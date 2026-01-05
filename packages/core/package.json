@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "test": "vitest run",
+    "test": "vitest run --no-color",
     "test:watch": "vitest",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
     "prepublishOnly": "npm run build"
