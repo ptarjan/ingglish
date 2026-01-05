@@ -1,18 +1,13 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
 import { translateText, reverseTranslateText } from '@ingglish/core';
 
-const SAMPLE_ENGLISH = `The quick brown fox jumps over the lazy dog.
+const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
 
 "Though" and "through" are spelled similarly but sound different.
 English spelling is notoriously difficult to learn because it has
 so many exceptions and irregularities. With Ingglish, words are
 spelled exactly as they sound - no memorization needed!`;
-
-const SAMPLE_INGGLISH = `Dhu kwik brown fahks jumps over dhu layzee dawg.
-Dhis sentuns kunntaynz evree leter uv dhu Ingglish alfubet.
-
-"Dho" and "throo" ahr speld similurlee but sownd diferunt.`;
 
 type EditingPane = 'english' | 'ingglish';
 
@@ -58,14 +53,9 @@ function TextTranslator() {
     setLastEdited('ingglish');
   }, []);
 
-  const handleSampleEnglish = useCallback(() => {
-    setEnglishText(SAMPLE_ENGLISH);
+  const handleSample = useCallback(() => {
+    setEnglishText(SAMPLE_TEXT);
     setLastEdited('english');
-  }, []);
-
-  const handleSampleIngglish = useCallback(() => {
-    setIngglishText(SAMPLE_INGGLISH);
-    setLastEdited('ingglish');
   }, []);
 
   const handleCopyEnglish = useCallback(async () => {
@@ -102,7 +92,7 @@ function TextTranslator() {
           <div className="section-header">
             <h2>English</h2>
             <div className="button-group">
-              <button onClick={handleSampleEnglish} className="btn-secondary">
+              <button onClick={handleSample} className="btn-secondary">
                 Sample
               </button>
               <button onClick={handleCopyEnglish} className="btn-secondary" disabled={!displayEnglish}>
@@ -129,9 +119,6 @@ function TextTranslator() {
           <div className="section-header">
             <h2>Ingglish</h2>
             <div className="button-group">
-              <button onClick={handleSampleIngglish} className="btn-secondary">
-                Sample
-              </button>
               <button onClick={handleCopyIngglish} className="btn-secondary" disabled={!displayIngglish}>
                 Copy
               </button>
