@@ -14,7 +14,6 @@ function UrlTranslator() {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isTranslated, setIsTranslated] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -89,12 +88,8 @@ function UrlTranslator() {
       setUrl(newUrl);
       setIsLoading(true);
       setError(null);
-      setIsTranslated(false);
 
       fetchAndTranslate(newUrl)
-        .then(() => {
-          setIsTranslated(true);
-        })
         .catch((err) => {
           const message = err instanceof Error ? err.message : 'Unknown error';
           setError(`Failed to load page: ${message}`);
@@ -130,11 +125,9 @@ function UrlTranslator() {
 
       setIsLoading(true);
       setError(null);
-      setIsTranslated(false);
 
       try {
         await fetchAndTranslate(urlToFetch);
-        setIsTranslated(true);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Unknown error';
         setError(
@@ -150,7 +143,6 @@ function UrlTranslator() {
   const handleClear = useCallback(() => {
     setUrl('');
     setError(null);
-    setIsTranslated(false);
     const iframe = iframeRef.current;
     if (iframe) {
       const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
@@ -195,8 +187,6 @@ function UrlTranslator() {
       </form>
 
       {error !== null && <div className="error-message">{error}</div>}
-
-      {isTranslated && <div className="success-message">Page translated to Ingglish!</div>}
 
       <div className="iframe-container">
         <iframe

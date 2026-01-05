@@ -19,6 +19,39 @@ for (const [phoneme, spelling] of Object.entries(PHONEME_MAP)) {
 // Sort by length descending so we match longer spellings first (e.g., "sh" before "s")
 const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort((a, b) => b.length - a.length);
 
+/**
+ * Ambiguous phonemes that can represent multiple phoneme sequences.
+ * "er" is particularly tricky because:
+ * - ER (r-colored schwa): "bird", "her", "nurse"
+ * - EH + R (short e + r consonant): "welfare", "energy", "better"
+ */
+const PHONEME_ALTERNATIVES: Record<string, string[]> = {
+  ER: ['EH R', 'IH R', 'AH R'], // Try alternate interpretations
+};
+
+/**
+ * Generates alternative phoneme sequences by expanding ambiguous phonemes.
+ * Returns an array of possible phoneme key strings to try.
+ */
+function generatePhonemeAlternatives(phonemes: string[]): string[] {
+  const results: string[] = [phonemes.join(' ')];
+
+  // For each ER phoneme, try replacing with alternatives
+  for (let i = 0; i < phonemes.length; i++) {
+    if (phonemes[i] === 'ER' && PHONEME_ALTERNATIVES['ER']) {
+      for (const alt of PHONEME_ALTERNATIVES['ER']) {
+        const altPhonemes = [...phonemes];
+        // Replace ER with the alternative (which may be multiple phonemes)
+        const altParts = alt.split(' ');
+        altPhonemes.splice(i, 1, ...altParts);
+        results.push(altPhonemes.join(' '));
+      }
+    }
+  }
+
+  return results;
+}
+
 // Cache for reverse dictionary lookup (phoneme string -> English words)
 let reverseDictionary: Map<string, string[]> | null = null;
 
@@ -134,8 +167,18 @@ export function reverseTranslateWord(inglishWord: string): string[] {
   }
 
   const reverseDict = buildReverseDictionary();
-  const phonemeKey = phonemes.join(' ');
-  const matches = reverseDict.get(phonemeKey) || [];
+
+  // Try the primary interpretation first, then alternatives
+  const phonemeVariants = generatePhonemeAlternatives(phonemes);
+  let matches: string[] = [];
+
+  for (const phonemeKey of phonemeVariants) {
+    const found = reverseDict.get(phonemeKey);
+    if (found && found.length > 0) {
+      matches = found;
+      break; // Use first matching variant
+    }
+  }
 
   if (matches.length === 0) {
     return [inglishWord]; // Return original if no match
