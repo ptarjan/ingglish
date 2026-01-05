@@ -145,14 +145,6 @@ function TextTranslator() {
           Clear All
         </button>
       </div>
-
-      <div className="info-box">
-        <h3>Bidirectional Translation</h3>
-        <p>
-          Type in either box! English → Ingglish uses the CMU dictionary. Ingglish → English may show
-          different words for homophones (e.g., "too" could be "to", "too", or "two").
-        </p>
-      </div>
     </div>
   );
 }
