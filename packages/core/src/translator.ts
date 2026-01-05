@@ -84,7 +84,8 @@ export function translateWord(word: string): string {
   }
 
   // Preserve case pattern
-  const isAllCaps = word === word.toUpperCase() && /[A-Z]/.test(word);
+  // Require length > 1 for all-caps to avoid treating single letters like "I" as acronyms
+  const isAllCaps = word.length > 1 && word === word.toUpperCase() && /[A-Z]/.test(word);
   const isCapitalized =
     word.length > 1 && /^[A-Z]/.test(word) && word.slice(1) === word.slice(1).toLowerCase();
 
