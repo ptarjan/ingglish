@@ -7,6 +7,7 @@ const EXAMPLE_URLS = [
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
   { name: 'BBC', url: 'https://bbc.com' },
   { name: 'CNN', url: 'https://cnn.com' },
+  { name: 'Reddit', url: 'https://old.reddit.com' },
 ];
 
 function UrlTranslator() {
