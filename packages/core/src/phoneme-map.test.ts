@@ -10,14 +10,55 @@ import {
 describe('phoneme-map', () => {
   describe('PHONEME_MAP', () => {
     it('should have all vowels mapped', () => {
-      const vowels = ['AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH', 'IY', 'OW', 'OY', 'UH', 'UW'];
+      const vowels = [
+        'AA',
+        'AE',
+        'AH',
+        'AO',
+        'AW',
+        'AY',
+        'EH',
+        'ER',
+        'EY',
+        'IH',
+        'IY',
+        'OW',
+        'OY',
+        'UH',
+        'UW',
+      ];
       for (const vowel of vowels) {
         expect(PHONEME_MAP[vowel]).toBeDefined();
       }
     });
 
     it('should have all consonants mapped', () => {
-      const consonants = ['B', 'CH', 'D', 'DH', 'F', 'G', 'HH', 'JH', 'K', 'L', 'M', 'N', 'NG', 'P', 'R', 'S', 'SH', 'T', 'TH', 'V', 'W', 'Y', 'Z', 'ZH'];
+      const consonants = [
+        'B',
+        'CH',
+        'D',
+        'DH',
+        'F',
+        'G',
+        'HH',
+        'JH',
+        'K',
+        'L',
+        'M',
+        'N',
+        'NG',
+        'P',
+        'R',
+        'S',
+        'SH',
+        'T',
+        'TH',
+        'V',
+        'W',
+        'Y',
+        'Z',
+        'ZH',
+      ];
       for (const consonant of consonants) {
         expect(PHONEME_MAP[consonant]).toBeDefined();
       }
@@ -82,21 +123,21 @@ describe('phoneme-map', () => {
 
     it('should handle vowel sounds correctly', () => {
       // Test each vowel
-      expect(phonemesToInglish(['AA1'])).toBe('ah');  // father
-      expect(phonemesToInglish(['AE1'])).toBe('a');   // cat
-      expect(phonemesToInglish(['AH1'])).toBe('u');   // but
-      expect(phonemesToInglish(['AO1'])).toBe('aw');  // caught
-      expect(phonemesToInglish(['AW1'])).toBe('ow');  // cow
-      expect(phonemesToInglish(['AY1'])).toBe('ai');  // my
-      expect(phonemesToInglish(['EH1'])).toBe('e');   // bed
-      expect(phonemesToInglish(['ER1'])).toBe('er');  // bird
-      expect(phonemesToInglish(['EY1'])).toBe('ay');  // say
-      expect(phonemesToInglish(['IH1'])).toBe('i');   // bit
-      expect(phonemesToInglish(['IY1'])).toBe('ee');  // bee
-      expect(phonemesToInglish(['OW1'])).toBe('oh');  // go
-      expect(phonemesToInglish(['OY1'])).toBe('oi');  // boy
-      expect(phonemesToInglish(['UH1'])).toBe('uu');  // book
-      expect(phonemesToInglish(['UW1'])).toBe('oo');  // too
+      expect(phonemesToInglish(['AA1'])).toBe('ah'); // father
+      expect(phonemesToInglish(['AE1'])).toBe('a'); // cat
+      expect(phonemesToInglish(['AH1'])).toBe('u'); // but
+      expect(phonemesToInglish(['AO1'])).toBe('aw'); // caught
+      expect(phonemesToInglish(['AW1'])).toBe('ow'); // cow
+      expect(phonemesToInglish(['AY1'])).toBe('ai'); // my
+      expect(phonemesToInglish(['EH1'])).toBe('e'); // bed
+      expect(phonemesToInglish(['ER1'])).toBe('er'); // bird
+      expect(phonemesToInglish(['EY1'])).toBe('ay'); // say
+      expect(phonemesToInglish(['IH1'])).toBe('i'); // bit
+      expect(phonemesToInglish(['IY1'])).toBe('ee'); // bee
+      expect(phonemesToInglish(['OW1'])).toBe('oh'); // go
+      expect(phonemesToInglish(['OY1'])).toBe('oi'); // boy
+      expect(phonemesToInglish(['UH1'])).toBe('uu'); // book
+      expect(phonemesToInglish(['UW1'])).toBe('oo'); // too
     });
 
     it('should handle consonant sounds correctly', () => {

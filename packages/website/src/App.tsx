@@ -18,8 +18,9 @@ function App() {
         setWordCount(stats.wordCount);
         setIsLoading(false);
       })
-      .catch((err) => {
-        setError(`Failed to load dictionary: ${err.message}`);
+      .catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        setError(`Failed to load dictionary: ${message}`);
         setIsLoading(false);
       });
   }, []);
@@ -33,7 +34,7 @@ function App() {
     );
   }
 
-  if (error) {
+  if (error !== null) {
     return (
       <div className="error-screen">
         <h1>Error</h1>
@@ -53,30 +54,28 @@ function App() {
       <nav className="tabs">
         <button
           className={`tab ${activeTab === 'text' ? 'active' : ''}`}
-          onClick={() => setActiveTab('text')}
+          onClick={() => {
+            setActiveTab('text');
+          }}
         >
           Translate Text
         </button>
         <button
           className={`tab ${activeTab === 'url' ? 'active' : ''}`}
-          onClick={() => setActiveTab('url')}
+          onClick={() => {
+            setActiveTab('url');
+          }}
         >
           Translate URL
         </button>
       </nav>
 
-      <main className="main">
-        {activeTab === 'text' ? <TextTranslator /> : <UrlTranslator />}
-      </main>
+      <main className="main">{activeTab === 'text' ? <TextTranslator /> : <UrlTranslator />}</main>
 
       <footer className="footer">
         <p>
           Inglish uses the{' '}
-          <a
-            href="https://github.com/cmusphinx/cmudict"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}
           to convert English words to their phonetic spellings.

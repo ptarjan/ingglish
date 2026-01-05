@@ -34,7 +34,7 @@ function TextTranslator() {
       try {
         const translated = translateText(text);
         setOutputText(translated);
-      } catch (err) {
+      } catch {
         setOutputText('Error translating text');
       } finally {
         setIsTranslating(false);
@@ -47,7 +47,7 @@ function TextTranslator() {
     try {
       const translated = translateText(SAMPLE_TEXT);
       setOutputText(translated);
-    } catch (err) {
+    } catch {
       setOutputText('Error translating text');
     }
   }, []);
@@ -56,8 +56,8 @@ function TextTranslator() {
     if (outputText) {
       try {
         await navigator.clipboard.writeText(outputText);
-      } catch (err) {
-        console.error('Failed to copy:', err);
+      } catch {
+        // Silently fail - clipboard API may not be available
       }
     }
   }, [outputText]);
@@ -97,11 +97,7 @@ function TextTranslator() {
               Inglish
               {isTranslating && <span className="translating-indicator"> (translating...)</span>}
             </h2>
-            <button
-              onClick={handleCopy}
-              className="btn-secondary"
-              disabled={!outputText}
-            >
+            <button onClick={handleCopy} className="btn-secondary" disabled={!outputText}>
               Copy
             </button>
           </div>
@@ -114,15 +110,25 @@ function TextTranslator() {
       <div className="info-box">
         <h3>How it works</h3>
         <p>
-          Inglish translates English words to their phonetic spellings using the
-          CMU Pronouncing Dictionary. Each sound maps to exactly one spelling:
+          Inglish translates English words to their phonetic spellings using the CMU Pronouncing
+          Dictionary. Each sound maps to exactly one spelling:
         </p>
         <ul>
-          <li><strong>ee</strong> = long "e" (bee, see)</li>
-          <li><strong>ai</strong> = long "i" (my, time)</li>
-          <li><strong>oh</strong> = long "o" (go, show)</li>
-          <li><strong>th</strong> = voiceless (think)</li>
-          <li><strong>dh</strong> = voiced (the, this)</li>
+          <li>
+            <strong>ee</strong> = long "e" (bee, see)
+          </li>
+          <li>
+            <strong>ai</strong> = long "i" (my, time)
+          </li>
+          <li>
+            <strong>oh</strong> = long "o" (go, show)
+          </li>
+          <li>
+            <strong>th</strong> = voiceless (think)
+          </li>
+          <li>
+            <strong>dh</strong> = voiced (the, this)
+          </li>
         </ul>
       </div>
     </div>

@@ -53,22 +53,12 @@ const DEFAULT_SKIP_TAGS = [
 /**
  * Attributes that may contain translatable text.
  */
-const TRANSLATABLE_ATTRIBUTES = [
-  'title',
-  'alt',
-  'placeholder',
-  'aria-label',
-  'aria-description',
-];
+const TRANSLATABLE_ATTRIBUTES = ['title', 'alt', 'placeholder', 'aria-label', 'aria-description'];
 
 /**
  * Checks if an element should be skipped during translation.
  */
-function shouldSkipElement(
-  element: Element,
-  skipTags: string[],
-  skipClasses: string[]
-): boolean {
+function shouldSkipElement(element: Element, skipTags: string[], skipClasses: string[]): boolean {
   // Check tag name
   if (skipTags.includes(element.tagName)) {
     return true;
@@ -99,15 +89,11 @@ function shouldSkipElement(
  */
 function countTextNodes(root: Node): number {
   let count = 0;
-  const walker = document.createTreeWalker(
-    root,
-    NodeFilter.SHOW_TEXT,
-    null
-  );
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
 
   while (walker.nextNode()) {
-    const text = walker.currentNode.textContent?.trim();
-    if (text && text.length > 0) {
+    const text = walker.currentNode.textContent?.trim() ?? '';
+    if (text.length > 0) {
       count++;
     }
   }
@@ -122,10 +108,7 @@ function countTextNodes(root: Node): number {
  * @param root The root element to translate
  * @param options Configuration options
  */
-export function translateDOM(
-  root: Element | Document,
-  options: DOMTranslatorOptions = {}
-): void {
+export function translateDOM(root: Element | Document, options: DOMTranslatorOptions = {}): void {
   requireBrowser();
 
   if (!isDictionaryLoaded()) {
@@ -144,29 +127,26 @@ export function translateDOM(
   let processedNodes = 0;
 
   // Create a tree walker to iterate through all text nodes
-  const walker = document.createTreeWalker(
-    root,
-    NodeFilter.SHOW_TEXT,
-    {
-      acceptNode(node: Text): number {
-        // Skip empty or whitespace-only text
-        if (!node.textContent?.trim()) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node: Text): number {
+      // Skip empty or whitespace-only text
+      const text = node.textContent?.trim() ?? '';
+      if (text.length === 0) {
+        return NodeFilter.FILTER_SKIP;
+      }
+
+      // Check parent elements for skip conditions
+      let parent = node.parentElement;
+      while (parent) {
+        if (shouldSkipElement(parent, skipTags, skipClasses)) {
           return NodeFilter.FILTER_SKIP;
         }
+        parent = parent.parentElement;
+      }
 
-        // Check parent elements for skip conditions
-        let parent = node.parentElement;
-        while (parent) {
-          if (shouldSkipElement(parent, skipTags, skipClasses)) {
-            return NodeFilter.FILTER_SKIP;
-          }
-          parent = parent.parentElement;
-        }
-
-        return NodeFilter.FILTER_ACCEPT;
-      },
-    }
-  );
+      return NodeFilter.FILTER_ACCEPT;
+    },
+  });
 
   // Collect all text nodes first (to avoid modifying while iterating)
   const textNodes: Text[] = [];
@@ -210,7 +190,7 @@ function translateElementAttributes(
 
     for (const attrName of TRANSLATABLE_ATTRIBUTES) {
       const attrValue = element.getAttribute(attrName);
-      if (attrValue) {
+      if (attrValue !== null && attrValue.length > 0) {
         element.setAttribute(attrName, translateText(attrValue));
       }
     }
@@ -246,11 +226,7 @@ export function observeAndTranslate(
     throw new Error('Dictionary not loaded. Call loadDictionary() first.');
   }
 
-  const {
-    skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = [],
-    translateAttributes = true,
-  } = options;
+  const { skipTags = DEFAULT_SKIP_TAGS, skipClasses = [], translateAttributes = true } = options;
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -258,8 +234,8 @@ export function observeAndTranslate(
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const textNode = node as Text;
-          const text = textNode.textContent;
-          if (text?.trim()) {
+          const text = textNode.textContent ?? '';
+          if (text.trim().length > 0) {
             // Check if we should skip this node
             let parent = textNode.parentElement;
             let shouldSkip = false;
@@ -322,7 +298,9 @@ export function observeAndTranslate(
   });
 
   // Return a function to stop observing
-  return () => observer.disconnect();
+  return () => {
+    observer.disconnect();
+  };
 }
 
 /**

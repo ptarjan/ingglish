@@ -15,64 +15,64 @@
 // Vowel mappings (stress markers will be stripped before lookup)
 export const VOWEL_MAP: Record<string, string> = {
   // Monophthongs
-  'AA': 'ah',  // father, hot, bother
-  'AE': 'a',   // cat, bat, had
-  'AH': 'u',   // but, cup, son
-  'AO': 'aw',  // thought, caught, law
-  'EH': 'e',   // bed, red, said
-  'ER': 'er',  // bird, her, nurse
-  'IH': 'i',   // bit, sit, gym
-  'IY': 'ee',  // bee, see, machine
-  'UH': 'uu',  // book, put, could
-  'UW': 'oo',  // too, blue, food
+  AA: 'ah', // father, hot, bother
+  AE: 'a', // cat, bat, had
+  AH: 'u', // but, cup, son
+  AO: 'aw', // thought, caught, law
+  EH: 'e', // bed, red, said
+  ER: 'er', // bird, her, nurse
+  IH: 'i', // bit, sit, gym
+  IY: 'ee', // bee, see, machine
+  UH: 'uu', // book, put, could
+  UW: 'oo', // too, blue, food
 
   // Diphthongs
-  'AW': 'ow',  // cow, how, out
-  'AY': 'ai',  // my, eye, time
-  'EY': 'ay',  // say, day, make
-  'OW': 'oh',  // go, show, coat
-  'OY': 'oi',  // boy, toy, coin
+  AW: 'ow', // cow, how, out
+  AY: 'ai', // my, eye, time
+  EY: 'ay', // say, day, make
+  OW: 'oh', // go, show, coat
+  OY: 'oi', // boy, toy, coin
 };
 
 // Consonant mappings
 export const CONSONANT_MAP: Record<string, string> = {
   // Stops (plosives)
-  'B': 'b',    // bat, cab
-  'D': 'd',    // dog, bed
-  'G': 'g',    // go, big
-  'K': 'k',    // cat, back
-  'P': 'p',    // pat, cup
-  'T': 't',    // top, cat
+  B: 'b', // bat, cab
+  D: 'd', // dog, bed
+  G: 'g', // go, big
+  K: 'k', // cat, back
+  P: 'p', // pat, cup
+  T: 't', // top, cat
 
   // Fricatives
-  'DH': 'dh',  // the, this, father (voiced)
-  'F': 'f',    // fat, laugh
-  'S': 's',    // sat, miss
-  'SH': 'sh',  // she,ush
-  'TH': 'th',  // think, bath (voiceless)
-  'V': 'v',    // van, love
-  'Z': 'z',    // zoo, is
-  'ZH': 'zh',  // measure, beige
+  DH: 'dh', // the, this, father (voiced)
+  F: 'f', // fat, laugh
+  S: 's', // sat, miss
+  SH: 'sh', // she,ush
+  TH: 'th', // think, bath (voiceless)
+  V: 'v', // van, love
+  Z: 'z', // zoo, is
+  ZH: 'zh', // measure, beige
 
   // Affricates
-  'CH': 'ch',  // chat, batch
-  'JH': 'j',   // just, edge
+  CH: 'ch', // chat, batch
+  JH: 'j', // just, edge
 
   // Nasals
-  'M': 'm',    // man, come
-  'N': 'n',    // no, pen
-  'NG': 'ng',  // sing, thing
+  M: 'm', // man, come
+  N: 'n', // no, pen
+  NG: 'ng', // sing, thing
 
   // Liquids
-  'L': 'l',    // let, well
-  'R': 'r',    // run, car
+  L: 'l', // let, well
+  R: 'r', // run, car
 
   // Semivowels (glides)
-  'W': 'w',    // wet, away
-  'Y': 'y',    // yes, you
+  W: 'w', // wet, away
+  Y: 'y', // yes, you
 
   // Aspirate
-  'HH': 'h',   // hat, ahead
+  HH: 'h', // hat, ahead
 };
 
 // Combined map for easy lookup
@@ -96,7 +96,7 @@ export function stripStress(phoneme: string): string {
  */
 export function phonemesToInglish(phonemes: string[]): string {
   return phonemes
-    .map(p => {
+    .map((p) => {
       const base = stripStress(p);
       const inglish = PHONEME_MAP[base];
       if (!inglish) {

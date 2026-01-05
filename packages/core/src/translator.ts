@@ -22,17 +22,14 @@ export async function loadDictionary(): Promise<CMUDictionary> {
   }
 
   dictionaryPromise = import('cmu-pronouncing-dictionary')
-    .then(module => {
-      // Validate module format
-      if (!module.default || typeof module.default !== 'object') {
-        throw new Error('Invalid dictionary module format');
-      }
-      dictionary = module.default as CMUDictionary;
+    .then((module: { default: CMUDictionary }) => {
+      dictionary = module.default;
       return dictionary;
     })
-    .catch(error => {
+    .catch((error: unknown) => {
       dictionaryPromise = null; // Reset so retry is possible
-      throw new Error(`Failed to load CMU dictionary: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load CMU dictionary: ${message}`);
     });
 
   return dictionaryPromise;
@@ -88,9 +85,8 @@ export function translateWord(word: string): string {
 
   // Preserve case pattern
   const isAllCaps = word === word.toUpperCase() && /[A-Z]/.test(word);
-  const isCapitalized = word.length > 1 &&
-    word[0] === word[0].toUpperCase() &&
-    word.slice(1) === word.slice(1).toLowerCase();
+  const isCapitalized =
+    word.length > 1 && /^[A-Z]/.test(word) && word.slice(1) === word.slice(1).toLowerCase();
 
   const phonemes = lookupPronunciation(word);
 
@@ -135,18 +131,20 @@ export function translateText(text: string): string {
   // This preserves punctuation, numbers, whitespace, etc.
   const tokens = text.split(/(\b[a-zA-Z']+\b)/);
 
-  return tokens.map(token => {
-    // Only translate if it's a word (contains letters)
-    if (/^[a-zA-Z']+$/.test(token)) {
-      // Handle contractions by splitting on apostrophe
-      if (token.includes("'")) {
-        const parts = token.split("'");
-        return parts.map(p => p ? translateWord(p) : '').join("'");
+  return tokens
+    .map((token) => {
+      // Only translate if it's a word (contains letters)
+      if (/^[a-zA-Z']+$/.test(token)) {
+        // Handle contractions by splitting on apostrophe
+        if (token.includes("'")) {
+          const parts = token.split("'");
+          return parts.map((p) => (p ? translateWord(p) : '')).join("'");
+        }
+        return translateWord(token);
       }
-      return translateWord(token);
-    }
-    return token;
-  }).join('');
+      return token;
+    })
+    .join('');
 }
 
 /**

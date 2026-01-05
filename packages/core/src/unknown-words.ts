@@ -1,11 +1,11 @@
-import { phonemesToInglish, PHONEME_MAP, stripStress } from './phoneme-map';
+import { phonemesToInglish } from './phoneme-map';
 import { lookupPronunciation } from './translator';
 
 /**
  * Common English suffixes and their phonetic representations.
  * Used when trying to stem unknown words.
  */
-const SUFFIX_PHONEMES: Array<{ suffix: string; phonemes: string[] }> = [
+const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] }[] = [
   // Verb suffixes
   { suffix: 'ing', phonemes: ['IH0', 'NG'] },
   { suffix: 'ed', phonemes: ['D'] }, // or T or IH0 D depending on context
@@ -41,7 +41,7 @@ const SUFFIX_PHONEMES: Array<{ suffix: string; phonemes: string[] }> = [
 /**
  * Common prefixes and their phonetic representations.
  */
-const PREFIX_PHONEMES: Array<{ prefix: string; phonemes: string[] }> = [
+const PREFIX_PHONEMES: { prefix: string; phonemes: string[] }[] = [
   { prefix: 'un', phonemes: ['AH0', 'N'] },
   { prefix: 're', phonemes: ['R', 'IY0'] },
   { prefix: 'pre', phonemes: ['P', 'R', 'IY0'] },
@@ -58,7 +58,7 @@ const PREFIX_PHONEMES: Array<{ prefix: string; phonemes: string[] }> = [
  * Basic letter-to-sound rules for grapheme-to-phoneme conversion.
  * Used as a fallback when the word isn't in the dictionary.
  */
-const GRAPHEME_TO_PHONEME: Array<{ pattern: RegExp; phonemes: string[] }> = [
+const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   // Digraphs first (longer patterns)
   { pattern: /^sh/i, phonemes: ['SH'] },
   { pattern: /^ch/i, phonemes: ['CH'] },
@@ -139,7 +139,7 @@ export function translateWithStemming(word: string): string | null {
         stem + 'e', // hoping -> hope
         stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
         stem.length > 0 ? stem + stem[stem.length - 1] : stem, // big -> bigg (for adding -er)
-      ].filter(v => v.length > 0);
+      ].filter((v) => v.length > 0);
 
       for (const variant of stemVariants) {
         const basePhonemes = lookupPronunciation(variant);
@@ -224,7 +224,7 @@ export function translateWithRules(word: string): string {
 export function translateUnknown(word: string): string {
   // Try stemming first
   const stemmedResult = translateWithStemming(word);
-  if (stemmedResult) {
+  if (stemmedResult !== null && stemmedResult.length > 0) {
     return stemmedResult;
   }
 

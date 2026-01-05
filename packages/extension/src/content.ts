@@ -2,32 +2,43 @@
 // This runs on every page and translates content when requested
 
 import { loadDictionary, translateDOM, observeAndTranslate } from '@inglish/core';
+import type { TranslateMessage, TranslateResponse } from './types';
 
 let isTranslating = false;
-let stopObserving: (() => void) | null = null;
+
+// Store reference to stop observing function (may be used in future for cleanup)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let stopObservingFn: (() => void) | null = null;
 
 // Listen for messages from background script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'TRANSLATE') {
-    translatePage()
-      .then(() => {
-        sendResponse({ success: true });
-      })
-      .catch((error) => {
-        console.error('Inglish translation error:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-    return true; // Keep channel open for async response
+chrome.runtime.onMessage.addListener(
+  (message: TranslateMessage, _sender, sendResponse: (response: TranslateResponse) => void) => {
+    if (message.type === 'TRANSLATE') {
+      translatePage()
+        .then(() => {
+          sendResponse({ success: true });
+        })
+        .catch((error: unknown) => {
+          // eslint-disable-next-line no-console
+          console.error('Inglish translation error:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          sendResponse({ success: false, error: errorMessage });
+        });
+      return true; // Keep channel open for async response
+    }
+    return false;
   }
-});
+);
 
 async function translatePage(): Promise<void> {
   if (isTranslating) {
+    // eslint-disable-next-line no-console
     console.log('Inglish: Already translating');
     return;
   }
 
   isTranslating = true;
+  // eslint-disable-next-line no-console
   console.log('Inglish: Starting translation...');
 
   try {
@@ -36,23 +47,53 @@ async function translatePage(): Promise<void> {
 
     // Translate the current page
     translateDOM(document.body, {
-      skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'KBD', 'SAMP', 'VAR', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SVG', 'MATH', 'CANVAS'],
+      skipTags: [
+        'SCRIPT',
+        'STYLE',
+        'CODE',
+        'PRE',
+        'KBD',
+        'SAMP',
+        'VAR',
+        'NOSCRIPT',
+        'TEXTAREA',
+        'INPUT',
+        'SVG',
+        'MATH',
+        'CANVAS',
+      ],
       skipClasses: ['no-translate', 'notranslate'],
       translateAttributes: true,
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
+          // eslint-disable-next-line no-console
           console.log(`Inglish: Translated ${processed}/${total} text nodes`);
         }
       },
     });
 
     // Set up observer for dynamic content
-    stopObserving = observeAndTranslate(document.body, {
-      skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'KBD', 'SAMP', 'VAR', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SVG', 'MATH', 'CANVAS'],
+    stopObservingFn = observeAndTranslate(document.body, {
+      skipTags: [
+        'SCRIPT',
+        'STYLE',
+        'CODE',
+        'PRE',
+        'KBD',
+        'SAMP',
+        'VAR',
+        'NOSCRIPT',
+        'TEXTAREA',
+        'INPUT',
+        'SVG',
+        'MATH',
+        'CANVAS',
+      ],
       skipClasses: ['no-translate', 'notranslate'],
       translateAttributes: true,
     });
 
+    // eslint-disable-next-line no-console
     console.log('Inglish: Translation complete!');
 
     // Add visual indicator
@@ -104,4 +145,5 @@ function addTranslationBadge(): void {
   document.body.appendChild(badge);
 }
 
+// eslint-disable-next-line no-console
 console.log('Inglish content script loaded');

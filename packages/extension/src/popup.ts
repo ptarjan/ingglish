@@ -1,5 +1,7 @@
 // Popup script for Inglish extension
 
+import type { StateResponse, ToggleResponse } from './types';
+
 const toggleBtn = document.getElementById('toggle-btn') as HTMLButtonElement;
 const statusText = document.getElementById('status-text') as HTMLSpanElement;
 const statusDot = document.getElementById('status-dot') as HTMLDivElement;
@@ -7,20 +9,20 @@ const statusDot = document.getElementById('status-dot') as HTMLDivElement;
 let isEnabled = false;
 
 // Get initial state
-chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response) => {
-  if (response) {
+chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response: StateResponse | undefined) => {
+  if (response !== undefined) {
     isEnabled = response.enabled;
     updateUI();
   }
 });
 
 // Handle toggle button click
-toggleBtn.addEventListener('click', async () => {
+toggleBtn.addEventListener('click', () => {
   toggleBtn.disabled = true;
   toggleBtn.textContent = 'Working...';
 
-  chrome.runtime.sendMessage({ type: 'TOGGLE' }, (response) => {
-    if (response?.success) {
+  chrome.runtime.sendMessage({ type: 'TOGGLE' }, (response: ToggleResponse | undefined) => {
+    if (response?.success === true && response.enabled !== undefined) {
       isEnabled = response.enabled;
       updateUI();
     } else {
@@ -33,7 +35,7 @@ toggleBtn.addEventListener('click', async () => {
   });
 });
 
-function updateUI() {
+function updateUI(): void {
   if (isEnabled) {
     toggleBtn.textContent = 'Turn Off';
     toggleBtn.classList.add('active');
