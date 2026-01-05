@@ -5,12 +5,52 @@ import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
 
 type Tab = 'text' | 'url' | 'guide';
+type ThemeMode = 'light' | 'dark' | 'auto';
+
+function getSystemTheme(): 'light' | 'dark' {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [wordCount, setWordCount] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<Tab>('text');
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    const saved = localStorage.getItem('themeMode');
+    return (saved as ThemeMode) || 'auto';
+  });
+
+  useEffect(() => {
+    const applyTheme = () => {
+      const effectiveTheme = themeMode === 'auto' ? getSystemTheme() : themeMode;
+      document.documentElement.setAttribute('data-theme', effectiveTheme);
+    };
+
+    applyTheme();
+    localStorage.setItem('themeMode', themeMode);
+
+    // Listen for OS theme changes when in auto mode
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    if (themeMode === 'auto') {
+      mediaQuery.addEventListener('change', applyTheme);
+      return () => mediaQuery.removeEventListener('change', applyTheme);
+    }
+  }, [themeMode]);
+
+  const cycleTheme = () => {
+    setThemeMode((prev) => {
+      if (prev === 'auto') return 'light';
+      if (prev === 'light') return 'dark';
+      return 'auto';
+    });
+  };
+
+  const getThemeIcon = () => {
+    if (themeMode === 'auto') return '🌓';
+    if (themeMode === 'light') return '☀️';
+    return '🌙';
+  };
 
   useEffect(() => {
     loadDictionary()
@@ -46,6 +86,9 @@ function App() {
 
   return (
     <div className="app">
+      <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
+        {getThemeIcon()}
+      </button>
       <header className="header">
         <div className="header-title">
           <img src="logo.svg" alt="Ingglish logo" className="logo" />

@@ -107,7 +107,7 @@ function SpellingGuide() {
           <tr>
             <th>Spelling</th>
             <th>Examples</th>
-            <th>CMU</th>
+            <th className="phoneme-header">CMU</th>
           </tr>
         </thead>
         <tbody>
