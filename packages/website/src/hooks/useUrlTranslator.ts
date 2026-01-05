@@ -39,11 +39,7 @@ function injectBaseTag(html: string, origin: string): string {
  * Checks if a URL should be ignored for navigation.
  */
 function shouldSkipUrl(href: string): boolean {
-  return (
-    href.startsWith('#') ||
-    href.startsWith('javascript:') ||
-    href.startsWith('mailto:')
-  );
+  return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
 }
 
 export function useUrlTranslator(): UseUrlTranslatorResult {

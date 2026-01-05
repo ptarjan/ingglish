@@ -3,12 +3,7 @@
  */
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { loadDictionary } from './translator';
-import {
-  translateDOM,
-  translateDOMAsync,
-  skipElement,
-  unskipElement,
-} from './dom-translator';
+import { translateDOM, translateDOMAsync, skipElement, unskipElement } from './dom-translator';
 
 describe('dom-translator', () => {
   beforeAll(async () => {

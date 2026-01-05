@@ -12,8 +12,8 @@
     "build": "npm run build --workspaces",
     "lint": "eslint packages/*/src",
     "lint:fix": "eslint packages/*/src --fix",
-    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\"",
-    "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\"",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
+    "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
     "check": "npm run lint && npm run format:check && npm run test",
     "debug:roundtrip": "npm run debug:roundtrip -w @ingglish/core --"
   },

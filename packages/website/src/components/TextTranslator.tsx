@@ -68,7 +68,9 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
         // Preserve whitespace and newlines
         return <span key={i}>{token.text}</span>;
       })}
-      {tokens.length === 0 && <span className="placeholder">Hover to see word correspondence...</span>}
+      {tokens.length === 0 && (
+        <span className="placeholder">Hover to see word correspondence...</span>
+      )}
     </div>
   );
 }
@@ -105,7 +107,8 @@ function TextTranslator() {
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
   const displayEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
-  const displayIngglish = lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
+  const displayIngglish =
+    lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
 
   const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEnglishText(e.target.value);
@@ -161,7 +164,11 @@ function TextTranslator() {
               <button onClick={handleSample} className="btn-secondary">
                 Sample
               </button>
-              <button onClick={handleCopyEnglish} className="btn-secondary" disabled={!displayEnglish}>
+              <button
+                onClick={handleCopyEnglish}
+                className="btn-secondary"
+                disabled={!displayEnglish}
+              >
                 Copy
               </button>
             </div>
@@ -185,7 +192,11 @@ function TextTranslator() {
           <div className="section-header">
             <h2>Ingglish</h2>
             <div className="button-group">
-              <button onClick={handleCopyIngglish} className="btn-secondary" disabled={!displayIngglish}>
+              <button
+                onClick={handleCopyIngglish}
+                className="btn-secondary"
+                disabled={!displayIngglish}
+              >
                 Copy
               </button>
             </div>

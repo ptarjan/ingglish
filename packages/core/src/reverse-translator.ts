@@ -21,9 +21,7 @@ for (const [phoneme, spelling] of Object.entries(PHONEME_MAP)) {
 }
 
 /** Spellings sorted by length (match longer patterns first, e.g., "sh" before "s") */
-const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort(
-  (a, b) => b.length - a.length
-);
+const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort((a, b) => b.length - a.length);
 
 // ============================================================================
 // Phoneme Alternatives (handling ambiguous spellings)
@@ -185,11 +183,13 @@ export function reverseTranslateText(inglishText: string): string {
         // Handle contractions - keep the apostrophe, translate parts
         if (token.includes("'")) {
           const parts = token.split("'");
-          return parts.map((p) => {
-            if (!p) return '';
-            const matches = reverseTranslateWord(p);
-            return matches[0] ?? p;
-          }).join("'");
+          return parts
+            .map((p) => {
+              if (!p) return '';
+              const matches = reverseTranslateWord(p);
+              return matches[0] ?? p;
+            })
+            .join("'");
         }
         const matches = reverseTranslateWord(token);
         return matches[0] ?? token;
@@ -204,18 +204,18 @@ export function reverseTranslateText(inglishText: string): string {
 // ============================================================================
 
 const INGLISH_PATTERNS = [
-  /\buu\b/i,      // "uu" is rare in English
-  /\bdh/i,        // "dh" at word start
+  /\buu\b/i, // "uu" is rare in English
+  /\bdh/i, // "dh" at word start
   /\bng[aeiou]/i, // "ng" + vowel at start
-  /[aeiou]h\b/i,  // vowel + "h" at end
+  /[aeiou]h\b/i, // vowel + "h" at end
 ];
 
 const ENGLISH_PATTERNS = [
-  /tion\b/i,  // "-tion" ending
-  /ight\b/i,  // "-ight" ending
-  /ough/i,    // "ough" pattern
+  /tion\b/i, // "-tion" ending
+  /ight\b/i, // "-ight" ending
+  /ough/i, // "ough" pattern
   /\bthe\b/i, // "the" (would be "dhu" in Ingglish)
-  /\bwh/i,    // "wh-" words
+  /\bwh/i, // "wh-" words
 ];
 
 /**

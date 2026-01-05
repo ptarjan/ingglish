@@ -145,13 +145,15 @@ function translateContraction(token: string): string {
 
   // Fallback: translate parts separately, preserving apostrophe
   const parts = token.split("'");
-  return parts.map((p, i) => {
-    if (!p) return '';
-    if (i > 0 && p.toLowerCase() === 't') {
-      return 't'; // Keep 't' as-is for n't contractions not in dictionary
-    }
-    return translateWord(p);
-  }).join("'");
+  return parts
+    .map((p, i) => {
+      if (!p) return '';
+      if (i > 0 && p.toLowerCase() === 't') {
+        return 't'; // Keep 't' as-is for n't contractions not in dictionary
+      }
+      return translateWord(p);
+    })
+    .join("'");
 }
 
 /**

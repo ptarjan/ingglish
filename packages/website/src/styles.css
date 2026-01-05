@@ -667,7 +667,9 @@ body {
   cursor: pointer;
   padding: 0.1em 0.15em;
   border-radius: 0.2em;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .word-token:hover {
