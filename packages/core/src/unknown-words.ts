@@ -137,9 +137,9 @@ export function translateWithStemming(word: string): string | null {
       const stemVariants = [
         stem,
         stem + 'e', // hoping -> hope
-        stem.slice(0, -1), // running -> run (double consonant)
-        stem + stem[stem.length - 1], // big -> bigg (for adding -er)
-      ];
+        stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
+        stem.length > 0 ? stem + stem[stem.length - 1] : stem, // big -> bigg (for adding -er)
+      ].filter(v => v.length > 0);
 
       for (const variant of stemVariants) {
         const basePhonemes = lookupPronunciation(variant);

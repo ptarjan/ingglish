@@ -21,11 +21,19 @@ export async function loadDictionary(): Promise<CMUDictionary> {
     return dictionaryPromise;
   }
 
-  dictionaryPromise = import('cmu-pronouncing-dictionary').then(module => {
-    // The module exports a default object with words as keys
-    dictionary = module.default as CMUDictionary;
-    return dictionary;
-  });
+  dictionaryPromise = import('cmu-pronouncing-dictionary')
+    .then(module => {
+      // Validate module format
+      if (!module.default || typeof module.default !== 'object') {
+        throw new Error('Invalid dictionary module format');
+      }
+      dictionary = module.default as CMUDictionary;
+      return dictionary;
+    })
+    .catch(error => {
+      dictionaryPromise = null; // Reset so retry is possible
+      throw new Error(`Failed to load CMU dictionary: ${error.message}`);
+    });
 
   return dictionaryPromise;
 }
@@ -68,15 +76,32 @@ export function lookupPronunciation(word: string): string[] | null {
  * @returns The Inglish spelling, or the original word if not found
  */
 export function translateWord(word: string): string {
+  // Handle empty strings
+  if (!word || word.length === 0) {
+    return word;
+  }
+
+  // Check if word has any letters to translate
+  if (!/[a-zA-Z]/.test(word)) {
+    return word;
+  }
+
   // Preserve case pattern
-  const isAllCaps = word === word.toUpperCase() && word.length > 1;
-  const isCapitalized = word[0] === word[0].toUpperCase() && word.slice(1) === word.slice(1).toLowerCase();
+  const isAllCaps = word === word.toUpperCase() && /[A-Z]/.test(word);
+  const isCapitalized = word.length > 1 &&
+    word[0] === word[0].toUpperCase() &&
+    word.slice(1) === word.slice(1).toLowerCase();
 
   const phonemes = lookupPronunciation(word);
 
   if (!phonemes) {
     // Word not found in dictionary - try fallback strategies
     const fallbackResult = translateUnknown(word);
+
+    // Return original if fallback failed
+    if (!fallbackResult || fallbackResult.length === 0) {
+      return word;
+    }
 
     // Apply original case pattern to fallback result
     if (isAllCaps) {

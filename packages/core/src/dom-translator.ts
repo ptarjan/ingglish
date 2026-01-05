@@ -1,6 +1,22 @@
 import { translateText, loadDictionary, isDictionaryLoaded } from './translator';
 
 /**
+ * Checks if we're in a browser environment.
+ */
+function isBrowser(): boolean {
+  return typeof document !== 'undefined' && typeof window !== 'undefined';
+}
+
+/**
+ * Throws an error if not in a browser environment.
+ */
+function requireBrowser(): void {
+  if (!isBrowser()) {
+    throw new Error('DOM translation requires a browser environment');
+  }
+}
+
+/**
  * Configuration options for DOM translation.
  */
 export interface DOMTranslatorOptions {
@@ -110,6 +126,8 @@ export function translateDOM(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): void {
+  requireBrowser();
+
   if (!isDictionaryLoaded()) {
     throw new Error('Dictionary not loaded. Call loadDictionary() first.');
   }
@@ -222,6 +240,8 @@ export function observeAndTranslate(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): () => void {
+  requireBrowser();
+
   if (!isDictionaryLoaded()) {
     throw new Error('Dictionary not loaded. Call loadDictionary() first.');
   }
@@ -280,12 +300,15 @@ export function observeAndTranslate(
           if (!shouldSkip) {
             // Temporarily disconnect observer to avoid infinite loop
             observer.disconnect();
-            textNode.textContent = translateText(text);
-            observer.observe(root, {
-              childList: true,
-              subtree: true,
-              characterData: true,
-            });
+            try {
+              textNode.textContent = translateText(text);
+            } finally {
+              observer.observe(root, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+              });
+            }
           }
         }
       }
