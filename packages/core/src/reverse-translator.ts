@@ -1,62 +1,14 @@
 import { PHONEME_MAP } from './phoneme-map';
 import { getDictionary } from './translator';
+import wordFrequencies from 'subtlex-word-frequencies';
 
-// Common English words - used to prefer more frequent words for homophones
-// Based on frequency lists, these are among the most common words
-const COMMON_WORDS = new Set([
-  // Articles & determiners
-  'the', 'a', 'an', 'this', 'that', 'these', 'those', 'some', 'any', 'no',
-  // Pronouns
-  'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
-  'my', 'your', 'his', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 'theirs',
-  'who', 'what', 'which', 'where', 'when', 'why', 'how',
-  // Common verbs
-  'be', 'is', 'are', 'was', 'were', 'been', 'being', 'am',
-  'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'done',
-  'say', 'said', 'go', 'goes', 'went', 'gone', 'going',
-  'get', 'got', 'getting', 'make', 'made', 'making',
-  'know', 'knew', 'known', 'think', 'thought', 'see', 'saw', 'seen',
-  'come', 'came', 'coming', 'take', 'took', 'taken', 'taking',
-  'want', 'use', 'find', 'give', 'tell', 'work', 'call', 'try', 'ask', 'need', 'feel',
-  'become', 'leave', 'put', 'mean', 'keep', 'let', 'begin', 'seem', 'help', 'show',
-  'hear', 'play', 'run', 'move', 'live', 'believe', 'hold', 'bring', 'happen',
-  'write', 'provide', 'sit', 'stand', 'lose', 'pay', 'meet', 'include', 'continue',
-  'set', 'learn', 'change', 'lead', 'understand', 'watch', 'follow', 'stop', 'create',
-  'speak', 'read', 'allow', 'add', 'spend', 'grow', 'open', 'walk', 'win', 'offer',
-  'remember', 'love', 'consider', 'appear', 'buy', 'wait', 'serve', 'die', 'send', 'expect',
-  // Prepositions & conjunctions
-  'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'up', 'about', 'into',
-  'through', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'again',
-  'and', 'but', 'or', 'if', 'because', 'as', 'until', 'while', 'although', 'though',
-  'so', 'than', 'too', 'very', 'just', 'only', 'also', 'now', 'then', 'here', 'there',
-  // Common nouns
-  'time', 'year', 'people', 'way', 'day', 'man', 'woman', 'child', 'world', 'life',
-  'hand', 'part', 'place', 'case', 'week', 'company', 'system', 'program', 'question',
-  'work', 'government', 'number', 'night', 'point', 'home', 'water', 'room', 'mother',
-  'area', 'money', 'story', 'fact', 'month', 'lot', 'right', 'study', 'book', 'eye',
-  'job', 'word', 'business', 'issue', 'side', 'kind', 'head', 'house', 'service', 'friend',
-  'father', 'power', 'hour', 'game', 'line', 'end', 'member', 'law', 'car', 'city',
-  'community', 'name', 'president', 'team', 'minute', 'idea', 'kid', 'body', 'information',
-  'back', 'parent', 'face', 'others', 'level', 'office', 'door', 'health', 'person', 'art',
-  // Common adjectives
-  'good', 'new', 'first', 'last', 'long', 'great', 'little', 'own', 'other', 'old',
-  'right', 'big', 'high', 'different', 'small', 'large', 'next', 'early', 'young', 'important',
-  'few', 'public', 'bad', 'same', 'able', 'best', 'better', 'sure', 'free', 'true',
-  // Common adverbs
-  'not', 'more', 'when', 'still', 'well', 'back', 'even', 'most', 'much',
-  // Numbers
-  'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-  'first', 'second', 'third',
-  // Other common words
-  'all', 'each', 'every', 'both', 'many', 'most', 'such', 'over', 'own', 'same',
-  'yes', 'no', 'like', 'would', 'could', 'should', 'may', 'might', 'must', 'will',
-  'can', 'shall', 'being', 'been',
-  // More common words (from sample text and frequent usage)
-  'quick', 'brown', 'fox', 'jumps', 'lazy', 'dog', 'sentence', 'contains', 'letter',
-  'alphabet', 'though', 'through', 'spelled', 'sound', 'different', 'english', 'spelling',
-  'difficult', 'learn', 'because', 'exceptions', 'words', 'exactly', 'needed',
-  'written', 'phonetic', 'over', 'every', 'similarly', 'notoriously', 'has', 'say',
-]);
+// Build word frequency map for O(1) lookups
+// Maps lowercase word -> frequency count (higher = more common)
+const WORD_FREQUENCY: Map<string, number> = new Map();
+for (const entry of wordFrequencies) {
+  // Store lowercase for case-insensitive matching
+  WORD_FREQUENCY.set(entry.word.toLowerCase(), entry.count);
+}
 
 // Build reverse map: Ingglish spelling -> phoneme
 const REVERSE_PHONEME_MAP: Record<string, string> = {};
@@ -71,25 +23,31 @@ const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort((a, b) => b.le
 let reverseDictionary: Map<string, string[]> | null = null;
 
 /**
- * Scores a word by commonality - lower is better (more common).
+ * Scores a word by frequency - lower score is better (more common).
+ * Uses SUBTLEX word frequency data from movie subtitles corpus.
  */
 function getWordScore(word: string): number {
   const lower = word.toLowerCase();
-  // Common words get score 0 (best)
-  if (COMMON_WORDS.has(lower)) {
-    return 0;
+  const frequency = WORD_FREQUENCY.get(lower);
+
+  if (frequency !== undefined) {
+    // Use negative frequency so higher frequency = lower (better) score
+    return -frequency;
   }
-  // Prefer shorter words (often more common)
-  // Also penalize words with numbers or unusual characters
+
+  // Words not in frequency list get a high score (less preferred)
+  // Penalize words with numbers
   if (/[0-9]/.test(word)) {
-    return 1000 + word.length;
+    return 1_000_000 + word.length;
   }
-  return 100 + word.length;
+
+  // Unknown words: penalize by length (shorter usually more common)
+  return 100_000 + word.length;
 }
 
 /**
  * Builds a reverse dictionary mapping phoneme sequences to English words.
- * Words are sorted by commonality (most common first).
+ * Words are sorted by frequency (most common first).
  */
 function buildReverseDictionary(): Map<string, string[]> {
   if (reverseDictionary) {
@@ -111,7 +69,7 @@ function buildReverseDictionary(): Map<string, string[]> {
     reverseDictionary.set(phonemeKey, existing);
   }
 
-  // Sort each word list by commonality
+  // Sort each word list by frequency (most common first)
   for (const [key, words] of reverseDictionary.entries()) {
     words.sort((a, b) => getWordScore(a) - getWordScore(b));
     reverseDictionary.set(key, words);
