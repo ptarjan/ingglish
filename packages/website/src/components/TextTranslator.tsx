@@ -103,8 +103,9 @@ function TextTranslator() {
   }, [deferredIngglish, lastEdited]);
 
   // Display values: show computed translation in the non-edited pane
-  const displayEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? '') : englishText;
-  const displayIngglish = lastEdited === 'english' ? (computedIngglish ?? '') : ingglishText;
+  // Fall back to the stored text (not empty) during deferred value transitions
+  const displayEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
+  const displayIngglish = lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
 
   const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEnglishText(e.target.value);
