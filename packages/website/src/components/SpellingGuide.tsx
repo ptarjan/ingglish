@@ -1,8 +1,9 @@
 import { VOWEL_MAP, CONSONANT_MAP } from '@ingglish/core';
 
 function SpellingGuide() {
-  const vowelEntries = Object.entries(VOWEL_MAP);
-  const consonantEntries = Object.entries(CONSONANT_MAP);
+  // Sort entries alphabetically by spelling
+  const vowelEntries = Object.entries(VOWEL_MAP).sort((a, b) => a[1].localeCompare(b[1]));
+  const consonantEntries = Object.entries(CONSONANT_MAP).sort((a, b) => a[1].localeCompare(b[1]));
 
   const vowelExamples: Record<string, string> = {
     AA: 'father, hot',
