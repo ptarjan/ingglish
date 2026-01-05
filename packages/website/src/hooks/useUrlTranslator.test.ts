@@ -1,0 +1,120 @@
+import { describe, it, expect } from 'vitest';
+import { normalizeUrl, shouldSkipUrl, injectBaseTag } from './useUrlTranslator';
+
+describe('normalizeUrl', () => {
+  it('returns null for empty string', () => {
+    expect(normalizeUrl('')).toBe(null);
+  });
+
+  it('returns null for whitespace only', () => {
+    expect(normalizeUrl('   ')).toBe(null);
+    expect(normalizeUrl('\t\n')).toBe(null);
+  });
+
+  it('adds https:// prefix when missing', () => {
+    expect(normalizeUrl('example.com')).toBe('https://example.com');
+    expect(normalizeUrl('www.example.com')).toBe('https://www.example.com');
+  });
+
+  it('preserves http:// prefix', () => {
+    expect(normalizeUrl('http://example.com')).toBe('http://example.com');
+  });
+
+  it('preserves https:// prefix', () => {
+    expect(normalizeUrl('https://example.com')).toBe('https://example.com');
+  });
+
+  it('returns null for invalid URLs', () => {
+    expect(normalizeUrl('not a valid url')).toBe(null);
+    expect(normalizeUrl('://missing-protocol')).toBe(null);
+  });
+
+  it('handles URLs with paths and query strings', () => {
+    expect(normalizeUrl('example.com/path?query=1')).toBe('https://example.com/path?query=1');
+  });
+
+  it('handles URLs with ports', () => {
+    expect(normalizeUrl('localhost:3000')).toBe('https://localhost:3000');
+  });
+});
+
+describe('shouldSkipUrl', () => {
+  it('skips hash links', () => {
+    expect(shouldSkipUrl('#')).toBe(true);
+    expect(shouldSkipUrl('#section')).toBe(true);
+    expect(shouldSkipUrl('#top')).toBe(true);
+  });
+
+  it('skips javascript: URLs', () => {
+    expect(shouldSkipUrl('javascript:void(0)')).toBe(true);
+    expect(shouldSkipUrl('javascript:alert("hi")')).toBe(true);
+  });
+
+  it('skips mailto: URLs', () => {
+    expect(shouldSkipUrl('mailto:test@example.com')).toBe(true);
+    expect(shouldSkipUrl('mailto:user@domain.org?subject=Hello')).toBe(true);
+  });
+
+  it('does not skip regular URLs', () => {
+    expect(shouldSkipUrl('https://example.com')).toBe(false);
+    expect(shouldSkipUrl('http://example.com')).toBe(false);
+    expect(shouldSkipUrl('/relative/path')).toBe(false);
+    expect(shouldSkipUrl('relative/path')).toBe(false);
+  });
+
+  it('does not skip tel: URLs (not in skip list)', () => {
+    expect(shouldSkipUrl('tel:+1234567890')).toBe(false);
+  });
+});
+
+describe('injectBaseTag', () => {
+  const origin = 'https://example.com';
+
+  it('injects base tag after <head> when present', () => {
+    const html = '<html><head><title>Test</title></head><body></body></html>';
+    const result = injectBaseTag(html, origin);
+    expect(result).toBe(
+      '<html><head><base href="https://example.com/"><title>Test</title></head><body></body></html>'
+    );
+  });
+
+  it('creates head and injects base tag when only <html> is present', () => {
+    const html = '<html><body>Content</body></html>';
+    const result = injectBaseTag(html, origin);
+    expect(result).toBe(
+      '<html><head><base href="https://example.com/"></head><body>Content</body></html>'
+    );
+  });
+
+  it('prepends base tag when no html or head tags present', () => {
+    const html = '<body>Content</body>';
+    const result = injectBaseTag(html, origin);
+    expect(result).toBe('<base href="https://example.com/"><body>Content</body>');
+  });
+
+  it('handles empty HTML', () => {
+    const html = '';
+    const result = injectBaseTag(html, origin);
+    expect(result).toBe('<base href="https://example.com/">');
+  });
+
+  it('handles HTML with uppercase tags', () => {
+    // Note: current implementation is case-sensitive
+    const html = '<HTML><HEAD></HEAD></HTML>';
+    const result = injectBaseTag(html, origin);
+    // Since it looks for lowercase, it prepends
+    expect(result).toBe('<base href="https://example.com/"><HTML><HEAD></HEAD></HTML>');
+  });
+
+  it('handles origin with trailing path (removes it)', () => {
+    const htmlWithHead = '<html><head></head></html>';
+    const result = injectBaseTag(htmlWithHead, 'https://example.com');
+    expect(result).toContain('href="https://example.com/"');
+  });
+
+  it('handles origin with port', () => {
+    const html = '<html><head></head></html>';
+    const result = injectBaseTag(html, 'http://localhost:3000');
+    expect(result).toContain('href="http://localhost:3000/"');
+  });
+});

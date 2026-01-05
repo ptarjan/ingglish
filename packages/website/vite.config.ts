@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  test: {
+    exclude: ['e2e/**', 'node_modules/**'],
+  },
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
   base: process.env.BASE_URL || '/',
   plugins: [react()],

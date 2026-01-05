@@ -24,7 +24,7 @@ interface UseUrlTranslatorResult {
 /**
  * Injects a base tag into HTML so relative URLs resolve correctly.
  */
-function injectBaseTag(html: string, origin: string): string {
+export function injectBaseTag(html: string, origin: string): string {
   const baseTag = `<base href="${origin}/">`;
 
   if (html.includes('<head>')) {
@@ -39,7 +39,7 @@ function injectBaseTag(html: string, origin: string): string {
 /**
  * Checks if a URL should be ignored for navigation.
  */
-function shouldSkipUrl(href: string): boolean {
+export function shouldSkipUrl(href: string): boolean {
   return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
 }
 
@@ -58,6 +58,9 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
 
     setIsLoading(true);
     setError(null);
+
+    // Hide iframe during translation to prevent English flash
+    iframe.style.visibility = 'hidden';
 
     try {
       const parsedUrl = new URL(targetUrl);
@@ -90,6 +93,8 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         translateAttributes: true,
       });
 
+      // Show iframe after translation is complete
+      iframe.style.visibility = 'visible';
       setHasContent(true);
 
       // Intercept link clicks for navigation
@@ -119,6 +124,8 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
       });
     } catch (err) {
       setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      // Show iframe even on error so user sees partial content if any
+      iframe.style.visibility = 'visible';
     } finally {
       setIsLoading(false);
     }
