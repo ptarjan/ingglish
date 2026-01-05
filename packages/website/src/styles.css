@@ -366,6 +366,13 @@ body {
 }
 
 /* Info Box */
+/* Translator Actions */
+.translator-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
 .info-box {
   background: var(--color-surface);
   border: 1px solid var(--color-border);

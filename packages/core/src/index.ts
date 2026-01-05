@@ -37,3 +37,11 @@ export {
   unskipElement,
   type DOMTranslatorOptions,
 } from './dom-translator';
+
+// Reverse translation (Ingglish -> English)
+export {
+  inglishToPhonemes,
+  reverseTranslateWord,
+  reverseTranslateText,
+  isLikelyInglish,
+} from './reverse-translator';

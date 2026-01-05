@@ -56,8 +56,8 @@ describe('translator', () => {
 
   describe('translateWord', () => {
     it('should translate common words', () => {
-      // hello = HH AH0 L OW1 -> huloh (American pronunciation)
-      expect(translateWord('hello')).toBe('huloh');
+      // hello = HH AH0 L OW1 -> hulo (American pronunciation)
+      expect(translateWord('hello')).toBe('hulo');
       expect(translateWord('world')).toBe('werld');
     });
 
@@ -82,7 +82,7 @@ describe('translator', () => {
   describe('translateText', () => {
     it('should translate multiple words', () => {
       const result = translateText('hello world');
-      expect(result).toContain('huloh');
+      expect(result).toContain('hulo');
       expect(result).toContain('werld');
     });
 

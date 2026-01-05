@@ -94,7 +94,7 @@ describe('phoneme-map', () => {
     it('should convert "hello" phonemes correctly', () => {
       // hello = HH AH0 L OW1
       const phonemes = ['HH', 'AH0', 'L', 'OW1'];
-      expect(phonemesToInglish(phonemes)).toBe('huloh');
+      expect(phonemesToInglish(phonemes)).toBe('hulo');
     });
 
     it('should convert "world" phonemes correctly', () => {
@@ -134,7 +134,7 @@ describe('phoneme-map', () => {
       expect(phonemesToInglish(['EY1'])).toBe('ay'); // say
       expect(phonemesToInglish(['IH1'])).toBe('i'); // bit
       expect(phonemesToInglish(['IY1'])).toBe('ee'); // bee
-      expect(phonemesToInglish(['OW1'])).toBe('oh'); // go
+      expect(phonemesToInglish(['OW1'])).toBe('o'); // go
       expect(phonemesToInglish(['OY1'])).toBe('oi'); // boy
       expect(phonemesToInglish(['UH1'])).toBe('uu'); // book
       expect(phonemesToInglish(['UW1'])).toBe('oo'); // too
