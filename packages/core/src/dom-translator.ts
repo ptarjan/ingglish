@@ -183,7 +183,7 @@ function translateElementAttributes(
   skipTags: string[],
   skipClasses: string[]
 ): void {
-  const elements = root.querySelectorAll('*');
+  const elements = Array.from(root.querySelectorAll('*'));
 
   for (const element of elements) {
     if (shouldSkipElement(element, skipTags, skipClasses)) {
@@ -235,7 +235,7 @@ export function observeAndTranslate(
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       // Handle added nodes
-      for (const node of mutation.addedNodes) {
+      for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const textNode = node as Text;
           const text = textNode.textContent;

@@ -1,0 +1,18 @@
+{
+  "name": "@inglish/extension",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup src/content.ts src/background.ts src/popup.ts --format iife --outDir dist --clean && cp src/manifest.json src/popup.html src/popup.css dist/",
+    "watch": "npm run build -- --watch",
+    "test": "echo 'No tests yet'"
+  },
+  "dependencies": {
+    "@inglish/core": "*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.260",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
