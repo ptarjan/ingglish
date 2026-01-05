@@ -1,12 +1,21 @@
 import { useState, useCallback, useRef } from 'react';
 import { translateDOMAsync } from '@ingglish/core';
 
+const EXAMPLE_URLS = [
+  { name: 'Wikipedia: English Language', url: 'https://en.wikipedia.org/wiki/English_language' },
+  { name: 'Wikipedia: Phonetics', url: 'https://en.wikipedia.org/wiki/Phonetics' },
+  { name: 'Project Gutenberg: Alice in Wonderland', url: 'https://www.gutenberg.org/files/11/11-h/11-h.htm' },
+  { name: 'BBC News', url: 'https://www.bbc.com/news' },
+  { name: 'NPR', url: 'https://text.npr.org/' },
+];
+
 function UrlTranslator() {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTranslated, setIsTranslated] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -109,9 +118,17 @@ function UrlTranslator() {
     }
   }, []);
 
+  const handleExampleClick = useCallback((exampleUrl: string) => {
+    setUrl(exampleUrl);
+    // Trigger form submission after setting URL
+    setTimeout(() => {
+      formRef.current?.requestSubmit();
+    }, 0);
+  }, []);
+
   return (
     <div className="url-translator">
-      <form onSubmit={handleSubmit} className="url-form">
+      <form ref={formRef} onSubmit={handleSubmit} className="url-form">
         <input
           type="text"
           value={url}
@@ -146,17 +163,24 @@ function UrlTranslator() {
         />
       </div>
 
-      <div className="info-box">
-        <h3>URL Translation</h3>
-        <p>
-          Enter any URL to view the page with all text translated to Ingglish. Due to browser
-          security restrictions, some websites may not load correctly.
-        </p>
-        <p>
-          <strong>Tip:</strong> For the best experience, try simple text-based websites like
-          Wikipedia articles or news sites.
-        </p>
+      <div className="example-urls">
+        <span className="example-label">Try an example:</span>
+        {EXAMPLE_URLS.map((example) => (
+          <button
+            key={example.url}
+            type="button"
+            className="example-link"
+            onClick={() => handleExampleClick(example.url)}
+            disabled={isLoading}
+          >
+            {example.name}
+          </button>
+        ))}
       </div>
+
+      <p className="url-note">
+        Due to browser security restrictions, some websites may not load correctly.
+      </p>
     </div>
   );
 }
