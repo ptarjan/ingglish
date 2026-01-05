@@ -34,9 +34,11 @@ const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort(
  * represent different phoneme sequences. For example, "er" could be:
  * - ER (r-colored schwa): "bird", "her"
  * - EH + R (short e + r): "welfare", "better"
+ *
+ * Only EH + R is valid here because IH + R -> "ir" and AH + R -> "ur"
  */
 const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
-  ER: [['EH', 'R'], ['IH', 'R'], ['AH', 'R']],
+  ER: [['EH', 'R']],
 };
 
 /**
