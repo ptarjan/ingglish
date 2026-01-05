@@ -70,6 +70,20 @@ describe('reverse-translator', () => {
       expect(results.length).toBeGreaterThanOrEqual(1);
     });
 
+    it('should handle ambiguous "er" spellings (welfare case)', () => {
+      // "welfare" translates to "welfer", which could be:
+      // - ER (r-colored schwa) - no match
+      // - EH + R (short e + r) - matches "welfare"
+      const results = reverseTranslateWord('welfer');
+      expect(results).toContain('welfare');
+    });
+
+    it('should handle "er" that is actually ER phoneme', () => {
+      // "her" -> "her" (ER is correct here)
+      const results = reverseTranslateWord('her');
+      expect(results).toContain('her');
+    });
+
     it('should round-trip words in dictionary', () => {
       // Test words that ARE in the CMU dictionary
       const testWords = ['quick', 'brown', 'fox', 'the', 'alphabet', 'through', 'english'];

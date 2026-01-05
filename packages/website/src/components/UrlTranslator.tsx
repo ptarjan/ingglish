@@ -5,7 +5,7 @@ const EXAMPLE_URLS = [
   { name: 'Wikipedia: English', url: 'https://en.wikipedia.org/wiki/English_language' },
   { name: 'US Constitution', url: 'https://www.archives.gov/founding-docs/constitution-transcript' },
   { name: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML' },
-  { name: 'Creative Commons', url: 'https://creativecommons.org/about/' },
+  { name: 'CNN', url: 'https://cnn.com' },
 ];
 
 function UrlTranslator() {
