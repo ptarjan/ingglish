@@ -106,9 +106,19 @@ export default {
 
       const html = await response.text();
 
-      // Use upstream cache headers if present, otherwise cache for 1 hour
+      // Ensure minimum 5 minute cache, default to 1 hour
+      const MIN_CACHE_SECONDS = 300; // 5 minutes
+      const DEFAULT_CACHE_SECONDS = 3600; // 1 hour
       const upstreamCacheControl = response.headers.get('Cache-Control');
-      const cacheControl = upstreamCacheControl || 'public, max-age=3600';
+
+      let cacheSeconds = DEFAULT_CACHE_SECONDS;
+      if (upstreamCacheControl) {
+        const maxAgeMatch = upstreamCacheControl.match(/max-age=(\d+)/);
+        if (maxAgeMatch) {
+          cacheSeconds = Math.max(parseInt(maxAgeMatch[1], 10), MIN_CACHE_SECONDS);
+        }
+      }
+      const cacheControl = `public, max-age=${cacheSeconds}`;
 
       return new Response(html, {
         status: response.status,
