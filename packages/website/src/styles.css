@@ -307,32 +307,6 @@ body {
   border: none;
 }
 
-.current-url {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  padding: 0.5rem 0;
-  overflow: hidden;
-}
-
-.current-url-label {
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-.current-url-link {
-  color: var(--color-primary);
-  text-decoration: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.current-url-link:hover {
-  text-decoration: underline;
-}
-
 .example-urls {
   display: flex;
   flex-wrap: wrap;

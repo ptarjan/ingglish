@@ -4,12 +4,14 @@ import { translateDOMAsync } from '@ingglish/core';
 const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 const EXAMPLE_URLS = [
-  { name: 'Wikipedia: English Language', url: 'https://en.wikipedia.org/wiki/English_language' },
+  { name: 'Wikipedia: English', url: 'https://en.wikipedia.org/wiki/English_language' },
+  { name: 'US Constitution', url: 'https://www.archives.gov/founding-docs/constitution-transcript' },
+  { name: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML' },
+  { name: 'Creative Commons', url: 'https://creativecommons.org/about/' },
 ];
 
 function UrlTranslator() {
   const [url, setUrl] = useState('');
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTranslated, setIsTranslated] = useState(false);
@@ -85,7 +87,6 @@ function UrlTranslator() {
 
       // Update the URL input and trigger navigation
       setUrl(newUrl);
-      setCurrentUrl(newUrl);
       setIsLoading(true);
       setError(null);
       setIsTranslated(false);
@@ -104,7 +105,6 @@ function UrlTranslator() {
     };
 
     iframeDoc.addEventListener('click', handleLinkClick);
-    setCurrentUrl(parsedUrl.href);
   }, []);
 
   const handleSubmit = useCallback(
@@ -149,7 +149,6 @@ function UrlTranslator() {
 
   const handleClear = useCallback(() => {
     setUrl('');
-    setCurrentUrl(null);
     setError(null);
     setIsTranslated(false);
     const iframe = iframeRef.current;
@@ -198,15 +197,6 @@ function UrlTranslator() {
       {error !== null && <div className="error-message">{error}</div>}
 
       {isTranslated && <div className="success-message">Page translated to Ingglish!</div>}
-
-      {currentUrl && (
-        <div className="current-url">
-          <span className="current-url-label">Current page:</span>
-          <a href={currentUrl} target="_blank" rel="noopener noreferrer" className="current-url-link">
-            {currentUrl}
-          </a>
-        </div>
-      )}
 
       <div className="iframe-container">
         <iframe
