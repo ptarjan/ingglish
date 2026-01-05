@@ -11,17 +11,14 @@ export interface Env {
   ALLOWED_ORIGINS: string;
 }
 
-function isAllowedOrigin(origin: string | null, allowedOrigins: string): boolean {
+export function isAllowedOrigin(origin: string | null, allowedOrigins: string): boolean {
   if (!origin) return false;
 
   const allowed = allowedOrigins.split(',').map((o) => o.trim());
-  return allowed.some((allowedOrigin) => {
-    // Exact match or subdomain match
-    return origin === allowedOrigin || origin.startsWith(allowedOrigin.replace('https://', 'https://').replace('http://', 'http://'));
-  });
+  return allowed.some((allowedOrigin) => origin === allowedOrigin);
 }
 
-function corsHeaders(origin: string): HeadersInit {
+export function corsHeaders(origin: string): HeadersInit {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
