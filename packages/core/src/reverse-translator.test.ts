@@ -87,6 +87,33 @@ describe('reverse-translator', () => {
         expect(results.length).toBeGreaterThan(0);
       }
     });
+
+    it('sample text should round-trip exactly', () => {
+      const sampleText = `The quick brown fox jumps over the lazy dog.
+This sentence contains every letter of the English alphabet.
+
+"Though" and "through" are spelled similarly but sound different.
+English spelling is notoriously difficult to learn because it has
+so many exceptions. With phonetic spelling, words
+are written exactly as they sound - what you see is what you say!`;
+
+      // Extract words
+      const words = sampleText.match(/[a-zA-Z]+/g) || [];
+      const failures: string[] = [];
+
+      for (const word of words) {
+        const ingglish = translateWord(word.toLowerCase());
+        const results = reverseTranslateWord(ingglish);
+        if (results[0]?.toLowerCase() !== word.toLowerCase()) {
+          failures.push(`${word} -> ${ingglish} -> ${results[0]} (expected ${word})`);
+        }
+      }
+
+      if (failures.length > 0) {
+        console.log('Round-trip failures:', failures);
+      }
+      expect(failures).toEqual([]);
+    });
   });
 
   describe('reverseTranslateText', () => {

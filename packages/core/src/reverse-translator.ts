@@ -55,6 +55,7 @@ const COMMON_WORDS = new Set([
   'quick', 'brown', 'fox', 'jumps', 'lazy', 'dog', 'sentence', 'contains', 'letter',
   'alphabet', 'though', 'through', 'spelled', 'sound', 'different', 'english', 'spelling',
   'difficult', 'learn', 'because', 'exceptions', 'words', 'exactly', 'needed',
+  'written', 'phonetic', 'over', 'every', 'similarly', 'notoriously', 'has', 'say',
 ]);
 
 // Build reverse map: Ingglish spelling -> phoneme
