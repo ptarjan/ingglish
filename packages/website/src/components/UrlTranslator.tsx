@@ -8,6 +8,8 @@ const EXAMPLE_URLS = [
     url: 'https://www.archives.gov/founding-docs/constitution-transcript',
   },
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
+  { name: 'Hacker News', url: 'https://news.ycombinator.com' },
+  { name: 'NPR', url: 'https://text.npr.org' },
   { name: 'BBC', url: 'https://bbc.com' },
   { name: 'CNN', url: 'https://cnn.com' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
