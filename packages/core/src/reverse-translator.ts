@@ -39,6 +39,7 @@ const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort(
  */
 const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
   ER: [['EH', 'R']],
+  SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
 };
 
 /**

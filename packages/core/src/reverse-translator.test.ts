@@ -129,6 +129,14 @@ describe('reverse-translator', () => {
       expect(failures).toEqual([]);
     });
 
+    it('should round-trip "exhumed"', () => {
+      // Regression test: "sh" can be SH (ship) or S+HH (exhume)
+      const word = 'exhumed';
+      const ingglish = translateWord(word);
+      const results = reverseTranslateWord(ingglish);
+      expect(results).toContain(word);
+    });
+
     it('sample text should round-trip exactly', () => {
       const sampleText = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
