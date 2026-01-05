@@ -116,6 +116,26 @@ For words not in the CMU dictionary, Inglish uses:
 1. **Stemming** - Tries to find a known base word (e.g., "running" → "run" + "ing")
 2. **Grapheme-to-phoneme rules** - Falls back to letter-to-sound conversion rules
 
+## Deployment
+
+### Website
+Deploy to Vercel or Netlify with one click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ptarjan/inglish&root-directory=packages/website)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ptarjan/inglish)
+
+See [docs/deployment.md](docs/deployment.md) for detailed deployment instructions.
+
+### Chrome Extension
+Build and load locally, or publish to Chrome Web Store.
+
+## CI/CD
+
+GitHub Actions workflow included for:
+- Running tests on every PR
+- Building all packages
+- Auto-deploying to Vercel on merge to main
+
 ## License
 
 MIT
