@@ -129,12 +129,18 @@ describe('reverse-translator', () => {
       expect(failures).toEqual([]);
     });
 
-    it('should round-trip "exhumed"', () => {
-      // Regression test: "sh" can be SH (ship) or S+HH (exhume)
-      const word = 'exhumed';
-      const ingglish = translateWord(word);
-      const results = reverseTranslateWord(ingglish);
-      expect(results).toContain(word);
+    it('should round-trip ambiguous words', () => {
+      // Regression tests for phoneme ambiguity
+      const ambiguousWords = [
+        { word: 'exhumed', note: '"sh" can be SH (ship) or S+HH (exhume)' },
+        { word: 'where', note: '"er" can be ER (were) or EH+R (where)' },
+      ];
+
+      for (const { word, note } of ambiguousWords) {
+        const ingglish = translateWord(word);
+        const results = reverseTranslateWord(ingglish);
+        expect(results, `${word}: ${note}`).toContain(word);
+      }
     });
 
     it('sample text should round-trip exactly', () => {

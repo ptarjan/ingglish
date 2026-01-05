@@ -121,6 +121,7 @@ async function debugText(text: string) {
 }
 
 async function main() {
+  const startTime = performance.now();
   const input = process.argv.slice(2).join(' ');
 
   if (!input) {
@@ -132,7 +133,9 @@ async function main() {
     process.exit(1);
   }
 
+  const dictStart = performance.now();
   await loadDictionary();
+  const dictTime = performance.now() - dictStart;
 
   // Single word vs text
   const isSingleWord = /^[a-zA-Z]+$/.test(input);
@@ -142,6 +145,9 @@ async function main() {
   } else {
     await debugText(input);
   }
+
+  const totalTime = performance.now() - startTime;
+  console.log(color(`[Timing: dict=${dictTime.toFixed(0)}ms, total=${totalTime.toFixed(0)}ms]`, 'dim'));
 }
 
 main().catch(console.error);

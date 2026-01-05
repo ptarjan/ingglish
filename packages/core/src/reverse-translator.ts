@@ -129,21 +129,29 @@ export function inglishToPhonemes(inglish: string): string[] | null {
 
 /**
  * Looks up English words matching a phoneme sequence.
- * Tries alternative phoneme interpretations if the primary doesn't match.
+ * Tries all alternative phoneme interpretations and combines results.
  */
 function lookupByPhonemes(phonemes: string[]): string[] {
   const reverseDict = getReverseDictionary();
   const variants = expandPhonemeAlternatives(phonemes);
+  const allMatches: string[] = [];
+  const seen = new Set<string>();
 
   for (const variant of variants) {
     const key = variant.join(' ');
     const matches = reverseDict.get(key);
-    if (matches && matches.length > 0) {
-      return matches;
+    if (matches) {
+      for (const match of matches) {
+        if (!seen.has(match)) {
+          seen.add(match);
+          allMatches.push(match);
+        }
+      }
     }
   }
 
-  return [];
+  // Re-sort combined results by frequency
+  return sortByFrequency(allMatches);
 }
 
 /**
