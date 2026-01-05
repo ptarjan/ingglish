@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { translateDOMAsync } from '@inglish/core';
+import { translateDOMAsync } from '@ingglish/core';
 
 function UrlTranslator() {
   const [url, setUrl] = useState('');

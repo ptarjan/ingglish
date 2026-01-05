@@ -1,5 +1,5 @@
-import { useState, useCallback, useRef } from 'react';
-import { translateText } from '@inglish/core';
+import { useState, useCallback, useDeferredValue, useMemo } from 'react';
+import { translateText } from '@ingglish/core';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
@@ -11,45 +11,29 @@ spelled exactly as they sound - no memorization needed!`;
 
 function TextTranslator() {
   const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
-  const [isTranslating, setIsTranslating] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout>();
+
+  // Use deferred value to keep typing responsive
+  const deferredText = useDeferredValue(inputText);
+  const isTranslating = deferredText !== inputText;
+
+  // Memoize translation to only run when deferred text changes
+  const outputText = useMemo(() => {
+    if (!deferredText.trim()) {
+      return '';
+    }
+    try {
+      return translateText(deferredText);
+    } catch {
+      return 'Error translating text';
+    }
+  }, [deferredText]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value;
-    setInputText(text);
-
-    // Debounce translation
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    if (!text.trim()) {
-      setOutputText('');
-      return;
-    }
-
-    setIsTranslating(true);
-    debounceRef.current = setTimeout(() => {
-      try {
-        const translated = translateText(text);
-        setOutputText(translated);
-      } catch {
-        setOutputText('Error translating text');
-      } finally {
-        setIsTranslating(false);
-      }
-    }, 150);
+    setInputText(e.target.value);
   }, []);
 
   const handleSampleClick = useCallback(() => {
     setInputText(SAMPLE_TEXT);
-    try {
-      const translated = translateText(SAMPLE_TEXT);
-      setOutputText(translated);
-    } catch {
-      setOutputText('Error translating text');
-    }
   }, []);
 
   const handleCopy = useCallback(async () => {
@@ -64,7 +48,6 @@ function TextTranslator() {
 
   const handleClear = useCallback(() => {
     setInputText('');
-    setOutputText('');
   }, []);
 
   return (

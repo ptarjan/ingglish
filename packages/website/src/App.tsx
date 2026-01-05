@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadDictionary, getDictionaryStats } from '@inglish/core';
+import { loadDictionary, getDictionaryStats } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
 
