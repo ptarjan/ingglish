@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
+    "build": "echo 'Cloudflare Worker - no build step needed'",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest run"

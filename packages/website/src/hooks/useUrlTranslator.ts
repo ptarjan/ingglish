@@ -58,60 +58,60 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
     const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
     if (!iframeDoc) return;
 
-    const parsedUrl = new URL(targetUrl);
-    const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
+    setIsLoading(true);
+    setError(null);
 
-    const response = await fetch(proxyUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status}`);
-    }
+    try {
+      const parsedUrl = new URL(targetUrl);
+      const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
 
-    const html = injectBaseTag(await response.text(), parsedUrl.origin);
-
-    // Write HTML to iframe
-    iframeDoc.open();
-    iframeDoc.write(html); // eslint-disable-line @typescript-eslint/no-deprecated
-    iframeDoc.close();
-
-    // Wait for content to load
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Translate the DOM
-    await translateDOMAsync(iframeDoc.body, {
-      skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'SVG', 'MATH'],
-      translateAttributes: true,
-    });
-
-    // Intercept link clicks for navigation
-    iframeDoc.addEventListener('click', (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest('a');
-      if (!anchor) return;
-
-      const href = anchor.getAttribute('href');
-      if (!href || shouldSkipUrl(href)) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      let newUrl: string;
-      try {
-        newUrl = new URL(href, parsedUrl.href).href;
-      } catch {
-        return;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.status}`);
       }
 
-      setUrl(newUrl);
-      setIsLoading(true);
-      setError(null);
+      const html = injectBaseTag(await response.text(), parsedUrl.origin);
 
-      translateUrl(newUrl)
-        .catch((err) => {
-          setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    });
+      // Write HTML to iframe
+      iframeDoc.open();
+      iframeDoc.write(html); // eslint-disable-line @typescript-eslint/no-deprecated
+      iframeDoc.close();
+
+      // Wait for content to load
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Translate the DOM
+      await translateDOMAsync(iframeDoc.body, {
+        skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'SVG', 'MATH'],
+        translateAttributes: true,
+      });
+
+      // Intercept link clicks for navigation
+      iframeDoc.addEventListener('click', (e: MouseEvent) => {
+        const anchor = (e.target as HTMLElement).closest('a');
+        if (!anchor) return;
+
+        const href = anchor.getAttribute('href');
+        if (!href || shouldSkipUrl(href)) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        let newUrl: string;
+        try {
+          newUrl = new URL(href, parsedUrl.href).href;
+        } catch {
+          return;
+        }
+
+        setUrl(newUrl);
+        translateUrl(newUrl);
+      });
+    } catch (err) {
+      setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const clear = useCallback(() => {
