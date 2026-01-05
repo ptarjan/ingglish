@@ -91,8 +91,9 @@ const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^c/i, phonemes: ['K'] }, // hard c
   { pattern: /^d/i, phonemes: ['D'] },
   { pattern: /^f/i, phonemes: ['F'] },
-  { pattern: /^g(?=[eiy])/i, phonemes: ['JH'] }, // soft g (simplified)
-  { pattern: /^g/i, phonemes: ['G'] }, // hard g
+  // Soft g before e/y, but NOT before i (too many exceptions: give, gift, girl, git)
+  { pattern: /^g(?=[ey])/i, phonemes: ['JH'] }, // soft g (gem, gym)
+  { pattern: /^g/i, phonemes: ['G'] }, // hard g (go, git, give, girl)
   { pattern: /^h/i, phonemes: ['HH'] },
   { pattern: /^j/i, phonemes: ['JH'] },
   { pattern: /^k/i, phonemes: ['K'] },
