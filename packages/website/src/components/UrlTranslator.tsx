@@ -5,10 +5,6 @@ const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 const EXAMPLE_URLS = [
   { name: 'Wikipedia: English Language', url: 'https://en.wikipedia.org/wiki/English_language' },
-  { name: 'Wikipedia: Phonetics', url: 'https://en.wikipedia.org/wiki/Phonetics' },
-  { name: 'Project Gutenberg: Alice in Wonderland', url: 'https://www.gutenberg.org/files/11/11-h/11-h.htm' },
-  { name: 'BBC News', url: 'https://www.bbc.com/news' },
-  { name: 'NPR', url: 'https://text.npr.org/' },
 ];
 
 function UrlTranslator() {
