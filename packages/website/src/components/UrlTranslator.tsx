@@ -44,7 +44,17 @@ function UrlTranslator() {
           throw new Error(`Failed to fetch: ${response.status}`);
         }
 
-        const html = await response.text();
+        let html = await response.text();
+
+        // Inject a <base> tag so relative URLs (images, CSS, etc.) resolve to the original site
+        const baseTag = `<base href="${parsedUrl.origin}/">`;
+        if (html.includes('<head>')) {
+          html = html.replace('<head>', `<head>${baseTag}`);
+        } else if (html.includes('<html>')) {
+          html = html.replace('<html>', `<html><head>${baseTag}</head>`);
+        } else {
+          html = baseTag + html;
+        }
 
         // Create a new document in the iframe
         const iframe = iframeRef.current;
