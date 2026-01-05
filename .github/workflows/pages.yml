@@ -37,6 +37,7 @@ jobs:
         run: npm run build -w @ingglish/website
         env:
           BASE_URL: /ingglish/
+          VITE_CORS_PROXY_URL: https://ingglish-cors-proxy.curly-unit-b9e0.workers.dev/?url=
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
