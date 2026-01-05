@@ -6,8 +6,8 @@ This sentence contains every letter of the English alphabet.
 
 "Though" and "through" are spelled similarly but sound different.
 English spelling is notoriously difficult to learn because it has
-so many exceptions and irregularities. With Ingglish, words are
-spelled exactly as they sound - no memorization needed!`;
+so many exceptions and irregularities. With phonetic spelling, words
+are written exactly as they sound - what you see is what you say!`;
 
 type EditingPane = 'english' | 'ingglish';
 

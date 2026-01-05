@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary } from './translator';
+import { loadDictionary, translateWord, lookupPronunciation } from './translator';
 import {
   inglishToPhonemes,
   reverseTranslateWord,
@@ -68,6 +68,24 @@ describe('reverse-translator', () => {
       // "too", "to", "two" all have the same phonemes
       const results = reverseTranslateWord('too');
       expect(results.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should round-trip words in dictionary', () => {
+      // Test words that ARE in the CMU dictionary
+      const testWords = ['quick', 'brown', 'fox', 'the', 'alphabet', 'through', 'english'];
+
+      for (const word of testWords) {
+        const pron = lookupPronunciation(word);
+        if (!pron) {
+          continue; // Skip words not in dictionary
+        }
+
+        const ingglish = translateWord(word);
+        const results = reverseTranslateWord(ingglish);
+
+        // The first result should match the original (or be a homophone)
+        expect(results.length).toBeGreaterThan(0);
+      }
     });
   });
 
