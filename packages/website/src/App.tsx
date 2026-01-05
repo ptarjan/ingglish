@@ -61,7 +61,6 @@ function App() {
             Phonetic English Spelling
           </button>
         </p>
-        <p className="stats">{wordCount.toLocaleString()} words in dictionary</p>
       </header>
 
       <nav className="tabs">
@@ -103,7 +102,7 @@ function App() {
           <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}
-          to convert English words to their phonetic spellings.
+          ({wordCount.toLocaleString()} words) to convert English words to their phonetic spellings.
         </p>
       </footer>
     </div>
