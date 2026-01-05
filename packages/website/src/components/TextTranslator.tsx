@@ -11,10 +11,73 @@ are written exactly as they sound - what you see is what you say!`;
 
 type EditingPane = 'english' | 'ingglish';
 
+interface Token {
+  text: string;
+  isWord: boolean;
+  wordIndex: number | null;
+}
+
+/**
+ * Tokenizes text into words and non-words, tracking word indices.
+ */
+function tokenize(text: string): Token[] {
+  const tokens: Token[] = [];
+  const regex = /([a-zA-Z]+)|([^a-zA-Z]+)/g;
+  let match;
+  let wordIndex = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match[1]) {
+      // Word
+      tokens.push({ text: match[1], isWord: true, wordIndex: wordIndex++ });
+    } else if (match[2]) {
+      // Non-word (punctuation, whitespace)
+      tokens.push({ text: match[2], isWord: false, wordIndex: null });
+    }
+  }
+
+  return tokens;
+}
+
+interface WordDisplayProps {
+  text: string;
+  hoveredWordIndex: number | null;
+  onHoverWord: (index: number | null) => void;
+  className?: string;
+}
+
+function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDisplayProps) {
+  const tokens = useMemo(() => tokenize(text), [text]);
+
+  return (
+    <div className={`word-display ${className ?? ''}`}>
+      {tokens.map((token, i) => {
+        if (token.isWord) {
+          const isHighlighted = token.wordIndex === hoveredWordIndex;
+          return (
+            <span
+              key={i}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
+              onMouseEnter={() => onHoverWord(token.wordIndex)}
+              onMouseLeave={() => onHoverWord(null)}
+            >
+              {token.text}
+            </span>
+          );
+        }
+        // Preserve whitespace and newlines
+        return <span key={i}>{token.text}</span>;
+      })}
+      {tokens.length === 0 && <span className="placeholder">Hover to see word correspondence...</span>}
+    </div>
+  );
+}
+
 function TextTranslator() {
   const [englishText, setEnglishText] = useState('');
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
+  const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -85,6 +148,8 @@ function TextTranslator() {
     setIngglishText('');
   }, []);
 
+  const hasContent = displayEnglish.trim() || displayIngglish.trim();
+
   return (
     <div className="text-translator">
       <div className="translator-grid">
@@ -139,6 +204,28 @@ function TextTranslator() {
           />
         </div>
       </div>
+
+      {hasContent && (
+        <div className="word-correspondence">
+          <div className="correspondence-header">
+            <span className="correspondence-label">Hover to see word correspondence</span>
+          </div>
+          <div className="correspondence-grid">
+            <WordDisplay
+              text={displayEnglish}
+              hoveredWordIndex={hoveredWordIndex}
+              onHoverWord={setHoveredWordIndex}
+              className="english-words"
+            />
+            <WordDisplay
+              text={displayIngglish}
+              hoveredWordIndex={hoveredWordIndex}
+              onHoverWord={setHoveredWordIndex}
+              className="ingglish-words"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="translator-actions">
         <button onClick={handleClear} className="btn-secondary">

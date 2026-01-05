@@ -537,3 +537,71 @@ body {
 .principles-list li strong {
   color: var(--color-text);
 }
+
+/* Word Correspondence */
+.word-correspondence {
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.correspondence-header {
+  padding: 0.5rem 1rem;
+  background: var(--color-surface-hover);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.correspondence-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.correspondence-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .correspondence-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.word-display {
+  padding: 1rem;
+  background: var(--color-surface);
+  white-space: pre-wrap;
+  line-height: 1.8;
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.word-display .placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.word-token {
+  cursor: pointer;
+  padding: 0.1em 0.15em;
+  border-radius: 0.2em;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.word-token:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.word-token.highlighted {
+  background: var(--color-primary);
+  color: white;
+}
