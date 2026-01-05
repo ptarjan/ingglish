@@ -1,54 +1,127 @@
 import { VOWEL_MAP, CONSONANT_MAP } from '@ingglish/core';
 
+type SoundEntry = {
+  phoneme: string;
+  spelling: string;
+  examples: string;
+};
+
+type SoundGroup = {
+  name: string;
+  sounds: SoundEntry[];
+};
+
 function SpellingGuide() {
-  // Sort entries alphabetically by spelling
-  const vowelEntries = Object.entries(VOWEL_MAP).sort((a, b) => a[1].localeCompare(b[1]));
-  const consonantEntries = Object.entries(CONSONANT_MAP).sort((a, b) => a[1].localeCompare(b[1]));
+  // Organize vowels by type
+  const vowelGroups: SoundGroup[] = [
+    {
+      name: 'Short Vowels',
+      sounds: [
+        { phoneme: 'AE', spelling: VOWEL_MAP.AE, examples: 'cat, bat' },
+        { phoneme: 'EH', spelling: VOWEL_MAP.EH, examples: 'bed, red' },
+        { phoneme: 'IH', spelling: VOWEL_MAP.IH, examples: 'bit, sit' },
+        { phoneme: 'AH', spelling: VOWEL_MAP.AH, examples: 'but, cup' },
+        { phoneme: 'UH', spelling: VOWEL_MAP.UH, examples: 'book, put' },
+      ],
+    },
+    {
+      name: 'Long Vowels',
+      sounds: [
+        { phoneme: 'AA', spelling: VOWEL_MAP.AA, examples: 'father, hot' },
+        { phoneme: 'AO', spelling: VOWEL_MAP.AO, examples: 'thought, law' },
+        { phoneme: 'IY', spelling: VOWEL_MAP.IY, examples: 'bee, see' },
+        { phoneme: 'UW', spelling: VOWEL_MAP.UW, examples: 'too, blue' },
+        { phoneme: 'ER', spelling: VOWEL_MAP.ER, examples: 'bird, her' },
+      ],
+    },
+    {
+      name: 'Diphthongs',
+      sounds: [
+        { phoneme: 'AY', spelling: VOWEL_MAP.AY, examples: 'my, time' },
+        { phoneme: 'EY', spelling: VOWEL_MAP.EY, examples: 'say, day' },
+        { phoneme: 'OW', spelling: VOWEL_MAP.OW, examples: 'go, show' },
+        { phoneme: 'AW', spelling: VOWEL_MAP.AW, examples: 'cow, out' },
+        { phoneme: 'OY', spelling: VOWEL_MAP.OY, examples: 'boy, toy' },
+      ],
+    },
+  ];
 
-  const vowelExamples: Record<string, string> = {
-    AA: 'father, hot',
-    AE: 'cat, bat',
-    AH: 'but, cup',
-    AO: 'thought, law',
-    EH: 'bed, red',
-    ER: 'bird, her',
-    IH: 'bit, sit',
-    IY: 'bee, see',
-    UH: 'book, put',
-    UW: 'too, blue',
-    AW: 'cow, out',
-    AY: 'my, time',
-    EY: 'say, day',
-    OW: 'go, show',
-    OY: 'boy, toy',
-  };
+  // Organize consonants by type
+  const consonantGroups: SoundGroup[] = [
+    {
+      name: 'Stops (Plosives)',
+      sounds: [
+        { phoneme: 'P', spelling: CONSONANT_MAP.P, examples: 'pat, cup' },
+        { phoneme: 'B', spelling: CONSONANT_MAP.B, examples: 'bat, cab' },
+        { phoneme: 'T', spelling: CONSONANT_MAP.T, examples: 'top, cat' },
+        { phoneme: 'D', spelling: CONSONANT_MAP.D, examples: 'dog, bed' },
+        { phoneme: 'K', spelling: CONSONANT_MAP.K, examples: 'cat, back' },
+        { phoneme: 'G', spelling: CONSONANT_MAP.G, examples: 'go, big' },
+      ],
+    },
+    {
+      name: 'Fricatives',
+      sounds: [
+        { phoneme: 'F', spelling: CONSONANT_MAP.F, examples: 'fat, laugh' },
+        { phoneme: 'V', spelling: CONSONANT_MAP.V, examples: 'van, love' },
+        { phoneme: 'TH', spelling: CONSONANT_MAP.TH, examples: 'think, bath' },
+        { phoneme: 'DH', spelling: CONSONANT_MAP.DH, examples: 'the, this' },
+        { phoneme: 'S', spelling: CONSONANT_MAP.S, examples: 'sat, miss' },
+        { phoneme: 'Z', spelling: CONSONANT_MAP.Z, examples: 'zoo, is' },
+        { phoneme: 'SH', spelling: CONSONANT_MAP.SH, examples: 'she, push' },
+        { phoneme: 'ZH', spelling: CONSONANT_MAP.ZH, examples: 'measure, beige' },
+        { phoneme: 'HH', spelling: CONSONANT_MAP.HH, examples: 'hat, ahead' },
+      ],
+    },
+    {
+      name: 'Affricates',
+      sounds: [
+        { phoneme: 'CH', spelling: CONSONANT_MAP.CH, examples: 'chat, batch' },
+        { phoneme: 'JH', spelling: CONSONANT_MAP.JH, examples: 'just, edge' },
+      ],
+    },
+    {
+      name: 'Nasals',
+      sounds: [
+        { phoneme: 'M', spelling: CONSONANT_MAP.M, examples: 'man, come' },
+        { phoneme: 'N', spelling: CONSONANT_MAP.N, examples: 'no, pen' },
+        { phoneme: 'NG', spelling: CONSONANT_MAP.NG, examples: 'sing, thing' },
+      ],
+    },
+    {
+      name: 'Liquids & Glides',
+      sounds: [
+        { phoneme: 'L', spelling: CONSONANT_MAP.L, examples: 'let, well' },
+        { phoneme: 'R', spelling: CONSONANT_MAP.R, examples: 'run, car' },
+        { phoneme: 'W', spelling: CONSONANT_MAP.W, examples: 'wet, away' },
+        { phoneme: 'Y', spelling: CONSONANT_MAP.Y, examples: 'yes, you' },
+      ],
+    },
+  ];
 
-  const consonantExamples: Record<string, string> = {
-    B: 'bat, cab',
-    D: 'dog, bed',
-    G: 'go, big',
-    K: 'cat, back',
-    P: 'pat, cup',
-    T: 'top, cat',
-    DH: 'the, this',
-    F: 'fat, laugh',
-    S: 'sat, miss',
-    SH: 'she,ush',
-    TH: 'think, bath',
-    V: 'van, love',
-    Z: 'zoo, is',
-    ZH: 'measure, beige',
-    CH: 'chat, batch',
-    JH: 'just, edge',
-    M: 'man, come',
-    N: 'no, pen',
-    NG: 'sing, thing',
-    L: 'let, well',
-    R: 'run, car',
-    W: 'wet, away',
-    Y: 'yes, you',
-    HH: 'hat, ahead',
-  };
+  const renderGroup = (group: SoundGroup) => (
+    <div key={group.name} className="sound-group">
+      <h4>{group.name}</h4>
+      <table className="mapping-table">
+        <thead>
+          <tr>
+            <th>Spelling</th>
+            <th>Examples</th>
+            <th>CMU</th>
+          </tr>
+        </thead>
+        <tbody>
+          {group.sounds.map((sound) => (
+            <tr key={sound.phoneme}>
+              <td className="spelling-cell">{sound.spelling}</td>
+              <td className="examples-cell">{sound.examples}</td>
+              <td className="phoneme-cell">{sound.phoneme}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <div className="spelling-guide">
@@ -63,46 +136,12 @@ function SpellingGuide() {
 
       <div className="guide-section">
         <h3>Vowels</h3>
-        <table className="mapping-table">
-          <thead>
-            <tr>
-              <th>Spelling</th>
-              <th>Sound</th>
-              <th>Examples</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vowelEntries.map(([phoneme, spelling]) => (
-              <tr key={phoneme}>
-                <td className="spelling-cell">{spelling}</td>
-                <td className="phoneme-cell">{phoneme}</td>
-                <td className="examples-cell">{vowelExamples[phoneme]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="sound-groups">{vowelGroups.map(renderGroup)}</div>
       </div>
 
       <div className="guide-section">
         <h3>Consonants</h3>
-        <table className="mapping-table">
-          <thead>
-            <tr>
-              <th>Spelling</th>
-              <th>Sound</th>
-              <th>Examples</th>
-            </tr>
-          </thead>
-          <tbody>
-            {consonantEntries.map(([phoneme, spelling]) => (
-              <tr key={phoneme}>
-                <td className="spelling-cell">{spelling}</td>
-                <td className="phoneme-cell">{phoneme}</td>
-                <td className="examples-cell">{consonantExamples[phoneme]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="sound-groups">{consonantGroups.map(renderGroup)}</div>
       </div>
 
       <div className="guide-section">
