@@ -52,14 +52,14 @@ function UrlTranslator() {
           return;
         }
 
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
         if (!iframeDoc) {
           return;
         }
 
-        // Write the HTML to the iframe
+        // Write the HTML to the iframe (document.write is necessary for iframe content)
         iframeDoc.open();
-        iframeDoc.write(html);
+        iframeDoc.write(html); // eslint-disable-line @typescript-eslint/no-deprecated
         iframeDoc.close();
 
         // Wait for the iframe to load
@@ -90,10 +90,10 @@ function UrlTranslator() {
     setIsTranslated(false);
     const iframe = iframeRef.current;
     if (iframe) {
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
       if (iframeDoc) {
         iframeDoc.open();
-        iframeDoc.write('');
+        iframeDoc.write(''); // eslint-disable-line @typescript-eslint/no-deprecated
         iframeDoc.close();
       }
     }

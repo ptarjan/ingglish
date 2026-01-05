@@ -100,7 +100,7 @@ export function phonemesToInglish(phonemes: string[]): string {
       const base = stripStress(p);
       const inglish = PHONEME_MAP[base];
       if (!inglish) {
-        console.warn(`Unknown phoneme: ${p}`);
+        // Unknown phoneme - return lowercase as fallback
         return p.toLowerCase();
       }
       return inglish;
