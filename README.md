@@ -2,9 +2,19 @@
 
 Phonetic English spelling translator. Words are spelled exactly as they sound - no exceptions!
 
+**[Try it live →](https://ptarjan.github.io/ingglish/)**
+
 ## Overview
 
 Ingglish translates English text into a consistent, phonetic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
+
+### Features
+
+- **Bidirectional translation** - Translate English → Ingglish and back
+- **URL translator** - Translate entire web pages
+- **Contraction support** - Handles "wouldn't", "can't", "you're", etc.
+- **Case preservation** - Maintains capitalization patterns
+- **DOM translation** - Translate web pages in-place
 
 ## Packages
 
@@ -13,6 +23,7 @@ This is a monorepo containing:
 - **@ingglish/core** - Core translation library (Node.js & Browser)
 - **@ingglish/website** - React website for text and URL translation
 - **@ingglish/extension** - Chrome extension for translating any webpage
+- **@ingglish/cors-proxy** - Cloudflare Worker CORS proxy for URL translation
 
 ## Installation
 
@@ -31,14 +42,22 @@ npm run build
 ### Core Library
 
 ```typescript
-import { loadDictionary, translateText } from '@ingglish/core';
+import {
+  loadDictionary,
+  translateText,
+  reverseTranslateText
+} from '@ingglish/core';
 
 // Load the dictionary (required once)
 await loadDictionary();
 
-// Translate text
-const result = translateText('Hello, world!');
-console.log(result); // "Huloh, werld!"
+// Translate English → Ingglish
+const ingglish = translateText('Hello, world!');
+console.log(ingglish); // "huloh, werld!"
+
+// Translate Ingglish → English
+const english = reverseTranslateText('huloh, werld!');
+console.log(english); // "hello, world!"
 
 // Translate DOM elements (browser only)
 import { translateDOM } from '@ingglish/core';

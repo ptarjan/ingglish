@@ -148,6 +148,41 @@ Add to GitHub Actions to auto-build extension:
     path: packages/extension/dist
 ```
 
+## CORS Proxy Deployment
+
+The URL translator feature requires a CORS proxy to fetch external websites. You can use the included Cloudflare Worker.
+
+### Deploy to Cloudflare Workers
+
+1. **Install Wrangler CLI**
+   ```bash
+   npm install -g wrangler
+   wrangler login
+   ```
+
+2. **Configure your worker** (edit `packages/cors-proxy/wrangler.toml`):
+   ```toml
+   name = "ingglish-cors-proxy"
+   main = "src/index.ts"
+   compatibility_date = "2024-01-01"
+
+   [vars]
+   ALLOWED_ORIGINS = "https://your-site.com,https://ptarjan.github.io"
+   ```
+
+3. **Deploy**
+   ```bash
+   cd packages/cors-proxy
+   wrangler deploy
+   ```
+
+4. **Update website environment**
+   Set `VITE_CORS_PROXY_URL` to your worker URL.
+
+### Using Custom Proxy
+
+Alternatively, use any CORS proxy that supports the `?url=` parameter format.
+
 ## Environment Variables
 
 ### Website
@@ -155,7 +190,7 @@ No environment variables required for basic deployment.
 
 ### For URL Translation Feature
 If you want to use your own CORS proxy instead of allorigins.win:
-- `VITE_CORS_PROXY_URL` - Your CORS proxy URL
+- `VITE_CORS_PROXY_URL` - Your CORS proxy URL (e.g., `https://your-proxy.workers.dev/?url=`)
 
 ## Monitoring & Analytics
 
