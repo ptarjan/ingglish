@@ -155,6 +155,15 @@ GitHub Actions workflow included for:
 - Building all packages
 - Auto-deploying to Vercel on merge to main
 
+## Documentation
+
+- [API Reference](docs/api-reference.md) - Complete API documentation
+- [Phoneme Mapping](docs/phoneme-mapping.md) - How sounds map to spellings
+- [Architecture](docs/architecture.md) - System design overview
+- [Deployment](docs/deployment.md) - Deployment instructions
+- [Extension Setup](docs/extension-setup.md) - Chrome extension guide
+- [Contributing](docs/contributing.md) - How to contribute
+
 ## License
 
 MIT
