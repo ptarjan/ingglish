@@ -30,6 +30,10 @@ yarn-error.log*
 # Test coverage
 coverage/
 
+# Playwright
+playwright-report/
+test-results/
+
 # Temporary files
 *.tmp
 *.temp

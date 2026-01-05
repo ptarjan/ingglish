@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { loadDictionary, getDictionaryStats } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
+import SpellingGuide from './components/SpellingGuide';
 
-type Tab = 'text' | 'url';
+type Tab = 'text' | 'url' | 'guide';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,9 +47,20 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <img src="logo.svg" alt="Ingglish logo" className="logo" />
-        <h1>Ingglish</h1>
-        <p className="subtitle">Phonetic English Spelling</p>
+        <div className="header-title">
+          <img src="logo.svg" alt="Ingglish logo" className="logo" />
+          <h1>Ingglish</h1>
+        </div>
+        <p className="subtitle">
+          <button
+            className="subtitle-link"
+            onClick={() => {
+              setActiveTab('guide');
+            }}
+          >
+            Phonetic English Spelling
+          </button>
+        </p>
         <p className="stats">{wordCount.toLocaleString()} words in dictionary</p>
       </header>
 
@@ -69,9 +81,21 @@ function App() {
         >
           Translate URL
         </button>
+        <button
+          className={`tab ${activeTab === 'guide' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('guide');
+          }}
+        >
+          Spelling Guide
+        </button>
       </nav>
 
-      <main className="main">{activeTab === 'text' ? <TextTranslator /> : <UrlTranslator />}</main>
+      <main className="main">
+        {activeTab === 'text' && <TextTranslator />}
+        {activeTab === 'url' && <UrlTranslator />}
+        {activeTab === 'guide' && <SpellingGuide />}
+      </main>
 
       <footer className="footer">
         <p>

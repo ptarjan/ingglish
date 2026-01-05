@@ -68,10 +68,16 @@ body {
   margin-bottom: 2rem;
 }
 
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .logo {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 1rem;
+  width: 56px;
+  height: 56px;
 }
 
 .header h1 {
@@ -87,6 +93,22 @@ body {
   font-size: 1.25rem;
   color: var(--color-text-muted);
   margin-top: 0.5rem;
+}
+
+.subtitle-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.subtitle-link:hover {
+  color: var(--color-primary);
 }
 
 .stats {
@@ -365,4 +387,98 @@ body {
 
 .footer a:hover {
   text-decoration: underline;
+}
+
+/* Spelling Guide */
+.spelling-guide {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.guide-intro {
+  margin-bottom: 2rem;
+}
+
+.guide-intro h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.guide-intro p {
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.guide-section {
+  margin-bottom: 2rem;
+}
+
+.guide-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.mapping-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.mapping-table th,
+.mapping-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mapping-table th {
+  background: var(--color-surface-hover);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.mapping-table tr:last-child td {
+  border-bottom: none;
+}
+
+.spelling-cell {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.phoneme-cell {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.examples-cell {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.principles-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.principles-list li {
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--color-primary);
+}
+
+.principles-list li strong {
+  color: var(--color-text);
 }

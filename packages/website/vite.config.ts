@@ -8,6 +8,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    // Dictionary chunk is ~6.6MB, suppress warning for it
+    chunkSizeWarningLimit: 7000,
     rollupOptions: {
       output: {
         manualChunks: {

@@ -30,7 +30,7 @@ export const VOWEL_MAP: Record<string, string> = {
   AW: 'ow', // cow, how, out
   AY: 'ai', // my, eye, time
   EY: 'ay', // say, day, make
-  OW: 'oh', // go, show, coat
+  OW: 'o', // go, show, coat
   OY: 'oi', // boy, toy, coin
 };
 
@@ -111,7 +111,7 @@ export function phonemesToInglish(phonemes: string[]): string {
 /**
  * Examples of the mapping:
  *
- * "hello" -> HH AH0 L OW1 -> "huloh"
+ * "hello" -> HH AH0 L OW1 -> "hulo"
  * "world" -> W ER1 L D -> "werld"
  * "the" -> DH AH0 -> "dhu"
  * "think" -> TH IH1 NG K -> "thingk"
