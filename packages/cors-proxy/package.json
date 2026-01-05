@@ -4,14 +4,15 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
-    "build": "echo 'Cloudflare Worker - no build step needed'",
+    "build": "tsc --noEmit",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest run"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",
-    "vitest": "^2.1.8",
+    "typescript": "^5.3.0",
+    "vitest": "^4.0.16",
     "wrangler": "^4.54.0"
   }
 }

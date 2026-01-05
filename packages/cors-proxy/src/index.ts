@@ -20,7 +20,7 @@ export function isAllowedOrigin(origin: string | null, allowedOrigins: string): 
   return allowed.some((allowedOrigin) => origin === allowedOrigin);
 }
 
-export function corsHeaders(origin: string): HeadersInit {
+export function corsHeaders(origin: string): Record<string, string> {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
