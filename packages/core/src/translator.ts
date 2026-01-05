@@ -122,6 +122,39 @@ export function translateWord(word: string): string {
 }
 
 /**
+ * Translates a contraction to Ingglish.
+ * First tries to look up the whole contraction in the dictionary.
+ * Returns the translation without apostrophe for consistent round-tripping.
+ */
+function translateContraction(token: string): string {
+  // Try to look up the whole contraction (with apostrophe) in dictionary
+  const phonemes = lookupPronunciation(token);
+
+  if (phonemes) {
+    // Found the whole contraction - translate it as a unit
+    const translated = phonemesToInglish(phonemes);
+
+    // Preserve case
+    const isAllCaps = token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
+    const isCapitalized = /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
+
+    if (isAllCaps) return translated.toUpperCase();
+    if (isCapitalized) return translated.charAt(0).toUpperCase() + translated.slice(1);
+    return translated;
+  }
+
+  // Fallback: translate parts separately, preserving apostrophe
+  const parts = token.split("'");
+  return parts.map((p, i) => {
+    if (!p) return '';
+    if (i > 0 && p.toLowerCase() === 't') {
+      return 't'; // Keep 't' as-is for n't contractions not in dictionary
+    }
+    return translateWord(p);
+  }).join("'");
+}
+
+/**
  * Translates text containing multiple words to Ingglish.
  * Preserves punctuation, whitespace, and non-word characters.
  * @param text The English text to translate
@@ -136,20 +169,9 @@ export function translateText(text: string): string {
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (/^[a-zA-Z']+$/.test(token)) {
-        // Handle contractions - always preserve the apostrophe
+        // Handle contractions
         if (token.includes("'")) {
-          const parts = token.split("'");
-          // Try to translate each part, checking if the whole contraction is in dictionary
-          // for better pronunciation of parts like "n't"
-          return parts.map((p, i) => {
-            if (!p) return '';
-            // For the suffix part after apostrophe (like "t" in "don't"),
-            // try looking up common contraction endings
-            if (i > 0 && p.toLowerCase() === 't') {
-              return 't'; // "n't" contractions - keep as 't'
-            }
-            return translateWord(p);
-          }).join("'");
+          return translateContraction(token);
         }
         return translateWord(token);
       }

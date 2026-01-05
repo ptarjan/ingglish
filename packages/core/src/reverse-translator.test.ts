@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary, translateWord, lookupPronunciation } from './translator';
+import { loadDictionary, translateWord, translateText, lookupPronunciation } from './translator';
 import {
   inglishToPhonemes,
   reverseTranslateWord,
@@ -100,6 +100,33 @@ describe('reverse-translator', () => {
         // The first result should match the original (or be a homophone)
         expect(results.length).toBeGreaterThan(0);
       }
+    });
+
+    it('should round-trip contractions', () => {
+      // Contractions are translated without apostrophe for consistent phonetic representation
+      // The reverse translation returns the base word form
+      const contractions = [
+        { input: "wouldn't", expectedBack: "wouldn't" },
+        { input: "couldn't", expectedBack: "couldn't" },
+        { input: "shouldn't", expectedBack: "shouldn't" },
+        { input: "don't", expectedBack: "don't" },
+        { input: "can't", expectedBack: "can't" },
+        { input: "won't", expectedBack: "won't" },
+      ];
+      const failures: string[] = [];
+
+      for (const { input, expectedBack } of contractions) {
+        const ingglish = translateText(input);
+        const back = reverseTranslateText(ingglish);
+        if (back.toLowerCase() !== expectedBack.toLowerCase()) {
+          failures.push(`${input} -> ${ingglish} -> ${back} (expected: ${expectedBack})`);
+        }
+      }
+
+      if (failures.length > 0) {
+        console.log('Contraction round-trip failures:', failures);
+      }
+      expect(failures).toEqual([]);
     });
 
     it('sample text should round-trip exactly', () => {

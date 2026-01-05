@@ -18,6 +18,29 @@ export function getWordFrequency(word: string): number | undefined {
   return frequencyMap.get(word.toLowerCase());
 }
 
+// Common English contractions that should be preferred over homophones
+const COMMON_CONTRACTIONS = new Set([
+  // n't contractions
+  "can't", "won't", "don't", "didn't", "doesn't", "isn't", "aren't", "wasn't",
+  "weren't", "hasn't", "haven't", "hadn't", "couldn't", "wouldn't", "shouldn't",
+  "mustn't", "needn't", "mightn't", "shan't", "ain't",
+  // 'll contractions
+  "i'll", "you'll", "he'll", "she'll", "it'll", "we'll", "they'll", "that'll",
+  "who'll", "what'll", "there'll",
+  // 're contractions
+  "you're", "we're", "they're",
+  // 've contractions
+  "i've", "you've", "we've", "they've", "could've", "would've", "should've",
+  "might've", "must've",
+  // 'd contractions
+  "i'd", "you'd", "he'd", "she'd", "it'd", "we'd", "they'd", "that'd", "who'd",
+  // 's contractions (is/has)
+  "he's", "she's", "it's", "that's", "what's", "who's", "where's", "there's",
+  "here's", "how's", "let's",
+  // 'm contractions
+  "i'm",
+]);
+
 /**
  * Scores a word for ranking - lower score is better (more common).
  * Used for sorting homophones by likelihood.
@@ -25,8 +48,18 @@ export function getWordFrequency(word: string): number | undefined {
 export function scoreWord(word: string): number {
   const frequency = getWordFrequency(word);
 
+  // Boost common contractions - they're usually more common than their
+  // homophones (e.g., "won't" vs archaic "wont")
+  const isCommonContraction = COMMON_CONTRACTIONS.has(word.toLowerCase());
+
   if (frequency !== undefined) {
-    return -frequency; // Negate so higher frequency = lower (better) score
+    // Common contractions get a boost since SUBTLEX often underrepresents them
+    return isCommonContraction ? -frequency - 10_000_000 : -frequency;
+  }
+
+  // Common contractions without frequency data are still boosted
+  if (isCommonContraction) {
+    return -5_000_000;
   }
 
   // Penalize words with numbers (likely variant spellings like HELLO2)
