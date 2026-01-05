@@ -1,5 +1,5 @@
 /**
- * Phoneme to Inglish spelling mapping.
+ * Phoneme to Ingglish spelling mapping.
  *
  * Design principles:
  * 1. Each phoneme has exactly one spelling (no ambiguity)
@@ -90,9 +90,9 @@ export function stripStress(phoneme: string): string {
 }
 
 /**
- * Converts an array of ARPAbet phonemes to Inglish spelling.
+ * Converts an array of ARPAbet phonemes to Ingglish spelling.
  * @param phonemes Array of phonemes (e.g., ["HH", "AH0", "L", "OW1"])
- * @returns Inglish spelling (e.g., "huloh")
+ * @returns Ingglish spelling (e.g., "hulo")
  */
 export function phonemesToInglish(phonemes: string[]): string {
   return phonemes

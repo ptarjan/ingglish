@@ -13,32 +13,34 @@ test.describe('Text Translator', () => {
   });
 
   test('translates text when typed', async ({ page }) => {
-    const input = page.locator('.text-input');
-    const output = page.locator('.text-output');
+    // With bidirectional translation, we have two text-input textareas
+    const englishInput = page.locator('.text-input').first();
+    const ingglishInput = page.locator('.text-input').last();
 
-    await input.fill('hello');
-    await expect(output).toContainText('hulo');
+    await englishInput.fill('hello');
+    await expect(ingglishInput).toHaveValue('hulo');
   });
 
   test('preserves capitalization', async ({ page }) => {
-    const input = page.locator('.text-input');
-    const output = page.locator('.text-output');
+    const englishInput = page.locator('.text-input').first();
+    const ingglishInput = page.locator('.text-input').last();
 
-    await input.fill('Hello');
-    await expect(output).toContainText('Hulo');
+    await englishInput.fill('Hello');
+    await expect(ingglishInput).toHaveValue('Hulo');
   });
 
   test('handles sample text button', async ({ page }) => {
-    await page.click('button:has-text("Sample")');
-    const input = page.locator('.text-input');
-    await expect(input).not.toBeEmpty();
+    // Click the first Sample button (English side)
+    await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
+    const englishInput = page.locator('.text-input').first();
+    await expect(englishInput).not.toBeEmpty();
   });
 
   test('clears text with clear button', async ({ page }) => {
-    const input = page.locator('.text-input');
-    await input.fill('test');
-    await page.click('button:has-text("Clear")');
-    await expect(input).toBeEmpty();
+    const englishInput = page.locator('.text-input').first();
+    await englishInput.fill('test');
+    await page.click('button:has-text("Clear All")');
+    await expect(englishInput).toBeEmpty();
   });
 });
 

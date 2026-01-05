@@ -204,7 +204,7 @@ export function wordToPhonemes(word: string): string[] {
  * This is a fallback when the word isn't in the dictionary.
  *
  * @param word The unknown word
- * @returns The best-effort Inglish spelling
+ * @returns The best-effort Ingglish spelling
  */
 export function translateWithRules(word: string): string {
   const phonemes = wordToPhonemes(word);

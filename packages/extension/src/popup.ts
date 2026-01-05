@@ -1,4 +1,4 @@
-// Popup script for Inglish extension
+// Popup script for Ingglish extension
 
 import type { StateResponse, ToggleResponse } from './types';
 

@@ -68,9 +68,9 @@ export function lookupPronunciation(word: string): string[] | null {
 }
 
 /**
- * Translates a single word to Inglish spelling.
+ * Translates a single word to Ingglish spelling.
  * @param word The English word to translate
- * @returns The Inglish spelling, or the original word if not found
+ * @returns The Ingglish spelling, or the original word if not found
  */
 export function translateWord(word: string): string {
   // Handle empty strings
@@ -122,10 +122,10 @@ export function translateWord(word: string): string {
 }
 
 /**
- * Translates text containing multiple words to Inglish.
+ * Translates text containing multiple words to Ingglish.
  * Preserves punctuation, whitespace, and non-word characters.
  * @param text The English text to translate
- * @returns The text with all words translated to Inglish
+ * @returns The text with all words translated to Ingglish
  */
 export function translateText(text: string): string {
   // Regex to match words (letters and apostrophes) vs everything else
