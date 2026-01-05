@@ -17,6 +17,8 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           // The CMU dictionary is large, keep it separate
           dictionary: ['cmu-pronouncing-dictionary'],
+          // Word frequency data is ~3.5MB, keep it separate
+          'word-frequencies': ['subtlex-word-frequencies'],
         },
       },
     },
