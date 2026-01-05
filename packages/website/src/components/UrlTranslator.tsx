@@ -121,7 +121,11 @@ function UrlTranslator() {
           placeholder="Enter a URL (e.g., example.com)"
           className="url-input"
         />
-        <button type="submit" className="btn-primary" disabled={isLoading}>
+        <button
+          type="submit"
+          className={`btn-primary ${isLoading ? 'btn-loading' : ''}`}
+          disabled={isLoading}
+        >
           {isLoading ? 'Loading...' : 'Translate'}
         </button>
         <button type="button" onClick={handleClear} className="btn-secondary">

@@ -42,6 +42,39 @@ test.describe('Text Translator', () => {
     await page.click('button:has-text("Clear All")');
     await expect(englishInput).toBeEmpty();
   });
+
+  test('English text does not flash empty when focusing Ingglish after sample', async ({ page }) => {
+    // Load sample text
+    await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
+
+    const englishInput = page.locator('.text-input').first();
+    const ingglishInput = page.locator('.text-input').last();
+
+    // Wait for translation to complete
+    await expect(ingglishInput).not.toBeEmpty();
+
+    // Store the English text before focus change
+    const englishBefore = await englishInput.inputValue();
+    expect(englishBefore.length).toBeGreaterThan(0);
+
+    // Focus the Ingglish input
+    await ingglishInput.focus();
+
+    // English text should still be visible (not empty)
+    await expect(englishInput).not.toBeEmpty();
+  });
+
+  test('reverse translation works', async ({ page }) => {
+    const ingglishInput = page.locator('.text-input').last();
+    const englishInput = page.locator('.text-input').first();
+
+    // Focus Ingglish input and type a known word
+    await ingglishInput.focus();
+    await ingglishInput.fill('hulo');
+
+    // Wait for reverse translation to complete
+    await expect(englishInput).toHaveValue('hello');
+  });
 });
 
 test.describe('Tab Navigation', () => {

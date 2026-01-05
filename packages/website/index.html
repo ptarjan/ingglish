@@ -6,6 +6,16 @@
     <title>Ingglish - Phonetic English Spelling</title>
     <meta name="description" content="Translate English text to phonetic spelling. Ingglish removes all spelling exceptions and irregularities." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Apply theme immediately to prevent flash
+      (function() {
+        var themeMode = localStorage.getItem('themeMode') || 'auto';
+        var isDark = themeMode === 'dark' || (themeMode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
