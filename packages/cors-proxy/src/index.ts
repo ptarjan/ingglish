@@ -106,11 +106,16 @@ export default {
 
       const html = await response.text();
 
+      // Use upstream cache headers if present, otherwise cache for 1 hour
+      const upstreamCacheControl = response.headers.get('Cache-Control');
+      const cacheControl = upstreamCacheControl || 'public, max-age=3600';
+
       return new Response(html, {
         status: response.status,
         headers: {
           ...corsHeaders(origin),
           'Content-Type': contentType,
+          'Cache-Control': cacheControl,
           'X-Proxied-URL': parsedUrl.toString(),
         },
       });
