@@ -48,13 +48,7 @@ const DEFAULT_SKIP_CLASSES = ['no-translate', 'notranslate'];
 /**
  * Attributes that may contain translatable text.
  */
-const TRANSLATABLE_ATTRIBUTES = [
-  'title',
-  'alt',
-  'placeholder',
-  'aria-label',
-  'aria-description',
-];
+const TRANSLATABLE_ATTRIBUTES = ['title', 'alt', 'placeholder', 'aria-label', 'aria-description'];
 
 /**
  * Checks if an element should be skipped during translation.
