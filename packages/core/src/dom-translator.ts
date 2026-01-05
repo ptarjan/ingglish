@@ -1,4 +1,7 @@
 import { translateText, loadDictionary, isDictionaryLoaded } from './translator';
+import type { DOMTranslatorOptions } from './types';
+
+export type { DOMTranslatorOptions };
 
 /**
  * Checks if we're in a browser environment.
@@ -14,20 +17,6 @@ function requireBrowser(): void {
   if (!isBrowser()) {
     throw new Error('DOM translation requires a browser environment');
   }
-}
-
-/**
- * Configuration options for DOM translation.
- */
-export interface DOMTranslatorOptions {
-  /** Elements to skip (by tag name) */
-  skipTags?: string[];
-  /** Elements to skip (by class name) */
-  skipClasses?: string[];
-  /** Whether to translate attributes like title, alt, placeholder */
-  translateAttributes?: boolean;
-  /** Callback for progress updates */
-  onProgress?: (processed: number, total: number) => void;
 }
 
 /**

@@ -1,8 +1,8 @@
 import { phonemesToInglish } from './phoneme-map';
 import { translateUnknown } from './unknown-words';
+import type { CMUDictionary } from './types';
 
-// Type for the CMU dictionary - it's a simple object mapping words to pronunciations
-type CMUDictionary = Record<string, string>;
+export type { CMUDictionary };
 
 // The dictionary will be loaded once and cached
 let dictionary: CMUDictionary | null = null;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadDictionary, getDictionaryStats } from '@ingglish/core';
+import { translate } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
@@ -14,7 +14,6 @@ function getSystemTheme(): 'light' | 'dark' {
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [wordCount, setWordCount] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<Tab>('text');
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem('themeMode');
@@ -53,12 +52,9 @@ function App() {
   };
 
   useEffect(() => {
-    loadDictionary()
-      .then(() => {
-        const stats = getDictionaryStats();
-        setWordCount(stats.wordCount);
-        setIsLoading(false);
-      })
+    // Preload dictionary by calling translate once
+    translate('')
+      .then(() => setIsLoading(false))
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : 'Unknown error';
         setError(`Failed to load dictionary: ${message}`);
@@ -145,7 +141,7 @@ function App() {
           <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}
-          ({wordCount.toLocaleString()} words) to convert English words to their phonetic spellings.
+          (134,000+ words) to convert English words to their phonetic spellings.
         </p>
       </footer>
     </div>

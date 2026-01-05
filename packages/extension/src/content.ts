@@ -1,7 +1,7 @@
 // Content script for Ingglish extension
 // This runs on every page and translates content when requested
 
-import { loadDictionary, translateDOM, observeAndTranslate } from '@ingglish/core';
+import { translateDOM, observeAndTranslate } from '@ingglish/core';
 import type { TranslateMessage, TranslateResponse } from './types';
 
 let isTranslating = false;
@@ -42,11 +42,8 @@ async function translatePage(): Promise<void> {
   console.log('Ingglish: Starting translation...');
 
   try {
-    // Load the dictionary
-    await loadDictionary();
-
-    // Translate the current page
-    translateDOM(document.body, {
+    // Translate the current page (auto-loads dictionary)
+    await translateDOM(document.body, {
       skipTags: [
         'SCRIPT',
         'STYLE',
@@ -72,8 +69,8 @@ async function translatePage(): Promise<void> {
       },
     });
 
-    // Set up observer for dynamic content
-    stopObservingFn = observeAndTranslate(document.body, {
+    // Set up observer for dynamic content (auto-loads dictionary)
+    stopObservingFn = await observeAndTranslate(document.body, {
       skipTags: [
         'SCRIPT',
         'STYLE',

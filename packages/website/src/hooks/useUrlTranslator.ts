@@ -4,7 +4,7 @@
  * and intercepting link navigation.
  */
 import { useState, useCallback, useRef } from 'react';
-import { translateDOMAsync } from '@ingglish/core';
+import { translateDOM } from '@ingglish/core';
 
 // Use custom proxy if configured, otherwise fall back to allorigins
 const CORS_PROXY = import.meta.env.VITE_CORS_PROXY_URL || 'https://api.allorigins.win/raw?url=';
@@ -83,7 +83,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Translate the DOM
-      await translateDOMAsync(iframeDoc.body, {
+      await translateDOM(iframeDoc.body, {
         skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'SVG', 'MATH'],
         translateAttributes: true,
       });
