@@ -1,0 +1,17 @@
+{
+  "name": "inglish",
+  "version": "1.0.0",
+  "description": "Phonetic English spelling translator",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces",
+    "build": "npm run build --workspaces",
+    "lint": "eslint packages/*/src"
+  },
+  "keywords": ["phonetic", "english", "spelling", "pronunciation"],
+  "author": "",
+  "license": "MIT"
+}
