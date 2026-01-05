@@ -1,7 +1,5 @@
-import { useState, useCallback, useRef } from 'react';
-import { translateDOMAsync } from '@ingglish/core';
-
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+import { useCallback, useRef } from 'react';
+import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 
 const EXAMPLE_URLS = [
   { name: 'Wikipedia: English', url: 'https://en.wikipedia.org/wiki/English_language' },
@@ -11,156 +9,34 @@ const EXAMPLE_URLS = [
 ];
 
 function UrlTranslator() {
-  const [url, setUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { url, setUrl, isLoading, error, iframeRef, translateUrl, clear } = useUrlTranslator();
   const formRef = useRef<HTMLFormElement>(null);
-
-  // Core function to fetch and translate a URL
-  const fetchAndTranslate = useCallback(async (targetUrl: string): Promise<void> => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-
-    const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
-    if (!iframeDoc) return;
-
-    const parsedUrl = new URL(targetUrl);
-    const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
-
-    const response = await fetch(proxyUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status}`);
-    }
-
-    let html = await response.text();
-
-    // Inject a <base> tag so relative URLs (images, CSS, etc.) resolve to the original site
-    const baseTag = `<base href="${parsedUrl.origin}/">`;
-    if (html.includes('<head>')) {
-      html = html.replace('<head>', `<head>${baseTag}`);
-    } else if (html.includes('<html>')) {
-      html = html.replace('<html>', `<html><head>${baseTag}</head>`);
-    } else {
-      html = baseTag + html;
-    }
-
-    // Write the HTML to the iframe
-    iframeDoc.open();
-    iframeDoc.write(html); // eslint-disable-line @typescript-eslint/no-deprecated
-    iframeDoc.close();
-
-    // Wait for the iframe to load
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Translate the DOM
-    await translateDOMAsync(iframeDoc.body, {
-      skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'SVG', 'MATH'],
-      translateAttributes: true,
-    });
-
-    // Intercept link clicks to translate navigated pages
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
-      if (!anchor) return;
-
-      const href = anchor.getAttribute('href');
-      if (!href) return;
-
-      // Skip javascript: links, anchors, and mailto:
-      if (href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) {
-        return;
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      // Resolve relative URLs against the current page
-      let newUrl: string;
-      try {
-        newUrl = new URL(href, parsedUrl.href).href;
-      } catch {
-        return;
-      }
-
-      // Update the URL input and trigger navigation
-      setUrl(newUrl);
-      setIsLoading(true);
-      setError(null);
-
-      fetchAndTranslate(newUrl)
-        .catch((err) => {
-          const message = err instanceof Error ? err.message : 'Unknown error';
-          setError(`Failed to load page: ${message}`);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
-
-    iframeDoc.addEventListener('click', handleLinkClick);
-  }, []);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-      if (!url.trim()) {
-        setError('Please enter a URL');
+      const normalized = normalizeUrl(url);
+      if (!normalized) {
         return;
       }
 
-      let urlToFetch = url;
       try {
-        // Add protocol if missing
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          urlToFetch = 'https://' + url;
-        }
-        new URL(urlToFetch); // Validate URL format
+        await translateUrl(normalized);
       } catch {
-        setError('Invalid URL format');
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        await fetchAndTranslate(urlToFetch);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Unknown error';
-        setError(
-          `Failed to load page: ${message}. Note: Some websites block cross-origin requests.`
-        );
-      } finally {
-        setIsLoading(false);
+        // Error handling is done in the hook
       }
     },
-    [url, fetchAndTranslate]
+    [url, translateUrl]
   );
 
-  const handleClear = useCallback(() => {
-    setUrl('');
-    setError(null);
-    const iframe = iframeRef.current;
-    if (iframe) {
-      const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
-      if (iframeDoc) {
-        iframeDoc.open();
-        iframeDoc.write(''); // eslint-disable-line @typescript-eslint/no-deprecated
-        iframeDoc.close();
-      }
-    }
-  }, []);
-
-  const handleExampleClick = useCallback((exampleUrl: string) => {
-    setUrl(exampleUrl);
-    // Trigger form submission after setting URL
-    setTimeout(() => {
-      formRef.current?.requestSubmit();
-    }, 0);
-  }, []);
+  const handleExampleClick = useCallback(
+    (exampleUrl: string) => {
+      setUrl(exampleUrl);
+      setTimeout(() => formRef.current?.requestSubmit(), 0);
+    },
+    [setUrl]
+  );
 
   return (
     <div className="url-translator">
@@ -168,9 +44,7 @@ function UrlTranslator() {
         <input
           type="text"
           value={url}
-          onChange={(e) => {
-            setUrl(e.target.value);
-          }}
+          onChange={(e) => setUrl(e.target.value)}
           placeholder="Enter a URL (e.g., example.com)"
           className="url-input"
         />
@@ -181,12 +55,12 @@ function UrlTranslator() {
         >
           {isLoading ? 'Loading...' : 'Translate'}
         </button>
-        <button type="button" onClick={handleClear} className="btn-secondary">
+        <button type="button" onClick={clear} className="btn-secondary">
           Clear
         </button>
       </form>
 
-      {error !== null && <div className="error-message">{error}</div>}
+      {error && <div className="error-message">{error}</div>}
 
       <div className="iframe-container">
         <iframe

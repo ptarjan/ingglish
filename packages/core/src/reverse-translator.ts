@@ -1,50 +1,56 @@
+/**
+ * Reverse translation: Ingglish -> English
+ *
+ * Uses phoneme matching to find English words that would produce
+ * the given Ingglish spelling. Handles homophones by preferring
+ * more common words based on frequency data.
+ */
 import { PHONEME_MAP } from './phoneme-map';
 import { getDictionary } from './translator';
-import wordFrequencies from 'subtlex-word-frequencies';
+import { sortByFrequency } from './word-frequency';
+import { detectCasePattern, applyCasePattern } from './case-utils';
 
-// Build word frequency map for O(1) lookups
-// Maps lowercase word -> frequency count (higher = more common)
-const WORD_FREQUENCY: Map<string, number> = new Map();
-for (const entry of wordFrequencies) {
-  // Store lowercase for case-insensitive matching
-  WORD_FREQUENCY.set(entry.word.toLowerCase(), entry.count);
-}
+// ============================================================================
+// Reverse Phoneme Map
+// ============================================================================
 
-// Build reverse map: Ingglish spelling -> phoneme
+/** Maps Ingglish spellings back to phonemes */
 const REVERSE_PHONEME_MAP: Record<string, string> = {};
 for (const [phoneme, spelling] of Object.entries(PHONEME_MAP)) {
   REVERSE_PHONEME_MAP[spelling] = phoneme;
 }
 
-// Sort by length descending so we match longer spellings first (e.g., "sh" before "s")
-const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort((a, b) => b.length - a.length);
+/** Spellings sorted by length (match longer patterns first, e.g., "sh" before "s") */
+const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort(
+  (a, b) => b.length - a.length
+);
+
+// ============================================================================
+// Phoneme Alternatives (handling ambiguous spellings)
+// ============================================================================
 
 /**
- * Ambiguous phonemes that can represent multiple phoneme sequences.
- * "er" is particularly tricky because:
- * - ER (r-colored schwa): "bird", "her", "nurse"
- * - EH + R (short e + r consonant): "welfare", "energy", "better"
+ * Some Ingglish spellings are ambiguous because the same letters can
+ * represent different phoneme sequences. For example, "er" could be:
+ * - ER (r-colored schwa): "bird", "her"
+ * - EH + R (short e + r): "welfare", "better"
  */
-const PHONEME_ALTERNATIVES: Record<string, string[]> = {
-  ER: ['EH R', 'IH R', 'AH R'], // Try alternate interpretations
+const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
+  ER: [['EH', 'R'], ['IH', 'R'], ['AH', 'R']],
 };
 
 /**
- * Generates alternative phoneme sequences by expanding ambiguous phonemes.
- * Returns an array of possible phoneme key strings to try.
+ * Generates alternative phoneme sequences for ambiguous spellings.
  */
-function generatePhonemeAlternatives(phonemes: string[]): string[] {
-  const results: string[] = [phonemes.join(' ')];
+function expandPhonemeAlternatives(phonemes: string[]): string[][] {
+  const results: string[][] = [phonemes];
 
-  // For each ER phoneme, try replacing with alternatives
   for (let i = 0; i < phonemes.length; i++) {
-    if (phonemes[i] === 'ER' && PHONEME_ALTERNATIVES['ER']) {
-      for (const alt of PHONEME_ALTERNATIVES['ER']) {
-        const altPhonemes = [...phonemes];
-        // Replace ER with the alternative (which may be multiple phonemes)
-        const altParts = alt.split(' ');
-        altPhonemes.splice(i, 1, ...altParts);
-        results.push(altPhonemes.join(' '));
+    const alternatives = PHONEME_ALTERNATIVES[phonemes[i]];
+    if (alternatives) {
+      for (const alt of alternatives) {
+        const expanded = [...phonemes.slice(0, i), ...alt, ...phonemes.slice(i + 1)];
+        results.push(expanded);
       }
     }
   }
@@ -52,68 +58,49 @@ function generatePhonemeAlternatives(phonemes: string[]): string[] {
   return results;
 }
 
-// Cache for reverse dictionary lookup (phoneme string -> English words)
-let reverseDictionary: Map<string, string[]> | null = null;
+// ============================================================================
+// Reverse Dictionary Cache
+// ============================================================================
+
+let reverseDictionaryCache: Map<string, string[]> | null = null;
 
 /**
- * Scores a word by frequency - lower score is better (more common).
- * Uses SUBTLEX word frequency data from movie subtitles corpus.
- */
-function getWordScore(word: string): number {
-  const lower = word.toLowerCase();
-  const frequency = WORD_FREQUENCY.get(lower);
-
-  if (frequency !== undefined) {
-    // Use negative frequency so higher frequency = lower (better) score
-    return -frequency;
-  }
-
-  // Words not in frequency list get a high score (less preferred)
-  // Penalize words with numbers
-  if (/[0-9]/.test(word)) {
-    return 1_000_000 + word.length;
-  }
-
-  // Unknown words: penalize by length (shorter usually more common)
-  return 100_000 + word.length;
-}
-
-/**
- * Builds a reverse dictionary mapping phoneme sequences to English words.
+ * Builds and caches a reverse dictionary: phoneme sequence -> English words.
  * Words are sorted by frequency (most common first).
  */
-function buildReverseDictionary(): Map<string, string[]> {
-  if (reverseDictionary) {
-    return reverseDictionary;
+function getReverseDictionary(): Map<string, string[]> {
+  if (reverseDictionaryCache) {
+    return reverseDictionaryCache;
   }
 
   const dict = getDictionary();
-  reverseDictionary = new Map();
+  reverseDictionaryCache = new Map();
 
   for (const [word, pronunciation] of Object.entries(dict)) {
-    // Strip stress markers and join phonemes
     const phonemeKey = pronunciation
       .split(' ')
-      .map((p) => p.replace(/[012]$/, ''))
+      .map((p) => p.replace(/[012]$/, '')) // Strip stress markers
       .join(' ');
 
-    const existing = reverseDictionary.get(phonemeKey) || [];
-    existing.push(word);
-    reverseDictionary.set(phonemeKey, existing);
+    const words = reverseDictionaryCache.get(phonemeKey) ?? [];
+    words.push(word);
+    reverseDictionaryCache.set(phonemeKey, words);
   }
 
-  // Sort each word list by frequency (most common first)
-  for (const [key, words] of reverseDictionary.entries()) {
-    words.sort((a, b) => getWordScore(a) - getWordScore(b));
-    reverseDictionary.set(key, words);
+  // Sort each word list by frequency
+  for (const [key, words] of reverseDictionaryCache.entries()) {
+    reverseDictionaryCache.set(key, sortByFrequency(words));
   }
 
-  return reverseDictionary;
+  return reverseDictionaryCache;
 }
 
+// ============================================================================
+// Core Translation Functions
+// ============================================================================
+
 /**
- * Parses Ingglish text into phoneme sequences.
- * Returns an array of phonemes, or null if parsing fails.
+ * Parses Ingglish text into phonemes.
  */
 export function inglishToPhonemes(inglish: string): string[] | null {
   const phonemes: string[] = [];
@@ -132,8 +119,7 @@ export function inglishToPhonemes(inglish: string): string[] | null {
     }
 
     if (!matched) {
-      // Unknown character - skip it (could be punctuation)
-      remaining = remaining.slice(1);
+      remaining = remaining.slice(1); // Skip unknown characters
     }
   }
 
@@ -141,111 +127,90 @@ export function inglishToPhonemes(inglish: string): string[] | null {
 }
 
 /**
+ * Looks up English words matching a phoneme sequence.
+ * Tries alternative phoneme interpretations if the primary doesn't match.
+ */
+function lookupByPhonemes(phonemes: string[]): string[] {
+  const reverseDict = getReverseDictionary();
+  const variants = expandPhonemeAlternatives(phonemes);
+
+  for (const variant of variants) {
+    const key = variant.join(' ');
+    const matches = reverseDict.get(key);
+    if (matches && matches.length > 0) {
+      return matches;
+    }
+  }
+
+  return [];
+}
+
+/**
  * Translates an Ingglish word back to English.
- * Returns an array of possible English words (for homophones).
+ * Returns possible English words sorted by frequency.
  */
 export function reverseTranslateWord(inglishWord: string): string[] {
-  if (!inglishWord || inglishWord.length === 0) {
-    return [];
+  if (!inglishWord || !/[a-zA-Z]/.test(inglishWord)) {
+    return inglishWord ? [inglishWord] : [];
   }
 
-  // Check if word has any letters
-  if (!/[a-zA-Z]/.test(inglishWord)) {
-    return [inglishWord];
-  }
-
-  // Preserve case pattern
-  const isAllCaps = inglishWord.length > 1 && inglishWord === inglishWord.toUpperCase();
-  const isCapitalized =
-    inglishWord.length > 1 &&
-    /^[A-Z]/.test(inglishWord) &&
-    inglishWord.slice(1) === inglishWord.slice(1).toLowerCase();
-
+  const casePattern = detectCasePattern(inglishWord);
   const phonemes = inglishToPhonemes(inglishWord);
+
   if (!phonemes) {
     return [inglishWord];
   }
 
-  const reverseDict = buildReverseDictionary();
-
-  // Try the primary interpretation first, then alternatives
-  const phonemeVariants = generatePhonemeAlternatives(phonemes);
-  let matches: string[] = [];
-
-  for (const phonemeKey of phonemeVariants) {
-    const found = reverseDict.get(phonemeKey);
-    if (found && found.length > 0) {
-      matches = found;
-      break; // Use first matching variant
-    }
-  }
+  const matches = lookupByPhonemes(phonemes);
 
   if (matches.length === 0) {
-    return [inglishWord]; // Return original if no match
+    return [inglishWord];
   }
 
-  // Apply original case pattern
-  return matches.map((word) => {
-    if (isAllCaps) {
-      return word.toUpperCase();
-    } else if (isCapitalized) {
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    }
-    return word;
-  });
+  return matches.map((word) => applyCasePattern(word, casePattern));
 }
 
 /**
  * Translates Ingglish text back to English.
- * For homophones, uses the first match.
+ * For homophones, uses the most common word.
  */
 export function reverseTranslateText(inglishText: string): string {
-  // Split into tokens (words and non-words)
-  const tokens = inglishText.split(/(\b[a-zA-Z]+\b)/);
-
-  return tokens
+  return inglishText
+    .split(/(\b[a-zA-Z]+\b)/)
     .map((token) => {
       if (/^[a-zA-Z]+$/.test(token)) {
         const matches = reverseTranslateWord(token);
-        return matches[0] || token;
+        return matches[0] ?? token;
       }
       return token;
     })
     .join('');
 }
 
+// ============================================================================
+// Language Detection
+// ============================================================================
+
+const INGLISH_PATTERNS = [
+  /\buu\b/i,      // "uu" is rare in English
+  /\bdh/i,        // "dh" at word start
+  /\bng[aeiou]/i, // "ng" + vowel at start
+  /[aeiou]h\b/i,  // vowel + "h" at end
+];
+
+const ENGLISH_PATTERNS = [
+  /tion\b/i,  // "-tion" ending
+  /ight\b/i,  // "-ight" ending
+  /ough/i,    // "ough" pattern
+  /\bthe\b/i, // "the" (would be "dhu" in Ingglish)
+  /\bwh/i,    // "wh-" words
+];
+
 /**
- * Detects if text is likely Ingglish based on character patterns.
- * Ingglish uses specific letter combinations that are rare in English.
+ * Heuristically detects if text is Ingglish vs English.
  */
 export function isLikelyInglish(text: string): boolean {
-  // Common Ingglish patterns that are rare in English
-  const inglishPatterns = [
-    /\buu\b/i, // "uu" is very rare in English
-    /\bdh/i, // "dh" at start is rare in English
-    /\bng[aeiou]/i, // "ng" followed by vowel at start
-    /[aeiou]h\b/i, // vowel + "h" at end (like "ah", "oh")
-  ];
-
-  // Common English patterns
-  const englishPatterns = [
-    /tion\b/i, // "-tion" ending
-    /ight\b/i, // "-ight" ending
-    /ough/i, // "ough" pattern
-    /\bthe\b/i, // "the" (would be "dhu" in Ingglish)
-    /\bwh/i, // "wh-" words
-  ];
-
-  let inglishScore = 0;
-  let englishScore = 0;
-
-  for (const pattern of inglishPatterns) {
-    if (pattern.test(text)) inglishScore++;
-  }
-
-  for (const pattern of englishPatterns) {
-    if (pattern.test(text)) englishScore++;
-  }
-
+  const inglishScore = INGLISH_PATTERNS.filter((p) => p.test(text)).length;
+  const englishScore = ENGLISH_PATTERNS.filter((p) => p.test(text)).length;
   return inglishScore > englishScore;
 }
