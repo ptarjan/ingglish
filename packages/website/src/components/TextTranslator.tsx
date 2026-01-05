@@ -14,7 +14,6 @@ function TextTranslator() {
 
   // Use deferred value to keep typing responsive
   const deferredText = useDeferredValue(inputText);
-  const isTranslating = deferredText !== inputText;
 
   // Memoize translation to only run when deferred text changes
   const outputText = useMemo(() => {
@@ -76,10 +75,7 @@ function TextTranslator() {
 
         <div className="output-section">
           <div className="section-header">
-            <h2>
-              Ingglish
-              {isTranslating && <span className="translating-indicator"> (translating...)</span>}
-            </h2>
+            <h2>Ingglish</h2>
             <button onClick={handleCopy} className="btn-secondary" disabled={!outputText}>
               Copy
             </button>
