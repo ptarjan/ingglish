@@ -4,12 +4,13 @@ import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 const EXAMPLE_URLS = [
   { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/English_language' },
   { name: 'US Constitution', url: 'https://www.archives.gov/founding-docs/constitution-transcript' },
+  { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
   { name: 'BBC', url: 'https://bbc.com' },
   { name: 'CNN', url: 'https://cnn.com' },
 ];
 
 function UrlTranslator() {
-  const { url, setUrl, isLoading, error, iframeRef, translateUrl, clear } = useUrlTranslator();
+  const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } = useUrlTranslator();
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = useCallback(
@@ -62,7 +63,7 @@ function UrlTranslator() {
 
       {error && <div className="error-message">{error}</div>}
 
-      <div className="iframe-container">
+      <div className={`iframe-container ${hasContent ? '' : 'iframe-container--empty'}`}>
         <iframe
           ref={iframeRef}
           title="Translated page"

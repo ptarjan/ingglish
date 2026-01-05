@@ -13,6 +13,7 @@ interface UseUrlTranslatorResult {
   url: string;
   setUrl: (url: string) => void;
   isLoading: boolean;
+  hasContent: boolean;
   error: string | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   translateUrl: (targetUrl: string) => Promise<void>;
@@ -48,6 +49,7 @@ function shouldSkipUrl(href: string): boolean {
 export function useUrlTranslator(): UseUrlTranslatorResult {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -86,6 +88,8 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         translateAttributes: true,
       });
 
+      setHasContent(true);
+
       // Intercept link clicks for navigation
       iframeDoc.addEventListener('click', (e: MouseEvent) => {
         const anchor = (e.target as HTMLElement).closest('a');
@@ -117,6 +121,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
   const clear = useCallback(() => {
     setUrl('');
     setError(null);
+    setHasContent(false);
 
     const iframe = iframeRef.current;
     if (iframe) {
@@ -133,6 +138,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
     url,
     setUrl,
     isLoading,
+    hasContent,
     error,
     iframeRef,
     translateUrl,

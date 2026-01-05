@@ -301,6 +301,10 @@ body {
   background: var(--color-surface);
 }
 
+.iframe-container--empty {
+  display: none;
+}
+
 .page-iframe {
   width: 100%;
   min-height: 500px;
