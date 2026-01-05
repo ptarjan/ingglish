@@ -309,6 +309,7 @@ body {
   width: 100%;
   min-height: 500px;
   border: none;
+  background: white;
 }
 
 .example-urls {
