@@ -12,7 +12,7 @@ type SoundGroup = {
 };
 
 function SpellingGuide() {
-  // Organize vowels by type
+  // Organize vowels by type (following traditional English phonics)
   const vowelGroups: SoundGroup[] = [
     {
       name: 'Short Vowels',
@@ -27,21 +27,21 @@ function SpellingGuide() {
     {
       name: 'Long Vowels',
       sounds: [
-        { phoneme: 'AA', spelling: VOWEL_MAP.AA, examples: 'father, hot' },
-        { phoneme: 'AO', spelling: VOWEL_MAP.AO, examples: 'thought, law' },
-        { phoneme: 'IY', spelling: VOWEL_MAP.IY, examples: 'bee, see' },
+        { phoneme: 'EY', spelling: VOWEL_MAP.EY, examples: 'say, cake' },
+        { phoneme: 'IY', spelling: VOWEL_MAP.IY, examples: 'bee, feet' },
+        { phoneme: 'AY', spelling: VOWEL_MAP.AY, examples: 'my, bike' },
+        { phoneme: 'OW', spelling: VOWEL_MAP.OW, examples: 'go, nose' },
         { phoneme: 'UW', spelling: VOWEL_MAP.UW, examples: 'too, blue' },
-        { phoneme: 'ER', spelling: VOWEL_MAP.ER, examples: 'bird, her' },
       ],
     },
     {
-      name: 'Diphthongs',
+      name: 'Other Vowels',
       sounds: [
-        { phoneme: 'AY', spelling: VOWEL_MAP.AY, examples: 'my, time' },
-        { phoneme: 'EY', spelling: VOWEL_MAP.EY, examples: 'say, day' },
-        { phoneme: 'OW', spelling: VOWEL_MAP.OW, examples: 'go, show' },
+        { phoneme: 'AA', spelling: VOWEL_MAP.AA, examples: 'father, hot' },
+        { phoneme: 'AO', spelling: VOWEL_MAP.AO, examples: 'thought, law' },
         { phoneme: 'AW', spelling: VOWEL_MAP.AW, examples: 'cow, out' },
         { phoneme: 'OY', spelling: VOWEL_MAP.OY, examples: 'boy, toy' },
+        { phoneme: 'ER', spelling: VOWEL_MAP.ER, examples: 'bird, her' },
       ],
     },
   ];
