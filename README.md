@@ -1,25 +1,25 @@
-# Inglish
+# Ingglish
 
 Phonetic English spelling translator. Words are spelled exactly as they sound - no exceptions!
 
 ## Overview
 
-Inglish translates English text into a consistent, phonetic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
+Ingglish translates English text into a consistent, phonetic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
 
 ## Packages
 
 This is a monorepo containing:
 
-- **@inglish/core** - Core translation library (Node.js & Browser)
-- **@inglish/website** - React website for text and URL translation
-- **@inglish/extension** - Chrome extension for translating any webpage
+- **@ingglish/core** - Core translation library (Node.js & Browser)
+- **@ingglish/website** - React website for text and URL translation
+- **@ingglish/extension** - Chrome extension for translating any webpage
 
 ## Installation
 
 ```bash
 # Clone and install
-git clone https://github.com/ptarjan/inglish.git
-cd inglish
+git clone https://github.com/ptarjan/ingglish.git
+cd ingglish
 npm install
 
 # Build all packages
@@ -31,7 +31,7 @@ npm run build
 ### Core Library
 
 ```typescript
-import { loadDictionary, translateText } from '@inglish/core';
+import { loadDictionary, translateText } from '@ingglish/core';
 
 // Load the dictionary (required once)
 await loadDictionary();
@@ -41,14 +41,14 @@ const result = translateText('Hello, world!');
 console.log(result); // "Huloh, werld!"
 
 // Translate DOM elements (browser only)
-import { translateDOM } from '@inglish/core';
+import { translateDOM } from '@ingglish/core';
 translateDOM(document.body);
 ```
 
 ### Website
 
 ```bash
-npm run dev -w @inglish/website
+npm run dev -w @ingglish/website
 ```
 
 Then open http://localhost:3000
@@ -57,7 +57,7 @@ Then open http://localhost:3000
 
 ```bash
 # Build the extension
-npm run build -w @inglish/extension
+npm run build -w @ingglish/extension
 
 # Load in Chrome:
 # 1. Go to chrome://extensions
@@ -70,7 +70,7 @@ npm run build -w @inglish/extension
 
 Each sound maps to exactly one spelling:
 
-| Sound | Inglish | Examples |
+| Sound | Ingglish | Examples |
 |-------|---------|----------|
 | Long "e" | ee | bee, see |
 | Long "i" | ai | my, time |
@@ -85,7 +85,7 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 ## Examples
 
-| English | Inglish |
+| English | Ingglish |
 |---------|---------|
 | hello | huloh |
 | world | werld |
@@ -106,12 +106,12 @@ npm test
 npm run build
 
 # Run website dev server
-npm run dev -w @inglish/website
+npm run dev -w @ingglish/website
 ```
 
 ## How Unknown Words Are Handled
 
-For words not in the CMU dictionary, Inglish uses:
+For words not in the CMU dictionary, Ingglish uses:
 
 1. **Stemming** - Tries to find a known base word (e.g., "running" → "run" + "ing")
 2. **Grapheme-to-phoneme rules** - Falls back to letter-to-sound conversion rules
@@ -121,8 +121,8 @@ For words not in the CMU dictionary, Inglish uses:
 ### Website
 Deploy to Vercel or Netlify with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ptarjan/inglish&root-directory=packages/website)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ptarjan/inglish)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ptarjan/ingglish&root-directory=packages/website)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ptarjan/ingglish)
 
 See [docs/deployment.md](docs/deployment.md) for detailed deployment instructions.
 

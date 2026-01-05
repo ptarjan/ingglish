@@ -46,7 +46,7 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Inglish</h1>
+        <h1>Ingglish</h1>
         <p className="subtitle">Phonetic English Spelling</p>
         <p className="stats">{wordCount.toLocaleString()} words in dictionary</p>
       </header>
@@ -74,7 +74,7 @@ function App() {
 
       <footer className="footer">
         <p>
-          Inglish uses the{' '}
+          Ingglish uses the{' '}
           <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}

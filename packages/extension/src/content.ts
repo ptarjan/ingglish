@@ -1,7 +1,7 @@
-// Content script for Inglish extension
+// Content script for Ingglish extension
 // This runs on every page and translates content when requested
 
-import { loadDictionary, translateDOM, observeAndTranslate } from '@inglish/core';
+import { loadDictionary, translateDOM, observeAndTranslate } from '@ingglish/core';
 import type { TranslateMessage, TranslateResponse } from './types';
 
 let isTranslating = false;
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(
         })
         .catch((error: unknown) => {
           // eslint-disable-next-line no-console
-          console.error('Inglish translation error:', error);
+          console.error('Ingglish translation error:', error);
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           sendResponse({ success: false, error: errorMessage });
         });
@@ -33,13 +33,13 @@ chrome.runtime.onMessage.addListener(
 async function translatePage(): Promise<void> {
   if (isTranslating) {
     // eslint-disable-next-line no-console
-    console.log('Inglish: Already translating');
+    console.log('Ingglish: Already translating');
     return;
   }
 
   isTranslating = true;
   // eslint-disable-next-line no-console
-  console.log('Inglish: Starting translation...');
+  console.log('Ingglish: Starting translation...');
 
   try {
     // Load the dictionary
@@ -67,7 +67,7 @@ async function translatePage(): Promise<void> {
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
           // eslint-disable-next-line no-console
-          console.log(`Inglish: Translated ${processed}/${total} text nodes`);
+          console.log(`Ingglish: Translated ${processed}/${total} text nodes`);
         }
       },
     });
@@ -94,7 +94,7 @@ async function translatePage(): Promise<void> {
     });
 
     // eslint-disable-next-line no-console
-    console.log('Inglish: Translation complete!');
+    console.log('Ingglish: Translation complete!');
 
     // Add visual indicator
     addTranslationBadge();
@@ -106,13 +106,13 @@ async function translatePage(): Promise<void> {
 
 function addTranslationBadge(): void {
   // Check if badge already exists
-  if (document.getElementById('inglish-badge')) {
+  if (document.getElementById('ingglish-badge')) {
     return;
   }
 
   const badge = document.createElement('div');
-  badge.id = 'inglish-badge';
-  badge.textContent = 'Inglish';
+  badge.id = 'ingglish-badge';
+  badge.textContent = 'Ingglish';
   badge.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -146,4 +146,4 @@ function addTranslationBadge(): void {
 }
 
 // eslint-disable-next-line no-console
-console.log('Inglish content script loaded');
+console.log('Ingglish content script loaded');

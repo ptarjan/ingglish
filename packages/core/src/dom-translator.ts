@@ -77,7 +77,7 @@ function shouldSkipElement(element: Element, skipTags: string[], skipClasses: st
   }
 
   // Check for data attribute to skip
-  if (element.hasAttribute('data-inglish-skip')) {
+  if (element.hasAttribute('data-ingglish-skip')) {
     return true;
   }
 
@@ -307,12 +307,12 @@ export function observeAndTranslate(
  * Marks an element to be skipped during translation.
  */
 export function skipElement(element: Element): void {
-  element.setAttribute('data-inglish-skip', 'true');
+  element.setAttribute('data-ingglish-skip', 'true');
 }
 
 /**
  * Removes the skip marker from an element.
  */
 export function unskipElement(element: Element): void {
-  element.removeAttribute('data-inglish-skip');
+  element.removeAttribute('data-ingglish-skip');
 }

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#gradient)"/>
+  <!-- Letter I -->
+  <rect x="45" y="55" width="15" height="90" rx="4" fill="white"/>
+  <rect x="40" y="55" width="25" height="12" rx="3" fill="white"/>
+  <rect x="40" y="133" width="25" height="12" rx="3" fill="white"/>
+  <!-- Phonetic wave / sound symbol -->
+  <path d="M80 100 Q95 70 110 100 Q125 130 140 100" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <!-- Dot representing speech/sound -->
+  <circle cx="155" cy="80" r="10" fill="white"/>
+</svg>

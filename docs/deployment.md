@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying the Inglish website and Chrome extension.
+This guide covers deploying the Ingglish website and Chrome extension.
 
 ## Website Deployment
 
@@ -13,7 +13,7 @@ This guide covers deploying the Inglish website and Chrome extension.
 
 2. **Configure Build Settings**
    - Framework Preset: Vite
-   - Build Command: `cd ../.. && npm run build -w @inglish/core && npm run build -w @inglish/website`
+   - Build Command: `cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website`
    - Output Directory: `dist`
    - Install Command: `cd ../.. && npm ci`
 
@@ -34,7 +34,7 @@ This guide covers deploying the Inglish website and Chrome extension.
 
 2. **Configure Build Settings**
    - Base directory: `packages/website`
-   - Build command: `cd ../.. && npm run build -w @inglish/core && npm run build -w @inglish/website`
+   - Build command: `cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website`
    - Publish directory: `packages/website/dist`
 
 3. **Deploy**
@@ -75,8 +75,8 @@ This guide covers deploying the Inglish website and Chrome extension.
          - name: Install and Build
            run: |
              npm ci
-             npm run build -w @inglish/core
-             npm run build -w @inglish/website
+             npm run build -w @ingglish/core
+             npm run build -w @ingglish/website
 
          - name: Setup Pages
            uses: actions/configure-pages@v4
@@ -93,7 +93,7 @@ This guide covers deploying the Inglish website and Chrome extension.
 3. **Update vite.config.ts** for GitHub Pages base path:
    ```typescript
    export default defineConfig({
-     base: '/inglish/', // Replace with your repo name
+     base: '/ingglish/', // Replace with your repo name
      // ... rest of config
    });
    ```
@@ -104,7 +104,7 @@ This guide covers deploying the Inglish website and Chrome extension.
 
 1. Build the extension:
    ```bash
-   npm run build -w @inglish/extension
+   npm run build -w @ingglish/extension
    ```
 
 2. Load in Chrome:
@@ -123,7 +123,7 @@ This guide covers deploying the Inglish website and Chrome extension.
 2. **Create ZIP**
    ```bash
    cd packages/extension/dist
-   zip -r ../inglish-extension.zip .
+   zip -r ../ingglish-extension.zip .
    ```
 
 3. **Submit to Chrome Web Store**
@@ -139,7 +139,7 @@ Add to GitHub Actions to auto-build extension:
 
 ```yaml
 - name: Build Extension
-  run: npm run build -w @inglish/extension
+  run: npm run build -w @ingglish/extension
 
 - name: Upload Extension Artifact
   uses: actions/upload-artifact@v4
@@ -161,7 +161,7 @@ If you want to use your own CORS proxy instead of allorigins.win:
 
 ### Add Vercel Analytics (Optional)
 ```bash
-npm install @vercel/analytics -w @inglish/website
+npm install @vercel/analytics -w @ingglish/website
 ```
 
 Update `main.tsx`:

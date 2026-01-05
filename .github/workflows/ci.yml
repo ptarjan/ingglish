@@ -23,16 +23,16 @@ jobs:
         run: npm ci
 
       - name: Build core library
-        run: npm run build -w @inglish/core
+        run: npm run build -w @ingglish/core
 
       - name: Run tests
-        run: npm test -w @inglish/core
+        run: npm test -w @ingglish/core
 
       - name: Build website
-        run: npm run build -w @inglish/website
+        run: npm run build -w @ingglish/website
 
       - name: Build extension
-        run: npm run build -w @inglish/extension
+        run: npm run build -w @ingglish/extension
 
   deploy-preview:
     runs-on: ubuntu-latest
@@ -53,8 +53,8 @@ jobs:
 
       - name: Build all packages
         run: |
-          npm run build -w @inglish/core
-          npm run build -w @inglish/website
+          npm run build -w @ingglish/core
+          npm run build -w @ingglish/website
 
       - name: Deploy to Vercel Preview
         uses: amondnet/vercel-action@v25
@@ -83,8 +83,8 @@ jobs:
 
       - name: Build all packages
         run: |
-          npm run build -w @inglish/core
-          npm run build -w @inglish/website
+          npm run build -w @ingglish/core
+          npm run build -w @ingglish/website
 
       - name: Deploy to Vercel Production
         uses: amondnet/vercel-action@v25

@@ -121,7 +121,7 @@ function UrlTranslator() {
 
       {error !== null && <div className="error-message">{error}</div>}
 
-      {isTranslated && <div className="success-message">Page translated to Inglish!</div>}
+      {isTranslated && <div className="success-message">Page translated to Ingglish!</div>}
 
       <div className="iframe-container">
         <iframe
@@ -135,7 +135,7 @@ function UrlTranslator() {
       <div className="info-box">
         <h3>URL Translation</h3>
         <p>
-          Enter any URL to view the page with all text translated to Inglish. Due to browser
+          Enter any URL to view the page with all text translated to Ingglish. Due to browser
           security restrictions, some websites may not load correctly.
         </p>
         <p>

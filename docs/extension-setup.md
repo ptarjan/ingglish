@@ -9,7 +9,7 @@
 
 2. Build the extension:
    ```bash
-   npm run build -w @inglish/extension
+   npm run build -w @ingglish/extension
    ```
 
 3. The built extension will be in `packages/extension/dist/`
@@ -34,12 +34,12 @@ Place these in `packages/extension/src/icons/` before building.
 
 You can use any image editor or an online tool. The icons should:
 - Have a transparent background
-- Use the Inglish purple gradient (#6366f1 to #a855f7)
+- Use the Ingglish purple gradient (#6366f1 to #a855f7)
 - Be simple and recognizable at small sizes
 
 ## Usage
 
-1. Click the Inglish extension icon in the Chrome toolbar
+1. Click the Ingglish extension icon in the Chrome toolbar
 2. Click "Translate Page" to translate the current page
 3. Click "Turn Off" to reload the page with original text
 

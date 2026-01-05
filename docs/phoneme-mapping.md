@@ -1,4 +1,4 @@
-# Phoneme to Inglish Spelling Mapping
+# Phoneme to Ingglish Spelling Mapping
 
 ## Overview
 
@@ -22,7 +22,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 
 ## Vowel Mappings
 
-| Phoneme | Inglish | Example Words | Notes |
+| Phoneme | Ingglish | Example Words | Notes |
 |---------|---------|---------------|-------|
 | AA | ah | f**a**ther, h**o**t | Open back vowel |
 | AE | a | c**a**t, b**a**t | Near-open front vowel |
@@ -43,7 +43,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 ## Consonant Mappings
 
 ### Stops (Plosives)
-| Phoneme | Inglish | Example Words |
+| Phoneme | Ingglish | Example Words |
 |---------|---------|---------------|
 | B | b | **b**at, ca**b** |
 | D | d | **d**og, be**d** |
@@ -53,7 +53,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | T | t | **t**op, ca**t** |
 
 ### Fricatives
-| Phoneme | Inglish | Example Words | Notes |
+| Phoneme | Ingglish | Example Words | Notes |
 |---------|---------|---------------|-------|
 | DH | dh | **th**e, fa**th**er | Voiced dental fricative |
 | F | f | **f**at, lau**gh** | |
@@ -65,20 +65,20 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | ZH | zh | mea**s**ure, bei**ge** | |
 
 ### Affricates
-| Phoneme | Inglish | Example Words |
+| Phoneme | Ingglish | Example Words |
 |---------|---------|---------------|
 | CH | ch | **ch**at, ba**tch** |
 | JH | j | **j**ust, e**dge** |
 
 ### Nasals
-| Phoneme | Inglish | Example Words |
+| Phoneme | Ingglish | Example Words |
 |---------|---------|---------------|
 | M | m | **m**an, co**m**e |
 | N | n | **n**o, pe**n** |
 | NG | ng | si**ng**, thi**ng** |
 
 ### Liquids & Glides
-| Phoneme | Inglish | Example Words |
+| Phoneme | Ingglish | Example Words |
 |---------|---------|---------------|
 | L | l | **l**et, we**ll** |
 | R | r | **r**un, ca**r** |
@@ -113,7 +113,7 @@ Each diphthong gets a two-letter combination:
 
 ## Example Translations
 
-| English | Phonemes | Inglish |
+| English | Phonemes | Ingglish |
 |---------|----------|---------|
 | hello | HH AH0 L OW1 | huloh |
 | world | W ER1 L D | werld |
@@ -133,7 +133,7 @@ We strip these markers before mapping. This simplifies the output while still pr
 
 ## Limitations
 
-1. **Homophones**: Words that sound the same will have the same Inglish spelling
+1. **Homophones**: Words that sound the same will have the same Ingglish spelling
    - "their", "there", "they're" → all become the same
 2. **Accent neutrality**: CMU dictionary represents General American English
 3. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary

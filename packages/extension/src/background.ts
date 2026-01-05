@@ -1,4 +1,4 @@
-// Background service worker for Inglish extension
+// Background service worker for Ingglish extension
 
 import type { ExtensionMessage, StateResponse, ToggleResponse } from './types';
 
@@ -76,4 +76,4 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 });
 
 // eslint-disable-next-line no-console
-console.log('Inglish background service worker loaded');
+console.log('Ingglish background service worker loaded');

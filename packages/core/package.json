@@ -1,5 +1,5 @@
 {
-  "name": "@inglish/core",
+  "name": "@ingglish/core",
   "version": "1.0.0",
   "description": "Core phonetic English translation library",
   "main": "dist/index.js",

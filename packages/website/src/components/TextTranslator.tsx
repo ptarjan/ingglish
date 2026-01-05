@@ -6,7 +6,7 @@ This sentence contains every letter of the English alphabet.
 
 "Though" and "through" are spelled similarly but sound different.
 English spelling is notoriously difficult to learn because it has
-so many exceptions and irregularities. With Inglish, words are
+so many exceptions and irregularities. With Ingglish, words are
 spelled exactly as they sound - no memorization needed!`;
 
 function TextTranslator() {
@@ -94,7 +94,7 @@ function TextTranslator() {
         <div className="output-section">
           <div className="section-header">
             <h2>
-              Inglish
+              Ingglish
               {isTranslating && <span className="translating-indicator"> (translating...)</span>}
             </h2>
             <button onClick={handleCopy} className="btn-secondary" disabled={!outputText}>
@@ -110,7 +110,7 @@ function TextTranslator() {
       <div className="info-box">
         <h3>How it works</h3>
         <p>
-          Inglish translates English words to their phonetic spellings using the CMU Pronouncing
+          Ingglish translates English words to their phonetic spellings using the CMU Pronouncing
           Dictionary. Each sound maps to exactly one spelling:
         </p>
         <ul>

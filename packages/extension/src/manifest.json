@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Inglish - Phonetic English",
+  "name": "Ingglish - Phonetic English",
   "version": "1.0.0",
   "description": "Translate any webpage to phonetic English spelling. Words are spelled exactly as they sound!",
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Inglish Translator"
+    "default_title": "Ingglish Translator"
   },
   "background": {
     "service_worker": "background.js",
