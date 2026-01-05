@@ -93,6 +93,12 @@ const COMMON_CONTRACTIONS = new Set([
   "i'm",
 ]);
 
+// Scoring constants for word ranking (lower = more likely)
+const CONTRACTION_FREQUENCY_BOOST = 10_000_000; // Added to frequency for known contractions
+const UNKNOWN_CONTRACTION_SCORE = -5_000_000; // Score for contractions without frequency data
+const NUMERIC_WORD_PENALTY = 1_000_000; // Penalty for words containing numbers
+const UNKNOWN_WORD_PENALTY = 100_000; // Base penalty for unknown words
+
 /**
  * Scores a word for ranking - lower score is better (more common).
  * Used for sorting homophones by likelihood.
@@ -106,21 +112,21 @@ export function scoreWord(word: string): number {
 
   if (frequency !== undefined) {
     // Common contractions get a boost since SUBTLEX often underrepresents them
-    return isCommonContraction ? -frequency - 10_000_000 : -frequency;
+    return isCommonContraction ? -frequency - CONTRACTION_FREQUENCY_BOOST : -frequency;
   }
 
   // Common contractions without frequency data are still boosted
   if (isCommonContraction) {
-    return -5_000_000;
+    return UNKNOWN_CONTRACTION_SCORE;
   }
 
   // Penalize words with numbers (likely variant spellings like HELLO2)
   if (/[0-9]/.test(word)) {
-    return 1_000_000 + word.length;
+    return NUMERIC_WORD_PENALTY + word.length;
   }
 
   // Unknown words: penalize by length (shorter usually more common)
-  return 100_000 + word.length;
+  return UNKNOWN_WORD_PENALTY + word.length;
 }
 
 /**

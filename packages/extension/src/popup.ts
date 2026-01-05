@@ -2,9 +2,14 @@
 
 import type { StateResponse, ToggleResponse } from './types';
 
-const toggleBtn = document.getElementById('toggle-btn') as HTMLButtonElement;
-const statusText = document.getElementById('status-text') as HTMLSpanElement;
-const statusDot = document.getElementById('status-dot') as HTMLDivElement;
+const toggleBtn = document.getElementById('toggle-btn');
+const statusText = document.getElementById('status-text');
+const statusDot = document.getElementById('status-dot');
+
+// Validate required elements exist
+if (!toggleBtn || !statusText || !statusDot) {
+  throw new Error('Required popup elements not found');
+}
 
 let isEnabled = false;
 

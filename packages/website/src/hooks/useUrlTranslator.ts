@@ -22,10 +22,23 @@ interface UseUrlTranslatorResult {
 }
 
 /**
+ * Escapes HTML attribute values to prevent XSS.
+ */
+function escapeHtmlAttr(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/**
  * Injects a base tag into HTML so relative URLs resolve correctly.
  */
 export function injectBaseTag(html: string, origin: string): string {
-  const baseTag = `<base href="${origin}/">`;
+  const safeOrigin = escapeHtmlAttr(origin);
+  const baseTag = `<base href="${safeOrigin}/">`;
 
   if (html.includes('<head>')) {
     return html.replace('<head>', `<head>${baseTag}`);
@@ -120,7 +133,11 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         }
 
         setUrl(newUrl);
-        void translateUrl(newUrl);
+        translateUrl(newUrl).catch((err: unknown) => {
+          // Error is already handled in translateUrl, but log for debugging
+          // eslint-disable-next-line no-console
+          console.error('Navigation translation failed:', err);
+        });
       });
     } catch (err) {
       setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);

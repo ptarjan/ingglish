@@ -5,6 +5,7 @@ import { translateDOM, observeAndTranslate } from '@ingglish/core';
 import type { TranslateMessage, TranslateResponse } from './types';
 
 let isTranslating = false;
+let stopObserver: (() => void) | null = null;
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener(
@@ -48,8 +49,13 @@ async function translatePage(): Promise<void> {
       },
     });
 
+    // Stop any previous observer before creating a new one
+    if (stopObserver) {
+      stopObserver();
+    }
+
     // Set up observer for dynamic content using defaults
-    await observeAndTranslate(document.body);
+    stopObserver = await observeAndTranslate(document.body);
 
     // eslint-disable-next-line no-console
     console.log('Ingglish: Translation complete!');

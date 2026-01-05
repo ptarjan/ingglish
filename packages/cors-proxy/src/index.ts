@@ -29,6 +29,42 @@ export function corsHeaders(origin: string): Record<string, string> {
   };
 }
 
+/**
+ * Checks if a hostname resolves to a private/internal IP address.
+ * Prevents SSRF attacks by blocking requests to internal networks.
+ */
+export function isPrivateHost(hostname: string): boolean {
+  const lowerHost = hostname.toLowerCase();
+
+  // Block localhost
+  if (lowerHost === 'localhost' || lowerHost === 'localhost.localdomain') {
+    return true;
+  }
+
+  // Block private IPv4 ranges
+  const privateIPv4Patterns = [
+    /^127\./, // Loopback
+    /^10\./, // Class A private
+    /^172\.(1[6-9]|2[0-9]|3[01])\./, // Class B private
+    /^192\.168\./, // Class C private
+    /^169\.254\./, // Link-local
+    /^0\./, // Current network
+  ];
+
+  for (const pattern of privateIPv4Patterns) {
+    if (pattern.test(hostname)) {
+      return true;
+    }
+  }
+
+  // Block IPv6 loopback and private
+  if (hostname === '::1' || hostname.startsWith('fc') || hostname.startsWith('fd')) {
+    return true;
+  }
+
+  return false;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get('Origin');
@@ -80,6 +116,14 @@ export default {
     if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
       return new Response('Invalid protocol', {
         status: 400,
+        headers: corsHeaders(origin),
+      });
+    }
+
+    // Block requests to private/internal networks (SSRF protection)
+    if (isPrivateHost(parsedUrl.hostname)) {
+      return new Response('Forbidden: Private networks not allowed', {
+        status: 403,
         headers: corsHeaders(origin),
       });
     }
