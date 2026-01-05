@@ -58,8 +58,12 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
             <span
               key={i}
               className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
-              onMouseEnter={() => onHoverWord(token.wordIndex)}
-              onMouseLeave={() => onHoverWord(null)}
+              onMouseEnter={() => {
+                onHoverWord(token.wordIndex);
+              }}
+              onMouseLeave={() => {
+                onHoverWord(null);
+              }}
             >
               {token.text}
             </span>
@@ -87,7 +91,9 @@ function TextTranslator() {
 
   // Compute translations based on which pane was last edited
   const computedIngglish = useMemo(() => {
-    if (lastEdited !== 'english' || !deferredEnglish.trim()) return null;
+    if (lastEdited !== 'english' || !deferredEnglish.trim()) {
+      return null;
+    }
     try {
       return translateText(deferredEnglish);
     } catch (err) {
@@ -98,7 +104,9 @@ function TextTranslator() {
   }, [deferredEnglish, lastEdited]);
 
   const computedEnglish = useMemo(() => {
-    if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) return null;
+    if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
+      return null;
+    }
     try {
       return reverseTranslateText(deferredIngglish);
     } catch (err) {
@@ -181,7 +189,7 @@ function TextTranslator() {
             value={lastEdited === 'english' ? englishText : displayEnglish}
             onChange={handleEnglishChange}
             onFocus={() => {
-              if (lastEdited === 'ingglish' && computedEnglish) {
+              if (lastEdited === 'ingglish' && computedEnglish !== null) {
                 setEnglishText(computedEnglish);
                 setLastEdited('english');
               }
@@ -209,7 +217,7 @@ function TextTranslator() {
             value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             onChange={handleIngglishChange}
             onFocus={() => {
-              if (lastEdited === 'english' && computedIngglish) {
+              if (lastEdited === 'english' && computedIngglish !== null) {
                 setIngglishText(computedIngglish);
                 setLastEdited('ingglish');
               }

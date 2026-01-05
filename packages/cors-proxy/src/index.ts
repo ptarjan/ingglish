@@ -12,7 +12,9 @@ export interface Env {
 }
 
 export function isAllowedOrigin(origin: string | null, allowedOrigins: string): boolean {
-  if (!origin) return false;
+  if (origin === null || origin === '') {
+    return false;
+  }
 
   const allowed = allowedOrigins.split(',').map((o) => o.trim());
   return allowed.some((allowedOrigin) => origin === allowedOrigin);
@@ -33,7 +35,7 @@ export default {
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-      if (origin && isAllowedOrigin(origin, env.ALLOWED_ORIGINS)) {
+      if (origin !== null && isAllowedOrigin(origin, env.ALLOWED_ORIGINS)) {
         return new Response(null, {
           status: 204,
           headers: corsHeaders(origin),
@@ -48,7 +50,7 @@ export default {
     }
 
     // Validate origin
-    if (!origin || !isAllowedOrigin(origin, env.ALLOWED_ORIGINS)) {
+    if (origin === null || !isAllowedOrigin(origin, env.ALLOWED_ORIGINS)) {
       return new Response('Forbidden: Invalid origin', { status: 403 });
     }
 
@@ -56,7 +58,7 @@ export default {
     const requestUrl = new URL(request.url);
     const targetUrl = requestUrl.searchParams.get('url');
 
-    if (!targetUrl) {
+    if (targetUrl === null || targetUrl === '') {
       return new Response('Missing url parameter', {
         status: 400,
         headers: corsHeaders(origin),
@@ -94,7 +96,7 @@ export default {
       });
 
       // Get content type
-      const contentType = response.headers.get('Content-Type') || 'text/html';
+      const contentType = response.headers.get('Content-Type') ?? 'text/html';
 
       // Only proxy HTML content
       if (!contentType.includes('text/html') && !contentType.includes('application/xhtml')) {
@@ -112,8 +114,8 @@ export default {
       const upstreamCacheControl = response.headers.get('Cache-Control');
 
       let cacheSeconds = DEFAULT_CACHE_SECONDS;
-      if (upstreamCacheControl) {
-        const maxAgeMatch = upstreamCacheControl.match(/max-age=(\d+)/);
+      if (upstreamCacheControl !== null) {
+        const maxAgeMatch = /max-age=(\d+)/.exec(upstreamCacheControl);
         if (maxAgeMatch) {
           cacheSeconds = Math.max(parseInt(maxAgeMatch[1], 10), MIN_CACHE_SECONDS);
         }
@@ -122,12 +124,11 @@ export default {
 
       return new Response(html, {
         status: response.status,
-        headers: {
-          ...corsHeaders(origin),
+        headers: Object.assign({}, corsHeaders(origin), {
           'Content-Type': contentType,
           'Cache-Control': cacheControl,
           'X-Proxied-URL': parsedUrl.toString(),
-        },
+        }),
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';

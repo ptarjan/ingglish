@@ -23,7 +23,7 @@ function UrlTranslator() {
       e.preventDefault();
 
       const normalized = normalizeUrl(url);
-      if (!normalized) {
+      if (normalized === null) {
         return;
       }
 
@@ -50,7 +50,9 @@ function UrlTranslator() {
         <input
           type="text"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e) => {
+            setUrl(e.target.value);
+          }}
           placeholder="Enter a URL (e.g., example.com)"
           className="url-input"
         />
@@ -66,7 +68,7 @@ function UrlTranslator() {
         </button>
       </form>
 
-      {error && <div className="error-message">{error}</div>}
+      {error !== null && <div className="error-message">{error}</div>}
 
       <div className={`iframe-container ${hasContent ? '' : 'iframe-container--empty'}`}>
         <iframe
@@ -84,7 +86,9 @@ function UrlTranslator() {
             key={example.url}
             type="button"
             className="example-link"
-            onClick={() => handleExampleClick(example.url)}
+            onClick={() => {
+              handleExampleClick(example.url);
+            }}
             disabled={isLoading}
           >
             {example.name}

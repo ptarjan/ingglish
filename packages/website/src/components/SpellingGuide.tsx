@@ -1,15 +1,15 @@
 import { VOWEL_MAP, CONSONANT_MAP } from '@ingglish/core';
 
-type SoundEntry = {
+interface SoundEntry {
   phoneme: string;
   spelling: string;
   examples: string;
-};
+}
 
-type SoundGroup = {
+interface SoundGroup {
   name: string;
   sounds: SoundEntry[];
-};
+}
 
 function SpellingGuide() {
   // Organize vowels by type (following traditional English phonics)

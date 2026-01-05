@@ -7,7 +7,8 @@ import { useState, useCallback, useRef } from 'react';
 import { translateDOM } from '@ingglish/core';
 
 // Use custom proxy if configured, otherwise fall back to allorigins
-const CORS_PROXY = import.meta.env.VITE_CORS_PROXY_URL || 'https://api.allorigins.win/raw?url=';
+const CORS_PROXY: string =
+  import.meta.env.VITE_CORS_PROXY_URL ?? 'https://api.allorigins.win/raw?url=';
 
 interface UseUrlTranslatorResult {
   url: string;
@@ -51,7 +52,9 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
 
   const translateUrl = useCallback(async (targetUrl: string): Promise<void> => {
     const iframe = iframeRef.current;
-    if (!iframe) return;
+    if (!iframe) {
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -92,10 +95,14 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
       // Intercept link clicks for navigation
       iframeDoc.addEventListener('click', (e: MouseEvent) => {
         const anchor = (e.target as HTMLElement).closest('a');
-        if (!anchor) return;
+        if (!anchor) {
+          return;
+        }
 
         const href = anchor.getAttribute('href');
-        if (!href || shouldSkipUrl(href)) return;
+        if (href === null || href === '' || shouldSkipUrl(href)) {
+          return;
+        }
 
         e.preventDefault();
         e.stopPropagation();
@@ -108,7 +115,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         }
 
         setUrl(newUrl);
-        translateUrl(newUrl);
+        void translateUrl(newUrl);
       });
     } catch (err) {
       setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -145,7 +152,9 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
  * Returns null if invalid.
  */
 export function normalizeUrl(input: string): string | null {
-  if (!input.trim()) return null;
+  if (!input.trim()) {
+    return null;
+  }
 
   let urlString = input;
   if (!input.startsWith('http://') && !input.startsWith('https://')) {

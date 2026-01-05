@@ -138,8 +138,12 @@ function translateContraction(token: string): string {
     const isAllCaps = token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
     const isCapitalized = /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
 
-    if (isAllCaps) return translated.toUpperCase();
-    if (isCapitalized) return translated.charAt(0).toUpperCase() + translated.slice(1);
+    if (isAllCaps) {
+      return translated.toUpperCase();
+    }
+    if (isCapitalized) {
+      return translated.charAt(0).toUpperCase() + translated.slice(1);
+    }
     return translated;
   }
 
@@ -147,7 +151,9 @@ function translateContraction(token: string): string {
   const parts = token.split("'");
   return parts
     .map((p, i) => {
-      if (!p) return '';
+      if (!p) {
+        return '';
+      }
       if (i > 0 && p.toLowerCase() === 't') {
         return 't'; // Keep 't' as-is for n't contractions not in dictionary
       }

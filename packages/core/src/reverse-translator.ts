@@ -48,7 +48,7 @@ function expandPhonemeAlternatives(phonemes: string[]): string[][] {
 
   for (let i = 0; i < phonemes.length; i++) {
     const alternatives = PHONEME_ALTERNATIVES[phonemes[i]];
-    if (alternatives) {
+    if (alternatives !== undefined) {
       for (const alt of alternatives) {
         const expanded = [...phonemes.slice(0, i), ...alt, ...phonemes.slice(i + 1)];
         results.push(expanded);
@@ -193,7 +193,9 @@ export function reverseTranslateText(inglishText: string): string {
           const parts = token.split("'");
           return parts
             .map((p) => {
-              if (!p) return '';
+              if (!p) {
+                return '';
+              }
               const matches = reverseTranslateWord(p);
               return matches[0] ?? p;
             })

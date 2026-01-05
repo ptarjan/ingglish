@@ -5,7 +5,7 @@
 import wordFrequencies from 'subtlex-word-frequencies';
 
 // Build frequency map at module load time for O(1) lookups
-const frequencyMap: Map<string, number> = new Map();
+const frequencyMap = new Map<string, number>();
 for (const { word, count } of wordFrequencies) {
   frequencyMap.set(word.toLowerCase(), count);
 }

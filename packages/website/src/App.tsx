@@ -33,28 +33,40 @@ function App() {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     if (themeMode === 'auto') {
       mediaQuery.addEventListener('change', applyTheme);
-      return () => mediaQuery.removeEventListener('change', applyTheme);
+      return () => {
+        mediaQuery.removeEventListener('change', applyTheme);
+      };
     }
   }, [themeMode]);
 
   const cycleTheme = () => {
     setThemeMode((prev) => {
-      if (prev === 'auto') return 'light';
-      if (prev === 'light') return 'dark';
+      if (prev === 'auto') {
+        return 'light';
+      }
+      if (prev === 'light') {
+        return 'dark';
+      }
       return 'auto';
     });
   };
 
   const getThemeIcon = () => {
-    if (themeMode === 'auto') return '🌓';
-    if (themeMode === 'light') return '☀️';
+    if (themeMode === 'auto') {
+      return '🌓';
+    }
+    if (themeMode === 'light') {
+      return '☀️';
+    }
     return '🌙';
   };
 
   useEffect(() => {
     // Preload dictionary by calling translate once
     translate('')
-      .then(() => setIsLoading(false))
+      .then(() => {
+        setIsLoading(false);
+      })
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : 'Unknown error';
         setError(`Failed to load dictionary: ${message}`);
