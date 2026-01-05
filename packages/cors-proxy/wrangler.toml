@@ -1,0 +1,7 @@
+name = "ingglish-cors-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[vars]
+# Comma-separated list of allowed origins
+ALLOWED_ORIGINS = "https://paultarjan.com,http://localhost:5173,http://localhost:4173"

@@ -6,14 +6,15 @@
 import { useState, useCallback, useRef } from 'react';
 import { translateDOMAsync } from '@ingglish/core';
 
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+// Use custom proxy if configured, otherwise fall back to allorigins
+const CORS_PROXY = import.meta.env.VITE_CORS_PROXY_URL || 'https://api.allorigins.win/raw?url=';
 
 interface UseUrlTranslatorResult {
   url: string;
   setUrl: (url: string) => void;
   isLoading: boolean;
   error: string | null;
-  iframeRef: React.RefObject<HTMLIFrameElement | null>;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
   translateUrl: (targetUrl: string) => Promise<void>;
   clear: () => void;
 }
@@ -48,7 +49,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const translateUrl = useCallback(async (targetUrl: string): Promise<void> => {
     const iframe = iframeRef.current;
