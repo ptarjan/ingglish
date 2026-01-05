@@ -36,7 +36,7 @@ jobs:
       - name: Build website
         run: npm run build -w @ingglish/website
         env:
-          BASE_URL: /inglish/
+          BASE_URL: /ingglish/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
