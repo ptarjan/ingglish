@@ -136,10 +136,20 @@ export function translateText(text: string): string {
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (/^[a-zA-Z']+$/.test(token)) {
-        // Handle contractions by splitting on apostrophe
+        // Handle contractions - always preserve the apostrophe
         if (token.includes("'")) {
           const parts = token.split("'");
-          return parts.map((p) => (p ? translateWord(p) : '')).join("'");
+          // Try to translate each part, checking if the whole contraction is in dictionary
+          // for better pronunciation of parts like "n't"
+          return parts.map((p, i) => {
+            if (!p) return '';
+            // For the suffix part after apostrophe (like "t" in "don't"),
+            // try looking up common contraction endings
+            if (i > 0 && p.toLowerCase() === 't') {
+              return 't'; // "n't" contractions - keep as 't'
+            }
+            return translateWord(p);
+          }).join("'");
         }
         return translateWord(token);
       }

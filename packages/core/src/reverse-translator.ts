@@ -178,9 +178,18 @@ export function reverseTranslateWord(inglishWord: string): string[] {
  */
 export function reverseTranslateText(inglishText: string): string {
   return inglishText
-    .split(/(\b[a-zA-Z]+\b)/)
+    .split(/(\b[a-zA-Z']+\b)/)
     .map((token) => {
-      if (/^[a-zA-Z]+$/.test(token)) {
+      if (/^[a-zA-Z']+$/.test(token)) {
+        // Handle contractions - keep the apostrophe, translate parts
+        if (token.includes("'")) {
+          const parts = token.split("'");
+          return parts.map((p) => {
+            if (!p) return '';
+            const matches = reverseTranslateWord(p);
+            return matches[0] ?? p;
+          }).join("'");
+        }
         const matches = reverseTranslateWord(token);
         return matches[0] ?? token;
       }
