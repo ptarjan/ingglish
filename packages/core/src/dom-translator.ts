@@ -40,9 +40,21 @@ const DEFAULT_SKIP_TAGS = [
 ];
 
 /**
+ * Default CSS classes to skip during translation.
+ * Common conventions for marking content as non-translatable.
+ */
+const DEFAULT_SKIP_CLASSES = ['no-translate', 'notranslate'];
+
+/**
  * Attributes that may contain translatable text.
  */
-const TRANSLATABLE_ATTRIBUTES = ['title', 'alt', 'placeholder', 'aria-label', 'aria-description'];
+const TRANSLATABLE_ATTRIBUTES = [
+  'title',
+  'alt',
+  'placeholder',
+  'aria-label',
+  'aria-description',
+];
 
 /**
  * Checks if an element should be skipped during translation.
@@ -106,7 +118,7 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
 
   const {
     skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = [],
+    skipClasses = DEFAULT_SKIP_CLASSES,
     translateAttributes = true,
     onProgress,
   } = options;
@@ -215,7 +227,11 @@ export function observeAndTranslate(
     throw new Error('Dictionary not loaded. Call loadDictionary() first.');
   }
 
-  const { skipTags = DEFAULT_SKIP_TAGS, skipClasses = [], translateAttributes = true } = options;
+  const {
+    skipTags = DEFAULT_SKIP_TAGS,
+    skipClasses = DEFAULT_SKIP_CLASSES,
+    translateAttributes = true,
+  } = options;
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {

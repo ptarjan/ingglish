@@ -6,10 +6,6 @@ import type { TranslateMessage, TranslateResponse } from './types';
 
 let isTranslating = false;
 
-// Store reference to stop observing function (may be used in future for cleanup)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let stopObservingFn: (() => void) | null = null;
-
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener(
   (message: TranslateMessage, _sender, sendResponse: (response: TranslateResponse) => void) => {
@@ -42,25 +38,8 @@ async function translatePage(): Promise<void> {
   console.log('Ingglish: Starting translation...');
 
   try {
-    // Translate the current page (auto-loads dictionary)
+    // Translate the current page using defaults (auto-loads dictionary)
     await translateDOM(document.body, {
-      skipTags: [
-        'SCRIPT',
-        'STYLE',
-        'CODE',
-        'PRE',
-        'KBD',
-        'SAMP',
-        'VAR',
-        'NOSCRIPT',
-        'TEXTAREA',
-        'INPUT',
-        'SVG',
-        'MATH',
-        'CANVAS',
-      ],
-      skipClasses: ['no-translate', 'notranslate'],
-      translateAttributes: true,
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
           // eslint-disable-next-line no-console
@@ -69,29 +48,12 @@ async function translatePage(): Promise<void> {
       },
     });
 
-    // Set up observer for dynamic content (auto-loads dictionary)
-    stopObservingFn = await observeAndTranslate(document.body, {
-      skipTags: [
-        'SCRIPT',
-        'STYLE',
-        'CODE',
-        'PRE',
-        'KBD',
-        'SAMP',
-        'VAR',
-        'NOSCRIPT',
-        'TEXTAREA',
-        'INPUT',
-        'SVG',
-        'MATH',
-        'CANVAS',
-      ],
-      skipClasses: ['no-translate', 'notranslate'],
-      translateAttributes: true,
-    });
+    // Set up observer for dynamic content using defaults
+    await observeAndTranslate(document.body);
 
     // eslint-disable-next-line no-console
     console.log('Ingglish: Translation complete!');
+    isTranslating = false;
 
     // Add visual indicator
     addTranslationBadge();

@@ -90,7 +90,9 @@ function TextTranslator() {
     if (lastEdited !== 'english' || !deferredEnglish.trim()) return null;
     try {
       return translateText(deferredEnglish);
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('Translation failed:', err);
       return null;
     }
   }, [deferredEnglish, lastEdited]);
@@ -99,7 +101,9 @@ function TextTranslator() {
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) return null;
     try {
       return reverseTranslateText(deferredIngglish);
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('Reverse translation failed:', err);
       return null;
     }
   }, [deferredIngglish, lastEdited]);
@@ -131,7 +135,7 @@ function TextTranslator() {
       try {
         await navigator.clipboard.writeText(text);
       } catch {
-        // Silently fail
+        // Clipboard can fail in non-secure contexts or if permission denied - expected
       }
     }
   }, [displayEnglish]);
@@ -142,7 +146,7 @@ function TextTranslator() {
       try {
         await navigator.clipboard.writeText(text);
       } catch {
-        // Silently fail
+        // Clipboard can fail in non-secure contexts or if permission denied - expected
       }
     }
   }, [displayIngglish]);

@@ -53,9 +53,6 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
-    const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
-    if (!iframeDoc) return;
-
     setIsLoading(true);
     setError(null);
 
@@ -70,17 +67,23 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
 
       const html = injectBaseTag(await response.text(), parsedUrl.origin);
 
-      // Write HTML to iframe
-      iframeDoc.open();
-      iframeDoc.write(html); // eslint-disable-line @typescript-eslint/no-deprecated
-      iframeDoc.close();
+      // Load HTML into iframe using srcdoc and wait for load event
+      await new Promise<void>((resolve) => {
+        const onLoad = () => {
+          iframe.removeEventListener('load', onLoad);
+          resolve();
+        };
+        iframe.addEventListener('load', onLoad);
+        iframe.srcdoc = html;
+      });
 
-      // Wait for content to load
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const iframeDoc = iframe.contentDocument;
+      if (!iframeDoc?.body) {
+        throw new Error('Failed to access iframe content');
+      }
 
       // Translate the DOM
       await translateDOM(iframeDoc.body, {
-        skipTags: ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'SVG', 'MATH'],
         translateAttributes: true,
       });
 
@@ -121,12 +124,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
 
     const iframe = iframeRef.current;
     if (iframe) {
-      const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
-      if (iframeDoc) {
-        iframeDoc.open();
-        iframeDoc.write(''); // eslint-disable-line @typescript-eslint/no-deprecated
-        iframeDoc.close();
-      }
+      iframe.srcdoc = '';
     }
   }, []);
 

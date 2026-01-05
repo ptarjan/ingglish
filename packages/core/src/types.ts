@@ -19,19 +19,20 @@ export type CMUDictionary = Record<string, string>;
  */
 export interface DOMTranslatorOptions {
   /**
-   * HTML tag names to skip (e.g., ['SCRIPT', 'STYLE', 'CODE']).
-   * @default ['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'SVG', 'MATH', 'CANVAS', 'TEMPLATE', 'TEXTAREA', 'INPUT', 'SELECT']
+   * HTML tag names to skip during translation.
+   * @default ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'KBD', 'SAMP', 'VAR', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SVG', 'MATH', 'CANVAS']
    */
   skipTags?: string[];
 
   /**
-   * CSS class names to skip.
+   * CSS class names to skip during translation.
+   * @default ['no-translate', 'notranslate']
    */
   skipClasses?: string[];
 
   /**
-   * Whether to translate attributes like title, alt, placeholder.
-   * @default false
+   * Whether to translate attributes like title, alt, placeholder, aria-label.
+   * @default true
    */
   translateAttributes?: boolean;
 
