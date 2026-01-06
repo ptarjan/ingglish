@@ -119,92 +119,95 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const translateUrl = useCallback(async (targetUrl: string): Promise<void> => {
-    const iframe = iframeRef.current;
-    if (!iframe) {
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const parsedUrl = new URL(targetUrl);
-      const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
-
-      const response = await fetch(proxyUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status}`);
+  const translateUrl = useCallback(
+    async (targetUrl: string): Promise<void> => {
+      const iframe = iframeRef.current;
+      if (!iframe) {
+        return;
       }
 
-      const rawHtml = await response.text();
+      setIsLoading(true);
+      setError(null);
 
-      // Check for bot protection pages before processing
-      const botProtectionError = detectBotProtection(rawHtml);
-      if (botProtectionError !== null) {
-        throw new Error(botProtectionError);
-      }
+      try {
+        const parsedUrl = new URL(targetUrl);
+        const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
 
-      const html = injectBaseTag(rawHtml, getBaseUrl(parsedUrl.href));
-
-      // Load HTML into iframe using srcdoc and wait for load event
-      await new Promise<void>((resolve) => {
-        const onLoad = () => {
-          iframe.removeEventListener('load', onLoad);
-          resolve();
-        };
-        iframe.addEventListener('load', onLoad);
-        iframe.srcdoc = html;
-      });
-
-      const iframeDoc = iframe.contentDocument;
-      if (!iframeDoc?.body) {
-        throw new Error('Failed to access iframe content');
-      }
-
-      // Translate the DOM
-      await translateDOM(iframeDoc.body, {
-        translateAttributes: true,
-      });
-
-      setHasContent(true);
-
-      // Intercept link clicks for navigation
-      iframeDoc.addEventListener('click', (e: MouseEvent) => {
-        const anchor = (e.target as HTMLElement).closest('a');
-        if (!anchor) {
-          return;
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.status}`);
         }
 
-        const href = anchor.getAttribute('href');
-        if (href === null || href === '' || shouldSkipUrl(href)) {
-          return;
+        const rawHtml = await response.text();
+
+        // Check for bot protection pages before processing
+        const botProtectionError = detectBotProtection(rawHtml);
+        if (botProtectionError !== null) {
+          throw new Error(botProtectionError);
         }
 
-        e.preventDefault();
-        e.stopPropagation();
+        const html = injectBaseTag(rawHtml, getBaseUrl(parsedUrl.href));
 
-        let newUrl: string;
-        try {
-          newUrl = new URL(href, parsedUrl.href).href;
-        } catch {
-          return;
-        }
-
-        setUrl(newUrl);
-        onNavigate?.(newUrl);
-        translateUrl(newUrl).catch((err: unknown) => {
-          // Error is already handled in translateUrl, but log for debugging
-          // eslint-disable-next-line no-console
-          console.error('Navigation translation failed:', err);
+        // Load HTML into iframe using srcdoc and wait for load event
+        await new Promise<void>((resolve) => {
+          const onLoad = () => {
+            iframe.removeEventListener('load', onLoad);
+            resolve();
+          };
+          iframe.addEventListener('load', onLoad);
+          iframe.srcdoc = html;
         });
-      });
-    } catch (err) {
-      setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onNavigate]);
+
+        const iframeDoc = iframe.contentDocument;
+        if (!iframeDoc?.body) {
+          throw new Error('Failed to access iframe content');
+        }
+
+        // Translate the DOM
+        await translateDOM(iframeDoc.body, {
+          translateAttributes: true,
+        });
+
+        setHasContent(true);
+
+        // Intercept link clicks for navigation
+        iframeDoc.addEventListener('click', (e: MouseEvent) => {
+          const anchor = (e.target as HTMLElement).closest('a');
+          if (!anchor) {
+            return;
+          }
+
+          const href = anchor.getAttribute('href');
+          if (href === null || href === '' || shouldSkipUrl(href)) {
+            return;
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          let newUrl: string;
+          try {
+            newUrl = new URL(href, parsedUrl.href).href;
+          } catch {
+            return;
+          }
+
+          setUrl(newUrl);
+          onNavigate?.(newUrl);
+          translateUrl(newUrl).catch((err: unknown) => {
+            // Error is already handled in translateUrl, but log for debugging
+            // eslint-disable-next-line no-console
+            console.error('Navigation translation failed:', err);
+          });
+        });
+      } catch (err) {
+        setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onNavigate]
+  );
 
   const clear = useCallback(() => {
     setUrl('');

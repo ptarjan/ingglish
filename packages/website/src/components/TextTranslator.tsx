@@ -288,7 +288,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -181,8 +181,7 @@ describe('detectBotProtection', () => {
   });
 
   it('detects JavaScript verification pages', () => {
-    const html =
-      "<p>JavaScript is disabled</p><p>we need to verify that you're not a robot</p>";
+    const html = "<p>JavaScript is disabled</p><p>we need to verify that you're not a robot</p>";
     expect(detectBotProtection(html)).toContain('JavaScript verification');
   });
 

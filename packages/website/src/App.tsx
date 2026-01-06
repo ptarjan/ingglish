@@ -118,19 +118,25 @@ function App() {
     window.history.replaceState(null, '', url.toString());
   }, []);
 
-  const handleShareUrl = useCallback((targetUrl: string) => {
-    const shareUrl = buildShareUrl(targetUrl);
-    navigator.clipboard.writeText(shareUrl).catch(() => {
-      // Fallback: clipboard might not be available
-    });
-    window.history.replaceState(null, '', shareUrl);
-  }, [buildShareUrl]);
+  const handleShareUrl = useCallback(
+    (targetUrl: string) => {
+      const shareUrl = buildShareUrl(targetUrl);
+      navigator.clipboard.writeText(shareUrl).catch(() => {
+        // Fallback: clipboard might not be available
+      });
+      window.history.replaceState(null, '', shareUrl);
+    },
+    [buildShareUrl]
+  );
 
   // Update browser URL without copying to clipboard (for navigation)
-  const handleUrlNavigate = useCallback((targetUrl: string) => {
-    const shareUrl = buildShareUrl(targetUrl);
-    window.history.replaceState(null, '', shareUrl);
-  }, [buildShareUrl]);
+  const handleUrlNavigate = useCallback(
+    (targetUrl: string) => {
+      const shareUrl = buildShareUrl(targetUrl);
+      window.history.replaceState(null, '', shareUrl);
+    },
+    [buildShareUrl]
+  );
 
   useEffect(() => {
     // Preload dictionary by calling translate once
