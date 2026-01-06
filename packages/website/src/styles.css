@@ -536,13 +536,11 @@ body {
 
 .guide-intro a {
   color: var(--color-primary);
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 
 .guide-intro a:hover {
-  color: var(--color-primary-hover);
+  text-decoration: underline;
 }
 
 .guide-section {
