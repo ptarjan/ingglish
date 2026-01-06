@@ -10,7 +10,7 @@ const EXAMPLE_URLS = [
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
   { name: 'Hacker News', url: 'https://news.ycombinator.com' },
   { name: 'NPR', url: 'https://text.npr.org' },
-  { name: 'BBC', url: 'https://bbc.com' },
+  { name: 'Moby Dick', url: 'https://www.gutenberg.org/cache/epub/2701/pg2701-images.html' },
   { name: 'Aesop Fables', url: 'https://www.gutenberg.org/cache/epub/21/pg21-images.html' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
 ];
