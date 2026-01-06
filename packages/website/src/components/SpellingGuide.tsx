@@ -161,6 +161,40 @@ function SpellingGuide() {
           </li>
         </ul>
       </div>
+
+      <div className="guide-section">
+        <h3>Unused Letters</h3>
+        <p>
+          These English letters are not used in Ingglish because they are redundant - their sounds
+          are already covered by other letters:
+        </p>
+        <table className="mapping-table">
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Replaced By</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="spelling-cell">c</td>
+              <td className="examples-cell">k or s</td>
+              <td className="examples-cell">cat → kat, city → siti</td>
+            </tr>
+            <tr>
+              <td className="spelling-cell">q</td>
+              <td className="examples-cell">k or kw</td>
+              <td className="examples-cell">queen → kween</td>
+            </tr>
+            <tr>
+              <td className="spelling-cell">x</td>
+              <td className="examples-cell">ks or z</td>
+              <td className="examples-cell">box → boks, xylophone → zailufown</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
