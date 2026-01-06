@@ -136,7 +136,15 @@ function SpellingGuide() {
           >
             spelling reforms
           </a>{' '}
-          have been proposed over the centuries—from the{' '}
+          have been proposed over the centuries—from{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Benjamin Franklin's phonetic alphabet</strong>
+          </a>{' '}
+          (1768) to the{' '}
           <a
             href="https://en.wikipedia.org/wiki/Shavian_alphabet"
             target="_blank"
@@ -144,7 +152,7 @@ function SpellingGuide() {
           >
             <strong>Shavian alphabet</strong>
           </a>{' '}
-          (48 entirely new characters) to{' '}
+          (48 new characters) to{' '}
           <a
             href="https://en.wikipedia.org/wiki/Cut_Spelling"
             target="_blank"
@@ -152,12 +160,16 @@ function SpellingGuide() {
           >
             <strong>Cut Spelling</strong>
           </a>{' '}
-          (removing silent letters) to{' '}
-          <a href="https://en.wikipedia.org/wiki/Unifon" target="_blank" rel="noopener noreferrer">
-            <strong>Unifon</strong>
+          (removing silent letters).{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Noah_Webster#Spelling_reform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Noah Webster</strong>
           </a>{' '}
-          (extended Latin alphabet). Most fail because they're either too radical to read or too
-          conservative to help.
+          succeeded in simplifying American spelling (color, center, dialog), but most reforms fail
+          because they're either too radical to read or too conservative to help.
         </p>
         <p>
           Ingglish takes a practical middle path: it uses the{' '}
