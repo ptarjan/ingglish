@@ -18,9 +18,12 @@ describe('case-utils', () => {
       expect(detectCasePattern('World')).toBe('capitalized');
     });
 
-    it('should handle single characters', () => {
+    it('should handle single characters as lowercase', () => {
+      // Single chars always return 'lower' since only "I" is grammatically
+      // capitalized in English, and Ingglish doesn't preserve that convention
       expect(detectCasePattern('a')).toBe('lower');
-      expect(detectCasePattern('A')).toBe('upper');
+      expect(detectCasePattern('A')).toBe('lower');
+      expect(detectCasePattern('I')).toBe('lower');
     });
 
     it('should treat mixed case as lowercase', () => {

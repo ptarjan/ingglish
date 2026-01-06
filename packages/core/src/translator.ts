@@ -134,9 +134,13 @@ function translateContraction(token: string): string {
     // Found the whole contraction - translate it as a unit
     const translated = phonemesToInglish(phonemes);
 
-    // Preserve case
-    const isAllCaps = token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
-    const isCapitalized = /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
+    // Preserve case, but not for I-contractions (I'm, I'll, I've, I'd)
+    // since "I" is only capitalized due to English grammar rules
+    const isIContraction = /^I'/i.test(token);
+    const isAllCaps =
+      !isIContraction && token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
+    const isCapitalized =
+      !isIContraction && /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
 
     if (isAllCaps) {
       return translated.toUpperCase();

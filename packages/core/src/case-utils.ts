@@ -6,10 +6,12 @@ export type CasePattern = 'lower' | 'upper' | 'capitalized';
 
 /**
  * Detects the case pattern of a word.
+ * Single characters always return 'lower' since only "I" is grammatically
+ * capitalized in English, and Ingglish doesn't preserve that convention.
  */
 export function detectCasePattern(word: string): CasePattern {
   if (word.length <= 1) {
-    return word === word.toUpperCase() ? 'upper' : 'lower';
+    return 'lower';
   }
 
   if (word === word.toUpperCase()) {
