@@ -175,10 +175,16 @@ function App() {
         {getThemeIcon()}
       </button>
       <header className="header">
-        <div className="header-title">
+        <button
+          className="header-title"
+          onClick={() => {
+            window.history.pushState(null, '', '/');
+            setActiveTab('text');
+          }}
+        >
           <img src="logo.svg" alt="Ingglish logo" className="logo" />
           <h1>Ingglish</h1>
-        </div>
+        </button>
         <p className="subtitle">
           <button
             className="subtitle-link"
