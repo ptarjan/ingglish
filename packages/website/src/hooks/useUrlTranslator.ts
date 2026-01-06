@@ -35,10 +35,11 @@ function escapeHtmlAttr(text: string): string {
 
 /**
  * Injects a base tag into HTML so relative URLs resolve correctly.
+ * Uses the full URL path (up to last slash) so relative links work properly.
  */
-export function injectBaseTag(html: string, origin: string): string {
-  const safeOrigin = escapeHtmlAttr(origin);
-  const baseTag = `<base href="${safeOrigin}/">`;
+export function injectBaseTag(html: string, baseUrl: string): string {
+  const safeBaseUrl = escapeHtmlAttr(baseUrl);
+  const baseTag = `<base href="${safeBaseUrl}">`;
 
   if (html.includes('<head>')) {
     return html.replace('<head>', `<head>${baseTag}`);
@@ -47,6 +48,24 @@ export function injectBaseTag(html: string, origin: string): string {
     return html.replace('<html>', `<html><head>${baseTag}</head>`);
   }
   return baseTag + html;
+}
+
+/**
+ * Gets the base URL for a page (URL up to and including the last slash).
+ * For https://example.com/path/page.html → https://example.com/path/
+ * For https://example.com/path/ → https://example.com/path/
+ */
+export function getBaseUrl(url: string): string {
+  const parsed = new URL(url);
+  const pathParts = parsed.pathname.split('/');
+  // If pathname ends with slash or has no extension, keep it as-is
+  // Otherwise, remove the filename part
+  if (parsed.pathname.endsWith('/') || !pathParts[pathParts.length - 1].includes('.')) {
+    return parsed.origin + parsed.pathname + (parsed.pathname.endsWith('/') ? '' : '/');
+  }
+  // Remove filename, keep directory
+  pathParts.pop();
+  return parsed.origin + pathParts.join('/') + '/';
 }
 
 /**
@@ -81,7 +100,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
 
-      const html = injectBaseTag(await response.text(), parsedUrl.origin);
+      const html = injectBaseTag(await response.text(), getBaseUrl(parsedUrl.href));
 
       // Load HTML into iframe using srcdoc and wait for load event
       await new Promise<void>((resolve) => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeUrl, shouldSkipUrl, injectBaseTag } from './useUrlTranslator';
+import { normalizeUrl, shouldSkipUrl, injectBaseTag, getBaseUrl } from './useUrlTranslator';
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {
@@ -67,54 +67,82 @@ describe('shouldSkipUrl', () => {
   });
 });
 
+describe('getBaseUrl', () => {
+  it('handles URLs ending with slash', () => {
+    expect(getBaseUrl('https://example.com/')).toBe('https://example.com/');
+    expect(getBaseUrl('https://example.com/path/')).toBe('https://example.com/path/');
+    expect(getBaseUrl('https://example.com/deep/path/')).toBe('https://example.com/deep/path/');
+  });
+
+  it('handles URLs with filenames', () => {
+    expect(getBaseUrl('https://example.com/page.html')).toBe('https://example.com/');
+    expect(getBaseUrl('https://example.com/path/page.html')).toBe('https://example.com/path/');
+    expect(getBaseUrl('https://example.com/deep/path/index.php')).toBe(
+      'https://example.com/deep/path/'
+    );
+  });
+
+  it('handles URLs without extension as directories', () => {
+    expect(getBaseUrl('https://example.com/nerdiversary')).toBe(
+      'https://example.com/nerdiversary/'
+    );
+    expect(getBaseUrl('https://example.com/path/segment')).toBe(
+      'https://example.com/path/segment/'
+    );
+  });
+
+  it('handles root URLs', () => {
+    expect(getBaseUrl('https://example.com')).toBe('https://example.com/');
+  });
+
+  it('handles URLs with ports', () => {
+    expect(getBaseUrl('http://localhost:3000/path/')).toBe('http://localhost:3000/path/');
+    expect(getBaseUrl('http://localhost:3000/page.html')).toBe('http://localhost:3000/');
+  });
+});
+
 describe('injectBaseTag', () => {
-  const origin = 'https://example.com';
+  const baseUrl = 'https://example.com/path/';
 
   it('injects base tag after <head> when present', () => {
     const html = '<html><head><title>Test</title></head><body></body></html>';
-    const result = injectBaseTag(html, origin);
+    const result = injectBaseTag(html, baseUrl);
     expect(result).toBe(
-      '<html><head><base href="https://example.com/"><title>Test</title></head><body></body></html>'
+      '<html><head><base href="https://example.com/path/"><title>Test</title></head><body></body></html>'
     );
   });
 
   it('creates head and injects base tag when only <html> is present', () => {
     const html = '<html><body>Content</body></html>';
-    const result = injectBaseTag(html, origin);
+    const result = injectBaseTag(html, baseUrl);
     expect(result).toBe(
-      '<html><head><base href="https://example.com/"></head><body>Content</body></html>'
+      '<html><head><base href="https://example.com/path/"></head><body>Content</body></html>'
     );
   });
 
   it('prepends base tag when no html or head tags present', () => {
     const html = '<body>Content</body>';
-    const result = injectBaseTag(html, origin);
-    expect(result).toBe('<base href="https://example.com/"><body>Content</body>');
+    const result = injectBaseTag(html, baseUrl);
+    expect(result).toBe('<base href="https://example.com/path/"><body>Content</body>');
   });
 
   it('handles empty HTML', () => {
     const html = '';
-    const result = injectBaseTag(html, origin);
-    expect(result).toBe('<base href="https://example.com/">');
+    const result = injectBaseTag(html, baseUrl);
+    expect(result).toBe('<base href="https://example.com/path/">');
   });
 
   it('handles HTML with uppercase tags', () => {
     // Note: current implementation is case-sensitive
     const html = '<HTML><HEAD></HEAD></HTML>';
-    const result = injectBaseTag(html, origin);
+    const result = injectBaseTag(html, baseUrl);
     // Since it looks for lowercase, it prepends
-    expect(result).toBe('<base href="https://example.com/"><HTML><HEAD></HEAD></HTML>');
+    expect(result).toBe('<base href="https://example.com/path/"><HTML><HEAD></HEAD></HTML>');
   });
 
-  it('handles origin with trailing path (removes it)', () => {
-    const htmlWithHead = '<html><head></head></html>';
-    const result = injectBaseTag(htmlWithHead, 'https://example.com');
-    expect(result).toContain('href="https://example.com/"');
-  });
-
-  it('handles origin with port', () => {
+  it('handles base URL with port', () => {
     const html = '<html><head></head></html>';
-    const result = injectBaseTag(html, 'http://localhost:3000');
+    const result = injectBaseTag(html, 'http://localhost:3000/');
     expect(result).toContain('href="http://localhost:3000/"');
   });
 });
