@@ -19,6 +19,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run --no-color",
     "test:watch": "vitest",
+    "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
     "prepublishOnly": "npm run build"
   },

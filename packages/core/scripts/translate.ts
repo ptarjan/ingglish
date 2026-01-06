@@ -1,10 +1,11 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env npx vite-node
 /**
  * CLI tool to translate words/text to Ingglish and back.
- * Usage: npx tsx scripts/translate.ts "text to translate"
- *        npx tsx scripts/translate.ts -r "ingglish text"  (reverse)
+ * Usage: npm run translate "text to translate"
+ *        npm run translate -- -r "ingglish text"  (reverse)
  */
-import { loadDictionary, translateText, lookupPronunciation, reverseTranslateText } from '../dist/index.mjs';
+import { loadDictionary, translateText, lookupPronunciation } from '../src/translator.js';
+import { reverseTranslateText } from '../src/reverse-translator.js';
 
 async function main() {
   await loadDictionary();
@@ -14,8 +15,8 @@ async function main() {
   const text = reverse ? args.slice(1).join(' ') : args.join(' ');
 
   if (!text) {
-    console.log('Usage: npx tsx scripts/translate.ts "text to translate"');
-    console.log('       npx tsx scripts/translate.ts -r "ingglish text"');
+    console.log('Usage: npm run translate "text to translate"');
+    console.log('       npm run translate -- -r "ingglish text"');
     process.exit(1);
   }
 
