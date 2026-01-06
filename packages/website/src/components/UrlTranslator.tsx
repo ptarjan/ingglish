@@ -12,6 +12,7 @@ const EXAMPLE_URLS = [
   { name: 'NPR', url: 'https://text.npr.org' },
   { name: 'NY Times', url: 'https://www.nytimes.com' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
+  { name: 'GitHub', url: 'https://github.com/ptarjan/ingglish' },
 ];
 
 interface UrlTranslatorProps {
