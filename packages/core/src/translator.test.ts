@@ -148,4 +148,26 @@ describe('translator', () => {
       expect(result).toContain('?');
     });
   });
+
+  describe('contraction edge cases', () => {
+    it('should handle contractions with apostrophe parts', () => {
+      // Test contractions that go through the fallback path
+      // where parts are translated separately
+      const result = translateText("y'all");
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle possessives correctly', () => {
+      // John's is in the dictionary as a complete word
+      const result = translateText("John's");
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle multiple apostrophes', () => {
+      const result = translateText("'twas");
+      expect(result).toBeDefined();
+    });
+  });
 });

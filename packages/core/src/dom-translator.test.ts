@@ -3,7 +3,13 @@
  */
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { loadDictionary } from './translator';
-import { translateDOM, translateDOMAsync, skipElement, unskipElement } from './dom-translator';
+import {
+  translateDOM,
+  translateDOMAsync,
+  skipElement,
+  unskipElement,
+  observeAndTranslate,
+} from './dom-translator';
 
 describe('dom-translator', () => {
   beforeAll(async () => {
@@ -132,6 +138,94 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<pre><span>Hello</span></pre>';
       translateDOM(document.body);
       expect(document.querySelector('span')?.textContent).toBe('Hello');
+    });
+  });
+
+  describe('observeAndTranslate', () => {
+    it('should return a stop function', () => {
+      const stop = observeAndTranslate(document.body);
+      expect(typeof stop).toBe('function');
+      stop();
+    });
+
+    it('should translate newly added text nodes', async () => {
+      const stop = observeAndTranslate(document.body);
+
+      // Add a new element with text
+      const p = document.createElement('p');
+      p.textContent = 'Hello';
+      document.body.appendChild(p);
+
+      // Wait for MutationObserver to process
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(p.textContent).toBe('Hulo');
+      stop();
+    });
+
+    it('should translate newly added element nodes', async () => {
+      const stop = observeAndTranslate(document.body);
+
+      // Add a new element with nested text
+      const div = document.createElement('div');
+      div.innerHTML = '<span>World</span>';
+      document.body.appendChild(div);
+
+      // Wait for MutationObserver to process
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(div.querySelector('span')?.textContent).toBe('Werld');
+      stop();
+    });
+
+    it('should skip elements inside skipped tags', async () => {
+      const stop = observeAndTranslate(document.body);
+
+      // Add a code element that should be skipped
+      const code = document.createElement('code');
+      code.textContent = 'Hello';
+      document.body.appendChild(code);
+
+      // Wait for MutationObserver to process
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(code.textContent).toBe('Hello');
+      stop();
+    });
+
+    it('should stop observing when stop function is called', async () => {
+      const stop = observeAndTranslate(document.body);
+      stop();
+
+      // Add a new element after stopping
+      const p = document.createElement('p');
+      p.textContent = 'Hello';
+      document.body.appendChild(p);
+
+      // Wait a bit
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      // Should not be translated since observer was stopped
+      expect(p.textContent).toBe('Hello');
+    });
+
+    it('should translate character data changes', async () => {
+      // First add an element
+      const p = document.createElement('p');
+      p.textContent = 'Test';
+      document.body.appendChild(p);
+
+      // Now start observing
+      const stop = observeAndTranslate(document.body);
+
+      // Change the text content
+      p.textContent = 'Hello';
+
+      // Wait for MutationObserver to process
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(p.textContent).toBe('Hulo');
+      stop();
     });
   });
 });
