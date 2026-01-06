@@ -530,6 +530,10 @@ body {
   line-height: 1.7;
 }
 
+.guide-intro p + p {
+  margin-top: 1rem;
+}
+
 .guide-intro a {
   color: var(--color-primary);
   text-decoration: underline;
