@@ -11,7 +11,7 @@ const EXAMPLE_URLS = [
   { name: 'Hacker News', url: 'https://news.ycombinator.com' },
   { name: 'NPR', url: 'https://text.npr.org' },
   { name: 'BBC', url: 'https://bbc.com' },
-  { name: 'CNN', url: 'https://cnn.com' },
+  { name: 'Aesop Fables', url: 'https://www.gutenberg.org/cache/epub/21/pg21-images.html' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
 ];
 
