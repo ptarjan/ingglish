@@ -238,9 +238,7 @@ function App() {
           <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}
-          (134,000+ words) to convert English words to their phonetic spellings.
-        </p>
-        <p>
+          (134,000+ words) to convert English words to their phonetic spellings.{' '}
           <a href="https://github.com/ptarjan/ingglish" target="_blank" rel="noopener noreferrer">
             View on GitHub
           </a>
