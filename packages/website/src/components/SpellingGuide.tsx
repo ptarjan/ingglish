@@ -128,7 +128,15 @@ function SpellingGuide() {
       <div className="guide-intro">
         <h2>How Ingglish Works</h2>
         <p>
-          Many spelling reforms have been proposed over the centuries—from the{' '}
+          Many{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/English-language_spelling_reform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            spelling reforms
+          </a>{' '}
+          have been proposed over the centuries—from the{' '}
           <a
             href="https://en.wikipedia.org/wiki/Shavian_alphabet"
             target="_blank"
