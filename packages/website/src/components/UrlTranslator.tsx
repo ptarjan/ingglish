@@ -69,7 +69,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   );
 
   const handleShare = useCallback(() => {
-    if (onShare && url.trim()) {
+    if (onShare !== undefined && url.trim().length > 0) {
       onShare(url);
       setCopiedShare(true);
       setTimeout(() => {
@@ -105,7 +105,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
             type="button"
             onClick={handleShare}
             className="btn-secondary"
-            disabled={!hasContent}
+            disabled={url.trim().length === 0}
           >
             {copiedShare ? 'Copied!' : 'Share'}
           </button>
