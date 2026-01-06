@@ -128,6 +128,29 @@ npm run build
 npm run dev -w @ingglish/website
 ```
 
+### CLI Scripts
+
+The core package includes useful CLI scripts for translation and debugging:
+
+```bash
+cd packages/core
+
+# Translate text to Ingglish (shows word-by-word breakdown)
+npm run translate "I'm going to the store"
+# Output:
+# ✓ "I'm" -> "aim" -> "i'm"
+# ✓ "going" -> "going" -> "going"
+# Full translation: aim going too dhu stawr
+
+# Reverse translate Ingglish back to English
+npm run translate -- -r "aim going too dhu stawr"
+# Output: i'm going to the store
+
+# Debug round-trip issues with detailed phoneme analysis
+npm run debug:roundtrip "beautiful"
+# Shows: CMU phonemes, translation steps, comparison
+```
+
 ## How Unknown Words Are Handled
 
 For words not in the CMU dictionary, Ingglish uses:
