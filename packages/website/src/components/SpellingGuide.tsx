@@ -175,8 +175,9 @@ function SpellingGuide() {
           Ingglish takes a practical middle path: it uses the{' '}
           <strong>familiar Latin alphabet</strong> with a <strong>one-to-one mapping</strong>{' '}
           between sounds and spellings. Each letter or letter combination always makes the same
-          sound. You can read any word aloud correctly without memorization—and you can start
-          reading Ingglish immediately without learning a new alphabet.
+          sound. You can read any word aloud correctly without memorization, start reading
+          immediately without learning a new alphabet, and type on any standard keyboard without
+          diacritics or special characters.
         </p>
       </div>
 
