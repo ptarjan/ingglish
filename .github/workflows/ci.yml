@@ -25,14 +25,14 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Build
+        run: npm run build
+
       - name: Lint
         run: npm run lint
 
       - name: Check formatting
         run: npm run format:check
-
-      - name: Build
-        run: npm run build
 
       - name: Test
         run: npm test
