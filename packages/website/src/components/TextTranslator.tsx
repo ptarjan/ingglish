@@ -79,8 +79,13 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
   );
 }
 
-function TextTranslator() {
-  const [englishText, setEnglishText] = useState('');
+interface TextTranslatorProps {
+  initialText?: string;
+  onShare?: (text: string) => void;
+}
+
+function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
+  const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
   const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
@@ -164,6 +169,12 @@ function TextTranslator() {
     setIngglishText('');
   }, []);
 
+  const handleShare = useCallback(() => {
+    if (onShare && displayEnglish.trim()) {
+      onShare(displayEnglish);
+    }
+  }, [onShare, displayEnglish]);
+
   const hasContent = displayEnglish.trim() || displayIngglish.trim();
 
   return (
@@ -222,7 +233,7 @@ function TextTranslator() {
                 setLastEdited('ingglish');
               }
             }}
-            placeholder="Type Ingglish text here..."
+            placeholder="Taip Ingglish tekst heer..."
             className="text-input"
             spellCheck={false}
           />
@@ -255,6 +266,11 @@ function TextTranslator() {
         <button onClick={handleClear} className="btn-secondary">
           Clear All
         </button>
+        {onShare && (
+          <button onClick={handleShare} className="btn-secondary" disabled={!hasContent}>
+            Share
+          </button>
+        )}
       </div>
     </div>
   );

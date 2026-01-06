@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { translate } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
@@ -11,10 +11,30 @@ function getSystemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function getTabFromHash(): Tab {
+  const hash = window.location.hash.slice(1);
+  if (hash === 'url' || hash === 'guide') {
+    return hash;
+  }
+  return 'text';
+}
+
+function getInitialText(): string {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('text') ?? '';
+}
+
+function getInitialUrl(): string {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('url') ?? '';
+}
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('text');
+  const [activeTab, setActiveTab] = useState<Tab>(getTabFromHash);
+  const [initialText] = useState(getInitialText);
+  const [initialUrl] = useState(getInitialUrl);
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem('themeMode');
     return (saved as ThemeMode) || 'auto';
@@ -60,6 +80,45 @@ function App() {
     }
     return '🌙';
   };
+
+  // Sync tab with URL hash
+  useEffect(() => {
+    window.location.hash = activeTab === 'text' ? '' : activeTab;
+  }, [activeTab]);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handleHashChange = () => {
+      setActiveTab(getTabFromHash());
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+  // Share functions
+  const handleShareText = useCallback((text: string) => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('text', text);
+    navigator.clipboard.writeText(url.toString()).catch(() => {
+      // Fallback: just update URL
+    });
+    window.history.replaceState(null, '', url.toString());
+  }, []);
+
+  const handleShareUrl = useCallback((targetUrl: string) => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = 'url';
+    url.searchParams.set('url', targetUrl);
+    navigator.clipboard.writeText(url.toString()).catch(() => {
+      // Fallback: just update URL
+    });
+    window.history.replaceState(null, '', url.toString());
+  }, []);
 
   useEffect(() => {
     // Preload dictionary by calling translate once
@@ -142,8 +201,10 @@ function App() {
       </nav>
 
       <main className="main">
-        {activeTab === 'text' && <TextTranslator />}
-        {activeTab === 'url' && <UrlTranslator />}
+        {activeTab === 'text' && (
+          <TextTranslator initialText={initialText} onShare={handleShareText} />
+        )}
+        {activeTab === 'url' && <UrlTranslator initialUrl={initialUrl} onShare={handleShareUrl} />}
         {activeTab === 'guide' && <SpellingGuide />}
       </main>
 

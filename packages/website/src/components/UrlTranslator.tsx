@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 
 const EXAMPLE_URLS = [
@@ -15,10 +15,28 @@ const EXAMPLE_URLS = [
   { name: 'Reddit', url: 'https://old.reddit.com' },
 ];
 
-function UrlTranslator() {
+interface UrlTranslatorProps {
+  initialUrl?: string;
+  onShare?: (url: string) => void;
+}
+
+function UrlTranslator({ initialUrl = '', onShare }: UrlTranslatorProps) {
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
     useUrlTranslator();
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Auto-translate if initialUrl is provided
+  useEffect(() => {
+    if (initialUrl.length > 0) {
+      const normalized = normalizeUrl(initialUrl);
+      if (normalized !== null) {
+        setUrl(normalized);
+        translateUrl(normalized).catch(() => {
+          // Error handled in hook
+        });
+      }
+    }
+  }, [initialUrl, setUrl, translateUrl]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -46,6 +64,12 @@ function UrlTranslator() {
     [setUrl]
   );
 
+  const handleShare = useCallback(() => {
+    if (onShare && url.trim()) {
+      onShare(url);
+    }
+  }, [onShare, url]);
+
   return (
     <div className="url-translator">
       <form ref={formRef} onSubmit={handleSubmit} className="url-form">
@@ -68,6 +92,16 @@ function UrlTranslator() {
         <button type="button" onClick={clear} className="btn-secondary">
           Clear
         </button>
+        {onShare && (
+          <button
+            type="button"
+            onClick={handleShare}
+            className="btn-secondary"
+            disabled={!hasContent}
+          >
+            Share
+          </button>
+        )}
       </form>
 
       {error !== null && <div className="error-message">{error}</div>}
