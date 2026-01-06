@@ -39,7 +39,7 @@ test.describe('Text Translator', () => {
   test('clears text with clear button', async ({ page }) => {
     const englishInput = page.locator('.text-input').first();
     await englishInput.fill('test');
-    await page.click('button:has-text("Clear All")');
+    await page.locator('.input-section').first().locator('button:has-text("Clear")').click();
     await expect(englishInput).toBeEmpty();
   });
 
