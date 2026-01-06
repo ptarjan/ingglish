@@ -92,10 +92,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  text-decoration: none;
 }
 
 .subtitle-link {

@@ -176,16 +176,10 @@ function App() {
       </button>
       <header className="header">
         <div className="header-title">
-          <button
-            className="logo-link"
-            onClick={() => {
-              window.history.pushState(null, '', '/');
-              setActiveTab('text');
-            }}
-          >
+          <a className="logo-link" href="https://paultarjan.com/ingglish/">
             <img src="logo.svg" alt="Ingglish logo" className="logo" />
             <h1>Ingglish</h1>
-          </button>
+          </a>
           <button
             className="subtitle-link"
             onClick={() => {
