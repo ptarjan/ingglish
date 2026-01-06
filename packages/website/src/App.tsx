@@ -175,17 +175,26 @@ function App() {
         {getThemeIcon()}
       </button>
       <header className="header">
-        <button
-          className="header-title"
-          onClick={() => {
-            window.history.pushState(null, '', '/');
-            setActiveTab('text');
-          }}
-        >
-          <img src="logo.svg" alt="Ingglish logo" className="logo" />
-          <h1>Ingglish</h1>
-          <span className="subtitle">— Phonetic English Spelling</span>
-        </button>
+        <div className="header-title">
+          <button
+            className="logo-link"
+            onClick={() => {
+              window.history.pushState(null, '', '/');
+              setActiveTab('text');
+            }}
+          >
+            <img src="logo.svg" alt="Ingglish logo" className="logo" />
+            <h1>Ingglish</h1>
+          </button>
+          <button
+            className="subtitle-link"
+            onClick={() => {
+              setActiveTab('guide');
+            }}
+          >
+            — Phonetic English Spelling
+          </button>
+        </div>
       </header>
 
       <nav className="tabs">

@@ -86,10 +86,29 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
+}
+
+.subtitle-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.subtitle-link:hover {
+  color: var(--color-primary);
 }
 
 .logo {
@@ -122,12 +141,6 @@ body {
 
 .theme-toggle:hover {
   background: var(--color-surface-hover);
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: var(--color-text-muted);
-  font-weight: 400;
 }
 
 .stats {
