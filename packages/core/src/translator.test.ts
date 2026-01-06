@@ -109,6 +109,16 @@ describe('translator', () => {
       expect(result).toBe('dont');
     });
 
+    it('should translate I and I-contractions to lowercase', () => {
+      // "I" is only capitalized in English due to grammar rules
+      // In Ingglish, it should be lowercase "ai"
+      expect(translateText('I')).toBe('ai');
+      expect(translateText("I'm")).toBe('aim');
+      expect(translateText("I'll")).toBe('ail');
+      expect(translateText("I've")).toBe('aiv');
+      expect(translateText("I'd")).toBe('aid');
+    });
+
     it('should handle empty string', () => {
       expect(translateText('')).toBe('');
     });
