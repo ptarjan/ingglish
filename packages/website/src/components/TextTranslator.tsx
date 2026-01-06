@@ -89,6 +89,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
   const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
+  const [copiedEnglish, setCopiedEnglish] = useState(false);
+  const [copiedIngglish, setCopiedIngglish] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -147,6 +150,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (text) {
       try {
         await navigator.clipboard.writeText(text);
+        setCopiedEnglish(true);
+        setTimeout(() => {
+          setCopiedEnglish(false);
+        }, 1500);
       } catch {
         // Clipboard can fail in non-secure contexts or if permission denied - expected
       }
@@ -158,6 +165,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (text) {
       try {
         await navigator.clipboard.writeText(text);
+        setCopiedIngglish(true);
+        setTimeout(() => {
+          setCopiedIngglish(false);
+        }, 1500);
       } catch {
         // Clipboard can fail in non-secure contexts or if permission denied - expected
       }
@@ -172,6 +183,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
       onShare(displayEnglish);
+      setCopiedShare(true);
+      setTimeout(() => {
+        setCopiedShare(false);
+      }, 1500);
     }
   }, [onShare, displayEnglish]);
 
@@ -192,11 +207,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 className="btn-secondary"
                 disabled={!displayEnglish}
               >
-                Copy
+                {copiedEnglish ? 'Copied!' : 'Copy'}
               </button>
               {onShare && (
                 <button onClick={handleShare} className="btn-secondary" disabled={!hasContent}>
-                  Share
+                  {copiedShare ? 'Copied!' : 'Share'}
                 </button>
               )}
               <button onClick={handleClear} className="btn-secondary" disabled={!hasContent}>
@@ -228,7 +243,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 className="btn-secondary"
                 disabled={!displayIngglish}
               >
-                Copy
+                {copiedIngglish ? 'Copied!' : 'Copy'}
               </button>
             </div>
           </div>

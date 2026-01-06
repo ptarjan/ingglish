@@ -234,6 +234,11 @@ function App() {
           </a>{' '}
           (134,000+ words) to convert English words to their phonetic spellings.
         </p>
+        <p>
+          <a href="https://github.com/ptarjan/ingglish" target="_blank" rel="noopener noreferrer">
+            View on GitHub
+          </a>
+        </p>
       </footer>
     </div>
   );

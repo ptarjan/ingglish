@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 
 const EXAMPLE_URLS = [
@@ -25,6 +25,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
     useUrlTranslator({ onNavigate });
   const formRef = useRef<HTMLFormElement>(null);
+  const [copiedShare, setCopiedShare] = useState(false);
 
   // Auto-translate if initialUrl is provided
   useEffect(() => {
@@ -70,6 +71,10 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   const handleShare = useCallback(() => {
     if (onShare && url.trim()) {
       onShare(url);
+      setCopiedShare(true);
+      setTimeout(() => {
+        setCopiedShare(false);
+      }, 1500);
     }
   }, [onShare, url]);
 
@@ -102,7 +107,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
             className="btn-secondary"
             disabled={!hasContent}
           >
-            Share
+            {copiedShare ? 'Copied!' : 'Share'}
           </button>
         )}
       </form>
