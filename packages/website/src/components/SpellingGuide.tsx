@@ -128,9 +128,35 @@ function SpellingGuide() {
       <div className="guide-intro">
         <h2>How Ingglish Works</h2>
         <p>
-          Ingglish uses a <strong>one-to-one mapping</strong> between sounds and spellings. Each
-          letter or letter combination always makes the same sound, so you can read any word aloud
-          correctly without memorization.
+          Many spelling reforms have been proposed over the centuries—from the{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Shavian_alphabet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Shavian alphabet</strong>
+          </a>{' '}
+          (48 entirely new characters) to{' '}
+          <a
+            href="https://en.wikipedia.org/wiki/Cut_Spelling"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Cut Spelling</strong>
+          </a>{' '}
+          (removing silent letters) to{' '}
+          <a href="https://en.wikipedia.org/wiki/Unifon" target="_blank" rel="noopener noreferrer">
+            <strong>Unifon</strong>
+          </a>{' '}
+          (extended Latin alphabet). Most fail because they're either too radical to read or too
+          conservative to help.
+        </p>
+        <p>
+          Ingglish takes a practical middle path: it uses the{' '}
+          <strong>familiar Latin alphabet</strong> with a <strong>one-to-one mapping</strong>{' '}
+          between sounds and spellings. Each letter or letter combination always makes the same
+          sound. You can read any word aloud correctly without memorization—and you can start
+          reading Ingglish immediately without learning a new alphabet.
         </p>
       </div>
 
