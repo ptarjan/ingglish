@@ -409,6 +409,12 @@ body {
   cursor: not-allowed;
 }
 
+.btn-copied {
+  background: var(--color-primary) !important;
+  color: white !important;
+  border-color: var(--color-primary) !important;
+}
+
 .btn-loading {
   position: relative;
   color: transparent !important;

@@ -104,7 +104,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
           <button
             type="button"
             onClick={handleShare}
-            className="btn-secondary"
+            className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
             disabled={url.trim().length === 0}
           >
             {copiedShare ? 'Copied!' : 'Share'}

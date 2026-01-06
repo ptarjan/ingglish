@@ -204,13 +204,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               </button>
               <button
                 onClick={handleCopyEnglish}
-                className="btn-secondary"
+                className={`btn-secondary ${copiedEnglish ? 'btn-copied' : ''}`}
                 disabled={!displayEnglish}
               >
                 {copiedEnglish ? 'Copied!' : 'Copy'}
               </button>
               {onShare && (
-                <button onClick={handleShare} className="btn-secondary" disabled={!hasContent}>
+                <button
+                  onClick={handleShare}
+                  className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
+                  disabled={!hasContent}
+                >
                   {copiedShare ? 'Copied!' : 'Share'}
                 </button>
               )}
@@ -240,7 +244,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             <div className="button-group">
               <button
                 onClick={handleCopyIngglish}
-                className="btn-secondary"
+                className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
                 disabled={!displayIngglish}
               >
                 {copiedIngglish ? 'Copied!' : 'Copy'}
