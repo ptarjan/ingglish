@@ -73,6 +73,11 @@ function UrlTranslator() {
       {error !== null && <div className="error-message">{error}</div>}
 
       <div className={`iframe-container ${hasContent ? '' : 'iframe-container--empty'}`}>
+        {isLoading && hasContent && (
+          <div className="iframe-loading-overlay">
+            <div className="loading-spinner" />
+          </div>
+        )}
         <iframe
           ref={iframeRef}
           title="Translated page"

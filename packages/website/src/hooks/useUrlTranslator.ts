@@ -72,9 +72,6 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
     setIsLoading(true);
     setError(null);
 
-    // Hide iframe during translation to prevent English flash
-    iframe.style.visibility = 'hidden';
-
     try {
       const parsedUrl = new URL(targetUrl);
       const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
@@ -106,8 +103,6 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         translateAttributes: true,
       });
 
-      // Show iframe after translation is complete
-      iframe.style.visibility = 'visible';
       setHasContent(true);
 
       // Intercept link clicks for navigation
@@ -141,8 +136,6 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
       });
     } catch (err) {
       setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      // Show iframe even on error so user sees partial content if any
-      iframe.style.visibility = 'visible';
     } finally {
       setIsLoading(false);
     }
