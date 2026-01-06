@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeUrl, shouldSkipUrl, injectBaseTag, getBaseUrl } from './useUrlTranslator';
+import {
+  normalizeUrl,
+  shouldSkipUrl,
+  injectBaseTag,
+  getBaseUrl,
+  detectBotProtection,
+} from './useUrlTranslator';
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {
@@ -144,5 +150,49 @@ describe('injectBaseTag', () => {
     const html = '<html><head></head></html>';
     const result = injectBaseTag(html, 'http://localhost:3000/');
     expect(result).toContain('href="http://localhost:3000/"');
+  });
+});
+
+describe('detectBotProtection', () => {
+  it('returns null for normal HTML', () => {
+    const html = '<html><head><title>Test</title></head><body>Hello world</body></html>';
+    expect(detectBotProtection(html)).toBe(null);
+  });
+
+  it('detects Cloudflare challenge pages', () => {
+    const html =
+      '<html><head><title>Just a moment...</title></head><script>window._cf_chl_opt={}</script></html>';
+    expect(detectBotProtection(html)).toContain('Cloudflare protection');
+  });
+
+  it('detects Cloudflare challenge-platform scripts', () => {
+    const html = '<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script>';
+    expect(detectBotProtection(html)).toContain('Cloudflare protection');
+  });
+
+  it('detects Cloudflare block pages', () => {
+    const html = '<h1>Sorry, you have been blocked</h1><p>You are unable to access example.com</p>';
+    expect(detectBotProtection(html)).toContain('blocked');
+  });
+
+  it('detects Cloudflare attention required pages', () => {
+    const html = '<title>Attention Required! | Cloudflare</title>';
+    expect(detectBotProtection(html)).toContain('blocked');
+  });
+
+  it('detects JavaScript verification pages', () => {
+    const html =
+      "<p>JavaScript is disabled</p><p>we need to verify that you're not a robot</p>";
+    expect(detectBotProtection(html)).toContain('JavaScript verification');
+  });
+
+  it('detects enable JavaScript continue pages', () => {
+    const html = '<p>Please enable JavaScript and cookies to continue</p>';
+    expect(detectBotProtection(html)).toContain('JavaScript verification');
+  });
+
+  it('is case insensitive', () => {
+    const html = '<H1>SORRY, YOU HAVE BEEN BLOCKED</H1>';
+    expect(detectBotProtection(html)).toContain('blocked');
   });
 });

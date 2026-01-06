@@ -79,6 +79,38 @@ export function shouldSkipUrl(href: string): boolean {
   return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
 }
 
+/**
+ * Detects if HTML content is a bot protection/challenge page.
+ * Returns a user-friendly error message if detected, null otherwise.
+ */
+export function detectBotProtection(html: string): string | null {
+  const lowerHtml = html.toLowerCase();
+
+  // Cloudflare challenge page ("Just a moment...")
+  if (lowerHtml.includes('window._cf_chl_opt') || lowerHtml.includes('challenge-platform')) {
+    return 'This site uses Cloudflare protection and requires JavaScript verification';
+  }
+
+  // Cloudflare block page ("Sorry, you have been blocked")
+  if (
+    lowerHtml.includes('you have been blocked') ||
+    lowerHtml.includes('attention required! | cloudflare')
+  ) {
+    return 'This site has blocked the request (Cloudflare protection)';
+  }
+
+  // JavaScript/robot verification pages
+  if (
+    (lowerHtml.includes('javascript is disabled') &&
+      lowerHtml.includes("verify that you're not a robot")) ||
+    (lowerHtml.includes('enable javascript') && lowerHtml.includes('continue'))
+  ) {
+    return 'This site requires JavaScript verification to access';
+  }
+
+  return null;
+}
+
 export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
   const { onNavigate } = options;
   const [url, setUrl] = useState('');
@@ -105,7 +137,15 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         throw new Error(`Failed to fetch: ${response.status}`);
       }
 
-      const html = injectBaseTag(await response.text(), getBaseUrl(parsedUrl.href));
+      const rawHtml = await response.text();
+
+      // Check for bot protection pages before processing
+      const botProtectionError = detectBotProtection(rawHtml);
+      if (botProtectionError !== null) {
+        throw new Error(botProtectionError);
+      }
+
+      const html = injectBaseTag(rawHtml, getBaseUrl(parsedUrl.href));
 
       // Load HTML into iframe using srcdoc and wait for load event
       await new Promise<void>((resolve) => {
