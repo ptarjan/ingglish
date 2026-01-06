@@ -6,7 +6,7 @@
  * more common words based on frequency data.
  */
 import { PHONEME_MAP } from './phoneme-map';
-import { getDictionary } from './translator';
+import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';
 
@@ -184,7 +184,10 @@ export function reverseTranslateWord(inglishWord: string): string[] {
  * For homophones, uses the most common word.
  */
 export function reverseTranslateText(inglishText: string): string {
-  return inglishText
+  // Normalize curly apostrophes to straight ones
+  const normalizedText = normalizeApostrophes(inglishText);
+
+  return normalizedText
     .split(/(\b[a-zA-Z']+\b)/)
     .map((token) => {
       if (/^[a-zA-Z']+$/.test(token)) {

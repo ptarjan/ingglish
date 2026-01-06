@@ -4,6 +4,14 @@ import type { CMUDictionary } from './types';
 
 export type { CMUDictionary };
 
+/**
+ * Normalizes various apostrophe characters to the standard straight apostrophe.
+ * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
+ */
+export function normalizeApostrophes(text: string): string {
+  return text.replace(/[\u2018\u2019\u02BC]/g, "'");
+}
+
 // The dictionary will be loaded once and cached
 let dictionary: CMUDictionary | null = null;
 let dictionaryPromise: Promise<CMUDictionary> | null = null;
@@ -173,9 +181,12 @@ function translateContraction(token: string): string {
  * @returns The text with all words translated to Ingglish
  */
 export function translateText(text: string): string {
+  // Normalize curly apostrophes to straight ones
+  const normalizedText = normalizeApostrophes(text);
+
   // Regex to match words (letters and apostrophes) vs everything else
   // This preserves punctuation, numbers, whitespace, etc.
-  const tokens = text.split(/(\b[a-zA-Z']+\b)/);
+  const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
 
   return tokens
     .map((token) => {

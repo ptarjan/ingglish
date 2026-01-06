@@ -109,6 +109,19 @@ describe('translator', () => {
       expect(result).toBe('dont');
     });
 
+    it('should normalize curly apostrophes', () => {
+      // Curly apostrophe (U+2019) should be treated the same as straight
+      const curly = 'don\u2019t'; // don't with curly apostrophe
+      const straight = "don't";
+      expect(translateText(curly)).toBe(translateText(straight));
+    });
+
+    it('should handle possessives with curly apostrophes', () => {
+      // Common in text copied from websites like NY Times
+      const result = translateText('China\u2019s economy');
+      expect(result).toBe('Chainuz ikahnumee');
+    });
+
     it('should translate I and I-contractions to lowercase', () => {
       // "I" is only capitalized in English due to grammar rules
       // In Ingglish, it should be lowercase "ai"
