@@ -145,24 +145,6 @@ function SpellingGuide() {
       </div>
 
       <div className="guide-section">
-        <h3>Key Principles</h3>
-        <ul className="principles-list">
-          <li>
-            <strong>No silent letters</strong> - every letter is pronounced
-          </li>
-          <li>
-            <strong>Consistent spelling</strong> - same sound = same spelling, always
-          </li>
-          <li>
-            <strong>Readable aloud</strong> - anyone can pronounce unfamiliar words correctly
-          </li>
-          <li>
-            <strong>Based on CMU dictionary</strong> - pronunciations from linguistic research
-          </li>
-        </ul>
-      </div>
-
-      <div className="guide-section">
         <h3>Unused Letters</h3>
         <p>
           These English letters are not used in Ingglish because they are redundant - their sounds
@@ -194,6 +176,24 @@ function SpellingGuide() {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div className="guide-section">
+        <h3>Key Principles</h3>
+        <ul className="principles-list">
+          <li>
+            <strong>No silent letters</strong> - every letter is pronounced
+          </li>
+          <li>
+            <strong>Consistent spelling</strong> - same sound = same spelling, always
+          </li>
+          <li>
+            <strong>Readable aloud</strong> - anyone can pronounce unfamiliar words correctly
+          </li>
+          <li>
+            <strong>Based on CMU dictionary</strong> - pronunciations from linguistic research
+          </li>
+        </ul>
       </div>
     </div>
   );

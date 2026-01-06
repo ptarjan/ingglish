@@ -194,6 +194,14 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               >
                 Copy
               </button>
+              {onShare && (
+                <button onClick={handleShare} className="btn-secondary" disabled={!hasContent}>
+                  Share
+                </button>
+              )}
+              <button onClick={handleClear} className="btn-secondary" disabled={!hasContent}>
+                Clear
+              </button>
             </div>
           </div>
           <textarea
@@ -262,16 +270,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         </div>
       )}
 
-      <div className="translator-actions">
-        <button onClick={handleClear} className="btn-secondary">
-          Clear All
-        </button>
-        {onShare && (
-          <button onClick={handleShare} className="btn-secondary" disabled={!hasContent}>
-            Share
-          </button>
-        )}
-      </div>
     </div>
   );
 }

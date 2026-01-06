@@ -18,11 +18,12 @@ const EXAMPLE_URLS = [
 interface UrlTranslatorProps {
   initialUrl?: string;
   onShare?: (url: string) => void;
+  onNavigate?: (url: string) => void;
 }
 
-function UrlTranslator({ initialUrl = '', onShare }: UrlTranslatorProps) {
+function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorProps) {
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
-    useUrlTranslator();
+    useUrlTranslator({ onNavigate });
   const formRef = useRef<HTMLFormElement>(null);
 
   // Auto-translate if initialUrl is provided
@@ -47,13 +48,15 @@ function UrlTranslator({ initialUrl = '', onShare }: UrlTranslatorProps) {
         return;
       }
 
+      onNavigate?.(normalized);
+
       try {
         await translateUrl(normalized);
       } catch {
         // Error handling is done in the hook
       }
     },
-    [url, translateUrl]
+    [url, translateUrl, onNavigate]
   );
 
   const handleExampleClick = useCallback(

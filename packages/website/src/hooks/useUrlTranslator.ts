@@ -10,6 +10,10 @@ import { translateDOM } from '@ingglish/core';
 const CORS_PROXY: string =
   import.meta.env.VITE_CORS_PROXY_URL ?? 'https://api.allorigins.win/raw?url=';
 
+interface UseUrlTranslatorOptions {
+  onNavigate?: (url: string) => void;
+}
+
 interface UseUrlTranslatorResult {
   url: string;
   setUrl: (url: string) => void;
@@ -75,7 +79,8 @@ export function shouldSkipUrl(href: string): boolean {
   return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
 }
 
-export function useUrlTranslator(): UseUrlTranslatorResult {
+export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
+  const { onNavigate } = options;
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
@@ -147,6 +152,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
         }
 
         setUrl(newUrl);
+        onNavigate?.(newUrl);
         translateUrl(newUrl).catch((err: unknown) => {
           // Error is already handled in translateUrl, but log for debugging
           // eslint-disable-next-line no-console
@@ -158,7 +164,7 @@ export function useUrlTranslator(): UseUrlTranslatorResult {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [onNavigate]);
 
   const clear = useCallback(() => {
     setUrl('');

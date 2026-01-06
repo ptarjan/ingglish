@@ -97,6 +97,15 @@ function App() {
     };
   }, []);
 
+  // Build shareable URL
+  const buildShareUrl = useCallback((targetUrl: string): string => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = 'url';
+    url.searchParams.set('url', targetUrl);
+    return url.toString();
+  }, []);
+
   // Share functions
   const handleShareText = useCallback((text: string) => {
     const url = new URL(window.location.href);
@@ -110,15 +119,18 @@ function App() {
   }, []);
 
   const handleShareUrl = useCallback((targetUrl: string) => {
-    const url = new URL(window.location.href);
-    url.search = '';
-    url.hash = 'url';
-    url.searchParams.set('url', targetUrl);
-    navigator.clipboard.writeText(url.toString()).catch(() => {
-      // Fallback: just update URL
+    const shareUrl = buildShareUrl(targetUrl);
+    navigator.clipboard.writeText(shareUrl).catch(() => {
+      // Fallback: clipboard might not be available
     });
-    window.history.replaceState(null, '', url.toString());
-  }, []);
+    window.history.replaceState(null, '', shareUrl);
+  }, [buildShareUrl]);
+
+  // Update browser URL without copying to clipboard (for navigation)
+  const handleUrlNavigate = useCallback((targetUrl: string) => {
+    const shareUrl = buildShareUrl(targetUrl);
+    window.history.replaceState(null, '', shareUrl);
+  }, [buildShareUrl]);
 
   useEffect(() => {
     // Preload dictionary by calling translate once
@@ -204,7 +216,13 @@ function App() {
         {activeTab === 'text' && (
           <TextTranslator initialText={initialText} onShare={handleShareText} />
         )}
-        {activeTab === 'url' && <UrlTranslator initialUrl={initialUrl} onShare={handleShareUrl} />}
+        {activeTab === 'url' && (
+          <UrlTranslator
+            initialUrl={initialUrl}
+            onShare={handleShareUrl}
+            onNavigate={handleUrlNavigate}
+          />
+        )}
         {activeTab === 'guide' && <SpellingGuide />}
       </main>
 
