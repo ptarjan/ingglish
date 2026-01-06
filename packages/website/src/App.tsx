@@ -184,17 +184,8 @@ function App() {
         >
           <img src="logo.svg" alt="Ingglish logo" className="logo" />
           <h1>Ingglish</h1>
+          <span className="subtitle">— Phonetic English Spelling</span>
         </button>
-        <p className="subtitle">
-          <button
-            className="subtitle-link"
-            onClick={() => {
-              setActiveTab('guide');
-            }}
-          >
-            Phonetic English Spelling
-          </button>
-        </p>
       </header>
 
       <nav className="tabs">

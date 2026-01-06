@@ -127,23 +127,7 @@ body {
 .subtitle {
   font-size: 1.25rem;
   color: var(--color-text-muted);
-  margin-top: 0.5rem;
-}
-
-.subtitle-link {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: inherit;
-  font-family: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 3px;
-}
-
-.subtitle-link:hover {
-  color: var(--color-primary);
+  font-weight: 400;
 }
 
 .stats {
