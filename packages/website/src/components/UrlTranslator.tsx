@@ -3,15 +3,10 @@ import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 
 const EXAMPLE_URLS = [
   { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/English_language' },
-  {
-    name: 'US Constitution',
-    url: 'https://www.archives.gov/founding-docs/constitution-transcript',
-  },
+  { name: 'US Constitution', url: 'https://www.archives.gov/founding-docs/constitution-transcript' },
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
   { name: 'Hacker News', url: 'https://news.ycombinator.com' },
   { name: 'NPR', url: 'https://text.npr.org' },
-  { name: 'Moby Dick', url: 'https://www.gutenberg.org/cache/epub/2701/pg2701-images.html' },
-  { name: 'Aesop Fables', url: 'https://www.gutenberg.org/cache/epub/21/pg21-images.html' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
 ];
 
