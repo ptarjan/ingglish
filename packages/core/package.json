@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint src",
     "test": "vitest run --no-color",
     "test:watch": "vitest",
     "translate": "npx vite-node scripts/translate.ts",

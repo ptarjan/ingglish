@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsup src/content.ts src/background.ts src/popup.ts --format iife --outDir dist --clean && cp src/manifest.json src/popup.html src/popup.css dist/ && node scripts/generate-icons.js",
     "build:icons": "node scripts/generate-icons.js",
+    "lint": "eslint src",
     "watch": "npm run build -- --watch",
     "test": "vitest run --no-color"
   },

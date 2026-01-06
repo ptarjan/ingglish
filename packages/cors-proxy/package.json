@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc --noEmit",
+    "lint": "eslint src",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest run --no-color"
