@@ -530,6 +530,17 @@ body {
   line-height: 1.7;
 }
 
+.guide-intro a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.guide-intro a:hover {
+  color: var(--color-primary-hover);
+}
+
 .guide-section {
   margin-bottom: 2rem;
 }
