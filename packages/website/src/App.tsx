@@ -7,6 +7,12 @@ import SpellingGuide from './components/SpellingGuide';
 type Tab = 'text' | 'url' | 'guide';
 type ThemeMode = 'light' | 'dark' | 'auto';
 
+const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
+
+function isValidThemeMode(value: string | null): value is ThemeMode {
+  return value !== null && VALID_THEME_MODES.includes(value as ThemeMode);
+}
+
 function getSystemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
@@ -36,8 +42,12 @@ function App() {
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-    const saved = localStorage.getItem('themeMode');
-    return (saved as ThemeMode) || 'auto';
+    try {
+      const saved = localStorage.getItem('themeMode');
+      return isValidThemeMode(saved) ? saved : 'auto';
+    } catch {
+      return 'auto'; // localStorage unavailable (private browsing)
+    }
   });
 
   useEffect(() => {
@@ -47,7 +57,11 @@ function App() {
     };
 
     applyTheme();
-    localStorage.setItem('themeMode', themeMode);
+    try {
+      localStorage.setItem('themeMode', themeMode);
+    } catch {
+      // localStorage unavailable (private browsing)
+    }
 
     // Listen for OS theme changes when in auto mode
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
