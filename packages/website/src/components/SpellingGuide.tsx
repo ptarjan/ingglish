@@ -126,7 +126,6 @@ function SpellingGuide() {
   return (
     <div className="spelling-guide">
       <div className="guide-intro">
-        <h2>How Ingglish Works</h2>
         <p>
           Many{' '}
           <a
