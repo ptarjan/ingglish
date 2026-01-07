@@ -40,6 +40,15 @@ body {
   min-height: 100vh;
 }
 
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .app {
   max-width: 1200px;
   margin: 0 auto;
@@ -512,15 +521,6 @@ body {
   font-size: 0.875rem;
 }
 
-.footer a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
 /* Spelling Guide */
 .spelling-guide {
   max-width: 800px;
@@ -543,15 +543,6 @@ body {
 
 .guide-intro p + p {
   margin-top: 1rem;
-}
-
-.guide-intro a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-.guide-intro a:hover {
-  text-decoration: underline;
 }
 
 .guide-section {
