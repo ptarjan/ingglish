@@ -114,7 +114,9 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
 
       {error !== null && <div className="error-message">{error}</div>}
 
-      <div className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'}`}>
+      <div
+        className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'}`}
+      >
         {isLoading && (
           <div className="iframe-loading-indicator">
             <div className="loading-spinner" />

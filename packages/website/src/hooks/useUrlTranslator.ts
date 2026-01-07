@@ -5,12 +5,7 @@
  */
 import { useState, useCallback, useRef } from 'react';
 import { translateDOM } from '@ingglish/core';
-import {
-  injectBaseTag,
-  getBaseUrl,
-  shouldSkipUrl,
-  detectBotProtection,
-} from '../utils/url';
+import { injectBaseTag, getBaseUrl, shouldSkipUrl, detectBotProtection } from '../utils/url';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../utils/url';

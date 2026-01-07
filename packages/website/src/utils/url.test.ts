@@ -1,11 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  normalizeUrl,
-  shouldSkipUrl,
-  injectBaseTag,
-  getBaseUrl,
-  detectBotProtection,
-} from './url';
+import { normalizeUrl, shouldSkipUrl, injectBaseTag, getBaseUrl, detectBotProtection } from './url';
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {
