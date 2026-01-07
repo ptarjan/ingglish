@@ -55,10 +55,10 @@ await loadDictionary();
 
 // Translate English → Ingglish
 const ingglish = translateText('Hello, world!');
-console.log(ingglish); // "huloh, werld!"
+console.log(ingglish); // "hulo, werld!"
 
 // Translate Ingglish → English
-const english = reverseTranslateText('huloh, werld!');
+const english = reverseTranslateText('hulo, werld!');
 console.log(english); // "hello, world!"
 
 // Translate DOM elements (browser only)
@@ -108,14 +108,14 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 | English | Ingglish |
 |---------|---------|
-| hello | huloh |
+| hello | hulo |
 | world | werld |
 | beautiful | byootuful |
 | through | throo |
-| though | dhoh |
+| though | dho |
 | thought | thawt |
 | the | dhu |
-| English | ingglihs |
+| English | Ingglish |
 
 ## Development
 
