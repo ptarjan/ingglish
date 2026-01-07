@@ -112,3 +112,15 @@ function addTranslationBadge(): void {
 
 // eslint-disable-next-line no-console
 console.log('Ingglish content script loaded');
+
+// Check if this tab should auto-translate (e.g., after navigation)
+chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response) => {
+  // Ignore errors if background isn't ready
+  if (chrome.runtime.lastError) return;
+
+  if (response?.enabled) {
+    // eslint-disable-next-line no-console
+    console.log('Ingglish: Auto-translating (tab was previously enabled)');
+    void translatePage();
+  }
+});
