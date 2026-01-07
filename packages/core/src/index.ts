@@ -5,8 +5,8 @@
  * ```typescript
  * import { translate, reverseTranslate } from '@ingglish/core';
  *
- * await translate('Hello, world!');        // 'huloh, werld!'
- * await reverseTranslate('huloh, werld!'); // 'hello, world!'
+ * await translate('Hello, world!');       // 'hulo, werld!'
+ * await reverseTranslate('hulo, werld!'); // 'hello, world!'
  * ```
  */
 
@@ -69,3 +69,9 @@ export { reverseTranslateText } from './reverse-translator';
 // =============================================================================
 
 export { VOWEL_MAP, CONSONANT_MAP } from './phoneme-map';
+
+// =============================================================================
+// Advanced: Phonemize support for better unknown word handling
+// =============================================================================
+
+export { preloadPhonemize } from './unknown-words';

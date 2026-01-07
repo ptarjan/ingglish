@@ -1,6 +1,38 @@
 import { phonemesToInglish } from './phoneme-map';
 import { lookupPronunciation } from './translator';
+import { ipaToArpabet } from './ipa-to-arpabet';
 
+// Lazy-loaded phonemize function
+let phonemizeFn: ((text: string) => string) | null = null;
+let phonemizeLoadAttempted = false;
+
+/**
+ * Attempts to load the phonemize module.
+ * Returns null if not available (fails silently).
+ */
+async function loadPhonemize(): Promise<typeof phonemizeFn> {
+  if (phonemizeLoadAttempted) {
+    return phonemizeFn;
+  }
+  phonemizeLoadAttempted = true;
+
+  try {
+    // Dynamic import to allow tree-shaking if not used
+    const mod = await import('phonemize');
+    phonemizeFn = mod.phonemize;
+    return phonemizeFn;
+  } catch {
+    // phonemize not available - fall back to rules
+    return null;
+  }
+}
+
+/**
+ * Synchronously get the phonemize function if already loaded.
+ */
+function getPhonemize(): typeof phonemizeFn {
+  return phonemizeFn;
+}
 /**
  * Common English suffixes and their phonetic representations.
  * Used when trying to stem unknown words.
@@ -213,11 +245,37 @@ export function translateWithRules(word: string): string {
 }
 
 /**
+ * Translates an unknown word using the phonemize library (neural G2P).
+ * This provides better accuracy than rule-based G2P for unusual words.
+ *
+ * @param word The unknown word
+ * @returns The Ingglish spelling, or null if phonemize is not available
+ */
+export function translateWithPhonemize(word: string): string | null {
+  const fn = getPhonemize();
+  if (fn === null) {
+    return null;
+  }
+
+  try {
+    const ipa = fn(word);
+    const arpabet = ipaToArpabet(ipa);
+    if (arpabet.length === 0) {
+      return null;
+    }
+    return phonemesToInglish(arpabet);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Attempts all strategies to translate an unknown word.
  *
  * Strategy order:
  * 1. Try stemming (find known base word + known suffix)
- * 2. Try grapheme-to-phoneme rules
+ * 2. Try phonemize (neural G2P) if available
+ * 3. Try grapheme-to-phoneme rules
  *
  * @param word The unknown word
  * @returns The translated word
@@ -229,6 +287,23 @@ export function translateUnknown(word: string): string {
     return stemmedResult;
   }
 
+  // Try phonemize if loaded
+  const phonemizeResult = translateWithPhonemize(word);
+  if (phonemizeResult !== null && phonemizeResult.length > 0) {
+    return phonemizeResult;
+  }
+
   // Fall back to grapheme-to-phoneme rules
   return translateWithRules(word);
+}
+
+/**
+ * Preloads the phonemize module for better unknown word handling.
+ * Call this at startup if you want phonemize to be available synchronously.
+ *
+ * @returns Promise that resolves when phonemize is loaded (or failed to load)
+ */
+export async function preloadPhonemize(): Promise<boolean> {
+  const mod = await loadPhonemize();
+  return mod !== null;
 }
