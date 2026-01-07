@@ -5,6 +5,19 @@ import type { ExtensionMessage, StateResponse, ToggleResponse } from './types';
 // Track which tabs have translation enabled
 const translatedTabs = new Set<number>();
 
+// Update icon based on translation state
+function updateIcon(tabId: number, enabled: boolean): void {
+  const suffix = enabled ? '' : '-off';
+  void chrome.action.setIcon({
+    tabId,
+    path: {
+      16: `icons/icon16${suffix}.png`,
+      48: `icons/icon48${suffix}.png`,
+      128: `icons/icon128${suffix}.png`,
+    },
+  });
+}
+
 // Listen for messages from popup and content scripts
 chrome.runtime.onMessage.addListener(
   (
@@ -42,6 +55,7 @@ chrome.runtime.onMessage.addListener(
         if (isEnabled) {
           // Disable translation - reload the page
           translatedTabs.delete(tabId);
+          updateIcon(tabId, false);
           void chrome.tabs.reload(tabId);
           sendResponse({ success: true, enabled: false });
         } else {
@@ -53,8 +67,10 @@ chrome.runtime.onMessage.addListener(
             if (chrome.runtime.lastError) {
               // Expected on pages where content scripts can't run (chrome://, etc.)
               translatedTabs.delete(tabId);
+              updateIcon(tabId, false);
               sendResponse({ success: false, error: 'Could not communicate with page' });
             } else {
+              updateIcon(tabId, true);
               sendResponse({ success: true, enabled: true });
             }
           });
