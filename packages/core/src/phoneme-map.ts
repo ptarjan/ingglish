@@ -115,6 +115,6 @@ export function phonemesToInglish(phonemes: string[]): string {
  * "world" -> W ER1 L D -> "werld"
  * "the" -> DH AH0 -> "dhu"
  * "think" -> TH IH1 NG K -> "thingk"
- * "beautiful" -> B Y UW1 T AH0 F AH0 L -> "byootufuhl"
- * "English" -> IH1 NG G L IH0 SH -> "inglich"
+ * "beautiful" -> B Y UW1 T AH0 F AH0 L -> "byootuful"
+ * "English" -> IH1 NG G L IH0 SH -> "Ingglish"
  */

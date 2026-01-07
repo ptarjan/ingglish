@@ -95,7 +95,7 @@ Each sound maps to exactly one spelling:
 |-------|---------|----------|
 | Long "e" | ee | bee, see |
 | Long "i" | ai | my, time |
-| Long "o" | oh | go, show |
+| Long "o" | o | go, show |
 | Voiced "th" | dh | the, this |
 | Unvoiced "th" | th | think, bath |
 | Short "u" | u | but, cup |

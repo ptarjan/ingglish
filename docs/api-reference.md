@@ -22,8 +22,8 @@ async function translate(text: string): Promise<string>
 ```typescript
 import { translate } from '@ingglish/core';
 
-await translate("Hello, world!"); // "huloh, werld!"
-await translate("The quick brown fox"); // "dhu kwik brown fahks"
+await translate("Hello, world!"); // "hulo, werld!"
+await translate("The quick brown fox"); // "Dhu kwik brown fahks"
 ```
 
 ### `reverseTranslate(text)`
@@ -38,7 +38,7 @@ async function reverseTranslate(text: string): Promise<string>
 ```typescript
 import { reverseTranslate } from '@ingglish/core';
 
-await reverseTranslate("huloh, werld!"); // "hello, world!"
+await reverseTranslate("hulo, werld!"); // "hello, world!"
 ```
 
 ## DOM Translation (Browser Only)

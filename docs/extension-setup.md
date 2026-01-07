@@ -41,11 +41,11 @@ You can use any image editor or an online tool. The icons should:
 
 1. Click the Ingglish extension icon in the Chrome toolbar
 2. Click "Translate Page" to translate the current page
-3. Click "Turn Off" to reload the page with original text
+3. Click "Turn Off" to restore the original text
 
 ## Notes
 
-- The extension uses a content script that runs on all pages
-- Translation state is lost when navigating to a new page
+- The translation script is loaded on-demand (not on every page)
+- Translation state persists within a tab but is lost when navigating
 - Some pages may block content scripts (e.g., Chrome Web Store)
 - Code blocks, form inputs, and scripts are not translated

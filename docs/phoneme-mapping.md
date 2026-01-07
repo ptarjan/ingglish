@@ -35,7 +35,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | EY | ay | s**ay**, d**ay** | Diphthong /eɪ/ |
 | IH | i | b**i**t, s**i**t | Near-close front vowel |
 | IY | ee | b**ee**, s**ee** | Close front vowel |
-| OW | oh | g**o**, sh**ow** | Diphthong /oʊ/ |
+| OW | o | g**o**, sh**ow** | Diphthong /oʊ/ |
 | OY | oi | b**oy**, t**oy** | Diphthong /ɔɪ/ |
 | UH | uu | b**oo**k, p**u**t | Near-close back vowel |
 | UW | oo | t**oo**, bl**ue** | Close back vowel |
@@ -108,19 +108,19 @@ Each diphthong gets a two-letter combination:
 - **ai** = AY (m**y**) - /aɪ/
 - **ay** = EY (s**ay**) - /eɪ/
 - **ow** = AW (c**ow**) - /aʊ/
-- **oh** = OW (g**o**) - /oʊ/
+- **o** = OW (g**o**) - /oʊ/
 - **oi** = OY (b**oy**) - /ɔɪ/
 
 ## Example Translations
 
 | English | Phonemes | Ingglish |
 |---------|----------|---------|
-| hello | HH AH0 L OW1 | huloh |
+| hello | HH AH0 L OW1 | hulo |
 | world | W ER1 L D | werld |
-| beautiful | B Y UW1 T AH0 F AH0 L | byootufuhl |
+| beautiful | B Y UW1 T AH0 F AH0 L | byootuful |
 | think | TH IH1 NG K | thingk |
 | the | DH AH0 | dhu |
-| English | IH1 NG G L IH0 SH | ingglihs |
+| English | IH1 NG G L IH0 SH | Ingglish |
 
 ## Stress Handling
 
