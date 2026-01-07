@@ -80,48 +80,15 @@ function shouldSkipElement(element: Element, skipTags: string[], skipClasses: st
 }
 
 /**
- * Counts all text nodes in a document/element.
+ * Collects all translatable text nodes in a single DOM walk.
+ * Returns nodes that should be translated (non-empty, not in skipped elements).
  */
-function countTextNodes(root: Node): number {
-  let count = 0;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-
-  while (walker.nextNode()) {
-    const text = walker.currentNode.textContent?.trim() ?? '';
-    if (text.length > 0) {
-      count++;
-    }
-  }
-
-  return count;
-}
-
-/**
- * Translates all text content within a DOM element.
- * Walks through all text nodes and translates them.
- *
- * @param root The root element to translate
- * @param options Configuration options
- */
-export function translateDOM(root: Element | Document, options: DOMTranslatorOptions = {}): void {
-  requireBrowser();
-
-  if (!isDictionaryLoaded()) {
-    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
-  }
-
-  const {
-    skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = DEFAULT_SKIP_CLASSES,
-    translateAttributes = true,
-    onProgress,
-  } = options;
-
-  // Count total nodes for progress
-  const totalNodes = onProgress ? countTextNodes(root) : 0;
-  let processedNodes = 0;
-
-  // Create a tree walker to iterate through all text nodes
+function collectTextNodes(
+  root: Element | Document,
+  skipTags: string[],
+  skipClasses: string[]
+): Text[] {
+  const textNodes: Text[] = [];
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode(node: Text): number {
       // Skip empty or whitespace-only text
@@ -143,14 +110,41 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     },
   });
 
-  // Collect all text nodes first (to avoid modifying while iterating)
-  const textNodes: Text[] = [];
   while (walker.nextNode()) {
     textNodes.push(walker.currentNode as Text);
   }
 
+  return textNodes;
+}
+
+/**
+ * Translates all text content within a DOM element.
+ * Uses a single DOM walk to collect and then translate text nodes.
+ *
+ * @param root The root element to translate
+ * @param options Configuration options
+ */
+export function translateDOM(root: Element | Document, options: DOMTranslatorOptions = {}): void {
+  requireBrowser();
+
+  if (!isDictionaryLoaded()) {
+    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
+  }
+
+  const {
+    skipTags = DEFAULT_SKIP_TAGS,
+    skipClasses = DEFAULT_SKIP_CLASSES,
+    translateAttributes = true,
+    onProgress,
+  } = options;
+
+  // Single walk to collect all text nodes
+  const textNodes = collectTextNodes(root, skipTags, skipClasses);
+  const totalNodes = textNodes.length;
+
   // Translate each text node
-  for (const textNode of textNodes) {
+  for (let i = 0; i < textNodes.length; i++) {
+    const textNode = textNodes[i];
     const originalText = textNode.textContent;
     if (originalText) {
       // Store original text for potential restoration
@@ -161,9 +155,8 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
       textNode.textContent = translateText(originalText);
     }
 
-    processedNodes++;
     if (onProgress && totalNodes > 0) {
-      onProgress(processedNodes, totalNodes);
+      onProgress(i + 1, totalNodes);
     }
   }
 

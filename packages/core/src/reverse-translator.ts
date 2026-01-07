@@ -60,16 +60,21 @@ function expandPhonemeAlternatives(phonemes: string[]): string[][] {
 }
 
 // ============================================================================
-// Reverse Dictionary Cache
+// Reverse Dictionary Cache (with lazy sorting for performance)
 // ============================================================================
 
+/** Raw reverse dictionary: phoneme sequence -> unsorted English words */
 let reverseDictionaryCache: Map<string, string[]> | null = null;
+
+/** Tracks which keys have been sorted (lazy sorting optimization) */
+const sortedKeys = new Set<string>();
 
 /**
  * Builds and caches a reverse dictionary: phoneme sequence -> English words.
- * Words are sorted by frequency (most common first).
+ * Words are NOT sorted during build - sorting happens lazily on lookup.
+ * This avoids O(n * m * log(m)) upfront cost for ~134k dictionary entries.
  */
-function getReverseDictionary(): Map<string, string[]> {
+function buildReverseDictionary(): Map<string, string[]> {
   if (reverseDictionaryCache) {
     return reverseDictionaryCache;
   }
@@ -88,12 +93,30 @@ function getReverseDictionary(): Map<string, string[]> {
     reverseDictionaryCache.set(phonemeKey, words);
   }
 
-  // Sort each word list by frequency
-  for (const [key, words] of reverseDictionaryCache.entries()) {
-    reverseDictionaryCache.set(key, sortByFrequency(words));
+  return reverseDictionaryCache;
+}
+
+/**
+ * Looks up words for a phoneme key, sorting by frequency on first access.
+ * Lazy sorting means we only pay the cost for keys actually queried.
+ */
+function lookupPhonemeKey(key: string): string[] | undefined {
+  const reverseDict = buildReverseDictionary();
+  const words = reverseDict.get(key);
+
+  if (!words) {
+    return undefined;
   }
 
-  return reverseDictionaryCache;
+  // Lazy sort: only sort this key's words on first access
+  if (!sortedKeys.has(key)) {
+    const sorted = sortByFrequency(words);
+    reverseDict.set(key, sorted);
+    sortedKeys.add(key);
+    return sorted;
+  }
+
+  return words;
 }
 
 // ============================================================================
@@ -132,14 +155,13 @@ export function inglishToPhonemes(inglish: string): string[] | null {
  * Tries all alternative phoneme interpretations and combines results.
  */
 function lookupByPhonemes(phonemes: string[]): string[] {
-  const reverseDict = getReverseDictionary();
   const variants = expandPhonemeAlternatives(phonemes);
   const allMatches: string[] = [];
   const seen = new Set<string>();
 
   for (const variant of variants) {
     const key = variant.join(' ');
-    const matches = reverseDict.get(key);
+    const matches = lookupPhonemeKey(key);
     if (matches) {
       for (const match of matches) {
         if (!seen.has(match)) {
@@ -150,8 +172,8 @@ function lookupByPhonemes(phonemes: string[]): string[] {
     }
   }
 
-  // Re-sort combined results by frequency
-  return sortByFrequency(allMatches);
+  // Re-sort combined results by frequency (only if multiple variants matched)
+  return allMatches.length > 0 && variants.length > 1 ? sortByFrequency(allMatches) : allMatches;
 }
 
 /**

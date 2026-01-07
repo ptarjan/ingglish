@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { loadDictionary } from './translator';
 import {
   translateDOM,
@@ -120,6 +120,24 @@ describe('dom-translator', () => {
       expect(progressCalls.length).toBe(2);
       expect(progressCalls[0]).toEqual([1, 2]);
       expect(progressCalls[1]).toEqual([2, 2]);
+    });
+
+    it('should walk the DOM only once (performance optimization)', () => {
+      document.body.innerHTML = '<p>Hello</p><p>World</p><p>Test</p>';
+
+      // Spy on createTreeWalker to count DOM walks
+      const createTreeWalkerSpy = vi.spyOn(document, 'createTreeWalker');
+
+      translateDOM(document.body, {
+        onProgress: () => {
+          /* progress callback enabled */
+        },
+      });
+
+      // Should only create one TreeWalker (single DOM walk)
+      expect(createTreeWalkerSpy).toHaveBeenCalledTimes(1);
+
+      createTreeWalkerSpy.mockRestore();
     });
   });
 
