@@ -8,14 +8,18 @@ const translatedTabs = new Set<number>();
 // Update icon based on translation state
 function updateIcon(tabId: number, enabled: boolean): void {
   const suffix = enabled ? '' : '-off';
-  void chrome.action.setIcon({
-    tabId,
-    path: {
-      16: `icons/icon16${suffix}.png`,
-      48: `icons/icon48${suffix}.png`,
-      128: `icons/icon128${suffix}.png`,
-    },
-  });
+  chrome.action
+    .setIcon({
+      tabId,
+      path: {
+        16: `icons/icon16${suffix}.png`,
+        48: `icons/icon48${suffix}.png`,
+        128: `icons/icon128${suffix}.png`,
+      },
+    })
+    .catch(() => {
+      // Tab may have been closed - ignore
+    });
 }
 
 // Inject the translation script into a tab
