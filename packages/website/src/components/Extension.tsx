@@ -40,9 +40,7 @@ function Extension() {
           </li>
           <li>
             <strong>Unzip the file</strong>
-            <p>
-              Extract the zip file to a folder (you'll get a <code>dist</code> folder)
-            </p>
+            <p>Extract the zip to a folder you'll keep (e.g., "ingglish-extension")</p>
           </li>
           <li>
             <strong>Open Chrome Extensions</strong>
@@ -56,7 +54,7 @@ function Extension() {
           </li>
           <li>
             <strong>Load the extension</strong>
-            <p>Click "Load unpacked" and select the extracted <code>dist</code> folder</p>
+            <p>Click "Load unpacked" and select the folder you extracted</p>
           </li>
         </ol>
       </div>

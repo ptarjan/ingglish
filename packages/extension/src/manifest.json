@@ -9,13 +9,12 @@
     "default_title": "Ingglish Translator"
   },
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.global.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["content.global.js"],
       "run_at": "document_idle"
     }
   ],
