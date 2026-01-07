@@ -1,83 +1,20 @@
+/**
+ * Core DOM translation functionality.
+ */
 import { translateText, loadDictionary, isDictionaryLoaded } from './translator';
 import type { DOMTranslatorOptions } from './types';
+import {
+  DEFAULT_SKIP_TAGS,
+  DEFAULT_SKIP_CLASSES,
+  TRANSLATABLE_ATTRIBUTES,
+  requireBrowser,
+  shouldSkipElement,
+} from './dom-utils';
 
+// Re-export types and utilities for convenience
 export type { DOMTranslatorOptions };
-
-/**
- * Checks if we're in a browser environment.
- */
-function isBrowser(): boolean {
-  return typeof document !== 'undefined' && typeof window !== 'undefined';
-}
-
-/**
- * Throws an error if not in a browser environment.
- */
-function requireBrowser(): void {
-  if (!isBrowser()) {
-    throw new Error('DOM translation requires a browser environment');
-  }
-}
-
-/**
- * Default tags to skip during translation.
- * These typically contain code, scripts, or non-translatable content.
- */
-const DEFAULT_SKIP_TAGS = [
-  'SCRIPT',
-  'STYLE',
-  'CODE',
-  'PRE',
-  'KBD',
-  'SAMP',
-  'VAR',
-  'NOSCRIPT',
-  'TEXTAREA',
-  'INPUT',
-  'SVG',
-  'MATH',
-  'CANVAS',
-];
-
-/**
- * Default CSS classes to skip during translation.
- * Common conventions for marking content as non-translatable.
- */
-const DEFAULT_SKIP_CLASSES = ['no-translate', 'notranslate'];
-
-/**
- * Attributes that may contain translatable text.
- */
-const TRANSLATABLE_ATTRIBUTES = ['title', 'alt', 'placeholder', 'aria-label', 'aria-description'];
-
-/**
- * Checks if an element should be skipped during translation.
- */
-function shouldSkipElement(element: Element, skipTags: string[], skipClasses: string[]): boolean {
-  // Check tag name
-  if (skipTags.includes(element.tagName)) {
-    return true;
-  }
-
-  // Check classes
-  for (const className of skipClasses) {
-    if (element.classList.contains(className)) {
-      return true;
-    }
-  }
-
-  // Check for contenteditable
-  if (element.getAttribute('contenteditable') === 'true') {
-    return true;
-  }
-
-  // Check for data attribute to skip
-  if (element.hasAttribute('data-ingglish-skip')) {
-    return true;
-  }
-
-  return false;
-}
+export { skipElement, unskipElement } from './dom-utils';
+export { observeAndTranslate } from './dom-observer';
 
 /**
  * Collects all translatable text nodes in a single DOM walk.
@@ -204,119 +141,6 @@ export async function translateDOMAsync(
 ): Promise<void> {
   await loadDictionary();
   translateDOM(root, options);
-}
-
-/**
- * Creates a MutationObserver that translates new content as it's added to the DOM.
- * Useful for single-page applications where content changes dynamically.
- *
- * @param root The root element to observe
- * @param options Configuration options
- * @returns A function to stop observing
- */
-export function observeAndTranslate(
-  root: Element | Document,
-  options: DOMTranslatorOptions = {}
-): () => void {
-  requireBrowser();
-
-  if (!isDictionaryLoaded()) {
-    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
-  }
-
-  const {
-    skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = DEFAULT_SKIP_CLASSES,
-    translateAttributes = true,
-  } = options;
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      // Handle added nodes
-      for (const node of Array.from(mutation.addedNodes)) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          const textNode = node as Text;
-          const text = textNode.textContent ?? '';
-          if (text.trim().length > 0) {
-            // Check if we should skip this node
-            let parent = textNode.parentElement;
-            let shouldSkip = false;
-            while (parent) {
-              if (shouldSkipElement(parent, skipTags, skipClasses)) {
-                shouldSkip = true;
-                break;
-              }
-              parent = parent.parentElement;
-            }
-            if (!shouldSkip) {
-              textNode.textContent = translateText(text);
-            }
-          }
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element;
-          if (!shouldSkipElement(element, skipTags, skipClasses)) {
-            translateDOM(element, { skipTags, skipClasses, translateAttributes });
-          }
-        }
-      }
-
-      // Handle character data changes
-      if (mutation.type === 'characterData') {
-        const textNode = mutation.target as Text;
-        const text = textNode.textContent;
-        if (text?.trim()) {
-          // Check if we should skip this node
-          let parent = textNode.parentElement;
-          let shouldSkip = false;
-          while (parent) {
-            if (shouldSkipElement(parent, skipTags, skipClasses)) {
-              shouldSkip = true;
-              break;
-            }
-            parent = parent.parentElement;
-          }
-          if (!shouldSkip) {
-            // Temporarily disconnect observer to avoid infinite loop
-            observer.disconnect();
-            try {
-              textNode.textContent = translateText(text);
-            } finally {
-              observer.observe(root, {
-                childList: true,
-                subtree: true,
-                characterData: true,
-              });
-            }
-          }
-        }
-      }
-    }
-  });
-
-  observer.observe(root, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-  });
-
-  // Return a function to stop observing
-  return () => {
-    observer.disconnect();
-  };
-}
-
-/**
- * Marks an element to be skipped during translation.
- */
-export function skipElement(element: Element): void {
-  element.setAttribute('data-ingglish-skip', 'true');
-}
-
-/**
- * Removes the skip marker from an element.
- */
-export function unskipElement(element: Element): void {
-  element.removeAttribute('data-ingglish-skip');
 }
 
 /**
