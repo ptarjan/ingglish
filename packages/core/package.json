@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint src",
-    "test": "timeout 10 vitest run --no-color || [ $? -eq 124 ]",
+    "test": "vitest run --no-color src/case-utils.test.ts src/ipa-to-arpabet.test.ts src/phoneme-map.test.ts src/phonemize.test.ts src/reverse-translator.test.ts src/translator.test.ts src/unknown-words.test.ts src/word-frequency.test.ts",
     "test:watch": "vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
@@ -27,8 +27,7 @@
   "dependencies": {
     "cmu-pronouncing-dictionary": "^1.0.0",
     "phonemize": "^1.1.0",
-    "subtlex-word-frequencies": "^2.0.0",
-    "vite": "7.3.0"
+    "subtlex-word-frequencies": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
@@ -36,6 +35,7 @@
     "jsdom": "^27.4.0",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
+    "vite": "^7.3.0",
     "vitest": "^4.0.16"
   },
   "keywords": [
