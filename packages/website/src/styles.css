@@ -376,6 +376,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  min-width: 5.5rem;
 }
 
 .btn-primary {
