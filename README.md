@@ -1,5 +1,7 @@
 # Ingglish
 
+[![CI](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml/badge.svg)](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml)
+
 Phonetic English spelling translator. Words are spelled exactly as they sound - no exceptions!
 
 **[Try it live →](https://ptarjan.github.io/ingglish/)**
