@@ -190,7 +190,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [onShare, displayEnglish]);
 
-  const hasContent = displayEnglish.trim() || displayIngglish.trim();
+  const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
   return (
     <div className="text-translator">
