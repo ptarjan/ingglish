@@ -24,7 +24,7 @@ const mockChrome = {
     },
   },
   action: {
-    setIcon: vi.fn(),
+    setIcon: vi.fn().mockResolvedValue(undefined),
   },
   scripting: {
     executeScript: vi.fn(),
