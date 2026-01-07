@@ -26,18 +26,26 @@ toggleBtn.addEventListener('click', () => {
   toggleBtn.disabled = true;
   toggleBtn.textContent = 'Working...';
 
+  // Send toggle message - don't wait for full translation to complete
+  // The translation happens in the content script regardless of popup state
   chrome.runtime.sendMessage({ type: 'TOGGLE' }, (response: ToggleResponse | undefined) => {
+    // Ignore chrome.runtime.lastError to prevent console errors when popup closes
+    void chrome.runtime.lastError;
+
     if (response?.success === true && response.enabled !== undefined) {
       isEnabled = response.enabled;
       updateUI();
-    } else {
-      // Show error
+    } else if (response?.success === false) {
+      // Show error only if we got an explicit failure
       statusText.textContent = 'Error';
       statusText.style.color = '#ef4444';
       toggleBtn.textContent = 'Try Again';
     }
     toggleBtn.disabled = false;
   });
+
+  // Close popup after a brief delay to let the message send
+  setTimeout(() => window.close(), 100);
 });
 
 function updateUI(): void {
