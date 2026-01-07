@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadDictionary, lookupPronunciation, translateWord } from './translator';
-import {
-  translateWithRules,
-  translateWithPhonemize,
-  preloadPhonemize,
-} from './unknown-words';
+import { translateWithRules, translateWithPhonemize, preloadPhonemize } from './unknown-words';
 
 describe('phonemize improvements', () => {
   beforeAll(async () => {
@@ -104,13 +100,7 @@ describe('phonemize improvements', () => {
 
   describe('phonemize vs rules comparison', () => {
     it('compares output quality on made-up words', () => {
-      const madeUpWords = [
-        'blorgify',
-        'schnozzle',
-        'quixotic',
-        'zephyrus',
-        'melodious',
-      ];
+      const madeUpWords = ['blorgify', 'schnozzle', 'quixotic', 'zephyrus', 'melodious'];
 
       const results: { word: string; phonemize: string | null; rules: string; inCmu: boolean }[] =
         [];

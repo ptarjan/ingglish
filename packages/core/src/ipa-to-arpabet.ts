@@ -11,70 +11,70 @@
  */
 const IPA_TO_ARPABET: Record<string, string> = {
   // Vowels (monophthongs)
-  'ə': 'AH0', // schwa (unstressed)
-  'ɝ': 'ER', // r-colored schwa (bird)
-  'ɚ': 'ER', // r-colored schwa variant
-  'ʌ': 'AH', // strut
-  'æ': 'AE', // trap
-  'ɑ': 'AA', // palm, father
-  'ɔ': 'AO', // thought
-  'ɛ': 'EH', // dress
-  'ɪ': 'IH', // kit
-  'i': 'IY', // fleece
-  'u': 'UW', // goose
-  'ʊ': 'UH', // foot
+  ə: 'AH0', // schwa (unstressed)
+  ɝ: 'ER', // r-colored schwa (bird)
+  ɚ: 'ER', // r-colored schwa variant
+  ʌ: 'AH', // strut
+  æ: 'AE', // trap
+  ɑ: 'AA', // palm, father
+  ɔ: 'AO', // thought
+  ɛ: 'EH', // dress
+  ɪ: 'IH', // kit
+  i: 'IY', // fleece
+  u: 'UW', // goose
+  ʊ: 'UH', // foot
 
   // Diphthongs (two-character sequences - checked first)
-  'aɪ': 'AY', // price
-  'aʊ': 'AW', // mouth
-  'ɔɪ': 'OY', // choice
-  'oʊ': 'OW', // goat
-  'eɪ': 'EY', // face
+  aɪ: 'AY', // price
+  aʊ: 'AW', // mouth
+  ɔɪ: 'OY', // choice
+  oʊ: 'OW', // goat
+  eɪ: 'EY', // face
 
   // Consonants - Stops
-  'p': 'P',
-  'b': 'B',
-  't': 'T',
-  'd': 'D',
-  'k': 'K',
-  'g': 'G',
-  'ɡ': 'G', // IPA variant of g
+  p: 'P',
+  b: 'B',
+  t: 'T',
+  d: 'D',
+  k: 'K',
+  g: 'G',
+  ɡ: 'G', // IPA variant of g
 
   // Consonants - Fricatives
-  'f': 'F',
-  'v': 'V',
-  'θ': 'TH', // think
-  'ð': 'DH', // this
-  's': 'S',
-  'z': 'Z',
-  'ʃ': 'SH', // ship
-  'ʒ': 'ZH', // measure
-  'h': 'HH',
+  f: 'F',
+  v: 'V',
+  θ: 'TH', // think
+  ð: 'DH', // this
+  s: 'S',
+  z: 'Z',
+  ʃ: 'SH', // ship
+  ʒ: 'ZH', // measure
+  h: 'HH',
 
   // Consonants - Affricates (two-character sequences)
-  'tʃ': 'CH', // church
-  'dʒ': 'JH', // judge
+  tʃ: 'CH', // church
+  dʒ: 'JH', // judge
 
   // Consonants - Nasals
-  'm': 'M',
-  'n': 'N',
-  'ŋ': 'NG', // sing
+  m: 'M',
+  n: 'N',
+  ŋ: 'NG', // sing
 
   // Consonants - Liquids
-  'l': 'L',
-  'ɫ': 'L', // dark l
-  'ɹ': 'R',
-  'r': 'R',
+  l: 'L',
+  ɫ: 'L', // dark l
+  ɹ: 'R',
+  r: 'R',
 
   // Consonants - Glides
-  'w': 'W',
-  'j': 'Y',
-  'y': 'Y',
+  w: 'W',
+  j: 'Y',
+  y: 'Y',
 
   // Additional vowel variants
-  'e': 'EY', // some IPA uses plain e for face vowel
-  'o': 'OW', // some IPA uses plain o for goat vowel
-  'a': 'AE', // fallback for plain a
+  e: 'EY', // some IPA uses plain e for face vowel
+  o: 'OW', // some IPA uses plain o for goat vowel
+  a: 'AE', // fallback for plain a
 };
 
 /**

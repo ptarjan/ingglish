@@ -37,7 +37,10 @@ describe('dom-translator', () => {
   });
 
   // Wrapper to track observers for cleanup
-  function createObserver(root: Element | Document, options?: Parameters<typeof observeAndTranslate>[1]) {
+  function createObserver(
+    root: Element | Document,
+    options?: Parameters<typeof observeAndTranslate>[1]
+  ) {
     const stop = observeAndTranslate(root, options);
     activeObservers.push(stop);
     return stop;
