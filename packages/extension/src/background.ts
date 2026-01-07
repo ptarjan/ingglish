@@ -87,9 +87,9 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   translatedTabs.delete(tabId);
 });
 
-// Restore icon state when tab finishes loading (Chrome resets icons on navigation)
+// Restore icon state during navigation (Chrome resets icons on navigation)
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.status === 'complete') {
+  if (changeInfo.status === 'loading' || changeInfo.status === 'complete') {
     const enabled = translatedTabs.has(tabId);
     updateIcon(tabId, enabled);
   }
