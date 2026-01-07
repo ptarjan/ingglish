@@ -56,22 +56,20 @@ chrome.runtime.onMessage.addListener(
           // Disable translation - reload the page
           translatedTabs.delete(tabId);
           updateIcon(tabId, false);
-          void chrome.tabs.reload(tabId);
           sendResponse({ success: true, enabled: false });
+          void chrome.tabs.reload(tabId);
         } else {
-          // Enable translation
+          // Enable translation - respond immediately, translate async
           translatedTabs.add(tabId);
+          updateIcon(tabId, true);
+          sendResponse({ success: true, enabled: true });
 
-          // Send message to content script
-          chrome.tabs.sendMessage(tabId, { type: 'TRANSLATE' }, (_response) => {
+          // Send message to content script (fire and forget)
+          chrome.tabs.sendMessage(tabId, { type: 'TRANSLATE' }, () => {
+            // If content script not available, revert state
             if (chrome.runtime.lastError) {
-              // Expected on pages where content scripts can't run (chrome://, etc.)
               translatedTabs.delete(tabId);
               updateIcon(tabId, false);
-              sendResponse({ success: false, error: 'Could not communicate with page' });
-            } else {
-              updateIcon(tabId, true);
-              sendResponse({ success: true, enabled: true });
             }
           });
         }
