@@ -319,12 +319,12 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.7);
+  background: #ffffff;
   z-index: 10;
 }
 
 [data-theme='dark'] .iframe-loading-overlay {
-  background: rgba(0, 0, 0, 0.5);
+  background: #1a1a2e;
 }
 
 .page-iframe {
