@@ -1,0 +1,144 @@
+/**
+ * Form styles: buttons, inputs, messages.
+ */
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 5.5rem;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-copied {
+  background: var(--color-primary) !important;
+  color: white !important;
+  border-color: var(--color-primary) !important;
+}
+
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-primary.btn-loading::after {
+  border-top-color: white;
+}
+
+.btn-secondary.btn-loading::after {
+  border-top-color: var(--color-text);
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Messages */
+.error-message {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+}
+
+.success-message {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid var(--color-success);
+  color: var(--color-success);
+}
+
+/* Info Box */
+.info-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.info-box h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.info-box p {
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.info-box ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  color: var(--color-text-muted);
+}
+
+.info-box li strong {
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+.note {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  border-left: 3px solid var(--color-primary);
+}

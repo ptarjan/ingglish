@@ -2,25 +2,19 @@
  * Word frequency scoring using SUBTLEX corpus data.
  * Used for selecting the most common word among homophones.
  */
+import wordFrequencies from 'subtlex-word-frequencies';
 
-// Lazy-loaded frequency map - only built when first accessed
+// Lazy-built frequency map - import happens at module load, Map built on first access
 let frequencyMap: Map<string, number> | null = null;
 
 /**
  * Gets the frequency map, building it lazily on first access.
- * This defers the cost of importing and processing 75k words until needed.
+ * This defers the cost of processing 75k words until actually needed.
  */
 function getFrequencyMap(): Map<string, number> {
   if (frequencyMap) {
     return frequencyMap;
   }
-
-  // Dynamic import would be better but requires async
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const wordFrequencies = require('subtlex-word-frequencies') as {
-    word: string;
-    count: number;
-  }[];
 
   frequencyMap = new Map<string, number>();
   for (const { word, count } of wordFrequencies) {

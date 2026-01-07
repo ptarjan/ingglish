@@ -5,7 +5,7 @@ import {
   injectBaseTag,
   getBaseUrl,
   detectBotProtection,
-} from './useUrlTranslator';
+} from './url';
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {
