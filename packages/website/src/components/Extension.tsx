@@ -29,25 +29,19 @@ function Extension() {
 
       <div className="guide-section">
         <h3>Installation</h3>
-        <p>The extension is not yet on the Chrome Web Store. To install manually:</p>
         <ol className="install-steps">
           <li>
             <strong>Download the extension</strong>
             <p>
-              Clone or download the{' '}
-              <a
-                href="https://github.com/ptarjan/ingglish"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub repository
+              <a href="ingglish-extension.zip" download>
+                Download ingglish-extension.zip
               </a>
             </p>
           </li>
           <li>
-            <strong>Build the extension</strong>
+            <strong>Unzip the file</strong>
             <p>
-              Run <code>cd packages/extension && npm run build</code>
+              Extract the zip file to a folder (you'll get a <code>dist</code> folder)
             </p>
           </li>
           <li>
@@ -62,9 +56,7 @@ function Extension() {
           </li>
           <li>
             <strong>Load the extension</strong>
-            <p>
-              Click "Load unpacked" and select the <code>packages/extension/dist</code> folder
-            </p>
+            <p>Click "Load unpacked" and select the extracted <code>dist</code> folder</p>
           </li>
         </ol>
       </div>
