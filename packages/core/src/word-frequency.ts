@@ -2,12 +2,32 @@
  * Word frequency scoring using SUBTLEX corpus data.
  * Used for selecting the most common word among homophones.
  */
-import wordFrequencies from 'subtlex-word-frequencies';
 
-// Build frequency map at module load time for O(1) lookups
-const frequencyMap = new Map<string, number>();
-for (const { word, count } of wordFrequencies) {
-  frequencyMap.set(word.toLowerCase(), count);
+// Lazy-loaded frequency map - only built when first accessed
+let frequencyMap: Map<string, number> | null = null;
+
+/**
+ * Gets the frequency map, building it lazily on first access.
+ * This defers the cost of importing and processing 75k words until needed.
+ */
+function getFrequencyMap(): Map<string, number> {
+  if (frequencyMap) {
+    return frequencyMap;
+  }
+
+  // Dynamic import would be better but requires async
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const wordFrequencies = require('subtlex-word-frequencies') as {
+    word: string;
+    count: number;
+  }[];
+
+  frequencyMap = new Map<string, number>();
+  for (const { word, count } of wordFrequencies) {
+    frequencyMap.set(word.toLowerCase(), count);
+  }
+
+  return frequencyMap;
 }
 
 /**
@@ -15,7 +35,7 @@ for (const { word, count } of wordFrequencies) {
  * Returns undefined if word is not in the corpus.
  */
 export function getWordFrequency(word: string): number | undefined {
-  return frequencyMap.get(word.toLowerCase());
+  return getFrequencyMap().get(word.toLowerCase());
 }
 
 // Common English contractions that should be preferred over homophones
