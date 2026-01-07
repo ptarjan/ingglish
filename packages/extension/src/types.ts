@@ -12,7 +12,11 @@ export interface TranslateMessage {
   type: 'TRANSLATE';
 }
 
-export type ExtensionMessage = GetStateMessage | ToggleMessage | TranslateMessage;
+export interface RestoreMessage {
+  type: 'RESTORE';
+}
+
+export type ExtensionMessage = GetStateMessage | ToggleMessage | TranslateMessage | RestoreMessage;
 
 export interface StateResponse {
   enabled: boolean;

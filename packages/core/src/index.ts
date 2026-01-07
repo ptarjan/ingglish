@@ -15,6 +15,7 @@ import { reverseTranslateText } from './reverse-translator';
 import {
   translateDOMAsync,
   observeAndTranslate as observeAndTranslateSync,
+  restoreDOM as restoreDOMSync,
 } from './dom-translator';
 
 // =============================================================================
@@ -49,6 +50,11 @@ export async function observeAndTranslate(
 ): Promise<() => void> {
   await loadDictionary();
   return observeAndTranslateSync(root, options);
+}
+
+/** Restore original text in a DOM element (undo translation). */
+export function restoreDOM(root: Element | Document): void {
+  restoreDOMSync(root);
 }
 
 // =============================================================================

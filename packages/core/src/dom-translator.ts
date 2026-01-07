@@ -153,6 +153,11 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
   for (const textNode of textNodes) {
     const originalText = textNode.textContent;
     if (originalText) {
+      // Store original text for potential restoration
+      const parent = textNode.parentElement;
+      if (parent && !parent.hasAttribute('data-ingglish-original')) {
+        parent.setAttribute('data-ingglish-original', originalText);
+      }
       textNode.textContent = translateText(originalText);
     }
 
@@ -186,6 +191,11 @@ function translateElementAttributes(
     for (const attrName of TRANSLATABLE_ATTRIBUTES) {
       const attrValue = element.getAttribute(attrName);
       if (attrValue !== null && attrValue.length > 0) {
+        // Store original attribute value for restoration
+        const originalAttrName = `data-ingglish-original-${attrName}`;
+        if (!element.hasAttribute(originalAttrName)) {
+          element.setAttribute(originalAttrName, attrValue);
+        }
         element.setAttribute(attrName, translateText(attrValue));
       }
     }
@@ -314,4 +324,49 @@ export function skipElement(element: Element): void {
  */
 export function unskipElement(element: Element): void {
   element.removeAttribute('data-ingglish-skip');
+}
+
+/**
+ * Restores original text content that was translated.
+ * Uses the data-ingglish-original attributes stored during translation.
+ *
+ * @param root The root element to restore
+ */
+export function restoreDOM(root: Element | Document): void {
+  requireBrowser();
+
+  // Restore text content
+  const elementsWithOriginal = Array.from(
+    root.querySelectorAll('[data-ingglish-original]')
+  );
+
+  for (const element of elementsWithOriginal) {
+    const originalText = element.getAttribute('data-ingglish-original');
+    if (originalText !== null) {
+      // Find the text node child and restore it
+      for (const child of Array.from(element.childNodes)) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          child.textContent = originalText;
+          break;
+        }
+      }
+      element.removeAttribute('data-ingglish-original');
+    }
+  }
+
+  // Restore attributes
+  for (const attrName of TRANSLATABLE_ATTRIBUTES) {
+    const originalAttrName = `data-ingglish-original-${attrName}`;
+    const elementsWithAttr = Array.from(
+      root.querySelectorAll(`[${originalAttrName}]`)
+    );
+
+    for (const element of elementsWithAttr) {
+      const originalValue = element.getAttribute(originalAttrName);
+      if (originalValue !== null) {
+        element.setAttribute(attrName, originalValue);
+        element.removeAttribute(originalAttrName);
+      }
+    }
+  }
 }

@@ -15,6 +15,7 @@ const mockChrome = {
   tabs: {
     query: vi.fn(),
     reload: vi.fn(),
+    sendMessage: vi.fn(),
     onRemoved: {
       addListener: vi.fn(),
     },
@@ -161,12 +162,17 @@ describe('background script', () => {
   });
 
   describe('TOGGLE message - disable translation', () => {
-    it('removes tab from translatedTabs and reloads page', async () => {
+    it('removes tab from translatedTabs and sends RESTORE message', async () => {
       const sendResponse = vi.fn();
 
       // First enable translation for tab 111
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
         callback([{ id: 111 }]);
+      });
+
+      // Mock sendMessage to call the callback
+      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
+        if (callback) callback({});
       });
 
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
@@ -179,7 +185,11 @@ describe('background script', () => {
       // Now toggle again to disable
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
-      expect(mockChrome.tabs.reload).toHaveBeenCalledWith(111);
+      expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
+        111,
+        { type: 'RESTORE' },
+        expect.any(Function)
+      );
       expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: false });
     });
   });

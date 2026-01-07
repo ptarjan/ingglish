@@ -69,11 +69,20 @@ chrome.runtime.onMessage.addListener(
         const isEnabled = translatedTabs.has(tabId);
 
         if (isEnabled) {
-          // Disable translation - reload the page
+          // Disable translation - restore original text
           translatedTabs.delete(tabId);
           updateIcon(tabId, false);
+
+          // Send RESTORE message to content script
+          chrome.tabs.sendMessage(tabId, { type: 'RESTORE' }, () => {
+            // Ignore errors (content script may not be present)
+            if (chrome.runtime.lastError) {
+              // eslint-disable-next-line no-console
+              console.log('Restore message failed, page may need refresh');
+            }
+          });
+
           sendResponse({ success: true, enabled: false });
-          void chrome.tabs.reload(tabId);
         } else {
           // Enable translation - inject script and translate
           translatedTabs.add(tabId);

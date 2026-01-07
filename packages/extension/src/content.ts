@@ -1,22 +1,62 @@
 // Content script for Ingglish extension
 // This is injected on-demand when translation is enabled (lazy loading)
 
-import { translateDOM, observeAndTranslate } from '@ingglish/core';
+import { translateDOM, observeAndTranslate, restoreDOM } from '@ingglish/core';
+import type { RestoreMessage } from './types';
 
-// Guard against double injection
-if ((window as { __ingglishInjected?: boolean }).__ingglishInjected === true) {
+// State management
+interface IngglishState {
+  injected: boolean;
+  translated: boolean;
+  stopObserver: (() => void) | null;
+}
+
+// Get or initialize state on window
+function getState(): IngglishState {
+  const win = window as { __ingglishState?: IngglishState };
+  win.__ingglishState ??= {
+    injected: false,
+    translated: false,
+    stopObserver: null,
+  };
+  return win.__ingglishState;
+}
+
+const state = getState();
+
+// Set up message listener (only once)
+if (!state.injected) {
+  state.injected = true;
+
+  chrome.runtime.onMessage.addListener(
+    (message: RestoreMessage, _sender, sendResponse: (response: { success: boolean }) => void) => {
+      if (message.type === 'RESTORE') {
+        restorePage();
+        sendResponse({ success: true });
+        return false;
+      }
+      return false;
+    }
+  );
+
   // eslint-disable-next-line no-console
-  console.log('Ingglish: Already injected, skipping');
-} else {
-  (window as { __ingglishInjected?: boolean }).__ingglishInjected = true;
+  console.log('Ingglish: Content script initialized');
+}
 
+// If not yet translated, translate now
+if (!state.translated) {
   // eslint-disable-next-line no-console
-  console.log('Ingglish: Translator injected, starting translation...');
-
+  console.log('Ingglish: Starting translation...');
   void translatePage();
 }
 
 async function translatePage(): Promise<void> {
+  if (state.translated) {
+    // eslint-disable-next-line no-console
+    console.log('Ingglish: Already translated, skipping');
+    return;
+  }
+
   try {
     // Translate the current page
     await translateDOM(document.body, {
@@ -29,7 +69,8 @@ async function translatePage(): Promise<void> {
     });
 
     // Set up observer for dynamic content
-    await observeAndTranslate(document.body);
+    state.stopObserver = await observeAndTranslate(document.body);
+    state.translated = true;
 
     // eslint-disable-next-line no-console
     console.log('Ingglish: Translation complete!');
@@ -40,6 +81,30 @@ async function translatePage(): Promise<void> {
     // eslint-disable-next-line no-console
     console.error('Ingglish translation error:', error);
   }
+}
+
+function restorePage(): void {
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Restoring original text...');
+
+  // Stop observing new content
+  if (state.stopObserver) {
+    state.stopObserver();
+    state.stopObserver = null;
+  }
+
+  // Restore original text
+  restoreDOM(document.body);
+  state.translated = false;
+
+  // Remove the badge
+  const badge = document.getElementById('ingglish-badge');
+  if (badge) {
+    badge.remove();
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Restoration complete!');
 }
 
 function addTranslationBadge(): void {

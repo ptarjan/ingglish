@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { translateDOM, observeAndTranslate } from '@ingglish/core';
+import { translateDOM, observeAndTranslate, restoreDOM } from '@ingglish/core';
 
 // Suppress console.error and console.log during tests
 vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -8,8 +8,20 @@ vi.spyOn(console, 'log').mockImplementation(() => {});
 // Mock @ingglish/core
 vi.mock('@ingglish/core', () => ({
   translateDOM: vi.fn().mockResolvedValue(undefined),
-  observeAndTranslate: vi.fn().mockResolvedValue(undefined),
+  observeAndTranslate: vi.fn().mockResolvedValue(vi.fn()),
+  restoreDOM: vi.fn(),
 }));
+
+// Mock chrome API
+const mockChrome = {
+  runtime: {
+    onMessage: {
+      addListener: vi.fn(),
+    },
+  },
+};
+
+vi.stubGlobal('chrome', mockChrome);
 
 // Create a proper DOM mock
 function createMockDocument() {
@@ -38,9 +50,20 @@ function createMockDocument() {
   };
 }
 
+interface IngglishState {
+  injected: boolean;
+  translated: boolean;
+  stopObserver: (() => void) | null;
+}
+
 describe('content script (lazy loaded)', () => {
   let mockDocument: ReturnType<typeof createMockDocument>;
-  let mockWindow: { __ingglishInjected?: boolean };
+  let mockWindow: { __ingglishState?: IngglishState };
+  let messageHandler: (
+    message: { type: string },
+    sender: unknown,
+    sendResponse: (response: { success: boolean }) => void
+  ) => boolean | undefined;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -48,15 +71,21 @@ describe('content script (lazy loaded)', () => {
 
     // Reset mocks to successful behavior
     vi.mocked(translateDOM).mockResolvedValue(undefined);
-    vi.mocked(observeAndTranslate).mockResolvedValue(undefined);
+    vi.mocked(observeAndTranslate).mockResolvedValue(vi.fn());
+    vi.mocked(restoreDOM).mockImplementation(() => {});
 
     // Set up document mock
     mockDocument = createMockDocument();
     vi.stubGlobal('document', mockDocument);
 
-    // Set up window mock for injection guard
+    // Set up window mock for state
     mockWindow = {};
     vi.stubGlobal('window', mockWindow);
+
+    // Capture the message handler
+    mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
+      messageHandler = handler;
+    });
   });
 
   afterEach(() => {
@@ -83,15 +112,25 @@ describe('content script (lazy loaded)', () => {
       });
     });
 
-    it('sets injection guard to prevent double injection', async () => {
+    it('sets state to track injection and translation', async () => {
       await import('./content');
 
-      expect(mockWindow.__ingglishInjected).toBe(true);
+      // Wait for translation to complete
+      await vi.waitFor(() => {
+        expect(translateDOM).toHaveBeenCalled();
+      });
+
+      expect(mockWindow.__ingglishState?.injected).toBe(true);
+      expect(mockWindow.__ingglishState?.translated).toBe(true);
     });
 
-    it('skips translation if already injected', async () => {
-      // Set the guard before importing
-      mockWindow.__ingglishInjected = true;
+    it('skips translation if already translated', async () => {
+      // Set state to already translated
+      mockWindow.__ingglishState = {
+        injected: true,
+        translated: true,
+        stopObserver: null,
+      };
 
       await import('./content');
 
@@ -112,6 +151,57 @@ describe('content script (lazy loaded)', () => {
 
       // Should not throw, error is logged
       expect(translateDOM).toHaveBeenCalled();
+    });
+  });
+
+  describe('RESTORE message', () => {
+    it('restores original text when RESTORE message is received', async () => {
+      await import('./content');
+
+      // Wait for initial translation
+      await vi.waitFor(() => {
+        expect(translateDOM).toHaveBeenCalled();
+      });
+
+      // Simulate RESTORE message
+      const sendResponse = vi.fn();
+      messageHandler({ type: 'RESTORE' }, {}, sendResponse);
+
+      expect(restoreDOM).toHaveBeenCalledWith(mockDocument.body);
+      expect(sendResponse).toHaveBeenCalledWith({ success: true });
+    });
+
+    it('stops observer when restoring', async () => {
+      const mockStopObserver = vi.fn();
+      vi.mocked(observeAndTranslate).mockResolvedValue(mockStopObserver);
+
+      await import('./content');
+
+      // Wait for initial translation
+      await vi.waitFor(() => {
+        expect(observeAndTranslate).toHaveBeenCalled();
+      });
+
+      // Simulate RESTORE message
+      messageHandler({ type: 'RESTORE' }, {}, vi.fn());
+
+      expect(mockStopObserver).toHaveBeenCalled();
+    });
+
+    it('resets translated state after restore', async () => {
+      await import('./content');
+
+      // Wait for initial translation
+      await vi.waitFor(() => {
+        expect(translateDOM).toHaveBeenCalled();
+      });
+
+      expect(mockWindow.__ingglishState?.translated).toBe(true);
+
+      // Simulate RESTORE message
+      messageHandler({ type: 'RESTORE' }, {}, vi.fn());
+
+      expect(mockWindow.__ingglishState?.translated).toBe(false);
     });
   });
 
