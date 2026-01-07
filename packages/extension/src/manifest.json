@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ingglish - Phonetic English",
   "version": "1.0.0",
-  "description": "Translate any webpage to phonetic English spelling. Words are spelled exactly as they sound!",
+  "description": "What if English spelling made sense? Translate any webpage to phonetic English.",
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
