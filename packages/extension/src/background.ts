@@ -9,10 +9,15 @@ const translatedTabs = new Set<number>();
 chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
-    _sender,
+    sender,
     sendResponse: (response: StateResponse | ToggleResponse) => void
   ) => {
     if (message.type === 'GET_STATE') {
+      // Use sender's tab ID if available (from content script), otherwise query active tab (from popup)
+      if (sender.tab?.id !== undefined) {
+        sendResponse({ enabled: translatedTabs.has(sender.tab.id) });
+        return false;
+      }
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const tabId = tabs[0]?.id;
         if (tabId !== undefined) {
@@ -68,12 +73,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   translatedTabs.delete(tabId);
 });
 
-// Clean up when tabs navigate away
-chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.status === 'loading') {
-    translatedTabs.delete(tabId);
-  }
-});
+// Note: We intentionally don't clear on navigation so translation persists across pages
 
 // eslint-disable-next-line no-console
 console.log('Ingglish background service worker loaded');
