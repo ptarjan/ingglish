@@ -77,6 +77,16 @@ describe('translator', () => {
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
     });
+
+    it('should translate url (not in CMU dictionary)', () => {
+      // "url" is not in CMU dictionary, should use rule-based G2P
+      // u->AH1 (u), r->R (r), l->L (l) = "url"
+      const result = translateWord('url');
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+      // The rule-based translation should produce something
+      console.log('url translates to:', result);
+    });
   });
 
   describe('translateText', () => {

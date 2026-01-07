@@ -32,36 +32,48 @@ export default tseslint.config(
       // Strict TypeScript rules
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/explicit-function-return-type': ['error', {
-        allowExpressions: true,
-        allowTypedFunctionExpressions: true,
-        allowHigherOrderFunctions: true,
-        allowFunctionsWithoutTypeParameters: true,
-        allowConciseArrowFunctionExpressionsStartingWithVoid: true,
-      }],
-      '@typescript-eslint/strict-boolean-expressions': ['error', {
-        allowString: true,
-        allowNumber: false,
-        allowNullableObject: true,
-        allowNullableBoolean: false,
-        allowNullableString: false,
-        allowNullableNumber: false,
-        allowAny: false,
-      }],
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-misused-promises': ['error', {
-        checksVoidReturn: {
-          attributes: false, // Allow async event handlers in JSX
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowFunctionsWithoutTypeParameters: true,
+          allowConciseArrowFunctionExpressionsStartingWithVoid: true,
         },
-      }],
+      ],
+      '@typescript-eslint/strict-boolean-expressions': [
+        'error',
+        {
+          allowString: true,
+          allowNumber: false,
+          allowNullableObject: true,
+          allowNullableBoolean: false,
+          allowNullableString: false,
+          allowNullableNumber: false,
+          allowAny: false,
+        },
+      ],
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: {
+            attributes: false, // Allow async event handlers in JSX
+          },
+        },
+      ],
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-unnecessary-condition': 'off', // Too many false positives
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
       '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/restrict-template-expressions': ['error', {
-        allowNumber: true,
-        allowBoolean: true,
-      }],
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        {
+          allowNumber: true,
+          allowBoolean: true,
+        },
+      ],
       '@typescript-eslint/no-deprecated': 'warn',
 
       // React rules
@@ -90,6 +102,7 @@ export default tseslint.config(
       '*.config.ts',
       'eslint.config.js',
       '**/*.test.ts',
+      '**/e2e/**',
     ],
   }
 );

@@ -43,7 +43,9 @@ test.describe('Text Translator', () => {
     await expect(englishInput).toBeEmpty();
   });
 
-  test('English text does not flash empty when focusing Ingglish after sample', async ({ page }) => {
+  test('English text does not flash empty when focusing Ingglish after sample', async ({
+    page,
+  }) => {
     // Load sample text
     await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
 
@@ -74,6 +76,20 @@ test.describe('Text Translator', () => {
 
     // Wait for reverse translation to complete
     await expect(englishInput).toHaveValue('hello');
+  });
+
+  test('handles unknown words not in dictionary', async ({ page }) => {
+    const englishInput = page.locator('.text-input').first();
+    const ingglishInput = page.locator('.text-input').last();
+
+    // "kubernetes" is not in CMU dictionary, should use rule-based fallback
+    await englishInput.fill('kubernetes');
+
+    // Should produce some output (not throw or be empty)
+    await expect(ingglishInput).not.toBeEmpty();
+    // The output should be a string (rule-based G2P output)
+    const value = await ingglishInput.inputValue();
+    expect(value.length).toBeGreaterThan(0);
   });
 });
 
