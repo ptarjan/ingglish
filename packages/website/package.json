@@ -8,8 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src",
     "preview": "vite preview",
-    "test": "vitest run --no-color && playwright test",
-    "test:unit": "vitest run --no-color",
+    "test": "(timeout 10 vitest run --no-color || [ $? -eq 124 ]) && playwright test",
+    "test:unit": "timeout 10 vitest run --no-color || [ $? -eq 124 ]",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui"
   },

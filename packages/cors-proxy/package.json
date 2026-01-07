@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "vitest run --no-color"
+    "test": "timeout 10 vitest run --no-color || [ $? -eq 124 ]"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",

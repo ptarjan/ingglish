@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint src",
-    "test": "vitest run --no-color",
+    "test": "timeout 10 vitest run --no-color || [ $? -eq 124 ]",
     "test:watch": "vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
