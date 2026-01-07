@@ -114,9 +114,9 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
 
       {error !== null && <div className="error-message">{error}</div>}
 
-      <div className={`iframe-container ${hasContent ? '' : 'iframe-container--empty'}`}>
-        {isLoading && hasContent && (
-          <div className="iframe-loading-overlay">
+      <div className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'}`}>
+        {isLoading && (
+          <div className="iframe-loading-indicator">
             <div className="loading-spinner" />
           </div>
         )}
@@ -124,7 +124,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
           ref={iframeRef}
           title="Translated page"
           sandbox="allow-same-origin"
-          className="page-iframe"
+          className={`page-iframe ${hasContent && !isLoading ? 'page-iframe--ready' : ''}`}
         />
       </div>
 

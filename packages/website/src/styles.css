@@ -313,18 +313,14 @@ a:hover {
   display: none;
 }
 
-.iframe-loading-overlay {
+.iframe-loading-indicator {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
   z-index: 10;
-}
-
-[data-theme='dark'] .iframe-loading-overlay {
-  background: #1a1a2e;
+  pointer-events: none;
 }
 
 .page-iframe {
@@ -332,6 +328,12 @@ a:hover {
   min-height: 500px;
   border: none;
   background: white;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+.page-iframe--ready {
+  opacity: 1;
 }
 
 .example-urls {
