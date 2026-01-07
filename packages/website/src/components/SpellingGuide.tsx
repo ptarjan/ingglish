@@ -133,7 +133,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            spelling reforms
+            <strong>spelling reforms</strong>
           </a>{' '}
           have been proposed over the centuries—from{' '}
           <a

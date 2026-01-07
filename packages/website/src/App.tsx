@@ -201,7 +201,7 @@ function App() {
               setActiveTab('guide');
             }}
           >
-            — Phonetic English Spelling
+            What if English spelling made sense?
           </button>
         </div>
       </header>
@@ -224,20 +224,20 @@ function App() {
           Translate URL
         </button>
         <button
-          className={`tab ${activeTab === 'guide' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('guide');
-          }}
-        >
-          Spelling Guide
-        </button>
-        <button
           className={`tab ${activeTab === 'extension' ? 'active' : ''}`}
           onClick={() => {
             setActiveTab('extension');
           }}
         >
           Extension
+        </button>
+        <button
+          className={`tab ${activeTab === 'guide' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('guide');
+          }}
+        >
+          Spelling Guide
         </button>
       </nav>
 
