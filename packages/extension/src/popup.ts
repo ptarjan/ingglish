@@ -56,9 +56,7 @@ toggleBtn.addEventListener('click', () => {
       // eslint-disable-next-line no-console
       console.error('Toggle failed:', response.error);
       statusText.textContent =
-        response.error !== undefined && response.error !== ''
-          ? response.error
-          : 'Unknown error';
+        response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
       statusText.style.color = '#ef4444';
       toggleBtn.textContent = 'Try Again';
     } else {

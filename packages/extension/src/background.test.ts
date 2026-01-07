@@ -41,10 +41,7 @@ describe('background script', () => {
     sendResponse: (response: unknown) => void
   ) => boolean | undefined;
   let tabRemovedHandler: (tabId: number) => void;
-  let tabUpdatedHandler: (
-    tabId: number,
-    changeInfo: { status?: string }
-  ) => void;
+  let tabUpdatedHandler: (tabId: number, changeInfo: { status?: string }) => void;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -122,9 +119,7 @@ describe('background script', () => {
         callback([{ id: 789 }]);
       });
 
-      mockChrome.scripting.executeScript.mockRejectedValueOnce(
-        new Error('Injection failed')
-      );
+      mockChrome.scripting.executeScript.mockRejectedValueOnce(new Error('Injection failed'));
 
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 

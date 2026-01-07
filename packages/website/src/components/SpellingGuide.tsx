@@ -133,7 +133,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>spelling reforms</strong>
+            spelling reforms
           </a>{' '}
           have been proposed over the centuries—from{' '}
           <a
@@ -141,7 +141,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>Benjamin Franklin's phonetic alphabet</strong>
+            Benjamin Franklin's phonetic alphabet
           </a>{' '}
           (1768) to the{' '}
           <a
@@ -149,7 +149,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>Shavian alphabet</strong>
+            Shavian alphabet
           </a>{' '}
           (48 new characters) to{' '}
           <a
@@ -157,7 +157,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>Cut Spelling</strong>
+            Cut Spelling
           </a>{' '}
           (removing silent letters).{' '}
           <a
@@ -165,7 +165,7 @@ function SpellingGuide() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong>Noah Webster</strong>
+            Noah Webster
           </a>{' '}
           succeeded in simplifying American spelling (color, center, dialog), but most reforms fail
           because they're either too radical to read or too conservative to help.

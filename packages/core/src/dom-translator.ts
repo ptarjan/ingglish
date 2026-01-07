@@ -336,9 +336,7 @@ export function restoreDOM(root: Element | Document): void {
   requireBrowser();
 
   // Restore text content
-  const elementsWithOriginal = Array.from(
-    root.querySelectorAll('[data-ingglish-original]')
-  );
+  const elementsWithOriginal = Array.from(root.querySelectorAll('[data-ingglish-original]'));
 
   for (const element of elementsWithOriginal) {
     const originalText = element.getAttribute('data-ingglish-original');
@@ -357,9 +355,7 @@ export function restoreDOM(root: Element | Document): void {
   // Restore attributes
   for (const attrName of TRANSLATABLE_ATTRIBUTES) {
     const originalAttrName = `data-ingglish-original-${attrName}`;
-    const elementsWithAttr = Array.from(
-      root.querySelectorAll(`[${originalAttrName}]`)
-    );
+    const elementsWithAttr = Array.from(root.querySelectorAll(`[${originalAttrName}]`));
 
     for (const element of elementsWithAttr) {
       const originalValue = element.getAttribute(originalAttrName);
