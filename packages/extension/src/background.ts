@@ -8,8 +8,6 @@ const translatedTabs = new Set<number>();
 // Update icon based on translation state
 function updateIcon(tabId: number, enabled: boolean): void {
   const suffix = enabled ? '' : '-off';
-  // eslint-disable-next-line no-console
-  console.log(`Setting icon for tab ${tabId}: enabled=${enabled}, suffix="${suffix}"`);
   void chrome.action.setIcon({
     tabId,
     path: {

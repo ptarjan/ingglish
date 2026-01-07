@@ -6,7 +6,12 @@
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Ingglish Translator"
+    "default_title": "Ingglish Translator",
+    "default_icon": {
+      "16": "icons/icon16-off.png",
+      "48": "icons/icon48-off.png",
+      "128": "icons/icon128-off.png"
+    }
   },
   "background": {
     "service_worker": "background.global.js"
