@@ -19,6 +19,7 @@ describe('phonemize improvements', () => {
       'chatgpt',
       'cryptocurrency',
       'blockchain',
+      'url', // Acronym - should be "yooahrel" (U-R-L spelled out)
     ];
 
     it('unknown words are not in CMU dictionary', () => {
