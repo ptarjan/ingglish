@@ -34,7 +34,10 @@ toggleBtn.addEventListener('click', () => {
     if (lastError) {
       // eslint-disable-next-line no-console
       console.error('Toggle error:', lastError.message);
-      statusText.textContent = lastError.message || 'Connection error';
+      statusText.textContent =
+        lastError.message !== undefined && lastError.message !== ''
+          ? lastError.message
+          : 'Connection error';
       statusText.style.color = '#ef4444';
       toggleBtn.textContent = 'Try Again';
       toggleBtn.disabled = false;
@@ -45,12 +48,17 @@ toggleBtn.addEventListener('click', () => {
       isEnabled = response.enabled;
       updateUI();
       // Close popup on success
-      setTimeout(() => window.close(), 50);
+      setTimeout(() => {
+        window.close();
+      }, 50);
     } else if (response?.success === false) {
       // Show error with details
       // eslint-disable-next-line no-console
       console.error('Toggle failed:', response.error);
-      statusText.textContent = response.error || 'Unknown error';
+      statusText.textContent =
+        response.error !== undefined && response.error !== ''
+          ? response.error
+          : 'Unknown error';
       statusText.style.color = '#ef4444';
       toggleBtn.textContent = 'Try Again';
     } else {

@@ -1,45 +1,24 @@
 // Content script for Ingglish extension
-// This runs on every page and translates content when requested
+// This is injected on-demand when translation is enabled (lazy loading)
 
 import { translateDOM, observeAndTranslate } from '@ingglish/core';
-import type { TranslateMessage, TranslateResponse } from './types';
 
-let isTranslating = false;
-let stopObserver: (() => void) | null = null;
+// Guard against double injection
+if ((window as { __ingglishInjected?: boolean }).__ingglishInjected === true) {
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Already injected, skipping');
+} else {
+  (window as { __ingglishInjected?: boolean }).__ingglishInjected = true;
 
-// Listen for messages from background script
-chrome.runtime.onMessage.addListener(
-  (message: TranslateMessage, _sender, sendResponse: (response: TranslateResponse) => void) => {
-    if (message.type === 'TRANSLATE') {
-      translatePage()
-        .then(() => {
-          sendResponse({ success: true });
-        })
-        .catch((error: unknown) => {
-          // eslint-disable-next-line no-console
-          console.error('Ingglish translation error:', error);
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-          sendResponse({ success: false, error: errorMessage });
-        });
-      return true; // Keep channel open for async response
-    }
-    return false;
-  }
-);
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Translator injected, starting translation...');
+
+  void translatePage();
+}
 
 async function translatePage(): Promise<void> {
-  if (isTranslating) {
-    // eslint-disable-next-line no-console
-    console.log('Ingglish: Already translating');
-    return;
-  }
-
-  isTranslating = true;
-  // eslint-disable-next-line no-console
-  console.log('Ingglish: Starting translation...');
-
   try {
-    // Translate the current page using defaults (auto-loads dictionary)
+    // Translate the current page
     await translateDOM(document.body, {
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
@@ -49,23 +28,17 @@ async function translatePage(): Promise<void> {
       },
     });
 
-    // Stop any previous observer before creating a new one
-    if (stopObserver) {
-      stopObserver();
-    }
-
-    // Set up observer for dynamic content using defaults
-    stopObserver = await observeAndTranslate(document.body);
+    // Set up observer for dynamic content
+    await observeAndTranslate(document.body);
 
     // eslint-disable-next-line no-console
     console.log('Ingglish: Translation complete!');
-    isTranslating = false;
 
     // Add visual indicator
     addTranslationBadge();
   } catch (error) {
-    isTranslating = false;
-    throw error;
+    // eslint-disable-next-line no-console
+    console.error('Ingglish translation error:', error);
   }
 }
 
@@ -109,18 +82,3 @@ function addTranslationBadge(): void {
 
   document.body.appendChild(badge);
 }
-
-// eslint-disable-next-line no-console
-console.log('Ingglish content script loaded');
-
-// Check if this tab should auto-translate (e.g., after navigation)
-chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response) => {
-  // Ignore errors if background isn't ready
-  if (chrome.runtime.lastError) return;
-
-  if (response?.enabled) {
-    // eslint-disable-next-line no-console
-    console.log('Ingglish: Auto-translating (tab was previously enabled)');
-    void translatePage();
-  }
-});

@@ -14,7 +14,6 @@ const mockChrome = {
   },
   tabs: {
     query: vi.fn(),
-    sendMessage: vi.fn(),
     reload: vi.fn(),
     onRemoved: {
       addListener: vi.fn(),
@@ -25,6 +24,9 @@ const mockChrome = {
   },
   action: {
     setIcon: vi.fn(),
+  },
+  scripting: {
+    executeScript: vi.fn(),
   },
 };
 
@@ -38,11 +40,16 @@ describe('background script', () => {
     sendResponse: (response: unknown) => void
   ) => boolean | undefined;
   let tabRemovedHandler: (tabId: number) => void;
+  let tabUpdatedHandler: (
+    tabId: number,
+    changeInfo: { status?: string }
+  ) => void;
 
   beforeEach(async () => {
     vi.resetModules();
     vi.clearAllMocks();
     mockChrome.runtime.lastError = null;
+    mockChrome.scripting.executeScript.mockResolvedValue([]);
 
     // Capture the handlers when the module loads
     mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
@@ -50,6 +57,9 @@ describe('background script', () => {
     });
     mockChrome.tabs.onRemoved.addListener.mockImplementation((handler) => {
       tabRemovedHandler = handler;
+    });
+    mockChrome.tabs.onUpdated.addListener.mockImplementation((handler) => {
+      tabUpdatedHandler = handler;
     });
 
     // Import the module to trigger handler registration
@@ -84,46 +94,51 @@ describe('background script', () => {
   });
 
   describe('TOGGLE message - enable translation', () => {
-    it('adds tab to translatedTabs and sends TRANSLATE message', () => {
+    it('adds tab to translatedTabs and injects script', async () => {
       const sendResponse = vi.fn();
 
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
         callback([{ id: 456 }]);
       });
 
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        mockChrome.runtime.lastError = null;
-        callback({});
-      });
-
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
-      expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
-        456,
-        { type: 'TRANSLATE' },
-        expect.any(Function)
-      );
+      // Wait for async operations
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith({
+          target: { tabId: 456 },
+          files: ['content.global.js'],
+        });
+      });
+
       expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
     });
 
-    it('reverts state when content script not available', () => {
+    it('reverts state when script injection fails', async () => {
       const sendResponse = vi.fn();
 
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
         callback([{ id: 789 }]);
       });
 
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        mockChrome.runtime.lastError = { message: 'Could not establish connection' };
-        callback(undefined);
-      });
+      mockChrome.scripting.executeScript.mockRejectedValueOnce(
+        new Error('Injection failed')
+      );
 
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
       // Response is sent immediately with success (optimistic)
       expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
 
-      // But state should be reverted after sendMessage fails
+      // Wait for async injection to fail
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
+      });
+
+      // Small delay for the .then() handler to run
+      await new Promise((r) => setTimeout(r, 10));
+
+      // State should be reverted after injection fails
       const stateResponse = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
       expect(stateResponse).toHaveBeenCalledWith({ enabled: false });
@@ -153,12 +168,13 @@ describe('background script', () => {
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
         callback([{ id: 111 }]);
       });
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        mockChrome.runtime.lastError = null;
-        callback({});
-      });
 
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+
+      // Wait for injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
+      });
 
       // Now toggle again to disable
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
@@ -174,12 +190,13 @@ describe('background script', () => {
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
         callback([{ id: 222 }]);
       });
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        mockChrome.runtime.lastError = null;
-        callback({});
-      });
 
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+
+      // Wait for injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
+      });
 
       // Verify tab is tracked
       const stateResponse = vi.fn();
@@ -193,6 +210,40 @@ describe('background script', () => {
       const stateResponse2 = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse2);
       expect(stateResponse2).toHaveBeenCalledWith({ enabled: false });
+    });
+  });
+
+  describe('tab navigation', () => {
+    it('re-injects script when enabled tab completes loading', async () => {
+      // Enable translation for tab
+      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+        callback([{ id: 333 }]);
+      });
+
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+
+      // Wait for initial injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
+      });
+
+      // Simulate page navigation completing
+      tabUpdatedHandler(333, { status: 'complete' });
+
+      // Wait for re-injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    it('does not inject script for disabled tabs', async () => {
+      // Simulate page load on a tab that was never enabled
+      tabUpdatedHandler(444, { status: 'complete' });
+
+      // Small delay
+      await new Promise((r) => setTimeout(r, 10));
+
+      expect(mockChrome.scripting.executeScript).not.toHaveBeenCalled();
     });
   });
 

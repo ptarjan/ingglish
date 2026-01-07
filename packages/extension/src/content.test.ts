@@ -11,22 +11,6 @@ vi.mock('@ingglish/core', () => ({
   observeAndTranslate: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Mock chrome API
-const mockChrome = {
-  runtime: {
-    onMessage: {
-      addListener: vi.fn(),
-    },
-    sendMessage: vi.fn((_message, callback) => {
-      // Simulate background responding with disabled state
-      if (callback) callback({ enabled: false });
-    }),
-    lastError: null as chrome.runtime.LastError | null,
-  },
-};
-
-vi.stubGlobal('chrome', mockChrome);
-
 // Create a proper DOM mock
 function createMockDocument() {
   const elements: Record<string, unknown> = {};
@@ -54,13 +38,9 @@ function createMockDocument() {
   };
 }
 
-describe('content script', () => {
-  let messageHandler: (
-    message: { type: string },
-    sender: unknown,
-    sendResponse: (response: { success: boolean; error?: string }) => void
-  ) => boolean | undefined;
+describe('content script (lazy loaded)', () => {
   let mockDocument: ReturnType<typeof createMockDocument>;
+  let mockWindow: { __ingglishInjected?: boolean };
 
   beforeEach(async () => {
     vi.resetModules();
@@ -74,35 +54,18 @@ describe('content script', () => {
     mockDocument = createMockDocument();
     vi.stubGlobal('document', mockDocument);
 
-    // Capture the message handler
-    mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
-      messageHandler = handler;
-    });
-
-    // Import the module
-    await import('./content');
+    // Set up window mock for injection guard
+    mockWindow = {};
+    vi.stubGlobal('window', mockWindow);
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('TRANSLATE message', () => {
-    it('responds with success after translation', async () => {
-      const sendResponse = vi.fn();
-
-      const result = messageHandler({ type: 'TRANSLATE' }, {}, sendResponse);
-
-      expect(result).toBe(true); // async response
-
-      // Wait for async translation to complete
-      await vi.waitFor(() => {
-        expect(sendResponse).toHaveBeenCalledWith({ success: true });
-      });
-    });
-
-    it('calls translateDOM with document.body', async () => {
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+  describe('automatic translation on load', () => {
+    it('translates page immediately when injected', async () => {
+      await import('./content');
 
       await vi.waitFor(() => {
         expect(translateDOM).toHaveBeenCalledWith(
@@ -113,41 +76,48 @@ describe('content script', () => {
     });
 
     it('calls observeAndTranslate after translation', async () => {
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+      await import('./content');
 
       await vi.waitFor(() => {
         expect(observeAndTranslate).toHaveBeenCalledWith(mockDocument.body);
       });
     });
 
-    it('responds with error on translation failure', async () => {
-      // Make translateDOM fail for this test
+    it('sets injection guard to prevent double injection', async () => {
+      await import('./content');
+
+      expect(mockWindow.__ingglishInjected).toBe(true);
+    });
+
+    it('skips translation if already injected', async () => {
+      // Set the guard before importing
+      mockWindow.__ingglishInjected = true;
+
+      await import('./content');
+
+      // Small delay
+      await new Promise((r) => setTimeout(r, 50));
+
+      // translateDOM should not be called
+      expect(translateDOM).not.toHaveBeenCalled();
+    });
+
+    it('handles translation errors gracefully', async () => {
       vi.mocked(translateDOM).mockRejectedValueOnce(new Error('Translation failed'));
 
-      const sendResponse = vi.fn();
-      messageHandler({ type: 'TRANSLATE' }, {}, sendResponse);
+      await import('./content');
 
-      await vi.waitFor(() => {
-        expect(sendResponse).toHaveBeenCalledWith({
-          success: false,
-          error: 'Translation failed',
-        });
-      });
-    });
-  });
+      // Wait a bit for the error to be caught
+      await new Promise((r) => setTimeout(r, 50));
 
-  describe('unknown message types', () => {
-    it('returns false for unknown message types', () => {
-      const sendResponse = vi.fn();
-      const result = messageHandler({ type: 'UNKNOWN' }, {}, sendResponse);
-
-      expect(result).toBe(false);
+      // Should not throw, error is logged
+      expect(translateDOM).toHaveBeenCalled();
     });
   });
 
   describe('translation badge', () => {
     it('creates badge element after translation', async () => {
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+      await import('./content');
 
       await vi.waitFor(() => {
         expect(mockDocument.createElement).toHaveBeenCalledWith('div');
@@ -155,7 +125,7 @@ describe('content script', () => {
     });
 
     it('appends badge to body', async () => {
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+      await import('./content');
 
       await vi.waitFor(() => {
         expect(mockDocument.body.appendChild).toHaveBeenCalled();
@@ -166,9 +136,14 @@ describe('content script', () => {
       // Simulate existing badge
       mockDocument._setElement('ingglish-badge', { id: 'ingglish-badge' });
 
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+      await import('./content');
 
-      // Wait a bit for translation to complete
+      // Wait for translation to complete
+      await vi.waitFor(() => {
+        expect(translateDOM).toHaveBeenCalled();
+      });
+
+      // Wait a bit more for badge creation
       await new Promise((r) => setTimeout(r, 50));
 
       // createElement should not be called because badge exists
@@ -189,7 +164,7 @@ describe('content script', () => {
         return createdElement;
       });
 
-      messageHandler({ type: 'TRANSLATE' }, {}, vi.fn());
+      await import('./content');
 
       await vi.waitFor(() => {
         expect(createdElement).not.toBeNull();

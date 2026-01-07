@@ -18,6 +18,21 @@ function updateIcon(tabId: number, enabled: boolean): void {
   });
 }
 
+// Inject the translation script into a tab
+async function injectTranslator(tabId: number): Promise<boolean> {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ['content.global.js'],
+    });
+    return true;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to inject translator:', error);
+    return false;
+  }
+}
+
 // Listen for messages from popup and content scripts
 chrome.runtime.onMessage.addListener(
   (
@@ -60,19 +75,19 @@ chrome.runtime.onMessage.addListener(
           sendResponse({ success: true, enabled: false });
           void chrome.tabs.reload(tabId);
         } else {
-          // Enable translation - respond immediately, translate async
+          // Enable translation - inject script and translate
           translatedTabs.add(tabId);
           updateIcon(tabId, true);
-          sendResponse({ success: true, enabled: true });
 
-          // Send message to content script (fire and forget)
-          chrome.tabs.sendMessage(tabId, { type: 'TRANSLATE' }, () => {
-            // If content script not available, revert state
-            if (chrome.runtime.lastError) {
+          // Inject the translator script (async, don't block response)
+          void injectTranslator(tabId).then((success) => {
+            if (!success) {
               translatedTabs.delete(tabId);
               updateIcon(tabId, false);
             }
           });
+
+          sendResponse({ success: true, enabled: true });
         }
       });
       return true; // Keep channel open for async response
@@ -87,11 +102,18 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   translatedTabs.delete(tabId);
 });
 
-// Restore icon state during navigation (Chrome resets icons on navigation)
+// Handle tab updates: restore icon and re-inject translator on navigation
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  const enabled = translatedTabs.has(tabId);
+
+  // Restore icon state (Chrome resets icons on navigation)
   if (changeInfo.status === 'loading' || changeInfo.status === 'complete') {
-    const enabled = translatedTabs.has(tabId);
     updateIcon(tabId, enabled);
+  }
+
+  // Re-inject translator when page finishes loading on enabled tabs
+  if (changeInfo.status === 'complete' && enabled) {
+    void injectTranslator(tabId);
   }
 });
 
