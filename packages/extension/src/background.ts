@@ -51,8 +51,7 @@ chrome.runtime.onMessage.addListener(
           // Send message to content script
           chrome.tabs.sendMessage(tabId, { type: 'TRANSLATE' }, (_response) => {
             if (chrome.runtime.lastError) {
-              // eslint-disable-next-line no-console
-              console.error('Error sending message:', chrome.runtime.lastError);
+              // Expected on pages where content scripts can't run (chrome://, etc.)
               translatedTabs.delete(tabId);
               sendResponse({ success: false, error: 'Could not communicate with page' });
             } else {
