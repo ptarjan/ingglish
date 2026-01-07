@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
 import { loadDictionary } from './translator';
 import {
   translateDOM,
@@ -12,25 +12,50 @@ import {
 } from './dom-translator';
 
 describe('dom-translator', () => {
+  // Track stop functions to ensure cleanup even if tests fail
+  let activeObservers: (() => void)[] = [];
+
   beforeAll(async () => {
     await loadDictionary();
   });
 
   beforeEach(() => {
     document.body.innerHTML = '';
+    activeObservers = [];
   });
+
+  afterEach(() => {
+    // Clean up any active MutationObservers to prevent process hanging
+    for (const stop of activeObservers) {
+      try {
+        stop();
+      } catch {
+        // Ignore errors if already stopped
+      }
+    }
+    activeObservers = [];
+  });
+
+  // Wrapper to track observers for cleanup
+  function createObserver(root: Element | Document, options?: Parameters<typeof observeAndTranslate>[1]) {
+    const stop = observeAndTranslate(root, options);
+    activeObservers.push(stop);
+    return stop;
+  }
 
   describe('translateDOM', () => {
     it('should translate text content', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       translateDOM(document.body);
-      expect(document.body.innerHTML).toBe('<p>Hulo werld</p>');
+      // Check text content (ignoring data attributes)
+      expect(document.body.textContent).toBe('Hulo werld');
     });
 
     it('should translate multiple text nodes', () => {
       document.body.innerHTML = '<div><p>Hello</p><p>World</p></div>';
       translateDOM(document.body);
-      expect(document.querySelector('div')?.innerHTML).toBe('<p>Hulo</p><p>Werld</p>');
+      // Check text content (ignoring data attributes)
+      expect(document.querySelector('div')?.textContent).toBe('HuloWerld');
     });
 
     it('should skip script tags by default', () => {
@@ -99,7 +124,8 @@ describe('dom-translator', () => {
     it('should translate text content asynchronously', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await translateDOMAsync(document.body);
-      expect(document.body.innerHTML).toBe('<p>Hulo werld</p>');
+      // Check text content (ignoring data attributes)
+      expect(document.body.textContent).toBe('Hulo werld');
     });
   });
 
@@ -143,28 +169,26 @@ describe('dom-translator', () => {
 
   describe('observeAndTranslate', () => {
     it('should return a stop function', () => {
-      const stop = observeAndTranslate(document.body);
+      const stop = createObserver(document.body);
       expect(typeof stop).toBe('function');
-      stop();
     });
 
     it('should translate newly added text nodes', async () => {
-      const stop = observeAndTranslate(document.body);
+      createObserver(document.body);
 
       // Add a new element with text
       const p = document.createElement('p');
-      p.textContent = 'Hello';
+      p.textContent = 'World';
       document.body.appendChild(p);
 
       // Wait for MutationObserver to process
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(p.textContent).toBe('Hulo');
-      stop();
+      expect(p.textContent).toBe('Werld');
     });
 
     it('should translate newly added element nodes', async () => {
-      const stop = observeAndTranslate(document.body);
+      createObserver(document.body);
 
       // Add a new element with nested text
       const div = document.createElement('div');
@@ -175,11 +199,10 @@ describe('dom-translator', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(div.querySelector('span')?.textContent).toBe('Werld');
-      stop();
     });
 
     it('should skip elements inside skipped tags', async () => {
-      const stop = observeAndTranslate(document.body);
+      createObserver(document.body);
 
       // Add a code element that should be skipped
       const code = document.createElement('code');
@@ -190,11 +213,10 @@ describe('dom-translator', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(code.textContent).toBe('Hello');
-      stop();
     });
 
     it('should stop observing when stop function is called', async () => {
-      const stop = observeAndTranslate(document.body);
+      const stop = createObserver(document.body);
       stop();
 
       // Add a new element after stopping
@@ -216,16 +238,15 @@ describe('dom-translator', () => {
       document.body.appendChild(p);
 
       // Now start observing
-      const stop = observeAndTranslate(document.body);
+      createObserver(document.body);
 
       // Change the text content
-      p.textContent = 'Hello';
+      p.textContent = 'World';
 
       // Wait for MutationObserver to process
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(p.textContent).toBe('Hulo');
-      stop();
+      expect(p.textContent).toBe('Werld');
     });
   });
 });

@@ -78,12 +78,6 @@ const IPA_TO_ARPABET: Record<string, string> = {
 };
 
 /**
- * Two-character IPA sequences that should be matched before single characters.
- * Order matters - longer sequences first.
- */
-const TWO_CHAR_SEQUENCES = ['aɪ', 'aʊ', 'ɔɪ', 'oʊ', 'eɪ', 'tʃ', 'dʒ'];
-
-/**
  * Converts an IPA transcription to ARPAbet phonemes.
  *
  * @param ipa - IPA string (e.g., "həˈɫoʊ" for "hello")
@@ -97,15 +91,12 @@ export function ipaToArpabet(ipa: string): string[] {
   let i = 0;
 
   while (i < clean.length) {
-    let matched = false;
-
     // Try two-character sequences first (diphthongs, affricates)
     if (i + 1 < clean.length) {
       const twoChar = clean.slice(i, i + 2);
       if (IPA_TO_ARPABET[twoChar]) {
         result.push(IPA_TO_ARPABET[twoChar]);
         i += 2;
-        matched = true;
         continue;
       }
     }
@@ -114,9 +105,7 @@ export function ipaToArpabet(ipa: string): string[] {
     const oneChar = clean[i];
     if (IPA_TO_ARPABET[oneChar]) {
       result.push(IPA_TO_ARPABET[oneChar]);
-      matched = true;
     }
-
     // Skip unknown characters (punctuation, etc.)
     i++;
   }

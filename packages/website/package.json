@@ -8,8 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src",
     "preview": "vite preview",
-    "test": "vitest run --no-color src/hooks/useUrlTranslator.test.ts && playwright test",
-    "test:unit": "vitest run --no-color src/hooks/useUrlTranslator.test.ts",
+    "test": "vitest run --no-color && playwright test",
+    "test:unit": "vitest run --no-color",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui"
   },

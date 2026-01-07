@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint src",
-    "test": "vitest run --no-color src/case-utils.test.ts src/ipa-to-arpabet.test.ts src/phoneme-map.test.ts src/phonemize.test.ts src/reverse-translator.test.ts src/translator.test.ts src/unknown-words.test.ts src/word-frequency.test.ts",
+    "test": "vitest run --no-color",
     "test:watch": "vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
