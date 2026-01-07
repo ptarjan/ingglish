@@ -33,6 +33,14 @@ jobs:
       - name: Build core library
         run: npm run build -w @ingglish/core
 
+      - name: Build extension
+        run: npm run build -w @ingglish/extension
+
+      - name: Package extension zip
+        run: |
+          cd packages/extension/dist
+          zip -r ../../website/public/ingglish-extension.zip .
+
       - name: Build website
         run: npm run build -w @ingglish/website
         env:
