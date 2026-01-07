@@ -28,7 +28,8 @@ chrome.runtime.onMessage.addListener(
     if (message.type === 'GET_STATE') {
       // Use sender's tab ID if available (from content script), otherwise query active tab (from popup)
       if (sender.tab?.id !== undefined) {
-        sendResponse({ enabled: translatedTabs.has(sender.tab.id) });
+        const enabled = translatedTabs.has(sender.tab.id);
+        sendResponse({ enabled });
         return false;
       }
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -86,7 +87,13 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   translatedTabs.delete(tabId);
 });
 
-// Note: We intentionally don't clear on navigation so translation persists across pages
+// Restore icon state when tab finishes loading (Chrome resets icons on navigation)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === 'complete') {
+    const enabled = translatedTabs.has(tabId);
+    updateIcon(tabId, enabled);
+  }
+});
 
 // eslint-disable-next-line no-console
 console.log('Ingglish background service worker loaded');

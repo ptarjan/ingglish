@@ -17,6 +17,11 @@ const mockChrome = {
     onMessage: {
       addListener: vi.fn(),
     },
+    sendMessage: vi.fn((_message, callback) => {
+      // Simulate background responding with disabled state
+      if (callback) callback({ enabled: false });
+    }),
+    lastError: null as chrome.runtime.LastError | null,
   },
 };
 

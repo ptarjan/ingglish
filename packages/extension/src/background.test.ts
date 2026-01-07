@@ -23,6 +23,9 @@ const mockChrome = {
       addListener: vi.fn(),
     },
   },
+  action: {
+    setIcon: vi.fn(),
+  },
 };
 
 // Set up global chrome mock
@@ -31,15 +34,15 @@ vi.stubGlobal('chrome', mockChrome);
 describe('background script', () => {
   let messageHandler: (
     message: { type: string },
-    sender: unknown,
+    sender: { tab?: { id?: number } },
     sendResponse: (response: unknown) => void
   ) => boolean | undefined;
   let tabRemovedHandler: (tabId: number) => void;
-  let tabUpdatedHandler: (tabId: number, changeInfo: { status?: string }) => void;
 
   beforeEach(async () => {
     vi.resetModules();
     vi.clearAllMocks();
+    mockChrome.runtime.lastError = null;
 
     // Capture the handlers when the module loads
     mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
@@ -47,9 +50,6 @@ describe('background script', () => {
     });
     mockChrome.tabs.onRemoved.addListener.mockImplementation((handler) => {
       tabRemovedHandler = handler;
-    });
-    mockChrome.tabs.onUpdated.addListener.mockImplementation((handler) => {
-      tabUpdatedHandler = handler;
     });
 
     // Import the module to trigger handler registration
@@ -106,7 +106,7 @@ describe('background script', () => {
       expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
     });
 
-    it('handles error when content script not available', () => {
+    it('reverts state when content script not available', () => {
       const sendResponse = vi.fn();
 
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
@@ -120,10 +120,13 @@ describe('background script', () => {
 
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
-      expect(sendResponse).toHaveBeenCalledWith({
-        success: false,
-        error: 'Could not communicate with page',
-      });
+      // Response is sent immediately with success (optimistic)
+      expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
+
+      // But state should be reverted after sendMessage fails
+      const stateResponse = vi.fn();
+      messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
+      expect(stateResponse).toHaveBeenCalledWith({ enabled: false });
     });
 
     it('responds with error when no active tab', () => {
@@ -190,27 +193,6 @@ describe('background script', () => {
       const stateResponse2 = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse2);
       expect(stateResponse2).toHaveBeenCalledWith({ enabled: false });
-    });
-
-    it('removes tab from translatedTabs when tab navigates', async () => {
-      // Enable translation for tab
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
-        callback([{ id: 333 }]);
-      });
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        mockChrome.runtime.lastError = null;
-        callback({});
-      });
-
-      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
-
-      // Simulate navigation
-      tabUpdatedHandler(333, { status: 'loading' });
-
-      // Verify tab is no longer tracked
-      const stateResponse = vi.fn();
-      messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
-      expect(stateResponse).toHaveBeenCalledWith({ enabled: false });
     });
   });
 
