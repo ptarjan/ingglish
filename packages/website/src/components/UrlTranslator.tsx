@@ -2,6 +2,46 @@ import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { useFormat } from '../contexts/FormatContext';
 
+/**
+ * Fullscreen icon (expand arrows)
+ */
+function FullscreenIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+    </svg>
+  );
+}
+
+/**
+ * Exit fullscreen icon (shrink arrows)
+ */
+function ExitFullscreenIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+    </svg>
+  );
+}
+
 const EXAMPLE_URLS = [
   { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/English_language' },
   {
@@ -27,7 +67,36 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
     useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeContainerRef = useRef<HTMLDivElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Listen for fullscreen changes (e.g., user presses Escape)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement !== null);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    if (iframeContainerRef.current === null) {
+      return;
+    }
+
+    try {
+      if (document.fullscreenElement !== null) {
+        await document.exitFullscreen();
+      } else {
+        await iframeContainerRef.current.requestFullscreen();
+      }
+    } catch {
+      // Fullscreen may not be supported or allowed
+    }
+  }, []);
 
   // Auto-translate if initialUrl is provided
   useEffect(() => {
@@ -117,12 +186,23 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
       {error !== null && <div className="error-message">{error}</div>}
 
       <div
-        className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'}`}
+        ref={iframeContainerRef}
+        className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'} ${isFullscreen ? 'iframe-container--fullscreen' : ''}`}
       >
         {isLoading && (
           <div className="iframe-loading-indicator">
             <div className="loading-spinner" />
           </div>
+        )}
+        {hasContent && (
+          <button
+            type="button"
+            className="fullscreen-btn"
+            onClick={toggleFullscreen}
+            title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+          >
+            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+          </button>
         )}
         <iframe
           ref={iframeRef}
