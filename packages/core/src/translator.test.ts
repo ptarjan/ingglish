@@ -82,7 +82,6 @@ describe('translator', () => {
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
       // The rule-based translation should produce something
-      console.log('url translates to:', result);
     });
   });
 

@@ -47,9 +47,7 @@ describe('phonemize improvements', () => {
         }
       }
 
-      // Log results for inspection
-      console.log('\nUnknown word translations:');
-      console.table(results);
+      // Results are captured in the test - no need to log
     });
   });
 
@@ -68,11 +66,10 @@ describe('phonemize improvements', () => {
         const phonemizeResult = translateWithPhonemize(name);
         const rulesResult = translateWithRules(name);
 
-        console.log(`${name}: phonemize="${phonemizeResult}" rules="${rulesResult}"`);
-
         // Both methods should produce output
         expect(rulesResult.length).toBeGreaterThan(0);
-        // Phonemize may or may not handle these well
+        // Phonemize may or may not handle these well, but should produce something
+        expect(phonemizeResult === null || phonemizeResult.length > 0).toBe(true);
       }
     });
   });
@@ -118,9 +115,6 @@ describe('phonemize improvements', () => {
           inCmu,
         });
       }
-
-      console.log('\nMade-up word comparison:');
-      console.table(results);
 
       // All should produce some output
       for (const r of results) {

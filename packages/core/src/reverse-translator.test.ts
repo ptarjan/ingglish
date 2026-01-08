@@ -125,9 +125,6 @@ describe('reverse-translator', () => {
         }
       }
 
-      if (failures.length > 0) {
-        console.log('Contraction round-trip failures:', failures);
-      }
       expect(failures).toEqual([]);
     });
 
@@ -155,7 +152,7 @@ so many exceptions. With phonetic spelling, words
 are written exactly as they sound - what you see is what you say!`;
 
       // Extract words
-      const words = sampleText.match(/[a-zA-Z]+/g) || [];
+      const words = sampleText.match(/[a-zA-Z]+/g) ?? [];
       const failures: string[] = [];
 
       for (const word of words) {
@@ -166,9 +163,6 @@ are written exactly as they sound - what you see is what you say!`;
         }
       }
 
-      if (failures.length > 0) {
-        console.log('Round-trip failures:', failures);
-      }
       expect(failures).toEqual([]);
     });
   });
