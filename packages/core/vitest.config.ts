@@ -8,5 +8,19 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'json', 'html'],
     },
+    // Performance optimizations
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        // Share global state (dictionary) across tests for speed
+        isolate: false,
+        // Use all available CPU threads
+        useAtomics: true,
+      },
+    },
+    // Cache test results
+    cache: {
+      dir: './node_modules/.vitest',
+    },
   },
 });

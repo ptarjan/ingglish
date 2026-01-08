@@ -6,11 +6,12 @@ export default defineConfig({
     exclude: ['e2e/**', 'node_modules/**'],
   },
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
-  base: process.env.BASE_URL || '/',
+  base: process.env.BASE_URL ?? '/',
   plugins: [react()],
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // Enable sourcemaps in CI for debugging, skip locally for speed
+    sourcemap: !!process.env.CI,
     // Dictionary chunk is ~6.6MB, suppress warning for it
     chunkSizeWarningLimit: 7000,
     rollupOptions: {
