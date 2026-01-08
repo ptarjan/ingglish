@@ -99,7 +99,7 @@ describe('content script (lazy loaded)', () => {
       await vi.waitFor(() => {
         expect(translateDOM).toHaveBeenCalledWith(
           mockDocument.body,
-          expect.objectContaining({ onProgress: expect.any(Function) })
+          expect.objectContaining({ showTooltips: true, onProgress: expect.any(Function) })
         );
       });
     });
@@ -108,7 +108,7 @@ describe('content script (lazy loaded)', () => {
       await import('./content');
 
       await vi.waitFor(() => {
-        expect(observeAndTranslate).toHaveBeenCalledWith(mockDocument.body);
+        expect(observeAndTranslate).toHaveBeenCalledWith(mockDocument.body, { showTooltips: true });
       });
     });
 
