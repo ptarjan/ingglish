@@ -369,7 +369,7 @@
   border-bottom: none;
 }
 
-.ipa-cell {
+.mapping-table .ipa-cell {
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 600;
@@ -378,7 +378,7 @@
   text-align: center;
 }
 
-.ingglish-cell {
+.mapping-table .ingglish-cell {
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 600;

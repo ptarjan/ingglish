@@ -57,7 +57,7 @@ function SpellingGuide(): React.JSX.Element {
     {
       name: 'Other Vowels',
       sounds: [
-        { phoneme: 'AH0', examples: '**a**bout, sof**a** (unstressed ʌ)' },
+        { phoneme: 'AH0', examples: '**a**bout, sof**a**' },
         { phoneme: 'AA', examples: 'f**a**ther, h**o**t' },
         { phoneme: 'AO', examples: 'th**ough**t, l**aw**' },
         { phoneme: 'AW', examples: 'c**ow**, **ou**t' },

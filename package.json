@@ -14,7 +14,9 @@
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
     "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
-    "check": "npm run lint && npm run format:check && npm run test",
+    "check": "npm run lint && npm run lint:css && npm run format:check && npm run test",
+    "lint:css": "stylelint \"packages/*/src/**/*.css\"",
+    "lint:css:fix": "stylelint \"packages/*/src/**/*.css\" --fix",
     "debug:roundtrip": "npm run debug:roundtrip -w @ingglish/core --",
     "prepare": "husky"
   },
@@ -31,7 +33,11 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{js,jsx,json,css,md}": [
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,json,md}": [
       "prettier --write"
     ]
   },
@@ -45,6 +51,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1",
     "typescript-eslint": "^8.52.0"
   }
 }
