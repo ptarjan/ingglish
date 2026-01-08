@@ -98,9 +98,10 @@ describe('arpabet-to-ipa', () => {
 
     it('should place secondary stress at syllable boundary', () => {
       // examination: IH0 G Z AE2 M AH0 N EY1 SH AH0 N
+      // Syllables: /ɪɡ.zæm.ə.neɪ.ʃən/ - "g" is coda, "z" is onset
+      // "gz" is NOT a valid English onset, so stress goes before "z" only
       const phonemes = ['IH0', 'G', 'Z', 'AE2', 'M', 'AH0', 'N', 'EY1', 'SH', 'AH0', 'N'];
-      // Note: IPA uses ɡ (U+0261) not g
-      expect(phonemesToIPA(phonemes)).toBe(`/ɪ${WJ}ˌ${WJ}ɡzæmə${WJ}ˈ${WJ}neɪʃən/`);
+      expect(phonemesToIPA(phonemes)).toBe(`/ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən/`);
     });
   });
 

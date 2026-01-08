@@ -19,24 +19,58 @@ interface Token {
 }
 
 /**
- * IPA character class for tokenization.
- * Includes Latin letters, IPA symbols, stress markers, and word joiner.
+ * Checks if a character is a "word" character (letter or IPA symbol).
+ * This includes Latin letters, IPA phonetic symbols, stress markers, and word joiner.
  */
-const IPA_WORD_CHARS =
-  // Basic Latin letters
-  'a-zA-Z' +
-  // IPA vowels and consonants
-  'əɝɚʌæɑɔɛɪiuʊ' + // vowels
-  'ðθʃʒŋɹɡ' + // consonants
-  // Diphthong components (already in basic: a, e, i, o, u)
-  'aɪaʊɔɪoʊeɪ' +
-  // Stress markers
-  'ˈˌ' +
-  // Word joiner (prevents line breaks)
-  '\u2060';
+function isWordChar(char: string): boolean {
+  const code = char.charCodeAt(0);
 
-// Regex pattern that matches either a "word" (letters + IPA chars) or "non-word"
-const TOKEN_REGEX = new RegExp(`([${IPA_WORD_CHARS}]+)|([^${IPA_WORD_CHARS}]+)`, 'g');
+  // Basic Latin letters (A-Z, a-z)
+  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
+    return true;
+  }
+
+  // Word joiner (U+2060) - invisible character that prevents line breaks
+  if (code === 0x2060) {
+    return true;
+  }
+
+  // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
+  if (code === 0x02c8 || code === 0x02cc) {
+    return true;
+  }
+
+  // Common IPA vowels
+  if (
+    char === 'ə' || // schwa
+    char === 'ɝ' || // r-colored schwa
+    char === 'ɚ' || // r-colored schwa variant
+    char === 'ʌ' || // strut
+    char === 'æ' || // trap
+    char === 'ɑ' || // palm
+    char === 'ɔ' || // thought
+    char === 'ɛ' || // dress
+    char === 'ɪ' || // kit
+    char === 'ʊ' // foot
+  ) {
+    return true;
+  }
+
+  // Common IPA consonants
+  if (
+    char === 'ð' || // voiced dental fricative
+    char === 'θ' || // voiceless dental fricative
+    char === 'ʃ' || // voiceless postalveolar fricative
+    char === 'ʒ' || // voiced postalveolar fricative
+    char === 'ŋ' || // velar nasal
+    char === 'ɹ' || // alveolar approximant
+    char === 'ɡ' // voiced velar stop (IPA g)
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * Tokenizes text into words and non-words, tracking word indices.
@@ -44,19 +78,34 @@ const TOKEN_REGEX = new RegExp(`([${IPA_WORD_CHARS}]+)|([^${IPA_WORD_CHARS}]+)`,
  */
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
-  let match;
   let wordIndex = 0;
+  let i = 0;
 
-  // Reset regex lastIndex for fresh matching
-  TOKEN_REGEX.lastIndex = 0;
-
-  while ((match = TOKEN_REGEX.exec(text)) !== null) {
-    if (match[1]) {
-      // Word (includes IPA characters)
-      tokens.push({ text: match[1], isWord: true, wordIndex: wordIndex++ });
-    } else if (match[2]) {
-      // Non-word (punctuation, whitespace)
-      tokens.push({ text: match[2], isWord: false, wordIndex: null });
+  while (i < text.length) {
+    // Check if starting a word
+    if (isWordChar(text[i])) {
+      let wordEnd = i + 1;
+      while (wordEnd < text.length && isWordChar(text[wordEnd])) {
+        wordEnd++;
+      }
+      tokens.push({
+        text: text.slice(i, wordEnd),
+        isWord: true,
+        wordIndex: wordIndex++,
+      });
+      i = wordEnd;
+    } else {
+      // Non-word characters (punctuation, whitespace)
+      let nonWordEnd = i + 1;
+      while (nonWordEnd < text.length && !isWordChar(text[nonWordEnd])) {
+        nonWordEnd++;
+      }
+      tokens.push({
+        text: text.slice(i, nonWordEnd),
+        isWord: false,
+        wordIndex: null,
+      });
+      i = nonWordEnd;
     }
   }
 

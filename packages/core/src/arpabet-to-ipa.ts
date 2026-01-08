@@ -130,6 +130,129 @@ function isVowel(phoneme: string): boolean {
 }
 
 /**
+ * Valid English onset clusters (using ARPAbet phonemes).
+ * Based on English phonotactics - these are the consonant combinations
+ * that can legally start a syllable in English.
+ */
+const VALID_ONSETS = new Set([
+  // Single consonants (all are valid onsets)
+  'B',
+  'CH',
+  'D',
+  'DH',
+  'F',
+  'G',
+  'HH',
+  'JH',
+  'K',
+  'L',
+  'M',
+  'N',
+  'P',
+  'R',
+  'S',
+  'SH',
+  'T',
+  'TH',
+  'V',
+  'W',
+  'Y',
+  'Z',
+  'ZH',
+  // Note: NG is NOT a valid onset in English
+  // Two-consonant clusters: consonant + liquid (L, R)
+  'B L',
+  'B R',
+  'D R',
+  'F L',
+  'F R',
+  'G L',
+  'G R',
+  'K L',
+  'K R',
+  'P L',
+  'P R',
+  'SH R',
+  'T R',
+  'TH R',
+  // Two-consonant clusters: consonant + glide (W, Y)
+  'B Y',
+  'D W',
+  'D Y',
+  'F Y',
+  'G W',
+  'G Y',
+  'HH Y',
+  'HH W',
+  'K W',
+  'K Y',
+  'L Y',
+  'M Y',
+  'N Y',
+  'P Y',
+  'S W',
+  'S Y',
+  'T W',
+  'T Y',
+  'TH W',
+  'TH Y',
+  'V Y',
+  'Z Y',
+  // Two-consonant clusters: s + consonant
+  'S K',
+  'S L',
+  'S M',
+  'S N',
+  'S P',
+  'S T',
+  // Three-consonant clusters: s + stop + liquid/glide
+  'S K R',
+  'S K W',
+  'S K Y',
+  'S P L',
+  'S P R',
+  'S P Y',
+  'S T R',
+  'S T Y',
+]);
+
+/**
+ * Checks if a sequence of consonant phonemes forms a valid English onset.
+ */
+function isValidOnset(consonants: string[]): boolean {
+  if (consonants.length === 0) {
+    return true;
+  }
+  const key = consonants.join(' ');
+  return VALID_ONSETS.has(key);
+}
+
+/**
+ * Finds the starting index of the maximal valid onset from a consonant cluster.
+ * Uses the Maximal Onset Principle: assign as many consonants as possible
+ * to the onset, as long as they form a legal onset cluster.
+ *
+ * @param consonants Array of consonant phonemes between two vowels
+ * @returns Index within the consonant array where the valid onset begins
+ */
+function findOnsetStart(consonants: string[]): number {
+  if (consonants.length === 0) {
+    return 0;
+  }
+
+  // Try progressively shorter substrings from the beginning
+  // to find the longest valid onset
+  for (let start = 0; start < consonants.length; start++) {
+    const candidate = consonants.slice(start);
+    if (isValidOnset(candidate)) {
+      return start;
+    }
+  }
+  // If nothing is valid (shouldn't happen), take just the last consonant
+  return consonants.length - 1;
+}
+
+/**
  * Converts an array of ARPAbet phonemes to IPA.
  * Places stress markers at syllable boundaries (before onset consonants),
  * not directly before vowels.
@@ -167,21 +290,21 @@ export function phonemesToIPA(phonemes: string[]): string {
       // Find where to place the stress marker (at syllable onset)
       let onsetIndex = ipaSegments.length;
 
-      // Look backwards to find the onset consonant(s) of this syllable
-      // Simple heuristic: take one consonant back if it exists and previous segment is a vowel
-      // or take consecutive consonants if they form a valid onset cluster
+      // Look backwards to find consonants between this vowel and the previous vowel
       if (i > 0) {
         let j = i - 1;
-        // Find consecutive consonants before this vowel
+        const consonants: string[] = [];
+        // Collect consecutive consonants before this vowel
         while (j >= 0 && !isVowel(phonemes[j])) {
+          consonants.unshift(stripStress(phonemes[j]));
           j--;
         }
         // j is now at the previous vowel (or -1 if no previous vowel)
-        // The onset starts at j+1
-        const onsetStart = j + 1;
-        if (onsetStart < i) {
-          // There are consonants before this vowel - they form the onset
-          onsetIndex = onsetStart;
+        // Use findOnsetStart to determine which consonants form the onset
+        if (consonants.length > 0) {
+          const onsetStartInCluster = findOnsetStart(consonants);
+          // Map back to phoneme index: j+1 is the first consonant, add onsetStartInCluster
+          onsetIndex = j + 1 + onsetStartInCluster;
         }
       }
 
