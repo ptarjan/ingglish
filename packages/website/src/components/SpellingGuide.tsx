@@ -40,6 +40,7 @@ function SpellingGuide(): React.JSX.Element {
         { phoneme: 'AE', examples: '**a**pple, c**a**t, b**a**d' },
         { phoneme: 'EH', examples: '**e**gg, p**e**t, b**e**d' },
         { phoneme: 'IH', examples: 'b**i**t, s**i**t, p**i**g' },
+        { phoneme: 'AA', examples: 'h**o**t, p**o**t, st**o**p' },
         { phoneme: 'AH', examples: 'b**u**t, c**u**p, c**u**t' },
         { phoneme: 'UH', examples: 'b**oo**k, p**u**t, g**oo**d' },
       ],
@@ -59,7 +60,6 @@ function SpellingGuide(): React.JSX.Element {
       sounds: [
         { phoneme: 'AW', examples: 'n**ow**, h**ow**, **ou**t' },
         { phoneme: 'OY', examples: 'b**oy**, t**oy**, n**oi**se' },
-        { phoneme: 'AA', examples: 'f**a**ther, h**o**t, c**a**lm' },
         { phoneme: 'AO', examples: 'th**ough**t, l**aw**, c**augh**t' },
         { phoneme: 'ER', examples: 'b**ir**d, h**er**, t**ur**n' },
         { phoneme: 'AH0', examples: '**a**bout, sof**a**, banan**a**' },
