@@ -38,6 +38,35 @@ body {
   margin-top: 4px;
 }
 
+.format-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.format-toggle label {
+  font-size: 12px;
+  color: #888;
+}
+
+.format-btn {
+  padding: 4px 12px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #f5f5f5;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.format-btn:hover {
+  background: #252525;
+}
+
 .status {
   display: flex;
   align-items: center;

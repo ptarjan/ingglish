@@ -1,23 +1,28 @@
 // Popup script for Ingglish extension
 
-import type { StateResponse, ToggleResponse } from './types';
+import type { OutputFormat } from '@ingglish/core';
+import type { StateResponse, ToggleResponse, FormatResponse } from './types';
 
 const toggleBtn = document.getElementById('toggle-btn');
 const statusText = document.getElementById('status-text');
 const statusDot = document.getElementById('status-dot');
+const formatBtn = document.getElementById('format-btn');
 
 // Validate required elements exist
-if (!toggleBtn || !statusText || !statusDot) {
+if (!toggleBtn || !statusText || !statusDot || !formatBtn) {
   throw new Error('Required popup elements not found');
 }
 
 let isEnabled = false;
+let currentFormat: OutputFormat = 'ingglish';
 
 // Get initial state
 chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response: StateResponse | undefined) => {
   if (response !== undefined) {
     isEnabled = response.enabled;
+    currentFormat = response.format ?? 'ingglish';
     updateUI();
+    updateFormatUI();
   }
 });
 
@@ -70,6 +75,20 @@ toggleBtn.addEventListener('click', () => {
   });
 });
 
+// Handle format button click
+formatBtn.addEventListener('click', () => {
+  const newFormat: OutputFormat = currentFormat === 'ingglish' ? 'ipa' : 'ingglish';
+  chrome.runtime.sendMessage(
+    { type: 'SET_FORMAT', format: newFormat },
+    (response: FormatResponse | undefined) => {
+      if (response?.format !== undefined) {
+        currentFormat = response.format;
+        updateFormatUI();
+      }
+    }
+  );
+});
+
 function updateUI(): void {
   if (isEnabled) {
     toggleBtn.textContent = 'Turn Off';
@@ -84,4 +103,8 @@ function updateUI(): void {
     statusText.style.color = '#888';
     statusDot.style.background = '#888';
   }
+}
+
+function updateFormatUI(): void {
+  formatBtn.textContent = currentFormat === 'ingglish' ? 'Ingglish' : 'IPA';
 }

@@ -3,7 +3,7 @@
  */
 import { translateText, isDictionaryLoaded, translateTextWithMapping } from './translator';
 import { translateDOM } from './dom-translator';
-import type { DOMTranslatorOptions } from './types';
+import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
@@ -15,9 +15,12 @@ import {
 /**
  * Creates a document fragment with tooltip spans for each translated word.
  */
-function createTooltipFragmentForObserver(text: string): DocumentFragment {
+function createTooltipFragmentForObserver(
+  text: string,
+  format: OutputFormat = 'ingglish'
+): DocumentFragment {
   const fragment = document.createDocumentFragment();
-  const tokens = translateTextWithMapping(text);
+  const tokens = translateTextWithMapping(text, format);
 
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
@@ -58,6 +61,7 @@ export function observeAndTranslate(
     skipClasses = DEFAULT_SKIP_CLASSES,
     translateAttributes = true,
     showTooltips = false,
+    outputFormat = 'ingglish',
   } = options;
 
   const observer = new MutationObserver((mutations) => {
@@ -70,17 +74,23 @@ export function observeAndTranslate(
           if (text.trim().length > 0) {
             if (!shouldSkipTextNode(textNode, skipTags, skipClasses)) {
               if (showTooltips) {
-                const fragment = createTooltipFragmentForObserver(text);
+                const fragment = createTooltipFragmentForObserver(text, outputFormat);
                 textNode.replaceWith(fragment);
               } else {
-                textNode.textContent = translateText(text);
+                textNode.textContent = translateText(text, outputFormat);
               }
             }
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           const element = node as Element;
           if (!shouldSkipElement(element, skipTags, skipClasses)) {
-            translateDOM(element, { skipTags, skipClasses, translateAttributes, showTooltips });
+            translateDOM(element, {
+              skipTags,
+              skipClasses,
+              translateAttributes,
+              showTooltips,
+              outputFormat,
+            });
           }
         }
       }
@@ -94,7 +104,7 @@ export function observeAndTranslate(
             // Temporarily disconnect observer to avoid infinite loop
             observer.disconnect();
             try {
-              textNode.textContent = translateText(text);
+              textNode.textContent = translateText(text, outputFormat);
             } finally {
               observer.observe(root, {
                 childList: true,

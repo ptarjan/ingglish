@@ -19,16 +19,19 @@ import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
 // Types
 // =============================================================================
 
-export type { DOMTranslatorOptions } from './types';
+export type { DOMTranslatorOptions, OutputFormat } from './types';
 
 // =============================================================================
 // Primary API
 // =============================================================================
 
-/** Translate English to Ingglish. */
-export async function translate(text: string): Promise<string> {
+/** Translate English to the specified format (Ingglish or IPA). */
+export async function translate(
+  text: string,
+  format: import('./types').OutputFormat = 'ingglish'
+): Promise<string> {
   await loadDictionary();
-  return translateText(text);
+  return translateText(text, format);
 }
 
 /** Translate Ingglish back to English. */
@@ -66,7 +69,7 @@ export { reverseTranslateText } from './reverse-translator';
 // Phoneme Maps (for spelling guide UI)
 // =============================================================================
 
-export { VOWEL_MAP, CONSONANT_MAP } from './phoneme-map';
+export { VOWEL_MAP, CONSONANT_MAP, phonemesToDisplay } from './phoneme-map';
 
 // =============================================================================
 // Advanced: Phonemize support for better unknown word handling

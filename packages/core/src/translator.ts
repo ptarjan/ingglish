@@ -1,6 +1,6 @@
-import { phonemesToInglish } from './phoneme-map';
+import { phonemesToDisplay } from './phoneme-map';
 import { translateUnknown } from './unknown-words';
-import type { CMUDictionary } from './types';
+import type { CMUDictionary, OutputFormat } from './types';
 
 export type { CMUDictionary };
 
@@ -76,12 +76,13 @@ export function lookupPronunciation(word: string): string[] | null {
 }
 
 /**
- * Translates a single word (or contraction) to Ingglish spelling.
+ * Translates a single word (or contraction) to the specified format.
  * Handles contractions like "don't", "I'm", etc.
  * @param word The English word to translate
- * @returns The Ingglish spelling, or the original word if not found
+ * @param format The output format ('ingglish' or 'ipa')
+ * @returns The translated word, or the original word if not found
  */
-export function translateWord(word: string): string {
+export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
   // Handle empty strings
   if (!word || word.length === 0) {
     return word;
@@ -94,7 +95,7 @@ export function translateWord(word: string): string {
 
   // Handle contractions (words with apostrophes)
   if (word.includes("'")) {
-    return translateContraction(word);
+    return translateContraction(word, format);
   }
 
   // Preserve case pattern
@@ -107,6 +108,7 @@ export function translateWord(word: string): string {
 
   if (!phonemes) {
     // Word not found in dictionary - try fallback strategies
+    // Note: translateUnknown only returns Ingglish for now
     const fallbackResult = translateUnknown(word);
 
     // Return original if fallback failed
@@ -123,44 +125,48 @@ export function translateWord(word: string): string {
     return fallbackResult;
   }
 
-  let result = phonemesToInglish(phonemes);
+  let result = phonemesToDisplay(phonemes, format);
 
-  // Apply original case pattern
-  if (isAllCaps) {
-    result = result.toUpperCase();
-  } else if (isCapitalized) {
-    result = result.charAt(0).toUpperCase() + result.slice(1);
+  // Apply original case pattern (only for Ingglish, IPA doesn't use case)
+  if (format === 'ingglish') {
+    if (isAllCaps) {
+      result = result.toUpperCase();
+    } else if (isCapitalized) {
+      result = result.charAt(0).toUpperCase() + result.slice(1);
+    }
   }
 
   return result;
 }
 
 /**
- * Translates a contraction to Ingglish (internal helper).
+ * Translates a contraction (internal helper).
  * First tries to look up the whole contraction in the dictionary.
  * Returns the translation without apostrophe for consistent round-tripping.
  */
-function translateContraction(token: string): string {
+function translateContraction(token: string, format: OutputFormat = 'ingglish'): string {
   // Try to look up the whole contraction (with apostrophe) in dictionary
   const phonemes = lookupPronunciation(token);
 
   if (phonemes) {
     // Found the whole contraction - translate it as a unit
-    const translated = phonemesToInglish(phonemes);
+    const translated = phonemesToDisplay(phonemes, format);
 
-    // Preserve case, but not for I-contractions (I'm, I'll, I've, I'd)
+    // Preserve case (only for Ingglish), but not for I-contractions (I'm, I'll, I've, I'd)
     // since "I" is only capitalized due to English grammar rules
-    const isIContraction = /^I'/i.test(token);
-    const isAllCaps =
-      !isIContraction && token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
-    const isCapitalized =
-      !isIContraction && /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
+    if (format === 'ingglish') {
+      const isIContraction = /^I'/i.test(token);
+      const isAllCaps =
+        !isIContraction && token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
+      const isCapitalized =
+        !isIContraction && /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
 
-    if (isAllCaps) {
-      return translated.toUpperCase();
-    }
-    if (isCapitalized) {
-      return translated.charAt(0).toUpperCase() + translated.slice(1);
+      if (isAllCaps) {
+        return translated.toUpperCase();
+      }
+      if (isCapitalized) {
+        return translated.charAt(0).toUpperCase() + translated.slice(1);
+      }
     }
     return translated;
   }
@@ -176,18 +182,19 @@ function translateContraction(token: string): string {
         return 't'; // Keep 't' as-is for n't contractions not in dictionary
       }
       // Recursively call translateWord for each part (without apostrophe, so no infinite loop)
-      return translateWord(p);
+      return translateWord(p, format);
     })
     .join("'");
 }
 
 /**
- * Translates text containing multiple words to Ingglish.
+ * Translates text containing multiple words to the specified format.
  * Preserves punctuation, whitespace, and non-word characters.
  * @param text The English text to translate
- * @returns The text with all words translated to Ingglish
+ * @param format The output format ('ingglish' or 'ipa')
+ * @returns The text with all words translated
  */
-export function translateText(text: string): string {
+export function translateText(text: string, format: OutputFormat = 'ingglish'): string {
   // Normalize curly apostrophes to straight ones
   const normalizedText = normalizeApostrophes(text);
 
@@ -199,7 +206,7 @@ export function translateText(text: string): string {
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (/^[a-zA-Z']+$/.test(token)) {
-        return translateWord(token);
+        return translateWord(token, format);
       }
       return token;
     })
@@ -209,17 +216,23 @@ export function translateText(text: string): string {
 /**
  * Async version of translateWord that ensures dictionary is loaded.
  */
-export async function translateWordAsync(word: string): Promise<string> {
+export async function translateWordAsync(
+  word: string,
+  format: OutputFormat = 'ingglish'
+): Promise<string> {
   await loadDictionary();
-  return translateWord(word);
+  return translateWord(word, format);
 }
 
 /**
  * Async version of translateText that ensures dictionary is loaded.
  */
-export async function translateTextAsync(text: string): Promise<string> {
+export async function translateTextAsync(
+  text: string,
+  format: OutputFormat = 'ingglish'
+): Promise<string> {
   await loadDictionary();
-  return translateText(text);
+  return translateText(text, format);
 }
 
 /**
@@ -245,9 +258,13 @@ export interface TranslatedToken {
  * Translates text and returns token-by-token mappings.
  * Useful for creating tooltips or other word-level features.
  * @param text The English text to translate
+ * @param format The output format ('ingglish' or 'ipa')
  * @returns Array of tokens with original and translated text
  */
-export function translateTextWithMapping(text: string): TranslatedToken[] {
+export function translateTextWithMapping(
+  text: string,
+  format: OutputFormat = 'ingglish'
+): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
 
   // Regex to match words (letters and apostrophes) vs everything else
@@ -260,7 +277,7 @@ export function translateTextWithMapping(text: string): TranslatedToken[] {
       if (/^[a-zA-Z']+$/.test(token)) {
         return {
           original: token,
-          translated: translateWord(token),
+          translated: translateWord(token, format),
           isWord: true,
         };
       }

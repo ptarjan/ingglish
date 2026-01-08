@@ -3,6 +3,13 @@
  */
 
 /**
+ * Output format for translations.
+ * - 'ingglish': Phonetic English spelling (e.g., "Hulo werld")
+ * - 'ipa': International Phonetic Alphabet (e.g., "/həlˈoʊ wˈɝld/")
+ */
+export type OutputFormat = 'ingglish' | 'ipa';
+
+/**
  * The CMU Pronouncing Dictionary type.
  * Maps lowercase words to their ARPAbet pronunciation strings.
  *
@@ -47,4 +54,10 @@ export interface DOMTranslatorOptions {
    * Callback for progress updates during translation.
    */
   onProgress?: (processed: number, total: number) => void;
+
+  /**
+   * Output format for translations.
+   * @default 'ingglish'
+   */
+  outputFormat?: OutputFormat;
 }

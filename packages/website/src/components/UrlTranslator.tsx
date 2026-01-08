@@ -1,5 +1,6 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
+import { useFormat } from '../contexts/FormatContext';
 
 const EXAMPLE_URLS = [
   { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/English_language' },
@@ -22,8 +23,9 @@ interface UrlTranslatorProps {
 }
 
 function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorProps) {
+  const { format } = useFormat();
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
-    useUrlTranslator({ onNavigate });
+    useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
 

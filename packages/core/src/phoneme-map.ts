@@ -12,6 +12,9 @@
  * - 24 consonants
  */
 
+import { phonemesToIPARaw } from './arpabet-to-ipa';
+import type { OutputFormat } from './types';
+
 // Vowel mappings (stress markers will be stripped before lookup)
 export const VOWEL_MAP: Record<string, string> = {
   // Monophthongs
@@ -106,6 +109,20 @@ export function phonemesToInglish(phonemes: string[]): string {
       return inglish;
     })
     .join('');
+}
+
+/**
+ * Converts phonemes to the specified output format.
+ *
+ * @param phonemes Array of ARPAbet phonemes
+ * @param format Output format ('ingglish' or 'ipa')
+ * @returns Formatted string
+ */
+export function phonemesToDisplay(phonemes: string[], format: OutputFormat = 'ingglish'): string {
+  if (format === 'ipa') {
+    return phonemesToIPARaw(phonemes);
+  }
+  return phonemesToInglish(phonemes);
 }
 
 /**

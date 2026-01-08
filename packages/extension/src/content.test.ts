@@ -18,6 +18,10 @@ const mockChrome = {
     onMessage: {
       addListener: vi.fn(),
     },
+    sendMessage: vi.fn().mockImplementation((_message, callback) => {
+      // Return format 'ingglish' for GET_FORMAT messages
+      if (callback) callback({ format: 'ingglish' });
+    }),
   },
 };
 
@@ -99,7 +103,11 @@ describe('content script (lazy loaded)', () => {
       await vi.waitFor(() => {
         expect(translateDOM).toHaveBeenCalledWith(
           mockDocument.body,
-          expect.objectContaining({ showTooltips: true, onProgress: expect.any(Function) })
+          expect.objectContaining({
+            showTooltips: true,
+            outputFormat: 'ingglish',
+            onProgress: expect.any(Function),
+          })
         );
       });
     });
@@ -108,7 +116,10 @@ describe('content script (lazy loaded)', () => {
       await import('./content');
 
       await vi.waitFor(() => {
-        expect(observeAndTranslate).toHaveBeenCalledWith(mockDocument.body, { showTooltips: true });
+        expect(observeAndTranslate).toHaveBeenCalledWith(mockDocument.body, {
+          showTooltips: true,
+          outputFormat: 'ingglish',
+        });
       });
     });
 

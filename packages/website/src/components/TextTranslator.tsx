@@ -1,5 +1,6 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
 import { translateText, reverseTranslateText } from '@ingglish/core';
+import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
@@ -85,6 +86,7 @@ interface TextTranslatorProps {
 }
 
 function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
+  const { format } = useFormat();
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
@@ -103,16 +105,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return null;
     }
     try {
-      return translateText(deferredEnglish);
+      return translateText(deferredEnglish, format);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn('Translation failed:', err);
       return null;
     }
-  }, [deferredEnglish, lastEdited]);
+  }, [deferredEnglish, lastEdited, format]);
 
   const computedEnglish = useMemo(() => {
-    if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
+    // Reverse translation only works for Ingglish format
+    if (format !== 'ingglish' || lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       return null;
     }
     try {
@@ -122,7 +125,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       console.warn('Reverse translation failed:', err);
       return null;
     }
-  }, [deferredIngglish, lastEdited]);
+  }, [deferredIngglish, lastEdited, format]);
 
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
@@ -240,7 +243,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
         <div className="input-section">
           <div className="section-header">
-            <h2>Ingglish</h2>
+            <h2>{format === 'ingglish' ? 'Ingglish' : 'IPA'}</h2>
             <div className="button-group">
               <button
                 onClick={handleCopyIngglish}
@@ -260,9 +263,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 setLastEdited('ingglish');
               }
             }}
-            placeholder="Taip Ingglish tekst heer..."
+            placeholder={
+              format === 'ingglish' ? 'Taip Ingglish tekst heer...' : '/taɪp aɪ piː eɪ hɪɹ.../'
+            }
             className="text-input"
             spellCheck={false}
+            readOnly={format === 'ipa'}
           />
         </div>
       </div>

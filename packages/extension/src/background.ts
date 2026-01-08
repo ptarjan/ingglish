@@ -1,9 +1,28 @@
 // Background service worker for Ingglish extension
 
-import type { ExtensionMessage, StateResponse, ToggleResponse } from './types';
+import type { OutputFormat } from '@ingglish/core';
+import type { ExtensionMessage, StateResponse, ToggleResponse, FormatResponse } from './types';
 
 // Track which tabs have translation enabled
 const translatedTabs = new Set<number>();
+
+// Default format
+const DEFAULT_FORMAT: OutputFormat = 'ingglish';
+
+// Get the current format from storage
+async function getFormat(): Promise<OutputFormat> {
+  try {
+    const result = await chrome.storage.sync.get('outputFormat');
+    return (result.outputFormat as OutputFormat) ?? DEFAULT_FORMAT;
+  } catch {
+    return DEFAULT_FORMAT;
+  }
+}
+
+// Set the format in storage
+async function setFormat(format: OutputFormat): Promise<void> {
+  await chrome.storage.sync.set({ outputFormat: format });
+}
 
 // Update icon based on translation state
 function updateIcon(tabId: number, enabled: boolean): void {
@@ -42,24 +61,41 @@ chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
     sender,
-    sendResponse: (response: StateResponse | ToggleResponse) => void
+    sendResponse: (response: StateResponse | ToggleResponse | FormatResponse) => void
   ) => {
     if (message.type === 'GET_STATE') {
       // Use sender's tab ID if available (from content script), otherwise query active tab (from popup)
-      if (sender.tab?.id !== undefined) {
-        const enabled = translatedTabs.has(sender.tab.id);
-        sendResponse({ enabled });
-        return false;
-      }
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0]?.id;
-        if (tabId !== undefined) {
-          sendResponse({ enabled: translatedTabs.has(tabId) });
-        } else {
-          sendResponse({ enabled: false });
+      void (async () => {
+        const format = await getFormat();
+        if (sender.tab?.id !== undefined) {
+          const enabled = translatedTabs.has(sender.tab.id);
+          sendResponse({ enabled, format });
+          return;
         }
-      });
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const tabId = tabs[0]?.id;
+          if (tabId !== undefined) {
+            sendResponse({ enabled: translatedTabs.has(tabId), format });
+          } else {
+            sendResponse({ enabled: false, format });
+          }
+        });
+      })();
       return true; // Keep channel open for async response
+    }
+
+    if (message.type === 'GET_FORMAT') {
+      void getFormat().then((format) => {
+        sendResponse({ format });
+      });
+      return true;
+    }
+
+    if (message.type === 'SET_FORMAT') {
+      void setFormat(message.format).then(() => {
+        sendResponse({ format: message.format });
+      });
+      return true;
     }
 
     if (message.type === 'TOGGLE') {

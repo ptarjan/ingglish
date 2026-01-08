@@ -1,0 +1,100 @@
+import { describe, it, expect } from 'vitest';
+import { arpabetPhonemeToIPA, phonemesToIPA, phonemesToIPARaw } from './arpabet-to-ipa';
+
+describe('arpabet-to-ipa', () => {
+  describe('arpabetPhonemeToIPA', () => {
+    it('should convert vowels', () => {
+      expect(arpabetPhonemeToIPA('AA')).toBe('ɑ');
+      expect(arpabetPhonemeToIPA('AE')).toBe('æ');
+      expect(arpabetPhonemeToIPA('IY')).toBe('i');
+      expect(arpabetPhonemeToIPA('UW')).toBe('u');
+    });
+
+    it('should convert consonants', () => {
+      expect(arpabetPhonemeToIPA('B')).toBe('b');
+      expect(arpabetPhonemeToIPA('SH')).toBe('ʃ');
+      expect(arpabetPhonemeToIPA('TH')).toBe('θ');
+      expect(arpabetPhonemeToIPA('DH')).toBe('ð');
+      expect(arpabetPhonemeToIPA('NG')).toBe('ŋ');
+    });
+
+    it('should handle stressed vowels', () => {
+      expect(arpabetPhonemeToIPA('EY1')).toBe('ˈeɪ');
+      expect(arpabetPhonemeToIPA('OW1')).toBe('ˈoʊ');
+      expect(arpabetPhonemeToIPA('AY2')).toBe('ˌaɪ');
+    });
+
+    it('should convert unstressed AH to schwa', () => {
+      expect(arpabetPhonemeToIPA('AH0')).toBe('ə');
+    });
+
+    it('should handle stressed AH as ʌ', () => {
+      expect(arpabetPhonemeToIPA('AH1')).toBe('ˈʌ');
+      expect(arpabetPhonemeToIPA('AH')).toBe('ʌ');
+    });
+
+    it('should return lowercase for unknown phonemes', () => {
+      expect(arpabetPhonemeToIPA('XY')).toBe('xy');
+    });
+  });
+
+  describe('phonemesToIPA', () => {
+    it('should convert hello', () => {
+      // hello: HH AH0 L OW1
+      // Note: stress marker precedes the vowel (not the syllable) since ARPAbet doesn't encode syllable boundaries
+      const phonemes = ['HH', 'AH0', 'L', 'OW1'];
+      expect(phonemesToIPA(phonemes)).toBe('/həlˈoʊ/');
+    });
+
+    it('should convert world', () => {
+      // world: W ER1 L D
+      const phonemes = ['W', 'ER1', 'L', 'D'];
+      expect(phonemesToIPA(phonemes)).toBe('/wˈɝld/');
+    });
+
+    it('should convert the', () => {
+      // the: DH AH0
+      const phonemes = ['DH', 'AH0'];
+      expect(phonemesToIPA(phonemes)).toBe('/ðə/');
+    });
+
+    it('should convert think', () => {
+      // think: TH IH1 NG K
+      const phonemes = ['TH', 'IH1', 'NG', 'K'];
+      expect(phonemesToIPA(phonemes)).toBe('/θˈɪŋk/');
+    });
+
+    it('should convert beautiful', () => {
+      // beautiful: B Y UW1 T AH0 F AH0 L
+      const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
+      expect(phonemesToIPA(phonemes)).toBe('/bjˈutəfəl/');
+    });
+
+    it('should handle affricates', () => {
+      // church: CH ER1 CH
+      const phonemes = ['CH', 'ER1', 'CH'];
+      expect(phonemesToIPA(phonemes)).toBe('/tʃˈɝtʃ/');
+
+      // judge: JH AH1 JH
+      const phonemes2 = ['JH', 'AH1', 'JH'];
+      expect(phonemesToIPA(phonemes2)).toBe('/dʒˈʌdʒ/');
+    });
+
+    it('should handle diphthongs', () => {
+      // time: T AY1 M
+      const phonemes = ['T', 'AY1', 'M'];
+      expect(phonemesToIPA(phonemes)).toBe('/tˈaɪm/');
+
+      // coin: K OY1 N
+      const phonemes2 = ['K', 'OY1', 'N'];
+      expect(phonemesToIPA(phonemes2)).toBe('/kˈɔɪn/');
+    });
+  });
+
+  describe('phonemesToIPARaw', () => {
+    it('should return IPA without slashes', () => {
+      const phonemes = ['HH', 'AH0', 'L', 'OW1'];
+      expect(phonemesToIPARaw(phonemes)).toBe('həlˈoʊ');
+    });
+  });
+});

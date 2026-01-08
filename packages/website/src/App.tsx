@@ -4,6 +4,7 @@ import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
 import Extension from './components/Extension';
+import { useFormat } from './contexts/FormatContext';
 
 type Tab = 'text' | 'url' | 'guide' | 'extension';
 type ThemeMode = 'light' | 'dark' | 'auto';
@@ -37,6 +38,7 @@ function getInitialUrl(): string {
 }
 
 function App() {
+  const { format, toggleFormat } = useFormat();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(getTabFromHash);
@@ -186,9 +188,19 @@ function App() {
 
   return (
     <div className="app">
-      <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
-        {getThemeIcon()}
-      </button>
+      <div className="toggle-buttons">
+        <button
+          className="format-toggle"
+          onClick={toggleFormat}
+          aria-label="Toggle output format"
+          title={format === 'ingglish' ? 'Switch to IPA' : 'Switch to Ingglish'}
+        >
+          {format === 'ingglish' ? 'Ingglish' : 'IPA'}
+        </button>
+        <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
+          {getThemeIcon()}
+        </button>
+      </div>
       <header className="header">
         <div className="header-title">
           <a className="logo-link" href="https://paultarjan.com/ingglish/">

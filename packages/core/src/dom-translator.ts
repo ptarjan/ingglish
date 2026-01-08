@@ -7,7 +7,7 @@ import {
   loadDictionary,
   isDictionaryLoaded,
 } from './translator';
-import type { DOMTranslatorOptions } from './types';
+import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
@@ -25,9 +25,9 @@ export { skipElement, unskipElement } from './dom-utils';
  * Words get wrapped in spans with data-original attributes for CSS tooltips.
  * Non-word tokens (punctuation, whitespace) are added as text nodes.
  */
-function createTooltipFragment(text: string): DocumentFragment {
+function createTooltipFragment(text: string, format: OutputFormat = 'ingglish'): DocumentFragment {
   const fragment = document.createDocumentFragment();
-  const tokens = translateTextWithMapping(text);
+  const tokens = translateTextWithMapping(text, format);
 
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
@@ -105,6 +105,7 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     translateAttributes = true,
     showTooltips = false,
     onProgress,
+    outputFormat = 'ingglish',
   } = options;
 
   // Get the document (works for both main document and iframes)
@@ -128,7 +129,7 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
 
       if (showTooltips) {
         // Replace text node with tooltip spans
-        const fragment = createTooltipFragment(originalText);
+        const fragment = createTooltipFragment(originalText, outputFormat);
         // Store original text on parent for restoration
         if (parent && !parent.hasAttribute('data-ingglish-original')) {
           parent.setAttribute('data-ingglish-original', originalText);
@@ -139,7 +140,7 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
         if (parent && !parent.hasAttribute('data-ingglish-original')) {
           parent.setAttribute('data-ingglish-original', originalText);
         }
-        textNode.textContent = translateText(originalText);
+        textNode.textContent = translateText(originalText, outputFormat);
       }
     }
 
@@ -150,7 +151,7 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
 
   // Translate attributes if enabled
   if (translateAttributes) {
-    translateElementAttributes(root, skipTags, skipClasses);
+    translateElementAttributes(root, skipTags, skipClasses, outputFormat);
   }
 }
 
@@ -227,7 +228,8 @@ function injectTooltipStyles(targetDoc: Document): void {
 function translateElementAttributes(
   root: Element | Document,
   skipTags: string[],
-  skipClasses: string[]
+  skipClasses: string[],
+  format: OutputFormat = 'ingglish'
 ): void {
   const elements = Array.from(root.querySelectorAll('*'));
 
@@ -244,7 +246,7 @@ function translateElementAttributes(
         if (!element.hasAttribute(originalAttrName)) {
           element.setAttribute(originalAttrName, attrValue);
         }
-        element.setAttribute(attrName, translateText(attrValue));
+        element.setAttribute(attrName, translateText(attrValue, format));
       }
     }
   }

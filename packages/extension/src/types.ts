@@ -1,5 +1,7 @@
 // Message types for Chrome extension communication
 
+import type { OutputFormat } from '@ingglish/core';
+
 export interface GetStateMessage {
   type: 'GET_STATE';
 }
@@ -16,10 +18,26 @@ export interface RestoreMessage {
   type: 'RESTORE';
 }
 
-export type ExtensionMessage = GetStateMessage | ToggleMessage | TranslateMessage | RestoreMessage;
+export interface SetFormatMessage {
+  type: 'SET_FORMAT';
+  format: OutputFormat;
+}
+
+export interface GetFormatMessage {
+  type: 'GET_FORMAT';
+}
+
+export type ExtensionMessage =
+  | GetStateMessage
+  | ToggleMessage
+  | TranslateMessage
+  | RestoreMessage
+  | SetFormatMessage
+  | GetFormatMessage;
 
 export interface StateResponse {
   enabled: boolean;
+  format?: OutputFormat;
 }
 
 export interface ToggleResponse {
@@ -31,4 +49,8 @@ export interface ToggleResponse {
 export interface TranslateResponse {
   success: boolean;
   error?: string;
+}
+
+export interface FormatResponse {
+  format: OutputFormat;
 }

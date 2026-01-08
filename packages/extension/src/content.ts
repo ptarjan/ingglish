@@ -2,7 +2,8 @@
 // This is injected on-demand when translation is enabled (lazy loading)
 
 import { translateDOM, observeAndTranslate, restoreDOM } from '@ingglish/core';
-import type { RestoreMessage } from './types';
+import type { OutputFormat } from '@ingglish/core';
+import type { RestoreMessage, FormatResponse } from './types';
 
 // State management
 interface IngglishState {
@@ -50,6 +51,15 @@ if (!state.translated) {
   void translatePage();
 }
 
+// Get the output format from background script
+async function getOutputFormat(): Promise<OutputFormat> {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: 'GET_FORMAT' }, (response: FormatResponse | undefined) => {
+      resolve(response?.format ?? 'ingglish');
+    });
+  });
+}
+
 async function translatePage(): Promise<void> {
   if (state.translated) {
     // eslint-disable-next-line no-console
@@ -58,9 +68,15 @@ async function translatePage(): Promise<void> {
   }
 
   try {
+    // Get the output format from storage
+    const outputFormat = await getOutputFormat();
+    // eslint-disable-next-line no-console
+    console.log(`Ingglish: Using format: ${outputFormat}`);
+
     // Translate the current page with tooltips enabled
     await translateDOM(document.body, {
       showTooltips: true,
+      outputFormat,
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
           // eslint-disable-next-line no-console
@@ -70,14 +86,17 @@ async function translatePage(): Promise<void> {
     });
 
     // Set up observer for dynamic content (with tooltips)
-    state.stopObserver = await observeAndTranslate(document.body, { showTooltips: true });
+    state.stopObserver = await observeAndTranslate(document.body, {
+      showTooltips: true,
+      outputFormat,
+    });
     state.translated = true;
 
     // eslint-disable-next-line no-console
     console.log('Ingglish: Translation complete!');
 
-    // Add visual indicator
-    addTranslationBadge();
+    // Add visual indicator with format
+    addTranslationBadge(outputFormat);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Ingglish translation error:', error);
@@ -108,7 +127,7 @@ function restorePage(): void {
   console.log('Ingglish: Restoration complete!');
 }
 
-function addTranslationBadge(): void {
+function addTranslationBadge(format: OutputFormat = 'ingglish'): void {
   // Check if badge already exists
   if (document.getElementById('ingglish-badge')) {
     return;
@@ -116,7 +135,7 @@ function addTranslationBadge(): void {
 
   const badge = document.createElement('div');
   badge.id = 'ingglish-badge';
-  badge.textContent = 'Ingglish';
+  badge.textContent = format === 'ingglish' ? 'Ingglish' : 'IPA';
   badge.style.cssText = `
     position: fixed;
     bottom: 20px;

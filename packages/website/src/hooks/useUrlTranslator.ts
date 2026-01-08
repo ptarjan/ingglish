@@ -5,6 +5,7 @@
  */
 import { useState, useCallback, useRef } from 'react';
 import { translateDOM } from '@ingglish/core';
+import type { OutputFormat } from '@ingglish/core';
 import { injectBaseTag, getBaseUrl, shouldSkipUrl, detectBotProtection } from '../utils/url';
 
 // Re-export utilities that components need
@@ -16,6 +17,7 @@ const CORS_PROXY: string =
 
 interface UseUrlTranslatorOptions {
   onNavigate?: (url: string) => void;
+  outputFormat?: OutputFormat;
 }
 
 interface UseUrlTranslatorResult {
@@ -30,7 +32,7 @@ interface UseUrlTranslatorResult {
 }
 
 export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
-  const { onNavigate } = options;
+  const { onNavigate, outputFormat = 'ingglish' } = options;
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
@@ -85,6 +87,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         await translateDOM(iframeDoc.body, {
           translateAttributes: true,
           showTooltips: true,
+          outputFormat,
         });
 
         setHasContent(true);
@@ -125,7 +128,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [onNavigate]
+    [onNavigate, outputFormat]
   );
 
   const clear = useCallback(() => {

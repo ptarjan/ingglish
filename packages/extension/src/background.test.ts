@@ -29,6 +29,16 @@ const mockChrome = {
   scripting: {
     executeScript: vi.fn(),
   },
+  storage: {
+    sync: {
+      get: vi.fn().mockImplementation((_keys, callback) => {
+        callback({ format: 'ingglish' });
+      }),
+      set: vi.fn().mockImplementation((_data, callback) => {
+        if (callback) callback();
+      }),
+    },
+  },
 };
 
 // Set up global chrome mock
@@ -65,7 +75,7 @@ describe('background script', () => {
   });
 
   describe('GET_STATE message', () => {
-    it('responds with enabled: false when tab is not translated', () => {
+    it('responds with enabled: false when tab is not translated', async () => {
       const sendResponse = vi.fn();
 
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
@@ -75,10 +85,14 @@ describe('background script', () => {
       const result = messageHandler({ type: 'GET_STATE' }, {}, sendResponse);
 
       expect(result).toBe(true); // async response
-      expect(sendResponse).toHaveBeenCalledWith({ enabled: false });
+
+      // Wait for async format retrieval
+      await vi.waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
     });
 
-    it('responds with enabled: false when no active tab', () => {
+    it('responds with enabled: false when no active tab', async () => {
       const sendResponse = vi.fn();
 
       mockChrome.tabs.query.mockImplementation((_query, callback) => {
@@ -87,7 +101,10 @@ describe('background script', () => {
 
       messageHandler({ type: 'GET_STATE' }, {}, sendResponse);
 
-      expect(sendResponse).toHaveBeenCalledWith({ enabled: false });
+      // Wait for async format retrieval
+      await vi.waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
     });
   });
 
@@ -137,7 +154,9 @@ describe('background script', () => {
       // State should be reverted after injection fails
       const stateResponse = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
-      expect(stateResponse).toHaveBeenCalledWith({ enabled: false });
+      await vi.waitFor(() => {
+        expect(stateResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
     });
 
     it('responds with error when no active tab', () => {
@@ -206,7 +225,9 @@ describe('background script', () => {
       // Verify tab is tracked
       const stateResponse = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
-      expect(stateResponse).toHaveBeenCalledWith({ enabled: true });
+      await vi.waitFor(() => {
+        expect(stateResponse).toHaveBeenCalledWith({ enabled: true, format: 'ingglish' });
+      });
 
       // Simulate tab close
       tabRemovedHandler(222);
@@ -214,7 +235,9 @@ describe('background script', () => {
       // Verify tab is no longer tracked
       const stateResponse2 = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse2);
-      expect(stateResponse2).toHaveBeenCalledWith({ enabled: false });
+      await vi.waitFor(() => {
+        expect(stateResponse2).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
     });
   });
 

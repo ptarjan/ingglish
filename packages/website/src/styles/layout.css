@@ -84,10 +84,33 @@
   background-clip: text;
 }
 
-.theme-toggle {
+.toggle-buttons {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.format-toggle {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  transition: background-color 0.2s;
+  color: var(--color-text);
+}
+
+.format-toggle:hover {
+  background: var(--color-surface-hover);
+}
+
+.theme-toggle {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
