@@ -5,7 +5,6 @@ import {
   lookupPronunciation,
   translateWord,
   translateText,
-  getDictionaryStats,
 } from './translator';
 
 describe('translator', () => {
@@ -22,11 +21,6 @@ describe('translator', () => {
 
     it('should report dictionary as loaded', () => {
       expect(isDictionaryLoaded()).toBe(true);
-    });
-
-    it('should have many words', () => {
-      const stats = getDictionaryStats();
-      expect(stats.wordCount).toBeGreaterThan(100000);
     });
   });
 

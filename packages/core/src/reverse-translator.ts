@@ -115,7 +115,7 @@ function lookupPhonemeKey(key: string): string[] | undefined {
  * Looks up English words matching an ARPAbet sequence.
  * Tries all alternative ARPAbet interpretations and combines results.
  */
-export function lookupByArpabet(arpabet: string[]): string[] {
+function lookupByArpabet(arpabet: string[]): string[] {
   const variants = expandArpabetAlternatives(arpabet);
   const allMatches: string[] = [];
   const seen = new Set<string>();

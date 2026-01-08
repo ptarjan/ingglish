@@ -2,8 +2,6 @@ import { arpabetToDisplay } from './arpabet-to-ingglish';
 import { translateUnknown } from './unknown-words';
 import type { CMUDictionary, OutputFormat } from './types';
 
-export type { CMUDictionary };
-
 /**
  * Normalizes various apostrophe characters to the standard straight apostrophe.
  * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
@@ -215,66 +213,28 @@ export function translateText(text: string, format: OutputFormat = 'ingglish'): 
 }
 
 /**
- * Async version of translateWord that ensures dictionary is loaded.
- */
-export async function translateWordAsync(
-  word: string,
-  format: OutputFormat = 'ingglish'
-): Promise<string> {
-  await loadDictionary();
-  return translateWord(word, format);
-}
-
-/**
- * Async version of translateText that ensures dictionary is loaded.
- */
-export async function translateTextAsync(
-  text: string,
-  format: OutputFormat = 'ingglish'
-): Promise<string> {
-  await loadDictionary();
-  return translateText(text, format);
-}
-
-/**
- * Gets statistics about the dictionary.
- */
-export function getDictionaryStats(): { wordCount: number } {
-  const dict = getDictionary();
-  return {
-    wordCount: Object.keys(dict).length,
-  };
-}
-
-/**
  * Represents a translated token with original and translated text.
  */
-export interface TranslatedToken {
+interface TranslatedToken {
   original: string;
   translated: string;
-  isWord: boolean; // true for words, false for punctuation/whitespace
+  isWord: boolean;
 }
 
 /**
  * Translates text and returns token-by-token mappings.
- * Useful for creating tooltips or other word-level features.
- * @param text The English text to translate
- * @param format The output format ('ingglish' or 'ipa')
- * @returns Array of tokens with original and translated text
+ * Used internally for DOM translation with tooltips.
  */
 export function translateTextWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
-
-  // Regex to match words (letters and apostrophes) vs everything else
   const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
 
   return tokens
-    .filter((token) => token.length > 0) // Filter out empty strings from split
+    .filter((token) => token.length > 0)
     .map((token) => {
-      // Only translate if it's a word (contains letters)
       if (/^[a-zA-Z']+$/.test(token)) {
         return {
           original: token,
