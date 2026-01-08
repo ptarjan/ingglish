@@ -1,6 +1,6 @@
 # Debugging Round-Trip Translation Issues
 
-When a word fails to round-trip (English → Ingglish → English doesn't return the original), use this guide to diagnose and fix the issue.
+When a word fails to round-trip (English → Ingglish → English or English → IPA → English doesn't return the original), use this guide to diagnose and fix the issue.
 
 ## Quick Start
 
@@ -98,14 +98,27 @@ it('should round-trip "exhumed"', () => {
 English → Ingglish → English
          │         │
          ▼         ▼
-      phonemes → spelling → phonemes
+   ARPAbet → spelling → ARPAbet
          │                    │
     CMU Dict              REVERSE_PHONEME_MAP
                               │
                          PHONEME_ALTERNATIVES
                          (handles ambiguity)
+
+English → IPA → English
+         │         │
+         ▼         ▼
+   ARPAbet → IPA symbols → ARPAbet
+         │                    │
+    CMU Dict              ipaToArpabet()
+         │
+   arpabetToIPA()
 ```
 
-The forward path (English → Ingglish) uses the CMU dictionary to get phonemes, then maps phonemes to spellings.
+The forward path (English → Ingglish) uses the CMU dictionary to get ARPAbet phonemes, then maps them to Ingglish spellings.
 
-The reverse path (Ingglish → English) parses the spelling back to phonemes using `REVERSE_PHONEME_MAP`, then looks up words with matching phoneme sequences. `PHONEME_ALTERNATIVES` handles cases where the same spelling could represent different phoneme sequences.
+The forward path (English → IPA) uses the CMU dictionary to get ARPAbet phonemes, then converts to IPA with proper stress markers at syllable boundaries.
+
+The reverse path (Ingglish → English) parses the spelling back to ARPAbet using `REVERSE_PHONEME_MAP`, then looks up words with matching phoneme sequences. `PHONEME_ALTERNATIVES` handles cases where the same spelling could represent different phoneme sequences.
+
+The reverse path (IPA → English) converts IPA symbols back to ARPAbet using `ipaToArpabet()`, then looks up matching words.

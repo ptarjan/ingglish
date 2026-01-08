@@ -35,8 +35,10 @@ The core library handles all translation logic.
 ```
 src/
 ├── translator.ts         # Main translation API
-├── reverse-translator.ts # Ingglish → English
+├── reverse-translator.ts # Ingglish/IPA → English
 ├── phoneme-map.ts        # ARPAbet → Ingglish mapping
+├── arpabet-to-ipa.ts     # ARPAbet → IPA conversion
+├── ipa-to-arpabet.ts     # IPA → ARPAbet conversion
 ├── unknown-words.ts      # Fallback strategies
 ├── word-frequency.ts     # Homophone ranking
 ├── case-utils.ts         # Case preservation
@@ -51,7 +53,7 @@ English Text
      │
      ▼
 ┌─────────────────┐
-│  translateText  │
+│  translateText  │ (format: 'ingglish' | 'ipa')
 └────────┬────────┘
          │ tokenize
          ▼
@@ -75,46 +77,57 @@ English Text
     └────┬────┘                  │
          │                       │
          ▼                       │
-┌──────────────────┐             │
-│ phonemesToInglish│<────────────┘
-└────────┬─────────┘
+┌────────────────────┐           │
+│   Output Format?   │<──────────┘
+└────────┬───────────┘
          │
-         ▼
-   Ingglish Text
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+Ingglish    IPA
+    │         │
+    ▼         ▼
+┌────────┐ ┌───────────┐
+│phoneme │ │phonemesTo │
+│ToInglish│ │   IPA     │
+└────┬───┘ └─────┬─────┘
+     │           │
+     ▼           ▼
+"hulo"     "/həˈloʊ/"
 ```
 
 ### Reverse Translation Flow
 
+Supports both Ingglish and IPA input:
+
 ```
-Ingglish Text
-     │
-     ▼
-┌─────────────────────┐
-│ reverseTranslateText│
-└────────┬────────────┘
-         │ tokenize
-         ▼
-┌─────────────────────┐
-│ reverseTranslateWord│
-└────────┬────────────┘
-         │
-         ▼
-┌─────────────────────┐
-│  inglishToPhonemes  │  Parse Ingglish → phonemes
-└────────┬────────────┘
-         │
-         ▼
-┌─────────────────────┐
-│  lookupByPhonemes   │  Reverse dictionary lookup
-└────────┬────────────┘
-         │
-         ▼
-┌─────────────────────┐
-│   sortByFrequency   │  Rank homophones
-└────────┬────────────┘
-         │
-         ▼
-   English Text (most common match)
+Ingglish Text          IPA Text
+     │                     │
+     ▼                     ▼
+┌─────────────────┐  ┌────────────────────┐
+│reverseTranslate │  │ reverseTranslate   │
+│     Text        │  │     IPAText        │
+└────────┬────────┘  └─────────┬──────────┘
+         │                     │
+         ▼                     ▼
+┌─────────────────┐  ┌────────────────────┐
+│inglishToPhonemes│  │   ipaToArpabet     │
+└────────┬────────┘  └─────────┬──────────┘
+         │                     │
+         └──────────┬──────────┘
+                    │
+                    ▼
+         ┌─────────────────────┐
+         │  lookupByPhonemes   │  Reverse dictionary lookup
+         └────────┬────────────┘
+                  │
+                  ▼
+         ┌─────────────────────┐
+         │   sortByFrequency   │  Rank homophones
+         └────────┬────────────┘
+                  │
+                  ▼
+            English Text (most common match)
 ```
 
 ### Key Data Structures

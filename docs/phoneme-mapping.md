@@ -1,8 +1,10 @@
-# Phoneme to Ingglish Spelling Mapping
+# ARPAbet to Ingglish/IPA Mapping
 
 ## Overview
 
-This document describes how we map ARPAbet phonemes from the CMU Pronouncing Dictionary to consistent English spellings.
+This document describes how we map ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA (International Phonetic Alphabet).
+
+**ARPAbet** is a phonetic notation system that uses ASCII characters to represent English phonemes (speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
 
 ## Design Principles
 
@@ -22,69 +24,69 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 
 ## Vowel Mappings
 
-| Phoneme | Ingglish | Example Words | Notes |
-|---------|---------|---------------|-------|
-| AA | ah | f**a**ther, h**o**t | Open back vowel |
-| AE | a | c**a**t, b**a**t | Near-open front vowel |
-| AH | u | b**u**t, c**u**p | Mid central vowel (schwa-like) |
-| AO | aw | th**ou**ght, l**aw** | Open-mid back rounded |
-| AW | ow | c**ow**, h**ow** | Diphthong /aʊ/ |
-| AY | ai | m**y**, t**i**me | Diphthong /aɪ/ |
-| EH | e | b**e**d, r**e**d | Open-mid front vowel |
-| ER | er | b**ir**d, h**er** | Rhotacized mid central |
-| EY | ay | s**ay**, d**ay** | Diphthong /eɪ/ |
-| IH | i | b**i**t, s**i**t | Near-close front vowel |
-| IY | ee | b**ee**, s**ee** | Close front vowel |
-| OW | o | g**o**, sh**ow** | Diphthong /oʊ/ |
-| OY | oi | b**oy**, t**oy** | Diphthong /ɔɪ/ |
-| UH | uu | b**oo**k, p**u**t | Near-close back vowel |
-| UW | oo | t**oo**, bl**ue** | Close back vowel |
+| ARPAbet | Ingglish | IPA | Example Words | Notes |
+|---------|----------|-----|---------------|-------|
+| AA | ah | ɑ | f**a**ther, h**o**t | Open back vowel |
+| AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
+| AH | u | ʌ/ə | b**u**t, c**u**p | Mid central vowel (schwa when unstressed) |
+| AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
+| AW | ow | aʊ | c**ow**, h**ow** | Diphthong |
+| AY | ai | aɪ | m**y**, t**i**me | Diphthong |
+| EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
+| ER | er | ɝ/ɚ | b**ir**d, h**er** | Rhotacized mid central |
+| EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
+| IH | i | ɪ | b**i**t, s**i**t | Near-close front vowel |
+| IY | ee | i | b**ee**, s**ee** | Close front vowel |
+| OW | o | oʊ | g**o**, sh**ow** | Diphthong |
+| OY | oi | ɔɪ | b**oy**, t**oy** | Diphthong |
+| UH | uu | ʊ | b**oo**k, p**u**t | Near-close back vowel |
+| UW | oo | u | t**oo**, bl**ue** | Close back vowel |
 
 ## Consonant Mappings
 
 ### Stops (Plosives)
-| Phoneme | Ingglish | Example Words |
-|---------|---------|---------------|
-| B | b | **b**at, ca**b** |
-| D | d | **d**og, be**d** |
-| G | g | **g**o, bi**g** |
-| K | k | **c**at, ba**ck** |
-| P | p | **p**at, cu**p** |
-| T | t | **t**op, ca**t** |
+| ARPAbet | Ingglish | IPA | Example Words |
+|---------|----------|-----|---------------|
+| B | b | b | **b**at, ca**b** |
+| D | d | d | **d**og, be**d** |
+| G | g | ɡ | **g**o, bi**g** |
+| K | k | k | **c**at, ba**ck** |
+| P | p | p | **p**at, cu**p** |
+| T | t | t | **t**op, ca**t** |
 
 ### Fricatives
-| Phoneme | Ingglish | Example Words | Notes |
-|---------|---------|---------------|-------|
-| DH | dh | **th**e, fa**th**er | Voiced dental fricative |
-| F | f | **f**at, lau**gh** | |
-| S | s | **s**at, mi**ss** | |
-| SH | sh | **sh**e, pu**sh** | |
-| TH | th | **th**ink, ba**th** | Voiceless dental fricative |
-| V | v | **v**an, lo**ve** | |
-| Z | z | **z**oo, i**s** | |
-| ZH | zh | mea**s**ure, bei**ge** | |
+| ARPAbet | Ingglish | IPA | Example Words | Notes |
+|---------|----------|-----|---------------|-------|
+| DH | dh | ð | **th**e, fa**th**er | Voiced dental fricative |
+| F | f | f | **f**at, lau**gh** | |
+| S | s | s | **s**at, mi**ss** | |
+| SH | sh | ʃ | **sh**e, pu**sh** | |
+| TH | th | θ | **th**ink, ba**th** | Voiceless dental fricative |
+| V | v | v | **v**an, lo**ve** | |
+| Z | z | z | **z**oo, i**s** | |
+| ZH | zh | ʒ | mea**s**ure, bei**ge** | |
 
 ### Affricates
-| Phoneme | Ingglish | Example Words |
-|---------|---------|---------------|
-| CH | ch | **ch**at, ba**tch** |
-| JH | j | **j**ust, e**dge** |
+| ARPAbet | Ingglish | IPA | Example Words |
+|---------|----------|-----|---------------|
+| CH | ch | tʃ | **ch**at, ba**tch** |
+| JH | j | dʒ | **j**ust, e**dge** |
 
 ### Nasals
-| Phoneme | Ingglish | Example Words |
-|---------|---------|---------------|
-| M | m | **m**an, co**m**e |
-| N | n | **n**o, pe**n** |
-| NG | ng | si**ng**, thi**ng** |
+| ARPAbet | Ingglish | IPA | Example Words |
+|---------|----------|-----|---------------|
+| M | m | m | **m**an, co**m**e |
+| N | n | n | **n**o, pe**n** |
+| NG | ng | ŋ | si**ng**, thi**ng** |
 
 ### Liquids & Glides
-| Phoneme | Ingglish | Example Words |
-|---------|---------|---------------|
-| L | l | **l**et, we**ll** |
-| R | r | **r**un, ca**r** |
-| W | w | **w**et, a**w**ay |
-| Y | y | **y**es, **y**ou |
-| HH | h | **h**at, a**h**ead |
+| ARPAbet | Ingglish | IPA | Example Words |
+|---------|----------|-----|---------------|
+| L | l | l | **l**et, we**ll** |
+| R | r | ɹ | **r**un, ca**r** |
+| W | w | w | **w**et, a**w**ay |
+| Y | y | j | **y**es, **y**ou |
+| HH | h | h | **h**at, a**h**ead |
 
 ## Key Design Decisions
 
@@ -125,11 +127,28 @@ Each diphthong gets a two-letter combination:
 ## Stress Handling
 
 ARPAbet includes stress markers on vowels:
-- **0** = no stress
+- **0** = no stress (unstressed)
 - **1** = primary stress
 - **2** = secondary stress
 
-We strip these markers before mapping. This simplifies the output while still producing phonetically accurate spellings. Future versions might optionally indicate stress.
+### Ingglish Output
+We strip stress markers before mapping to Ingglish spellings. This simplifies the output while still producing phonetically accurate spellings.
+
+### IPA Output
+IPA output preserves stress information using standard IPA stress markers:
+- **ˈ** (U+02C8) = primary stress
+- **ˌ** (U+02CC) = secondary stress
+
+Stress markers are placed at **syllable boundaries** following the Maximal Onset Principle. This means the marker appears before the onset consonants of the stressed syllable, not directly before the vowel.
+
+**Example:** "hello" /həˈloʊ/
+- The stress marker goes before "l" (the syllable onset), not before "oʊ"
+
+**Example:** "examination" /ɪɡˌzæməˈneɪʃən/
+- Secondary stress before "z" (onset of second syllable)
+- Primary stress before "n" (onset of fourth syllable)
+
+The system uses English phonotactics (valid onset clusters like /bl/, /str/, /skw/) to correctly place stress markers at syllable boundaries.
 
 ## Limitations
 

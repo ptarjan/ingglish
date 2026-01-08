@@ -10,20 +10,29 @@ npm install @ingglish/core
 
 ## Translation Functions
 
-### `translate(text)`
+### `translate(text, format?)`
 
-Translates English text to Ingglish. Automatically loads the dictionary.
+Translates English text to Ingglish or IPA. Automatically loads the dictionary.
 
 ```typescript
-async function translate(text: string): Promise<string>
+async function translate(
+  text: string,
+  format?: 'ingglish' | 'ipa'  // default: 'ingglish'
+): Promise<string>
 ```
 
 **Example:**
 ```typescript
 import { translate } from '@ingglish/core';
 
+// Default: Ingglish format
 await translate("Hello, world!"); // "hulo, werld!"
-await translate("The quick brown fox"); // "Dhu kwik brown fahks"
+
+// IPA format with stress markers
+await translate("Hello, world!", 'ipa'); // "/həˈloʊ, wɝld!/"
+
+// IPA stress markers are placed at syllable boundaries
+await translate("beautiful", 'ipa'); // "/ˈbjutəfəl/"
 ```
 
 ### `reverseTranslate(text)`
@@ -39,6 +48,22 @@ async function reverseTranslate(text: string): Promise<string>
 import { reverseTranslate } from '@ingglish/core';
 
 await reverseTranslate("hulo, werld!"); // "hello, world!"
+```
+
+### `reverseTranslateIPA(text)`
+
+Translates IPA text back to English. Automatically loads the dictionary.
+
+```typescript
+async function reverseTranslateIPA(text: string): Promise<string>
+```
+
+**Example:**
+```typescript
+import { reverseTranslateIPA } from '@ingglish/core';
+
+await reverseTranslateIPA("həˈloʊ wɝld"); // "hello world"
+await reverseTranslateIPA("/ðə kæt/"); // "the cat"
 ```
 
 ## DOM Translation (Browser Only)
@@ -57,9 +82,11 @@ async function translateDOM(
 **Options:**
 ```typescript
 interface DOMTranslatorOptions {
+  outputFormat?: 'ingglish' | 'ipa';  // Output format (default: 'ingglish')
   skipTags?: string[];        // Tags to skip (default: SCRIPT, STYLE, CODE, etc.)
   skipClasses?: string[];     // CSS classes to skip
   translateAttributes?: boolean; // Translate title, alt, placeholder (default: true)
+  showTooltips?: boolean;     // Show original text on hover (default: true)
   onProgress?: (processed: number, total: number) => void;
 }
 ```
@@ -101,12 +128,12 @@ stop(); // Stop observing
 These synchronous functions are available after the dictionary has been loaded
 (e.g., after calling `translate()` or `translateDOM()`).
 
-### `translateText(text)`
+### `translateText(text, format?)`
 
 Synchronous version of `translate()`. Dictionary must already be loaded.
 
 ```typescript
-function translateText(text: string): string
+function translateText(text: string, format?: 'ingglish' | 'ipa'): string
 ```
 
 ### `reverseTranslateText(text)`
@@ -115,6 +142,14 @@ Synchronous version of `reverseTranslate()`. Dictionary must already be loaded.
 
 ```typescript
 function reverseTranslateText(text: string): string
+```
+
+### `reverseTranslateIPAText(text)`
+
+Synchronous version of `reverseTranslateIPA()`. Dictionary must already be loaded.
+
+```typescript
+function reverseTranslateIPAText(text: string): string
 ```
 
 ## Phoneme Maps
@@ -139,13 +174,37 @@ const CONSONANT_MAP: Record<string, string>
 // Example entries: { "TH": "th", "DH": "dh", "SH": "sh", ... }
 ```
 
+## IPA Conversion
+
+### `arpabetPhonemeToIPA(phoneme)`
+
+Converts a single ARPAbet phoneme to IPA notation.
+
+```typescript
+function arpabetPhonemeToIPA(phoneme: string): string
+```
+
+**Example:**
+```typescript
+import { arpabetPhonemeToIPA } from '@ingglish/core';
+
+arpabetPhonemeToIPA('TH');  // "θ"
+arpabetPhonemeToIPA('DH');  // "ð"
+arpabetPhonemeToIPA('AH0'); // "ə" (unstressed schwa)
+arpabetPhonemeToIPA('EY1'); // "ˈeɪ" (stressed diphthong)
+```
+
 ## Types
 
 ```typescript
+type OutputFormat = 'ingglish' | 'ipa';
+
 interface DOMTranslatorOptions {
+  outputFormat?: OutputFormat;
   skipTags?: string[];
   skipClasses?: string[];
   translateAttributes?: boolean;
+  showTooltips?: boolean;
   onProgress?: (processed: number, total: number) => void;
 }
 ```

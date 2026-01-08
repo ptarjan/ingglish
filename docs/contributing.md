@@ -92,19 +92,21 @@ packages/
 2. Run `npm run dev -w @ingglish/website` for live reload
 3. Run `npm test -w @ingglish/website` for e2e tests
 
-### Adding New Phoneme Mappings
+### Adding New ARPAbet Mappings
 
 Edit `packages/core/src/phoneme-map.ts`:
 
 ```typescript
 export const VOWEL_MAP: Record<string, string> = {
-  // Add new vowel mappings here
+  // Add new ARPAbet vowel → Ingglish mappings here
 };
 
 export const CONSONANT_MAP: Record<string, string> = {
-  // Add new consonant mappings here
+  // Add new ARPAbet consonant → Ingglish mappings here
 };
 ```
+
+For IPA conversion, edit `packages/core/src/arpabet-to-ipa.ts`.
 
 ### Improving Unknown Word Handling
 

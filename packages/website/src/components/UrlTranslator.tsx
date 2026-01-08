@@ -71,31 +71,25 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   const [copiedShare, setCopiedShare] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Listen for fullscreen changes (e.g., user presses Escape)
+  // Listen for Escape key to exit fullscreen
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement !== null);
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
-  const toggleFullscreen = useCallback(async () => {
-    if (iframeContainerRef.current === null) {
+    if (!isFullscreen) {
       return;
     }
 
-    try {
-      if (document.fullscreenElement !== null) {
-        await document.exitFullscreen();
-      } else {
-        await iframeContainerRef.current.requestFullscreen();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFullscreen(false);
       }
-    } catch {
-      // Fullscreen may not be supported or allowed
-    }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullscreen]);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
   }, []);
 
   // Auto-translate if initialUrl is provided

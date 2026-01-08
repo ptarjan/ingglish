@@ -13,10 +13,12 @@ Ingglish translates English text into a consistent, phonetic spelling system whe
 ### Features
 
 - **Bidirectional translation** - Translate English → Ingglish and back
-- **URL translator** - Translate entire web pages
+- **IPA support** - Output in International Phonetic Alphabet with proper stress markers
+- **URL translator** - Translate entire web pages with fullscreen viewing
+- **Word correspondence** - Interactive hover to see original/translated word pairs
 - **Contraction support** - Handles "wouldn't", "can't", "you're", etc.
 - **Case preservation** - Maintains capitalization patterns
-- **DOM translation** - Translate web pages in-place
+- **DOM translation** - Translate web pages in-place with hover tooltips
 
 ## Packages
 
@@ -45,25 +47,30 @@ npm run build
 
 ```typescript
 import {
-  loadDictionary,
-  translateText,
-  reverseTranslateText
+  translate,
+  reverseTranslate,
+  reverseTranslateIPA
 } from '@ingglish/core';
 
-// Load the dictionary (required once)
-await loadDictionary();
-
-// Translate English → Ingglish
-const ingglish = translateText('Hello, world!');
+// Translate English → Ingglish (async, auto-loads dictionary)
+const ingglish = await translate('Hello, world!');
 console.log(ingglish); // "hulo, werld!"
 
+// Translate English → IPA
+const ipa = await translate('Hello, world!', 'ipa');
+console.log(ipa); // "/həˈloʊ, wɝld!/"
+
 // Translate Ingglish → English
-const english = reverseTranslateText('hulo, werld!');
+const english = await reverseTranslate('hulo, werld!');
 console.log(english); // "hello, world!"
+
+// Translate IPA → English
+const fromIPA = await reverseTranslateIPA('həˈloʊ wɝld');
+console.log(fromIPA); // "hello world"
 
 // Translate DOM elements (browser only)
 import { translateDOM } from '@ingglish/core';
-translateDOM(document.body);
+await translateDOM(document.body, { outputFormat: 'ingglish' });
 ```
 
 ### Website
@@ -106,16 +113,16 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 ## Examples
 
-| English | Ingglish |
-|---------|---------|
-| hello | hulo |
-| world | werld |
-| beautiful | byootuful |
-| through | throo |
-| though | dho |
-| thought | thawt |
-| the | dhu |
-| English | Ingglish |
+| English | Ingglish | IPA |
+|---------|---------|-----|
+| hello | hulo | /həˈloʊ/ |
+| world | werld | /wɝld/ |
+| beautiful | byootuful | /ˈbjutəfəl/ |
+| through | throo | /θɹu/ |
+| though | dho | /ðoʊ/ |
+| thought | thawt | /θɔt/ |
+| the | dhu | /ðə/ |
+| English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
 ## Development
 
