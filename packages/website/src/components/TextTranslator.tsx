@@ -19,17 +19,40 @@ interface Token {
 }
 
 /**
+ * IPA character class for tokenization.
+ * Includes Latin letters, IPA symbols, stress markers, and word joiner.
+ */
+const IPA_WORD_CHARS =
+  // Basic Latin letters
+  'a-zA-Z' +
+  // IPA vowels and consonants
+  'əɝɚʌæɑɔɛɪiuʊ' + // vowels
+  'ðθʃʒŋɹɡ' + // consonants
+  // Diphthong components (already in basic: a, e, i, o, u)
+  'aɪaʊɔɪoʊeɪ' +
+  // Stress markers
+  'ˈˌ' +
+  // Word joiner (prevents line breaks)
+  '\u2060';
+
+// Regex pattern that matches either a "word" (letters + IPA chars) or "non-word"
+const TOKEN_REGEX = new RegExp(`([${IPA_WORD_CHARS}]+)|([^${IPA_WORD_CHARS}]+)`, 'g');
+
+/**
  * Tokenizes text into words and non-words, tracking word indices.
+ * Handles both Ingglish (ASCII) and IPA (Unicode) text.
  */
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
-  const regex = /([a-zA-Z]+)|([^a-zA-Z]+)/g;
   let match;
   let wordIndex = 0;
 
-  while ((match = regex.exec(text)) !== null) {
+  // Reset regex lastIndex for fresh matching
+  TOKEN_REGEX.lastIndex = 0;
+
+  while ((match = TOKEN_REGEX.exec(text)) !== null) {
     if (match[1]) {
-      // Word
+      // Word (includes IPA characters)
       tokens.push({ text: match[1], isWord: true, wordIndex: wordIndex++ });
     } else if (match[2]) {
       // Non-word (punctuation, whitespace)
