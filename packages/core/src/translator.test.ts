@@ -174,5 +174,55 @@ describe('translator', () => {
       const result = translateText("'twas");
       expect(result).toBeDefined();
     });
+
+    it('should preserve all caps on contractions', () => {
+      // DON'T should stay uppercase
+      const result = translateWord("DON'T");
+      expect(result).toBe(result.toUpperCase());
+    });
+
+    it('should handle contractions not in dictionary via fallback', () => {
+      // Made-up contraction that won't be in CMU dictionary
+      const result = translateWord("foo't");
+      expect(result).toBeDefined();
+      expect(result).toContain("'");
+    });
+  });
+
+  describe('case preservation for unknown words', () => {
+    it('should preserve all caps on unknown words', () => {
+      // KUBERNETES is not in CMU dictionary
+      const result = translateWord('KUBERNETES');
+      expect(result).toBe(result.toUpperCase());
+    });
+
+    it('should preserve title case on unknown words', () => {
+      // Kubernetes is not in CMU dictionary
+      const result = translateWord('Kubernetes');
+      expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
+      expect(result.slice(1)).toBe(result.slice(1).toLowerCase());
+    });
+  });
+
+  describe('edge cases for coverage', () => {
+    it('should handle empty string in translateWord', () => {
+      // Line 86: return empty string for empty input
+      expect(translateWord('')).toBe('');
+    });
+
+    it('should handle contraction with leading apostrophe via fallback', () => {
+      // Made-up word that's definitely not in dictionary
+      // This tests line 178: empty first part in split("'")
+      const result = translateWord("'xyz");
+      expect(result).toBeDefined();
+      expect(result).toContain("'");
+      // First part is empty, second part 'xyz' gets translated by fallback
+    });
+
+    it('should handle words with only non-letter characters', () => {
+      // Should return as-is when no letters present
+      expect(translateWord('123')).toBe('123');
+      expect(translateWord('!!!')).toBe('!!!');
+    });
   });
 });

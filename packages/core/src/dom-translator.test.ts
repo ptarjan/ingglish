@@ -3,7 +3,13 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { translateTextWithMapping } from './translator';
-import { translateDOM, translateDOMAsync, skipElement, unskipElement } from './dom-translator';
+import {
+  translateDOM,
+  translateDOMAsync,
+  skipElement,
+  unskipElement,
+  restoreDOM,
+} from './dom-translator';
 import { observeAndTranslate } from './dom-observer';
 import { setupDictionary } from './test-setup';
 
@@ -385,6 +391,10 @@ describe('dom-translator', () => {
       expect(span?.textContent).toBe('Hulo');
     });
 
+    // Note: Tests for raw text nodes with showTooltips are complex due to
+    // MutationObserver behavior - the existing test using element.textContent
+    // is the recommended pattern
+
     // Note: iframe tests are skipped in jsdom due to limited contentDocument support
     // The fix for iframe style injection is tested manually in real browsers
     it.skip('should inject styles into iframe document, not parent document', () => {
@@ -431,6 +441,85 @@ describe('dom-translator', () => {
       // Both documents should have styles
       expect(document.getElementById('ingglish-tooltip-styles')).not.toBeNull();
       expect(iframeDoc.getElementById('ingglish-tooltip-styles')).not.toBeNull();
+    });
+  });
+
+  describe('restoreDOM', () => {
+    it('should restore text content from data-ingglish-original attribute', () => {
+      // Set up DOM with translation markers
+      document.body.innerHTML =
+        '<p><span data-ingglish-original="Hello">Hulo</span> <span data-ingglish-original="world">werld</span></p>';
+
+      restoreDOM(document.body);
+
+      // Should restore original text
+      expect(document.body.textContent).toBe('Hello world');
+      // Should remove the data attributes
+      expect(document.querySelector('[data-ingglish-original]')).toBeNull();
+    });
+
+    it('should restore attributes from data-ingglish-original-* attributes', () => {
+      document.body.innerHTML =
+        '<img alt="Hulo werld" data-ingglish-original-alt="Hello world" title="Klik heer" data-ingglish-original-title="Click here">';
+
+      restoreDOM(document.body);
+
+      const img = document.querySelector('img');
+      expect(img?.getAttribute('alt')).toBe('Hello world');
+      expect(img?.getAttribute('title')).toBe('Click here');
+      // Original data attributes should be removed
+      expect(img?.hasAttribute('data-ingglish-original-alt')).toBe(false);
+      expect(img?.hasAttribute('data-ingglish-original-title')).toBe(false);
+    });
+
+    it('should handle elements with no original data attributes', () => {
+      document.body.innerHTML = '<p>Already English</p>';
+
+      restoreDOM(document.body);
+
+      expect(document.body.textContent).toBe('Already English');
+    });
+
+    it('should restore placeholder attributes', () => {
+      document.body.innerHTML =
+        '<input placeholder="Tiep heer" data-ingglish-original-placeholder="Type here">';
+
+      restoreDOM(document.body);
+
+      const input = document.querySelector('input');
+      expect(input?.getAttribute('placeholder')).toBe('Type here');
+    });
+
+    it('should restore multiple text nodes in same element', () => {
+      document.body.innerHTML = '<div data-ingglish-original="Hello world">Hulo werld</div>';
+
+      restoreDOM(document.body);
+
+      expect(document.body.textContent).toBe('Hello world');
+    });
+  });
+
+  describe('round-trip translation and restoration', () => {
+    it('should correctly translate and then restore', () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+
+      // Translate
+      translateDOM(document.body, { translateAttributes: true });
+      expect(document.body.textContent).toBe('Hulo werld');
+
+      // Restore
+      restoreDOM(document.body);
+      expect(document.body.textContent).toBe('Hello world');
+    });
+
+    it('should correctly translate and restore attributes', () => {
+      document.body.innerHTML = '<img alt="Hello world">';
+
+      translateDOM(document.body, { translateAttributes: true });
+      expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hulo werld');
+
+      restoreDOM(document.body);
+      expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hello world');
     });
   });
 });
