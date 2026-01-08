@@ -125,7 +125,6 @@ function SpellingGuide(): React.JSX.Element {
       <table className="mapping-table">
         <thead>
           <tr>
-            <th>IPA</th>
             <th>{format === 'ipa' ? 'IPA' : 'Ingglish'}</th>
             <th>Examples</th>
           </tr>
@@ -133,7 +132,6 @@ function SpellingGuide(): React.JSX.Element {
         <tbody>
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
-              <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
               <td className="spelling-cell">{getSpelling(sound.phoneme, format)}</td>
               <td className="examples-cell">{sound.examples}</td>
             </tr>
