@@ -359,6 +359,12 @@
   color: var(--color-text-muted);
 }
 
+.mapping-table th:nth-child(1),
+.mapping-table th:nth-child(2) {
+  width: 3.5rem;
+  text-align: center;
+}
+
 .mapping-table tr:last-child td {
   border-bottom: none;
 }
@@ -368,6 +374,8 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text);
+  width: 3.5rem;
+  text-align: center;
 }
 
 .ingglish-cell {
@@ -375,6 +383,8 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-primary);
+  width: 3.5rem;
+  text-align: center;
 }
 
 .examples-cell {
@@ -384,7 +394,7 @@
 
 .examples-cell strong {
   color: var(--color-text);
-  font-weight: 700;
+  font-weight: inherit;
   text-decoration: underline;
   text-decoration-color: var(--color-primary);
   text-underline-offset: 2px;
