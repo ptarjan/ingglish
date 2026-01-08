@@ -76,7 +76,8 @@ export function lookupPronunciation(word: string): string[] | null {
 }
 
 /**
- * Translates a single word to Ingglish spelling.
+ * Translates a single word (or contraction) to Ingglish spelling.
+ * Handles contractions like "don't", "I'm", etc.
  * @param word The English word to translate
  * @returns The Ingglish spelling, or the original word if not found
  */
@@ -89,6 +90,11 @@ export function translateWord(word: string): string {
   // Check if word has any letters to translate
   if (!/[a-zA-Z]/.test(word)) {
     return word;
+  }
+
+  // Handle contractions (words with apostrophes)
+  if (word.includes("'")) {
+    return translateContraction(word);
   }
 
   // Preserve case pattern
@@ -130,7 +136,7 @@ export function translateWord(word: string): string {
 }
 
 /**
- * Translates a contraction to Ingglish.
+ * Translates a contraction to Ingglish (internal helper).
  * First tries to look up the whole contraction in the dictionary.
  * Returns the translation without apostrophe for consistent round-tripping.
  */
@@ -169,6 +175,7 @@ function translateContraction(token: string): string {
       if (i > 0 && p.toLowerCase() === 't') {
         return 't'; // Keep 't' as-is for n't contractions not in dictionary
       }
+      // Recursively call translateWord for each part (without apostrophe, so no infinite loop)
       return translateWord(p);
     })
     .join("'");
@@ -192,10 +199,6 @@ export function translateText(text: string): string {
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (/^[a-zA-Z']+$/.test(token)) {
-        // Handle contractions
-        if (token.includes("'")) {
-          return translateContraction(token);
-        }
         return translateWord(token);
       }
       return token;
@@ -253,15 +256,9 @@ export function translateTextWithMapping(text: string): TranslatedToken[] {
   return tokens.map((token) => {
     // Only translate if it's a word (contains letters)
     if (/^[a-zA-Z']+$/.test(token)) {
-      let translated: string;
-      if (token.includes("'")) {
-        translated = translateContraction(token);
-      } else {
-        translated = translateWord(token);
-      }
       return {
         original: token,
-        translated,
+        translated: translateWord(token),
         isWord: true,
       };
     }
