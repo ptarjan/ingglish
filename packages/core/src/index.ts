@@ -67,24 +67,12 @@ export function restoreDOM(root: Element | Document): void {
 // Sync API (dictionary must be loaded first via translate/translateDOM)
 // =============================================================================
 
-export { translateText, translateTextWithMapping } from './translator';
-export type { TranslatedToken } from './translator';
+export { translateText } from './translator';
 export { reverseTranslateText, reverseTranslateIPAText } from './reverse-translator';
 
 // =============================================================================
-// Phoneme Maps (for spelling guide UI)
+// Spelling Guide UI
 // =============================================================================
 
-export { VOWEL_MAP, CONSONANT_MAP, ARPABET_MAP, arpabetToDisplay } from './arpabet-to-ingglish';
-
-// =============================================================================
-// IPA conversion (for spelling guide UI)
-// =============================================================================
-
+export { VOWEL_MAP, CONSONANT_MAP } from './arpabet-to-ingglish';
 export { arpabetPhonemeToIPA } from './arpabet-to-ipa';
-
-// =============================================================================
-// Advanced: Phonemize support for better unknown word handling
-// =============================================================================
-
-export { preloadPhonemize } from './unknown-words';
