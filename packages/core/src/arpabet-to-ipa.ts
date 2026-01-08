@@ -69,12 +69,19 @@ const ARPABET_TO_IPA: Record<string, string> = {
 };
 
 /**
+ * Word joiner character (U+2060) - prevents line breaks between stress markers
+ * and following phonemes without affecting visual display.
+ */
+const WORD_JOINER = '\u2060';
+
+/**
  * Stress markers for IPA output.
  * 1 = primary stress (ˈ), 2 = secondary stress (ˌ), 0 = unstressed
+ * Word joiner surrounds the marker to prevent line breaks on either side.
  */
 const STRESS_MARKERS: Record<string, string> = {
-  '1': 'ˈ',
-  '2': 'ˌ',
+  '1': WORD_JOINER + 'ˈ' + WORD_JOINER,
+  '2': WORD_JOINER + 'ˌ' + WORD_JOINER,
   '0': '',
 };
 
@@ -113,44 +120,86 @@ export function arpabetPhonemeToIPA(phoneme: string): string {
 }
 
 /**
+ * Check if an ARPAbet phoneme is a vowel (has stress marker or is a vowel sound).
+ */
+function isVowel(phoneme: string): boolean {
+  const base = stripStress(phoneme);
+  // All ARPAbet vowels are 2-letter codes that start with A, E, I, O, U
+  // and can have stress markers (0, 1, 2)
+  return /^(AA|AE|AH|AO|AW|AY|EH|ER|EY|IH|IY|OW|OY|UH|UW)$/.test(base);
+}
+
+/**
  * Converts an array of ARPAbet phonemes to IPA.
+ * Places stress markers at syllable boundaries (before onset consonants),
+ * not directly before vowels.
  *
  * @param phonemes - Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns IPA transcription (e.g., "/həˈloʊ/")
  */
 export function phonemesToIPA(phonemes: string[]): string {
-  // Collect IPA segments, inserting stress markers at correct positions
-  const segments: string[] = [];
+  // First pass: convert all phonemes to IPA and track stress positions
+  const ipaSegments: string[] = [];
+  const stressPositions: { index: number; marker: string }[] = [];
 
-  for (const phoneme of phonemes) {
+  for (let i = 0; i < phonemes.length; i++) {
+    const phoneme = phonemes[i];
     const base = stripStress(phoneme);
     const stressMatch = /[012]$/.exec(phoneme);
     const stress = stressMatch !== null ? stressMatch[0] : null;
 
     const ipa = ARPABET_TO_IPA[base];
     if (ipa === undefined) {
-      segments.push(phoneme.toLowerCase());
+      ipaSegments.push(phoneme.toLowerCase());
       continue;
     }
 
     // Handle schwa for unstressed AH
     if (base === 'AH' && stress === '0') {
-      segments.push('ə');
+      ipaSegments.push('ə');
       continue;
     }
 
-    // For stressed vowels, add stress marker before the vowel
-    if (stress === '1') {
-      segments.push('ˈ' + ipa);
-    } else if (stress === '2') {
-      segments.push('ˌ' + ipa);
-    } else {
-      segments.push(ipa);
+    // Record stress position for later insertion at syllable boundary
+    if (stress === '1' || stress === '2') {
+      const marker =
+        stress === '1' ? WORD_JOINER + 'ˈ' + WORD_JOINER : WORD_JOINER + 'ˌ' + WORD_JOINER;
+      // Find where to place the stress marker (at syllable onset)
+      let onsetIndex = ipaSegments.length;
+
+      // Look backwards to find the onset consonant(s) of this syllable
+      // Simple heuristic: take one consonant back if it exists and previous segment is a vowel
+      // or take consecutive consonants if they form a valid onset cluster
+      if (i > 0) {
+        let j = i - 1;
+        // Find consecutive consonants before this vowel
+        while (j >= 0 && !isVowel(phonemes[j])) {
+          j--;
+        }
+        // j is now at the previous vowel (or -1 if no previous vowel)
+        // The onset starts at j+1
+        const onsetStart = j + 1;
+        if (onsetStart < i) {
+          // There are consonants before this vowel - they form the onset
+          onsetIndex = onsetStart;
+        }
+      }
+
+      stressPositions.push({ index: onsetIndex, marker });
     }
+
+    ipaSegments.push(ipa);
+  }
+
+  // Build final string with stress markers inserted at correct positions
+  // Process stress positions in reverse order so indices don't shift
+  const sortedStress = stressPositions.sort((a, b) => b.index - a.index);
+  for (const { index, marker } of sortedStress) {
+    ipaSegments.splice(index, 0, marker);
   }
 
   // Return with IPA brackets
-  return '/' + segments.join('') + '/';
+  return '/' + ipaSegments.join('') + '/';
 }
 
 /**
