@@ -107,9 +107,12 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     onProgress,
   } = options;
 
+  // Get the document (works for both main document and iframes)
+  const targetDoc = root instanceof Document ? root : root.ownerDocument;
+
   // Inject tooltip CSS if showing tooltips
-  if (showTooltips) {
-    injectTooltipStyles();
+  if (showTooltips && targetDoc !== null) {
+    injectTooltipStyles(targetDoc);
   }
 
   // Single walk to collect all text nodes
@@ -199,22 +202,23 @@ const TOOLTIP_STYLES = `
 }
 `;
 
-let tooltipStylesInjected = false;
+// Track which documents have had tooltip styles injected (supports iframes)
+const injectedDocuments = new WeakSet<Document>();
 
 /**
  * Injects the tooltip CSS styles into the document head.
- * Only injects once per document.
+ * Handles both main document and iframe documents.
  */
-function injectTooltipStyles(): void {
-  if (tooltipStylesInjected) {
+function injectTooltipStyles(targetDoc: Document): void {
+  if (injectedDocuments.has(targetDoc)) {
     return;
   }
 
-  const style = document.createElement('style');
+  const style = targetDoc.createElement('style');
   style.id = 'ingglish-tooltip-styles';
   style.textContent = TOOLTIP_STYLES;
-  document.head.appendChild(style);
-  tooltipStylesInjected = true;
+  targetDoc.head.appendChild(style);
+  injectedDocuments.add(targetDoc);
 }
 
 /**

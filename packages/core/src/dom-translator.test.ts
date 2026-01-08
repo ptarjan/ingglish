@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
-import { loadDictionary } from './translator';
+import { loadDictionary, translateTextWithMapping } from './translator';
 import {
   translateDOM,
   translateDOMAsync,
@@ -268,6 +268,155 @@ describe('dom-translator', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(p.textContent).toBe('Werld');
+    });
+  });
+
+  describe('translateTextWithMapping', () => {
+    it('should return token mappings for words', () => {
+      const tokens = translateTextWithMapping('Hello world');
+      expect(tokens).toHaveLength(3); // "Hello", " ", "world"
+
+      expect(tokens[0]).toEqual({
+        original: 'Hello',
+        translated: 'Hulo',
+        isWord: true,
+      });
+      expect(tokens[1]).toEqual({
+        original: ' ',
+        translated: ' ',
+        isWord: false,
+      });
+      expect(tokens[2]).toEqual({
+        original: 'world',
+        translated: 'werld',
+        isWord: true,
+      });
+    });
+
+    it('should handle punctuation', () => {
+      const tokens = translateTextWithMapping('Hello, world!');
+      // "Hello", ", ", "world", "!"
+      expect(tokens.filter((t) => t.isWord)).toHaveLength(2);
+      expect(tokens.filter((t) => !t.isWord)).toHaveLength(2);
+    });
+
+    it('should handle contractions', () => {
+      const tokens = translateTextWithMapping("don't");
+      expect(tokens).toHaveLength(1);
+      expect(tokens[0].isWord).toBe(true);
+      expect(tokens[0].original).toBe("don't");
+      expect(tokens[0].translated).toBe('dont');
+    });
+  });
+
+  describe('showTooltips option', () => {
+    it('should wrap translated words in spans with data-original attribute', () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      const spans = document.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(2);
+
+      expect(spans[0].getAttribute('data-original')).toBe('Hello');
+      expect(spans[0].textContent).toBe('Hulo');
+
+      expect(spans[1].getAttribute('data-original')).toBe('world');
+      expect(spans[1].textContent).toBe('werld');
+    });
+
+    it('should not wrap unchanged words in spans', () => {
+      document.body.innerHTML = '<p>123 hello</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      // Only "hello" should be wrapped (numbers stay as text)
+      const spans = document.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(1);
+      expect(spans[0].getAttribute('data-original')).toBe('hello');
+    });
+
+    it('should inject tooltip CSS styles', () => {
+      document.body.innerHTML = '<p>Hello</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      const styleElement = document.getElementById('ingglish-tooltip-styles');
+      expect(styleElement).not.toBeNull();
+      expect(styleElement?.textContent).toContain('.ingglish-word');
+      expect(styleElement?.textContent).toContain('data-original');
+    });
+
+    it('should preserve text content when using tooltips', () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      // Text content should still be the translated text
+      expect(document.body.textContent).toBe('Hulo werld');
+    });
+
+    it('should handle punctuation correctly with tooltips', () => {
+      document.body.innerHTML = '<p>Hello, world!</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      // Should have spans for words, text nodes for punctuation
+      const p = document.querySelector('p')!;
+      expect(p.textContent).toBe('Hulo, werld!');
+
+      const spans = p.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(2);
+    });
+
+    it('should work with observer for dynamic content', async () => {
+      createObserver(document.body, { showTooltips: true });
+
+      const p = document.createElement('p');
+      p.textContent = 'Hello';
+      document.body.appendChild(p);
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      const span = p.querySelector('.ingglish-word');
+      expect(span).not.toBeNull();
+      expect(span?.getAttribute('data-original')).toBe('Hello');
+      expect(span?.textContent).toBe('Hulo');
+    });
+
+    // Note: iframe tests are skipped in jsdom due to limited contentDocument support
+    // The fix for iframe style injection is tested manually in real browsers
+    it.skip('should inject styles into iframe document, not parent document', () => {
+      // Create an iframe
+      const iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentDocument!;
+      iframeDoc.body.innerHTML = '<p>Hello world</p>';
+
+      // Translate the iframe's body
+      translateDOM(iframeDoc.body, { showTooltips: true });
+
+      // Styles should be injected into iframe's document
+      const iframeStyle = iframeDoc.getElementById('ingglish-tooltip-styles');
+      expect(iframeStyle).not.toBeNull();
+      expect(iframeStyle?.textContent).toContain('.ingglish-word');
+
+      // Verify spans were created in iframe
+      const spans = iframeDoc.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(2);
+    });
+
+    it.skip('should inject styles into multiple documents independently', () => {
+      // First translate main document
+      document.body.innerHTML = '<p>Hello</p>';
+      translateDOM(document.body, { showTooltips: true });
+
+      // Create an iframe and translate it
+      const iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+      const iframeDoc = iframe.contentDocument!;
+      iframeDoc.body.innerHTML = '<p>World</p>';
+      translateDOM(iframeDoc.body, { showTooltips: true });
+
+      // Both documents should have styles
+      expect(document.getElementById('ingglish-tooltip-styles')).not.toBeNull();
+      expect(iframeDoc.getElementById('ingglish-tooltip-styles')).not.toBeNull();
     });
   });
 });
