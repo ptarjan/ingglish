@@ -50,7 +50,10 @@ describe('translator', () => {
     it('should return phoneme arrays', () => {
       const phonemes = lookupPronunciation('hello');
       expect(Array.isArray(phonemes)).toBe(true);
-      expect(phonemes!.length).toBeGreaterThan(0);
+      expect(phonemes).not.toBeNull();
+      if (phonemes !== null) {
+        expect(phonemes.length).toBeGreaterThan(0);
+      }
     });
   });
 

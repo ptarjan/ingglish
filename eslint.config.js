@@ -95,14 +95,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
-      '**/dist/**',
-      '**/node_modules/**',
-      '*.config.js',
-      '*.config.ts',
-      'eslint.config.js',
-      '**/*.test.ts',
-      '**/e2e/**',
-    ],
+    ignores: ['**/dist/**', '**/node_modules/**', '*.config.js', '*.config.ts', 'eslint.config.js'],
   }
 );

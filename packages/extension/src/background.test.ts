@@ -1,8 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Suppress console.error and console.log during tests
-vi.spyOn(console, 'error').mockImplementation(() => {});
-vi.spyOn(console, 'log').mockImplementation(() => {});
+vi.spyOn(console, 'error').mockImplementation(() => undefined);
+vi.spyOn(console, 'log').mockImplementation(() => undefined);
+
+// Type definitions for chrome API mock
+type QueryCallback = (tabs: { id?: number }[]) => void;
+type StorageGetCallback = (data: { format?: string }) => void;
+type StorageSetCallback = (() => void) | undefined;
+type SendMessageCallback = ((response: object) => void) | undefined;
 
 // Mock chrome API
 const mockChrome = {
@@ -13,9 +19,10 @@ const mockChrome = {
     lastError: null as chrome.runtime.LastError | null,
   },
   tabs: {
-    query: vi.fn(),
+    query: vi.fn<(query: object, callback: QueryCallback) => undefined>(),
     reload: vi.fn(),
-    sendMessage: vi.fn(),
+    sendMessage:
+      vi.fn<(tabId: number, message: object, callback: SendMessageCallback) => undefined>(),
     onRemoved: {
       addListener: vi.fn(),
     },
@@ -31,12 +38,20 @@ const mockChrome = {
   },
   storage: {
     sync: {
-      get: vi.fn().mockImplementation((_keys, callback) => {
-        callback({ format: 'ingglish' });
-      }),
-      set: vi.fn().mockImplementation((_data, callback) => {
-        if (callback) callback();
-      }),
+      get: vi
+        .fn<(keys: string[], callback: StorageGetCallback) => undefined>()
+        .mockImplementation((_keys: string[], callback: StorageGetCallback) => {
+          callback({ format: 'ingglish' });
+          return undefined;
+        }),
+      set: vi
+        .fn<(data: object, callback: StorageSetCallback) => undefined>()
+        .mockImplementation((_data: object, callback: StorageSetCallback) => {
+          if (callback !== undefined) {
+            callback();
+          }
+          return undefined;
+        }),
     },
   },
 };
@@ -60,15 +75,21 @@ describe('background script', () => {
     mockChrome.scripting.executeScript.mockResolvedValue([]);
 
     // Capture the handlers when the module loads
-    mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
-      messageHandler = handler;
-    });
-    mockChrome.tabs.onRemoved.addListener.mockImplementation((handler) => {
-      tabRemovedHandler = handler;
-    });
-    mockChrome.tabs.onUpdated.addListener.mockImplementation((handler) => {
-      tabUpdatedHandler = handler;
-    });
+    mockChrome.runtime.onMessage.addListener.mockImplementation(
+      (handler: typeof messageHandler) => {
+        messageHandler = handler;
+      }
+    );
+    mockChrome.tabs.onRemoved.addListener.mockImplementation(
+      (handler: typeof tabRemovedHandler) => {
+        tabRemovedHandler = handler;
+      }
+    );
+    mockChrome.tabs.onUpdated.addListener.mockImplementation(
+      (handler: typeof tabUpdatedHandler) => {
+        tabUpdatedHandler = handler;
+      }
+    );
 
     // Import the module to trigger handler registration
     await import('./background');
@@ -78,7 +99,7 @@ describe('background script', () => {
     it('responds with enabled: false when tab is not translated', async () => {
       const sendResponse = vi.fn();
 
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 123 }]);
       });
 
@@ -95,7 +116,7 @@ describe('background script', () => {
     it('responds with enabled: false when no active tab', async () => {
       const sendResponse = vi.fn();
 
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{}]); // tab without id
       });
 
@@ -112,7 +133,7 @@ describe('background script', () => {
     it('adds tab to translatedTabs and injects script', async () => {
       const sendResponse = vi.fn();
 
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 456 }]);
       });
 
@@ -132,7 +153,7 @@ describe('background script', () => {
     it('reverts state when script injection fails', async () => {
       const sendResponse = vi.fn();
 
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 789 }]);
       });
 
@@ -162,7 +183,7 @@ describe('background script', () => {
     it('responds with error when no active tab', () => {
       const sendResponse = vi.fn();
 
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{}]); // tab without id
       });
 
@@ -180,14 +201,18 @@ describe('background script', () => {
       const sendResponse = vi.fn();
 
       // First enable translation for tab 111
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 111 }]);
       });
 
       // Mock sendMessage to call the callback
-      mockChrome.tabs.sendMessage.mockImplementation((_tabId, _message, callback) => {
-        if (callback) callback({});
-      });
+      mockChrome.tabs.sendMessage.mockImplementation(
+        (_tabId: number, _message: object, callback: SendMessageCallback) => {
+          if (callback !== undefined) {
+            callback({});
+          }
+        }
+      );
 
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
 
@@ -211,7 +236,7 @@ describe('background script', () => {
   describe('tab cleanup', () => {
     it('removes tab from translatedTabs when tab is closed', async () => {
       // Enable translation for tab
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 222 }]);
       });
 
@@ -244,7 +269,7 @@ describe('background script', () => {
   describe('tab navigation', () => {
     it('re-injects script when enabled tab completes loading', async () => {
       // Enable translation for tab
-      mockChrome.tabs.query.mockImplementation((_query, callback) => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 333 }]);
       });
 

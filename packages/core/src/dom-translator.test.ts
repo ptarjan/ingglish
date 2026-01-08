@@ -148,24 +148,33 @@ describe('dom-translator', () => {
   describe('skipElement / unskipElement', () => {
     it('should add data-ingglish-skip attribute', () => {
       document.body.innerHTML = '<p>Hello</p>';
-      const p = document.querySelector('p')!;
-      skipElement(p);
-      expect(p.hasAttribute('data-ingglish-skip')).toBe(true);
+      const p = document.querySelector('p');
+      expect(p).not.toBeNull();
+      if (p !== null) {
+        skipElement(p);
+        expect(p.hasAttribute('data-ingglish-skip')).toBe(true);
+      }
     });
 
     it('should remove data-ingglish-skip attribute', () => {
       document.body.innerHTML = '<p data-ingglish-skip>Hello</p>';
-      const p = document.querySelector('p')!;
-      unskipElement(p);
-      expect(p.hasAttribute('data-ingglish-skip')).toBe(false);
+      const p = document.querySelector('p');
+      expect(p).not.toBeNull();
+      if (p !== null) {
+        unskipElement(p);
+        expect(p.hasAttribute('data-ingglish-skip')).toBe(false);
+      }
     });
 
     it('should prevent translation after skipElement', () => {
       document.body.innerHTML = '<p>Hello</p>';
-      const p = document.querySelector('p')!;
-      skipElement(p);
-      translateDOM(document.body);
-      expect(p.textContent).toBe('Hello');
+      const p = document.querySelector('p');
+      expect(p).not.toBeNull();
+      if (p !== null) {
+        skipElement(p);
+        translateDOM(document.body);
+        expect(p.textContent).toBe('Hello');
+      }
     });
   });
 
@@ -184,7 +193,7 @@ describe('dom-translator', () => {
   });
 
   describe('observeAndTranslate', () => {
-    it('should return a stop function', async () => {
+    it('should return a stop function', () => {
       const stop = createObserver(document.body);
       expect(typeof stop).toBe('function');
     });
@@ -352,11 +361,14 @@ describe('dom-translator', () => {
       translateDOM(document.body, { showTooltips: true });
 
       // Should have spans for words, text nodes for punctuation
-      const p = document.querySelector('p')!;
-      expect(p.textContent).toBe('Hulo, werld!');
+      const p = document.querySelector('p');
+      expect(p).not.toBeNull();
+      if (p !== null) {
+        expect(p.textContent).toBe('Hulo, werld!');
 
-      const spans = p.querySelectorAll('.ingglish-word');
-      expect(spans).toHaveLength(2);
+        const spans = p.querySelectorAll('.ingglish-word');
+        expect(spans).toHaveLength(2);
+      }
     });
 
     it('should work with observer for dynamic content', async () => {
@@ -381,7 +393,11 @@ describe('dom-translator', () => {
       const iframe = document.createElement('iframe');
       document.body.appendChild(iframe);
 
-      const iframeDoc = iframe.contentDocument!;
+      const iframeDoc = iframe.contentDocument;
+      expect(iframeDoc).not.toBeNull();
+      if (iframeDoc === null) {
+        return;
+      }
       iframeDoc.body.innerHTML = '<p>Hello world</p>';
 
       // Translate the iframe's body
@@ -405,7 +421,11 @@ describe('dom-translator', () => {
       // Create an iframe and translate it
       const iframe = document.createElement('iframe');
       document.body.appendChild(iframe);
-      const iframeDoc = iframe.contentDocument!;
+      const iframeDoc = iframe.contentDocument;
+      expect(iframeDoc).not.toBeNull();
+      if (iframeDoc === null) {
+        return;
+      }
       iframeDoc.body.innerHTML = '<p>World</p>';
       translateDOM(iframeDoc.body, { showTooltips: true });
 

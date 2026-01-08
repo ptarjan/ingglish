@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
 import { translateDOM, observeAndTranslate, restoreDOM } from '@ingglish/core';
 
 // Suppress console.error and console.log during tests
-vi.spyOn(console, 'error').mockImplementation(() => {});
-vi.spyOn(console, 'log').mockImplementation(() => {});
+vi.spyOn(console, 'error').mockImplementation(() => undefined);
+vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 // Mock @ingglish/core
 vi.mock('@ingglish/core', () => ({
@@ -12,27 +12,49 @@ vi.mock('@ingglish/core', () => ({
   restoreDOM: vi.fn(),
 }));
 
+type FormatCallback = ((response: { format: string }) => void) | undefined;
+
 // Mock chrome API
 const mockChrome = {
   runtime: {
     onMessage: {
       addListener: vi.fn(),
     },
-    sendMessage: vi.fn().mockImplementation((_message, callback) => {
-      // Return format 'ingglish' for GET_FORMAT messages
-      if (callback) callback({ format: 'ingglish' });
-    }),
+    sendMessage: vi
+      .fn<(message: object, callback: FormatCallback) => undefined>()
+      .mockImplementation((_message: object, callback: FormatCallback) => {
+        // Return format 'ingglish' for GET_FORMAT messages
+        if (callback !== undefined) {
+          callback({ format: 'ingglish' });
+        }
+        return undefined;
+      }),
   },
 };
 
 vi.stubGlobal('chrome', mockChrome);
 
 // Create a proper DOM mock
-function createMockDocument() {
+interface MockElement {
+  id: string;
+  textContent: string;
+  style: { cssText: string; opacity: string };
+  addEventListener: ReturnType<typeof vi.fn>;
+  remove: ReturnType<typeof vi.fn>;
+}
+
+interface MockDocument {
+  body: { appendChild: ReturnType<typeof vi.fn> };
+  getElementById: Mock<(id: string) => unknown>;
+  createElement: Mock<(tag: string) => MockElement>;
+  _setElement: (id: string, el: unknown) => void;
+}
+
+function createMockDocument(): MockDocument {
   const elements: Record<string, unknown> = {};
 
-  const createElement = vi.fn((_tag: string) => {
-    const el = {
+  const createElement: Mock<(tag: string) => MockElement> = vi.fn((_tag: string) => {
+    const el: MockElement = {
       id: '',
       textContent: '',
       style: { cssText: '', opacity: '' },
@@ -60,23 +82,25 @@ interface IngglishState {
   stopObserver: (() => void) | null;
 }
 
+type MessageHandler = (
+  message: { type: string },
+  sender: unknown,
+  sendResponse: (response: { success: boolean }) => void
+) => boolean | undefined;
+
 describe('content script (lazy loaded)', () => {
   let mockDocument: ReturnType<typeof createMockDocument>;
   let mockWindow: { __ingglishState?: IngglishState };
-  let messageHandler: (
-    message: { type: string },
-    sender: unknown,
-    sendResponse: (response: { success: boolean }) => void
-  ) => boolean | undefined;
+  let messageHandler: MessageHandler;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
 
     // Reset mocks to successful behavior
     vi.mocked(translateDOM).mockResolvedValue(undefined);
     vi.mocked(observeAndTranslate).mockResolvedValue(vi.fn());
-    vi.mocked(restoreDOM).mockImplementation(() => {});
+    vi.mocked(restoreDOM).mockImplementation(() => undefined);
 
     // Set up document mock
     mockDocument = createMockDocument();
@@ -87,7 +111,7 @@ describe('content script (lazy loaded)', () => {
     vi.stubGlobal('window', mockWindow);
 
     // Capture the message handler
-    mockChrome.runtime.onMessage.addListener.mockImplementation((handler) => {
+    mockChrome.runtime.onMessage.addListener.mockImplementation((handler: MessageHandler) => {
       messageHandler = handler;
     });
   });
@@ -106,6 +130,7 @@ describe('content script (lazy loaded)', () => {
           expect.objectContaining({
             showTooltips: true,
             outputFormat: 'ingglish',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             onProgress: expect.any(Function),
           })
         );
@@ -252,9 +277,8 @@ describe('content script (lazy loaded)', () => {
     });
 
     it('sets badge properties correctly', async () => {
-      let createdElement: { id: string; textContent: string; style: { cssText: string } } | null =
-        null;
-      mockDocument.createElement.mockImplementation(() => {
+      let createdElement: MockElement | null = null;
+      mockDocument.createElement.mockImplementation((_tag: string) => {
         createdElement = {
           id: '',
           textContent: '',
@@ -269,10 +293,12 @@ describe('content script (lazy loaded)', () => {
 
       await vi.waitFor(() => {
         expect(createdElement).not.toBeNull();
-        expect(createdElement!.id).toBe('ingglish-badge');
-        expect(createdElement!.textContent).toBe('Ingglish');
-        expect(createdElement!.style.cssText).toContain('position: fixed');
-        expect(createdElement!.style.cssText).toContain('z-index: 999999');
+        if (createdElement !== null) {
+          expect(createdElement.id).toBe('ingglish-badge');
+          expect(createdElement.textContent).toBe('Ingglish');
+          expect(createdElement.style.cssText).toContain('position: fixed');
+          expect(createdElement.style.cssText).toContain('z-index: 999999');
+        }
       });
     });
   });
