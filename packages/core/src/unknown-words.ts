@@ -1,6 +1,7 @@
-import { phonemesToInglish } from './phoneme-map';
+import { phonemesToDisplay } from './phoneme-map';
 import { lookupPronunciation } from './translator';
 import { ipaToArpabet } from './ipa-to-arpabet';
+import type { OutputFormat } from './types';
 
 /**
  * Phonemes for individual letters (for spelling out acronyms).
@@ -110,7 +111,7 @@ function isInitialism(word: string): boolean {
  * Translates a word by spelling out each letter.
  * Used for acronyms like URL, HTML, API.
  */
-export function translateAsAcronym(word: string): string {
+export function translateAsAcronym(word: string, format: OutputFormat = 'ingglish'): string {
   const phonemes: string[] = [];
   for (const char of word.toLowerCase()) {
     const letterPhonemes = LETTER_PHONEMES[char];
@@ -118,7 +119,7 @@ export function translateAsAcronym(word: string): string {
       phonemes.push(...letterPhonemes);
     }
   }
-  return phonemesToInglish(phonemes);
+  return phonemesToDisplay(phonemes, format);
 }
 
 // Lazy-loaded phonemize function
@@ -275,9 +276,13 @@ const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
  * Tries to find a known base word and apply suffix rules.
  *
  * @param word The unknown word
+ * @param format The output format
  * @returns The translated word, or null if stemming didn't help
  */
-export function translateWithStemming(word: string): string | null {
+export function translateWithStemming(
+  word: string,
+  format: OutputFormat = 'ingglish'
+): string | null {
   const lowerWord = word.toLowerCase();
 
   // Try removing suffixes and finding base word
@@ -297,7 +302,7 @@ export function translateWithStemming(word: string): string | null {
         const basePhonemes = lookupPronunciation(variant);
         if (basePhonemes) {
           const fullPhonemes = [...basePhonemes, ...suffixPhonemes];
-          return phonemesToInglish(fullPhonemes);
+          return phonemesToDisplay(fullPhonemes, format);
         }
       }
     }
@@ -310,7 +315,7 @@ export function translateWithStemming(word: string): string | null {
       const basePhonemes = lookupPronunciation(stem);
       if (basePhonemes) {
         const fullPhonemes = [...prefixPhonemes, ...basePhonemes];
-        return phonemesToInglish(fullPhonemes);
+        return phonemesToDisplay(fullPhonemes, format);
       }
     }
   }
@@ -356,11 +361,12 @@ export function wordToPhonemes(word: string): string[] {
  * This is a fallback when the word isn't in the dictionary.
  *
  * @param word The unknown word
- * @returns The best-effort Ingglish spelling
+ * @param format The output format
+ * @returns The best-effort translation
  */
-export function translateWithRules(word: string): string {
+export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
   const phonemes = wordToPhonemes(word);
-  return phonemesToInglish(phonemes);
+  return phonemesToDisplay(phonemes, format);
 }
 
 /**
@@ -368,9 +374,13 @@ export function translateWithRules(word: string): string {
  * This provides better accuracy than rule-based G2P for unusual words.
  *
  * @param word The unknown word
- * @returns The Ingglish spelling, or null if phonemize is not available
+ * @param format The output format
+ * @returns The translation, or null if phonemize is not available
  */
-export function translateWithPhonemize(word: string): string | null {
+export function translateWithPhonemize(
+  word: string,
+  format: OutputFormat = 'ingglish'
+): string | null {
   const fn = getPhonemize();
   if (fn === null) {
     return null;
@@ -382,7 +392,7 @@ export function translateWithPhonemize(word: string): string | null {
     if (arpabet.length === 0) {
       return null;
     }
-    return phonemesToInglish(arpabet);
+    return phonemesToDisplay(arpabet, format);
   } catch {
     return null;
   }
@@ -398,28 +408,29 @@ export function translateWithPhonemize(word: string): string | null {
  * 4. Try grapheme-to-phoneme rules
  *
  * @param word The unknown word
+ * @param format The output format
  * @returns The translated word
  */
-export function translateUnknown(word: string): string {
+export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
   // Check for initialisms first (URL -> yooahrel)
   if (isInitialism(word)) {
-    return translateAsAcronym(word);
+    return translateAsAcronym(word, format);
   }
 
   // Try stemming
-  const stemmedResult = translateWithStemming(word);
+  const stemmedResult = translateWithStemming(word, format);
   if (stemmedResult !== null && stemmedResult.length > 0) {
     return stemmedResult;
   }
 
   // Try phonemize if loaded
-  const phonemizeResult = translateWithPhonemize(word);
+  const phonemizeResult = translateWithPhonemize(word, format);
   if (phonemizeResult !== null && phonemizeResult.length > 0) {
     return phonemizeResult;
   }
 
   // Fall back to grapheme-to-phoneme rules
-  return translateWithRules(word);
+  return translateWithRules(word, format);
 }
 
 /**

@@ -1,4 +1,4 @@
-import { VOWEL_MAP, CONSONANT_MAP } from '@ingglish/core';
+import { VOWEL_MAP, CONSONANT_MAP, arpabetPhonemeToIPA } from '@ingglish/core';
 
 interface SoundEntry {
   phoneme: string;
@@ -11,7 +11,14 @@ interface SoundGroup {
   sounds: SoundEntry[];
 }
 
-function SpellingGuide() {
+/**
+ * Get clean IPA symbol for a phoneme (without word joiners used for line-break prevention)
+ */
+function getIPA(phoneme: string): string {
+  return arpabetPhonemeToIPA(phoneme).replace(/\u2060/g, '');
+}
+
+function SpellingGuide(): JSX.Element {
   // Organize vowels by type (following traditional English phonics)
   const vowelGroups: SoundGroup[] = [
     {
@@ -99,23 +106,23 @@ function SpellingGuide() {
     },
   ];
 
-  const renderGroup = (group: SoundGroup) => (
+  const renderGroup = (group: SoundGroup): JSX.Element => (
     <div key={group.name} className="sound-group">
       <h4>{group.name}</h4>
       <table className="mapping-table">
         <thead>
           <tr>
+            <th>IPA</th>
             <th>Spelling</th>
             <th>Examples</th>
-            <th className="phoneme-header">CMU</th>
           </tr>
         </thead>
         <tbody>
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
+              <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
               <td className="spelling-cell">{sound.spelling}</td>
               <td className="examples-cell">{sound.examples}</td>
-              <td className="phoneme-cell">{sound.phoneme}</td>
             </tr>
           ))}
         </tbody>

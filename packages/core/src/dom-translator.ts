@@ -163,6 +163,8 @@ const TOOLTIP_STYLES = `
 .ingglish-word {
   position: relative;
   cursor: help;
+  /* Create a stacking context above most page content */
+  isolation: isolate;
 }
 
 .ingglish-word:hover::after {
@@ -171,14 +173,15 @@ const TOOLTIP_STYLES = `
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 10000;
-  pointer-events: none;
+  background: #333 !important;
+  color: #fff !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+  /* Max z-index to ensure tooltip is above all other elements */
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
   opacity: 0;
   animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
@@ -189,11 +192,12 @@ const TOOLTIP_STYLES = `
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: #333;
-  margin-bottom: -10px;
-  z-index: 10000;
-  pointer-events: none;
+  border: 5px solid transparent !important;
+  border-top-color: #333 !important;
+  margin-bottom: -10px !important;
+  /* Max z-index to ensure tooltip arrow is above all other elements */
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
   opacity: 0;
   animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }

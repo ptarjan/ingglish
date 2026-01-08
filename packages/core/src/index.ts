@@ -72,6 +72,12 @@ export { reverseTranslateText } from './reverse-translator';
 export { VOWEL_MAP, CONSONANT_MAP, phonemesToDisplay } from './phoneme-map';
 
 // =============================================================================
+// IPA conversion (for spelling guide UI)
+// =============================================================================
+
+export { arpabetPhonemeToIPA } from './arpabet-to-ipa';
+
+// =============================================================================
 // Advanced: Phonemize support for better unknown word handling
 // =============================================================================
 

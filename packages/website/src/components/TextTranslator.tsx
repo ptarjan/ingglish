@@ -269,7 +269,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             className="text-input"
             spellCheck={false}
             readOnly={format === 'ipa'}
+            title={
+              format === 'ipa'
+                ? 'IPA output is read-only (reverse translation not supported)'
+                : undefined
+            }
           />
+          {format === 'ipa' && (
+            <p className="readonly-note">
+              IPA output is read-only. Switch to Ingglish for bidirectional editing.
+            </p>
+          )}
         </div>
       </div>
 

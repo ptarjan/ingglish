@@ -108,19 +108,20 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
 
   if (!phonemes) {
     // Word not found in dictionary - try fallback strategies
-    // Note: translateUnknown only returns Ingglish for now
-    const fallbackResult = translateUnknown(word);
+    const fallbackResult = translateUnknown(word, format);
 
     // Return original if fallback failed
     if (!fallbackResult || fallbackResult.length === 0) {
       return word;
     }
 
-    // Apply original case pattern to fallback result
-    if (isAllCaps) {
-      return fallbackResult.toUpperCase();
-    } else if (isCapitalized) {
-      return fallbackResult.charAt(0).toUpperCase() + fallbackResult.slice(1);
+    // Apply original case pattern to fallback result (only for Ingglish)
+    if (format === 'ingglish') {
+      if (isAllCaps) {
+        return fallbackResult.toUpperCase();
+      } else if (isCapitalized) {
+        return fallbackResult.charAt(0).toUpperCase() + fallbackResult.slice(1);
+      }
     }
     return fallbackResult;
   }
