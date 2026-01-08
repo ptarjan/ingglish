@@ -82,7 +82,7 @@ export function lookupPronunciation(word: string): string[] | null {
  */
 export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
   // Handle empty strings
-  if (!word || word.length === 0) {
+  if (!word) {
     return word;
   }
 

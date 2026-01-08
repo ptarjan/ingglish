@@ -165,5 +165,6 @@ function addTranslationBadge(format: OutputFormat = 'ingglish'): void {
     badge.remove();
   });
 
-  document.body.appendChild(badge);
+  // document.body may not exist during early page load or on some special pages
+  document.body?.appendChild(badge);
 }

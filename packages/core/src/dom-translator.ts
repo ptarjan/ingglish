@@ -220,7 +220,8 @@ function injectTooltipStyles(targetDoc: Document): void {
   const style = targetDoc.createElement('style');
   style.id = 'ingglish-tooltip-styles';
   style.textContent = TOOLTIP_STYLES;
-  targetDoc.head.appendChild(style);
+  // Some documents (malformed HTML, certain iframes) may not have a head element
+  targetDoc.head?.appendChild(style);
   injectedDocuments.add(targetDoc);
 }
 

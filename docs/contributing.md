@@ -54,8 +54,9 @@ npm run test:watch -w @ingglish/core
 ### Linting & Formatting
 
 ```bash
-# Check linting
+# Check all linting (TypeScript + CSS)
 npm run lint
+npm run lint:css
 
 # Fix linting issues
 npm run lint:fix
@@ -65,6 +66,9 @@ npm run format
 
 # Check formatting
 npm run format:check
+
+# Run all checks (lint, format, test)
+npm run check
 ```
 
 ## Project Structure
@@ -94,14 +98,14 @@ packages/
 
 ### Adding New ARPAbet Mappings
 
-Edit `packages/core/src/phoneme-map.ts`:
+Edit `packages/core/src/arpabet-to-ingglish.ts`:
 
 ```typescript
-export const VOWEL_MAP: Record<string, string> = {
+const VOWEL_MAP: Record<string, string> = {
   // Add new ARPAbet vowel → Ingglish mappings here
 };
 
-export const CONSONANT_MAP: Record<string, string> = {
+const CONSONANT_MAP: Record<string, string> = {
   // Add new ARPAbet consonant → Ingglish mappings here
 };
 ```
@@ -122,10 +126,15 @@ Edit `packages/core/src/unknown-words.ts`:
 - Every new function should have tests
 - Test edge cases (empty strings, special characters, etc.)
 - Test round-trip translations where applicable
+- Use shared test setup from `test-setup.ts`
 
 Example:
 ```typescript
+import { setupDictionary, SAMPLE_TEXT } from './test-setup';
+
 describe('translateWord', () => {
+  setupDictionary(); // Loads CMU dictionary before tests
+
   it('should handle empty string', () => {
     expect(translateWord('')).toBe('');
   });

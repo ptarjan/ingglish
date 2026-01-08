@@ -1,4 +1,4 @@
-function Extension() {
+function Extension(): React.JSX.Element {
   return (
     <div className="extension-page">
       <div className="guide-intro">
