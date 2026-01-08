@@ -5,24 +5,14 @@
  * the given Ingglish spelling. Handles homophones by preferring
  * more common words based on frequency data.
  */
-import { ARPABET_MAP } from './arpabet-to-ingglish';
 import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';
 import { ipaToArpabet } from './ipa-to-arpabet';
+import { ingglishToArpabet } from './ingglish-to-arpabet';
 
-// ============================================================================
-// Reverse ARPAbet Map
-// ============================================================================
-
-/** Maps Ingglish spellings back to ARPAbet */
-const REVERSE_ARPABET_MAP: Record<string, string> = {};
-for (const [arpabet, spelling] of Object.entries(ARPABET_MAP)) {
-  REVERSE_ARPABET_MAP[spelling] = arpabet;
-}
-
-/** Spellings sorted by length (match longer patterns first, e.g., "sh" before "s") */
-const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_ARPABET_MAP).sort((a, b) => b.length - a.length);
+// Re-export for backwards compatibility
+export { ingglishToArpabet } from './ingglish-to-arpabet';
 
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
@@ -123,33 +113,6 @@ function lookupPhonemeKey(key: string): string[] | undefined {
 // ============================================================================
 // Core Translation Functions
 // ============================================================================
-
-/**
- * Parses Ingglish text into ARPAbet phonemes.
- */
-export function ingglishToArpabet(ingglish: string): string[] | null {
-  const result: string[] = [];
-  let remaining = ingglish.toLowerCase();
-
-  while (remaining.length > 0) {
-    let matched = false;
-
-    for (const spelling of SPELLINGS_BY_LENGTH) {
-      if (remaining.startsWith(spelling)) {
-        result.push(REVERSE_ARPABET_MAP[spelling]);
-        remaining = remaining.slice(spelling.length);
-        matched = true;
-        break;
-      }
-    }
-
-    if (!matched) {
-      remaining = remaining.slice(1); // Skip unknown characters
-    }
-  }
-
-  return result.length > 0 ? result : null;
-}
 
 /**
  * Looks up English words matching an ARPAbet sequence.
