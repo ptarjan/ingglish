@@ -161,49 +161,54 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
  */
 const TOOLTIP_STYLES = `
 .ingglish-word {
-  position: relative;
+  position: relative !important;
   cursor: help;
-  /* Create a stacking context above most page content */
-  isolation: isolate;
+  /* Ensure overflow is visible to prevent clipping */
+  overflow: visible !important;
 }
 
 .ingglish-word:hover::after {
   content: attr(data-ingglish-orig);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   background: #333 !important;
   color: #fff !important;
   padding: 4px 8px !important;
   border-radius: 4px !important;
   font-size: 12px !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  line-height: 1.4 !important;
   white-space: nowrap !important;
   /* Max z-index to ensure tooltip is above all other elements */
   z-index: 2147483647 !important;
   pointer-events: none !important;
+  /* Force new compositing layer to escape some clipping contexts */
+  will-change: opacity !important;
   opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards !important;
 }
 
 .ingglish-word:hover::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  content: '' !important;
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   border: 5px solid transparent !important;
   border-top-color: #333 !important;
   margin-bottom: -10px !important;
   /* Max z-index to ensure tooltip arrow is above all other elements */
   z-index: 2147483647 !important;
   pointer-events: none !important;
+  will-change: opacity !important;
   opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards !important;
 }
 
 @keyframes ingglish-tooltip-fade-in {
-  to { opacity: 1; }
+  to { opacity: 1 !important; }
 }
 `;
 
