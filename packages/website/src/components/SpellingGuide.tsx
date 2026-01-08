@@ -4,6 +4,7 @@ import { useFormat } from '../contexts/FormatContext';
 
 interface SoundEntry {
   phoneme: string;
+  /** Examples with **bold** markers around the relevant letters */
   examples: string;
 }
 
@@ -29,6 +30,19 @@ function getSpelling(phoneme: string, format: OutputFormat): string {
   return arpabetPhonemeToIngglish(phoneme);
 }
 
+/**
+ * Renders example text with **bold** markers converted to <strong> elements
+ */
+function renderExamples(examples: string): React.ReactNode {
+  const parts = examples.split(/(\*\*[^*]+\*\*)/);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 function SpellingGuide(): React.JSX.Element {
   const { format } = useFormat();
 
@@ -37,31 +51,31 @@ function SpellingGuide(): React.JSX.Element {
     {
       name: 'Short Vowels',
       sounds: [
-        { phoneme: 'AE', examples: 'cat, bat' },
-        { phoneme: 'EH', examples: 'bed, red' },
-        { phoneme: 'IH', examples: 'bit, sit' },
-        { phoneme: 'AH', examples: 'but, cup' },
-        { phoneme: 'UH', examples: 'book, put' },
+        { phoneme: 'AE', examples: 'c**a**t, b**a**t' },
+        { phoneme: 'EH', examples: 'b**e**d, r**e**d' },
+        { phoneme: 'IH', examples: 'b**i**t, s**i**t' },
+        { phoneme: 'AH', examples: 'b**u**t, c**u**p' },
+        { phoneme: 'UH', examples: 'b**oo**k, p**u**t' },
       ],
     },
     {
       name: 'Long Vowels',
       sounds: [
-        { phoneme: 'EY', examples: 'say, cake' },
-        { phoneme: 'IY', examples: 'bee, feet' },
-        { phoneme: 'AY', examples: 'my, bike' },
-        { phoneme: 'OW', examples: 'go, nose' },
-        { phoneme: 'UW', examples: 'too, blue' },
+        { phoneme: 'EY', examples: 's**ay**, c**a**ke' },
+        { phoneme: 'IY', examples: 'b**ee**, f**ee**t' },
+        { phoneme: 'AY', examples: 'm**y**, b**i**ke' },
+        { phoneme: 'OW', examples: 'g**o**, n**o**se' },
+        { phoneme: 'UW', examples: 't**oo**, bl**ue**' },
       ],
     },
     {
       name: 'Other Vowels',
       sounds: [
-        { phoneme: 'AA', examples: 'father, hot' },
-        { phoneme: 'AO', examples: 'thought, law' },
-        { phoneme: 'AW', examples: 'cow, out' },
-        { phoneme: 'OY', examples: 'boy, toy' },
-        { phoneme: 'ER', examples: 'bird, her' },
+        { phoneme: 'AA', examples: 'f**a**ther, h**o**t' },
+        { phoneme: 'AO', examples: 'th**ough**t, l**aw**' },
+        { phoneme: 'AW', examples: 'c**ow**, **ou**t' },
+        { phoneme: 'OY', examples: 'b**oy**, t**oy**' },
+        { phoneme: 'ER', examples: 'b**ir**d, h**er**' },
       ],
     },
   ];
@@ -71,50 +85,50 @@ function SpellingGuide(): React.JSX.Element {
     {
       name: 'Stops (Plosives)',
       sounds: [
-        { phoneme: 'P', examples: 'pat, cup' },
-        { phoneme: 'B', examples: 'bat, cab' },
-        { phoneme: 'T', examples: 'top, cat' },
-        { phoneme: 'D', examples: 'dog, bed' },
-        { phoneme: 'K', examples: 'cat, back' },
-        { phoneme: 'G', examples: 'go, big' },
+        { phoneme: 'P', examples: '**p**at, cu**p**' },
+        { phoneme: 'B', examples: '**b**at, ca**b**' },
+        { phoneme: 'T', examples: '**t**op, ca**t**' },
+        { phoneme: 'D', examples: '**d**og, be**d**' },
+        { phoneme: 'K', examples: '**c**at, ba**ck**' },
+        { phoneme: 'G', examples: '**g**o, bi**g**' },
       ],
     },
     {
       name: 'Fricatives',
       sounds: [
-        { phoneme: 'F', examples: 'fat, laugh' },
-        { phoneme: 'V', examples: 'van, love' },
-        { phoneme: 'TH', examples: 'think, bath' },
-        { phoneme: 'DH', examples: 'the, this' },
-        { phoneme: 'S', examples: 'sat, miss' },
-        { phoneme: 'Z', examples: 'zoo, is' },
-        { phoneme: 'SH', examples: 'she, push' },
-        { phoneme: 'ZH', examples: 'measure, beige' },
-        { phoneme: 'HH', examples: 'hat, ahead' },
+        { phoneme: 'F', examples: '**f**at, lau**gh**' },
+        { phoneme: 'V', examples: '**v**an, lo**v**e' },
+        { phoneme: 'TH', examples: '**th**ink, ba**th**' },
+        { phoneme: 'DH', examples: '**th**e, **th**is' },
+        { phoneme: 'S', examples: '**s**at, mi**ss**' },
+        { phoneme: 'Z', examples: '**z**oo, i**s**' },
+        { phoneme: 'SH', examples: '**sh**e, pu**sh**' },
+        { phoneme: 'ZH', examples: 'mea**s**ure, bei**ge**' },
+        { phoneme: 'HH', examples: '**h**at, a**h**ead' },
       ],
     },
     {
       name: 'Affricates',
       sounds: [
-        { phoneme: 'CH', examples: 'chat, batch' },
-        { phoneme: 'JH', examples: 'just, edge' },
+        { phoneme: 'CH', examples: '**ch**at, bat**ch**' },
+        { phoneme: 'JH', examples: '**j**ust, e**dge**' },
       ],
     },
     {
       name: 'Nasals',
       sounds: [
-        { phoneme: 'M', examples: 'man, come' },
-        { phoneme: 'N', examples: 'no, pen' },
-        { phoneme: 'NG', examples: 'sing, thing' },
+        { phoneme: 'M', examples: '**m**an, co**m**e' },
+        { phoneme: 'N', examples: '**n**o, pe**n**' },
+        { phoneme: 'NG', examples: 'si**ng**, thi**ng**' },
       ],
     },
     {
       name: 'Liquids & Glides',
       sounds: [
-        { phoneme: 'L', examples: 'let, well' },
-        { phoneme: 'R', examples: 'run, car' },
-        { phoneme: 'W', examples: 'wet, away' },
-        { phoneme: 'Y', examples: 'yes, you' },
+        { phoneme: 'L', examples: '**l**et, we**ll**' },
+        { phoneme: 'R', examples: '**r**un, ca**r**' },
+        { phoneme: 'W', examples: '**w**et, a**w**ay' },
+        { phoneme: 'Y', examples: '**y**es, **y**ou' },
       ],
     },
   ];
@@ -133,7 +147,7 @@ function SpellingGuide(): React.JSX.Element {
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
               <td className="spelling-cell">{getSpelling(sound.phoneme, format)}</td>
-              <td className="examples-cell">{sound.examples}</td>
+              <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>
           ))}
         </tbody>
