@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadDictionary, translateWord, translateText, lookupPronunciation } from './translator';
 import {
-  ingglishToArpabet,
   reverseTranslateWord,
   reverseTranslateText,
   isLikelyIngglish,
@@ -9,6 +8,7 @@ import {
   reverseTranslateIPAWord,
   reverseTranslateIPAText,
 } from './reverse-translator';
+import { ingglishToArpabet } from './ingglish-to-arpabet';
 
 describe('reverse-translator', () => {
   beforeAll(async () => {

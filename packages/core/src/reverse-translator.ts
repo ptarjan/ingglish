@@ -11,9 +11,6 @@ import { detectCasePattern, applyCasePattern } from './case-utils';
 import { ipaToArpabet } from './ipa-to-arpabet';
 import { ingglishToArpabet } from './ingglish-to-arpabet';
 
-// Re-export for backwards compatibility
-export { ingglishToArpabet } from './ingglish-to-arpabet';
-
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
 // ============================================================================
