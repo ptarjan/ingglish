@@ -134,7 +134,7 @@ function SpellingGuide(): React.JSX.Element {
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
               <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
-              <td className="spelling-cell">{arpabetPhonemeToIngglish(sound.phoneme)}</td>
+              <td className="ingglish-cell">{arpabetPhonemeToIngglish(sound.phoneme)}</td>
               <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>
           ))}
@@ -244,17 +244,17 @@ function SpellingGuide(): React.JSX.Element {
           </thead>
           <tbody>
             <tr>
-              <td className="spelling-cell">c</td>
+              <td className="ingglish-cell">c</td>
               <td className="examples-cell">k or s</td>
               <td className="examples-cell">cat → kat, city → siti</td>
             </tr>
             <tr>
-              <td className="spelling-cell">q</td>
+              <td className="ingglish-cell">q</td>
               <td className="examples-cell">k or kw</td>
               <td className="examples-cell">queen → kween</td>
             </tr>
             <tr>
-              <td className="spelling-cell">x</td>
+              <td className="ingglish-cell">x</td>
               <td className="examples-cell">ks or z</td>
               <td className="examples-cell">box → boks, xylophone → zailufown</td>
             </tr>
