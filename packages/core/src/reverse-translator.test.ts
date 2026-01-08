@@ -6,7 +6,6 @@ import {
   isLikelyIngglish,
   ipaToArpabetClean,
   reverseTranslateIPAWord,
-  reverseTranslateIPAText,
 } from './reverse-translator';
 import { ingglishToArpabet } from './ingglish-to-arpabet';
 
@@ -260,33 +259,33 @@ are written exactly as they sound - what you see is what you say!`;
     });
   });
 
-  describe('reverseTranslateIPAText', () => {
+  describe('reverseTranslateText with IPA format', () => {
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
-      const result = reverseTranslateIPAText('həˈloʊ wɝld');
+      const result = reverseTranslateText('həˈloʊ wɝld', 'ipa');
       expect(result.toLowerCase()).toBe('hello world');
     });
 
     it('should handle IPA brackets', () => {
       // Remove surrounding slashes
-      const result = reverseTranslateIPAText('/kæt/');
+      const result = reverseTranslateText('/kæt/', 'ipa');
       expect(result.toLowerCase()).toBe('cat');
     });
 
     it('should handle multiple words', () => {
       // /ðə kæt/ -> "the cat"
-      const result = reverseTranslateIPAText('ðə kæt');
+      const result = reverseTranslateText('ðə kæt', 'ipa');
       expect(result.toLowerCase()).toBe('the cat');
     });
 
     it('should return empty string for empty input', () => {
-      expect(reverseTranslateIPAText('')).toBe('');
+      expect(reverseTranslateText('', 'ipa')).toBe('');
     });
 
     it('should round-trip translateText with IPA format', () => {
       // Translate "hello world" to IPA, then back to English
       const ipa = translateText('hello world', 'ipa');
-      const back = reverseTranslateIPAText(ipa);
+      const back = reverseTranslateText(ipa, 'ipa');
       expect(back.toLowerCase()).toBe('hello world');
     });
   });

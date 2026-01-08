@@ -7,12 +7,9 @@
 
 import { stripStress } from './arpabet-to-ingglish';
 
-/**
- * Mapping from ARPAbet phonemes to IPA symbols.
- * Covers American English sounds.
- */
-const ARPABET_TO_IPA: Record<string, string> = {
-  // Vowels (monophthongs)
+// Vowel mappings (IPA symbols for ARPAbet vowels)
+export const IPA_VOWEL_MAP: Record<string, string> = {
+  // Monophthongs
   AA: 'ɑ', // father, hot, bother
   AE: 'æ', // cat, bat, had
   AH: 'ʌ', // but, cup, son (stressed)
@@ -30,8 +27,11 @@ const ARPABET_TO_IPA: Record<string, string> = {
   EY: 'eɪ', // say, day, make
   OW: 'oʊ', // go, show, coat
   OY: 'ɔɪ', // boy, toy, coin
+};
 
-  // Consonants - Stops
+// Consonant mappings (IPA symbols for ARPAbet consonants)
+export const IPA_CONSONANT_MAP: Record<string, string> = {
+  // Stops (plosives)
   B: 'b',
   D: 'd',
   G: 'ɡ',
@@ -39,7 +39,7 @@ const ARPABET_TO_IPA: Record<string, string> = {
   P: 'p',
   T: 't',
 
-  // Consonants - Fricatives
+  // Fricatives
   DH: 'ð', // the, this, father (voiced)
   F: 'f',
   HH: 'h',
@@ -50,22 +50,28 @@ const ARPABET_TO_IPA: Record<string, string> = {
   Z: 'z',
   ZH: 'ʒ', // measure, beige
 
-  // Consonants - Affricates
+  // Affricates
   CH: 'tʃ', // chat, batch
   JH: 'dʒ', // just, edge
 
-  // Consonants - Nasals
+  // Nasals
   M: 'm',
   N: 'n',
   NG: 'ŋ', // sing, thing
 
-  // Consonants - Liquids
+  // Liquids
   L: 'l',
   R: 'ɹ',
 
-  // Consonants - Glides
+  // Glides (semivowels)
   W: 'w',
   Y: 'j',
+};
+
+// Combined map for easy lookup
+const ARPABET_TO_IPA: Record<string, string> = {
+  ...IPA_VOWEL_MAP,
+  ...IPA_CONSONANT_MAP,
 };
 
 /**

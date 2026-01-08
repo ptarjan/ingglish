@@ -1,8 +1,9 @@
-import { VOWEL_MAP, CONSONANT_MAP, arpabetPhonemeToIPA } from '@ingglish/core';
+import type { OutputFormat } from '@ingglish/core';
+import { arpabetPhonemeToIPA, arpabetPhonemeToIngglish } from '@ingglish/core';
+import { useFormat } from '../contexts/FormatContext';
 
 interface SoundEntry {
   phoneme: string;
-  spelling: string;
   examples: string;
 }
 
@@ -18,37 +19,49 @@ function getIPA(phoneme: string): string {
   return arpabetPhonemeToIPA(phoneme).replace(/\u2060/g, '');
 }
 
-function SpellingGuide(): JSX.Element {
+/**
+ * Get spelling for a phoneme based on format
+ */
+function getSpelling(phoneme: string, format: OutputFormat): string {
+  if (format === 'ipa') {
+    return getIPA(phoneme);
+  }
+  return arpabetPhonemeToIngglish(phoneme);
+}
+
+function SpellingGuide(): React.JSX.Element {
+  const { format } = useFormat();
+
   // Organize vowels by type (following traditional English phonics)
   const vowelGroups: SoundGroup[] = [
     {
       name: 'Short Vowels',
       sounds: [
-        { phoneme: 'AE', spelling: VOWEL_MAP.AE, examples: 'cat, bat' },
-        { phoneme: 'EH', spelling: VOWEL_MAP.EH, examples: 'bed, red' },
-        { phoneme: 'IH', spelling: VOWEL_MAP.IH, examples: 'bit, sit' },
-        { phoneme: 'AH', spelling: VOWEL_MAP.AH, examples: 'but, cup' },
-        { phoneme: 'UH', spelling: VOWEL_MAP.UH, examples: 'book, put' },
+        { phoneme: 'AE', examples: 'cat, bat' },
+        { phoneme: 'EH', examples: 'bed, red' },
+        { phoneme: 'IH', examples: 'bit, sit' },
+        { phoneme: 'AH', examples: 'but, cup' },
+        { phoneme: 'UH', examples: 'book, put' },
       ],
     },
     {
       name: 'Long Vowels',
       sounds: [
-        { phoneme: 'EY', spelling: VOWEL_MAP.EY, examples: 'say, cake' },
-        { phoneme: 'IY', spelling: VOWEL_MAP.IY, examples: 'bee, feet' },
-        { phoneme: 'AY', spelling: VOWEL_MAP.AY, examples: 'my, bike' },
-        { phoneme: 'OW', spelling: VOWEL_MAP.OW, examples: 'go, nose' },
-        { phoneme: 'UW', spelling: VOWEL_MAP.UW, examples: 'too, blue' },
+        { phoneme: 'EY', examples: 'say, cake' },
+        { phoneme: 'IY', examples: 'bee, feet' },
+        { phoneme: 'AY', examples: 'my, bike' },
+        { phoneme: 'OW', examples: 'go, nose' },
+        { phoneme: 'UW', examples: 'too, blue' },
       ],
     },
     {
       name: 'Other Vowels',
       sounds: [
-        { phoneme: 'AA', spelling: VOWEL_MAP.AA, examples: 'father, hot' },
-        { phoneme: 'AO', spelling: VOWEL_MAP.AO, examples: 'thought, law' },
-        { phoneme: 'AW', spelling: VOWEL_MAP.AW, examples: 'cow, out' },
-        { phoneme: 'OY', spelling: VOWEL_MAP.OY, examples: 'boy, toy' },
-        { phoneme: 'ER', spelling: VOWEL_MAP.ER, examples: 'bird, her' },
+        { phoneme: 'AA', examples: 'father, hot' },
+        { phoneme: 'AO', examples: 'thought, law' },
+        { phoneme: 'AW', examples: 'cow, out' },
+        { phoneme: 'OY', examples: 'boy, toy' },
+        { phoneme: 'ER', examples: 'bird, her' },
       ],
     },
   ];
@@ -58,62 +71,62 @@ function SpellingGuide(): JSX.Element {
     {
       name: 'Stops (Plosives)',
       sounds: [
-        { phoneme: 'P', spelling: CONSONANT_MAP.P, examples: 'pat, cup' },
-        { phoneme: 'B', spelling: CONSONANT_MAP.B, examples: 'bat, cab' },
-        { phoneme: 'T', spelling: CONSONANT_MAP.T, examples: 'top, cat' },
-        { phoneme: 'D', spelling: CONSONANT_MAP.D, examples: 'dog, bed' },
-        { phoneme: 'K', spelling: CONSONANT_MAP.K, examples: 'cat, back' },
-        { phoneme: 'G', spelling: CONSONANT_MAP.G, examples: 'go, big' },
+        { phoneme: 'P', examples: 'pat, cup' },
+        { phoneme: 'B', examples: 'bat, cab' },
+        { phoneme: 'T', examples: 'top, cat' },
+        { phoneme: 'D', examples: 'dog, bed' },
+        { phoneme: 'K', examples: 'cat, back' },
+        { phoneme: 'G', examples: 'go, big' },
       ],
     },
     {
       name: 'Fricatives',
       sounds: [
-        { phoneme: 'F', spelling: CONSONANT_MAP.F, examples: 'fat, laugh' },
-        { phoneme: 'V', spelling: CONSONANT_MAP.V, examples: 'van, love' },
-        { phoneme: 'TH', spelling: CONSONANT_MAP.TH, examples: 'think, bath' },
-        { phoneme: 'DH', spelling: CONSONANT_MAP.DH, examples: 'the, this' },
-        { phoneme: 'S', spelling: CONSONANT_MAP.S, examples: 'sat, miss' },
-        { phoneme: 'Z', spelling: CONSONANT_MAP.Z, examples: 'zoo, is' },
-        { phoneme: 'SH', spelling: CONSONANT_MAP.SH, examples: 'she, push' },
-        { phoneme: 'ZH', spelling: CONSONANT_MAP.ZH, examples: 'measure, beige' },
-        { phoneme: 'HH', spelling: CONSONANT_MAP.HH, examples: 'hat, ahead' },
+        { phoneme: 'F', examples: 'fat, laugh' },
+        { phoneme: 'V', examples: 'van, love' },
+        { phoneme: 'TH', examples: 'think, bath' },
+        { phoneme: 'DH', examples: 'the, this' },
+        { phoneme: 'S', examples: 'sat, miss' },
+        { phoneme: 'Z', examples: 'zoo, is' },
+        { phoneme: 'SH', examples: 'she, push' },
+        { phoneme: 'ZH', examples: 'measure, beige' },
+        { phoneme: 'HH', examples: 'hat, ahead' },
       ],
     },
     {
       name: 'Affricates',
       sounds: [
-        { phoneme: 'CH', spelling: CONSONANT_MAP.CH, examples: 'chat, batch' },
-        { phoneme: 'JH', spelling: CONSONANT_MAP.JH, examples: 'just, edge' },
+        { phoneme: 'CH', examples: 'chat, batch' },
+        { phoneme: 'JH', examples: 'just, edge' },
       ],
     },
     {
       name: 'Nasals',
       sounds: [
-        { phoneme: 'M', spelling: CONSONANT_MAP.M, examples: 'man, come' },
-        { phoneme: 'N', spelling: CONSONANT_MAP.N, examples: 'no, pen' },
-        { phoneme: 'NG', spelling: CONSONANT_MAP.NG, examples: 'sing, thing' },
+        { phoneme: 'M', examples: 'man, come' },
+        { phoneme: 'N', examples: 'no, pen' },
+        { phoneme: 'NG', examples: 'sing, thing' },
       ],
     },
     {
       name: 'Liquids & Glides',
       sounds: [
-        { phoneme: 'L', spelling: CONSONANT_MAP.L, examples: 'let, well' },
-        { phoneme: 'R', spelling: CONSONANT_MAP.R, examples: 'run, car' },
-        { phoneme: 'W', spelling: CONSONANT_MAP.W, examples: 'wet, away' },
-        { phoneme: 'Y', spelling: CONSONANT_MAP.Y, examples: 'yes, you' },
+        { phoneme: 'L', examples: 'let, well' },
+        { phoneme: 'R', examples: 'run, car' },
+        { phoneme: 'W', examples: 'wet, away' },
+        { phoneme: 'Y', examples: 'yes, you' },
       ],
     },
   ];
 
-  const renderGroup = (group: SoundGroup): JSX.Element => (
+  const renderGroup = (group: SoundGroup): React.JSX.Element => (
     <div key={group.name} className="sound-group">
       <h4>{group.name}</h4>
       <table className="mapping-table">
         <thead>
           <tr>
             <th>IPA</th>
-            <th>Spelling</th>
+            <th>{format === 'ipa' ? 'IPA' : 'Ingglish'}</th>
             <th>Examples</th>
           </tr>
         </thead>
@@ -121,7 +134,7 @@ function SpellingGuide(): JSX.Element {
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
               <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
-              <td className="spelling-cell">{sound.spelling}</td>
+              <td className="spelling-cell">{getSpelling(sound.phoneme, format)}</td>
               <td className="examples-cell">{sound.examples}</td>
             </tr>
           ))}

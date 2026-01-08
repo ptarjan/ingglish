@@ -11,7 +11,7 @@
  */
 
 import { loadDictionary, translateText } from './translator';
-import { reverseTranslateText, reverseTranslateIPAText } from './reverse-translator';
+import { reverseTranslateText } from './reverse-translator';
 import { translateDOMAsync, restoreDOM as restoreDOMSync } from './dom-translator';
 import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
 
@@ -34,16 +34,13 @@ export async function translate(
   return translateText(text, format);
 }
 
-/** Translate Ingglish back to English. */
-export async function reverseTranslate(text: string): Promise<string> {
+/** Translate text back to English from the specified format. */
+export async function reverseTranslate(
+  text: string,
+  format: import('./types').OutputFormat = 'ingglish'
+): Promise<string> {
   await loadDictionary();
-  return reverseTranslateText(text);
-}
-
-/** Translate IPA back to English. */
-export async function reverseTranslateIPA(text: string): Promise<string> {
-  await loadDictionary();
-  return reverseTranslateIPAText(text);
+  return reverseTranslateText(text, format);
 }
 
 /** Translate all text in a DOM element. */
@@ -68,11 +65,11 @@ export function restoreDOM(root: Element | Document): void {
 // =============================================================================
 
 export { translateText } from './translator';
-export { reverseTranslateText, reverseTranslateIPAText } from './reverse-translator';
+export { reverseTranslateText } from './reverse-translator';
 
 // =============================================================================
 // Spelling Guide UI
 // =============================================================================
 
-export { VOWEL_MAP, CONSONANT_MAP } from './arpabet-to-ingglish';
+export { arpabetPhonemeToIngglish } from './arpabet-to-ingglish';
 export { arpabetPhonemeToIPA } from './arpabet-to-ipa';

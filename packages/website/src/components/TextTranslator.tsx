@@ -1,5 +1,5 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateText, reverseTranslateText, reverseTranslateIPAText } from '@ingglish/core';
+import { translateText, reverseTranslateText } from '@ingglish/core';
 import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
@@ -190,10 +190,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return null;
     }
     try {
-      if (format === 'ipa') {
-        return reverseTranslateIPAText(deferredIngglish);
-      }
-      return reverseTranslateText(deferredIngglish);
+      return reverseTranslateText(deferredIngglish, format);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn('Reverse translation failed:', err);

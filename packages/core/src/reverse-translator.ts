@@ -1,15 +1,16 @@
 /**
- * Reverse translation: Ingglish -> English
+ * Reverse translation: Ingglish/IPA -> English
  *
  * Uses ARPAbet matching to find English words that would produce
- * the given Ingglish spelling. Handles homophones by preferring
- * more common words based on frequency data.
+ * the given spelling. Handles homophones by preferring more common
+ * words based on frequency data.
  */
 import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';
 import { ipaToArpabet } from './ipa-to-arpabet';
 import { ingglishToArpabet } from './ingglish-to-arpabet';
+import type { OutputFormat } from './types';
 
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
@@ -163,43 +164,6 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
 }
 
 /**
- * Translates Ingglish text back to English.
- * For homophones, uses the most common word.
- */
-export function reverseTranslateText(ingglishText: string): string {
-  // Normalize curly apostrophes to straight ones
-  const normalizedText = normalizeApostrophes(ingglishText);
-
-  return normalizedText
-    .split(/(\b[a-zA-Z']+\b)/)
-    .map((token) => {
-      if (/^[a-zA-Z']+$/.test(token)) {
-        // Handle contractions - keep the apostrophe, translate parts
-        if (token.includes("'")) {
-          const parts = token.split("'");
-          return parts
-            .map((p) => {
-              if (!p) {
-                return '';
-              }
-              const matches = reverseTranslateWord(p);
-              return matches[0] ?? p;
-            })
-            .join("'");
-        }
-        const matches = reverseTranslateWord(token);
-        return matches[0] ?? token;
-      }
-      return token;
-    })
-    .join('');
-}
-
-// ============================================================================
-// IPA Reverse Translation
-// ============================================================================
-
-/**
  * Converts IPA text to ARPAbet (stripping stress markers).
  */
 export function ipaToArpabetClean(ipa: string): string[] | null {
@@ -231,31 +195,71 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
   return matches;
 }
 
+// ============================================================================
+// Unified Reverse Translation
+// ============================================================================
+
+/**
+ * Translates Ingglish text back to English.
+ */
+function reverseTranslateIngglishText(text: string): string {
+  const normalizedText = normalizeApostrophes(text);
+
+  return normalizedText
+    .split(/(\b[a-zA-Z']+\b)/)
+    .map((token) => {
+      if (/^[a-zA-Z']+$/.test(token)) {
+        if (token.includes("'")) {
+          const parts = token.split("'");
+          return parts
+            .map((p) => {
+              if (!p) {
+                return '';
+              }
+              const matches = reverseTranslateWord(p);
+              return matches[0] ?? p;
+            })
+            .join("'");
+        }
+        const matches = reverseTranslateWord(token);
+        return matches[0] ?? token;
+      }
+      return token;
+    })
+    .join('');
+}
+
 /**
  * Translates IPA text back to English.
- * For homophones, uses the most common word.
- *
- * IPA text typically uses spaces between words and various brackets/slashes.
- * Example: "/həˈloʊ wɝld/" -> "hello world"
  */
-export function reverseTranslateIPAText(ipaText: string): string {
-  // Remove IPA brackets/slashes but preserve word boundaries
-  const cleanText = ipaText.replace(/^[/[\]]+|[/[\]]+$/g, '').trim();
-
-  // Split on spaces (IPA uses spaces between words)
+function reverseTranslateIPATextInternal(text: string): string {
+  const cleanText = text.replace(/^[/[\]]+|[/[\]]+$/g, '').trim();
   const words = cleanText.split(/\s+/);
 
   return words
     .map((word) => {
-      // Skip empty tokens
       if (!word) {
         return '';
       }
-
       const matches = reverseTranslateIPAWord(word);
       return matches[0] ?? word;
     })
     .join(' ');
+}
+
+/**
+ * Translates text back to English from the specified format.
+ * For homophones, uses the most common word.
+ *
+ * @param text - Text in Ingglish or IPA format
+ * @param format - The input format ('ingglish' or 'ipa')
+ * @returns English text
+ */
+export function reverseTranslateText(text: string, format: OutputFormat = 'ingglish'): string {
+  if (format === 'ipa') {
+    return reverseTranslateIPATextInternal(text);
+  }
+  return reverseTranslateIngglishText(text);
 }
 
 // ============================================================================

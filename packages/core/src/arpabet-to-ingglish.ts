@@ -93,6 +93,15 @@ export function stripStress(phoneme: string): string {
 }
 
 /**
+ * Converts a single ARPAbet phoneme to Ingglish spelling.
+ * Symmetric with arpabetPhonemeToIPA in arpabet-to-ipa.ts.
+ */
+export function arpabetPhonemeToIngglish(phoneme: string): string {
+  const base = stripStress(phoneme);
+  return ARPABET_MAP[base] ?? phoneme.toLowerCase();
+}
+
+/**
  * Converts an array of ARPAbet symbols to Ingglish spelling.
  * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns Ingglish spelling (e.g., "hulo")
