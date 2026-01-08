@@ -30,6 +30,16 @@ function isWordChar(char: string): boolean {
     return true;
   }
 
+  // Latin-1 Supplement accented letters (À-ÖØ-öø-ÿ)
+  // Used for stress markers in Ingglish (á, é, í, ó, ú)
+  if (
+    (code >= 0xc0 && code <= 0xd6) ||
+    (code >= 0xd8 && code <= 0xf6) ||
+    (code >= 0xf8 && code <= 0xff)
+  ) {
+    return true;
+  }
+
   // Word joiner (U+2060) - invisible character that prevents line breaks
   if (code === 0x2060) {
     return true;
