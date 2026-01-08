@@ -161,18 +161,16 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
  */
 const TOOLTIP_STYLES = `
 .ingglish-word {
-  position: relative !important;
+  position: relative;
   cursor: help;
-  /* Ensure overflow is visible to prevent clipping */
-  overflow: visible !important;
 }
 
 .ingglish-word:hover::after {
   content: attr(data-ingglish-orig);
-  position: absolute !important;
-  bottom: 100% !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   background: #333 !important;
   color: #fff !important;
   padding: 4px 8px !important;
@@ -181,34 +179,29 @@ const TOOLTIP_STYLES = `
   font-family: system-ui, -apple-system, sans-serif !important;
   line-height: 1.4 !important;
   white-space: nowrap !important;
-  /* Max z-index to ensure tooltip is above all other elements */
   z-index: 2147483647 !important;
   pointer-events: none !important;
-  /* Force new compositing layer to escape some clipping contexts */
-  will-change: opacity !important;
   opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards !important;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
 .ingglish-word:hover::before {
-  content: '' !important;
-  position: absolute !important;
-  bottom: 100% !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   border: 5px solid transparent !important;
   border-top-color: #333 !important;
   margin-bottom: -10px !important;
-  /* Max z-index to ensure tooltip arrow is above all other elements */
   z-index: 2147483647 !important;
   pointer-events: none !important;
-  will-change: opacity !important;
   opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards !important;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
 @keyframes ingglish-tooltip-fade-in {
-  to { opacity: 1 !important; }
+  to { opacity: 1; }
 }
 `;
 
