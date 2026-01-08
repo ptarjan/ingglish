@@ -24,8 +24,7 @@
   }
 }
 
-.input-section,
-.output-section {
+.input-section {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -45,21 +44,12 @@
   letter-spacing: 0.05em;
 }
 
-.translating-indicator {
-  color: var(--color-primary);
-  font-weight: 400;
-}
-
-.text-input,
-.text-output {
+.text-input {
   min-height: 300px;
   padding: 1rem;
   border-radius: 0.5rem;
   font-size: 1rem;
   line-height: 1.7;
-}
-
-.text-input {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   color: var(--color-text);
@@ -70,35 +60,6 @@
 .text-input:focus {
   outline: none;
   border-color: var(--color-primary);
-}
-
-.text-output {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  white-space: pre-wrap;
-  overflow-y: auto;
-}
-
-.text-output .placeholder {
-  color: var(--color-text-muted);
-}
-
-.readonly-note {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  margin-top: 0.5rem;
-  font-style: italic;
-}
-
-.text-input[readonly] {
-  background: var(--color-surface-hover);
-  cursor: not-allowed;
-}
-
-.translator-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
 }
 
 /* Word Correspondence */
@@ -414,14 +375,6 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-primary);
-}
-
-.phoneme-cell,
-.phoneme-header {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  opacity: 0.6;
 }
 
 .examples-cell {
