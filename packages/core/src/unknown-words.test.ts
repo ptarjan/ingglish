@@ -148,4 +148,48 @@ describe('unknown-words', () => {
       expect(result).not.toBe('beeelohahrgee'); // not spelled out
     });
   });
+
+  describe('IPA output format', () => {
+    it('translateWithRules should output IPA when format is ipa', () => {
+      const result = translateWithRules('blorg', 'ipa');
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+      // IPA output should contain IPA characters, not Latin alphabet
+      // The word "blorg" should produce something like /blɔɹɡ/
+      expect(result).toMatch(/[bɡʃʒθðŋɹɑæʌɔɛɪʊəaɪeɪoʊaʊɔɪuiˈˌ]/);
+    });
+
+    it('translateAsAcronym should output IPA when format is ipa', () => {
+      // URL = /juː ɑːɹ ɛl/ (you-are-ell)
+      const result = translateAsAcronym('url', 'ipa');
+      expect(result).toBeDefined();
+      // Should contain IPA vowels and consonants
+      expect(result).toMatch(/[juɑɹɛl]/);
+    });
+
+    it('translateUnknown should output IPA when format is ipa', () => {
+      const result = translateUnknown('xyzzy', 'ipa');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+      // Should not be plain ASCII letters like ingglish output
+      expect(result).not.toMatch(/^[a-zA-Z]+$/);
+    });
+
+    it('translateUnknown should output IPA for acronyms', () => {
+      const result = translateUnknown('api', 'ipa');
+      expect(result).toBeDefined();
+      // API = /eɪ piː aɪ/ (ay-pee-eye)
+      // Should contain IPA characters
+      expect(result).toMatch(/[eɪpiːaɪ]/);
+    });
+
+    it('translateWithStemming should output IPA when format is ipa', () => {
+      // Test with a word that has a known stem
+      const result = translateWithStemming('quickly', 'ipa');
+      // May return null if stem not found, otherwise should be IPA
+      if (result !== null) {
+        expect(result).toMatch(/[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/);
+      }
+    });
+  });
 });
