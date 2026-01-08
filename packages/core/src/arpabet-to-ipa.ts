@@ -5,7 +5,7 @@
  * This is the reverse of ipa-to-arpabet.ts.
  */
 
-import { stripStress } from './phoneme-map';
+import { stripStress } from './arpabet-to-ingglish';
 
 /**
  * Mapping from ARPAbet phonemes to IPA symbols.

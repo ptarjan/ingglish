@@ -75,7 +75,7 @@ export { reverseTranslateText, reverseTranslateIPAText } from './reverse-transla
 // Phoneme Maps (for spelling guide UI)
 // =============================================================================
 
-export { VOWEL_MAP, CONSONANT_MAP, ARPABET_MAP, arpabetToDisplay } from './phoneme-map';
+export { VOWEL_MAP, CONSONANT_MAP, ARPABET_MAP, arpabetToDisplay } from './arpabet-to-ingglish';
 
 // =============================================================================
 // IPA conversion (for spelling guide UI)

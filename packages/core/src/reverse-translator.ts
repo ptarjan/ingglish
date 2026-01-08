@@ -5,7 +5,7 @@
  * the given Ingglish spelling. Handles homophones by preferring
  * more common words based on frequency data.
  */
-import { ARPABET_MAP } from './phoneme-map';
+import { ARPABET_MAP } from './arpabet-to-ingglish';
 import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';

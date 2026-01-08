@@ -5,7 +5,7 @@ import {
   CONSONANT_MAP,
   stripStress,
   arpabetToIngglish,
-} from './phoneme-map';
+} from './arpabet-to-ingglish';
 
 describe('phoneme-map', () => {
   describe('ARPABET_MAP', () => {

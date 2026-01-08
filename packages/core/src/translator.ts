@@ -1,4 +1,4 @@
-import { arpabetToDisplay } from './phoneme-map';
+import { arpabetToDisplay } from './arpabet-to-ingglish';
 import { translateUnknown } from './unknown-words';
 import type { CMUDictionary, OutputFormat } from './types';
 

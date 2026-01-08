@@ -1,4 +1,4 @@
-import { arpabetToDisplay } from './phoneme-map';
+import { arpabetToDisplay } from './arpabet-to-ingglish';
 import { lookupPronunciation } from './translator';
 import { ipaToArpabet } from './ipa-to-arpabet';
 import type { OutputFormat } from './types';
