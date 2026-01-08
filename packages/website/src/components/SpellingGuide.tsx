@@ -1,6 +1,4 @@
-import type { OutputFormat } from '@ingglish/core';
 import { arpabetPhonemeToIPA, arpabetPhonemeToIngglish } from '@ingglish/core';
-import { useFormat } from '../contexts/FormatContext';
 
 interface SoundEntry {
   phoneme: string;
@@ -21,16 +19,6 @@ function getIPA(phoneme: string): string {
 }
 
 /**
- * Get spelling for a phoneme based on format
- */
-function getSpelling(phoneme: string, format: OutputFormat): string {
-  if (format === 'ipa') {
-    return getIPA(phoneme);
-  }
-  return arpabetPhonemeToIngglish(phoneme);
-}
-
-/**
  * Renders example text with **bold** markers converted to <strong> elements
  */
 function renderExamples(examples: string): React.ReactNode {
@@ -44,8 +32,6 @@ function renderExamples(examples: string): React.ReactNode {
 }
 
 function SpellingGuide(): React.JSX.Element {
-  const { format } = useFormat();
-
   // Organize vowels by type (following traditional English phonics)
   const vowelGroups: SoundGroup[] = [
     {
@@ -139,14 +125,16 @@ function SpellingGuide(): React.JSX.Element {
       <table className="mapping-table">
         <thead>
           <tr>
-            <th>{format === 'ipa' ? 'IPA' : 'Ingglish'}</th>
+            <th>IPA</th>
+            <th>Ingglish</th>
             <th>Examples</th>
           </tr>
         </thead>
         <tbody>
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
-              <td className="spelling-cell">{getSpelling(sound.phoneme, format)}</td>
+              <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
+              <td className="spelling-cell">{arpabetPhonemeToIngglish(sound.phoneme)}</td>
               <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>
           ))}
