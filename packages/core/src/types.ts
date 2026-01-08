@@ -37,6 +37,13 @@ export interface DOMTranslatorOptions {
   translateAttributes?: boolean;
 
   /**
+   * Whether to show tooltips with original English words on hover.
+   * When enabled, translated words are wrapped in spans with data-original attributes.
+   * @default false
+   */
+  showTooltips?: boolean;
+
+  /**
    * Callback for progress updates during translation.
    */
   onProgress?: (processed: number, total: number) => void;

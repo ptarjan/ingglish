@@ -58,8 +58,9 @@ async function translatePage(): Promise<void> {
   }
 
   try {
-    // Translate the current page
+    // Translate the current page with tooltips enabled
     await translateDOM(document.body, {
+      showTooltips: true,
       onProgress: (processed, total) => {
         if (processed % 100 === 0) {
           // eslint-disable-next-line no-console
@@ -68,8 +69,8 @@ async function translatePage(): Promise<void> {
       },
     });
 
-    // Set up observer for dynamic content
-    state.stopObserver = await observeAndTranslate(document.body);
+    // Set up observer for dynamic content (with tooltips)
+    state.stopObserver = await observeAndTranslate(document.body, { showTooltips: true });
     state.translated = true;
 
     // eslint-disable-next-line no-console

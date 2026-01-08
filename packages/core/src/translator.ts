@@ -228,3 +228,47 @@ export function getDictionaryStats(): { wordCount: number } {
     wordCount: Object.keys(dict).length,
   };
 }
+
+/**
+ * Represents a translated token with original and translated text.
+ */
+export interface TranslatedToken {
+  original: string;
+  translated: string;
+  isWord: boolean; // true for words, false for punctuation/whitespace
+}
+
+/**
+ * Translates text and returns token-by-token mappings.
+ * Useful for creating tooltips or other word-level features.
+ * @param text The English text to translate
+ * @returns Array of tokens with original and translated text
+ */
+export function translateTextWithMapping(text: string): TranslatedToken[] {
+  const normalizedText = normalizeApostrophes(text);
+
+  // Regex to match words (letters and apostrophes) vs everything else
+  const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
+
+  return tokens.map((token) => {
+    // Only translate if it's a word (contains letters)
+    if (/^[a-zA-Z']+$/.test(token)) {
+      let translated: string;
+      if (token.includes("'")) {
+        translated = translateContraction(token);
+      } else {
+        translated = translateWord(token);
+      }
+      return {
+        original: token,
+        translated,
+        isWord: true,
+      };
+    }
+    return {
+      original: token,
+      translated: token,
+      isWord: false,
+    };
+  });
+}

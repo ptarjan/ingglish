@@ -1,7 +1,12 @@
 /**
  * Core DOM translation functionality.
  */
-import { translateText, loadDictionary, isDictionaryLoaded } from './translator';
+import {
+  translateText,
+  translateTextWithMapping,
+  loadDictionary,
+  isDictionaryLoaded,
+} from './translator';
 import type { DOMTranslatorOptions } from './types';
 import {
   DEFAULT_SKIP_TAGS,
@@ -15,6 +20,32 @@ import {
 export type { DOMTranslatorOptions };
 export { skipElement, unskipElement } from './dom-utils';
 export { observeAndTranslate } from './dom-observer';
+
+/**
+ * Creates a document fragment with tooltip spans for each translated word.
+ * Words get wrapped in spans with data-original attributes for CSS tooltips.
+ * Non-word tokens (punctuation, whitespace) are added as text nodes.
+ */
+function createTooltipFragment(text: string): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  const tokens = translateTextWithMapping(text);
+
+  for (const token of tokens) {
+    if (token.isWord && token.original !== token.translated) {
+      // Word that was translated - wrap in tooltip span
+      const span = document.createElement('span');
+      span.className = 'ingglish-word';
+      span.setAttribute('data-original', token.original);
+      span.textContent = token.translated;
+      fragment.appendChild(span);
+    } else {
+      // Non-word or unchanged - just add as text
+      fragment.appendChild(document.createTextNode(token.translated));
+    }
+  }
+
+  return fragment;
+}
 
 /**
  * Collects all translatable text nodes in a single DOM walk.
@@ -72,8 +103,14 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     skipTags = DEFAULT_SKIP_TAGS,
     skipClasses = DEFAULT_SKIP_CLASSES,
     translateAttributes = true,
+    showTooltips = false,
     onProgress,
   } = options;
+
+  // Inject tooltip CSS if showing tooltips
+  if (showTooltips) {
+    injectTooltipStyles();
+  }
 
   // Single walk to collect all text nodes
   const textNodes = collectTextNodes(root, skipTags, skipClasses);
@@ -84,12 +121,23 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     const textNode = textNodes[i];
     const originalText = textNode.textContent;
     if (originalText) {
-      // Store original text for potential restoration
       const parent = textNode.parentElement;
-      if (parent && !parent.hasAttribute('data-ingglish-original')) {
-        parent.setAttribute('data-ingglish-original', originalText);
+
+      if (showTooltips) {
+        // Replace text node with tooltip spans
+        const fragment = createTooltipFragment(originalText);
+        // Store original text on parent for restoration
+        if (parent && !parent.hasAttribute('data-ingglish-original')) {
+          parent.setAttribute('data-ingglish-original', originalText);
+        }
+        textNode.replaceWith(fragment);
+      } else {
+        // Simple text replacement (original behavior)
+        if (parent && !parent.hasAttribute('data-ingglish-original')) {
+          parent.setAttribute('data-ingglish-original', originalText);
+        }
+        textNode.textContent = translateText(originalText);
       }
-      textNode.textContent = translateText(originalText);
     }
 
     if (onProgress && totalNodes > 0) {
@@ -101,6 +149,72 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
   if (translateAttributes) {
     translateElementAttributes(root, skipTags, skipClasses);
   }
+}
+
+/**
+ * CSS styles for tooltip functionality.
+ * Injected once into the document when tooltips are enabled.
+ */
+const TOOLTIP_STYLES = `
+.ingglish-word {
+  position: relative;
+  cursor: help;
+}
+
+.ingglish-word:hover::after {
+  content: attr(data-original);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
+}
+
+.ingglish-word:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+  margin-bottom: -10px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
+}
+
+@keyframes ingglish-tooltip-fade-in {
+  to { opacity: 1; }
+}
+`;
+
+let tooltipStylesInjected = false;
+
+/**
+ * Injects the tooltip CSS styles into the document head.
+ * Only injects once per document.
+ */
+function injectTooltipStyles(): void {
+  if (tooltipStylesInjected) {
+    return;
+  }
+
+  const style = document.createElement('style');
+  style.id = 'ingglish-tooltip-styles';
+  style.textContent = TOOLTIP_STYLES;
+  document.head.appendChild(style);
+  tooltipStylesInjected = true;
 }
 
 /**

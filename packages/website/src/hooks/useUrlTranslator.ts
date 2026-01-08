@@ -81,9 +81,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error('Failed to access iframe content');
         }
 
-        // Translate the DOM
+        // Translate the DOM with tooltips enabled
         await translateDOM(iframeDoc.body, {
           translateAttributes: true,
+          showTooltips: true,
         });
 
         setHasContent(true);
