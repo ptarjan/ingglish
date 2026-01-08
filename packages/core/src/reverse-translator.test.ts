@@ -5,6 +5,9 @@ import {
   reverseTranslateWord,
   reverseTranslateText,
   isLikelyInglish,
+  ipaToPhonemes,
+  reverseTranslateIPAWord,
+  reverseTranslateIPAText,
 } from './reverse-translator';
 
 describe('reverse-translator', () => {
@@ -203,6 +206,88 @@ are written exactly as they sound - what you see is what you say!`;
       // Pure words without distinctive patterns
       const result = isLikelyInglish('hello');
       expect(typeof result).toBe('boolean');
+    });
+  });
+
+  describe('ipaToPhonemes', () => {
+    it('should parse simple IPA to phonemes', () => {
+      // /kæt/ -> K AE T
+      expect(ipaToPhonemes('kæt')).toEqual(['K', 'AE', 'T']);
+    });
+
+    it('should parse IPA with diphthongs', () => {
+      // /haɪ/ -> HH AY (hi/high)
+      expect(ipaToPhonemes('haɪ')).toEqual(['HH', 'AY']);
+    });
+
+    it('should strip stress markers', () => {
+      // /həˈloʊ/ -> HH AH L OW (hello)
+      expect(ipaToPhonemes('həˈloʊ')).toEqual(['HH', 'AH', 'L', 'OW']);
+    });
+
+    it('should return null for empty input', () => {
+      expect(ipaToPhonemes('')).toEqual(null);
+    });
+  });
+
+  describe('reverseTranslateIPAWord', () => {
+    it('should translate simple IPA words', () => {
+      // /kæt/ -> "cat"
+      const results = reverseTranslateIPAWord('kæt');
+      expect(results).toContain('cat');
+    });
+
+    it('should translate IPA with diphthongs', () => {
+      // /haɪ/ -> "hi" or "high"
+      const results = reverseTranslateIPAWord('haɪ');
+      expect(results.some((w) => w === 'hi' || w === 'high')).toBe(true);
+    });
+
+    it('should handle stress markers', () => {
+      // /həˈloʊ/ -> "hello"
+      const results = reverseTranslateIPAWord('həˈloʊ');
+      expect(results).toContain('hello');
+    });
+
+    it('should return original for empty input', () => {
+      expect(reverseTranslateIPAWord('')).toEqual([]);
+    });
+
+    it('should handle common IPA transcriptions', () => {
+      // /wɝld/ -> "world"
+      const results = reverseTranslateIPAWord('wɝld');
+      expect(results).toContain('world');
+    });
+  });
+
+  describe('reverseTranslateIPAText', () => {
+    it('should translate IPA text to English', () => {
+      // /həˈloʊ wɝld/ -> "hello world"
+      const result = reverseTranslateIPAText('həˈloʊ wɝld');
+      expect(result.toLowerCase()).toBe('hello world');
+    });
+
+    it('should handle IPA brackets', () => {
+      // Remove surrounding slashes
+      const result = reverseTranslateIPAText('/kæt/');
+      expect(result.toLowerCase()).toBe('cat');
+    });
+
+    it('should handle multiple words', () => {
+      // /ðə kæt/ -> "the cat"
+      const result = reverseTranslateIPAText('ðə kæt');
+      expect(result.toLowerCase()).toBe('the cat');
+    });
+
+    it('should return empty string for empty input', () => {
+      expect(reverseTranslateIPAText('')).toBe('');
+    });
+
+    it('should round-trip translateText with IPA format', () => {
+      // Translate "hello world" to IPA, then back to English
+      const ipa = translateText('hello world', 'ipa');
+      const back = reverseTranslateIPAText(ipa);
+      expect(back.toLowerCase()).toBe('hello world');
     });
   });
 });

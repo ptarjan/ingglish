@@ -11,7 +11,7 @@
  */
 
 import { loadDictionary, translateText } from './translator';
-import { reverseTranslateText } from './reverse-translator';
+import { reverseTranslateText, reverseTranslateIPAText } from './reverse-translator';
 import { translateDOMAsync, restoreDOM as restoreDOMSync } from './dom-translator';
 import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
 
@@ -40,6 +40,12 @@ export async function reverseTranslate(text: string): Promise<string> {
   return reverseTranslateText(text);
 }
 
+/** Translate IPA back to English. */
+export async function reverseTranslateIPA(text: string): Promise<string> {
+  await loadDictionary();
+  return reverseTranslateIPAText(text);
+}
+
 /** Translate all text in a DOM element. */
 export const translateDOM = translateDOMAsync;
 
@@ -63,7 +69,7 @@ export function restoreDOM(root: Element | Document): void {
 
 export { translateText, translateTextWithMapping } from './translator';
 export type { TranslatedToken } from './translator';
-export { reverseTranslateText } from './reverse-translator';
+export { reverseTranslateText, reverseTranslateIPAText } from './reverse-translator';
 
 // =============================================================================
 // Phoneme Maps (for spelling guide UI)

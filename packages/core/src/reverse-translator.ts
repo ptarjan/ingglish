@@ -9,6 +9,7 @@ import { PHONEME_MAP } from './phoneme-map';
 import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';
+import { ipaToArpabet } from './ipa-to-arpabet';
 
 // ============================================================================
 // Reverse Phoneme Map
@@ -154,7 +155,7 @@ export function inglishToPhonemes(inglish: string): string[] | null {
  * Looks up English words matching a phoneme sequence.
  * Tries all alternative phoneme interpretations and combines results.
  */
-function lookupByPhonemes(phonemes: string[]): string[] {
+export function lookupByPhonemes(phonemes: string[]): string[] {
   const variants = expandPhonemeAlternatives(phonemes);
   const allMatches: string[] = [];
   const seen = new Set<string>();
@@ -232,6 +233,69 @@ export function reverseTranslateText(inglishText: string): string {
       return token;
     })
     .join('');
+}
+
+// ============================================================================
+// IPA Reverse Translation
+// ============================================================================
+
+/**
+ * Converts IPA text to ARPAbet phonemes (stripping stress markers).
+ */
+export function ipaToPhonemes(ipa: string): string[] | null {
+  const phonemes = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
+  return phonemes.length > 0 ? phonemes : null;
+}
+
+/**
+ * Translates an IPA word back to English.
+ * Returns possible English words sorted by frequency.
+ */
+export function reverseTranslateIPAWord(ipaWord: string): string[] {
+  if (!ipaWord || ipaWord.trim().length === 0) {
+    return ipaWord ? [ipaWord] : [];
+  }
+
+  const phonemes = ipaToPhonemes(ipaWord);
+
+  if (!phonemes) {
+    return [ipaWord];
+  }
+
+  const matches = lookupByPhonemes(phonemes);
+
+  if (matches.length === 0) {
+    return [ipaWord];
+  }
+
+  return matches;
+}
+
+/**
+ * Translates IPA text back to English.
+ * For homophones, uses the most common word.
+ *
+ * IPA text typically uses spaces between words and various brackets/slashes.
+ * Example: "/həˈloʊ wɝld/" -> "hello world"
+ */
+export function reverseTranslateIPAText(ipaText: string): string {
+  // Remove IPA brackets/slashes but preserve word boundaries
+  const cleanText = ipaText.replace(/^[/[\]]+|[/[\]]+$/g, '').trim();
+
+  // Split on spaces (IPA uses spaces between words)
+  const words = cleanText.split(/\s+/);
+
+  return words
+    .map((word) => {
+      // Skip empty tokens
+      if (!word) {
+        return '';
+      }
+
+      const matches = reverseTranslateIPAWord(word);
+      return matches[0] ?? word;
+    })
+    .join(' ');
 }
 
 // ============================================================================

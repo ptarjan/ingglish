@@ -1,5 +1,5 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateText, reverseTranslateText } from '@ingglish/core';
+import { translateText, reverseTranslateText, reverseTranslateIPAText } from '@ingglish/core';
 import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
@@ -114,11 +114,13 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, [deferredEnglish, lastEdited, format]);
 
   const computedEnglish = useMemo(() => {
-    // Reverse translation only works for Ingglish format
-    if (format !== 'ingglish' || lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
+    if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       return null;
     }
     try {
+      if (format === 'ipa') {
+        return reverseTranslateIPAText(deferredIngglish);
+      }
       return reverseTranslateText(deferredIngglish);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -268,18 +270,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             }
             className="text-input"
             spellCheck={false}
-            readOnly={format === 'ipa'}
-            title={
-              format === 'ipa'
-                ? 'IPA output is read-only (reverse translation not supported)'
-                : undefined
-            }
           />
-          {format === 'ipa' && (
-            <p className="readonly-note">
-              IPA output is read-only. Switch to Ingglish for bidirectional editing.
-            </p>
-          )}
         </div>
       </div>
 
