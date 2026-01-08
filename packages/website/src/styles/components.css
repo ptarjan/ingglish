@@ -382,6 +382,14 @@
   font-size: 0.875rem;
 }
 
+.examples-cell strong {
+  color: var(--color-text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-underline-offset: 2px;
+}
+
 .principles-list {
   list-style: none;
   display: flex;
