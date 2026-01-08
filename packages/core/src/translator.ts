@@ -253,19 +253,21 @@ export function translateTextWithMapping(text: string): TranslatedToken[] {
   // Regex to match words (letters and apostrophes) vs everything else
   const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
 
-  return tokens.map((token) => {
-    // Only translate if it's a word (contains letters)
-    if (/^[a-zA-Z']+$/.test(token)) {
+  return tokens
+    .filter((token) => token.length > 0) // Filter out empty strings from split
+    .map((token) => {
+      // Only translate if it's a word (contains letters)
+      if (/^[a-zA-Z']+$/.test(token)) {
+        return {
+          original: token,
+          translated: translateWord(token),
+          isWord: true,
+        };
+      }
       return {
         original: token,
-        translated: translateWord(token),
-        isWord: true,
+        translated: token,
+        isWord: false,
       };
-    }
-    return {
-      original: token,
-      translated: token,
-      isWord: false,
-    };
-  });
+    });
 }

@@ -19,7 +19,6 @@ import {
 // Re-export types and utilities for convenience
 export type { DOMTranslatorOptions };
 export { skipElement, unskipElement } from './dom-utils';
-export { observeAndTranslate } from './dom-observer';
 
 /**
  * Creates a document fragment with tooltip spans for each translated word.
@@ -33,9 +32,10 @@ function createTooltipFragment(text: string): DocumentFragment {
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
       // Word that was translated - wrap in tooltip span
+      // data-ingglish-orig stores original text AND marks as translated (prevents re-processing)
       const span = document.createElement('span');
       span.className = 'ingglish-word';
-      span.setAttribute('data-original', token.original);
+      span.setAttribute('data-ingglish-orig', token.original);
       span.textContent = token.translated;
       fragment.appendChild(span);
     } else {
@@ -165,7 +165,7 @@ const TOOLTIP_STYLES = `
 }
 
 .ingglish-word:hover::after {
-  content: attr(data-original);
+  content: attr(data-ingglish-orig);
   position: absolute;
   bottom: 100%;
   left: 50%;

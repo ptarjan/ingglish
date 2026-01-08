@@ -85,6 +85,11 @@ export function shouldSkipElement(
     return true;
   }
 
+  // Check for already-translated elements (marked with data-ingglish-orig)
+  if (element.hasAttribute('data-ingglish-orig')) {
+    return true;
+  }
+
   return false;
 }
 

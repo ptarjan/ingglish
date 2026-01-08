@@ -14,7 +14,6 @@ import {
 
 /**
  * Creates a document fragment with tooltip spans for each translated word.
- * (Duplicated from dom-translator to avoid circular imports)
  */
 function createTooltipFragmentForObserver(text: string): DocumentFragment {
   const fragment = document.createDocumentFragment();
@@ -22,9 +21,10 @@ function createTooltipFragmentForObserver(text: string): DocumentFragment {
 
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
+      // data-ingglish-orig stores original text AND marks as translated (prevents re-processing)
       const span = document.createElement('span');
       span.className = 'ingglish-word';
-      span.setAttribute('data-original', token.original);
+      span.setAttribute('data-ingglish-orig', token.original);
       span.textContent = token.translated;
       fragment.appendChild(span);
     } else {

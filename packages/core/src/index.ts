@@ -12,11 +12,8 @@
 
 import { loadDictionary, translateText } from './translator';
 import { reverseTranslateText } from './reverse-translator';
-import {
-  translateDOMAsync,
-  observeAndTranslate as observeAndTranslateSync,
-  restoreDOM as restoreDOMSync,
-} from './dom-translator';
+import { translateDOMAsync, restoreDOM as restoreDOMSync } from './dom-translator';
+import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
 
 // =============================================================================
 // Types

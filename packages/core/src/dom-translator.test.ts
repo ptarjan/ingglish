@@ -3,13 +3,8 @@
  */
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { loadDictionary, translateTextWithMapping } from './translator';
-import {
-  translateDOM,
-  translateDOMAsync,
-  skipElement,
-  unskipElement,
-  observeAndTranslate,
-} from './dom-translator';
+import { translateDOM, translateDOMAsync, skipElement, unskipElement } from './dom-translator';
+import { observeAndTranslate } from './dom-observer';
 
 describe('dom-translator', () => {
   // Track stop functions to ensure cleanup even if tests fail
@@ -189,7 +184,7 @@ describe('dom-translator', () => {
   });
 
   describe('observeAndTranslate', () => {
-    it('should return a stop function', () => {
+    it('should return a stop function', async () => {
       const stop = createObserver(document.body);
       expect(typeof stop).toBe('function');
     });
@@ -310,17 +305,17 @@ describe('dom-translator', () => {
   });
 
   describe('showTooltips option', () => {
-    it('should wrap translated words in spans with data-original attribute', () => {
+    it('should wrap translated words in spans with data-ingglish-orig attribute', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       translateDOM(document.body, { showTooltips: true });
 
       const spans = document.querySelectorAll('.ingglish-word');
       expect(spans).toHaveLength(2);
 
-      expect(spans[0].getAttribute('data-original')).toBe('Hello');
+      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('Hello');
       expect(spans[0].textContent).toBe('Hulo');
 
-      expect(spans[1].getAttribute('data-original')).toBe('world');
+      expect(spans[1].getAttribute('data-ingglish-orig')).toBe('world');
       expect(spans[1].textContent).toBe('werld');
     });
 
@@ -331,7 +326,7 @@ describe('dom-translator', () => {
       // Only "hello" should be wrapped (numbers stay as text)
       const spans = document.querySelectorAll('.ingglish-word');
       expect(spans).toHaveLength(1);
-      expect(spans[0].getAttribute('data-original')).toBe('hello');
+      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('hello');
     });
 
     it('should inject tooltip CSS styles', () => {
@@ -341,7 +336,7 @@ describe('dom-translator', () => {
       const styleElement = document.getElementById('ingglish-tooltip-styles');
       expect(styleElement).not.toBeNull();
       expect(styleElement?.textContent).toContain('.ingglish-word');
-      expect(styleElement?.textContent).toContain('data-original');
+      expect(styleElement?.textContent).toContain('data-ingglish-orig');
     });
 
     it('should preserve text content when using tooltips', () => {
@@ -375,7 +370,7 @@ describe('dom-translator', () => {
 
       const span = p.querySelector('.ingglish-word');
       expect(span).not.toBeNull();
-      expect(span?.getAttribute('data-original')).toBe('Hello');
+      expect(span?.getAttribute('data-ingglish-orig')).toBe('Hello');
       expect(span?.textContent).toBe('Hulo');
     });
 
