@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  PHONEME_MAP,
+  ARPABET_MAP,
   VOWEL_MAP,
   CONSONANT_MAP,
   stripStress,
-  phonemesToInglish,
+  arpabetToIngglish,
 } from './phoneme-map';
 
 describe('phoneme-map', () => {
-  describe('PHONEME_MAP', () => {
+  describe('ARPABET_MAP', () => {
     it('should have all vowels mapped', () => {
       const vowels = [
         'AA',
@@ -28,7 +28,7 @@ describe('phoneme-map', () => {
         'UW',
       ];
       for (const vowel of vowels) {
-        expect(PHONEME_MAP[vowel]).toBeDefined();
+        expect(ARPABET_MAP[vowel]).toBeDefined();
       }
     });
 
@@ -60,14 +60,14 @@ describe('phoneme-map', () => {
         'ZH',
       ];
       for (const consonant of consonants) {
-        expect(PHONEME_MAP[consonant]).toBeDefined();
+        expect(ARPABET_MAP[consonant]).toBeDefined();
       }
     });
 
     it('should have 39 total phonemes (15 vowels + 24 consonants)', () => {
       expect(Object.keys(VOWEL_MAP).length).toBe(15);
       expect(Object.keys(CONSONANT_MAP).length).toBe(24);
-      expect(Object.keys(PHONEME_MAP).length).toBe(39);
+      expect(Object.keys(ARPABET_MAP).length).toBe(39);
     });
   });
 
@@ -90,81 +90,81 @@ describe('phoneme-map', () => {
     });
   });
 
-  describe('phonemesToInglish', () => {
+  describe('arpabetToIngglish', () => {
     it('should convert "hello" phonemes correctly', () => {
       // hello = HH AH0 L OW1
       const phonemes = ['HH', 'AH0', 'L', 'OW1'];
-      expect(phonemesToInglish(phonemes)).toBe('hulo');
+      expect(arpabetToIngglish(phonemes)).toBe('hulo');
     });
 
     it('should convert "world" phonemes correctly', () => {
       // world = W ER1 L D
       const phonemes = ['W', 'ER1', 'L', 'D'];
-      expect(phonemesToInglish(phonemes)).toBe('werld');
+      expect(arpabetToIngglish(phonemes)).toBe('werld');
     });
 
     it('should convert "the" phonemes correctly', () => {
       // the = DH AH0 (or DH AH1)
       const phonemes = ['DH', 'AH0'];
-      expect(phonemesToInglish(phonemes)).toBe('dhu');
+      expect(arpabetToIngglish(phonemes)).toBe('dhu');
     });
 
     it('should convert "think" phonemes correctly', () => {
       // think = TH IH1 NG K
       const phonemes = ['TH', 'IH1', 'NG', 'K'];
-      expect(phonemesToInglish(phonemes)).toBe('thingk');
+      expect(arpabetToIngglish(phonemes)).toBe('thingk');
     });
 
     it('should convert "beautiful" phonemes correctly', () => {
       // beautiful = B Y UW1 T AH0 F AH0 L -> byootuful
       const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
-      expect(phonemesToInglish(phonemes)).toBe('byootuful');
+      expect(arpabetToIngglish(phonemes)).toBe('byootuful');
     });
 
     it('should handle vowel sounds correctly', () => {
       // Test each vowel
-      expect(phonemesToInglish(['AA1'])).toBe('ah'); // father
-      expect(phonemesToInglish(['AE1'])).toBe('a'); // cat
-      expect(phonemesToInglish(['AH1'])).toBe('u'); // but
-      expect(phonemesToInglish(['AO1'])).toBe('aw'); // caught
-      expect(phonemesToInglish(['AW1'])).toBe('ow'); // cow
-      expect(phonemesToInglish(['AY1'])).toBe('ai'); // my
-      expect(phonemesToInglish(['EH1'])).toBe('e'); // bed
-      expect(phonemesToInglish(['ER1'])).toBe('er'); // bird
-      expect(phonemesToInglish(['EY1'])).toBe('ay'); // say
-      expect(phonemesToInglish(['IH1'])).toBe('i'); // bit
-      expect(phonemesToInglish(['IY1'])).toBe('ee'); // bee
-      expect(phonemesToInglish(['OW1'])).toBe('o'); // go
-      expect(phonemesToInglish(['OY1'])).toBe('oi'); // boy
-      expect(phonemesToInglish(['UH1'])).toBe('uu'); // book
-      expect(phonemesToInglish(['UW1'])).toBe('oo'); // too
+      expect(arpabetToIngglish(['AA1'])).toBe('ah'); // father
+      expect(arpabetToIngglish(['AE1'])).toBe('a'); // cat
+      expect(arpabetToIngglish(['AH1'])).toBe('u'); // but
+      expect(arpabetToIngglish(['AO1'])).toBe('aw'); // caught
+      expect(arpabetToIngglish(['AW1'])).toBe('ow'); // cow
+      expect(arpabetToIngglish(['AY1'])).toBe('ai'); // my
+      expect(arpabetToIngglish(['EH1'])).toBe('e'); // bed
+      expect(arpabetToIngglish(['ER1'])).toBe('er'); // bird
+      expect(arpabetToIngglish(['EY1'])).toBe('ay'); // say
+      expect(arpabetToIngglish(['IH1'])).toBe('i'); // bit
+      expect(arpabetToIngglish(['IY1'])).toBe('ee'); // bee
+      expect(arpabetToIngglish(['OW1'])).toBe('o'); // go
+      expect(arpabetToIngglish(['OY1'])).toBe('oi'); // boy
+      expect(arpabetToIngglish(['UH1'])).toBe('uu'); // book
+      expect(arpabetToIngglish(['UW1'])).toBe('oo'); // too
     });
 
     it('should handle consonant sounds correctly', () => {
-      expect(phonemesToInglish(['B'])).toBe('b');
-      expect(phonemesToInglish(['CH'])).toBe('ch');
-      expect(phonemesToInglish(['D'])).toBe('d');
-      expect(phonemesToInglish(['DH'])).toBe('dh');
-      expect(phonemesToInglish(['F'])).toBe('f');
-      expect(phonemesToInglish(['G'])).toBe('g');
-      expect(phonemesToInglish(['HH'])).toBe('h');
-      expect(phonemesToInglish(['JH'])).toBe('j');
-      expect(phonemesToInglish(['K'])).toBe('k');
-      expect(phonemesToInglish(['L'])).toBe('l');
-      expect(phonemesToInglish(['M'])).toBe('m');
-      expect(phonemesToInglish(['N'])).toBe('n');
-      expect(phonemesToInglish(['NG'])).toBe('ng');
-      expect(phonemesToInglish(['P'])).toBe('p');
-      expect(phonemesToInglish(['R'])).toBe('r');
-      expect(phonemesToInglish(['S'])).toBe('s');
-      expect(phonemesToInglish(['SH'])).toBe('sh');
-      expect(phonemesToInglish(['T'])).toBe('t');
-      expect(phonemesToInglish(['TH'])).toBe('th');
-      expect(phonemesToInglish(['V'])).toBe('v');
-      expect(phonemesToInglish(['W'])).toBe('w');
-      expect(phonemesToInglish(['Y'])).toBe('y');
-      expect(phonemesToInglish(['Z'])).toBe('z');
-      expect(phonemesToInglish(['ZH'])).toBe('zh');
+      expect(arpabetToIngglish(['B'])).toBe('b');
+      expect(arpabetToIngglish(['CH'])).toBe('ch');
+      expect(arpabetToIngglish(['D'])).toBe('d');
+      expect(arpabetToIngglish(['DH'])).toBe('dh');
+      expect(arpabetToIngglish(['F'])).toBe('f');
+      expect(arpabetToIngglish(['G'])).toBe('g');
+      expect(arpabetToIngglish(['HH'])).toBe('h');
+      expect(arpabetToIngglish(['JH'])).toBe('j');
+      expect(arpabetToIngglish(['K'])).toBe('k');
+      expect(arpabetToIngglish(['L'])).toBe('l');
+      expect(arpabetToIngglish(['M'])).toBe('m');
+      expect(arpabetToIngglish(['N'])).toBe('n');
+      expect(arpabetToIngglish(['NG'])).toBe('ng');
+      expect(arpabetToIngglish(['P'])).toBe('p');
+      expect(arpabetToIngglish(['R'])).toBe('r');
+      expect(arpabetToIngglish(['S'])).toBe('s');
+      expect(arpabetToIngglish(['SH'])).toBe('sh');
+      expect(arpabetToIngglish(['T'])).toBe('t');
+      expect(arpabetToIngglish(['TH'])).toBe('th');
+      expect(arpabetToIngglish(['V'])).toBe('v');
+      expect(arpabetToIngglish(['W'])).toBe('w');
+      expect(arpabetToIngglish(['Y'])).toBe('y');
+      expect(arpabetToIngglish(['Z'])).toBe('z');
+      expect(arpabetToIngglish(['ZH'])).toBe('zh');
     });
   });
 });

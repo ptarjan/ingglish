@@ -100,9 +100,9 @@ English → Ingglish → English
          ▼         ▼
    ARPAbet → spelling → ARPAbet
          │                    │
-    CMU Dict              REVERSE_PHONEME_MAP
+    CMU Dict              REVERSE_ARPABET_MAP
                               │
-                         PHONEME_ALTERNATIVES
+                         ARPABET_ALTERNATIVES
                          (handles ambiguity)
 
 English → IPA → English
@@ -119,6 +119,6 @@ The forward path (English → Ingglish) uses the CMU dictionary to get ARPAbet p
 
 The forward path (English → IPA) uses the CMU dictionary to get ARPAbet phonemes, then converts to IPA with proper stress markers at syllable boundaries.
 
-The reverse path (Ingglish → English) parses the spelling back to ARPAbet using `REVERSE_PHONEME_MAP`, then looks up words with matching phoneme sequences. `PHONEME_ALTERNATIVES` handles cases where the same spelling could represent different phoneme sequences.
+The reverse path (Ingglish → English) parses the spelling back to ARPAbet using `REVERSE_ARPABET_MAP`, then looks up words with matching ARPAbet sequences. `ARPABET_ALTERNATIVES` handles cases where the same spelling could represent different ARPAbet sequences.
 
 The reverse path (IPA → English) converts IPA symbols back to ARPAbet using `ipaToArpabet()`, then looks up matching words.

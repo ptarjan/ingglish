@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadDictionary, translateWord, translateText, lookupPronunciation } from './translator';
 import {
-  inglishToPhonemes,
+  ingglishToArpabet,
   reverseTranslateWord,
   reverseTranslateText,
-  isLikelyInglish,
-  ipaToPhonemes,
+  isLikelyIngglish,
+  ipaToArpabetClean,
   reverseTranslateIPAWord,
   reverseTranslateIPAText,
 } from './reverse-translator';
@@ -15,29 +15,29 @@ describe('reverse-translator', () => {
     await loadDictionary();
   });
 
-  describe('inglishToPhonemes', () => {
+  describe('ingglishToArpabet', () => {
     it('should parse simple Ingglish words to phonemes', () => {
       // "kat" -> K AE T
-      expect(inglishToPhonemes('kat')).toEqual(['K', 'AE', 'T']);
+      expect(ingglishToArpabet('kat')).toEqual(['K', 'AE', 'T']);
     });
 
     it('should parse words with digraphs correctly', () => {
       // "dhu" -> DH AH (the) - 'u' maps to AH
-      expect(inglishToPhonemes('dhu')).toEqual(['DH', 'AH']);
+      expect(ingglishToArpabet('dhu')).toEqual(['DH', 'AH']);
     });
 
     it('should parse longer spellings before shorter ones', () => {
       // "she" -> SH IY (not S HH EH)
-      expect(inglishToPhonemes('shee')).toEqual(['SH', 'IY']);
+      expect(ingglishToArpabet('shee')).toEqual(['SH', 'IY']);
     });
 
     it('should parse "thingk" correctly', () => {
       // "thingk" -> TH IH NG K
-      expect(inglishToPhonemes('thingk')).toEqual(['TH', 'IH', 'NG', 'K']);
+      expect(ingglishToArpabet('thingk')).toEqual(['TH', 'IH', 'NG', 'K']);
     });
 
     it('should return null for empty input', () => {
-      expect(inglishToPhonemes('')).toEqual(null);
+      expect(ingglishToArpabet('')).toEqual(null);
     });
   });
 
@@ -192,41 +192,41 @@ are written exactly as they sound - what you see is what you say!`;
     });
   });
 
-  describe('isLikelyInglish', () => {
+  describe('isLikelyIngglish', () => {
     it('should detect Ingglish patterns', () => {
-      expect(isLikelyInglish('dhu kat')).toBe(true); // "dh" pattern
+      expect(isLikelyIngglish('dhu kat')).toBe(true); // "dh" pattern
     });
 
     it('should detect English patterns', () => {
-      expect(isLikelyInglish('the cat')).toBe(false); // "the" is English
-      expect(isLikelyInglish('thought')).toBe(false); // "ough" is English
+      expect(isLikelyIngglish('the cat')).toBe(false); // "the" is English
+      expect(isLikelyIngglish('thought')).toBe(false); // "ough" is English
     });
 
     it('should handle ambiguous text', () => {
       // Pure words without distinctive patterns
-      const result = isLikelyInglish('hello');
+      const result = isLikelyIngglish('hello');
       expect(typeof result).toBe('boolean');
     });
   });
 
-  describe('ipaToPhonemes', () => {
+  describe('ipaToArpabetClean', () => {
     it('should parse simple IPA to phonemes', () => {
       // /kæt/ -> K AE T
-      expect(ipaToPhonemes('kæt')).toEqual(['K', 'AE', 'T']);
+      expect(ipaToArpabetClean('kæt')).toEqual(['K', 'AE', 'T']);
     });
 
     it('should parse IPA with diphthongs', () => {
       // /haɪ/ -> HH AY (hi/high)
-      expect(ipaToPhonemes('haɪ')).toEqual(['HH', 'AY']);
+      expect(ipaToArpabetClean('haɪ')).toEqual(['HH', 'AY']);
     });
 
     it('should strip stress markers', () => {
       // /həˈloʊ/ -> HH AH L OW (hello)
-      expect(ipaToPhonemes('həˈloʊ')).toEqual(['HH', 'AH', 'L', 'OW']);
+      expect(ipaToArpabetClean('həˈloʊ')).toEqual(['HH', 'AH', 'L', 'OW']);
     });
 
     it('should return null for empty input', () => {
-      expect(ipaToPhonemes('')).toEqual(null);
+      expect(ipaToArpabetClean('')).toEqual(null);
     });
   });
 

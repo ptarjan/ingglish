@@ -1,18 +1,18 @@
 /**
- * Phoneme to Ingglish spelling mapping.
+ * ARPAbet to Ingglish spelling mapping.
  *
  * Design principles:
- * 1. Each phoneme has exactly one spelling (no ambiguity)
+ * 1. Each ARPAbet symbol has exactly one spelling (no ambiguity)
  * 2. Uses only the 26 English letters (no diacritics)
  * 3. Spellings are as intuitive as possible for English readers
  * 4. Stress markers (0, 1, 2) are stripped from vowels
  *
- * ARPAbet phonemes from CMU Pronouncing Dictionary:
+ * ARPAbet symbols from CMU Pronouncing Dictionary:
  * - 15 vowels (including diphthongs)
  * - 24 consonants
  */
 
-import { phonemesToIPARaw } from './arpabet-to-ipa';
+import { arpabetToIPARaw } from './arpabet-to-ipa';
 import type { OutputFormat } from './types';
 
 // Vowel mappings (stress markers will be stripped before lookup)
@@ -79,7 +79,7 @@ export const CONSONANT_MAP: Record<string, string> = {
 };
 
 // Combined map for easy lookup
-export const PHONEME_MAP: Record<string, string> = {
+export const ARPABET_MAP: Record<string, string> = {
   ...VOWEL_MAP,
   ...CONSONANT_MAP,
 };
@@ -93,36 +93,36 @@ export function stripStress(phoneme: string): string {
 }
 
 /**
- * Converts an array of ARPAbet phonemes to Ingglish spelling.
- * @param phonemes Array of phonemes (e.g., ["HH", "AH0", "L", "OW1"])
+ * Converts an array of ARPAbet symbols to Ingglish spelling.
+ * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns Ingglish spelling (e.g., "hulo")
  */
-export function phonemesToInglish(phonemes: string[]): string {
-  return phonemes
-    .map((p) => {
-      const base = stripStress(p);
-      const inglish = PHONEME_MAP[base];
-      if (!inglish) {
-        // Unknown phoneme - return lowercase as fallback
-        return p.toLowerCase();
+export function arpabetToIngglish(arpabet: string[]): string {
+  return arpabet
+    .map((symbol) => {
+      const base = stripStress(symbol);
+      const ingglish = ARPABET_MAP[base];
+      if (!ingglish) {
+        // Unknown symbol - return lowercase as fallback
+        return symbol.toLowerCase();
       }
-      return inglish;
+      return ingglish;
     })
     .join('');
 }
 
 /**
- * Converts phonemes to the specified output format.
+ * Converts ARPAbet to the specified output format.
  *
- * @param phonemes Array of ARPAbet phonemes
+ * @param arpabet Array of ARPAbet symbols
  * @param format Output format ('ingglish' or 'ipa')
  * @returns Formatted string
  */
-export function phonemesToDisplay(phonemes: string[], format: OutputFormat = 'ingglish'): string {
+export function arpabetToDisplay(arpabet: string[], format: OutputFormat = 'ingglish'): string {
   if (format === 'ipa') {
-    return phonemesToIPARaw(phonemes);
+    return arpabetToIPARaw(arpabet);
   }
-  return phonemesToInglish(phonemes);
+  return arpabetToIngglish(arpabet);
 }
 
 /**

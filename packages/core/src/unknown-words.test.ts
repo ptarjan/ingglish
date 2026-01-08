@@ -5,7 +5,7 @@ import {
   translateWithRules,
   translateUnknown,
   translateAsAcronym,
-  wordToPhonemes,
+  wordToArpabet,
 } from './unknown-words';
 
 describe('unknown-words', () => {
@@ -13,29 +13,29 @@ describe('unknown-words', () => {
     await loadDictionary();
   });
 
-  describe('wordToPhonemes', () => {
+  describe('wordToArpabet', () => {
     it('should convert simple words to phonemes', () => {
-      const phonemes = wordToPhonemes('cat');
+      const phonemes = wordToArpabet('cat');
       expect(phonemes.length).toBeGreaterThan(0);
     });
 
     it('should handle digraphs', () => {
-      const phonemes = wordToPhonemes('ship');
+      const phonemes = wordToArpabet('ship');
       expect(phonemes).toContain('SH');
     });
 
     it('should handle th', () => {
-      const phonemes = wordToPhonemes('think');
+      const phonemes = wordToArpabet('think');
       expect(phonemes).toContain('TH');
     });
 
     it('should handle ch', () => {
-      const phonemes = wordToPhonemes('chat');
+      const phonemes = wordToArpabet('chat');
       expect(phonemes).toContain('CH');
     });
 
     it('should handle double vowels', () => {
-      const phonemes = wordToPhonemes('see');
+      const phonemes = wordToArpabet('see');
       expect(phonemes).toContain('IY1');
     });
   });

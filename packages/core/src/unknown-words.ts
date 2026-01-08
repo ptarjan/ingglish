@@ -1,4 +1,4 @@
-import { phonemesToDisplay } from './phoneme-map';
+import { arpabetToDisplay } from './phoneme-map';
 import { lookupPronunciation } from './translator';
 import { ipaToArpabet } from './ipa-to-arpabet';
 import type { OutputFormat } from './types';
@@ -112,14 +112,14 @@ function isInitialism(word: string): boolean {
  * Used for acronyms like URL, HTML, API.
  */
 export function translateAsAcronym(word: string, format: OutputFormat = 'ingglish'): string {
-  const phonemes: string[] = [];
+  const arpabet: string[] = [];
   for (const char of word.toLowerCase()) {
-    const letterPhonemes = LETTER_PHONEMES[char];
-    if (letterPhonemes !== undefined) {
-      phonemes.push(...letterPhonemes);
+    const letterArpabet = LETTER_PHONEMES[char];
+    if (letterArpabet !== undefined) {
+      arpabet.push(...letterArpabet);
     }
   }
-  return phonemesToDisplay(phonemes, format);
+  return arpabetToDisplay(arpabet, format);
 }
 
 // Lazy-loaded phonemize function
@@ -286,7 +286,7 @@ export function translateWithStemming(
   const lowerWord = word.toLowerCase();
 
   // Try removing suffixes and finding base word
-  for (const { suffix, phonemes: suffixPhonemes } of SUFFIX_PHONEMES) {
+  for (const { suffix, phonemes: suffixArpabet } of SUFFIX_PHONEMES) {
     if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
       const stem = lowerWord.slice(0, -suffix.length);
 
@@ -299,23 +299,23 @@ export function translateWithStemming(
       ].filter((v) => v.length > 0);
 
       for (const variant of stemVariants) {
-        const basePhonemes = lookupPronunciation(variant);
-        if (basePhonemes) {
-          const fullPhonemes = [...basePhonemes, ...suffixPhonemes];
-          return phonemesToDisplay(fullPhonemes, format);
+        const baseArpabet = lookupPronunciation(variant);
+        if (baseArpabet) {
+          const fullArpabet = [...baseArpabet, ...suffixArpabet];
+          return arpabetToDisplay(fullArpabet, format);
         }
       }
     }
   }
 
   // Try removing prefixes
-  for (const { prefix, phonemes: prefixPhonemes } of PREFIX_PHONEMES) {
+  for (const { prefix, phonemes: prefixArpabet } of PREFIX_PHONEMES) {
     if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
       const stem = lowerWord.slice(prefix.length);
-      const basePhonemes = lookupPronunciation(stem);
-      if (basePhonemes) {
-        const fullPhonemes = [...prefixPhonemes, ...basePhonemes];
-        return phonemesToDisplay(fullPhonemes, format);
+      const baseArpabet = lookupPronunciation(stem);
+      if (baseArpabet) {
+        const fullArpabet = [...prefixArpabet, ...baseArpabet];
+        return arpabetToDisplay(fullArpabet, format);
       }
     }
   }
@@ -324,23 +324,23 @@ export function translateWithStemming(
 }
 
 /**
- * Converts a word to phonemes using grapheme-to-phoneme rules.
+ * Converts a word to ARPAbet using grapheme-to-phoneme rules.
  * This is a simple rule-based approach for unknown words.
  *
  * @param word The word to convert
- * @returns Array of phonemes
+ * @returns Array of ARPAbet phonemes
  */
-export function wordToPhonemes(word: string): string[] {
-  const phonemes: string[] = [];
+export function wordToArpabet(word: string): string[] {
+  const result: string[] = [];
   let remaining = word.toLowerCase();
 
   while (remaining.length > 0) {
     let matched = false;
 
-    for (const { pattern, phonemes: rulePhonemes } of GRAPHEME_TO_PHONEME) {
+    for (const { pattern, phonemes: ruleArpabet } of GRAPHEME_TO_PHONEME) {
       const match = remaining.match(pattern);
       if (match) {
-        phonemes.push(...rulePhonemes);
+        result.push(...ruleArpabet);
         remaining = remaining.slice(match[0].length);
         matched = true;
         break;
@@ -353,7 +353,7 @@ export function wordToPhonemes(word: string): string[] {
     }
   }
 
-  return phonemes;
+  return result;
 }
 
 /**
@@ -365,8 +365,8 @@ export function wordToPhonemes(word: string): string[] {
  * @returns The best-effort translation
  */
 export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
-  const phonemes = wordToPhonemes(word);
-  return phonemesToDisplay(phonemes, format);
+  const arpabet = wordToArpabet(word);
+  return arpabetToDisplay(arpabet, format);
 }
 
 /**
@@ -392,7 +392,7 @@ export function translateWithPhonemize(
     if (arpabet.length === 0) {
       return null;
     }
-    return phonemesToDisplay(arpabet, format);
+    return arpabetToDisplay(arpabet, format);
   } catch {
     return null;
   }

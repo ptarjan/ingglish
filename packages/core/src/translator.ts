@@ -1,4 +1,4 @@
-import { phonemesToDisplay } from './phoneme-map';
+import { arpabetToDisplay } from './phoneme-map';
 import { translateUnknown } from './unknown-words';
 import type { CMUDictionary, OutputFormat } from './types';
 
@@ -126,7 +126,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     return fallbackResult;
   }
 
-  let result = phonemesToDisplay(phonemes, format);
+  let result = arpabetToDisplay(phonemes, format);
 
   // Apply original case pattern (only for Ingglish, IPA doesn't use case)
   if (format === 'ingglish') {
@@ -151,7 +151,7 @@ function translateContraction(token: string, format: OutputFormat = 'ingglish'):
 
   if (phonemes) {
     // Found the whole contraction - translate it as a unit
-    const translated = phonemesToDisplay(phonemes, format);
+    const translated = arpabetToDisplay(phonemes, format);
 
     // Preserve case (only for Ingglish), but not for I-contractions (I'm, I'll, I've, I'd)
     // since "I" is only capitalized due to English grammar rules

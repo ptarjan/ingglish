@@ -257,23 +257,23 @@ function findOnsetStart(consonants: string[]): number {
  * Places stress markers at syllable boundaries (before onset consonants),
  * not directly before vowels.
  *
- * @param phonemes - Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW1"])
+ * @param arpabet - Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns IPA transcription (e.g., "/həˈloʊ/")
  */
-export function phonemesToIPA(phonemes: string[]): string {
-  // First pass: convert all phonemes to IPA and track stress positions
+export function arpabetToIPA(arpabet: string[]): string {
+  // First pass: convert all ARPAbet to IPA and track stress positions
   const ipaSegments: string[] = [];
   const stressPositions: { index: number; marker: string }[] = [];
 
-  for (let i = 0; i < phonemes.length; i++) {
-    const phoneme = phonemes[i];
-    const base = stripStress(phoneme);
-    const stressMatch = /[012]$/.exec(phoneme);
+  for (let i = 0; i < arpabet.length; i++) {
+    const symbol = arpabet[i];
+    const base = stripStress(symbol);
+    const stressMatch = /[012]$/.exec(symbol);
     const stress = stressMatch !== null ? stressMatch[0] : null;
 
     const ipa = ARPABET_TO_IPA[base];
     if (ipa === undefined) {
-      ipaSegments.push(phoneme.toLowerCase());
+      ipaSegments.push(symbol.toLowerCase());
       continue;
     }
 
@@ -295,8 +295,8 @@ export function phonemesToIPA(phonemes: string[]): string {
         let j = i - 1;
         const consonants: string[] = [];
         // Collect consecutive consonants before this vowel
-        while (j >= 0 && !isVowel(phonemes[j])) {
-          consonants.unshift(stripStress(phonemes[j]));
+        while (j >= 0 && !isVowel(arpabet[j])) {
+          consonants.unshift(stripStress(arpabet[j]));
           j--;
         }
         // j is now at the previous vowel (or -1 if no previous vowel)
@@ -326,13 +326,13 @@ export function phonemesToIPA(phonemes: string[]): string {
 }
 
 /**
- * Converts an array of ARPAbet phonemes to IPA without brackets.
+ * Converts an array of ARPAbet symbols to IPA without brackets.
  * Useful for combining with other text.
  *
- * @param phonemes - Array of ARPAbet phonemes
+ * @param arpabet - Array of ARPAbet symbols
  * @returns IPA transcription without surrounding slashes
  */
-export function phonemesToIPARaw(phonemes: string[]): string {
-  const full = phonemesToIPA(phonemes);
+export function arpabetToIPARaw(arpabet: string[]): string {
+  const full = arpabetToIPA(arpabet);
   return full.slice(1, -1); // Remove leading/trailing slashes
 }

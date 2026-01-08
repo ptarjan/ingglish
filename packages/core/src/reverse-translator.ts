@@ -1,57 +1,57 @@
 /**
  * Reverse translation: Ingglish -> English
  *
- * Uses phoneme matching to find English words that would produce
+ * Uses ARPAbet matching to find English words that would produce
  * the given Ingglish spelling. Handles homophones by preferring
  * more common words based on frequency data.
  */
-import { PHONEME_MAP } from './phoneme-map';
+import { ARPABET_MAP } from './phoneme-map';
 import { getDictionary, normalizeApostrophes } from './translator';
 import { sortByFrequency } from './word-frequency';
 import { detectCasePattern, applyCasePattern } from './case-utils';
 import { ipaToArpabet } from './ipa-to-arpabet';
 
 // ============================================================================
-// Reverse Phoneme Map
+// Reverse ARPAbet Map
 // ============================================================================
 
-/** Maps Ingglish spellings back to phonemes */
-const REVERSE_PHONEME_MAP: Record<string, string> = {};
-for (const [phoneme, spelling] of Object.entries(PHONEME_MAP)) {
-  REVERSE_PHONEME_MAP[spelling] = phoneme;
+/** Maps Ingglish spellings back to ARPAbet */
+const REVERSE_ARPABET_MAP: Record<string, string> = {};
+for (const [arpabet, spelling] of Object.entries(ARPABET_MAP)) {
+  REVERSE_ARPABET_MAP[spelling] = arpabet;
 }
 
 /** Spellings sorted by length (match longer patterns first, e.g., "sh" before "s") */
-const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_PHONEME_MAP).sort((a, b) => b.length - a.length);
+const SPELLINGS_BY_LENGTH = Object.keys(REVERSE_ARPABET_MAP).sort((a, b) => b.length - a.length);
 
 // ============================================================================
-// Phoneme Alternatives (handling ambiguous spellings)
+// ARPAbet Alternatives (handling ambiguous spellings)
 // ============================================================================
 
 /**
  * Some Ingglish spellings are ambiguous because the same letters can
- * represent different phoneme sequences. For example, "er" could be:
+ * represent different ARPAbet sequences. For example, "er" could be:
  * - ER (r-colored schwa): "bird", "her"
  * - EH + R (short e + r): "welfare", "better"
  *
  * Only EH + R is valid here because IH + R -> "ir" and AH + R -> "ur"
  */
-const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
+const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   ER: [['EH', 'R']],
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
 };
 
 /**
- * Generates alternative phoneme sequences for ambiguous spellings.
+ * Generates alternative ARPAbet sequences for ambiguous spellings.
  */
-function expandPhonemeAlternatives(phonemes: string[]): string[][] {
-  const results: string[][] = [phonemes];
+function expandArpabetAlternatives(arpabet: string[]): string[][] {
+  const results: string[][] = [arpabet];
 
-  for (let i = 0; i < phonemes.length; i++) {
-    const alternatives = PHONEME_ALTERNATIVES[phonemes[i]];
+  for (let i = 0; i < arpabet.length; i++) {
+    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
     if (alternatives !== undefined) {
       for (const alt of alternatives) {
-        const expanded = [...phonemes.slice(0, i), ...alt, ...phonemes.slice(i + 1)];
+        const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
         results.push(expanded);
       }
     }
@@ -125,18 +125,18 @@ function lookupPhonemeKey(key: string): string[] | undefined {
 // ============================================================================
 
 /**
- * Parses Ingglish text into phonemes.
+ * Parses Ingglish text into ARPAbet phonemes.
  */
-export function inglishToPhonemes(inglish: string): string[] | null {
-  const phonemes: string[] = [];
-  let remaining = inglish.toLowerCase();
+export function ingglishToArpabet(ingglish: string): string[] | null {
+  const result: string[] = [];
+  let remaining = ingglish.toLowerCase();
 
   while (remaining.length > 0) {
     let matched = false;
 
     for (const spelling of SPELLINGS_BY_LENGTH) {
       if (remaining.startsWith(spelling)) {
-        phonemes.push(REVERSE_PHONEME_MAP[spelling]);
+        result.push(REVERSE_ARPABET_MAP[spelling]);
         remaining = remaining.slice(spelling.length);
         matched = true;
         break;
@@ -148,15 +148,15 @@ export function inglishToPhonemes(inglish: string): string[] | null {
     }
   }
 
-  return phonemes.length > 0 ? phonemes : null;
+  return result.length > 0 ? result : null;
 }
 
 /**
- * Looks up English words matching a phoneme sequence.
- * Tries all alternative phoneme interpretations and combines results.
+ * Looks up English words matching an ARPAbet sequence.
+ * Tries all alternative ARPAbet interpretations and combines results.
  */
-export function lookupByPhonemes(phonemes: string[]): string[] {
-  const variants = expandPhonemeAlternatives(phonemes);
+export function lookupByArpabet(arpabet: string[]): string[] {
+  const variants = expandArpabetAlternatives(arpabet);
   const allMatches: string[] = [];
   const seen = new Set<string>();
 
@@ -181,22 +181,22 @@ export function lookupByPhonemes(phonemes: string[]): string[] {
  * Translates an Ingglish word back to English.
  * Returns possible English words sorted by frequency.
  */
-export function reverseTranslateWord(inglishWord: string): string[] {
-  if (!inglishWord || !/[a-zA-Z]/.test(inglishWord)) {
-    return inglishWord ? [inglishWord] : [];
+export function reverseTranslateWord(ingglishWord: string): string[] {
+  if (!ingglishWord || !/[a-zA-Z]/.test(ingglishWord)) {
+    return ingglishWord ? [ingglishWord] : [];
   }
 
-  const casePattern = detectCasePattern(inglishWord);
-  const phonemes = inglishToPhonemes(inglishWord);
+  const casePattern = detectCasePattern(ingglishWord);
+  const arpabet = ingglishToArpabet(ingglishWord);
 
-  if (!phonemes) {
-    return [inglishWord];
+  if (!arpabet) {
+    return [ingglishWord];
   }
 
-  const matches = lookupByPhonemes(phonemes);
+  const matches = lookupByArpabet(arpabet);
 
   if (matches.length === 0) {
-    return [inglishWord];
+    return [ingglishWord];
   }
 
   return matches.map((word) => applyCasePattern(word, casePattern));
@@ -206,9 +206,9 @@ export function reverseTranslateWord(inglishWord: string): string[] {
  * Translates Ingglish text back to English.
  * For homophones, uses the most common word.
  */
-export function reverseTranslateText(inglishText: string): string {
+export function reverseTranslateText(ingglishText: string): string {
   // Normalize curly apostrophes to straight ones
-  const normalizedText = normalizeApostrophes(inglishText);
+  const normalizedText = normalizeApostrophes(ingglishText);
 
   return normalizedText
     .split(/(\b[a-zA-Z']+\b)/)
@@ -240,11 +240,11 @@ export function reverseTranslateText(inglishText: string): string {
 // ============================================================================
 
 /**
- * Converts IPA text to ARPAbet phonemes (stripping stress markers).
+ * Converts IPA text to ARPAbet (stripping stress markers).
  */
-export function ipaToPhonemes(ipa: string): string[] | null {
-  const phonemes = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
-  return phonemes.length > 0 ? phonemes : null;
+export function ipaToArpabetClean(ipa: string): string[] | null {
+  const arpabet = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
+  return arpabet.length > 0 ? arpabet : null;
 }
 
 /**
@@ -256,13 +256,13 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
     return ipaWord ? [ipaWord] : [];
   }
 
-  const phonemes = ipaToPhonemes(ipaWord);
+  const arpabet = ipaToArpabetClean(ipaWord);
 
-  if (!phonemes) {
+  if (!arpabet) {
     return [ipaWord];
   }
 
-  const matches = lookupByPhonemes(phonemes);
+  const matches = lookupByArpabet(arpabet);
 
   if (matches.length === 0) {
     return [ipaWord];
@@ -302,7 +302,7 @@ export function reverseTranslateIPAText(ipaText: string): string {
 // Language Detection
 // ============================================================================
 
-const INGLISH_PATTERNS = [
+const INGGLISH_PATTERNS = [
   /\buu\b/i, // "uu" is rare in English
   /\bdh/i, // "dh" at word start
   /\bng[aeiou]/i, // "ng" + vowel at start
@@ -320,8 +320,8 @@ const ENGLISH_PATTERNS = [
 /**
  * Heuristically detects if text is Ingglish vs English.
  */
-export function isLikelyInglish(text: string): boolean {
-  const inglishScore = INGLISH_PATTERNS.filter((p) => p.test(text)).length;
+export function isLikelyIngglish(text: string): boolean {
+  const ingglishScore = INGGLISH_PATTERNS.filter((p) => p.test(text)).length;
   const englishScore = ENGLISH_PATTERNS.filter((p) => p.test(text)).length;
-  return inglishScore > englishScore;
+  return ingglishScore > englishScore;
 }
