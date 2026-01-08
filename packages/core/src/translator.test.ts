@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   loadDictionary,
   isDictionaryLoaded,
@@ -6,11 +6,10 @@ import {
   translateWord,
   translateText,
 } from './translator';
+import { setupDictionary } from './test-setup';
 
 describe('translator', () => {
-  beforeAll(async () => {
-    await loadDictionary();
-  });
+  setupDictionary();
 
   describe('loadDictionary', () => {
     it('should load the dictionary', async () => {

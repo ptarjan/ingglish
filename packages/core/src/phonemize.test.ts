@@ -1,24 +1,18 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary, lookupPronunciation, translateWord } from './translator';
+import { lookupPronunciation, translateWord } from './translator';
 import { translateWithRules, translateWithPhonemize, preloadPhonemize } from './unknown-words';
+import { setupDictionary, UNKNOWN_TECH_WORDS } from './test-setup';
 
 describe('phonemize improvements', () => {
+  setupDictionary();
+
   beforeAll(async () => {
-    await loadDictionary();
     await preloadPhonemize();
   });
 
   describe('handles words not in CMU dictionary', () => {
-    // These are real names and neologisms not in CMU
     const unknownWords = [
-      'kubernetes',
-      'spotify',
-      'airbnb',
-      'instagram',
-      'tiktok',
-      'chatgpt',
-      'cryptocurrency',
-      'blockchain',
+      ...UNKNOWN_TECH_WORDS,
       'url', // Acronym - should be "yooahrel" (U-R-L spelled out)
     ];
 

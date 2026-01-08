@@ -1,18 +1,17 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
-import { loadDictionary, translateTextWithMapping } from './translator';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { translateTextWithMapping } from './translator';
 import { translateDOM, translateDOMAsync, skipElement, unskipElement } from './dom-translator';
 import { observeAndTranslate } from './dom-observer';
+import { setupDictionary } from './test-setup';
 
 describe('dom-translator', () => {
+  setupDictionary();
+
   // Track stop functions to ensure cleanup even if tests fail
   let activeObservers: (() => void)[] = [];
-
-  beforeAll(async () => {
-    await loadDictionary();
-  });
 
   beforeEach(() => {
     document.body.innerHTML = '';

@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary } from './translator';
+import { describe, it, expect } from 'vitest';
 import {
   translateWithStemming,
   translateWithRules,
@@ -7,11 +6,10 @@ import {
   translateAsAcronym,
   wordToArpabet,
 } from './unknown-words';
+import { setupDictionary } from './test-setup';
 
 describe('unknown-words', () => {
-  beforeAll(async () => {
-    await loadDictionary();
-  });
+  setupDictionary();
 
   describe('wordToArpabet', () => {
     it('should convert simple words to phonemes', () => {

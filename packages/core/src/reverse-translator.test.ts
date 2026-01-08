@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary, translateWord, translateText, lookupPronunciation } from './translator';
+import { describe, it, expect } from 'vitest';
+import { translateWord, translateText, lookupPronunciation } from './translator';
 import {
   reverseTranslateWord,
   reverseTranslateText,
@@ -8,11 +8,10 @@ import {
   reverseTranslateIPAWord,
 } from './reverse-translator';
 import { ingglishToArpabet } from './ingglish-to-arpabet';
+import { setupDictionary, SAMPLE_TEXT } from './test-setup';
 
 describe('reverse-translator', () => {
-  beforeAll(async () => {
-    await loadDictionary();
-  });
+  setupDictionary();
 
   describe('ingglishToArpabet', () => {
     it('should parse simple Ingglish words to phonemes', () => {
@@ -143,16 +142,8 @@ describe('reverse-translator', () => {
     });
 
     it('sample text should round-trip exactly', () => {
-      const sampleText = `The quick brown fox jumps over the lazy dog.
-This sentence contains every letter of the English alphabet.
-
-"Though" and "through" are spelled similarly but sound different.
-English spelling is notoriously difficult to learn because it has
-so many exceptions. With phonetic spelling, words
-are written exactly as they sound - what you see is what you say!`;
-
       // Extract words
-      const words = sampleText.match(/[a-zA-Z]+/g) ?? [];
+      const words = SAMPLE_TEXT.match(/[a-zA-Z]+/g) ?? [];
       const failures: string[] = [];
 
       for (const word of words) {
