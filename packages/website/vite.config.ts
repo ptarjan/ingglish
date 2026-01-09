@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
   test: {
@@ -7,6 +7,7 @@ export default defineConfig({
   },
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
   base: process.env.BASE_URL ?? '/',
+  // SWC is ~20x faster than Babel for React compilation
   plugins: [react()],
   build: {
     outDir: 'dist',
