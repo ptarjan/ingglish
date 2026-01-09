@@ -105,6 +105,14 @@ export function stripScripts(html: string): string {
         el.remove();
       });
 
+    // Also remove scripts inside template elements
+    doc.querySelectorAll('template').forEach((template) => {
+      const content = template.content;
+      content.querySelectorAll('script').forEach((s) => {
+        s.remove();
+      });
+    });
+
     // Remove inline event handlers (onclick, onload, onerror, etc.)
     doc.querySelectorAll('*').forEach((el) => {
       Array.from(el.attributes).forEach((attr) => {
