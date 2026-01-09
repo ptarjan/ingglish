@@ -103,6 +103,10 @@ export function stripScripts(html: string): string {
       .replace(/<script[^>]*>/gi, '')
       // Remove noscript tags (they can contain script-like content)
       .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
+      // Remove iframes (they can contain scripts and create about:blank frames)
+      .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+      .replace(/<iframe[^>]*\/>/gi, '')
+      .replace(/<iframe[^>]*>/gi, '')
   );
 }
 
