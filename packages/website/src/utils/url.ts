@@ -101,12 +101,19 @@ export function stripScripts(html: string): string {
       .replace(/<script[^>]*\/>/gi, '')
       // Remove unclosed script tags
       .replace(/<script[^>]*>/gi, '')
-      // Remove noscript tags (they can contain script-like content)
+      // Remove noscript tags
       .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
-      // Remove iframes (they can contain scripts and create about:blank frames)
+      // Remove iframes
       .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
       .replace(/<iframe[^>]*\/>/gi, '')
       .replace(/<iframe[^>]*>/gi, '')
+      // Remove object tags (can execute plugins/scripts)
+      .replace(/<object[\s\S]*?<\/object>/gi, '')
+      .replace(/<object[^>]*\/>/gi, '')
+      .replace(/<object[^>]*>/gi, '')
+      // Remove embed tags
+      .replace(/<embed[^>]*\/>/gi, '')
+      .replace(/<embed[^>]*>/gi, '')
   );
 }
 
