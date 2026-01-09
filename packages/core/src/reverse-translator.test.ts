@@ -166,6 +166,13 @@ describe('reverse-translator', () => {
       expect(result).toContain('!');
     });
 
+    it('should preserve punctuation in IPA reverse translation', () => {
+      // IPA text with punctuation should preserve it
+      const result = reverseTranslateSync('həˈloʊ, wɝld!', 'ipa');
+      expect(result).toContain(',');
+      expect(result).toContain('!');
+    });
+
     it('should handle mixed text', () => {
       const result = reverseTranslateSync('Dhu kat.');
       expect(result).toMatch(/\bcat\b/i);
