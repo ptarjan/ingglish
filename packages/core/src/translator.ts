@@ -193,7 +193,7 @@ function translateContraction(token: string, format: OutputFormat = 'ingglish'):
  * @param format The output format ('ingglish' or 'ipa')
  * @returns The text with all words translated
  */
-export function translateText(text: string, format: OutputFormat = 'ingglish'): string {
+export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
   // Normalize curly apostrophes to straight ones
   const normalizedText = normalizeApostrophes(text);
 
@@ -225,7 +225,7 @@ interface TranslatedToken {
  * Translates text and returns token-by-token mappings.
  * Used internally for DOM translation with tooltips.
  */
-export function translateTextWithMapping(
+export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {

@@ -1,8 +1,8 @@
 /**
  * MutationObserver-based DOM translation for dynamic content.
  */
-import { translateText, translateTextWithMapping } from '@ingglish/core';
-import { translateDOM } from './dom-translator';
+import { translateSync, translateSyncWithMapping } from '@ingglish/core';
+import { translateDOMSync } from './dom-translator';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,
@@ -20,7 +20,7 @@ function createTooltipFragmentForObserver(
   format: OutputFormat = 'ingglish'
 ): DocumentFragment {
   const fragment = document.createDocumentFragment();
-  const tokens = translateTextWithMapping(text, format);
+  const tokens = translateSyncWithMapping(text, format);
 
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
@@ -73,14 +73,14 @@ export function observeAndTranslate(
                 const fragment = createTooltipFragmentForObserver(text, outputFormat);
                 textNode.replaceWith(fragment);
               } else {
-                textNode.textContent = translateText(text, outputFormat);
+                textNode.textContent = translateSync(text, outputFormat);
               }
             }
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           const element = node as Element;
           if (!shouldSkipElement(element, skipTags, skipClasses)) {
-            translateDOM(element, {
+            translateDOMSync(element, {
               skipTags,
               skipClasses,
               translateAttributes,
@@ -100,7 +100,7 @@ export function observeAndTranslate(
             // Temporarily disconnect observer to avoid infinite loop
             observer.disconnect();
             try {
-              textNode.textContent = translateText(text, outputFormat);
+              textNode.textContent = translateSync(text, outputFormat);
             } finally {
               observer.observe(root, {
                 childList: true,

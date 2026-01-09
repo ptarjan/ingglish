@@ -263,7 +263,7 @@ function reverseTranslateIPATextInternal(text: string): string {
  * @param format - The input format ('ingglish' or 'ipa')
  * @returns English text
  */
-export function reverseTranslateText(text: string, format: OutputFormat = 'ingglish'): string {
+export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
   if (format === 'ipa') {
     return reverseTranslateIPATextInternal(text);
   }

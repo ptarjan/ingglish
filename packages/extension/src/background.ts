@@ -1,7 +1,7 @@
 // Background service worker for Ingglish extension
 
 import type { OutputFormat } from '@ingglish/core';
-import { translate, translateText } from '@ingglish/core';
+import { translate, translateSync } from '@ingglish/core';
 
 // Track dictionary loading state
 let dictionaryLoaded = false;
@@ -94,7 +94,7 @@ function getCachedTranslation(word: string, format: OutputFormat): string {
   }
 
   cacheStats.misses++;
-  const translated = translateText(word, format);
+  const translated = translateSync(word, format);
 
   // Evict oldest entries if cache is full (simple FIFO eviction)
   if (translationCache.size >= MAX_CACHE_SIZE) {

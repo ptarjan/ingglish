@@ -21,7 +21,7 @@ export type { DOMTranslatorOptions, OutputFormat } from './types';
 
 export {
   translateDOM,
-  translateDOMAsync,
+  translateDOMSync,
   restoreDOM,
   skipElement,
   unskipElement,

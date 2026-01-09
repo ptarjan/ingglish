@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { translateWord, translateText, lookupPronunciation } from './translator';
+import { translateWord, translateSync, lookupPronunciation } from './translator';
 import {
   reverseTranslateWord,
-  reverseTranslateText,
+  reverseTranslateSync,
   isLikelyIngglish,
   ipaToArpabetClean,
   reverseTranslateIPAWord,
@@ -117,8 +117,8 @@ describe('reverse-translator', () => {
       const failures: string[] = [];
 
       for (const { input, expectedBack } of contractions) {
-        const ingglish = translateText(input);
-        const back = reverseTranslateText(ingglish);
+        const ingglish = translateSync(input);
+        const back = reverseTranslateSync(ingglish);
         if (back.toLowerCase() !== expectedBack.toLowerCase()) {
           failures.push(`${input} -> ${ingglish} -> ${back} (expected: ${expectedBack})`);
         }
@@ -158,21 +158,21 @@ describe('reverse-translator', () => {
     });
   });
 
-  describe('reverseTranslateText', () => {
+  describe('reverseTranslateSync', () => {
     it('should translate text preserving punctuation', () => {
       // Basic test - translates words, keeps punctuation
-      const result = reverseTranslateText('hulo, werld!');
+      const result = reverseTranslateSync('hulo, werld!');
       expect(result).toContain(',');
       expect(result).toContain('!');
     });
 
     it('should handle mixed text', () => {
-      const result = reverseTranslateText('Dhu kat.');
+      const result = reverseTranslateSync('Dhu kat.');
       expect(result).toMatch(/\bcat\b/i);
     });
 
     it('should return empty string for empty input', () => {
-      expect(reverseTranslateText('')).toBe('');
+      expect(reverseTranslateSync('')).toBe('');
     });
   });
 
@@ -244,33 +244,33 @@ describe('reverse-translator', () => {
     });
   });
 
-  describe('reverseTranslateText with IPA format', () => {
+  describe('reverseTranslateSync with IPA format', () => {
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
-      const result = reverseTranslateText('həˈloʊ wɝld', 'ipa');
+      const result = reverseTranslateSync('həˈloʊ wɝld', 'ipa');
       expect(result.toLowerCase()).toBe('hello world');
     });
 
     it('should handle IPA brackets', () => {
       // Remove surrounding slashes
-      const result = reverseTranslateText('/kæt/', 'ipa');
+      const result = reverseTranslateSync('/kæt/', 'ipa');
       expect(result.toLowerCase()).toBe('cat');
     });
 
     it('should handle multiple words', () => {
       // /ðə kæt/ -> "the cat"
-      const result = reverseTranslateText('ðə kæt', 'ipa');
+      const result = reverseTranslateSync('ðə kæt', 'ipa');
       expect(result.toLowerCase()).toBe('the cat');
     });
 
     it('should return empty string for empty input', () => {
-      expect(reverseTranslateText('', 'ipa')).toBe('');
+      expect(reverseTranslateSync('', 'ipa')).toBe('');
     });
 
-    it('should round-trip translateText with IPA format', () => {
+    it('should round-trip translateSync with IPA format', () => {
       // Translate "hello world" to IPA, then back to English
-      const ipa = translateText('hello world', 'ipa');
-      const back = reverseTranslateText(ipa, 'ipa');
+      const ipa = translateSync('hello world', 'ipa');
+      const back = reverseTranslateSync(ipa, 'ipa');
       expect(back.toLowerCase()).toBe('hello world');
     });
   });

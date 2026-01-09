@@ -9,7 +9,7 @@
  * ```
  */
 
-import { loadDictionary, translateText } from './translator';
+import { loadDictionary, translateSync } from './translator';
 
 // =============================================================================
 // Types
@@ -27,15 +27,15 @@ export async function translate(
   format: import('./types').OutputFormat = 'ingglish'
 ): Promise<string> {
   await loadDictionary();
-  return translateText(text, format);
+  return translateSync(text, format);
 }
 
 // =============================================================================
 // Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateText, translateTextWithMapping } from './translator';
-export { reverseTranslateText } from './reverse-translator';
+export { translateSync, translateSyncWithMapping } from './translator';
+export { reverseTranslateSync } from './reverse-translator';
 
 // =============================================================================
 // Spelling Guide

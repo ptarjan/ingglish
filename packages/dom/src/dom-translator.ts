@@ -1,7 +1,7 @@
 /**
  * Core DOM translation functionality.
  */
-import { translate, translateText, translateTextWithMapping } from '@ingglish/core';
+import { translate, translateSync, translateSyncWithMapping } from '@ingglish/core';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,
@@ -22,7 +22,7 @@ export { skipElement, unskipElement } from './dom-utils';
  */
 function createTooltipFragment(text: string, format: OutputFormat = 'ingglish'): DocumentFragment {
   const fragment = document.createDocumentFragment();
-  const tokens = translateTextWithMapping(text, format);
+  const tokens = translateSyncWithMapping(text, format);
 
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
@@ -111,7 +111,7 @@ function translateTextNode(
     if (parent && !parent.hasAttribute('data-ingglish-original')) {
       parent.setAttribute('data-ingglish-original', originalText);
     }
-    textNode.textContent = translateText(originalText, outputFormat);
+    textNode.textContent = translateSync(originalText, outputFormat);
   }
 }
 
@@ -160,22 +160,22 @@ function translateNodesChunked(
 }
 
 /**
- * Translates all text content within a DOM element.
- * Uses a single DOM walk to collect and then translate text nodes.
+ * Translates all text content within a DOM element (sync version).
+ * Dictionary must already be loaded via translateDOM() or translate().
  *
  * @param root The root element to translate
  * @param options Configuration options
  * @returns Promise when chunked=true, void otherwise
  */
-export function translateDOM(
+export function translateDOMSync(
   root: Element | Document,
   options: DOMTranslatorOptions & { chunked: true }
 ): Promise<void>;
-export function translateDOM(
+export function translateDOMSync(
   root: Element | Document,
   options?: DOMTranslatorOptions & { chunked?: false }
 ): void;
-export function translateDOM(
+export function translateDOMSync(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): void | Promise<void> {
@@ -318,23 +318,23 @@ function translateElementAttributes(
         if (!element.hasAttribute(originalAttrName)) {
           element.setAttribute(originalAttrName, attrValue);
         }
-        element.setAttribute(attrName, translateText(attrValue, format));
+        element.setAttribute(attrName, translateSync(attrValue, format));
       }
     }
   }
 }
 
 /**
- * Async version that loads the dictionary first.
- * When chunked=true, waits for chunked processing to complete.
+ * Translates all text content within a DOM element (async, auto-loads dictionary).
+ * This is the recommended entry point for DOM translation.
  */
-export async function translateDOMAsync(
+export async function translateDOM(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): Promise<void> {
   // Ensure dictionary is loaded by calling translate
   await translate('');
-  const result = translateDOM(root, options as DOMTranslatorOptions & { chunked: true });
+  const result = translateDOMSync(root, options as DOMTranslatorOptions & { chunked: true });
   // If chunked mode returns a Promise, await it
   if (result instanceof Promise) {
     await result;

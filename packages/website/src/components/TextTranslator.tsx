@@ -1,5 +1,5 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateText, reverseTranslateText } from '@ingglish/core';
+import { translateSync, reverseTranslateSync } from '@ingglish/core';
 import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
@@ -187,7 +187,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return null;
     }
     try {
-      return translateText(deferredEnglish, format);
+      return translateSync(deferredEnglish, format);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn('Translation failed:', err);
@@ -200,7 +200,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return null;
     }
     try {
-      return reverseTranslateText(deferredIngglish, format);
+      return reverseTranslateSync(deferredIngglish, format);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn('Reverse translation failed:', err);

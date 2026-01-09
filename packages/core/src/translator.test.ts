@@ -4,7 +4,7 @@ import {
   isDictionaryLoaded,
   lookupPronunciation,
   translateWord,
-  translateText,
+  translateSync,
 } from './translator';
 import { setupDictionary } from './test-setup';
 
@@ -84,31 +84,31 @@ describe('translator', () => {
     });
   });
 
-  describe('translateText', () => {
+  describe('translateSync', () => {
     it('should translate multiple words', () => {
-      const result = translateText('hello world');
+      const result = translateSync('hello world');
       expect(result).toContain('hulo');
       expect(result).toContain('werld');
     });
 
     it('should preserve punctuation', () => {
-      const result = translateText('Hello, world!');
+      const result = translateSync('Hello, world!');
       expect(result).toContain(',');
       expect(result).toContain('!');
     });
 
     it('should preserve whitespace', () => {
-      const result = translateText('hello   world');
+      const result = translateSync('hello   world');
       expect(result).toContain('   ');
     });
 
     it('should preserve numbers', () => {
-      const result = translateText('hello 123 world');
+      const result = translateSync('hello 123 world');
       expect(result).toContain('123');
     });
 
     it('should handle contractions', () => {
-      const result = translateText("don't");
+      const result = translateSync("don't");
       // Contractions are translated as a unit - no apostrophe needed
       // The important thing is they round-trip correctly
       expect(result).toBe('dont');
@@ -118,35 +118,35 @@ describe('translator', () => {
       // Curly apostrophe (U+2019) should be treated the same as straight
       const curly = 'don\u2019t'; // don't with curly apostrophe
       const straight = "don't";
-      expect(translateText(curly)).toBe(translateText(straight));
+      expect(translateSync(curly)).toBe(translateSync(straight));
     });
 
     it('should handle possessives with curly apostrophes', () => {
       // Common in text copied from websites like NY Times
-      const result = translateText('China\u2019s economy');
+      const result = translateSync('China\u2019s economy');
       expect(result).toBe('Chainuz ikahnumee');
     });
 
     it('should translate I and I-contractions to lowercase', () => {
       // "I" is only capitalized in English due to grammar rules
       // In Ingglish, it should be lowercase "ai"
-      expect(translateText('I')).toBe('ai');
-      expect(translateText("I'm")).toBe('aim');
-      expect(translateText("I'll")).toBe('ail');
-      expect(translateText("I've")).toBe('aiv');
-      expect(translateText("I'd")).toBe('aid');
+      expect(translateSync('I')).toBe('ai');
+      expect(translateSync("I'm")).toBe('aim');
+      expect(translateSync("I'll")).toBe('ail');
+      expect(translateSync("I've")).toBe('aiv');
+      expect(translateSync("I'd")).toBe('aid');
     });
 
     it('should handle empty string', () => {
-      expect(translateText('')).toBe('');
+      expect(translateSync('')).toBe('');
     });
 
     it('should handle only punctuation', () => {
-      expect(translateText('!!!')).toBe('!!!');
+      expect(translateSync('!!!')).toBe('!!!');
     });
 
     it('should handle mixed content', () => {
-      const result = translateText('Hello, World! How are you?');
+      const result = translateSync('Hello, World! How are you?');
       expect(result).toBeDefined();
       expect(result).toContain(',');
       expect(result).toContain('!');
@@ -158,20 +158,20 @@ describe('translator', () => {
     it('should handle contractions with apostrophe parts', () => {
       // Test contractions that go through the fallback path
       // where parts are translated separately
-      const result = translateText("y'all");
+      const result = translateSync("y'all");
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
     });
 
     it('should handle possessives correctly', () => {
       // John's is in the dictionary as a complete word
-      const result = translateText("John's");
+      const result = translateSync("John's");
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
     });
 
     it('should handle multiple apostrophes', () => {
-      const result = translateText("'twas");
+      const result = translateSync("'twas");
       expect(result).toBeDefined();
     });
 
