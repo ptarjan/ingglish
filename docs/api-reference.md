@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API documentation for `@ingglish/core`.
+API documentation for `@ingglish/core` and `@ingglish/dom`.
 
 ## Installation
 
@@ -64,63 +64,6 @@ import { reverseTranslateIPA } from '@ingglish/core';
 
 await reverseTranslateIPA("həˈloʊ wɝld"); // "hello world"
 await reverseTranslateIPA("/ðə kæt/"); // "the cat"
-```
-
-## DOM Translation (Browser Only)
-
-### `translateDOM(root, options?)`
-
-Translates all text content within a DOM element. Automatically loads the dictionary.
-
-```typescript
-async function translateDOM(
-  root: Element | Document,
-  options?: DOMTranslatorOptions
-): Promise<void>
-```
-
-**Options:**
-```typescript
-interface DOMTranslatorOptions {
-  outputFormat?: 'ingglish' | 'ipa';  // Output format (default: 'ingglish')
-  skipTags?: string[];        // Tags to skip (default: SCRIPT, STYLE, CODE, etc.)
-  skipClasses?: string[];     // CSS classes to skip
-  translateAttributes?: boolean; // Translate title, alt, placeholder (default: true)
-  showTooltips?: boolean;     // Show original text on hover (default: true)
-  onProgress?: (processed: number, total: number) => void;
-}
-```
-
-**Example:**
-```typescript
-import { translateDOM } from '@ingglish/core';
-
-await translateDOM(document.body, {
-  skipTags: ['CODE', 'PRE'],
-  translateAttributes: true,
-  onProgress: (done, total) => console.log(`${done}/${total}`)
-});
-```
-
-### `observeAndTranslate(root, options?)`
-
-Creates a MutationObserver that translates new content as it's added to the DOM.
-Useful for single-page applications where content changes dynamically.
-
-```typescript
-async function observeAndTranslate(
-  root: Element | Document,
-  options?: DOMTranslatorOptions
-): Promise<() => void>  // Returns stop function
-```
-
-**Example:**
-```typescript
-import { observeAndTranslate } from '@ingglish/core';
-
-const stop = await observeAndTranslate(document.body);
-// Later...
-stop(); // Stop observing
 ```
 
 ## Sync API
@@ -197,14 +140,113 @@ arpabetPhonemeToIPA('EY1'); // "ˈeɪ" (stressed diphthong)
 ## Types
 
 ```typescript
+// @ingglish/core
 type OutputFormat = 'ingglish' | 'ipa';
+```
 
+---
+
+# @ingglish/dom
+
+Browser-only DOM translation utilities.
+
+## Installation
+
+```bash
+npm install @ingglish/dom
+```
+
+## DOM Translation
+
+### `translateDOM(root, options?)`
+
+Translates all text content within a DOM element. Automatically loads the dictionary.
+
+```typescript
+async function translateDOM(
+  root: Element | Document,
+  options?: DOMTranslatorOptions
+): Promise<void>
+```
+
+**Options:**
+```typescript
+interface DOMTranslatorOptions {
+  outputFormat?: 'ingglish' | 'ipa';  // Output format (default: 'ingglish')
+  skipTags?: string[];        // Tags to skip (default: SCRIPT, STYLE, CODE, etc.)
+  skipClasses?: string[];     // CSS classes to skip
+  translateAttributes?: boolean; // Translate title, alt, placeholder (default: true)
+  showTooltips?: boolean;     // Show original text on hover (default: false)
+  chunked?: boolean;          // Use requestAnimationFrame for smooth rendering (default: false)
+  chunkSize?: number;         // Nodes per frame when chunked (default: 100)
+  onProgress?: (processed: number, total: number) => void;
+}
+```
+
+**Example:**
+```typescript
+import { translateDOM } from '@ingglish/dom';
+
+await translateDOM(document.body, {
+  showTooltips: true,
+  chunked: true,
+  onProgress: (done, total) => console.log(`${done}/${total}`)
+});
+```
+
+### `observeAndTranslate(root, options?)`
+
+Creates a MutationObserver that translates new content as it's added to the DOM.
+Useful for single-page applications where content changes dynamically.
+
+```typescript
+function observeAndTranslate(
+  root: Element | Document,
+  options?: DOMTranslatorOptions
+): () => void  // Returns stop function
+```
+
+**Example:**
+```typescript
+import { observeAndTranslate } from '@ingglish/dom';
+
+const stop = observeAndTranslate(document.body, { showTooltips: true });
+// Later...
+stop(); // Stop observing
+```
+
+### `restoreDOM(root)`
+
+Restores translated text back to original English using stored data attributes.
+
+```typescript
+function restoreDOM(root: Element | Document): void
+```
+
+### `skipElement(element)` / `unskipElement(element)`
+
+Programmatically mark elements to skip or include during translation.
+
+```typescript
+import { skipElement, unskipElement } from '@ingglish/dom';
+
+skipElement(document.querySelector('.dynamic-content'));
+// Later...
+unskipElement(document.querySelector('.dynamic-content'));
+```
+
+## Types
+
+```typescript
+// @ingglish/dom
 interface DOMTranslatorOptions {
   outputFormat?: OutputFormat;
   skipTags?: string[];
   skipClasses?: string[];
   translateAttributes?: boolean;
   showTooltips?: boolean;
+  chunked?: boolean;
+  chunkSize?: number;
   onProgress?: (processed: number, total: number) => void;
 }
 ```

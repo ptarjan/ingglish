@@ -24,7 +24,8 @@ Ingglish translates English text into a consistent, phonetic spelling system whe
 
 This is a monorepo containing:
 
-- **@ingglish/core** - Core translation library (Node.js & Browser)
+- **@ingglish/core** - Core text translation library (Node.js & Browser)
+- **@ingglish/dom** - DOM translation utilities (Browser only)
 - **@ingglish/website** - React website for text and URL translation
 - **@ingglish/extension** - Chrome extension for translating any webpage
 - **@ingglish/cors-proxy** - Cloudflare Worker CORS proxy for URL translation
@@ -46,11 +47,7 @@ npm run build
 ### Core Library
 
 ```typescript
-import {
-  translate,
-  reverseTranslate,
-  reverseTranslateIPA
-} from '@ingglish/core';
+import { translate, reverseTranslateText } from '@ingglish/core';
 
 // Translate English → Ingglish (async, auto-loads dictionary)
 const ingglish = await translate('Hello, world!');
@@ -60,17 +57,25 @@ console.log(ingglish); // "hulo, werld!"
 const ipa = await translate('Hello, world!', 'ipa');
 console.log(ipa); // "/həˈloʊ, wɝld!/"
 
-// Translate Ingglish → English
-const english = await reverseTranslate('hulo, werld!');
+// Translate Ingglish → English (sync, after dictionary loaded)
+const english = reverseTranslateText('hulo, werld!');
 console.log(english); // "hello, world!"
+```
 
-// Translate IPA → English
-const fromIPA = await reverseTranslateIPA('həˈloʊ wɝld');
-console.log(fromIPA); // "hello world"
+### DOM Translation (Browser)
 
-// Translate DOM elements (browser only)
-import { translateDOM } from '@ingglish/core';
-await translateDOM(document.body, { outputFormat: 'ingglish' });
+```typescript
+import { translateDOM, observeAndTranslate } from '@ingglish/dom';
+
+// Translate DOM elements with tooltips
+await translateDOM(document.body, {
+  showTooltips: true,
+  chunked: true, // Smooth rendering for large pages
+});
+
+// Auto-translate dynamic content (SPAs)
+const stop = observeAndTranslate(document.body);
+// Later: stop() to disconnect observer
 ```
 
 ### Website

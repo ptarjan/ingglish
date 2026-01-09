@@ -7,7 +7,8 @@ This document describes the high-level architecture of the Ingglish project.
 ```
 ingglish/
 ├── packages/
-│   ├── core/           # Translation library
+│   ├── core/           # Text translation library
+│   ├── dom/            # DOM translation utilities
 │   ├── website/        # React web application
 │   ├── extension/      # Chrome extension
 │   └── cors-proxy/     # Cloudflare Worker proxy
@@ -18,17 +19,16 @@ ingglish/
 ## Package Dependencies
 
 ```
-@ingglish/website ──────┐
-                        ├──> @ingglish/core
-@ingglish/extension ────┘
-                              │
-                              ├──> cmu-pronouncing-dictionary
-                              └──> subtlex-word-frequencies
+@ingglish/website ──────┬──> @ingglish/dom ──> @ingglish/core
+                        │                            │
+                        └────────────────────────────┤
+                                                     ├──> cmu-pronouncing-dictionary
+@ingglish/extension ─────────────────────────────────┘──> subtlex-word-frequencies
 ```
 
 ## Core Library (`@ingglish/core`)
 
-The core library handles all translation logic.
+The core library handles text translation logic.
 
 ### Module Structure
 
@@ -42,7 +42,6 @@ src/
 ├── unknown-words.ts      # Fallback strategies
 ├── word-frequency.ts     # Homophone ranking
 ├── case-utils.ts         # Case preservation
-├── dom-translator.ts     # Browser DOM translation
 └── index.ts              # Public exports
 ```
 
@@ -165,6 +164,29 @@ Map<string, string[]>
 }
 ```
 
+## DOM Library (`@ingglish/dom`)
+
+Browser-only utilities for translating DOM content.
+
+### Module Structure
+
+```
+src/
+├── dom-translator.ts     # translateDOM, restoreDOM
+├── dom-observer.ts       # observeAndTranslate (MutationObserver)
+├── dom-utils.ts          # Skip logic, element utilities
+├── types.ts              # DOMTranslatorOptions
+└── index.ts              # Public exports
+```
+
+### Key Features
+
+- **Chunked translation**: Uses `requestAnimationFrame` for smooth rendering on large pages
+- **Tooltip support**: Wraps translated words in spans with original text on hover
+- **MutationObserver**: Auto-translates dynamically added content (SPAs)
+- **Attribute translation**: Handles `title`, `alt`, `placeholder`, `aria-label`
+- **Skip logic**: Respects `<code>`, `<pre>`, `.no-translate`, `contenteditable`
+
 ## Website (`@ingglish/website`)
 
 React single-page application with three main features:
@@ -199,7 +221,7 @@ src/
 1. User enters URL
 2. Website fetches via CORS proxy
 3. HTML is written to sandboxed iframe
-4. `translateDOM` walks text nodes and translates
+4. `translateDOM` from `@ingglish/dom` walks text nodes and translates
 5. Links are intercepted for navigation within iframe
 
 ## Chrome Extension (`@ingglish/extension`)
@@ -209,10 +231,18 @@ src/
 ```
 src/
 ├── manifest.json     # Extension configuration
-├── content.ts        # Content script (runs on pages)
-├── background.ts     # Service worker
+├── content-lite.ts   # Lightweight content script (~11KB)
+├── background.ts     # Service worker (holds dictionary ~5MB)
 └── popup.ts          # Popup UI
 ```
+
+### Architecture
+
+The extension uses a message-passing architecture to keep the content script lightweight:
+
+- **Background service worker**: Loads the full CMU dictionary (~5MB) once
+- **Content script**: Lightweight (~11KB), walks DOM and sends words to background for translation
+- **Translation cache**: 50K entry in-memory cache in background for fast repeated lookups
 
 ### Flow
 
@@ -223,15 +253,20 @@ src/
 └──────────────┘     └──────┬───────┘
                             │
                             ▼
-                     ┌──────────────┐
-                     │Content Script│
-                     │ (content.ts) │
-                     └──────┬───────┘
-                            │
-                            ▼
-                     ┌──────────────┐
-                     │ translateDOM │  @ingglish/core
-                     └──────────────┘
+┌──────────────────────────────────────────────────┐
+│              Content Script (content-lite.ts)     │
+│  • Walks DOM, collects text nodes                │
+│  • Sends batches of words to background          │
+│  • Applies translations in chunks (RAF)          │
+└──────────────────────┬───────────────────────────┘
+                       │ chrome.runtime.sendMessage
+                       ▼
+┌──────────────────────────────────────────────────┐
+│              Background (background.ts)           │
+│  • Loads CMU dictionary on startup               │
+│  • Caches translations (50K entries, FIFO)       │
+│  • Returns translated words                      │
+└──────────────────────────────────────────────────┘
 ```
 
 ## CORS Proxy (`@ingglish/cors-proxy`)
