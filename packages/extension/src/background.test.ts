@@ -309,4 +309,27 @@ describe('background script', () => {
       expect(sendResponse).not.toHaveBeenCalled();
     });
   });
+
+  describe('translation caching', () => {
+    it('exports cacheStats for monitoring', async () => {
+      // Access cacheStats through the module
+      const { cacheStats } = await import('./background');
+
+      expect(cacheStats).toBeDefined();
+      expect(typeof cacheStats.hits).toBe('number');
+      expect(typeof cacheStats.misses).toBe('number');
+      expect(typeof cacheStats.size).toBe('function');
+      expect(typeof cacheStats.clear).toBe('function');
+    });
+
+    it('cache clear resets all stats', async () => {
+      const { cacheStats } = await import('./background');
+
+      // Set some values and clear
+      cacheStats.clear();
+      expect(cacheStats.hits).toBe(0);
+      expect(cacheStats.misses).toBe(0);
+      expect(cacheStats.size()).toBe(0);
+    });
+  });
 });

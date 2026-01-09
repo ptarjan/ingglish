@@ -219,6 +219,62 @@ function injectStyles(): void {
   document.head?.appendChild(style);
 }
 
+// Chunk size for DOM updates (balance between responsiveness and speed)
+const DOM_CHUNK_SIZE = 100;
+// Word batch size for translation requests
+const WORD_BATCH_SIZE = 1000;
+
+// Apply translations to a chunk of text nodes using requestAnimationFrame
+function applyTranslationsChunked(
+  textNodes: Text[],
+  translations: Record<string, string>,
+  onComplete: () => void
+): void {
+  let index = 0;
+
+  function processChunk(): void {
+    const endIndex = Math.min(index + DOM_CHUNK_SIZE, textNodes.length);
+
+    // Process this chunk
+    while (index < endIndex) {
+      const textNode = textNodes[index];
+      const parent = textNode.parentElement;
+      if (parent && !parent.hasAttribute('data-ingglish-original')) {
+        parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
+      }
+      const fragment = translateTextNode(textNode, translations);
+      textNode.replaceWith(fragment);
+      index++;
+    }
+
+    // Schedule next chunk or complete
+    if (index < textNodes.length) {
+      requestAnimationFrame(processChunk);
+    } else {
+      onComplete();
+    }
+  }
+
+  // Start processing
+  requestAnimationFrame(processChunk);
+}
+
+// Translate words in batches to avoid overwhelming the message channel
+async function translateWordsInBatches(
+  words: string[],
+  format: OutputFormat
+): Promise<Record<string, string>> {
+  const allTranslations: Record<string, string> = {};
+
+  for (let i = 0; i < words.length; i += WORD_BATCH_SIZE) {
+    const batch = words.slice(i, i + WORD_BATCH_SIZE);
+    const batchTranslations = await translateWordsBatch(batch, format);
+    Object.assign(allTranslations, batchTranslations);
+  }
+
+  return allTranslations;
+}
+
 // Main translation function
 async function translatePage(): Promise<void> {
   if (state.translated) {
@@ -227,6 +283,7 @@ async function translatePage(): Promise<void> {
     return;
   }
 
+  const startTime = performance.now();
   // eslint-disable-next-line no-console
   console.log('Ingglish: Starting translation...');
 
@@ -250,29 +307,28 @@ async function translatePage(): Promise<void> {
   const uniqueWords = [...new Set(allWords)];
 
   // eslint-disable-next-line no-console
-  console.log(`Ingglish: Translating ${uniqueWords.length} unique words...`);
+  console.log(
+    `Ingglish: Translating ${uniqueWords.length} unique words across ${textNodes.length} nodes...`
+  );
 
   // Batch translate all words via background script
-  const translations = await translateWordsBatch(uniqueWords, format);
+  const translations = await translateWordsInBatches(uniqueWords, format);
 
-  // Apply translations to DOM
-  for (const textNode of textNodes) {
-    const parent = textNode.parentElement;
-    if (parent && !parent.hasAttribute('data-ingglish-original')) {
-      parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
-    }
-    const fragment = translateTextNode(textNode, translations);
-    textNode.replaceWith(fragment);
-  }
+  // Apply translations to DOM in chunks for smooth rendering
+  return new Promise((resolve) => {
+    applyTranslationsChunked(textNodes, translations, () => {
+      state.translated = true;
+      addTranslationBadge(format);
 
-  state.translated = true;
-  addTranslationBadge(format);
+      const elapsed = (performance.now() - startTime).toFixed(0);
+      // eslint-disable-next-line no-console
+      console.log(`Ingglish: Translation complete in ${elapsed}ms!`);
 
-  // eslint-disable-next-line no-console
-  console.log('Ingglish: Translation complete!');
-
-  // Set up mutation observer for dynamic content
-  setupObserver(format, translations);
+      // Set up mutation observer for dynamic content
+      setupObserver(format, translations);
+      resolve();
+    });
+  });
 }
 
 // Observe DOM for dynamic content

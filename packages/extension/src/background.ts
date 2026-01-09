@@ -13,6 +13,23 @@ import type {
 // Track which tabs have translation enabled
 const translatedTabs = new Set<number>();
 
+// Translation cache - persists across message calls for fast lookups
+// Key: "format:word" (e.g., "ingglish:hello"), Value: translated word
+const translationCache = new Map<string, string>();
+const MAX_CACHE_SIZE = 50000; // ~2MB assuming avg 40 bytes per entry
+
+// Cache statistics for testing/debugging
+export const cacheStats = {
+  hits: 0,
+  misses: 0,
+  size: () => translationCache.size,
+  clear: () => {
+    translationCache.clear();
+    cacheStats.hits = 0;
+    cacheStats.misses = 0;
+  },
+};
+
 // Default format
 const DEFAULT_FORMAT: OutputFormat = 'ingglish';
 
@@ -63,6 +80,31 @@ async function injectTranslator(tabId: number): Promise<boolean> {
   }
 }
 
+// Get cached translation or compute and cache it
+function getCachedTranslation(word: string, format: OutputFormat): string {
+  const cacheKey = `${format}:${word}`;
+  const cached = translationCache.get(cacheKey);
+
+  if (cached !== undefined) {
+    cacheStats.hits++;
+    return cached;
+  }
+
+  cacheStats.misses++;
+  const translated = translateWord(word, format);
+
+  // Evict oldest entries if cache is full (simple FIFO eviction)
+  if (translationCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = translationCache.keys().next().value;
+    if (typeof firstKey === 'string') {
+      translationCache.delete(firstKey);
+    }
+  }
+
+  translationCache.set(cacheKey, translated);
+  return translated;
+}
+
 // Translate a batch of words (used by lightweight content script)
 function translateWords(words: string[], format: OutputFormat): Record<string, string> {
   if (!isDictionaryLoaded()) {
@@ -72,9 +114,9 @@ function translateWords(words: string[], format: OutputFormat): Record<string, s
   const translations: Record<string, string> = {};
   for (const word of words) {
     const lowerWord = word.toLowerCase();
-    // Only translate if not already cached for this batch
+    // Only translate if not already in result (dedup within batch)
     if (!(lowerWord in translations)) {
-      translations[lowerWord] = translateWord(word, format);
+      translations[lowerWord] = getCachedTranslation(lowerWord, format);
     }
   }
   return translations;
