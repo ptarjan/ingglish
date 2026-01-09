@@ -3,17 +3,14 @@
  *
  * @example
  * ```typescript
- * import { translate, reverseTranslate } from '@ingglish/core';
+ * import { translate } from '@ingglish/core';
  *
- * await translate('Hello, world!');       // 'hulo, werld!'
- * await reverseTranslate('hulo, werld!'); // 'hello, world!'
+ * await translate('Hello, world!'); // 'hulo, werld!'
  * ```
  */
 
 import { loadDictionary, translateText } from './translator';
-import { reverseTranslateText } from './reverse-translator';
-import { translateDOMAsync, restoreDOM as restoreDOMSync } from './dom-translator';
-import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
+import { translateDOMAsync } from './dom-translator';
 
 // =============================================================================
 // Types
@@ -22,10 +19,10 @@ import { observeAndTranslate as observeAndTranslateSync } from './dom-observer';
 export type { DOMTranslatorOptions, OutputFormat } from './types';
 
 // =============================================================================
-// Primary API
+// Primary API (auto-loads dictionary)
 // =============================================================================
 
-/** Translate English to the specified format (Ingglish or IPA). */
+/** Translate English text to the specified format (Ingglish or IPA). */
 export async function translate(
   text: string,
   format: import('./types').OutputFormat = 'ingglish'
@@ -34,31 +31,8 @@ export async function translate(
   return translateText(text, format);
 }
 
-/** Translate text back to English from the specified format. */
-export async function reverseTranslate(
-  text: string,
-  format: import('./types').OutputFormat = 'ingglish'
-): Promise<string> {
-  await loadDictionary();
-  return reverseTranslateText(text, format);
-}
-
-/** Translate all text in a DOM element. */
+/** Translate all text in a DOM element. Supports chunked mode for large pages. */
 export const translateDOM = translateDOMAsync;
-
-/** Observe DOM for changes and translate new content. Returns stop function. */
-export async function observeAndTranslate(
-  root: Element | Document,
-  options?: import('./types').DOMTranslatorOptions
-): Promise<() => void> {
-  await loadDictionary();
-  return observeAndTranslateSync(root, options);
-}
-
-/** Restore original text in a DOM element (undo translation). */
-export function restoreDOM(root: Element | Document): void {
-  restoreDOMSync(root);
-}
 
 // =============================================================================
 // Sync API (dictionary must be loaded first via translate/translateDOM)
@@ -68,7 +42,7 @@ export { translateText, translateWord, loadDictionary, isDictionaryLoaded } from
 export { reverseTranslateText } from './reverse-translator';
 
 // =============================================================================
-// Spelling Guide UI
+// Spelling Guide
 // =============================================================================
 
 export { arpabetPhonemeToIngglish } from './arpabet-to-ingglish';
