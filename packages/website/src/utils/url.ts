@@ -89,6 +89,16 @@ export function detectBotProtection(html: string): string | null {
 }
 
 /**
+ * Strips script tags and other active content from HTML.
+ * This prevents console errors from blocked script execution in sandboxed iframes.
+ */
+export function stripScripts(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<script\b[^>]*\/>/gi, '');
+}
+
+/**
  * Normalizes a URL input (adds https:// if missing).
  * Returns null if invalid.
  */

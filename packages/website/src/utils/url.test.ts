@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeUrl, shouldSkipUrl, injectBaseTag, getBaseUrl, detectBotProtection } from './url';
+import {
+  normalizeUrl,
+  shouldSkipUrl,
+  injectBaseTag,
+  getBaseUrl,
+  detectBotProtection,
+  stripScripts,
+} from './url';
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {
@@ -187,5 +194,46 @@ describe('detectBotProtection', () => {
   it('is case insensitive', () => {
     const html = '<H1>SORRY, YOU HAVE BEEN BLOCKED</H1>';
     expect(detectBotProtection(html)).toContain('blocked');
+  });
+});
+
+describe('stripScripts', () => {
+  it('removes script tags with content', () => {
+    const html = '<html><head><script>alert("hi")</script></head><body>Hello</body></html>';
+    expect(stripScripts(html)).toBe('<html><head></head><body>Hello</body></html>');
+  });
+
+  it('removes multiple script tags', () => {
+    const html = '<script>a</script><p>text</p><script>b</script>';
+    expect(stripScripts(html)).toBe('<p>text</p>');
+  });
+
+  it('removes script tags with attributes', () => {
+    const html = '<script type="text/javascript" src="app.js"></script>';
+    expect(stripScripts(html)).toBe('');
+  });
+
+  it('removes self-closing script tags', () => {
+    const html = '<script src="app.js"/><p>content</p>';
+    expect(stripScripts(html)).toBe('<p>content</p>');
+  });
+
+  it('handles multiline script content', () => {
+    const html = `<script>
+      function test() {
+        return 1;
+      }
+    </script><p>text</p>`;
+    expect(stripScripts(html)).toBe('<p>text</p>');
+  });
+
+  it('is case insensitive', () => {
+    const html = '<SCRIPT>code</SCRIPT><Script>more</Script>';
+    expect(stripScripts(html)).toBe('');
+  });
+
+  it('preserves other content', () => {
+    const html = '<html><head><title>Test</title></head><body><p>Hello</p></body></html>';
+    expect(stripScripts(html)).toBe(html);
   });
 });

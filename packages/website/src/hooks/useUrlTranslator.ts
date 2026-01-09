@@ -6,7 +6,13 @@
 import { useState, useCallback, useRef } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/dom';
-import { injectBaseTag, getBaseUrl, shouldSkipUrl, detectBotProtection } from '../utils/url';
+import {
+  injectBaseTag,
+  getBaseUrl,
+  shouldSkipUrl,
+  detectBotProtection,
+  stripScripts,
+} from '../utils/url';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../utils/url';
@@ -66,7 +72,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error(botProtectionError);
         }
 
-        const html = injectBaseTag(rawHtml, getBaseUrl(parsedUrl.href));
+        const html = injectBaseTag(stripScripts(rawHtml), getBaseUrl(parsedUrl.href));
 
         // Load HTML into iframe using srcdoc and wait for load event
         await new Promise<void>((resolve) => {
