@@ -23,18 +23,17 @@ export {
   translateDOM,
   translateDOMSync,
   restoreDOM,
-  skipElement,
-  unskipElement,
   applyTranslationsMap,
-} from './dom-translator';
+  type ApplyTranslationsOptions,
+} from './translate';
 
-export type { ApplyTranslationsOptions } from './dom-translator';
+export { skipElement, unskipElement } from './utils';
 
 // =============================================================================
 // DOM Observer (for dynamic content)
 // =============================================================================
 
-export { observeAndTranslate } from './dom-observer';
+export { observeAndTranslate } from './observe';
 
 // =============================================================================
 // Utilities
@@ -55,4 +54,4 @@ export {
   normalizeApostrophes,
   applyCase,
   injectTooltipStyles,
-} from './dom-utils';
+} from './utils';
