@@ -93,9 +93,17 @@ export function detectBotProtection(html: string): string | null {
  * This prevents console errors from blocked script execution in sandboxed iframes.
  */
 export function stripScripts(html: string): string {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<script\b[^>]*\/>/gi, '');
+  return (
+    html
+      // Remove script tags (including those with newlines in attributes)
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      // Remove self-closing script tags
+      .replace(/<script[^>]*\/>/gi, '')
+      // Remove unclosed script tags
+      .replace(/<script[^>]*>/gi, '')
+      // Remove noscript tags (they can contain script-like content)
+      .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
+  );
 }
 
 /**
