@@ -34,7 +34,7 @@ export async function translate(
 // Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateText, translateWord, translateTextWithMapping } from './translator';
+export { translateText, translateTextWithMapping } from './translator';
 export { reverseTranslateText } from './reverse-translator';
 
 // =============================================================================
