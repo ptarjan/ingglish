@@ -1,4 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  type Mock,
+  type MockInstance,
+} from 'vitest';
 import { translateDOM, observeAndTranslate, restoreDOM } from '@ingglish/core';
 
 // Suppress console.error and console.log during tests
@@ -11,6 +20,11 @@ vi.mock('@ingglish/core', () => ({
   observeAndTranslate: vi.fn().mockReturnValue(vi.fn()),
   restoreDOM: vi.fn(),
 }));
+
+// Type assertions for mocked functions
+const mockTranslateDOM = translateDOM as unknown as MockInstance;
+const mockObserveAndTranslate = observeAndTranslate as unknown as MockInstance;
+const mockRestoreDOM = restoreDOM as unknown as MockInstance;
 
 type FormatCallback = ((response: { format: string }) => void) | undefined;
 
@@ -98,9 +112,9 @@ describe('content script (lazy loaded)', () => {
     vi.clearAllMocks();
 
     // Reset mocks to successful behavior
-    vi.mocked(translateDOM).mockImplementation(() => undefined);
-    vi.mocked(observeAndTranslate).mockReturnValue(vi.fn());
-    vi.mocked(restoreDOM).mockImplementation(() => undefined);
+    mockTranslateDOM.mockImplementation(() => undefined);
+    mockObserveAndTranslate.mockReturnValue(vi.fn());
+    mockRestoreDOM.mockImplementation(() => undefined);
 
     // Set up document mock
     mockDocument = createMockDocument();
@@ -178,7 +192,7 @@ describe('content script (lazy loaded)', () => {
     });
 
     it('handles translation errors gracefully', async () => {
-      vi.mocked(translateDOM).mockRejectedValueOnce(new Error('Translation failed'));
+      mockTranslateDOM.mockRejectedValueOnce(new Error('Translation failed'));
 
       await import('./content');
 
@@ -209,7 +223,7 @@ describe('content script (lazy loaded)', () => {
 
     it('stops observer when restoring', async () => {
       const mockStopObserver = vi.fn();
-      vi.mocked(observeAndTranslate).mockResolvedValue(mockStopObserver);
+      mockObserveAndTranslate.mockReturnValue(mockStopObserver);
 
       await import('./content');
 
