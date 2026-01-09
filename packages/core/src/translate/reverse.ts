@@ -1,0 +1,206 @@
+/**
+ * Reverse translation: Ingglish/IPA -> English.
+ *
+ * Uses ARPAbet matching to find English words that would produce
+ * the given spelling. Handles homophones by preferring more common
+ * words based on frequency data.
+ */
+
+import { lookupPhonemeKey } from '../dictionary/reverse';
+import { sortByFrequency } from '../utils/frequency';
+import { detectCasePattern, applyCasePattern } from '../utils/case';
+import { normalizeApostrophes, tokenizeIPA } from '../utils/text';
+import { ingglishToArpabet } from '../convert/from-ingglish';
+import { ipaToArpabet } from '../convert/from-ipa';
+import type { OutputFormat } from '../types';
+
+// ============================================================================
+// ARPAbet Alternatives (handling ambiguous spellings)
+// ============================================================================
+
+/**
+ * Some Ingglish spellings are ambiguous because the same letters can
+ * represent different ARPAbet sequences. For example, "er" could be:
+ * - ER (r-colored schwa): "bird", "her"
+ * - EH + R (short e + r): "welfare", "better"
+ *
+ * Only EH + R is valid here because IH + R -> "ir" and AH + R -> "ur"
+ */
+const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
+  ER: [['EH', 'R']],
+  SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
+};
+
+/**
+ * Generates alternative ARPAbet sequences for ambiguous spellings.
+ */
+function expandArpabetAlternatives(arpabet: string[]): string[][] {
+  const results: string[][] = [arpabet];
+
+  for (let i = 0; i < arpabet.length; i++) {
+    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
+    if (alternatives !== undefined) {
+      for (const alt of alternatives) {
+        const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
+        results.push(expanded);
+      }
+    }
+  }
+
+  return results;
+}
+
+// ============================================================================
+// Core Translation Functions
+// ============================================================================
+
+/**
+ * Looks up English words matching an ARPAbet sequence.
+ * Tries all alternative ARPAbet interpretations and combines results.
+ */
+function lookupByArpabet(arpabet: string[]): string[] {
+  const variants = expandArpabetAlternatives(arpabet);
+  const allMatches: string[] = [];
+  const seen = new Set<string>();
+
+  for (const variant of variants) {
+    const key = variant.join(' ');
+    const matches = lookupPhonemeKey(key);
+    if (matches) {
+      for (const match of matches) {
+        if (!seen.has(match)) {
+          seen.add(match);
+          allMatches.push(match);
+        }
+      }
+    }
+  }
+
+  // Re-sort combined results by frequency (only if multiple variants matched)
+  return allMatches.length > 0 && variants.length > 1 ? sortByFrequency(allMatches) : allMatches;
+}
+
+/**
+ * Translates an Ingglish word back to English.
+ * Returns possible English words sorted by frequency.
+ */
+export function reverseTranslateWord(ingglishWord: string): string[] {
+  if (!ingglishWord || !/[a-zA-Z]/.test(ingglishWord)) {
+    return ingglishWord ? [ingglishWord] : [];
+  }
+
+  const casePattern = detectCasePattern(ingglishWord);
+  const arpabet = ingglishToArpabet(ingglishWord);
+
+  if (!arpabet) {
+    return [ingglishWord];
+  }
+
+  const matches = lookupByArpabet(arpabet);
+
+  if (matches.length === 0) {
+    return [ingglishWord];
+  }
+
+  return matches.map((word) => applyCasePattern(word, casePattern));
+}
+
+/**
+ * Converts IPA text to ARPAbet (stripping stress markers).
+ */
+export function ipaToArpabetClean(ipa: string): string[] | null {
+  const arpabet = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
+  return arpabet.length > 0 ? arpabet : null;
+}
+
+/**
+ * Translates an IPA word back to English.
+ * Returns possible English words sorted by frequency.
+ */
+export function reverseTranslateIPAWord(ipaWord: string): string[] {
+  if (!ipaWord || ipaWord.trim().length === 0) {
+    return ipaWord ? [ipaWord] : [];
+  }
+
+  const arpabet = ipaToArpabetClean(ipaWord);
+
+  if (!arpabet) {
+    return [ipaWord];
+  }
+
+  const matches = lookupByArpabet(arpabet);
+
+  if (matches.length === 0) {
+    return [ipaWord];
+  }
+
+  return matches;
+}
+
+// ============================================================================
+// Unified Reverse Translation
+// ============================================================================
+
+/**
+ * Translates Ingglish text back to English.
+ */
+function reverseTranslateIngglishText(text: string): string {
+  const normalizedText = normalizeApostrophes(text);
+
+  return normalizedText
+    .split(/(\b[a-zA-Z']+\b)/)
+    .map((token) => {
+      if (/^[a-zA-Z']+$/.test(token)) {
+        if (token.includes("'")) {
+          const parts = token.split("'");
+          return parts
+            .map((p) => {
+              if (!p) {
+                return '';
+              }
+              const matches = reverseTranslateWord(p);
+              return matches[0] ?? p;
+            })
+            .join("'");
+        }
+        const matches = reverseTranslateWord(token);
+        return matches[0] ?? token;
+      }
+      return token;
+    })
+    .join('');
+}
+
+/**
+ * Translates IPA text back to English, preserving punctuation.
+ */
+function reverseTranslateIPATextInternal(text: string): string {
+  // Strip leading/trailing IPA notation brackets (/, [, ]) but preserve internal punctuation
+  const cleanText = text.replace(/^[/[\]]+|[/[\]]+$/g, '');
+  const tokens = tokenizeIPA(cleanText);
+
+  return tokens
+    .map((token) => {
+      if (token.isWord) {
+        const matches = reverseTranslateIPAWord(token.text);
+        return matches[0] ?? token.text;
+      }
+      return token.text;
+    })
+    .join('');
+}
+
+/**
+ * Translates text back to English from the specified format.
+ * For homophones, uses the most common word.
+ *
+ * @param text - Text in Ingglish or IPA format
+ * @param format - The input format ('ingglish' or 'ipa')
+ * @returns English text
+ */
+export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
+  if (format === 'ipa') {
+    return reverseTranslateIPATextInternal(text);
+  }
+  return reverseTranslateIngglishText(text);
+}

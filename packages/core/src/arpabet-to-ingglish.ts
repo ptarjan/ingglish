@@ -1,142 +1,18 @@
 /**
- * ARPAbet to Ingglish spelling mapping.
- *
- * Design principles:
- * 1. Each ARPAbet symbol has exactly one spelling (no ambiguity)
- * 2. Uses only the 26 English letters (no diacritics)
- * 3. Spellings are as intuitive as possible for English readers
- * 4. Stress markers (0, 1, 2) are stripped from vowels
- *
- * ARPAbet symbols from CMU Pronouncing Dictionary:
- * - 15 vowels (including diphthongs)
- * - 24 consonants
+ * ARPAbet to Ingglish conversion - re-exports from new location for backwards compatibility.
+ * @deprecated Import from './convert' instead.
  */
 
-import { stripStress } from './arpabet-utils';
-import { arpabetToIPARaw } from './arpabet-to-ipa';
-import type { OutputFormat } from './types';
+export { stripStress } from './phonemes/arpabet';
 
-// Re-export stripStress for backwards compatibility
-export { stripStress } from './arpabet-utils';
+export {
+  INGGLISH_VOWEL_MAP as VOWEL_MAP,
+  INGGLISH_CONSONANT_MAP as CONSONANT_MAP,
+  ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
+} from './convert/ingglish-maps';
 
-// Vowel mappings (stress markers will be stripped before lookup)
-export const VOWEL_MAP: Record<string, string> = {
-  // Monophthongs
-  AA: 'ah', // father, hot, bother
-  AE: 'a', // cat, bat, had
-  AH: 'u', // but, cup, son
-  AO: 'aw', // thought, caught, law
-  EH: 'e', // bed, red, said
-  ER: 'er', // bird, her, nurse
-  IH: 'i', // bit, sit, gym
-  IY: 'ee', // bee, see, machine
-  UH: 'uu', // book, put, could
-  UW: 'oo', // too, blue, food
-
-  // Diphthongs
-  AW: 'ow', // cow, how, out
-  AY: 'ai', // my, eye, time
-  EY: 'ay', // say, day, make
-  OW: 'o', // go, show, coat
-  OY: 'oi', // boy, toy, coin
-};
-
-// Consonant mappings
-export const CONSONANT_MAP: Record<string, string> = {
-  // Stops (plosives)
-  B: 'b', // bat, cab
-  D: 'd', // dog, bed
-  G: 'g', // go, big
-  K: 'k', // cat, back
-  P: 'p', // pat, cup
-  T: 't', // top, cat
-
-  // Fricatives
-  DH: 'dh', // the, this, father (voiced)
-  F: 'f', // fat, laugh
-  S: 's', // sat, miss
-  SH: 'sh', // she,ush
-  TH: 'th', // think, bath (voiceless)
-  V: 'v', // van, love
-  Z: 'z', // zoo, is
-  ZH: 'zh', // measure, beige
-
-  // Affricates
-  CH: 'ch', // chat, batch
-  JH: 'j', // just, edge
-
-  // Nasals
-  M: 'm', // man, come
-  N: 'n', // no, pen
-  NG: 'ng', // sing, thing
-
-  // Liquids
-  L: 'l', // let, well
-  R: 'r', // run, car
-
-  // Semivowels (glides)
-  W: 'w', // wet, away
-  Y: 'y', // yes, you
-
-  // Aspirate
-  HH: 'h', // hat, ahead
-};
-
-// Combined map for easy lookup
-export const ARPABET_MAP: Record<string, string> = {
-  ...VOWEL_MAP,
-  ...CONSONANT_MAP,
-};
-
-/**
- * Converts a single ARPAbet phoneme to Ingglish spelling.
- * Symmetric with arpabetPhonemeToIPA in arpabet-to-ipa.ts.
- */
-export function arpabetPhonemeToIngglish(phoneme: string): string {
-  const base = stripStress(phoneme);
-  return ARPABET_MAP[base] ?? phoneme.toLowerCase();
-}
-
-/**
- * Converts an array of ARPAbet symbols to Ingglish spelling.
- * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
- * @returns Ingglish spelling (e.g., "hulo")
- */
-export function arpabetToIngglish(arpabet: string[]): string {
-  return arpabet
-    .map((symbol) => {
-      const base = stripStress(symbol);
-      const ingglish = ARPABET_MAP[base];
-      if (!ingglish) {
-        // Unknown symbol - return lowercase as fallback
-        return symbol.toLowerCase();
-      }
-      return ingglish;
-    })
-    .join('');
-}
-
-/**
- * Converts ARPAbet to the specified output format.
- *
- * @param arpabet Array of ARPAbet symbols
- * @param format Output format ('ingglish' or 'ipa')
- * @returns Formatted string
- */
-export function arpabetToFormat(arpabet: string[], format: OutputFormat = 'ingglish'): string {
-  if (format === 'ipa') {
-    return arpabetToIPARaw(arpabet);
-  }
-  return arpabetToIngglish(arpabet);
-}
-
-/**
- * Examples of the mapping:
- *
- * "hello" -> HH AH0 L OW1 -> "hulo"
- * "world" -> W ER1 L D -> "werld"
- * "the" -> DH AH0 -> "dhu"
- * "think" -> TH IH1 NG K -> "thingk"
- * "beautiful" -> B Y UW1 T AH0 F AH0 L -> "byootuful"
- * "English" -> IH1 NG G L IH0 SH -> "Ingglish"
- */
+export {
+  arpabetPhonemeToIngglish,
+  arpabetToIngglish,
+  arpabetToFormat,
+} from './convert/to-ingglish';

@@ -1,0 +1,99 @@
+/**
+ * Fallback strategies for translating unknown words.
+ *
+ * Strategy order:
+ * 1. Custom pronunciations (tech terms, brand names)
+ * 2. Initialisms (spell out letters: URL -> you-are-ell)
+ * 3. Compound word splitting (github -> git + hub)
+ * 4. Stemming (find known base word + known suffix)
+ * 5. Neural G2P via phonemize (if available)
+ * 6. Rule-based grapheme-to-phoneme
+ */
+
+import { arpabetToFormat } from '../convert/to-ingglish';
+import {
+  CUSTOM_PRONUNCIATIONS,
+  hasCustomPronunciation,
+  getCustomPronunciation,
+} from './custom-words';
+import { isInitialism, translateAsAcronym, LETTER_PHONEMES, KNOWN_INITIALISMS } from './acronyms';
+import { translateAsCompound } from './compounds';
+import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
+import { translateWithPhonemize, preloadPhonemize } from './phonemize';
+import { translateWithRules, wordToArpabet, GRAPHEME_TO_PHONEME } from './g2p-rules';
+import type { OutputFormat } from '../types';
+
+// Re-export everything for consumers who need specific strategies
+export {
+  // Custom words
+  CUSTOM_PRONUNCIATIONS,
+  hasCustomPronunciation,
+  getCustomPronunciation,
+  // Acronyms
+  LETTER_PHONEMES,
+  KNOWN_INITIALISMS,
+  isInitialism,
+  translateAsAcronym,
+  // Compounds
+  translateAsCompound,
+  // Stemming
+  SUFFIX_PHONEMES,
+  PREFIX_PHONEMES,
+  translateWithStemming,
+  // Phonemize
+  translateWithPhonemize,
+  preloadPhonemize,
+  // G2P rules
+  GRAPHEME_TO_PHONEME,
+  wordToArpabet,
+  translateWithRules,
+};
+
+/**
+ * Attempts all strategies to translate an unknown word.
+ *
+ * Strategy order:
+ * 1. Check custom pronunciations first
+ * 2. Check if it's an acronym (spell out letters)
+ * 3. Try compound word splitting (git+hub)
+ * 4. Try stemming (find known base word + known suffix)
+ * 5. Try phonemize (neural G2P) if available
+ * 6. Try grapheme-to-phoneme rules
+ *
+ * @param word The unknown word
+ * @param format The output format
+ * @returns The translated word
+ */
+export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
+  // Check custom pronunciations first
+  const customPhonemes = getCustomPronunciation(word);
+  if (customPhonemes !== undefined) {
+    return arpabetToFormat(customPhonemes, format);
+  }
+
+  // Check for initialisms (URL -> yooahrel)
+  if (isInitialism(word)) {
+    return translateAsAcronym(word, format);
+  }
+
+  // Try compound word splitting (github -> git + hub)
+  const compoundResult = translateAsCompound(word, format);
+  if (compoundResult !== null && compoundResult.length > 0) {
+    return compoundResult;
+  }
+
+  // Try stemming
+  const stemmedResult = translateWithStemming(word, format);
+  if (stemmedResult !== null && stemmedResult.length > 0) {
+    return stemmedResult;
+  }
+
+  // Try phonemize if loaded
+  const phonemizeResult = translateWithPhonemize(word, format);
+  if (phonemizeResult !== null && phonemizeResult.length > 0) {
+    return phonemizeResult;
+  }
+
+  // Fall back to grapheme-to-phoneme rules
+  return translateWithRules(word, format);
+}

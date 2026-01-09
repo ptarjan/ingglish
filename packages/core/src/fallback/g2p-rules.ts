@@ -1,0 +1,120 @@
+/**
+ * Grapheme-to-phoneme (G2P) rule-based conversion.
+ *
+ * Basic letter-to-sound rules for converting unknown words
+ * to phonemes. Used as a fallback when no other strategy works.
+ */
+
+import { arpabetToFormat } from '../convert/to-ingglish';
+import type { OutputFormat } from '../types';
+
+/**
+ * Basic letter-to-sound rules for grapheme-to-phoneme conversion.
+ * Used as a fallback when the word isn't in the dictionary.
+ */
+export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
+  // Digraphs first (longer patterns)
+  { pattern: /^sh/i, phonemes: ['SH'] },
+  { pattern: /^ch/i, phonemes: ['CH'] },
+  { pattern: /^th/i, phonemes: ['TH'] }, // Simplified: always voiceless
+  { pattern: /^wh/i, phonemes: ['W'] },
+  { pattern: /^ph/i, phonemes: ['F'] },
+  { pattern: /^gh/i, phonemes: ['G'] },
+  { pattern: /^ng/i, phonemes: ['NG'] },
+  { pattern: /^ck/i, phonemes: ['K'] },
+  { pattern: /^qu/i, phonemes: ['K', 'W'] },
+
+  // Vowel digraphs
+  { pattern: /^ee/i, phonemes: ['IY1'] },
+  { pattern: /^ea/i, phonemes: ['IY1'] },
+  { pattern: /^oo/i, phonemes: ['UW1'] },
+  { pattern: /^ou/i, phonemes: ['AW1'] },
+  { pattern: /^ow/i, phonemes: ['OW1'] },
+  { pattern: /^oi/i, phonemes: ['OY1'] },
+  { pattern: /^oy/i, phonemes: ['OY1'] },
+  { pattern: /^ai/i, phonemes: ['EY1'] },
+  { pattern: /^ay/i, phonemes: ['EY1'] },
+  { pattern: /^au/i, phonemes: ['AO1'] },
+  { pattern: /^aw/i, phonemes: ['AO1'] },
+  { pattern: /^ie/i, phonemes: ['IY1'] },
+  { pattern: /^ey/i, phonemes: ['IY1'] },
+
+  // Single consonants
+  { pattern: /^b/i, phonemes: ['B'] },
+  { pattern: /^c(?=[eiy])/i, phonemes: ['S'] }, // soft c
+  { pattern: /^c/i, phonemes: ['K'] }, // hard c
+  { pattern: /^d/i, phonemes: ['D'] },
+  { pattern: /^f/i, phonemes: ['F'] },
+  // Soft g before e/y, but NOT before i (too many exceptions: give, gift, girl, git)
+  { pattern: /^g(?=[ey])/i, phonemes: ['JH'] }, // soft g (gem, gym)
+  { pattern: /^g/i, phonemes: ['G'] }, // hard g (go, git, give, girl)
+  { pattern: /^h/i, phonemes: ['HH'] },
+  { pattern: /^j/i, phonemes: ['JH'] },
+  { pattern: /^k/i, phonemes: ['K'] },
+  { pattern: /^l/i, phonemes: ['L'] },
+  { pattern: /^m/i, phonemes: ['M'] },
+  { pattern: /^n/i, phonemes: ['N'] },
+  { pattern: /^p/i, phonemes: ['P'] },
+  { pattern: /^r/i, phonemes: ['R'] },
+  { pattern: /^s/i, phonemes: ['S'] },
+  { pattern: /^t/i, phonemes: ['T'] },
+  { pattern: /^v/i, phonemes: ['V'] },
+  { pattern: /^w/i, phonemes: ['W'] },
+  { pattern: /^x/i, phonemes: ['K', 'S'] },
+  { pattern: /^y(?=[aeiou])/i, phonemes: ['Y'] }, // consonant y
+  { pattern: /^y/i, phonemes: ['IY1'] }, // vowel y
+  { pattern: /^z/i, phonemes: ['Z'] },
+
+  // Single vowels (default, short sounds)
+  { pattern: /^a/i, phonemes: ['AE1'] },
+  { pattern: /^e/i, phonemes: ['EH1'] },
+  { pattern: /^i/i, phonemes: ['IH1'] },
+  { pattern: /^o/i, phonemes: ['AA1'] },
+  { pattern: /^u/i, phonemes: ['AH1'] },
+];
+
+/**
+ * Converts a word to ARPAbet using grapheme-to-phoneme rules.
+ * This is a simple rule-based approach for unknown words.
+ *
+ * @param word The word to convert
+ * @returns Array of ARPAbet phonemes
+ */
+export function wordToArpabet(word: string): string[] {
+  const result: string[] = [];
+  let remaining = word.toLowerCase();
+
+  while (remaining.length > 0) {
+    let matched = false;
+
+    for (const { pattern, phonemes: ruleArpabet } of GRAPHEME_TO_PHONEME) {
+      const match = remaining.match(pattern);
+      if (match) {
+        result.push(...ruleArpabet);
+        remaining = remaining.slice(match[0].length);
+        matched = true;
+        break;
+      }
+    }
+
+    if (!matched) {
+      // Skip unknown characters
+      remaining = remaining.slice(1);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Translates an unknown word using grapheme-to-phoneme rules.
+ * This is a fallback when the word isn't in the dictionary.
+ *
+ * @param word The unknown word
+ * @param format The output format
+ * @returns The best-effort translation
+ */
+export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
+  const arpabet = wordToArpabet(word);
+  return arpabetToFormat(arpabet, format);
+}
