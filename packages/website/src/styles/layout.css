@@ -179,3 +179,54 @@
   color: var(--color-text-muted);
   font-size: 0.875rem;
 }
+
+/* =============================================================================
+   Mobile Responsive Styles
+   ============================================================================= */
+
+@media (max-width: 640px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .subtitle-link {
+    font-size: 1rem;
+  }
+
+  .toggle-buttons {
+    position: static;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+  }
+}

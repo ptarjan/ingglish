@@ -478,3 +478,92 @@
   font-family: var(--font-mono);
   font-size: 0.85rem;
 }
+
+/* =============================================================================
+   Mobile Responsive Styles
+   ============================================================================= */
+
+@media (max-width: 640px) {
+  /* Text Translator */
+  .text-translator {
+    gap: 1rem;
+  }
+
+  .text-input {
+    min-height: 150px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .section-header h2 {
+    font-size: 0.875rem;
+  }
+
+  .word-display {
+    min-height: 80px;
+    max-height: 150px;
+  }
+
+  /* URL Translator */
+  .url-form {
+    flex-direction: column;
+  }
+
+  .url-input {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .page-iframe {
+    min-height: 300px;
+  }
+
+  .example-urls {
+    justify-content: center;
+  }
+
+  .example-label {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Spelling Guide */
+  .spelling-guide {
+    padding: 0;
+  }
+
+  .guide-intro h2 {
+    font-size: 1.25rem;
+  }
+
+  .sound-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .mapping-table th,
+  .mapping-table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .mapping-table .ipa-cell,
+  .mapping-table .ingglish-cell {
+    font-size: 1rem;
+    width: 2.5rem;
+  }
+
+  .mapping-table th:nth-child(1),
+  .mapping-table th:nth-child(2) {
+    width: 2.5rem;
+  }
+
+  /* Extension Page */
+  .install-steps li {
+    padding: 1rem 1rem 1rem 3rem;
+  }
+
+  .install-steps li::before {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+    left: 0.75rem;
+  }
+}
