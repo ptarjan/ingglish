@@ -12,6 +12,7 @@ import {
   shouldSkipUrl,
   detectBotProtection,
   proxyFontUrls,
+  stripScripts,
 } from '../utils/url';
 
 // Re-export utilities that components need
@@ -72,7 +73,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error(botProtectionError);
         }
 
-        const htmlWithBase = injectBaseTag(rawHtml, getBaseUrl(parsedUrl.href));
+        const htmlWithBase = injectBaseTag(stripScripts(rawHtml), getBaseUrl(parsedUrl.href));
         const html = proxyFontUrls(htmlWithBase, CORS_PROXY);
 
         // Load HTML into iframe using srcdoc and wait for load event
