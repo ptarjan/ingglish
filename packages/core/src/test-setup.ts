@@ -3,14 +3,18 @@
  */
 import { beforeAll } from 'vitest';
 import { loadDictionary } from './translator';
+import { warmReverseDictionaryCache } from './reverse-translator';
 
 /**
  * Call this in your test file to ensure the dictionary is loaded before tests run.
+ * Also pre-builds the reverse dictionary cache to avoid ~400ms hit on first lookup.
  * Usage: setupDictionary();
  */
 export function setupDictionary(): void {
   beforeAll(async () => {
     await loadDictionary();
+    // Pre-build reverse dictionary cache to speed up first test
+    warmReverseDictionaryCache();
   });
 }
 

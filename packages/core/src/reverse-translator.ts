@@ -86,6 +86,14 @@ function buildReverseDictionary(): Map<string, string[]> {
 }
 
 /**
+ * Pre-builds the reverse dictionary cache.
+ * Call this during test setup to avoid the ~400ms cost on first lookup.
+ */
+export function warmReverseDictionaryCache(): void {
+  buildReverseDictionary();
+}
+
+/**
  * Looks up words for a phoneme key, sorting by frequency on first access.
  * Lazy sorting means we only pay the cost for keys actually queried.
  */

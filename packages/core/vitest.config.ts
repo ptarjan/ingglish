@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // Cache directory for faster subsequent runs
+  cacheDir: './node_modules/.vite',
   test: {
     globals: true,
     environment: 'node',
@@ -17,10 +19,6 @@ export default defineConfig({
         // Use all available CPU threads
         useAtomics: true,
       },
-    },
-    // Cache test results
-    cache: {
-      dir: './node_modules/.vitest',
     },
   },
 });
