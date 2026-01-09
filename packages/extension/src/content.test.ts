@@ -7,8 +7,8 @@ vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 // Mock @ingglish/core
 vi.mock('@ingglish/core', () => ({
-  translateDOM: vi.fn().mockResolvedValue(undefined),
-  observeAndTranslate: vi.fn().mockResolvedValue(vi.fn()),
+  translateDOM: vi.fn(),
+  observeAndTranslate: vi.fn().mockReturnValue(vi.fn()),
   restoreDOM: vi.fn(),
 }));
 
@@ -98,8 +98,8 @@ describe('content script (lazy loaded)', () => {
     vi.clearAllMocks();
 
     // Reset mocks to successful behavior
-    vi.mocked(translateDOM).mockResolvedValue(undefined);
-    vi.mocked(observeAndTranslate).mockResolvedValue(vi.fn());
+    vi.mocked(translateDOM).mockImplementation(() => undefined);
+    vi.mocked(observeAndTranslate).mockReturnValue(vi.fn());
     vi.mocked(restoreDOM).mockImplementation(() => undefined);
 
     // Set up document mock
