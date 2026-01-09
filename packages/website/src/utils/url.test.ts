@@ -6,6 +6,7 @@ import {
   getBaseUrl,
   detectBotProtection,
   stripScripts,
+  proxyFontUrls,
 } from './url';
 
 describe('normalizeUrl', () => {
@@ -235,5 +236,57 @@ describe('stripScripts', () => {
   it('preserves other content', () => {
     const html = '<html><head><title>Test</title></head><body><p>Hello</p></body></html>';
     expect(stripScripts(html)).toBe(html);
+  });
+});
+
+describe('proxyFontUrls', () => {
+  const proxy = 'https://proxy.example.com/?url=';
+
+  it('proxies woff2 font URLs', () => {
+    const css = 'url(https://example.com/font.woff2)';
+    const result = proxyFontUrls(css, proxy);
+    expect(result).toBe(`url(${proxy}${encodeURIComponent('https://example.com/font.woff2')})`);
+  });
+
+  it('proxies woff font URLs', () => {
+    const css = "url('https://example.com/font.woff')";
+    const result = proxyFontUrls(css, proxy);
+    expect(result).toBe(`url('${proxy}${encodeURIComponent('https://example.com/font.woff')}')`);
+  });
+
+  it('proxies ttf font URLs', () => {
+    const css = 'url("https://example.com/font.ttf")';
+    const result = proxyFontUrls(css, proxy);
+    expect(result).toBe(`url("${proxy}${encodeURIComponent('https://example.com/font.ttf')}")`);
+  });
+
+  it('proxies font URLs with query strings', () => {
+    const css = 'url(https://example.com/font.woff2?v=4.4.0)';
+    const result = proxyFontUrls(css, proxy);
+    expect(result).toBe(
+      `url(${proxy}${encodeURIComponent('https://example.com/font.woff2?v=4.4.0')})`
+    );
+  });
+
+  it('does not proxy image URLs', () => {
+    const css = 'url(https://example.com/image.png)';
+    expect(proxyFontUrls(css, proxy)).toBe(css);
+  });
+
+  it('does not proxy relative URLs', () => {
+    const css = 'url(fonts/font.woff2)';
+    expect(proxyFontUrls(css, proxy)).toBe(css);
+  });
+
+  it('handles multiple font URLs', () => {
+    const css = `
+      @font-face {
+        src: url(https://a.com/font.woff2),
+             url(https://b.com/font.woff);
+      }
+    `;
+    const result = proxyFontUrls(css, proxy);
+    expect(result).toContain(`${proxy}${encodeURIComponent('https://a.com/font.woff2')}`);
+    expect(result).toContain(`${proxy}${encodeURIComponent('https://b.com/font.woff')}`);
   });
 });

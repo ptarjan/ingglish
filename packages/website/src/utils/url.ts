@@ -99,6 +99,21 @@ export function stripScripts(html: string): string {
 }
 
 /**
+ * Rewrites font URLs in CSS to go through a CORS proxy.
+ * This fixes font loading errors for cross-origin stylesheets.
+ */
+export function proxyFontUrls(html: string, proxyUrl: string): string {
+  // Match url() in CSS with font file extensions
+  const fontUrlPattern =
+    /url\s*\(\s*(['"]?)(https?:\/\/[^)'"]+\.(?:woff2?|ttf|eot|otf)(?:\?[^)'"]*)?)\1\s*\)/gi;
+
+  return html.replace(fontUrlPattern, (_match: string, quote: string, fontUrl: string) => {
+    const proxiedUrl = `${proxyUrl}${encodeURIComponent(fontUrl)}`;
+    return `url(${quote}${proxiedUrl}${quote})`;
+  });
+}
+
+/**
  * Normalizes a URL input (adds https:// if missing).
  * Returns null if invalid.
  */
