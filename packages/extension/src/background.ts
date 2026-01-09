@@ -1,7 +1,10 @@
 // Background service worker for Ingglish extension
 
 import type { OutputFormat } from '@ingglish/core';
-import { loadDictionary, translateWord, isDictionaryLoaded } from '@ingglish/core';
+import { translate, translateWord } from '@ingglish/core';
+
+// Track dictionary loading state
+let dictionaryLoaded = false;
 import type {
   ExtensionMessage,
   StateResponse,
@@ -107,7 +110,7 @@ function getCachedTranslation(word: string, format: OutputFormat): string {
 
 // Translate a batch of words (used by lightweight content script)
 function translateWords(words: string[], format: OutputFormat): Record<string, string> {
-  if (!isDictionaryLoaded()) {
+  if (!dictionaryLoaded) {
     return {};
   }
 
@@ -168,8 +171,9 @@ chrome.runtime.onMessage.addListener(
 
     if (message.type === 'TRANSLATE_WORDS') {
       // Ensure dictionary is loaded, then translate
-      void loadDictionary()
+      void translate('')
         .then(() => {
+          dictionaryLoaded = true;
           const translations = translateWords(message.words, message.format);
           sendResponse({ translations });
         })
@@ -248,7 +252,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 });
 
 // Pre-load dictionary on service worker startup for faster translations
-void loadDictionary().then(() => {
+void translate('').then(() => {
+  dictionaryLoaded = true;
   // eslint-disable-next-line no-console
   console.log('Ingglish: Dictionary loaded in background');
 });

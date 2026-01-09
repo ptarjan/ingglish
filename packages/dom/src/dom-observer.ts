@@ -1,7 +1,7 @@
 /**
  * MutationObserver-based DOM translation for dynamic content.
  */
-import { translateText, isDictionaryLoaded, translateTextWithMapping } from '@ingglish/core';
+import { translateText, translateTextWithMapping } from '@ingglish/core';
 import { translateDOM } from './dom-translator';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
@@ -51,10 +51,6 @@ export function observeAndTranslate(
   options: DOMTranslatorOptions = {}
 ): () => void {
   requireBrowser();
-
-  if (!isDictionaryLoaded()) {
-    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
-  }
 
   const {
     skipTags = DEFAULT_SKIP_TAGS,

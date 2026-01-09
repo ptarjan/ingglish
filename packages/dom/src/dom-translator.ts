@@ -1,12 +1,7 @@
 /**
  * Core DOM translation functionality.
  */
-import {
-  translateText,
-  translateTextWithMapping,
-  loadDictionary,
-  isDictionaryLoaded,
-} from '@ingglish/core';
+import { translate, translateText, translateTextWithMapping } from '@ingglish/core';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,
@@ -186,10 +181,6 @@ export function translateDOM(
 ): void | Promise<void> {
   requireBrowser();
 
-  if (!isDictionaryLoaded()) {
-    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
-  }
-
   const {
     skipTags = DEFAULT_SKIP_TAGS,
     skipClasses = DEFAULT_SKIP_CLASSES,
@@ -341,7 +332,8 @@ export async function translateDOMAsync(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): Promise<void> {
-  await loadDictionary();
+  // Ensure dictionary is loaded by calling translate
+  await translate('');
   const result = translateDOM(root, options as DOMTranslatorOptions & { chunked: true });
   // If chunked mode returns a Promise, await it
   if (result instanceof Promise) {
