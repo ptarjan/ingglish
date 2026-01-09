@@ -90,31 +90,36 @@ export function detectBotProtection(html: string): string | null {
 
 /**
  * Strips script tags and other active content from HTML.
- * This prevents console errors from blocked script execution in sandboxed iframes.
+ * Uses DOMParser in browser for reliability, falls back to regex in Node.
  */
 export function stripScripts(html: string): string {
-  return (
-    html
-      // Remove script tags (including those with newlines in attributes)
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      // Remove self-closing script tags
-      .replace(/<script[^>]*\/>/gi, '')
-      // Remove unclosed script tags
-      .replace(/<script[^>]*>/gi, '')
-      // Remove noscript tags
-      .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
-      // Remove iframes
-      .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
-      .replace(/<iframe[^>]*\/>/gi, '')
-      .replace(/<iframe[^>]*>/gi, '')
-      // Remove object tags (can execute plugins/scripts)
-      .replace(/<object[\s\S]*?<\/object>/gi, '')
-      .replace(/<object[^>]*\/>/gi, '')
-      .replace(/<object[^>]*>/gi, '')
-      // Remove embed tags
-      .replace(/<embed[^>]*\/>/gi, '')
-      .replace(/<embed[^>]*>/gi, '')
-  );
+  // Use DOMParser in browser environments for more reliable parsing
+  if (typeof DOMParser !== 'undefined') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Remove all potentially executable elements
+    doc
+      .querySelectorAll('script, noscript, iframe, object, embed, frame, frameset')
+      .forEach((el) => {
+        el.remove();
+      });
+
+    return doc.documentElement.outerHTML;
+  }
+
+  // Fallback to regex for Node.js/test environments
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<script[^>]*>/gi, '')
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<iframe[^>]*>/gi, '')
+    .replace(/<object[\s\S]*?<\/object>/gi, '')
+    .replace(/<object[^>]*>/gi, '')
+    .replace(/<embed[^>]*>/gi, '')
+    .replace(/<frame[^>]*>/gi, '')
+    .replace(/<frameset[\s\S]*?<\/frameset>/gi, '');
 }
 
 /**
