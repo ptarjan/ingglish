@@ -11,7 +11,8 @@
     "test": "vitest run --no-color"
   },
   "dependencies": {
-    "@ingglish/core": "*"
+    "@ingglish/core": "*",
+    "@ingglish/dom": "*"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.260",

@@ -1,72 +1,20 @@
 // Lightweight content script for Ingglish extension
-// Uses message passing to background for translations (no dictionary bundled)
+// Uses message passing to background for translations and shared DOM utilities
 
 import type { OutputFormat } from '@ingglish/core';
+import {
+  applyTranslationsMap,
+  restoreDOM,
+  collectTextNodes,
+  extractWordsFromNodes,
+  injectTooltipStyles,
+  DEFAULT_SKIP_TAGS,
+  DEFAULT_SKIP_CLASSES,
+} from '@ingglish/dom';
 import type { RestoreMessage, FormatResponse, TranslateWordsResponse } from './types';
 
-// CSS styles for tooltips
-const TOOLTIP_STYLES = `
-.ingglish-word {
-  position: relative;
-  cursor: help;
-}
-
-.ingglish-word:hover::after {
-  content: attr(data-ingglish-orig);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333 !important;
-  color: #fff !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  font-size: 12px !important;
-  font-family: system-ui, -apple-system, sans-serif !important;
-  line-height: 1.4 !important;
-  white-space: nowrap !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-  opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-.ingglish-word:hover::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent !important;
-  border-top-color: #333 !important;
-  margin-bottom: -10px !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-  opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-@keyframes ingglish-tooltip-fade-in {
-  to { opacity: 1; }
-}
-`;
-
-// Tags to skip during translation
-const SKIP_TAGS = new Set([
-  'SCRIPT',
-  'STYLE',
-  'NOSCRIPT',
-  'IFRAME',
-  'OBJECT',
-  'EMBED',
-  'SVG',
-  'MATH',
-  'CODE',
-  'PRE',
-  'TEXTAREA',
-  'INPUT',
-  'SELECT',
-]);
+// Additional tags to skip for extension (security-sensitive)
+const EXTENSION_SKIP_TAGS = [...DEFAULT_SKIP_TAGS, 'IFRAME', 'OBJECT', 'EMBED', 'SELECT'];
 
 // State management
 interface IngglishState {
@@ -86,6 +34,9 @@ function getState(): IngglishState {
 }
 
 const state = getState();
+
+// Word batch size for translation requests
+const WORD_BATCH_SIZE = 1000;
 
 // Request batch translation from background script
 async function translateWordsBatch(
@@ -109,154 +60,6 @@ async function getOutputFormat(): Promise<OutputFormat> {
       resolve(response?.format ?? 'ingglish');
     });
   });
-}
-
-// Check if element should be skipped
-function shouldSkip(element: Element): boolean {
-  if (SKIP_TAGS.has(element.tagName)) {
-    return true;
-  }
-  if (element.hasAttribute('data-ingglish-skip')) {
-    return true;
-  }
-  if (element.classList?.contains('ingglish-word')) {
-    return true;
-  }
-  return false;
-}
-
-// Collect all text nodes in the DOM
-function collectTextNodes(root: Element): Text[] {
-  const textNodes: Text[] = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode(node: Text): number {
-      const text = node.textContent?.trim() ?? '';
-      if (text.length === 0) {
-        return NodeFilter.FILTER_SKIP;
-      }
-
-      let parent = node.parentElement;
-      while (parent) {
-        if (shouldSkip(parent)) {
-          return NodeFilter.FILTER_SKIP;
-        }
-        parent = parent.parentElement;
-      }
-      return NodeFilter.FILTER_ACCEPT;
-    },
-  });
-
-  while (walker.nextNode()) {
-    textNodes.push(walker.currentNode as Text);
-  }
-  return textNodes;
-}
-
-// Extract unique words from text
-function extractWords(text: string): string[] {
-  const normalized = text.replace(/[\u2018\u2019\u02BC]/g, "'");
-  const matches = normalized.match(/\b[a-zA-Z']+\b/g) ?? [];
-  return [...new Set(matches.map((w) => w.toLowerCase()))];
-}
-
-// Apply case transformation
-function applyCase(original: string, translated: string): string {
-  if (original.length > 1 && original === original.toUpperCase() && /[A-Z]/.test(original)) {
-    return translated.toUpperCase();
-  }
-  if (/^[A-Z]/.test(original) && original.slice(1) === original.slice(1).toLowerCase()) {
-    return translated.charAt(0).toUpperCase() + translated.slice(1);
-  }
-  return translated;
-}
-
-// Translate a text node with tooltip spans
-function translateTextNode(textNode: Text, translations: Record<string, string>): DocumentFragment {
-  const fragment = document.createDocumentFragment();
-  const text = textNode.textContent ?? '';
-  const normalized = text.replace(/[\u2018\u2019\u02BC]/g, "'");
-
-  // Split into words and non-words
-  const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
-
-  for (const token of tokens) {
-    if (!token) {
-      continue;
-    }
-
-    if (/^[a-zA-Z']+$/.test(token)) {
-      const lowerToken = token.toLowerCase();
-      const translated = translations[lowerToken];
-
-      if (translated && translated !== token.toLowerCase()) {
-        // Word was translated - wrap in tooltip span
-        const span = document.createElement('span');
-        span.className = 'ingglish-word';
-        span.setAttribute('data-ingglish-orig', token);
-        span.textContent = applyCase(token, translated);
-        fragment.appendChild(span);
-      } else {
-        // No translation - keep original
-        fragment.appendChild(document.createTextNode(token));
-      }
-    } else {
-      // Non-word (punctuation, space, etc.)
-      fragment.appendChild(document.createTextNode(token));
-    }
-  }
-
-  return fragment;
-}
-
-// Inject tooltip styles
-function injectStyles(): void {
-  if (document.getElementById('ingglish-tooltip-styles')) {
-    return;
-  }
-  const style = document.createElement('style');
-  style.id = 'ingglish-tooltip-styles';
-  style.textContent = TOOLTIP_STYLES;
-  document.head?.appendChild(style);
-}
-
-// Chunk size for DOM updates (balance between responsiveness and speed)
-const DOM_CHUNK_SIZE = 100;
-// Word batch size for translation requests
-const WORD_BATCH_SIZE = 1000;
-
-// Apply translations to a chunk of text nodes using requestAnimationFrame
-function applyTranslationsChunked(
-  textNodes: Text[],
-  translations: Record<string, string>,
-  onComplete: () => void
-): void {
-  let index = 0;
-
-  function processChunk(): void {
-    const endIndex = Math.min(index + DOM_CHUNK_SIZE, textNodes.length);
-
-    // Process this chunk
-    while (index < endIndex) {
-      const textNode = textNodes[index];
-      const parent = textNode.parentElement;
-      if (parent && !parent.hasAttribute('data-ingglish-original')) {
-        parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
-      }
-      const fragment = translateTextNode(textNode, translations);
-      textNode.replaceWith(fragment);
-      index++;
-    }
-
-    // Schedule next chunk or complete
-    if (index < textNodes.length) {
-      requestAnimationFrame(processChunk);
-    } else {
-      onComplete();
-    }
-  }
-
-  // Start processing
-  requestAnimationFrame(processChunk);
 }
 
 // Translate words in batches to avoid overwhelming the message channel
@@ -288,23 +91,18 @@ async function translatePage(): Promise<void> {
   console.log('Ingglish: Starting translation...');
 
   const format = await getOutputFormat();
-  injectStyles();
+  injectTooltipStyles(document);
 
-  // Collect all text nodes
-  const textNodes = collectTextNodes(document.body);
+  // Collect all text nodes using shared utility
+  const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
   if (textNodes.length === 0) {
     // eslint-disable-next-line no-console
     console.log('Ingglish: No text nodes found');
     return;
   }
 
-  // Extract all unique words
-  const allWords: string[] = [];
-  for (const node of textNodes) {
-    const words = extractWords(node.textContent ?? '');
-    allWords.push(...words);
-  }
-  const uniqueWords = [...new Set(allWords)];
+  // Extract all unique words using shared utility
+  const uniqueWords = extractWordsFromNodes(textNodes);
 
   // eslint-disable-next-line no-console
   console.log(
@@ -314,21 +112,21 @@ async function translatePage(): Promise<void> {
   // Batch translate all words via background script
   const translations = await translateWordsInBatches(uniqueWords, format);
 
-  // Apply translations to DOM in chunks for smooth rendering
-  return new Promise((resolve) => {
-    applyTranslationsChunked(textNodes, translations, () => {
-      state.translated = true;
-      addTranslationBadge(format);
-
-      const elapsed = (performance.now() - startTime).toFixed(0);
-      // eslint-disable-next-line no-console
-      console.log(`Ingglish: Translation complete in ${elapsed}ms!`);
-
-      // Set up mutation observer for dynamic content
-      setupObserver(format, translations);
-      resolve();
-    });
+  // Apply translations using shared utility
+  await applyTranslationsMap(document.body, translations, {
+    showTooltips: true,
+    chunkSize: 100,
   });
+
+  state.translated = true;
+  addTranslationBadge(format);
+
+  const elapsed = (performance.now() - startTime).toFixed(0);
+  // eslint-disable-next-line no-console
+  console.log(`Ingglish: Translation complete in ${elapsed}ms!`);
+
+  // Set up mutation observer for dynamic content
+  setupObserver(format, translations);
 }
 
 // Observe DOM for dynamic content
@@ -350,7 +148,11 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
             newNodes.push(node as Text);
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          const collected = collectTextNodes(node as Element);
+          const collected = collectTextNodes(
+            node as Element,
+            EXTENSION_SKIP_TAGS,
+            DEFAULT_SKIP_CLASSES
+          );
           newNodes.push(...collected);
         }
       }
@@ -361,15 +163,7 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
     }
 
     // Get new words that aren't already translated
-    const newWords: string[] = [];
-    for (const node of newNodes) {
-      const words = extractWords(node.textContent ?? '');
-      for (const word of words) {
-        if (!(word in translations)) {
-          newWords.push(word);
-        }
-      }
-    }
+    const newWords = extractWordsFromNodes(newNodes).filter((word) => !(word in translations));
 
     // Fetch new translations if needed (fire and forget)
     void (async () => {
@@ -378,14 +172,16 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
         Object.assign(translations, newTranslations);
       }
 
-      // Apply translations
+      // Apply translations to new nodes
       for (const textNode of newNodes) {
         const parent = textNode.parentElement;
-        if (parent && !parent.hasAttribute('data-ingglish-original')) {
-          parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
+        if (parent) {
+          // Use shared utility for applying translations
+          await applyTranslationsMap(parent, translations, {
+            showTooltips: true,
+            chunkSize: 10, // Smaller chunks for dynamic content
+          });
         }
-        const fragment = translateTextNode(textNode, translations);
-        textNode.replaceWith(fragment);
       }
     })();
   });
@@ -406,17 +202,8 @@ function restorePage(): void {
     state.observer = null;
   }
 
-  // Restore elements with data-ingglish-original
-  const elements = Array.from(document.querySelectorAll('[data-ingglish-original]'));
-  for (const element of elements) {
-    const htmlEl = element as HTMLElement;
-    const original = htmlEl.getAttribute('data-ingglish-original');
-    if (original !== null) {
-      // Replace all child nodes with original text
-      htmlEl.textContent = original;
-      htmlEl.removeAttribute('data-ingglish-original');
-    }
-  }
+  // Use shared restore utility
+  restoreDOM(document.body);
 
   // Remove badge
   document.getElementById('ingglish-badge')?.remove();

@@ -25,7 +25,10 @@ export {
   restoreDOM,
   skipElement,
   unskipElement,
+  applyTranslationsMap,
 } from './dom-translator';
+
+export type { ApplyTranslationsOptions } from './dom-translator';
 
 // =============================================================================
 // DOM Observer (for dynamic content)
@@ -41,8 +44,15 @@ export {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
   TRANSLATABLE_ATTRIBUTES,
+  TOOLTIP_STYLES,
   isBrowser,
   requireBrowser,
   shouldSkipElement,
   shouldSkipTextNode,
+  collectTextNodes,
+  extractWords,
+  extractWordsFromNodes,
+  normalizeApostrophes,
+  applyCase,
+  injectTooltipStyles,
 } from './dom-utils';

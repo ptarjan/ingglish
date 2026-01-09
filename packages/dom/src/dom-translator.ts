@@ -9,6 +9,10 @@ import {
   TRANSLATABLE_ATTRIBUTES,
   requireBrowser,
   shouldSkipElement,
+  collectTextNodes as collectTextNodesUtil,
+  normalizeApostrophes,
+  applyCase,
+  injectTooltipStyles as injectTooltipStylesUtil,
 } from './dom-utils';
 
 // Re-export types and utilities for convenience
@@ -40,44 +44,6 @@ function createTooltipFragment(text: string, format: OutputFormat = 'ingglish'):
   }
 
   return fragment;
-}
-
-/**
- * Collects all translatable text nodes in a single DOM walk.
- * Returns nodes that should be translated (non-empty, not in skipped elements).
- */
-function collectTextNodes(
-  root: Element | Document,
-  skipTags: string[],
-  skipClasses: string[]
-): Text[] {
-  const textNodes: Text[] = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode(node: Text): number {
-      // Skip empty or whitespace-only text
-      const text = node.textContent?.trim() ?? '';
-      if (text.length === 0) {
-        return NodeFilter.FILTER_SKIP;
-      }
-
-      // Check parent elements for skip conditions
-      let parent = node.parentElement;
-      while (parent) {
-        if (shouldSkipElement(parent, skipTags, skipClasses)) {
-          return NodeFilter.FILTER_SKIP;
-        }
-        parent = parent.parentElement;
-      }
-
-      return NodeFilter.FILTER_ACCEPT;
-    },
-  });
-
-  while (walker.nextNode()) {
-    textNodes.push(walker.currentNode as Text);
-  }
-
-  return textNodes;
 }
 
 // Default chunk size for chunked DOM updates
@@ -197,11 +163,11 @@ export function translateDOMSync(
 
   // Inject tooltip CSS if showing tooltips
   if (showTooltips && targetDoc !== null) {
-    injectTooltipStyles(targetDoc);
+    injectTooltipStylesUtil(targetDoc);
   }
 
   // Single walk to collect all text nodes
-  const textNodes = collectTextNodes(root, skipTags, skipClasses);
+  const textNodes = collectTextNodesUtil(root, skipTags, skipClasses);
   const totalNodes = textNodes.length;
 
   // Translate attributes if enabled (do this first, it's fast)
@@ -222,76 +188,6 @@ export function translateDOMSync(
       onProgress(i + 1, totalNodes);
     }
   }
-}
-
-/**
- * CSS styles for tooltip functionality.
- * Injected once into the document when tooltips are enabled.
- */
-const TOOLTIP_STYLES = `
-.ingglish-word {
-  position: relative;
-  cursor: help;
-}
-
-.ingglish-word:hover::after {
-  content: attr(data-ingglish-orig);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333 !important;
-  color: #fff !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-  font-size: 12px !important;
-  font-family: system-ui, -apple-system, sans-serif !important;
-  line-height: 1.4 !important;
-  white-space: nowrap !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-  opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-.ingglish-word:hover::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent !important;
-  border-top-color: #333 !important;
-  margin-bottom: -10px !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-  opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-@keyframes ingglish-tooltip-fade-in {
-  to { opacity: 1; }
-}
-`;
-
-// Track which documents have had tooltip styles injected (supports iframes)
-const injectedDocuments = new WeakSet<Document>();
-
-/**
- * Injects the tooltip CSS styles into the document head.
- * Handles both main document and iframe documents.
- */
-function injectTooltipStyles(targetDoc: Document): void {
-  if (injectedDocuments.has(targetDoc)) {
-    return;
-  }
-
-  const style = targetDoc.createElement('style');
-  style.id = 'ingglish-tooltip-styles';
-  style.textContent = TOOLTIP_STYLES;
-  // Some documents (malformed HTML, certain iframes) may not have a head element
-  targetDoc.head?.appendChild(style);
-  injectedDocuments.add(targetDoc);
 }
 
 /**
@@ -380,4 +276,146 @@ export function restoreDOM(root: Element | Document): void {
       }
     }
   }
+}
+
+/**
+ * Options for applying pre-computed translations.
+ */
+export interface ApplyTranslationsOptions {
+  /** Whether to show tooltips with original text on hover */
+  showTooltips?: boolean;
+  /** Number of text nodes to process per animation frame */
+  chunkSize?: number;
+  /** Callback for progress updates */
+  onProgress?: (processed: number, total: number) => void;
+}
+
+/**
+ * Creates a tooltip fragment from text using a pre-computed translations map.
+ * This is used by the extension which fetches translations from the background worker.
+ */
+function createTooltipFragmentFromMap(
+  text: string,
+  translations: Record<string, string>
+): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  const normalized = normalizeApostrophes(text);
+
+  // Split into words and non-words
+  const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
+
+  for (const token of tokens) {
+    if (!token) {
+      continue;
+    }
+
+    if (/^[a-zA-Z']+$/.test(token)) {
+      const lowerToken = token.toLowerCase();
+      const translated = translations[lowerToken];
+
+      if (translated && translated !== lowerToken) {
+        // Word was translated - wrap in tooltip span
+        const span = document.createElement('span');
+        span.className = 'ingglish-word';
+        span.setAttribute('data-ingglish-orig', token);
+        span.textContent = applyCase(token, translated);
+        fragment.appendChild(span);
+      } else {
+        // No translation or unchanged - keep original
+        fragment.appendChild(document.createTextNode(token));
+      }
+    } else {
+      // Non-word (punctuation, space, etc.)
+      fragment.appendChild(document.createTextNode(token));
+    }
+  }
+
+  return fragment;
+}
+
+/**
+ * Applies pre-computed translations to a DOM tree.
+ * This is designed for use cases where translations are fetched externally
+ * (e.g., from a service worker via message passing).
+ *
+ * @param root The root element to translate
+ * @param translations Map of lowercase words to their translations
+ * @param options Configuration options
+ */
+export function applyTranslationsMap(
+  root: Element | Document,
+  translations: Record<string, string>,
+  options: ApplyTranslationsOptions = {}
+): Promise<void> {
+  requireBrowser();
+
+  const { showTooltips = true, chunkSize = DEFAULT_CHUNK_SIZE, onProgress } = options;
+
+  // Get the document for style injection
+  const targetDoc = root instanceof Document ? root : root.ownerDocument;
+  if (showTooltips && targetDoc !== null) {
+    injectTooltipStylesUtil(targetDoc);
+  }
+
+  // Collect all text nodes
+  const textNodes = collectTextNodesUtil(root);
+  const totalNodes = textNodes.length;
+
+  return new Promise((resolve) => {
+    let index = 0;
+
+    function processChunk(): void {
+      const endIndex = Math.min(index + chunkSize, totalNodes);
+
+      while (index < endIndex) {
+        const textNode = textNodes[index];
+        const parent = textNode.parentElement;
+
+        if (parent && !parent.hasAttribute('data-ingglish-original')) {
+          parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
+        }
+
+        if (showTooltips) {
+          const fragment = createTooltipFragmentFromMap(textNode.textContent ?? '', translations);
+          textNode.replaceWith(fragment);
+        } else {
+          // Simple text replacement without tooltips
+          const text = textNode.textContent ?? '';
+          const normalized = normalizeApostrophes(text);
+          let result = '';
+          const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
+          for (const token of tokens) {
+            if (!token) {
+              continue;
+            }
+            if (/^[a-zA-Z']+$/.test(token)) {
+              const translated = translations[token.toLowerCase()];
+              result += translated ? applyCase(token, translated) : token;
+            } else {
+              result += token;
+            }
+          }
+          textNode.textContent = result;
+        }
+
+        index++;
+
+        if (onProgress && totalNodes > 0) {
+          onProgress(index, totalNodes);
+        }
+      }
+
+      if (index < totalNodes) {
+        requestAnimationFrame(processChunk);
+      } else {
+        resolve();
+      }
+    }
+
+    if (totalNodes > 0) {
+      requestAnimationFrame(processChunk);
+    } else {
+      resolve();
+    }
+  });
 }
