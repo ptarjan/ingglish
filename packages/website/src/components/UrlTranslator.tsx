@@ -202,7 +202,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         <iframe
           ref={iframeRef}
           title="Translated page"
-          sandbox="allow-same-origin"
+          sandbox="allow-same-origin allow-scripts"
           className={`page-iframe ${hasContent && !isLoading ? 'page-iframe--ready' : ''}`}
         />
       </div>
