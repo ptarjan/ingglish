@@ -60,4 +60,17 @@ export interface DOMTranslatorOptions {
    * @default 'ingglish'
    */
   outputFormat?: OutputFormat;
+
+  /**
+   * Enable chunked DOM updates using requestAnimationFrame for smooth rendering.
+   * Prevents UI freezes on large pages.
+   * @default false
+   */
+  chunked?: boolean;
+
+  /**
+   * Number of text nodes to process per animation frame when chunked is enabled.
+   * @default 100
+   */
+  chunkSize?: number;
 }

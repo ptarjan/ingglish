@@ -85,14 +85,105 @@ function collectTextNodes(
   return textNodes;
 }
 
+// Default chunk size for chunked DOM updates
+const DEFAULT_CHUNK_SIZE = 100;
+
+/**
+ * Translates a single text node (internal helper).
+ */
+function translateTextNode(
+  textNode: Text,
+  showTooltips: boolean,
+  outputFormat: OutputFormat
+): void {
+  const originalText = textNode.textContent;
+  if (!originalText) {
+    return;
+  }
+
+  const parent = textNode.parentElement;
+
+  if (showTooltips) {
+    // Replace text node with tooltip spans
+    const fragment = createTooltipFragment(originalText, outputFormat);
+    // Store original text on parent for restoration
+    if (parent && !parent.hasAttribute('data-ingglish-original')) {
+      parent.setAttribute('data-ingglish-original', originalText);
+    }
+    textNode.replaceWith(fragment);
+  } else {
+    // Simple text replacement (original behavior)
+    if (parent && !parent.hasAttribute('data-ingglish-original')) {
+      parent.setAttribute('data-ingglish-original', originalText);
+    }
+    textNode.textContent = translateText(originalText, outputFormat);
+  }
+}
+
+/**
+ * Processes text nodes in chunks using requestAnimationFrame for smooth rendering.
+ */
+function translateNodesChunked(
+  textNodes: Text[],
+  showTooltips: boolean,
+  outputFormat: OutputFormat,
+  chunkSize: number,
+  onProgress?: (processed: number, total: number) => void
+): Promise<void> {
+  return new Promise((resolve) => {
+    const totalNodes = textNodes.length;
+    let index = 0;
+
+    function processChunk(): void {
+      const endIndex = Math.min(index + chunkSize, totalNodes);
+
+      // Process this chunk
+      while (index < endIndex) {
+        translateTextNode(textNodes[index], showTooltips, outputFormat);
+        index++;
+
+        if (onProgress && totalNodes > 0) {
+          onProgress(index, totalNodes);
+        }
+      }
+
+      // Schedule next chunk or complete
+      if (index < totalNodes) {
+        requestAnimationFrame(processChunk);
+      } else {
+        resolve();
+      }
+    }
+
+    // Start processing
+    if (totalNodes > 0) {
+      requestAnimationFrame(processChunk);
+    } else {
+      resolve();
+    }
+  });
+}
+
 /**
  * Translates all text content within a DOM element.
  * Uses a single DOM walk to collect and then translate text nodes.
  *
  * @param root The root element to translate
  * @param options Configuration options
+ * @returns Promise when chunked=true, void otherwise
  */
-export function translateDOM(root: Element | Document, options: DOMTranslatorOptions = {}): void {
+export function translateDOM(
+  root: Element | Document,
+  options: DOMTranslatorOptions & { chunked: true }
+): Promise<void>;
+export function translateDOM(
+  root: Element | Document,
+  options?: DOMTranslatorOptions & { chunked?: false }
+): void;
+export function translateDOM(
+  root: Element | Document,
+  options: DOMTranslatorOptions = {}
+): void | Promise<void> {
   requireBrowser();
 
   if (!isDictionaryLoaded()) {
@@ -106,6 +197,8 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
     showTooltips = false,
     onProgress,
     outputFormat = 'ingglish',
+    chunked = false,
+    chunkSize = DEFAULT_CHUNK_SIZE,
   } = options;
 
   // Get the document (works for both main document and iframes)
@@ -120,38 +213,23 @@ export function translateDOM(root: Element | Document, options: DOMTranslatorOpt
   const textNodes = collectTextNodes(root, skipTags, skipClasses);
   const totalNodes = textNodes.length;
 
-  // Translate each text node
-  for (let i = 0; i < textNodes.length; i++) {
-    const textNode = textNodes[i];
-    const originalText = textNode.textContent;
-    if (originalText) {
-      const parent = textNode.parentElement;
+  // Translate attributes if enabled (do this first, it's fast)
+  if (translateAttributes) {
+    translateElementAttributes(root, skipTags, skipClasses, outputFormat);
+  }
 
-      if (showTooltips) {
-        // Replace text node with tooltip spans
-        const fragment = createTooltipFragment(originalText, outputFormat);
-        // Store original text on parent for restoration
-        if (parent && !parent.hasAttribute('data-ingglish-original')) {
-          parent.setAttribute('data-ingglish-original', originalText);
-        }
-        textNode.replaceWith(fragment);
-      } else {
-        // Simple text replacement (original behavior)
-        if (parent && !parent.hasAttribute('data-ingglish-original')) {
-          parent.setAttribute('data-ingglish-original', originalText);
-        }
-        textNode.textContent = translateText(originalText, outputFormat);
-      }
-    }
+  // Chunked mode: use requestAnimationFrame for smooth rendering
+  if (chunked) {
+    return translateNodesChunked(textNodes, showTooltips, outputFormat, chunkSize, onProgress);
+  }
+
+  // Sync mode: translate all nodes immediately
+  for (let i = 0; i < totalNodes; i++) {
+    translateTextNode(textNodes[i], showTooltips, outputFormat);
 
     if (onProgress && totalNodes > 0) {
       onProgress(i + 1, totalNodes);
     }
-  }
-
-  // Translate attributes if enabled
-  if (translateAttributes) {
-    translateElementAttributes(root, skipTags, skipClasses, outputFormat);
   }
 }
 
@@ -257,13 +335,18 @@ function translateElementAttributes(
 
 /**
  * Async version that loads the dictionary first.
+ * When chunked=true, waits for chunked processing to complete.
  */
 export async function translateDOMAsync(
   root: Element | Document,
   options: DOMTranslatorOptions = {}
 ): Promise<void> {
   await loadDictionary();
-  translateDOM(root, options);
+  const result = translateDOM(root, options as DOMTranslatorOptions & { chunked: true });
+  // If chunked mode returns a Promise, await it
+  if (result instanceof Promise) {
+    await result;
+  }
 }
 
 /**

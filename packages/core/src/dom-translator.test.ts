@@ -444,6 +444,64 @@ describe('dom-translator', () => {
     });
   });
 
+  describe('chunked option', () => {
+    it('should return a Promise when chunked=true', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      const result = translateDOM(document.body, { chunked: true });
+      expect(result).toBeInstanceOf(Promise);
+      await result;
+      expect(document.body.textContent).toBe('Hulo werld');
+    });
+
+    it('should translate all text nodes in chunks', async () => {
+      // Create multiple text nodes
+      document.body.innerHTML =
+        '<div><p>Hello</p><p>World</p><p>Test</p><p>Case</p><p>Here</p></div>';
+      await translateDOM(document.body, { chunked: true, chunkSize: 2 });
+      // All should be translated
+      expect(document.body.textContent).toBe('HuloWerldTestKaysHeer');
+    });
+
+    it('should call onProgress for chunked translation', async () => {
+      document.body.innerHTML = '<div><p>Hello</p><p>World</p></div>';
+      const progressCalls: { processed: number; total: number }[] = [];
+
+      await translateDOM(document.body, {
+        chunked: true,
+        chunkSize: 1,
+        onProgress: (processed, total) => {
+          progressCalls.push({ processed, total });
+        },
+      });
+
+      expect(progressCalls.length).toBeGreaterThan(0);
+      // Last call should show all processed
+      const lastCall = progressCalls[progressCalls.length - 1];
+      expect(lastCall.processed).toBe(lastCall.total);
+    });
+
+    it('should work with tooltips in chunked mode', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await translateDOM(document.body, { chunked: true, showTooltips: true });
+
+      const spans = document.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(2);
+      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('Hello');
+    });
+
+    it('should handle empty document in chunked mode', async () => {
+      document.body.innerHTML = '';
+      await translateDOM(document.body, { chunked: true });
+      expect(document.body.textContent).toBe('');
+    });
+
+    it('translateDOMAsync should await chunked result', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await translateDOMAsync(document.body, { chunked: true });
+      expect(document.body.textContent).toBe('Hulo werld');
+    });
+  });
+
   describe('restoreDOM', () => {
     it('should restore text content from data-ingglish-original attribute', () => {
       // Set up DOM with translation markers

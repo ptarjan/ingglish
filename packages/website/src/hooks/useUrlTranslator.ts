@@ -83,11 +83,13 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error('Failed to access iframe content');
         }
 
-        // Translate the DOM with tooltips enabled
+        // Translate the DOM with tooltips and chunked updates for smooth rendering
         await translateDOM(iframeDoc.body, {
           translateAttributes: true,
           showTooltips: true,
           outputFormat,
+          chunked: true, // Use requestAnimationFrame for large pages
+          chunkSize: 100,
         });
 
         setHasContent(true);
