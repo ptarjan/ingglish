@@ -97,6 +97,12 @@ describe('translator', () => {
       expect(result).toContain('!');
     });
 
+    it('should preserve punctuation in IPA output', () => {
+      const result = translateSync('Hello, world!', 'ipa');
+      expect(result).toContain(',');
+      expect(result).toContain('!');
+    });
+
     it('should preserve whitespace', () => {
       const result = translateSync('hello   world');
       expect(result).toContain('   ');
