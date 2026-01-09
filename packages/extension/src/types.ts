@@ -27,13 +27,21 @@ export interface GetFormatMessage {
   type: 'GET_FORMAT';
 }
 
+// Batch translate words (for lightweight content script)
+export interface TranslateWordsMessage {
+  type: 'TRANSLATE_WORDS';
+  words: string[];
+  format: OutputFormat;
+}
+
 export type ExtensionMessage =
   | GetStateMessage
   | ToggleMessage
   | TranslateMessage
   | RestoreMessage
   | SetFormatMessage
-  | GetFormatMessage;
+  | GetFormatMessage
+  | TranslateWordsMessage;
 
 export interface StateResponse {
   enabled: boolean;
@@ -53,4 +61,9 @@ export interface TranslateResponse {
 
 export interface FormatResponse {
   format: OutputFormat;
+}
+
+// Response for batch translation
+export interface TranslateWordsResponse {
+  translations: Record<string, string>;
 }

@@ -64,7 +64,7 @@ export function restoreDOM(root: Element | Document): void {
 // Sync API (dictionary must be loaded first via translate/translateDOM)
 // =============================================================================
 
-export { translateText } from './translator';
+export { translateText, translateWord, loadDictionary, isDictionaryLoaded } from './translator';
 export { reverseTranslateText } from './reverse-translator';
 
 // =============================================================================

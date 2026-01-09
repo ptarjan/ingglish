@@ -1,7 +1,14 @@
 // Background service worker for Ingglish extension
 
 import type { OutputFormat } from '@ingglish/core';
-import type { ExtensionMessage, StateResponse, ToggleResponse, FormatResponse } from './types';
+import { loadDictionary, translateWord, isDictionaryLoaded } from '@ingglish/core';
+import type {
+  ExtensionMessage,
+  StateResponse,
+  ToggleResponse,
+  FormatResponse,
+  TranslateWordsResponse,
+} from './types';
 
 // Track which tabs have translation enabled
 const translatedTabs = new Set<number>();
@@ -41,12 +48,12 @@ function updateIcon(tabId: number, enabled: boolean): void {
     });
 }
 
-// Inject the translation script into a tab
+// Inject the lightweight translation script into a tab
 async function injectTranslator(tabId: number): Promise<boolean> {
   try {
     await chrome.scripting.executeScript({
       target: { tabId },
-      files: ['content.global.js'],
+      files: ['content-lite.global.js'],
     });
     return true;
   } catch (error) {
@@ -56,12 +63,31 @@ async function injectTranslator(tabId: number): Promise<boolean> {
   }
 }
 
+// Translate a batch of words (used by lightweight content script)
+function translateWords(words: string[], format: OutputFormat): Record<string, string> {
+  if (!isDictionaryLoaded()) {
+    return {};
+  }
+
+  const translations: Record<string, string> = {};
+  for (const word of words) {
+    const lowerWord = word.toLowerCase();
+    // Only translate if not already cached for this batch
+    if (!(lowerWord in translations)) {
+      translations[lowerWord] = translateWord(word, format);
+    }
+  }
+  return translations;
+}
+
 // Listen for messages from popup and content scripts
 chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
     sender,
-    sendResponse: (response: StateResponse | ToggleResponse | FormatResponse) => void
+    sendResponse: (
+      response: StateResponse | ToggleResponse | FormatResponse | TranslateWordsResponse
+    ) => void
   ) => {
     if (message.type === 'GET_STATE') {
       // Use sender's tab ID if available (from content script), otherwise query active tab (from popup)
@@ -95,6 +121,19 @@ chrome.runtime.onMessage.addListener(
       void setFormat(message.format).then(() => {
         sendResponse({ format: message.format });
       });
+      return true;
+    }
+
+    if (message.type === 'TRANSLATE_WORDS') {
+      // Ensure dictionary is loaded, then translate
+      void loadDictionary()
+        .then(() => {
+          const translations = translateWords(message.words, message.format);
+          sendResponse({ translations });
+        })
+        .catch(() => {
+          sendResponse({ translations: {} });
+        });
       return true;
     }
 
@@ -164,6 +203,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === 'complete' && enabled) {
     void injectTranslator(tabId);
   }
+});
+
+// Pre-load dictionary on service worker startup for faster translations
+void loadDictionary().then(() => {
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Dictionary loaded in background');
 });
 
 // eslint-disable-next-line no-console

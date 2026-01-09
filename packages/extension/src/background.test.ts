@@ -143,7 +143,7 @@ describe('background script', () => {
       await vi.waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith({
           target: { tabId: 456 },
-          files: ['content.global.js'],
+          files: ['content-lite.global.js'],
         });
       });
 
