@@ -191,9 +191,7 @@ const VALID_ONSETS = new Set([
   'T W',
   'T Y',
   'TH W',
-  'TH Y',
   'V Y',
-  'Z Y',
   // Two-consonant clusters: s + consonant
   'S K',
   'S L',
