@@ -3,6 +3,10 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   // Cache directory for faster subsequent runs
   cacheDir: './node_modules/.vite',
+  // Use esbuild for faster TypeScript transforms
+  esbuild: {
+    target: 'esnext', // Required for top-level await support
+  },
   test: {
     globals: true,
     environment: 'node',
@@ -12,13 +16,9 @@ export default defineConfig({
     },
     // Performance optimizations
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        // Share global state (dictionary) across tests for speed
-        isolate: false,
-        // Use all available CPU threads
-        useAtomics: true,
-      },
-    },
+    isolate: false, // Share global state (dictionary) across tests for speed
+    // Faster timeouts
+    testTimeout: 10000,
+    hookTimeout: 30000,
   },
 });
