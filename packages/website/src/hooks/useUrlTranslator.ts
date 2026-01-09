@@ -4,8 +4,8 @@
  * and intercepting link navigation.
  */
 import { useState, useCallback, useRef } from 'react';
-import { translateDOM } from '@ingglish/core';
-import type { OutputFormat } from '@ingglish/core';
+import { translateDOM } from '@ingglish/dom';
+import type { OutputFormat } from '@ingglish/dom';
 import { injectBaseTag, getBaseUrl, shouldSkipUrl, detectBotProtection } from '../utils/url';
 
 // Re-export utilities that components need

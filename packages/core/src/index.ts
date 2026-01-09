@@ -10,13 +10,12 @@
  */
 
 import { loadDictionary, translateText } from './translator';
-import { translateDOMAsync } from './dom-translator';
 
 // =============================================================================
 // Types
 // =============================================================================
 
-export type { DOMTranslatorOptions, OutputFormat } from './types';
+export type { OutputFormat } from './types';
 
 // =============================================================================
 // Primary API (auto-loads dictionary)
@@ -31,14 +30,17 @@ export async function translate(
   return translateText(text, format);
 }
 
-/** Translate all text in a DOM element. Supports chunked mode for large pages. */
-export const translateDOM = translateDOMAsync;
-
 // =============================================================================
-// Sync API (dictionary must be loaded first via translate/translateDOM)
+// Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateText, translateWord, loadDictionary, isDictionaryLoaded } from './translator';
+export {
+  translateText,
+  translateWord,
+  translateTextWithMapping,
+  loadDictionary,
+  isDictionaryLoaded,
+} from './translator';
 export { reverseTranslateText } from './reverse-translator';
 
 // =============================================================================

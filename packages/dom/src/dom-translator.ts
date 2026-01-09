@@ -6,7 +6,7 @@ import {
   translateTextWithMapping,
   loadDictionary,
   isDictionaryLoaded,
-} from './translator';
+} from '@ingglish/core';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {
   DEFAULT_SKIP_TAGS,

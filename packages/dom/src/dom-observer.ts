@@ -1,7 +1,7 @@
 /**
  * MutationObserver-based DOM translation for dynamic content.
  */
-import { translateText, isDictionaryLoaded, translateTextWithMapping } from './translator';
+import { translateText, isDictionaryLoaded, translateTextWithMapping } from '@ingglish/core';
 import { translateDOM } from './dom-translator';
 import type { DOMTranslatorOptions, OutputFormat } from './types';
 import {

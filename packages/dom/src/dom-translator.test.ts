@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { translateTextWithMapping } from './translator';
+import { translateTextWithMapping } from '@ingglish/core';
 import {
   translateDOM,
   translateDOMAsync,
