@@ -1,4 +1,4 @@
-import { arpabetToDisplay } from './arpabet-to-ingglish';
+import { arpabetToFormat } from './arpabet-to-ingglish';
 import { lookupPronunciation } from './translator';
 import { ipaToArpabet } from './ipa-to-arpabet';
 import type { OutputFormat } from './types';
@@ -119,7 +119,7 @@ export function translateAsAcronym(word: string, format: OutputFormat = 'ingglis
       arpabet.push(...letterArpabet);
     }
   }
-  return arpabetToDisplay(arpabet, format);
+  return arpabetToFormat(arpabet, format);
 }
 
 // Lazy-loaded phonemize function
@@ -302,7 +302,7 @@ export function translateWithStemming(
         const baseArpabet = lookupPronunciation(variant);
         if (baseArpabet) {
           const fullArpabet = [...baseArpabet, ...suffixArpabet];
-          return arpabetToDisplay(fullArpabet, format);
+          return arpabetToFormat(fullArpabet, format);
         }
       }
     }
@@ -315,7 +315,7 @@ export function translateWithStemming(
       const baseArpabet = lookupPronunciation(stem);
       if (baseArpabet) {
         const fullArpabet = [...prefixArpabet, ...baseArpabet];
-        return arpabetToDisplay(fullArpabet, format);
+        return arpabetToFormat(fullArpabet, format);
       }
     }
   }
@@ -366,7 +366,7 @@ export function wordToArpabet(word: string): string[] {
  */
 export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
   const arpabet = wordToArpabet(word);
-  return arpabetToDisplay(arpabet, format);
+  return arpabetToFormat(arpabet, format);
 }
 
 /**
@@ -392,7 +392,7 @@ export function translateWithPhonemize(
     if (arpabet.length === 0) {
       return null;
     }
-    return arpabetToDisplay(arpabet, format);
+    return arpabetToFormat(arpabet, format);
   } catch {
     return null;
   }

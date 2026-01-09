@@ -5,7 +5,7 @@
  * This is the reverse of ipa-to-arpabet.ts.
  */
 
-import { stripStress } from './arpabet-to-ingglish';
+import { stripStress, isVowel } from './arpabet-utils';
 
 // Vowel mappings (IPA symbols for ARPAbet vowels)
 export const IPA_VOWEL_MAP: Record<string, string> = {
@@ -123,16 +123,6 @@ export function arpabetPhonemeToIPA(phoneme: string): string {
   }
 
   return ipa;
-}
-
-/**
- * Check if an ARPAbet phoneme is a vowel (has stress marker or is a vowel sound).
- */
-function isVowel(phoneme: string): boolean {
-  const base = stripStress(phoneme);
-  // All ARPAbet vowels are 2-letter codes that start with A, E, I, O, U
-  // and can have stress markers (0, 1, 2)
-  return /^(AA|AE|AH|AO|AW|AY|EH|ER|EY|IH|IY|OW|OY|UH|UW)$/.test(base);
 }
 
 /**

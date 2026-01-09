@@ -12,8 +12,12 @@
  * - 24 consonants
  */
 
+import { stripStress } from './arpabet-utils';
 import { arpabetToIPARaw } from './arpabet-to-ipa';
 import type { OutputFormat } from './types';
+
+// Re-export stripStress for backwards compatibility
+export { stripStress } from './arpabet-utils';
 
 // Vowel mappings (stress markers will be stripped before lookup)
 export const VOWEL_MAP: Record<string, string> = {
@@ -85,14 +89,6 @@ export const ARPABET_MAP: Record<string, string> = {
 };
 
 /**
- * Strips stress markers (0, 1, 2) from a phoneme.
- * Example: "AH0" -> "AH", "EY1" -> "EY"
- */
-export function stripStress(phoneme: string): string {
-  return phoneme.replace(/[012]$/, '');
-}
-
-/**
  * Converts a single ARPAbet phoneme to Ingglish spelling.
  * Symmetric with arpabetPhonemeToIPA in arpabet-to-ipa.ts.
  */
@@ -127,7 +123,7 @@ export function arpabetToIngglish(arpabet: string[]): string {
  * @param format Output format ('ingglish' or 'ipa')
  * @returns Formatted string
  */
-export function arpabetToDisplay(arpabet: string[], format: OutputFormat = 'ingglish'): string {
+export function arpabetToFormat(arpabet: string[], format: OutputFormat = 'ingglish'): string {
   if (format === 'ipa') {
     return arpabetToIPARaw(arpabet);
   }
