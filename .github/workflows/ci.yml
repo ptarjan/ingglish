@@ -22,6 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build core (required for types)
+        run: npm run build -w @ingglish/core
+
       - name: Lint
         run: npm run lint
 
