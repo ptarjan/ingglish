@@ -1,5 +1,6 @@
 import { arpabetToFormat } from './arpabet-to-ingglish';
 import { translateUnknown } from './unknown-words';
+import { detectCasePattern, applyCasePattern } from './case-utils';
 import type { CMUDictionary, OutputFormat } from './types';
 
 /**
@@ -96,11 +97,8 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     return translateContraction(word, format);
   }
 
-  // Preserve case pattern
-  // Require length > 1 for all-caps to avoid treating single letters like "I" as acronyms
-  const isAllCaps = word.length > 1 && word === word.toUpperCase() && /[A-Z]/.test(word);
-  const isCapitalized =
-    word.length > 1 && /^[A-Z]/.test(word) && word.slice(1) === word.slice(1).toLowerCase();
+  // Detect case pattern for preservation
+  const casePattern = detectCasePattern(word);
 
   const phonemes = lookupPronunciation(word);
 
@@ -115,11 +113,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
 
     // Apply original case pattern to fallback result (only for Ingglish)
     if (format === 'ingglish') {
-      if (isAllCaps) {
-        return fallbackResult.toUpperCase();
-      } else if (isCapitalized) {
-        return fallbackResult.charAt(0).toUpperCase() + fallbackResult.slice(1);
-      }
+      return applyCasePattern(fallbackResult, casePattern, word);
     }
     return fallbackResult;
   }
@@ -128,11 +122,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
 
   // Apply original case pattern (only for Ingglish, IPA doesn't use case)
   if (format === 'ingglish') {
-    if (isAllCaps) {
-      result = result.toUpperCase();
-    } else if (isCapitalized) {
-      result = result.charAt(0).toUpperCase() + result.slice(1);
-    }
+    result = applyCasePattern(result, casePattern, word);
   }
 
   return result;
@@ -155,16 +145,9 @@ function translateContraction(token: string, format: OutputFormat = 'ingglish'):
     // since "I" is only capitalized due to English grammar rules
     if (format === 'ingglish') {
       const isIContraction = /^I'/i.test(token);
-      const isAllCaps =
-        !isIContraction && token.length > 1 && token === token.toUpperCase() && /[A-Z]/.test(token);
-      const isCapitalized =
-        !isIContraction && /^[A-Z]/.test(token) && token.slice(1) === token.slice(1).toLowerCase();
-
-      if (isAllCaps) {
-        return translated.toUpperCase();
-      }
-      if (isCapitalized) {
-        return translated.charAt(0).toUpperCase() + translated.slice(1);
+      if (!isIContraction) {
+        const casePattern = detectCasePattern(token);
+        return applyCasePattern(translated, casePattern, token);
       }
     }
     return translated;

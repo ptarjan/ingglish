@@ -26,9 +26,12 @@ describe('case-utils', () => {
       expect(detectCasePattern('I')).toBe('lower');
     });
 
-    it('should treat mixed case as lowercase', () => {
-      // Words like "McDonald" don't fit our patterns, default to lower
-      expect(detectCasePattern('hElLo')).toBe('lower');
+    it('should detect mixed case', () => {
+      // Words like "GitHub", "iPhone", "McDonald" have internal capitals
+      expect(detectCasePattern('GitHub')).toBe('mixed');
+      expect(detectCasePattern('iPhone')).toBe('mixed');
+      expect(detectCasePattern('McDonald')).toBe('mixed');
+      expect(detectCasePattern('hElLo')).toBe('mixed');
     });
   });
 
@@ -53,21 +56,44 @@ describe('case-utils', () => {
       expect(applyCasePattern('', 'lower')).toBe('');
       expect(applyCasePattern('', 'capitalized')).toBe('');
     });
+
+    it('should apply mixed case with original word', () => {
+      // "GitHub" -> "github" should preserve caps at positions 0 and 3
+      expect(applyCasePattern('github', 'mixed', 'GitHub')).toBe('GitHub');
+      // "iPhone" has 'P' uppercase at position 1, so position 1 becomes uppercase
+      expect(applyCasePattern('aifon', 'mixed', 'iPhone')).toBe('aIfon');
+    });
+
+    it('should handle mixed case when translated is longer', () => {
+      // If translated is longer than original, extra chars are lowercase
+      expect(applyCasePattern('githubextra', 'mixed', 'GitHub')).toBe('GitHubextra');
+    });
+
+    it('should handle mixed case without original (defaults to lower)', () => {
+      expect(applyCasePattern('github', 'mixed')).toBe('github');
+    });
   });
 
   describe('round-trip', () => {
     it('should preserve case pattern through detect -> apply', () => {
       const testCases = [
-        { word: 'hello', expected: 'world' },
-        { word: 'HELLO', expected: 'WORLD' },
-        { word: 'Hello', expected: 'World' },
+        { word: 'hello', translated: 'world', expected: 'world' },
+        { word: 'HELLO', translated: 'world', expected: 'WORLD' },
+        { word: 'Hello', translated: 'world', expected: 'World' },
       ];
 
-      for (const { word, expected } of testCases) {
+      for (const { word, translated, expected } of testCases) {
         const pattern = detectCasePattern(word);
-        const result = applyCasePattern('world', pattern);
+        const result = applyCasePattern(translated, pattern, word);
         expect(result).toBe(expected);
       }
+    });
+
+    it('should preserve mixed case through detect -> apply', () => {
+      const pattern = detectCasePattern('GitHub');
+      expect(pattern).toBe('mixed');
+      const result = applyCasePattern('github', pattern, 'GitHub');
+      expect(result).toBe('GitHub');
     });
   });
 });

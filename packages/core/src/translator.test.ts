@@ -202,6 +202,20 @@ describe('translator', () => {
       expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
       expect(result.slice(1)).toBe(result.slice(1).toLowerCase());
     });
+
+    it('should preserve mixed case on unknown words like GitHub', () => {
+      // GitHub has internal capital - should preserve position-by-position
+      const result = translateWord('GitHub');
+      expect(result).toBe('GitHub');
+    });
+
+    it('should translate GitHub with correct phonetics (t+h not θ)', () => {
+      // GitHub = git + hub, the "th" should NOT become theta sound
+      const ipa = translateWord('GitHub', 'ipa');
+      expect(ipa).toContain('t'); // separate t
+      expect(ipa).toContain('h'); // separate h
+      expect(ipa).not.toContain('θ'); // NOT theta digraph
+    });
   });
 
   describe('edge cases for coverage', () => {

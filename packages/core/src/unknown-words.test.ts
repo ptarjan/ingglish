@@ -4,6 +4,7 @@ import {
   translateWithRules,
   translateUnknown,
   translateAsAcronym,
+  translateAsCompound,
   wordToArpabet,
   translateWithPhonemize,
   preloadPhonemize,
@@ -91,6 +92,45 @@ describe('unknown-words', () => {
       // For a completely made-up word, should use rules
       const result = translateUnknown('blargification');
       expect(result).toBeDefined();
+    });
+
+    it('should use custom pronunciations for tech terms', () => {
+      // "git" is in our custom dictionary
+      const result = translateUnknown('git');
+      expect(result).toBe('git'); // G IH1 T -> git
+    });
+
+    it('should handle compound words like github', () => {
+      // github = git (custom) + hub (CMU) -> github
+      const result = translateUnknown('github');
+      expect(result).toBe('github'); // git + hub
+    });
+
+    it('should produce correct IPA for github', () => {
+      // github should be /ɡɪthʌb/ NOT /ɡɪθʌb/
+      const result = translateUnknown('github', 'ipa');
+      expect(result).toContain('t'); // separate t
+      expect(result).toContain('h'); // separate h
+      expect(result).not.toContain('θ'); // NOT theta
+    });
+  });
+
+  describe('translateAsCompound', () => {
+    it('should split compound words into known parts', () => {
+      // "sunlight" = sun + light (both in CMU)
+      const result = translateAsCompound('sunlight');
+      expect(result).toBeDefined();
+      expect(result).not.toBeNull();
+    });
+
+    it('should return null for non-compound words', () => {
+      const result = translateAsCompound('xyzzy');
+      expect(result).toBeNull();
+    });
+
+    it('should handle github with custom git', () => {
+      const result = translateAsCompound('github');
+      expect(result).toBe('github');
     });
   });
 

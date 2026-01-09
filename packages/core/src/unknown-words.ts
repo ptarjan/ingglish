@@ -4,6 +4,27 @@ import { ipaToArpabet } from './ipa-to-arpabet';
 import type { OutputFormat } from './types';
 
 /**
+ * Custom pronunciations for common words not in CMU dictionary.
+ * Primarily tech terms, brand names, and neologisms.
+ */
+const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
+  // Tech terms
+  git: ['G', 'IH1', 'T'],
+  npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // spelled out
+  oauth: ['OW1', 'AO1', 'TH'],
+  async: ['EY1', 'S', 'IH0', 'NG', 'K'],
+  sudo: ['S', 'UW1', 'D', 'OW0'],
+  webpack: ['W', 'EH1', 'B', 'P', 'AE1', 'K'],
+  localhost: ['L', 'OW1', 'K', 'AH0', 'L', 'HH', 'OW1', 'S', 'T'],
+  bitcoin: ['B', 'IH1', 'T', 'K', 'OY1', 'N'],
+  podcast: ['P', 'AA1', 'D', 'K', 'AE1', 'S', 'T'],
+  emoji: ['IH0', 'M', 'OW1', 'JH', 'IY0'],
+  meme: ['M', 'IY1', 'M'],
+  vlog: ['V', 'L', 'AO1', 'G'],
+  blog: ['B', 'L', 'AO1', 'G'],
+};
+
+/**
  * Phonemes for individual letters (for spelling out acronyms).
  * Based on how native English speakers pronounce alphabet letters.
  */
@@ -399,22 +420,81 @@ export function translateWithPhonemize(
 }
 
 /**
+ * Looks up pronunciation in custom dictionary or CMU.
+ * Custom pronunciations take precedence.
+ */
+function lookupWithCustom(word: string): string[] | null {
+  const lower = word.toLowerCase();
+  const custom = CUSTOM_PRONUNCIATIONS[lower];
+  if (custom !== undefined) {
+    return custom;
+  }
+  return lookupPronunciation(word);
+}
+
+/**
+ * Attempts to translate an unknown word by splitting it into compound parts.
+ * Tries to find a split point where both parts are known dictionary words.
+ *
+ * @param word The unknown word
+ * @param format The output format
+ * @returns The translated word, or null if no valid split found
+ */
+export function translateAsCompound(
+  word: string,
+  format: OutputFormat = 'ingglish'
+): string | null {
+  const lowerWord = word.toLowerCase();
+
+  // Try each possible split point (minimum 2 chars each side)
+  for (let i = 2; i < lowerWord.length - 1; i++) {
+    const left = lowerWord.slice(0, i);
+    const right = lowerWord.slice(i);
+
+    const leftPhonemes = lookupWithCustom(left);
+    const rightPhonemes = lookupWithCustom(right);
+
+    if (leftPhonemes && rightPhonemes) {
+      // Both parts are known words - combine their pronunciations
+      const combined = [...leftPhonemes, ...rightPhonemes];
+      return arpabetToFormat(combined, format);
+    }
+  }
+
+  return null;
+}
+
+/**
  * Attempts all strategies to translate an unknown word.
  *
  * Strategy order:
- * 1. Check if it's an acronym (spell out letters)
- * 2. Try stemming (find known base word + known suffix)
- * 3. Try phonemize (neural G2P) if available
- * 4. Try grapheme-to-phoneme rules
+ * 1. Check custom pronunciations first
+ * 2. Check if it's an acronym (spell out letters)
+ * 3. Try compound word splitting (git+hub)
+ * 4. Try stemming (find known base word + known suffix)
+ * 5. Try phonemize (neural G2P) if available
+ * 6. Try grapheme-to-phoneme rules
  *
  * @param word The unknown word
  * @param format The output format
  * @returns The translated word
  */
 export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
-  // Check for initialisms first (URL -> yooahrel)
+  // Check custom pronunciations first
+  const customPhonemes = CUSTOM_PRONUNCIATIONS[word.toLowerCase()];
+  if (customPhonemes !== undefined) {
+    return arpabetToFormat(customPhonemes, format);
+  }
+
+  // Check for initialisms (URL -> yooahrel)
   if (isInitialism(word)) {
     return translateAsAcronym(word, format);
+  }
+
+  // Try compound word splitting (github -> git + hub)
+  const compoundResult = translateAsCompound(word, format);
+  if (compoundResult !== null && compoundResult.length > 0) {
+    return compoundResult;
   }
 
   // Try stemming
