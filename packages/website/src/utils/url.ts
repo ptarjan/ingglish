@@ -105,7 +105,21 @@ export function stripScripts(html: string): string {
         el.remove();
       });
 
-    return doc.documentElement.outerHTML;
+    // Remove inline event handlers (onclick, onload, onerror, etc.)
+    doc.querySelectorAll('*').forEach((el) => {
+      Array.from(el.attributes).forEach((attr) => {
+        if (attr.name.startsWith('on')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    // Preserve doctype if present
+    const doctype = doc.doctype
+      ? `<!DOCTYPE ${doc.doctype.name}${doc.doctype.publicId ? ` PUBLIC "${doc.doctype.publicId}"` : ''}${doc.doctype.systemId ? ` "${doc.doctype.systemId}"` : ''}>`
+      : '';
+
+    return doctype + doc.documentElement.outerHTML;
   }
 
   // Fallback to regex for Node.js/test environments
