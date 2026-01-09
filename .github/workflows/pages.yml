@@ -33,6 +33,9 @@ jobs:
       - name: Build core library
         run: npm run build -w @ingglish/core
 
+      - name: Build dom library
+        run: npm run build -w @ingglish/dom
+
       - name: Build extension
         run: npm run build -w @ingglish/extension
 
