@@ -96,15 +96,31 @@ test.describe('URL Translator Navigation', () => {
     const link = iframe.locator('a[href*="page-b"]');
     await expect(link).toBeVisible();
 
+    // Verify link has event handlers attached
+    const hasEventHandlers = await link.evaluate((el) => {
+      // Check if the element responds to touch events
+      return el.getAttribute('href')?.includes('page-b');
+    });
+    expect(hasEventHandlers).toBe(true);
+
     const box = await link.boundingBox();
     expect(box).toBeTruthy();
     if (box) {
       await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
     }
 
+    // Wait for URL change - this is the key assertion
     await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
+
+    // Verify iframe reloads
     await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+
+    // Verify new content is translated
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
+
+    // Verify translation was applied
+    const wordCount = await iframe.locator('.ingglish-word').count();
+    expect(wordCount).toBeGreaterThan(0);
   });
 
   test('back button returns to previous page', async ({ page }, testInfo) => {
