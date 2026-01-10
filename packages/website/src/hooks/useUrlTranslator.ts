@@ -44,6 +44,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   );
   // Track the current base URL for resolving relative links from postMessage
   const baseUrlRef = useRef<string | null>(null);
+  // Track the previous format to detect changes
+  const prevFormatRef = useRef<OutputFormat>(outputFormat);
 
   const translateUrl = useCallback(
     async (targetUrl: string, pushHistory = true): Promise<void> => {
@@ -226,6 +228,18 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       window.removeEventListener('pageshow', handlePageShow);
     };
   }, []);
+
+  // Retranslate when output format changes
+  useEffect(() => {
+    if (prevFormatRef.current !== outputFormat && hasContent && url.length > 0) {
+      // Format changed and we have content - retranslate without pushing history
+      translateUrlRef.current?.(url, false).catch((err: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error('Format change retranslation failed:', err);
+      });
+    }
+    prevFormatRef.current = outputFormat;
+  }, [outputFormat, hasContent, url]);
 
   return {
     url,

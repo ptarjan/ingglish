@@ -6,8 +6,6 @@ vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 // Type definitions for chrome API mock
 type QueryCallback = (tabs: { id?: number }[]) => void;
-type StorageGetCallback = (data: { format?: string }) => void;
-type StorageSetCallback = (() => void) | undefined;
 type SendMessageCallback = ((response: object) => void) | undefined;
 
 // Mock chrome API
@@ -38,20 +36,12 @@ const mockChrome = {
   },
   storage: {
     sync: {
-      get: vi
-        .fn<(keys: string[], callback: StorageGetCallback) => undefined>()
-        .mockImplementation((_keys: string[], callback: StorageGetCallback) => {
-          callback({ format: 'ingglish' });
-          return undefined;
-        }),
-      set: vi
-        .fn<(data: object, callback: StorageSetCallback) => undefined>()
-        .mockImplementation((_data: object, callback: StorageSetCallback) => {
-          if (callback !== undefined) {
-            callback();
-          }
-          return undefined;
-        }),
+      get: vi.fn().mockResolvedValue({ outputFormat: 'ingglish' }),
+      set: vi.fn().mockResolvedValue(undefined),
+    },
+    local: {
+      get: vi.fn().mockResolvedValue({}),
+      set: vi.fn().mockResolvedValue(undefined),
     },
   },
 };
@@ -330,6 +320,84 @@ describe('background script', () => {
       expect(cacheStats.hits).toBe(0);
       expect(cacheStats.misses).toBe(0);
       expect(cacheStats.size()).toBe(0);
+    });
+  });
+
+  describe('SET_FORMAT message', () => {
+    it('saves the new format and responds with it', async () => {
+      const sendResponse = vi.fn();
+
+      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+
+      await vi.waitFor(() => {
+        expect(mockChrome.storage.sync.set).toHaveBeenCalledWith({ outputFormat: 'ipa' });
+        expect(sendResponse).toHaveBeenCalledWith({ format: 'ipa' });
+      });
+    });
+
+    it('sends RETRANSLATE to all translated tabs when format changes', async () => {
+      // First enable translation for two tabs
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: 501 }]);
+      });
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
+      });
+
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: 502 }]);
+      });
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
+      });
+
+      // Mock sendMessage to track calls
+      mockChrome.tabs.sendMessage.mockClear();
+      mockChrome.tabs.sendMessage.mockImplementation(
+        (_tabId: number, _message: object, callback: SendMessageCallback) => {
+          if (callback !== undefined) {
+            callback({ success: true });
+          }
+        }
+      );
+
+      // Change format to IPA
+      const sendResponse = vi.fn();
+      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+
+      await vi.waitFor(() => {
+        // Should send RETRANSLATE to both tabs
+        expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
+          501,
+          { type: 'RETRANSLATE', format: 'ipa' },
+          expect.any(Function)
+        );
+        expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
+          502,
+          { type: 'RETRANSLATE', format: 'ipa' },
+          expect.any(Function)
+        );
+      });
+    });
+
+    it('does not send RETRANSLATE when no tabs are translated', async () => {
+      mockChrome.tabs.sendMessage.mockClear();
+
+      const sendResponse = vi.fn();
+      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+
+      await vi.waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ format: 'ipa' });
+      });
+
+      // No tabs should receive RETRANSLATE
+      expect(mockChrome.tabs.sendMessage).not.toHaveBeenCalledWith(
+        expect.anything(),
+        { type: 'RETRANSLATE', format: 'ipa' },
+        expect.any(Function)
+      );
     });
   });
 });
