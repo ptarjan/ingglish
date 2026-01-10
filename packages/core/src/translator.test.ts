@@ -128,13 +128,14 @@ describe('translator', () => {
       expect(result).toBe('Chiinuz ikahnumee');
     });
 
-    it('should preserve capitalization on I and I-contractions', () => {
-      // Capitalization is preserved (e.g., "A cat" keeps the capital A)
-      expect(translateSync('I')).toBe('Ii');
-      expect(translateSync("I'm")).toBe('Iim');
-      expect(translateSync("I'll")).toBe('Iil');
-      expect(translateSync("I've")).toBe('Iiv');
-      expect(translateSync("I'd")).toBe('Iid');
+    it('should treat I as lowercase (English capitalizes I by convention only)', () => {
+      // "I" is always capitalized in English, but it's just a pronoun
+      // In Ingglish, there's no special reason to capitalize it
+      expect(translateSync('I')).toBe('ii');
+      expect(translateSync("I'm")).toBe('iim');
+      expect(translateSync("I'll")).toBe('iil');
+      expect(translateSync("I've")).toBe('iiv');
+      expect(translateSync("I'd")).toBe('iid');
       // Lowercase remains lowercase
       expect(translateSync('i')).toBe('ii');
     });

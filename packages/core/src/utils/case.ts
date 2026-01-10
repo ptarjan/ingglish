@@ -13,7 +13,12 @@ export function detectCasePattern(word: string): CasePattern {
   }
 
   // Single characters: check if uppercase
+  // Exception: "I" is always capitalized in English by convention, but it's just
+  // a regular pronoun, not special - treat it as lowercase for translation
   if (word.length === 1) {
+    if (word === 'I') {
+      return 'lower';
+    }
     return word === word.toUpperCase() && word !== word.toLowerCase() ? 'capitalized' : 'lower';
   }
 

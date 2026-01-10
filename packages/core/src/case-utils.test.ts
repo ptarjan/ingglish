@@ -33,7 +33,9 @@ describe('case-utils', () => {
       expect(detectCasePattern('i')).toBe('lower');
       // Uppercase single chars (preserves "A" at start of sentence)
       expect(detectCasePattern('A')).toBe('capitalized');
-      expect(detectCasePattern('I')).toBe('capitalized');
+      // "I" is special: always capitalized in English by convention, but just a pronoun
+      // Treat as lowercase for translation purposes
+      expect(detectCasePattern('I')).toBe('lower');
       // Non-letter characters
       expect(detectCasePattern('5')).toBe('lower');
     });

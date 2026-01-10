@@ -40,6 +40,11 @@ export function translateContraction(token: string, format: OutputFormat = 'ingg
 
     // Preserve case (only for Ingglish)
     if (format === 'ingglish') {
+      // Special case: I-contractions (I'm, I'll, I've, I'd) should be lowercase
+      // because "I" is only capitalized in English by convention, not phonetically special
+      if (token.toLowerCase().startsWith("i'")) {
+        return translated.toLowerCase();
+      }
       const casePattern = detectCasePattern(token);
       return applyCasePattern(translated, casePattern, token);
     }
