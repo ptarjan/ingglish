@@ -7,7 +7,10 @@ import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils'
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
-const DEFAULT_CHUNK_SIZE = 100;
+const DEFAULT_CHUNK_SIZE = 200;
+
+// Threshold for synchronous processing (avoid RAF overhead for small pages)
+const SYNC_THRESHOLD = 500;
 
 /**
  * Options for applying pre-computed translations.
@@ -17,8 +20,53 @@ export interface ApplyTranslationsOptions {
   showTooltips?: boolean;
   /** Number of text nodes to process per animation frame */
   chunkSize?: number;
+  /** Pre-collected text nodes (avoids re-traversing DOM) */
+  textNodes?: Text[];
   /** Callback for progress updates */
   onProgress?: (processed: number, total: number) => void;
+}
+
+/**
+ * Process a single text node, applying translations.
+ */
+function processTextNode(
+  textNode: Text,
+  translations: Record<string, string>,
+  showTooltips: boolean
+): void {
+  const parent = textNode.parentElement;
+
+  if (parent && !parent.hasAttribute('data-ingglish-original')) {
+    parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
+  }
+
+  if (showTooltips) {
+    const fragment = createTooltipFragmentFromMap(textNode.textContent ?? '', translations);
+    textNode.replaceWith(fragment);
+  } else {
+    // Simple text replacement without tooltips
+    const text = textNode.textContent ?? '';
+    const normalized = normalizeApostrophes(text);
+    let result = '';
+    const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
+    for (const token of tokens) {
+      if (!token) {
+        continue;
+      }
+      if (/^[a-zA-Z']+$/.test(token)) {
+        const translated = translations[token.toLowerCase()];
+        if (translated) {
+          const pattern = detectCasePattern(token);
+          result += applyCasePattern(translated, pattern, token);
+        } else {
+          result += token;
+        }
+      } else {
+        result += token;
+      }
+    }
+    textNode.textContent = result;
+  }
 }
 
 /**
@@ -37,7 +85,12 @@ export function applyTranslationsMap(
 ): Promise<void> {
   requireBrowser();
 
-  const { showTooltips = true, chunkSize = DEFAULT_CHUNK_SIZE, onProgress } = options;
+  const {
+    showTooltips = true,
+    chunkSize = DEFAULT_CHUNK_SIZE,
+    textNodes: preCollectedNodes,
+    onProgress,
+  } = options;
 
   // Get the document for style injection
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
@@ -45,10 +98,22 @@ export function applyTranslationsMap(
     injectTooltipStyles(targetDoc);
   }
 
-  // Collect all text nodes
-  const textNodes = collectTextNodes(root);
+  // Use pre-collected nodes if provided, otherwise collect them
+  const textNodes = preCollectedNodes ?? collectTextNodes(root);
   const totalNodes = textNodes.length;
 
+  // For small pages, process synchronously to avoid RAF overhead
+  if (totalNodes <= SYNC_THRESHOLD) {
+    for (let i = 0; i < totalNodes; i++) {
+      processTextNode(textNodes[i], translations, showTooltips);
+      if (onProgress) {
+        onProgress(i + 1, totalNodes);
+      }
+    }
+    return Promise.resolve();
+  }
+
+  // For larger pages, chunk the work across animation frames
   return new Promise((resolve) => {
     let index = 0;
 
@@ -56,41 +121,7 @@ export function applyTranslationsMap(
       const endIndex = Math.min(index + chunkSize, totalNodes);
 
       while (index < endIndex) {
-        const textNode = textNodes[index];
-        const parent = textNode.parentElement;
-
-        if (parent && !parent.hasAttribute('data-ingglish-original')) {
-          parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
-        }
-
-        if (showTooltips) {
-          const fragment = createTooltipFragmentFromMap(textNode.textContent ?? '', translations);
-          textNode.replaceWith(fragment);
-        } else {
-          // Simple text replacement without tooltips
-          const text = textNode.textContent ?? '';
-          const normalized = normalizeApostrophes(text);
-          let result = '';
-          const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
-          for (const token of tokens) {
-            if (!token) {
-              continue;
-            }
-            if (/^[a-zA-Z']+$/.test(token)) {
-              const translated = translations[token.toLowerCase()];
-              if (translated) {
-                const pattern = detectCasePattern(token);
-                result += applyCasePattern(translated, pattern, token);
-              } else {
-                result += token;
-              }
-            } else {
-              result += token;
-            }
-          }
-          textNode.textContent = result;
-        }
-
+        processTextNode(textNodes[index], translations, showTooltips);
         index++;
 
         if (onProgress && totalNodes > 0) {
@@ -105,10 +136,6 @@ export function applyTranslationsMap(
       }
     }
 
-    if (totalNodes > 0) {
-      requestAnimationFrame(processChunk);
-    } else {
-      resolve();
-    }
+    requestAnimationFrame(processChunk);
   });
 }

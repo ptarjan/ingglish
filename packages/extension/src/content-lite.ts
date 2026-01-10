@@ -207,7 +207,7 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   const applyStart = performance.now();
   await applyTranslationsMap(document.body, translations, {
     showTooltips: true,
-    chunkSize: 100,
+    textNodes, // Pass pre-collected nodes to avoid re-traversing DOM
   });
   perf.applyDOM = performance.now() - applyStart;
 
