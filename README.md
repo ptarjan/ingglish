@@ -88,16 +88,7 @@ Then open http://localhost:3000
 
 ### Chrome Extension
 
-```bash
-# Build the extension
-npm run build -w @ingglish/extension
-
-# Load in Chrome:
-# 1. Go to chrome://extensions
-# 2. Enable "Developer mode"
-# 3. Click "Load unpacked"
-# 4. Select packages/extension/dist
-```
+See [Extension Setup Guide](docs/extension-setup.md) for build and installation instructions.
 
 ## Phoneme Mapping
 
@@ -106,7 +97,7 @@ Each sound maps to exactly one spelling:
 | Sound | Ingglish | Examples |
 |-------|---------|----------|
 | Long "e" | ee | bee, see |
-| Long "i" | ai | my, time |
+| Long "i" | ii | my, time |
 | Long "o" | o | go, show |
 | Voiced "th" | dh | the, this |
 | Unvoiced "th" | th | think, bath |
@@ -132,74 +123,60 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 ## Development
 
 ```bash
-# Run tests
-npm test
-
-# Build all packages
-npm run build
-
-# Run website dev server
-npm run dev -w @ingglish/website
+npm test                           # Run all tests
+npm run build                      # Build all packages
+npm run dev -w @ingglish/website   # Run website dev server
 ```
 
-### CLI Scripts
+See [Contributing Guide](docs/contributing.md) for detailed development workflow, testing guidelines, and code style.
 
-The core package includes useful CLI scripts for translation and debugging:
+### CLI Scripts
 
 ```bash
 cd packages/core
 
-# Translate text to Ingglish (shows word-by-word breakdown)
-npm run translate "I'm going to the store"
-# Output:
-# ✓ "I'm" -> "aim" -> "i'm"
-# ✓ "going" -> "going" -> "going"
-# Full translation: aim going too dhu stawr
+# Translate text (shows word-by-word breakdown)
+npm run translate "Hello world"
 
-# Reverse translate Ingglish back to English
-npm run translate -- -r "aim going too dhu stawr"
-# Output: i'm going to the store
+# Reverse translate
+npm run translate -- -r "hulo werld"
 
-# Debug round-trip issues with detailed phoneme analysis
+# Debug round-trip issues
 npm run debug:roundtrip "beautiful"
-# Shows: CMU phonemes, translation steps, comparison
 ```
 
 ## How Unknown Words Are Handled
 
-For words not in the CMU dictionary, Ingglish uses:
+For words not in the CMU dictionary, Ingglish uses a multi-step fallback strategy:
 
-1. **Stemming** - Tries to find a known base word (e.g., "running" → "run" + "ing")
-2. **Grapheme-to-phoneme rules** - Falls back to letter-to-sound conversion rules
+1. **Custom pronunciations** - Known tech terms and brand names (e.g., "GitHub" → "git-hub")
+2. **Initialisms** - Spell out as letters (e.g., "URL" → "you-are-ell", "API" → "ay-pee-ii")
+3. **Compound splitting** - Split on common boundaries (e.g., "github" → "git" + "hub")
+4. **Stemming** - Find known base word + suffix (e.g., "running" → "run" + "ing")
+5. **Neural G2P** - Use grapheme-to-phoneme neural network for complex words
+6. **Rule-based G2P** - Fall back to letter-to-sound conversion rules
 
 ## Deployment
 
-### Website
-Deploy to Vercel or Netlify with one click:
+Deploy the website with one click:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ptarjan/ingglish&root-directory=packages/website)
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ptarjan/ingglish)
 
-See [docs/deployment.md](docs/deployment.md) for detailed deployment instructions.
-
-### Chrome Extension
-Build and load locally, or publish to Chrome Web Store.
-
-## CI/CD
-
-GitHub Actions workflow included for:
-- Running tests on every PR
-- Building all packages
-- Auto-deploying to Vercel on merge to main
+See [Deployment Guide](docs/deployment.md) for detailed instructions on deploying the website, Chrome extension, and CORS proxy.
 
 ## Documentation
 
-- [API Reference](docs/api-reference.md) - Complete API documentation
-- [Phoneme Mapping](docs/phoneme-mapping.md) - How sounds map to spellings
-- [Architecture](docs/architecture.md) - System design overview
-- [Deployment](docs/deployment.md) - Deployment instructions
-- [Extension Setup](docs/extension-setup.md) - Chrome extension guide
-- [Contributing](docs/contributing.md) - How to contribute
+### Reference
+- [API Reference](docs/api-reference.md) - Complete API for @ingglish/core and @ingglish/dom
+- [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA conversion rules
+- [Architecture](docs/architecture.md) - System design, data flow, and module structure
+
+### Guides
+- [Contributing](docs/contributing.md) - Development setup and workflow
+- [Extension Setup](docs/extension-setup.md) - Chrome extension build and installation
+- [Deployment](docs/deployment.md) - Deploy website, extension, and CORS proxy
+- [Debugging](docs/debugging.md) - Diagnose round-trip translation issues
 
 ## License
 

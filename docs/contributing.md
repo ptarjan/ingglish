@@ -75,10 +75,11 @@ npm run check
 
 ```
 packages/
-├── core/           # Translation library (TypeScript)
+├── core/           # Translation library (TypeScript, Node.js & Browser)
+├── dom/            # DOM translation utilities (Browser only)
 ├── website/        # React web app (Vite + TypeScript)
-├── extension/      # Chrome extension
-└── cors-proxy/     # Cloudflare Worker
+├── extension/      # Chrome extension (Manifest V3)
+└── cors-proxy/     # Cloudflare Worker (CORS proxy)
 ```
 
 ## Making Changes
@@ -96,28 +97,38 @@ packages/
 2. Run `npm run dev -w @ingglish/website` for live reload
 3. Run `npm test -w @ingglish/website` for e2e tests
 
+### Extension Changes
+
+1. Make changes in `packages/extension/src/`
+2. Run `npm run build -w @ingglish/extension` to rebuild
+3. Reload the extension in Chrome (`chrome://extensions` > refresh icon)
+
+See [Extension Setup](extension-setup.md) for build and loading instructions.
+
 ### Adding New ARPAbet Mappings
 
-Edit `packages/core/src/arpabet-to-ingglish.ts`:
+Edit `packages/core/src/convert/ingglish-maps.ts`:
 
 ```typescript
-const VOWEL_MAP: Record<string, string> = {
+export const VOWEL_MAP: Record<string, string> = {
   // Add new ARPAbet vowel → Ingglish mappings here
 };
 
-const CONSONANT_MAP: Record<string, string> = {
+export const CONSONANT_MAP: Record<string, string> = {
   // Add new ARPAbet consonant → Ingglish mappings here
 };
 ```
 
-For IPA conversion, edit `packages/core/src/arpabet-to-ipa.ts`.
+For IPA conversion, edit `packages/core/src/convert/ipa-maps.ts`.
 
 ### Improving Unknown Word Handling
 
-Edit `packages/core/src/unknown-words.ts`:
+Edit files in `packages/core/src/fallback/`:
 
-- Add suffix rules to `SUFFIX_RULES`
-- Add grapheme patterns to `G2P_RULES`
+- `custom-words.ts` - Add pronunciations for tech terms, brand names
+- `stemming.ts` - Add suffix rules
+- `compounds.ts` - Add compound word patterns
+- `acronyms.ts` - Add initialism handling
 
 ## Testing Guidelines
 

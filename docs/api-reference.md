@@ -35,35 +35,21 @@ await translate("Hello, world!", 'ipa'); // "/həˈloʊ, wɝld!/"
 await translate("beautiful", 'ipa'); // "/ˈbjutəfəl/"
 ```
 
-### `reverseTranslate(text)`
+### Reverse Translation
 
-Translates Ingglish text back to English. Automatically loads the dictionary.
-
-```typescript
-async function reverseTranslate(text: string): Promise<string>
-```
-
-**Example:**
-```typescript
-import { reverseTranslate } from '@ingglish/core';
-
-await reverseTranslate("hulo, werld!"); // "hello, world!"
-```
-
-### `reverseTranslateIPA(text)`
-
-Translates IPA text back to English. Automatically loads the dictionary.
+Reverse translation is performed synchronously via `reverseTranslateSync()` after the dictionary is loaded (by calling `translate()` first):
 
 ```typescript
-async function reverseTranslateIPA(text: string): Promise<string>
-```
+import { translate, reverseTranslateSync } from '@ingglish/core';
 
-**Example:**
-```typescript
-import { reverseTranslateIPA } from '@ingglish/core';
+// Load dictionary first
+await translate("hello");
 
-await reverseTranslateIPA("həˈloʊ wɝld"); // "hello world"
-await reverseTranslateIPA("/ðə kæt/"); // "the cat"
+// Then reverse translate synchronously
+reverseTranslateSync("hulo werld"); // "hello world"
+
+// For IPA input, pass 'ipa' as the format:
+reverseTranslateSync("həˈloʊ wɝld", 'ipa'); // "hello world"
 ```
 
 ## Sync API
@@ -71,28 +57,47 @@ await reverseTranslateIPA("/ðə kæt/"); // "the cat"
 These synchronous functions are available after the dictionary has been loaded
 (e.g., after calling `translate()` or `translateDOM()`).
 
-### `translateText(text, format?)`
+### `translateSync(text, format?)`
 
 Synchronous version of `translate()`. Dictionary must already be loaded.
 
 ```typescript
-function translateText(text: string, format?: 'ingglish' | 'ipa'): string
+function translateSync(text: string, format?: 'ingglish' | 'ipa'): string
 ```
 
-### `reverseTranslateText(text)`
+### `translateSyncWithMapping(text, format?)`
 
-Synchronous version of `reverseTranslate()`. Dictionary must already be loaded.
+Like `translateSync` but also returns a mapping of English words to translated words.
 
 ```typescript
-function reverseTranslateText(text: string): string
+function translateSyncWithMapping(
+  text: string,
+  format?: 'ingglish' | 'ipa'
+): { result: string; mapping: Map<string, string> }
 ```
 
-### `reverseTranslateIPAText(text)`
+### `reverseTranslateSync(text, format?)`
 
-Synchronous version of `reverseTranslateIPA()`. Dictionary must already be loaded.
+Synchronous reverse translation. Dictionary must already be loaded.
 
 ```typescript
-function reverseTranslateIPAText(text: string): string
+function reverseTranslateSync(
+  text: string,
+  format?: 'ingglish' | 'ipa'  // default: 'ingglish'
+): string
+```
+
+**Example:**
+```typescript
+import { translate, translateSync, reverseTranslateSync } from '@ingglish/core';
+
+// Load dictionary first
+await translate("hello");
+
+// Now use sync functions
+const ingglish = translateSync("Hello, world!");
+const english = reverseTranslateSync(ingglish);
+const fromIPA = reverseTranslateSync("həˈloʊ", 'ipa');
 ```
 
 ## Phoneme Maps
@@ -221,6 +226,40 @@ Restores translated text back to original English using stored data attributes.
 
 ```typescript
 function restoreDOM(root: Element | Document): void
+```
+
+### `applyTranslationsMap(root, translations, options?)`
+
+Applies pre-computed translations to DOM. Useful when translations are fetched separately
+(e.g., from an extension's background script via message passing).
+
+```typescript
+async function applyTranslationsMap(
+  root: Element | Document,
+  translations: Record<string, string>,  // lowercase word → translated word
+  options?: ApplyTranslationsOptions
+): Promise<void>
+
+interface ApplyTranslationsOptions {
+  showTooltips?: boolean;      // Show original on hover (default: true)
+  chunkSize?: number;          // Nodes per animation frame (default: 200)
+  textNodes?: Text[];          // Pre-collected text nodes (avoids re-traversing DOM)
+  onProgress?: (processed: number, total: number) => void;
+}
+```
+
+**Example:**
+```typescript
+import { applyTranslationsMap, collectTextNodes } from '@ingglish/dom';
+
+// Pre-collect text nodes for efficiency
+const textNodes = collectTextNodes(document.body);
+
+// Fetch translations from elsewhere (e.g., service worker)
+const translations = await fetchTranslationsFromBackground(words);
+
+// Apply with pre-collected nodes
+await applyTranslationsMap(document.body, translations, { textNodes });
 ```
 
 ### `skipElement(element)` / `unskipElement(element)`

@@ -1,18 +1,16 @@
 # Chrome Extension Setup
 
+## Prerequisites
+
+See the [Contributing Guide](contributing.md) for initial project setup (clone, install, build).
+
 ## Building the Extension
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+```bash
+npm run build -w @ingglish/extension
+```
 
-2. Build the extension:
-   ```bash
-   npm run build -w @ingglish/extension
-   ```
-
-3. The built extension will be in `packages/extension/dist/`
+The built extension will be in `packages/extension/dist/`.
 
 ## Loading in Chrome
 
@@ -42,10 +40,28 @@ You can use any image editor or an online tool. The icons should:
 1. Click the Ingglish extension icon in the Chrome toolbar
 2. Click "Translate Page" to translate the current page
 3. Click "Turn Off" to restore the original text
+4. Use the format toggle to switch between Ingglish and IPA output
+
+### Keyboard Shortcut
+
+- **Windows/Linux**: `Ctrl+Shift+I`
+- **Mac**: `Cmd+Shift+I`
+
+This toggles translation on/off for the current page.
+
+## Features
+
+- **Format switching**: Toggle between Ingglish and IPA output formats
+- **In-place updates**: Format switching updates existing translations without re-rendering
+- **Dynamic content**: Automatically translates content added via JavaScript (SPAs, infinite scroll)
+- **Debounced updates**: Batches rapid DOM changes to prevent freezing
+
+For technical details on the extension architecture and message-passing flow, see [Architecture Overview](architecture.md#chrome-extension-ingglishextension).
 
 ## Notes
 
 - The translation script is loaded on-demand (not on every page)
-- Translation state persists within a tab but is lost when navigating
+- Translation state persists within a tab across page refreshes
 - Some pages may block content scripts (e.g., Chrome Web Store)
 - Code blocks, form inputs, and scripts are not translated
+- Hover over translated words to see the original English

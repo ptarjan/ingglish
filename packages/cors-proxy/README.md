@@ -4,8 +4,12 @@ A Cloudflare Worker that proxies requests for the Ingglish URL translator.
 
 ## Security Features
 
-- **Origin validation**: Only allows requests from paultarjan.com and localhost
+- **Origin validation**: Only allows requests from configured allowed origins
+- **SSRF prevention**: Blocks requests to private IP ranges (127.*, 10.*, 172.16-31.*, 192.168.*, 169.254.*, ::1, fc00::/fd00::)
+- **Protocol restriction**: Only allows HTTP/HTTPS URLs
+- **Content-Type validation**: Only proxies HTML responses
 - **Rate limiting**: Uses Cloudflare's built-in DDoS protection
+- **Cache control**: Enforces minimum 5-minute cache headers
 
 ## Deployment
 
