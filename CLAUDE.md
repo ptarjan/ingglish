@@ -11,3 +11,7 @@ Use test-driven development (TDD). When possible, write a failing test first, th
 ## Code Comments
 
 Add TODO comments in the code when a feature isn't complete. This helps track unfinished work.
+
+## Performance
+
+Profile before optimizing. Don't guess at performance solutions - measure first to identify actual bottlenecks.
