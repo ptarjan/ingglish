@@ -14,8 +14,8 @@ describe('case-utils', () => {
       expect(detectCasePattern('API')).toBe('upper');
     });
 
-    it('should treat short all-caps words as capitalized', () => {
-      // 2-letter all-caps words like "UI", "AI" should be capitalized, not all uppercase
+    it('should treat two-letter initialisms as capitalized', () => {
+      // 2-letter initialisms like "UI", "AI" should be capitalized, not all uppercase
       // This makes translations more natural (e.g., "Yuai" instead of "YUAI")
       expect(detectCasePattern('UI')).toBe('capitalized');
       expect(detectCasePattern('AI')).toBe('capitalized');
