@@ -10,7 +10,9 @@
       "Bash(npm test:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(git push)",
+      "Bash(git stash:*)"
     ]
   }
 }
