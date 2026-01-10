@@ -128,14 +128,15 @@ describe('translator', () => {
       expect(result).toBe('Chainuz ikahnumee');
     });
 
-    it('should translate I and I-contractions to lowercase', () => {
-      // "I" is only capitalized in English due to grammar rules
-      // In Ingglish, it should be lowercase "ai"
-      expect(translateSync('I')).toBe('ai');
-      expect(translateSync("I'm")).toBe('aim');
-      expect(translateSync("I'll")).toBe('ail');
-      expect(translateSync("I've")).toBe('aiv');
-      expect(translateSync("I'd")).toBe('aid');
+    it('should preserve capitalization on I and I-contractions', () => {
+      // Capitalization is preserved (e.g., "A cat" keeps the capital A)
+      expect(translateSync('I')).toBe('Ai');
+      expect(translateSync("I'm")).toBe('Aim');
+      expect(translateSync("I'll")).toBe('Ail');
+      expect(translateSync("I've")).toBe('Aiv');
+      expect(translateSync("I'd")).toBe('Aid');
+      // Lowercase remains lowercase
+      expect(translateSync('i')).toBe('ai');
     });
 
     it('should handle empty string', () => {

@@ -38,14 +38,10 @@ export function translateContraction(token: string, format: OutputFormat = 'ingg
     // Found the whole contraction - translate it as a unit
     const translated = arpabetToFormat(phonemes, format);
 
-    // Preserve case (only for Ingglish), but not for I-contractions (I'm, I'll, I've, I'd)
-    // since "I" is only capitalized due to English grammar rules
+    // Preserve case (only for Ingglish)
     if (format === 'ingglish') {
-      const isIContraction = /^I'/i.test(token);
-      if (!isIContraction) {
-        const casePattern = detectCasePattern(token);
-        return applyCasePattern(translated, casePattern, token);
-      }
+      const casePattern = detectCasePattern(token);
+      return applyCasePattern(translated, casePattern, token);
     }
     return translated;
   }
