@@ -106,6 +106,29 @@
   min-height: 100px;
   max-height: 200px;
   overflow-y: auto;
+
+  /* Scrollbar styling for dark mode */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-surface);
+}
+
+/* Webkit scrollbar styling (Chrome, Edge, Safari) */
+.word-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.word-display::-webkit-scrollbar-track {
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+.word-display::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.word-display::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
 }
 
 .word-display .placeholder {
@@ -358,6 +381,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 .mapping-table th:nth-child(1),
