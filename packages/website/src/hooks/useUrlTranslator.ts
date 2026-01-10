@@ -100,15 +100,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error('Failed to access iframe content');
         }
 
-        // Translate the DOM with tooltips and chunked updates for smooth rendering
-        await translateDOM(iframeDoc.body, {
-          translateAttributes: true,
-          showTooltips: true,
-          outputFormat,
-          chunked: true, // Use requestAnimationFrame for large pages
-          chunkSize: 100,
-        });
-
+        // Show content immediately - translation happens in background
         setHasContent(true);
 
         // Navigate to a new URL within the translator
@@ -130,7 +122,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         // Intercept all link navigation using multiple event types for reliability
         // The key is preventing the default behavior early enough on all platforms
-
         const handleLinkActivation = (e: Event, href: string) => {
           e.preventDefault();
           e.stopPropagation();
@@ -138,8 +129,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           navigateToUrl(href);
         };
 
-        // Directly modify all anchor elements to intercept navigation
-        // This is more reliable than event delegation on iOS Safari
+        // Set up link handlers immediately so links work while translation is in progress
         const anchors = iframeDoc.querySelectorAll('a[href]');
         anchors.forEach((anchor) => {
           const href = anchor.getAttribute('href');
@@ -151,7 +141,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           let touchStarted = false;
 
           // On iOS Safari, we MUST preventDefault on touchstart to stop native navigation
-          // Also stop propagation to prevent any other handlers from interfering
           anchor.addEventListener(
             'touchstart',
             (e) => {
@@ -183,6 +172,15 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             },
             { capture: true }
           );
+        });
+
+        // Translate the DOM with tooltips and larger chunks for faster rendering
+        await translateDOM(iframeDoc.body, {
+          translateAttributes: true,
+          showTooltips: true,
+          outputFormat,
+          chunked: true, // Use requestAnimationFrame for large pages
+          chunkSize: 500, // Larger chunks = fewer DOM updates = faster
         });
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
