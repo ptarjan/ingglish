@@ -67,7 +67,7 @@ describe('background script', () => {
     sendResponse: (response: unknown) => void
   ) => boolean | undefined;
   let tabRemovedHandler: (tabId: number) => void;
-  let tabUpdatedHandler: (tabId: number, changeInfo: { status?: string }) => void;
+  let tabUpdatedHandler: (tabId: number, changeInfo: { status?: string; url?: string }) => void;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -284,6 +284,28 @@ describe('background script', () => {
 
       // Simulate page navigation starting with URL change
       tabUpdatedHandler(333, { status: 'loading', url: 'https://example.com/new-page' });
+
+      // Wait for re-injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    it('re-injects script when enabled tab is refreshed (no URL change)', async () => {
+      // Enable translation for tab
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: 555 }]);
+      });
+
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+
+      // Wait for initial injection
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
+      });
+
+      // Simulate page refresh (loading status without URL change)
+      tabUpdatedHandler(555, { status: 'loading' });
 
       // Wait for re-injection
       await vi.waitFor(() => {

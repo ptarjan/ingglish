@@ -340,10 +340,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     updateIcon(tabId, enabled);
   }
 
-  // Re-inject translator on navigation for enabled tabs
-  // Inject as early as possible - when loading starts with a URL change
+  // Re-inject translator on navigation/refresh for enabled tabs
+  // Inject as early as possible - when loading starts (covers both navigation and refresh)
   // Skip permission check - just try to inject and handle failure
-  if (changeInfo.status === 'loading' && changeInfo.url !== undefined && enabled) {
+  if (changeInfo.status === 'loading' && enabled) {
     void injectTranslator(tabId, false).then((success) => {
       if (!success) {
         // Injection failed (no permission for new URL) - disable translation
