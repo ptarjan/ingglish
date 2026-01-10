@@ -147,10 +147,11 @@ function App() {
   );
 
   // Update browser URL without copying to clipboard (for navigation)
+  // Preserve existing history state (like translatorUrl) when updating the URL
   const handleUrlNavigate = useCallback(
     (targetUrl: string) => {
       const shareUrl = buildShareUrl(targetUrl);
-      window.history.replaceState(null, '', shareUrl);
+      window.history.replaceState(history.state, '', shareUrl);
     },
     [buildShareUrl]
   );
