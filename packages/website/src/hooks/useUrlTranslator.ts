@@ -129,10 +129,14 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         };
 
         // Handle link clicks - intercept before native navigation
+        // Track touched anchor for iOS Safari where touchend target can differ
+        let touchedAnchor: HTMLAnchorElement | null = null;
+
         // Use touchstart to prevent default early on iOS Safari
         iframeDoc.addEventListener(
           'touchstart',
           (e: TouchEvent) => {
+            touchedAnchor = null;
             const target = e.target as HTMLElement;
             const anchor = target.closest('a[href]');
             if (!anchor) {
@@ -144,7 +148,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
               return;
             }
 
-            // Prevent default to stop iOS from following the link
+            // Store anchor and prevent default to stop iOS from following the link
+            touchedAnchor = anchor;
             e.preventDefault();
           },
           { capture: true, passive: false }
@@ -154,8 +159,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         iframeDoc.addEventListener(
           'touchend',
           (e: TouchEvent) => {
-            const target = e.target as HTMLElement;
-            const anchor = target.closest('a[href]');
+            // Use the anchor captured in touchstart
+            const anchor = touchedAnchor;
+            touchedAnchor = null;
+
             if (!anchor) {
               return;
             }
