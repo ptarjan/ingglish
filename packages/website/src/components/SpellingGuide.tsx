@@ -202,6 +202,14 @@ function SpellingGuide(): React.JSX.Element {
           suffixes and prefixes (-tion, -ing, un-, re-), and rule-based grapheme-to-phoneme
           conversion. This ensures even invented words get reasonable phonetic spellings.
         </p>
+
+        <h4>Reverse Translation</h4>
+        <p>
+          Ingglish can be translated back to English. The system matches phonetic spellings against
+          the dictionary to find the original words. For homophones like "too", "to", and "two"
+          (all spelled "too" in Ingglish), the most common word is chosen based on frequency data.
+          Case patterns are preserved during reverse translation.
+        </p>
       </div>
     </div>
   );
