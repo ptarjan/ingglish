@@ -157,10 +157,15 @@ export default {
         /<html[\s>]/i.test(html.slice(0, 1000));
 
       if (!isHtmlContentType && !looksLikeHtml) {
-        return new Response(`Only HTML content is supported (received: ${contentType})`, {
-          status: 415,
-          headers: corsHeaders(origin),
-        });
+        // Include first 200 chars of body for debugging blocked responses
+        const preview = html.slice(0, 200);
+        return new Response(
+          `Only HTML content is supported (received: ${contentType})\n\nBody preview:\n${preview}`,
+          {
+            status: 415,
+            headers: corsHeaders(origin),
+          }
+        );
       }
 
       // Ensure minimum 5 minute cache, default to 1 hour
