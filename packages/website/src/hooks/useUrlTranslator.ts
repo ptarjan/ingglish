@@ -89,24 +89,47 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         // Inject a script that captures link clicks and sends them to parent via postMessage
         // This runs inside the iframe's own JS context, which works better on iOS
+        // Handle both click and touch events for iOS Safari compatibility
         const clickHandlerScript = `
           <script>
             (function() {
+              var touchedAnchor = null;
+
+              function findAnchor(el) {
+                if (el && el.closest) return el.closest('a[href]');
+                while (el && el.tagName !== 'A') el = el.parentElement;
+                return el;
+              }
+
+              function handleLink(anchor, e) {
+                if (!anchor) return false;
+                var href = anchor.getAttribute('href');
+                if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
+                  return true;
+                }
+                return false;
+              }
+
+              // Touch events for iOS Safari
+              document.addEventListener('touchstart', function(e) {
+                touchedAnchor = findAnchor(e.target);
+              }, true);
+
+              document.addEventListener('touchend', function(e) {
+                if (touchedAnchor) {
+                  var anchor = touchedAnchor;
+                  touchedAnchor = null;
+                  handleLink(anchor, e);
+                }
+              }, true);
+
+              // Click events for desktop and as fallback
               document.addEventListener('click', function(e) {
-                var anchor = e.target.closest ? e.target.closest('a[href]') : null;
-                if (!anchor) {
-                  var el = e.target;
-                  while (el && el.tagName !== 'A') el = el.parentElement;
-                  anchor = el;
-                }
-                if (anchor && anchor.href) {
-                  var href = anchor.getAttribute('href');
-                  if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
-                  }
-                }
+                var anchor = findAnchor(e.target);
+                handleLink(anchor, e);
               }, true);
             })();
           </script>
