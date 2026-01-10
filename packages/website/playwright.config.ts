@@ -26,19 +26,14 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    // Mobile tests only run locally (CI only has chromium installed)
-    ...(!process.env.CI
-      ? [
-          {
-            name: 'mobile-safari',
-            use: { ...devices['iPhone 14'] },
-          },
-          {
-            name: 'mobile-chrome',
-            use: { ...devices['Pixel 7'] },
-          },
-        ]
-      : []),
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 14'] },
+    },
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 7'] },
+    },
   ],
   webServer: {
     command: 'npm run preview',
