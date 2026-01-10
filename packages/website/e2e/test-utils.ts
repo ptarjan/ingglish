@@ -52,8 +52,20 @@ export const MOCK_PAGE_A_HTML = `<!DOCTYPE html>
 <body>
   <h1>This is Page A</h1>
   <p>Some text to translate on page A.</p>
+  <nav>
+    <a href="#section-one">Jump to Section One (relative)</a>
+    <a href="https://example.com/page-a#section-two">Jump to Section Two (absolute)</a>
+  </nav>
   <a href="https://example.com/page-b">Go to Page B</a>
   <a href="https://example.com/another-page">Another link</a>
+  <section id="section-one" style="margin-top: 500px;">
+    <h2>Section One</h2>
+    <p>Content in section one.</p>
+  </section>
+  <section id="section-two" style="margin-top: 500px;">
+    <h2>Section Two</h2>
+    <p>Content in section two.</p>
+  </section>
 </body>
 </html>`;
 

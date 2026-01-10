@@ -189,4 +189,41 @@ test.describe('URL Translator Navigation', () => {
     const wordCount = await iframe.locator('.ingglish-word').count();
     expect(wordCount).toBeGreaterThan(0);
   });
+
+  test('anchor link scrolls without refetching', async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name.includes('safari'),
+      'Playwright WebKit cannot create TouchEvent'
+    );
+    const input = page.locator('.url-input');
+    await input.fill('https://example.com/page-a');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+
+    const iframe = page.frameLocator('.page-iframe');
+    // Verify page is translated
+    await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
+    const initialWordCount = await iframe.locator('.ingglish-word').count();
+    expect(initialWordCount).toBeGreaterThan(0);
+
+    // Click anchor link (with absolute URL - this sends postMessage, unlike pure #hash links)
+    const anchorLink = iframe.locator('a[href="https://example.com/page-a#section-two"]');
+    await expect(anchorLink).toBeVisible();
+    await anchorLink.click();
+
+    // URL should update to include the hash
+    await expect(input).toHaveValue(/page-a#section-two/, { timeout: 5000 });
+
+    // Page should still be translated (not showing loading, not refetched)
+    await expect(page.locator('.btn-loading')).not.toBeVisible();
+    const afterWordCount = await iframe.locator('.ingglish-word').count();
+    expect(afterWordCount).toBe(initialWordCount);
+
+    // Section should still be translated
+    await expect(iframe.locator('#section-two h2')).toHaveAttribute(
+      'data-ingglish-original',
+      /Section Two/
+    );
+  });
 });

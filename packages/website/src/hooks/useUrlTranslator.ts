@@ -6,7 +6,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/dom';
-import { shouldSkipUrl, processProxiedHtml } from '../utils/url';
+import { shouldSkipUrl, isHashOnlyChange, processProxiedHtml } from '../utils/url';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../utils/url';
@@ -44,8 +44,31 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   );
   // Track the current base URL for resolving relative links from postMessage
   const baseUrlRef = useRef<string | null>(null);
+  // Track the current loaded URL (for detecting hash-only changes)
+  const currentUrlRef = useRef<string | null>(null);
   // Track the previous format to detect changes
   const prevFormatRef = useRef<OutputFormat>(outputFormat);
+
+  // Handle hash-only navigation by scrolling within the iframe
+  const scrollToHash = useCallback((hash: string) => {
+    const iframe = iframeRef.current;
+    if (!iframe?.contentDocument) {
+      return;
+    }
+
+    const targetId = hash.slice(1); // Remove the leading #
+    if (!targetId) {
+      return;
+    }
+
+    const targetElement =
+      iframe.contentDocument.getElementById(targetId) ??
+      iframe.contentDocument.querySelector(`[name="${targetId}"]`);
+
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
 
   const translateUrl = useCallback(
     async (targetUrl: string, pushHistory = true): Promise<void> => {
@@ -98,6 +121,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         // Store base URL for resolving relative links from postMessage
         baseUrlRef.current = baseUrl;
+        // Store current URL for detecting hash-only navigation
+        currentUrlRef.current = targetUrl;
 
         // Show content immediately - translation happens in background
         setHasContent(true);
@@ -123,6 +148,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     setUrl('');
     setError(null);
     setHasContent(false);
+    currentUrlRef.current = null;
 
     const iframe = iframeRef.current;
     if (iframe) {
@@ -150,7 +176,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         baseUrlRef.current !== null
       ) {
         const href = data.href;
-        // Skip special URLs
+        // Skip special URLs (javascript:, mailto:, pure # links)
         if (shouldSkipUrl(href)) {
           return;
         }
@@ -159,6 +185,18 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         try {
           newUrl = new URL(href, baseUrlRef.current).href;
         } catch {
+          return;
+        }
+
+        // Check if this is just a hash change on the same page
+        if (currentUrlRef.current !== null && isHashOnlyChange(currentUrlRef.current, newUrl)) {
+          // Just scroll to the target, don't refetch/retranslate
+          const hash = new URL(newUrl).hash;
+          scrollToHash(hash);
+          // Update URL display without pushing to history (it's the same page)
+          setUrl(newUrl);
+          currentUrlRef.current = newUrl;
+          onNavigate?.(newUrl);
           return;
         }
 
@@ -174,7 +212,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, []);
+  }, [scrollToHash, onNavigate]);
 
   // Handle browser back/forward navigation
   // Also handle iOS Safari's BFCache restoration via pageshow event
@@ -182,12 +220,24 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     const handlePopState = (e: PopStateEvent) => {
       const state = e.state as { translatorUrl?: string } | null;
       if (state?.translatorUrl !== undefined) {
+        const targetUrl = state.translatorUrl;
+
+        // Check if this is just a hash change on the same page
+        if (currentUrlRef.current !== null && isHashOnlyChange(currentUrlRef.current, targetUrl)) {
+          // Just scroll to the target, don't refetch/retranslate
+          const hash = new URL(targetUrl).hash;
+          scrollToHash(hash);
+          setUrl(targetUrl);
+          currentUrlRef.current = targetUrl;
+          return;
+        }
+
         // Navigate back to a previous translated page
         // Immediately show loading to prevent flash of old content
         setIsLoading(true);
-        setUrl(state.translatorUrl);
+        setUrl(targetUrl);
         // Use false for pushHistory to avoid adding duplicate entries
-        translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
+        translateUrlRef.current?.(targetUrl, false).catch((err: unknown) => {
           // eslint-disable-next-line no-console
           console.error('Back navigation failed:', err);
         });
@@ -196,6 +246,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setUrl('');
         setError(null);
         setHasContent(false);
+        currentUrlRef.current = null;
         const iframe = iframeRef.current;
         if (iframe) {
           iframe.srcdoc = '';
@@ -227,7 +278,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('pageshow', handlePageShow);
     };
-  }, []);
+  }, [scrollToHash]);
 
   // Retranslate when output format changes
   useEffect(() => {

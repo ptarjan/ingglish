@@ -57,6 +57,26 @@ export function shouldSkipUrl(href: string): boolean {
 }
 
 /**
+ * Checks if two URLs are the same except for the hash fragment.
+ * Returns true if navigating from oldUrl to newUrl is just a hash change.
+ */
+export function isHashOnlyChange(oldUrl: string, newUrl: string): boolean {
+  try {
+    const oldParsed = new URL(oldUrl);
+    const newParsed = new URL(newUrl);
+    // Same origin, pathname, and search - only hash differs
+    return (
+      oldParsed.origin === newParsed.origin &&
+      oldParsed.pathname === newParsed.pathname &&
+      oldParsed.search === newParsed.search &&
+      newParsed.hash !== ''
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Detects if HTML content is a bot protection/challenge page.
  * Returns a user-friendly error message if detected, null otherwise.
  */
