@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectCasePattern, applyCasePattern } from './case-utils';
+import { detectCasePattern, applyCasePattern } from './utils/case';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {

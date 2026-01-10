@@ -8,8 +8,9 @@ import {
   wordToArpabet,
   translateWithPhonemize,
   preloadPhonemize,
-} from './unknown-words';
-import { lookupPronunciation, translateWord } from './translator';
+} from './fallback';
+import { lookupPronunciation } from './dictionary';
+import { translateWord } from './translate/forward';
 import { setupDictionary, UNKNOWN_TECH_WORDS } from './test-setup';
 
 describe('unknown-words', () => {

@@ -1,11 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import {
-  loadDictionary,
-  isDictionaryLoaded,
-  lookupPronunciation,
-  translateWord,
-  translateSync,
-} from './translator';
+import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from './dictionary';
+import { translateWord, translateSync } from './translate/forward';
 import { setupDictionary } from './test-setup';
 
 describe('translator', () => {

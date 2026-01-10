@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ipaToArpabet, ipaToArpabetString } from './ipa-to-arpabet';
+import { ipaToArpabet, ipaToArpabetString } from './convert/from-ipa';
 
 describe('ipaToArpabet', () => {
   it('converts simple consonants', () => {

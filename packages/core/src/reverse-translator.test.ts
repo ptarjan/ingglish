@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { translateWord, translateSync, lookupPronunciation } from './translator';
+import { lookupPronunciation } from './dictionary';
+import { translateWord, translateSync } from './translate/forward';
 import {
   reverseTranslateWord,
   reverseTranslateSync,
-  isLikelyIngglish,
   ipaToArpabetClean,
   reverseTranslateIPAWord,
-} from './reverse-translator';
-import { ingglishToArpabet } from './ingglish-to-arpabet';
+} from './translate/reverse';
+import { isLikelyIngglish } from './detect/language';
+import { ingglishToArpabet } from './convert/from-ingglish';
 import { setupDictionary, SAMPLE_TEXT } from './test-setup';
 
 describe('reverse-translator', () => {

@@ -2,8 +2,7 @@
  * Shared test setup and data for @ingglish/core tests
  */
 import { beforeAll } from 'vitest';
-import { loadDictionary } from './translator';
-import { warmReverseDictionaryCache } from './reverse-translator';
+import { loadDictionary, warmReverseDictionaryCache } from './dictionary';
 
 /**
  * Call this in your test file to ensure the dictionary is loaded before tests run.

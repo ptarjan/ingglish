@@ -9,7 +9,8 @@
  * ```
  */
 
-import { loadDictionary, translateSync } from './translator';
+import { loadDictionary } from './dictionary';
+import { translateSync } from './translate';
 
 // =============================================================================
 // Types
@@ -34,12 +35,12 @@ export async function translate(
 // Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateSync, translateSyncWithMapping } from './translator';
-export { reverseTranslateSync } from './reverse-translator';
+export { translateSync, translateSyncWithMapping } from './translate';
+export { reverseTranslateSync } from './translate';
 
 // =============================================================================
 // Spelling Guide
 // =============================================================================
 
-export { arpabetPhonemeToIngglish } from './arpabet-to-ingglish';
-export { arpabetPhonemeToIPA } from './arpabet-to-ipa';
+export { arpabetPhonemeToIngglish } from './convert';
+export { arpabetPhonemeToIPA } from './convert';

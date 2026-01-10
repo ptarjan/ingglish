@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { arpabetPhonemeToIPA, arpabetToIPA, arpabetToIPARaw } from './arpabet-to-ipa';
+import { arpabetPhonemeToIPA, arpabetToIPA, arpabetToIPARaw } from './convert/to-ipa';
 
 // Word joiner character (U+2060) prevents line breaks around stress markers
 const WJ = '\u2060';

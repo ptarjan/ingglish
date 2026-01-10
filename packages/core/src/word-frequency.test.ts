@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getWordFrequency, scoreWord, sortByFrequency } from './word-frequency';
+import { getWordFrequency, scoreWord, sortByFrequency } from './utils/frequency';
 
 describe('word-frequency', () => {
   describe('getWordFrequency', () => {
