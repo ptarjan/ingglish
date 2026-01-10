@@ -77,11 +77,15 @@ test.describe('URL Translator Link Navigation', () => {
     expect(isLoading || hasContent || hasError).toBe(true);
   });
 
-  test('clicking a link in translated page loads and translates next page', async ({ page }) => {
+  test('clicking a link in translated page loads and translates next page', async ({
+    page,
+  }, testInfo) => {
     // This test verifies that clicking a link:
     // 1. Intercepts the navigation
     // 2. Loads the new page
     // 3. Translates the new page content
+
+    const isMobile = testInfo.project.name.includes('mobile');
 
     // Load Hacker News
     await page.locator('.example-link:has-text("Hacker News")').click();
@@ -113,8 +117,15 @@ test.describe('URL Translator Link Navigation', () => {
     // Get the current URL
     const urlBefore = await page.locator('.url-input').inputValue();
 
-    // Click the link
-    await link.click();
+    // Use tap for mobile to test touch event handlers, click for desktop
+    if (isMobile) {
+      const box = await link.boundingBox();
+      if (box) {
+        await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+      }
+    } else {
+      await link.click();
+    }
 
     // Wait for the new page to start loading
     await expect(async () => {
