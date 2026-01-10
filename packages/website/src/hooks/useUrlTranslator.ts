@@ -102,21 +102,36 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setHasContent(true);
 
-        // Handle link navigation
+        // Neutralize all links to prevent native navigation
+        // This is critical for iOS Safari where touch events in iframes are
+        // handled at the native level before JavaScript handlers fire
+        const links = iframeDoc.querySelectorAll('a[href]');
+        links.forEach((link) => {
+          const anchor = link as HTMLAnchorElement;
+          const href = anchor.getAttribute('href');
+          if (href !== null && href !== '' && !shouldSkipUrl(href)) {
+            // Store original href and neutralize the link
+            anchor.setAttribute('data-original-href', href);
+            anchor.removeAttribute('href');
+            // Keep visual styling as a link
+            anchor.style.cursor = 'pointer';
+          }
+        });
+
+        // Handle link navigation via click on neutralized links
         const handleLinkClick = (e: Event) => {
           const anchor = (e.target as HTMLElement).closest('a');
           if (!anchor) {
             return;
           }
 
-          const href = anchor.getAttribute('href');
-          if (href === null || href === '' || shouldSkipUrl(href)) {
+          const href = anchor.getAttribute('data-original-href');
+          if (href === null || href === '') {
             return;
           }
 
           e.preventDefault();
           e.stopPropagation();
-          e.stopImmediatePropagation();
 
           let newUrl: string;
           try {
@@ -128,61 +143,13 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           setUrl(newUrl);
           onNavigate?.(newUrl);
           translateUrl(newUrl).catch((err: unknown) => {
-            // Error is already handled in translateUrl, but log for debugging
             // eslint-disable-next-line no-console
             console.error('Navigation translation failed:', err);
           });
         };
 
-        // Use capture phase to intercept before browser processes the click
-        // This is critical for mobile where default actions may run earlier
+        // Use capture phase for early interception
         iframeDoc.addEventListener('click', handleLinkClick, { capture: true });
-
-        // Also add touchend listener for mobile devices
-        // On iOS Safari, touchend fires before click and is more reliable
-        iframeDoc.addEventListener(
-          'touchend',
-          (e: TouchEvent) => {
-            // Only handle single-touch taps
-            if (e.changedTouches.length !== 1) {
-              return;
-            }
-
-            const touch = e.changedTouches[0];
-            const target = iframeDoc.elementFromPoint(touch.clientX, touch.clientY);
-            if (!target) {
-              return;
-            }
-
-            const anchor = (target as HTMLElement).closest('a');
-            if (!anchor) {
-              return;
-            }
-
-            const href = anchor.getAttribute('href');
-            if (href === null || href === '' || shouldSkipUrl(href)) {
-              return;
-            }
-
-            // Prevent the subsequent click event and default behavior
-            e.preventDefault();
-
-            let newUrl: string;
-            try {
-              newUrl = new URL(href, parsedUrl.href).href;
-            } catch {
-              return;
-            }
-
-            setUrl(newUrl);
-            onNavigate?.(newUrl);
-            translateUrl(newUrl).catch((err: unknown) => {
-              // eslint-disable-next-line no-console
-              console.error('Navigation translation failed:', err);
-            });
-          },
-          { capture: true, passive: false }
-        );
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
