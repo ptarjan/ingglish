@@ -149,4 +149,61 @@ test.describe('URL Translator Link Navigation', () => {
     const urlAfter = await page.locator('.url-input').inputValue();
     expect(urlAfter).not.toBe(urlBefore);
   });
+
+  test('back button navigates to previous translated page', async ({ page }, testInfo) => {
+    const isMobile = testInfo.project.name.includes('mobile');
+
+    // Load first page
+    await page.locator('.example-link:has-text("Hacker News")').click();
+
+    // Wait for content
+    await expect(async () => {
+      const hasContent = await page.locator('.page-iframe--ready').isVisible();
+      const hasError = await page.locator('.error-message').isVisible();
+      expect(hasContent || hasError).toBe(true);
+    }).toPass({ timeout: 60000 });
+
+    if (await page.locator('.error-message').isVisible()) {
+      test.skip(true, 'External URL failed to load');
+      return;
+    }
+
+    const firstUrl = await page.locator('.url-input').inputValue();
+    const iframe = page.frameLocator('.page-iframe');
+
+    // Click a link to navigate to second page
+    const link = iframe.locator('a[href]').first();
+    await expect(link).toBeVisible({ timeout: 10000 });
+
+    if (isMobile) {
+      const box = await link.boundingBox();
+      if (box) {
+        await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+      }
+    } else {
+      await link.click();
+    }
+
+    // Wait for second page to load
+    await expect(async () => {
+      const urlAfter = await page.locator('.url-input').inputValue();
+      expect(urlAfter !== firstUrl).toBe(true);
+    }).toPass({ timeout: 30000 });
+
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 60000 });
+
+    // Now go back
+    await page.goBack();
+
+    // Should navigate back to first URL
+    await expect(async () => {
+      const currentUrl = await page.locator('.url-input').inputValue();
+      expect(currentUrl).toBe(firstUrl);
+    }).toPass({ timeout: 30000 });
+
+    // Should still have translated content
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 60000 });
+    const tooltipCount = await iframe.locator('.ingglish-word').count();
+    expect(tooltipCount).toBeGreaterThan(0);
+  });
 });
