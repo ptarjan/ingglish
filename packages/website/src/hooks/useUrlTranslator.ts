@@ -111,37 +111,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setHasContent(true);
 
-        // Neutralize all links to prevent native navigation
-        // This is critical for iOS Safari where touch events in iframes are
-        // handled at the native level before JavaScript handlers fire
-        const links = iframeDoc.querySelectorAll('a[href]');
-        links.forEach((link) => {
-          const anchor = link as HTMLAnchorElement;
-          const href = anchor.getAttribute('href');
-          if (href !== null && href !== '' && !shouldSkipUrl(href)) {
-            // Store original href and neutralize the link
-            anchor.setAttribute('data-original-href', href);
-            anchor.removeAttribute('href');
-            // Keep visual styling as a link
-            anchor.style.cursor = 'pointer';
-          }
-        });
-
-        // Handle link navigation via click on neutralized links
-        const handleLinkClick = (e: Event) => {
-          const anchor = (e.target as HTMLElement).closest('a');
-          if (!anchor) {
-            return;
-          }
-
-          const href = anchor.getAttribute('data-original-href');
-          if (href === null || href === '') {
-            return;
-          }
-
-          e.preventDefault();
-          e.stopPropagation();
-
+        // Navigate to a new URL within the translator
+        const navigateToUrl = (href: string) => {
           let newUrl: string;
           try {
             newUrl = new URL(href, parsedUrl.href).href;
@@ -157,8 +128,46 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           });
         };
 
-        // Use capture phase for early interception
-        iframeDoc.addEventListener('click', handleLinkClick, { capture: true });
+        // Neutralize all links to prevent native navigation
+        // This is critical for iOS Safari where touch events in iframes are
+        // handled at the native level before JavaScript handlers fire
+        const links = iframeDoc.querySelectorAll('a[href]');
+        links.forEach((link) => {
+          const anchor = link as HTMLAnchorElement;
+          const href = anchor.getAttribute('href');
+          if (href !== null && href !== '' && !shouldSkipUrl(href)) {
+            // Store original href and neutralize the link
+            anchor.setAttribute('data-original-href', href);
+            anchor.removeAttribute('href');
+            // Keep visual styling as a link
+            anchor.style.cursor = 'pointer';
+            // Make it tappable on iOS
+            anchor.setAttribute('role', 'link');
+          }
+        });
+
+        // Use pointerup for unified mouse/touch handling
+        // Pointer events work across mouse, touch, and pen input
+        iframeDoc.addEventListener(
+          'pointerup',
+          (e: PointerEvent) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest('a[data-original-href]');
+            if (!anchor) {
+              return;
+            }
+
+            const href = anchor.getAttribute('data-original-href');
+            if (href === null || href === '') {
+              return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            navigateToUrl(href);
+          },
+          { capture: true }
+        );
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
