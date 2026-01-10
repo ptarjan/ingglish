@@ -145,16 +145,23 @@ export default {
 
       // Get content type
       const contentType = response.headers.get('Content-Type') ?? 'text/html';
+      const html = await response.text();
 
-      // Only proxy HTML content
-      if (!contentType.includes('text/html') && !contentType.includes('application/xhtml')) {
+      // Check if content is HTML - either by content-type or by content inspection
+      // Some sites return text/plain for HTML or block proxies with wrong content-type
+      const isHtmlContentType =
+        contentType.includes('text/html') || contentType.includes('application/xhtml');
+      const looksLikeHtml =
+        html.trimStart().startsWith('<!') ||
+        html.trimStart().toLowerCase().startsWith('<html') ||
+        /<html[\s>]/i.test(html.slice(0, 1000));
+
+      if (!isHtmlContentType && !looksLikeHtml) {
         return new Response(`Only HTML content is supported (received: ${contentType})`, {
           status: 415,
           headers: corsHeaders(origin),
         });
       }
-
-      const html = await response.text();
 
       // Ensure minimum 5 minute cache, default to 1 hour
       const MIN_CACHE_SECONDS = 300; // 5 minutes
