@@ -26,6 +26,15 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    // Mobile tests - enable in CI with: npx playwright install webkit chromium
+    // {
+    //   name: 'mobile-safari',
+    //   use: { ...devices['iPhone 14'] },
+    // },
+    // {
+    //   name: 'mobile-chrome',
+    //   use: { ...devices['Pixel 7'] },
+    // },
   ],
   webServer: {
     command: 'npm run preview',
