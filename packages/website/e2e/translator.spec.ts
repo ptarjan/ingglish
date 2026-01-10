@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Text Translator', () => {
   test.skip(({ isMobile }) => isMobile, 'Mobile layout issues cause click interception');
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'networkidle' });
     // Wait for dictionary to load
     await expect(page.locator('.header h1')).toBeVisible();
   });
@@ -97,7 +97,7 @@ test.describe('Text Translator', () => {
 
 test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'networkidle' });
     await expect(page.locator('.header h1')).toBeVisible();
   });
 
@@ -120,7 +120,7 @@ test.describe('Tab Navigation', () => {
 test.describe('Spelling Guide', () => {
   test.skip(({ isMobile }) => isMobile, 'Mobile layout issues cause click interception');
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'networkidle' });
     await expect(page.locator('.header h1')).toBeVisible();
     await page.click('.tab:has-text("Spelling Guide")');
   });

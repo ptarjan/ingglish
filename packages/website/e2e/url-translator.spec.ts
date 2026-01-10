@@ -4,8 +4,8 @@ import { setupMockProxy } from './test-utils';
 test.describe('URL Translator', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 10000 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('.header h1')).toBeVisible();
     await page.click('.tab:has-text("Translate URL")');
     await expect(page.locator('.url-translator')).toBeVisible();
   });
@@ -81,8 +81,8 @@ test.describe('URL Translator', () => {
 test.describe('URL Translator Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 10000 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.locator('.header h1')).toBeVisible();
     await page.click('.tab:has-text("Translate URL")');
     await expect(page.locator('.url-translator')).toBeVisible();
   });
