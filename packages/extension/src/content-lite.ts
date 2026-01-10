@@ -52,6 +52,40 @@ function isContextValid(): boolean {
   }
 }
 
+// Show a message when the extension context is invalidated
+function showContextInvalidMessage(): void {
+  // Only show once
+  if (document.getElementById('ingglish-refresh-notice')) {
+    return;
+  }
+
+  const notice = document.createElement('div');
+  notice.id = 'ingglish-refresh-notice';
+  notice.innerHTML =
+    'Ingglish extension was updated. <a href="#" style="color: white; text-decoration: underline;">Refresh page</a> to continue translating.';
+  notice.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ef4444;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    z-index: 999999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+  `;
+
+  notice.querySelector('a')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    location.reload();
+  });
+
+  document.body?.appendChild(notice);
+}
+
 // Request batch translation from background script
 async function translateWordsBatch(
   words: string[],
@@ -60,6 +94,7 @@ async function translateWordsBatch(
   if (!isContextValid()) {
     // eslint-disable-next-line no-console
     console.log('Ingglish: Extension context invalidated, please refresh the page');
+    showContextInvalidMessage();
     return {};
   }
 
@@ -202,6 +237,7 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
     if (!isContextValid()) {
       state.observer?.disconnect();
       state.observer = null;
+      showContextInvalidMessage();
       return;
     }
 
