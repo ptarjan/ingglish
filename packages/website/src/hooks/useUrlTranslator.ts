@@ -208,6 +208,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       const state = e.state as { translatorUrl?: string } | null;
       if (state?.translatorUrl !== undefined) {
         // Navigate back to a previous translated page
+        // Immediately show loading to prevent flash of old content
+        setIsLoading(true);
         setUrl(state.translatorUrl);
         // Use false for pushHistory to avoid adding duplicate entries
         translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
@@ -233,6 +235,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         // Page was restored from BFCache - check if we need to retranslate
         const state = history.state as { translatorUrl?: string } | null;
         if (state?.translatorUrl !== undefined) {
+          // Immediately show loading to prevent flash of stale content
+          setIsLoading(true);
           setUrl(state.translatorUrl);
           translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
             // eslint-disable-next-line no-console
