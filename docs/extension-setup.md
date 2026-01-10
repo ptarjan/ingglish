@@ -44,8 +44,8 @@ You can use any image editor or an online tool. The icons should:
 
 ### Keyboard Shortcut
 
-- **Windows/Linux**: `Ctrl+Shift+I`
-- **Mac**: `Cmd+Shift+I`
+- **Windows/Linux**: `Alt+Shift+I`
+- **Mac**: `Ctrl+Shift+I`
 
 This toggles translation on/off for the current page.
 
