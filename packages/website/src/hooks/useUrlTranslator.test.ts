@@ -77,13 +77,14 @@ describe('link click handling basics', () => {
     document.body.appendChild(container);
 
     let interceptedHref = '';
-    document.addEventListener('click', (e) => {
+    const handler = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest('a');
       if (anchor) {
         e.preventDefault();
         interceptedHref = anchor.getAttribute('href') ?? '';
       }
-    });
+    };
+    document.addEventListener('click', handler);
 
     const link = container.querySelector('a');
     const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
@@ -91,6 +92,7 @@ describe('link click handling basics', () => {
 
     expect(interceptedHref).toBe('/test');
 
+    document.removeEventListener('click', handler);
     document.body.removeChild(container);
   });
 });

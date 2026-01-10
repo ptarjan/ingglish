@@ -26,8 +26,42 @@ const CORS_PROXY: string =
 const BODY_CLOSE_REGEX = /<\/body>/i;
 const HTML_CLOSE_REGEX = /<\/html>/i;
 
-// Script injected into iframe to capture link clicks via postMessage
-// Handles both touch (iOS Safari) and click events
+/**
+ * Script injected into iframe to capture link clicks via postMessage.
+ * Handles both touch (iOS Safari) and click events.
+ *
+ * Readable version:
+ * ```js
+ * (function() {
+ *   var touchTarget = null;
+ *
+ *   // Find closest anchor element (with IE11 fallback)
+ *   function findAnchor(el) {
+ *     return el && el.closest
+ *       ? el.closest('a[href]')
+ *       : (function(n) { while (n && n.tagName !== 'A') n = n.parentElement; return n; })(el);
+ *   }
+ *
+ *   // Handle navigation for valid links
+ *   function handleLink(anchor, event) {
+ *     if (!anchor) return;
+ *     var href = anchor.getAttribute('href');
+ *     if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
+ *       event.preventDefault();
+ *       event.stopPropagation();
+ *       parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
+ *     }
+ *   }
+ *
+ *   // Track touch target for iOS Safari
+ *   document.addEventListener('touchstart', function(e) { touchTarget = findAnchor(e.target); }, true);
+ *   document.addEventListener('touchend', function(e) {
+ *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
+ *   }, true);
+ *   document.addEventListener('click', function(e) { handleLink(findAnchor(e.target), e); }, true);
+ * })();
+ * ```
+ */
 const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(r&&r.indexOf('javascript:')!==0&&r.indexOf('#')!==0&&r.indexOf('mailto:')!==0){e.preventDefault();e.stopPropagation();parent.postMessage({type:'ingglish-link-click',href:r},'*')}}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
 
 interface UseUrlTranslatorOptions {
@@ -162,6 +196,12 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   // Handle link clicks from iframe via postMessage (works on iOS)
   useEffect(() => {
     const handleMessage = (e: MessageEvent<unknown>) => {
+      // srcdoc iframes have origin "null" (string literal)
+      // Only accept messages from our iframe or same origin
+      if (e.origin !== 'null' && e.origin !== window.location.origin) {
+        return;
+      }
+
       // Type guard for our message format
       const data = e.data as { type?: string; href?: string } | null;
       if (

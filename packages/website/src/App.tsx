@@ -141,8 +141,8 @@ function App() {
       navigator.clipboard.writeText(shareUrl).catch(() => {
         // Fallback: clipboard might not be available
       });
-      // Share doesn't need to preserve translator state - just update URL for sharing
-      window.history.replaceState(null, '', shareUrl);
+      // Preserve translator state so back button still works after sharing
+      window.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
     },
     [buildShareUrl]
   );
