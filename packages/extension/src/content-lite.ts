@@ -83,22 +83,11 @@ async function translateWordsInBatches(
   return allTranslations;
 }
 
-// Main translation function
-async function translatePage(): Promise<void> {
-  if (state.translated) {
-    // eslint-disable-next-line no-console
-    console.log('Ingglish: Already translated');
-    return;
-  }
-
+// Core translation logic shared by translatePage and retranslatePage
+async function performTranslation(format: OutputFormat): Promise<void> {
   const startTime = performance.now();
-  // eslint-disable-next-line no-console
-  console.log('Ingglish: Starting translation...');
-
-  const format = await getOutputFormat();
   injectTooltipStyles(document);
 
-  // Collect all text nodes using shared utility
   const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
   if (textNodes.length === 0) {
     // eslint-disable-next-line no-console
@@ -106,7 +95,6 @@ async function translatePage(): Promise<void> {
     return;
   }
 
-  // Extract all unique words using shared utility
   const uniqueWords = extractWordsFromNodes(textNodes);
 
   // eslint-disable-next-line no-console
@@ -114,10 +102,8 @@ async function translatePage(): Promise<void> {
     `Ingglish: Translating ${uniqueWords.length} unique words across ${textNodes.length} nodes...`
   );
 
-  // Batch translate all words via background script
   const translations = await translateWordsInBatches(uniqueWords, format);
 
-  // Apply translations using shared utility
   await applyTranslationsMap(document.body, translations, {
     showTooltips: true,
     chunkSize: 100,
@@ -130,8 +116,22 @@ async function translatePage(): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Translation complete in ${elapsed}ms!`);
 
-  // Set up mutation observer for dynamic content
   setupObserver(format, translations);
+}
+
+// Main translation function
+async function translatePage(): Promise<void> {
+  if (state.translated) {
+    // eslint-disable-next-line no-console
+    console.log('Ingglish: Already translated');
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('Ingglish: Starting translation...');
+
+  const format = await getOutputFormat();
+  await performTranslation(format);
 }
 
 // Observe DOM for dynamic content
@@ -232,31 +232,8 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   document.getElementById('ingglish-badge')?.remove();
   state.translated = false;
 
-  // Now translate with the new format
-  const startTime = performance.now();
-  injectTooltipStyles(document);
-
-  const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
-  if (textNodes.length === 0) {
-    return;
-  }
-
-  const uniqueWords = extractWordsFromNodes(textNodes);
-  const translations = await translateWordsInBatches(uniqueWords, format);
-
-  await applyTranslationsMap(document.body, translations, {
-    showTooltips: true,
-    chunkSize: 100,
-  });
-
-  state.translated = true;
-  addTranslationBadge(format);
-
-  const elapsed = (performance.now() - startTime).toFixed(0);
-  // eslint-disable-next-line no-console
-  console.log(`Ingglish: Retranslation complete in ${elapsed}ms!`);
-
-  setupObserver(format, translations);
+  // Translate with the new format
+  await performTranslation(format);
 }
 
 function addTranslationBadge(format: OutputFormat): void {
