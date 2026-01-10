@@ -120,8 +120,26 @@ async function translateWordsInBatches(
   return allTranslations;
 }
 
+// Wait for document.body to be available
+async function waitForBody(): Promise<void> {
+  if (document.body !== null) {
+    return;
+  }
+  return new Promise((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (document.body !== null) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(document.documentElement, { childList: true });
+  });
+}
+
 // Core translation logic shared by translatePage and retranslatePage
 async function performTranslation(format: OutputFormat): Promise<void> {
+  await waitForBody();
+
   const startTime = performance.now();
   injectTooltipStyles(document);
 
