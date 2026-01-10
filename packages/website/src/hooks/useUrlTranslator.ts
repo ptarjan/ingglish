@@ -128,80 +128,44 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           });
         };
 
-        // Handle link clicks - intercept before native navigation
-        // Track touched anchor for iOS Safari where touchend target can differ
-        let touchedAnchor: HTMLAnchorElement | null = null;
+        // Intercept all link navigation using multiple event types for reliability
+        // The key is preventing the default behavior early enough on all platforms
 
-        // Use touchstart to prevent default early on iOS Safari
-        iframeDoc.addEventListener(
-          'touchstart',
-          (e: TouchEvent) => {
-            touchedAnchor = null;
-            const target = e.target as HTMLElement;
-            const anchor = target.closest<HTMLAnchorElement>('a[href]');
-            if (!anchor) {
-              return;
-            }
+        const handleLinkActivation = (e: Event, href: string) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          navigateToUrl(href);
+        };
 
-            const href = anchor.getAttribute('href');
-            if (href === null || href === '' || shouldSkipUrl(href)) {
-              return;
-            }
+        // Directly modify all anchor elements to intercept navigation
+        // This is more reliable than event delegation on iOS Safari
+        const anchors = iframeDoc.querySelectorAll('a[href]');
+        anchors.forEach((anchor) => {
+          const href = anchor.getAttribute('href');
+          if (href === null || href === '' || shouldSkipUrl(href)) {
+            return;
+          }
 
-            // Store anchor and prevent default to stop iOS from following the link
-            touchedAnchor = anchor;
-            e.preventDefault();
-          },
-          { capture: true, passive: false }
-        );
+          // Add click handler directly to each anchor
+          anchor.addEventListener(
+            'click',
+            (e) => {
+              handleLinkActivation(e, href);
+            },
+            { capture: true }
+          );
 
-        // Handle the actual navigation on touchend
-        iframeDoc.addEventListener(
-          'touchend',
-          (e: TouchEvent) => {
-            // Use the anchor captured in touchstart
-            const anchor = touchedAnchor;
-            touchedAnchor = null;
-
-            if (!anchor) {
-              return;
-            }
-
-            const href = anchor.getAttribute('href');
-            if (href === null || href === '' || shouldSkipUrl(href)) {
-              return;
-            }
-
-            e.preventDefault();
-            // Defer to next tick to avoid mobile Safari touch event issues
-            setTimeout(() => {
-              navigateToUrl(href);
-            }, 0);
-          },
-          { capture: true, passive: false }
-        );
-
-        // Handle clicks for desktop
-        iframeDoc.addEventListener(
-          'click',
-          (e: Event) => {
-            const target = e.target as HTMLElement;
-            const anchor = target.closest('a[href]');
-            if (!anchor) {
-              return;
-            }
-
-            const href = anchor.getAttribute('href');
-            if (href === null || href === '' || shouldSkipUrl(href)) {
-              return;
-            }
-
-            e.preventDefault();
-            e.stopPropagation();
-            navigateToUrl(href);
-          },
-          { capture: true }
-        );
+          // On touch devices, also handle touchend to ensure we catch taps
+          anchor.addEventListener(
+            'touchend',
+            (e) => {
+              e.preventDefault();
+              handleLinkActivation(e, href);
+            },
+            { capture: true, passive: false }
+          );
+        });
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
