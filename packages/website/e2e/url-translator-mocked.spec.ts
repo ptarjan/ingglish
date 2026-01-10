@@ -1,64 +1,9 @@
 import { test, expect } from '@playwright/test';
-
-// Mock HTML pages for testing - no external dependencies
-const PAGE_A_HTML = `<!DOCTYPE html>
-<html>
-<head><title>Page A</title></head>
-<body>
-  <h1>This is Page A</h1>
-  <p>Some text to translate on page A.</p>
-  <a href="https://example.com/page-b">Go to Page B</a>
-</body>
-</html>`;
-
-const PAGE_B_HTML = `<!DOCTYPE html>
-<html>
-<head><title>Page B</title></head>
-<body>
-  <h1>This is Page B</h1>
-  <p>Different text to translate on page B.</p>
-  <a href="https://example.com/page-a">Go back to Page A</a>
-</body>
-</html>`;
+import { setupMockProxy } from './test-utils';
 
 test.describe('URL Translator with Mocked Responses', () => {
   test.beforeEach(async ({ page }) => {
-    // Intercept all proxy requests and return mock HTML
-    await page.route('**/api.allorigins.win/**', async (route) => {
-      const url = route.request().url();
-      if (url.includes('page-b') || url.includes('Page%20B')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: PAGE_B_HTML,
-        });
-      } else {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: PAGE_A_HTML,
-        });
-      }
-    });
-
-    // Also intercept custom proxy if configured
-    await page.route('**/ingglish-cors-proxy**', async (route) => {
-      const url = route.request().url();
-      if (url.includes('page-b') || url.includes('Page%20B')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: PAGE_B_HTML,
-        });
-      } else {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: PAGE_A_HTML,
-        });
-      }
-    });
-
+    await setupMockProxy(page);
     await page.goto('/');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 10000 });
     await page.click('.tab:has-text("Translate URL")');
