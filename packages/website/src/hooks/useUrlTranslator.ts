@@ -166,7 +166,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             }
 
             e.preventDefault();
-            navigateToUrl(href);
+            // Defer to next tick to avoid mobile Safari touch event issues
+            setTimeout(() => {
+              navigateToUrl(href);
+            }, 0);
           },
           { capture: true, passive: false }
         );
