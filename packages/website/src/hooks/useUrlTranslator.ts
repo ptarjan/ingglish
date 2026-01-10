@@ -147,16 +147,16 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             return;
           }
 
-          // Add click handler directly to each anchor
+          // On iOS Safari, we MUST preventDefault on touchstart to stop native navigation
           anchor.addEventListener(
-            'click',
+            'touchstart',
             (e) => {
-              handleLinkActivation(e, href);
+              e.preventDefault();
             },
-            { capture: true }
+            { capture: true, passive: false }
           );
 
-          // On touch devices, also handle touchend to ensure we catch taps
+          // Handle the actual navigation on touchend
           anchor.addEventListener(
             'touchend',
             (e) => {
@@ -164,6 +164,15 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
               handleLinkActivation(e, href);
             },
             { capture: true, passive: false }
+          );
+
+          // Add click handler for desktop
+          anchor.addEventListener(
+            'click',
+            (e) => {
+              handleLinkActivation(e, href);
+            },
+            { capture: true }
           );
         });
       } catch (err) {
