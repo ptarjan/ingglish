@@ -328,6 +328,97 @@ describe('background script', () => {
     });
   });
 
+  describe('TRANSLATE_WORDS message', () => {
+    it('translates words and returns translations', async () => {
+      const sendResponse = vi.fn();
+
+      messageHandler(
+        { type: 'TRANSLATE_WORDS', words: ['hello', 'world'], format: 'ingglish' } as {
+          type: string;
+        },
+        {},
+        sendResponse
+      );
+
+      await vi.waitFor(
+        () => {
+          expect(sendResponse).toHaveBeenCalled();
+          const response = sendResponse.mock.calls[0][0] as {
+            translations: Record<string, string>;
+          };
+          expect(response.translations).toBeDefined();
+          expect(response.translations.hello).toBeDefined();
+          expect(response.translations.world).toBeDefined();
+        },
+        { timeout: 5000 }
+      );
+    });
+
+    it('returns same translations when switching format and back', async () => {
+      // Translate words to Ingglish
+      const ingglishResponse = vi.fn();
+      messageHandler(
+        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ingglish' } as {
+          type: string;
+        },
+        {},
+        ingglishResponse
+      );
+
+      await vi.waitFor(() => {
+        expect(ingglishResponse).toHaveBeenCalled();
+      });
+
+      const ingglishTranslations = (
+        ingglishResponse.mock.calls[0][0] as { translations: Record<string, string> }
+      ).translations;
+
+      // Translate same words to IPA
+      const ipaResponse = vi.fn();
+      messageHandler(
+        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ipa' } as {
+          type: string;
+        },
+        {},
+        ipaResponse
+      );
+
+      await vi.waitFor(() => {
+        expect(ipaResponse).toHaveBeenCalled();
+      });
+
+      const ipaTranslations = (
+        ipaResponse.mock.calls[0][0] as { translations: Record<string, string> }
+      ).translations;
+
+      // IPA translations should be different from Ingglish
+      expect(ipaTranslations.hello).not.toBe(ingglishTranslations.hello);
+
+      // Translate back to Ingglish
+      const ingglishResponse2 = vi.fn();
+      messageHandler(
+        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ingglish' } as {
+          type: string;
+        },
+        {},
+        ingglishResponse2
+      );
+
+      await vi.waitFor(() => {
+        expect(ingglishResponse2).toHaveBeenCalled();
+      });
+
+      const ingglishTranslations2 = (
+        ingglishResponse2.mock.calls[0][0] as { translations: Record<string, string> }
+      ).translations;
+
+      // Ingglish translations should be the same as the first time
+      expect(ingglishTranslations2.hello).toBe(ingglishTranslations.hello);
+      expect(ingglishTranslations2.world).toBe(ingglishTranslations.world);
+      expect(ingglishTranslations2.the).toBe(ingglishTranslations.the);
+    });
+  });
+
   describe('SET_FORMAT message', () => {
     it('saves the new format and responds with it', async () => {
       const sendResponse = vi.fn();

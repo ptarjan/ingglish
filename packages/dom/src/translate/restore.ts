@@ -19,13 +19,9 @@ export function restoreDOM(root: Element | Document): void {
   for (const element of elementsWithOriginal) {
     const originalText = element.getAttribute('data-ingglish-original');
     if (originalText !== null) {
-      // Find the text node child and restore it
-      for (const child of Array.from(element.childNodes)) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          child.textContent = originalText;
-          break;
-        }
-      }
+      // Clear all child nodes and replace with a single text node
+      // This handles the case where tooltips created spans + text nodes
+      element.textContent = originalText;
       element.removeAttribute('data-ingglish-original');
     }
   }
