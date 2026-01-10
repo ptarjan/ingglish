@@ -18,6 +18,11 @@ export interface RestoreMessage {
   type: 'RESTORE';
 }
 
+export interface RetranslateMessage {
+  type: 'RETRANSLATE';
+  format: OutputFormat;
+}
+
 export interface SetFormatMessage {
   type: 'SET_FORMAT';
   format: OutputFormat;
@@ -39,6 +44,7 @@ export type ExtensionMessage =
   | ToggleMessage
   | TranslateMessage
   | RestoreMessage
+  | RetranslateMessage
   | SetFormatMessage
   | GetFormatMessage
   | TranslateWordsMessage;

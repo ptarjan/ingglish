@@ -11,7 +11,12 @@ import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
 } from '@ingglish/dom';
-import type { RestoreMessage, FormatResponse, TranslateWordsResponse } from './types';
+import type {
+  RestoreMessage,
+  RetranslateMessage,
+  FormatResponse,
+  TranslateWordsResponse,
+} from './types';
 
 // Additional tags to skip for extension (security-sensitive)
 const EXTENSION_SKIP_TAGS = [...DEFAULT_SKIP_TAGS, 'IFRAME', 'OBJECT', 'EMBED', 'SELECT'];
@@ -213,6 +218,47 @@ function restorePage(): void {
   console.log('Ingglish: Restoration complete!');
 }
 
+// Retranslate page with a new format
+async function retranslatePage(format: OutputFormat): Promise<void> {
+  // eslint-disable-next-line no-console
+  console.log(`Ingglish: Retranslating with format: ${format}...`);
+
+  // First restore to original text
+  if (state.observer) {
+    state.observer.disconnect();
+    state.observer = null;
+  }
+  restoreDOM(document.body);
+  document.getElementById('ingglish-badge')?.remove();
+  state.translated = false;
+
+  // Now translate with the new format
+  const startTime = performance.now();
+  injectTooltipStyles(document);
+
+  const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
+  if (textNodes.length === 0) {
+    return;
+  }
+
+  const uniqueWords = extractWordsFromNodes(textNodes);
+  const translations = await translateWordsInBatches(uniqueWords, format);
+
+  await applyTranslationsMap(document.body, translations, {
+    showTooltips: true,
+    chunkSize: 100,
+  });
+
+  state.translated = true;
+  addTranslationBadge(format);
+
+  const elapsed = (performance.now() - startTime).toFixed(0);
+  // eslint-disable-next-line no-console
+  console.log(`Ingglish: Retranslation complete in ${elapsed}ms!`);
+
+  setupObserver(format, translations);
+}
+
 function addTranslationBadge(format: OutputFormat): void {
   if (document.getElementById('ingglish-badge')) {
     return;
@@ -252,10 +298,25 @@ if (!state.injected) {
   state.injected = true;
 
   chrome.runtime.onMessage.addListener(
-    (message: RestoreMessage, _sender, sendResponse: (response: { success: boolean }) => void) => {
+    (
+      message: RestoreMessage | RetranslateMessage,
+      _sender,
+      sendResponse: (response: { success: boolean }) => void
+    ) => {
       if (message.type === 'RESTORE') {
         restorePage();
         sendResponse({ success: true });
+        return false;
+      }
+      if (message.type === 'RETRANSLATE') {
+        // Only retranslate if currently translated
+        if (state.translated) {
+          void retranslatePage(message.format).then(() => {
+            sendResponse({ success: true });
+          });
+          return true; // Keep channel open for async response
+        }
+        sendResponse({ success: false });
         return false;
       }
       return false;

@@ -201,7 +201,19 @@ chrome.runtime.onMessage.addListener(
 
     if (message.type === 'SET_FORMAT') {
       void setFormat(message.format).then(() => {
+        // Send response first
         sendResponse({ format: message.format });
+
+        // Retranslate all currently translated tabs with the new format
+        for (const tabId of translatedTabs) {
+          chrome.tabs.sendMessage(tabId, { type: 'RETRANSLATE', format: message.format }, () => {
+            // Ignore errors (tab may have been closed or script not injected)
+            if (chrome.runtime.lastError) {
+              // eslint-disable-next-line no-console
+              console.log(`Retranslate message failed for tab ${tabId}`);
+            }
+          });
+        }
       });
       return true;
     }
