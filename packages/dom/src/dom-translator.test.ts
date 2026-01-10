@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { translateSyncWithMapping } from '@ingglish/core';
-import { translateDOM, translateDOMSync, restoreDOM } from './translate';
+import { translateDOM, translateDOMSync, restoreDOM, applyTranslationsMap } from './translate';
 import { skipElement, unskipElement } from './utils';
 import { observeAndTranslate } from './observe';
 import { setupDictionary } from './test-setup';
@@ -550,6 +550,26 @@ describe('dom-translator', () => {
 
       expect(document.body.textContent).toBe('Hello world');
     });
+
+    it('should restore when tooltips created spans and text nodes', () => {
+      // This simulates what applyTranslationsMap creates with tooltips:
+      // - Parent has data-ingglish-original with full original text
+      // - Children are a mix of tooltip spans and text nodes
+      document.body.innerHTML = `
+        <p data-ingglish-original="Hello world">
+          <span class="ingglish-word" data-ingglish-orig="Hello">Hulo</span>
+          <span class="ingglish-word" data-ingglish-orig="world">werld</span>
+        </p>
+      `;
+
+      restoreDOM(document.body);
+
+      // Should clear all children and restore original text
+      expect(document.body.textContent?.trim()).toBe('Hello world');
+      // Spans should be removed
+      expect(document.querySelector('.ingglish-word')).toBeNull();
+      expect(document.querySelector('[data-ingglish-orig]')).toBeNull();
+    });
   });
 
   describe('round-trip translation and restoration', () => {
@@ -573,6 +593,69 @@ describe('dom-translator', () => {
 
       restoreDOM(document.body);
       expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hello world');
+    });
+
+    it('should correctly translate with tooltips and restore', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+
+      // Apply translations with tooltips (like the extension does)
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'hulo', world: 'werld' },
+        { showTooltips: true }
+      );
+
+      // Should have translated text with tooltip spans
+      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.querySelector('.ingglish-word')).not.toBeNull();
+
+      // Restore
+      restoreDOM(document.body);
+
+      // Should restore original text and remove all tooltip spans
+      expect(document.body.textContent).toBe('Hello world');
+      expect(document.querySelector('.ingglish-word')).toBeNull();
+    });
+
+    it('should handle multiple translate-restore cycles with tooltips', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      const originalText = 'Hello world';
+
+      // First cycle: translate to "ingglish"
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'hulo', world: 'werld' },
+        { showTooltips: true }
+      );
+      expect(document.body.textContent).toBe('Hulo werld');
+
+      // Restore
+      restoreDOM(document.body);
+      expect(document.body.textContent).toBe(originalText);
+
+      // Second cycle: translate to "IPA" (different translations)
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'həˈloʊ', world: 'wɜːld' },
+        { showTooltips: true }
+      );
+      expect(document.body.textContent).toBe('Həˈloʊ wɜːld');
+
+      // Restore again
+      restoreDOM(document.body);
+      expect(document.body.textContent).toBe(originalText);
+
+      // Third cycle: back to "ingglish"
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'hulo', world: 'werld' },
+        { showTooltips: true }
+      );
+      expect(document.body.textContent).toBe('Hulo werld');
+
+      // Final restore
+      restoreDOM(document.body);
+      expect(document.body.textContent).toBe(originalText);
     });
   });
 });
