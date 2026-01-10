@@ -2,6 +2,7 @@
 // Uses message passing to background for translations and shared DOM utilities
 
 import type { OutputFormat } from '@ingglish/core';
+import { detectCasePattern, applyCasePattern } from '@ingglish/core';
 import {
   applyTranslationsMap,
   restoreDOM,
@@ -341,22 +342,81 @@ function restorePage(): void {
   console.log('Ingglish: Restoration complete!');
 }
 
-// Retranslate page with a new format
+// Retranslate page with a new format (in-place update, much faster than restore + re-translate)
 async function retranslatePage(format: OutputFormat): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
 
-  // First restore to original text
+  const startTime = performance.now();
+
+  // Find all translated word spans
+  const wordSpans = document.querySelectorAll('.ingglish-word[data-ingglish-orig]');
+  if (wordSpans.length === 0) {
+    // No spans found, fall back to full re-translation
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    restoreDOM(document.body);
+    document.getElementById('ingglish-badge')?.remove();
+    state.translated = false;
+    await performTranslation(format);
+    return;
+  }
+
+  // Convert to array with proper typing
+  const spans = Array.from(wordSpans) as HTMLElement[];
+
+  // Collect unique original words
+  const originalWords = new Set<string>();
+  for (const span of spans) {
+    const orig = span.getAttribute('data-ingglish-orig');
+    if (orig !== null && orig !== '') {
+      originalWords.add(orig.toLowerCase());
+    }
+  }
+
+  // Fetch new translations
+  const translations = await translateWordsInBatches([...originalWords], format);
+
+  // Update spans in-place (chunked to avoid blocking)
+  const CHUNK_SIZE = 200;
+
+  for (let i = 0; i < spans.length; i += CHUNK_SIZE) {
+    const chunk = spans.slice(i, i + CHUNK_SIZE);
+    for (const span of chunk) {
+      const orig = span.getAttribute('data-ingglish-orig');
+      if (orig !== null && orig !== '') {
+        const translated = translations[orig.toLowerCase()];
+        if (translated !== undefined) {
+          // Preserve case pattern from original
+          const pattern = detectCasePattern(orig);
+          span.textContent = applyCasePattern(translated, pattern, orig);
+        }
+      }
+    }
+    // Yield to browser between chunks for large pages
+    if (i + CHUNK_SIZE < spans.length) {
+      await new Promise((r) => setTimeout(r, 0));
+    }
+  }
+
+  // Update badge
+  const badge = document.getElementById('ingglish-badge');
+  if (badge) {
+    badge.textContent = format === 'ingglish' ? 'Ingglish' : 'IPA';
+  }
+
+  // Update observer with new translations
   if (state.observer) {
     state.observer.disconnect();
     state.observer = null;
   }
-  restoreDOM(document.body);
-  document.getElementById('ingglish-badge')?.remove();
-  state.translated = false;
+  setupObserver(format, translations);
 
-  // Translate with the new format
-  await performTranslation(format);
+  const elapsed = (performance.now() - startTime).toFixed(0);
+  // eslint-disable-next-line no-console
+  console.log(`Ingglish: Format switch complete in ${elapsed}ms (${spans.length} words)`);
 }
 
 function addTranslationBadge(format: OutputFormat): void {
