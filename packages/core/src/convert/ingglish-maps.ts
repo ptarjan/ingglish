@@ -25,7 +25,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
 
   // Diphthongs
   AW: 'ow', // cow, how, out
-  AY: 'ai', // my, eye, time
+  AY: 'ii', // my, eye, time
   EY: 'ay', // say, day, make
   OW: 'o', // go, show, coat
   OY: 'oi', // boy, toy, coin

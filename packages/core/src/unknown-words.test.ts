@@ -148,7 +148,7 @@ describe('unknown-words', () => {
 
     it('should spell out API correctly', () => {
       const result = translateAsAcronym('api');
-      expect(result).toBe('aypeeai');
+      expect(result).toBe('aypeeii');
     });
 
     it('should spell out CSS correctly', () => {
@@ -181,7 +181,7 @@ describe('unknown-words', () => {
 
     it('should translate api as spelled-out letters', () => {
       const result = translateUnknown('api');
-      expect(result).toBe('aypeeai');
+      expect(result).toBe('aypeeii');
     });
 
     it('should not treat regular words as acronyms', () => {

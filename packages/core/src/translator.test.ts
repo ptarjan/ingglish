@@ -125,18 +125,18 @@ describe('translator', () => {
     it('should handle possessives with curly apostrophes', () => {
       // Common in text copied from websites like NY Times
       const result = translateSync('China\u2019s economy');
-      expect(result).toBe('Chainuz ikahnumee');
+      expect(result).toBe('Chiinuz ikahnumee');
     });
 
     it('should preserve capitalization on I and I-contractions', () => {
       // Capitalization is preserved (e.g., "A cat" keeps the capital A)
-      expect(translateSync('I')).toBe('Ai');
-      expect(translateSync("I'm")).toBe('Aim');
-      expect(translateSync("I'll")).toBe('Ail');
-      expect(translateSync("I've")).toBe('Aiv');
-      expect(translateSync("I'd")).toBe('Aid');
+      expect(translateSync('I')).toBe('Ii');
+      expect(translateSync("I'm")).toBe('Iim');
+      expect(translateSync("I'll")).toBe('Iil');
+      expect(translateSync("I've")).toBe('Iiv');
+      expect(translateSync("I'd")).toBe('Iid');
       // Lowercase remains lowercase
-      expect(translateSync('i')).toBe('ai');
+      expect(translateSync('i')).toBe('ii');
     });
 
     it('should handle empty string', () => {

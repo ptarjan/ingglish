@@ -128,7 +128,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['AH1'])).toBe('u'); // but
       expect(arpabetToIngglish(['AO1'])).toBe('aw'); // caught
       expect(arpabetToIngglish(['AW1'])).toBe('ow'); // cow
-      expect(arpabetToIngglish(['AY1'])).toBe('ai'); // my
+      expect(arpabetToIngglish(['AY1'])).toBe('ii'); // my
       expect(arpabetToIngglish(['EH1'])).toBe('e'); // bed
       expect(arpabetToIngglish(['ER1'])).toBe('er'); // bird
       expect(arpabetToIngglish(['EY1'])).toBe('ay'); // say
