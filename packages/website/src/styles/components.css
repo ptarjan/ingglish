@@ -191,6 +191,8 @@
   background: white;
   opacity: 0;
   transition: opacity 0.2s ease-in;
+  /* Improve touch handling on mobile - removes 300ms click delay */
+  touch-action: manipulation;
 }
 
 .page-iframe--ready {
