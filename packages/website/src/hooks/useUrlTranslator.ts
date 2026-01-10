@@ -22,6 +22,14 @@ export { normalizeUrl } from '../utils/url';
 const CORS_PROXY: string =
   import.meta.env.VITE_CORS_PROXY_URL ?? 'https://api.allorigins.win/raw?url=';
 
+// Regex patterns for HTML tag matching (precompiled for performance)
+const BODY_CLOSE_REGEX = /<\/body>/i;
+const HTML_CLOSE_REGEX = /<\/html>/i;
+
+// Script injected into iframe to capture link clicks via postMessage
+// Handles both touch (iOS Safari) and click events
+const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(r&&r.indexOf('javascript:')!==0&&r.indexOf('#')!==0&&r.indexOf('mailto:')!==0){e.preventDefault();e.stopPropagation();parent.postMessage({type:'ingglish-link-click',href:r},'*')}}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
+
 interface UseUrlTranslatorOptions {
   onNavigate?: (url: string) => void;
   outputFormat?: OutputFormat;
@@ -87,64 +95,16 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const htmlWithBase = injectBaseTag(stripScripts(rawHtml), getBaseUrl(parsedUrl.href));
         const htmlWithFonts = proxyFontUrls(htmlWithBase, CORS_PROXY);
 
-        // Inject a script that captures link clicks and sends them to parent via postMessage
-        // This runs inside the iframe's own JS context, which works better on iOS
-        // Handle both click and touch events for iOS Safari compatibility
-        const clickHandlerScript = `
-          <script>
-            (function() {
-              var touchedAnchor = null;
-
-              function findAnchor(el) {
-                if (el && el.closest) return el.closest('a[href]');
-                while (el && el.tagName !== 'A') el = el.parentElement;
-                return el;
-              }
-
-              function handleLink(anchor, e) {
-                if (!anchor) return false;
-                var href = anchor.getAttribute('href');
-                if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
-                  return true;
-                }
-                return false;
-              }
-
-              // Touch events for iOS Safari
-              document.addEventListener('touchstart', function(e) {
-                touchedAnchor = findAnchor(e.target);
-              }, true);
-
-              document.addEventListener('touchend', function(e) {
-                if (touchedAnchor) {
-                  var anchor = touchedAnchor;
-                  touchedAnchor = null;
-                  handleLink(anchor, e);
-                }
-              }, true);
-
-              // Click events for desktop and as fallback
-              document.addEventListener('click', function(e) {
-                var anchor = findAnchor(e.target);
-                handleLink(anchor, e);
-              }, true);
-            })();
-          </script>
-        `;
-
-        // Insert script before closing </body> or </html> tag (case-insensitive)
+        // Insert click handler script before closing </body> or </html> tag
         let html = htmlWithFonts;
-        const bodyMatch = /<\/body>/i.exec(html);
-        const htmlMatch = /<\/html>/i.exec(html);
+        const bodyMatch = BODY_CLOSE_REGEX.exec(html);
+        const htmlMatch = HTML_CLOSE_REGEX.exec(html);
         if (bodyMatch !== null) {
-          html = html.replace(bodyMatch[0], clickHandlerScript + bodyMatch[0]);
+          html = html.replace(bodyMatch[0], CLICK_HANDLER_SCRIPT + bodyMatch[0]);
         } else if (htmlMatch !== null) {
-          html = html.replace(htmlMatch[0], clickHandlerScript + htmlMatch[0]);
+          html = html.replace(htmlMatch[0], CLICK_HANDLER_SCRIPT + htmlMatch[0]);
         } else {
-          html = html + clickHandlerScript;
+          html = html + CLICK_HANDLER_SCRIPT;
         }
 
         // Load HTML into iframe using srcdoc and wait for load event
@@ -182,7 +142,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [onNavigate, outputFormat]
+    [outputFormat]
   );
 
   const clear = useCallback(() => {
