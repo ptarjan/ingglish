@@ -102,8 +102,13 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setHasContent(true);
 
-        // Handle link navigation - shared logic for click and touch events
-        const handleLinkNavigation = (e: Event, anchor: HTMLAnchorElement): void => {
+        // Intercept link clicks for navigation
+        iframeDoc.addEventListener('click', (e: MouseEvent) => {
+          const anchor = (e.target as HTMLElement).closest('a');
+          if (!anchor) {
+            return;
+          }
+
           const href = anchor.getAttribute('href');
           if (href === null || href === '' || shouldSkipUrl(href)) {
             return;
@@ -126,38 +131,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             // eslint-disable-next-line no-console
             console.error('Navigation translation failed:', err);
           });
-        };
-
-        // Intercept link clicks for navigation
-        iframeDoc.addEventListener('click', (e: MouseEvent) => {
-          const anchor = (e.target as HTMLElement).closest('a');
-          if (!anchor) {
-            return;
-          }
-          handleLinkNavigation(e, anchor);
         });
-
-        // Also handle touch events for mobile - touchend fires before click on mobile
-        // and is more reliable for detecting taps on links in iframes
-        iframeDoc.addEventListener(
-          'touchend',
-          (e: TouchEvent) => {
-            if (e.changedTouches.length === 0) {
-              return;
-            }
-
-            const touch = e.changedTouches[0];
-            // Get the element at the touch point
-            const target = iframeDoc.elementFromPoint(touch.clientX, touch.clientY);
-            const anchor = (target as HTMLElement | null)?.closest('a');
-            if (!anchor) {
-              return;
-            }
-
-            handleLinkNavigation(e, anchor);
-          },
-          { passive: false }
-        );
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
