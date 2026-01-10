@@ -128,37 +128,61 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           });
         };
 
-        // Neutralize all links to prevent native navigation
-        // This is critical for iOS Safari where touch events in iframes are
-        // handled at the native level before JavaScript handlers fire
-        const links = iframeDoc.querySelectorAll('a[href]');
-        links.forEach((link) => {
-          const anchor = link as HTMLAnchorElement;
-          const href = anchor.getAttribute('href');
-          if (href !== null && href !== '' && !shouldSkipUrl(href)) {
-            // Store original href and neutralize the link
-            anchor.setAttribute('data-original-href', href);
-            anchor.removeAttribute('href');
-            // Keep visual styling as a link
-            anchor.style.cursor = 'pointer';
-            // Make it tappable on iOS
-            anchor.setAttribute('role', 'link');
-          }
-        });
-
-        // Use pointerup for unified mouse/touch handling
-        // Pointer events work across mouse, touch, and pen input
+        // Handle link clicks - intercept before native navigation
+        // Use touchstart to prevent default early on iOS Safari
         iframeDoc.addEventListener(
-          'pointerup',
-          (e: PointerEvent) => {
+          'touchstart',
+          (e: TouchEvent) => {
             const target = e.target as HTMLElement;
-            const anchor = target.closest('a[data-original-href]');
+            const anchor = target.closest('a[href]');
             if (!anchor) {
               return;
             }
 
-            const href = anchor.getAttribute('data-original-href');
-            if (href === null || href === '') {
+            const href = anchor.getAttribute('href');
+            if (href === null || href === '' || shouldSkipUrl(href)) {
+              return;
+            }
+
+            // Prevent default to stop iOS from following the link
+            e.preventDefault();
+          },
+          { capture: true, passive: false }
+        );
+
+        // Handle the actual navigation on touchend
+        iframeDoc.addEventListener(
+          'touchend',
+          (e: TouchEvent) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest('a[href]');
+            if (!anchor) {
+              return;
+            }
+
+            const href = anchor.getAttribute('href');
+            if (href === null || href === '' || shouldSkipUrl(href)) {
+              return;
+            }
+
+            e.preventDefault();
+            navigateToUrl(href);
+          },
+          { capture: true, passive: false }
+        );
+
+        // Handle clicks for desktop
+        iframeDoc.addEventListener(
+          'click',
+          (e: Event) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest('a[href]');
+            if (!anchor) {
+              return;
+            }
+
+            const href = anchor.getAttribute('href');
+            if (href === null || href === '' || shouldSkipUrl(href)) {
               return;
             }
 

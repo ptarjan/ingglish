@@ -106,8 +106,8 @@ test.describe('URL Translator Link Navigation', () => {
     const tooltipCount = await iframe.locator('.ingglish-tooltip').count();
     expect(tooltipCount).toBeGreaterThan(0);
 
-    // Find any link in the page (hrefs are moved to data-original-href after translation)
-    const link = iframe.locator('a[data-original-href]').first();
+    // Find any link in the page
+    const link = iframe.locator('a[href]').first();
     await expect(link).toBeVisible({ timeout: 10000 });
 
     // Get the current URL
