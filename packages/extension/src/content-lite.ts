@@ -346,10 +346,15 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
 
-  const startTime = performance.now();
+  const perf = { start: performance.now(), query: 0, collect: 0, fetch: 0, apply: 0 };
 
-  // Find all translated word spans
+  // Find all translated word spans (yield first to let UI update)
+  await new Promise((r) => requestAnimationFrame(r));
+
+  const queryStart = performance.now();
   const wordSpans = document.querySelectorAll('.ingglish-word[data-ingglish-orig]');
+  perf.query = performance.now() - queryStart;
+
   if (wordSpans.length === 0) {
     // No spans found, fall back to full re-translation
     if (state.observer) {
@@ -366,7 +371,11 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // Convert to array with proper typing
   const spans = Array.from(wordSpans) as HTMLElement[];
 
+  // Yield before heavy work
+  await new Promise((r) => requestAnimationFrame(r));
+
   // Collect unique original words
+  const collectStart = performance.now();
   const originalWords = new Set<string>();
   for (const span of spans) {
     const orig = span.getAttribute('data-ingglish-orig');
@@ -374,9 +383,12 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
       originalWords.add(orig.toLowerCase());
     }
   }
+  perf.collect = performance.now() - collectStart;
 
   // Fetch new translations
+  const fetchStart = performance.now();
   const translations = await translateWordsInBatches([...originalWords], format);
+  perf.fetch = performance.now() - fetchStart;
 
   // Update spans in-place (chunked with RAF to avoid blocking)
   const CHUNK_SIZE = 50; // Small chunks to stay responsive
@@ -410,6 +422,8 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
     requestAnimationFrame(processChunk);
   });
 
+  perf.apply = performance.now() - fetchStart - perf.fetch;
+
   // Update badge
   const badge = document.getElementById('ingglish-badge');
   if (badge) {
@@ -423,9 +437,17 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   }
   setupObserver(format, translations);
 
-  const elapsed = (performance.now() - startTime).toFixed(0);
+  const total = performance.now() - perf.start;
   // eslint-disable-next-line no-console
-  console.log(`Ingglish: Format switch complete in ${elapsed}ms (${spans.length} words)`);
+  console.log(
+    `Ingglish Format Switch:\n` +
+      `  Spans: ${spans.length}, Unique words: ${originalWords.size}\n` +
+      `  Query DOM:    ${perf.query.toFixed(1)}ms\n` +
+      `  Collect words: ${perf.collect.toFixed(1)}ms\n` +
+      `  Fetch:        ${perf.fetch.toFixed(1)}ms\n` +
+      `  Apply:        ${perf.apply.toFixed(1)}ms\n` +
+      `  Total:        ${total.toFixed(1)}ms`
+  );
 }
 
 function addTranslationBadge(format: OutputFormat): void {
