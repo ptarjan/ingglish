@@ -78,9 +78,75 @@ test.describe('URL Translator Navigation', () => {
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
   });
 
-  // Note: Playwright's webkit engine cannot properly dispatch click/tap events
-  // to elements inside iframes. This is a known Playwright limitation, not a code issue.
-  // The code works on real Safari - test manually on actual iOS devices.
+  // Test that the postMessage mechanism works by directly dispatching touch events
+  // in the iframe's document. This simulates what happens on real iOS Safari.
+  test('postMessage link navigation works via touch events', async ({ page }) => {
+    const input = page.locator('.url-input');
+    await input.fill('https://example.com/page-a');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+
+    const iframe = page.frameLocator('.page-iframe');
+    await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
+
+    // Verify the click handler script was injected
+    const iframeElement = page.locator('.page-iframe');
+    const hasScript = await iframeElement.evaluate((el: HTMLIFrameElement) => {
+      const doc = el.contentDocument;
+      if (!doc) return false;
+      const scripts = doc.querySelectorAll('script');
+      return Array.from(scripts).some((s) => s.textContent.includes('ingglish-link-click'));
+    });
+    expect(hasScript).toBe(true);
+
+    // Directly dispatch touch events on the link element inside the iframe
+    // This simulates what happens on real iOS Safari
+    const link = iframe.locator('a[href*="page-b"]');
+    await expect(link).toBeVisible();
+
+    await link.evaluate((el) => {
+      // Create and dispatch touchstart
+      const touchStart = new TouchEvent('touchstart', {
+        bubbles: true,
+        cancelable: true,
+        touches: [
+          new Touch({
+            identifier: 0,
+            target: el,
+            clientX: 0,
+            clientY: 0,
+          }),
+        ],
+      });
+      el.dispatchEvent(touchStart);
+
+      // Create and dispatch touchend
+      const touchEnd = new TouchEvent('touchend', {
+        bubbles: true,
+        cancelable: true,
+        changedTouches: [
+          new Touch({
+            identifier: 0,
+            target: el,
+            clientX: 0,
+            clientY: 0,
+          }),
+        ],
+      });
+      el.dispatchEvent(touchEnd);
+    });
+
+    // Verify navigation happened
+    await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
+
+    const wordCount = await iframe.locator('.ingglish-word').count();
+    expect(wordCount).toBeGreaterThan(0);
+  });
+
+  // Also test with Playwright's touchscreen for mobile emulation
   test('mobile tap navigates and translates', async ({ page }, testInfo) => {
     const isMobile = testInfo.project.name.includes('mobile');
     const isWebkit = testInfo.project.name.includes('safari');
