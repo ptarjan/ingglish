@@ -45,6 +45,37 @@ test.describe('URL Translator', () => {
     const wordCount = await iframe.locator('.ingglish-word').count();
     expect(wordCount).toBeGreaterThan(0);
   });
+
+  test('clicking example URL fills input and translates', async ({ page }) => {
+    const input = page.locator('.url-input');
+    await expect(input).toHaveValue('');
+
+    // Click first example link
+    await page.click('.example-link >> nth=0');
+
+    // Input should be filled with a URL
+    await expect(input).not.toHaveValue('');
+
+    // Should start loading
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+  });
+
+  test('shows loading state while translating', async ({ page }) => {
+    const input = page.locator('.url-input');
+    await input.fill('https://example.com/page-a');
+
+    // Start translation
+    await page.click('button[type="submit"]');
+
+    // Should show loading button state
+    await expect(page.locator('.btn-loading')).toBeVisible();
+
+    // Wait for completion
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+
+    // Loading should be gone
+    await expect(page.locator('.btn-loading')).not.toBeVisible();
+  });
 });
 
 test.describe('URL Translator Navigation', () => {

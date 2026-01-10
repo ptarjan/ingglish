@@ -8,7 +8,48 @@ import {
   stripScripts,
   proxyFontUrls,
   processProxiedHtml,
+  escapeHtmlAttr,
 } from './url';
+
+describe('escapeHtmlAttr', () => {
+  it('escapes ampersands', () => {
+    expect(escapeHtmlAttr('a&b')).toBe('a&amp;b');
+  });
+
+  it('escapes double quotes', () => {
+    expect(escapeHtmlAttr('a"b')).toBe('a&quot;b');
+  });
+
+  it('escapes single quotes', () => {
+    expect(escapeHtmlAttr("a'b")).toBe('a&#39;b');
+  });
+
+  it('escapes less than', () => {
+    expect(escapeHtmlAttr('a<b')).toBe('a&lt;b');
+  });
+
+  it('escapes greater than', () => {
+    expect(escapeHtmlAttr('a>b')).toBe('a&gt;b');
+  });
+
+  it('escapes multiple special characters', () => {
+    expect(escapeHtmlAttr('<script>"alert(\'xss\')"</script>')).toBe(
+      '&lt;script&gt;&quot;alert(&#39;xss&#39;)&quot;&lt;/script&gt;'
+    );
+  });
+
+  it('handles URLs with query parameters', () => {
+    expect(escapeHtmlAttr('https://example.com?a=1&b=2')).toBe('https://example.com?a=1&amp;b=2');
+  });
+
+  it('returns empty string unchanged', () => {
+    expect(escapeHtmlAttr('')).toBe('');
+  });
+
+  it('returns safe strings unchanged', () => {
+    expect(escapeHtmlAttr('https://example.com/path')).toBe('https://example.com/path');
+  });
+});
 
 describe('normalizeUrl', () => {
   it('returns null for empty string', () => {

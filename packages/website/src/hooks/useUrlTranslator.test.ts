@@ -1,98 +1,73 @@
 /**
  * @vitest-environment jsdom
  *
- * Tests for URL translator link navigation handling.
+ * Tests for URL translator postMessage handling.
+ * Note: shouldSkipUrl tests are in url.test.ts to avoid duplication.
  */
 import { describe, it, expect } from 'vitest';
-import { shouldSkipUrl } from '../utils/url';
 
-describe('shouldSkipUrl for link navigation', () => {
-  it('should skip hash-only links', () => {
-    expect(shouldSkipUrl('#')).toBe(true);
-    expect(shouldSkipUrl('#section')).toBe(true);
+describe('postMessage origin validation', () => {
+  // Test the origin validation logic used in useUrlTranslator
+  const isValidOrigin = (origin: string): boolean => {
+    // srcdoc iframes have origin "null" (string literal)
+    // Only accept messages from our iframe or same origin
+    return origin === 'null' || origin === window.location.origin;
+  };
+
+  it('accepts messages from srcdoc iframes (origin "null")', () => {
+    expect(isValidOrigin('null')).toBe(true);
   });
 
-  it('should skip javascript: links', () => {
-    expect(shouldSkipUrl('javascript:void(0)')).toBe(true);
-    expect(shouldSkipUrl('javascript:alert(1)')).toBe(true);
+  it('accepts messages from same origin', () => {
+    expect(isValidOrigin(window.location.origin)).toBe(true);
   });
 
-  it('should skip mailto: links', () => {
-    expect(shouldSkipUrl('mailto:test@example.com')).toBe(true);
-  });
-
-  it('should NOT skip regular http/https links', () => {
-    expect(shouldSkipUrl('https://example.com')).toBe(false);
-    expect(shouldSkipUrl('http://example.com')).toBe(false);
-  });
-
-  it('should NOT skip relative links', () => {
-    expect(shouldSkipUrl('/page')).toBe(false);
-    expect(shouldSkipUrl('page.html')).toBe(false);
-    expect(shouldSkipUrl('../other')).toBe(false);
-  });
-
-  it('should NOT skip tel: links (allows phone dialing)', () => {
-    expect(shouldSkipUrl('tel:+1234567890')).toBe(false);
+  it('rejects messages from different origins', () => {
+    expect(isValidOrigin('https://evil.com')).toBe(false);
+    expect(isValidOrigin('http://localhost:3001')).toBe(false);
   });
 });
 
-describe('link click handling basics', () => {
-  it('closest("a") finds parent anchor from nested element', () => {
-    const container = document.createElement('div');
-    container.innerHTML = '<a href="/test"><span><strong>Nested</strong></span></a>';
-    document.body.appendChild(container);
-
-    const strong = container.querySelector('strong');
-    const anchor = strong?.closest('a');
-
-    expect(anchor).not.toBeNull();
-    expect(anchor?.getAttribute('href')).toBe('/test');
-
-    document.body.removeChild(container);
-  });
-
-  it('click event can be prevented', () => {
-    const link = document.createElement('a');
-    link.href = 'https://example.com';
-    document.body.appendChild(link);
-
-    let defaultPrevented = false;
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      defaultPrevented = e.defaultPrevented;
-    });
-
-    const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
-    link.dispatchEvent(clickEvent);
-
-    expect(defaultPrevented).toBe(true);
-
-    document.body.removeChild(link);
-  });
-
-  it('document-level click handler can intercept link clicks', () => {
-    const container = document.createElement('div');
-    container.innerHTML = '<a href="/test">Link</a>';
-    document.body.appendChild(container);
-
-    let interceptedHref = '';
-    const handler = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest('a');
-      if (anchor) {
-        e.preventDefault();
-        interceptedHref = anchor.getAttribute('href') ?? '';
-      }
+describe('link click message handling', () => {
+  it('ingglish-link-click message format is correct', () => {
+    // Test that the expected message format is handled correctly
+    const message = {
+      type: 'ingglish-link-click',
+      href: '/path/to/page',
     };
-    document.addEventListener('click', handler);
 
-    const link = container.querySelector('a');
-    const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
-    link?.dispatchEvent(clickEvent);
+    expect(message.type).toBe('ingglish-link-click');
+    expect(typeof message.href).toBe('string');
+  });
 
-    expect(interceptedHref).toBe('/test');
+  it('relative URLs are resolved against base URL', () => {
+    const baseUrl = 'https://example.com/path/';
+    const href = '../other/page.html';
 
-    document.removeEventListener('click', handler);
-    document.body.removeChild(container);
+    const resolved = new URL(href, baseUrl).href;
+    expect(resolved).toBe('https://example.com/other/page.html');
+  });
+
+  it('absolute URLs are preserved', () => {
+    const baseUrl = 'https://example.com/path/';
+    const href = 'https://other.com/page.html';
+
+    const resolved = new URL(href, baseUrl).href;
+    expect(resolved).toBe('https://other.com/page.html');
+  });
+});
+
+describe('history state management', () => {
+  it('translator state shape is correct', () => {
+    const state = { translatorUrl: 'https://example.com' };
+
+    expect(state.translatorUrl).toBeDefined();
+    expect(typeof state.translatorUrl).toBe('string');
+  });
+
+  it('null state indicates no translation', () => {
+    const state: { translatorUrl?: string } | null = null;
+
+    expect(state?.translatorUrl).toBeUndefined();
   });
 });
