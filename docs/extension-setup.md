@@ -44,10 +44,10 @@ You can use any image editor or an online tool. The icons should:
 
 ### Keyboard Shortcut
 
-- **Windows/Linux**: `Alt+Shift+I`
-- **Mac**: `Ctrl+Shift+I`
+- **Windows/Linux**: `Alt+Shift+G`
+- **Mac**: `Ctrl+Shift+G`
 
-This toggles translation on/off for the current page.
+This toggles translation on/off for the current page. (G for inGglish)
 
 ## Features
 

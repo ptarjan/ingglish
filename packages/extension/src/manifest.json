@@ -25,8 +25,8 @@
   "commands": {
     "toggle-translation": {
       "suggested_key": {
-        "default": "Alt+Shift+I",
-        "mac": "MacCtrl+Shift+I"
+        "default": "Alt+Shift+G",
+        "mac": "MacCtrl+Shift+G"
       },
       "description": "Toggle translation on the current page"
     }
