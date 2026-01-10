@@ -138,7 +138,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           (e: TouchEvent) => {
             touchedAnchor = null;
             const target = e.target as HTMLElement;
-            const anchor = target.closest('a[href]');
+            const anchor = target.closest<HTMLAnchorElement>('a[href]');
             if (!anchor) {
               return;
             }
