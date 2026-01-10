@@ -123,6 +123,16 @@ async function hasTabPermission(tabId: number): Promise<boolean> {
   }
 }
 
+// CSS to hide page content while translating (prevents flash of untranslated text)
+const HIDE_CSS = `
+  body {
+    visibility: hidden !important;
+  }
+  body.ingglish-ready {
+    visibility: visible !important;
+  }
+`;
+
 // Inject the lightweight translation script into a tab
 async function injectTranslator(tabId: number, checkPermission = true): Promise<boolean> {
   // Check permission first (skip for popup-initiated actions which use activeTab)
@@ -136,6 +146,13 @@ async function injectTranslator(tabId: number, checkPermission = true): Promise<
   }
 
   try {
+    // First inject CSS to hide content (prevents flash of untranslated text)
+    await chrome.scripting.insertCSS({
+      target: { tabId },
+      css: HIDE_CSS,
+    });
+
+    // Then inject the translator script
     await chrome.scripting.executeScript({
       target: { tabId },
       files: ['content-lite.global.js'],

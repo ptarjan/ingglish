@@ -38,6 +38,7 @@ const mockChrome = {
   },
   scripting: {
     executeScript: vi.fn(),
+    insertCSS: vi.fn(),
   },
   storage: {
     sync: {
@@ -72,6 +73,7 @@ describe('background script', () => {
     vi.resetModules();
     vi.clearAllMocks();
     mockChrome.runtime.lastError = null;
+    mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
     mockChrome.scripting.executeScript.mockResolvedValue([]);
 
     // Capture the handlers when the module loads

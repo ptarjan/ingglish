@@ -199,6 +199,9 @@ async function performTranslation(format: OutputFormat): Promise<void> {
     chunkSize: 100,
   });
 
+  // Reveal the page now that translation is complete (CSS hides body until this class is added)
+  document.body.classList.add('ingglish-ready');
+
   state.translated = true;
   addTranslationBadge(format);
 
@@ -308,8 +311,9 @@ function restorePage(): void {
   // Use shared restore utility
   restoreDOM(document.body);
 
-  // Remove badge
+  // Remove badge and ready class
   document.getElementById('ingglish-badge')?.remove();
+  document.body.classList.remove('ingglish-ready');
 
   state.translated = false;
   // eslint-disable-next-line no-console
