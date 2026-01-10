@@ -102,13 +102,9 @@ test.describe('URL Translator Link Navigation', () => {
     // Get the iframe
     const iframe = page.frameLocator('.page-iframe');
 
-    // Verify the first page has translated content (ingglish tooltips)
-    // Skip if translation didn't work (external URLs can be unreliable in CI)
-    const tooltipCount = await iframe.locator('.ingglish-tooltip').count();
-    if (tooltipCount === 0) {
-      test.skip(true, 'Page loaded but no translated content - external URL may have issues');
-      return;
-    }
+    // Verify the first page has translated content (ingglish-word spans)
+    const tooltipCount = await iframe.locator('.ingglish-word').count();
+    expect(tooltipCount).toBeGreaterThan(0);
 
     // Find any link in the page
     const link = iframe.locator('a[href]').first();
@@ -135,7 +131,7 @@ test.describe('URL Translator Link Navigation', () => {
 
     // CRITICAL: Verify the NEW page also has translated content
     // This proves that navigation worked AND translation was applied
-    const newTooltipCount = await iframe.locator('.ingglish-tooltip').count();
+    const newTooltipCount = await iframe.locator('.ingglish-word').count();
     expect(newTooltipCount).toBeGreaterThan(0);
 
     // Verify URL actually changed
