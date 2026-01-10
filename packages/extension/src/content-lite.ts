@@ -175,29 +175,41 @@ async function waitForBody(): Promise<void> {
 async function performTranslation(format: OutputFormat): Promise<void> {
   await waitForBody();
 
-  const startTime = performance.now();
+  const perf = {
+    start: performance.now(),
+    collectNodes: 0,
+    extractWords: 0,
+    fetchTranslations: 0,
+    applyDOM: 0,
+    total: 0,
+  };
+
   injectTooltipStyles(document);
 
+  const collectStart = performance.now();
   const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
+  perf.collectNodes = performance.now() - collectStart;
+
   if (textNodes.length === 0) {
     // eslint-disable-next-line no-console
     console.log('Ingglish: No text nodes found');
     return;
   }
 
+  const extractStart = performance.now();
   const uniqueWords = extractWordsFromNodes(textNodes);
+  perf.extractWords = performance.now() - extractStart;
 
-  // eslint-disable-next-line no-console
-  console.log(
-    `Ingglish: Translating ${uniqueWords.length} unique words across ${textNodes.length} nodes...`
-  );
-
+  const fetchStart = performance.now();
   const translations = await translateWordsInBatches(uniqueWords, format);
+  perf.fetchTranslations = performance.now() - fetchStart;
 
+  const applyStart = performance.now();
   await applyTranslationsMap(document.body, translations, {
     showTooltips: true,
     chunkSize: 100,
   });
+  perf.applyDOM = performance.now() - applyStart;
 
   // Reveal the page now that translation is complete (CSS hides body until this class is added)
   document.body.classList.add('ingglish-ready');
@@ -205,9 +217,18 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   state.translated = true;
   addTranslationBadge(format);
 
-  const elapsed = (performance.now() - startTime).toFixed(0);
+  perf.total = performance.now() - perf.start;
+
   // eslint-disable-next-line no-console
-  console.log(`Ingglish: Translation complete in ${elapsed}ms!`);
+  console.log(
+    `Ingglish Performance:\n` +
+      `  Nodes: ${textNodes.length}, Words: ${uniqueWords.length}\n` +
+      `  Collect nodes:      ${perf.collectNodes.toFixed(1)}ms\n` +
+      `  Extract words:      ${perf.extractWords.toFixed(1)}ms\n` +
+      `  Fetch translations: ${perf.fetchTranslations.toFixed(1)}ms\n` +
+      `  Apply to DOM:       ${perf.applyDOM.toFixed(1)}ms\n` +
+      `  Total:              ${perf.total.toFixed(1)}ms`
+  );
 
   setupObserver(format, translations);
 }
