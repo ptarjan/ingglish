@@ -17,7 +17,13 @@ export function detectCasePattern(word: string): CasePattern {
     return word === word.toUpperCase() && word !== word.toLowerCase() ? 'capitalized' : 'lower';
   }
 
+  // All uppercase words
   if (word === word.toUpperCase()) {
+    // Short all-caps words (2 letters like "UI", "AI") should be title-cased, not ALL CAPS
+    // This handles common acronyms more naturally
+    if (word.length <= 2) {
+      return 'capitalized';
+    }
     return 'upper';
   }
 

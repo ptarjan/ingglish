@@ -239,4 +239,8 @@ test.describe('URL Translator Navigation', () => {
       /Section Two/
     );
   });
+
+  // Note: Pure hash link scrolling within srcdoc iframes is handled by the click handler script
+  // but cannot be reliably tested with Playwright due to how it handles clicks in srcdoc iframes.
+  // The click handler is verified in the 'click handler script is injected' test above.
 });

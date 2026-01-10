@@ -228,11 +228,22 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  *   function handleLink(anchor, event) {
  *     if (!anchor) return;
  *     var href = anchor.getAttribute('href');
- *     if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
- *       event.preventDefault();
- *       event.stopPropagation();
- *       parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
+ *     if (!href || href.indexOf('javascript:') === 0 || href.indexOf('mailto:') === 0) return;
+ *
+ *     // Prevent default immediately for all handled links
+ *     event.preventDefault();
+ *     event.stopPropagation();
+ *
+ *     // Handle pure hash links (#section) - scroll within iframe
+ *     if (href.indexOf('#') === 0) {
+ *       var id = href.slice(1);
+ *       var target = document.getElementById(id) || document.querySelector('[name="' + id + '"]');
+ *       if (target) target.scrollIntoView({ behavior: 'smooth' });
+ *       return;
  *     }
+ *
+ *     // Handle external links - send to parent
+ *     parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
  *   }
  *
  *   // Track touch target for iOS Safari
@@ -244,7 +255,7 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  * })();
  * ```
  */
-const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(r&&r.indexOf('javascript:')!==0&&r.indexOf('#')!==0&&r.indexOf('mailto:')!==0){e.preventDefault();e.stopPropagation();parent.postMessage({type:'ingglish-link-click',href:r},'*')}}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
+const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
 
 /**
  * Injects the click handler script before the closing body or html tag.
