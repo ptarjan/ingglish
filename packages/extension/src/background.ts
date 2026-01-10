@@ -13,8 +13,45 @@ import type {
   TranslateWordsResponse,
 } from './types';
 
-// Track which tabs have translation enabled
+// Track which tabs have translation enabled (in-memory cache, backed by storage)
 const translatedTabs = new Set<number>();
+
+// Persist translatedTabs to storage (survives service worker suspension on mobile)
+async function saveTranslatedTabs(): Promise<void> {
+  try {
+    await chrome.storage.local.set({ translatedTabs: [...translatedTabs] });
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+// Load translatedTabs from storage on startup
+async function loadTranslatedTabs(): Promise<void> {
+  try {
+    const result = await chrome.storage.local.get('translatedTabs');
+    if (Array.isArray(result.translatedTabs)) {
+      for (const tabId of result.translatedTabs) {
+        if (typeof tabId === 'number') {
+          translatedTabs.add(tabId);
+        }
+      }
+    }
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+// Add a tab to the translated set and persist
+function addTranslatedTab(tabId: number): void {
+  translatedTabs.add(tabId);
+  void saveTranslatedTabs();
+}
+
+// Remove a tab from the translated set and persist
+function removeTranslatedTab(tabId: number): void {
+  translatedTabs.delete(tabId);
+  void saveTranslatedTabs();
+}
 
 // Translation cache - persists across message calls for fast lookups
 // Key: "format:word" (e.g., "ingglish:hello"), Value: translated word
@@ -195,7 +232,7 @@ chrome.runtime.onMessage.addListener(
 
         if (isEnabled) {
           // Disable translation - restore original text
-          translatedTabs.delete(tabId);
+          removeTranslatedTab(tabId);
           updateIcon(tabId, false);
 
           // Send RESTORE message to content script
@@ -210,13 +247,13 @@ chrome.runtime.onMessage.addListener(
           sendResponse({ success: true, enabled: false });
         } else {
           // Enable translation - inject script and translate
-          translatedTabs.add(tabId);
+          addTranslatedTab(tabId);
           updateIcon(tabId, true);
 
           // Inject the translator script (async, don't block response)
           void injectTranslator(tabId).then((success) => {
             if (!success) {
-              translatedTabs.delete(tabId);
+              removeTranslatedTab(tabId);
               updateIcon(tabId, false);
             }
           });
@@ -233,7 +270,7 @@ chrome.runtime.onMessage.addListener(
 
 // Clean up when tabs are closed
 chrome.tabs.onRemoved.addListener((tabId) => {
-  translatedTabs.delete(tabId);
+  removeTranslatedTab(tabId);
 });
 
 // Handle tab updates: restore icon and re-inject translator on navigation
@@ -251,12 +288,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 });
 
-// Pre-load dictionary on service worker startup for faster translations
-void translate('').then(() => {
+// Load persisted state and pre-load dictionary on service worker startup
+void (async () => {
+  // Restore translated tabs from storage (important for mobile where service worker suspends)
+  await loadTranslatedTabs();
+
+  // Pre-load dictionary for faster translations
+  await translate('');
   dictionaryLoaded = true;
   // eslint-disable-next-line no-console
   console.log('Ingglish: Dictionary loaded in background');
-});
+})();
 
 // eslint-disable-next-line no-console
 console.log('Ingglish background service worker loaded');
