@@ -105,4 +105,66 @@ describe('initialisms', () => {
       expect(result).toBe('AI');
     });
   });
+
+  describe('edge cases: initialisms that are also dictionary words', () => {
+    it('should treat IT as initialism, not pronoun', () => {
+      // IT = Information Technology (initialism), also "it" (pronoun)
+      // When uppercase, should be treated as initialism
+      const result = translateWord('IT', 'ingglish');
+      expect(result).toBe('IT'); // Information Technology → IT
+    });
+
+    it('should treat lowercase "it" as regular word', () => {
+      // lowercase "it" should be the pronoun, not initialism
+      const result = translateWord('it', 'ingglish');
+      expect(result).toBe('it'); // pronoun translates to "it"
+    });
+
+    it('should treat AM as initialism when uppercase', () => {
+      // AM = Ante Meridiem
+      const result = translateWord('AM', 'ingglish');
+      // ante → antee (a), meridiem → muridieum (m)
+      expect(result).toBe('AM');
+    });
+
+    it('should treat lowercase "am" as verb', () => {
+      // "am" is the verb (I am)
+      const result = translateWord('am', 'ingglish');
+      expect(result).toBe('am'); // verb "am" → "am"
+    });
+
+    it('should treat PM as initialism', () => {
+      const result = translateWord('PM', 'ingglish');
+      // post → pohst (p), meridiem → muridieum (m)
+      expect(result).toBe('PM');
+    });
+  });
+
+  describe('IPA format with initialisms', () => {
+    it('should fall back to dictionary/rules for IPA since expansion not supported', () => {
+      // translateInitialism returns null for IPA, so it falls through
+      const result = translateWord('UI', 'ipa');
+      // Should get some IPA output (either from dictionary or fallback)
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle API in IPA format', () => {
+      const result = translateWord('API', 'ipa');
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('mixed case initialisms', () => {
+    it('should handle title case Ui', () => {
+      const result = translateWord('Ui', 'ingglish');
+      // Title case should become uppercase (initialism)
+      expect(result).toBe('YI');
+    });
+
+    it('should handle title case Api', () => {
+      const result = translateWord('Api', 'ingglish');
+      expect(result).toBe('API');
+    });
+  });
 });

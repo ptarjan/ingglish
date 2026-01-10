@@ -164,6 +164,47 @@ function SpellingGuide(): React.JSX.Element {
           </tbody>
         </table>
       </div>
+
+      <div className="guide-section">
+        <h3>Special Cases</h3>
+        <p>
+          Beyond basic phonetic translation, Ingglish handles several edge cases to produce readable
+          output:
+        </p>
+
+        <h4>Initialisms</h4>
+        <p>
+          Initialisms like UI, API, and URL are translated by taking the first letter of each
+          translated expansion word. For example, UI (User Interface) becomes YI because "user"
+          translates to "yoozer" (Y) and "interface" translates to "interfays" (I). This preserves
+          the initialism format while using Ingglish phonetics. Common initialisms stay all caps: UI
+          → YI, API → API, URL → YRL.
+        </p>
+
+        <h4>Contractions</h4>
+        <p>
+          Contractions like "don't", "I'm", and "we'll" are translated as complete units using their
+          dictionary pronunciations. The apostrophe is dropped since Ingglish spelling is
+          unambiguous: don't → dont, I'm → Iim, we'll → wiil. This ensures contractions round-trip
+          correctly between English and Ingglish.
+        </p>
+
+        <h4>Case Preservation</h4>
+        <p>
+          Capitalization patterns are preserved during translation. ALL CAPS stays all caps, Title
+          Case stays title case, and lowercase stays lowercase. For mixed case like "GitHub", the
+          exact pattern is preserved position-by-position. Single uppercase letters like "I" and "A"
+          remain capitalized.
+        </p>
+
+        <h4>Unknown Words</h4>
+        <p>
+          Words not in the dictionary (like tech terms, brand names, or neologisms) are handled
+          through multiple fallback strategies: compound word splitting (GitHub → Git + Hub), known
+          suffixes and prefixes (-tion, -ing, un-, re-), and rule-based grapheme-to-phoneme
+          conversion. This ensures even invented words get reasonable phonetic spellings.
+        </p>
+      </div>
     </div>
   );
 }

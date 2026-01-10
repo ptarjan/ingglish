@@ -7,6 +7,7 @@
  */
 
 import { arpabetToFormat } from '../convert/to-ingglish';
+import { INITIALISM_EXPANSIONS } from '../translate/initialisms';
 import type { OutputFormat } from '../types';
 
 /**
@@ -43,64 +44,14 @@ export const LETTER_PHONEMES: Record<string, string[]> = {
 };
 
 /**
- * Initialisms that should be spelled out letter-by-letter.
+ * Known initialisms - derived from INITIALISM_EXPANSIONS for consistency.
  * These are pronounced as individual letters, NOT as words.
  *
  * Excludes acronyms pronounced as words like:
  * - RAM (ram), ROM (rom), GIF (gif/jif), JPEG (jay-peg)
  * - JSON (jason), SQL (sequel), NASA, NATO, SCUBA, LASER
- *
- * Lowercase for case-insensitive matching.
  */
-export const KNOWN_INITIALISMS = new Set([
-  // Tech
-  'url', // you-are-ell
-  'html', // aych-tee-em-ell
-  'css', // see-ess-ess
-  'api', // ay-pee-eye
-  'http', // aych-tee-tee-pee
-  'https', // aych-tee-tee-pee-ess
-  'xml', // ex-em-ell
-  'php', // pee-aych-pee
-  'usb', // you-ess-bee
-  'cpu', // see-pee-you
-  'gpu', // jee-pee-you
-  'ssd', // ess-ess-dee
-  'hdd', // aych-dee-dee
-  'pdf', // pee-dee-eff
-  'svg', // ess-vee-jee
-  'ui', // you-eye
-  'ux', // you-ex
-  'ai', // ay-eye (as in "A.I.", not the word "ai")
-
-  // Business/titles
-  'ceo', // see-ee-oh
-  'cfo', // see-eff-oh
-  'cto', // see-tee-oh
-  'vp', // vee-pee
-  'hr', // aych-are
-  'pr', // pee-are
-
-  // General
-  'id', // eye-dee
-  'tv', // tee-vee
-  'pc', // pee-see
-  'dj', // dee-jay
-  'mc', // em-see
-  'atm', // ay-tee-em
-  'gps', // jee-pee-ess
-  'fbi', // eff-bee-eye
-  'cia', // see-eye-ay
-  'dna', // dee-en-ay
-  'rna', // are-en-ay
-  'faq', // eff-ay-kyoo
-  'diy', // dee-eye-why
-  'eta', // ee-tee-ay
-  'mph', // em-pee-aych
-  'rpm', // are-pee-em
-  'ac', // ay-see
-  'dc', // dee-see
-]);
+export const KNOWN_INITIALISMS = new Set(Object.keys(INITIALISM_EXPANSIONS));
 
 /**
  * Checks if a word should be spelled out as individual letters (initialism).
