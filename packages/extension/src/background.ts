@@ -105,8 +105,36 @@ function updateIcon(tabId: number, enabled: boolean): void {
     });
 }
 
+// Check if we have permission to access a tab
+async function hasTabPermission(tabId: number): Promise<boolean> {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    const url = tab.url;
+    if (url === undefined || url === '') {
+      return false;
+    }
+    // Can't inject into chrome:// or chrome-extension:// pages
+    if (url.startsWith('chrome://') || url.startsWith('chrome-extension://')) {
+      return false;
+    }
+    return await chrome.permissions.contains({ origins: [url] });
+  } catch {
+    return false;
+  }
+}
+
 // Inject the lightweight translation script into a tab
-async function injectTranslator(tabId: number): Promise<boolean> {
+async function injectTranslator(tabId: number, checkPermission = true): Promise<boolean> {
+  // Check permission first (skip for popup-initiated actions which use activeTab)
+  if (checkPermission) {
+    const hasPermission = await hasTabPermission(tabId);
+    if (!hasPermission) {
+      // eslint-disable-next-line no-console
+      console.log('No permission to inject into tab', tabId);
+      return false;
+    }
+  }
+
   try {
     await chrome.scripting.executeScript({
       target: { tabId },
@@ -263,7 +291,8 @@ chrome.runtime.onMessage.addListener(
           updateIcon(tabId, true);
 
           // Inject the translator script (async, don't block response)
-          void injectTranslator(tabId).then((success) => {
+          // Skip permission check - popup already requested permission + has activeTab
+          void injectTranslator(tabId, false).then((success) => {
             if (!success) {
               removeTranslatedTab(tabId);
               updateIcon(tabId, false);

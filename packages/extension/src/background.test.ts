@@ -18,6 +18,7 @@ const mockChrome = {
   },
   tabs: {
     query: vi.fn<(query: object, callback: QueryCallback) => undefined>(),
+    get: vi.fn().mockResolvedValue({ url: 'https://example.com' }),
     reload: vi.fn(),
     sendMessage:
       vi.fn<(tabId: number, message: object, callback: SendMessageCallback) => undefined>(),
@@ -27,6 +28,10 @@ const mockChrome = {
     onUpdated: {
       addListener: vi.fn(),
     },
+  },
+  permissions: {
+    contains: vi.fn().mockResolvedValue(true),
+    request: vi.fn().mockResolvedValue(true),
   },
   action: {
     setIcon: vi.fn().mockResolvedValue(undefined),
