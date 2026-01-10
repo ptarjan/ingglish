@@ -267,7 +267,7 @@ describe('background script', () => {
   });
 
   describe('tab navigation', () => {
-    it('re-injects script when enabled tab completes loading', async () => {
+    it('re-injects script when enabled tab starts loading with new URL', async () => {
       // Enable translation for tab
       mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
         callback([{ id: 333 }]);
@@ -280,8 +280,8 @@ describe('background script', () => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
       });
 
-      // Simulate page navigation completing
-      tabUpdatedHandler(333, { status: 'complete' });
+      // Simulate page navigation starting with URL change
+      tabUpdatedHandler(333, { status: 'loading', url: 'https://example.com/new-page' });
 
       // Wait for re-injection
       await vi.waitFor(() => {
@@ -291,7 +291,7 @@ describe('background script', () => {
 
     it('does not inject script for disabled tabs', async () => {
       // Simulate page load on a tab that was never enabled
-      tabUpdatedHandler(444, { status: 'complete' });
+      tabUpdatedHandler(444, { status: 'loading', url: 'https://example.com' });
 
       // Small delay
       await new Promise((r) => setTimeout(r, 10));
