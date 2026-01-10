@@ -6,7 +6,9 @@
 export const TOOLTIP_STYLES = `
 .ingglish-word {
   position: relative;
+  display: inline;
   cursor: help;
+  vertical-align: baseline;
 }
 
 .ingglish-word:hover::after {
