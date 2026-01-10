@@ -144,7 +144,7 @@ export default {
 
       // Only proxy HTML content
       if (!contentType.includes('text/html') && !contentType.includes('application/xhtml')) {
-        return new Response('Only HTML content is supported', {
+        return new Response(`Only HTML content is supported (received: ${contentType})`, {
           status: 415,
           headers: corsHeaders(origin),
         });
