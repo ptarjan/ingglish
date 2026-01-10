@@ -257,6 +257,61 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 
   const translations = { ...existingTranslations };
 
+  // Debounce and batch mutations to avoid overwhelming the browser
+  let pendingNodes: Text[] = [];
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let isProcessing = false;
+
+  async function processPendingNodes(): Promise<void> {
+    if (isProcessing || pendingNodes.length === 0) {
+      return;
+    }
+
+    isProcessing = true;
+    const nodesToProcess = pendingNodes;
+    pendingNodes = [];
+
+    // Yield to browser first
+    await new Promise((r) => requestAnimationFrame(r));
+
+    // Get new words that aren't already translated
+    const newWords = extractWordsFromNodes(nodesToProcess).filter(
+      (word) => !(word in translations)
+    );
+
+    if (newWords.length > 0) {
+      const newTranslations = await translateWordsBatch([...new Set(newWords)], format);
+      Object.assign(translations, newTranslations);
+    }
+
+    // Apply translations in chunks with RAF
+    const CHUNK_SIZE = 20;
+    for (let i = 0; i < nodesToProcess.length; i += CHUNK_SIZE) {
+      const chunk = nodesToProcess.slice(i, i + CHUNK_SIZE);
+      for (const textNode of chunk) {
+        const parent = textNode.parentElement;
+        if (parent && !parent.closest('.ingglish-word')) {
+          // Direct text replacement to avoid re-traversing
+          await applyTranslationsMap(parent, translations, {
+            showTooltips: true,
+            textNodes: [textNode],
+          });
+        }
+      }
+      // Yield between chunks
+      if (i + CHUNK_SIZE < nodesToProcess.length) {
+        await new Promise((r) => requestAnimationFrame(r));
+      }
+    }
+
+    isProcessing = false;
+
+    // Process any nodes that accumulated while we were working
+    if (pendingNodes.length > 0) {
+      void processPendingNodes();
+    }
+  }
+
   state.observer = new MutationObserver((mutations) => {
     // Stop observing if extension context is invalidated
     if (!isContextValid()) {
@@ -266,14 +321,13 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
       return;
     }
 
-    const newNodes: Text[] = [];
-
+    // Collect new nodes
     for (const mutation of mutations) {
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const text = (node as Text).textContent?.trim() ?? '';
           if (text.length > 0) {
-            newNodes.push(node as Text);
+            pendingNodes.push(node as Text);
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           const collected = collectTextNodes(
@@ -281,37 +335,19 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
             EXTENSION_SKIP_TAGS,
             DEFAULT_SKIP_CLASSES
           );
-          newNodes.push(...collected);
+          pendingNodes.push(...collected);
         }
       }
     }
 
-    if (newNodes.length === 0) {
-      return;
+    // Debounce processing (wait for mutations to settle)
+    if (debounceTimer !== null) {
+      clearTimeout(debounceTimer);
     }
-
-    // Get new words that aren't already translated
-    const newWords = extractWordsFromNodes(newNodes).filter((word) => !(word in translations));
-
-    // Fetch new translations if needed (fire and forget)
-    void (async () => {
-      if (newWords.length > 0) {
-        const newTranslations = await translateWordsBatch([...new Set(newWords)], format);
-        Object.assign(translations, newTranslations);
-      }
-
-      // Apply translations to new nodes
-      for (const textNode of newNodes) {
-        const parent = textNode.parentElement;
-        if (parent) {
-          // Use shared utility for applying translations
-          await applyTranslationsMap(parent, translations, {
-            showTooltips: true,
-            chunkSize: 10, // Smaller chunks for dynamic content
-          });
-        }
-      }
-    })();
+    debounceTimer = setTimeout(() => {
+      debounceTimer = null;
+      void processPendingNodes();
+    }, 100); // 100ms debounce
   });
 
   state.observer.observe(document.body, {
