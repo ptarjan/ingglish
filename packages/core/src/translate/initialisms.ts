@@ -6,7 +6,6 @@
  * expansion word (e.g., UI = User Interface → Yoozer Interfays → YI).
  */
 
-import { detectCasePattern, applyCasePattern } from '../utils/case';
 import type { OutputFormat } from '../types';
 
 // Will be set by forward.ts to break circular dependency
@@ -213,7 +212,10 @@ export function translateInitialism(
 
   const result = firstLetters.join('');
 
-  // Apply case pattern from original word
-  const casePattern = detectCasePattern(word);
-  return applyCasePattern(result, casePattern, word);
+  // Initialisms stay all caps (UI → YI, API → API)
+  // Only lowercase if original was lowercase
+  if (word === word.toLowerCase()) {
+    return result.toLowerCase();
+  }
+  return result.toUpperCase();
 }

@@ -48,7 +48,8 @@ describe('initialisms', () => {
       const result = translateInitialism('UI', 'ingglish');
       // UI = User Interface → first letters of translated words
       // user → yoozer (y), interface → interfays (i)
-      expect(result).toBe('Yi');
+      // Initialisms stay all caps
+      expect(result).toBe('YI');
     });
 
     it('should translate API with correct first letters', () => {
@@ -75,7 +76,7 @@ describe('initialisms', () => {
       // ETA = Estimated Time of Arrival → "of" is skipped
       const result = translateInitialism('ETA', 'ingglish');
       // estimated → estimaytid (e), time → taim (t), arrival translation starts with 'e'
-      // ETA is 3 letters all caps, so stays uppercase
+      // Initialisms stay all caps
       expect(result).toBe('ETE');
     });
 
@@ -94,13 +95,14 @@ describe('initialisms', () => {
     it('should translate initialisms in full text flow', () => {
       // When using translateWord directly, initialisms should be translated
       const result = translateWord('UI', 'ingglish');
-      expect(result).toBe('Yi');
+      // Initialisms stay all caps
+      expect(result).toBe('YI');
     });
 
     it('should translate AI correctly', () => {
       const result = translateWord('AI', 'ingglish');
-      // AI = Artificial Intelligence → artikishl intelijns → Ai
-      expect(result).toBe('Ai');
+      // AI = Artificial Intelligence → first letters stay all caps
+      expect(result).toBe('AI');
     });
   });
 });
