@@ -3,7 +3,7 @@
  * Handles fetching pages through CORS proxy, translating content,
  * and intercepting link navigation.
  */
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/dom';
 import {
@@ -34,7 +34,7 @@ interface UseUrlTranslatorResult {
   hasContent: boolean;
   error: string | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
-  translateUrl: (targetUrl: string) => Promise<void>;
+  translateUrl: (targetUrl: string, pushHistory?: boolean) => Promise<void>;
   clear: () => void;
 }
 
@@ -45,9 +45,13 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  // Track the current translateUrl function for popstate handler
+  const translateUrlRef = useRef<((url: string, pushHistory?: boolean) => Promise<void>) | null>(
+    null
+  );
 
   const translateUrl = useCallback(
-    async (targetUrl: string): Promise<void> => {
+    async (targetUrl: string, pushHistory = true): Promise<void> => {
       const iframe = iframeRef.current;
       if (!iframe) {
         return;
@@ -55,6 +59,11 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
       setIsLoading(true);
       setError(null);
+
+      // Push to browser history so back button works
+      if (pushHistory) {
+        history.pushState({ translatorUrl: targetUrl }, '', window.location.pathname);
+      }
 
       try {
         const parsedUrl = new URL(targetUrl);
@@ -168,6 +177,39 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     if (iframe) {
       iframe.srcdoc = '';
     }
+  }, []);
+
+  // Keep ref updated for popstate handler
+  translateUrlRef.current = translateUrl;
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const state = e.state as { translatorUrl?: string } | null;
+      if (state?.translatorUrl !== undefined) {
+        // Navigate back to a previous translated page
+        setUrl(state.translatorUrl);
+        // Use false for pushHistory to avoid adding duplicate entries
+        translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
+          // eslint-disable-next-line no-console
+          console.error('Back navigation failed:', err);
+        });
+      } else {
+        // No translator state - clear the iframe
+        setUrl('');
+        setError(null);
+        setHasContent(false);
+        const iframe = iframeRef.current;
+        if (iframe) {
+          iframe.srcdoc = '';
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   return {
