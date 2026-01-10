@@ -49,6 +49,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const translateUrlRef = useRef<((url: string, pushHistory?: boolean) => Promise<void>) | null>(
     null
   );
+  // Track the current base URL for resolving relative links from postMessage
+  const baseUrlRef = useRef<string | null>(null);
 
   const translateUrl = useCallback(
     async (targetUrl: string, pushHistory = true): Promise<void> => {
@@ -83,7 +85,44 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         }
 
         const htmlWithBase = injectBaseTag(stripScripts(rawHtml), getBaseUrl(parsedUrl.href));
-        const html = proxyFontUrls(htmlWithBase, CORS_PROXY);
+        const htmlWithFonts = proxyFontUrls(htmlWithBase, CORS_PROXY);
+
+        // Inject a script that captures link clicks and sends them to parent via postMessage
+        // This runs inside the iframe's own JS context, which works better on iOS
+        const clickHandlerScript = `
+          <script>
+            (function() {
+              document.addEventListener('click', function(e) {
+                var anchor = e.target.closest ? e.target.closest('a[href]') : null;
+                if (!anchor) {
+                  var el = e.target;
+                  while (el && el.tagName !== 'A') el = el.parentElement;
+                  anchor = el;
+                }
+                if (anchor && anchor.href) {
+                  var href = anchor.getAttribute('href');
+                  if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
+                  }
+                }
+              }, true);
+            })();
+          </script>
+        `;
+
+        // Insert script before closing </body> or </html> tag (case-insensitive)
+        let html = htmlWithFonts;
+        const bodyMatch = /<\/body>/i.exec(html);
+        const htmlMatch = /<\/html>/i.exec(html);
+        if (bodyMatch !== null) {
+          html = html.replace(bodyMatch[0], clickHandlerScript + bodyMatch[0]);
+        } else if (htmlMatch !== null) {
+          html = html.replace(htmlMatch[0], clickHandlerScript + htmlMatch[0]);
+        } else {
+          html = html + clickHandlerScript;
+        }
 
         // Load HTML into iframe using srcdoc and wait for load event
         await new Promise<void>((resolve) => {
@@ -100,65 +139,11 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           throw new Error('Failed to access iframe content');
         }
 
+        // Store base URL for resolving relative links from postMessage
+        baseUrlRef.current = parsedUrl.href;
+
         // Show content immediately - translation happens in background
         setHasContent(true);
-
-        // Navigate to a new URL within the translator
-        const navigateToUrl = (href: string) => {
-          let newUrl: string;
-          try {
-            newUrl = new URL(href, parsedUrl.href).href;
-          } catch {
-            return;
-          }
-
-          setUrl(newUrl);
-          // translateUrl must be called BEFORE onNavigate because:
-          // - translateUrl pushes new history entry with state
-          // - onNavigate updates the URL of current entry
-          // If reversed, onNavigate would update the wrong entry
-          translateUrl(newUrl)
-            .then(() => {
-              onNavigate?.(newUrl);
-            })
-            .catch((err: unknown) => {
-              // eslint-disable-next-line no-console
-              console.error('Navigation translation failed:', err);
-            });
-        };
-
-        // For iOS Safari, attach handlers directly to each anchor element
-        // Event delegation doesn't work reliably in iframes on iOS
-        const setupAnchorHandlers = () => {
-          const anchors = iframeDoc.querySelectorAll('a[href]');
-          anchors.forEach((anchor) => {
-            const href = anchor.getAttribute('href');
-            if (href === null || href === '' || shouldSkipUrl(href)) {
-              return;
-            }
-
-            // Use onclick attribute for maximum iOS compatibility
-            (anchor as HTMLAnchorElement).onclick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigateToUrl(href);
-              return false;
-            };
-
-            // Also prevent touch from triggering native navigation
-            anchor.addEventListener(
-              'touchend',
-              (e) => {
-                e.preventDefault();
-                navigateToUrl(href);
-              },
-              { passive: false }
-            );
-          });
-        };
-
-        // Set up handlers before translation (for initial links)
-        setupAnchorHandlers();
 
         // Translate the DOM with tooltips and larger chunks for faster rendering
         await translateDOM(iframeDoc.body, {
@@ -168,9 +153,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           chunked: true, // Use requestAnimationFrame for large pages
           chunkSize: 500, // Larger chunks = fewer DOM updates = faster
         });
-
-        // Re-attach handlers after translation in case DOM structure changed
-        setupAnchorHandlers();
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
@@ -193,6 +175,48 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
   // Keep ref updated for popstate handler
   translateUrlRef.current = translateUrl;
+
+  // Handle link clicks from iframe via postMessage (works on iOS)
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent<unknown>) => {
+      // Type guard for our message format
+      const data = e.data as { type?: string; href?: string } | null;
+      if (
+        data?.type === 'ingglish-link-click' &&
+        typeof data.href === 'string' &&
+        baseUrlRef.current !== null
+      ) {
+        const href = data.href;
+        // Skip special URLs
+        if (shouldSkipUrl(href)) {
+          return;
+        }
+
+        let newUrl: string;
+        try {
+          newUrl = new URL(href, baseUrlRef.current).href;
+        } catch {
+          return;
+        }
+
+        setUrl(newUrl);
+        translateUrlRef
+          .current?.(newUrl)
+          .then(() => {
+            onNavigate?.(newUrl);
+          })
+          .catch((err: unknown) => {
+            // eslint-disable-next-line no-console
+            console.error('Navigation translation failed:', err);
+          });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [onNavigate]);
 
   // Handle browser back/forward navigation
   // Also handle iOS Safari's BFCache restoration via pageshow event
