@@ -26,100 +26,55 @@ chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response: StateResponse | und
   }
 });
 
-// Request host permission for the current tab if needed
-async function ensureHostPermission(): Promise<boolean> {
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  const url = tabs[0]?.url;
-
-  if (
-    url === undefined ||
-    url === '' ||
-    url.startsWith('chrome://') ||
-    url.startsWith('chrome-extension://')
-  ) {
-    // Can't inject into chrome:// pages
-    return false;
-  }
-
-  // Get the origin (e.g., "https://example.com")
-  const origin = new URL(url).origin + '/*';
-
-  // Check if we already have permission
-  const hasPermission = await chrome.permissions.contains({ origins: [origin] });
-  if (hasPermission) {
-    return true;
-  }
-
-  // Request permission for this specific origin
-  try {
-    return await chrome.permissions.request({ origins: [origin] });
-  } catch {
-    return false;
-  }
-}
-
 // Handle toggle button click
+// Note: activeTab permission is granted when user clicks the extension icon,
+// so we don't need to request additional permissions for the initial toggle
 toggleBtn.addEventListener('click', () => {
   toggleBtn.disabled = true;
   toggleBtn.textContent = 'Working...';
 
-  // Wrap async logic
-  void (async () => {
-    // If enabling, ensure we have permission first
-    if (!isEnabled) {
-      const hasPermission = await ensureHostPermission();
-      if (!hasPermission) {
-        statusText.textContent = 'Permission denied';
-        statusText.style.color = '#ef4444';
-        toggleBtn.textContent = 'Translate Page';
-        toggleBtn.disabled = false;
-        return;
-      }
+  // Send toggle message - don't wait for full translation to complete
+  // The translation happens in the content script regardless of popup state
+  chrome.runtime.sendMessage({ type: 'TOGGLE' }, (response: ToggleResponse | undefined) => {
+    const lastError = chrome.runtime.lastError;
+
+    if (lastError) {
+      // eslint-disable-next-line no-console
+      console.error('Toggle error:', lastError.message);
+      statusText.textContent =
+        lastError.message !== undefined && lastError.message !== ''
+          ? lastError.message
+          : 'Connection error';
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
+      toggleBtn.disabled = false;
+      return;
     }
 
-    // Send toggle message - don't wait for full translation to complete
-    // The translation happens in the content script regardless of popup state
-    chrome.runtime.sendMessage({ type: 'TOGGLE' }, (response: ToggleResponse | undefined) => {
-      const lastError = chrome.runtime.lastError;
-
-      if (lastError) {
-        // eslint-disable-next-line no-console
-        console.error('Toggle error:', lastError.message);
-        statusText.textContent =
-          lastError.message !== undefined && lastError.message !== ''
-            ? lastError.message
-            : 'Connection error';
-        statusText.style.color = '#ef4444';
-        toggleBtn.textContent = 'Try Again';
-        toggleBtn.disabled = false;
-        return;
-      }
-
-      if (response?.success === true && response.enabled !== undefined) {
-        isEnabled = response.enabled;
-        updateUI();
-        // Close popup on success
-        setTimeout(() => {
-          window.close();
-        }, 50);
-      } else if (response?.success === false) {
-        // Show error with details
-        // eslint-disable-next-line no-console
-        console.error('Toggle failed:', response.error);
-        statusText.textContent =
-          response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
-        statusText.style.color = '#ef4444';
-        toggleBtn.textContent = 'Try Again';
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('Unexpected response:', response);
-        statusText.textContent = 'No response';
-        statusText.style.color = '#ef4444';
-        toggleBtn.textContent = 'Try Again';
-      }
-      toggleBtn.disabled = false;
-    });
-  })();
+    if (response?.success === true && response.enabled !== undefined) {
+      isEnabled = response.enabled;
+      updateUI();
+      // Close popup on success
+      setTimeout(() => {
+        window.close();
+      }, 50);
+    } else if (response?.success === false) {
+      // Show error with details
+      // eslint-disable-next-line no-console
+      console.error('Toggle failed:', response.error);
+      statusText.textContent =
+        response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('Unexpected response:', response);
+      statusText.textContent = 'No response';
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
+    }
+    toggleBtn.disabled = false;
+  });
 });
 
 // Handle format button click
