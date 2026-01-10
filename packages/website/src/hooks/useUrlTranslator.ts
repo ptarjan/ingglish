@@ -127,55 +127,38 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             });
         };
 
-        // Use event delegation at document level - more robust when DOM is modified
-        // Track touch target to handle tap correctly
-        let touchTarget: HTMLAnchorElement | null = null;
-
-        iframeDoc.addEventListener(
-          'touchstart',
-          (e) => {
-            const anchor = (e.target as Element).closest?.('a[href]');
-            if (anchor !== null) {
-              const href = anchor.getAttribute('href');
-              if (href !== null && href !== '' && !shouldSkipUrl(href)) {
-                touchTarget = anchor;
-                e.preventDefault();
-              }
+        // For iOS Safari, attach handlers directly to each anchor element
+        // Event delegation doesn't work reliably in iframes on iOS
+        const setupAnchorHandlers = () => {
+          const anchors = iframeDoc.querySelectorAll('a[href]');
+          anchors.forEach((anchor) => {
+            const href = anchor.getAttribute('href');
+            if (href === null || href === '' || shouldSkipUrl(href)) {
+              return;
             }
-          },
-          { capture: true, passive: false }
-        );
 
-        iframeDoc.addEventListener(
-          'touchend',
-          (e) => {
-            if (touchTarget) {
-              const href = touchTarget.getAttribute('href');
-              touchTarget = null;
-              if (href !== null && href !== '') {
+            // Use onclick attribute for maximum iOS compatibility
+            (anchor as HTMLAnchorElement).onclick = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigateToUrl(href);
+              return false;
+            };
+
+            // Also prevent touch from triggering native navigation
+            anchor.addEventListener(
+              'touchend',
+              (e) => {
                 e.preventDefault();
                 navigateToUrl(href);
-              }
-            }
-          },
-          { capture: true, passive: false }
-        );
+              },
+              { passive: false }
+            );
+          });
+        };
 
-        iframeDoc.addEventListener(
-          'click',
-          (e) => {
-            const anchor = (e.target as Element).closest?.('a[href]');
-            if (anchor !== null) {
-              const href = anchor.getAttribute('href');
-              if (href !== null && href !== '' && !shouldSkipUrl(href)) {
-                e.preventDefault();
-                e.stopPropagation();
-                navigateToUrl(href);
-              }
-            }
-          },
-          { capture: true }
-        );
+        // Set up handlers before translation (for initial links)
+        setupAnchorHandlers();
 
         // Translate the DOM with tooltips and larger chunks for faster rendering
         await translateDOM(iframeDoc.body, {
@@ -185,6 +168,9 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           chunked: true, // Use requestAnimationFrame for large pages
           chunkSize: 500, // Larger chunks = fewer DOM updates = faster
         });
+
+        // Re-attach handlers after translation in case DOM structure changed
+        setupAnchorHandlers();
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
