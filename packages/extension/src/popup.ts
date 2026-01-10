@@ -41,15 +41,18 @@ async function ensureHostPermission(): Promise<boolean> {
     return false;
   }
 
+  // Get the origin (e.g., "https://example.com")
+  const origin = new URL(url).origin + '/*';
+
   // Check if we already have permission
-  const hasPermission = await chrome.permissions.contains({ origins: [url] });
+  const hasPermission = await chrome.permissions.contains({ origins: [origin] });
   if (hasPermission) {
     return true;
   }
 
-  // Request permission - this shows a prompt to the user
+  // Request permission for this specific origin
   try {
-    return await chrome.permissions.request({ origins: ['<all_urls>'] });
+    return await chrome.permissions.request({ origins: [origin] });
   } catch {
     return false;
   }
