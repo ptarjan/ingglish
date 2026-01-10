@@ -64,10 +64,13 @@ export function isHashOnlyChange(oldUrl: string, newUrl: string): boolean {
   try {
     const oldParsed = new URL(oldUrl);
     const newParsed = new URL(newUrl);
-    // Same origin, pathname, and search - only hash differs
+    // Normalize pathnames by removing trailing slash for comparison
+    const oldPath = oldParsed.pathname.replace(/\/$/, '');
+    const newPath = newParsed.pathname.replace(/\/$/, '');
+    // Same origin, pathname (ignoring trailing slash), and search - only hash differs
     return (
       oldParsed.origin === newParsed.origin &&
-      oldParsed.pathname === newParsed.pathname &&
+      oldPath === newPath &&
       oldParsed.search === newParsed.search &&
       newParsed.hash !== ''
     );

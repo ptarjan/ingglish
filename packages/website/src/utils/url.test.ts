@@ -4,6 +4,7 @@ import {
   shouldSkipUrl,
   injectBaseTag,
   getBaseUrl,
+  isHashOnlyChange,
   detectBotProtection,
   stripScripts,
   proxyFontUrls,
@@ -194,6 +195,66 @@ describe('injectBaseTag', () => {
     const html = '<html><head></head></html>';
     const result = injectBaseTag(html, 'http://localhost:3000/');
     expect(result).toContain('href="http://localhost:3000/"');
+  });
+});
+
+describe('isHashOnlyChange', () => {
+  it('returns true for same URL with different hash', () => {
+    expect(isHashOnlyChange('https://example.com/page', 'https://example.com/page#section')).toBe(
+      true
+    );
+  });
+
+  it('returns true when hash changes', () => {
+    expect(isHashOnlyChange('https://example.com/page#one', 'https://example.com/page#two')).toBe(
+      true
+    );
+  });
+
+  it('returns false for different paths', () => {
+    expect(
+      isHashOnlyChange('https://example.com/page-a', 'https://example.com/page-b#section')
+    ).toBe(false);
+  });
+
+  it('returns false for different origins', () => {
+    expect(isHashOnlyChange('https://example.com/page', 'https://other.com/page#section')).toBe(
+      false
+    );
+  });
+
+  it('returns false when new URL has no hash', () => {
+    expect(isHashOnlyChange('https://example.com/page#section', 'https://example.com/page')).toBe(
+      false
+    );
+  });
+
+  it('returns false for different query strings', () => {
+    expect(
+      isHashOnlyChange('https://example.com/page?a=1', 'https://example.com/page?b=2#section')
+    ).toBe(false);
+  });
+
+  it('handles trailing slash differences (Wikipedia-style links)', () => {
+    // Wikipedia links often have trailing slash in the anchor href but not in the current URL
+    expect(
+      isHashOnlyChange(
+        'https://en.wikipedia.org/wiki/English_language',
+        'https://en.wikipedia.org/wiki/English_language/#History'
+      )
+    ).toBe(true);
+
+    expect(
+      isHashOnlyChange(
+        'https://en.wikipedia.org/wiki/English_language/',
+        'https://en.wikipedia.org/wiki/English_language#History'
+      )
+    ).toBe(true);
+  });
+
+  it('returns false for invalid URLs', () => {
+    expect(isHashOnlyChange('not a url', 'https://example.com#section')).toBe(false);
+    expect(isHashOnlyChange('https://example.com', 'not a url')).toBe(false);
   });
 });
 
