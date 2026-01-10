@@ -142,3 +142,21 @@
   color: var(--color-text-muted);
   border-left: 3px solid var(--color-primary);
 }
+
+/* =============================================================================
+   Mobile Responsive Styles
+   ============================================================================= */
+
+@media (max-width: 640px) {
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.5rem 0.75rem;
+    min-width: auto;
+    font-size: 0.8125rem;
+  }
+
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

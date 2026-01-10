@@ -1,9 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { blockExternalNetwork } from './test-utils';
 
-// Skip mobile for text translator tests - layout issues cause click interception
 test.describe('Text Translator', () => {
-  test.skip(({ isMobile }) => isMobile, 'Mobile layout issues cause click interception');
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -121,7 +119,6 @@ test.describe('Tab Navigation', () => {
 });
 
 test.describe('Spelling Guide', () => {
-  test.skip(({ isMobile }) => isMobile, 'Mobile layout issues cause click interception');
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/', { waitUntil: 'networkidle' });
