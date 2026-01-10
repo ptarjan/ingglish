@@ -51,7 +51,8 @@ export {
   collectTextNodes,
   extractWords,
   extractWordsFromNodes,
-  normalizeApostrophes,
-  applyCase,
   injectTooltipStyles,
 } from './utils';
+
+// Re-export text utilities from core
+export { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core';

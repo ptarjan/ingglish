@@ -44,3 +44,19 @@ export { reverseTranslateSync } from './translate';
 
 export { arpabetPhonemeToIngglish } from './convert';
 export { arpabetPhonemeToIPA } from './convert';
+
+// =============================================================================
+// Text Utilities (shared with @ingglish/dom)
+// =============================================================================
+
+export {
+  normalizeApostrophes,
+  isIPAChar,
+  isPhoneticChar,
+  tokenizeIPA,
+  tokenizeText,
+  tokenizePhonetic,
+} from './utils/text';
+export type { TextToken, IndexedToken } from './utils/text';
+export { detectCasePattern, applyCasePattern } from './utils/case';
+export type { CasePattern } from './utils/case';

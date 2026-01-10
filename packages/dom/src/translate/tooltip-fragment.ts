@@ -2,8 +2,12 @@
  * Tooltip fragment creation utilities.
  */
 
-import { translateSyncWithMapping } from '@ingglish/core';
-import { normalizeApostrophes, applyCase } from '../utils';
+import {
+  translateSyncWithMapping,
+  normalizeApostrophes,
+  detectCasePattern,
+  applyCasePattern,
+} from '@ingglish/core';
 import type { OutputFormat } from '../types';
 
 /**
@@ -64,7 +68,8 @@ export function createTooltipFragmentFromMap(
         const span = document.createElement('span');
         span.className = 'ingglish-word';
         span.setAttribute('data-ingglish-orig', token);
-        span.textContent = applyCase(token, translated);
+        const pattern = detectCasePattern(token);
+        span.textContent = applyCasePattern(translated, pattern, token);
         fragment.appendChild(span);
       } else {
         // No translation or unchanged - keep original

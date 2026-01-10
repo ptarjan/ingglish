@@ -2,7 +2,7 @@
  * Word extraction utilities.
  */
 
-import { normalizeApostrophes } from './text';
+import { normalizeApostrophes } from '@ingglish/core';
 
 /**
  * Extracts unique words from text for batch translation.

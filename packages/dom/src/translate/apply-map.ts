@@ -2,13 +2,8 @@
  * Apply pre-computed translations to DOM.
  */
 
-import {
-  requireBrowser,
-  collectTextNodes,
-  injectTooltipStyles,
-  normalizeApostrophes,
-  applyCase,
-} from '../utils';
+import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core';
+import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
@@ -83,7 +78,12 @@ export function applyTranslationsMap(
             }
             if (/^[a-zA-Z']+$/.test(token)) {
               const translated = translations[token.toLowerCase()];
-              result += translated ? applyCase(token, translated) : token;
+              if (translated) {
+                const pattern = detectCasePattern(token);
+                result += applyCasePattern(translated, pattern, token);
+              } else {
+                result += token;
+              }
             } else {
               result += token;
             }

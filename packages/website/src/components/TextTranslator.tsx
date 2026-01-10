@@ -1,5 +1,6 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateSync, reverseTranslateSync } from '@ingglish/core';
+import { translateSync, reverseTranslateSync, tokenizePhonetic } from '@ingglish/core';
+import type { IndexedToken } from '@ingglish/core';
 import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
@@ -12,116 +13,6 @@ are written exactly as they sound - what you see is what you say!`;
 
 type EditingPane = 'english' | 'ingglish';
 
-interface Token {
-  text: string;
-  isWord: boolean;
-  wordIndex: number | null;
-}
-
-/**
- * Checks if a character is a "word" character (letter or IPA symbol).
- * This includes Latin letters, IPA phonetic symbols, stress markers, and word joiner.
- */
-function isWordChar(char: string): boolean {
-  const code = char.charCodeAt(0);
-
-  // Basic Latin letters (A-Z, a-z)
-  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
-    return true;
-  }
-
-  // Latin-1 Supplement accented letters (À-ÖØ-öø-ÿ)
-  // Used for stress markers in Ingglish (á, é, í, ó, ú)
-  if (
-    (code >= 0xc0 && code <= 0xd6) ||
-    (code >= 0xd8 && code <= 0xf6) ||
-    (code >= 0xf8 && code <= 0xff)
-  ) {
-    return true;
-  }
-
-  // Word joiner (U+2060) - invisible character that prevents line breaks
-  if (code === 0x2060) {
-    return true;
-  }
-
-  // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
-  if (code === 0x02c8 || code === 0x02cc) {
-    return true;
-  }
-
-  // Common IPA vowels
-  if (
-    char === 'ə' || // schwa
-    char === 'ɝ' || // r-colored schwa
-    char === 'ɚ' || // r-colored schwa variant
-    char === 'ʌ' || // strut
-    char === 'æ' || // trap
-    char === 'ɑ' || // palm
-    char === 'ɔ' || // thought
-    char === 'ɛ' || // dress
-    char === 'ɪ' || // kit
-    char === 'ʊ' // foot
-  ) {
-    return true;
-  }
-
-  // Common IPA consonants
-  if (
-    char === 'ð' || // voiced dental fricative
-    char === 'θ' || // voiceless dental fricative
-    char === 'ʃ' || // voiceless postalveolar fricative
-    char === 'ʒ' || // voiced postalveolar fricative
-    char === 'ŋ' || // velar nasal
-    char === 'ɹ' || // alveolar approximant
-    char === 'ɡ' // voiced velar stop (IPA g)
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Tokenizes text into words and non-words, tracking word indices.
- * Handles both Ingglish (ASCII) and IPA (Unicode) text.
- */
-function tokenize(text: string): Token[] {
-  const tokens: Token[] = [];
-  let wordIndex = 0;
-  let i = 0;
-
-  while (i < text.length) {
-    // Check if starting a word
-    if (isWordChar(text[i])) {
-      let wordEnd = i + 1;
-      while (wordEnd < text.length && isWordChar(text[wordEnd])) {
-        wordEnd++;
-      }
-      tokens.push({
-        text: text.slice(i, wordEnd),
-        isWord: true,
-        wordIndex: wordIndex++,
-      });
-      i = wordEnd;
-    } else {
-      // Non-word characters (punctuation, whitespace)
-      let nonWordEnd = i + 1;
-      while (nonWordEnd < text.length && !isWordChar(text[nonWordEnd])) {
-        nonWordEnd++;
-      }
-      tokens.push({
-        text: text.slice(i, nonWordEnd),
-        isWord: false,
-        wordIndex: null,
-      });
-      i = nonWordEnd;
-    }
-  }
-
-  return tokens;
-}
-
 interface WordDisplayProps {
   text: string;
   hoveredWordIndex: number | null;
@@ -130,7 +21,7 @@ interface WordDisplayProps {
 }
 
 function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDisplayProps) {
-  const tokens = useMemo(() => tokenize(text), [text]);
+  const tokens: IndexedToken[] = useMemo(() => tokenizePhonetic(text), [text]);
 
   return (
     <div className={`word-display ${className ?? ''}`}>

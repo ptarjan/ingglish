@@ -19,14 +19,8 @@ export {
 // Text node collection
 export { collectTextNodes } from './text-nodes';
 
-// Text processing
-export { normalizeApostrophes } from './text';
-
 // Word extraction
 export { extractWords, extractWordsFromNodes } from './extract';
-
-// Case transformation
-export { applyCase } from './case';
 
 // Tooltip styles
 export { TOOLTIP_STYLES, injectTooltipStyles } from './tooltip';
