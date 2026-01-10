@@ -135,7 +135,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           'touchstart',
           (e) => {
             const anchor = (e.target as Element).closest?.('a[href]');
-            if (anchor) {
+            if (anchor !== null) {
               const href = anchor.getAttribute('href');
               if (href !== null && href !== '' && !shouldSkipUrl(href)) {
                 touchTarget = anchor;
@@ -165,7 +165,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           'click',
           (e) => {
             const anchor = (e.target as Element).closest?.('a[href]');
-            if (anchor) {
+            if (anchor !== null) {
               const href = anchor.getAttribute('href');
               if (href !== null && href !== '' && !shouldSkipUrl(href)) {
                 e.preventDefault();
@@ -209,6 +209,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   translateUrlRef.current = translateUrl;
 
   // Handle browser back/forward navigation
+  // Also handle iOS Safari's BFCache restoration via pageshow event
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       const state = e.state as { translatorUrl?: string } | null;
@@ -232,9 +233,27 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       }
     };
 
+    // Handle BFCache restoration on iOS Safari
+    // When user navigates back, Safari may restore from cache without firing popstate
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        // Page was restored from BFCache - check if we need to retranslate
+        const state = history.state as { translatorUrl?: string } | null;
+        if (state?.translatorUrl !== undefined) {
+          setUrl(state.translatorUrl);
+          translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
+            // eslint-disable-next-line no-console
+            console.error('BFCache restoration failed:', err);
+          });
+        }
+      }
+    };
+
     window.addEventListener('popstate', handlePopState);
+    window.addEventListener('pageshow', handlePageShow);
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('pageshow', handlePageShow);
     };
   }, []);
 
