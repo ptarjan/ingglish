@@ -17,7 +17,7 @@ test.describe('URL Translator', () => {
 
   test('displays example URLs', async ({ page }) => {
     await expect(page.locator('.example-urls')).toBeVisible();
-    await expect(page.locator('.example-link')).toHaveCount(8);
+    await expect(page.locator('.example-link')).toHaveCount(9);
   });
 
   test('can enter a URL', async ({ page }) => {

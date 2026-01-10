@@ -49,6 +49,7 @@ const EXAMPLE_URLS = [
     url: 'https://www.archives.gov/founding-docs/constitution-transcript',
   },
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
+  { name: 'Dictionary', url: 'https://www.merriam-webster.com/dictionary/hello' },
   { name: 'Hacker News', url: 'https://news.ycombinator.com' },
   { name: 'NPR', url: 'https://text.npr.org' },
   { name: 'NY Times', url: 'https://www.nytimes.com' },
