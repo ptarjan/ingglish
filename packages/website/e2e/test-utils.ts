@@ -1,5 +1,50 @@
 import type { Page } from '@playwright/test';
 
+/**
+ * Block all external network requests by default.
+ * Only allows requests to localhost (the test server).
+ * Mocks common external resources (fonts, etc).
+ * Any other unmocked external request will cause the test to fail.
+ */
+export async function blockExternalNetwork(page: Page) {
+  await page.route('**/*', async (route) => {
+    const url = route.request().url();
+
+    // Allow localhost requests (the test server)
+    if (url.includes('localhost') || url.includes('127.0.0.1')) {
+      await route.continue();
+      return;
+    }
+
+    // Mock Google Fonts - return empty CSS
+    if (url.includes('fonts.googleapis.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/css',
+        body: '/* Mocked font CSS */',
+      });
+      return;
+    }
+
+    // Mock Google Fonts static files
+    if (url.includes('fonts.gstatic.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'font/woff2',
+        body: '',
+      });
+      return;
+    }
+
+    // Block all other external requests with a clear error
+    await route.abort('blockedbyclient');
+    throw new Error(
+      `Unmocked external network request: ${route.request().method()} ${url}\n` +
+        'Add a mock for this URL in test-utils.ts or use setupMockProxy()'
+    );
+  });
+}
+
 // Mock HTML pages for testing - no external dependencies
 export const MOCK_PAGE_A_HTML = `<!DOCTYPE html>
 <html>
@@ -22,41 +67,63 @@ export const MOCK_PAGE_B_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Helper to set up mock proxy responses
+/**
+ * Set up mock proxy responses for URL translator tests.
+ * Also blocks all other external network requests.
+ */
 export async function setupMockProxy(page: Page) {
-  // Intercept all proxy requests and return mock HTML
-  await page.route('**/api.allorigins.win/**', async (route) => {
+  await page.route('**/*', async (route) => {
     const url = route.request().url();
-    if (url.includes('page-b') || url.includes('another-page')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'text/html',
-        body: MOCK_PAGE_B_HTML,
-      });
-    } else {
-      await route.fulfill({
-        status: 200,
-        contentType: 'text/html',
-        body: MOCK_PAGE_A_HTML,
-      });
-    }
-  });
 
-  // Also intercept custom proxy if configured
-  await page.route('**/ingglish-cors-proxy**', async (route) => {
-    const url = route.request().url();
-    if (url.includes('page-b') || url.includes('another-page')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'text/html',
-        body: MOCK_PAGE_B_HTML,
-      });
-    } else {
-      await route.fulfill({
-        status: 200,
-        contentType: 'text/html',
-        body: MOCK_PAGE_A_HTML,
-      });
+    // Allow localhost requests (the test server)
+    if (url.includes('localhost') || url.includes('127.0.0.1')) {
+      await route.continue();
+      return;
     }
+
+    // Mock Google Fonts - return empty CSS
+    if (url.includes('fonts.googleapis.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/css',
+        body: '/* Mocked font CSS */',
+      });
+      return;
+    }
+
+    // Mock Google Fonts static files
+    if (url.includes('fonts.gstatic.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'font/woff2',
+        body: '',
+      });
+      return;
+    }
+
+    // Mock CORS proxy requests (allorigins.win or custom proxy)
+    if (url.includes('api.allorigins.win') || url.includes('ingglish-cors-proxy')) {
+      if (url.includes('page-b') || url.includes('another-page')) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html',
+          body: MOCK_PAGE_B_HTML,
+        });
+      } else {
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html',
+          body: MOCK_PAGE_A_HTML,
+        });
+      }
+      return;
+    }
+
+    // Block all other external requests with a clear error
+    await route.abort('blockedbyclient');
+    throw new Error(
+      `Unmocked external network request: ${route.request().method()} ${url}\n` +
+        'Add a mock for this URL in test-utils.ts or use setupMockProxy()'
+    );
   });
 }
