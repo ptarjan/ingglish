@@ -58,6 +58,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       // Push to browser history so back button works
       if (pushHistory) {
         history.pushState({ translatorUrl: targetUrl }, '', window.location.pathname);
+        // Update URL in address bar immediately (before translation completes)
+        onNavigate?.(targetUrl);
       }
 
       try {
@@ -112,7 +114,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat]
+    [outputFormat, onNavigate]
   );
 
   const clear = useCallback(() => {
@@ -159,15 +161,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         }
 
         setUrl(newUrl);
-        translateUrlRef
-          .current?.(newUrl)
-          .then(() => {
-            onNavigate?.(newUrl);
-          })
-          .catch((err: unknown) => {
-            // eslint-disable-next-line no-console
-            console.error('Navigation translation failed:', err);
-          });
+        translateUrlRef.current?.(newUrl).catch((err: unknown) => {
+          // eslint-disable-next-line no-console
+          console.error('Navigation translation failed:', err);
+        });
       }
     };
 
@@ -175,7 +172,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, [onNavigate]);
+  }, []);
 
   // Handle browser back/forward navigation
   // Also handle iOS Safari's BFCache restoration via pageshow event

@@ -66,7 +66,8 @@ describe('history state management', () => {
   });
 
   it('null state indicates no translation', () => {
-    const state: { translatorUrl?: string } | null = null;
+    // Simulating history.state being null
+    const state = null as { translatorUrl?: string } | null;
 
     expect(state?.translatorUrl).toBeUndefined();
   });
