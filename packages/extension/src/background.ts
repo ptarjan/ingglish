@@ -300,6 +300,47 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 });
 
+// Toggle translation for a specific tab
+function toggleTab(tabId: number): void {
+  const isEnabled = translatedTabs.has(tabId);
+
+  if (isEnabled) {
+    // Disable translation - restore original text
+    removeTranslatedTab(tabId);
+    updateIcon(tabId, false);
+
+    chrome.tabs.sendMessage(tabId, { type: 'RESTORE' }, () => {
+      if (chrome.runtime.lastError) {
+        // eslint-disable-next-line no-console
+        console.log('Restore message failed, page may need refresh');
+      }
+    });
+  } else {
+    // Enable translation - inject script and translate
+    addTranslatedTab(tabId);
+    updateIcon(tabId, true);
+
+    void injectTranslator(tabId).then((success) => {
+      if (!success) {
+        removeTranslatedTab(tabId);
+        updateIcon(tabId, false);
+      }
+    });
+  }
+}
+
+// Handle keyboard shortcut (Ctrl+Shift+I / Cmd+Shift+I)
+chrome.commands.onCommand.addListener((command) => {
+  if (command === 'toggle-translation') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0]?.id;
+      if (tabId !== undefined) {
+        toggleTab(tabId);
+      }
+    });
+  }
+});
+
 // Load persisted state and pre-load dictionary on service worker startup
 void (async () => {
   // Restore translated tabs from storage (important for mobile where service worker suspends)

@@ -44,6 +44,11 @@ const mockChrome = {
       set: vi.fn().mockResolvedValue(undefined),
     },
   },
+  commands: {
+    onCommand: {
+      addListener: vi.fn(),
+    },
+  },
 };
 
 // Set up global chrome mock
