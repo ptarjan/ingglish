@@ -141,17 +141,19 @@ function App() {
       navigator.clipboard.writeText(shareUrl).catch(() => {
         // Fallback: clipboard might not be available
       });
+      // Share doesn't need to preserve translator state - just update URL for sharing
       window.history.replaceState(null, '', shareUrl);
     },
     [buildShareUrl]
   );
 
   // Update browser URL without copying to clipboard (for navigation)
-  // Preserve existing history state (like translatorUrl) when updating the URL
+  // Use the translatorUrl state that should have been set by translateUrl's pushState
   const handleUrlNavigate = useCallback(
     (targetUrl: string) => {
       const shareUrl = buildShareUrl(targetUrl);
-      window.history.replaceState(history.state, '', shareUrl);
+      // Explicitly set the correct state - don't rely on history.state which may be stale
+      window.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
     },
     [buildShareUrl]
   );

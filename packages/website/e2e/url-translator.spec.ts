@@ -147,7 +147,7 @@ test.describe('URL Translator Navigation', () => {
     await page.evaluate(() => {
       history.back();
     });
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     await expect(input).toHaveValue(/page-a/, { timeout: 10000 });
     await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });

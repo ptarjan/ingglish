@@ -114,10 +114,12 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         return;
       }
 
-      onNavigate?.(normalized);
-
       try {
+        // translateUrl must be called BEFORE onNavigate because:
+        // - translateUrl pushes new history entry with state
+        // - onNavigate updates the URL of current entry
         await translateUrl(normalized);
+        onNavigate?.(normalized);
       } catch {
         // Error handling is done in the hook
       }

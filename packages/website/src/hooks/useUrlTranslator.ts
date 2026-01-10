@@ -113,66 +113,69 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           }
 
           setUrl(newUrl);
-          onNavigate?.(newUrl);
-          translateUrl(newUrl).catch((err: unknown) => {
-            // eslint-disable-next-line no-console
-            console.error('Navigation translation failed:', err);
-          });
+          // translateUrl must be called BEFORE onNavigate because:
+          // - translateUrl pushes new history entry with state
+          // - onNavigate updates the URL of current entry
+          // If reversed, onNavigate would update the wrong entry
+          translateUrl(newUrl)
+            .then(() => {
+              onNavigate?.(newUrl);
+            })
+            .catch((err: unknown) => {
+              // eslint-disable-next-line no-console
+              console.error('Navigation translation failed:', err);
+            });
         };
 
-        // Intercept all link navigation using multiple event types for reliability
-        // The key is preventing the default behavior early enough on all platforms
-        const handleLinkActivation = (e: Event, href: string) => {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          navigateToUrl(href);
-        };
+        // Use event delegation at document level - more robust when DOM is modified
+        // Track touch target to handle tap correctly
+        let touchTarget: HTMLAnchorElement | null = null;
 
-        // Set up link handlers immediately so links work while translation is in progress
-        const anchors = iframeDoc.querySelectorAll('a[href]');
-        anchors.forEach((anchor) => {
-          const href = anchor.getAttribute('href');
-          if (href === null || href === '' || shouldSkipUrl(href)) {
-            return;
-          }
-
-          // Track if a touch started on this anchor to handle touchend correctly
-          let touchStarted = false;
-
-          // On iOS Safari, we MUST preventDefault on touchstart to stop native navigation
-          anchor.addEventListener(
-            'touchstart',
-            (e) => {
-              touchStarted = true;
-              e.preventDefault();
-              e.stopPropagation();
-              e.stopImmediatePropagation();
-            },
-            { capture: true, passive: false }
-          );
-
-          // Handle the actual navigation on touchend
-          anchor.addEventListener(
-            'touchend',
-            (e) => {
-              if (touchStarted) {
-                touchStarted = false;
-                handleLinkActivation(e, href);
+        iframeDoc.addEventListener(
+          'touchstart',
+          (e) => {
+            const anchor = (e.target as Element).closest?.('a[href]');
+            if (anchor) {
+              const href = anchor.getAttribute('href');
+              if (href !== null && href !== '' && !shouldSkipUrl(href)) {
+                touchTarget = anchor;
+                e.preventDefault();
               }
-            },
-            { capture: true, passive: false }
-          );
+            }
+          },
+          { capture: true, passive: false }
+        );
 
-          // Add click handler for desktop and as a fallback for mobile
-          anchor.addEventListener(
-            'click',
-            (e) => {
-              handleLinkActivation(e, href);
-            },
-            { capture: true }
-          );
-        });
+        iframeDoc.addEventListener(
+          'touchend',
+          (e) => {
+            if (touchTarget) {
+              const href = touchTarget.getAttribute('href');
+              touchTarget = null;
+              if (href !== null && href !== '') {
+                e.preventDefault();
+                navigateToUrl(href);
+              }
+            }
+          },
+          { capture: true, passive: false }
+        );
+
+        iframeDoc.addEventListener(
+          'click',
+          (e) => {
+            const anchor = (e.target as Element).closest?.('a[href]');
+            if (anchor) {
+              const href = anchor.getAttribute('href');
+              if (href !== null && href !== '' && !shouldSkipUrl(href)) {
+                e.preventDefault();
+                e.stopPropagation();
+                navigateToUrl(href);
+              }
+            }
+          },
+          { capture: true }
+        );
 
         // Translate the DOM with tooltips and larger chunks for faster rendering
         await translateDOM(iframeDoc.body, {
