@@ -294,8 +294,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     updateIcon(tabId, enabled);
   }
 
-  // Re-inject translator when page finishes loading on enabled tabs
-  if (changeInfo.status === 'complete' && enabled) {
+  // Inject translator as early as possible on enabled tabs
+  // Using 'loading' status means DOM is ready but resources may still be loading
+  if (changeInfo.status === 'loading' && changeInfo.url !== undefined && enabled) {
     void injectTranslator(tabId);
   }
 });

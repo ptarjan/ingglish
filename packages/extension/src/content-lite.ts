@@ -348,7 +348,16 @@ if (!state.injected) {
   console.log('Ingglish: Lightweight content script initialized');
 }
 
-// Translate if not yet translated
-if (!state.translated) {
-  void translatePage();
+// Translate when DOM is ready
+function startTranslation(): void {
+  if (!state.translated) {
+    void translatePage();
+  }
+}
+
+// If DOM is already ready, translate immediately; otherwise wait for DOMContentLoaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startTranslation);
+} else {
+  startTranslation();
 }
