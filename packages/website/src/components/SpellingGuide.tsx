@@ -171,15 +171,6 @@ function SpellingGuide(): React.JSX.Element {
           Beyond basic phonetic translation, Ingglish handles several edge cases:
         </p>
 
-        <h4>Initialisms</h4>
-        <p>
-          Initialisms like UI, API, and URL are translated by taking the first letter of each
-          translated expansion word. For example, UI (User Interface) becomes YI because "user"
-          translates to "yoozer" (Y) and "interface" translates to "interfays" (I). This preserves
-          the initialism format while using Ingglish phonetics. Common initialisms stay all caps: UI
-          → YI, API → API, URL → YRL.
-        </p>
-
         <h4>Contractions</h4>
         <p>
           Contractions like "don't", "I'm", and "we'll" are translated as complete units using their
@@ -193,6 +184,15 @@ function SpellingGuide(): React.JSX.Element {
           Capitalization patterns are preserved during translation. ALL CAPS stays all caps, Title
           Case stays title case, and lowercase stays lowercase. For mixed case like "GitHub", the
           exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ii" since Ingglish doesn't require capitalizing pronouns.
+        </p>
+
+        <h4>Initialisms</h4>
+        <p>
+          Initialisms like UI, API, and URL are translated by taking the first letter of each
+          translated expansion word. For example, UI (User Interface) becomes YI because "user"
+          translates to "yoozer" (Y) and "interface" translates to "interfays" (I). This preserves
+          the initialism format while using Ingglish phonetics. Common initialisms stay all caps: UI
+          → YI, API → API, URL → YRL.
         </p>
 
         <h4>Unknown Words</h4>
