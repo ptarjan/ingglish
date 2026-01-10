@@ -102,13 +102,15 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setHasContent(true);
 
-        // Handle link navigation - reads from data-href (href is removed to prevent navigation)
-        const handleLinkNavigation = (anchor: HTMLAnchorElement): void => {
-          // Links have href moved to data-href to prevent browser navigation
-          const href = anchor.getAttribute('data-href');
+        // Handle link navigation - shared logic for click and touch events
+        const handleLinkNavigation = (e: Event, anchor: HTMLAnchorElement): void => {
+          const href = anchor.getAttribute('href');
           if (href === null || href === '' || shouldSkipUrl(href)) {
             return;
           }
+
+          e.preventDefault();
+          e.stopPropagation();
 
           let newUrl: string;
           try {
@@ -128,29 +130,34 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         // Intercept link clicks for navigation
         iframeDoc.addEventListener('click', (e: MouseEvent) => {
-          const anchor = (e.target as HTMLElement).closest('a[data-href]');
+          const anchor = (e.target as HTMLElement).closest('a');
           if (!anchor) {
             return;
           }
-          handleLinkNavigation(anchor as HTMLAnchorElement);
+          handleLinkNavigation(e, anchor);
         });
 
-        // Also handle touch events for mobile
-        iframeDoc.addEventListener('touchend', (e: TouchEvent) => {
-          if (e.changedTouches.length === 0) {
-            return;
-          }
+        // Also handle touch events for mobile - touchend fires before click on mobile
+        // and is more reliable for detecting taps on links in iframes
+        iframeDoc.addEventListener(
+          'touchend',
+          (e: TouchEvent) => {
+            if (e.changedTouches.length === 0) {
+              return;
+            }
 
-          const touch = e.changedTouches[0];
-          // Get the element at the touch point
-          const target = iframeDoc.elementFromPoint(touch.clientX, touch.clientY);
-          const anchor = (target as HTMLElement | null)?.closest('a[data-href]');
-          if (!anchor) {
-            return;
-          }
+            const touch = e.changedTouches[0];
+            // Get the element at the touch point
+            const target = iframeDoc.elementFromPoint(touch.clientX, touch.clientY);
+            const anchor = (target as HTMLElement | null)?.closest('a');
+            if (!anchor) {
+              return;
+            }
 
-          handleLinkNavigation(anchor as HTMLAnchorElement);
-        });
+            handleLinkNavigation(e, anchor);
+          },
+          { passive: false }
+        );
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
