@@ -7,6 +7,7 @@ import { lookupPronunciation } from '../dictionary/lookup';
 import { detectCasePattern, applyCasePattern } from '../utils/case';
 import { normalizeApostrophes } from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
+import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
 import type { OutputFormat } from '../types';
 
 // Import translateUnknown - we'll set this up with proper dependency injection
@@ -34,6 +35,14 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   // Handle contractions (words with apostrophes)
   if (word.includes("'")) {
     return translateContraction(word, format);
+  }
+
+  // Handle known initialisms (UI, API, etc.) - translate to first letters of expansion
+  if (isInitialism(word)) {
+    const initialismResult = translateInitialism(word, format);
+    if (initialismResult !== null) {
+      return initialismResult;
+    }
   }
 
   // Detect case pattern for preservation
@@ -67,8 +76,9 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   return result;
 }
 
-// Register translateWord with contractions module to break circular dependency
+// Register translateWord with modules to break circular dependencies
 setTranslateWordFn(translateWord);
+setInitialismTranslateWordFn(translateWord);
 
 /**
  * Translates text containing multiple words to the specified format.
