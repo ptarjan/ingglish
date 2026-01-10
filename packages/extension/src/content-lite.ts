@@ -333,9 +333,8 @@ function restorePage(): void {
   // Use shared restore utility
   restoreDOM(document.body);
 
-  // Remove badge and ready class
+  // Remove badge (keep ingglish-ready class so page stays visible with injected CSS)
   document.getElementById('ingglish-badge')?.remove();
-  document.body.classList.remove('ingglish-ready');
 
   state.translated = false;
   // eslint-disable-next-line no-console
