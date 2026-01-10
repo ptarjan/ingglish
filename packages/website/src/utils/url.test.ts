@@ -7,6 +7,7 @@ import {
   detectBotProtection,
   stripScripts,
   proxyFontUrls,
+  processProxiedHtml,
 } from './url';
 
 describe('normalizeUrl', () => {
@@ -288,5 +289,81 @@ describe('proxyFontUrls', () => {
     const result = proxyFontUrls(css, proxy);
     expect(result).toContain(`${proxy}${encodeURIComponent('https://a.com/font.woff2')}`);
     expect(result).toContain(`${proxy}${encodeURIComponent('https://b.com/font.woff')}`);
+  });
+});
+
+describe('processProxiedHtml', () => {
+  const options = {
+    pageUrl: 'https://example.com/path/page.html',
+    proxyUrl: 'https://proxy.example.com/?url=',
+  };
+
+  it('processes HTML through the full pipeline', () => {
+    const html = '<html><head></head><body><p>Hello</p></body></html>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.baseUrl).toBe('https://example.com/path/');
+    expect(result.html).toContain('<base href="https://example.com/path/">');
+    expect(result.html).toContain('ingglish-link-click');
+  });
+
+  it('throws for bot protection pages', () => {
+    const html = '<html><script>window._cf_chl_opt={}</script></html>';
+    expect(() => processProxiedHtml(html, options)).toThrow('Cloudflare protection');
+  });
+
+  it('strips scripts from HTML', () => {
+    const html = '<html><head><script>alert(1)</script></head><body>Content</body></html>';
+    const result = processProxiedHtml(html, options);
+
+    // Should not contain the alert script
+    expect(result.html).not.toContain('alert(1)');
+    // But should contain the click handler script
+    expect(result.html).toContain('ingglish-link-click');
+  });
+
+  it('proxies font URLs', () => {
+    const html =
+      '<html><head><style>@font-face { src: url(https://fonts.example.com/font.woff2); }</style></head><body></body></html>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.html).toContain(
+      `${options.proxyUrl}${encodeURIComponent('https://fonts.example.com/font.woff2')}`
+    );
+  });
+
+  it('injects click handler before </body>', () => {
+    const html = '<html><body><p>Test</p></body></html>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.html).toMatch(/ingglish-link-click.*<\/body>/s);
+  });
+
+  it('injects click handler before </html> if no body tag', () => {
+    const html = '<html><p>Test</p></html>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.html).toMatch(/ingglish-link-click.*<\/html>/s);
+  });
+
+  it('appends click handler if no body or html closing tags', () => {
+    const html = '<p>Test</p>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.html).toContain('ingglish-link-click');
+  });
+
+  it('returns correct base URL for different page paths', () => {
+    const result1 = processProxiedHtml('<html></html>', {
+      ...options,
+      pageUrl: 'https://example.com/',
+    });
+    expect(result1.baseUrl).toBe('https://example.com/');
+
+    const result2 = processProxiedHtml('<html></html>', {
+      ...options,
+      pageUrl: 'https://example.com/deep/path/file.html',
+    });
+    expect(result2.baseUrl).toBe('https://example.com/deep/path/');
   });
 });

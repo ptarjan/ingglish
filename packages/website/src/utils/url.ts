@@ -180,3 +180,111 @@ export function normalizeUrl(input: string): string | null {
     return null;
   }
 }
+
+// Regex patterns for HTML tag matching (precompiled for performance)
+const BODY_CLOSE_REGEX = /<\/body>/i;
+const HTML_CLOSE_REGEX = /<\/html>/i;
+
+/**
+ * Script injected into iframe to capture link clicks via postMessage.
+ * Handles both touch (iOS Safari) and click events.
+ *
+ * Readable version:
+ * ```js
+ * (function() {
+ *   var touchTarget = null;
+ *
+ *   // Find closest anchor element (with IE11 fallback)
+ *   function findAnchor(el) {
+ *     return el && el.closest
+ *       ? el.closest('a[href]')
+ *       : (function(n) { while (n && n.tagName !== 'A') n = n.parentElement; return n; })(el);
+ *   }
+ *
+ *   // Handle navigation for valid links
+ *   function handleLink(anchor, event) {
+ *     if (!anchor) return;
+ *     var href = anchor.getAttribute('href');
+ *     if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
+ *       event.preventDefault();
+ *       event.stopPropagation();
+ *       parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
+ *     }
+ *   }
+ *
+ *   // Track touch target for iOS Safari
+ *   document.addEventListener('touchstart', function(e) { touchTarget = findAnchor(e.target); }, true);
+ *   document.addEventListener('touchend', function(e) {
+ *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
+ *   }, true);
+ *   document.addEventListener('click', function(e) { handleLink(findAnchor(e.target), e); }, true);
+ * })();
+ * ```
+ */
+const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(r&&r.indexOf('javascript:')!==0&&r.indexOf('#')!==0&&r.indexOf('mailto:')!==0){e.preventDefault();e.stopPropagation();parent.postMessage({type:'ingglish-link-click',href:r},'*')}}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
+
+/**
+ * Injects the click handler script before the closing body or html tag.
+ */
+function injectClickHandler(html: string): string {
+  const bodyMatch = BODY_CLOSE_REGEX.exec(html);
+  if (bodyMatch !== null) {
+    return html.replace(bodyMatch[0], CLICK_HANDLER_SCRIPT + bodyMatch[0]);
+  }
+
+  const htmlMatch = HTML_CLOSE_REGEX.exec(html);
+  if (htmlMatch !== null) {
+    return html.replace(htmlMatch[0], CLICK_HANDLER_SCRIPT + htmlMatch[0]);
+  }
+
+  return html + CLICK_HANDLER_SCRIPT;
+}
+
+export interface ProcessHtmlOptions {
+  /** The original page URL (for base tag) */
+  pageUrl: string;
+  /** The CORS proxy URL prefix */
+  proxyUrl: string;
+}
+
+export interface ProcessHtmlResult {
+  /** The processed HTML ready for iframe srcdoc */
+  html: string;
+  /** The base URL for resolving relative links */
+  baseUrl: string;
+}
+
+/**
+ * Processes raw HTML from a proxied page for safe display in an iframe.
+ *
+ * Pipeline:
+ * 1. Detect bot protection pages (throws if detected)
+ * 2. Strip scripts and dangerous elements
+ * 3. Inject base tag for relative URL resolution
+ * 4. Proxy font URLs through CORS proxy
+ * 5. Inject click handler for link navigation
+ *
+ * @throws Error if bot protection is detected
+ */
+export function processProxiedHtml(
+  rawHtml: string,
+  options: ProcessHtmlOptions
+): ProcessHtmlResult {
+  // Step 1: Check for bot protection
+  const botProtectionError = detectBotProtection(rawHtml);
+  if (botProtectionError !== null) {
+    throw new Error(botProtectionError);
+  }
+
+  // Step 2-3: Strip scripts and inject base tag
+  const baseUrl = getBaseUrl(options.pageUrl);
+  const htmlWithBase = injectBaseTag(stripScripts(rawHtml), baseUrl);
+
+  // Step 4: Proxy font URLs
+  const htmlWithFonts = proxyFontUrls(htmlWithBase, options.proxyUrl);
+
+  // Step 5: Inject click handler
+  const html = injectClickHandler(htmlWithFonts);
+
+  return { html, baseUrl };
+}

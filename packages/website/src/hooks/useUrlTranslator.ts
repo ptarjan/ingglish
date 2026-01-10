@@ -6,14 +6,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/dom';
-import {
-  injectBaseTag,
-  getBaseUrl,
-  shouldSkipUrl,
-  detectBotProtection,
-  proxyFontUrls,
-  stripScripts,
-} from '../utils/url';
+import { shouldSkipUrl, processProxiedHtml } from '../utils/url';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../utils/url';
@@ -21,48 +14,6 @@ export { normalizeUrl } from '../utils/url';
 // Use custom proxy if configured, otherwise fall back to allorigins
 const CORS_PROXY: string =
   import.meta.env.VITE_CORS_PROXY_URL ?? 'https://api.allorigins.win/raw?url=';
-
-// Regex patterns for HTML tag matching (precompiled for performance)
-const BODY_CLOSE_REGEX = /<\/body>/i;
-const HTML_CLOSE_REGEX = /<\/html>/i;
-
-/**
- * Script injected into iframe to capture link clicks via postMessage.
- * Handles both touch (iOS Safari) and click events.
- *
- * Readable version:
- * ```js
- * (function() {
- *   var touchTarget = null;
- *
- *   // Find closest anchor element (with IE11 fallback)
- *   function findAnchor(el) {
- *     return el && el.closest
- *       ? el.closest('a[href]')
- *       : (function(n) { while (n && n.tagName !== 'A') n = n.parentElement; return n; })(el);
- *   }
- *
- *   // Handle navigation for valid links
- *   function handleLink(anchor, event) {
- *     if (!anchor) return;
- *     var href = anchor.getAttribute('href');
- *     if (href && href.indexOf('javascript:') !== 0 && href.indexOf('#') !== 0 && href.indexOf('mailto:') !== 0) {
- *       event.preventDefault();
- *       event.stopPropagation();
- *       parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
- *     }
- *   }
- *
- *   // Track touch target for iOS Safari
- *   document.addEventListener('touchstart', function(e) { touchTarget = findAnchor(e.target); }, true);
- *   document.addEventListener('touchend', function(e) {
- *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
- *   }, true);
- *   document.addEventListener('click', function(e) { handleLink(findAnchor(e.target), e); }, true);
- * })();
- * ```
- */
-const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(r&&r.indexOf('javascript:')!==0&&r.indexOf('#')!==0&&r.indexOf('mailto:')!==0){e.preventDefault();e.stopPropagation();parent.postMessage({type:'ingglish-link-click',href:r},'*')}}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
 
 interface UseUrlTranslatorOptions {
   onNavigate?: (url: string) => void;
@@ -120,26 +71,11 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         const rawHtml = await response.text();
 
-        // Check for bot protection pages before processing
-        const botProtectionError = detectBotProtection(rawHtml);
-        if (botProtectionError !== null) {
-          throw new Error(botProtectionError);
-        }
-
-        const htmlWithBase = injectBaseTag(stripScripts(rawHtml), getBaseUrl(parsedUrl.href));
-        const htmlWithFonts = proxyFontUrls(htmlWithBase, CORS_PROXY);
-
-        // Insert click handler script before closing </body> or </html> tag
-        let html = htmlWithFonts;
-        const bodyMatch = BODY_CLOSE_REGEX.exec(html);
-        const htmlMatch = HTML_CLOSE_REGEX.exec(html);
-        if (bodyMatch !== null) {
-          html = html.replace(bodyMatch[0], CLICK_HANDLER_SCRIPT + bodyMatch[0]);
-        } else if (htmlMatch !== null) {
-          html = html.replace(htmlMatch[0], CLICK_HANDLER_SCRIPT + htmlMatch[0]);
-        } else {
-          html = html + CLICK_HANDLER_SCRIPT;
-        }
+        // Process HTML: sanitize, inject base tag, proxy fonts, add click handler
+        const { html, baseUrl } = processProxiedHtml(rawHtml, {
+          pageUrl: parsedUrl.href,
+          proxyUrl: CORS_PROXY,
+        });
 
         // Load HTML into iframe using srcdoc and wait for load event
         await new Promise<void>((resolve) => {
@@ -157,7 +93,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         }
 
         // Store base URL for resolving relative links from postMessage
-        baseUrlRef.current = parsedUrl.href;
+        baseUrlRef.current = baseUrl;
 
         // Show content immediately - translation happens in background
         setHasContent(true);
