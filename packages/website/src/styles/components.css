@@ -344,6 +344,10 @@
   color: var(--color-primary);
 }
 
+.guide-section h4 {
+  margin-top: 1.5rem;
+}
+
 .sound-groups {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
