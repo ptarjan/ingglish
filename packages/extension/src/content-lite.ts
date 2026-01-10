@@ -379,27 +379,37 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // Fetch new translations
   const translations = await translateWordsInBatches([...originalWords], format);
 
-  // Update spans in-place (chunked to avoid blocking)
-  const CHUNK_SIZE = 200;
+  // Update spans in-place (chunked with RAF to avoid blocking)
+  const CHUNK_SIZE = 50; // Small chunks to stay responsive
 
-  for (let i = 0; i < spans.length; i += CHUNK_SIZE) {
-    const chunk = spans.slice(i, i + CHUNK_SIZE);
-    for (const span of chunk) {
-      const orig = span.getAttribute('data-ingglish-orig');
-      if (orig !== null && orig !== '') {
-        const translated = translations[orig.toLowerCase()];
-        if (translated !== undefined) {
-          // Preserve case pattern from original
-          const pattern = detectCasePattern(orig);
-          span.textContent = applyCasePattern(translated, pattern, orig);
+  await new Promise<void>((resolve) => {
+    let index = 0;
+
+    function processChunk(): void {
+      const endIndex = Math.min(index + CHUNK_SIZE, spans.length);
+
+      while (index < endIndex) {
+        const span = spans[index];
+        const orig = span.getAttribute('data-ingglish-orig');
+        if (orig !== null && orig !== '') {
+          const translated = translations[orig.toLowerCase()];
+          if (translated !== undefined) {
+            const pattern = detectCasePattern(orig);
+            span.textContent = applyCasePattern(translated, pattern, orig);
+          }
         }
+        index++;
+      }
+
+      if (index < spans.length) {
+        requestAnimationFrame(processChunk);
+      } else {
+        resolve();
       }
     }
-    // Yield to browser between chunks for large pages
-    if (i + CHUNK_SIZE < spans.length) {
-      await new Promise((r) => setTimeout(r, 0));
-    }
-  }
+
+    requestAnimationFrame(processChunk);
+  });
 
   // Update badge
   const badge = document.getElementById('ingglish-badge');
