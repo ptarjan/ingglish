@@ -90,6 +90,7 @@ export function detectBotProtection(html: string): string | null {
 
 /**
  * Strips script tags and other active content from HTML.
+ * Also disables links by moving href to data-href (prevents navigation before JS handlers run).
  * Uses DOMParser in browser for reliability, falls back to regex in Node.
  */
 export function stripScripts(html: string): string {
@@ -120,6 +121,20 @@ export function stripScripts(html: string): string {
           el.removeAttribute(attr.name);
         }
       });
+    });
+
+    // Disable links by moving href to data-href
+    // This prevents browser navigation before our JS handlers can intercept
+    // Critical for mobile where touch events may not preventDefault in time
+    doc.querySelectorAll('a[href]').forEach((anchor) => {
+      const href = anchor.getAttribute('href');
+      if (href !== null) {
+        anchor.setAttribute('data-href', href);
+        anchor.removeAttribute('href');
+        // Add cursor pointer since removing href changes default cursor
+        const existingStyle = anchor.getAttribute('style') ?? '';
+        anchor.setAttribute('style', existingStyle + ';cursor:pointer');
+      }
     });
 
     // Preserve doctype if present
