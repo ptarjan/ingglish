@@ -113,14 +113,19 @@ describe('content-lite', () => {
   });
 
   describe('RETRANSLATE message', () => {
-    it('should update spans in-place without full re-render', async () => {
-      // Set up a translated page with spans
+    it('should preserve same DOM elements (in-place update, not recreate)', async () => {
+      // Set up a translated page with spans (realistic structure with data-ingglish-original)
       document.body.innerHTML = `
-        <p>
+        <p data-ingglish-original="Hello world">
           <span class="ingglish-word" data-ingglish-orig="Hello">Hulo</span>
           <span class="ingglish-word" data-ingglish-orig="world">werld</span>
         </p>
       `;
+
+      // Capture references to the actual DOM elements
+      const originalSpans = document.querySelectorAll('.ingglish-word');
+      const span1 = originalSpans[0];
+      const span2 = originalSpans[1];
 
       // Mark as translated
       const win = window as { __ingglishStateLite?: { translated: boolean } };
@@ -140,9 +145,15 @@ describe('content-lite', () => {
         { timeout: 2000 }
       );
 
-      // Spans should still exist (not destroyed and recreated)
-      const spans = document.querySelectorAll('.ingglish-word');
-      expect(spans.length).toBe(2);
+      // The SAME span elements should still be in the document
+      // (old implementation would destroy them and create new ones)
+      expect(span1.isConnected).toBe(true);
+      expect(span2.isConnected).toBe(true);
+
+      // And they should still be the ones in the DOM
+      const currentSpans = document.querySelectorAll('.ingglish-word');
+      expect(currentSpans[0]).toBe(span1);
+      expect(currentSpans[1]).toBe(span2);
     });
 
     it('should not freeze when processing many spans', async () => {
@@ -180,33 +191,95 @@ describe('content-lite', () => {
   });
 
   describe('MutationObserver debouncing', () => {
-    it('should batch rapid mutations', async () => {
-      // This test verifies the debounce behavior
-      // The observer should wait 100ms before processing
+    it('should wait 100ms before processing mutations', async () => {
+      // This test verifies the debounce timer behavior
+      // Without debounce, mutations would process immediately
+      // With 100ms debounce, we should see a delay before processing
 
       // First do initial translation to set up observer
-      document.body.innerHTML = '<p>Initial content</p>';
+      document.body.innerHTML = '<p>Initial</p>';
 
-      // Trigger translation
-      const translateSpy = vi.spyOn(mockChrome.runtime, 'sendMessage');
-
-      // Simulate multiple rapid DOM mutations
-      for (let i = 0; i < 5; i++) {
-        const p = document.createElement('p');
-        p.textContent = `New content ${i}`;
-        document.body.appendChild(p);
-      }
-
-      // Wait for debounce (100ms) + processing
+      // Wait longer for initial translation and observer setup to complete
       await new Promise((r) => setTimeout(r, 200));
 
-      // Translation requests should be batched, not one per mutation
+      // Clear all previous calls
+      mockChrome.runtime.sendMessage.mockClear();
+
+      // Add a mutation with a unique word
+      const p = document.createElement('p');
+      p.textContent = 'Xylophone'; // Unique word not in initial translation
+      document.body.appendChild(p);
+
+      // Check immediately (before 100ms debounce)
+      await new Promise((r) => setTimeout(r, 20));
+      const callsBeforeDebounce = mockChrome.runtime.sendMessage.mock.calls.filter((call) => {
+        const msg = call[0] as { type: string; words?: string[] };
+        return msg.type === 'TRANSLATE_WORDS' && msg.words?.includes('xylophone') === true;
+      });
+
+      // With debouncing, no translate call for the new word should have happened yet
+      expect(callsBeforeDebounce.length).toBe(0);
+
+      // Wait for debounce to complete (100ms from mutation + buffer)
+      await new Promise((r) => setTimeout(r, 150));
+
+      // Now it should have been processed
+      const callsAfterDebounce = mockChrome.runtime.sendMessage.mock.calls.filter((call) => {
+        const msg = call[0] as { type: string; words?: string[] };
+        return msg.type === 'TRANSLATE_WORDS' && msg.words?.includes('xylophone') === true;
+      });
+      expect(callsAfterDebounce.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should batch mutations that occur within debounce window', async () => {
+      // Test that multiple mutations within 100ms get batched together
+
+      document.body.innerHTML = '<p>Initial</p>';
+      await new Promise((r) => setTimeout(r, 50));
+
+      mockChrome.runtime.sendMessage.mockClear();
+      const translateSpy = vi.spyOn(mockChrome.runtime, 'sendMessage');
+
+      // Add first mutation with unique words
+      const p1 = document.createElement('p');
+      p1.textContent = 'Alpha bravo';
+      document.body.appendChild(p1);
+
+      // Wait 30ms (still within debounce window)
+      await new Promise((r) => setTimeout(r, 30));
+
+      // Add second mutation
+      const p2 = document.createElement('p');
+      p2.textContent = 'Charlie delta';
+      document.body.appendChild(p2);
+
+      // Wait 30ms more (still within debounce window from second mutation)
+      await new Promise((r) => setTimeout(r, 30));
+
+      // Add third mutation
+      const p3 = document.createElement('p');
+      p3.textContent = 'Echo foxtrot';
+      document.body.appendChild(p3);
+
+      // Wait for debounce to complete (100ms from last mutation + buffer)
+      await new Promise((r) => setTimeout(r, 150));
+
+      // All mutations should be batched into a single translate call
       const translateCalls = translateSpy.mock.calls.filter(
         (call) => (call[0] as { type: string }).type === 'TRANSLATE_WORDS'
       );
 
-      // Should have at most 2 calls (initial + batched), not 5+
-      expect(translateCalls.length).toBeLessThanOrEqual(2);
+      // Should have only 1 batched call, not 3 separate calls
+      expect(translateCalls.length).toBe(1);
+
+      // And the call should contain words from all mutations
+      const words = (translateCalls[0][0] as { words: string[] }).words;
+      expect(words).toContain('alpha');
+      expect(words).toContain('bravo');
+      expect(words).toContain('charlie');
+      expect(words).toContain('delta');
+      expect(words).toContain('echo');
+      expect(words).toContain('foxtrot');
     });
   });
 });
