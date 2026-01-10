@@ -43,27 +43,64 @@ const state = getState();
 // Word batch size for translation requests
 const WORD_BATCH_SIZE = 1000;
 
+// Check if extension context is still valid (not invalidated by extension reload)
+function isContextValid(): boolean {
+  try {
+    return chrome.runtime?.id !== undefined;
+  } catch {
+    return false;
+  }
+}
+
 // Request batch translation from background script
 async function translateWordsBatch(
   words: string[],
   format: OutputFormat
 ): Promise<Record<string, string>> {
+  if (!isContextValid()) {
+    // eslint-disable-next-line no-console
+    console.log('Ingglish: Extension context invalidated, please refresh the page');
+    return {};
+  }
+
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage(
-      { type: 'TRANSLATE_WORDS', words, format },
-      (response: TranslateWordsResponse | undefined) => {
-        resolve(response?.translations ?? {});
-      }
-    );
+    try {
+      chrome.runtime.sendMessage(
+        { type: 'TRANSLATE_WORDS', words, format },
+        (response: TranslateWordsResponse | undefined) => {
+          if (chrome.runtime.lastError) {
+            // Context was invalidated during the call
+            resolve({});
+            return;
+          }
+          resolve(response?.translations ?? {});
+        }
+      );
+    } catch {
+      // Extension context invalidated
+      resolve({});
+    }
   });
 }
 
 // Get output format from background
 async function getOutputFormat(): Promise<OutputFormat> {
+  if (!isContextValid()) {
+    return 'ingglish';
+  }
+
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type: 'GET_FORMAT' }, (response: FormatResponse | undefined) => {
-      resolve(response?.format ?? 'ingglish');
-    });
+    try {
+      chrome.runtime.sendMessage({ type: 'GET_FORMAT' }, (response: FormatResponse | undefined) => {
+        if (chrome.runtime.lastError) {
+          resolve('ingglish');
+          return;
+        }
+        resolve(response?.format ?? 'ingglish');
+      });
+    } catch {
+      resolve('ingglish');
+    }
   });
 }
 
@@ -143,6 +180,13 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
   const translations = { ...existingTranslations };
 
   state.observer = new MutationObserver((mutations) => {
+    // Stop observing if extension context is invalidated
+    if (!isContextValid()) {
+      state.observer?.disconnect();
+      state.observer = null;
+      return;
+    }
+
     const newNodes: Text[] = [];
 
     for (const mutation of mutations) {
