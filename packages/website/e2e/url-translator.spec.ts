@@ -207,6 +207,14 @@ test.describe('URL Translator Navigation', () => {
     const initialWordCount = await iframe.locator('.ingglish-word').count();
     expect(initialWordCount).toBeGreaterThan(0);
 
+    // Track network requests to the proxy after initial load
+    let proxyRequestCount = 0;
+    page.on('request', (request) => {
+      if (request.url().includes('allorigins.win')) {
+        proxyRequestCount++;
+      }
+    });
+
     // Click anchor link (with absolute URL - this sends postMessage, unlike pure #hash links)
     const anchorLink = iframe.locator('a[href="https://example.com/page-a#section-two"]');
     await expect(anchorLink).toBeVisible();
@@ -215,8 +223,13 @@ test.describe('URL Translator Navigation', () => {
     // URL should update to include the hash
     await expect(input).toHaveValue(/page-a#section-two/, { timeout: 5000 });
 
-    // Page should still be translated (not showing loading, not refetched)
-    await expect(page.locator('.btn-loading')).not.toBeVisible();
+    // Wait a bit to catch any delayed requests
+    await page.waitForTimeout(500);
+
+    // No new proxy requests should have been made (this is the key assertion)
+    expect(proxyRequestCount).toBe(0);
+
+    // Page should still be translated
     const afterWordCount = await iframe.locator('.ingglish-word').count();
     expect(afterWordCount).toBe(initialWordCount);
 
