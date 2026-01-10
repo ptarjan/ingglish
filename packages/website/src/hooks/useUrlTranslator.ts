@@ -102,8 +102,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setHasContent(true);
 
-        // Intercept link clicks for navigation
-        iframeDoc.addEventListener('click', (e: MouseEvent) => {
+        // Handle link navigation
+        const handleLinkClick = (e: Event) => {
           const anchor = (e.target as HTMLElement).closest('a');
           if (!anchor) {
             return;
@@ -116,6 +116,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
           e.preventDefault();
           e.stopPropagation();
+          e.stopImmediatePropagation();
 
           let newUrl: string;
           try {
@@ -131,7 +132,57 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             // eslint-disable-next-line no-console
             console.error('Navigation translation failed:', err);
           });
-        });
+        };
+
+        // Use capture phase to intercept before browser processes the click
+        // This is critical for mobile where default actions may run earlier
+        iframeDoc.addEventListener('click', handleLinkClick, { capture: true });
+
+        // Also add touchend listener for mobile devices
+        // On iOS Safari, touchend fires before click and is more reliable
+        iframeDoc.addEventListener(
+          'touchend',
+          (e: TouchEvent) => {
+            // Only handle single-touch taps
+            if (e.changedTouches.length !== 1) {
+              return;
+            }
+
+            const touch = e.changedTouches[0];
+            const target = iframeDoc.elementFromPoint(touch.clientX, touch.clientY);
+            if (!target) {
+              return;
+            }
+
+            const anchor = (target as HTMLElement).closest('a');
+            if (!anchor) {
+              return;
+            }
+
+            const href = anchor.getAttribute('href');
+            if (href === null || href === '' || shouldSkipUrl(href)) {
+              return;
+            }
+
+            // Prevent the subsequent click event and default behavior
+            e.preventDefault();
+
+            let newUrl: string;
+            try {
+              newUrl = new URL(href, parsedUrl.href).href;
+            } catch {
+              return;
+            }
+
+            setUrl(newUrl);
+            onNavigate?.(newUrl);
+            translateUrl(newUrl).catch((err: unknown) => {
+              // eslint-disable-next-line no-console
+              console.error('Navigation translation failed:', err);
+            });
+          },
+          { capture: true, passive: false }
+        );
       } catch (err) {
         setError(`Failed to load page: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
