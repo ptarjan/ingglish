@@ -323,10 +323,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     updateIcon(tabId, enabled);
   }
 
-  // Inject translator as early as possible on enabled tabs
-  // Using 'loading' status means DOM is ready but resources may still be loading
-  if (changeInfo.status === 'loading' && changeInfo.url !== undefined && enabled) {
-    void injectTranslator(tabId);
+  // Re-inject translator on navigation for enabled tabs
+  // Skip permission check - just try to inject and handle failure
+  if (changeInfo.status === 'complete' && enabled) {
+    void injectTranslator(tabId, false).then((success) => {
+      if (!success) {
+        // Injection failed (no permission for new URL) - disable translation
+        removeTranslatedTab(tabId);
+        updateIcon(tabId, false);
+      }
+    });
   }
 });
 
@@ -347,10 +353,11 @@ function toggleTab(tabId: number): void {
     });
   } else {
     // Enable translation - inject script and translate
+    // Keyboard shortcuts grant activeTab permission, so skip permission check
     addTranslatedTab(tabId);
     updateIcon(tabId, true);
 
-    void injectTranslator(tabId).then((success) => {
+    void injectTranslator(tabId, false).then((success) => {
       if (!success) {
         removeTranslatedTab(tabId);
         updateIcon(tabId, false);
