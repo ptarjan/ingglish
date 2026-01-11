@@ -56,7 +56,7 @@ Every phonetic system must choose whose pronunciation to encode. English has 14-
 
 The Shavian alphabet fragmented because "an American, a Scot, or an Australian would need to spell words differently to match their accent."
 
-**Ingglish's approach:** Based on the CMU Pronouncing Dictionary (General American), which is widely understood internationally. The phonemic representation is abstract enough that speakers of different accents can map it to their own pronunciation—the same way IPA works.
+**Ingglish's approach:** Ingglish picks a winner: General American English, based on the CMU Pronouncing Dictionary. This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
 
 ### 2. Breaking Etymology
 
@@ -218,7 +218,7 @@ For example:
 - "dance" in Ingglish reflects American /æ/, not British /ɑː/
 - "schedule" reflects American "skedyool," not British "shedyool"
 
-This is the same limitation IPA transcriptions have—they represent one accent. Ingglish documentation should acknowledge this clearly.
+This is an explicit trade-off: one consistent standard that everyone recognizes, rather than regional variants that would fragment the system.
 
 ### The "Why Bother?" Question
 
