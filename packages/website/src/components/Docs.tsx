@@ -1,5 +1,11 @@
 import type { JSX } from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+
+interface HeadingInfo {
+  id: string;
+  text: string;
+  level: number;
+}
 
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import apiReference from '../../../../docs/generated/README.md';
@@ -62,6 +68,23 @@ for (const doc of docs) {
   }
 }
 
+function extractHeadings(html: string): HeadingInfo[] {
+  const headings: HeadingInfo[] = [];
+  // Match h2 and h3 tags and extract their content
+  const regex = /<h([23])[^>]*>([^<]+)<\/h[23]>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    const level = parseInt(match[1], 10);
+    const text = match[2].trim();
+    const id = text
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]/g, '');
+    headings.push({ id, text, level });
+  }
+  return headings;
+}
+
 function parseDocsHash(): { docId: string | null; sectionId: string | null } {
   const hash = window.location.hash.slice(1);
   if (hash.startsWith('docs/')) {
@@ -86,6 +109,9 @@ function Docs(): JSX.Element {
   });
 
   const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0];
+
+  // Extract headings from current doc for TOC
+  const currentHeadings = useMemo(() => extractHeadings(currentDoc.content), [currentDoc.content]);
 
   // Process links and headings after HTML is rendered
   useEffect(() => {
@@ -190,6 +216,20 @@ function Docs(): JSX.Element {
               >
                 {doc.title}
               </button>
+              {activeDoc === doc.id && currentHeadings.length > 0 && (
+                <ul className="docs-subsections">
+                  {currentHeadings.map((heading) => (
+                    <li key={heading.id}>
+                      <a
+                        href={`#docs/${doc.id}/${heading.id}`}
+                        className={`docs-subsection-link docs-subsection-h${heading.level}`}
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
