@@ -49,12 +49,10 @@ export function arpabetPhonemeToIPA(phoneme: string): string {
     return 'ə';
   }
 
-  // Add stress marker before the vowel if stressed
-  if (stress !== null && stress !== '' && STRESS_MARKERS[stress] !== undefined) {
-    const marker = STRESS_MARKERS[stress];
-    if (marker !== '') {
-      return marker + ipa;
-    }
+  // Add stress marker before the vowel if stressed (stress '1' or '2')
+  // Note: stress '0' has empty marker, so we can skip the check
+  if (stress === '1' || stress === '2') {
+    return STRESS_MARKERS[stress] + ipa;
   }
 
   return ipa;

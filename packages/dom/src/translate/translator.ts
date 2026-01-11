@@ -73,7 +73,8 @@ function translateNodesChunked(
         translateTextNode(textNodes[index], showTooltips, outputFormat);
         index++;
 
-        if (onProgress && totalNodes > 0) {
+        // Note: totalNodes > 0 is always true here since we only enter processChunk when totalNodes > 0
+        if (onProgress) {
           onProgress(index, totalNodes);
         }
       }
