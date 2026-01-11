@@ -10,8 +10,8 @@
 /**
  * ARPAbet vowels to Ingglish spellings.
  *
- * Note: R-colored vowels (AA+R → 'ar', AO+R → 'or') are handled
- * contextually in arpabetToIngglish() via look-ahead, not here.
+ * Note: R-colored vowels (AA+R → 'ar', AO+R → 'or', EH+R → 'air') are
+ * handled contextually in arpabetToIngglish() via look-ahead, not here.
  */
 export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   // Monophthongs
@@ -19,7 +19,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   AE: 'a', // cat, bat, had
   AH: 'u', // but, cup, son
   AO: 'aw', // thought, caught, law (but AO+R → 'or' in store, more)
-  EH: 'e', // bed, red, said
+  EH: 'e', // bed, red, said (but EH+R → 'air' in air, care, there)
   ER: 'er', // bird, her, nurse
   IH: 'i', // bit, sit, gym
   IY: 'ee', // bee, see, machine

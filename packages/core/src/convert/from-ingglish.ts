@@ -8,10 +8,14 @@
 import { INGGLISH_TO_ARPABET_MAP } from './ingglish-maps';
 
 /**
- * R-colored vowel sequences: 'ar' → AA+R, 'or' → AO+R
- * These override the default single-char mappings when followed by 'r'.
+ * R-colored vowel sequences by length.
+ * Check 3-char first (air), then 2-char (ar, or).
  */
-const R_COLORED_VOWELS: Record<string, [string, string]> = {
+const R_COLORED_3CHAR: Record<string, [string, string]> = {
+  air: ['EH', 'R'], // air, care, there, where
+};
+
+const R_COLORED_2CHAR: Record<string, [string, string]> = {
   ar: ['AA', 'R'], // star, car, far
   or: ['AO', 'R'], // store, more, for
 };
@@ -38,10 +42,18 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
   let remaining = ingglish.toLowerCase();
 
   while (remaining.length > 0) {
-    // Check for R-colored vowels first (ar, or)
+    // Check for 3-char R-colored vowels first (air)
+    const threeChar = remaining.slice(0, 3);
+    if (remaining.length >= 3 && threeChar in R_COLORED_3CHAR) {
+      result.push(...R_COLORED_3CHAR[threeChar]);
+      remaining = remaining.slice(3);
+      continue;
+    }
+
+    // Check for 2-char R-colored vowels (ar, or)
     const twoChar = remaining.slice(0, 2);
-    if (remaining.length >= 2 && twoChar in R_COLORED_VOWELS) {
-      result.push(...R_COLORED_VOWELS[twoChar]);
+    if (remaining.length >= 2 && twoChar in R_COLORED_2CHAR) {
+      result.push(...R_COLORED_2CHAR[twoChar]);
       remaining = remaining.slice(2);
       continue;
     }
