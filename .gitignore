@@ -8,8 +8,9 @@ docs/generated/
 *.tgz
 ingglish-extension.zip
 
-# Downloaded dictionary (pulled from GitHub during build)
+# Downloaded dictionaries (pulled from GitHub during build)
 packages/core/src/dictionary/cmudict.json
+ipa-dict-en_US.txt
 
 # IDE
 .idea/
