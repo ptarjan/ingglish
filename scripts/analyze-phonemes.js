@@ -4,21 +4,21 @@ const dictionary = require('cmu-pronouncing-dictionary');
 
 // Current vowel mappings with their lengths
 const VOWEL_MAP = {
-  AA: 'ah',  // 2 chars
-  AE: 'a',   // 1 char
-  AH: 'u',   // 1 char
-  AO: 'aw',  // 2 chars
-  EH: 'e',   // 1 char
-  ER: 'er',  // 2 chars
-  IH: 'i',   // 1 char
-  IY: 'ee',  // 2 chars
-  UH: 'uu',  // 2 chars
-  UW: 'oo',  // 2 chars
-  AW: 'ow',  // 2 chars
-  AY: 'ai',  // 2 chars
-  EY: 'ay',  // 2 chars
-  OW: 'o',   // 1 char
-  OY: 'oi',  // 2 chars
+  AA: 'o', // 1 char (father, hot, rock)
+  AE: 'a', // 1 char
+  AH: 'u', // 1 char
+  AO: 'aw', // 2 chars (thought, law)
+  EH: 'e', // 1 char
+  ER: 'er', // 2 chars
+  IH: 'i', // 1 char
+  IY: 'ee', // 2 chars
+  UH: 'uu', // 2 chars
+  UW: 'oo', // 2 chars
+  AW: 'ow', // 2 chars
+  AY: 'ii', // 2 chars
+  EY: 'ay', // 2 chars
+  OW: 'oh', // 2 chars (go, show)
+  OY: 'oi', // 2 chars
 };
 
 // Count phoneme occurrences
@@ -59,14 +59,16 @@ for (const [phoneme, count] of sorted) {
 console.log('\n=== Current Total Vowel Characters:', totalChars.toLocaleString(), '===\n');
 
 // Now check if any swaps would help
-// Single-char vowels: a (AE), u (AH), e (EH), i (IH), o (OW)
-// Two-char vowels: ah (AA), aw (AO), er (ER), ee (IY), uu (UH), oo (UW), ow (AW), ai (AY), ay (EY), oi (OY)
+// Single-char vowels: o (AA), a (AE), u (AH), e (EH), i (IH)
+// Two-char vowels: aw (AO), er (ER), ee (IY), uu (UH), oo (UW), ow (AW), ii (AY), ay (EY), oh (OW), oi (OY)
 
-const singleChar = ['AE', 'AH', 'EH', 'IH', 'OW'];
-const twoChar = ['AA', 'AO', 'ER', 'IY', 'UH', 'UW', 'AW', 'AY', 'EY', 'OY'];
+const singleChar = ['AA', 'AE', 'AH', 'EH', 'IH'];
+const twoChar = ['AO', 'ER', 'IY', 'UH', 'UW', 'AW', 'AY', 'EY', 'OW', 'OY'];
 
 console.log('=== Potential Swaps Analysis ===\n');
-console.log('Swapping a 1-char vowel with a 2-char vowel saves chars if the 2-char is more frequent.\n');
+console.log(
+  'Swapping a 1-char vowel with a 2-char vowel saves chars if the 2-char is more frequent.\n'
+);
 
 const swaps = [];
 for (const single of singleChar) {
@@ -91,6 +93,8 @@ for (const swap of swaps.slice(0, 10)) {
 
 if (swaps.length > 0) {
   const best = swaps[0];
-  console.log(`\n=== Best swap: ${best.single} (${VOWEL_MAP[best.single]}) <-> ${best.two} (${VOWEL_MAP[best.two]}) ===`);
+  console.log(
+    `\n=== Best swap: ${best.single} (${VOWEL_MAP[best.single]}) <-> ${best.two} (${VOWEL_MAP[best.two]}) ===`
+  );
   console.log(`This would save ${best.savings.toLocaleString()} characters across all words.`);
 }

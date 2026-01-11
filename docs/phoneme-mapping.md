@@ -26,7 +26,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 
 | ARPAbet | Ingglish | IPA | Example Words | Notes |
 |---------|----------|-----|---------------|-------|
-| AA | ah | ɑ | f**a**ther, h**o**t | Open back vowel |
+| AA | o | ɑ | f**a**ther, h**o**t, r**o**ck | Open back vowel |
 | AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
 | AH | u | ʌ/ə | b**u**t, c**u**p | Mid central vowel (schwa when unstressed) |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
@@ -37,7 +37,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
 | IH | i | ɪ | b**i**t, s**i**t | Near-close front vowel |
 | IY | ee | i | b**ee**, s**ee** | Close front vowel |
-| OW | o | oʊ | g**o**, sh**ow** | Diphthong |
+| OW | oh | oʊ | g**o**, sh**ow** | Diphthong |
 | OY | oi | ɔɪ | b**oy**, t**oy** | Diphthong |
 | UH | uu | ʊ | b**oo**k, p**u**t | Near-close back vowel |
 | UW | oo | u | t**oo**, bl**ue** | Close back vowel |
@@ -110,7 +110,7 @@ Each diphthong gets a consistent spelling:
 - **ii** = AY (m**y**) - /aɪ/
 - **ay** = EY (s**ay**) - /eɪ/
 - **ow** = AW (c**ow**) - /aʊ/
-- **o** = OW (g**o**) - /oʊ/
+- **oh** = OW (g**o**) - /oʊ/
 - **oi** = OY (b**oy**) - /ɔɪ/
 
 ## Example Translations
