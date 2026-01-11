@@ -21,7 +21,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run update-dictionaries && tsup src/index.ts src/internal.ts --format cjs,esm --dts",
+    "prebuild": "npm run update-dictionaries",
+    "build": "tsup src/index.ts src/internal.ts --format cjs,esm --dts",
     "lint": "eslint src",
     "pretest": "npm run update-dictionaries",
     "test": "vitest run --no-color",

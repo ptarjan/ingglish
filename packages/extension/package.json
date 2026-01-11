@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsup src/content-lite.ts src/background.ts src/popup.ts --format iife --outDir dist --clean && node scripts/copy-assets.js && node scripts/generate-icons.js",
+    "build": "tsup src/content-lite.ts src/background.ts src/popup.ts --format iife --outDir dist --clean",
+    "postbuild": "node scripts/copy-assets.js && node scripts/generate-icons.js",
     "build:icons": "node scripts/generate-icons.js",
     "lint": "eslint src",
     "watch": "npm run build -- --watch",

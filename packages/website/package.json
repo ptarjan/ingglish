@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "prebuild": "tsc --noEmit",
+    "build": "vite build",
     "build:fast": "vite build",
     "lint": "eslint src",
     "preview": "vite preview",
-    "test": "vitest run --no-color && playwright test",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run --no-color",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui"
