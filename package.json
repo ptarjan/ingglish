@@ -8,7 +8,6 @@
     "packages/*"
   ],
   "scripts": {
-    "generate:supplement": "node scripts/generate-supplementary-dict.cjs",
     "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "npm run test --workspaces",
     "build": "npm run build -w @ingglish/core && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",

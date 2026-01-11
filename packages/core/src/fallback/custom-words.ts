@@ -3,11 +3,8 @@
  * Primarily tech terms, brand names, and neologisms.
  */
 
-import { IPA_DICT_SUPPLEMENT } from './ipa-dict-supplement';
-
 /**
  * Custom pronunciations for common words not in CMU dictionary.
- * These take priority over the ipa-dict supplement.
  */
 export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Tech terms
@@ -27,18 +24,14 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
 /**
  * Checks if a word has a custom pronunciation.
- * Checks both hand-curated CUSTOM_PRONUNCIATIONS and the ipa-dict supplement.
  */
 export function hasCustomPronunciation(word: string): boolean {
-  const lower = word.toLowerCase();
-  return CUSTOM_PRONUNCIATIONS[lower] !== undefined || IPA_DICT_SUPPLEMENT[lower] !== undefined;
+  return CUSTOM_PRONUNCIATIONS[word.toLowerCase()] !== undefined;
 }
 
 /**
  * Gets custom pronunciation for a word.
- * Checks hand-curated CUSTOM_PRONUNCIATIONS first, then falls back to ipa-dict supplement.
  */
 export function getCustomPronunciation(word: string): string[] | undefined {
-  const lower = word.toLowerCase();
-  return CUSTOM_PRONUNCIATIONS[lower] ?? IPA_DICT_SUPPLEMENT[lower];
+  return CUSTOM_PRONUNCIATIONS[word.toLowerCase()];
 }

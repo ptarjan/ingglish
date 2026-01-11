@@ -30,8 +30,7 @@
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
     "update-dictionary": "npx tsx scripts/build-dictionary.ts",
-    "generate-supplement": "node ../../scripts/generate-supplementary-dict.cjs",
-    "update-dictionaries": "npm run update-dictionary && npm run generate-supplement",
+    "update-dictionaries": "npm run update-dictionary",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

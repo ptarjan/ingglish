@@ -56,7 +56,7 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           // Dictionary files - large, rarely change
-          if (id.includes('cmudict') || id.includes('ipa-dict-supplement')) {
+          if (id.includes('cmudict')) {
             return 'cmudict';
           }
           // Word frequency data - separate chunk (loaded via dynamic import)
