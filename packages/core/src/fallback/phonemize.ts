@@ -11,27 +11,32 @@ import type { OutputFormat } from '../types';
 
 // Lazy-loaded phonemize function
 let phonemizeFn: ((text: string) => string) | null = null;
-let phonemizeLoadAttempted = false;
+// Cache the load promise to prevent concurrent loads (race condition)
+let loadPromise: Promise<typeof phonemizeFn> | null = null;
 
 /**
  * Attempts to load the phonemize module.
  * Returns null if not available (fails silently).
+ * Uses promise caching to prevent race conditions on concurrent calls.
  */
 async function loadPhonemize(): Promise<typeof phonemizeFn> {
-  if (phonemizeLoadAttempted) {
-    return phonemizeFn;
+  if (loadPromise) {
+    return loadPromise;
   }
-  phonemizeLoadAttempted = true;
 
-  try {
-    // Dynamic import to allow tree-shaking if not used
-    const mod = await import('phonemize');
-    phonemizeFn = mod.phonemize;
-    return phonemizeFn;
-  } catch {
-    // phonemize not available - fall back to rules
-    return null;
-  }
+  loadPromise = (async () => {
+    try {
+      // Dynamic import to allow tree-shaking if not used
+      const mod = await import('phonemize');
+      phonemizeFn = mod.phonemize;
+      return phonemizeFn;
+    } catch {
+      // phonemize not available - fall back to rules
+      return null;
+    }
+  })();
+
+  return loadPromise;
 }
 
 /**
