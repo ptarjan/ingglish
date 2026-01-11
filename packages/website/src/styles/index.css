@@ -5,4 +5,8 @@
 @import './base.css';
 @import './layout.css';
 @import './forms.css';
-@import './components.css';
+@import './text-translator.css';
+@import './url-translator.css';
+@import './spelling-guide.css';
+@import './extension-page.css';
+@import './docs.css';

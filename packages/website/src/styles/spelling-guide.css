@@ -1,0 +1,171 @@
+/**
+ * Spelling Guide component styles.
+ */
+
+.spelling-guide {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.guide-intro {
+  margin-bottom: 2rem;
+}
+
+.guide-intro h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.guide-intro p {
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.guide-intro p + p {
+  margin-top: 1rem;
+}
+
+.guide-section {
+  margin-bottom: 2rem;
+}
+
+.guide-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.guide-section h4 {
+  margin-top: 1.5rem;
+}
+
+.sound-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.sound-group h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.mapping-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.mapping-table th,
+.mapping-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mapping-table th {
+  background: var(--color-surface-hover);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.mapping-table th:nth-child(1),
+.mapping-table th:nth-child(2) {
+  width: 3.5rem;
+  text-align: center;
+}
+
+.mapping-table tr:last-child td {
+  border-bottom: none;
+}
+
+.mapping-table .ipa-cell {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  width: 3.5rem;
+  text-align: center;
+}
+
+.mapping-table .ingglish-cell {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  width: 3.5rem;
+  text-align: center;
+}
+
+.examples-cell {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.examples-cell strong {
+  color: var(--color-text);
+  font-weight: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-underline-offset: 2px;
+}
+
+.principles-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.principles-list li {
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--color-primary);
+}
+
+.principles-list li strong {
+  color: var(--color-text);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .spelling-guide {
+    padding: 0;
+  }
+
+  .guide-intro h2 {
+    font-size: 1.25rem;
+  }
+
+  .sound-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .mapping-table th,
+  .mapping-table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .mapping-table .ipa-cell,
+  .mapping-table .ingglish-cell {
+    font-size: 1rem;
+    width: 2.5rem;
+  }
+
+  .mapping-table th:nth-child(1),
+  .mapping-table th:nth-child(2) {
+    width: 2.5rem;
+  }
+}

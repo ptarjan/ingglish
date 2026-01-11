@@ -1,3 +1,19 @@
+/**
+ * Extension popup styles.
+ * Uses CSS variables for consistency with the main website theme.
+ */
+
+:root {
+  --color-bg: #0f0f0f;
+  --color-surface: #1a1a1a;
+  --color-surface-hover: #252525;
+  --color-border: #333;
+  --color-text: #f5f5f5;
+  --color-text-muted: #888;
+  --color-primary: #6366f1;
+  --color-primary-hover: #818cf8;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,8 +25,8 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
-  background: #0f0f0f;
-  color: #f5f5f5;
+  background: var(--color-bg);
+  color: var(--color-text);
   width: 280px;
 }
 
@@ -34,7 +50,7 @@ body {
 .header h1 {
   font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, var(--color-primary), #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -43,7 +59,7 @@ body {
 
 .subtitle {
   font-size: 12px;
-  color: #888;
+  color: var(--color-text-muted);
   margin-top: 4px;
 }
 
@@ -57,15 +73,15 @@ body {
 
 .format-toggle label {
   font-size: 12px;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .format-btn {
   padding: 4px 12px;
-  border: 1px solid #333;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
-  background: #1a1a1a;
-  color: #f5f5f5;
+  background: var(--color-surface);
+  color: var(--color-text);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -73,7 +89,7 @@ body {
 }
 
 .format-btn:hover {
-  background: #252525;
+  background: var(--color-surface-hover);
 }
 
 .status {
@@ -88,13 +104,13 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #888;
+  background: var(--color-text-muted);
 }
 
 .status-text {
   font-size: 14px;
   font-weight: 500;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .toggle-btn {
@@ -102,7 +118,7 @@ body {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: #6366f1;
+  background: var(--color-primary);
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -111,7 +127,7 @@ body {
 }
 
 .toggle-btn:hover:not(:disabled) {
-  background: #818cf8;
+  background: var(--color-primary-hover);
 }
 
 .toggle-btn:disabled {
@@ -120,25 +136,25 @@ body {
 }
 
 .toggle-btn.active {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 
 .toggle-btn.active:hover:not(:disabled) {
-  background: #252525;
+  background: var(--color-surface-hover);
 }
 
 .info {
   margin-top: 16px;
   padding: 12px;
-  background: #1a1a1a;
+  background: var(--color-surface);
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid var(--color-border);
 }
 
 .info p {
   font-size: 12px;
-  color: #888;
+  color: var(--color-text-muted);
   text-align: center;
   line-height: 1.5;
 }
@@ -150,7 +166,7 @@ body {
 
 .footer a {
   font-size: 12px;
-  color: #6366f1;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
