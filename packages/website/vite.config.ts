@@ -3,25 +3,32 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 
-// Skip sourcemaps for data and vendor chunks (only keep for app code)
-function skipDataSourcemaps(): Plugin {
-  const skipChunks = ['cmudict', 'word-frequencies', 'vendor'];
+// Skip sourcemaps for data and vendor chunks, format data chunks for readability
+function processChunks(): Plugin {
+  const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
+  const formatChunks = ['cmudict', 'word-frequencies'];
   return {
-    name: 'skip-data-sourcemaps',
+    name: 'process-chunks',
     generateBundle(_, bundle) {
       for (const name of Object.keys(bundle)) {
-        // Delete sourcemap files for data chunks
-        if (name.endsWith('.map') && skipChunks.some((c) => name.includes(c))) {
+        // Delete sourcemap files
+        if (name.endsWith('.map') && skipSourcemaps.some((c) => name.includes(c))) {
           delete bundle[name];
           continue;
         }
-        // Strip sourceMappingURL from data chunk JS files
         const asset = bundle[name];
-        if (
-          asset?.type === 'chunk' &&
-          skipChunks.some((c) => name.includes(c)) &&
-          typeof asset.code === 'string'
-        ) {
+        if (asset?.type !== 'chunk' || typeof asset.code !== 'string') continue;
+
+        // Format data chunks for readability (minification doesn't help for string data)
+        if (formatChunks.some((c) => name.includes(c))) {
+          asset.code = asset.code
+            .replace(/,(["{a-zA-Z])/g, ',\n$1')
+            .replace(/\{(["{a-zA-Z])/g, '{\n$1')
+            .replace(/"}/g, '"\n}');
+          asset.map = null;
+        }
+        // Strip sourceMappingURL from skipped chunks
+        if (skipSourcemaps.some((c) => name.includes(c))) {
           asset.code = asset.code.replace(/\n\/\/# sourceMappingURL=.*$/, '');
           asset.map = null;
         }
@@ -38,7 +45,7 @@ export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
   // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
-  plugins: [markdown(), react(), skipDataSourcemaps()],
+  plugins: [markdown(), react(), processChunks()],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed
