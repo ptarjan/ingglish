@@ -118,7 +118,7 @@ Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and childr
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Changes are rare and carefully considered (like the recent `ii` → `ie` change for better readability).
+**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary).
 
 ### 10. Vested Interests
 
