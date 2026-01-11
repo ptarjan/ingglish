@@ -4,6 +4,9 @@
 
 import { getDictionary } from './loader';
 
+/** Cache for split pronunciations to avoid repeated string splits */
+const splitCache = new Map<string, string[]>();
+
 /**
  * Looks up a word in the CMU dictionary.
  * @param word The word to look up (case insensitive)
@@ -11,11 +14,18 @@ import { getDictionary } from './loader';
  */
 export function lookupPronunciation(word: string): string[] | null {
   const dict = getDictionary();
-  const pronunciation = dict[word.toLowerCase()];
+  const key = word.toLowerCase();
+  const pronunciation = dict[key];
   if (!pronunciation) {
     return null;
   }
-  return pronunciation.split(' ');
+  // Check cache first
+  let phonemes = splitCache.get(key);
+  if (!phonemes) {
+    phonemes = pronunciation.split(' ');
+    splitCache.set(key, phonemes);
+  }
+  return phonemes;
 }
 
 /**

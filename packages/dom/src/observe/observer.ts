@@ -2,9 +2,10 @@
  * MutationObserver-based DOM translation for dynamic content.
  */
 
-import { translateSync, translateSyncWithMapping } from '@ingglish/core';
+import { translateSync } from '@ingglish/core';
 import { translateDOMSync } from '../translate/translator';
-import type { DOMTranslatorOptions, OutputFormat } from '../types';
+import { createTooltipFragment } from '../translate/tooltip-fragment';
+import type { DOMTranslatorOptions } from '../types';
 import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
@@ -12,32 +13,6 @@ import {
   shouldSkipElement,
   shouldSkipTextNode,
 } from '../utils';
-
-/**
- * Creates a document fragment with tooltip spans for each translated word.
- */
-function createTooltipFragmentForObserver(
-  text: string,
-  format: OutputFormat = 'ingglish'
-): DocumentFragment {
-  const fragment = document.createDocumentFragment();
-  const tokens = translateSyncWithMapping(text, format);
-
-  for (const token of tokens) {
-    if (token.isWord && token.original !== token.translated) {
-      // data-ingglish-orig stores original text AND marks as translated (prevents re-processing)
-      const span = document.createElement('span');
-      span.className = 'ingglish-word';
-      span.setAttribute('data-ingglish-orig', token.original);
-      span.textContent = token.translated;
-      fragment.appendChild(span);
-    } else {
-      fragment.appendChild(document.createTextNode(token.translated));
-    }
-  }
-
-  return fragment;
-}
 
 /**
  * Creates a MutationObserver that translates new content as it's added to the DOM.
@@ -83,7 +58,7 @@ export function observeAndTranslate(
         continue;
       }
       if (showTooltips) {
-        const fragment = createTooltipFragmentForObserver(text, outputFormat);
+        const fragment = createTooltipFragment(text, outputFormat);
         textNode.replaceWith(fragment);
       } else {
         textNode.textContent = translateSync(text, outputFormat);
