@@ -38,7 +38,7 @@ test.describe('URL Translator', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -57,7 +57,7 @@ test.describe('URL Translator', () => {
     await expect(input).not.toHaveValue('');
 
     // Should start loading
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
   });
 
   test('shows loading state while translating', async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe('URL Translator', () => {
 
     // Start translation and wait for completion
     await page.click('button[type="submit"]');
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     // After completion, loading should be gone
     await expect(page.locator('.btn-loading')).not.toBeVisible();
@@ -108,7 +108,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframeElement = page.locator('.page-iframe');
     const hasScript = await iframeElement.evaluate((el: HTMLIFrameElement) => {
@@ -131,7 +131,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -141,7 +141,7 @@ test.describe('URL Translator Navigation', () => {
     await clickLink(link);
 
     await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
 
     const wordCount = await iframe.locator('.ingglish-word').count();
@@ -159,7 +159,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -169,7 +169,7 @@ test.describe('URL Translator Navigation', () => {
     await clickLink(link);
 
     await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
 
     await page.evaluate(() => {
@@ -178,7 +178,7 @@ test.describe('URL Translator Navigation', () => {
 
     // Wait for URL to update after back navigation
     await expect(input).toHaveValue(/page-a/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
 
     const wordCount = await iframe.locator('.ingglish-word').count();
@@ -194,7 +194,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframe = page.frameLocator('.page-iframe');
     // Verify page is translated
@@ -244,7 +244,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
 
     const iframe = page.frameLocator('.page-iframe');
 
