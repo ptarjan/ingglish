@@ -2,6 +2,7 @@ import type { HTMLAttributes, JSX, ReactNode } from 'react';
 import { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // Import markdown files at build time
 import apiReference from '../../../../docs/generated/README.md?raw';
@@ -223,7 +224,9 @@ function Docs(): JSX.Element {
             </a>
           </div>
         )}
-        <Markdown components={components}>{currentDoc.content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} components={components}>
+          {currentDoc.content}
+        </Markdown>
       </article>
     </div>
   );
