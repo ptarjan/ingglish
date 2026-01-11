@@ -63,6 +63,12 @@ export const ARPABET_CONSONANTS = [
   'Y',
 ] as const;
 
+/** Pre-built Set for O(1) vowel lookup */
+const VOWELS_SET = new Set(ARPABET_VOWELS);
+
+/** Pre-built Set for O(1) consonant lookup */
+const CONSONANTS_SET = new Set(ARPABET_CONSONANTS);
+
 /**
  * Strips stress markers (0, 1, 2) from a phoneme.
  *
@@ -86,7 +92,7 @@ export function stripStress(phoneme: string): string {
  */
 export function isVowel(phoneme: string): boolean {
   const base = stripStress(phoneme);
-  return (ARPABET_VOWELS as readonly string[]).includes(base);
+  return VOWELS_SET.has(base);
 }
 
 /**
@@ -99,7 +105,7 @@ export function isVowel(phoneme: string): boolean {
  */
 export function isConsonant(phoneme: string): boolean {
   const base = stripStress(phoneme);
-  return (ARPABET_CONSONANTS as readonly string[]).includes(base);
+  return CONSONANTS_SET.has(base);
 }
 
 /**
