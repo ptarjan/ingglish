@@ -5,8 +5,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  // Use 2 workers in CI for faster tests
-  workers: process.env.CI ? 2 : undefined,
+  // More workers since tests are I/O-bound (waiting for pages, not CPU)
+  workers: process.env.CI ? 4 : undefined,
   reporter: 'list',
   // Fast timeouts - local server should respond quickly
   timeout: 5000,
