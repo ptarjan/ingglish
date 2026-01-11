@@ -127,6 +127,17 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium webkit
 
+      - name: Debug - check website dist
+        run: |
+          echo "=== Website dist contents ==="
+          ls -la packages/website/dist/
+          ls -la packages/website/dist/assets/ | head -10
+          echo "=== Starting preview server test ==="
+          cd packages/website && timeout 5 npm run preview &
+          sleep 2
+          curl -v http://localhost:3000/ 2>&1 | head -30 || echo "curl failed"
+          pkill -f "vite preview" || true
+
       - name: E2E tests
         run: npm run test:e2e -w @ingglish/website
 

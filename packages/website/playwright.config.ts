@@ -8,8 +8,8 @@ export default defineConfig({
   // More workers since tests are I/O-bound (waiting for pages, not CPU)
   workers: process.env.CI ? 4 : undefined,
   reporter: 'list',
-  // Fast timeouts - local server should respond quickly
-  timeout: 5000,
+  // Fast timeouts - fail fast if server not responding
+  timeout: 1000,
   expect: {
     timeout: 1000,
   },
