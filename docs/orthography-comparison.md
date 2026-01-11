@@ -15,10 +15,12 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | Spanish | a | gato (closer to /a/) |
 | Italian | a | gatto |
 | German | ä | Männer (similar sound) |
-| French | a | chat |
+| [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
+| [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
+| [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language#Writing_system) | a | sama (same) |
 
 **Notes:**
-- Nearly universal to use 'a' for open vowels
+- Nearly universal to use 'a' for open vowels across all language families
 - English /æ/ is more front than most languages' /a/, but 'a' is still the intuitive choice
 
 ### The Short 'E' Sound (/ɛ/ as in "bed")
@@ -29,11 +31,13 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | e | bed, pet |
 | Spanish | e | este |
 | Italian | e | bello |
-| German | e, ä | Bett, hätte |
-| French | e, è | cette, père |
+| Swahili | e | embe (mango) |
+| Turkish | e | ev (house) |
+| Vietnamese | e | xe (vehicle) |
+| [Pinyin](https://en.wikipedia.org/wiki/Pinyin) | e | hē (drink) |
 
 **Notes:**
-- Virtually universal across Latin-script languages
+- Virtually universal across Latin-script languages worldwide
 - No innovation needed here
 
 ### The Short 'I' Sound (/ɪ/ as in "bit")
@@ -44,11 +48,13 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | i | bit, sit |
 | Spanish | i | si |
 | Italian | i | sì |
-| German | i | mit |
-| Dutch | i | dit |
+| Swahili | i | nini (what) |
+| Turkish | i | bir (one) |
+| Indonesian | i | ini (this) |
+| [Polish](https://en.wikipedia.org/wiki/Polish_orthography) | i | mi (me) |
 
 **Notes:**
-- Standard across Romance and Germanic languages
+- Standard across virtually all Latin-script languages globally
 - English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
 
 ### The Short 'O' Sound (/ɑ/ as in "hot")
@@ -59,11 +65,14 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | o | hot, cot |
 | Spanish | o | poco |
 | Italian | o | otto |
-| Portuguese | o | boca |
+| Swahili | o | moto (fire) |
+| Turkish | o | on (ten) |
+| Indonesian | o | bodoh (stupid) |
+| Pinyin | o | bō (wave) |
 
 **Notes:**
-- American English "hot" uses /ɑ/, similar to Spanish 'o'
-- This is the "father" vowel in many accents
+- Nearly universal use of 'o' for back vowels worldwide
+- American English "hot" uses /ɑ/, similar to many languages' open 'o'
 
 ### The Short 'U' Sound (/ʌ/ as in "but")
 
@@ -71,12 +80,16 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **u** | but → **but** |
 | English | u | but, cup |
-| (No direct equivalent in most languages) | — | — |
+| Swahili | u | juu (up) |
+| Turkish | u | uzun (long) |
+| Indonesian | u | untuk (for) |
+| Vietnamese | ư | mưa (rain) — different sound |
 
 **Notes:**
-- The /ʌ/ sound is relatively rare across languages
-- Spanish and Italian would use 'a' for a similar sound
+- The English /ʌ/ sound is relatively rare across languages
+- Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
+- Turkish has a distinct /ɯ/ sound written as 'ı' (dotless i)
 
 ### The Long 'EE' Sound (/iː/ as in "bee")
 
@@ -86,11 +99,13 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | ee, ea, ie | bee, sea, piece |
 | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä |
 | [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga |
-| Dutch | ie | niet |
-| German | ie | Bier |
+| Indonesian | i | ini (phonemic—no length distinction) |
+| Swahili | i | (no length distinction) |
+| Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
 
 **Notes:**
 - Finnish/Estonian use doubled vowels for length—we follow this principle
+- Many languages (Swahili, Indonesian, Turkish) don't distinguish vowel length
 - 'ee' already exists in English ("bee", "see", "tree")
 - Consistent pattern: double the letter to lengthen the sound
 
@@ -102,11 +117,14 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | oo, ou, ew | too, you, new |
 | Finnish | uu | suuri |
 | Estonian | uu | kuul |
-| Dutch | oe | boek |
-| German | u | Buch |
+| Indonesian | u | buku (phonemic—no length distinction) |
+| Swahili | u | kuku (chicken) |
+| Japanese (Romaji) | uu, ū | sūpu (soup) |
+| Pinyin | u | wū (house) |
 
 **Notes:**
 - Follows the same doubling pattern as 'ee'
+- Most non-European languages don't distinguish vowel length
 - 'oo' already common in English ("too", "moon", "food")
 
 ### The Short 'OO' Sound (/ʊ/ as in "book")
@@ -115,12 +133,14 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **uu** | book → **buuk** |
 | English | oo, u | book, put |
+| German | u | Futter (short u) |
 | (Most languages don't distinguish /uː/ from /ʊ/) | — | — |
 
 **Notes:**
 - This is our most novel vowel spelling
 - English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with oo vs. uu
-- Most languages don't have this distinction, so there's no standard
+- Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
+- German distinguishes long/short u but uses the same letter
 
 ### The 'IE' Diphthong (/aɪ/ as in "my")
 
@@ -131,10 +151,13 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
 | Dutch | ij, ei | mij, klein |
 | Italian | ai | mai |
+| Pinyin | ai | bái (white) |
+| Vietnamese | ai | hai (two) |
 
 **Notes:**
 - Matches English words: "tie", "pie", "die", "lie", "vie"
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—opposite pattern
+- Pinyin and Vietnamese use 'ai'—close to our choice
 - We chose 'ie' because it's already established in English
 
 ### The 'AY' Diphthong (/eɪ/ as in "say")
@@ -145,9 +168,12 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | ay, ai, a-e | say, rain, make |
 | Spanish | ey | rey |
 | Portuguese | ei | lei |
+| Pinyin | ei | bēi (cup) |
+| Indonesian | e | sate (no true diphthong) |
 
 **Notes:**
 - Matches English: "say", "day", "play", "way"
+- Many languages don't have this exact diphthong
 - Clear and unambiguous
 
 ### The 'OH' Diphthong (/oʊ/ as in "go")
@@ -158,10 +184,13 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | o, oa, ow | go, boat, show |
 | Dutch | oo | boot |
 | German | o | Boot |
+| Pinyin | ou | dōu (all) |
+| Japanese (Romaji) | o, ō | ohayō (good morning) |
 
 **Notes:**
 - We needed to distinguish from 'ow' (/aʊ/ as in "cow")
 - 'oh' is less common but unambiguous
+- Many languages (Spanish, Swahili, Turkish) have pure /o/ without glide
 - English "oh!" already uses this spelling for the sound
 
 ### The 'OW' Diphthong (/aʊ/ as in "cow")
@@ -172,10 +201,14 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | ow, ou | cow, out |
 | German | au | Haus |
 | Dutch | au, ou | blauw, oud |
+| Pinyin | ao | hǎo (good) |
+| Portuguese | au | mau (bad) |
 
 **Notes:**
 - Matches English: "cow", "now", "how", "wow"
-- German/Dutch use 'au', but 'ow' is more familiar to English readers
+- German/Dutch/Portuguese use 'au'
+- Pinyin uses 'ao'—interesting reversal
+- We chose 'ow' because it's more familiar to English readers
 
 ### The 'OI' Diphthong (/ɔɪ/ as in "boy")
 
@@ -186,9 +219,12 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | French | oi | roi |
 | Dutch | ooi | mooi |
 | German | eu, äu | neu, Häuser |
+| Indonesian | oi | (rare—mostly in loanwords) |
+| Vietnamese | oi | nói (speak) |
 
 **Notes:**
-- Nearly universal use of 'oi' for this sound
+- Very common diphthong spelling worldwide: 'oi' or 'oy'
+- German is the outlier using 'eu'
 - No innovation needed
 
 ## Consonants
