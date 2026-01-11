@@ -8,6 +8,9 @@ docs/generated/
 *.tgz
 ingglish-extension.zip
 
+# Downloaded dictionary (pulled from GitHub during build)
+packages/core/src/dictionary/cmudict.json
+
 # IDE
 .idea/
 .vscode/

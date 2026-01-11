@@ -49,14 +49,7 @@ export const COMMON_TEST_WORDS = [
 
 /**
  * Tech/brand words not in the CMU dictionary (for testing unknown word handling)
+ * Note: The CMU dictionary is regularly updated, so some tech words may be added.
+ * These are verified not to be in the dictionary as of the current version.
  */
-export const UNKNOWN_TECH_WORDS = [
-  'kubernetes',
-  'spotify',
-  'airbnb',
-  'instagram',
-  'tiktok',
-  'chatgpt',
-  'cryptocurrency',
-  'blockchain',
-];
+export const UNKNOWN_TECH_WORDS = ['kubernetes', 'airbnb', 'tiktok', 'chatgpt', 'cryptocurrency'];

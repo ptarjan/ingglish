@@ -1,5 +1,7 @@
 /**
  * CMU Dictionary loading and caching.
+ *
+ * Dictionary sourced from: https://github.com/cmusphinx/cmudict
  */
 
 import type { CMUDictionary } from '../types';
@@ -21,7 +23,7 @@ export async function loadDictionary(): Promise<CMUDictionary> {
     return dictionaryPromise;
   }
 
-  dictionaryPromise = import('cmu-pronouncing-dictionary')
+  dictionaryPromise = import('./cmudict.json')
     .then((module: { default: CMUDictionary }) => {
       dictionary = module.default;
       return dictionary;

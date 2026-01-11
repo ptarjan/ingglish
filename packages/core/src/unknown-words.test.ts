@@ -241,10 +241,8 @@ describe('unknown-words', () => {
     });
 
     describe('handles words not in CMU dictionary', () => {
-      const unknownWords = [
-        ...UNKNOWN_TECH_WORDS,
-        'url', // Acronym - should be "yooahrel" (U-R-L spelled out)
-      ];
+      // Note: 'url' is now in the CMU dictionary (Y UW2 AA2 R EH1 L)
+      const unknownWords = [...UNKNOWN_TECH_WORDS];
 
       it('unknown words are not in CMU dictionary', () => {
         for (const word of unknownWords) {
