@@ -346,6 +346,41 @@ This is distinctly American English - most languages don't have these:
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
 
+### Diphthongs: A Difficult Choice
+
+The four diphthong spellings were the hardest decisions in Ingglish's design. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal) or the rare sounds like /θ/ and /ð/ (where no global standard exists), diphthongs have **competing conventions** across major language families.
+
+| Sound | Ingglish | Alternative | Who Uses Ingglish's Choice | Who Uses Alternative |
+|-------|----------|-------------|---------------------------|---------------------|
+| /aɪ/ (my) | **ie** | ai | English (tie, pie, die) | Pinyin, Italian, Vietnamese, IPA |
+| /aʊ/ (cow) | **ow** | au | English (cow, now, how) | German, Dutch, Portuguese, Spanish, IPA |
+| /eɪ/ (say) | **ay** | ei | English (say, day, play) | Pinyin, Portuguese, IPA |
+| /oʊ/ (go) | **oh** | ou | English (oh!) | Pinyin |
+
+**Why this matters for global users:**
+
+A Spanish speaker seeing 'ay' naturally produces /aj/ (like English "eye"), not /eɪ/. A Pinyin speaker seeing 'ie' produces /iɛ/, not /aɪ/. The alternative spellings (ai, au, ei, ou) would be more intuitive for billions of non-English speakers.
+
+**Why we chose English conventions anyway:**
+
+1. **Existing English patterns**: Words like "tie," "cow," "say," and "oh" already use these spellings
+2. **Bidirectional readability**: Ingglish text should feel connected to traditional English
+3. **Target audience**: Many users are English speakers wanting phonetic spelling, not just ESL learners
+4. **Partial alignment**: Even the alternatives aren't universal—German uses 'ei' for /aɪ/ (opposite of Pinyin's 'ai')
+
+**The honest trade-off:**
+
+We chose familiarity for English readers over global intuitiveness. A future version of Ingglish could offer an "international mode" using ai/au/ei/ou, but for now, the English-familiar spellings help maintain the connection between Ingglish and traditional English spelling.
+
+| English | Current Ingglish | If We Used Global Conventions |
+|---------|------------------|------------------------------|
+| my time | mie tiem | mai taim |
+| say day | say day | sei dei |
+| go show | goh shoh | gou shou |
+| cow how | kow how | kau hau |
+
+This remains an open question. If Ingglish adoption grows among ESL learners worldwide, revisiting these choices would be worthwhile.
+
 ## Commonality Ratings Summary
 
 Each spelling is rated by how widely it's used across world languages:
