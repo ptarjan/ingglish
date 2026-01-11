@@ -27,7 +27,7 @@ async function main() {
 
   // 1. Dictionary loading
   console.log('--- Dictionary Loading ---');
-  const { loadDictionary, getDictionaryStats } = await import('../src/translator');
+  const { loadDictionary, getDictionary } = await import('../src/dictionary/loader');
 
   await profileAsync('loadDictionary (first call)', async () => {
     await loadDictionary();
@@ -37,12 +37,13 @@ async function main() {
     await loadDictionary();
   });
 
-  const stats = getDictionaryStats();
-  console.log(`Dictionary size: ${stats.wordCount} words\n`);
+  const dict = getDictionary();
+  console.log(`Dictionary size: ${Object.keys(dict).length} words\n`);
 
   // 2. Word translation
   console.log('--- Word Translation ---');
-  const { translateWord, translateText } = await import('../src/translator');
+  const { translateWord } = await import('../src/translate/forward');
+  const { translateSync: translateText } = await import('../src/translate/forward');
 
   // Single word
   profile('translateWord("hello") x1', () => translateWord('hello'));
@@ -79,7 +80,8 @@ async function main() {
 
   // 4. Reverse translation
   console.log('--- Reverse Translation ---');
-  const { reverseTranslateText, reverseTranslateWord } = await import('../src/reverse-translator');
+  const { reverseTranslateWord, reverseTranslateSync: reverseTranslateText } =
+    await import('../src/translate/reverse');
 
   profile('reverseTranslateWord("huloh") - first call (builds cache)', () => {
     reverseTranslateWord('huloh');
@@ -102,7 +104,7 @@ async function main() {
 
   // 5. Word frequency sorting
   console.log('--- Word Frequency ---');
-  const { sortByFrequency, getWordFrequency } = await import('../src/word-frequency');
+  const { sortByFrequency, getWordFrequency } = await import('../src/utils/frequency');
 
   profile('getWordFrequency("the")', () => getWordFrequency('the'));
   profile('getWordFrequency("xyzabc") - unknown', () => getWordFrequency('xyzabc'));
@@ -128,8 +130,8 @@ async function main() {
 
   // 6. Phonemize (if available)
   console.log('--- Phonemize Fallback ---');
-  const { preloadPhonemize, translateWithPhonemize, translateWithRules } =
-    await import('../src/unknown-words');
+  const { preloadPhonemize, translateWithPhonemize } = await import('../src/fallback/phonemize');
+  const { translateWithRules } = await import('../src/fallback/g2p-rules');
 
   await profileAsync('preloadPhonemize', async () => {
     await preloadPhonemize();
