@@ -55,13 +55,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // Debug - print all large core modules
-          if (id.includes('core/dist')) console.log('CORE:', id.split('/').slice(-2).join('/'));
-          // Dictionary files first (before packages/core check) - large, rarely change
+          // Dictionary files - large, rarely change
           if (id.includes('cmudict') || id.includes('ipa-dict-supplement')) {
             return 'cmudict';
           }
-          // Word frequency data - separate chunk
+          // Word frequency data - separate chunk (loaded via dynamic import)
           if (id.includes('word-frequencies')) {
             return 'word-frequencies';
           }
