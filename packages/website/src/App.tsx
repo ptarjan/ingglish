@@ -4,9 +4,10 @@ import TextTranslator from './components/TextTranslator';
 import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
 import Extension from './components/Extension';
+import Docs from './components/Docs';
 import { useFormat } from './contexts/FormatContext';
 
-type Tab = 'text' | 'url' | 'guide' | 'extension';
+type Tab = 'text' | 'url' | 'guide' | 'extension' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
 
 const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
@@ -21,7 +22,7 @@ function getSystemTheme(): 'light' | 'dark' {
 
 function getTabFromHash(): Tab {
   const hash = window.location.hash.slice(1);
-  if (hash === 'url' || hash === 'guide' || hash === 'extension') {
+  if (hash === 'url' || hash === 'guide' || hash === 'extension' || hash === 'docs') {
     return hash;
   }
   return 'text';
@@ -254,6 +255,14 @@ function App() {
         >
           Spelling Guide
         </button>
+        <button
+          className={`tab ${activeTab === 'docs' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('docs');
+          }}
+        >
+          Docs
+        </button>
       </nav>
 
       <main className="main">
@@ -269,6 +278,7 @@ function App() {
         )}
         {activeTab === 'guide' && <SpellingGuide />}
         {activeTab === 'extension' && <Extension />}
+        {activeTab === 'docs' && <Docs />}
       </main>
 
       <footer className="footer">
