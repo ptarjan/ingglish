@@ -100,11 +100,12 @@ export function arpabetToIPA(arpabet: string[]): string {
       if (i > 0) {
         let j = i - 1;
         const consonants: string[] = [];
-        // Collect consecutive consonants before this vowel
+        // Collect consecutive consonants before this vowel (push + reverse is O(n) vs unshift O(n²))
         while (j >= 0 && !isVowel(arpabet[j])) {
-          consonants.unshift(stripStress(arpabet[j]));
+          consonants.push(stripStress(arpabet[j]));
           j--;
         }
+        consonants.reverse();
         // j is now at the previous vowel (or -1 if no previous vowel)
         // Use findOnsetStart to determine which consonants form the onset
         if (consonants.length > 0) {
@@ -121,14 +122,24 @@ export function arpabetToIPA(arpabet: string[]): string {
   }
 
   // Build final string with stress markers inserted at correct positions
-  // Process stress positions in reverse order so indices don't shift
-  const sortedStress = stressPositions.sort((a, b) => b.index - a.index);
-  for (const { index, marker } of sortedStress) {
-    ipaSegments.splice(index, 0, marker);
+  // Single-pass construction avoids O(n²) splice operations
+  const sortedStress = stressPositions.sort((a, b) => a.index - b.index);
+  const result: string[] = [];
+  let stressIdx = 0;
+
+  for (let i = 0; i <= ipaSegments.length; i++) {
+    // Insert any stress markers at this position
+    while (stressIdx < sortedStress.length && sortedStress[stressIdx].index === i) {
+      result.push(sortedStress[stressIdx].marker);
+      stressIdx++;
+    }
+    if (i < ipaSegments.length) {
+      result.push(ipaSegments[i]);
+    }
   }
 
   // Return with IPA brackets
-  return `/${ipaSegments.join('')}/`;
+  return `/${result.join('')}/`;
 }
 
 /**

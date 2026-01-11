@@ -8,11 +8,14 @@
 import { INGGLISH_TO_ARPABET_MAP } from './ingglish-maps';
 
 /**
- * Spellings sorted by length (match longer patterns first).
- * For example, "sh" must be matched before "s".
+ * Pre-built Sets for O(1) lookup by spelling length.
+ * Enables fast prefix matching: check 2-char, then 1-char.
  */
-const SPELLINGS_BY_LENGTH = Object.keys(INGGLISH_TO_ARPABET_MAP).sort(
-  (a, b) => b.length - a.length
+const TWO_CHAR_SPELLINGS = new Set(
+  Object.keys(INGGLISH_TO_ARPABET_MAP).filter((s) => s.length === 2)
+);
+const ONE_CHAR_SPELLINGS = new Set(
+  Object.keys(INGGLISH_TO_ARPABET_MAP).filter((s) => s.length === 1)
 );
 
 /**
@@ -26,20 +29,24 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
   let remaining = ingglish.toLowerCase();
 
   while (remaining.length > 0) {
-    let matched = false;
-
-    for (const spelling of SPELLINGS_BY_LENGTH) {
-      if (remaining.startsWith(spelling)) {
-        result.push(INGGLISH_TO_ARPABET_MAP[spelling]);
-        remaining = remaining.slice(spelling.length);
-        matched = true;
-        break;
-      }
+    // Try 2-char spelling first (e.g., "sh" before "s")
+    const twoChar = remaining.slice(0, 2);
+    if (remaining.length >= 2 && TWO_CHAR_SPELLINGS.has(twoChar)) {
+      result.push(INGGLISH_TO_ARPABET_MAP[twoChar]);
+      remaining = remaining.slice(2);
+      continue;
     }
 
-    if (!matched) {
-      remaining = remaining.slice(1); // Skip unknown characters
+    // Try 1-char spelling
+    const oneChar = remaining[0];
+    if (ONE_CHAR_SPELLINGS.has(oneChar)) {
+      result.push(INGGLISH_TO_ARPABET_MAP[oneChar]);
+      remaining = remaining.slice(1);
+      continue;
     }
+
+    // Skip unknown characters
+    remaining = remaining.slice(1);
   }
 
   return result.length > 0 ? result : null;
