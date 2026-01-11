@@ -116,17 +116,19 @@ This is problematic because spellings would collide. The R-rule ensures:
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, and AE vowels use their regular spellings (o, aw, e, a).
 
-### Why Not Just Ignore R-Coloring?
+### Why Not Use R-Colored Spellings for All Vowels?
 
-We could simplify by always using the base vowel spelling (AA → 'o', AO → 'aw', etc.) regardless of whether R follows. But this creates confusing collisions:
+Why not just spell AA as 'ar' everywhere, even without R? Then "hot" would be "hart" and "star" would be "star" - no special rules needed.
 
-| Without R-rules | Problem |
-|-----------------|---------|
-| star → stor | Looks like "store" |
-| air → er | Same as "her" |
-| barrow → baroh | Same as "borrow" |
+The problem is ambiguity when reading. If 'ar' always means AA, then when you see "kar":
+- Is it K + AA = "car" (K AA)?
+- Or is it K + A + R = the start of "carry" (K AE R)?
 
-English readers would misread "stor" as "store". The R-colored spellings (ar, or, air, aar) match how these sounds are conventionally written in English, making them immediately recognizable.
+The 'a' is already used for AE (the "cat" vowel), so 'ar' could be parsed as either AA or AE+R. By only using 'ar' when R actually follows in pronunciation, we keep the spelling unambiguous:
+- "car" (K AA R) → "kar" (k + ar)
+- "carry" (K AE R IY) → "kaaree" (k + aar + ee)
+
+These are clearly different spellings that can be read back correctly.
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
