@@ -1,6 +1,12 @@
-# Orthography Comparison: Ingglish vs Other Languages
+# Orthography Comparison: How Common Are Ingglish's Spelling Choices?
 
-How do other languages represent the sounds we use in Ingglish? This document compares our spelling choices to common patterns across world languages.
+This document analyzes each Ingglish spelling choice and rates how widely it's used across world languages:
+
+- **Universal**: Used by most languages with this sound
+- **Common**: Used by multiple language families
+- **Regional**: Used by a specific language family or region
+- **Rare**: Used by few languages
+- **Novel**: Invented for Ingglish or very uncommon
 
 ## Design Philosophy
 
@@ -173,13 +179,45 @@ This is distinctly American English - most languages don't have these:
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
 
+## Commonality Ratings Summary
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
+| zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian; 350+ years in English dictionaries |
+| th | /θ/ | **Regional** | Only ~4% of languages have this sound; English, Albanian, Welsh use 'th' |
+| dh | /ð/ | **Rare** | Albanian (official letter), Cornish, Swahili; ~7% of languages have /ð/ |
+| ch | /tʃ/ | **Universal** | Spanish, English, Czech, Portuguese, and most Latin-script languages |
+| j | /dʒ/ | **Common** | English-influenced: Indonesian, Malay, Somali, Indian romanization |
+| ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
+| ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
+| oo | /uː/ | **Common** | Finnish 'uu', Dutch 'oo'; consistent doubling pattern |
+| uu | /ʊ/ | **Novel** | Ingglish innovation—most languages don't distinguish /uː/ from /ʊ/ |
+| ie | /aɪ/ | **Common** | English "tie, pie, die, lie"; matches existing English pattern |
+| ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
+| ow | /aʊ/ | **Regional** | English convention; German/Dutch use 'au' more commonly |
+| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ow' |
+| oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
+
+### Key Findings
+
+1. **Most consonant choices are well-attested**: sh, ch, ng, j are Common or Universal
+2. **'dh' for /ð/ has real precedent**: Albanian uses it as an official alphabet letter
+3. **Doubled vowels follow Finnish/Estonian patterns**: ee, oo are principled choices
+4. **'ie' for /aɪ/ matches English**: words like "tie", "pie", "die", "lie" already use this
+5. **One genuinely novel spelling**: 'uu' for /ʊ/ (most languages don't need this distinction)
+6. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
+
 ## References
 
 - [Phonemic orthography - Wikipedia](https://en.wikipedia.org/wiki/Phonemic_orthography)
+- [Sh (digraph) - Wikipedia](https://en.wikipedia.org/wiki/Sh_(digraph))
+- [Ch (digraph) - Wikipedia](https://en.wikipedia.org/wiki/Ch_(digraph))
+- [Voiced dental fricative - Wikipedia](https://en.wikipedia.org/wiki/Voiced_dental_fricative)
+- [Voiced velar nasal - Wikipedia](https://en.wikipedia.org/wiki/Voiced_velar_nasal)
+- [Zhe (Cyrillic) - Wikipedia](https://en.wikipedia.org/wiki/Zhe_(Cyrillic))
+- [J - Wikipedia](https://en.wikipedia.org/wiki/J)
 - [Finnish orthography - Wikipedia](https://en.wikipedia.org/wiki/Finnish_orthography)
 - [German orthography - Wikipedia](https://en.wikipedia.org/wiki/German_orthography)
 - [Dutch orthography - Wikipedia](https://en.wikipedia.org/wiki/Dutch_orthography)
-- [Polish digraphs](https://en.wikipedia.org/wiki/Sz_(digraph))
-- [Dental fricatives across languages](https://en.wikipedia.org/wiki/Voiceless_dental_fricative)
-- [The TH digraph](https://en.wikipedia.org/wiki/Th_(digraph))
 - [WALS: Uncommon Consonants](https://wals.info/chapter/19)
