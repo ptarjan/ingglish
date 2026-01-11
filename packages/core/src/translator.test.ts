@@ -48,7 +48,7 @@ describe('translator', () => {
   describe('translateWord', () => {
     it('should translate common words', () => {
       // hello = HH AH0 L OW1 -> hulo (American pronunciation)
-      expect(translateWord('hello')).toBe('hulo');
+      expect(translateWord('hello')).toBe('huloh');
       expect(translateWord('world')).toBe('werld');
     });
 
@@ -82,7 +82,7 @@ describe('translator', () => {
   describe('translateSync', () => {
     it('should translate multiple words', () => {
       const result = translateSync('hello world');
-      expect(result).toContain('hulo');
+      expect(result).toContain('huloh');
       expect(result).toContain('werld');
     });
 
@@ -112,7 +112,7 @@ describe('translator', () => {
       const result = translateSync("don't");
       // Contractions are translated as a unit - no apostrophe needed
       // The important thing is they round-trip correctly
-      expect(result).toBe('dont');
+      expect(result).toBe('dohnt');
     });
 
     it('should normalize curly apostrophes', () => {

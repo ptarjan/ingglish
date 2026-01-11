@@ -316,7 +316,7 @@ describe('unknown-words', () => {
         expect(lookupPronunciation('hello')).not.toBeNull();
 
         const result = translateWord('hello');
-        expect(result).toBe('hulo'); // Known correct translation
+        expect(result).toBe('huloh'); // Known correct translation
       });
     });
 

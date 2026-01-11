@@ -15,7 +15,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   AA: 'ah', // father, hot, bother
   AE: 'a', // cat, bat, had
   AH: 'u', // but, cup, son
-  AO: 'aw', // thought, caught, law
+  AO: 'o', // thought, caught, law
   EH: 'e', // bed, red, said
   ER: 'er', // bird, her, nurse
   IH: 'i', // bit, sit, gym
@@ -27,7 +27,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   AW: 'ow', // cow, how, out
   AY: 'ii', // my, eye, time
   EY: 'ay', // say, day, make
-  OW: 'o', // go, show, coat
+  OW: 'oh', // go, show, coat
   OY: 'oi', // boy, toy, coin
 };
 

@@ -94,7 +94,7 @@ describe('phoneme-map', () => {
     it('should convert "hello" phonemes correctly', () => {
       // hello = HH AH0 L OW1
       const phonemes = ['HH', 'AH0', 'L', 'OW1'];
-      expect(arpabetToIngglish(phonemes)).toBe('hulo');
+      expect(arpabetToIngglish(phonemes)).toBe('huloh');
     });
 
     it('should convert "world" phonemes correctly', () => {
@@ -126,7 +126,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['AA1'])).toBe('ah'); // father
       expect(arpabetToIngglish(['AE1'])).toBe('a'); // cat
       expect(arpabetToIngglish(['AH1'])).toBe('u'); // but
-      expect(arpabetToIngglish(['AO1'])).toBe('aw'); // caught
+      expect(arpabetToIngglish(['AO1'])).toBe('o'); // caught
       expect(arpabetToIngglish(['AW1'])).toBe('ow'); // cow
       expect(arpabetToIngglish(['AY1'])).toBe('ii'); // my
       expect(arpabetToIngglish(['EH1'])).toBe('e'); // bed
@@ -134,7 +134,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['EY1'])).toBe('ay'); // say
       expect(arpabetToIngglish(['IH1'])).toBe('i'); // bit
       expect(arpabetToIngglish(['IY1'])).toBe('ee'); // bee
-      expect(arpabetToIngglish(['OW1'])).toBe('o'); // go
+      expect(arpabetToIngglish(['OW1'])).toBe('oh'); // go
       expect(arpabetToIngglish(['OY1'])).toBe('oi'); // boy
       expect(arpabetToIngglish(['UH1'])).toBe('uu'); // book
       expect(arpabetToIngglish(['UW1'])).toBe('oo'); // too
