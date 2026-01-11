@@ -44,46 +44,57 @@ export function observeAndTranslate(
   function processBatch() {
     batchScheduled = false;
 
-    // Process collected text nodes
-    for (const textNode of pendingTextNodes) {
-      // Check if node is still in DOM and not already processed
-      if (textNode.parentNode?.nodeType !== Node.ELEMENT_NODE) {
-        continue;
+    // Disconnect observer during batch processing to avoid re-triggering on our own changes
+    observer.disconnect();
+    try {
+      // Process collected text nodes
+      for (const textNode of pendingTextNodes) {
+        // Check if node is still in DOM and not already processed
+        if (textNode.parentNode?.nodeType !== Node.ELEMENT_NODE) {
+          continue;
+        }
+        const text = textNode.textContent ?? '';
+        if (text.trim().length === 0) {
+          continue;
+        }
+        if (shouldSkipTextNode(textNode, skipTags, skipClasses)) {
+          continue;
+        }
+        if (showTooltips) {
+          const fragment = createTooltipFragment(text, outputFormat);
+          textNode.replaceWith(fragment);
+        } else {
+          textNode.textContent = translateSync(text, outputFormat);
+        }
       }
-      const text = textNode.textContent ?? '';
-      if (text.trim().length === 0) {
-        continue;
-      }
-      if (shouldSkipTextNode(textNode, skipTags, skipClasses)) {
-        continue;
-      }
-      if (showTooltips) {
-        const fragment = createTooltipFragment(text, outputFormat);
-        textNode.replaceWith(fragment);
-      } else {
-        textNode.textContent = translateSync(text, outputFormat);
-      }
-    }
-    pendingTextNodes = [];
+      pendingTextNodes = [];
 
-    // Process collected elements
-    for (const element of pendingElements) {
-      // Check if element is still in DOM
-      if (!element.parentNode) {
-        continue;
+      // Process collected elements
+      for (const element of pendingElements) {
+        // Check if element is still in DOM
+        if (!element.parentNode) {
+          continue;
+        }
+        if (shouldSkipElement(element, skipTags, skipClasses)) {
+          continue;
+        }
+        translateDOMSync(element, {
+          skipTags,
+          skipClasses,
+          translateAttributes,
+          showTooltips,
+          outputFormat,
+        });
       }
-      if (shouldSkipElement(element, skipTags, skipClasses)) {
-        continue;
-      }
-      translateDOMSync(element, {
-        skipTags,
-        skipClasses,
-        translateAttributes,
-        showTooltips,
-        outputFormat,
+      pendingElements = [];
+    } finally {
+      // Reconnect observer
+      observer.observe(root, {
+        childList: true,
+        subtree: true,
+        characterData: true,
       });
     }
-    pendingElements = [];
   }
 
   function scheduleBatch() {
