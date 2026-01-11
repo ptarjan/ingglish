@@ -140,6 +140,21 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['UW1'])).toBe('oo'); // too
     });
 
+    it('should handle R-colored vowels (AA+R → ar, AO+R → or)', () => {
+      // star = S T AA1 R
+      expect(arpabetToIngglish(['S', 'T', 'AA1', 'R'])).toBe('star');
+      // car = K AA1 R
+      expect(arpabetToIngglish(['K', 'AA1', 'R'])).toBe('kar');
+      // store = S T AO1 R
+      expect(arpabetToIngglish(['S', 'T', 'AO1', 'R'])).toBe('stor');
+      // more = M AO1 R
+      expect(arpabetToIngglish(['M', 'AO1', 'R'])).toBe('mor');
+      // Standalone AA without R should still be 'o'
+      expect(arpabetToIngglish(['AA1'])).toBe('o');
+      // Standalone AO without R should still be 'aw'
+      expect(arpabetToIngglish(['AO1'])).toBe('aw');
+    });
+
     it('should handle consonant sounds correctly', () => {
       expect(arpabetToIngglish(['B'])).toBe('b');
       expect(arpabetToIngglish(['CH'])).toBe('ch');

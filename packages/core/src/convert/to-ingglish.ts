@@ -26,14 +26,26 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  * Converts an array of ARPAbet phonemes to Ingglish spelling.
  * Uses direct loop + string concat (benchmarked 60% faster than map+join).
  *
+ * R-colored vowels: AA+R → 'ar', AO+R → 'or' (more intuitive than 'or'/'awr')
+ *
  * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns Ingglish spelling (e.g., "huloh")
  */
 export function arpabetToIngglish(arpabet: string[]): string {
   let result = '';
-  for (const phoneme of arpabet) {
+  for (let i = 0; i < arpabet.length; i++) {
+    const phoneme = arpabet[i];
     const base = stripStress(phoneme);
-    result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
+    const nextBase = i + 1 < arpabet.length ? stripStress(arpabet[i + 1]) : null;
+
+    // R-colored vowels: use 'ar' for AA+R, 'or' for AO+R
+    if (base === 'AA' && nextBase === 'R') {
+      result += 'a'; // The R will add 'r' on the next iteration
+    } else if (base === 'AO' && nextBase === 'R') {
+      result += 'o'; // The R will add 'r' on the next iteration
+    } else {
+      result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
+    }
   }
   return result;
 }

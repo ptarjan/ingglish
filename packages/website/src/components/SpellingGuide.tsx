@@ -36,8 +36,10 @@ function SpellingGuide(): React.JSX.Element {
         <tbody>
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
-              <td className="ipa-cell">{getIPA(sound.phoneme)}</td>
-              <td className="ingglish-cell">{arpabetPhonemeToIngglish(sound.phoneme)}</td>
+              <td className="ipa-cell">{sound.ipaOverride ?? getIPA(sound.phoneme)}</td>
+              <td className="ingglish-cell">
+                {sound.ingglishOverride ?? arpabetPhonemeToIngglish(sound.phoneme)}
+              </td>
               <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>
           ))}

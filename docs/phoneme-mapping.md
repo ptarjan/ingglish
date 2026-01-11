@@ -88,6 +88,28 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | Y | y | j | **y**es, **y**ou |
 | HH | h | h | **h**at, a**h**ead |
 
+## R-Colored Vowels
+
+When certain vowels are followed by R, they combine into special r-colored sounds. Ingglish uses intuitive spellings for these combinations:
+
+| Phoneme Sequence | Ingglish | IPA | Example Words | Notes |
+|------------------|----------|-----|---------------|-------|
+| AA + R | ar | ɑɹ | st**ar**, c**ar**, f**ar** | Father vowel + R |
+| AO + R | or | ɔɹ | st**ore**, m**ore**, f**or** | Thought vowel + R |
+| ER | er | ɝ | b**ir**d, h**er**, t**ur**n | Standalone r-colored vowel |
+
+### Why This Matters
+
+Without special handling, the vowel mappings would produce confusing results:
+- "star" (AA + R) would become "stor" (o + r)
+- "store" (AO + R) would become "stawr" (aw + r)
+
+This is problematic because "stor" looks like "store" to English readers. The R-rule ensures:
+- "star" → **star** (intuitive)
+- "store" → **stor** (clearly different from "star")
+
+The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA and AO vowels use their regular spellings (o and aw).
+
 ## Key Design Decisions
 
 ### TH vs DH Distinction

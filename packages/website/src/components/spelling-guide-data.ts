@@ -2,6 +2,10 @@ export interface SoundEntry {
   phoneme: string;
   /** Examples with **bold** markers around the relevant letters */
   examples: string;
+  /** Override IPA display (for combinations like AA+R) */
+  ipaOverride?: string;
+  /** Override Ingglish display (for combinations like AA+R) */
+  ingglishOverride?: string;
 }
 
 export interface SoundGroup {
@@ -38,8 +42,25 @@ export const vowelGroups: SoundGroup[] = [
       { phoneme: 'OY', examples: 'b**oy**, t**oy**, n**oi**se' },
       { phoneme: 'AO', examples: 'th**ough**t, l**aw**, c**augh**t' },
       { phoneme: 'UH', examples: 'b**oo**k, p**u**t, g**oo**d' },
-      { phoneme: 'ER', examples: 'b**ir**d, h**er**, t**ur**n' },
       { phoneme: 'AH0', examples: '**a**bout, sof**a**, banan**a**' },
+    ],
+  },
+  {
+    name: 'R-Colored Vowels',
+    sounds: [
+      {
+        phoneme: 'AA+R',
+        examples: 'st**ar**, c**ar**, f**ar**',
+        ipaOverride: 'ɑɹ',
+        ingglishOverride: 'ar',
+      },
+      {
+        phoneme: 'AO+R',
+        examples: 'st**ore**, m**ore**, f**or**',
+        ipaOverride: 'ɔɹ',
+        ingglishOverride: 'or',
+      },
+      { phoneme: 'ER', examples: 'b**ir**d, h**er**, t**ur**n' },
     ],
   },
 ];

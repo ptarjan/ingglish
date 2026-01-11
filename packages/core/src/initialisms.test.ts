@@ -101,8 +101,8 @@ describe('initialisms', () => {
 
     it('should translate AI correctly', () => {
       const result = translateWord('AI', 'ingglish');
-      // AI = Artificial Intelligence → ortifishul intelijuns → OI
-      expect(result).toBe('OI');
+      // AI = Artificial Intelligence → artufishul intelijuns → AI
+      expect(result).toBe('AI');
     });
   });
 
