@@ -37,6 +37,8 @@ jobs:
           name: build-output
           path: |
             packages/*/dist
+            packages/core/src/dictionary/cmudict.ts
+            packages/core/src/fallback/ipa-dict-supplement.ts
             docs/generated
           retention-days: 1
 
