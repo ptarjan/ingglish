@@ -1,6 +1,9 @@
 /**
  * @ingglish/core - Phonetic English Translation Library
  *
+ * IMPORTANT: Keep this file absolutely minimal. Every export here ends up in
+ * the main bundle. Use internal.ts for exports needed by other packages.
+ *
  * @example
  * ```typescript
  * import { translate } from '@ingglish/core';
