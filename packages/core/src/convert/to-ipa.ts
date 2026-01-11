@@ -128,7 +128,7 @@ export function arpabetToIPA(arpabet: string[]): string {
   }
 
   // Return with IPA brackets
-  return '/' + ipaSegments.join('') + '/';
+  return `/${ipaSegments.join('')}/`;
 }
 
 /**
