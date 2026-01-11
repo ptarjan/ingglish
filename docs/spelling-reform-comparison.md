@@ -118,7 +118,7 @@ Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and childr
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary).
+**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](https://ingglish.com/#docs/orthography-comparison), showing how each maps to IPA and compares to other languages.
 
 ### 10. Vested Interests
 
