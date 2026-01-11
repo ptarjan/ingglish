@@ -72,7 +72,7 @@ export function observeAndTranslate(
     // Process collected text nodes
     for (const textNode of pendingTextNodes) {
       // Check if node is still in DOM and not already processed
-      if (!textNode.parentNode || textNode.parentNode.nodeType !== Node.ELEMENT_NODE) {
+      if (textNode.parentNode?.nodeType !== Node.ELEMENT_NODE) {
         continue;
       }
       const text = textNode.textContent ?? '';
