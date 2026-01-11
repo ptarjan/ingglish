@@ -120,13 +120,12 @@ The rule applies only when the vowel is immediately followed by R in the phoneme
 
 Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'aa', then R-coloring would happen automatically - no special rules needed.
 
-The problem is parsing ambiguity. When reading 'ai', is it:
-- One EH vowel ('ai')?
-- Or AA followed by IH ('a' + 'i')?
+The problem is readability. These spellings would make words look like different English words:
+- "hot" → "hat" (looks like the head covering)
+- "law" → "lo" (looks incomplete)
+- "bed" → "baid" (looks like "bade" or "bayed")
 
-Similarly, 'aa' could be one AE vowel or two AA vowels in a row.
-
-Multi-character vowel spellings create ambiguity when their component characters are also valid single-letter vowels. The current system uses distinct spellings (o, aw, e, a) that don't overlap, keeping parsing unambiguous.
+The R-colored spellings (ar, or, air, aar) were chosen because they match English conventions *in the R context* - "star", "store", "air", "arrow" all look natural. But using their base vowels everywhere would create confusing false cognates.
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
