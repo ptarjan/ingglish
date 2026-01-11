@@ -62,8 +62,27 @@ function parseDocsHash(): { docId: string | null; sectionId: string | null } {
   return { docId: null, sectionId: null };
 }
 
-function createHeadingId(text: string): string {
-  return text
+function getTextContent(node: ReactNode): string {
+  if (typeof node === 'string') {
+    return node;
+  }
+  if (typeof node === 'number') {
+    return String(node);
+  }
+  if (node === null || node === undefined || typeof node === 'boolean') {
+    return '';
+  }
+  if (Array.isArray(node)) {
+    return node.map(getTextContent).join('');
+  }
+  if (typeof node === 'object' && 'props' in node) {
+    return getTextContent((node as { props: { children?: ReactNode } }).props.children);
+  }
+  return '';
+}
+
+function createHeadingId(children: ReactNode): string {
+  return getTextContent(children)
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w-]/g, '');
@@ -74,7 +93,7 @@ function createHeadingComponent(Tag: 'h1' | 'h2' | 'h3' | 'h4') {
     children,
     ...props
   }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) => {
-    const id = typeof children === 'string' ? createHeadingId(children) : undefined;
+    const id = createHeadingId(children);
     return (
       <Tag id={id} {...props}>
         {children}
