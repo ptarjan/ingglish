@@ -151,9 +151,9 @@ describe('unknown-words', () => {
   });
 
   describe('translateAsAcronym', () => {
-    it('should spell out URL as yooarel', () => {
+    it('should spell out URL as yuuarel', () => {
       const result = translateAsAcronym('url');
-      expect(result).toBe('yooarel');
+      expect(result).toBe('yuuarel');
     });
 
     it('should spell out HTML correctly', () => {
@@ -174,19 +174,19 @@ describe('unknown-words', () => {
 
     it('should handle uppercase input', () => {
       const result = translateAsAcronym('URL');
-      expect(result).toBe('yooarel');
+      expect(result).toBe('yuuarel');
     });
   });
 
   describe('acronym detection in translateUnknown', () => {
     it('should translate url as spelled-out letters', () => {
       const result = translateUnknown('url');
-      expect(result).toBe('yooarel');
+      expect(result).toBe('yuuarel');
     });
 
     it('should translate URL (uppercase) as spelled-out letters', () => {
       const result = translateUnknown('URL');
-      expect(result).toBe('yooarel');
+      expect(result).toBe('yuuarel');
     });
 
     it('should translate html as spelled-out letters', () => {

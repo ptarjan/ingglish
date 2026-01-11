@@ -120,7 +120,7 @@ Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-e
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-**Ingglish's reality check:** This is a genuine challenge. Ingglish spellings like "luv" and "throo" may face similar perception issues. The mitigation is positioning Ingglish as a technical notation (like IPA) rather than casual spelling, and using it in contexts that confer authority (educational, linguistic, accessibility).
+**Ingglish's reality check:** This is a genuine challenge. Ingglish spellings like "luv" and "thruu" may face similar perception issues. The mitigation is positioning Ingglish as a technical notation (like IPA) rather than casual spelling, and using it in contexts that confer authority (educational, linguistic, accessibility).
 
 ### 9. Constant Revision
 
@@ -212,8 +212,8 @@ Let's be honest:
 
 Some Ingglish spellings will look strange or "wrong" to readers:
 - "enough" → "enuf" (text-speak association)
-- "through" → "throo" (looks like a children's book)
-- "beautiful" → "byootuful" (unfamiliar)
+- "through" → "thruu" (looks like a children's book)
+- "beautiful" → "byuutuful" (unfamiliar)
 
 This isn't fatal, but it means Ingglish works best in contexts where phonetic accuracy is valued over conventional appearance.
 

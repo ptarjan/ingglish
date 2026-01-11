@@ -23,8 +23,8 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   ER: 'er', // bird, her, nurse
   IH: 'i', // bit, sit, gym
   IY: 'ee', // bee, see, machine
-  UH: 'uu', // book, put, could
-  UW: 'oo', // too, blue, food
+  UH: 'oo', // book, put, could
+  UW: 'uu', // too, blue, food
 
   // Diphthongs
   AW: 'ow', // cow, how, out

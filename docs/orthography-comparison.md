@@ -113,7 +113,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **oo** | too → **too** |
+| **Ingglish** | **uu** | too → **tuu** |
 | English | oo, ou, ew | too, you, new |
 | Finnish | uu | suuri |
 | Estonian | uu | kuul |
@@ -123,22 +123,22 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | Pinyin | u | wū (house) |
 
 **Notes:**
-- Follows the same doubling pattern as 'ee'
+- Follows Finnish/Estonian convention: 'uu' for /uː/
 - Most non-European languages don't distinguish vowel length
-- 'oo' already common in English ("too", "moon", "food")
+- The longer sound gets the longer spelling (uu vs oo)
 
 ### The Short 'OO' Sound (/ʊ/ as in "book")
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **uu** | book → **buuk** |
+| **Ingglish** | **oo** | book → **book** |
 | English | oo, u | book, put |
 | German | u | Futter (short u) |
 | (Most languages don't distinguish /uː/ from /ʊ/) | — | — |
 
 **Notes:**
-- This is our most novel vowel spelling
-- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with oo vs. uu
+- 'oo' matches English words like "book", "good", "look"
+- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with uu vs. oo
 - Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
 - German distinguishes long/short u but uses the same letter
 
@@ -331,7 +331,7 @@ This is distinctly American English - most languages don't have these:
 - **sh** for /ʃ/ (English)
 - **ch** for /tʃ/ (universal)
 - **ng** for /ŋ/ (universal)
-- **ee/oo** for long vowels (Finnish-style doubling)
+- **ee/uu** for long vowels (Finnish-style doubling)
 - **ie** for /aɪ/ (English: tie, pie, die, lie)
 - **oi** for /ɔɪ/ (universal)
 - **ow** for /aʊ/ (English)
@@ -339,7 +339,7 @@ This is distinctly American English - most languages don't have these:
 ### Solving Problems English Never Did
 - **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. Albanian already uses 'dh' officially.
 - **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
-- **uu** for /ʊ/ - "too" and "book" sound different. Now they look different too.
+- **oo/uu** for /ʊ/ vs /uː/ - "book" and "too" sound different. Now they look different: book vs tuu.
 - **oh** for /oʊ/ - Distinguishes "go" from "cow" without ambiguity.
 
 ### Trade-offs
@@ -408,8 +408,8 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
-| oo | /uː/ | **Common** | Finnish 'uu', Dutch 'oo'; consistent doubling pattern |
-| uu | /ʊ/ | **Novel** | Ingglish innovation—most languages don't distinguish /uː/ from /ʊ/ |
+| uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
+| oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
 | ie | /aɪ/ | **Common** | English "tie, pie, die, lie"; matches existing English pattern |
 | ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
 | ow | /aʊ/ | **Regional** | English convention; German/Dutch use 'au' more commonly |
@@ -433,9 +433,9 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 
 1. **Most consonant choices are well-attested**: sh, ch, ng, j are Common or Universal
 2. **'dh' for /ð/ has real precedent**: Albanian uses it as an official alphabet letter
-3. **Doubled vowels follow Finnish/Estonian patterns**: ee, oo are principled choices
+3. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
 4. **'ie' for /aɪ/ matches English**: words like "tie", "pie", "die", "lie" already use this
-5. **One genuinely novel spelling**: 'uu' for /ʊ/ (most languages don't need this distinction)
+5. **'oo' for /ʊ/ matches English**: words like "book", "good", "look" already use this
 6. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
 
 ## Phonemic Orthography Success Stories
@@ -510,12 +510,12 @@ This explains why English spelling is so difficult: we're mapping ~15 vowel soun
 ### Our Choices Are Well-Supported
 
 1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach when single letters aren't available
-2. **Vowel doubling** (ee, oo): Finnish/Estonian pattern, principled and consistent
+2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern for long vowels; oo matches English "book"
 3. **Diphthong spellings** (ie, ay, ow, oi, oh): Follow existing English patterns where possible
 
 ### Why English Is Harder Than Other Languages
 
-1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, oo) and digraphs (ie, ay, ow).
+1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ie, ay, ow).
 2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
 3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
 

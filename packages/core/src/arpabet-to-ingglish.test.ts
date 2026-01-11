@@ -116,9 +116,9 @@ describe('phoneme-map', () => {
     });
 
     it('should convert "beautiful" phonemes correctly', () => {
-      // beautiful = B Y UW1 T AH0 F AH0 L -> byootuful
+      // beautiful = B Y UW1 T AH0 F AH0 L -> byuutuful
       const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
-      expect(arpabetToIngglish(phonemes)).toBe('byootuful');
+      expect(arpabetToIngglish(phonemes)).toBe('byuutuful');
     });
 
     it('should handle vowel sounds correctly', () => {
@@ -136,8 +136,8 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['IY1'])).toBe('ee'); // bee
       expect(arpabetToIngglish(['OW1'])).toBe('oh'); // go
       expect(arpabetToIngglish(['OY1'])).toBe('oi'); // boy
-      expect(arpabetToIngglish(['UH1'])).toBe('uu'); // book
-      expect(arpabetToIngglish(['UW1'])).toBe('oo'); // too
+      expect(arpabetToIngglish(['UH1'])).toBe('oo'); // book
+      expect(arpabetToIngglish(['UW1'])).toBe('uu'); // too
     });
 
     it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→aar)', () => {

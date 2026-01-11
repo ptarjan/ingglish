@@ -208,45 +208,14 @@ function SpellingGuide(): React.JSX.Element {
         <p>
           Ingglish can be translated back to English. The system matches phonetic spellings against
           the dictionary to find the original words. For homophones like "too", "to", and "two" (all
-          spelled "too" in Ingglish), the most common word is chosen based on frequency data. Case
+          spelled "tuu" in Ingglish), the most common word is chosen based on frequency data. Case
           patterns are preserved during reverse translation.
         </p>
 
         <h4>R-Colored Vowels</h4>
         <p>
-          When certain vowels are followed by R, they combine into special r-colored sounds.
-          Ingglish uses intuitive spellings for these combinations:
-        </p>
-        <table className="mapping-table">
-          <thead>
-            <tr>
-              <th>Sound</th>
-              <th>Ingglish</th>
-              <th>Examples</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="ipa-cell">/ɑɹ/</td>
-              <td className="ingglish-cell">ar</td>
-              <td className="examples-cell">star → star, car → kar, far → far</td>
-            </tr>
-            <tr>
-              <td className="ipa-cell">/ɔɹ/</td>
-              <td className="ingglish-cell">or</td>
-              <td className="examples-cell">store → stor, more → mor, for → for</td>
-            </tr>
-            <tr>
-              <td className="ipa-cell">/ɝ/</td>
-              <td className="ingglish-cell">er</td>
-              <td className="examples-cell">bird → berd, her → her, turn → tern</td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          This keeps r-colored vowels looking natural to English readers. Without this rule, "star"
-          would become "stor" and "store" would become "stawr" - confusing because "stor" looks like
-          "store" to English readers.
+          When certain vowels are followed by R, they combine into special r-colored sounds. See the
+          R-Colored Vowels table in the Vowels section above for the complete list of mappings.
         </p>
       </div>
     </div>

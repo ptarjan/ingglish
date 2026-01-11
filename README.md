@@ -121,8 +121,8 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 |---------|---------|-----|
 | hello | huloh | /həˈloʊ/ |
 | world | werld | /wɝld/ |
-| beautiful | byootuful | /ˈbjutəfəl/ |
-| through | throo | /θɹu/ |
+| beautiful | byuutuful | /ˈbjutəfəl/ |
+| through | thruu | /θɹu/ |
 | though | dhoh | /ðoʊ/ |
 | thought | thot | /θɔt/ |
 | the | dhu | /ðə/ |

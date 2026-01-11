@@ -39,8 +39,8 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | IY | ee | i | b**ee**, s**ee** | Close front vowel |
 | OW | oh | oʊ | g**o**, sh**ow** | Diphthong |
 | OY | oi | ɔɪ | b**oy**, t**oy** | Diphthong |
-| UH | uu | ʊ | b**oo**k, p**u**t | Near-close back vowel |
-| UW | oo | u | t**oo**, bl**ue** | Close back vowel |
+| UH | oo | ʊ | b**oo**k, p**u**t | Near-close back vowel |
+| UW | uu | u | t**oo**, bl**ue** | Close back vowel |
 
 ## Consonant Mappings
 
@@ -143,10 +143,10 @@ We preserve this distinction with **"th"** and **"dh"** respectively. This creat
 ### Schwa Representation
 The schwa (ə) is the most common vowel in unstressed syllables. In ARPAbet, it's typically AH0 (unstressed AH). We map this to **"u"**, which matches words like "but" and "cup" where the schwa sound appears.
 
-### Double Letters for Long Vowels
-- **ee** for IY (b**ee**) - distinguishes from short "i"
-- **oo** for UW (t**oo**) - distinguishes from short "u"
-- **uu** for UH (b**oo**k) - the "u" in "put"
+### Doubled Vowel Spellings
+- **ee** for IY (b**ee**) - the long "ee" sound, following Finnish doubling pattern
+- **uu** for UW (t**oo**) - the long "oo" sound; longer sound gets the longer spelling
+- **oo** for UH (b**oo**k) - the short "oo" sound; matches English "book", "good", "look"
 
 ### Diphthongs
 Each diphthong gets a consistent spelling:
@@ -195,7 +195,7 @@ We chose familiarity for English readers over global intuitiveness. The English-
 |---------|----------|---------|
 | hello | HH AH0 L OW1 | huloh |
 | world | W ER1 L D | werld |
-| beautiful | B Y UW1 T AH0 F AH0 L | byootuful |
+| beautiful | B Y UW1 T AH0 F AH0 L | byuutuful |
 | think | TH IH1 NG K | thingk |
 | the | DH AH0 | dhu |
 | English | IH1 NG G L IH0 SH | Ingglish |
