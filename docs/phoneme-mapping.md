@@ -118,13 +118,15 @@ The rule applies only when the vowel is immediately followed by R in the phoneme
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not spell AA as 'a' everywhere? Then "hot" would be "hat" and "star" would be "star" - consistent and simple.
+Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'aa', then R-coloring would happen automatically - no special rules needed.
 
-The problem is that 'a' is already used for AE (the "cat" vowel). Using 'a' for AA would create collisions:
-- "hot" (H AA T) → "hat"
-- "hat" (H AE T) → "hat"
+The problem is parsing ambiguity. When reading 'ai', is it:
+- One EH vowel ('ai')?
+- Or AA followed by IH ('a' + 'i')?
 
-These are different words with different sounds, but they'd have identical spellings. Each vowel needs its own unique spelling, which is why AA uses 'o' (not 'a') when not followed by R.
+Similarly, 'aa' could be one AE vowel or two AA vowels in a row.
+
+Multi-character vowel spellings create ambiguity when their component characters are also valid single-letter vowels. The current system uses distinct spellings (o, aw, e, a) that don't overlap, keeping parsing unambiguous.
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
