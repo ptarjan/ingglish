@@ -134,7 +134,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | **Ingglish** | **oo** | book → **book** |
 | English | oo, u | book, put |
 | German | u | Futter (short u) |
-| (Most languages don't distinguish /uː/ from /ʊ/) | — | — |
+| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
 
 **Notes:**
 - 'oo' matches English words like "book", "good", "look"
