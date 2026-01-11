@@ -103,7 +103,11 @@ function translateElementAttributes(
   skipClasses: string[],
   format: OutputFormat = 'ingglish'
 ): void {
-  const elements = Array.from(root.querySelectorAll('*'));
+  // Only query elements that have translatable attributes (much smaller set than '*')
+  const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(
+    ','
+  );
+  const elements = Array.from(root.querySelectorAll(attrSelector));
 
   for (const element of elements) {
     if (shouldSkipElement(element, skipTags, skipClasses)) {

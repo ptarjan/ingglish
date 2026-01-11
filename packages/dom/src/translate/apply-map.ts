@@ -6,8 +6,8 @@ import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingg
 import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
-// Default chunk size for chunked DOM updates
-const DEFAULT_CHUNK_SIZE = 200;
+// Default chunk size for chunked DOM updates (consistent with translator.ts)
+const DEFAULT_CHUNK_SIZE = 100;
 
 // Threshold for synchronous processing (avoid RAF overhead for small pages)
 const SYNC_THRESHOLD = 500;

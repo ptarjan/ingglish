@@ -61,38 +61,81 @@ export function observeAndTranslate(
     outputFormat = 'ingglish',
   } = options;
 
+  // Batching: collect nodes and process in next microtask
+  let pendingTextNodes: Text[] = [];
+  let pendingElements: Element[] = [];
+  let batchScheduled = false;
+
+  function processBatch() {
+    batchScheduled = false;
+
+    // Process collected text nodes
+    for (const textNode of pendingTextNodes) {
+      // Check if node is still in DOM and not already processed
+      if (!textNode.parentNode || textNode.parentNode.nodeType !== Node.ELEMENT_NODE) {
+        continue;
+      }
+      const text = textNode.textContent ?? '';
+      if (text.trim().length === 0) {
+        continue;
+      }
+      if (shouldSkipTextNode(textNode, skipTags, skipClasses)) {
+        continue;
+      }
+      if (showTooltips) {
+        const fragment = createTooltipFragmentForObserver(text, outputFormat);
+        textNode.replaceWith(fragment);
+      } else {
+        textNode.textContent = translateSync(text, outputFormat);
+      }
+    }
+    pendingTextNodes = [];
+
+    // Process collected elements
+    for (const element of pendingElements) {
+      // Check if element is still in DOM
+      if (!element.parentNode) {
+        continue;
+      }
+      if (shouldSkipElement(element, skipTags, skipClasses)) {
+        continue;
+      }
+      translateDOMSync(element, {
+        skipTags,
+        skipClasses,
+        translateAttributes,
+        showTooltips,
+        outputFormat,
+      });
+    }
+    pendingElements = [];
+  }
+
+  function scheduleBatch() {
+    if (!batchScheduled) {
+      batchScheduled = true;
+      queueMicrotask(processBatch);
+    }
+  }
+
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      // Handle added nodes
+      // Handle added nodes - collect for batch processing
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const textNode = node as Text;
           const text = textNode.textContent ?? '';
           if (text.trim().length > 0) {
-            if (!shouldSkipTextNode(textNode, skipTags, skipClasses)) {
-              if (showTooltips) {
-                const fragment = createTooltipFragmentForObserver(text, outputFormat);
-                textNode.replaceWith(fragment);
-              } else {
-                textNode.textContent = translateSync(text, outputFormat);
-              }
-            }
+            pendingTextNodes.push(textNode);
+            scheduleBatch();
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element;
-          if (!shouldSkipElement(element, skipTags, skipClasses)) {
-            translateDOMSync(element, {
-              skipTags,
-              skipClasses,
-              translateAttributes,
-              showTooltips,
-              outputFormat,
-            });
-          }
+          pendingElements.push(node as Element);
+          scheduleBatch();
         }
       }
 
-      // Handle character data changes (only for non-tooltip mode to avoid complexity)
+      // Handle character data changes (process immediately to avoid complexity)
       if (mutation.type === 'characterData' && !showTooltips) {
         const textNode = mutation.target as Text;
         const text = textNode.textContent;

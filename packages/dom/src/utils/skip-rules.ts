@@ -23,11 +23,17 @@ export const DEFAULT_SKIP_TAGS = [
   'CANVAS',
 ];
 
+/** Pre-built Set for O(1) tag lookup (internal use) */
+export const DEFAULT_SKIP_TAGS_SET = new Set(DEFAULT_SKIP_TAGS);
+
 /**
  * Default CSS classes to skip during translation.
  * Common conventions for marking content as non-translatable.
  */
 export const DEFAULT_SKIP_CLASSES = ['no-translate', 'notranslate'];
+
+/** Pre-built Set for O(1) class lookup (internal use) */
+export const DEFAULT_SKIP_CLASSES_SET = new Set(DEFAULT_SKIP_CLASSES);
 
 /**
  * Attributes that may contain translatable text.
@@ -41,21 +47,21 @@ export const TRANSLATABLE_ATTRIBUTES = [
 ];
 
 /**
- * Checks if an element should be skipped during translation.
+ * Internal helper: checks element skip with O(1) Set lookups.
  */
-export function shouldSkipElement(
+function checkElementSkip(
   element: Element,
-  skipTags: string[],
-  skipClasses: string[]
+  skipTagsSet: Set<string>,
+  skipClassesSet: Set<string>
 ): boolean {
-  // Check tag name
-  if (skipTags.includes(element.tagName)) {
+  // Check tag name - O(1) with Set
+  if (skipTagsSet.has(element.tagName)) {
     return true;
   }
 
-  // Check classes
-  for (const className of skipClasses) {
-    if (element.classList.contains(className)) {
+  // Check classes - O(1) per class with Set
+  for (const className of element.classList) {
+    if (skipClassesSet.has(className)) {
       return true;
     }
   }
@@ -76,6 +82,24 @@ export function shouldSkipElement(
   }
 
   return false;
+}
+
+/**
+ * Checks if an element should be skipped during translation.
+ */
+export function shouldSkipElement(
+  element: Element,
+  skipTags: string[],
+  skipClasses: string[]
+): boolean {
+  // Convert to Sets for O(1) lookup (cached if using defaults)
+  const tagsSet =
+    skipTags === DEFAULT_SKIP_TAGS ? DEFAULT_SKIP_TAGS_SET : new Set(skipTags);
+  const classesSet =
+    skipClasses === DEFAULT_SKIP_CLASSES
+      ? DEFAULT_SKIP_CLASSES_SET
+      : new Set(skipClasses);
+  return checkElementSkip(element, tagsSet, classesSet);
 }
 
 /**
