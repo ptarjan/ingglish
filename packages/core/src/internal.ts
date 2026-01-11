@@ -22,3 +22,7 @@ export type { CasePattern } from './utils/case';
 
 // Phoneme conversion (for spelling guide)
 export { arpabetPhonemeToIngglish, arpabetPhonemeToIPA } from './convert';
+
+// Word-level translation (advanced use)
+export { translateWord } from './translate/forward';
+export { reverseTranslateWord, reverseTranslateIPAWord } from './translate/reverse';
