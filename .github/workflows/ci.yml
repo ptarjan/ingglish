@@ -132,13 +132,19 @@ jobs:
           echo "=== Dist contents ==="
           ls -la packages/website/dist/
           echo ""
-          echo "=== Check for index.html ==="
-          head -50 packages/website/dist/index.html
+          echo "=== Assets folder ==="
+          ls -la packages/website/dist/assets/
           echo ""
-          echo "=== Start server and test ==="
+          echo "=== First 100 chars of index JS ==="
+          head -c 200 packages/website/dist/assets/index-*.js
+          echo ""
+          echo ""
+          echo "=== Start server and fetch JS ==="
           cd packages/website && timeout 10 npm run preview &
           sleep 5
-          curl -s http://localhost:3000 | head -100
+          echo "Fetching index.js..."
+          curl -s http://localhost:3000/assets/index-8p3JmnMt.js | head -c 500 || echo "Different hash, trying to find..."
+          ls packages/website/dist/assets/*.js | head -1 | xargs -I{} basename {} | xargs -I{} curl -s "http://localhost:3000/assets/{}" | head -c 500
 
       - name: Smoke test (1 browser, 1 test)
         run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
