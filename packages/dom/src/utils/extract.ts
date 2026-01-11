@@ -2,7 +2,7 @@
  * Word extraction utilities.
  */
 
-import { normalizeApostrophes } from '@ingglish/core/internal';
+import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/core/internal';
 
 /**
  * Extracts unique words from text for batch translation.
@@ -10,8 +10,10 @@ import { normalizeApostrophes } from '@ingglish/core/internal';
  */
 export function extractWords(text: string): string[] {
   const normalized = normalizeApostrophes(text);
-  const matches = normalized.match(/\b[a-zA-Z']+\b/g) ?? [];
-  return [...new Set(matches.map((w) => w.toLowerCase()))];
+  // Use split with WORD_SPLIT_REGEX and filter for words
+  const tokens = normalized.split(WORD_SPLIT_REGEX);
+  const words = tokens.filter((t) => t !== '' && WORD_TEST_REGEX.test(t));
+  return [...new Set(words.map((w) => w.toLowerCase()))];
 }
 
 /**

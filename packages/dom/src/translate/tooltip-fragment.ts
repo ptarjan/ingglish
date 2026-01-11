@@ -3,7 +3,13 @@
  */
 
 import { translateSyncWithMapping } from '@ingglish/core';
-import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core/internal';
+import {
+  normalizeApostrophes,
+  detectCasePattern,
+  applyCasePattern,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+} from '@ingglish/core/internal';
 import type { OutputFormat } from '../types';
 
 /**
@@ -48,14 +54,14 @@ export function createTooltipFragmentFromMap(
   const normalized = normalizeApostrophes(text);
 
   // Split into words and non-words
-  const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
+  const tokens = normalized.split(WORD_SPLIT_REGEX);
 
   for (const token of tokens) {
     if (!token) {
       continue;
     }
 
-    if (/^[a-zA-Z']+$/.test(token)) {
+    if (WORD_TEST_REGEX.test(token)) {
       const lowerToken = token.toLowerCase();
       const translated = translations[lowerToken];
 

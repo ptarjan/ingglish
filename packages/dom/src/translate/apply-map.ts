@@ -2,7 +2,13 @@
  * Apply pre-computed translations to DOM.
  */
 
-import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
+import {
+  detectCasePattern,
+  applyCasePattern,
+  normalizeApostrophes,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+} from '@ingglish/core/internal';
 import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
@@ -48,12 +54,12 @@ function processTextNode(
     const text = textNode.textContent ?? '';
     const normalized = normalizeApostrophes(text);
     let result = '';
-    const tokens = normalized.split(/(\b[a-zA-Z']+\b)/);
+    const tokens = normalized.split(WORD_SPLIT_REGEX);
     for (const token of tokens) {
       if (!token) {
         continue;
       }
-      if (/^[a-zA-Z']+$/.test(token)) {
+      if (WORD_TEST_REGEX.test(token)) {
         const translated = translations[token.toLowerCase()];
         if (translated) {
           const pattern = detectCasePattern(token);

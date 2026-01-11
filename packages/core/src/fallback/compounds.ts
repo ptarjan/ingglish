@@ -10,18 +10,6 @@ import { getCustomPronunciation } from './custom-words';
 import type { OutputFormat } from '../types';
 
 /**
- * Looks up pronunciation in custom dictionary or CMU.
- * Custom pronunciations take precedence.
- */
-function lookupWithCustom(word: string): string[] | null {
-  const custom = getCustomPronunciation(word);
-  if (custom !== undefined) {
-    return custom;
-  }
-  return lookupPronunciation(word);
-}
-
-/**
  * Attempts to translate an unknown word by splitting it into compound parts.
  * Tries to find a split point where both parts are known dictionary words.
  *
@@ -40,8 +28,9 @@ export function translateAsCompound(
     const left = lowerWord.slice(0, i);
     const right = lowerWord.slice(i);
 
-    const leftPhonemes = lookupWithCustom(left);
-    const rightPhonemes = lookupWithCustom(right);
+    // Look up in custom dictionary first, then CMU
+    const leftPhonemes = getCustomPronunciation(left) ?? lookupPronunciation(left);
+    const rightPhonemes = getCustomPronunciation(right) ?? lookupPronunciation(right);
 
     if (leftPhonemes && rightPhonemes) {
       // Both parts are known words - combine their pronunciations

@@ -13,6 +13,8 @@ export {
   tokenizeIPA,
   tokenizeText,
   tokenizePhonetic,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
 } from './utils/text';
 export type { TextToken, IndexedToken } from './utils/text';
 

@@ -5,17 +5,13 @@
 import { arpabetToFormat } from '../convert/to-ingglish';
 import { lookupPronunciation } from '../dictionary/lookup';
 import { detectCasePattern, applyCasePattern } from '../utils/case';
-import { normalizeApostrophes } from '../utils/text';
+import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
 import type { OutputFormat } from '../types';
 
 // Import translateUnknown - we'll set this up with proper dependency injection
 import { translateUnknown } from '../fallback';
-
-// Pre-compiled regex patterns for hot path performance
-const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
-const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
 
 /**
  * Translates a single word (or contraction) to the specified format.

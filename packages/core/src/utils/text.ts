@@ -2,6 +2,12 @@
  * Text processing utilities for normalization and tokenization.
  */
 
+// Shared regex patterns for word tokenization (exported for use in dom package)
+/** Regex to split text into word and non-word tokens */
+export const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
+/** Regex to test if a token is a word */
+export const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
+
 /**
  * Normalizes various apostrophe characters to the standard straight apostrophe.
  * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
@@ -129,13 +135,13 @@ export function tokenizeIPA(text: string): TextToken[] {
  */
 export function tokenizeText(text: string): TextToken[] {
   const normalized = normalizeApostrophes(text);
-  const parts = normalized.split(/(\b[a-zA-Z']+\b)/);
+  const parts = normalized.split(WORD_SPLIT_REGEX);
 
   return parts
     .filter((part) => part.length > 0)
     .map((part) => ({
       text: part,
-      isWord: /^[a-zA-Z']+$/.test(part),
+      isWord: WORD_TEST_REGEX.test(part),
     }));
 }
 

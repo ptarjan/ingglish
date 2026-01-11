@@ -9,14 +9,15 @@
 import { lookupPhonemeKey } from '../dictionary/reverse';
 import { sortByFrequency } from '../utils/frequency';
 import { detectCasePattern, applyCasePattern } from '../utils/case';
-import { normalizeApostrophes, tokenizeIPA } from '../utils/text';
+import {
+  normalizeApostrophes,
+  tokenizeIPA,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+} from '../utils/text';
 import { ingglishToArpabet } from '../convert/from-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
 import type { OutputFormat } from '../types';
-
-// Pre-compiled regex patterns for hot path performance
-const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
-const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
 
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)

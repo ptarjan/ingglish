@@ -23,8 +23,8 @@ export const DEFAULT_SKIP_TAGS = [
   'CANVAS',
 ];
 
-/** Pre-built Set for O(1) tag lookup (internal use) */
-export const DEFAULT_SKIP_TAGS_SET = new Set(DEFAULT_SKIP_TAGS);
+/** Pre-built Set for O(1) tag lookup (internal only) */
+const DEFAULT_SKIP_TAGS_SET = new Set(DEFAULT_SKIP_TAGS);
 
 /**
  * Default CSS classes to skip during translation.
@@ -32,8 +32,8 @@ export const DEFAULT_SKIP_TAGS_SET = new Set(DEFAULT_SKIP_TAGS);
  */
 export const DEFAULT_SKIP_CLASSES = ['no-translate', 'notranslate'];
 
-/** Pre-built Set for O(1) class lookup (internal use) */
-export const DEFAULT_SKIP_CLASSES_SET = new Set(DEFAULT_SKIP_CLASSES);
+/** Pre-built Set for O(1) class lookup (internal only) */
+const DEFAULT_SKIP_CLASSES_SET = new Set(DEFAULT_SKIP_CLASSES);
 
 /**
  * Attributes that may contain translatable text.
@@ -60,7 +60,7 @@ function checkElementSkip(
   }
 
   // Check classes - O(1) per class with Set
-  for (const className of Array.from(element.classList)) {
+  for (const className of element.classList as Iterable<string>) {
     if (skipClassesSet.has(className)) {
       return true;
     }
