@@ -6,49 +6,190 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 
 ## Vowels
 
-### Short Vowels
+### The Short 'A' Sound (/æ/ as in "cat")
 
-| Sound | IPA | Ingglish | Other Languages |
-|-------|-----|----------|-----------------|
-| cat | æ | **a** | Matches most languages using 'a' for open front vowel |
-| bed | ɛ | **e** | Universal - nearly all Latin-script languages |
-| bit | ɪ | **i** | Standard across Romance, Germanic languages |
-| hot | ɑ | **o** | Spanish 'o', matches "father" vowel representation |
-| but | ʌ | **u** | English convention; some languages use 'a' for this |
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **a** | cat → **kat** |
+| English | a | cat, hat |
+| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
+| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
+| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (similar sound) |
+| French | a | chat |
 
 **Notes:**
-- Our 'u' for /ʌ/ follows English spelling conventions ("but", "cup")
+- Nearly universal to use 'a' for open vowels
+- English /æ/ is more front than most languages' /a/, but 'a' is still the intuitive choice
+
+### The Short 'E' Sound (/ɛ/ as in "bed")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **e** | bed → **bed** |
+| English | e | bed, pet |
+| Spanish | e | este |
+| Italian | e | bello |
+| German | e, ä | Bett, hätte |
+| French | e, è | cette, père |
+
+**Notes:**
+- Virtually universal across Latin-script languages
+- No innovation needed here
+
+### The Short 'I' Sound (/ɪ/ as in "bit")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **i** | bit → **bit** |
+| English | i | bit, sit |
+| Spanish | i | si |
+| Italian | i | sì |
+| German | i | mit |
+| Dutch | i | dit |
+
+**Notes:**
+- Standard across Romance and Germanic languages
+- English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
+
+### The Short 'O' Sound (/ɑ/ as in "hot")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **o** | hot → **hot** |
+| English | o | hot, cot |
+| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | o | poco |
+| Italian | o | otto |
+| Portuguese | o | boca |
+
+**Notes:**
+- American English "hot" uses /ɑ/, similar to Spanish 'o'
+- This is the "father" vowel in many accents
+
+### The Short 'U' Sound (/ʌ/ as in "but")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **u** | but → **but** |
+| English | u | but, cup |
+| (No direct equivalent in most languages) | — | — |
+
+**Notes:**
+- The /ʌ/ sound is relatively rare across languages
 - Spanish and Italian would use 'a' for a similar sound
-- We chose familiarity over cross-linguistic consistency here
+- We follow English convention ("but", "cup") for familiarity
 
-### Long Vowels (Doubled Letters)
+### The Long 'EE' Sound (/iː/ as in "bee")
 
-| Sound | IPA | Ingglish | Other Languages |
-|-------|-----|----------|-----------------|
-| bee | i | **ee** | Finnish: 'ii', Dutch: 'ie', German: 'ie' |
-| too | u | **oo** | Finnish: 'uu', Dutch: 'oe', German: 'u' |
-| book | ʊ | **uu** | Unusual - most languages don't distinguish /u/ from /ʊ/ |
-
-**Notes:**
-- [Finnish and Estonian](https://en.wikipedia.org/wiki/Finnish_orthography) use doubled vowels for length - our 'ee' and 'oo' follow this pattern
-- German uses 'ie' for /iː/ (historically a diphthong that merged)
-- Our 'uu' for /ʊ/ is unconventional but distinguishes "too" from "book"
-
-### Diphthongs
-
-| Sound | IPA | Ingglish | Other Languages |
-|-------|-----|----------|-----------------|
-| my, time | aɪ | **ie** | German: 'ei', Dutch: 'ij/ei', English: 'ie' (tie, pie) |
-| say, day | eɪ | **ay** | Spanish: 'ey', German: 'ei' (different sound!) |
-| go, show | oʊ | **oh** | Dutch: 'oo', German: 'o' |
-| cow, out | aʊ | **ow** | German: 'au', Dutch: 'au/ou' |
-| boy, toy | ɔɪ | **oi** | Universal - German 'eu/äu', Dutch 'ooi' |
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ee** | bee → **bee** |
+| English | ee, ea, ie | bee, sea, piece |
+| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography) | ii | siitä |
+| [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography) | ii | liiga |
+| Dutch | ie | niet |
+| German | ie | Bier |
 
 **Notes:**
-- [German 'ei'](https://en.wikipedia.org/wiki/German_orthography) represents /aɪ/, while 'ie' is /iː/
-- [Dutch has spelling ambiguity](https://en.wikipedia.org/wiki/Dutch_orthography): 'ij' and 'ei' both represent /ɛi/
-- Our 'ie' for /aɪ/ matches English words like "tie", "pie", "die", "lie"
-- Our 'ow' matches English conventions ("cow", "now")
+- Finnish/Estonian use doubled vowels for length—we follow this principle
+- 'ee' already exists in English ("bee", "see", "tree")
+- Consistent pattern: double the letter to lengthen the sound
+
+### The Long 'OO' Sound (/uː/ as in "too")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oo** | too → **too** |
+| English | oo, ou, ew | too, you, new |
+| Finnish | uu | suuri |
+| Estonian | uu | kuul |
+| Dutch | oe | boek |
+| German | u | Buch |
+
+**Notes:**
+- Follows the same doubling pattern as 'ee'
+- 'oo' already common in English ("too", "moon", "food")
+
+### The Short 'OO' Sound (/ʊ/ as in "book")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **uu** | book → **buuk** |
+| English | oo, u | book, put |
+| (Most languages don't distinguish /uː/ from /ʊ/) | — | — |
+
+**Notes:**
+- This is our most novel vowel spelling
+- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with oo vs. uu
+- Most languages don't have this distinction, so there's no standard
+
+### The 'IE' Diphthong (/aɪ/ as in "my")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ie** | my → **mie** |
+| English | ie, i, y | tie, pie, my |
+| [German](https://en.wikipedia.org/wiki/German_orthography) | ei | mein |
+| Dutch | ij, ei | mij, klein |
+| Italian | ai | mai |
+
+**Notes:**
+- Matches English words: "tie", "pie", "die", "lie", "vie"
+- German 'ei' is /aɪ/, but their 'ie' is /iː/—opposite pattern
+- We chose 'ie' because it's already established in English
+
+### The 'AY' Diphthong (/eɪ/ as in "say")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ay** | say → **say** |
+| English | ay, ai, a-e | say, rain, make |
+| Spanish | ey | rey |
+| Portuguese | ei | lei |
+
+**Notes:**
+- Matches English: "say", "day", "play", "way"
+- Clear and unambiguous
+
+### The 'OH' Diphthong (/oʊ/ as in "go")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oh** | go → **goh** |
+| English | o, oa, ow | go, boat, show |
+| Dutch | oo | boot |
+| German | o | Boot |
+
+**Notes:**
+- We needed to distinguish from 'ow' (/aʊ/ as in "cow")
+- 'oh' is less common but unambiguous
+- English "oh!" already uses this spelling for the sound
+
+### The 'OW' Diphthong (/aʊ/ as in "cow")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ow** | cow → **kow** |
+| English | ow, ou | cow, out |
+| German | au | Haus |
+| Dutch | au, ou | blauw, oud |
+
+**Notes:**
+- Matches English: "cow", "now", "how", "wow"
+- German/Dutch use 'au', but 'ow' is more familiar to English readers
+
+### The 'OI' Diphthong (/ɔɪ/ as in "boy")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oi** | boy → **boi** |
+| English | oi, oy | oil, boy |
+| French | oi | roi |
+| Dutch | ooi | mooi |
+| German | eu, äu | neu, Häuser |
+
+**Notes:**
+- Nearly universal use of 'oi' for this sound
+- No innovation needed
 
 ## Consonants
 
