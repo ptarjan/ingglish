@@ -7,6 +7,7 @@
 
 import { getDictionary } from './loader';
 import { sortByFrequency } from '../utils/frequency';
+import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
 
 /** Raw reverse dictionary: phoneme sequence -> unsorted English words */
 let reverseDictionaryCache: Map<string, string[]> | null = null;
@@ -30,7 +31,7 @@ function buildReverseDictionary(): Map<string, string[]> {
   for (const [word, pronunciation] of Object.entries(dict)) {
     const phonemeKey = pronunciation
       .split(' ')
-      .map((p) => p.replace(/[012]$/, '')) // Strip stress markers
+      .map((p) => p.replace(STRESS_MARKER_REGEX, '')) // Strip stress markers
       .join(' ');
 
     const words = reverseDictionaryCache.get(phonemeKey) ?? [];

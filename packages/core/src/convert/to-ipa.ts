@@ -5,7 +5,7 @@
  * with proper stress marker placement at syllable boundaries.
  */
 
-import { stripStress, isVowel } from '../phonemes/arpabet';
+import { stripStress, isVowel, STRESS_MARKER_REGEX } from '../phonemes/arpabet';
 import { findOnsetStart } from '../phonemes/phonotactics';
 import { ARPABET_TO_IPA_MAP } from './ipa-maps';
 
@@ -35,7 +35,7 @@ const STRESS_MARKERS: Record<string, string> = {
  */
 export function arpabetPhonemeToIPA(phoneme: string): string {
   const base = stripStress(phoneme);
-  const stressMatch = /[012]$/.exec(phoneme);
+  const stressMatch = STRESS_MARKER_REGEX.exec(phoneme);
   const stress = stressMatch !== null ? stressMatch[0] : null;
 
   const ipa = ARPABET_TO_IPA_MAP[base];
@@ -74,7 +74,7 @@ export function arpabetToIPA(arpabet: string[]): string {
   for (let i = 0; i < arpabet.length; i++) {
     const symbol = arpabet[i];
     const base = stripStress(symbol);
-    const stressMatch = /[012]$/.exec(symbol);
+    const stressMatch = STRESS_MARKER_REGEX.exec(symbol);
     const stress = stressMatch !== null ? stressMatch[0] : null;
 
     const ipa = ARPABET_TO_IPA_MAP[base];

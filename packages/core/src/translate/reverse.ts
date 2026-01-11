@@ -17,6 +17,7 @@ import {
 } from '../utils/text';
 import { ingglishToArpabet } from '../convert/from-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
+import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
 import type { OutputFormat } from '../types';
 
 // ============================================================================
@@ -114,7 +115,7 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  * Converts IPA text to ARPAbet (stripping stress markers).
  */
 export function ipaToArpabetClean(ipa: string): string[] | null {
-  const arpabet = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
+  const arpabet = ipaToArpabet(ipa).map((p) => p.replace(STRESS_MARKER_REGEX, ''));
   return arpabet.length > 0 ? arpabet : null;
 }
 

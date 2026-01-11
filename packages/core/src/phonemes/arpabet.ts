@@ -69,6 +69,9 @@ const VOWELS_SET = new Set(ARPABET_VOWELS);
 /** Pre-built Set for O(1) consonant lookup */
 const CONSONANTS_SET = new Set(ARPABET_CONSONANTS);
 
+/** Regex pattern to match ARPAbet stress markers (0, 1, 2) at end of phoneme */
+export const STRESS_MARKER_REGEX = /[012]$/;
+
 /**
  * Strips stress markers (0, 1, 2) from a phoneme.
  *
@@ -78,7 +81,7 @@ const CONSONANTS_SET = new Set(ARPABET_CONSONANTS);
  * stripStress('B')   // 'B'
  */
 export function stripStress(phoneme: string): string {
-  return phoneme.replace(/[012]$/, '');
+  return phoneme.replace(STRESS_MARKER_REGEX, '');
 }
 
 /**
@@ -119,7 +122,7 @@ export function isConsonant(phoneme: string): boolean {
  * getStress('B')   // null
  */
 export function getStress(phoneme: string): 0 | 1 | 2 | null {
-  const match = /[012]$/.exec(phoneme);
+  const match = STRESS_MARKER_REGEX.exec(phoneme);
   if (match === null) {
     return null;
   }
