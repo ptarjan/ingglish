@@ -67,7 +67,8 @@ async function main() {
   // 3. Text translation
   console.log('--- Text Translation ---');
   const shortText = 'Hello world';
-  const mediumText = 'The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.';
+  const mediumText =
+    'The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.';
   const longText = mediumText.repeat(100);
 
   profile(`translateText (${shortText.length} chars)`, () => translateText(shortText));
@@ -80,12 +81,12 @@ async function main() {
   console.log('--- Reverse Translation ---');
   const { reverseTranslateText, reverseTranslateWord } = await import('../src/reverse-translator');
 
-  profile('reverseTranslateWord("hulo") - first call (builds cache)', () => {
-    reverseTranslateWord('hulo');
+  profile('reverseTranslateWord("huloh") - first call (builds cache)', () => {
+    reverseTranslateWord('huloh');
   });
 
-  profile('reverseTranslateWord("hulo") - cached', () => {
-    reverseTranslateWord('hulo');
+  profile('reverseTranslateWord("huloh") - cached', () => {
+    reverseTranslateWord('huloh');
   });
 
   profile('reverseTranslateWord("werld")', () => {
@@ -106,7 +107,18 @@ async function main() {
   profile('getWordFrequency("the")', () => getWordFrequency('the'));
   profile('getWordFrequency("xyzabc") - unknown', () => getWordFrequency('xyzabc'));
 
-  const testWords = ['hello', 'world', 'the', 'a', 'is', 'hello', 'test', 'word', 'frequency', 'check'];
+  const testWords = [
+    'hello',
+    'world',
+    'the',
+    'a',
+    'is',
+    'hello',
+    'test',
+    'word',
+    'frequency',
+    'check',
+  ];
   profile(`sortByFrequency (${testWords.length} words)`, () => sortByFrequency(testWords));
 
   const manyWords = Array.from({ length: 1000 }, (_, i) => `word${i}`);
@@ -116,7 +128,8 @@ async function main() {
 
   // 6. Phonemize (if available)
   console.log('--- Phonemize Fallback ---');
-  const { preloadPhonemize, translateWithPhonemize, translateWithRules } = await import('../src/unknown-words');
+  const { preloadPhonemize, translateWithPhonemize, translateWithRules } =
+    await import('../src/unknown-words');
 
   await profileAsync('preloadPhonemize', async () => {
     await preloadPhonemize();

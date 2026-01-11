@@ -98,6 +98,7 @@ export default tseslint.config(
     ignores: [
       '**/dist/**',
       '**/node_modules/**',
+      '**/scripts/**',
       'eslint.config.js',
       // Config files in all packages
       '**/*.config.js',
