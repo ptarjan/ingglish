@@ -87,13 +87,12 @@ There's no English Academy that can decree changes. Every attempt at mandatory r
 
 The value of a spelling system depends on how many people use it. Individual adoption seems pointless without collective adoption.
 
-**Ingglish's approach:** Provides immediate utility even for individual users:
-- Pronunciation guide for unfamiliar words
-- ESL learning aid
-- Accessibility for dyslexic readers
-- Unambiguous input for speech synthesis
+**Ingglish's approach:** Bidirectional translation tools eliminate the network effect problem entirely. You can:
+- Convert any English text to Ingglish instantly
+- Convert Ingglish back to English for sharing with others
+- Read content in whichever spelling you prefer
 
-You don't need everyone to adopt Ingglish for it to be useful to you.
+You don't need to wait for anyone else to adopt Ingglish. The tools let you use it today.
 
 ### 6. Typography Disasters
 
