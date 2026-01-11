@@ -211,7 +211,7 @@ Let's be honest:
 ### The Perception Problem
 
 Some Ingglish spellings will look strange or "wrong" to readers:
-- "enough" → "enuf" (text-speak association)
+- "enough" → "inuf" (text-speak association)
 - "through" → "thruu" (looks like a children's book)
 - "beautiful" → "byuutuful" (unfamiliar)
 
