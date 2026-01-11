@@ -15,6 +15,7 @@
 import { loadDictionary } from './dictionary';
 import { loadFrequencies } from './utils/frequency';
 import { translateSync, reverseTranslateSync } from './translate';
+import { type OutputFormat } from './types';
 
 // =============================================================================
 // Types
@@ -27,10 +28,7 @@ export type { OutputFormat } from './types';
 // =============================================================================
 
 /** Translate English text to the specified format (Ingglish or IPA). */
-export async function translate(
-  text: string,
-  format: import('./types').OutputFormat = 'ingglish'
-): Promise<string> {
+export async function translate(text: string, format: OutputFormat = 'ingglish'): Promise<string> {
   // Load dictionary and word frequencies in parallel
   await Promise.all([loadDictionary(), loadFrequencies()]);
   return translateSync(text, format);
@@ -39,7 +37,7 @@ export async function translate(
 /** Reverse translate Ingglish/IPA text back to English. */
 export async function reverseTranslate(
   text: string,
-  format: import('./types').OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish'
 ): Promise<string> {
   // Load dictionary and word frequencies in parallel (frequencies needed to pick most common homophone)
   await Promise.all([loadDictionary(), loadFrequencies()]);
