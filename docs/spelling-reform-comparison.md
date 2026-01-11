@@ -1,6 +1,6 @@
 # Why Ingglish Might Actually Work
 
-English spelling reform has a 250-year history of spectacular failure. From Benjamin Franklin's 1768 phonetic alphabet to the Initial Teaching Alphabet of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
+English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
 This document examines what went wrong with previous reforms and shows how Ingglish's design choices avoid the same mistakes—while being honest about what Ingglish can and can't achieve.
 
@@ -10,11 +10,11 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 ### Complete Alphabet Replacements
 
-**Shavian Alphabet (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published. Nobody learned it.
+**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published. Nobody learned it.
 
-**Deseret Alphabet (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. The project's own creator abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
+**[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. The project's own creator abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
-**Unifon (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
+**[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
 
 **What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
@@ -22,7 +22,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 ### Transitional Systems
 
-**Initial Teaching Alphabet (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
+**[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
 Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. A 2001 BBC survey found adults who learned via ITA frequently reported it "hampered, rather than helped, their reading and spelling ability."
 
@@ -32,13 +32,13 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 ### Political Failures
 
-**Theodore Roosevelt (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid "immediate outcry and ample mockery of President 'Rozevult.'"
+**[Theodore Roosevelt's spelling reform](https://en.wikipedia.org/wiki/Simplified_Spelling_Board#Roosevelt_and_the_Government_Printing_Office) (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid "immediate outcry and ample mockery of President 'Rozevult.'"
 
-**Andrew Carnegie (1906-1920)** - The steel magnate invested $283,000 (roughly $8 million today) in the Simplified Spelling Board. Result: zero lasting impact.
+**[Andrew Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board) (1906-1920)** - The steel magnate invested $283,000 (roughly $8 million today) in the Simplified Spelling Board. Result: zero lasting impact.
 
 **UK Parliamentary Bills (1949, 1953)** - Both failed.
 
-**What went wrong:** No central authority can mandate spelling changes for English. Unlike French (Académie française) or Spanish (Real Academia Española), English has no official body with that power.
+**What went wrong:** No central authority can mandate spelling changes for English. Unlike French ([Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise)) or Spanish ([Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy)), English has no official body with that power.
 
 **How Ingglish differs:** Not trying to replace English spelling. No political mandate needed. Voluntary adoption only.
 
@@ -56,7 +56,7 @@ Every phonetic system must choose whose pronunciation to encode. English has 14-
 
 The Shavian alphabet fragmented because "an American, a Scot, or an Australian would need to spell words differently to match their accent."
 
-**Ingglish's approach:** Ingglish picks a winner: General American English, based on the CMU Pronouncing Dictionary. This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
+**Ingglish's approach:** Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
 
 ### 2. Breaking Etymology
 
@@ -75,7 +75,7 @@ But here's the dirty secret: many "etymological" spellings are actually **wrong*
 
 Over 1 billion people read English. Any reform makes existing text harder to read—at least initially.
 
-**Ingglish's approach:** Positioned as a **supplementary** system (like IPA), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
+**Ingglish's approach:** Positioned as a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
 ### 4. No Central Authority
 
@@ -131,9 +131,9 @@ People who invested years mastering English spelling resist changes that would d
 
 ## What Actually Worked: Successful Reforms
 
-### Turkish (1928) - The "Big Bang"
+### [Turkish alphabet reform](https://en.wikipedia.org/wiki/Turkish_alphabet) (1928) - The "Big Bang"
 
-Atatürk replaced the Arabic script with a Latin alphabet in three months. Literacy rose from 9% to 33% in just ten years.
+[Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from 9% to 33% in just ten years.
 
 **Why it worked:**
 - Authoritarian one-party state could mandate change
@@ -143,7 +143,7 @@ Atatürk replaced the Arabic script with a Latin alphabet in three months. Liter
 
 **Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack—and shouldn't want. Ingglish correctly doesn't attempt this.
 
-### German (1996) - Modest Reform
+### [German orthography reform](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996) (1996) - Modest Reform
 
 Changed ß→ss in some words, simplified compound consonants, etc.
 
@@ -155,9 +155,9 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 **Lesson for Ingglish:** Even **minor** mandatory reforms face massive resistance. Voluntary adoption avoids the backlash.
 
-### Korean Hangul - The Long Game
+### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
-King Sejong created Hangul in 1443. Widespread adoption came in the 1990s—**550 years later**.
+[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. Widespread adoption came in the 1990s—**550 years later**.
 
 **Why it eventually worked:**
 - Coexisted with Chinese characters for centuries
