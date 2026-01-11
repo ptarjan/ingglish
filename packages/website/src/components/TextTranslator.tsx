@@ -1,6 +1,6 @@
 import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateSync, reverseTranslateSync, tokenizePhonetic } from '@ingglish/core';
-import type { IndexedToken } from '@ingglish/core';
+import { translateSync, reverseTranslateSync } from '@ingglish/core';
+import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.

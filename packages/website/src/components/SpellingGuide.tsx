@@ -1,4 +1,4 @@
-import { arpabetPhonemeToIPA, arpabetPhonemeToIngglish } from '@ingglish/core';
+import { arpabetPhonemeToIPA, arpabetPhonemeToIngglish } from '@ingglish/core/internal';
 import { vowelGroups, consonantGroups, type SoundGroup } from './spelling-guide-data';
 
 /**
