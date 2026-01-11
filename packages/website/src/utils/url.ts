@@ -209,8 +209,8 @@ const BODY_CLOSE_REGEX = /<\/body>/i;
 const HTML_CLOSE_REGEX = /<\/html>/i;
 
 /**
- * Script injected into iframe to capture link clicks via postMessage.
- * Handles both touch (iOS Safari) and click events.
+ * Script injected into iframe to capture link clicks and form submissions via postMessage.
+ * Handles both touch (iOS Safari) and click events, plus GET form submissions.
  *
  * Readable version:
  * ```js
@@ -246,16 +246,38 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  *     parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
  *   }
  *
+ *   // Handle form submissions (GET only)
+ *   function handleForm(event) {
+ *     var form = event.target;
+ *     var method = (form.method || 'GET').toUpperCase();
+ *     if (method !== 'GET') return; // Only handle GET forms
+ *
+ *     event.preventDefault();
+ *     event.stopPropagation();
+ *
+ *     var action = form.action || window.location.href;
+ *     var formData = new FormData(form);
+ *     var params = new URLSearchParams();
+ *     formData.forEach(function(value, key) {
+ *       params.append(key, value);
+ *     });
+ *
+ *     var url = new URL(action);
+ *     url.search = params.toString();
+ *     parent.postMessage({ type: 'ingglish-link-click', href: url.href }, '*');
+ *   }
+ *
  *   // Track touch target for iOS Safari
  *   document.addEventListener('touchstart', function(e) { touchTarget = findAnchor(e.target); }, true);
  *   document.addEventListener('touchend', function(e) {
  *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
  *   }, true);
  *   document.addEventListener('click', function(e) { handleLink(findAnchor(e.target), e); }, true);
+ *   document.addEventListener('submit', handleForm, true);
  * })();
  * ```
  */
-const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
+const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}function s(e){var f=e.target;var m=(f.method||'GET').toUpperCase();if(m!=='GET')return;e.preventDefault();e.stopPropagation();var a=f.action||window.location.href;var d=new FormData(f);var p=new URLSearchParams();d.forEach(function(v,k){p.append(k,v)});var u=new URL(a);u.search=p.toString();parent.postMessage({type:'ingglish-link-click',href:u.href},'*')}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true);document.addEventListener('submit',s,true)})();</script>`;
 
 /**
  * Injects the click handler script before the closing body or html tag.
