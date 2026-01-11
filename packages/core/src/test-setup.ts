@@ -3,6 +3,7 @@
  */
 import { beforeAll } from 'vitest';
 import { loadDictionary, warmReverseDictionaryCache } from './dictionary';
+import { loadFrequencies } from './utils/frequency';
 
 /**
  * Call this in your test file to ensure the dictionary is loaded before tests run.
@@ -11,9 +12,19 @@ import { loadDictionary, warmReverseDictionaryCache } from './dictionary';
  */
 export function setupDictionary(): void {
   beforeAll(async () => {
-    await loadDictionary();
+    await Promise.all([loadDictionary(), loadFrequencies()]);
     // Pre-build reverse dictionary cache to speed up first test
     warmReverseDictionaryCache();
+  });
+}
+
+/**
+ * Call this in your test file to ensure word frequencies are loaded before tests run.
+ * Usage: setupFrequencies();
+ */
+export function setupFrequencies(): void {
+  beforeAll(async () => {
+    await loadFrequencies();
   });
 }
 

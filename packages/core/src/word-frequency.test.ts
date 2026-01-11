@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { getWordFrequency, scoreWord, sortByFrequency } from './utils/frequency';
+import { setupFrequencies } from './test-setup';
+
+setupFrequencies();
 
 describe('word-frequency', () => {
   describe('getWordFrequency', () => {
