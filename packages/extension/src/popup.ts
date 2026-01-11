@@ -3,15 +3,21 @@
 import type { OutputFormat } from '@ingglish/core';
 import type { StateResponse, ToggleResponse, FormatResponse } from './types';
 
-const toggleBtn = document.getElementById('toggle-btn');
-const statusText = document.getElementById('status-text');
-const statusDot = document.getElementById('status-dot');
-const formatBtn = document.getElementById('format-btn');
+const toggleBtn = document.getElementById('toggle-btn') as HTMLButtonElement | null;
+const statusText = document.getElementById('status-text') as HTMLSpanElement | null;
+const statusDot = document.getElementById('status-dot') as HTMLSpanElement | null;
+const formatBtn = document.getElementById('format-btn') as HTMLButtonElement | null;
 
 // Validate required elements exist
 if (!toggleBtn || !statusText || !statusDot || !formatBtn) {
   throw new Error('Required popup elements not found');
 }
+
+// TypeScript now knows these are non-null after the check above
+const toggleBtnEl = toggleBtn;
+const statusTextEl = statusText;
+const statusDotEl = statusDot;
+const formatBtnEl = formatBtn;
 
 let isEnabled = false;
 let currentFormat: OutputFormat = 'ingglish';
@@ -29,9 +35,9 @@ chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response: StateResponse | und
 // Handle toggle button click
 // Note: activeTab permission is granted when user clicks the extension icon,
 // so we don't need to request additional permissions for the initial toggle
-toggleBtn.addEventListener('click', () => {
-  toggleBtn.disabled = true;
-  toggleBtn.textContent = 'Working...';
+toggleBtnEl.addEventListener('click', () => {
+  toggleBtnEl.disabled = true;
+  toggleBtnEl.textContent = 'Working...';
 
   // Send toggle message - don't wait for full translation to complete
   // The translation happens in the content script regardless of popup state
@@ -41,13 +47,13 @@ toggleBtn.addEventListener('click', () => {
     if (lastError) {
       // eslint-disable-next-line no-console
       console.error('Toggle error:', lastError.message);
-      statusText.textContent =
+      statusTextEl.textContent =
         lastError.message !== undefined && lastError.message !== ''
           ? lastError.message
           : 'Connection error';
-      statusText.style.color = '#ef4444';
-      toggleBtn.textContent = 'Try Again';
-      toggleBtn.disabled = false;
+      statusTextEl.style.color = '#ef4444';
+      toggleBtnEl.textContent = 'Try Again';
+      toggleBtnEl.disabled = false;
       return;
     }
 
@@ -62,23 +68,23 @@ toggleBtn.addEventListener('click', () => {
       // Show error with details
       // eslint-disable-next-line no-console
       console.error('Toggle failed:', response.error);
-      statusText.textContent =
+      statusTextEl.textContent =
         response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
-      statusText.style.color = '#ef4444';
-      toggleBtn.textContent = 'Try Again';
+      statusTextEl.style.color = '#ef4444';
+      toggleBtnEl.textContent = 'Try Again';
     } else {
       // eslint-disable-next-line no-console
       console.error('Unexpected response:', response);
-      statusText.textContent = 'No response';
-      statusText.style.color = '#ef4444';
-      toggleBtn.textContent = 'Try Again';
+      statusTextEl.textContent = 'No response';
+      statusTextEl.style.color = '#ef4444';
+      toggleBtnEl.textContent = 'Try Again';
     }
-    toggleBtn.disabled = false;
+    toggleBtnEl.disabled = false;
   });
 });
 
 // Handle format button click
-formatBtn.addEventListener('click', () => {
+formatBtnEl.addEventListener('click', () => {
   const newFormat: OutputFormat = currentFormat === 'ingglish' ? 'ipa' : 'ingglish';
   chrome.runtime.sendMessage(
     { type: 'SET_FORMAT', format: newFormat },
@@ -93,20 +99,20 @@ formatBtn.addEventListener('click', () => {
 
 function updateUI(): void {
   if (isEnabled) {
-    toggleBtn.textContent = 'Turn Off';
-    toggleBtn.classList.add('active');
-    statusText.textContent = 'Active';
-    statusText.style.color = '#22c55e';
-    statusDot.style.background = '#22c55e';
+    toggleBtnEl.textContent = 'Turn Off';
+    toggleBtnEl.classList.add('active');
+    statusTextEl.textContent = 'Active';
+    statusTextEl.style.color = '#22c55e';
+    statusDotEl.style.background = '#22c55e';
   } else {
-    toggleBtn.textContent = 'Translate Page';
-    toggleBtn.classList.remove('active');
-    statusText.textContent = 'Off';
-    statusText.style.color = '#888';
-    statusDot.style.background = '#888';
+    toggleBtnEl.textContent = 'Translate Page';
+    toggleBtnEl.classList.remove('active');
+    statusTextEl.textContent = 'Off';
+    statusTextEl.style.color = '#888';
+    statusDotEl.style.background = '#888';
   }
 }
 
 function updateFormatUI(): void {
-  formatBtn.textContent = currentFormat === 'ingglish' ? 'Ingglish' : 'IPA';
+  formatBtnEl.textContent = currentFormat === 'ingglish' ? 'Ingglish' : 'IPA';
 }
