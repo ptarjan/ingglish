@@ -498,17 +498,18 @@ describe('dom-translator', () => {
   });
 
   describe('restoreDOM', () => {
-    it('should restore text content from data-ingglish-original attribute', () => {
-      // Set up DOM with translation markers
+    it('should restore text content from word spans', () => {
+      // Set up DOM with word spans (as created by translation with tooltips)
       document.body.innerHTML =
-        '<p><span data-ingglish-original="Hello">Huloh</span> <span data-ingglish-original="world">werld</span></p>';
+        '<p><span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></p>';
 
       restoreDOM(document.body);
 
       // Should restore original text
       expect(document.body.textContent).toBe('Hello world');
-      // Should remove the data attributes
-      expect(document.querySelector('[data-ingglish-original]')).toBeNull();
+      // Should remove the word spans
+      expect(document.querySelector('.ingglish-word')).toBeNull();
+      expect(document.querySelector('[data-ingglish-orig]')).toBeNull();
     });
 
     it('should restore attributes from data-ingglish-original-* attributes', () => {
@@ -543,41 +544,47 @@ describe('dom-translator', () => {
       expect(input?.getAttribute('placeholder')).toBe('Type here');
     });
 
-    it('should restore multiple text nodes in same element', () => {
-      document.body.innerHTML = '<div data-ingglish-original="Hello world">Huloh werld</div>';
+    it('should restore multiple words in same element', () => {
+      // Set up DOM with multiple word spans in one element
+      document.body.innerHTML =
+        '<div><span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></div>';
 
       restoreDOM(document.body);
 
       expect(document.body.textContent).toBe('Hello world');
+      expect(document.querySelector('.ingglish-word')).toBeNull();
     });
 
-    it('should restore when tooltips created spans and text nodes', () => {
+    it('should restore when tooltips created spans preserving DOM structure', () => {
       // This simulates what applyTranslationsMap creates with tooltips:
-      // - Parent has data-ingglish-original with full original text
-      // - Children are a mix of tooltip spans and text nodes
+      // Word spans contain original text in data-ingglish-orig
+      // Nested elements should be preserved after restoration
       document.body.innerHTML = `
-        <p data-ingglish-original="Hello world">
+        <p>
           <span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span>
+          <strong>important</strong>
           <span class="ingglish-word" data-ingglish-orig="world">werld</span>
         </p>
       `;
 
       restoreDOM(document.body);
 
-      // Should clear all children and restore original text
-      expect(document.body.textContent?.trim()).toBe('Hello world');
+      // Should restore original words while preserving nested elements
+      expect(document.body.textContent?.replace(/\s+/g, ' ').trim()).toBe('Hello important world');
       // Spans should be removed
       expect(document.querySelector('.ingglish-word')).toBeNull();
       expect(document.querySelector('[data-ingglish-orig]')).toBeNull();
+      // Nested element should be preserved
+      expect(document.querySelector('strong')).not.toBeNull();
     });
   });
 
   describe('round-trip translation and restoration', () => {
-    it('should correctly translate and then restore', () => {
+    it('should correctly translate and then restore', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
 
-      // Translate
-      translateDOMSync(document.body, { translateAttributes: true });
+      // Translate with tooltips (as the extension does)
+      await translateDOM(document.body, { showTooltips: true });
       expect(document.body.textContent).toBe('Huloh werld');
 
       // Restore

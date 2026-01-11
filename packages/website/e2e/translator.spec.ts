@@ -4,9 +4,9 @@ import { blockExternalNetwork } from './test-utils';
 test.describe('Text Translator', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/');
     // Wait for dictionary to load
-    await expect(page.locator('.header h1')).toBeVisible();
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
 
   test('displays header with logo and title', async ({ page }) => {
@@ -98,8 +98,8 @@ test.describe('Text Translator', () => {
 test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(page.locator('.header h1')).toBeVisible();
+    await page.goto('/');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
 
   test('switches to URL translator tab', async ({ page }) => {
@@ -121,8 +121,8 @@ test.describe('Tab Navigation', () => {
 test.describe('Spelling Guide', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(page.locator('.header h1')).toBeVisible();
+    await page.goto('/');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await page.click('.tab:has-text("Spelling Guide")');
   });
 

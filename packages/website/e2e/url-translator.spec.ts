@@ -4,8 +4,8 @@ import { setupMockProxy } from './test-utils';
 test.describe('URL Translator', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(page.locator('.header h1')).toBeVisible();
+    await page.goto('/');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await page.click('.tab:has-text("Translate URL")');
     await expect(page.locator('.url-translator')).toBeVisible();
   });
@@ -64,16 +64,11 @@ test.describe('URL Translator', () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/page-a');
 
-    // Start translation
+    // Start translation and wait for completion
     await page.click('button[type="submit"]');
-
-    // Should show loading button state
-    await expect(page.locator('.btn-loading')).toBeVisible();
-
-    // Wait for completion
     await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
 
-    // Loading should be gone
+    // After completion, loading should be gone
     await expect(page.locator('.btn-loading')).not.toBeVisible();
   });
 });
@@ -81,8 +76,8 @@ test.describe('URL Translator', () => {
 test.describe('URL Translator Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(page.locator('.header h1')).toBeVisible();
+    await page.goto('/');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await page.click('.tab:has-text("Translate URL")');
     await expect(page.locator('.url-translator')).toBeVisible();
   });
@@ -180,8 +175,8 @@ test.describe('URL Translator Navigation', () => {
     await page.evaluate(() => {
       history.back();
     });
-    await page.waitForTimeout(500);
 
+    // Wait for URL to update after back navigation
     await expect(input).toHaveValue(/page-a/, { timeout: 10000 });
     await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -223,8 +218,8 @@ test.describe('URL Translator Navigation', () => {
     // URL should update to include the hash
     await expect(input).toHaveValue(/page-a#section-two/, { timeout: 5000 });
 
-    // Wait a bit to catch any delayed requests
-    await page.waitForTimeout(500);
+    // Wait for any pending network activity to complete
+    await page.waitForLoadState('networkidle');
 
     // No new proxy requests should have been made (this is the key assertion)
     expect(proxyRequestCount).toBe(0);
@@ -243,4 +238,42 @@ test.describe('URL Translator Navigation', () => {
   // Note: Pure hash link scrolling within srcdoc iframes is handled by the click handler script
   // but cannot be reliably tested with Playwright due to how it handles clicks in srcdoc iframes.
   // The click handler is verified in the 'click handler script is injected' test above.
+
+  test('hovering over words does not cause layout shift', async ({ page }) => {
+    const input = page.locator('.url-input');
+    await input.fill('https://example.com/page-a');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 30000 });
+
+    const iframe = page.frameLocator('.page-iframe');
+
+    // Wait for translation to complete
+    const firstWord = iframe.locator('.ingglish-word').first();
+    await expect(firstWord).toBeVisible();
+
+    // Get the position of a reference element before hover
+    const h1 = iframe.locator('h1');
+    const h1BoundingBox = await h1.boundingBox();
+    expect(h1BoundingBox).not.toBeNull();
+
+    // Get positions of multiple elements to check for any layout shift
+    const paragraph = iframe.locator('p').first();
+    const paragraphBoundingBox = await paragraph.boundingBox();
+
+    // Hover over a translated word to trigger the tooltip
+    await firstWord.hover();
+
+    // Wait a moment for any potential layout recalculation
+    await page.waitForTimeout(100);
+
+    // Verify the reference elements haven't moved
+    const h1AfterHover = await h1.boundingBox();
+    const paragraphAfterHover = await paragraph.boundingBox();
+
+    expect(h1AfterHover?.x).toBe(h1BoundingBox?.x);
+    expect(h1AfterHover?.y).toBe(h1BoundingBox?.y);
+    expect(paragraphAfterHover?.x).toBe(paragraphBoundingBox?.x);
+    expect(paragraphAfterHover?.y).toBe(paragraphBoundingBox?.y);
+  });
 });

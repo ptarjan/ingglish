@@ -6,24 +6,28 @@ import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../utils';
 
 /**
  * Restores original text content that was translated.
- * Uses the data-ingglish-original attributes stored during translation.
+ * Replaces tooltip spans with their original text to preserve DOM structure.
  *
  * @param root The root element to restore
  */
 export function restoreDOM(root: Element | Document): void {
   requireBrowser();
 
-  // Restore text content
-  const elementsWithOriginal = Array.from(root.querySelectorAll('[data-ingglish-original]'));
-
-  for (const element of elementsWithOriginal) {
-    const originalText = element.getAttribute('data-ingglish-original');
-    if (originalText !== null) {
-      // Clear all child nodes and replace with a single text node
-      // This handles the case where tooltips created spans + text nodes
-      element.textContent = originalText;
-      element.removeAttribute('data-ingglish-original');
+  // First, replace all tooltip spans with their original text
+  // This preserves nested DOM structure (unlike textContent replacement)
+  const wordSpans = Array.from(root.querySelectorAll('.ingglish-word[data-ingglish-orig]'));
+  for (const span of wordSpans) {
+    const originalWord = span.getAttribute('data-ingglish-orig');
+    if (originalWord !== null) {
+      const textNode = document.createTextNode(originalWord);
+      span.replaceWith(textNode);
     }
+  }
+
+  // Clean up any data-ingglish-original attributes (no longer needed for restoration)
+  const elementsWithOriginal = Array.from(root.querySelectorAll('[data-ingglish-original]'));
+  for (const element of elementsWithOriginal) {
+    element.removeAttribute('data-ingglish-original');
   }
 
   // Restore attributes

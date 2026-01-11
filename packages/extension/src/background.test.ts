@@ -68,6 +68,7 @@ describe('background script', () => {
   ) => boolean | undefined;
   let tabRemovedHandler: (tabId: number) => void;
   let tabUpdatedHandler: (tabId: number, changeInfo: { status?: string; url?: string }) => void;
+  let commandHandler: (command: string) => void;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -90,6 +91,11 @@ describe('background script', () => {
     mockChrome.tabs.onUpdated.addListener.mockImplementation(
       (handler: typeof tabUpdatedHandler) => {
         tabUpdatedHandler = handler;
+      }
+    );
+    mockChrome.commands.onCommand.addListener.mockImplementation(
+      (handler: typeof commandHandler) => {
+        commandHandler = handler;
       }
     );
 
@@ -523,6 +529,124 @@ describe('background script', () => {
         { type: 'RETRANSLATE', format: 'ipa' },
         expect.any(Function)
       );
+    });
+  });
+
+  describe('keyboard shortcut (toggle-translation command)', () => {
+    it('enables translation when triggered on untranslated tab', async () => {
+      const tabId = 789;
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: tabId }]);
+      });
+      mockChrome.scripting.executeScript.mockResolvedValue([]);
+      mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
+
+      // Trigger keyboard shortcut
+      commandHandler('toggle-translation');
+
+      // Should inject translator script
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith(
+          expect.objectContaining({
+            target: { tabId },
+          })
+        );
+      });
+
+      // Should update icon to enabled state
+      await vi.waitFor(() => {
+        expect(mockChrome.action.setIcon).toHaveBeenCalledWith(
+          expect.objectContaining({
+            tabId,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            path: expect.objectContaining({
+              16: 'icons/icon16.png',
+            }),
+          })
+        );
+      });
+    });
+
+    it('disables translation when triggered on translated tab', async () => {
+      const tabId = 790;
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: tabId }]);
+      });
+      mockChrome.scripting.executeScript.mockResolvedValue([]);
+      mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
+
+      // First enable translation via keyboard shortcut
+      commandHandler('toggle-translation');
+
+      await vi.waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
+      });
+
+      // Clear mocks to track the disable action
+      mockChrome.scripting.executeScript.mockClear();
+      mockChrome.action.setIcon.mockClear();
+      mockChrome.tabs.sendMessage.mockImplementation(
+        (_tabId: number, _message: object, callback: SendMessageCallback) => {
+          if (callback !== undefined) {
+            callback({ success: true });
+          }
+        }
+      );
+
+      // Trigger keyboard shortcut again to disable
+      commandHandler('toggle-translation');
+
+      // Should send RESTORE message to disable translation
+      await vi.waitFor(() => {
+        expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
+          tabId,
+          { type: 'RESTORE' },
+          expect.any(Function)
+        );
+      });
+
+      // Should update icon to disabled state
+      await vi.waitFor(() => {
+        expect(mockChrome.action.setIcon).toHaveBeenCalledWith(
+          expect.objectContaining({
+            tabId,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            path: expect.objectContaining({
+              16: 'icons/icon16-off.png',
+            }),
+          })
+        );
+      });
+    });
+
+    it('ignores unrecognized commands', async () => {
+      mockChrome.tabs.query.mockClear();
+      mockChrome.scripting.executeScript.mockClear();
+
+      // Trigger an unrecognized command
+      commandHandler('some-other-command');
+
+      // Give it a moment
+      await new Promise((r) => setTimeout(r, 10));
+
+      // Should not query tabs or inject scripts
+      expect(mockChrome.tabs.query).not.toHaveBeenCalled();
+      expect(mockChrome.scripting.executeScript).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when no active tab', async () => {
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([]); // No tabs
+      });
+      mockChrome.scripting.executeScript.mockClear();
+
+      commandHandler('toggle-translation');
+
+      // Give it a moment
+      await new Promise((r) => setTimeout(r, 10));
+
+      // Should not inject scripts
+      expect(mockChrome.scripting.executeScript).not.toHaveBeenCalled();
     });
   });
 });
