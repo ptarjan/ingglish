@@ -61,8 +61,9 @@ function checkElementSkip(
     return true;
   }
 
-  // Check classes - O(1) per class with Set
-  for (const className of Array.from(element.classList)) {
+  // Check classes - O(1) per class with Set (Array.from for type safety)
+  const classes: string[] = Array.from(element.classList);
+  for (const className of classes) {
     if (skipClassesSet.has(className)) {
       return true;
     }

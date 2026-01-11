@@ -321,9 +321,10 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
       return;
     }
 
-    // Collect new nodes
+    // Collect new nodes (Array.from needed for TypeScript type safety)
     for (const mutation of mutations) {
-      for (const node of Array.from(mutation.addedNodes)) {
+      const nodes: Node[] = Array.from(mutation.addedNodes);
+      for (const node of nodes) {
         if (node.nodeType === Node.TEXT_NODE) {
           const text = (node as Text).textContent?.trim() ?? '';
           if (text.length > 0) {

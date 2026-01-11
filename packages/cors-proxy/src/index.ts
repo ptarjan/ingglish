@@ -16,8 +16,18 @@ export function isAllowedOrigin(origin: string | null, allowedOrigins: string): 
     return false;
   }
 
-  const allowed = allowedOrigins.split(',').map((o) => o.trim());
-  return allowed.some((allowedOrigin) => origin === allowedOrigin);
+  // Avoid array allocations by checking directly during iteration
+  let start = 0;
+  for (let i = 0; i <= allowedOrigins.length; i++) {
+    if (i === allowedOrigins.length || allowedOrigins[i] === ',') {
+      const segment = allowedOrigins.slice(start, i).trim();
+      if (segment === origin) {
+        return true;
+      }
+      start = i + 1;
+    }
+  }
+  return false;
 }
 
 export function corsHeaders(origin: string): Record<string, string> {
@@ -28,6 +38,16 @@ export function corsHeaders(origin: string): Record<string, string> {
     'Access-Control-Max-Age': '86400',
   };
 }
+
+// Pre-compiled regex patterns for private IPv4 ranges (hoisted for performance)
+const PRIVATE_IPV4_PATTERNS = [
+  /^127\./, // Loopback
+  /^10\./, // Class A private
+  /^172\.(1[6-9]|2[0-9]|3[01])\./, // Class B private
+  /^192\.168\./, // Class C private
+  /^169\.254\./, // Link-local
+  /^0\./, // Current network
+];
 
 /**
  * Checks if a hostname resolves to a private/internal IP address.
@@ -42,16 +62,7 @@ export function isPrivateHost(hostname: string): boolean {
   }
 
   // Block private IPv4 ranges
-  const privateIPv4Patterns = [
-    /^127\./, // Loopback
-    /^10\./, // Class A private
-    /^172\.(1[6-9]|2[0-9]|3[01])\./, // Class B private
-    /^192\.168\./, // Class C private
-    /^169\.254\./, // Link-local
-    /^0\./, // Current network
-  ];
-
-  for (const pattern of privateIPv4Patterns) {
+  for (const pattern of PRIVATE_IPV4_PATTERNS) {
     if (pattern.test(hostname)) {
       return true;
     }
@@ -112,8 +123,8 @@ export default {
       });
     }
 
-    // Only allow http/https
-    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    // Only allow http/https (direct comparison avoids array allocation)
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
       return new Response('Invalid protocol', {
         status: 400,
         headers: corsHeaders(origin),

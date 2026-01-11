@@ -25,16 +25,22 @@ export function extractWords(text: string): string[] {
 
 /**
  * Extracts all unique words from an array of text nodes.
- * Useful for batch translation scenarios.
+ * Uses a single Set to collect and deduplicate in one pass.
  *
  * @param textNodes - Array of DOM text nodes to extract words from
  * @returns Array of unique lowercase words across all nodes
  */
 export function extractWordsFromNodes(textNodes: Text[]): string[] {
-  const allWords: string[] = [];
+  const uniqueWords = new Set<string>();
   for (const node of textNodes) {
-    const words = extractWords(node.textContent ?? '');
-    allWords.push(...words);
+    const text = node.textContent ?? '';
+    const normalized = normalizeApostrophes(text);
+    const tokens = normalized.split(WORD_SPLIT_REGEX);
+    for (const token of tokens) {
+      if (token !== '' && WORD_TEST_REGEX.test(token)) {
+        uniqueWords.add(token.toLowerCase());
+      }
+    }
   }
-  return [...new Set(allWords)];
+  return Array.from(uniqueWords);
 }
