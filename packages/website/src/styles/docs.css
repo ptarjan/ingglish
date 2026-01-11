@@ -14,12 +14,14 @@
   width: 200px;
 }
 
-.docs-sidebar ul {
+.docs-sidebar > ul {
   list-style: none;
   padding: 0;
   margin: 0;
   position: sticky;
   top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
 .docs-sidebar li {
