@@ -12,10 +12,15 @@ import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@inggli
  */
 export function extractWords(text: string): string[] {
   const normalized = normalizeApostrophes(text);
-  // Use split with WORD_SPLIT_REGEX and filter for words
   const tokens = normalized.split(WORD_SPLIT_REGEX);
-  const words = tokens.filter((t) => t !== '' && WORD_TEST_REGEX.test(t));
-  return [...new Set(words.map((w) => w.toLowerCase()))];
+  // Single pass: filter, lowercase, and deduplicate
+  const uniqueWords = new Set<string>();
+  for (const token of tokens) {
+    if (token !== '' && WORD_TEST_REGEX.test(token)) {
+      uniqueWords.add(token.toLowerCase());
+    }
+  }
+  return Array.from(uniqueWords);
 }
 
 /**

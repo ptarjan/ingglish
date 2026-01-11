@@ -37,8 +37,18 @@ const IPA_CHARS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ');
  * @returns true if text appears to be Ingglish, false if likely English
  */
 export function isLikelyIngglish(text: string): boolean {
-  const ingglishScore = INGGLISH_PATTERNS.filter((p) => p.test(text)).length;
-  const englishScore = ENGLISH_PATTERNS.filter((p) => p.test(text)).length;
+  let ingglishScore = 0;
+  let englishScore = 0;
+  for (const p of INGGLISH_PATTERNS) {
+    if (p.test(text)) {
+      ingglishScore++;
+    }
+  }
+  for (const p of ENGLISH_PATTERNS) {
+    if (p.test(text)) {
+      englishScore++;
+    }
+  }
   return ingglishScore > englishScore;
 }
 
