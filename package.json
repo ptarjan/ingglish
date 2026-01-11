@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "docs": "typedoc",
+    "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "npm run test --workspaces",
     "build": "npm run docs && npm run build --workspaces",
     "lint": "npm run lint --workspaces",
