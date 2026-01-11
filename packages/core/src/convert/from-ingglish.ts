@@ -13,6 +13,7 @@ import { INGGLISH_TO_ARPABET_MAP } from './ingglish-maps';
  */
 const R_COLORED_3CHAR: Record<string, [string, string]> = {
   air: ['EH', 'R'], // air, care, there, where
+  aar: ['AE', 'R'], // arrow, barrow, carrot
 };
 
 const R_COLORED_2CHAR: Record<string, [string, string]> = {

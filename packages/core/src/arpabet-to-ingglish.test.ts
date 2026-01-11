@@ -140,27 +140,26 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['UW1'])).toBe('oo'); // too
     });
 
-    it('should handle R-colored vowels (AA+R → ar, AO+R → or, EH+R → air)', () => {
-      // star = S T AA1 R
+    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→aar)', () => {
+      // AA+R → ar
       expect(arpabetToIngglish(['S', 'T', 'AA1', 'R'])).toBe('star');
-      // car = K AA1 R
       expect(arpabetToIngglish(['K', 'AA1', 'R'])).toBe('kar');
-      // store = S T AO1 R
+      // AO+R → or
       expect(arpabetToIngglish(['S', 'T', 'AO1', 'R'])).toBe('stor');
-      // more = M AO1 R
       expect(arpabetToIngglish(['M', 'AO1', 'R'])).toBe('mor');
-      // air = EH1 R
+      // EH+R → air
       expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
-      // care = K EH1 R
       expect(arpabetToIngglish(['K', 'EH1', 'R'])).toBe('kair');
-      // there = DH EH1 R
       expect(arpabetToIngglish(['DH', 'EH1', 'R'])).toBe('dhair');
-      // Standalone AA without R should still be 'o'
+      // AE+R → aar
+      expect(arpabetToIngglish(['AE1', 'R', 'OW0'])).toBe('aaroh'); // arrow
+      expect(arpabetToIngglish(['B', 'AE1', 'R', 'OW0'])).toBe('baaroh'); // barrow
+      expect(arpabetToIngglish(['K', 'AE1', 'R', 'AH0', 'T'])).toBe('kaarut'); // carrot
+      // Standalone vowels without R
       expect(arpabetToIngglish(['AA1'])).toBe('o');
-      // Standalone AO without R should still be 'aw'
       expect(arpabetToIngglish(['AO1'])).toBe('aw');
-      // Standalone EH without R should still be 'e'
       expect(arpabetToIngglish(['EH1'])).toBe('e');
+      expect(arpabetToIngglish(['AE1'])).toBe('a');
     });
 
     it('should handle consonant sounds correctly', () => {

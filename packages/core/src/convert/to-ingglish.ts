@@ -38,13 +38,15 @@ export function arpabetToIngglish(arpabet: string[]): string {
     const base = stripStress(phoneme);
     const nextBase = i + 1 < arpabet.length ? stripStress(arpabet[i + 1]) : null;
 
-    // R-colored vowels: use 'ar' for AA+R, 'or' for AO+R, 'air' for EH+R
+    // R-colored vowels: AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'aar'
     if (base === 'AA' && nextBase === 'R') {
       result += 'a'; // The R will add 'r' on the next iteration
     } else if (base === 'AO' && nextBase === 'R') {
       result += 'o'; // The R will add 'r' on the next iteration
     } else if (base === 'EH' && nextBase === 'R') {
       result += 'ai'; // The R will add 'r' on the next iteration
+    } else if (base === 'AE' && nextBase === 'R') {
+      result += 'aa'; // The R will add 'r' on the next iteration
     } else {
       result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
     }

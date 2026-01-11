@@ -66,6 +66,12 @@ export const vowelGroups: SoundGroup[] = [
         ipaOverride: 'ɛɹ',
         ingglishOverride: 'air',
       },
+      {
+        phoneme: 'AE+R',
+        examples: '**arr**ow, b**arr**ow, c**arr**ot',
+        ipaOverride: 'æɹ',
+        ingglishOverride: 'aar',
+      },
       { phoneme: 'ER', examples: 'b**ir**d, h**er**, t**ur**n' },
     ],
   },
