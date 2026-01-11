@@ -1,4 +1,4 @@
-# Orthography Comparison: Why Ingglish Spellings Make Sense
+# Why Ingglish Spellings Make Sense
 
 Every Ingglish spelling has a reason. This document shows that our choices aren't arbitrary—they're grounded in how other languages solve the same problems.
 
