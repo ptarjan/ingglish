@@ -131,7 +131,7 @@ export function applyTranslationsMap(
         processTextNode(textNodes[index], translations, showTooltips);
         index++;
 
-        if (onProgress && totalNodes > 0) {
+        if (onProgress) {
           onProgress(index, totalNodes);
         }
       }

@@ -187,7 +187,7 @@ export function translateDOMSync(
   for (let i = 0; i < totalNodes; i++) {
     translateTextNode(textNodes[i], showTooltips, outputFormat);
 
-    if (onProgress && totalNodes > 0) {
+    if (onProgress) {
       onProgress(i + 1, totalNodes);
     }
   }
