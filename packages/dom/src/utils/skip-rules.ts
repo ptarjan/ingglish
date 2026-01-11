@@ -60,7 +60,7 @@ function checkElementSkip(
   }
 
   // Check classes - O(1) per class with Set
-  for (const className of element.classList) {
+  for (const className of Array.from(element.classList)) {
     if (skipClassesSet.has(className)) {
       return true;
     }
