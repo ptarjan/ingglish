@@ -19,12 +19,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Cache CMU dictionary
-        uses: actions/cache@v4
-        with:
-          path: packages/core/src/dictionary/cmudict.ts
-          key: cmudict-v1
-
       - name: Install dependencies
         run: npm ci
 
@@ -37,6 +31,8 @@ jobs:
           name: build-output
           path: |
             packages/*/dist
+            packages/core/src/dictionary/cmudict.ts
+            packages/core/src/fallback/ipa-dict-supplement.ts
             docs/generated
           retention-days: 1
 
@@ -53,12 +49,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Cache CMU dictionary
-        uses: actions/cache@v4
-        with:
-          path: packages/core/src/dictionary/cmudict.ts
-          key: cmudict-v1
-
       - name: Install dependencies
         run: npm ci
 
@@ -66,9 +56,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output
-
-      - name: Generate dictionaries for linting
-        run: npm run update-dictionaries -w @ingglish/core
 
       - name: Lint
         run: npm run lint
