@@ -9,7 +9,7 @@ This document describes how we map ARPAbet notation from the CMU Pronouncing Dic
 ## Design Principles
 
 1. **One sound, one spelling**: Each phoneme maps to exactly one spelling sequence
-2. **No diacritics**: Only use the 26 standard English letters
+2. **No diacritics**: Only 24 ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'
 3. **Intuitive for English readers**: Spellings should feel natural based on existing English conventions
 4. **Consistent and reversible**: The mapping is deterministic
 

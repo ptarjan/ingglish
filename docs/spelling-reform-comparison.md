@@ -18,7 +18,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
-**How Ingglish differs:** Uses only the 26 standard ASCII letters. Anyone literate in English can start reading Ingglish immediately.
+**How Ingglish differs:** Uses only 24 standard ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
 
 ### Transitional Systems
 
@@ -198,7 +198,7 @@ Let's be honest:
 
 | Design Choice | Why It Matters |
 |---------------|----------------|
-| ASCII-only | Works on any keyboard, any device, any platform |
+| 24 ASCII letters only | Works on any keyboard, any device, any platform |
 | Standard digraphs (sh, ch, th) | Already familiar to English readers |
 | CMU dictionary basis | Consistent, well-documented pronunciations |
 | Supplementary positioning | No political battle required |
