@@ -113,6 +113,9 @@ const UNKNOWN_CONTRACTION_SCORE = -5_000_000; // Score for contractions without 
 const NUMERIC_WORD_PENALTY = 1_000_000; // Penalty for words containing numbers
 const UNKNOWN_WORD_PENALTY = 100_000; // Base penalty for unknown words
 
+// Pre-compiled regex for hot path performance
+const NUMERIC_REGEX = /[0-9]/;
+
 /**
  * Scores a word for ranking - lower score is better (more common).
  * Used for sorting homophones by likelihood.
@@ -135,7 +138,7 @@ export function scoreWord(word: string): number {
   }
 
   // Penalize words with numbers (likely variant spellings like HELLO2)
-  if (/[0-9]/.test(word)) {
+  if (NUMERIC_REGEX.test(word)) {
     return NUMERIC_WORD_PENALTY + word.length;
   }
 

@@ -13,6 +13,10 @@ import type { OutputFormat } from '../types';
 // Import translateUnknown - we'll set this up with proper dependency injection
 import { translateUnknown } from '../fallback';
 
+// Pre-compiled regex patterns for hot path performance
+const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
+const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
+
 /**
  * Translates a single word (or contraction) to the specified format.
  * Handles contractions like "don't", "I'm", etc.
@@ -92,14 +96,13 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
   // Normalize curly apostrophes to straight ones
   const normalizedText = normalizeApostrophes(text);
 
-  // Regex to match words (letters and apostrophes) vs everything else
-  // This preserves punctuation, numbers, whitespace, etc.
-  const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
+  // Split on word boundaries, preserving punctuation, numbers, whitespace
+  const tokens = normalizedText.split(WORD_SPLIT_REGEX);
 
   return tokens
     .map((token) => {
       // Only translate if it's a word (contains letters)
-      if (/^[a-zA-Z']+$/.test(token)) {
+      if (WORD_TEST_REGEX.test(token)) {
         return translateWord(token, format);
       }
       return token;
@@ -125,12 +128,12 @@ export function translateSyncWithMapping(
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
-  const tokens = normalizedText.split(/(\b[a-zA-Z']+\b)/);
+  const tokens = normalizedText.split(WORD_SPLIT_REGEX);
 
   return tokens
     .filter((token) => token.length > 0)
     .map((token) => {
-      if (/^[a-zA-Z']+$/.test(token)) {
+      if (WORD_TEST_REGEX.test(token)) {
         return {
           original: token,
           translated: translateWord(token, format),

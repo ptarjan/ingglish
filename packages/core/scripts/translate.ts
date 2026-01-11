@@ -4,8 +4,10 @@
  * Usage: npm run translate "text to translate"
  *        npm run translate -- -r "ingglish text"  (reverse)
  */
-import { loadDictionary, translateText, lookupPronunciation } from '../src/translator.js';
-import { reverseTranslateText } from '../src/reverse-translator.js';
+import { loadDictionary } from '../src/dictionary/loader.js';
+import { lookupPronunciation } from '../src/dictionary/lookup.js';
+import { translateSync } from '../src/translate/forward.js';
+import { reverseTranslateSync } from '../src/translate/reverse.js';
 
 async function main() {
   await loadDictionary();
@@ -22,7 +24,7 @@ async function main() {
 
   if (reverse) {
     console.log('Ingglish:', text);
-    console.log('English:', reverseTranslateText(text));
+    console.log('English:', reverseTranslateSync(text));
   } else {
     // Show detailed info for each word
     const words = text.match(/[a-zA-Z']+/g) || [];
@@ -31,14 +33,16 @@ async function main() {
 
     for (const word of words) {
       const pron = lookupPronunciation(word);
-      const translated = translateText(word);
-      const back = reverseTranslateText(translated);
+      const translated = translateSync(word);
+      const back = reverseTranslateSync(translated);
       const match = back.toLowerCase() === word.toLowerCase() ? '✓' : '✗';
-      console.log(`${match} "${word}" -> "${translated}" -> "${back}"${pron ? '' : ' (not in CMU)'}`);
+      console.log(
+        `${match} "${word}" -> "${translated}" -> "${back}"${pron ? '' : ' (not in CMU)'}`
+      );
     }
 
     console.log('---');
-    console.log('Full translation:', translateText(text));
+    console.log('Full translation:', translateSync(text));
   }
 }
 

@@ -2,6 +2,13 @@
  * Utilities for preserving case patterns during translation.
  */
 
+/**
+ * Case pattern detected in a word.
+ * - 'lower': all lowercase (hello)
+ * - 'upper': all uppercase (HELLO)
+ * - 'capitalized': first letter uppercase (Hello)
+ * - 'mixed': mixed case like camelCase (GitHub, iPhone)
+ */
 export type CasePattern = 'lower' | 'upper' | 'capitalized' | 'mixed';
 
 /**

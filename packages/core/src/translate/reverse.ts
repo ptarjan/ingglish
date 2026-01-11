@@ -14,6 +14,10 @@ import { ingglishToArpabet } from '../convert/from-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
 import type { OutputFormat } from '../types';
 
+// Pre-compiled regex patterns for hot path performance
+const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
+const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
+
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
 // ============================================================================
@@ -148,9 +152,9 @@ function reverseTranslateIngglishText(text: string): string {
   const normalizedText = normalizeApostrophes(text);
 
   return normalizedText
-    .split(/(\b[a-zA-Z']+\b)/)
+    .split(WORD_SPLIT_REGEX)
     .map((token) => {
-      if (/^[a-zA-Z']+$/.test(token)) {
+      if (WORD_TEST_REGEX.test(token)) {
         if (token.includes("'")) {
           const parts = token.split("'");
           return parts

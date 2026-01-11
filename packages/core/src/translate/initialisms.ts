@@ -11,6 +11,9 @@ import type { OutputFormat } from '../types';
 // Will be set by forward.ts to break circular dependency
 let translateWordFn: ((word: string, format: OutputFormat) => string) | null = null;
 
+// Small connector words to skip in initialism expansion (O(1) lookup)
+const SKIP_WORDS = new Set(['a', 'as', 'of', 'it', 'the', 'an', 'to', 'in', 'on', 'per']);
+
 /**
  * Sets the translateWord function to break circular dependency.
  */
@@ -195,7 +198,7 @@ export function translateInitialism(
 
   for (const expansionWord of expansion) {
     // Skip small connector words (a, as, of, it, etc.) - don't include in initialism
-    if (['a', 'as', 'of', 'it', 'the', 'an', 'to', 'in', 'on', 'per'].includes(expansionWord)) {
+    if (SKIP_WORDS.has(expansionWord)) {
       continue;
     }
 
