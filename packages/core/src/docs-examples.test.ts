@@ -1,0 +1,256 @@
+/**
+ * Tests that verify all examples in documentation are correct.
+ * This prevents documentation drift when phoneme mappings change.
+ */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
+import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { translateSync } from './translate/forward';
+import { setupDictionary } from './test-setup';
+
+// Paths relative to repo root (vitest runs from packages/core)
+const DOCS_DIR = join(process.cwd(), '../../docs');
+const README_PATH = join(process.cwd(), '../../README.md');
+
+interface Example {
+  english: string;
+  ingglish: string;
+  source: string;
+  line: number;
+}
+
+// Words that are not real English words (phoneme symbols, abbreviations, etc.)
+const SKIP_WORDS = new Set([
+  // ARPAbet symbols
+  'aa',
+  'ae',
+  'ah',
+  'ao',
+  'aw',
+  'ay',
+  'eh',
+  'er',
+  'ey',
+  'ih',
+  'iy',
+  'ow',
+  'oy',
+  'uh',
+  'uw',
+  'b',
+  'd',
+  'g',
+  'k',
+  'p',
+  't',
+  'dh',
+  'f',
+  's',
+  'sh',
+  'th',
+  'v',
+  'z',
+  'zh',
+  'ch',
+  'jh',
+  'm',
+  'n',
+  'ng',
+  'l',
+  'r',
+  'w',
+  'y',
+  'hh',
+  // Table headers and non-examples
+  'arpabet',
+  'ingglish',
+  'ipa',
+  'example',
+  'language',
+  'spelling',
+  'notes',
+  'sound',
+  // Language names (from comparison tables)
+  'spanish',
+  'italian',
+  'german',
+  'french',
+  'portuguese',
+  'dutch',
+  'polish',
+  'turkish',
+  'indonesian',
+  'swahili',
+  'pinyin',
+  'vietnamese',
+  'finnish',
+  'hungarian',
+  'albanian',
+  'commonality',
+  'romaji',
+  // Partial examples from README
+  'git',
+  'hub',
+  'run',
+  'ing',
+]);
+
+/**
+ * Extract examples from markdown content.
+ * Handles various formats:
+ * - "word" → "translated" or "word" → **translated**
+ * - | English | Ingglish | table rows (specific example tables only)
+ * - word → **translated** (without quotes, inline in tables)
+ */
+function extractExamples(content: string, filename: string): Example[] {
+  const examples: Example[] = [];
+  const lines = content.split('\n');
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineNum = i + 1;
+
+    // Skip hypothetical examples (lines explaining what we DON'T do)
+    if (
+      line.includes('looks like') ||
+      line.includes('looks incomplete') ||
+      line.includes('would become') ||
+      line.includes('would produce')
+    ) {
+      continue;
+    }
+
+    // Skip lines that are clearly not translation examples
+    if (
+      line.includes('ARPAbet') ||
+      line.includes('IPA') ||
+      line.includes('Phoneme') ||
+      line.includes('Language') ||
+      line.includes('Commonality')
+    ) {
+      continue;
+    }
+
+    // Pattern 1: - "word" → **translated** (distinct from "other")
+    // This is the most reliable format used in phoneme-mapping.md
+    const distinctMatch = /^-\s*"([a-zA-Z]{2,})"\s*→\s*\*\*([a-zA-Z]+)\*\*\s*\(distinct from/.exec(
+      line
+    );
+    if (distinctMatch) {
+      const english = distinctMatch[1].toLowerCase();
+      const ingglish = distinctMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english) && english.length >= 3) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
+
+    // Pattern 2: - "word" → **translated** (intuitive) or similar
+    const intuitiveMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*\*\*([a-zA-Z]+)\*\*/.exec(line);
+    if (intuitiveMatch) {
+      const english = intuitiveMatch[1].toLowerCase();
+      const ingglish = intuitiveMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english)) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
+
+    // Pattern 3: - "word" → "translated" (text-speak association) etc
+    const quotedMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*"([a-zA-Z]+)"/.exec(line);
+    if (quotedMatch) {
+      const english = quotedMatch[1].toLowerCase();
+      const ingglish = quotedMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english)) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
+
+    // Pattern 4: | word | translated | /IPA/ | (README example table)
+    // Only match when there's an IPA column (indicates it's the examples table)
+    const readmeTableMatch = /^\|\s*([a-zA-Z]{3,})\s*\|\s*([a-zA-Z]+)\s*\|\s*\/[^/]+\/\s*\|/.exec(
+      line
+    );
+    if (readmeTableMatch) {
+      const english = readmeTableMatch[1].toLowerCase();
+      const ingglish = readmeTableMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english) && english !== 'english') {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
+
+    // Pattern 5: word → **translated** (inline in orthography comparison tables)
+    // e.g., | **Ingglish** | **a** | cat → **kat** |
+    const inlineMatch = /\|\s*([a-zA-Z]{3,})\s*→\s*\*\*([a-zA-Z]+)\*\*\s*\|/.exec(line);
+    if (inlineMatch) {
+      const english = inlineMatch[1].toLowerCase();
+      const ingglish = inlineMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english)) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+    }
+  }
+
+  return examples;
+}
+
+/**
+ * Read a file and extract examples
+ */
+function getExamplesFromFile(filepath: string): Example[] {
+  try {
+    const content = readFileSync(filepath, 'utf-8');
+    const filename = filepath.split('/').pop() ?? filepath;
+    return extractExamples(content, filename);
+  } catch {
+    return [];
+  }
+}
+
+describe('documentation examples', () => {
+  setupDictionary();
+
+  // Collect all examples from docs
+  const allExamples: Example[] = [];
+
+  // README
+  allExamples.push(...getExamplesFromFile(README_PATH));
+
+  // Doc files
+  const docFiles = [
+    'phoneme-mapping.md',
+    'orthography-comparison.md',
+    'spelling-reform-comparison.md',
+  ];
+
+  for (const file of docFiles) {
+    allExamples.push(...getExamplesFromFile(join(DOCS_DIR, file)));
+  }
+
+  // Deduplicate examples (same word may appear multiple times)
+  const seenExamples = new Map<string, Example>();
+  for (const example of allExamples) {
+    const key = `${example.english}:${example.ingglish}`;
+    if (!seenExamples.has(key)) {
+      seenExamples.set(key, example);
+    }
+  }
+
+  const uniqueExamples = Array.from(seenExamples.values());
+
+  it('should find examples in documentation', () => {
+    expect(uniqueExamples.length).toBeGreaterThan(15);
+  });
+
+  describe('verify all examples translate correctly', () => {
+    for (const example of uniqueExamples) {
+      it(`"${example.english}" → "${example.ingglish}" (${example.source}:${example.line})`, () => {
+        const result = translateSync(example.english, 'ingglish');
+        expect(result.toLowerCase()).toBe(example.ingglish);
+      });
+    }
+  });
+});
