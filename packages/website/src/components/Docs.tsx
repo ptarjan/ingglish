@@ -10,6 +10,7 @@ import deployment from '../../../../docs/deployment.md';
 import performance from '../../../../docs/performance.md';
 import orthographyComparison from '../../../../docs/orthography-comparison.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
+import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 
 interface DocEntry {
   id: string;
@@ -34,6 +35,12 @@ const docs: DocEntry[] = [
     title: 'Orthography Comparison',
     content: orthographyComparison,
     filename: 'orthography-comparison.md',
+  },
+  {
+    id: 'spelling-reform-comparison',
+    title: 'Spelling Reform History',
+    content: spellingReformComparison,
+    filename: 'spelling-reform-comparison.md',
   },
   { id: 'performance', title: 'Performance', content: performance, filename: 'performance.md' },
   { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },
