@@ -116,6 +116,8 @@ This is problematic because spellings would collide. The R-rule ensures:
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, and AE vowels use their regular spellings (o, aw, e, a).
 
+With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
+
 ## Key Design Decisions
 
 ### TH vs DH Distinction
