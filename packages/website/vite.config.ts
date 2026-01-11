@@ -1,6 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
+import type { Plugin } from 'vite';
+
+// Skip sourcemaps for large data chunks (dictionary, frequencies)
+function skipDataSourcemaps(): Plugin {
+  return {
+    name: 'skip-data-sourcemaps',
+    generateBundle(_, bundle) {
+      for (const name of Object.keys(bundle)) {
+        if (
+          name.endsWith('.map') &&
+          (name.includes('cmudict') || name.includes('word-frequencies'))
+        ) {
+          delete bundle[name];
+        }
+      }
+    },
+  };
+}
 
 export default defineConfig({
   test: {
@@ -10,7 +28,7 @@ export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
   // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
-  plugins: [markdown(), react()],
+  plugins: [markdown(), react(), skipDataSourcemaps()],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed
