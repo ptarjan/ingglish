@@ -127,6 +127,19 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium webkit
 
+      - name: Debug - verify dist and server
+        run: |
+          echo "=== Dist contents ==="
+          ls -la packages/website/dist/
+          echo ""
+          echo "=== Check for index.html ==="
+          head -50 packages/website/dist/index.html
+          echo ""
+          echo "=== Start server and test ==="
+          cd packages/website && timeout 10 npm run preview &
+          sleep 5
+          curl -s http://localhost:3000 | head -100
+
       - name: Smoke test (1 browser, 1 test)
         run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
 
