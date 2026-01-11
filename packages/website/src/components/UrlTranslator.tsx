@@ -55,7 +55,6 @@ const EXAMPLE_URLS = [
   { name: 'NY Times', url: 'https://www.nytimes.com' },
   { name: 'Reddit', url: 'https://old.reddit.com' },
   { name: 'GitHub', url: 'https://github.com/ptarjan/ingglish' },
-  { name: 'Our Docs', url: 'https://paultarjan.com/ingglish/#docs/orthography-comparison' },
 ];
 
 interface UrlTranslatorProps {
