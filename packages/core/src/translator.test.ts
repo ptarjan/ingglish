@@ -223,23 +223,37 @@ describe('translator', () => {
 
   describe('edge cases for coverage', () => {
     it('should handle empty string in translateWord', () => {
-      // Line 86: return empty string for empty input
       expect(translateWord('')).toBe('');
     });
 
     it('should handle contraction with leading apostrophe via fallback', () => {
-      // Made-up word that's definitely not in dictionary
-      // This tests line 178: empty first part in split("'")
       const result = translateWord("'xyz");
       expect(result).toBeDefined();
       expect(result).toContain("'");
-      // First part is empty, second part 'xyz' gets translated by fallback
     });
 
     it('should handle words with only non-letter characters', () => {
-      // Should return as-is when no letters present
       expect(translateWord('123')).toBe('123');
       expect(translateWord('!!!')).toBe('!!!');
+    });
+
+    it('should translate unknown words to IPA format', () => {
+      // Unknown word in IPA format should return IPA characters
+      const result = translateWord('xyzzy', 'ipa');
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+      // IPA result should contain non-ASCII characters
+      expect(result).not.toMatch(/^[a-zA-Z]+$/);
+    });
+
+    it('should use translateSyncWithMapping for token mapping', async () => {
+      // Test the mapping function used by DOM translator
+      const { translateSyncWithMapping } = await import('./translate/forward');
+      const tokens = translateSyncWithMapping('Hello world', 'ingglish');
+      expect(tokens).toHaveLength(3);
+      expect(tokens[0].isWord).toBe(true);
+      expect(tokens[1].isWord).toBe(false);
+      expect(tokens[2].isWord).toBe(true);
     });
   });
 });

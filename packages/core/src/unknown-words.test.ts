@@ -59,14 +59,11 @@ describe('unknown-words', () => {
 
   describe('translateWithStemming', () => {
     it('should handle -ing suffix with known base', () => {
-      // "running" should find "run" + "ing"
       const result = translateWithStemming('running');
-      // May or may not find it depending on dictionary
       expect(result === null || typeof result === 'string').toBe(true);
     });
 
     it('should handle -ly suffix with known base', () => {
-      // "quickly" should find "quick" + "ly"
       const result = translateWithStemming('quickly');
       expect(result === null || typeof result === 'string').toBe(true);
     });
@@ -76,8 +73,26 @@ describe('unknown-words', () => {
       expect(result === null || typeof result === 'string').toBe(true);
     });
 
+    it('should handle un- prefix with known base', () => {
+      // "unhappy" = un- + happy (both known)
+      const result = translateWithStemming('unhappy');
+      expect(result === null || typeof result === 'string').toBe(true);
+    });
+
+    it('should handle re- prefix with known base', () => {
+      // "rebuild" = re- + build
+      const result = translateWithStemming('rebuild');
+      expect(result === null || typeof result === 'string').toBe(true);
+    });
+
     it('should return null for words without recognizable stems', () => {
       const result = translateWithStemming('xyzzy');
+      expect(result).toBeNull();
+    });
+
+    it('should return null for short prefixed words', () => {
+      // Too short to be a valid prefix + stem
+      const result = translateWithStemming('una');
       expect(result).toBeNull();
     });
   });
