@@ -9,7 +9,7 @@ docs/generated/
 ingglish-extension.zip
 
 # Downloaded dictionaries (pulled from GitHub during build)
-packages/core/src/dictionary/cmudict.json
+packages/core/src/dictionary/cmudict.ts
 ipa-dict-en_US.txt
 
 # IDE

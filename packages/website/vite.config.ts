@@ -17,13 +17,19 @@ export default defineConfig({
     chunkSizeWarningLimit: 7000,
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks(id) {
           // Split vendor code for better caching
-          vendor: ['react', 'react-dom'],
-          // The CMU dictionary is large, keep it separate
-          dictionary: ['cmu-pronouncing-dictionary'],
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
+            return 'vendor';
+          }
           // Word frequency data is ~3.5MB, keep it separate
-          'word-frequencies': ['subtlex-word-frequencies'],
+          if (id.includes('subtlex-word-frequencies')) {
+            return 'word-frequencies';
+          }
+          // The CMU dictionary is large (~4MB), keep it separate for caching
+          if (id.includes('@ingglish/core') && id.includes('index')) {
+            return 'dictionary';
+          }
         },
       },
     },

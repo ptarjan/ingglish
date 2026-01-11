@@ -23,7 +23,7 @@ export async function loadDictionary(): Promise<CMUDictionary> {
     return dictionaryPromise;
   }
 
-  dictionaryPromise = import('./cmudict.json')
+  dictionaryPromise = import('./cmudict')
     .then((module: { default: CMUDictionary }) => {
       dictionary = module.default;
       return dictionary;

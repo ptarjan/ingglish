@@ -157,13 +157,20 @@ async function main() {
     console.log('Downloaded ipa-dict');
   }
 
-  // Load CMU dictionary from our local JSON
-  const cmuPath = path.join(__dirname, '..', 'packages', 'core', 'src', 'dictionary', 'cmudict.json');
+  // Load CMU dictionary from our local TypeScript file
+  const cmuPath = path.join(__dirname, '..', 'packages', 'core', 'src', 'dictionary', 'cmudict.ts');
   if (!fs.existsSync(cmuPath)) {
     console.error('CMU dictionary not found. Run "npm run update-dictionary" in packages/core first.');
     process.exit(1);
   }
-  const cmu = JSON.parse(fs.readFileSync(cmuPath, 'utf8'));
+  // Parse the TypeScript file to extract the JSON object
+  const tsContent = fs.readFileSync(cmuPath, 'utf8');
+  const jsonMatch = tsContent.match(/export default ({.*}) as const;/s);
+  if (!jsonMatch) {
+    console.error('Could not parse CMU dictionary TypeScript file');
+    process.exit(1);
+  }
+  const cmu = JSON.parse(jsonMatch[1]);
   const cmuWords = new Set(Object.keys(cmu).filter(w => !w.includes('(')));
   console.log(`CMU has ${cmuWords.size} words`);
 
