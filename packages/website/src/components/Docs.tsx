@@ -23,7 +23,6 @@ const GITHUB_EDIT_BASE =
   'https://github.com/ptarjan/ingglish/edit/claude/url-translator-shared-lib-hNsxZ/docs/';
 
 const docs: DocEntry[] = [
-  { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
   {
     id: 'phoneme-mapping',
     title: 'Phoneme Mapping',
@@ -42,6 +41,7 @@ const docs: DocEntry[] = [
     content: spellingReformComparison,
     filename: 'spelling-reform-comparison.md',
   },
+  { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
   { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
   { id: 'performance', title: 'Performance', content: performance, filename: 'performance.md' },
   { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },

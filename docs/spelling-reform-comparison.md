@@ -79,7 +79,7 @@ Over 1 billion people read English. Any reform makes existing text harder to rea
 
 Unlike historical reforms that required institutional buy-in, Ingglish provides tools for individual exploration:
 - **Text translator**: Paste any text to see it in Ingglish instantly
-- **URL translator**: View any webpage translated while preserving layout ([see this page in Ingglish](https://paultarjan.com/ingglish/#url/https://paultarjan.com/ingglish))
+- **URL translator**: View any webpage translated while preserving layout ([try it on Wikipedia](https://paultarjan.com/ingglish/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
 - **Chrome extension**: Browse the entire web in Ingglish
 - **Bidirectional translation**: Read Ingglish back to standard English
 
@@ -132,7 +132,7 @@ New Spelling, Unifon, and other systems were repeatedly revised, preventing stab
 
 People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital—hence spelling bees.
 
-**Ingglish's approach:** Traditional spelling isn't going anywhere. But over time, it could become like Middle English or Old English—an interesting historical artifact that scholars study, while everyday communication uses something more sensible. Your spelling knowledge becomes richer, not obsolete.
+**Ingglish's approach:** Not asking anyone to give up traditional spelling. The investment stands. Ingglish is additive—it gives you a new tool without taking anything away.
 
 ---
 
@@ -180,10 +180,10 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 ### What Won't Happen
 
 Let's be honest:
-- Ingglish won't replace English spelling immediately
+- Ingglish won't replace English spelling
 - Governments won't mandate it
 - Schools won't teach it as primary literacy
-- Traditional spelling won't become obsolete immediately
+- Traditional spelling will remain the default
 
 ### What Could Happen
 
