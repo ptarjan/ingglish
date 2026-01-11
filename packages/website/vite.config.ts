@@ -6,7 +6,8 @@ import type { Plugin } from 'vite';
 // Skip sourcemaps for data and vendor chunks, format data chunks for readability
 function processChunks(): Plugin {
   const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
-  const formatChunks = ['cmudict', 'word-frequencies'];
+  // Only format cmudict - word-frequencies uses JSON.parse() which breaks with literal newlines
+  const formatChunks = ['cmudict'];
   return {
     name: 'process-chunks',
     generateBundle(_, bundle) {
