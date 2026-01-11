@@ -3,6 +3,7 @@ import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
 // Import markdown files at build time
+import apiReference from '../../../../docs/generated/README.md?raw';
 import architecture from '../../../../docs/architecture.md?raw';
 import contributing from '../../../../docs/contributing.md?raw';
 import debugging from '../../../../docs/debugging.md?raw';
@@ -21,6 +22,7 @@ const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
   { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
+  { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
   {
     id: 'phoneme-mapping',
     title: 'Phoneme Mapping',
