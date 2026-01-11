@@ -1,5 +1,5 @@
-import { useState, useCallback, useDeferredValue, useMemo } from 'react';
-import { translateSync, reverseTranslateSync } from '@ingglish/core';
+import { useState, useCallback, useDeferredValue, useMemo, useEffect } from 'react';
+import { translateSync, reverseTranslate } from '@ingglish/core';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
 
@@ -86,17 +86,30 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [deferredEnglish, lastEdited, format]);
 
-  const computedEnglish = useMemo(() => {
+  // Async reverse translation with useEffect
+  const [computedEnglish, setComputedEnglish] = useState<string | null>(null);
+  useEffect(() => {
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
-      return null;
+      setComputedEnglish(null);
+      return;
     }
-    try {
-      return reverseTranslateSync(deferredIngglish, format);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn('Reverse translation failed:', err);
-      return null;
-    }
+    let cancelled = false;
+    reverseTranslate(deferredIngglish, format)
+      .then((result) => {
+        if (!cancelled) {
+          setComputedEnglish(result);
+        }
+      })
+      .catch((err: unknown) => {
+        // eslint-disable-next-line no-console
+        console.warn('Reverse translation failed:', err);
+        if (!cancelled) {
+          setComputedEnglish(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [deferredIngglish, lastEdited, format]);
 
   // Display values: show computed translation in the non-edited pane

@@ -5,6 +5,7 @@ import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
 import Extension from './components/Extension';
 import Docs from './components/Docs';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useFormat } from './contexts/FormatContext';
 
 type Tab = 'text' | 'url' | 'guide' | 'extension' | 'docs';
@@ -276,18 +277,26 @@ function App() {
 
       <main className="main">
         {activeTab === 'text' && (
-          <TextTranslator initialText={initialText} onShare={handleShareText} />
+          <ErrorBoundary>
+            <TextTranslator initialText={initialText} onShare={handleShareText} />
+          </ErrorBoundary>
         )}
         {activeTab === 'url' && (
-          <UrlTranslator
-            initialUrl={initialUrl}
-            onShare={handleShareUrl}
-            onNavigate={handleUrlNavigate}
-          />
+          <ErrorBoundary>
+            <UrlTranslator
+              initialUrl={initialUrl}
+              onShare={handleShareUrl}
+              onNavigate={handleUrlNavigate}
+            />
+          </ErrorBoundary>
         )}
         {activeTab === 'guide' && <SpellingGuide />}
         {activeTab === 'extension' && <Extension />}
-        {activeTab === 'docs' && <Docs />}
+        {activeTab === 'docs' && (
+          <ErrorBoundary>
+            <Docs />
+          </ErrorBoundary>
+        )}
       </main>
 
       <footer className="footer">

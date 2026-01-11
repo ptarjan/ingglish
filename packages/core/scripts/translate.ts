@@ -8,9 +8,11 @@ import { loadDictionary } from '../src/dictionary/loader.js';
 import { lookupPronunciation } from '../src/dictionary/lookup.js';
 import { translateSync } from '../src/translate/forward.js';
 import { reverseTranslateSync } from '../src/translate/reverse.js';
+import { loadFrequencies } from '../src/utils/frequency.js';
 
 async function main() {
-  await loadDictionary();
+  // Load dictionary and frequencies (both paths use reverse translation)
+  await Promise.all([loadDictionary(), loadFrequencies()]);
 
   const args = process.argv.slice(2);
   const reverse = args[0] === '-r';

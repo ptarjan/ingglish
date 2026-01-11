@@ -5,9 +5,9 @@ import { useState, useEffect, useRef } from 'react';
 import apiReference from '../../../../docs/generated/README.md';
 import architecture from '../../../../docs/architecture.md';
 import contributing from '../../../../docs/contributing.md';
-import debugging from '../../../../docs/debugging.md';
+import troubleshooting from '../../../../docs/troubleshooting.md';
 import deployment from '../../../../docs/deployment.md';
-import extensionSetup from '../../../../docs/extension-setup.md';
+import performance from '../../../../docs/performance.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 
 interface DocEntry {
@@ -28,15 +28,15 @@ const docs: DocEntry[] = [
     content: phonemeMapping,
     filename: 'phoneme-mapping.md',
   },
-  {
-    id: 'extension-setup',
-    title: 'Extension Setup',
-    content: extensionSetup,
-    filename: 'extension-setup.md',
-  },
+  { id: 'performance', title: 'Performance', content: performance, filename: 'performance.md' },
   { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },
   { id: 'contributing', title: 'Contributing', content: contributing, filename: 'contributing.md' },
-  { id: 'debugging', title: 'Debugging', content: debugging, filename: 'debugging.md' },
+  {
+    id: 'troubleshooting',
+    title: 'Troubleshooting',
+    content: troubleshooting,
+    filename: 'troubleshooting.md',
+  },
 ];
 
 // Map filenames to doc IDs for link handling
