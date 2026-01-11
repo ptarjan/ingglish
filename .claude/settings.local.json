@@ -14,7 +14,11 @@
       "Bash(git push)",
       "Bash(git stash:*)",
       "Bash(git clean:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(npm run lint)",
+      "Bash(gh run list:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm run lint:*)"
     ]
   }
 }

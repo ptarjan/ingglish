@@ -571,19 +571,22 @@
   margin-bottom: 1rem;
 }
 
-.docs-edit-button {
+.docs-edit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border-radius: 0.375rem;
   text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
-.docs-edit-button:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+.docs-edit-link:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
 }
 
 .docs-content h1 {
