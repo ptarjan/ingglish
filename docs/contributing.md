@@ -129,6 +129,26 @@ Edit files in `packages/core/src/fallback/`:
 - `stemming.ts` - Add suffix rules
 - `compounds.ts` - Add compound word patterns
 - `acronyms.ts` - Add initialism handling
+- `g2p-rules.ts` - Improve rule-based grapheme-to-phoneme conversion
+
+### Profiling Performance
+
+Use profiling scripts to measure performance impacts:
+
+```bash
+# Core library benchmarks (1000 iterations)
+cd packages/core
+npx tsx scripts/benchmark.ts
+
+# DOM translation profiling with real Wikipedia HTML
+cd packages/dom
+npx tsx scripts/profile-wikipedia.ts
+
+# Compare TreeWalker alternatives
+npx tsx scripts/profile-tree-walker.ts
+```
+
+Always profile before and after making optimization changes.
 
 ## Testing Guidelines
 

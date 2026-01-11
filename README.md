@@ -143,6 +143,20 @@ npm run translate -- -r "huloh werld"
 
 # Debug round-trip issues
 npm run debug:roundtrip "beautiful"
+
+# Run benchmarks
+npx tsx scripts/benchmark.ts
+```
+
+### Profiling
+
+```bash
+# Profile DOM translation with real Wikipedia HTML
+cd packages/dom
+npx tsx scripts/profile-wikipedia.ts
+
+# Compare TreeWalker alternatives
+npx tsx scripts/profile-tree-walker.ts
 ```
 
 ## How Unknown Words Are Handled

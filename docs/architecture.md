@@ -34,7 +34,8 @@ The core library handles text translation logic.
 
 ```
 src/
-├── index.ts                    # Public API exports
+├── index.ts                    # Public API exports (minimal bundle)
+├── internal.ts                 # Exports for other packages (code-split)
 ├── types.ts                    # Type definitions
 ├── translate/                  # Translation logic
 │   ├── forward.ts              # English → Ingglish/IPA
@@ -57,7 +58,8 @@ src/
 │   ├── acronyms.ts             # Acronym expansion
 │   ├── compounds.ts            # Compound word splitting
 │   ├── stemming.ts             # Base word + suffix matching
-│   └── phonemize.ts            # Neural G2P wrapper
+│   ├── phonemize.ts            # Neural G2P wrapper
+│   └── g2p-rules.ts            # Rule-based grapheme-to-phoneme
 ├── phonemes/                   # Phoneme handling
 │   ├── arpabet.ts              # ARPAbet phoneme definitions
 │   └── phonotactics.ts         # English sound rules for stress
@@ -234,7 +236,11 @@ src/
 ├── components/
 │   ├── TextTranslator.tsx   # Bidirectional text translation
 │   ├── UrlTranslator.tsx    # Web page translation
-│   └── SpellingGuide.tsx    # Phoneme mapping reference
+│   ├── SpellingGuide.tsx    # Phoneme mapping reference
+│   ├── Extension.tsx        # Chrome extension info page
+│   └── Docs.tsx             # Documentation viewer
+├── contexts/
+│   └── FormatContext.tsx    # Output format state (Ingglish/IPA)
 ├── hooks/
 │   └── useUrlTranslator.ts  # URL fetching & translation logic
 └── App.tsx                   # Tab navigation & routing
@@ -368,3 +374,49 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 3. **Reverse Translation**: Builds reverse map on first use, O(n) for n words
 4. **DOM Translation**: Uses TreeWalker for efficient text node traversal
 5. **Bundle Splitting**: Dictionary and word frequencies in separate chunks
+
+## Profiling & Benchmarking
+
+The project includes comprehensive profiling scripts for performance analysis.
+
+### Core Profiling Scripts (`packages/core/scripts/`)
+
+```
+scripts/
+├── benchmark.ts           # Full benchmark suite with statistics
+├── profile.ts             # Quick translation profiling
+├── profile-translate.ts   # translateSync performance analysis
+├── profile-convert.ts     # Phoneme conversion performance
+├── debug-roundtrip.ts     # Round-trip translation debugging
+├── translate.ts           # CLI translation tool
+└── build-dictionary.ts    # Dictionary build utilities
+```
+
+### DOM Profiling Scripts (`packages/dom/scripts/`)
+
+```
+scripts/
+├── profile-wikipedia.ts   # Real Wikipedia HTML profiling (~300KB)
+├── profile-tree-walker.ts # TreeWalker alternatives comparison
+├── profile-process-node.ts# Text node processing analysis
+├── profile-dom.ts         # General DOM translation profiling
+├── profile-real-html.ts   # Article-style HTML profiling
+└── profile-walker-only.ts # TreeWalker-only benchmarks
+```
+
+### Running Benchmarks
+
+```bash
+# Core library benchmarks
+cd packages/core
+npx tsx scripts/benchmark.ts
+
+# DOM profiling with Wikipedia HTML
+cd packages/dom
+npx tsx scripts/profile-wikipedia.ts
+```
+
+Sample output from `profile-wikipedia.ts`:
+- Collects text nodes, extracts words, applies translations
+- Compares TreeWalker alternatives (current, stack-based, simple)
+- Reports per-node and per-word timing in microseconds
