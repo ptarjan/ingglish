@@ -81,7 +81,7 @@ Over 1 billion people read English. Any reform makes existing text harder to rea
 
 There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
 
-**Ingglish's approach:** Not attempting mandatory adoption. Works through voluntary use in contexts where phonetic clarity matters.
+**Ingglish's approach:** Not attempting mandatory adoption. Works through voluntary use by anyone who wants consistent, readable spelling.
 
 ### 5. The Network Effect Trap
 
