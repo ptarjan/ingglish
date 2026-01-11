@@ -38,26 +38,3 @@ export async function translate(
 export { translateSync, translateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
 export { reverseTranslateSync } from './translate';
-
-// =============================================================================
-// Spelling Guide
-// =============================================================================
-
-export { arpabetPhonemeToIngglish } from './convert';
-export { arpabetPhonemeToIPA } from './convert';
-
-// =============================================================================
-// Text Utilities (shared with @ingglish/dom)
-// =============================================================================
-
-export {
-  normalizeApostrophes,
-  isIPAChar,
-  isPhoneticChar,
-  tokenizeIPA,
-  tokenizeText,
-  tokenizePhonetic,
-} from './utils/text';
-export type { TextToken, IndexedToken } from './utils/text';
-export { detectCasePattern, applyCasePattern } from './utils/case';
-export type { CasePattern } from './utils/case';

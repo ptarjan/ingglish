@@ -2,12 +2,8 @@
  * Tooltip fragment creation utilities.
  */
 
-import {
-  translateSyncWithMapping,
-  normalizeApostrophes,
-  detectCasePattern,
-  applyCasePattern,
-} from '@ingglish/core';
+import { translateSyncWithMapping } from '@ingglish/core';
+import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core/internal';
 import type { OutputFormat } from '../types';
 
 /**

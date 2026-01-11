@@ -54,5 +54,5 @@ export {
   injectTooltipStyles,
 } from './utils';
 
-// Re-export text utilities from core
-export { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core';
+// Re-export text utilities from core (internal API)
+export { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core/internal';

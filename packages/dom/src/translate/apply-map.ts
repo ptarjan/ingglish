@@ -2,7 +2,7 @@
  * Apply pre-computed translations to DOM.
  */
 
-import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core';
+import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
 import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
