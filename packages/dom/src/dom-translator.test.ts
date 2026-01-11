@@ -46,14 +46,14 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       translateDOMSync(document.body);
       // Check text content (ignoring data attributes)
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
 
     it('should translate multiple text nodes', () => {
       document.body.innerHTML = '<div><p>Hello</p><p>World</p></div>';
       translateDOMSync(document.body);
       // Check text content (ignoring data attributes)
-      expect(document.querySelector('div')?.textContent).toBe('HuloWerld');
+      expect(document.querySelector('div')?.textContent).toBe('HulohWerld');
     });
 
     it('should skip script tags by default', () => {
@@ -96,7 +96,7 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<img alt="Hello world" title="Click here">';
       translateDOMSync(document.body, { translateAttributes: true });
       const img = document.querySelector('img');
-      expect(img?.getAttribute('alt')).toBe('Hulo werld');
+      expect(img?.getAttribute('alt')).toBe('Huloh werld');
       expect(img?.getAttribute('title')).toBe('Klik heer');
     });
 
@@ -141,7 +141,7 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await translateDOM(document.body);
       // Check text content (ignoring data attributes)
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
   });
 
@@ -182,7 +182,7 @@ describe('dom-translator', () => {
     it('should translate nested text', () => {
       document.body.innerHTML = '<div><span>Hello</span> <strong>world</strong></div>';
       translateDOMSync(document.body);
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
 
     it('should skip nested elements inside skipped parent', () => {
@@ -282,7 +282,7 @@ describe('dom-translator', () => {
 
       expect(tokens[0]).toEqual({
         original: 'Hello',
-        translated: 'Hulo',
+        translated: 'Huloh',
         isWord: true,
       });
       expect(tokens[1]).toEqual({
@@ -309,7 +309,7 @@ describe('dom-translator', () => {
       expect(tokens).toHaveLength(1);
       expect(tokens[0].isWord).toBe(true);
       expect(tokens[0].original).toBe("don't");
-      expect(tokens[0].translated).toBe('dont');
+      expect(tokens[0].translated).toBe('dohnt');
     });
   });
 
@@ -322,7 +322,7 @@ describe('dom-translator', () => {
       expect(spans).toHaveLength(2);
 
       expect(spans[0].getAttribute('data-ingglish-orig')).toBe('Hello');
-      expect(spans[0].textContent).toBe('Hulo');
+      expect(spans[0].textContent).toBe('Huloh');
 
       expect(spans[1].getAttribute('data-ingglish-orig')).toBe('world');
       expect(spans[1].textContent).toBe('werld');
@@ -353,7 +353,7 @@ describe('dom-translator', () => {
       translateDOMSync(document.body, { showTooltips: true });
 
       // Text content should still be the translated text
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
 
     it('should handle punctuation correctly with tooltips', () => {
@@ -364,7 +364,7 @@ describe('dom-translator', () => {
       const p = document.querySelector('p');
       expect(p).not.toBeNull();
       if (p !== null) {
-        expect(p.textContent).toBe('Hulo, werld!');
+        expect(p.textContent).toBe('Huloh, werld!');
 
         const spans = p.querySelectorAll('.ingglish-word');
         expect(spans).toHaveLength(2);
@@ -383,7 +383,7 @@ describe('dom-translator', () => {
       const span = p.querySelector('.ingglish-word');
       expect(span).not.toBeNull();
       expect(span?.getAttribute('data-ingglish-orig')).toBe('Hello');
-      expect(span?.textContent).toBe('Hulo');
+      expect(span?.textContent).toBe('Huloh');
     });
 
     // Note: Tests for raw text nodes with showTooltips are complex due to
@@ -445,7 +445,7 @@ describe('dom-translator', () => {
       const result = translateDOM(document.body, { chunked: true });
       expect(result).toBeInstanceOf(Promise);
       await result;
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
 
     it('should translate all text nodes in chunks', async () => {
@@ -454,7 +454,7 @@ describe('dom-translator', () => {
         '<div><p>Hello</p><p>World</p><p>Test</p><p>Case</p><p>Here</p></div>';
       await translateDOM(document.body, { chunked: true, chunkSize: 2 });
       // All should be translated
-      expect(document.body.textContent).toBe('HuloWerldTestKaysHeer');
+      expect(document.body.textContent).toBe('HulohWerldTestKaysHeer');
     });
 
     it('should call onProgress for chunked translation', async () => {
@@ -493,7 +493,7 @@ describe('dom-translator', () => {
     it('translateDOM should await chunked result', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await translateDOM(document.body, { chunked: true });
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
     });
   });
 
@@ -501,7 +501,7 @@ describe('dom-translator', () => {
     it('should restore text content from data-ingglish-original attribute', () => {
       // Set up DOM with translation markers
       document.body.innerHTML =
-        '<p><span data-ingglish-original="Hello">Hulo</span> <span data-ingglish-original="world">werld</span></p>';
+        '<p><span data-ingglish-original="Hello">Huloh</span> <span data-ingglish-original="world">werld</span></p>';
 
       restoreDOM(document.body);
 
@@ -513,7 +513,7 @@ describe('dom-translator', () => {
 
     it('should restore attributes from data-ingglish-original-* attributes', () => {
       document.body.innerHTML =
-        '<img alt="Hulo werld" data-ingglish-original-alt="Hello world" title="Klik heer" data-ingglish-original-title="Click here">';
+        '<img alt="Huloh werld" data-ingglish-original-alt="Hello world" title="Klik heer" data-ingglish-original-title="Click here">';
 
       restoreDOM(document.body);
 
@@ -544,7 +544,7 @@ describe('dom-translator', () => {
     });
 
     it('should restore multiple text nodes in same element', () => {
-      document.body.innerHTML = '<div data-ingglish-original="Hello world">Hulo werld</div>';
+      document.body.innerHTML = '<div data-ingglish-original="Hello world">Huloh werld</div>';
 
       restoreDOM(document.body);
 
@@ -557,7 +557,7 @@ describe('dom-translator', () => {
       // - Children are a mix of tooltip spans and text nodes
       document.body.innerHTML = `
         <p data-ingglish-original="Hello world">
-          <span class="ingglish-word" data-ingglish-orig="Hello">Hulo</span>
+          <span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span>
           <span class="ingglish-word" data-ingglish-orig="world">werld</span>
         </p>
       `;
@@ -578,7 +578,7 @@ describe('dom-translator', () => {
 
       // Translate
       translateDOMSync(document.body, { translateAttributes: true });
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
 
       // Restore
       restoreDOM(document.body);
@@ -589,7 +589,7 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<img alt="Hello world">';
 
       translateDOMSync(document.body, { translateAttributes: true });
-      expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hulo werld');
+      expect(document.querySelector('img')?.getAttribute('alt')).toBe('Huloh werld');
 
       restoreDOM(document.body);
       expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hello world');
@@ -601,12 +601,12 @@ describe('dom-translator', () => {
       // Apply translations with tooltips (like the extension does)
       await applyTranslationsMap(
         document.body,
-        { hello: 'hulo', world: 'werld' },
+        { hello: 'huloh', world: 'werld' },
         { showTooltips: true }
       );
 
       // Should have translated text with tooltip spans
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
       expect(document.querySelector('.ingglish-word')).not.toBeNull();
 
       // Restore
@@ -624,10 +624,10 @@ describe('dom-translator', () => {
       // First cycle: translate to "ingglish"
       await applyTranslationsMap(
         document.body,
-        { hello: 'hulo', world: 'werld' },
+        { hello: 'huloh', world: 'werld' },
         { showTooltips: true }
       );
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
 
       // Restore
       restoreDOM(document.body);
@@ -648,10 +648,10 @@ describe('dom-translator', () => {
       // Third cycle: back to "ingglish"
       await applyTranslationsMap(
         document.body,
-        { hello: 'hulo', world: 'werld' },
+        { hello: 'huloh', world: 'werld' },
         { showTooltips: true }
       );
-      expect(document.body.textContent).toBe('Hulo werld');
+      expect(document.body.textContent).toBe('Huloh werld');
 
       // Final restore
       restoreDOM(document.body);

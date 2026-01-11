@@ -5,7 +5,7 @@
  * ```typescript
  * import { translate } from '@ingglish/core';
  *
- * await translate('Hello, world!'); // 'hulo, werld!'
+ * await translate('Hello, world!'); // 'Huloh, werld!'
  * ```
  */
 

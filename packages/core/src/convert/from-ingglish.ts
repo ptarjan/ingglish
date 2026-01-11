@@ -18,7 +18,7 @@ const SPELLINGS_BY_LENGTH = Object.keys(INGGLISH_TO_ARPABET_MAP).sort(
 /**
  * Converts an Ingglish spelling to ARPAbet phonemes.
  *
- * @param ingglish - Ingglish string (e.g., "hulo" for "hello")
+ * @param ingglish - Ingglish string (e.g., "huloh" for "hello")
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH", "L", "OW"]), or null if empty
  */
 export function ingglishToArpabet(ingglish: string): string[] | null {

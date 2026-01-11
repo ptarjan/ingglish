@@ -51,14 +51,14 @@ import { translate, reverseTranslateText } from '@ingglish/core';
 
 // Translate English → Ingglish (async, auto-loads dictionary)
 const ingglish = await translate('Hello, world!');
-console.log(ingglish); // "hulo, werld!"
+console.log(ingglish); // "Huloh, werld!"
 
 // Translate English → IPA
 const ipa = await translate('Hello, world!', 'ipa');
 console.log(ipa); // "/həˈloʊ, wɝld!/"
 
 // Translate Ingglish → English (sync, after dictionary loaded)
-const english = reverseTranslateText('hulo, werld!');
+const english = reverseTranslateText('huloh, werld!');
 console.log(english); // "hello, world!"
 ```
 
@@ -98,11 +98,11 @@ Each sound maps to exactly one spelling:
 |-------|---------|----------|
 | Long "e" | ee | bee, see |
 | Long "i" | ii | my, time |
-| Long "o" | o | go, show |
+| Long "o" | oh | go, show |
 | Voiced "th" | dh | the, this |
 | Unvoiced "th" | th | think, bath |
 | Short "u" | u | but, cup |
-| "aw" sound | aw | caught, law |
+| "aw/o" sound | o | caught, law |
 | "er" sound | er | bird, her |
 
 See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
@@ -111,12 +111,12 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 | English | Ingglish | IPA |
 |---------|---------|-----|
-| hello | hulo | /həˈloʊ/ |
+| hello | huloh | /həˈloʊ/ |
 | world | werld | /wɝld/ |
 | beautiful | byootuful | /ˈbjutəfəl/ |
 | through | throo | /θɹu/ |
-| though | dho | /ðoʊ/ |
-| thought | thawt | /θɔt/ |
+| though | dhoh | /ðoʊ/ |
+| thought | thot | /θɔt/ |
 | the | dhu | /ðə/ |
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
@@ -139,7 +139,7 @@ cd packages/core
 npm run translate "Hello world"
 
 # Reverse translate
-npm run translate -- -r "hulo werld"
+npm run translate -- -r "huloh werld"
 
 # Debug round-trip issues
 npm run debug:roundtrip "beautiful"

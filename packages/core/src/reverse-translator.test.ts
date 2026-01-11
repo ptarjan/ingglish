@@ -162,7 +162,7 @@ describe('reverse-translator', () => {
   describe('reverseTranslateSync', () => {
     it('should translate text preserving punctuation', () => {
       // Basic test - translates words, keeps punctuation
-      const result = reverseTranslateSync('hulo, werld!');
+      const result = reverseTranslateSync('huloh, werld!');
       expect(result).toContain(',');
       expect(result).toContain('!');
     });

@@ -114,7 +114,7 @@ Ingglish    IPA
 └────┬───┘ └─────┬─────┘
      │           │
      ▼           ▼
-"hulo"     "/həˈloʊ/"
+"huloh"    "/həˈloʊ/"
 ```
 
 ### Reverse Translation Flow

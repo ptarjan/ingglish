@@ -117,7 +117,7 @@ Each diphthong gets a consistent spelling:
 
 | English | Phonemes | Ingglish |
 |---------|----------|---------|
-| hello | HH AH0 L OW1 | hulo |
+| hello | HH AH0 L OW1 | huloh |
 | world | W ER1 L D | werld |
 | beautiful | B Y UW1 T AH0 F AH0 L | byootuful |
 | think | TH IH1 NG K | thingk |
