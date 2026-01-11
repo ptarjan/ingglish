@@ -22,7 +22,11 @@ function getSystemTheme(): 'light' | 'dark' {
 
 function getTabFromHash(): Tab {
   const hash = window.location.hash.slice(1);
-  if (hash === 'url' || hash === 'guide' || hash === 'extension' || hash === 'docs') {
+  // Handle docs deep links like #docs/contributing
+  if (hash === 'docs' || hash.startsWith('docs/')) {
+    return 'docs';
+  }
+  if (hash === 'url' || hash === 'guide' || hash === 'extension') {
     return hash;
   }
   return 'text';
@@ -99,9 +103,14 @@ function App() {
     return '🌙';
   };
 
-  // Sync tab with URL hash
+  // Sync tab with URL hash (docs manages its own hash for deep linking)
   useEffect(() => {
-    window.location.hash = activeTab === 'text' ? '' : activeTab;
+    if (activeTab === 'text') {
+      window.location.hash = '';
+    } else if (activeTab !== 'docs') {
+      window.location.hash = activeTab;
+    }
+    // For docs tab, let the Docs component manage the hash
   }, [activeTab]);
 
   // Handle browser back/forward

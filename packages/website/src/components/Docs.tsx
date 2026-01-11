@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
@@ -40,6 +40,22 @@ const docs: DocEntry[] = [
   { id: 'debugging', title: 'Debugging', content: debugging, filename: 'debugging.md' },
 ];
 
+// Map filenames to doc IDs for link handling
+const filenameToId: Record<string, string> = {};
+for (const doc of docs) {
+  if (doc.filename !== undefined) {
+    filenameToId[doc.filename] = doc.id;
+  }
+}
+
+function getDocIdFromHash(): string | null {
+  const hash = window.location.hash.slice(1);
+  if (hash.startsWith('docs/')) {
+    return hash.slice(5); // Remove 'docs/' prefix
+  }
+  return null;
+}
+
 function getTextFromChildren(children: React.ReactNode): string {
   if (typeof children === 'string') {
     return children;
@@ -61,13 +77,39 @@ function createHeadingId(children: React.ReactNode): string {
 }
 
 function Docs(): React.JSX.Element {
-  const [activeDoc, setActiveDoc] = useState(docs[0].id);
+  const [activeDoc, setActiveDoc] = useState(() => {
+    const hashDocId = getDocIdFromHash();
+    if (hashDocId !== null && docs.some((d) => d.id === hashDocId)) {
+      return hashDocId;
+    }
+    return docs[0].id;
+  });
+
+  // Update URL hash when switching docs
+  useEffect(() => {
+    window.location.hash = `docs/${activeDoc}`;
+  }, [activeDoc]);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hashDocId = getDocIdFromHash();
+      if (hashDocId !== null && docs.some((d) => d.id === hashDocId)) {
+        setActiveDoc(hashDocId);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0];
 
   // Custom components to handle links and add heading IDs
   const components: Components = {
     a: ({ href, children, ...props }) => {
+      // Handle anchor links (smooth scroll)
       if (href?.startsWith('#') === true) {
         return (
           <a
@@ -86,6 +128,27 @@ function Docs(): React.JSX.Element {
           </a>
         );
       }
+      // Handle .md links (switch docs)
+      if (href?.endsWith('.md') === true) {
+        const filename = href.split('/').pop() ?? '';
+        const docId = filenameToId[filename];
+        if (docId !== undefined) {
+          return (
+            <a
+              href={`#docs/${docId}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveDoc(docId);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              {...props}
+            >
+              {children}
+            </a>
+          );
+        }
+      }
+      // External links
       return (
         <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
           {children}
