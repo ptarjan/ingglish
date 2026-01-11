@@ -431,12 +431,13 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 
 ### Key Findings
 
-1. **Most consonant choices are well-attested**: sh, ch, ng, j are Common or Universal
-2. **'dh' for /ð/ has real precedent**: Albanian uses it as an official alphabet letter
-3. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
-4. **'ie' for /aɪ/ matches English**: words like "tie", "pie", "die", "lie" already use this
+1. **Zero Novel spellings**: Every Ingglish spelling has precedent in at least one major language
+2. **Most consonant choices are well-attested**: sh, ch, ng, j are Common or Universal
+3. **'dh' for /ð/ has real precedent**: Albanian uses it as an official alphabet letter
+4. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
 5. **'oo' for /ʊ/ matches English**: words like "book", "good", "look" already use this
-6. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
+6. **'arr' for /æɹ/ matches English**: words like "carrot", "barrel", "arrow" already use this
+7. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
 
 ## Phonemic Orthography Success Stories
 
