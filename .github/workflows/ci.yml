@@ -85,6 +85,15 @@ jobs:
         with:
           name: build-output
 
+      - name: Debug - verify artifacts
+        run: |
+          echo "=== Checking dist directories ==="
+          ls -la packages/website/dist/ || echo "website dist missing!"
+          ls -la packages/core/dist/ || echo "core dist missing!"
+          echo "=== Checking dictionaries ==="
+          ls -la packages/core/src/dictionary/cmudict.ts || echo "cmudict missing!"
+          ls -la packages/core/src/fallback/ipa-dict-supplement.ts || echo "supplement missing!"
+
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(npm ls @playwright/test --json | jq -r '.. | .["@playwright/test"]? | .version? // empty' | head -1)" >> $GITHUB_OUTPUT
