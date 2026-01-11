@@ -6,8 +6,7 @@ import type { Plugin } from 'vite';
 // Skip sourcemaps for data and vendor chunks, format data chunks for readability
 function processChunks(): Plugin {
   const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
-  // Only format cmudict - word-frequencies uses JSON.parse() which breaks with literal newlines
-  const formatChunks = ['cmudict'];
+  const formatChunks = ['cmudict', 'word-frequencies'];
   return {
     name: 'process-chunks',
     generateBundle(_, bundle) {
@@ -60,8 +59,8 @@ export default defineConfig({
           if (id.includes('cmudict') || id.includes('ipa-dict-supplement')) {
             return 'cmudict';
           }
-          // Word frequency data is ~3.5MB, keep it separate
-          if (id.includes('subtlex-word-frequencies')) {
+          // Word frequency data - keep it separate (matches both npm package and generated file)
+          if (id.includes('word-frequencies')) {
             return 'word-frequencies';
           }
           // @ingglish libraries - separate for caching (library changes less than UI)

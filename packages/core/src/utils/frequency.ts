@@ -2,9 +2,9 @@
  * Word frequency scoring using SUBTLEX corpus data.
  * Used for selecting the most common word among homophones.
  */
-import wordFrequencies from 'subtlex-word-frequencies';
+import WORD_FREQUENCIES from '../data/word-frequencies';
 
-// Lazy-built frequency map - import happens at module load, Map built on first access
+// Lazy-built frequency map - data is an object, Map built on first access for case-insensitive lookup
 let frequencyMap: Map<string, number> | null = null;
 
 /**
@@ -17,7 +17,7 @@ function getFrequencyMap(): Map<string, number> {
   }
 
   frequencyMap = new Map<string, number>();
-  for (const { word, count } of wordFrequencies) {
+  for (const [word, count] of Object.entries(WORD_FREQUENCIES)) {
     frequencyMap.set(word.toLowerCase(), count);
   }
 

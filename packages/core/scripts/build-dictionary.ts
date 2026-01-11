@@ -10,9 +10,11 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import wordFrequencies from 'subtlex-word-frequencies';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'dictionary', 'cmudict.ts');
+const WORD_FREQ_OUTPUT_PATH = path.join(__dirname, '..', 'src', 'data', 'word-frequencies.ts');
 
 const CMUDICT_URL = 'https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict';
 
@@ -133,6 +135,37 @@ export default cmudict;
   // Show file size
   const stats = await fs.stat(OUTPUT_PATH);
   console.log(`File size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+
+  // Generate word-frequencies.ts from npm package
+  await generateWordFrequencies();
+}
+
+async function generateWordFrequencies(): Promise<void> {
+  // Skip if already exists (unless --force)
+  const forceUpdate = process.argv.includes('--force');
+  if (!forceUpdate && (await fileExists(WORD_FREQ_OUTPUT_PATH))) {
+    console.log('Word frequencies already exists, skipping (use --force to regenerate)');
+    return;
+  }
+
+  // Ensure data directory exists
+  await fs.mkdir(path.dirname(WORD_FREQ_OUTPUT_PATH), { recursive: true });
+
+  // Convert array to object: { word: count }
+  const frequencyMap: Record<string, number> = {};
+  for (const { word, count } of wordFrequencies) {
+    frequencyMap[word] = count;
+  }
+
+  const tsContent = `// Auto-generated word frequencies - do not edit
+// Generated from subtlex-word-frequencies npm package
+const WORD_FREQUENCIES: Record<string, number> = ${JSON.stringify(frequencyMap, null, 2)};
+export default WORD_FREQUENCIES;
+`;
+
+  await fs.writeFile(WORD_FREQ_OUTPUT_PATH, tsContent);
+  console.log(`Generated ${WORD_FREQ_OUTPUT_PATH}`);
+  console.log(`Total words: ${Object.keys(frequencyMap).length}`);
 }
 
 main().catch(console.error);
