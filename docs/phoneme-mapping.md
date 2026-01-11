@@ -97,7 +97,7 @@ When certain vowels are followed by R, they combine into special r-colored sound
 | AA + R | ar | ɑɹ | st**ar**, c**ar**, f**ar** | Father vowel + R |
 | AO + R | or | ɔɹ | st**ore**, m**ore**, f**or** | Thought vowel + R |
 | EH + R | air | ɛɹ | **air**, c**are**, th**ere** | Bed vowel + R |
-| AE + R | aar | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
+| AE + R | arr | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
 | ER | er | ɝ | b**ir**d, h**er**, t**ur**n | Standalone r-colored vowel |
 
 ### Why This Matters
@@ -112,20 +112,20 @@ This is problematic because spellings would collide. The R-rule ensures:
 - "star" → **star** (intuitive)
 - "store" → **stor** (clearly different from "star")
 - "air" → **air** (distinct from "her" → "her")
-- "barrow" → **baaroh** (distinct from "borrow" → "baroh")
+- "barrow" → **barroh** (distinct from "borrow" → "baroh")
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, and AE vowels use their regular spellings (o, aw, e, a).
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'aa', then R-coloring would happen automatically - no special rules needed.
+Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically - no special rules needed.
 
 The problem is readability. These spellings would make words look like different English words:
 - "hot" → "hat" (looks like the head covering)
 - "law" → "lo" (looks incomplete)
 - "bed" → "baid" (looks like "bade" or "bayed")
 
-The R-colored spellings (ar, or, air, aar) were chosen because they match English conventions *in the R context* - "star", "store", "air", "arrow" all look natural. But using their base vowels everywhere would create confusing false cognates.
+The R-colored spellings (ar, or, air, arr) were chosen because they match English conventions *in the R context* - "star", "store", "air", "arrow" all look natural. But using their base vowels everywhere would create confusing false cognates.
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 

@@ -317,7 +317,7 @@ This is distinctly American English - most languages don't have these:
 | star | ɑɹ | **ar** | Intuitive English spelling |
 | store | ɔɹ | **or** | Matches English conventions |
 | air | ɛɹ | **air** | Matches English conventions |
-| arrow | æɹ | **aar** | Distinguishes from 'ar' |
+| arrow | æɹ | **arr** | Doubled 'r' distinguishes from 'ar' |
 | bird | ɝ | **er** | Standard rhotic vowel |
 
 **Notes:**
@@ -425,7 +425,7 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | or | /ɔɹ/ | **Regional** | English convention; rhotic dialects only |
 | air | /ɛɹ/ | **Regional** | English convention; rhotic dialects only |
 | er | /ɝ/ | **Regional** | English convention; rhotic dialects only |
-| aar | /æɹ/ | **Novel** | Distinguishes "arrow" from "star"; Ingglish-specific |
+| arr | /æɹ/ | **Common** | Doubled 'r' after short vowel; matches English "carrot", "barrel" |
 
 Note: R-colored vowels are specific to rhotic English dialects. Most languages don't merge vowel + /r/ into single phonemic units.
 

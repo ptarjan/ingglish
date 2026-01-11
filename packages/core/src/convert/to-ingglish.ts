@@ -38,7 +38,7 @@ export function arpabetToIngglish(arpabet: string[]): string {
     const base = stripStress(phoneme);
     const nextBase = i + 1 < arpabet.length ? stripStress(arpabet[i + 1]) : null;
 
-    // R-colored vowels: AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'aar'
+    // R-colored vowels: AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'arr'
     if (base === 'AA' && nextBase === 'R') {
       result += 'a'; // The R will add 'r' on the next iteration
     } else if (base === 'AO' && nextBase === 'R') {
@@ -46,7 +46,7 @@ export function arpabetToIngglish(arpabet: string[]): string {
     } else if (base === 'EH' && nextBase === 'R') {
       result += 'ai'; // The R will add 'r' on the next iteration
     } else if (base === 'AE' && nextBase === 'R') {
-      result += 'aa'; // The R will add 'r' on the next iteration
+      result += 'ar'; // The R will add 'r' on the next iteration → 'arr'
     } else {
       result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
     }
