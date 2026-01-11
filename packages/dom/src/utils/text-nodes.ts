@@ -22,26 +22,20 @@ export function collectTextNodes(
 
   // Use SHOW_ALL to visit both elements and text nodes
   // This allows FILTER_REJECT on elements to skip entire subtrees
-  const walker = document.createTreeWalker(
-    root,
-    NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
-    {
-      acceptNode(node: Node): number {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          // For elements: reject (skip subtree) if should skip, otherwise skip (continue into children)
-          return shouldSkipElement(node as Element, skipTags, skipClasses)
-            ? NodeFilter.FILTER_REJECT
-            : NodeFilter.FILTER_SKIP;
-        }
-
-        // For text nodes: accept if non-empty
-        const text = (node as Text).textContent?.trim() ?? '';
-        return text.length > 0
-          ? NodeFilter.FILTER_ACCEPT
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+    acceptNode(node: Node): number {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        // For elements: reject (skip subtree) if should skip, otherwise skip (continue into children)
+        return shouldSkipElement(node as Element, skipTags, skipClasses)
+          ? NodeFilter.FILTER_REJECT
           : NodeFilter.FILTER_SKIP;
-      },
-    }
-  );
+      }
+
+      // For text nodes: accept if non-empty
+      const text = (node as Text).textContent?.trim() ?? '';
+      return text.length > 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    },
+  });
 
   while (walker.nextNode()) {
     if (walker.currentNode.nodeType === Node.TEXT_NODE) {

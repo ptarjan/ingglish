@@ -93,12 +93,9 @@ export function shouldSkipElement(
   skipClasses: string[]
 ): boolean {
   // Convert to Sets for O(1) lookup (cached if using defaults)
-  const tagsSet =
-    skipTags === DEFAULT_SKIP_TAGS ? DEFAULT_SKIP_TAGS_SET : new Set(skipTags);
+  const tagsSet = skipTags === DEFAULT_SKIP_TAGS ? DEFAULT_SKIP_TAGS_SET : new Set(skipTags);
   const classesSet =
-    skipClasses === DEFAULT_SKIP_CLASSES
-      ? DEFAULT_SKIP_CLASSES_SET
-      : new Set(skipClasses);
+    skipClasses === DEFAULT_SKIP_CLASSES ? DEFAULT_SKIP_CLASSES_SET : new Set(skipClasses);
   return checkElementSkip(element, tagsSet, classesSet);
 }
 

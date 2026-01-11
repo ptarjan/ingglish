@@ -104,9 +104,7 @@ function translateElementAttributes(
   format: OutputFormat = 'ingglish'
 ): void {
   // Only query elements that have translatable attributes (much smaller set than '*')
-  const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(
-    ','
-  );
+  const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
   const elements = Array.from(root.querySelectorAll(attrSelector));
 
   for (const element of elements) {
