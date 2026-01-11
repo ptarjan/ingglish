@@ -64,10 +64,10 @@ export const ARPABET_CONSONANTS = [
 ] as const;
 
 /** Pre-built Set for O(1) vowel lookup */
-const VOWELS_SET = new Set(ARPABET_VOWELS);
+const VOWELS_SET = new Set<string>(ARPABET_VOWELS);
 
 /** Pre-built Set for O(1) consonant lookup */
-const CONSONANTS_SET = new Set(ARPABET_CONSONANTS);
+const CONSONANTS_SET = new Set<string>(ARPABET_CONSONANTS);
 
 /** Regex pattern to match ARPAbet stress markers (0, 1, 2) at end of phoneme */
 export const STRESS_MARKER_REGEX = /[012]$/;
