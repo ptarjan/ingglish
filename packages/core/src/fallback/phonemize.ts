@@ -9,17 +9,20 @@ import { arpabetToFormat } from '../convert/to-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
 import type { OutputFormat } from '../types';
 
+// Type for the phonemize function
+type PhonemizeFn = ((text: string) => string) | null;
+
 // Lazy-loaded phonemize function
-let phonemizeFn: ((text: string) => string) | null = null;
+let phonemizeFn: PhonemizeFn = null;
 // Cache the load promise to prevent concurrent loads (race condition)
-let loadPromise: Promise<typeof phonemizeFn> | null = null;
+let loadPromise: Promise<PhonemizeFn> | null = null;
 
 /**
  * Attempts to load the phonemize module.
  * Returns null if not available (fails silently).
  * Uses promise caching to prevent race conditions on concurrent calls.
  */
-async function loadPhonemize(): Promise<typeof phonemizeFn> {
+async function loadPhonemize(): Promise<PhonemizeFn> {
   if (loadPromise) {
     return loadPromise;
   }
@@ -42,7 +45,7 @@ async function loadPhonemize(): Promise<typeof phonemizeFn> {
 /**
  * Synchronously get the phonemize function if already loaded.
  */
-function getPhonemize(): typeof phonemizeFn {
+function getPhonemize(): PhonemizeFn {
   return phonemizeFn;
 }
 
