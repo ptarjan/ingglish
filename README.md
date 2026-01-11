@@ -47,7 +47,7 @@ npm run build
 ### Core Library
 
 ```typescript
-import { translate, reverseTranslateText } from '@ingglish/core';
+import { translate, reverseTranslateSync } from '@ingglish/core';
 
 // Translate English → Ingglish (async, auto-loads dictionary)
 const ingglish = await translate('Hello, world!');
@@ -58,7 +58,7 @@ const ipa = await translate('Hello, world!', 'ipa');
 console.log(ipa); // "/həˈloʊ, wɝld!/"
 
 // Translate Ingglish → English (sync, after dictionary loaded)
-const english = reverseTranslateText('huloh, werld!');
+const english = reverseTranslateSync('huloh, werld!');
 console.log(english); // "hello, world!"
 ```
 
