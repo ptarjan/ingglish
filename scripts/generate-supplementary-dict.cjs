@@ -164,8 +164,8 @@ async function main() {
     process.exit(1);
   }
   // Parse the TypeScript file to extract the JSON object
-  const tsContent = fs.readFileSync(cmuPath, 'utf8');
-  const jsonMatch = tsContent.match(/export default ({.*}) as const;/s);
+  const cmuTsContent = fs.readFileSync(cmuPath, 'utf8');
+  const jsonMatch = cmuTsContent.match(/export default ({.*}) as const;/s);
   if (!jsonMatch) {
     console.error('Could not parse CMU dictionary TypeScript file');
     process.exit(1);
