@@ -3,48 +3,54 @@
  * Used for selecting the most common word among homophones.
  */
 
-// Lazy-loaded frequency map
+// Lazy-loaded frequency data and map
+let wordFrequencies: Record<string, number> | null = null;
+let frequenciesPromise: Promise<Record<string, number>> | null = null;
 let frequencyMap: Map<string, number> | null = null;
-let loadPromise: Promise<Map<string, number>> | null = null;
 
 /**
- * Gets the frequency map, loading it lazily on first access.
- * Uses dynamic import to allow code splitting of the 1MB+ data.
+ * Loads word frequency data.
+ * The data is cached after first load.
  */
-async function getFrequencyMapAsync(): Promise<Map<string, number>> {
+export async function loadFrequencies(): Promise<Record<string, number>> {
+  if (wordFrequencies) {
+    return wordFrequencies;
+  }
+
+  if (frequenciesPromise) {
+    return frequenciesPromise;
+  }
+
+  frequenciesPromise = import('../data/word-frequencies')
+    .then((module: { default: Record<string, number> }) => {
+      wordFrequencies = module.default;
+      return wordFrequencies;
+    })
+    .catch((error: unknown) => {
+      frequenciesPromise = null; // Reset so retry is possible
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load word frequencies: ${message}`);
+    });
+
+  return frequenciesPromise;
+}
+
+/**
+ * Gets the frequency map, building it lazily from loaded data.
+ */
+function getFrequencyMap(): Map<string, number> | null {
   if (frequencyMap) {
     return frequencyMap;
   }
-  if (loadPromise) {
-    return loadPromise;
+  if (!wordFrequencies) {
+    return null;
   }
 
-  loadPromise = (async () => {
-    const { default: WORD_FREQUENCIES } = await import('../data/word-frequencies');
-    frequencyMap = new Map<string, number>();
-    for (const [word, count] of Object.entries(WORD_FREQUENCIES)) {
-      frequencyMap.set(word.toLowerCase(), count);
-    }
-    return frequencyMap;
-  })();
-
-  return loadPromise;
-}
-
-/**
- * Gets the frequency map synchronously. Returns null if not yet loaded.
- * Call preloadFrequencies() first to ensure data is available.
- */
-function getFrequencyMap(): Map<string, number> | null {
+  frequencyMap = new Map<string, number>();
+  for (const [word, count] of Object.entries(wordFrequencies)) {
+    frequencyMap.set(word.toLowerCase(), count);
+  }
   return frequencyMap;
-}
-
-/**
- * Preloads word frequency data. Call this at app startup for best performance.
- * Without preloading, frequency-based sorting won't work until data loads.
- */
-export async function preloadFrequencies(): Promise<void> {
-  await getFrequencyMapAsync();
 }
 
 /**

@@ -10,6 +10,7 @@
  */
 
 import { loadDictionary } from './dictionary';
+import { loadFrequencies } from './utils/frequency';
 import { translateSync } from './translate';
 
 // =============================================================================
@@ -27,7 +28,8 @@ export async function translate(
   text: string,
   format: import('./types').OutputFormat = 'ingglish'
 ): Promise<string> {
-  await loadDictionary();
+  // Load dictionary and word frequencies in parallel
+  await Promise.all([loadDictionary(), loadFrequencies()]);
   return translateSync(text, format);
 }
 
