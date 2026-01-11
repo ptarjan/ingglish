@@ -77,6 +77,14 @@ Over 1 billion people read English. Any reform makes existing text harder to rea
 
 **Ingglish's approach:** Positioned as a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
+Unlike historical reforms that required institutional buy-in, Ingglish provides tools for individual exploration:
+- **Text translator**: Paste any text to see it in Ingglish instantly
+- **URL translator**: View any webpage translated while preserving layout ([see this page in Ingglish](https://paultarjan.com/ingglish/#url/https://paultarjan.com/ingglish))
+- **Chrome extension**: Browse the entire web in Ingglish
+- **Bidirectional translation**: Read Ingglish back to standard English
+
+This lets anyone experience phonemic English without waiting for collective adoption.
+
 ### 4. No Central Authority
 
 There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
@@ -118,7 +126,7 @@ Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and childr
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](https://ingglish.com/#docs/orthography-comparison), showing how each maps to IPA and compares to other languages.
+**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](https://paultarjan.com/ingglish/#docs/orthography-comparison), showing how each maps to IPA and compares to other languages.
 
 ### 10. Vested Interests
 
@@ -246,9 +254,9 @@ The bar for success isn't "everyone uses Ingglish." It's "Ingglish is useful to 
 
 ## Further Reading
 
-- [Orthography Comparison](https://ingglish.com/#docs/orthography-comparison) - How Ingglish's specific spellings compare to other languages
-- [Phoneme Mapping](https://ingglish.com/#docs/phoneme-mapping) - The complete sound-to-spelling reference
-- [Architecture](https://ingglish.com/#docs/architecture) - How the translation system works
+- [Orthography Comparison](https://paultarjan.com/ingglish/#docs/orthography-comparison) - How Ingglish's specific spellings compare to other languages
+- [Phoneme Mapping](https://paultarjan.com/ingglish/#docs/phoneme-mapping) - The complete sound-to-spelling reference
+- [Architecture](https://paultarjan.com/ingglish/#docs/architecture) - How the translation system works
 
 ## Video Resources
 

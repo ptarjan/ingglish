@@ -1,12 +1,6 @@
 # Orthography Comparison: How Common Are Ingglish's Spelling Choices?
 
-This document analyzes each Ingglish spelling choice and rates how widely it's used across world languages:
-
-- **Universal**: Used by most languages with this sound
-- **Common**: Used by multiple language families
-- **Regional**: Used by a specific language family or region
-- **Rare**: Used by few languages
-- **Novel**: Invented for Ingglish or very uncommon
+This document analyzes each Ingglish spelling choice and compares it to conventions in other languages.
 
 ## Design Philosophy
 
@@ -181,6 +175,40 @@ This is distinctly American English - most languages don't have these:
 
 ## Commonality Ratings Summary
 
+Each spelling is rated by how widely it's used across world languages:
+
+- **Universal**: Used by most languages with this sound
+- **Common**: Used by multiple language families
+- **Regional**: Used by a specific language family or region
+- **Rare**: Used by few languages
+- **Novel**: Invented for Ingglish or very uncommon
+
+### Single Consonants
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| b | /b/ | **Universal** | Standard across virtually all Latin-script languages |
+| d | /d/ | **Universal** | Standard across virtually all Latin-script languages |
+| f | /f/ | **Universal** | Standard across virtually all Latin-script languages |
+| g | /g/ | **Universal** | Always hard /g/, never /dʒ/ as in English "gem" |
+| h | /h/ | **Universal** | Standard; silent in some languages but letter is universal |
+| k | /k/ | **Universal** | Standard across virtually all Latin-script languages |
+| l | /l/ | **Universal** | Standard across virtually all Latin-script languages |
+| m | /m/ | **Universal** | Standard across virtually all Latin-script languages |
+| n | /n/ | **Universal** | Standard across virtually all Latin-script languages |
+| p | /p/ | **Universal** | Standard across virtually all Latin-script languages |
+| r | /ɹ/ | **Universal** | Letter universal; exact sound varies by language |
+| s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
+| t | /t/ | **Universal** | Standard across virtually all Latin-script languages |
+| v | /v/ | **Universal** | Standard across virtually all Latin-script languages |
+| w | /w/ | **Common** | Less common in some European languages |
+| y | /j/ | **Common** | Used for /j/ in English, German, Scandinavian |
+| z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
+
+Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlike English, 'g' is always hard, 's' is always /s/, and 'c' is not used (replaced by 'k' or 's').
+
+### Consonant Digraphs
+
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
 | sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
@@ -190,6 +218,21 @@ This is distinctly American English - most languages don't have these:
 | ch | /tʃ/ | **Universal** | Spanish, English, Czech, Portuguese, and most Latin-script languages |
 | j | /dʒ/ | **Common** | English-influenced: Indonesian, Malay, Somali, Indian romanization |
 | ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
+
+### Short Vowels
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| a | /æ/ | **Common** | Most languages use 'a' for an open front vowel |
+| e | /ɛ/ | **Universal** | Nearly all Latin-script languages |
+| i | /ɪ/ | **Universal** | Standard across Romance, Germanic languages |
+| o | /ɑ/ | **Common** | Spanish 'o'; matches "father" vowel in many languages |
+| u | /ʌ/ | **Regional** | English convention ("but", "cup"); Spanish/Italian use 'a' for similar sound |
+
+### Long Vowels & Diphthongs
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
 | oo | /uː/ | **Common** | Finnish 'uu', Dutch 'oo'; consistent doubling pattern |
 | uu | /ʊ/ | **Novel** | Ingglish innovation—most languages don't distinguish /uː/ from /ʊ/ |
@@ -198,6 +241,19 @@ This is distinctly American English - most languages don't have these:
 | ow | /aʊ/ | **Regional** | English convention; German/Dutch use 'au' more commonly |
 | oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ow' |
 | oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
+| aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
+
+### R-Colored Vowels
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| ar | /ɑɹ/ | **Regional** | English convention; rhotic dialects only |
+| or | /ɔɹ/ | **Regional** | English convention; rhotic dialects only |
+| air | /ɛɹ/ | **Regional** | English convention; rhotic dialects only |
+| er | /ɝ/ | **Regional** | English convention; rhotic dialects only |
+| aar | /æɹ/ | **Novel** | Distinguishes "arrow" from "star"; Ingglish-specific |
+
+Note: R-colored vowels are specific to rhotic English dialects. Most languages don't merge vowel + /r/ into single phonemic units.
 
 ### Key Findings
 
@@ -208,47 +264,11 @@ This is distinctly American English - most languages don't have these:
 5. **One genuinely novel spelling**: 'uu' for /ʊ/ (most languages don't need this distinction)
 6. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
 
-## Historical Context: English Spelling Reform
-
-Ingglish isn't the first attempt at phonemic English spelling. Understanding this history shows why certain choices work better than others.
-
-### Notable Reform Systems
-
-| System | Year | Approach | Status |
-|--------|------|----------|--------|
-| Benjamin Franklin's Phonetic Alphabet | 1768 | New letters for sounds | Never adopted |
-| Pitman's Initial Teaching Alphabet (ITA) | 1961 | 44 characters, used in schools | Declined by 1970s |
-| Shavian Alphabet | 1962 | Entirely new script (40+ letters) | Niche use |
-| SoundSpel | 1970s | ASCII-compatible reform | Limited adoption |
-| Cut Spelling | 1992 | Remove redundant letters | Academic proposal |
-
-### Why Previous Reforms Failed
-
-1. **New characters**: Shavian, ITA, and Franklin's system required learning entirely new alphabets
-2. **Printing costs**: Pre-digital systems couldn't easily add new characters
-3. **Compatibility**: Couldn't be typed on standard keyboards
-4. **Institutional resistance**: Publishers, educators, and governments rejected changes
-
-### Where Ingglish Differs
-
-- **No new characters**: Uses only the 26 ASCII letters
-- **Familiar digraphs**: 'sh', 'ch', 'th' are already known to English readers
-- **Keyboard compatible**: Works on any device without special input methods
-- **Incremental exposure**: Chrome extension allows gradual familiarity
-
 ## Phonemic Orthography Success Stories
 
-Several languages have successfully implemented or reformed their orthographies to be highly phonemic.
+For a detailed analysis of why previous English spelling reforms failed (and succeeded), see [Spelling Reform History](spelling-reform-comparison.md).
 
-### Turkish (1928 Reform)
-
-| Before | After |
-|--------|-------|
-| Arabic script | Latin alphabet with 29 letters |
-| ~10% literacy | ~90% literacy by 1950s |
-| Complex vowel harmony unmarked | Systematic: ö, ü, ı, ş, ç, ğ |
-
-**Key insight**: Turkey's script reform dramatically improved literacy because the new orthography matched spoken Turkish. Children learn to read Turkish in a few months, compared to years for English.
+Below are examples of phonemic orthographies that use spellings similar to Ingglish.
 
 ### Finnish
 
@@ -258,15 +278,6 @@ Finnish is often cited as having the most transparent orthography in Europe:
 - Double letters indicate length (aa, ee, oo) — same principle Ingglish uses
 - Children achieve reading fluency by end of first grade
 - Dyslexia rates are significantly lower than in English-speaking countries
-
-### Korean Hangul (1443)
-
-While not Latin-based, Hangul demonstrates phonemic design principles:
-
-- Each letter represents exactly one phoneme
-- Letters are grouped into syllable blocks
-- Called "the most scientific writing system" by linguists
-- Literacy can be achieved in days, not years
 
 ### Swahili
 
@@ -336,11 +347,7 @@ This explains why English spelling is so difficult: we're mapping ~15 vowel soun
 
 ### What Makes Ingglish Practical
 
-Unlike historical reforms, Ingglish:
-- Requires no new characters (unlike Shavian, ITA)
-- Works on any keyboard (unlike diacritic-heavy systems)
-- Uses familiar patterns (sh, ch from English; ee, oo from Finnish)
-- Can be learned gradually through exposure (via browser extension)
+Unlike historical reforms, Ingglish uses only ASCII letters, works on any keyboard, and builds on familiar patterns. For a deeper analysis of why this matters, see [Spelling Reform History](spelling-reform-comparison.md).
 
 ## References
 
