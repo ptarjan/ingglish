@@ -8,6 +8,7 @@ import contributing from '../../../../docs/contributing.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import deployment from '../../../../docs/deployment.md';
 import performance from '../../../../docs/performance.md';
+import orthographyComparison from '../../../../docs/orthography-comparison.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 
 interface DocEntry {
@@ -27,6 +28,12 @@ const docs: DocEntry[] = [
     title: 'Phoneme Mapping',
     content: phonemeMapping,
     filename: 'phoneme-mapping.md',
+  },
+  {
+    id: 'orthography-comparison',
+    title: 'Orthography Comparison',
+    content: orthographyComparison,
+    filename: 'orthography-comparison.md',
   },
   { id: 'performance', title: 'Performance', content: performance, filename: 'performance.md' },
   { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },

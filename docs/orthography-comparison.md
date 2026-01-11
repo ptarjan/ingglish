@@ -42,16 +42,16 @@ Our constraint of using only the 26 ASCII letters (no diacritics) limits some op
 
 | Sound | IPA | Ingglish | Other Languages |
 |-------|-----|----------|-----------------|
-| my, time | aɪ | **ii** | German: 'ei', Dutch: 'ij/ei' |
+| my, time | aɪ | **ie** | German: 'ei', Dutch: 'ij/ei', English: 'ie' (tie, pie) |
 | say, day | eɪ | **ay** | Spanish: 'ey', German: 'ei' (different sound!) |
 | go, show | oʊ | **oh** | Dutch: 'oo', German: 'o' |
 | cow, out | aʊ | **ow** | German: 'au', Dutch: 'au/ou' |
 | boy, toy | ɔɪ | **oi** | Universal - German 'eu/äu', Dutch 'ooi' |
 
 **Notes:**
-- [German 'ei'](https://en.wikipedia.org/wiki/German_orthography) represents /aɪ/ (same as our 'ii'), while 'ie' is /iː/
+- [German 'ei'](https://en.wikipedia.org/wiki/German_orthography) represents /aɪ/, while 'ie' is /iː/
 - [Dutch has spelling ambiguity](https://en.wikipedia.org/wiki/Dutch_orthography): 'ij' and 'ei' both represent /ɛi/
-- Our 'ii' for /aɪ/ is unconventional but unambiguous
+- Our 'ie' for /aɪ/ matches English words like "tie", "pie", "die", "lie"
 - Our 'ow' matches English conventions ("cow", "now")
 
 ## Consonants
@@ -165,14 +165,14 @@ This is distinctly American English - most languages don't have these:
 ### Novel Choices
 - **dh** for /ð/ - distinguishes from /θ/, inspired by linguistic notation
 - **zh** for /ʒ/ - parallels sh/zh voicing pair, used in Romanization
-- **ii** for /aɪ/ - unconventional but unambiguous
+- **ie** for /aɪ/ - matches English "tie", "pie", "die" pattern
 - **uu** for /ʊ/ - distinguishes from /u/
 - **oh** for /oʊ/ - avoids confusion with /aʊ/ ('ow')
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
-- Some choices (like 'ii' for /aɪ/) sacrifice convention for consistency
+- Some choices prioritize pattern matching with existing English words (like 'ie' for /aɪ/ matching "tie", "pie")
 
 ## References
 
