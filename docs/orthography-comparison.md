@@ -159,20 +159,19 @@ This is distinctly American English - most languages don't have these:
 - **ch** for /tʃ/ (universal)
 - **ng** for /ŋ/ (universal)
 - **ee/oo** for long vowels (Finnish-style doubling)
+- **ie** for /aɪ/ (English: tie, pie, die, lie)
 - **oi** for /ɔɪ/ (universal)
 - **ow** for /aʊ/ (English)
 
 ### Novel Choices
 - **dh** for /ð/ - distinguishes from /θ/, inspired by linguistic notation
 - **zh** for /ʒ/ - parallels sh/zh voicing pair, used in Romanization
-- **ie** for /aɪ/ - matches English "tie", "pie", "die" pattern
 - **uu** for /ʊ/ - distinguishes from /u/
 - **oh** for /oʊ/ - avoids confusion with /aʊ/ ('ow')
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
-- Some choices prioritize pattern matching with existing English words (like 'ie' for /aɪ/ matching "tie", "pie")
 
 ## References
 
