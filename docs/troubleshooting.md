@@ -43,7 +43,7 @@ npm run lint
 
 When a word fails to round-trip (English → Ingglish → English doesn't return the original):
 
-## Quick Start
+#### Quick Start
 
 ```bash
 # From the repo root
@@ -54,7 +54,7 @@ This shows a detailed breakdown of the translation pipeline.
 
 > **Note:** The debug script runs via vitest because the CMU dictionary uses JSON imports that require proper ESM handling. The script generates a temporary test file, runs it, then cleans up.
 
-## Understanding the Output
+#### Understanding the Output
 
 ```
 ═══════════════════════════════════════════
@@ -87,9 +87,9 @@ This shows a detailed breakdown of the translation pipeline.
    ✓ SUCCESS - "exhumed" found in results
 ```
 
-## Common Issues
+#### Common Issues
 
-### 1. Phoneme Parsing Ambiguity
+##### 1. Phoneme Parsing Ambiguity
 
 The most common issue is when an Ingglish spelling can be parsed multiple ways:
 
@@ -108,17 +108,17 @@ const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
 };
 ```
 
-### 2. Word Not in CMU Dictionary
+##### 2. Word Not in CMU Dictionary
 
 If step 1 shows "Word not found", the word isn't in the CMU Pronouncing Dictionary. It will be passed through unchanged or use fallback heuristics.
 
-### 3. Phoneme Sequence Not Found
+##### 3. Phoneme Sequence Not Found
 
 If the parsed phonemes don't match any dictionary entry, check:
 1. Are the expected phonemes correct? (CMU may have errors)
 2. Is there a more common word with the same phonemes? (homophones)
 
-## Adding a Regression Test
+#### Adding a Regression Test
 
 After fixing an issue, add a test to prevent regression:
 
@@ -133,7 +133,7 @@ it('should round-trip "exhumed"', () => {
 });
 ```
 
-## Architecture Overview
+#### Architecture Overview
 
 ```
 English → Ingglish → English
