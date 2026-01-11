@@ -168,7 +168,7 @@ See [Deployment Guide](docs/deployment.md) for detailed instructions on deployin
 ## Documentation
 
 ### Reference
-- [API Reference](docs/api-reference.md) - Complete API for @ingglish/core and @ingglish/dom
+- [API Reference](https://ingglish.com/#docs/api-reference) - Complete API for @ingglish/core (auto-generated)
 - [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA conversion rules
 - [Architecture](docs/architecture.md) - System design, data flow, and module structure
 

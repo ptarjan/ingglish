@@ -30,12 +30,15 @@ export function restoreDOM(root: Element | Document): void {
     element.removeAttribute('data-ingglish-original');
   }
 
-  // Restore attributes
-  for (const attrName of TRANSLATABLE_ATTRIBUTES) {
-    const originalAttrName = `data-ingglish-original-${attrName}`;
-    const elementsWithAttr = Array.from(root.querySelectorAll(`[${originalAttrName}]`));
+  // Restore attributes - batch query for all translatable attributes at once
+  const attrSelector = TRANSLATABLE_ATTRIBUTES.map(
+    (attr) => `[data-ingglish-original-${attr}]`
+  ).join(',');
+  const elementsWithTranslatedAttrs = Array.from(root.querySelectorAll(attrSelector));
 
-    for (const element of elementsWithAttr) {
+  for (const element of elementsWithTranslatedAttrs) {
+    for (const attrName of TRANSLATABLE_ATTRIBUTES) {
+      const originalAttrName = `data-ingglish-original-${attrName}`;
       const originalValue = element.getAttribute(originalAttrName);
       if (originalValue !== null) {
         element.setAttribute(attrName, originalValue);
