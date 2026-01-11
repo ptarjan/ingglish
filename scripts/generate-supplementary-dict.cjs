@@ -157,9 +157,13 @@ async function main() {
     console.log('Downloaded ipa-dict');
   }
 
-  // Load CMU dictionary (from built cmudict.json)
-  const cmuDictPath = path.join(__dirname, '..', 'packages', 'core', 'src', 'dictionary', 'cmudict.json');
-  const cmu = JSON.parse(fs.readFileSync(cmuDictPath, 'utf8'));
+  // Load CMU dictionary from our local JSON
+  const cmuPath = path.join(__dirname, '..', 'packages', 'core', 'src', 'dictionary', 'cmudict.json');
+  if (!fs.existsSync(cmuPath)) {
+    console.error('CMU dictionary not found. Run "npm run update-dictionary" in packages/core first.');
+    process.exit(1);
+  }
+  const cmu = JSON.parse(fs.readFileSync(cmuPath, 'utf8'));
   const cmuWords = new Set(Object.keys(cmu).filter(w => !w.includes('(')));
   console.log(`CMU has ${cmuWords.size} words`);
 
