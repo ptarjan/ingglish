@@ -20,6 +20,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // @ingglish libraries - separate for caching (library changes less than UI)
+          // Check for monorepo paths (packages/core, packages/dom)
+          if (id.includes('packages/core') || id.includes('packages/dom')) {
+            return 'ingglish';
+          }
           // Split vendor code for better caching
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
             return 'vendor';
@@ -29,8 +34,8 @@ export default defineConfig({
             return 'word-frequencies';
           }
           // The CMU dictionary is large (~4MB), keep it separate for caching
-          if (id.includes('@ingglish/core') && id.includes('index')) {
-            return 'dictionary';
+          if (id.includes('cmudict') || id.includes('ipa-dict-supplement')) {
+            return 'cmudict';
           }
         },
       },
