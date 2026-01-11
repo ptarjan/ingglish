@@ -449,7 +449,8 @@ Below are examples of phonemic orthographies that use spellings similar to Inggl
 Finnish is often cited as having the most transparent orthography in Europe:
 
 - **99% phoneme-to-grapheme consistency**
-- Double letters indicate length (aa, ee, oo) — same principle Ingglish uses
+- Double letters indicate length (aa, ee, uu) — Ingglish follows this exactly
+- 'uu' for /uː/ in Finnish matches Ingglish 'uu' for the same sound
 - Children achieve reading fluency by end of first grade
 - Dyslexia rates are significantly lower than in English-speaking countries
 
