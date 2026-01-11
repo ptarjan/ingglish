@@ -25,7 +25,8 @@ interface DocEntry {
   filename?: string; // undefined for auto-generated docs
 }
 
-const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
+const GITHUB_EDIT_BASE =
+  'https://github.com/ptarjan/ingglish/edit/claude/url-translator-shared-lib-hNsxZ/docs/';
 
 const docs: DocEntry[] = [
   {
