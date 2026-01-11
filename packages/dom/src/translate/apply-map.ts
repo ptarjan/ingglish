@@ -93,7 +93,7 @@ export function applyTranslationsMap(
   requireBrowser();
 
   const {
-    showTooltips = true,
+    showTooltips = false,
     chunkSize = DEFAULT_CHUNK_SIZE,
     textNodes: preCollectedNodes,
     onProgress,
