@@ -118,17 +118,13 @@ The rule applies only when the vowel is immediately followed by R in the phoneme
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not just spell AA as 'ar' everywhere, even without R? Then "hot" would be "hart" and "star" would be "star" - no special rules needed.
+Why not spell AA as 'a' everywhere? Then "hot" would be "hat" and "star" would be "star" - consistent and simple.
 
-The problem is ambiguity when reading. If 'ar' always means AA, then when you see "kar":
-- Is it K + AA = "car" (K AA)?
-- Or is it K + A + R = the start of "carry" (K AE R)?
+The problem is that 'a' is already used for AE (the "cat" vowel). Using 'a' for AA would create collisions:
+- "hot" (H AA T) → "hat"
+- "hat" (H AE T) → "hat"
 
-The 'a' is already used for AE (the "cat" vowel), so 'ar' could be parsed as either AA or AE+R. By only using 'ar' when R actually follows in pronunciation, we keep the spelling unambiguous:
-- "car" (K AA R) → "kar" (k + ar)
-- "carry" (K AE R IY) → "kaaree" (k + aar + ee)
-
-These are clearly different spellings that can be read back correctly.
+These are different words with different sounds, but they'd have identical spellings. Each vowel needs its own unique spelling, which is why AA uses 'o' (not 'a') when not followed by R.
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
