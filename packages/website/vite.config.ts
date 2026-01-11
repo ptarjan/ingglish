@@ -3,15 +3,15 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 
-// Skip sourcemaps for large data chunks (dictionary, frequencies)
+// Skip sourcemaps for data and vendor chunks (only keep for app code)
 function skipDataSourcemaps(): Plugin {
-  const dataChunks = ['cmudict', 'word-frequencies'];
+  const skipChunks = ['cmudict', 'word-frequencies', 'vendor'];
   return {
     name: 'skip-data-sourcemaps',
     generateBundle(_, bundle) {
       for (const name of Object.keys(bundle)) {
         // Delete sourcemap files for data chunks
-        if (name.endsWith('.map') && dataChunks.some((c) => name.includes(c))) {
+        if (name.endsWith('.map') && skipChunks.some((c) => name.includes(c))) {
           delete bundle[name];
           continue;
         }
@@ -19,7 +19,7 @@ function skipDataSourcemaps(): Plugin {
         const asset = bundle[name];
         if (
           asset?.type === 'chunk' &&
-          dataChunks.some((c) => name.includes(c)) &&
+          skipChunks.some((c) => name.includes(c)) &&
           typeof asset.code === 'string'
         ) {
           asset.code = asset.code.replace(/\n\/\/# sourceMappingURL=.*$/, '');
