@@ -49,12 +49,17 @@ for (const doc of docs) {
   }
 }
 
-function getDocIdFromHash(): string | null {
+function parseDocsHash(): { docId: string | null; sectionId: string | null } {
   const hash = window.location.hash.slice(1);
   if (hash.startsWith('docs/')) {
-    return hash.slice(5); // Remove 'docs/' prefix
+    const path = hash.slice(5); // Remove 'docs/' prefix
+    const slashIndex = path.indexOf('/');
+    if (slashIndex !== -1) {
+      return { docId: path.slice(0, slashIndex), sectionId: path.slice(slashIndex + 1) };
+    }
+    return { docId: path, sectionId: null };
   }
-  return null;
+  return { docId: null, sectionId: null };
 }
 
 function createHeadingId(text: string): string {
@@ -80,24 +85,45 @@ function createHeadingComponent(Tag: 'h1' | 'h2' | 'h3' | 'h4') {
 
 function Docs(): JSX.Element {
   const [activeDoc, setActiveDoc] = useState(() => {
-    const hashDocId = getDocIdFromHash();
-    if (hashDocId !== null && docs.some((d) => d.id === hashDocId)) {
-      return hashDocId;
+    const { docId } = parseDocsHash();
+    if (docId !== null && docs.some((d) => d.id === docId)) {
+      return docId;
     }
     return docs[0].id;
   });
 
-  // Update URL hash when switching docs
+  // Update URL hash when switching docs (preserve section if same doc)
   useEffect(() => {
-    window.location.hash = `docs/${activeDoc}`;
+    const { docId: currentDocId, sectionId } = parseDocsHash();
+    if (currentDocId !== activeDoc) {
+      window.location.hash = `docs/${activeDoc}`;
+    } else if (sectionId === null) {
+      window.location.hash = `docs/${activeDoc}`;
+    }
   }, [activeDoc]);
+
+  // Scroll to section on initial load
+  useEffect(() => {
+    const { sectionId } = parseDocsHash();
+    if (sectionId !== null) {
+      // Wait for markdown to render
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView();
+      }, 100);
+    }
+  }, []);
 
   // Handle browser back/forward
   useEffect(() => {
     const handleHashChange = () => {
-      const hashDocId = getDocIdFromHash();
-      if (hashDocId !== null && docs.some((d) => d.id === hashDocId)) {
-        setActiveDoc(hashDocId);
+      const { docId, sectionId } = parseDocsHash();
+      if (docId !== null && docs.some((d) => d.id === docId)) {
+        setActiveDoc(docId);
+        if (sectionId !== null) {
+          setTimeout(() => {
+            document.getElementById(sectionId)?.scrollIntoView();
+          }, 100);
+        }
       }
     };
     window.addEventListener('hashchange', handleHashChange);
@@ -131,9 +157,10 @@ function Docs(): JSX.Element {
           </a>
         );
       }
-      // Anchor links work natively
+      // Anchor links - transform to full docs path for shareability
+      const sectionId = href.slice(1);
       return (
-        <a href={href} {...props}>
+        <a href={`#docs/${activeDoc}/${sectionId}`} {...props}>
           {children}
         </a>
       );
