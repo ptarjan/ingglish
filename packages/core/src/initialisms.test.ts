@@ -101,8 +101,8 @@ describe('initialisms', () => {
 
     it('should translate AI correctly', () => {
       const result = translateWord('AI', 'ingglish');
-      // AI = Artificial Intelligence → first letters stay all caps
-      expect(result).toBe('AI');
+      // AI = Artificial Intelligence → ortifishul intelijuns → OI
+      expect(result).toBe('OI');
     });
   });
 

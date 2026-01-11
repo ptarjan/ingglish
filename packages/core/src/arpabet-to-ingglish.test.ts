@@ -123,10 +123,10 @@ describe('phoneme-map', () => {
 
     it('should handle vowel sounds correctly', () => {
       // Test each vowel
-      expect(arpabetToIngglish(['AA1'])).toBe('ah'); // father
+      expect(arpabetToIngglish(['AA1'])).toBe('o'); // father, hot, rock
       expect(arpabetToIngglish(['AE1'])).toBe('a'); // cat
       expect(arpabetToIngglish(['AH1'])).toBe('u'); // but
-      expect(arpabetToIngglish(['AO1'])).toBe('o'); // caught
+      expect(arpabetToIngglish(['AO1'])).toBe('aw'); // caught, law, thought
       expect(arpabetToIngglish(['AW1'])).toBe('ow'); // cow
       expect(arpabetToIngglish(['AY1'])).toBe('ii'); // my
       expect(arpabetToIngglish(['EH1'])).toBe('e'); // bed

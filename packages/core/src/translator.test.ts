@@ -125,7 +125,7 @@ describe('translator', () => {
     it('should handle possessives with curly apostrophes', () => {
       // Common in text copied from websites like NY Times
       const result = translateSync('China\u2019s economy');
-      expect(result).toBe('Chiinuz ikahnumee');
+      expect(result).toBe('Chiinuz ikonumee');
     });
 
     it('should treat I as lowercase (English capitalizes I by convention only)', () => {

@@ -12,10 +12,10 @@
  */
 export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   // Monophthongs
-  AA: 'ah', // father, hot, bother
+  AA: 'o', // father, hot, rock
   AE: 'a', // cat, bat, had
   AH: 'u', // but, cup, son
-  AO: 'o', // thought, caught, law
+  AO: 'aw', // thought, caught, law
   EH: 'e', // bed, red, said
   ER: 'er', // bird, her, nurse
   IH: 'i', // bit, sit, gym
