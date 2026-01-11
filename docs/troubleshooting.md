@@ -1,16 +1,29 @@
 # Troubleshooting
 
-This guide covers common issues you may encounter when developing with Ingglish and how to resolve them.
+This guide covers common issues and how to resolve them.
 
 ## Build Issues
 
 ### Build Fails
-- Ensure Node.js 20+ is installed
+
+**Symptoms:** `npm run build` exits with errors.
+
+**Solutions:**
+- Ensure Node.js 20+ is installed (`node --version`)
 - Run `npm ci` to get exact dependency versions
-- Check that core library builds before website: `npm run build -w @ingglish/core`
+- Build packages in order: core must build before website
+  ```bash
+  npm run build -w @ingglish/core
+  npm run build -w @ingglish/website
+  ```
 
 ### TypeScript Errors in Dependent Packages
-When changing exports in `@ingglish/core`, dependent packages won't be linted by pre-commit hooks. Run a full lint:
+
+**Symptoms:** After changing exports in `@ingglish/core`, you get type errors in other packages.
+
+**Cause:** Pre-commit hooks only lint staged files. Changes to core's exports won't trigger linting of dependent packages.
+
+**Solution:** Run a full lint before pushing:
 ```bash
 npm run lint
 ```
@@ -18,114 +31,80 @@ npm run lint
 ## Website Issues
 
 ### Blank Page
-- Check browser console for errors
-- Verify the base path matches your deployment URL
-- Ensure dictionary JSON is loading correctly
+
+**Symptoms:** The website loads but shows nothing.
+
+**Solutions:**
+- Check browser console for JavaScript errors
+- Verify the dictionary chunk loaded (Network tab → look for `cmudict-*.js`)
+- Check that the base path matches your deployment URL
 
 ### Dictionary Not Loading
-- Check network tab for failed requests
-- Verify CORS headers if using custom CDN
+
+**Symptoms:** "Loading dictionary..." never completes, or translation doesn't work.
+
+**Solutions:**
+- Check Network tab for failed requests (4xx/5xx errors)
+- Verify CORS headers if hosting assets on a different domain
+- Check that `cmudict-*.js` and `word-frequencies-*.js` are accessible
 
 ## Extension Issues
 
 ### Extension Not Working
-- Check that manifest.json is valid
-- Verify content scripts have correct permissions
-- Check service worker console for errors (`chrome://extensions` → Inspect views)
+
+**Symptoms:** Extension icon appears but pages aren't translated.
+
+**Solutions:**
+- Verify `manifest.json` is valid JSON
+- Check service worker console: `chrome://extensions` → find Ingglish → "Inspect views: service worker"
+- Ensure content scripts have correct host permissions
 
 ### Pages Not Translating
-- Some pages block content scripts (Chrome Web Store, browser settings)
-- Check if the page uses Shadow DOM (not currently supported)
+
+**Symptoms:** Some specific pages don't translate.
+
+**Cause:** Certain pages block content scripts or use unsupported features.
+
+**Known limitations:**
+- Chrome Web Store and browser settings pages block all extensions
+- Pages using Shadow DOM are not currently supported
+- Some sites with strict CSP may block the extension
 
 ## Translation Issues
 
-### Round-Trip Translation Failures
+### Round-Trip Failures
 
-When a word fails to round-trip (English → Ingglish → English doesn't return the original):
+**Symptoms:** A word doesn't survive round-trip translation (English → Ingglish → English returns a different word).
 
-#### Quick Start
-
+**Debug command:**
 ```bash
-# From the repo root
-npm run debug:roundtrip -w @ingglish/core exhumed
+npm run debug:roundtrip -w @ingglish/core <word>
 ```
 
-This shows a detailed breakdown of the translation pipeline.
+This shows the translation pipeline step-by-step, highlighting where mismatches occur.
 
-> **Note:** The debug script runs via vitest because the CMU dictionary uses JSON imports that require proper ESM handling. The script generates a temporary test file, runs it, then cleans up.
+**Common causes:**
 
-#### Understanding the Output
+1. **Phoneme ambiguity** - The Ingglish spelling can be parsed multiple ways:
+   | Spelling | Could be | Example |
+   |----------|----------|---------|
+   | `sh` | SH (ship) or S+HH (exhume) | "ekshyoomd" |
+   | `er` | ER (bird) or EH+R (welfare) | "welfer" |
+   | `th` | TH (think) or T+HH (Thailand) | "tailand" |
 
-```
-═══════════════════════════════════════════
-  Round-trip Debug: "exhumed"
-═══════════════════════════════════════════
+   **Fix:** Add an alternative in `PHONEME_ALTERNATIVES` in `reverse-translator.ts`.
 
-1. CMU Dictionary Lookup
-   Raw: EH0 K S HH Y UW1 M D
-   Phonemes: [EH, K, S, HH, Y, UW, M, D]
+2. **Word not in dictionary** - The word isn't in CMU Pronouncing Dictionary. It will pass through unchanged or use fallback heuristics.
 
-2. English → Ingglish
-   "exhumed" → "ekshyoomd"
+3. **Homophone selection** - Multiple words share the same pronunciation. The reverse translator picks the most common one based on word frequency data.
 
-3. Ingglish → Phonemes (what reverse translator sees)
-   "ekshyoomd" → [EH, K, SH, Y, UW, M, D]
+### Adding Regression Tests
 
-4. Phoneme Comparison
-   Expected vs Parsed:
-   ✓ EH        vs EH
-   ✓ K         vs K
-   ✗ S         vs SH       ← Mismatch!
-   ✗ HH        vs Y
-   ...
-
-5. Reverse Translation Results
-   Input: "ekshyoomd"
-   Results: [exhumed]
-
-6. Round-trip Result
-   ✓ SUCCESS - "exhumed" found in results
-```
-
-#### Common Issues
-
-**Phoneme Parsing Ambiguity**
-
-The most common issue is when an Ingglish spelling can be parsed multiple ways:
-
-| Ingglish | Could be | Example |
-|----------|----------|---------|
-| `sh` | SH (ship) or S+HH (exhume) | "ekshyoomd" |
-| `er` | ER (bird) or EH+R (welfare) | "welfer" |
-| `th` | TH (think) or T+HH (Thailand) | "tailand" |
-
-**Solution:** Add an entry to `PHONEME_ALTERNATIVES` in `reverse-translator.ts`:
-
-```typescript
-const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
-  ER: [['EH', 'R']],
-  SH: [['S', 'HH']],  // ← Add alternative interpretation
-};
-```
-
-**Word Not in CMU Dictionary**
-
-If step 1 shows "Word not found", the word isn't in the CMU Pronouncing Dictionary. It will be passed through unchanged or use fallback heuristics.
-
-**Phoneme Sequence Not Found**
-
-If the parsed phonemes don't match any dictionary entry, check:
-1. Are the expected phonemes correct? (CMU may have errors)
-2. Is there a more common word with the same phonemes? (homophones)
-
-#### Adding a Regression Test
-
-After fixing an issue, add a test to prevent regression:
+After fixing a translation issue, add a test to prevent regression:
 
 ```typescript
 // In reverse-translator.test.ts
 it('should round-trip "exhumed"', () => {
-  // Regression test: "sh" can be SH (ship) or S+HH (exhume)
   const word = 'exhumed';
   const ingglish = translateWord(word);
   const results = reverseTranslateWord(ingglish);
@@ -133,33 +112,8 @@ it('should round-trip "exhumed"', () => {
 });
 ```
 
-#### Architecture Overview
+## See Also
 
-```
-English → Ingglish → English
-         │         │
-         ▼         ▼
-   ARPAbet → spelling → ARPAbet
-         │                    │
-    CMU Dict              REVERSE_ARPABET_MAP
-                              │
-                         ARPABET_ALTERNATIVES
-                         (handles ambiguity)
-
-English → IPA → English
-         │         │
-         ▼         ▼
-   ARPAbet → IPA symbols → ARPAbet
-         │                    │
-    CMU Dict              ipaToArpabet()
-         │
-   arpabetToIPA()
-```
-
-The forward path (English → Ingglish) uses the CMU dictionary to get ARPAbet phonemes, then maps them to Ingglish spellings.
-
-The forward path (English → IPA) uses the CMU dictionary to get ARPAbet phonemes, then converts to IPA with proper stress markers at syllable boundaries.
-
-The reverse path (Ingglish → English) parses the spelling back to ARPAbet using `REVERSE_ARPABET_MAP`, then looks up words with matching ARPAbet sequences. `ARPABET_ALTERNATIVES` handles cases where the same spelling could represent different ARPAbet sequences.
-
-The reverse path (IPA → English) converts IPA symbols back to ARPAbet using `ipaToArpabet()`, then looks up matching words.
+- [Architecture](architecture.md) - How the translation pipeline works
+- [Phoneme Mapping](phoneme-mapping.md) - ARPAbet to Ingglish/IPA tables
+- [Performance](performance.md) - Profiling and optimization
