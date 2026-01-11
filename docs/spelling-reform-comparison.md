@@ -1,356 +1,265 @@
-# Spelling Reform Comparison: Lessons for Ingglish
+# Why Ingglish Might Actually Work
 
-A comprehensive analysis of historical spelling reform attempts, why they failed, and how Ingglish avoids (or should avoid) the same pitfalls.
+English spelling reform has a 250-year history of spectacular failure. From Benjamin Franklin's 1768 phonetic alphabet to the Initial Teaching Alphabet of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
-## Executive Summary
-
-English spelling reform has a 250+ year history of failure. From Benjamin Franklin's 1768 phonetic alphabet to the Initial Teaching Alphabet of the 1960s, every major attempt has failed to gain adoption. This document analyzes **why** these systems failed and evaluates Ingglish against the same criteria.
-
-**Key finding:** Ingglish's design choices align well with the lessons from failed reforms, but there are opportunities for improvement.
+This document examines what went wrong with previous reforms and shows how Ingglish's design choices avoid the same mistakes—while being honest about what Ingglish can and can't achieve.
 
 ---
 
-## Part 1: The Graveyard of Spelling Reforms
+## The Graveyard of Spelling Reforms
 
-### 1.1 Complete Alphabet Replacements
+### Complete Alphabet Replacements
 
-| System | Date | Characters | Fate |
-|--------|------|------------|------|
-| Benjamin Franklin's Alphabet | 1768 | 26 (6 new) | Abandoned by creator |
-| Deseret Alphabet | 1854 | 38 | $20,000+ spent, 500 books sold |
-| Shavian Alphabet | 1962 | 48 | One book published |
-| Unifon | 1959 | 40 | No academic validation |
+**Shavian Alphabet (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published. Nobody learned it.
 
-**Why they failed:**
-- Required learning entirely new characters
-- No reading materials existed
-- Broke all connection to existing literature
-- Typography problems (Deseret had no ascenders/descenders, making text unreadable)
+**Deseret Alphabet (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. The project's own creator abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
-### 1.2 Transitional Systems
+**Unifon (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
 
-| System | Date | Approach | Fate |
-|--------|------|----------|------|
-| Initial Teaching Alphabet | 1961 | 44 modified Latin chars | Abandoned by 1980s |
+**What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
-**Why it failed:**
-- Children learned ITA, then couldn't read regular English
-- "Teaching something that must be un-taught violates fundamental pedagogy"
-- Based on Received Pronunciation - useless for American, Scottish, Australian speakers
-- Adults who learned via ITA report lifelong spelling difficulties
+**How Ingglish differs:** Uses only the 26 standard ASCII letters. Anyone literate in English can start reading Ingglish immediately.
 
-### 1.3 Latin-Based Reforms
+### Transitional Systems
 
-| System | Creator | Approach | Fate |
-|--------|---------|----------|------|
-| New Spelling | Ripman/Archer (1948) | Phonemic respelling | Constant revision, no adoption |
-| Cut Spelling | Upward (1992) | Remove redundant letters | Academic interest only |
-| SoundSpel | Rondthaler (1986) | Full phonemic | American Literacy Council only |
-| Truespel | Zurinskas | Pronunciation guide | Minimal adoption |
-| Traditional Spelling Revised | Linstead (2021) | Conservative reform | Too new to evaluate |
+**Initial Teaching Alphabet (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
-**Why they failed:**
-- No central authority to mandate adoption
-- "Chicken and egg" - no readers, so no writers, so no readers
-- Each chose a different dialect as "standard"
-- Constant revision prevented stable adoption
+Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. A 2001 BBC survey found adults who learned via ITA frequently reported it "hampered, rather than helped, their reading and spelling ability."
 
-### 1.4 Political Failures
+The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
-| Attempt | Year | Outcome |
-|---------|------|---------|
-| Roosevelt's 300 simplified spellings | 1906 | Congress overturned in 4 months |
-| UK Spelling Reform Bills | 1949, 1953 | Failed in Parliament |
-| Andrew Carnegie's $283,000 investment | 1906-1920 | Zero lasting impact |
+**How Ingglish differs:** Not positioned for initial literacy instruction. Users already know traditional spelling. Ingglish supplements rather than replaces.
+
+### Political Failures
+
+**Theodore Roosevelt (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid "immediate outcry and ample mockery of President 'Rozevult.'"
+
+**Andrew Carnegie (1906-1920)** - The steel magnate invested $283,000 (roughly $8 million today) in the Simplified Spelling Board. Result: zero lasting impact.
+
+**UK Parliamentary Bills (1949, 1953)** - Both failed.
+
+**What went wrong:** No central authority can mandate spelling changes for English. Unlike French (Académie française) or Spanish (Real Academia Española), English has no official body with that power.
+
+**How Ingglish differs:** Not trying to replace English spelling. No political mandate needed. Voluntary adoption only.
 
 ---
 
-## Part 2: Why Reforms Fail - The 10 Fatal Flaws
+## The 10 Ways Spelling Reforms Die
 
-### Flaw 1: The Dialect Problem
+### 1. The Dialect Problem
+
 Every phonetic system must choose whose pronunciation to encode. English has 14-22 vowel phonemes depending on dialect.
 
-- "dance" - /æ/ in US, /ɑː/ in UK
-- "herbs" - silent H in US, pronounced in UK
-- "Mary/marry/merry" - identical in some US dialects, distinct in others
+- "dance" - /æ/ in American, /ɑː/ in British
+- "herbs" - silent H in American, pronounced in British
+- "Mary/marry/merry" - identical in some dialects, distinct in others
 
-**How Ingglish handles this:** Based on General American (CMU dictionary), but uses abstract phonemic representation that accommodates variation. The same spelling works for multiple accents.
+The Shavian alphabet fragmented because "an American, a Scot, or an Australian would need to spell words differently to match their accent."
 
-### Flaw 2: Breaking Etymology
-Critics argue spelling preserves word relationships:
-- "real" / "reality" - the silent 'a' shows connection
-- "sign" / "signature" - the silent 'g' reveals relationship
-- "nation" / "national" - vowel changes but spelling stays
+**Ingglish's approach:** Based on the CMU Pronouncing Dictionary (General American), which is widely understood internationally. The phonemic representation is abstract enough that speakers of different accents can map it to their own pronunciation—the same way IPA works.
 
-**Counter-argument:** Many "etymological" spellings are actually **false**:
-- "debt" - 'b' added incorrectly based on Latin "debitum" (came through French without 'b')
-- "island" - 's' added incorrectly (from Germanic, not Latin "insula")
-- "ache" - respelled from "ake" based on false Greek connection
+### 2. Breaking Etymology
 
-**How Ingglish handles this:** Ingglish prioritizes pronunciation over etymology, but doesn't prevent parallel use of traditional spelling for formal/academic contexts.
+Critics argue that spelling preserves word relationships:
+- "sign" / "signature" - the silent 'g' shows the connection
+- "nation" / "national" - consistent spelling despite vowel changes
 
-### Flaw 3: The Transition Problem
-Over 1 billion people read English. Any reform makes existing text harder to read.
+But here's the dirty secret: many "etymological" spellings are actually **wrong**:
+- "debt" - the 'b' was added based on Latin "debitum," but the word came through French without it
+- "island" - the 's' was added incorrectly (Germanic origin, not Latin "insula")
+- "ache" - respelled from "ake" based on a false Greek connection
 
-**How Ingglish handles this:** Positioned as a **supplementary** system (like IPA), not a replacement. No one needs to "unlearn" anything.
+**Ingglish's approach:** Prioritizes pronunciation over etymology. This is an explicit trade-off. Ingglish is for reading aloud correctly, not for studying word origins.
 
-### Flaw 4: No Central Authority
-Unlike French (Académie française) or Spanish (Real Academia Española), English has no body that can mandate changes.
+### 3. The Transition Problem
 
-**How Ingglish handles this:** Not attempting to replace English spelling - just providing an alternative for those who want phonetic clarity.
+Over 1 billion people read English. Any reform makes existing text harder to read—at least initially.
 
-### Flaw 5: The Network Effect
-The value of a spelling system depends on how many people use it. Individual adoption is pointless without collective adoption.
+**Ingglish's approach:** Positioned as a **supplementary** system (like IPA), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
-**How Ingglish handles this:** Provides immediate utility (pronunciation guide, learning aid) even for individual users. Doesn't require everyone to adopt it.
+### 4. No Central Authority
 
-### Flaw 6: Typography Problems
-Deseret's lack of ascenders/descenders made all words rectangular blobs. Shavian's similar letterforms reduced distinctiveness.
+There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
 
-**How Ingglish handles this:** Uses standard Latin alphabet with familiar letter shapes. Word shapes remain distinctive.
+**Ingglish's approach:** Not attempting mandatory adoption. Works through voluntary use in contexts where phonetic clarity matters.
 
-### Flaw 7: Requires New Learning
-Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-egg problem: no materials exist to learn from.
+### 5. The Network Effect Trap
 
-**How Ingglish handles this:** Uses only the 26 standard ASCII letters. Anyone literate in English can start reading immediately.
+The value of a spelling system depends on how many people use it. Individual adoption seems pointless without collective adoption.
 
-### Flaw 8: Looks "Childish"
-"Simplified spelling always looks like a child wrote it because we associate phonetic spelling with the attempts and trials of learners."
+**Ingglish's approach:** Provides immediate utility even for individual users:
+- Pronunciation guide for unfamiliar words
+- ESL learning aid
+- Accessibility for dyslexic readers
+- Unambiguous input for speech synthesis
 
-**How Ingglish handles this:** Legitimate concern. "thru" for "through" carries stigma. Ingglish spellings like "throo" may face similar perception issues.
+You don't need everyone to adopt Ingglish for it to be useful to you.
 
-### Flaw 9: Constant Revision
-New Spelling, Unifon, and others were repeatedly revised, preventing stable adoption and creating incompatible versions.
+### 6. Typography Disasters
 
-**How Ingglish handles this:** Based on stable phoneme-to-grapheme mappings. Changes should be rare and carefully considered.
+The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result: "All typeset words have a roughly rectangular shape, and lines of Deseret printing become very monotonous." It was exhausting to read.
 
-### Flaw 10: Vested Interests
-"Those who invested years acquiring spelling skills resist giving them up. Spelling difficulty has become cultural capital (spelling bees, etc.)."
+**Ingglish's approach:** Uses standard Latin letters with their familiar shapes. Word silhouettes remain distinctive.
 
-**How Ingglish handles this:** Not asking anyone to give up traditional spelling - just offering an alternative.
+### 7. Requires Learning New Characters
+
+Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-egg problem: no materials exist to learn from, and nobody creates materials because nobody can read them.
+
+**Ingglish's approach:** Zero new characters. The digraphs (sh, ch, th, ng) are already familiar to English readers.
+
+### 8. The "Looks Childish" Problem
+
+"Simplified spelling always looks like a child wrote it because we associate phonetic spelling with the attempts and trials of learners trying to sound things out."
+
+Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
+
+**Ingglish's reality check:** This is a genuine challenge. Ingglish spellings like "luv" and "throo" may face similar perception issues. The mitigation is positioning Ingglish as a technical notation (like IPA) rather than casual spelling, and using it in contexts that confer authority (educational, linguistic, accessibility).
+
+### 9. Constant Revision
+
+New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
+
+**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Changes are rare and carefully considered (like the recent `ii` → `ie` change for better readability).
+
+### 10. Vested Interests
+
+People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital—hence spelling bees.
+
+**Ingglish's approach:** Not asking anyone to give up traditional spelling. The investment stands. Ingglish is additive.
 
 ---
 
-## Part 3: Lessons from Successful Reforms
+## What Actually Worked: Successful Reforms
 
 ### Turkish (1928) - The "Big Bang"
-Replaced Arabic script with Latin alphabet in 3 months. Literacy tripled in 10 years.
 
-**Success factors:**
+Atatürk replaced the Arabic script with a Latin alphabet in three months. Literacy rose from 9% to 33% in just ten years.
+
+**Why it worked:**
 - Authoritarian one-party state could mandate change
-- Only 9% initial literacy (few invested in old system)
-- Part of broader national identity transformation
-- Personal leadership (Atatürk taught citizens in parks)
+- Only 9% initial literacy (few people invested in the old system)
+- Part of a broader national identity transformation
+- Personal leadership (Atatürk himself taught citizens in parks)
 
-**Lesson for Ingglish:** Big-bang reform requires political power English lacks. Ingglish correctly doesn't attempt this.
+**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack—and shouldn't want. Ingglish correctly doesn't attempt this.
 
 ### German (1996) - Modest Reform
+
 Changed ß→ss in some words, simplified compound consonants, etc.
 
-**Success factors:**
-- Minor changes only
-- Government mandate across 4 countries
-- Schools adopted first, creating new generation
+**What happened:**
+- Polls consistently showed majority opposition
+- Some newspapers refused to implement it
+- A "reform of the reform" in 2006 reverted controversial changes
+- But it stuck in schools, creating a new generation using the new spellings
 
-**Challenges:**
-- Majority opposed it in polls
-- Some newspapers refused to implement
-- 2006 "reform of the reform" reverted controversial changes
-
-**Lesson for Ingglish:** Even **minor** reforms face massive resistance when mandatory. Voluntary adoption avoids backlash.
+**Lesson for Ingglish:** Even **minor** mandatory reforms face massive resistance. Voluntary adoption avoids the backlash.
 
 ### Korean Hangul - The Long Game
-Created in 1443, widespread adoption only in 1990s (550 years).
 
-**Success factors:**
+King Sejong created Hangul in 1443. Widespread adoption came in the 1990s—**550 years later**.
+
+**Why it eventually worked:**
 - Coexisted with Chinese characters for centuries
 - Gained status gradually through nationalist movements
-- Technology (computers) made Hangul more practical than Chinese
+- Technology (computers) made Hangul more practical than Chinese characters
 
 **Lesson for Ingglish:** Supplementary systems can eventually become primary. Patience and coexistence are viable strategies.
 
 ---
 
-## Part 4: Ingglish Scorecard
-
-| Failure Mode | Ingglish Risk | Notes |
-|--------------|---------------|-------|
-| New alphabet required | **None** | Uses standard 26 letters |
-| Dialect-specific | **Low** | CMU dictionary is widely understood |
-| Breaks etymology | **Accepted** | By design - phonetic over historical |
-| Transition required | **None** | Supplementary, not replacement |
-| Central authority needed | **None** | Voluntary adoption model |
-| Network effect trap | **Low** | Useful individually (pronunciation guide) |
-| Typography problems | **None** | Standard Latin letters |
-| Requires new learning | **Low** | Intuitive for English readers |
-| Looks childish | **Medium** | Some spellings may carry stigma |
-| Constant revision | **Low** | Stable design principles |
-
-**Overall assessment:** Ingglish avoids most historical pitfalls through its design philosophy of being a supplementary system using standard characters.
-
----
-
-## Part 5: Recommendations for Ingglish
-
-Based on this research, here are recommendations to strengthen Ingglish:
-
-### 5.1 Already Handled Well
-
-1. **ASCII-only constraint** - Critical for adoption. Shavian and Deseret failed partly due to special characters.
-
-2. **Supplementary positioning** - Not trying to replace English spelling avoids the political impossibility of mandatory reform.
-
-3. **Dictionary-based** - Using CMU pronunciations provides consistency and credibility.
-
-4. **Digraph approach** - Using "sh", "th", "ch" follows established English conventions rather than inventing new symbols.
-
-### 5.2 Potential Improvements
-
-#### A. Consider preserving more morphological markers
-
-**Issue:** Current Ingglish may obscure word relationships.
-
-**Example:**
-- "nation" → "nayshun"
-- "national" → "nashunul"
-
-The connection between these words is less visible than in traditional spelling.
-
-**Possible approach:** Document known morphological families so users understand connections, even if spellings differ.
-
-#### B. Address the "looks childish" problem
-
-**Issue:** Spellings like "luv", "thru", "enuf" carry stigma from text-speak and children's writing.
-
-**Ingglish equivalents:**
-- "love" → "luv"
-- "through" → "throo"
-- "enough" → "enuf"
-
-**Possible approaches:**
-1. Emphasize Ingglish as a **technical notation** (like IPA) rather than casual spelling
-2. Use in contexts that confer authority (academic, linguistic, educational)
-3. Accept that any phonetic spelling will initially seem strange
-
-#### C. Document dialect variations explicitly
-
-**Issue:** Ingglish is based on General American. Speakers of other varieties may find mismatches.
-
-**Examples:**
-- "dance" - GA /æ/, RP /ɑː/
-- "bath" - GA /æ/, RP /ɑː/
-- "tomato" - GA /eɪ/, RP /ɑː/
-
-**Recommendation:** Create documentation showing how major dialect differences map to Ingglish, acknowledging that GA is the reference but other pronunciations are valid.
-
-#### D. Establish stability guidelines
-
-**Issue:** Constant revision killed New Spelling and Unifon.
-
-**Recommendation:**
-- Document core principles that won't change
-- Establish process for considering changes (like the `ii` → `ie` change)
-- Maintain changelog of any modifications
-- Avoid "version fragmentation"
-
-#### E. Create compelling use cases
-
-**Issue:** Why would anyone use Ingglish?
-
-**Strong use cases based on research:**
-1. **ESL pronunciation guide** - Better than dictionary phonetics for learners
-2. **Speech synthesis input** - Unambiguous pronunciation specification
-3. **Linguistic research** - Phonemic transcription without IPA complexity
-4. **Accessibility** - Dyslexic readers may find phonemic spelling easier
-5. **Language learning** - Bridge between spoken and written English
-
-**Weak use case:**
-- Replacing English spelling (politically impossible, not Ingglish's goal)
-
-#### F. Learn from ITA's transition problem
-
-**Issue:** ITA children couldn't transfer to regular English.
-
-**Ingglish is safer because:**
-- Not positioned for initial literacy instruction
-- Users already know traditional spelling
-- Bi-directional translation means users maintain both systems
-
-**Recommendation:** Explicitly discourage using Ingglish as the **sole** system for teaching children to read. It should supplement, not replace, traditional literacy instruction.
-
-### 5.3 Features to Avoid Adding
-
-Based on failed reforms, Ingglish should **not**:
-
-1. **Add diacritics** - Interspel uses accents for homophones; this adds complexity and keyboard issues
-
-2. **Create dialect-specific variants** - Shavian fragmented into regional spellings; maintain one standard
-
-3. **Preserve "sight words" exceptions** - TSR keeps 100 irregular common words; this creates two systems to learn
-
-4. **Add uppercase/lowercase complexity** - Current approach (preserve source case) is simpler than alternatives
-
-5. **Attempt mandatory adoption** - Every political attempt has failed; voluntary is the only viable path
-
----
-
-## Part 6: The Realistic Path Forward
-
-Based on 250 years of spelling reform history, here's what's realistic for Ingglish:
+## What Ingglish Can Realistically Achieve
 
 ### What Won't Happen
-- Ingglish replacing English spelling
-- Government adoption
-- Universal literacy instruction in Ingglish
-- Traditional spelling becoming obsolete
+
+Let's be honest:
+- Ingglish won't replace English spelling
+- Governments won't mandate it
+- Schools won't teach it as primary literacy
+- Traditional spelling won't become obsolete
 
 ### What Could Happen
-- Niche adoption for specific use cases (ESL, accessibility, linguistics)
-- Gradual familiarity through exposure
-- Recognition as a useful tool alongside IPA
-- Potential adoption in specific contexts (like Hangul's 550-year journey)
 
-### Success Metrics
-Rather than "replacing English spelling," realistic success would be:
-- Used in ESL instruction materials
-- Recognized by linguists as a practical notation
-- Available in dictionaries as an alternative to IPA
-- Adopted by accessibility tools
-- Stable community of users
+- **ESL instruction:** Phonetic spelling that's easier than IPA and works on any keyboard
+- **Accessibility:** Consistent spelling may help dyslexic readers
+- **Pronunciation guides:** More intuitive than dictionary phonetics
+- **Speech synthesis:** Unambiguous input format
+- **Linguistic research:** Practical phonemic notation
+- **Gradual familiarity:** Like Hangul's centuries-long rise, slow recognition is possible
+
+### Why Ingglish's Design Supports These Goals
+
+| Design Choice | Why It Matters |
+|---------------|----------------|
+| ASCII-only | Works on any keyboard, any device, any platform |
+| Standard digraphs (sh, ch, th) | Already familiar to English readers |
+| CMU dictionary basis | Consistent, well-documented pronunciations |
+| Supplementary positioning | No political battle required |
+| Bi-directional translation | Maintains connection to traditional spelling |
+
+---
+
+## Honest Assessment: Where Ingglish Could Struggle
+
+### The Perception Problem
+
+Some Ingglish spellings will look strange or "wrong" to readers:
+- "enough" → "enuf" (text-speak association)
+- "through" → "throo" (looks like a children's book)
+- "beautiful" → "byootuful" (unfamiliar)
+
+This isn't fatal, but it means Ingglish works best in contexts where phonetic accuracy is valued over conventional appearance.
+
+### The Dialect Gap
+
+Ingglish is based on General American pronunciation. Speakers of British, Australian, Indian, or other varieties may find some spellings don't match their pronunciation.
+
+For example:
+- "dance" in Ingglish reflects American /æ/, not British /ɑː/
+- "schedule" reflects American "skedyool," not British "shedyool"
+
+This is the same limitation IPA transcriptions have—they represent one accent. Ingglish documentation should acknowledge this clearly.
+
+### The "Why Bother?" Question
+
+For fluent English readers, the value proposition isn't obvious. They already know how to pronounce words. Ingglish's primary audience is:
+- ESL learners who need pronunciation help
+- People with reading difficulties
+- Applications requiring unambiguous pronunciation
+- Anyone curious about phonemic spelling
 
 ---
 
 ## Conclusion
 
-Ingglish is well-designed to avoid the catastrophic failures of historical spelling reforms. By positioning itself as a supplementary system using standard characters, it sidesteps the political impossibility of mandatory reform.
+Ingglish isn't trying to do what every failed spelling reform attempted. It's not trying to replace English spelling, get government adoption, or make traditional literacy obsolete.
 
-The main risks are:
-1. **Perception as "childish"** - requires positioning as technical/academic
-2. **Dialect mismatch** - requires clear documentation
-3. **Instability** - requires disciplined change management
+Instead, Ingglish offers:
+- A phonemic notation using only standard characters
+- A supplementary system that coexists with traditional spelling
+- A tool for specific use cases where pronunciation clarity matters
 
-The research strongly suggests that Ingglish should **embrace** its role as a niche tool rather than aspiring to replace traditional spelling. History shows that's the only path that works.
+That's a much smaller ambition than previous reforms—and that's exactly why it might actually work.
+
+The bar for success isn't "everyone uses Ingglish." It's "Ingglish is useful to the people who choose to use it." By that standard, the design is sound.
 
 ---
 
+## Further Reading
+
+- [Orthography Comparison](https://ingglish.com/#docs/orthography-comparison) - How Ingglish's specific spellings compare to other languages
+- [Phoneme Mapping](https://ingglish.com/#docs/phoneme-mapping) - The complete sound-to-spelling reference
+- [Architecture](https://ingglish.com/#docs/architecture) - How the translation system works
+
 ## Sources
 
-This document synthesizes research from:
-- Shavian Alphabet (Shaw, Read, 1962)
-- Initial Teaching Alphabet (Pitman, 1961)
-- Deseret Alphabet (Young, 1854)
-- Cut Spelling (Upward, 1992)
-- SoundSpel (Rondthaler, 1986)
-- Benjamin Franklin's Phonetic Alphabet (1768)
-- Noah Webster's spelling reforms (1806-1843)
-- Theodore Roosevelt's Simplified Spelling (1906)
-- German Spelling Reform (1996)
-- Portuguese Orthographic Agreement (1990)
-- Turkish Alphabet Reform (1928)
-- Korean Hangul adoption (1443-present)
-
-Academic sources:
-- Great Vowel Shift research
-- Reading research on orthographic mapping
-- Network effects in language adoption
-- English Spelling Society publications
+Historical research drawn from:
+- [Shavian Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Shavian_alphabet)
+- [Initial Teaching Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet)
+- [Deseret Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Deseret_alphabet)
+- [English-language spelling reform - Wikipedia](https://en.wikipedia.org/wiki/English-language_spelling_reform)
+- [German orthography reform of 1996 - Wikipedia](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996)
+- [Turkish alphabet - Wikipedia](https://en.wikipedia.org/wiki/Turkish_alphabet)
+- [Hangul - Wikipedia](https://en.wikipedia.org/wiki/Hangul)
+- [Simplified Spelling Board - Wikipedia](https://en.wikipedia.org/wiki/Simplified_Spelling_Board)
+- [English Spelling Society](https://www.spellingsociety.org/)
