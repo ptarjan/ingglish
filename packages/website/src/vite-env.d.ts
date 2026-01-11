@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
-declare module '*.md?raw' {
+// Markdown files are converted to HTML at build time by vite-plugin-md
+declare module '*.md' {
   const content: string;
   export default content;
 }

@@ -1,17 +1,14 @@
-import type { HTMLAttributes, JSX, ReactNode } from 'react';
-import { useState, useEffect } from 'react';
-import Markdown from 'react-markdown';
-import type { Components } from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import type { JSX } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-// Import markdown files at build time
-import apiReference from '../../../../docs/generated/README.md?raw';
-import architecture from '../../../../docs/architecture.md?raw';
-import contributing from '../../../../docs/contributing.md?raw';
-import debugging from '../../../../docs/debugging.md?raw';
-import deployment from '../../../../docs/deployment.md?raw';
-import extensionSetup from '../../../../docs/extension-setup.md?raw';
-import phonemeMapping from '../../../../docs/phoneme-mapping.md?raw';
+// Import markdown files - vite-plugin-md converts to HTML at build time
+import apiReference from '../../../../docs/generated/README.md';
+import architecture from '../../../../docs/architecture.md';
+import contributing from '../../../../docs/contributing.md';
+import debugging from '../../../../docs/debugging.md';
+import deployment from '../../../../docs/deployment.md';
+import extensionSetup from '../../../../docs/extension-setup.md';
+import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 
 interface DocEntry {
   id: string;
@@ -53,7 +50,7 @@ for (const doc of docs) {
 function parseDocsHash(): { docId: string | null; sectionId: string | null } {
   const hash = window.location.hash.slice(1);
   if (hash.startsWith('docs/')) {
-    const path = hash.slice(5); // Remove 'docs/' prefix
+    const path = hash.slice(5);
     const slashIndex = path.indexOf('/');
     if (slashIndex !== -1) {
       return { docId: path.slice(0, slashIndex), sectionId: path.slice(slashIndex + 1) };
@@ -63,47 +60,8 @@ function parseDocsHash(): { docId: string | null; sectionId: string | null } {
   return { docId: null, sectionId: null };
 }
 
-function getTextContent(node: ReactNode): string {
-  if (typeof node === 'string') {
-    return node;
-  }
-  if (typeof node === 'number') {
-    return String(node);
-  }
-  if (node === null || node === undefined || typeof node === 'boolean') {
-    return '';
-  }
-  if (Array.isArray(node)) {
-    return node.map(getTextContent).join('');
-  }
-  if (typeof node === 'object' && 'props' in node) {
-    return getTextContent((node as { props: { children?: ReactNode } }).props.children);
-  }
-  return '';
-}
-
-function createHeadingId(children: ReactNode): string {
-  return getTextContent(children)
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]/g, '');
-}
-
-function createHeadingComponent(Tag: 'h1' | 'h2' | 'h3' | 'h4') {
-  return ({
-    children,
-    ...props
-  }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) => {
-    const id = createHeadingId(children);
-    return (
-      <Tag id={id} {...props}>
-        {children}
-      </Tag>
-    );
-  };
-}
-
 function Docs(): JSX.Element {
+  const contentRef = useRef<HTMLDivElement>(null);
   const [activeDoc, setActiveDoc] = useState(() => {
     const { docId } = parseDocsHash();
     if (docId !== null && docs.some((d) => d.id === docId)) {
@@ -112,7 +70,59 @@ function Docs(): JSX.Element {
     return docs[0].id;
   });
 
-  // Update URL hash when switching docs (preserve section if same doc)
+  const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0];
+
+  // Process links and headings after HTML is rendered
+  useEffect(() => {
+    const container = contentRef.current;
+    if (container === null) {
+      return;
+    }
+
+    // Add IDs to headings
+    container.querySelectorAll('h1, h2, h3, h4').forEach((heading) => {
+      const text = heading.textContent ?? '';
+      const id = text
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]/g, '');
+      heading.id = id;
+    });
+
+    // Transform links
+    container.querySelectorAll('a').forEach((link) => {
+      const href = link.getAttribute('href');
+      if (href === null || href === '') {
+        return;
+      }
+
+      // Transform .md links to hash links
+      if (href.includes('.md')) {
+        const [mdPath, section] = href.split('#');
+        const filename = mdPath.split('/').pop() ?? '';
+        const docId = filenameToId[filename];
+        if (docId !== undefined) {
+          link.setAttribute('href', section ? `#docs/${docId}/${section}` : `#docs/${docId}`);
+          return;
+        }
+      }
+
+      // Anchor links - transform to full docs path
+      if (href.startsWith('#')) {
+        const sectionId = href.slice(1);
+        link.setAttribute('href', `#docs/${activeDoc}/${sectionId}`);
+        return;
+      }
+
+      // External links open in new tab
+      if (!href.startsWith('#')) {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }, [activeDoc, currentDoc.content]);
+
+  // Update URL hash when switching docs
   useEffect(() => {
     const { docId: currentDocId, sectionId } = parseDocsHash();
     if (currentDocId !== activeDoc) {
@@ -126,7 +136,6 @@ function Docs(): JSX.Element {
   useEffect(() => {
     const { sectionId } = parseDocsHash();
     if (sectionId !== null) {
-      // Wait for markdown to render
       setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView();
       }, 100);
@@ -151,47 +160,6 @@ function Docs(): JSX.Element {
       window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
-
-  const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0];
-
-  // Custom components to handle links and add heading IDs
-  const components: Components = {
-    a: ({ href, children, ...props }) => {
-      // Transform .md links (with optional #section) to hash links
-      if (href?.includes('.md') === true) {
-        const [mdPath, section] = href.split('#');
-        const filename = mdPath.split('/').pop() ?? '';
-        const docId = filenameToId[filename];
-        if (docId !== undefined) {
-          const hashPath = section !== undefined ? `#docs/${docId}/${section}` : `#docs/${docId}`;
-          return (
-            <a href={hashPath} {...props}>
-              {children}
-            </a>
-          );
-        }
-      }
-      // External links open in new tab
-      if (href?.startsWith('#') !== true) {
-        return (
-          <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
-            {children}
-          </a>
-        );
-      }
-      // Anchor links - transform to full docs path for shareability
-      const sectionId = href.slice(1);
-      return (
-        <a href={`#docs/${activeDoc}/${sectionId}`} {...props}>
-          {children}
-        </a>
-      );
-    },
-    h1: createHeadingComponent('h1'),
-    h2: createHeadingComponent('h2'),
-    h3: createHeadingComponent('h3'),
-    h4: createHeadingComponent('h4'),
-  };
 
   return (
     <div className="docs-container">
@@ -224,9 +192,7 @@ function Docs(): JSX.Element {
             </a>
           </div>
         )}
-        <Markdown remarkPlugins={[remarkGfm]} components={components}>
-          {currentDoc.content}
-        </Markdown>
+        <div ref={contentRef} dangerouslySetInnerHTML={{ __html: currentDoc.content }} />
       </article>
     </div>
   );

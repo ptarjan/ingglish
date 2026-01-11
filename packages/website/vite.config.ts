@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import markdown from './vite-plugin-md';
 
 export default defineConfig({
   test: {
@@ -8,7 +9,8 @@ export default defineConfig({
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
-  plugins: [react()],
+  // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
+  plugins: [markdown(), react()],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed
