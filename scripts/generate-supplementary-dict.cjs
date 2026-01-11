@@ -260,6 +260,12 @@ export function getSupplementaryPronunciation(word: string): string[] | undefine
     console.log('Note: prettier not available, skipping formatting');
   }
 
+  // Clean up downloaded ipa-dict file
+  if (fs.existsSync(ipaDictPath)) {
+    fs.unlinkSync(ipaDictPath);
+    console.log('Cleaned up downloaded ipa-dict');
+  }
+
   // Print some sample entries
   console.log('\nSample entries:');
   curated.slice(0, 20).forEach(([word, phonemes]) => {

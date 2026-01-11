@@ -47,6 +47,5 @@ test-results/
 *.temp
 .vite/
 
-# Downloaded/generated dictionaries (regenerated during build)
-ipa-dict-en_US.txt
+# Generated dictionaries (regenerated during build)
 packages/core/src/fallback/ipa-dict-supplement.ts
