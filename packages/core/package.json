@@ -25,6 +25,7 @@
     "lint": "eslint src",
     "pretest": "npm run update-dictionaries",
     "test": "vitest run --no-color",
+    "test:unit": "vitest run --no-color",
     "test:watch": "npm run update-dictionaries && vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",

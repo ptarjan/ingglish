@@ -8,7 +8,8 @@
     "build:icons": "node scripts/generate-icons.js",
     "lint": "eslint src",
     "watch": "npm run build -- --watch",
-    "test": "vitest run --no-color"
+    "test": "vitest run --no-color",
+    "test:unit": "vitest run --no-color"
   },
   "dependencies": {
     "@ingglish/core": "^1.0.0",
