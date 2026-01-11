@@ -208,6 +208,140 @@ This is distinctly American English - most languages don't have these:
 5. **One genuinely novel spelling**: 'uu' for /ʊ/ (most languages don't need this distinction)
 6. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
 
+## Historical Context: English Spelling Reform
+
+Ingglish isn't the first attempt at phonemic English spelling. Understanding this history shows why certain choices work better than others.
+
+### Notable Reform Systems
+
+| System | Year | Approach | Status |
+|--------|------|----------|--------|
+| Benjamin Franklin's Phonetic Alphabet | 1768 | New letters for sounds | Never adopted |
+| Pitman's Initial Teaching Alphabet (ITA) | 1961 | 44 characters, used in schools | Declined by 1970s |
+| Shavian Alphabet | 1962 | Entirely new script (40+ letters) | Niche use |
+| SoundSpel | 1970s | ASCII-compatible reform | Limited adoption |
+| Cut Spelling | 1992 | Remove redundant letters | Academic proposal |
+
+### Why Previous Reforms Failed
+
+1. **New characters**: Shavian, ITA, and Franklin's system required learning entirely new alphabets
+2. **Printing costs**: Pre-digital systems couldn't easily add new characters
+3. **Compatibility**: Couldn't be typed on standard keyboards
+4. **Institutional resistance**: Publishers, educators, and governments rejected changes
+
+### Where Ingglish Differs
+
+- **No new characters**: Uses only the 26 ASCII letters
+- **Familiar digraphs**: 'sh', 'ch', 'th' are already known to English readers
+- **Keyboard compatible**: Works on any device without special input methods
+- **Incremental exposure**: Chrome extension allows gradual familiarity
+
+## Phonemic Orthography Success Stories
+
+Several languages have successfully implemented or reformed their orthographies to be highly phonemic.
+
+### Turkish (1928 Reform)
+
+| Before | After |
+|--------|-------|
+| Arabic script | Latin alphabet with 29 letters |
+| ~10% literacy | ~90% literacy by 1950s |
+| Complex vowel harmony unmarked | Systematic: ö, ü, ı, ş, ç, ğ |
+
+**Key insight**: Turkey's script reform dramatically improved literacy because the new orthography matched spoken Turkish. Children learn to read Turkish in a few months, compared to years for English.
+
+### Finnish
+
+Finnish is often cited as having the most transparent orthography in Europe:
+
+- **99% phoneme-to-grapheme consistency**
+- Double letters indicate length (aa, ee, oo) — same principle Ingglish uses
+- Children achieve reading fluency by end of first grade
+- Dyslexia rates are significantly lower than in English-speaking countries
+
+### Korean Hangul (1443)
+
+While not Latin-based, Hangul demonstrates phonemic design principles:
+
+- Each letter represents exactly one phoneme
+- Letters are grouped into syllable blocks
+- Called "the most scientific writing system" by linguists
+- Literacy can be achieved in days, not years
+
+### Swahili
+
+A successful African example using Latin script:
+
+- Nearly 1:1 sound-to-letter correspondence
+- 'ng'' represents /ŋ/ (similar to our 'ng')
+- 'dh' represents /ð/ — same as Ingglish!
+- 'sh' represents /ʃ/ — same as Ingglish
+- High literacy rates across East Africa
+
+## Phoneme Frequency: How Common Are These Sounds?
+
+Not all phonemes are equally common across world languages. Data from [PHOIBLE](https://phoible.org/) (a database of 3,000+ language phoneme inventories):
+
+### Consonants in Ingglish
+
+| Sound | IPA | % of languages | Notes |
+|-------|-----|----------------|-------|
+| m | /m/ | 96% | Nearly universal |
+| k | /k/ | 90% | Very common |
+| n | /n/ | 88% | Very common |
+| p | /p/ | 86% | Very common |
+| t | /t/ | 85% | Very common |
+| j (as in "yes") | /j/ | 84% | Very common |
+| w | /w/ | 76% | Common |
+| s | /s/ | 75% | Common |
+| l | /l/ | 68% | Common |
+| h | /h/ | 62% | Common |
+| r | /r/ or /ɹ/ | 60% | Common (varies by type) |
+| ŋ (ng) | /ŋ/ | 51% | About half of languages |
+| ʃ (sh) | /ʃ/ | 45% | Less than half |
+| tʃ (ch) | /tʃ/ | 44% | Less than half |
+| dʒ (j) | /dʒ/ | 30% | Less common |
+| ʒ (zh) | /ʒ/ | 20% | Uncommon |
+| θ (th) | /θ/ | 4% | Rare |
+| ð (dh) | /ð/ | 7% | Rare |
+
+**Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling — few languages have these sounds.
+
+### Vowel Systems
+
+Most languages have 5-7 vowel phonemes. English has 14-15 (depending on dialect), making it unusually complex:
+
+| Vowels | % of languages | Examples |
+|--------|----------------|----------|
+| 5 vowels | 32% | Spanish, Japanese, Swahili |
+| 6 vowels | 14% | Most common system |
+| 7+ vowels | 29% | German, French |
+| 10+ vowels | <5% | English, Danish |
+
+This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
+
+## Implications for Ingglish
+
+### Our Choices Are Well-Supported
+
+1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach when single letters aren't available
+2. **Vowel doubling** (ee, oo): Finnish/Estonian pattern, principled and consistent
+3. **Diphthong spellings** (ie, ay, ow, oi, oh): Follow existing English patterns where possible
+
+### Our Challenges Are Inherent to English
+
+1. **Too many vowels**: English's 14-15 vowels require creative solutions with only 5 letters
+2. **Rare consonants**: /θ/ and /ð/ have no standard Latin spelling because most languages don't have them
+3. **R-colored vowels**: Unique to rhotic English dialects; no cross-linguistic precedent
+
+### What Makes Ingglish Practical
+
+Unlike historical reforms, Ingglish:
+- Requires no new characters (unlike Shavian, ITA)
+- Works on any keyboard (unlike diacritic-heavy systems)
+- Uses familiar patterns (sh, ch from English; ee, oo from Finnish)
+- Can be learned gradually through exposure (via browser extension)
+
 ## References
 
 - [Phonemic orthography - Wikipedia](https://en.wikipedia.org/wiki/Phonemic_orthography)
@@ -221,3 +355,8 @@ This is distinctly American English - most languages don't have these:
 - [German orthography - Wikipedia](https://en.wikipedia.org/wiki/German_orthography)
 - [Dutch orthography - Wikipedia](https://en.wikipedia.org/wiki/Dutch_orthography)
 - [WALS: Uncommon Consonants](https://wals.info/chapter/19)
+- [PHOIBLE - Phoneme Inventory Database](https://phoible.org/)
+- [Turkish alphabet - Wikipedia](https://en.wikipedia.org/wiki/Turkish_alphabet)
+- [Korean Hangul - Wikipedia](https://en.wikipedia.org/wiki/Hangul)
+- [Swahili orthography - Wikipedia](https://en.wikipedia.org/wiki/Swahili_language#Orthography)
+- [English spelling reform - Wikipedia](https://en.wikipedia.org/wiki/English-language_spelling_reform)
