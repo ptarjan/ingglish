@@ -36,6 +36,7 @@ export async function translate(
 // =============================================================================
 
 export { translateSync, translateSyncWithMapping } from './translate';
+export type { TranslatedToken } from './translate';
 export { reverseTranslateSync } from './translate';
 
 // =============================================================================
