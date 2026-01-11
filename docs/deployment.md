@@ -54,15 +54,20 @@ This guide covers deploying the Ingglish website and Chrome extension.
    on:
      push:
        branches: [main]
+     workflow_dispatch:
+
+   permissions:
+     contents: read
+     pages: write
+     id-token: write
+
+   concurrency:
+     group: "pages"
+     cancel-in-progress: false
 
    jobs:
-     deploy:
+     build:
        runs-on: ubuntu-latest
-       permissions:
-         contents: read
-         pages: write
-         id-token: write
-
        steps:
          - uses: actions/checkout@v4
 
@@ -72,11 +77,31 @@ This guide covers deploying the Ingglish website and Chrome extension.
              node-version: '20'
              cache: 'npm'
 
-         - name: Install and Build
+         - name: Install dependencies
+           run: npm ci
+
+         - name: Build core library
+           run: npm run build -w @ingglish/core
+
+         - name: Build dom library
+           run: npm run build -w @ingglish/dom
+
+         - name: Generate API docs
+           run: npm run docs
+
+         - name: Build extension
+           run: npm run build -w @ingglish/extension
+
+         - name: Package extension zip
            run: |
-             npm ci
-             npm run build -w @ingglish/core
-             npm run build -w @ingglish/website
+             cd packages/extension/dist
+             zip -r ../../website/public/ingglish-extension.zip .
+
+         - name: Build website
+           run: npm run build -w @ingglish/website
+           env:
+             BASE_URL: /your-repo-name/
+             VITE_CORS_PROXY_URL: https://your-cors-proxy.workers.dev/?url=
 
          - name: Setup Pages
            uses: actions/configure-pages@v4
@@ -86,17 +111,21 @@ This guide covers deploying the Ingglish website and Chrome extension.
            with:
              path: packages/website/dist
 
+     deploy:
+       environment:
+         name: github-pages
+         url: ${{ steps.deployment.outputs.page_url }}
+       runs-on: ubuntu-latest
+       needs: build
+       steps:
          - name: Deploy to GitHub Pages
+           id: deployment
            uses: actions/deploy-pages@v4
    ```
 
-3. **Update vite.config.ts** for GitHub Pages base path:
-   ```typescript
-   export default defineConfig({
-     base: '/ingglish/', // Replace with your repo name
-     // ... rest of config
-   });
-   ```
+3. **Environment Variables**
+   - `BASE_URL` - Set to `/<repo-name>/` for GitHub Pages subpath
+   - `VITE_CORS_PROXY_URL` - URL to your CORS proxy for the URL translator feature
 
 ## Chrome Extension Deployment
 
