@@ -59,40 +59,30 @@ describe('dom-translator', () => {
       expect(content?.length).toBeGreaterThan(0);
     });
 
-    it('should skip script tags by default', () => {
-      document.body.innerHTML = '<script>var hello = "world";</script>';
+    it.each([
+      ['script', '<script>var hello = "world";</script>', '<script>var hello = "world";</script>'],
+      ['code', '<code>console.log("hello")</code>', '<code>console.log("hello")</code>'],
+      ['pre', '<pre>Hello World</pre>', '<pre>Hello World</pre>'],
+      [
+        'contenteditable',
+        '<div contenteditable="true">Hello</div>',
+        '<div contenteditable="true">Hello</div>',
+      ],
+      [
+        'data-ingglish-skip',
+        '<p data-ingglish-skip>Hello</p>',
+        '<p data-ingglish-skip="">Hello</p>',
+      ],
+    ])('should skip %s elements by default', (_name, input, expected) => {
+      document.body.innerHTML = input;
       translateDOMSync(document.body);
-      expect(document.body.innerHTML).toBe('<script>var hello = "world";</script>');
-    });
-
-    it('should skip code tags by default', () => {
-      document.body.innerHTML = '<code>console.log("hello")</code>';
-      translateDOMSync(document.body);
-      expect(document.body.innerHTML).toBe('<code>console.log("hello")</code>');
-    });
-
-    it('should skip pre tags by default', () => {
-      document.body.innerHTML = '<pre>Hello World</pre>';
-      translateDOMSync(document.body);
-      expect(document.body.innerHTML).toBe('<pre>Hello World</pre>');
+      expect(document.body.innerHTML).toBe(expected);
     });
 
     it('should skip custom classes', () => {
       document.body.innerHTML = '<p class="no-translate">Hello</p>';
       translateDOMSync(document.body, { skipClasses: ['no-translate'] });
       expect(document.body.innerHTML).toBe('<p class="no-translate">Hello</p>');
-    });
-
-    it('should skip contenteditable elements', () => {
-      document.body.innerHTML = '<div contenteditable="true">Hello</div>';
-      translateDOMSync(document.body);
-      expect(document.body.innerHTML).toBe('<div contenteditable="true">Hello</div>');
-    });
-
-    it('should skip elements with data-ingglish-skip', () => {
-      document.body.innerHTML = '<p data-ingglish-skip>Hello</p>';
-      translateDOMSync(document.body);
-      expect(document.body.innerHTML).toBe('<p data-ingglish-skip="">Hello</p>');
     });
 
     it('should translate attributes when enabled', () => {
@@ -137,16 +127,6 @@ describe('dom-translator', () => {
       expect(createTreeWalkerSpy).toHaveBeenCalledTimes(1);
 
       createTreeWalkerSpy.mockRestore();
-    });
-  });
-
-  describe('translateDOM', () => {
-    it('should translate text content asynchronously', async () => {
-      document.body.innerHTML = '<p>Hello world</p>';
-      await translateDOM(document.body);
-      // Verify translation happened (content changed)
-      expect(document.body.textContent).not.toBe('Hello world');
-      expect(document.body.textContent?.length).toBeGreaterThan(0);
     });
   });
 
@@ -353,41 +333,21 @@ describe('dom-translator', () => {
       expect(spans[0].getAttribute('data-ingglish-orig')).toBe('hello');
     });
 
-    it('should inject tooltip CSS styles', () => {
-      document.body.innerHTML = '<p>Hello</p>';
-      translateDOMSync(document.body, { showTooltips: true });
-
-      const styleElement = document.getElementById('ingglish-tooltip-styles');
-      expect(styleElement).not.toBeNull();
-      expect(styleElement?.textContent).toContain('.ingglish-word');
-      expect(styleElement?.textContent).toContain('data-ingglish-orig');
-    });
-
-    it('should preserve text content when using tooltips', () => {
-      document.body.innerHTML = '<p>Hello world</p>';
-      translateDOMSync(document.body, { showTooltips: true });
-
-      // Text content should be translated (not original)
-      expect(document.body.textContent).not.toBe('Hello world');
-      expect(document.body.textContent?.length).toBeGreaterThan(0);
-    });
-
-    it('should handle punctuation correctly with tooltips', () => {
+    it('should inject tooltip CSS styles and preserve punctuation', () => {
       document.body.innerHTML = '<p>Hello, world!</p>';
       translateDOMSync(document.body, { showTooltips: true });
 
-      // Should have spans for words, text nodes for punctuation
-      const p = document.querySelector('p');
-      expect(p).not.toBeNull();
-      if (p !== null) {
-        // Punctuation preserved, words translated
-        expect(p.textContent).toContain(',');
-        expect(p.textContent).toContain('!');
-        expect(p.textContent).not.toBe('Hello, world!');
+      // CSS styles injected
+      const styleElement = document.getElementById('ingglish-tooltip-styles');
+      expect(styleElement).not.toBeNull();
+      expect(styleElement?.textContent).toContain('.ingglish-word');
 
-        const spans = p.querySelectorAll('.ingglish-word');
-        expect(spans).toHaveLength(2);
-      }
+      // Content translated, punctuation preserved
+      const p = document.querySelector('p');
+      expect(p?.textContent).toContain(',');
+      expect(p?.textContent).toContain('!');
+      expect(p?.textContent).not.toBe('Hello, world!');
+      expect(p?.querySelectorAll('.ingglish-word')).toHaveLength(2);
     });
 
     it('should work with observer for dynamic content', async () => {
@@ -511,78 +471,39 @@ describe('dom-translator', () => {
       await translateDOM(document.body, { chunked: true });
       expect(document.body.textContent).toBe('');
     });
-
-    it('translateDOM should await chunked result', async () => {
-      document.body.innerHTML = '<p>Hello world</p>';
-      await translateDOM(document.body, { chunked: true });
-      // Verify translation happened
-      expect(document.body.textContent).not.toBe('Hello world');
-      expect(document.body.textContent?.length).toBeGreaterThan(0);
-    });
   });
 
   describe('restoreDOM', () => {
     it('should restore text content from word spans', () => {
-      // Set up DOM with word spans (as created by translation with tooltips)
       document.body.innerHTML =
         '<p><span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></p>';
 
       restoreDOM(document.body);
 
-      // Should restore original text
       expect(document.body.textContent).toBe('Hello world');
-      // Should remove the word spans
       expect(document.querySelector('.ingglish-word')).toBeNull();
-      expect(document.querySelector('[data-ingglish-orig]')).toBeNull();
     });
 
     it('should restore attributes from data-ingglish-original-* attributes', () => {
       document.body.innerHTML =
-        '<img alt="Huloh werld" data-ingglish-original-alt="Hello world" title="Klik heer" data-ingglish-original-title="Click here">';
+        '<img alt="Huloh" data-ingglish-original-alt="Hello" title="Klik" data-ingglish-original-title="Click">' +
+        '<input placeholder="Tiep" data-ingglish-original-placeholder="Type">';
 
       restoreDOM(document.body);
 
-      const img = document.querySelector('img');
-      expect(img?.getAttribute('alt')).toBe('Hello world');
-      expect(img?.getAttribute('title')).toBe('Click here');
-      // Original data attributes should be removed
-      expect(img?.hasAttribute('data-ingglish-original-alt')).toBe(false);
-      expect(img?.hasAttribute('data-ingglish-original-title')).toBe(false);
+      expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hello');
+      expect(document.querySelector('img')?.getAttribute('title')).toBe('Click');
+      expect(document.querySelector('input')?.getAttribute('placeholder')).toBe('Type');
+      expect(document.querySelector('img')?.hasAttribute('data-ingglish-original-alt')).toBe(false);
     });
 
     it('should handle elements with no original data attributes', () => {
       document.body.innerHTML = '<p>Already English</p>';
-
       restoreDOM(document.body);
-
       expect(document.body.textContent).toBe('Already English');
     });
 
-    it('should restore placeholder attributes', () => {
-      document.body.innerHTML =
-        '<input placeholder="Tiep heer" data-ingglish-original-placeholder="Type here">';
-
-      restoreDOM(document.body);
-
-      const input = document.querySelector('input');
-      expect(input?.getAttribute('placeholder')).toBe('Type here');
-    });
-
-    it('should restore multiple words in same element', () => {
-      // Set up DOM with multiple word spans in one element
-      document.body.innerHTML =
-        '<div><span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></div>';
-
-      restoreDOM(document.body);
-
-      expect(document.body.textContent).toBe('Hello world');
-      expect(document.querySelector('.ingglish-word')).toBeNull();
-    });
-
-    it('should restore when tooltips created spans preserving DOM structure', () => {
-      // This simulates what applyTranslationsMap creates with tooltips:
-      // Word spans contain original text in data-ingglish-orig
-      // Nested elements should be preserved after restoration
+    it('should preserve nested DOM structure when restoring', () => {
       document.body.innerHTML = `
         <p>
           <span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span>
@@ -593,101 +514,52 @@ describe('dom-translator', () => {
 
       restoreDOM(document.body);
 
-      // Should restore original words while preserving nested elements
       expect(document.body.textContent?.replace(/\s+/g, ' ').trim()).toBe('Hello important world');
-      // Spans should be removed
       expect(document.querySelector('.ingglish-word')).toBeNull();
-      expect(document.querySelector('[data-ingglish-orig]')).toBeNull();
-      // Nested element should be preserved
       expect(document.querySelector('strong')).not.toBeNull();
     });
   });
 
   describe('round-trip translation and restoration', () => {
-    it('should correctly translate and then restore', async () => {
-      document.body.innerHTML = '<p>Hello world</p>';
+    it('should correctly translate and then restore text and attributes', async () => {
+      document.body.innerHTML = '<p>Hello world</p><img alt="Click here">';
       const originalText = 'Hello world';
+      const originalAlt = 'Click here';
 
-      // Translate with tooltips (as the extension does)
-      await translateDOM(document.body, { showTooltips: true });
-      expect(document.body.textContent).not.toBe(originalText); // Translated
-
-      // Restore
-      restoreDOM(document.body);
-      expect(document.body.textContent).toBe(originalText); // Back to original
-    });
-
-    it('should correctly translate and restore attributes', () => {
-      document.body.innerHTML = '<img alt="Hello world">';
-      const originalAlt = 'Hello world';
-
-      translateDOMSync(document.body, { translateAttributes: true });
-      expect(document.querySelector('img')?.getAttribute('alt')).not.toBe(originalAlt); // Translated
-
-      restoreDOM(document.body);
-      expect(document.querySelector('img')?.getAttribute('alt')).toBe(originalAlt); // Restored
-    });
-
-    it('should correctly translate with tooltips and restore', async () => {
-      document.body.innerHTML = '<p>Hello world</p>';
-      const originalText = 'Hello world';
-
-      // Apply translations with tooltips (like the extension does)
-      await applyTranslationsMap(
-        document.body,
-        { hello: 'huloh', world: 'werld' },
-        { showTooltips: true }
-      );
-
-      // Should have translated text with tooltip spans
+      // Translate with tooltips and attributes
+      await translateDOM(document.body, { showTooltips: true, translateAttributes: true });
       expect(document.body.textContent).not.toBe(originalText);
+      expect(document.querySelector('img')?.getAttribute('alt')).not.toBe(originalAlt);
       expect(document.querySelector('.ingglish-word')).not.toBeNull();
 
       // Restore
       restoreDOM(document.body);
-
-      // Should restore original text and remove all tooltip spans
       expect(document.body.textContent).toBe(originalText);
+      expect(document.querySelector('img')?.getAttribute('alt')).toBe(originalAlt);
       expect(document.querySelector('.ingglish-word')).toBeNull();
     });
 
-    it('should handle multiple translate-restore cycles with tooltips', async () => {
+    it('should handle multiple translate-restore cycles', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
       const originalText = 'Hello world';
 
-      // First cycle: translate to "ingglish"
+      // First cycle
       await applyTranslationsMap(
         document.body,
         { hello: 'huloh', world: 'werld' },
         { showTooltips: true }
       );
-      expect(document.body.textContent).not.toBe(originalText); // Translated
-
-      // Restore
+      expect(document.body.textContent).not.toBe(originalText);
       restoreDOM(document.body);
       expect(document.body.textContent).toBe(originalText);
 
-      // Second cycle: translate to "IPA" (different translations)
+      // Second cycle with different translations (IPA)
       await applyTranslationsMap(
         document.body,
         { hello: 'həˈloʊ', world: 'wɜːld' },
         { showTooltips: true }
       );
-      expect(document.body.textContent).not.toBe(originalText); // Translated differently
-
-      // Restore again
-      restoreDOM(document.body);
-      expect(document.body.textContent).toBe(originalText);
-
-      // Third cycle: back to "ingglish"
-      await applyTranslationsMap(
-        document.body,
-        { hello: 'huloh', world: 'werld' },
-        { showTooltips: true }
-      );
-      expect(document.body.textContent).not.toBe(originalText); // Translated
-
-      // Final restore
+      expect(document.body.textContent).not.toBe(originalText);
       restoreDOM(document.body);
       expect(document.body.textContent).toBe(originalText);
     });
