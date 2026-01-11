@@ -110,7 +110,8 @@ Each sound maps to exactly one spelling:
 | Voiced "th" | dh | the, this |
 | Unvoiced "th" | th | think, bath |
 | Short "u" | u | but, cup |
-| "aw/o" sound | o | caught, law |
+| "o" sound | o | hot, rock |
+| "aw" sound | aw | thought, law |
 | "er" sound | er | bird, her |
 
 See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
@@ -124,7 +125,7 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 | beautiful | byuutuful | /ˈbjutəfəl/ |
 | through | thruu | /θɹu/ |
 | though | dhoh | /ðoʊ/ |
-| thought | thot | /θɔt/ |
+| thought | thawt | /θɔt/ |
 | the | dhu | /ðə/ |
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
