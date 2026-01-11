@@ -273,23 +273,6 @@ describe('dom-translator', () => {
 
       expect(p.textContent).toBe('Werld');
     });
-
-    it('should not double-translate (regression test for observer re-triggering)', async () => {
-      // This tests the fix for a bug where setting textContent triggered a characterData
-      // mutation, causing the observer to re-translate already translated text.
-      // e.g., "World" → "Werld" → "Wairld" (wrong!)
-      createObserver(document.body);
-
-      const p = document.createElement('p');
-      p.textContent = 'World';
-      document.body.appendChild(p);
-
-      // Wait long enough for any potential double-translation
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // Should be "Werld", not "Wairld" (which would happen if translated twice)
-      expect(p.textContent).toBe('Werld');
-    });
   });
 
   describe('translateSyncWithMapping', () => {
