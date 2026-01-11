@@ -8,18 +8,18 @@ export default defineConfig({
   // Use 2 workers in CI for faster tests
   workers: process.env.CI ? 2 : undefined,
   reporter: 'list',
-  // Faster timeouts
-  timeout: 30000,
+  // Fast timeouts - local server should respond quickly
+  timeout: 5000,
   expect: {
-    timeout: 5000,
+    timeout: 1000,
   },
   use: {
     baseURL: 'http://localhost:3000',
     // Only trace on retry to save time
     trace: 'on-first-retry',
-    // Faster navigation
-    actionTimeout: 10000,
-    navigationTimeout: 15000,
+    // Fast timeouts
+    actionTimeout: 1000,
+    navigationTimeout: 1000,
   },
   projects: [
     {
