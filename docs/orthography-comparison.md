@@ -489,8 +489,8 @@ Not all phonemes are equally common across world languages. Data from [PHOIBLE](
 | tʃ (ch) | /tʃ/ | 44% | Less than half |
 | dʒ (j) | /dʒ/ | 30% | Less common |
 | ʒ (zh) | /ʒ/ | 20% | Uncommon |
-| θ (th) | /θ/ | 4% | Rare |
 | ð (dh) | /ð/ | 7% | Rare |
+| θ (th) | /θ/ | 4% | Rare |
 
 **Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling — few languages have these sounds.
 
