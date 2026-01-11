@@ -15,8 +15,9 @@ export default defineConfig({
   },
   use: {
     baseURL: 'http://localhost:3000',
-    // Only trace on retry to save time
+    // Capture on failure for debugging
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
     // Allow time for React to render
     actionTimeout: 5000,
     navigationTimeout: 5000,
