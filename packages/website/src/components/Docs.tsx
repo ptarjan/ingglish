@@ -137,13 +137,15 @@ function Docs(): JSX.Element {
   // Custom components to handle links and add heading IDs
   const components: Components = {
     a: ({ href, children, ...props }) => {
-      // Transform .md links to hash links
-      if (href?.endsWith('.md') === true) {
-        const filename = href.split('/').pop() ?? '';
+      // Transform .md links (with optional #section) to hash links
+      if (href?.includes('.md') === true) {
+        const [mdPath, section] = href.split('#');
+        const filename = mdPath.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {
+          const hashPath = section !== undefined ? `#docs/${docId}/${section}` : `#docs/${docId}`;
           return (
-            <a href={`#docs/${docId}`} {...props}>
+            <a href={hashPath} {...props}>
               {children}
             </a>
           );
