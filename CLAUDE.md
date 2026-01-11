@@ -4,6 +4,18 @@
 
 No need to build and test after every change - CI will handle that on push.
 
+## Cross-Package Changes
+
+This monorepo uses lint-staged for pre-commit hooks, which only lints staged files. When changing exports or interfaces in `@ingglish/core`, dependent packages (`dom`, `website`, `extension`) won't be automatically linted because they weren't modified.
+
+**Before pushing changes that affect cross-package APIs**, run a full lint to catch breakages:
+
+```bash
+npm run lint
+```
+
+This catches type errors in dependent packages that lint-staged misses.
+
 ## Testing
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
