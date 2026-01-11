@@ -6,7 +6,9 @@ import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@inggli
 
 /**
  * Extracts unique words from text for batch translation.
- * Returns lowercase words for dictionary lookup.
+ *
+ * @param text - Text to extract words from
+ * @returns Array of unique lowercase words (no duplicates)
  */
 export function extractWords(text: string): string[] {
   const normalized = normalizeApostrophes(text);
@@ -19,6 +21,9 @@ export function extractWords(text: string): string[] {
 /**
  * Extracts all unique words from an array of text nodes.
  * Useful for batch translation scenarios.
+ *
+ * @param textNodes - Array of DOM text nodes to extract words from
+ * @returns Array of unique lowercase words across all nodes
  */
 export function extractWordsFromNodes(textNodes: Text[]): string[] {
   const allWords: string[] = [];
