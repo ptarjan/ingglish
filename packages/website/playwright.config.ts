@@ -8,18 +8,18 @@ export default defineConfig({
   // More workers since tests are I/O-bound (waiting for pages, not CPU)
   workers: process.env.CI ? 4 : undefined,
   reporter: 'list',
-  // Fast timeouts - fail fast if server not responding
-  timeout: 1000,
+  // Reasonable timeouts - allow for React hydration + dictionary load
+  timeout: 10000,
   expect: {
-    timeout: 1000,
+    timeout: 5000,
   },
   use: {
     baseURL: 'http://localhost:3000',
     // Only trace on retry to save time
     trace: 'on-first-retry',
-    // Fast timeouts
-    actionTimeout: 1000,
-    navigationTimeout: 1000,
+    // Allow time for React to render
+    actionTimeout: 5000,
+    navigationTimeout: 5000,
   },
   projects: [
     {
