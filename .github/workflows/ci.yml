@@ -7,9 +7,43 @@ on:
     branches: [main, master]
 
 jobs:
-  # Fast checks run first for quick feedback
+  # Build once, share artifacts with other jobs
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Cache CMU dictionary
+        uses: actions/cache@v4
+        with:
+          path: packages/core/src/dictionary/cmudict.ts
+          key: cmudict-v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            packages/*/dist
+            docs/generated
+          retention-days: 1
+
+  # Fast checks using cached build
   lint:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/checkout@v4
 
@@ -22,8 +56,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build core and dom (required for types)
-        run: npm run build -w @ingglish/core && npm run build -w @ingglish/dom
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Lint
         run: npm run lint
@@ -31,9 +67,10 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
-  # Build and test run in parallel with lint
+  # Tests using cached build
   test:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - uses: actions/checkout@v4
@@ -47,8 +84,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Get Playwright version
         id: playwright-version
@@ -74,23 +113,16 @@ jobs:
 
   deploy-preview:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: [build, lint, test]
     if: github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
+          name: build-output
 
       - name: Deploy to Vercel Preview
         uses: amondnet/vercel-action@v25
@@ -102,23 +134,16 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: [build, lint, test]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
+          name: build-output
 
       - name: Deploy to Vercel Production
         uses: amondnet/vercel-action@v25
