@@ -128,21 +128,13 @@ function Docs(): React.JSX.Element {
           </a>
         );
       }
-      // Handle .md links (switch docs)
+      // Handle .md links (transform to hash links, let browser handle navigation)
       if (href?.endsWith('.md') === true) {
         const filename = href.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {
           return (
-            <a
-              href={`#docs/${docId}`}
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveDoc(docId);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              {...props}
-            >
+            <a href={`#docs/${docId}`} {...props}>
               {children}
             </a>
           );
