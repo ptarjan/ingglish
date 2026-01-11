@@ -10,6 +10,7 @@ import {
   WORD_TEST_REGEX,
 } from '@ingglish/core/internal';
 import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
+import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates (consistent with translator.ts)
@@ -42,8 +43,8 @@ function processTextNode(
 ): void {
   const parent = textNode.parentElement;
 
-  if (parent && !parent.hasAttribute('data-ingglish-original')) {
-    parent.setAttribute('data-ingglish-original', textNode.textContent ?? '');
+  if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+    parent.setAttribute(ATTR_ORIGINAL_CONTENT, textNode.textContent ?? '');
   }
 
   if (showTooltips) {

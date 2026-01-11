@@ -16,6 +16,19 @@
 export type { DOMTranslatorOptions, OutputFormat } from './types';
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+export {
+  WORD_SPAN_CLASS,
+  TOOLTIP_STYLES_ID,
+  ATTR_ORIGINAL_WORD,
+  ATTR_ORIGINAL_CONTENT,
+  ATTR_SKIP,
+  ATTR_ORIGINAL_PREFIX,
+} from './constants';
+
+// =============================================================================
 // DOM Translation
 // =============================================================================
 

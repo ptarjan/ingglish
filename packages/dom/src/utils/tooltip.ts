@@ -3,16 +3,18 @@
  * Shows original text on hover for translated words.
  */
 
+import { WORD_SPAN_CLASS, TOOLTIP_STYLES_ID, ATTR_ORIGINAL_WORD } from '../constants';
+
 export const TOOLTIP_STYLES = `
-.ingglish-word {
+.${WORD_SPAN_CLASS} {
   position: relative;
   display: inline;
   cursor: help;
   vertical-align: baseline;
 }
 
-.ingglish-word:hover::after {
-  content: attr(data-ingglish-orig);
+.${WORD_SPAN_CLASS}:hover::after {
+  content: attr(${ATTR_ORIGINAL_WORD});
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -31,7 +33,7 @@ export const TOOLTIP_STYLES = `
   animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
-.ingglish-word:hover::before {
+.${WORD_SPAN_CLASS}:hover::before {
   content: '';
   position: absolute;
   bottom: 100%;
@@ -55,11 +57,11 @@ export const TOOLTIP_STYLES = `
  * Injects tooltip styles into the document if not already present.
  */
 export function injectTooltipStyles(targetDoc: Document = document): void {
-  if (targetDoc.getElementById('ingglish-tooltip-styles')) {
+  if (targetDoc.getElementById(TOOLTIP_STYLES_ID)) {
     return;
   }
   const style = targetDoc.createElement('style');
-  style.id = 'ingglish-tooltip-styles';
+  style.id = TOOLTIP_STYLES_ID;
   style.textContent = TOOLTIP_STYLES;
   targetDoc.head?.appendChild(style);
 }

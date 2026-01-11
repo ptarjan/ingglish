@@ -3,6 +3,8 @@
  * Determines which elements and text nodes should be skipped.
  */
 
+import { ATTR_ORIGINAL_WORD, ATTR_SKIP } from '../constants';
+
 /**
  * Default tags to skip during translation.
  * These typically contain code, scripts, or non-translatable content.
@@ -72,12 +74,12 @@ function checkElementSkip(
   }
 
   // Check for data attribute to skip
-  if (element.hasAttribute('data-ingglish-skip')) {
+  if (element.hasAttribute(ATTR_SKIP)) {
     return true;
   }
 
-  // Check for already-translated elements (marked with data-ingglish-orig)
-  if (element.hasAttribute('data-ingglish-orig')) {
+  // Check for already-translated elements (marked with ATTR_ORIGINAL_WORD)
+  if (element.hasAttribute(ATTR_ORIGINAL_WORD)) {
     return true;
   }
 
@@ -121,12 +123,12 @@ export function shouldSkipTextNode(
  * Marks an element to be skipped during translation.
  */
 export function skipElement(element: Element): void {
-  element.setAttribute('data-ingglish-skip', 'true');
+  element.setAttribute(ATTR_SKIP, 'true');
 }
 
 /**
  * Removes the skip marker from an element.
  */
 export function unskipElement(element: Element): void {
-  element.removeAttribute('data-ingglish-skip');
+  element.removeAttribute(ATTR_SKIP);
 }

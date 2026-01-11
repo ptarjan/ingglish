@@ -13,6 +13,7 @@ import {
   collectTextNodes,
   injectTooltipStyles,
 } from '../utils';
+import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import { createTooltipFragment } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
@@ -37,14 +38,14 @@ function translateTextNode(
     // Replace text node with tooltip spans
     const fragment = createTooltipFragment(originalText, outputFormat);
     // Store original text on parent for restoration
-    if (parent && !parent.hasAttribute('data-ingglish-original')) {
-      parent.setAttribute('data-ingglish-original', originalText);
+    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
     }
     textNode.replaceWith(fragment);
   } else {
     // Simple text replacement (original behavior)
-    if (parent && !parent.hasAttribute('data-ingglish-original')) {
-      parent.setAttribute('data-ingglish-original', originalText);
+    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
     }
     textNode.textContent = translateSync(originalText, outputFormat);
   }
@@ -116,7 +117,7 @@ function translateElementAttributes(
       const attrValue = element.getAttribute(attrName);
       if (attrValue !== null && attrValue.length > 0) {
         // Store original attribute value for restoration
-        const originalAttrName = `data-ingglish-original-${attrName}`;
+        const originalAttrName = `${ATTR_ORIGINAL_PREFIX}${attrName}`;
         if (!element.hasAttribute(originalAttrName)) {
           element.setAttribute(originalAttrName, attrValue);
         }

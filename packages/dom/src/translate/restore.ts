@@ -3,6 +3,12 @@
  */
 
 import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../utils';
+import {
+  WORD_SPAN_CLASS,
+  ATTR_ORIGINAL_WORD,
+  ATTR_ORIGINAL_CONTENT,
+  ATTR_ORIGINAL_PREFIX,
+} from '../constants';
 
 /**
  * Restores original text content that was translated.
@@ -15,30 +21,30 @@ export function restoreDOM(root: Element | Document): void {
 
   // First, replace all tooltip spans with their original text
   // This preserves nested DOM structure (unlike textContent replacement)
-  const wordSpans = Array.from(root.querySelectorAll('.ingglish-word[data-ingglish-orig]'));
+  const wordSpans = Array.from(root.querySelectorAll(`.${WORD_SPAN_CLASS}[${ATTR_ORIGINAL_WORD}]`));
   for (const span of wordSpans) {
-    const originalWord = span.getAttribute('data-ingglish-orig');
+    const originalWord = span.getAttribute(ATTR_ORIGINAL_WORD);
     if (originalWord !== null) {
       const textNode = document.createTextNode(originalWord);
       span.replaceWith(textNode);
     }
   }
 
-  // Clean up any data-ingglish-original attributes (no longer needed for restoration)
-  const elementsWithOriginal = Array.from(root.querySelectorAll('[data-ingglish-original]'));
+  // Clean up any original content attributes (no longer needed for restoration)
+  const elementsWithOriginal = Array.from(root.querySelectorAll(`[${ATTR_ORIGINAL_CONTENT}]`));
   for (const element of elementsWithOriginal) {
-    element.removeAttribute('data-ingglish-original');
+    element.removeAttribute(ATTR_ORIGINAL_CONTENT);
   }
 
   // Restore attributes - batch query for all translatable attributes at once
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map(
-    (attr) => `[data-ingglish-original-${attr}]`
+    (attr) => `[${ATTR_ORIGINAL_PREFIX}${attr}]`
   ).join(',');
   const elementsWithTranslatedAttrs = Array.from(root.querySelectorAll(attrSelector));
 
   for (const element of elementsWithTranslatedAttrs) {
     for (const attrName of TRANSLATABLE_ATTRIBUTES) {
-      const originalAttrName = `data-ingglish-original-${attrName}`;
+      const originalAttrName = `${ATTR_ORIGINAL_PREFIX}${attrName}`;
       const originalValue = element.getAttribute(originalAttrName);
       if (originalValue !== null) {
         element.setAttribute(attrName, originalValue);

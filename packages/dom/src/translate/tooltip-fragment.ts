@@ -10,6 +10,7 @@ import {
   WORD_SPLIT_REGEX,
   WORD_TEST_REGEX,
 } from '@ingglish/core/internal';
+import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD } from '../constants';
 import type { OutputFormat } from '../types';
 
 /**
@@ -27,10 +28,10 @@ export function createTooltipFragment(
   for (const token of tokens) {
     if (token.isWord && token.original !== token.translated) {
       // Word that was translated - wrap in tooltip span
-      // data-ingglish-orig stores original text AND marks as translated (prevents re-processing)
+      // ATTR_ORIGINAL_WORD stores original text AND marks as translated (prevents re-processing)
       const span = document.createElement('span');
-      span.className = 'ingglish-word';
-      span.setAttribute('data-ingglish-orig', token.original);
+      span.className = WORD_SPAN_CLASS;
+      span.setAttribute(ATTR_ORIGINAL_WORD, token.original);
       span.textContent = token.translated;
       fragment.appendChild(span);
     } else {
@@ -68,8 +69,8 @@ export function createTooltipFragmentFromMap(
       if (translated && translated !== lowerToken) {
         // Word was translated - wrap in tooltip span
         const span = document.createElement('span');
-        span.className = 'ingglish-word';
-        span.setAttribute('data-ingglish-orig', token);
+        span.className = WORD_SPAN_CLASS;
+        span.setAttribute(ATTR_ORIGINAL_WORD, token);
         const pattern = detectCasePattern(token);
         span.textContent = applyCasePattern(translated, pattern, token);
         fragment.appendChild(span);
