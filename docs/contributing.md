@@ -103,8 +103,6 @@ packages/
 2. Run `npm run build -w @ingglish/extension` to rebuild
 3. Reload the extension in Chrome (`chrome://extensions` > refresh icon)
 
-See [Extension Setup](extension-setup.md) for build and loading instructions.
-
 ### Adding New ARPAbet Mappings
 
 Edit `packages/core/src/convert/ingglish-maps.ts`:

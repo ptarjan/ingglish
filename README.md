@@ -92,7 +92,11 @@ Then open http://localhost:3000
 
 ### Chrome Extension
 
-See [Extension Setup Guide](docs/extension-setup.md) for build and installation instructions.
+```bash
+npm run build -w @ingglish/extension
+```
+
+Then load `packages/extension/dist` as an unpacked extension in Chrome (`chrome://extensions` > Developer mode > Load unpacked).
 
 ## Phoneme Mapping
 

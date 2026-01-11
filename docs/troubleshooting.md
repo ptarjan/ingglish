@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Common issues and how to fix them.
+This guide covers common issues you may encounter when developing with Ingglish and how to resolve them.
 
 ## Build Issues
 
@@ -89,7 +89,7 @@ This shows a detailed breakdown of the translation pipeline.
 
 #### Common Issues
 
-##### 1. Phoneme Parsing Ambiguity
+**Phoneme Parsing Ambiguity**
 
 The most common issue is when an Ingglish spelling can be parsed multiple ways:
 
@@ -108,11 +108,11 @@ const PHONEME_ALTERNATIVES: Record<string, string[][]> = {
 };
 ```
 
-##### 2. Word Not in CMU Dictionary
+**Word Not in CMU Dictionary**
 
 If step 1 shows "Word not found", the word isn't in the CMU Pronouncing Dictionary. It will be passed through unchanged or use fallback heuristics.
 
-##### 3. Phoneme Sequence Not Found
+**Phoneme Sequence Not Found**
 
 If the parsed phonemes don't match any dictionary entry, check:
 1. Are the expected phonemes correct? (CMU may have errors)
