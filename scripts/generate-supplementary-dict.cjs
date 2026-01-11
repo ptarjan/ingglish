@@ -157,8 +157,9 @@ async function main() {
     console.log('Downloaded ipa-dict');
   }
 
-  // Load CMU dictionary
-  const cmu = require('cmu-pronouncing-dictionary');
+  // Load CMU dictionary (from built cmudict.json)
+  const cmuDictPath = path.join(__dirname, '..', 'packages', 'core', 'src', 'dictionary', 'cmudict.json');
+  const cmu = JSON.parse(fs.readFileSync(cmuDictPath, 'utf8'));
   const cmuWords = new Set(Object.keys(cmu).filter(w => !w.includes('(')));
   console.log(`CMU has ${cmuWords.size} words`);
 
