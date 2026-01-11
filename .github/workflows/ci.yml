@@ -38,6 +38,8 @@ jobs:
           retention-days: 1
 
   # Fast checks using cached build
+  # NOTE: Lint needs build artifacts because ESLint type-checking requires
+  # the generated .d.ts files for cross-package imports to resolve correctly.
   lint:
     runs-on: ubuntu-latest
     needs: build
@@ -131,6 +133,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium webkit
 
+      # NOTE: Smoke test catches catastrophic failures fast (e.g., app won't start)
+      # before waiting for the full suite. Useful for quick feedback on broken builds.
       - name: Smoke test (1 browser, 1 test)
         run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
 

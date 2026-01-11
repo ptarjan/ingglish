@@ -1,6 +1,11 @@
 /**
- * Internal utilities shared with @ingglish/dom.
+ * Internal utilities shared between packages in this monorepo.
  * Not part of the public API - may change without notice.
+ *
+ * NOTE: This file exports utilities needed by @ingglish/dom, @ingglish/website,
+ * and @ingglish/extension. It is NOT for external consumers of @ingglish/core.
+ * Functions only used within core (like ipaToArpabetClean) belong in their
+ * respective modules, not here.
  *
  * @internal
  */
