@@ -251,6 +251,13 @@ The bar for success isn't "everyone uses Ingglish." It's "Ingglish is useful to 
 - [Phoneme Mapping](https://ingglish.com/#docs/phoneme-mapping) - The complete sound-to-spelling reference
 - [Architecture](https://ingglish.com/#docs/architecture) - How the translation system works
 
+## Video Resources
+
+- [The Screwed-Up History of English Spelling](https://www.pbs.org/video/the-screwed-up-history-of-english-spelling-iake2v/) - PBS Otherwords (8 min) - Excellent overview of how English spelling became such a mess
+- [Ghoti and the Ministry of Helth: Spelling Reform](https://www.youtube.com/watch?v=AfRJVF-bRwQ) - Tom Scott (3 min) - Quick introduction to spelling reform history
+- [Most English spelling reforms are bad](https://www.youtube.com/watch?v=TEsqY4MH40s) - Jan Misali (17 min) - Critical analysis of why reforms fail, plus a creative alternative approach
+- [The Simplified Spelling Board](https://www.youtube.com/watch?v=zWLVogAqNac) - The History Guy (15 min) - Deep dive into Roosevelt and Carnegie's failed reform attempt
+
 ## Sources
 
 Historical research drawn from:
