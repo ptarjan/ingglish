@@ -128,6 +128,8 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 | the | dhu | /ðə/ |
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
+> **About the name:** "Ingglish" is simply how you spell "English" in Ingglish! When speaking, you can distinguish them by stressing the first syllable and pausing briefly between the two g's: **ING·glish** vs. English.
+
 ## Development
 
 ```bash
