@@ -172,7 +172,7 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 ### What Won't Happen
 
 Let's be honest:
-- Ingglish won't replace English spelling
+- Ingglish won't replace English spelling immediately
 - Governments won't mandate it
 - Schools won't teach it as primary literacy
 - Traditional spelling won't become obsolete
