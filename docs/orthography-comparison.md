@@ -1,12 +1,12 @@
-# Orthography Comparison: How Common Are Ingglish's Spelling Choices?
+# Orthography Comparison: Why Ingglish Spellings Make Sense
 
-This document analyzes each Ingglish spelling choice and compares it to conventions in other languages.
+Every Ingglish spelling has a reason. This document shows that our choices aren't arbitrary—they're grounded in how other languages solve the same problems.
 
 ## Design Philosophy
 
-Ingglish follows the **phonemic principle**: one sound = one spelling. This aligns with languages like Finnish, Spanish, and Turkish, which have highly consistent orthographies. English, by contrast, has only [72% letter-to-sound consistency](https://en.wikipedia.org/wiki/English_orthography).
+Ingglish follows the **phonemic principle**: one sound = one spelling. Finnish children learn to read in months, not years, because Finnish spelling is consistent. Spanish speakers can pronounce any word they see. English speakers can't—our spelling has only [72% letter-to-sound consistency](https://en.wikipedia.org/wiki/English_orthography).
 
-Our constraint of using only the 26 ASCII letters (no diacritics) limits some options but keeps the system accessible on any keyboard.
+We use only the 26 ASCII letters (no diacritics), so you can type Ingglish on any keyboard, anywhere.
 
 ## Vowels
 
@@ -163,11 +163,11 @@ This is distinctly American English - most languages don't have these:
 - **oi** for /ɔɪ/ (universal)
 - **ow** for /aʊ/ (English)
 
-### Novel Choices
-- **dh** for /ð/ - distinguishes from /θ/, inspired by linguistic notation
-- **zh** for /ʒ/ - parallels sh/zh voicing pair, used in Romanization
-- **uu** for /ʊ/ - distinguishes from /u/
-- **oh** for /oʊ/ - avoids confusion with /aʊ/ ('ow')
+### Solving Problems English Never Did
+- **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. Albanian already uses 'dh' officially.
+- **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
+- **uu** for /ʊ/ - "too" and "book" sound different. Now they look different too.
+- **oh** for /oʊ/ - Distinguishes "go" from "cow" without ambiguity.
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
@@ -339,15 +339,20 @@ This explains why English spelling is so difficult: we're mapping ~15 vowel soun
 2. **Vowel doubling** (ee, oo): Finnish/Estonian pattern, principled and consistent
 3. **Diphthong spellings** (ie, ay, ow, oi, oh): Follow existing English patterns where possible
 
-### Our Challenges Are Inherent to English
+### Why English Is Harder Than Other Languages
 
-1. **Too many vowels**: English's 14-15 vowels require creative solutions with only 5 letters
-2. **Rare consonants**: /θ/ and /ð/ have no standard Latin spelling because most languages don't have them
-3. **R-colored vowels**: Unique to rhotic English dialects; no cross-linguistic precedent
+1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, oo) and digraphs (ie, ay, ow).
+2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
+3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
 
-### What Makes Ingglish Practical
+### What Makes Ingglish Work
 
-Unlike historical reforms, Ingglish uses only ASCII letters, works on any keyboard, and builds on familiar patterns. For a deeper analysis of why this matters, see [Spelling Reform History](spelling-reform-comparison.md).
+1. **No new characters to learn**: Every letter is already on your keyboard
+2. **Familiar patterns**: sh, ch, th, ng—you already know these
+3. **Logical extensions**: If sh/s are voicing pairs, zh/z should be too
+4. **Bidirectional tools**: Convert any text to Ingglish and back instantly
+
+Previous reforms asked people to learn new alphabets or adopt strange-looking spellings. Ingglish asks you to be slightly more consistent with patterns you already use. For a deeper analysis of why this matters, see [Spelling Reform History](spelling-reform-comparison.md).
 
 ## References
 
