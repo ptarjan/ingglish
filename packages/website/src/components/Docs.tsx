@@ -70,12 +70,13 @@ for (const doc of docs) {
 
 function extractHeadings(html: string): HeadingInfo[] {
   const headings: HeadingInfo[] = [];
-  // Match h2 and h3 tags and extract their content
-  const regex = /<h([23])[^>]*>([^<]+)<\/h[23]>/gi;
+  // Match h2 and h3 tags and extract their full content (including nested HTML like links)
+  const regex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
   let match;
   while ((match = regex.exec(html)) !== null) {
     const level = parseInt(match[1], 10);
-    const text = match[2].trim();
+    // Strip HTML tags to get plain text
+    const text = match[2].replace(/<[^>]+>/g, '').trim();
     const id = text
       .toLowerCase()
       .replace(/\s+/g, '-')
