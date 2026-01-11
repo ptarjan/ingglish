@@ -116,6 +116,19 @@ This is problematic because spellings would collide. The R-rule ensures:
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, and AE vowels use their regular spellings (o, aw, e, a).
 
+### Why Not Always Use the R-Colored Spellings?
+
+We can't simply map AA → 'ar', AO → 'or', etc. because these vowels appear without R in many words:
+
+| Vowel | Without R | With R |
+|-------|-----------|--------|
+| AA | h**o**t → hot | st**ar** → star |
+| AO | l**aw** → law | st**ore** → stor |
+| EH | b**e**d → bed | **air** → air |
+| AE | c**a**t → kat | **arr**ow → aaroh |
+
+If we always used 'ar' for AA, then "hot" would become "hart" instead of "hot". The R-colored spellings only apply when R actually follows the vowel in pronunciation.
+
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
 ## Key Design Decisions
