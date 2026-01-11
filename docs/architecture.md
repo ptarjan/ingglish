@@ -367,56 +367,16 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Performance Considerations
+## Performance
 
-1. **Dictionary Loading**: ~3MB gzipped, loaded once and cached
-2. **Translation**: O(n) where n = word count, dictionary lookup is O(1)
-3. **Reverse Translation**: Builds reverse map on first use, O(n) for n words
-4. **DOM Translation**: Uses TreeWalker for efficient text node traversal
-5. **Bundle Splitting**: Dictionary and word frequencies in separate chunks
+| Operation | Complexity | Notes |
+|-----------|------------|-------|
+| Dictionary loading | O(n) | ~3MB gzipped, loaded once and cached |
+| Word lookup | O(1) | Hash map lookup |
+| Translation | O(n) | n = word count |
+| Reverse translation | O(1) | Phoneme key lookup after initial map build |
+| DOM traversal | O(n) | TreeWalker, n = nodes |
 
-## Profiling & Benchmarking
+Bundle splitting keeps initial load fast: dictionary and word frequencies are loaded on-demand.
 
-The project includes comprehensive profiling scripts for performance analysis.
-
-### Core Profiling Scripts (`packages/core/scripts/`)
-
-```
-scripts/
-├── benchmark.ts           # Full benchmark suite with statistics
-├── profile.ts             # Quick translation profiling
-├── profile-translate.ts   # translateSync performance analysis
-├── profile-convert.ts     # Phoneme conversion performance
-├── debug-roundtrip.ts     # Round-trip translation debugging
-├── translate.ts           # CLI translation tool
-└── build-dictionary.ts    # Dictionary build utilities
-```
-
-### DOM Profiling Scripts (`packages/dom/scripts/`)
-
-```
-scripts/
-├── profile-wikipedia.ts   # Real Wikipedia HTML profiling (~300KB)
-├── profile-tree-walker.ts # TreeWalker alternatives comparison
-├── profile-process-node.ts# Text node processing analysis
-├── profile-dom.ts         # General DOM translation profiling
-├── profile-real-html.ts   # Article-style HTML profiling
-└── profile-walker-only.ts # TreeWalker-only benchmarks
-```
-
-### Running Benchmarks
-
-```bash
-# Core library benchmarks
-cd packages/core
-npx tsx scripts/benchmark.ts
-
-# DOM profiling with Wikipedia HTML
-cd packages/dom
-npx tsx scripts/profile-wikipedia.ts
-```
-
-Sample output from `profile-wikipedia.ts`:
-- Collects text nodes, extracts words, applies translations
-- Compares TreeWalker alternatives (current, stack-based, simple)
-- Reports per-node and per-word timing in microseconds
+See [Performance Guide](performance.md) for profiling scripts and optimization guidelines.

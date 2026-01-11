@@ -55,18 +55,44 @@ This guide covers deploying the Ingglish website and Chrome extension.
 
 ## Chrome Extension Deployment
 
-### Development Testing
+### Building
 
-1. Build the extension:
-   ```bash
-   npm run build -w @ingglish/extension
-   ```
+```bash
+npm run build -w @ingglish/extension
+```
 
-2. Load in Chrome:
-   - Go to `chrome://extensions`
-   - Enable "Developer mode"
-   - Click "Load unpacked"
-   - Select `packages/extension/dist`
+The built extension will be in `packages/extension/dist/`.
+
+### Loading in Chrome
+
+1. Go to `chrome://extensions`
+2. Enable "Developer mode" (toggle in top right)
+3. Click "Load unpacked"
+4. Select `packages/extension/dist`
+
+### Usage
+
+1. Click the Ingglish extension icon in the Chrome toolbar
+2. Click "Translate Page" to translate the current page
+3. Click "Turn Off" to restore the original text
+4. Use the format toggle to switch between Ingglish and IPA
+
+**Keyboard Shortcuts:**
+- **Windows/Linux**: `Alt+Shift+G`
+- **Mac**: `Ctrl+Shift+G`
+
+### Features
+
+- **Format switching** - Toggle between Ingglish and IPA output
+- **In-place updates** - Format switching updates existing translations without re-rendering
+- **Dynamic content** - Automatically translates content added via JavaScript (SPAs, infinite scroll)
+- **Hover tooltips** - See original English by hovering over translated words
+
+### Notes
+
+- Translation state persists within a tab across page refreshes
+- Some pages block content scripts (e.g., Chrome Web Store)
+- Code blocks, form inputs, and scripts are not translated
 
 ### Chrome Web Store Publishing
 
@@ -151,17 +177,4 @@ import { Analytics } from '@vercel/analytics/react';
 
 ## Troubleshooting
 
-### Build Fails
-- Ensure Node.js 20+ is installed
-- Run `npm ci` to get exact dependency versions
-- Check that core library builds before website
-
-### Website Shows Blank Page
-- Check browser console for errors
-- Verify the base path matches your deployment URL
-- Ensure dictionary JSON is loading correctly
-
-### Extension Not Working
-- Check that manifest.json is valid
-- Verify content scripts have correct permissions
-- Check service worker console for errors
+See [Troubleshooting Guide](troubleshooting.md) for common deployment issues.

@@ -143,21 +143,9 @@ npm run translate -- -r "huloh werld"
 
 # Debug round-trip issues
 npm run debug:roundtrip "beautiful"
-
-# Run benchmarks
-npx tsx scripts/benchmark.ts
 ```
 
-### Profiling
-
-```bash
-# Profile DOM translation with real Wikipedia HTML
-cd packages/dom
-npx tsx scripts/profile-wikipedia.ts
-
-# Compare TreeWalker alternatives
-npx tsx scripts/profile-tree-walker.ts
-```
+See [Performance Guide](docs/performance.md) for profiling and benchmarking scripts.
 
 ## How Unknown Words Are Handled
 
@@ -181,16 +169,12 @@ See [Deployment Guide](docs/deployment.md) for detailed instructions on deployin
 
 ## Documentation
 
-### Reference
-- [API Reference](docs/generated/README.md) - Complete API for @ingglish/core (auto-generated)
-- [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA conversion rules
-- [Architecture](docs/architecture.md) - System design, data flow, and module structure
-
-### Guides
+- [Architecture](docs/architecture.md) - System design, data flow, module structure
 - [Contributing](docs/contributing.md) - Development setup and workflow
-- [Extension Setup](docs/extension-setup.md) - Chrome extension build and installation
-- [Deployment](docs/deployment.md) - Deploy website, extension, and CORS proxy
-- [Debugging](docs/debugging.md) - Diagnose round-trip translation issues
+- [Deployment](docs/deployment.md) - Deploy website, extension, CORS proxy
+- [Performance](docs/performance.md) - Profiling and optimization
+- [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA tables
+- [Troubleshooting](docs/troubleshooting.md) - Common issues and fixes
 
 ## License
 

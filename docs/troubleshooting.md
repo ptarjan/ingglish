@@ -1,6 +1,47 @@
-# Debugging Round-Trip Translation Issues
+# Troubleshooting
 
-When a word fails to round-trip (English → Ingglish → English or English → IPA → English doesn't return the original), use this guide to diagnose and fix the issue.
+Common issues and how to fix them.
+
+## Build Issues
+
+### Build Fails
+- Ensure Node.js 20+ is installed
+- Run `npm ci` to get exact dependency versions
+- Check that core library builds before website: `npm run build -w @ingglish/core`
+
+### TypeScript Errors in Dependent Packages
+When changing exports in `@ingglish/core`, dependent packages won't be linted by pre-commit hooks. Run a full lint:
+```bash
+npm run lint
+```
+
+## Website Issues
+
+### Blank Page
+- Check browser console for errors
+- Verify the base path matches your deployment URL
+- Ensure dictionary JSON is loading correctly
+
+### Dictionary Not Loading
+- Check network tab for failed requests
+- Verify CORS headers if using custom CDN
+
+## Extension Issues
+
+### Extension Not Working
+- Check that manifest.json is valid
+- Verify content scripts have correct permissions
+- Check service worker console for errors (`chrome://extensions` → Inspect views)
+
+### Pages Not Translating
+- Some pages block content scripts (Chrome Web Store, browser settings)
+- Check if the page uses Shadow DOM (not currently supported)
+
+## Translation Issues
+
+### Round-Trip Translation Failures
+
+When a word fails to round-trip (English → Ingglish → English doesn't return the original):
 
 ## Quick Start
 
