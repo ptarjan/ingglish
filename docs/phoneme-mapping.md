@@ -129,6 +129,8 @@ The R-colored spellings (ar, or, air, aar) were chosen because they match Englis
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
+That said, if Ingglish ever gains enough adoption that the R-coloring exception becomes the biggest pain point, that would be a wonderful problem to have. This rule exists to ease the transition for English readers, but it's not fundamental to the system. A future version could drop it in favor of full consistency if that's what readers prefer.
+
 ## Key Design Decisions
 
 ### TH vs DH Distinction
