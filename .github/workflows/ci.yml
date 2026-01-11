@@ -127,7 +127,10 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium webkit
 
-      - name: E2E tests
+      - name: Smoke test (1 browser, 1 test)
+        run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
+
+      - name: E2E tests (full suite)
         run: npm run test:e2e -w @ingglish/website
 
   deploy-preview:
