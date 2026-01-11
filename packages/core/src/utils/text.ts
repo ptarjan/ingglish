@@ -16,8 +16,8 @@ export function normalizeApostrophes(text: string): string {
   return text.replace(/[\u2018\u2019\u02BC]/g, "'");
 }
 
-// Common IPA symbols used in phonetic transcription
-const IPA_SYMBOLS = 'əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ';
+// Common IPA symbols used in phonetic transcription (Set for O(1) lookup)
+const IPA_SYMBOLS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ');
 
 /**
  * Checks if a character is an IPA phonetic symbol (not punctuation).
@@ -40,8 +40,8 @@ export function isIPAChar(char: string): boolean {
     return true;
   }
 
-  // Common IPA symbols
-  if (IPA_SYMBOLS.includes(char)) {
+  // Common IPA symbols (O(1) Set lookup)
+  if (IPA_SYMBOLS_SET.has(char)) {
     return true;
   }
 
@@ -83,8 +83,8 @@ export function isPhoneticChar(char: string): boolean {
     return true;
   }
 
-  // Common IPA symbols
-  if (IPA_SYMBOLS.includes(char)) {
+  // Common IPA symbols (O(1) Set lookup)
+  if (IPA_SYMBOLS_SET.has(char)) {
     return true;
   }
 

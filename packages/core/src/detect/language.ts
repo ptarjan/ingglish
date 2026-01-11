@@ -26,6 +26,11 @@ const ENGLISH_PATTERNS = [
 ];
 
 /**
+ * IPA-specific characters for detection (Set for O(1) lookup).
+ */
+const IPA_CHARS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ');
+
+/**
  * Heuristically detects if text is Ingglish vs English.
  *
  * @param text - The text to analyze
@@ -50,11 +55,10 @@ export function isLikelyIPA(text: string): boolean {
     return true;
   }
 
-  // Count IPA-specific characters
-  const ipaChars = 'əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ';
+  // Count IPA-specific characters using pre-built Set
   let ipaCount = 0;
   for (const char of text) {
-    if (ipaChars.includes(char)) {
+    if (IPA_CHARS_SET.has(char)) {
       ipaCount++;
     }
   }

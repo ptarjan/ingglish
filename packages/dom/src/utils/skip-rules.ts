@@ -62,6 +62,7 @@ function checkElementSkip(
   }
 
   // Check classes - O(1) per class with Set
+  // Note: DOMTokenList is Iterable<string> but TS lib.dom types it as any
   for (const className of element.classList as Iterable<string>) {
     if (skipClassesSet.has(className)) {
       return true;
