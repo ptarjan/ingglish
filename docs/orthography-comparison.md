@@ -12,9 +12,9 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **a** | cat → **kat** |
 | English | a | cat, hat |
-| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
-| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
-| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (similar sound) |
+| Spanish | a | gato (closer to /a/) |
+| Italian | a | gatto |
+| German | ä | Männer (similar sound) |
 | French | a | chat |
 
 **Notes:**
@@ -57,7 +57,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **o** | hot → **hot** |
 | English | o | hot, cot |
-| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | o | poco |
+| Spanish | o | poco |
 | Italian | o | otto |
 | Portuguese | o | boca |
 
@@ -84,8 +84,8 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **ee** | bee → **bee** |
 | English | ee, ea, ie | bee, sea, piece |
-| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography) | ii | siitä |
-| [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography) | ii | liiga |
+| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä |
+| [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga |
 | Dutch | ie | niet |
 | German | ie | Bier |
 
@@ -128,7 +128,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **ie** | my → **mie** |
 | English | ie, i, y | tie, pie, my |
-| [German](https://en.wikipedia.org/wiki/German_orthography) | ei | mein |
+| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
 | Dutch | ij, ei | mij, klein |
 | Italian | ai | mai |
 
@@ -199,7 +199,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **sh** | ship → **ship** |
 | English | sh | ship |
-| [German](https://en.wikipedia.org/wiki/German_orthography) | sch | Schiff |
+| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff |
 | [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła |
 | Hungarian | s | só (salt) |
 | Czech/Slovak | š | škola |
