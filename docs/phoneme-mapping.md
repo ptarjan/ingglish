@@ -156,3 +156,8 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
    - "their", "there", "they're" → all become the same
 2. **Accent neutrality**: CMU dictionary represents General American English
 3. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
+
+## See Also
+
+- [Architecture](architecture.md) - How translation works end-to-end
+- [Contributing](contributing.md) - How to add new phoneme mappings

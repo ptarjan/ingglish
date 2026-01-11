@@ -1,5 +1,7 @@
 # Ingglish Documentation
 
+Welcome to the Ingglish documentation. These guides cover everything from getting started to deploying your own instance.
+
 ## Overview
 
 - [Architecture](architecture.md) - System design, data flow, module structure
@@ -13,8 +15,8 @@
 ## Reference
 
 - [Phoneme Mapping](phoneme-mapping.md) - ARPAbet to Ingglish/IPA conversion tables
-- [Troubleshooting](troubleshooting.md) - Common issues and debugging
+- [Troubleshooting](troubleshooting.md) - Common issues and solutions
 
 ## API
 
-- [Generated API Reference](generated/README.md) - Auto-generated from TypeScript (if available)
+- [Generated API Reference](generated/README.md) - Auto-generated from TypeScript

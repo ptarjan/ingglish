@@ -227,11 +227,12 @@ Before submitting:
 2. Describe the use case
 3. Suggest implementation if possible
 
-## Questions?
-
-- Open a GitHub issue with the `question` label
-- Check existing documentation in `/docs`
-
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
+
+## See Also
+
+- [Architecture](architecture.md) - How the codebase is organized
+- [Performance](performance.md) - Profiling and benchmarking
+- [Troubleshooting](troubleshooting.md) - Common issues and solutions

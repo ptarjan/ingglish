@@ -108,3 +108,8 @@ The core library uses dynamic imports for code splitting:
 - Word frequencies - Loaded on first reverse translation (~500KB)
 
 This keeps initial page load fast while deferring heavy data until needed.
+
+## See Also
+
+- [Architecture](architecture.md) - System design and data flow
+- [Contributing](contributing.md) - Development workflow
