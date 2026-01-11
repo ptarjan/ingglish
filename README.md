@@ -105,7 +105,7 @@ Each sound maps to exactly one spelling:
 | Sound | Ingglish | Examples |
 |-------|---------|----------|
 | Long "e" | ee | bee, see |
-| Long "i" | ii | my, time |
+| Long "i" | ie | my, time |
 | Long "o" | oh | go, show |
 | Voiced "th" | dh | the, this |
 | Unvoiced "th" | th | think, bath |
@@ -162,7 +162,7 @@ See [Performance Guide](docs/performance.md) for profiling and benchmarking scri
 For words not in the CMU dictionary, Ingglish uses a multi-step fallback strategy:
 
 1. **Custom pronunciations** - Known tech terms and brand names (e.g., "GitHub" → "git-hub")
-2. **Initialisms** - Spell out as letters (e.g., "URL" → "you-are-ell", "API" → "ay-pee-ii")
+2. **Initialisms** - Spell out as letters (e.g., "URL" → "you-are-ell", "API" → "ay-pee-ie")
 3. **Compound splitting** - Split on common boundaries (e.g., "github" → "git" + "hub")
 4. **Stemming** - Find known base word + suffix (e.g., "running" → "run" + "ing")
 5. **Neural G2P** - Use grapheme-to-phoneme neural network for complex words

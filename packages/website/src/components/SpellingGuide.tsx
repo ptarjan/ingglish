@@ -175,7 +175,7 @@ function SpellingGuide(): React.JSX.Element {
         <p>
           Contractions like "don't", "I'm", and "we'll" are translated as complete units using their
           dictionary pronunciations. The apostrophe is dropped since Ingglish spelling is
-          unambiguous: don't → dont, I'm → iim, we'll → wiil. This ensures contractions round-trip
+          unambiguous: don't → dohnt, I'm → iem, we'll → weel. This ensures contractions round-trip
           correctly between English and Ingglish.
         </p>
 
@@ -183,8 +183,8 @@ function SpellingGuide(): React.JSX.Element {
         <p>
           Capitalization patterns are preserved during translation. ALL CAPS stays all caps, Title
           Case stays title case, and lowercase stays lowercase. For mixed case like "GitHub", the
-          exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ii"
-          since Ingglish doesn't require capitalizing pronouns.
+          exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ie"
+          since the capitalization is just an English convention, not phonetic.
         </p>
 
         <h4>Initialisms</h4>

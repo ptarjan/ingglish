@@ -31,7 +31,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | AH | u | ʌ/ə | b**u**t, c**u**p | Mid central vowel (schwa when unstressed) |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
 | AW | ow | aʊ | c**ow**, h**ow** | Diphthong |
-| AY | ii | aɪ | m**y**, t**i**me | Diphthong |
+| AY | ie | aɪ | m**y**, t**i**me | Diphthong |
 | EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
 | ER | er | ɝ/ɚ | b**ir**d, h**er** | Rhotacized mid central |
 | EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
@@ -150,7 +150,7 @@ The schwa (ə) is the most common vowel in unstressed syllables. In ARPAbet, it'
 
 ### Diphthongs
 Each diphthong gets a consistent spelling:
-- **ii** = AY (m**y**) - /aɪ/
+- **ie** = AY (m**y**) - /aɪ/
 - **ay** = EY (s**ay**) - /eɪ/
 - **ow** = AW (c**ow**) - /aʊ/
 - **oh** = OW (g**o**) - /oʊ/

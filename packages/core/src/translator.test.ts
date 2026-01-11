@@ -125,19 +125,19 @@ describe('translator', () => {
     it('should handle possessives with curly apostrophes', () => {
       // Common in text copied from websites like NY Times
       const result = translateSync('China\u2019s economy');
-      expect(result).toBe('Chiinuz ikonumee');
+      expect(result).toBe('Chienuz ikonumee');
     });
 
     it('should treat I as lowercase (English capitalizes I by convention only)', () => {
       // "I" is always capitalized in English, but it's just a pronoun
       // In Ingglish, there's no special reason to capitalize it
-      expect(translateSync('I')).toBe('ii');
-      expect(translateSync("I'm")).toBe('iim');
-      expect(translateSync("I'll")).toBe('iil');
-      expect(translateSync("I've")).toBe('iiv');
-      expect(translateSync("I'd")).toBe('iid');
+      expect(translateSync('I')).toBe('ie');
+      expect(translateSync("I'm")).toBe('iem');
+      expect(translateSync("I'll")).toBe('iel');
+      expect(translateSync("I've")).toBe('iev');
+      expect(translateSync("I'd")).toBe('ied');
       // Lowercase remains lowercase
-      expect(translateSync('i')).toBe('ii');
+      expect(translateSync('i')).toBe('ie');
     });
 
     it('should handle empty string', () => {
