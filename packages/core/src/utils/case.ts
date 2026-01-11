@@ -76,18 +76,15 @@ export function applyCasePattern(word: string, pattern: CasePattern, original?: 
  * Preserves uppercase positions character-by-character.
  */
 function applyMixedCase(translated: string, original: string): string {
-  const result: string[] = [];
   const lowerTranslated = translated.toLowerCase();
+  let result = '';
 
   for (let i = 0; i < lowerTranslated.length; i++) {
     const char = lowerTranslated[i];
     // Use original's case pattern if within bounds, otherwise lowercase
-    if (i < original.length && original[i] === original[i].toUpperCase()) {
-      result.push(char.toUpperCase());
-    } else {
-      result.push(char);
-    }
+    result +=
+      i < original.length && original[i] === original[i].toUpperCase() ? char.toUpperCase() : char;
   }
 
-  return result.join('');
+  return result;
 }
