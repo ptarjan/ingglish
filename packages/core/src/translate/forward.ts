@@ -126,20 +126,24 @@ export function translateSyncWithMapping(
   const normalizedText = normalizeApostrophes(text);
   const tokens = normalizedText.split(WORD_SPLIT_REGEX);
 
-  return tokens
-    .filter((token) => token.length > 0)
-    .map((token) => {
+  // Single pass: filter and map together
+  const result: TranslatedToken[] = [];
+  for (const token of tokens) {
+    if (token.length > 0) {
       if (WORD_TEST_REGEX.test(token)) {
-        return {
+        result.push({
           original: token,
           translated: translateWord(token, format),
           isWord: true,
-        };
+        });
+      } else {
+        result.push({
+          original: token,
+          translated: token,
+          isWord: false,
+        });
       }
-      return {
-        original: token,
-        translated: token,
-        isWord: false,
-      };
-    });
+    }
+  }
+  return result;
 }

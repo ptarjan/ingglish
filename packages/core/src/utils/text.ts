@@ -137,12 +137,14 @@ export function tokenizeText(text: string): TextToken[] {
   const normalized = normalizeApostrophes(text);
   const parts = normalized.split(WORD_SPLIT_REGEX);
 
-  return parts
-    .filter((part) => part.length > 0)
-    .map((part) => ({
-      text: part,
-      isWord: WORD_TEST_REGEX.test(part),
-    }));
+  // Single pass: filter and map together
+  const tokens: TextToken[] = [];
+  for (const part of parts) {
+    if (part.length > 0) {
+      tokens.push({ text: part, isWord: WORD_TEST_REGEX.test(part) });
+    }
+  }
+  return tokens;
 }
 
 /**
