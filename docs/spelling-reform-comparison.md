@@ -175,7 +175,7 @@ Let's be honest:
 - Ingglish won't replace English spelling immediately
 - Governments won't mandate it
 - Schools won't teach it as primary literacy
-- Traditional spelling won't become obsolete
+- Traditional spelling won't become obsolete immediately
 
 ### What Could Happen
 
