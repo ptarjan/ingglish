@@ -38,7 +38,6 @@ This guide covers deploying the Ingglish website and Chrome extension.
    - Publish directory: `packages/website/dist`
 
 3. **Deploy**
-   - Configuration is already in `netlify.toml`
    - Netlify will auto-deploy on push
 
 ### Option 3: GitHub Pages
@@ -91,24 +90,19 @@ This guide covers deploying the Ingglish website and Chrome extension.
 
 ### Extension CI/CD
 
-Add to GitHub Actions to auto-build extension:
-
-```yaml
-- name: Build Extension
-  run: npm run build -w @ingglish/extension
-
-- name: Upload Extension Artifact
-  uses: actions/upload-artifact@v4
-  with:
-    name: chrome-extension
-    path: packages/extension/dist
-```
+The extension is automatically built and packaged in [.github/workflows/pages.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/pages.yml).
 
 ## CORS Proxy Deployment
 
 The URL translator feature requires a CORS proxy to fetch external websites. You can use the included Cloudflare Worker.
 
-### Deploy to Cloudflare Workers
+### Automatic Deployment
+
+The CORS proxy is automatically deployed via [.github/workflows/deploy-cors-proxy.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/deploy-cors-proxy.yml) when changes are pushed to `packages/cors-proxy/`.
+
+Requires `CLOUDFLARE_API_TOKEN` secret in repository settings.
+
+### Manual Deployment
 
 1. **Install Wrangler CLI**
    ```bash
@@ -116,15 +110,8 @@ The URL translator feature requires a CORS proxy to fetch external websites. You
    wrangler login
    ```
 
-2. **Configure your worker** (edit `packages/cors-proxy/wrangler.toml`):
-   ```toml
-   name = "ingglish-cors-proxy"
-   main = "src/index.ts"
-   compatibility_date = "2024-01-01"
-
-   [vars]
-   ALLOWED_ORIGINS = "https://your-site.com,https://ptarjan.github.io"
-   ```
+2. **Configure your worker**
+   Edit [packages/cors-proxy/wrangler.toml](https://github.com/ptarjan/ingglish/blob/main/packages/cors-proxy/wrangler.toml) to set `ALLOWED_ORIGINS`.
 
 3. **Deploy**
    ```bash
