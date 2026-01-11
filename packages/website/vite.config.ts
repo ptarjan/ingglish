@@ -5,8 +5,8 @@ import type { Plugin } from 'vite';
 
 // Skip sourcemaps for data and vendor chunks, format data chunks for readability
 function processChunks(): Plugin {
-  const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
-  const formatChunks = ['cmudict', 'word-frequencies'];
+  const skipSourcemaps = ['cmudict', 'vendor'];
+  const formatChunks = ['cmudict'];
   return {
     name: 'process-chunks',
     generateBundle(_, bundle) {
@@ -59,11 +59,7 @@ export default defineConfig({
           if (id.includes('cmudict') || id.includes('ipa-dict-supplement')) {
             return 'cmudict';
           }
-          // Word frequency data - keep it separate (matches both npm package and generated file)
-          if (id.includes('word-frequencies')) {
-            return 'word-frequencies';
-          }
-          // @ingglish libraries - separate for caching (library changes less than UI)
+          // @ingglish libraries (includes word-frequencies bundled by tsup)
           if (id.includes('packages/core') || id.includes('packages/dom')) {
             return 'ingglish';
           }
