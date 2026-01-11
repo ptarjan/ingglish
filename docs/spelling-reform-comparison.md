@@ -124,7 +124,7 @@ New Spelling, Unifon, and other systems were repeatedly revised, preventing stab
 
 People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital—hence spelling bees.
 
-**Ingglish's approach:** Not asking anyone to give up traditional spelling. The investment stands. Ingglish is additive.
+**Ingglish's approach:** Traditional spelling isn't going anywhere. But over time, it could become like Middle English or Old English—an interesting historical artifact that scholars study, while everyday communication uses something more sensible. Your spelling knowledge becomes richer, not obsolete.
 
 ---
 
