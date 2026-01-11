@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import type { HTMLAttributes, JSX, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 
@@ -56,27 +57,28 @@ function getDocIdFromHash(): string | null {
   return null;
 }
 
-function getTextFromChildren(children: React.ReactNode): string {
-  if (typeof children === 'string') {
-    return children;
-  }
-  if (Array.isArray(children)) {
-    return children.map(getTextFromChildren).join('');
-  }
-  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
-    return getTextFromChildren(children.props.children);
-  }
-  return '';
-}
-
-function createHeadingId(children: React.ReactNode): string {
-  return getTextFromChildren(children)
+function createHeadingId(text: string): string {
+  return text
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w-]/g, '');
 }
 
-function Docs(): React.JSX.Element {
+function createHeadingComponent(Tag: 'h1' | 'h2' | 'h3' | 'h4') {
+  return ({
+    children,
+    ...props
+  }: HTMLAttributes<HTMLHeadingElement> & { children?: ReactNode }) => {
+    const id = typeof children === 'string' ? createHeadingId(children) : undefined;
+    return (
+      <Tag id={id} {...props}>
+        {children}
+      </Tag>
+    );
+  };
+}
+
+function Docs(): JSX.Element {
   const [activeDoc, setActiveDoc] = useState(() => {
     const hashDocId = getDocIdFromHash();
     if (hashDocId !== null && docs.some((d) => d.id === hashDocId)) {
@@ -109,26 +111,7 @@ function Docs(): React.JSX.Element {
   // Custom components to handle links and add heading IDs
   const components: Components = {
     a: ({ href, children, ...props }) => {
-      // Handle anchor links (smooth scroll)
-      if (href?.startsWith('#') === true) {
-        return (
-          <a
-            href={href}
-            onClick={(e) => {
-              e.preventDefault();
-              const id = href.slice(1);
-              const element = document.getElementById(id);
-              if (element !== null) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            {...props}
-          >
-            {children}
-          </a>
-        );
-      }
-      // Handle .md links (transform to hash links, let browser handle navigation)
+      // Transform .md links to hash links
       if (href?.endsWith('.md') === true) {
         const filename = href.split('/').pop() ?? '';
         const docId = filenameToId[filename];
@@ -140,45 +123,25 @@ function Docs(): React.JSX.Element {
           );
         }
       }
-      // External links
+      // External links open in new tab
+      if (href?.startsWith('#') !== true) {
+        return (
+          <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+            {children}
+          </a>
+        );
+      }
+      // Anchor links work natively
       return (
-        <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+        <a href={href} {...props}>
           {children}
         </a>
       );
     },
-    h1: ({ children, ...props }) => {
-      const id = createHeadingId(children);
-      return (
-        <h1 id={id} {...props}>
-          {children}
-        </h1>
-      );
-    },
-    h2: ({ children, ...props }) => {
-      const id = createHeadingId(children);
-      return (
-        <h2 id={id} {...props}>
-          {children}
-        </h2>
-      );
-    },
-    h3: ({ children, ...props }) => {
-      const id = createHeadingId(children);
-      return (
-        <h3 id={id} {...props}>
-          {children}
-        </h3>
-      );
-    },
-    h4: ({ children, ...props }) => {
-      const id = createHeadingId(children);
-      return (
-        <h4 id={id} {...props}>
-          {children}
-        </h4>
-      );
-    },
+    h1: createHeadingComponent('h1'),
+    h2: createHeadingComponent('h2'),
+    h3: createHeadingComponent('h3'),
+    h4: createHeadingComponent('h4'),
   };
 
   return (
