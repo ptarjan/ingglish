@@ -61,10 +61,12 @@ function checkElementSkip(
     return true;
   }
 
-  // Check classes - O(1) per class with Set (Array.from for type safety)
-  const classes: string[] = Array.from(element.classList);
-  for (const className of classes) {
-    if (skipClassesSet.has(className)) {
+  // Check classes - O(1) per class with Set
+  // Indexed loop avoids Array.from allocation; classList is a DOMTokenList
+  const classList = element.classList;
+  const classCount = classList.length;
+  for (let i = 0; i < classCount; i++) {
+    if (skipClassesSet.has(classList[i])) {
       return true;
     }
   }
