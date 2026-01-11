@@ -2,34 +2,58 @@
  * Word frequency scoring using SUBTLEX corpus data.
  * Used for selecting the most common word among homophones.
  */
-import WORD_FREQUENCIES from '../data/word-frequencies';
 
-// Lazy-built frequency map - data is an object, Map built on first access for case-insensitive lookup
+// Lazy-loaded frequency map
 let frequencyMap: Map<string, number> | null = null;
+let loadPromise: Promise<Map<string, number>> | null = null;
 
 /**
- * Gets the frequency map, building it lazily on first access.
- * This defers the cost of processing 75k words until actually needed.
+ * Gets the frequency map, loading it lazily on first access.
+ * Uses dynamic import to allow code splitting of the 1MB+ data.
  */
-function getFrequencyMap(): Map<string, number> {
+async function getFrequencyMapAsync(): Promise<Map<string, number>> {
   if (frequencyMap) {
     return frequencyMap;
   }
-
-  frequencyMap = new Map<string, number>();
-  for (const [word, count] of Object.entries(WORD_FREQUENCIES)) {
-    frequencyMap.set(word.toLowerCase(), count);
+  if (loadPromise) {
+    return loadPromise;
   }
 
+  loadPromise = (async () => {
+    const { default: WORD_FREQUENCIES } = await import('../data/word-frequencies');
+    frequencyMap = new Map<string, number>();
+    for (const [word, count] of Object.entries(WORD_FREQUENCIES)) {
+      frequencyMap.set(word.toLowerCase(), count);
+    }
+    return frequencyMap;
+  })();
+
+  return loadPromise;
+}
+
+/**
+ * Gets the frequency map synchronously. Returns null if not yet loaded.
+ * Call preloadFrequencies() first to ensure data is available.
+ */
+function getFrequencyMap(): Map<string, number> | null {
   return frequencyMap;
 }
 
 /**
+ * Preloads word frequency data. Call this at app startup for best performance.
+ * Without preloading, frequency-based sorting won't work until data loads.
+ */
+export async function preloadFrequencies(): Promise<void> {
+  await getFrequencyMapAsync();
+}
+
+/**
  * Returns the frequency count for a word (higher = more common).
- * Returns undefined if word is not in the corpus.
+ * Returns undefined if word is not in the corpus or data hasn't loaded yet.
  */
 export function getWordFrequency(word: string): number | undefined {
-  return getFrequencyMap().get(word.toLowerCase());
+  const map = getFrequencyMap();
+  return map?.get(word.toLowerCase());
 }
 
 // Common English contractions that should be preferred over homophones
