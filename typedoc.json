@@ -10,5 +10,5 @@
   "hideBreadcrumbs": true,
   "useCodeBlocks": true,
   "expandObjects": true,
-  "sourceLinkTemplate": "https://github.com/ptarjan/ingglish/blob/main/{path}#L{line}"
+  "sourceLinkTemplate": "https://github.com/ptarjan/ingglish/blob/claude/url-translator-shared-lib-hNsxZ/{path}#L{line}"
 }
