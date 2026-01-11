@@ -8,8 +8,9 @@
     "packages/*"
   ],
   "scripts": {
+    "docs": "typedoc",
     "test": "npm run test --workspaces",
-    "build": "npm run build --workspaces",
+    "build": "npm run docs && npm run build --workspaces",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
@@ -53,6 +54,8 @@
     "prettier": "^3.7.4",
     "stylelint": "^16.26.1",
     "stylelint-config-standard": "^39.0.1",
+    "typedoc": "^0.28.15",
+    "typedoc-plugin-markdown": "^4.9.0",
     "typescript-eslint": "^8.52.0"
   }
 }

@@ -565,6 +565,27 @@
   overflow-x: auto;
 }
 
+.docs-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.docs-edit-button {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.docs-edit-button:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
 .docs-content h1 {
   font-size: 2rem;
   margin-bottom: 1rem;

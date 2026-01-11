@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Markdown from 'react-markdown';
 
 // Import markdown files at build time
-import apiReference from '../../../../docs/api-reference.md?raw';
+import apiReference from '../../../../docs/generated/README.md?raw';
 import architecture from '../../../../docs/architecture.md?raw';
 import contributing from '../../../../docs/contributing.md?raw';
 import debugging from '../../../../docs/debugging.md?raw';
@@ -14,16 +14,19 @@ interface DocEntry {
   id: string;
   title: string;
   content: string;
+  filename?: string; // undefined for auto-generated docs
 }
 
+const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
+
 const docs: DocEntry[] = [
-  { id: 'architecture', title: 'Architecture', content: architecture },
-  { id: 'api-reference', title: 'API Reference', content: apiReference },
-  { id: 'phoneme-mapping', title: 'Phoneme Mapping', content: phonemeMapping },
-  { id: 'extension-setup', title: 'Extension Setup', content: extensionSetup },
-  { id: 'deployment', title: 'Deployment', content: deployment },
-  { id: 'contributing', title: 'Contributing', content: contributing },
-  { id: 'debugging', title: 'Debugging', content: debugging },
+  { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
+  { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
+  { id: 'phoneme-mapping', title: 'Phoneme Mapping', content: phonemeMapping, filename: 'phoneme-mapping.md' },
+  { id: 'extension-setup', title: 'Extension Setup', content: extensionSetup, filename: 'extension-setup.md' },
+  { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },
+  { id: 'contributing', title: 'Contributing', content: contributing, filename: 'contributing.md' },
+  { id: 'debugging', title: 'Debugging', content: debugging, filename: 'debugging.md' },
 ];
 
 function Docs(): React.JSX.Element {
@@ -50,6 +53,18 @@ function Docs(): React.JSX.Element {
         </ul>
       </nav>
       <article className="docs-content">
+        {currentDoc.filename && (
+          <div className="docs-header">
+            <a
+              href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="docs-edit-button"
+            >
+              Edit on GitHub
+            </a>
+          </div>
+        )}
         <Markdown>{currentDoc.content}</Markdown>
       </article>
     </div>
