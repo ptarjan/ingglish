@@ -116,7 +116,7 @@ function SpellingGuide(): React.JSX.Element {
             <strong>Readable aloud</strong> - anyone can pronounce unfamiliar words correctly
           </li>
           <li>
-            <strong>Based on CMU dictionary</strong> - pronunciations from linguistic research
+            <strong>Research-based</strong> - pronunciations from linguistic research
           </li>
         </ul>
       </div>
