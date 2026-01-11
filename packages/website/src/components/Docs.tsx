@@ -68,6 +68,12 @@ for (const doc of docs) {
   }
 }
 
+function decodeHtmlEntities(text: string): string {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
+
 function extractHeadings(html: string): HeadingInfo[] {
   const headings: HeadingInfo[] = [];
   // Match h2 and h3 tags and extract their full content (including nested HTML like links)
@@ -75,8 +81,9 @@ function extractHeadings(html: string): HeadingInfo[] {
   let match;
   while ((match = regex.exec(html)) !== null) {
     const level = parseInt(match[1], 10);
-    // Strip HTML tags to get plain text
-    const text = match[2].replace(/<[^>]+>/g, '').trim();
+    // Strip HTML tags and decode entities to get plain text
+    const rawText = match[2].replace(/<[^>]+>/g, '').trim();
+    const text = decodeHtmlEntities(rawText);
     const id = text
       .toLowerCase()
       .replace(/\s+/g, '-')
