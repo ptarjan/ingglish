@@ -2,11 +2,7 @@
 
 Every Ingglish spelling has a reason. This document shows that our choices aren't arbitrary—they're grounded in how other languages solve the same problems.
 
-## Design Philosophy
-
-Ingglish follows the **phonemic principle**: one sound = one spelling. Finnish children learn to read in months, not years, because Finnish spelling is consistent. Spanish speakers can pronounce any word they see. English speakers can't—our spelling has only [72% letter-to-sound consistency](https://en.wikipedia.org/wiki/English_orthography).
-
-We use only 24 of the 26 ASCII letters (no diacritics): 'q' and 'x' are redundant (replaced by 'k'/'kw' and 'ks'/'z'), and 'c' only appears in the digraph 'ch'. You can type Ingglish on any keyboard, anywhere.
+For the design philosophy behind Ingglish, see [Spelling Reform History](spelling-reform-comparison.md).
 
 ## Vowels
 
