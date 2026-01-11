@@ -152,8 +152,6 @@ Each diphthong gets a consistent spelling:
 | the | DH AH0 | dhu |
 | English | IH1 NG G L IH0 SH | Ingglish |
 
-> **About the name:** "Ingglish" is simply how you spell "English" in Ingglish! When speaking, you can distinguish them by stressing the first syllable and pausing briefly between the two g's: **ING·glish** vs. English.
-
 ## Stress Handling
 
 ARPAbet includes stress markers on vowels:
