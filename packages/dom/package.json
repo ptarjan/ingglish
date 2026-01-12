@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format cjs,esm --dts --tsconfig tsconfig.build.json",
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint src",
     "test": "vitest run --no-color",
