@@ -123,10 +123,6 @@ Spellings with support from multiple languages are more defensible:
 
 R-colored vowel rules were essential to prevent words like "air" and "her" from both mapping to "er". Fixing collisions is more important than simplicity.
 
-### 4. Avoid Texting Conventions
-
-The [caught-cot merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) attempt ("thought" → "thot") was rejected partly because it looked like texting slang. Ingglish should look like a legitimate alternative spelling.
-
 ## Dialect Choice
 
 Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization.
