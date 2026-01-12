@@ -28,6 +28,12 @@
   margin-bottom: 0.25rem;
 }
 
+.docs-sidebar li.docs-section-start {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
 .docs-nav-item {
   display: block;
   width: 100%;

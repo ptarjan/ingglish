@@ -25,6 +25,7 @@ interface DocEntry {
   title: string;
   content: string;
   filename?: string; // undefined for auto-generated docs
+  firstInSection?: boolean; // adds visual separator before this item
 }
 
 const GITHUB_EDIT_BASE =
@@ -61,7 +62,13 @@ const docs: DocEntry[] = [
     content: spellingReformComparison,
     filename: 'spelling-reform-comparison.md',
   },
-  { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
+  {
+    id: 'architecture',
+    title: 'Architecture',
+    content: architecture,
+    filename: 'architecture.md',
+    firstInSection: true,
+  },
   { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
   {
     id: 'performance',
@@ -234,7 +241,7 @@ function Docs(): JSX.Element {
       <nav className="docs-sidebar">
         <ul>
           {docs.map((doc) => (
-            <li key={doc.id}>
+            <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
               <button
                 className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
                 onClick={() => {
