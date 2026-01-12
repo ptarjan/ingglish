@@ -1,6 +1,6 @@
 /**
  * Exhaustively search for ALL safe mapping improvements.
- * Optimized with early exit - only compute collisions if identical count improved.
+ * Optimized: only recompute words affected by a phoneme change.
  */
 
 import { loadDictionary, getDictionary } from '../src/dictionary/loader';
@@ -10,16 +10,28 @@ await loadDictionary();
 const cmudict = getDictionary();
 const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0);
 
-function phonemesToSpelling(phonemes: string[], map: Record<string, string>): string {
-  return phonemes.map((p) => map[p.replace(/[0-2]$/, '')] || p.toLowerCase()).join('');
+// Pre-compute base phonemes (strip stress markers once)
+const wordBasePhonemes = new Map<string, string[]>();
+for (const word of allWords) {
+  const phonemes = cmudict[word];
+  if (phonemes) {
+    wordBasePhonemes.set(
+      word,
+      phonemes.map((p) => p.replace(/[0-2]$/, ''))
+    );
+  }
+}
+
+function phonemesToSpelling(basePhonemes: string[], map: Record<string, string>): string {
+  return basePhonemes.map((p) => map[p] || p.toLowerCase()).join('');
 }
 
 function getCollisionCount(map: Record<string, string>): number {
   const spellingToWords = new Map<string, Set<string>>();
   for (const word of allWords) {
-    const phonemes = cmudict[word];
-    if (!phonemes) continue;
-    const spelling = phonemesToSpelling(phonemes, map);
+    const basePhonemes = wordBasePhonemes.get(word);
+    if (!basePhonemes) continue;
+    const spelling = phonemesToSpelling(basePhonemes, map);
     const baseWord = word.replace(/\(\d+\)$/, '');
     if (!spellingToWords.has(spelling)) spellingToWords.set(spelling, new Set());
     spellingToWords.get(spelling)!.add(baseWord);
@@ -31,19 +43,69 @@ function getCollisionCount(map: Record<string, string>): number {
   return collisions;
 }
 
-// Returns { count, words } for more detailed analysis
+// Pre-compute which words contain each phoneme (for incremental updates)
+const wordsWithPhoneme = new Map<string, string[]>();
+for (const phoneme of Object.keys(ARPABET_TO_INGGLISH_MAP)) {
+  wordsWithPhoneme.set(phoneme, []);
+}
+for (const word of allWords) {
+  const basePhonemes = wordBasePhonemes.get(word);
+  if (!basePhonemes) continue;
+  const seen = new Set<string>();
+  for (const base of basePhonemes) {
+    if (!seen.has(base) && wordsWithPhoneme.has(base)) {
+      wordsWithPhoneme.get(base)!.push(word);
+      seen.add(base);
+    }
+  }
+}
+
+// Pre-compute baseline identical words and their spellings
+const baselineSpellings = new Map<string, string>();
+const baselineIdentical = new Set<string>();
+for (const word of allWords) {
+  const basePhonemes = wordBasePhonemes.get(word);
+  if (!basePhonemes) continue;
+  const spelling = phonemesToSpelling(basePhonemes, ARPABET_TO_INGGLISH_MAP);
+  baselineSpellings.set(word, spelling);
+  if (spelling.toLowerCase() === word.toLowerCase()) baselineIdentical.add(word);
+}
+
+// Fast incremental check: only recompute affected words
+function getIdenticalDelta(
+  phoneme: string,
+  newValue: string
+): { gained: string[]; lost: string[]; netGain: number } {
+  const affected = wordsWithPhoneme.get(phoneme) || [];
+  const testMap = { ...ARPABET_TO_INGGLISH_MAP, [phoneme]: newValue };
+  const gained: string[] = [];
+  const lost: string[] = [];
+
+  for (const word of affected) {
+    const basePhonemes = wordBasePhonemes.get(word)!;
+    const newSpelling = phonemesToSpelling(basePhonemes, testMap);
+    const wasIdentical = baselineIdentical.has(word);
+    const isIdentical = newSpelling.toLowerCase() === word.toLowerCase();
+
+    if (!wasIdentical && isIdentical) gained.push(word);
+    if (wasIdentical && !isIdentical) lost.push(word);
+  }
+
+  return { gained, lost, netGain: gained.length - lost.length };
+}
+
+// Full identical words check (only used for final reporting)
 function getIdenticalWords(map: Record<string, string>): Set<string> {
   const identical = new Set<string>();
   for (const word of allWords) {
-    const phonemes = cmudict[word];
-    if (!phonemes) continue;
-    const spelling = phonemesToSpelling(phonemes, map);
+    const basePhonemes = wordBasePhonemes.get(word);
+    if (!basePhonemes) continue;
+    const spelling = phonemesToSpelling(basePhonemes, map);
     if (spelling.toLowerCase() === word.toLowerCase()) identical.add(word);
   }
   return identical;
 }
 
-const baselineIdentical = getIdenticalWords(ARPABET_TO_INGGLISH_MAP);
 const baselineCollisions = getCollisionCount(ARPABET_TO_INGGLISH_MAP);
 
 console.log(`Baseline: ${baselineIdentical.size} identical, ${baselineCollisions} collisions\n`);
@@ -129,33 +191,30 @@ for (let pi = 0; pi < phonemes.length; pi++) {
     if (option === current) continue;
     tested++;
 
-    const testMap = { ...ARPABET_TO_INGGLISH_MAP, [phoneme]: option };
-    const testIdentical = getIdenticalWords(testMap);
+    // Fast incremental check - only looks at words with this phoneme
+    const delta = getIdenticalDelta(phoneme, option);
 
-    // EARLY EXIT: Skip if not better (fast check)
-    if (testIdentical.size <= baselineIdentical.size) {
+    // EARLY EXIT: Skip if not better
+    if (delta.netGain <= 0) {
       skippedNotBetter++;
       continue;
     }
 
     // Only compute expensive collision check if identical improved
+    const testMap = { ...ARPABET_TO_INGGLISH_MAP, [phoneme]: option };
     const collisions = getCollisionCount(testMap);
     if (collisions > baselineCollisions) {
       skippedCollisions++;
       continue;
     }
 
-    // Calculate what we gained and lost
-    const gained = [...testIdentical].filter((w) => !baselineIdentical.has(w));
-    const lost = [...baselineIdentical].filter((w) => !testIdentical.has(w));
-
     improvements.push({
       phoneme,
       from: current,
       to: option,
-      netGain: testIdentical.size - baselineIdentical.size,
-      gained,
-      lost,
+      netGain: delta.netGain,
+      gained: delta.gained,
+      lost: delta.lost,
     });
   }
 }
