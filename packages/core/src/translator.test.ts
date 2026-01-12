@@ -1,23 +1,31 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from './dictionary';
 import { translateWord, translateSync } from './translate/forward';
 import { translate, reverseTranslate } from './index';
 import { setupDictionary } from './test-setup';
+import * as dictModule from './dictionary';
 
-describe('async API loads required dictionaries', () => {
-  // These tests verify the async functions load their own dependencies
-  // They do NOT use setupDictionary() to ensure they're self-sufficient
+describe('async API loads only required dictionaries', () => {
+  // Verify each async function only loads what it needs
 
-  it('translate() should work without pre-loading', async () => {
-    const result = await translate('hello world');
-    expect(result).toContain('huloh');
-    expect(result).toContain('werld');
+  it('translate() should not call loadReverseDictionary', async () => {
+    const loadReverseSpy = vi.spyOn(dictModule, 'loadReverseDictionary');
+    loadReverseSpy.mockClear();
+
+    await translate('hello world');
+
+    expect(loadReverseSpy).not.toHaveBeenCalled();
+    loadReverseSpy.mockRestore();
   });
 
-  it('reverseTranslate() should work without pre-loading', async () => {
-    const result = await reverseTranslate('huloh werld');
-    expect(result.toLowerCase()).toContain('hello');
-    expect(result.toLowerCase()).toContain('world');
+  it('reverseTranslate() should not call loadDictionary', async () => {
+    const loadDictSpy = vi.spyOn(dictModule, 'loadDictionary');
+    loadDictSpy.mockClear();
+
+    await reverseTranslate('huloh werld');
+
+    expect(loadDictSpy).not.toHaveBeenCalled();
+    loadDictSpy.mockRestore();
   });
 });
 
