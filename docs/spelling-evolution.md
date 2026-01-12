@@ -70,6 +70,7 @@ After extensive iteration, these are the current spellings:
 
 **Examples:**
 - out → out (identical!)
+- our → our (identical!)
 - loud → loud (identical!)
 - sound → sound (identical!)
 - cow → kou
