@@ -138,7 +138,7 @@ Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-e
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-**Ingglish's reality check:** This is a genuine challenge. Ingglish spellings like "luv" and "thruu" may face similar perception issues. The mitigation is positioning Ingglish as a technical notation (like IPA) rather than casual spelling, and using it in contexts that confer authority (educational, linguistic, accessibility).
+**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and most other languages use consistent phonetic spelling—nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
 
 ### 9. Constant Revision
 
@@ -150,7 +150,7 @@ New Spelling, Unifon, and other systems were repeatedly revised, preventing stab
 
 People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital—hence spelling bees.
 
-**Ingglish's approach:** Not asking anyone to give up traditional spelling. The investment stands. Ingglish is additive—it gives you a new tool without taking anything away.
+**Ingglish's response:** Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature—it's a bug that we've rationalized into tradition.
 
 ---
 
@@ -195,22 +195,20 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 ## What Ingglish Can Realistically Achieve
 
-### What Won't Happen
+### The Metric Parallel
 
-Let's be honest:
-- Ingglish won't replace English spelling
-- Governments won't mandate it
-- Schools won't teach it as primary literacy
-- Traditional spelling will remain the default
+The US officially adopted metric in 1975. Fifty years later, Americans still use miles and Fahrenheit daily. Did metric fail?
 
-### What Could Happen
+No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements—road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
 
-- **ESL instruction:** Phonetic spelling that's easier than IPA and works on any keyboard
-- **Accessibility:** Consistent spelling may help dyslexic readers
-- **Pronunciation guides:** More intuitive than dictionary phonetics
-- **Speech synthesis:** Unambiguous input format
-- **Linguistic research:** Practical phonemic notation
-- **Gradual familiarity:** Like Hangul's centuries-long rise, slow recognition is possible
+Ingglish could follow the same path:
+- **Education:** Phonetic spelling for ESL and early literacy
+- **Accessibility:** Consistent spelling for dyslexic readers
+- **Technology:** Unambiguous input for speech synthesis and language models
+- **International:** A standard that doesn't privilege native speakers' memorized exceptions
+- **Gradual familiarity:** Like Hangul's centuries-long rise, recognition builds over time
+
+Traditional spelling may persist in casual contexts indefinitely—and that's fine. The goal isn't to eliminate traditional spelling. It's to provide a better option where consistency matters.
 
 ### Why Ingglish's Design Supports These Goals
 
@@ -224,16 +222,16 @@ Let's be honest:
 
 ---
 
-## Honest Assessment: Where Ingglish Could Struggle
+## The Unfamiliarity Hurdle
 
-### The Perception Problem
+### Initial Perception
 
-Some Ingglish spellings will look strange or "wrong" to readers:
-- "enough" → "inuf" (text-speak association)
-- "through" → "thruu" (looks like a children's book)
-- "beautiful" → "byuutuful" (unfamiliar)
+Some Ingglish spellings will look strange at first:
+- "enough" → "inuf"
+- "through" → "thruu"
+- "beautiful" → "byuutuful"
 
-This isn't fatal, but it means Ingglish works best in contexts where phonetic accuracy is valued over conventional appearance.
+But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar—it's whether the system is better. A consistent spelling system where every letter has one sound is objectively easier to learn than one where "ough" can be pronounced seven different ways.
 
 ### The Dialect Gap
 
@@ -262,16 +260,13 @@ A consistent spelling system benefits everyone, not just learners. The transitio
 
 ## Conclusion
 
-Ingglish isn't trying to do what every failed spelling reform attempted. It's not trying to replace English spelling, get government adoption, or make traditional literacy obsolete.
+English spelling is a legacy system. Like imperial measurements, it works—but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
 
-Instead, Ingglish offers:
-- A phonemic notation using only standard characters
-- A supplementary system that coexists with traditional spelling
-- A tool for specific use cases where pronunciation clarity matters
+Ingglish offers what metric offered: a rational alternative. Not a mandate, but an option. The tools exist today to read and write in a consistent phonemic system without waiting for collective adoption.
 
-That's a much smaller ambition than previous reforms—and that's exactly why it might actually work.
+Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can succeed in domains where consistency matters while traditional spelling persists elsewhere.
 
-The bar for success isn't "everyone uses Ingglish." It's "Ingglish is useful to the people who choose to use it." By that standard, the design is sound.
+The question isn't whether Ingglish will replace English spelling overnight. It's whether a better system, freely available, will gradually prove its worth. Metric took decades. Hangul took centuries. Consistency tends to win eventually.
 
 ---
 
