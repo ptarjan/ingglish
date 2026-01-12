@@ -120,11 +120,11 @@ jobs:
           retention-days: 1
 
   # ============================================================================
-  # POST-BUILD CHECKS - Need build artifacts
+  # POST-BUILD CHECKS - Need build artifacts (run in parallel)
   # ============================================================================
 
-  # Post-build verification: lint (needs .d.ts), docs tests, extension tests
-  verify:
+  # Type-aware linting needs .d.ts files
+  typecheck:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -148,7 +148,29 @@ jobs:
       - name: Lint (type-aware)
         run: npm run lint
 
-      # Docs link validation needs generated docs (excluded from regular unit tests)
+  # Tests that need build artifacts (docs, extension)
+  test-deps:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: .
+
+      # Docs link validation needs generated docs
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
 
@@ -156,10 +178,18 @@ jobs:
       - name: Extension unit tests
         run: npm run test:unit -w @ingglish/extension
 
-  # Browser tests need the built website
+  # Browser tests need the built website - run browsers in parallel
   test-e2e:
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chromium
+            project_flags: --project=chromium --project=mobile-chrome
+          - browser: webkit
+            project_flags: --project=mobile-safari
     steps:
       - uses: actions/checkout@v4
 
@@ -187,35 +217,35 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}-chromium-webkit
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}-${{ matrix.browser }}
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Install Playwright deps (if cached)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium webkit
+        run: npx playwright install-deps ${{ matrix.browser }}
 
-      # NOTE: Smoke test catches catastrophic failures fast (e.g., app won't start)
-      # before waiting for the full suite. Useful for quick feedback on broken builds.
-      - name: Smoke test (1 browser, 1 test)
+      # Smoke test catches catastrophic failures fast before full suite
+      - name: Smoke test
+        if: matrix.browser == 'chromium'
         run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
 
-      - name: E2E tests (full suite)
-        run: npm run test:e2e -w @ingglish/website
+      - name: E2E tests (${{ matrix.browser }})
+        run: cd packages/website && npx playwright test ${{ matrix.project_flags }}
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: packages/website/test-results/
           retention-days: 7
 
   deploy-preview:
     runs-on: ubuntu-latest
-    needs: [build, lint-basic, verify, test-unit, test-e2e]
+    needs: [build, lint-basic, typecheck, test-deps, test-unit, test-e2e]
     if: github.event_name == 'pull_request'
 
     steps:
@@ -237,7 +267,7 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-latest
-    needs: [build, lint-basic, verify, test-unit, test-e2e]
+    needs: [build, lint-basic, typecheck, test-deps, test-unit, test-e2e]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
