@@ -120,3 +120,4 @@ For detailed language-by-language comparisons, see [Orthography Comparison](orth
 - [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
 - [Phoneme Mapping](phoneme-mapping.md) - Technical mapping tables
 - [Spelling Reform History](spelling-reform-comparison.md) - Why previous reforms failed
+- [Identical Words Analysis](identical-words-analysis.md) - Analysis of words that stay unchanged

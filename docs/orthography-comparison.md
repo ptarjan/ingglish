@@ -209,6 +209,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
 - German/Portuguese use 'au'; Pinyin uses 'ao'
 - Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
+- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
 
 ### The 'OI' Diphthong (/ɔɪ/ as in "boy")
 

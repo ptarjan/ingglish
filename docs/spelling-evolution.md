@@ -245,8 +245,10 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 ## Key Lessons Learned
 
-### 1. Identical Words Are the Biggest Win
-When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We should prioritize mappings that create more identical words.
+### 1. Identical Words Are a Big Win (But Not Everything)
+When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).
+
+Current status: **6,930 identical words** (5.13% of dictionary). See [Identical Words Analysis](identical-words-analysis.md) for details on potential improvements.
 
 ### 2. International Precedent Matters
 Spellings with support from multiple languages (like 'ai' from Pinyin/Italian/Vietnamese) are more defensible than purely English-based choices.
