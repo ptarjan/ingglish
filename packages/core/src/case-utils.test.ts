@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { detectCasePattern, applyCasePattern } from './utils/case';
+import { detectCasePattern, applyCasePattern, splitCamelCase } from './utils/case';
+import { translateWord } from './translate/forward';
+import { setupDictionary } from './test-setup';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {
@@ -108,6 +110,59 @@ describe('case-utils', () => {
       expect(pattern).toBe('mixed');
       const result = applyCasePattern('github', pattern, 'GitHub');
       expect(result).toBe('GitHub');
+    });
+  });
+
+  describe('splitCamelCase', () => {
+    it('should split camelCase words at boundaries', () => {
+      expect(splitCamelCase('iCloud')).toEqual(['i', 'Cloud']);
+      expect(splitCamelCase('iPhone')).toEqual(['i', 'Phone']);
+      expect(splitCamelCase('MacBook')).toEqual(['Mac', 'Book']);
+      expect(splitCamelCase('sunLight')).toEqual(['sun', 'Light']);
+    });
+
+    it('should handle multiple boundaries', () => {
+      expect(splitCamelCase('myAwesomeApp')).toEqual(['my', 'Awesome', 'App']);
+      // Note: consecutive uppercase letters stay together since only lowercase->uppercase is a boundary
+      expect(splitCamelCase('getHTTPResponse')).toEqual(['get', 'HTTPResponse']);
+    });
+
+    it('should return null for non-camelCase words', () => {
+      expect(splitCamelCase('hello')).toBeNull();
+      expect(splitCamelCase('HELLO')).toBeNull();
+      expect(splitCamelCase('Hello')).toBeNull();
+    });
+
+    it('should return null for empty or single char', () => {
+      expect(splitCamelCase('')).toBeNull();
+      expect(splitCamelCase('a')).toBeNull();
+    });
+  });
+
+  describe('camelCase translation', () => {
+    setupDictionary();
+
+    it('should translate iCloud with capital at component boundary', () => {
+      // "iCloud" should become "ieKlowd" not "iEklowd"
+      // The K should be capitalized because "Cloud" starts with capital C
+      const result = translateWord('iCloud');
+      expect(result).toBe('ieKlowd');
+    });
+
+    it('should translate iPhone with capital at component boundary', () => {
+      const result = translateWord('iPhone');
+      expect(result).toBe('ieFohn');
+    });
+
+    it('should translate MacBook preserving both capitals', () => {
+      const result = translateWord('MacBook');
+      expect(result).toBe('MakBook');
+    });
+
+    it('should handle unknown camelCase words', () => {
+      // Unknown words should also preserve camelCase boundaries
+      const result = translateWord('fooBar');
+      expect(result).toBe('fuuBar');
     });
   });
 });
