@@ -343,7 +343,7 @@ This is distinctly American English - most languages don't have these:
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
-- For detailed discussion of diphthong alternatives considered, see [Phoneme Mapping: Diphthongs](phoneme-mapping.md#diphthongs-a-difficult-choice)
+- For detailed discussion of diphthong alternatives considered, see [Design Decisions: Diphthongs](design-decisions.md#diphthong-decisions)
 
 ## Commonality Ratings Summary
 
