@@ -5,7 +5,7 @@ import type { Plugin } from 'vite';
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
-  const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
+  const skipSourcemaps = ['cmudict', 'reverse-cmudict', 'word-frequencies', 'vendor'];
   return {
     name: 'process-chunks',
     generateBundle(_, bundle) {
@@ -47,6 +47,10 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           // Dictionary files - large, rarely change
+          // Note: reverse-cmudict must be checked BEFORE cmudict (substring match)
+          if (id.includes('reverse-cmudict')) {
+            return 'reverse-cmudict';
+          }
           if (id.includes('cmudict')) {
             return 'cmudict';
           }
