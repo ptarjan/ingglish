@@ -1,7 +1,25 @@
 import { describe, it, expect } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from './dictionary';
 import { translateWord, translateSync } from './translate/forward';
+import { translate, reverseTranslate } from './index';
 import { setupDictionary } from './test-setup';
+
+describe('async API loads required dictionaries', () => {
+  // These tests verify the async functions load their own dependencies
+  // They do NOT use setupDictionary() to ensure they're self-sufficient
+
+  it('translate() should work without pre-loading', async () => {
+    const result = await translate('hello world');
+    expect(result).toContain('huloh');
+    expect(result).toContain('werld');
+  });
+
+  it('reverseTranslate() should work without pre-loading', async () => {
+    const result = await reverseTranslate('huloh werld');
+    expect(result.toLowerCase()).toContain('hello');
+    expect(result.toLowerCase()).toContain('world');
+  });
+});
 
 describe('translator', () => {
   setupDictionary();

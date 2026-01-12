@@ -39,8 +39,8 @@ export async function reverseTranslate(
   text: string,
   format: OutputFormat = 'ingglish'
 ): Promise<string> {
-  // Load all required dictionaries in parallel
-  await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
+  // Load reverse dictionary and frequencies (forward dictionary not needed)
+  await Promise.all([loadReverseDictionary(), loadFrequencies()]);
   return reverseTranslateSync(text, format);
 }
 
