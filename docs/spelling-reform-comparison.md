@@ -247,11 +247,16 @@ This is an explicit trade-off: one consistent standard that everyone recognizes,
 
 ### The "Why Bother?" Question
 
-For fluent English readers, the value proposition isn't obvious. They already know how to pronounce words. Ingglish's primary audience is:
-- ESL learners who need pronunciation help
-- People with reading difficulties
-- Applications requiring unambiguous pronunciation
-- Anyone curious about phonemic spelling
+Fluent English readers might ask: "I already know how to pronounce words. Why change?"
+
+The answer is similar to the metric system. Imperial units work—Americans use them daily. But the inconsistency creates friction: 12 inches to a foot, 3 feet to a yard, 5,280 feet to a mile. Once you've used metric, the elegance of base-10 is obvious.
+
+English spelling is the imperial system of writing. It works, but at enormous cost:
+- **Years of memorization** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian
+- **Constant exceptions** - "I before E except after C" has more exceptions than examples
+- **Pronunciation guessing** - "Lead" rhymes with "read" or "red" depending on context
+
+A consistent spelling system benefits everyone, not just learners. The transition has a cost, but standardization pays dividends forever.
 
 ---
 
