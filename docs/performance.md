@@ -87,8 +87,7 @@ Total                    34.2ms
 |------|------------|-------|
 | Forward (dictionary hit) | O(p) | p = phoneme count |
 | Forward (unknown word) | O(n) | n = word length |
-| Reverse (first lookup) | O(n + m log m) | m = homophones (typically 1-5) |
-| Reverse (cached) | O(n) | Lazy sorting, paid once per phoneme key |
+| Reverse | O(n) | Pre-sorted at build time |
 | Full text | O(w × n) | w = word count |
 
 All paths are **linear** — no quadratic or exponential complexity.
@@ -97,7 +96,7 @@ All paths are **linear** — no quadratic or exponential complexity.
 
 | Operation | Complexity | Notes |
 |-----------|------------|-------|
-| Dictionary lookup | O(1) | Hash table with split cache |
+| Dictionary lookup | O(1) | Hash table, phonemes pre-split at build time |
 | ARPAbet→Ingglish | O(p) | p = phoneme count, single pass |
 | CamelCase split | O(n) | n = word length, single pass |
 | Case detection | O(n) | Single pass through word |
@@ -117,16 +116,14 @@ All paths are **linear** — no quadratic or exponential complexity.
 | Operation | Complexity | Notes |
 |-----------|------------|-------|
 | Ingglish→ARPAbet | O(n) | n = word length |
-| Phoneme key lookup | O(1) | Hash table |
-| Homophone sort (first access) | O(m log m) | m = homophones, lazy sorted |
-| Homophone sort (cached) | O(1) | Already sorted |
+| Phoneme key lookup | O(1) | Hash table, words pre-sorted by frequency at build time |
 
 ### Infrastructure
 
 | Operation | Complexity | Notes |
 |-----------|------------|-------|
-| Dictionary loading | O(n) | ~3MB gzipped, loaded once and cached |
-| Reverse dict build | O(n) | Built once on first reverse lookup |
+| Forward dictionary load | O(n) | ~1MB gzipped, phonemes pre-split |
+| Reverse dictionary load | O(n) | ~300KB gzipped, words pre-sorted |
 | DOM traversal | O(n) | TreeWalker, n = nodes |
 
 ## Optimization Guidelines
@@ -146,8 +143,13 @@ All paths are **linear** — no quadratic or exponential complexity.
 The core library uses dynamic imports for code splitting:
 
 - `index.ts` - Minimal public API (~2KB)
-- Dictionary data - Loaded on first `translate()` call (~3MB)
+- Forward dictionary - Loaded on first `translate()` call (~1MB gzipped)
+- Reverse dictionary - Loaded on first reverse translation (~300KB gzipped)
 - Word frequencies - Loaded on first reverse translation (~500KB)
+
+Dictionaries are pre-processed at build time:
+- Phonemes pre-split into arrays (no runtime string splitting)
+- Reverse dictionary pre-sorted by word frequency (no runtime sorting)
 
 This keeps initial page load fast while deferring heavy data until needed.
 
