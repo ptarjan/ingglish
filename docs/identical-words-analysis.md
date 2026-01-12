@@ -18,7 +18,7 @@ An "identical word" is one where converting English → phonemes → Ingglish pr
 - "bit" → /bɪt/ → "bit" ✓ (identical)
 - "boat" → /boʊt/ → "boht" ✗ (changed)
 
-More identical words mean less visual disruption when reading Ingglish text.
+More identical words means more natural readability for native English readers — familiar words stay familiar.
 
 ## Current Mapping Performance
 
@@ -144,7 +144,7 @@ We verified the proposed changes don't create problematic collisions:
 
 These have excellent gain-to-loss ratios:
 
-1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), minimal disruption
+1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), keeps familiar words
 2. **/aɪ/: "ai" → "ei"** — Large gain (+316), loses only loanwords
 
 ### Moderate Confidence Changes
@@ -156,7 +156,7 @@ These trade common words for other common words:
 
 ### Low Confidence Change
 
-5. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), may not be worth the churn
+5. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), marginal benefit
 
 ## Methodology
 
@@ -172,9 +172,8 @@ npx vite-node scripts/exhaustive-search.ts
 
 ## Conclusion
 
-The claim "we prioritize mappings that create more identical words" is **partially true**. The current mappings do prioritize disambiguation over raw identical count, which is the right choice. However, there are safe optimizations available that would add +564 identical words (8% improvement) without creating new collisions.
+The current mappings prioritize disambiguation over raw identical count, which is the right choice — collisions destroy meaning. However, there are safe optimizations available that would add +564 identical words (8% improvement) without creating new collisions.
 
 Whether to implement these changes depends on:
-1. How much weight we give to identical word count vs. stability
+1. How much weight we give to identical word count (natural readability for English readers)
 2. Whether the specific words lost (thai, chai, dawn, draw) matter more than words gained
-3. Appetite for changing the established spelling conventions
