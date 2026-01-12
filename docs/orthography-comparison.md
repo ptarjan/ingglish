@@ -11,7 +11,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **a** | cat → **kat** |
-| English | a | cat, hat |
+| [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
 | [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
 | [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
 | [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (similar sound) |
