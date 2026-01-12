@@ -55,6 +55,29 @@ describe('performance optimizations', () => {
     });
   });
 
+  describe('lookupPronunciation toLowerCase optimization', () => {
+    it('should call toLowerCase only once per lookup (not in custom-words too)', () => {
+      const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
+
+      // Test with a regular dictionary word (use unique word to avoid cache conflicts)
+      toLowerCaseSpy.mockClear();
+      lookupPronunciation('Zebra');
+      const callsForRegular = toLowerCaseSpy.mock.calls.length;
+
+      // Test with a custom pronunciation word (vs)
+      toLowerCaseSpy.mockClear();
+      lookupPronunciation('VS');
+      const callsForCustom = toLowerCaseSpy.mock.calls.length;
+
+      // Each lookup should only call toLowerCase once
+      // (not twice - once in lookupPronunciation and once in getCustomPronunciation)
+      expect(callsForRegular).toBe(1);
+      expect(callsForCustom).toBe(1);
+
+      toLowerCaseSpy.mockRestore();
+    });
+  });
+
   describe('lookupPronunciation split cache', () => {
     it('should cache split results (not split on repeated lookups)', () => {
       const splitSpy = vi.spyOn(String.prototype, 'split');
