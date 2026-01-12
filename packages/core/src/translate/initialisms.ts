@@ -224,10 +224,17 @@ export const INITIALISM_EXPANSIONS: Record<string, string[]> = {
   mp4: ['moving', 'picture', 'experts', 'group'],
 };
 
+// Longest initialism in INITIALISM_EXPANSIONS (https, nosql = 5)
+const MAX_INITIALISM_LENGTH = 5;
+
 /**
  * Checks if a word is a known initialism with an expansion.
  */
 export function isInitialism(word: string): boolean {
+  // Fast path: skip words longer than any known initialism
+  if (word.length > MAX_INITIALISM_LENGTH) {
+    return false;
+  }
   return word.toLowerCase() in INITIALISM_EXPANSIONS;
 }
 

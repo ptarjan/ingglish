@@ -94,6 +94,26 @@ export function applyCasePattern(word: string, pattern: CasePattern, original?: 
  * e.g., "iCloud" -> ["i", "Cloud"], "MacBook" -> ["Mac", "Book"]
  */
 export function splitCamelCase(word: string): string[] | null {
+  // Fast path: need at least 2 chars for camelCase
+  if (word.length < 2) {
+    return null;
+  }
+
+  // Fast path: check for any internal uppercase (position 1+)
+  // Uses charCode for speed - A-Z are 65-90
+  let hasInternalUpper = false;
+  for (let i = 1; i < word.length; i++) {
+    const c = word.charCodeAt(i);
+    if (c >= 65 && c <= 90) {
+      hasInternalUpper = true;
+      break;
+    }
+  }
+  if (!hasInternalUpper) {
+    return null;
+  }
+
+  // Full camelCase split
   const parts: string[] = [];
   let start = 0;
 

@@ -33,23 +33,35 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  */
 export function arpabetToIngglish(arpabet: string[]): string {
   let result = '';
-  for (let i = 0; i < arpabet.length; i++) {
+  const len = arpabet.length;
+
+  for (let i = 0; i < len; i++) {
     const phoneme = arpabet[i];
     const base = stripStress(phoneme);
-    const nextBase = i + 1 < arpabet.length ? stripStress(arpabet[i + 1]) : null;
 
-    // R-colored vowels: AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'arr'
-    if (base === 'AA' && nextBase === 'R') {
-      result += 'a'; // The R will add 'r' on the next iteration
-    } else if (base === 'AO' && nextBase === 'R') {
-      result += 'o'; // The R will add 'r' on the next iteration
-    } else if (base === 'EH' && nextBase === 'R') {
-      result += 'ai'; // The R will add 'r' on the next iteration
-    } else if (base === 'AE' && nextBase === 'R') {
-      result += 'ar'; // The R will add 'r' on the next iteration → 'arr'
-    } else {
-      result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
+    // R-colored vowel check: only if next phoneme is R (or R0/R1/R2)
+    // Check raw phoneme first to avoid stripStress call when not needed
+    if (i + 1 < len) {
+      const next = arpabet[i + 1];
+      // R is always 'R' (no stress variants), so direct check works
+      if (next === 'R') {
+        if (base === 'AA') {
+          result += 'a'; // R will add 'r' next
+          continue;
+        } else if (base === 'AO') {
+          result += 'o'; // R will add 'r' next
+          continue;
+        } else if (base === 'EH') {
+          result += 'ai'; // R will add 'r' next
+          continue;
+        } else if (base === 'AE') {
+          result += 'ar'; // R will add 'r' next → 'arr'
+          continue;
+        }
+      }
     }
+
+    result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
   }
   return result;
 }
