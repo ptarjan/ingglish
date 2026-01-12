@@ -7,6 +7,9 @@
  * Custom pronunciations for common words not in CMU dictionary.
  */
 export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
+  // Abbreviations
+  vs: ['V', 'ER1', 'S', 'AH0', 'S'], // versus
+
   // Tech terms
   git: ['G', 'IH1', 'T'],
   npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // spelled out
