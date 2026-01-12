@@ -27,7 +27,7 @@ function getTabFromHash(): Tab {
   if (hash === 'docs' || hash.startsWith('docs/')) {
     return 'docs';
   }
-  if (hash === 'url' || hash === 'guide' || hash === 'extension') {
+  if (hash === 'text' || hash === 'url' || hash === 'guide' || hash === 'extension') {
     return hash;
   }
   return 'text';
@@ -106,9 +106,7 @@ function App() {
 
   // Sync tab with URL hash (docs manages its own hash for deep linking)
   useEffect(() => {
-    if (activeTab === 'text') {
-      window.location.hash = '';
-    } else if (activeTab !== 'docs') {
+    if (activeTab !== 'docs') {
       window.location.hash = activeTab;
     }
     // For docs tab, let the Docs component manage the hash
@@ -233,46 +231,21 @@ function App() {
       </header>
 
       <nav className="tabs">
-        <button
-          className={`tab ${activeTab === 'text' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('text');
-          }}
-        >
+        <a className={`tab ${activeTab === 'text' ? 'active' : ''}`} href="#text">
           Translate Text
-        </button>
-        <button
-          className={`tab ${activeTab === 'url' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('url');
-          }}
-        >
+        </a>
+        <a className={`tab ${activeTab === 'url' ? 'active' : ''}`} href="#url">
           Translate URL
-        </button>
-        <button
-          className={`tab ${activeTab === 'extension' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('extension');
-          }}
-        >
+        </a>
+        <a className={`tab ${activeTab === 'extension' ? 'active' : ''}`} href="#extension">
           Extension
-        </button>
-        <button
-          className={`tab ${activeTab === 'guide' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('guide');
-          }}
-        >
+        </a>
+        <a className={`tab ${activeTab === 'guide' ? 'active' : ''}`} href="#guide">
           Spelling Guide
-        </button>
-        <button
-          className={`tab ${activeTab === 'docs' ? 'active' : ''}`}
-          onClick={() => {
-            setActiveTab('docs');
-          }}
-        >
+        </a>
+        <a className={`tab ${activeTab === 'docs' ? 'active' : ''}`} href="#docs">
           Docs
-        </button>
+        </a>
       </nav>
 
       <main className="main">

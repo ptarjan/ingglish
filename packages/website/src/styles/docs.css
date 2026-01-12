@@ -46,6 +46,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  text-decoration: none;
 }
 
 .docs-nav-item:hover {

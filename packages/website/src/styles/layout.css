@@ -173,6 +173,7 @@
   cursor: pointer;
   border-radius: 0.5rem;
   transition: all 0.2s;
+  text-decoration: none;
 }
 
 .tab:hover {

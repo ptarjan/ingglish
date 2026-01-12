@@ -249,14 +249,12 @@ function Docs(): JSX.Element {
         <ul>
           {docs.map((doc) => (
             <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
-              <button
+              <a
+                href={`#docs/${doc.id}`}
                 className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveDoc(doc.id);
-                }}
               >
                 {doc.title}
-              </button>
+              </a>
               {activeDoc === doc.id && currentHeadings.length > 0 && (
                 <ul className="docs-subsections">
                   {currentHeadings.map((heading) => (
