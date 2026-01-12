@@ -7,7 +7,8 @@ export { loadDictionary, getDictionary, isDictionaryLoaded } from './loader';
 export { lookupPronunciation, hasWord } from './lookup';
 
 export {
-  warmReverseDictionaryCache,
+  loadReverseDictionary,
+  getReverseDictionary,
   lookupPhonemeKey,
   clearReverseDictionaryCache,
 } from './reverse';

@@ -2,19 +2,17 @@
  * Shared test setup and data for @ingglish/core tests
  */
 import { beforeAll } from 'vitest';
-import { loadDictionary, warmReverseDictionaryCache } from './dictionary';
+import { loadDictionary, loadReverseDictionary } from './dictionary';
 import { loadFrequencies } from './utils/frequency';
 
 /**
  * Call this in your test file to ensure the dictionary is loaded before tests run.
- * Also pre-builds the reverse dictionary cache to avoid ~400ms hit on first lookup.
+ * Also loads the reverse dictionary for reverse translation tests.
  * Usage: setupDictionary();
  */
 export function setupDictionary(): void {
   beforeAll(async () => {
-    await Promise.all([loadDictionary(), loadFrequencies()]);
-    // Pre-build reverse dictionary cache to speed up first test
-    warmReverseDictionaryCache();
+    await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
   });
 }
 

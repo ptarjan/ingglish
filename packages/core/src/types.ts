@@ -20,3 +20,15 @@ export type OutputFormat = 'ingglish' | 'ipa';
  * }
  */
 export type CMUDictionary = Record<string, string[]>;
+
+/**
+ * The reverse CMU dictionary type.
+ * Maps phoneme sequences (stress-stripped) to words sorted by frequency.
+ *
+ * @example
+ * {
+ *   "HH AH L OW": ["hello"],
+ *   "T UW": ["to", "too", "two"]
+ * }
+ */
+export type ReverseDictionary = Record<string, string[]>;

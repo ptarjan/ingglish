@@ -4,10 +4,10 @@
  * These tests verify that fast paths are being used by spying on
  * slow-path operations and ensuring they're not called unnecessarily.
  */
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { stripStress, STRESS_MARKER_REGEX } from './phonemes/arpabet';
 import { lookupPronunciation } from './dictionary/lookup';
-import { lookupPhonemeKey, clearReverseDictionaryCache } from './dictionary/reverse';
+import { lookupPhonemeKey } from './dictionary/reverse';
 import { arpabetToIngglish } from './convert/to-ingglish';
 import { setupDictionary } from './test-setup';
 
@@ -97,40 +97,29 @@ describe('performance optimizations', () => {
     });
   });
 
-  describe('lookupPhonemeKey lazy sorting', () => {
-    beforeAll(() => {
-      // Clear cache to test fresh
-      clearReverseDictionaryCache();
-    });
-
-    it('should sort by frequency only on first lookup (lazy sorting)', async () => {
-      // We need to import and spy on the actual module
+  describe('lookupPhonemeKey pre-sorted dictionary', () => {
+    it('should not call sortByFrequency at runtime (pre-sorted at build time)', async () => {
       const frequencyModule = await import('./utils/frequency');
       const sortSpy = vi.spyOn(frequencyModule, 'sortByFrequency');
-
-      // Clear reverse cache to get fresh state
-      clearReverseDictionaryCache();
       sortSpy.mockClear();
 
-      // Use a phoneme key that has homophones (multiple words)
-      // "T UW" = to, too, two
-      const key = 'T UW';
+      // Look up multiple phoneme keys including homophones
+      lookupPhonemeKey('T UW'); // to, too, two
+      lookupPhonemeKey('HH AH L OW'); // hello
+      lookupPhonemeKey('DH AH'); // the
 
-      // First lookup - should call sortByFrequency
-      const result1 = lookupPhonemeKey(key);
-      expect(result1).toBeDefined();
-      expect(sortSpy).toHaveBeenCalledTimes(1);
-
-      // Second lookup - should NOT call sortByFrequency (already sorted)
-      sortSpy.mockClear();
-      const result2 = lookupPhonemeKey(key);
-      expect(result2).toBeDefined();
+      // No sorting should happen (pre-sorted at build time)
       expect(sortSpy).not.toHaveBeenCalled();
 
-      // Results should be identical
-      expect(result1).toEqual(result2);
-
       sortSpy.mockRestore();
+    });
+
+    it('should return words sorted by frequency', () => {
+      // "T UW" has homophones: to, too, two
+      // "to" should be first (most common)
+      const words = lookupPhonemeKey('T UW');
+      expect(words).toBeDefined();
+      expect(words?.[0]).toBe('to');
     });
   });
 

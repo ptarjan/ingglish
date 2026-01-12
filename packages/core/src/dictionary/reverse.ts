@@ -2,82 +2,67 @@
  * Reverse dictionary: phoneme sequence -> English words.
  *
  * Used for reverse translation (Ingglish/IPA -> English).
- * Implements lazy sorting for performance optimization.
+ * Pre-built at build time with words sorted by frequency.
  */
 
-import { getDictionary } from './loader';
-import { sortByFrequency } from '../utils/frequency';
-import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
+import type { ReverseDictionary } from '../types';
 
-/** Raw reverse dictionary: phoneme sequence -> unsorted English words */
-let reverseDictionaryCache: Map<string, string[]> | null = null;
-
-/** Tracks which keys have been sorted (lazy sorting optimization) */
-const sortedKeys = new Set<string>();
+// The reverse dictionary will be loaded once and cached
+let reverseDict: ReverseDictionary | null = null;
+let reverseDictPromise: Promise<ReverseDictionary> | null = null;
 
 /**
- * Builds and caches a reverse dictionary: phoneme sequence -> English words.
- * Words are NOT sorted during build - sorting happens lazily on lookup.
- * This avoids O(n * m * log(m)) upfront cost for ~134k dictionary entries.
+ * Loads the pre-built reverse dictionary.
+ * The dictionary is cached after first load.
  */
-function buildReverseDictionary(): Map<string, string[]> {
-  if (reverseDictionaryCache) {
-    return reverseDictionaryCache;
+export async function loadReverseDictionary(): Promise<ReverseDictionary> {
+  if (reverseDict) {
+    return reverseDict;
   }
 
-  const dict = getDictionary();
-  reverseDictionaryCache = new Map();
-
-  for (const [word, phonemes] of Object.entries(dict)) {
-    // Dictionary values are already pre-split arrays
-    const phonemeKey = phonemes
-      .map((p) => p.replace(STRESS_MARKER_REGEX, '')) // Strip stress markers
-      .join(' ');
-
-    const words = reverseDictionaryCache.get(phonemeKey) ?? [];
-    words.push(word);
-    reverseDictionaryCache.set(phonemeKey, words);
+  if (reverseDictPromise) {
+    return reverseDictPromise;
   }
 
-  return reverseDictionaryCache;
+  reverseDictPromise = import('./reverse-cmudict')
+    .then((module: { default: ReverseDictionary }) => {
+      reverseDict = module.default;
+      return reverseDict;
+    })
+    .catch((error: unknown) => {
+      reverseDictPromise = null;
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load reverse dictionary: ${message}`);
+    });
+
+  return reverseDictPromise;
 }
 
 /**
- * Pre-builds the reverse dictionary cache.
- * Call this during test setup to avoid the ~400ms cost on first lookup.
+ * Gets the reverse dictionary synchronously.
+ * Throws if dictionary hasn't been loaded yet.
  */
-export function warmReverseDictionaryCache(): void {
-  buildReverseDictionary();
+export function getReverseDictionary(): ReverseDictionary {
+  if (!reverseDict) {
+    throw new Error('Reverse dictionary not loaded. Call loadReverseDictionary() first.');
+  }
+  return reverseDict;
 }
 
 /**
- * Looks up words for a phoneme key, sorting by frequency on first access.
- * Lazy sorting means we only pay the cost for keys actually queried.
+ * Looks up words for a phoneme key.
+ * Returns words sorted by frequency (pre-sorted at build time).
  */
 export function lookupPhonemeKey(key: string): string[] | undefined {
-  const reverseDict = buildReverseDictionary();
-  const words = reverseDict.get(key);
-
-  if (!words) {
-    return undefined;
-  }
-
-  // Lazy sort: only sort this key's words on first access
-  if (!sortedKeys.has(key)) {
-    const sorted = sortByFrequency(words);
-    reverseDict.set(key, sorted);
-    sortedKeys.add(key);
-    return sorted;
-  }
-
-  return words;
+  const dict = getReverseDictionary();
+  return dict[key];
 }
 
 /**
  * Clears the reverse dictionary cache.
- * Useful for testing or when dictionary changes.
+ * Useful for testing.
  */
 export function clearReverseDictionaryCache(): void {
-  reverseDictionaryCache = null;
-  sortedKeys.clear();
+  reverseDict = null;
+  reverseDictPromise = null;
 }
