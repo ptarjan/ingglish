@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import {
   isInitialism,
   translateInitialism,
@@ -40,6 +40,37 @@ describe('initialisms', () => {
       expect(isInitialism('hello')).toBe(false);
       expect(isInitialism('UNKNOWN')).toBe(false);
       expect(isInitialism('xyz')).toBe(false);
+    });
+
+    // Fast path optimization tests - words > MAX_INITIALISM_LENGTH (5) skip lookup
+    it('should skip toLowerCase for words longer than max length (fast path)', () => {
+      const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
+      toLowerCaseSpy.mockClear();
+
+      // Long word (7 chars) should return false WITHOUT calling toLowerCase
+      const result = isInitialism('toolong');
+      expect(result).toBe(false);
+      expect(toLowerCaseSpy).not.toHaveBeenCalled();
+
+      toLowerCaseSpy.mockRestore();
+    });
+
+    it('should call toLowerCase for words within max length (slow path)', () => {
+      const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
+      toLowerCaseSpy.mockClear();
+
+      // Short word (3 chars) should call toLowerCase for lookup
+      isInitialism('api');
+      expect(toLowerCaseSpy).toHaveBeenCalled();
+
+      toLowerCaseSpy.mockRestore();
+    });
+
+    it('should verify max initialism length matches longest entry', () => {
+      // Ensure our MAX_INITIALISM_LENGTH constant is correct
+      // If someone adds a longer initialism, this test fails as a reminder to update the constant
+      const maxLen = Math.max(...Object.keys(INITIALISM_EXPANSIONS).map((k) => k.length));
+      expect(maxLen).toBe(5); // "https" and "nosql" are the longest
     });
   });
 

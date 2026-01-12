@@ -137,6 +137,59 @@ describe('case-utils', () => {
       expect(splitCamelCase('')).toBeNull();
       expect(splitCamelCase('a')).toBeNull();
     });
+
+    // Fast path optimization tests - ensure charCode-based check works correctly
+    it('should use fast path: only check for A-Z (charCodes 65-90)', () => {
+      // Words with only lowercase letters should hit fast path and return null
+      expect(splitCamelCase('lowercase')).toBeNull();
+      expect(splitCamelCase('alllowercase')).toBeNull();
+
+      // Words with uppercase only at position 0 should return null (not camelCase)
+      expect(splitCamelCase('Uppercase')).toBeNull();
+
+      // Words with internal uppercase should be detected
+      expect(splitCamelCase('hasInternalA')).toEqual(['has', 'Internal', 'A']);
+      expect(splitCamelCase('endsWithZ')).toEqual(['ends', 'With', 'Z']);
+    });
+
+    it('should not be confused by numbers or special chars', () => {
+      // Numbers (charCodes 48-57) should not trigger uppercase detection
+      expect(splitCamelCase('test123')).toBeNull();
+      expect(splitCamelCase('version2')).toBeNull();
+
+      // Special chars should not trigger uppercase detection
+      expect(splitCamelCase('hello_world')).toBeNull();
+    });
+
+    it('should correctly identify charCode boundaries for A-Z (65-90)', () => {
+      // Test charCode boundary: 64 is '@', 65 is 'A', 90 is 'Z', 91 is '['
+      // Characters just outside A-Z range should not be detected as uppercase
+      expect(splitCamelCase('test@end')).toBeNull(); // @ = 64
+      expect(splitCamelCase('test[end')).toBeNull(); // [ = 91
+
+      // Characters at A-Z boundaries should be detected
+      expect(splitCamelCase('testAend')).toEqual(['test', 'Aend']); // A = 65
+      expect(splitCamelCase('testZend')).toEqual(['test', 'Zend']); // Z = 90
+    });
+
+    it('should use charCode-based fast path (verifies optimization assumption)', () => {
+      // This test verifies that the charCode range 65-90 correctly identifies A-Z
+      // If the implementation changes to use a different method, this test ensures
+      // the boundary behavior is preserved
+
+      // Test all uppercase letters at position 1+ trigger camelCase detection
+      for (let charCode = 65; charCode <= 90; charCode++) {
+        const char = String.fromCharCode(charCode);
+        const word = 'a' + char; // e.g., "aA", "aB", ..., "aZ"
+        expect(splitCamelCase(word)).toEqual(['a', char]);
+      }
+
+      // Test characters just outside A-Z don't trigger detection
+      expect(splitCamelCase('a@')).toBeNull(); // 64
+      expect(splitCamelCase('a[')).toBeNull(); // 91
+      expect(splitCamelCase('a0')).toBeNull(); // 48 (number)
+      expect(splitCamelCase('a ')).toBeNull(); // 32 (space)
+    });
   });
 
   describe('camelCase translation', () => {

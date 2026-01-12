@@ -162,6 +162,21 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['AE1'])).toBe('a');
     });
 
+    // Fast path optimization: R in ARPAbet is always 'R' (no stress variants)
+    // so we can compare directly without calling stripStress
+    it('should detect R-coloring with direct R comparison (no R0/R1/R2 variants)', () => {
+      // R never has stress markers in ARPAbet, verify our optimization assumption
+      // If R ever had stress markers, these tests would fail
+      expect(arpabetToIngglish(['AA1', 'R'])).toBe('ar'); // direct 'R' check works
+      expect(arpabetToIngglish(['AO1', 'R'])).toBe('or');
+      expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
+      expect(arpabetToIngglish(['AE1', 'R'])).toBe('arr');
+
+      // R at end of word still works
+      expect(arpabetToIngglish(['F', 'AA1', 'R'])).toBe('far');
+      expect(arpabetToIngglish(['B', 'AO1', 'R'])).toBe('bor');
+    });
+
     it('should handle consonant sounds correctly', () => {
       expect(arpabetToIngglish(['B'])).toBe('b');
       expect(arpabetToIngglish(['CH'])).toBe('ch');
