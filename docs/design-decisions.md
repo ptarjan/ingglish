@@ -93,10 +93,10 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 | Combination | Spelling | Why |
 |-------------|----------|-----|
-| AA + R | ar | "star" → "star" (identical!) |
-| AO + R | or | "store" → "stor" |
-| EH + R | air | Fixed 204 collisions (air vs her) |
-| AE + R | arr | Matches English "carrot", "barrel" |
+| /ɑ/ + R | ar | "star" → "star" (identical!) |
+| /ɔ/ + R | or | "store" → "stor" |
+| /ɛ/ + R | air | Fixed 204 collisions (air vs her) |
+| /æ/ + R | arr | Matches English "carrot", "barrel" |
 
 ## Dialect Choice
 

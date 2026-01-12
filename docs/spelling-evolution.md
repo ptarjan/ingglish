@@ -82,14 +82,14 @@ After extensive iteration, these are the current spellings:
 
 **Attempt 1: 'o'**
 - Rationale: Simple, matches Spanish/Italian
-- Problem: When we changed AA to 'o', this created a collision
-- Verdict: ❌ Rejected - collision with AA vowel
+- Problem: When we changed /ɑ/ to 'o', this created a collision
+- Verdict: ❌ Rejected - collision with /ɑ/ vowel
 
 **Attempt 2: 'oh' (current)**
 - Rationale:
   - English "oh!" already uses this for the exclamation
   - Distinguishes "go" (goh) from "cow" (kou) without ambiguity
-  - Only option left after reserving 'o' for AA
+  - Only option left after reserving 'o' for /ɑ/
 - Verdict: ✅ **Adopted** - necessary to avoid collision
 
 **Examples:**
@@ -101,7 +101,7 @@ After extensive iteration, these are the current spellings:
 
 ## Vowel Evolution
 
-### AA (father, hot): ah → o
+### /ɑ/ (father, hot): ah → o
 
 **Attempt 1: 'ah'**
 - Rationale: Phonetically accurate for open back vowel
@@ -124,7 +124,7 @@ After extensive iteration, these are the current spellings:
 
 ---
 
-### AO (thought, law): aw → o → aw
+### /ɔ/ (thought, law): aw → o → aw
 
 This vowel went through the most iteration.
 
@@ -134,11 +134,11 @@ This vowel went through the most iteration.
 - Verdict: ⚠️ Acceptable
 
 **Attempt 2: 'o' (caught-cot merger)**
-- Rationale: Simplify by merging with AA, reflecting American pronunciation
+- Rationale: Simplify by merging with /ɑ/, reflecting American pronunciation
 - Problem:
   - "thought" → "thot" looked too informal/texting
   - Lost distinction for speakers who maintain the difference
-  - Required changing OW to 'oh' to avoid collision
+  - Required changing /oʊ/ to 'oh' to avoid collision
 - Verdict: ❌ Rejected - lost too much information
 
 **Attempt 3: 'aw' (current, reverted)**
@@ -156,19 +156,19 @@ This vowel went through the most iteration.
 
 ---
 
-### UH/UW Swap: oo ↔ uu
+### /ʊ/ and /uː/ Swap: oo ↔ uu
 
 **Original:**
-- UH (book) → 'uu'
-- UW (too) → 'oo'
+- /ʊ/ (book) → 'uu'
+- /uː/ (too) → 'oo'
 
 **Problem:**
 - "book" → "buuk" looked strange when English already has "book"
 - "too" → "too" was identical, but the long sound had the shorter spelling
 
 **After Swap (current):**
-- UH (book) → 'oo' - matches English "book", "good", "look"
-- UW (too) → 'uu' - longer sound gets longer spelling (Finnish pattern)
+- /ʊ/ (book) → 'oo' - matches English "book", "good", "look"
+- /uː/ (too) → 'uu' - longer sound gets longer spelling (Finnish pattern)
 
 **Rationale:**
 - "book" → "book" (identical!) is a huge win
@@ -183,12 +183,12 @@ This vowel went through the most iteration.
 
 R-colored vowels were added iteratively to fix collisions and improve readability.
 
-### AA+R → 'ar' (added)
+### /ɑ/+R → 'ar' (added)
 
 **Before:** No special handling
 - "star" → "stor" (collision with "store")
 
-**After:** Look-ahead rule for AA followed by R
+**After:** Look-ahead rule for /ɑ/ followed by R
 - "star" → "star" (identical!)
 - "car" → "kar"
 
@@ -196,12 +196,12 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 ---
 
-### AO+R → 'or' (added)
+### /ɔ/+R → 'or' (added)
 
 **Before:** No special handling
 - "store" → "stawr" (confusing)
 
-**After:** Look-ahead rule for AO followed by R
+**After:** Look-ahead rule for /ɔ/ followed by R
 - "store" → "stor"
 - "more" → "mor"
 
@@ -209,24 +209,24 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 ---
 
-### EH+R → 'air' (added)
+### /ɛ/+R → 'air' (added)
 
 **Before:** No special handling
 - "air" → "er" (collision with "her")
 - "there" → "dher" (collision with "the" + "her")
 
-**After:** Look-ahead rule for EH followed by R
+**After:** Look-ahead rule for /ɛ/ followed by R
 - "air" → "air" (identical!)
 - "there" → "dhair"
 - "care" → "kair"
 
-**Impact:** Fixed 204 word collisions between EH+R and ER words
+**Impact:** Fixed 204 word collisions between /ɛ/+R and /ɝ/ words
 
 **Verdict:** ✅ Essential - massive collision reduction
 
 ---
 
-### AE+R: aar → arr
+### /æ/+R: aar → arr
 
 **Attempt 1: 'aar'**
 - Rationale: Double the vowel before R
@@ -267,7 +267,7 @@ Several changes were specifically made to upgrade ratings:
 The caught-cot merger attempt ("thought" → "thot") was rejected partly because it looked like texting slang. Ingglish should look like a legitimate alternative spelling, not informal abbreviation.
 
 ### 6. Reversion Is Okay
-The AO vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
+The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
 
 ---
 
@@ -283,7 +283,7 @@ The AO vowel went aw → o → aw. We weren't afraid to revert when a change did
 
 ### Removing R-colored vowel special handling
 - Would simplify the system
-- Rejected because collisions are unacceptable (204 EH+R/ER collisions alone)
+- Rejected because collisions are unacceptable (204 /ɛ/+R vs /ɝ/ collisions alone)
 
 ---
 
