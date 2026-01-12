@@ -4,7 +4,7 @@
 
 import { arpabetToFormat } from '../convert/to-ingglish';
 import { lookupPronunciation } from '../dictionary/lookup';
-import { detectCasePattern, applyCasePattern } from '../utils/case';
+import { detectCasePattern, applyCasePattern, splitCamelCase } from '../utils/case';
 import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
@@ -45,6 +45,31 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     }
   }
 
+  // Handle camelCase words by translating each component separately
+  // This preserves case at component boundaries (e.g., "iCloud" -> "ieKlowd")
+  const camelParts = splitCamelCase(word);
+  if (camelParts !== null && camelParts.length > 1) {
+    // Translate each part and preserve its case
+    const translatedParts = camelParts.map((part) => {
+      const partCasePattern = detectCasePattern(part);
+      const partPhonemes = lookupPronunciation(part);
+      let translated: string;
+
+      if (partPhonemes) {
+        translated = arpabetToFormat(partPhonemes, format);
+      } else {
+        translated = translateUnknown(part, format);
+      }
+
+      if (format === 'ingglish') {
+        return applyCasePattern(translated, partCasePattern, part);
+      }
+      return translated;
+    });
+
+    return translatedParts.join('');
+  }
+
   // Detect case pattern for preservation
   const casePattern = detectCasePattern(word);
 
@@ -61,6 +86,15 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
 
     // Apply original case pattern to fallback result (only for Ingglish)
     if (format === 'ingglish') {
+      // Skip case application if result already has mixed case (e.g., compound words)
+      // This prevents re-applying position-based casing to properly-cased compounds
+      const resultHasMixedCase =
+        fallbackResult !== fallbackResult.toLowerCase() &&
+        fallbackResult !== fallbackResult.toUpperCase() &&
+        !/^[A-Z][a-z]*$/.test(fallbackResult);
+      if (resultHasMixedCase) {
+        return fallbackResult;
+      }
       return applyCasePattern(fallbackResult, casePattern, word);
     }
     return fallbackResult;

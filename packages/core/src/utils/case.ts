@@ -72,8 +72,39 @@ export function applyCasePattern(word: string, pattern: CasePattern, original?: 
 }
 
 /**
+ * Splits a word at camelCase boundaries.
+ * e.g., "iCloud" -> ["i", "Cloud"], "MacBook" -> ["Mac", "Book"]
+ */
+export function splitCamelCase(word: string): string[] | null {
+  const parts: string[] = [];
+  let start = 0;
+
+  for (let i = 1; i < word.length; i++) {
+    const prev = word[i - 1];
+    const curr = word[i];
+    // Boundary: previous char is lowercase, current is uppercase
+    if (
+      prev === prev.toLowerCase() &&
+      prev !== prev.toUpperCase() &&
+      curr === curr.toUpperCase() &&
+      curr !== curr.toLowerCase()
+    ) {
+      parts.push(word.slice(start, i));
+      start = i;
+    }
+  }
+
+  if (parts.length > 0) {
+    parts.push(word.slice(start));
+    return parts;
+  }
+
+  return null;
+}
+
+/**
  * Applies mixed case from original word to translated word.
- * Preserves uppercase positions character-by-character.
+ * Uses position-based mapping for each character.
  */
 function applyMixedCase(translated: string, original: string): string {
   const lowerTranslated = translated.toLowerCase();
