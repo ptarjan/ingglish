@@ -3,10 +3,9 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 
-// Skip sourcemaps for data and vendor chunks, format data chunks for readability
+// Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
   const skipSourcemaps = ['cmudict', 'word-frequencies', 'vendor'];
-  const formatChunks = ['cmudict', 'word-frequencies'];
   return {
     name: 'process-chunks',
     generateBundle(_, bundle) {
@@ -19,14 +18,6 @@ function processChunks(): Plugin {
         const asset = bundle[name];
         if (asset?.type !== 'chunk' || typeof asset.code !== 'string') continue;
 
-        // Format data chunks for readability (minification doesn't help for string data)
-        if (formatChunks.some((c) => name.includes(c))) {
-          asset.code = asset.code
-            .replace(/,(["{a-zA-Z])/g, ',\n$1')
-            .replace(/\{(["{a-zA-Z])/g, '{\n$1')
-            .replace(/"}/g, '"\n}');
-          asset.map = null;
-        }
         // Strip sourceMappingURL from skipped chunks
         if (skipSourcemaps.some((c) => name.includes(c))) {
           asset.code = asset.code.replace(/\n\/\/# sourceMappingURL=.*$/, '');
