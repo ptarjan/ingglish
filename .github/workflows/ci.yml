@@ -22,6 +22,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache generated dictionaries
+        uses: actions/cache@v4
+        id: dict-cache
+        with:
+          path: |
+            packages/core/src/dictionary/cmudict.ts
+            packages/core/src/dictionary/reverse-cmudict.ts
+            packages/core/src/data/word-frequencies.ts
+          key: dictionaries-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+
       - name: Build
         run: npm run build
 
