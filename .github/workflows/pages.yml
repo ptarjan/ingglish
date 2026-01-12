@@ -42,6 +42,9 @@ jobs:
       - name: Build core and dom libraries
         run: npm run build:fast -w @ingglish/core && npm run build:fast -w @ingglish/dom
 
+      - name: Generate docs
+        run: npm run docs
+
       - name: Build extension and package zip
         run: |
           npm run build -w @ingglish/extension
