@@ -44,11 +44,11 @@ Sample output:
 Iterations: 1000, Warmup: 100
 
 --- Forward Translation ---
-translateSync(short text)                      0.015ms  (min: 0.012ms, max: 0.089ms)     66667 ops/sec
-translateSync(medium text)                     0.045ms  (min: 0.039ms, max: 0.156ms)     22222 ops/sec
+translateSync(short text)                      0.005ms  (min: 0.003ms, max: 0.033ms)    212690 ops/sec
+translateSync(medium text)                     0.013ms  (min: 0.009ms, max: 0.077ms)     74524 ops/sec
 
 --- Reverse Translation ---
-reverseTranslateWord(single)                   0.008ms  (min: 0.006ms, max: 0.042ms)    125000 ops/sec
+reverseTranslateWord(single)                   0.005ms  (min: 0.003ms, max: 0.544ms)    183851 ops/sec
 ```
 
 ### DOM Library
@@ -66,15 +66,15 @@ npx tsx scripts/profile-tree-walker.ts
 Sample output from `profile-wikipedia.ts`:
 ```
 === Wikipedia HTML Profiling ===
-HTML size: 287KB, Text nodes: 1,247, Words: 12,456
+HTML size: 219KB, Text nodes: 808, Words: 1,769
 
 Phase                    Time (ms)    Per-item
 ─────────────────────────────────────────────
-Collect nodes            12.3         9.8µs/node
-Extract words            4.2          0.3µs/word
-Apply translations       45.6         3.7µs/word
+Collect nodes            13.8         17.0µs/node
+Extract words            0.8          0.8µs/word
+Apply translations       34.2         19.3µs/word
 ─────────────────────────────────────────────
-Total                    62.1ms
+Total                    34.2ms
 ```
 
 ## Performance Characteristics
