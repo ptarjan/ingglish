@@ -11,12 +11,12 @@ export type OutputFormat = 'ingglish' | 'ipa';
 
 /**
  * The CMU Pronouncing Dictionary type.
- * Maps lowercase words to their ARPAbet pronunciation strings.
+ * Maps lowercase words to their ARPAbet phoneme arrays.
  *
  * @example
  * {
- *   "hello": "HH AH0 L OW1",
- *   "world": "W ER1 L D"
+ *   "hello": ["HH", "AH0", "L", "OW1"],
+ *   "world": ["W", "ER1", "L", "D"]
  * }
  */
-export type CMUDictionary = Record<string, string>;
+export type CMUDictionary = Record<string, string[]>;

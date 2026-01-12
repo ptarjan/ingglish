@@ -28,9 +28,9 @@ function buildReverseDictionary(): Map<string, string[]> {
   const dict = getDictionary();
   reverseDictionaryCache = new Map();
 
-  for (const [word, pronunciation] of Object.entries(dict)) {
-    const phonemeKey = pronunciation
-      .split(' ')
+  for (const [word, phonemes] of Object.entries(dict)) {
+    // Dictionary values are already pre-split arrays
+    const phonemeKey = phonemes
       .map((p) => p.replace(STRESS_MARKER_REGEX, '')) // Strip stress markers
       .join(' ');
 

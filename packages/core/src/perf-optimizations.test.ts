@@ -6,7 +6,7 @@
  */
 import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { stripStress, STRESS_MARKER_REGEX } from './phonemes/arpabet';
-import { lookupPronunciation, clearSplitCache } from './dictionary/lookup';
+import { lookupPronunciation } from './dictionary/lookup';
 import { lookupPhonemeKey, clearReverseDictionaryCache } from './dictionary/reverse';
 import { arpabetToIngglish } from './convert/to-ingglish';
 import { setupDictionary } from './test-setup';
@@ -78,32 +78,20 @@ describe('performance optimizations', () => {
     });
   });
 
-  describe('lookupPronunciation split cache', () => {
-    it('should cache split results (not split on repeated lookups)', () => {
-      // Clear cache to ensure fresh state (other tests may have cached 'hello')
-      clearSplitCache();
+  describe('lookupPronunciation pre-split dictionary', () => {
+    it('should not call split at runtime (phonemes pre-split at build time)', () => {
       const splitSpy = vi.spyOn(String.prototype, 'split');
-
-      // First lookup - should call split
       splitSpy.mockClear();
-      const result1 = lookupPronunciation('hello');
-      expect(result1).toBeDefined();
+
+      // Look up multiple words
+      lookupPronunciation('hello');
+      lookupPronunciation('world');
+      lookupPronunciation('test');
+
+      // No space-splitting should happen (dictionary values are already arrays)
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      const splitCallsFirst = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
-
-      // Second lookup - should NOT call split (cached)
-      splitSpy.mockClear();
-      const result2 = lookupPronunciation('hello');
-      expect(result2).toBeDefined();
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      const splitCallsSecond = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
-
-      // First lookup should have split, second should not
-      expect(splitCallsFirst).toBeGreaterThan(0);
-      expect(splitCallsSecond).toBe(0);
-
-      // Results should be identical
-      expect(result1).toEqual(result2);
+      const spaceSplitCalls = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
+      expect(spaceSplitCalls).toBe(0);
 
       splitSpy.mockRestore();
     });

@@ -5,9 +5,6 @@
 import { getDictionary } from './loader';
 import { getCustomPronunciation } from '../fallback/custom-words';
 
-/** Cache for split pronunciations to avoid repeated string splits */
-const splitCache = new Map<string, string[]>();
-
 /**
  * Looks up a word in the CMU dictionary.
  * Custom pronunciations override dictionary entries.
@@ -24,17 +21,8 @@ export function lookupPronunciation(word: string): string[] | null {
   }
 
   const dict = getDictionary();
-  const pronunciation = dict[key];
-  if (!pronunciation) {
-    return null;
-  }
-  // Check cache first
-  let phonemes = splitCache.get(key);
-  if (!phonemes) {
-    phonemes = pronunciation.split(' ');
-    splitCache.set(key, phonemes);
-  }
-  return phonemes;
+  // Dictionary values are already pre-split arrays (done at build time)
+  return dict[key] ?? null;
 }
 
 /**
@@ -43,11 +31,4 @@ export function lookupPronunciation(word: string): string[] | null {
 export function hasWord(word: string): boolean {
   const dict = getDictionary();
   return dict[word.toLowerCase()] !== undefined;
-}
-
-/**
- * Clears the split cache. Used for testing.
- */
-export function clearSplitCache(): void {
-  splitCache.clear();
 }
