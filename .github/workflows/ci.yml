@@ -223,6 +223,11 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
+      # Webkit needs system deps even when cached (chromium works without)
+      - name: Install Playwright deps (webkit only)
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && matrix.browser == 'webkit'
+        run: npx playwright install-deps webkit
+
       # Smoke test catches catastrophic failures fast before full suite
       - name: Smoke test
         if: matrix.browser == 'chromium'
