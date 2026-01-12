@@ -30,7 +30,8 @@ jobs:
             packages/core/src/dictionary/cmudict.ts
             packages/core/src/dictionary/reverse-cmudict.ts
             packages/core/src/data/word-frequencies.ts
-          key: dictionaries-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+          # Include all build scripts and package.json to catch dependency changes
+          key: dictionaries-v2-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
 
       - name: Build
         run: npm run build
