@@ -190,6 +190,46 @@ describe('case-utils', () => {
       expect(splitCamelCase('a0')).toBeNull(); // 48 (number)
       expect(splitCamelCase('a ')).toBeNull(); // 32 (space)
     });
+
+    it('should skip slow path for lowercase words (no array allocation)', () => {
+      // Manual spy - vi.spyOn(Array.prototype, 'push') causes stack overflow
+      // because vitest's internal tracking uses arrays
+      let pushCallCount = 0;
+      const originalPush = Array.prototype.push;
+
+      Array.prototype.push = function (...args: unknown[]) {
+        pushCallCount++;
+        return originalPush.apply(this, args);
+      };
+
+      try {
+        // Lowercase word should return null WITHOUT pushing to parts array
+        const result = splitCamelCase('lowercase');
+        expect(result).toBeNull();
+        expect(pushCallCount).toBe(0);
+      } finally {
+        Array.prototype.push = originalPush;
+      }
+    });
+
+    it('should use slow path for camelCase words (array allocation)', () => {
+      let pushCallCount = 0;
+      const originalPush = Array.prototype.push;
+
+      Array.prototype.push = function (...args: unknown[]) {
+        pushCallCount++;
+        return originalPush.apply(this, args);
+      };
+
+      try {
+        // camelCase word should push parts to array
+        const result = splitCamelCase('camelCase');
+        expect(result).toEqual(['camel', 'Case']);
+        expect(pushCallCount).toBeGreaterThan(0);
+      } finally {
+        Array.prototype.push = originalPush;
+      }
+    });
   });
 
   describe('camelCase translation', () => {
@@ -198,11 +238,13 @@ describe('case-utils', () => {
     it('should translate iCloud with capital at component boundary', () => {
       // "iCloud" should become "aiKlowd" not "aIklowd"
       // The K should be capitalized because "Cloud" starts with capital C
+      // (AY vowel maps to 'ai')
       const result = translateWord('iCloud');
       expect(result).toBe('aiKlowd');
     });
 
     it('should translate iPhone with capital at component boundary', () => {
+      // (AY vowel maps to 'ai')
       const result = translateWord('iPhone');
       expect(result).toBe('aiFohn');
     });
