@@ -11,12 +11,14 @@ interface HeadingInfo {
 import apiReference from '../../../../docs/generated/README.md';
 import architecture from '../../../../docs/architecture.md';
 import contributing from '../../../../docs/contributing.md';
-import troubleshooting from '../../../../docs/troubleshooting.md';
-import deployment from '../../../../docs/deployment.md';
-import performance from '../../../../docs/performance.md';
+import deploymentDoc from '../../../../docs/deployment.md';
+import designDecisions from '../../../../docs/design-decisions.md';
 import orthographyComparison from '../../../../docs/orthography-comparison.md';
+import performanceDoc from '../../../../docs/performance.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
+import spellingEvolution from '../../../../docs/spelling-evolution.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
+import troubleshooting from '../../../../docs/troubleshooting.md';
 
 interface DocEntry {
   id: string;
@@ -30,10 +32,22 @@ const GITHUB_EDIT_BASE =
 
 const docs: DocEntry[] = [
   {
+    id: 'design-decisions',
+    title: 'Design Decisions',
+    content: designDecisions,
+    filename: 'design-decisions.md',
+  },
+  {
     id: 'phoneme-mapping',
     title: 'Phoneme Mapping',
     content: phonemeMapping,
     filename: 'phoneme-mapping.md',
+  },
+  {
+    id: 'spelling-evolution',
+    title: 'Spelling Evolution',
+    content: spellingEvolution,
+    filename: 'spelling-evolution.md',
   },
   {
     id: 'orthography-comparison',
@@ -49,8 +63,13 @@ const docs: DocEntry[] = [
   },
   { id: 'architecture', title: 'Architecture', content: architecture, filename: 'architecture.md' },
   { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
-  { id: 'performance', title: 'Performance', content: performance, filename: 'performance.md' },
-  { id: 'deployment', title: 'Deployment', content: deployment, filename: 'deployment.md' },
+  {
+    id: 'performance',
+    title: 'Performance',
+    content: performanceDoc,
+    filename: 'performance.md',
+  },
+  { id: 'deployment', title: 'Deployment', content: deploymentDoc, filename: 'deployment.md' },
   { id: 'contributing', title: 'Contributing', content: contributing, filename: 'contributing.md' },
   {
     id: 'troubleshooting',
