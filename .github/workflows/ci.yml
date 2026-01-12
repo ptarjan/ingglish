@@ -31,7 +31,7 @@ jobs:
             packages/core/src/dictionary/cmudict.ts
             packages/core/src/dictionary/reverse-cmudict.ts
             packages/core/src/data/word-frequencies.ts
-          key: dictionaries-v2-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
+          key: dictionaries-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
 
       - name: Install dependencies
         run: npm ci
@@ -86,7 +86,7 @@ jobs:
             packages/core/src/dictionary/cmudict.ts
             packages/core/src/dictionary/reverse-cmudict.ts
             packages/core/src/data/word-frequencies.ts
-          key: dictionaries-v2-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
+          key: dictionaries-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
 
       # Profile build steps individually
       - name: Build core (includes dictionary generation)
