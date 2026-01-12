@@ -2,23 +2,6 @@
 
 This document records all phoneme spelling changes made during Ingglish development, explaining what we tried, what worked, what didn't, and why we ended up with the current system.
 
-## Summary of Final Mappings
-
-After extensive iteration, these are the current spellings:
-
-| Sound | IPA | Final Spelling | Previous Attempts |
-|-------|-----|----------------|-------------------|
-| my, time | /aɪ/ | **ai** | ii → ie → ai |
-| cow, out | /aʊ/ | **ou** | ow → ou |
-| go, show | /oʊ/ | **oh** | o → oh |
-| father, hot | /ɑ/ | **o** | ah → o |
-| thought, law | /ɔ/ | **aw** | aw → o → aw |
-| book, put | /ʊ/ | **oo** | uu → oo (swapped) |
-| too, blue | /uː/ | **uu** | oo → uu (swapped) |
-| arrow, carrot | /æɹ/ | **arr** | aar → arr |
-
----
-
 ## Diphthong Evolution
 
 ### /aɪ/ (my, time): ii → ie → ai
