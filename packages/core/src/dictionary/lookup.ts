@@ -44,3 +44,10 @@ export function hasWord(word: string): boolean {
   const dict = getDictionary();
   return dict[word.toLowerCase()] !== undefined;
 }
+
+/**
+ * Clears the split cache. Used for testing.
+ */
+export function clearSplitCache(): void {
+  splitCache.clear();
+}

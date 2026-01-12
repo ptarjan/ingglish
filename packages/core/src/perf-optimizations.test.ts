@@ -6,7 +6,7 @@
  */
 import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { stripStress, STRESS_MARKER_REGEX } from './phonemes/arpabet';
-import { lookupPronunciation } from './dictionary/lookup';
+import { lookupPronunciation, clearSplitCache } from './dictionary/lookup';
 import { lookupPhonemeKey, clearReverseDictionaryCache } from './dictionary/reverse';
 import { arpabetToIngglish } from './convert/to-ingglish';
 import { setupDictionary } from './test-setup';
@@ -80,6 +80,8 @@ describe('performance optimizations', () => {
 
   describe('lookupPronunciation split cache', () => {
     it('should cache split results (not split on repeated lookups)', () => {
+      // Clear cache to ensure fresh state (other tests may have cached 'hello')
+      clearSplitCache();
       const splitSpy = vi.spyOn(String.prototype, 'split');
 
       // First lookup - should call split
