@@ -15,6 +15,7 @@ Welcome to the Ingglish documentation. These guides cover everything from gettin
 ## Reference
 
 - [Phoneme Mapping](phoneme-mapping.md) - ARPAbet to Ingglish/IPA conversion tables
+- [Spelling Evolution](spelling-evolution.md) - History of spelling changes and why
 - [Troubleshooting](troubleshooting.md) - Common issues and solutions
 
 ## API

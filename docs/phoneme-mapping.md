@@ -240,5 +240,7 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 
 ## See Also
 
+- [Spelling Evolution](spelling-evolution.md) - History of spelling changes and why
+- [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
 - [Architecture](architecture.md) - How translation works end-to-end
 - [Contributing](contributing.md) - How to add new phoneme mappings
