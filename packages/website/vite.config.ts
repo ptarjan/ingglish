@@ -30,7 +30,8 @@ function processChunks(): Plugin {
 
 export default defineConfig({
   test: {
-    exclude: ['e2e/**', 'node_modules/**'],
+    // Docs.test.ts needs generated docs, runs separately after build
+    exclude: ['e2e/**', 'node_modules/**', '**/Docs.test.ts'],
   },
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
   base: process.env.BASE_URL ?? '/',
