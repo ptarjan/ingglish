@@ -2,7 +2,7 @@
 
 This document analyzes whether the current Ingglish phoneme mappings maximize "identical words" — words where the Ingglish spelling equals the English spelling.
 
-## Executive Summary
+## Summary
 
 **Question:** Does the current mapping maximize identical words?
 
