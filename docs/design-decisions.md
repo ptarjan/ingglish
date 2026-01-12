@@ -123,14 +123,7 @@ Spellings with support from multiple languages are more defensible:
 
 R-colored vowel rules were essential to prevent words like "air" and "her" from both mapping to "er". Fixing collisions is more important than simplicity.
 
-### 4. Reversion Is Okay
-
-Some spellings went back and forth:
-- /ɔ/ (thought): aw → o → aw
-
-We weren't afraid to revert when a change didn't work out. The goal is the best final system.
-
-### 5. Avoid Texting Conventions
+### 4. Avoid Texting Conventions
 
 The [caught-cot merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) attempt ("thought" → "thot") was rejected partly because it looked like texting slang. Ingglish should look like a legitimate alternative spelling.
 
