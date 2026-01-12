@@ -145,7 +145,10 @@ jobs:
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
 
-      # Extension tests need @ingglish/core and @ingglish/dom built
+      # DOM and extension tests need @ingglish/core built
+      - name: DOM unit tests
+        run: npm run test:unit -w @ingglish/dom
+
       - name: Extension unit tests
         run: npm run test:unit -w @ingglish/extension
 
