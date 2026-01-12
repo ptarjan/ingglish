@@ -6,6 +6,9 @@ import { setupDictionary } from './test-setup';
 import * as dictModule from './dictionary';
 
 describe('async API loads only required dictionaries', () => {
+  // Pre-load dictionaries so we're only testing which ones are called, not loading speed
+  setupDictionary();
+
   // Verify each async function only loads what it needs
 
   it('translate() should not call loadReverseDictionary', async () => {
