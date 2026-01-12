@@ -89,12 +89,8 @@ jobs:
             packages/core/src/data/word-frequencies.ts
           key: dictionaries-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
 
-      # Generate dictionaries if cache missed
-      - name: Generate dictionaries
-        if: steps.dict-cache.outputs.cache-hit != 'true'
-        run: npm run update-dictionaries -w @ingglish/core
-
       # Fast build: ESM only, no DTS (TypeScript paths resolve to source)
+      # Note: build:fast includes update-dictionaries
       - name: Build core (ESM only)
         run: npm run build:fast -w @ingglish/core
 
