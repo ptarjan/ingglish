@@ -16,6 +16,8 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
 
+**[English Phonotypic Alphabet](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet) (1845)** - Isaac Pitman and Alexander John Ellis created a 40-letter alphabet. Trials in Waltham, Massachusetts (1852-1860) and Syracuse, New York (1850-1866) showed students could learn literacy faster, but elements were later absorbed into the IPA instead of gaining direct adoption.
+
 **What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
 **How Ingglish differs:** Uses only 24 standard ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
@@ -29,6 +31,22 @@ Then it collapsed. Children learned ITA, but couldn't transfer to regular Englis
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
 **How Ingglish differs:** Not positioned for initial literacy instruction. Users already know traditional spelling. Ingglish supplements rather than replaces.
+
+### Simplified Spelling Systems
+
+**[Fonetic Advocat](https://exhibits.lib.ku.edu/exhibits/show/english-language/item/7259) (1850s)** - Published in "Sinsinati" (Cincinnati) by E. Longley, director of the American Phonetic Society. Promoted the English Phonotypic Alphabet. George Bernard Shaw himself owned a copy, showing the continuity of reform interest across generations.
+
+**[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A collaboration between the Spelling Reform Association and the English Spelling Society with Swedish professor R.E. Zachrisson. Attempted to create a simplified system that preserved word recognition while improving phonetic consistency.
+
+**[Cut Spelling](https://www.spellingsociety.org/) (1992)** - Christopher Upward's system focused on *removing* unnecessary letters rather than respelling. Claimed to eliminate 50% of common spelling errors by cutting redundant letters. Example: "accommodation" → "acomodation."
+
+**[SoundSpel](https://en.wikipedia.org/wiki/SoundSpel) (1910)** - One of many systems based on Pitman and Ellis's phonogram foundations. Like Truespel and others, attempted full phonetic representation but never achieved adoption.
+
+**Chicago Tribune (1934-1975)** - The newspaper unilaterally adopted 80 reformed spellings including "tho," "thru," "agast," "burocrat," and "iland." After 40 years, they quietly abandoned the experiment.
+
+**What went wrong:** Even well-designed simplified systems failed to gain traction without institutional backing or network effects.
+
+**How Ingglish differs:** Provides instant bidirectional translation tools that eliminate the need for collective adoption.
 
 ### Political Failures
 
@@ -277,3 +295,11 @@ Historical research drawn from:
 - [Hangul - Wikipedia](https://en.wikipedia.org/wiki/Hangul)
 - [Simplified Spelling Board - Wikipedia](https://en.wikipedia.org/wiki/Simplified_Spelling_Board)
 - [English Spelling Society](https://www.spellingsociety.org/)
+- [English Phonotypic Alphabet - Wikipedia](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet)
+- [Isaac Pitman - Wikipedia](https://en.wikipedia.org/wiki/Isaac_Pitman)
+- [Unifon - Wikipedia](https://en.wikipedia.org/wiki/Unifon)
+- [SoundSpel - Wikipedia](https://en.wikipedia.org/wiki/SoundSpel)
+- [Anglic - Wikipedia](https://en.wikipedia.org/wiki/Anglic)
+- [The Fonetic Advocat - Kenneth Spencer Research Library](https://exhibits.lib.ku.edu/exhibits/show/english-language/item/7259)
+- [A Brief History of Spelling Reform - Spelling Society](https://www.spellingsociety.org/uploaded_misc/efforts-misc.pdf)
+- [A Brief History of English Spelling Reform - History Today](https://www.historytoday.com/brief-history-english-spelling-reform)
