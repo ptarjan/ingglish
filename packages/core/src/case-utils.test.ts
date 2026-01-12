@@ -196,15 +196,15 @@ describe('case-utils', () => {
     setupDictionary();
 
     it('should translate iCloud with capital at component boundary', () => {
-      // "iCloud" should become "ieKlowd" not "iEklowd"
+      // "iCloud" should become "aiKlowd" not "aIklowd"
       // The K should be capitalized because "Cloud" starts with capital C
       const result = translateWord('iCloud');
-      expect(result).toBe('ieKlowd');
+      expect(result).toBe('aiKlowd');
     });
 
     it('should translate iPhone with capital at component boundary', () => {
       const result = translateWord('iPhone');
-      expect(result).toBe('ieFohn');
+      expect(result).toBe('aiFohn');
     });
 
     it('should translate MacBook preserving both capitals', () => {
