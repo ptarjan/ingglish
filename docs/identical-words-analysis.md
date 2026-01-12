@@ -20,6 +20,8 @@ An "identical word" is one where converting English → phonemes → Ingglish pr
 
 More identical words means more natural readability for native English readers — familiar words stay familiar.
 
+However, not all identical words are equal. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions — prioritizing spellings with broad international support rather than chasing loanword matches.
+
 ## Current Mapping Performance
 
 | Metric | Value |
