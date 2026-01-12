@@ -69,15 +69,16 @@ Combined effect: 6,930 → 7,537 identical words (5.13% → 5.58%)
 
 Each change involves gaining some identical words while losing others:
 
-#### /aɪ/: "ai" → "ei" (Best ROI: +316 net)
+#### /aɪ/: "ai" → "ei" (+316 net)
 
-**Gained (352 words):** Common words with "ei" spelling
-- bernstein, brandeis, einstein, weinstein, klein, stein,stein, reich, heist, seize, feisty, height, sleight, etc.
+**Gained (352 words):** Words with "ei" spelling
+- German surnames: bernstein, einstein, weinstein, klein, reich (loanwords)
+- Native English: heist, seize, feisty, height, sleight, vein, rein
 
 **Lost (36 words):** Words with "ai" for the /aɪ/ sound
-- thai, chai, bonsai, mai, kai, samurai, shanghai, etc.
+- Asian loanwords: thai, chai, bonsai, mai, kai, samurai, shanghai
 
-**Assessment:** Excellent trade. Gains mainstream words, loses mostly loanwords and proper nouns.
+**Assessment:** Mixed. Both gains and losses are largely loanwords. The native English gains (heist, height, seize) are valuable, but many German surname matches won't feel familiar to readers anyway.
 
 #### /oʊ/: "oh" → "ow" (+137 net)
 
@@ -149,8 +150,11 @@ We verified the proposed changes don't create problematic collisions:
 
 These have excellent gain-to-loss ratios:
 
-1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), keeps familiar words
-2. **/aɪ/: "ai" → "ei"** — Large gain (+316), loses only loanwords
+1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), minimal disruption
+
+### Mixed Confidence Changes
+
+2. **/aɪ/: "ai" → "ei"** — Large gain (+316), but many gains are German loanwords (einstein, bernstein). Native English gains (heist, height, seize) are valuable. Loses Asian loanwords (thai, chai).
 
 ### Questionable Chain Improvement
 
