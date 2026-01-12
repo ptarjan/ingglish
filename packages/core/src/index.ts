@@ -12,7 +12,7 @@
  * ```
  */
 
-import { loadDictionary } from './dictionary';
+import { loadDictionary, loadReverseDictionary } from './dictionary';
 import { loadFrequencies } from './utils/frequency';
 import { translateSync, reverseTranslateSync } from './translate';
 import { type OutputFormat } from './types';
@@ -39,8 +39,8 @@ export async function reverseTranslate(
   text: string,
   format: OutputFormat = 'ingglish'
 ): Promise<string> {
-  // Load dictionary and word frequencies in parallel (frequencies needed to pick most common homophone)
-  await Promise.all([loadDictionary(), loadFrequencies()]);
+  // Load all required dictionaries in parallel
+  await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
   return reverseTranslateSync(text, format);
 }
 
