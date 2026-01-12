@@ -14,7 +14,12 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@ingglish/core": ["../core/src/index.ts"],
+      "@ingglish/core/internal": ["../core/src/internal.ts"],
+      "@ingglish/dom": ["../dom/src/index.ts"]
+    }
   },
   "include": ["src", "e2e"],
   "references": [{ "path": "./tsconfig.node.json" }]

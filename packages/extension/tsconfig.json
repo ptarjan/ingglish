@@ -9,7 +9,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@ingglish/core": ["../core/src/index.ts"],
+      "@ingglish/core/internal": ["../core/src/internal.ts"],
+      "@ingglish/dom": ["../dom/src/index.ts"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

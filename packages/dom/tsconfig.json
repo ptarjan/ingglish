@@ -13,7 +13,11 @@
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@ingglish/core": ["../core/src/index.ts"],
+      "@ingglish/core/internal": ["../core/src/internal.ts"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
