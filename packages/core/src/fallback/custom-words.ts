@@ -27,14 +27,16 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
 /**
  * Checks if a word has a custom pronunciation.
+ * @param word The word to look up (should be lowercase for best performance)
  */
 export function hasCustomPronunciation(word: string): boolean {
-  return CUSTOM_PRONUNCIATIONS[word.toLowerCase()] !== undefined;
+  return CUSTOM_PRONUNCIATIONS[word] !== undefined;
 }
 
 /**
  * Gets custom pronunciation for a word.
+ * @param word The word to look up (should be lowercase for best performance)
  */
 export function getCustomPronunciation(word: string): string[] | undefined {
-  return CUSTOM_PRONUNCIATIONS[word.toLowerCase()];
+  return CUSTOM_PRONUNCIATIONS[word];
 }
