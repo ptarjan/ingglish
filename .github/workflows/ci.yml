@@ -36,8 +36,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Unit tests
-        run: npm run test:unit --workspaces --if-present
+      # Only core and website - extension needs build artifacts
+      - name: Unit tests (core + website)
+        run: npm run test:unit -w @ingglish/core -w @ingglish/website
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:
@@ -143,6 +144,10 @@ jobs:
       # Docs link validation needs generated docs (excluded from regular unit tests)
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
+
+      # Extension tests need @ingglish/core and @ingglish/dom built
+      - name: Extension unit tests
+        run: npm run test:unit -w @ingglish/extension
 
   # Browser tests need the built website
   test-e2e:
