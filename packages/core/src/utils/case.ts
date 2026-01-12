@@ -13,48 +13,67 @@ export type CasePattern = 'lower' | 'upper' | 'capitalized' | 'mixed';
 
 /**
  * Detects the case pattern of a word.
+ * Optimized for the common case (lowercase) by checking it first.
  */
 export function detectCasePattern(word: string): CasePattern {
   if (word.length === 0) {
     return 'lower';
   }
 
-  // Single characters: check if uppercase
-  // Exception: "I" is always capitalized in English by convention, but it's just
-  // a regular pronoun, not special - treat it as lowercase for translation
+  // Fast path: check first character to quickly identify lowercase words
+  // Most English text is lowercase, so this avoids expensive string operations
+  const firstChar = word.charCodeAt(0);
+  const isFirstUpper = firstChar >= 65 && firstChar <= 90; // A-Z
+
+  // All lowercase - most common case
+  if (!isFirstUpper && word === word.toLowerCase()) {
+    return 'lower';
+  }
+
+  // Single characters
   if (word.length === 1) {
+    // "I" is treated as lowercase for translation purposes
     if (word === 'I') {
       return 'lower';
     }
-    return word === word.toUpperCase() && word !== word.toLowerCase() ? 'capitalized' : 'lower';
+    return isFirstUpper ? 'capitalized' : 'lower';
   }
 
-  // All uppercase words
+  // Check if all uppercase
   if (word === word.toUpperCase()) {
-    // Short all-caps words (2 letters like "UI", "AI") should be title-cased, not ALL CAPS
-    // These are typically initialisms (spelled out letter-by-letter), not acronyms
+    // Short all-caps words (2 letters like "UI", "AI") should be title-cased
+    // These are typically initialisms (spelled out letter-by-letter)
     if (word.length <= 2) {
       return 'capitalized';
     }
     return 'upper';
   }
 
-  if (/^[A-Z]/.test(word) && word.slice(1) === word.slice(1).toLowerCase()) {
+  // Capitalized: first uppercase, rest lowercase
+  if (isFirstUpper && word.slice(1) === word.slice(1).toLowerCase()) {
     return 'capitalized';
   }
 
-  // Check for mixed case (like "GitHub", "iPhone", "McDonald")
-  if (word !== word.toLowerCase()) {
-    return 'mixed';
-  }
-
-  return 'lower';
+  // Mixed case (like "GitHub", "iPhone", "McDonald")
+  return 'mixed';
 }
 
 /**
  * Applies a case pattern to a word, optionally using original word for mixed case.
+ * Optimized: lowercase case returns word directly if already lowercase.
  */
 export function applyCasePattern(word: string, pattern: CasePattern, original?: string): string {
+  // Fast path for lowercase (most common case)
+  // Check if word is already lowercase to avoid creating new string
+  if (pattern === 'lower') {
+    // Quick check: if first char is lowercase and word equals lowercase, return as-is
+    const firstChar = word.charCodeAt(0);
+    if (firstChar >= 97 && firstChar <= 122 && word === word.toLowerCase()) {
+      return word;
+    }
+    return word.toLowerCase();
+  }
+
   switch (pattern) {
     case 'upper':
       return word.toUpperCase();
@@ -65,7 +84,6 @@ export function applyCasePattern(word: string, pattern: CasePattern, original?: 
         return applyMixedCase(word, original);
       }
       return word.toLowerCase();
-    case 'lower':
     default:
       return word.toLowerCase();
   }
