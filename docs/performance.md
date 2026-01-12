@@ -12,6 +12,7 @@ This guide covers profiling, benchmarking, and optimization for Ingglish.
 | `profile.ts` | Quick translation profiling |
 | `profile-translate.ts` | translateSync performance analysis |
 | `profile-convert.ts` | Phoneme conversion performance |
+| `cpu-profile.ts` | V8 CPU profiler for flame graphs |
 
 ### DOM Library (`packages/dom/scripts/`)
 
@@ -22,6 +23,7 @@ This guide covers profiling, benchmarking, and optimization for Ingglish.
 | `profile-process-node.ts` | Text node processing analysis |
 | `profile-dom.ts` | General DOM translation profiling |
 | `profile-real-html.ts` | Article-style HTML profiling |
+| `profile-tooltips.ts` | Tooltip overhead comparison |
 
 ## Running Benchmarks
 
