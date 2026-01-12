@@ -45,12 +45,6 @@ const docs: DocEntry[] = [
     filename: 'phoneme-mapping.md',
   },
   {
-    id: 'spelling-evolution',
-    title: 'Spelling Evolution',
-    content: spellingEvolution,
-    filename: 'spelling-evolution.md',
-  },
-  {
     id: 'orthography-comparison',
     title: 'Orthography Comparison',
     content: orthographyComparison,
@@ -61,6 +55,12 @@ const docs: DocEntry[] = [
     title: 'Spelling Reform History',
     content: spellingReformComparison,
     filename: 'spelling-reform-comparison.md',
+  },
+  {
+    id: 'spelling-evolution',
+    title: 'Spelling Evolution',
+    content: spellingEvolution,
+    filename: 'spelling-evolution.md',
   },
   {
     id: 'architecture',
