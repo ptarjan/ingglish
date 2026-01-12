@@ -188,16 +188,16 @@ For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping
 | Japanese (Romaji) | o, ō | ohayō (good morning) |
 
 **Notes:**
-- We needed to distinguish from 'ow' (/aʊ/ as in "cow")
+- We needed to distinguish from 'ou' (/aʊ/ as in "cow")
 - 'oh' is less common but unambiguous
 - Many languages (Spanish, Swahili, Turkish) have pure /o/ without glide
 - English "oh!" already uses this spelling for the sound
 
-### The 'OW' Diphthong (/aʊ/ as in "cow")
+### The 'OU' Diphthong (/aʊ/ as in "cow")
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ow** | cow → **kow** |
+| **Ingglish** | **ou** | cow → **kou** |
 | English | ow, ou | cow, out |
 | German | au | Haus |
 | Dutch | au, ou | blauw, oud |
@@ -205,10 +205,10 @@ For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping
 | Portuguese | au | mau (bad) |
 
 **Notes:**
-- Matches English: "cow", "now", "how", "wow"
-- German/Dutch/Portuguese use 'au'
-- Pinyin uses 'ao'—interesting reversal
-- We chose 'ow' because it's more familiar to English readers
+- **Some words become identical**: "out" → "out", "loud" → "loud", "sound" → "sound"
+- Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
+- German/Portuguese use 'au'; Pinyin uses 'ao'
+- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
 
 ### The 'OI' Diphthong (/ɔɪ/ as in "boy")
 
@@ -332,13 +332,13 @@ This is distinctly American English - most languages don't have these:
 - **ee/uu** for long vowels (Finnish-style doubling)
 - **ai** for /aɪ/ (Pinyin, Italian, Vietnamese, IPA)
 - **oi** for /ɔɪ/ (universal)
-- **ow** for /aʊ/ (English)
+- **ou** for /aʊ/ (English, Dutch)
 
 ### Solving Problems English Never Did
 - **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
 - **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
 - **oo/uu** for /ʊ/ vs /uː/ - "book" and "too" sound different. Now they look different: book vs tuu.
-- **oh** for /oʊ/ - Distinguishes "go" from "cow" without ambiguity.
+- **oh** for /oʊ/ - Distinguishes "go" (goh) from "cow" (kou) without ambiguity.
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
@@ -410,8 +410,8 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
 | ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
 | ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
-| ow | /aʊ/ | **Regional** | English convention; German/Dutch use 'au' more commonly |
-| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ow' |
+| ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
+| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
 | oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
 | aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
 
@@ -435,7 +435,7 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 4. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
 5. **'oo' for /ʊ/ matches English**: words like "book", "good", "look" already use this
 6. **'arr' for /æɹ/ matches English**: words like "carrot", "barrel", "arrow" already use this
-7. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ow' (/aʊ/)
+7. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ou' (/aʊ/)
 
 ## Phonemic Orthography Success Stories
 
@@ -511,11 +511,11 @@ This explains why English spelling is so difficult: we're mapping ~15 vowel soun
 
 1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach when single letters aren't available
 2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern for long vowels; oo matches English "book"
-3. **Diphthong spellings** (ai, ay, ow, oi, oh): Follow existing patterns (ai from IPA/Pinyin, others from English)
+3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns (ai from IPA/Pinyin, others from English)
 
 ### Why English Is Harder Than Other Languages
 
-1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ow).
+1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou).
 2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
 3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
 

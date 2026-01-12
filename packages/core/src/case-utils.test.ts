@@ -236,11 +236,11 @@ describe('case-utils', () => {
     setupDictionary();
 
     it('should translate iCloud with capital at component boundary', () => {
-      // "iCloud" should become "aiKlowd" not "aIklowd"
+      // "iCloud" should become "aiKloud" not "aIkloud"
       // The K should be capitalized because "Cloud" starts with capital C
       // (AY vowel maps to 'ai')
       const result = translateWord('iCloud');
-      expect(result).toBe('aiKlowd');
+      expect(result).toBe('aiKloud');
     });
 
     it('should translate iPhone with capital at component boundary', () => {

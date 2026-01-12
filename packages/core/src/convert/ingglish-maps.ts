@@ -27,7 +27,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   UW: 'uu', // too, blue, food
 
   // Diphthongs
-  AW: 'ow', // cow, how, out
+  AW: 'ou', // cow, how, out
   AY: 'ai', // my, eye, time
   EY: 'ay', // say, day, make
   OW: 'oh', // go, show, coat

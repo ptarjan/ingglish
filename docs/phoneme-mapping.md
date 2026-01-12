@@ -30,7 +30,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
 | AH | u | ʌ/ə | b**u**t, c**u**p | Mid central vowel (schwa when unstressed) |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
-| AW | ow | aʊ | c**ow**, h**ow** | Diphthong |
+| AW | ou | aʊ | c**ow**, h**ow** | Diphthong |
 | AY | ai | aɪ | m**y**, t**i**me | Diphthong |
 | EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
 | ER | er | ɝ/ɚ | b**ir**d, h**er** | Rhotacized mid central |
@@ -152,7 +152,7 @@ The schwa (ə) is the most common vowel in unstressed syllables. In ARPAbet, it'
 Each diphthong gets a consistent spelling:
 - **ai** = AY (m**y**) - /aɪ/
 - **ay** = EY (s**ay**) - /eɪ/
-- **ow** = AW (c**ow**) - /aʊ/
+- **ou** = AW (c**ow**) - /aʊ/
 - **oh** = OW (g**o**) - /oʊ/
 - **oi** = OY (b**oy**) - /ɔɪ/
 
@@ -163,7 +163,7 @@ The diphthong spellings were among the hardest decisions in Ingglish's design. U
 | Sound | Ingglish | Alternative | Who Uses Ingglish's Choice | Who Uses Alternative |
 |-------|----------|-------------|---------------------------|---------------------|
 | /aɪ/ (my) | **ai** | ie | Pinyin, Italian, Vietnamese, IPA | English (tie, pie, die) |
-| /aʊ/ (cow) | **ow** | au | English (cow, now, how) | German, Dutch, Portuguese, Spanish, IPA |
+| /aʊ/ (cow) | **ou** | au, ow | English (out, loud, sound), Dutch (oud) | German, Portuguese use 'au'; English also uses 'ow' |
 | /eɪ/ (say) | **ay** | ei | English (say, day, play) | Pinyin, Portuguese, IPA |
 | /oʊ/ (go) | **oh** | ou | English (oh!) | Pinyin |
 
@@ -174,9 +174,15 @@ The diphthong spellings were among the hardest decisions in Ingglish's design. U
 3. **Phonetic transparency**: You can "see" the glide from /a/ to /i/
 4. **Availability**: English 'ai' words (rain, paint) use /eɪ/, so 'ai' is free for /aɪ/
 
-**Why we kept English conventions for the others:**
+**Why we chose 'ou' for /aʊ/:**
 
-1. **Existing patterns**: Words like "cow," "say," and "oh" already use ow/ay/oh
+1. **Identical spellings**: Words like "out", "loud", "sound" remain unchanged in Ingglish
+2. **International precedent**: Dutch uses 'ou' for this sound (oud = old)
+3. **Trade-off accepted**: "cow" → "kou" looks less familiar, but having common words like "out" and "loud" be identical to English is a bigger win
+
+**Why we kept English conventions for ay/oh:**
+
+1. **Existing patterns**: Words like "say" and "oh" already use ay/oh
 2. **Bidirectional readability**: Ingglish text should feel connected to traditional English
 3. **Target audience**: Many users are English speakers wanting phonetic spelling
 
@@ -185,7 +191,8 @@ The diphthong spellings were among the hardest decisions in Ingglish's design. U
 | my time | mai taim |
 | say day | say day |
 | go show | goh shoh |
-| cow how | kow how |
+| out loud | out loud |
+| cow how | kou hou |
 
 ## Example Translations
 
