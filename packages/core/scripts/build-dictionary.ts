@@ -95,9 +95,13 @@ async function fileExists(filepath: string): Promise<boolean> {
 async function main(): Promise<void> {
   const forceUpdate = process.argv.includes('--force');
 
-  // Skip if dictionary already exists (unless --force)
-  if (!forceUpdate && (await fileExists(OUTPUT_PATH))) {
-    console.log('Dictionary already exists, skipping download (use --force to re-download)');
+  // Check if all generated files exist
+  const forwardExists = await fileExists(OUTPUT_PATH);
+  const reverseExists = await fileExists(REVERSE_OUTPUT_PATH);
+
+  // Skip if all dictionaries already exist (unless --force)
+  if (!forceUpdate && forwardExists && reverseExists) {
+    console.log('Dictionaries already exist, skipping download (use --force to re-download)');
     return;
   }
 
