@@ -80,6 +80,13 @@ describe('initialisms', () => {
       expect(result).toBe('ETE');
     });
 
+    it('should use full digraph for words starting with sh, ch, th, etc.', () => {
+      // SSH = Secure Shell
+      // secure → sikyoor (s), shell → shel (sh, not just s)
+      const result = translateInitialism('SSH', 'ingglish');
+      expect(result).toBe('SSH');
+    });
+
     it('should return null for unknown words', () => {
       const result = translateInitialism('UNKNOWN', 'ingglish');
       expect(result).toBe(null);
