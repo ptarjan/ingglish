@@ -2,7 +2,7 @@
 
 Every Ingglish spelling has a reason. This document shows that our choices aren't arbitrary—they're grounded in how other languages solve the same problems.
 
-For the design philosophy behind Ingglish, see [Spelling Reform History](spelling-reform-comparison.md).
+For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping.md).
 
 ## Vowels
 
@@ -12,9 +12,9 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|----------|---------|
 | **Ingglish** | **a** | cat → **kat** |
 | English | a | cat, hat |
-| Spanish | a | gato (closer to /a/) |
-| Italian | a | gatto |
-| German | ä | Männer (similar sound) |
+| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
+| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
+| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (similar sound) |
 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
 | [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
 | [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language#Writing_system) | a | sama (same) |
@@ -33,7 +33,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | Italian | e | bello |
 | Swahili | e | embe (mango) |
 | Turkish | e | ev (house) |
-| Vietnamese | e | xe (vehicle) |
+| [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_alphabet) | e | xe (vehicle) |
 | [Pinyin](https://en.wikipedia.org/wiki/Pinyin) | e | hē (drink) |
 
 **Notes:**
@@ -149,7 +149,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | **Ingglish** | **ie** | my → **mie** |
 | English | ie, i, y | tie, pie, my |
 | [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
-| Dutch | ij, ei | mij, klein |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij, klein |
 | Italian | ai | mai |
 | Pinyin | ai | bái (white) |
 | Vietnamese | ai | hai (two) |
@@ -167,7 +167,7 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | **Ingglish** | **ay** | say → **say** |
 | English | ay, ai, a-e | say, rain, make |
 | Spanish | ey | rey |
-| Portuguese | ei | lei |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei |
 | Pinyin | ei | bēi (cup) |
 | Indonesian | e | sate (no true diphthong) |
 
@@ -237,10 +237,10 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 | English | sh | ship |
 | [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff |
 | [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła |
-| Hungarian | s | só (salt) |
-| Czech/Slovak | š | škola |
+| [Hungarian](https://en.wikipedia.org/wiki/Hungarian_orthography) | s | só (salt) |
+| [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola |
 | Italian | sc (before e/i) | pesce |
-| French | ch | chat |
+| [French](https://en.wikipedia.org/wiki/French_orthography) | ch | chat |
 | Turkish | ş | şeker |
 
 **Notes:**
@@ -270,11 +270,9 @@ For the design philosophy behind Ingglish, see [Spelling Reform History](spellin
 |----------|---------------|------------|
 | **Ingglish** | **th** | **dh** |
 | English | th | th (ambiguous!) |
-| [Icelandic](https://en.wikipedia.org/wiki/Voiced_dental_fricative) | þ (thorn) | ð (eth) |
-| [Greek](https://en.wikipedia.org/wiki/Voiceless_dental_fricative) | θ (theta) | δ (delta) |
-| Welsh | th | dd |
+| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | þ (thorn) | ð (eth) |
+| [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | th | dd |
 | Spanish (Castilian) | c/z | — |
-| Arabic | ث | ذ |
 
 **Notes:**
 - [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19) - they're genuinely rare
@@ -337,7 +335,7 @@ This is distinctly American English - most languages don't have these:
 - **ow** for /aʊ/ (English)
 
 ### Solving Problems English Never Did
-- **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. Albanian already uses 'dh' officially.
+- **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
 - **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
 - **oo/uu** for /ʊ/ vs /uː/ - "book" and "too" sound different. Now they look different: book vs tuu.
 - **oh** for /oʊ/ - Distinguishes "go" from "cow" without ambiguity.
