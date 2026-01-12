@@ -79,12 +79,52 @@ Total                    62.1ms
 
 ## Performance Characteristics
 
+### Summary
+
+| Path | Complexity | Notes |
+|------|------------|-------|
+| Forward (dictionary hit) | O(p) | p = phoneme count |
+| Forward (unknown word) | O(n) | n = word length |
+| Reverse (first lookup) | O(n + m log m) | m = homophones (typically 1-5) |
+| Reverse (cached) | O(n) | Lazy sorting, paid once per phoneme key |
+| Full text | O(w × n) | w = word count |
+
+All paths are **linear** — no quadratic or exponential complexity.
+
+### Forward Translation (`translateWord`)
+
+| Operation | Complexity | Notes |
+|-----------|------------|-------|
+| Dictionary lookup | O(1) | Hash table with split cache |
+| ARPAbet→Ingglish | O(p) | p = phoneme count, single pass |
+| CamelCase split | O(n) | n = word length, single pass |
+| Case detection | O(n) | Single pass through word |
+
+#### Fallback chain for unknown words
+
+| Strategy | Complexity | Notes |
+|----------|------------|-------|
+| Custom pronunciations | O(1) | Hash table lookup |
+| Initialism check | O(1) | Hash table + O(e) for expansion |
+| Compound splitting | O(n) | n-2 split points × O(1) lookup each |
+| Stemming | O(1) | ~20 suffixes × ~4 variants = constant |
+| G2P rules | O(n) | n chars × ~40 rules (constant) |
+
+### Reverse Translation (`reverseTranslateWord`)
+
+| Operation | Complexity | Notes |
+|-----------|------------|-------|
+| Ingglish→ARPAbet | O(n) | n = word length |
+| Phoneme key lookup | O(1) | Hash table |
+| Homophone sort (first access) | O(m log m) | m = homophones, lazy sorted |
+| Homophone sort (cached) | O(1) | Already sorted |
+
+### Infrastructure
+
 | Operation | Complexity | Notes |
 |-----------|------------|-------|
 | Dictionary loading | O(n) | ~3MB gzipped, loaded once and cached |
-| Word lookup | O(1) | Hash map lookup |
-| Translation | O(n) | n = word count |
-| Reverse translation | O(1) | Phoneme key lookup after initial build |
+| Reverse dict build | O(n) | Built once on first reverse lookup |
 | DOM traversal | O(n) | TreeWalker, n = nodes |
 
 ## Optimization Guidelines
