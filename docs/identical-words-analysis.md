@@ -15,8 +15,8 @@ However, we found **5 safe improvements** that add **+564 identical words** with
 ## Background
 
 An "identical word" is one where converting English → phonemes → Ingglish produces the original English spelling. For example:
-- "bit" → /B IH T/ → "bit" ✓ (identical)
-- "boat" → /B OW T/ → "boht" ✗ (changed)
+- "bit" → /bɪt/ → "bit" ✓ (identical)
+- "boat" → /boʊt/ → "boht" ✗ (changed)
 
 More identical words mean less visual disruption when reading Ingglish text.
 
@@ -34,10 +34,10 @@ We tested mappings that maximize identical words:
 
 | Change | Identical Gain | Problem |
 |--------|---------------|---------|
-| OW: oh → o | +1,200 | "go" and "got" both become "go" |
-| AH: u → a | +782 | "cup" and "cap" both become "cap" |
-| Z: z → s | +755 | "prize" becomes "prise" |
-| AO: aw → o | +532 | "saw" and "so" both become "so" |
+| /oʊ/: oh → o | +1,200 | "go" and "got" both become "go" |
+| /ʌ/: u → a | +782 | "cup" and "cap" both become "cap" |
+| /z/: z → s | +755 | "prize" becomes "prise" |
+| /ɔ/: aw → o | +532 | "saw" and "so" both become "so" |
 
 These changes create **collisions** — different words that get the same spelling. This destroys meaning and makes text ambiguous.
 
@@ -51,11 +51,11 @@ We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combination
 
 | Phoneme | Current | Proposed | Gained | Lost | Net Gain |
 |---------|---------|----------|--------|------|----------|
-| AY | ai | ei | +352 | -36 | **+316** |
-| OW | oh | ow | +217 | -80 | **+137** |
-| AO | aw | au | +203 | -140 | **+63** |
-| UW | uu | eu | +43 | -2 | **+41** |
-| OY | oi | oy | +118 | -108 | **+10** |
+| /aɪ/ | ai | ei | +352 | -36 | **+316** |
+| /oʊ/ | oh | ow | +217 | -80 | **+137** |
+| /ɔ/ | aw | au | +203 | -140 | **+63** |
+| /uː/ | uu | eu | +43 | -2 | **+41** |
+| /ɔɪ/ | oi | oy | +118 | -108 | **+10** |
 | **Total** | | | | | **+564** |
 
 Combined effect: 6,930 → 7,494 identical words (5.13% → 5.54%)
@@ -64,17 +64,17 @@ Combined effect: 6,930 → 7,494 identical words (5.13% → 5.54%)
 
 Each change involves gaining some identical words while losing others:
 
-#### AY: "ai" → "ei" (Best ROI: +316 net)
+#### /aɪ/: "ai" → "ei" (Best ROI: +316 net)
 
 **Gained (352 words):** Common words with "ei" spelling
 - bernstein, brandeis, einstein, weinstein, klein, stein,stein, reich, heist, seize, feisty, height, sleight, etc.
 
-**Lost (36 words):** Words with "ai" for the /AY/ sound
+**Lost (36 words):** Words with "ai" for the /aɪ/ sound
 - thai, chai, bonsai, mai, kai, samurai, shanghai, etc.
 
 **Assessment:** Excellent trade. Gains mainstream words, loses mostly loanwords and proper nouns.
 
-#### OW: "oh" → "ow" (+137 net)
+#### /oʊ/: "oh" → "ow" (+137 net)
 
 **Gained (217 words):** Words with "ow" spelling
 - blow, flow, glow, grow, know, show, slow, snow, throw, below, follow, tomorrow, etc.
@@ -84,7 +84,7 @@ Each change involves gaining some identical words while losing others:
 
 **Assessment:** Good trade. Gains common English words, loses mostly German surnames.
 
-#### AO: "aw" → "au" (+63 net)
+#### /ɔ/: "aw" → "au" (+63 net)
 
 **Gained (203 words):** Words with "au" spelling
 - audit, august, author, autumn, because, caught, daughter, fault, haul, etc.
@@ -94,7 +94,7 @@ Each change involves gaining some identical words while losing others:
 
 **Assessment:** Mixed trade. Both sets contain common words. The "au" words are slightly more frequent in formal text.
 
-#### UW: "uu" → "eu" (+41 net, Best Efficiency)
+#### /uː/: "uu" → "eu" (+41 net, Best Efficiency)
 
 **Gained (43 words):** Words with "eu" spelling
 - deuce, feud, neutral, neuron, pneumonia, pseudo, therapeutic, etc.
@@ -104,7 +104,7 @@ Each change involves gaining some identical words while losing others:
 
 **Assessment:** Excellent efficiency. Almost pure gain with minimal loss.
 
-#### OY: "oi" → "oy" (+10 net)
+#### /ɔɪ/: "oi" → "oy" (+10 net)
 
 **Gained (118 words):** Words with "oy" spelling
 - boy, joy, toy, enjoy, destroy, employ, royal, loyal, etc.
@@ -120,9 +120,9 @@ These changes improved identical count but were rejected:
 
 | Change | Net Gain | Reason Rejected |
 |--------|----------|-----------------|
-| OW: oh → oa | +70 | Lower gain than "ow" for same phoneme |
-| OW: oh → oe | +54 | Lower gain than "ow" for same phoneme |
-| AY: ai → ie | +5 | Lower gain than "ei" for same phoneme |
+| /oʊ/: oh → oa | +70 | Lower gain than "ow" for same phoneme |
+| /oʊ/: oh → oe | +54 | Lower gain than "ow" for same phoneme |
+| /aɪ/: ai → ie | +5 | Lower gain than "ei" for same phoneme |
 
 ## Collision Check
 
@@ -144,19 +144,19 @@ We verified the proposed changes don't create problematic collisions:
 
 These have excellent gain-to-loss ratios:
 
-1. **UW: "uu" → "eu"** — Nearly pure gain (+41), minimal disruption
-2. **AY: "ai" → "ei"** — Large gain (+316), loses only loanwords
+1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), minimal disruption
+2. **/aɪ/: "ai" → "ei"** — Large gain (+316), loses only loanwords
 
 ### Moderate Confidence Changes
 
 These trade common words for other common words:
 
-3. **OW: "oh" → "ow"** — Gains everyday words (+137), loses German names
-4. **AO: "aw" → "au"** — Trade-off between "au" and "aw" words (+63)
+3. **/oʊ/: "oh" → "ow"** — Gains everyday words (+137), loses German names
+4. **/ɔ/: "aw" → "au"** — Trade-off between "au" and "aw" words (+63)
 
 ### Low Confidence Change
 
-5. **OY: "oi" → "oy"** — Nearly breaks even (+10), may not be worth the churn
+5. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), may not be worth the churn
 
 ## Methodology
 
