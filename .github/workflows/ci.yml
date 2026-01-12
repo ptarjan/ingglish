@@ -88,8 +88,15 @@ jobs:
             packages/core/src/data/word-frequencies.ts
           key: dictionaries-v2-${{ hashFiles('packages/core/scripts/*.ts', 'packages/core/package.json') }}
 
-      - name: Build
-        run: npm run build
+      # Profile build steps individually
+      - name: Build core (includes dictionary generation)
+        run: npm run build -w @ingglish/core
+
+      - name: Generate docs
+        run: npm run docs
+
+      - name: Build other packages
+        run: npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
