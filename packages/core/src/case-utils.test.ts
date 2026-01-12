@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { detectCasePattern, applyCasePattern, splitCamelCase } from './utils/case';
 import { translateWord } from './translate/forward';
 import { setupDictionary } from './test-setup';
@@ -258,6 +258,72 @@ describe('case-utils', () => {
       // Unknown words should also preserve camelCase boundaries
       const result = translateWord('fooBar');
       expect(result).toBe('fuuBar');
+    });
+  });
+
+  /**
+   * Performance regression tests
+   * These tests verify that the performance optimizations remain in place:
+   * - detectCasePattern uses charCode fast path for lowercase detection
+   * - applyCasePattern returns same string reference for already-lowercase words
+   */
+  describe('performance optimizations', () => {
+    it('detectCasePattern should use fast path for lowercase words (charCode check)', () => {
+      // Spy on String.prototype.toLowerCase to count calls
+      const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
+
+      // For a lowercase word, detectCasePattern should only call toLowerCase once
+      // (to verify the word equals its lowercase form)
+      toLowerCaseSpy.mockClear();
+      detectCasePattern('hello');
+      // Fast path: charCode check for first char + one toLowerCase comparison
+      expect(toLowerCaseSpy).toHaveBeenCalledTimes(1);
+
+      // For a capitalized word like "Hello", it needs toLowerCase for slice(1) check
+      toLowerCaseSpy.mockClear();
+      detectCasePattern('Hello');
+      // Capitalized path: toLowerCase called for slice(1) comparison
+      expect(toLowerCaseSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+
+      toLowerCaseSpy.mockRestore();
+    });
+
+    it('applyCasePattern should return same string reference for already-lowercase input', () => {
+      // Performance optimization: if word is already lowercase, return it without creating new string
+      const lowercaseWord = 'hello';
+      const result = applyCasePattern(lowercaseWord, 'lower');
+
+      // Should return the exact same string reference, not a new string
+      // This avoids unnecessary string allocation
+      expect(result).toBe(lowercaseWord);
+      expect(Object.is(result, lowercaseWord)).toBe(true);
+    });
+
+    it('applyCasePattern should create new string only when case change is needed', () => {
+      const mixedCaseWord = 'Hello';
+      const result = applyCasePattern(mixedCaseWord, 'lower');
+
+      // Should return a different string since conversion was needed
+      expect(result).toBe('hello');
+      expect(Object.is(result, mixedCaseWord)).toBe(false);
+    });
+
+    it('detectCasePattern should handle many lowercase words efficiently', () => {
+      // This test ensures the fast path works for typical text (mostly lowercase)
+      const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
+
+      const lowercaseWords = ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'lazy', 'dog'];
+
+      toLowerCaseSpy.mockClear();
+      for (const word of lowercaseWords) {
+        expect(detectCasePattern(word)).toBe('lower');
+      }
+
+      // Each lowercase word should only need one toLowerCase call (the comparison)
+      // Fast path avoids expensive toUpperCase checks for common case
+      expect(toLowerCaseSpy).toHaveBeenCalledTimes(lowercaseWords.length);
+
+      toLowerCaseSpy.mockRestore();
     });
   });
 });

@@ -564,4 +564,134 @@ describe('dom-translator', () => {
       expect(document.body.textContent).toBe(originalText);
     });
   });
+
+  /**
+   * Performance regression tests for tooltip fragment creation
+   * These tests verify that performance optimizations remain in place:
+   * - Uses cloneNode instead of createElement for word spans (faster)
+   * - Batches adjacent non-word tokens into single text nodes (fewer DOM nodes)
+   */
+  describe('tooltip fragment performance optimizations', () => {
+    it('should use cloneNode for word spans instead of createElement', async () => {
+      // Spy on document.createElement and Node.prototype.cloneNode
+      const createElementSpy = vi.spyOn(document, 'createElement');
+      const cloneNodeSpy = vi.spyOn(Node.prototype, 'cloneNode');
+
+      document.body.innerHTML = '<p>Hello world test</p>';
+
+      // Clear spies before translation
+      createElementSpy.mockClear();
+      cloneNodeSpy.mockClear();
+
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'huloh', world: 'werld', test: 'tust' },
+        { showTooltips: true }
+      );
+
+      // Should use cloneNode for creating word spans (3 words = 3 cloneNode calls)
+      expect(cloneNodeSpy.mock.calls.length).toBeGreaterThanOrEqual(3);
+
+      // createElement should only be called once for the template span (or for fragment)
+      // Not once per word - that would be the unoptimized path
+      const spanCreateCalls = createElementSpy.mock.calls.filter((call) => call[0] === 'span');
+      expect(spanCreateCalls.length).toBeLessThanOrEqual(1);
+
+      createElementSpy.mockRestore();
+      cloneNodeSpy.mockRestore();
+    });
+
+    it('should batch adjacent non-word tokens into single text nodes', async () => {
+      // Text with punctuation: "Hello, world! How are you?"
+      // Without batching: 10+ nodes (each punctuation/space separate)
+      // With batching: fewer nodes (adjacent non-words combined)
+      document.body.innerHTML = '<p>Hello, world! How are you?</p>';
+
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'huloh', world: 'werld', how: 'how', are: 'ar', you: 'yuu' },
+        { showTooltips: true }
+      );
+
+      const p = document.querySelector('p');
+      if (p === null) {
+        throw new Error('Expected p element');
+      }
+
+      // Count child nodes in the paragraph
+      // With batching: 5 word spans + text nodes for punctuation groups
+      // ", " and "! " and "?" should be batched with adjacent whitespace
+      const childCount = p.childNodes.length;
+
+      // Without batching we'd have ~10+ nodes (each token separate)
+      // With batching we should have fewer (spans + batched text nodes)
+      // Expected: 5 spans + ~3 text nodes for ", ", "! ", " ", "?"
+      expect(childCount).toBeLessThanOrEqual(9);
+
+      // Verify the optimization by checking text node contents
+      // Adjacent punctuation+space should be combined
+      const textNodes = Array.from(p.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE);
+
+      // Check that some text nodes contain multiple characters (batched)
+      const hasBatchedNodes = textNodes.some((node) => (node.textContent?.length ?? 0) > 1);
+      expect(hasBatchedNodes).toBe(true);
+    });
+
+    it('should create minimal DOM nodes for text with many punctuation marks', async () => {
+      // Worst case: many punctuation marks
+      document.body.innerHTML = '<p>A... B!!! C??? D...</p>';
+
+      await applyTranslationsMap(
+        document.body,
+        { a: 'aa', b: 'bb', c: 'cc', d: 'dd' },
+        { showTooltips: true }
+      );
+
+      const p = document.querySelector('p');
+      if (p === null) {
+        throw new Error('Expected p element');
+      }
+
+      // 4 word spans + text nodes for punctuation groups
+      // With batching: "... ", "!!! ", "??? ", "..." are combined
+      const wordSpans = p.querySelectorAll('.ingglish-word');
+      expect(wordSpans.length).toBe(4);
+
+      // Total nodes should be much less than 16 (4 letters + 12 punctuation chars)
+      expect(p.childNodes.length).toBeLessThanOrEqual(8);
+    });
+
+    it('should reuse template span across multiple translations', async () => {
+      const createElementSpy = vi.spyOn(document, 'createElement');
+
+      // First translation
+      document.body.innerHTML = '<p>Hello world</p>';
+      createElementSpy.mockClear();
+
+      await applyTranslationsMap(
+        document.body,
+        { hello: 'huloh', world: 'werld' },
+        { showTooltips: true }
+      );
+
+      // Second translation - template should be reused
+      document.body.innerHTML = '<p>Test case here</p>';
+
+      await applyTranslationsMap(
+        document.body,
+        { test: 'tust', case: 'kais', here: 'hir' },
+        { showTooltips: true }
+      );
+
+      const totalSpanCalls = createElementSpy.mock.calls.filter(
+        (call) => call[0] === 'span'
+      ).length;
+
+      // Template span should only be created once total (or zero if already cached)
+      // Not once per word in each translation
+      expect(totalSpanCalls).toBeLessThanOrEqual(1);
+
+      createElementSpy.mockRestore();
+    });
+  });
 });
