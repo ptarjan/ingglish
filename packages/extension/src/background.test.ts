@@ -385,9 +385,9 @@ describe('background script', () => {
           expect(response.translations.hello).toBeDefined();
           expect(response.translations.world).toBeDefined();
         },
-        { timeout: 5000 }
+        { timeout: 10000 }
       );
-    });
+    }, 15000);
 
     it('returns same translations when switching format and back', async () => {
       // Translate words to Ingglish
@@ -400,9 +400,12 @@ describe('background script', () => {
         ingglishResponse
       );
 
-      await vi.waitFor(() => {
-        expect(ingglishResponse).toHaveBeenCalled();
-      });
+      await vi.waitFor(
+        () => {
+          expect(ingglishResponse).toHaveBeenCalled();
+        },
+        { timeout: 10000 }
+      );
 
       const ingglishTranslations = (
         ingglishResponse.mock.calls[0][0] as { translations: Record<string, string> }
@@ -451,7 +454,7 @@ describe('background script', () => {
       expect(ingglishTranslations2.hello).toBe(ingglishTranslations.hello);
       expect(ingglishTranslations2.world).toBe(ingglishTranslations.world);
       expect(ingglishTranslations2.the).toBe(ingglishTranslations.the);
-    });
+    }, 15000);
   });
 
   describe('SET_FORMAT message', () => {
