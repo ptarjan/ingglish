@@ -98,31 +98,6 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 | EH + R | air | Fixed 204 collisions (air vs her) |
 | AE + R | arr | Matches English "carrot", "barrel" |
 
-## Evolution and Lessons Learned
-
-We iterated extensively on spellings (see [Spelling Evolution](spelling-evolution.md) for the full history). Key lessons:
-
-### 1. Identical Words Are the Biggest Win
-
-When a word is spelled identically in English and Ingglish, it provides maximum familiarity:
-- out → out
-- loud → loud
-- book → book
-- law → law
-- hot → hot
-
-We prioritize mappings that create more identical words.
-
-### 2. International Precedent Matters
-
-Spellings with support from multiple languages are more defensible:
-- 'ai' has precedent in [Pinyin](https://en.wikipedia.org/wiki/Pinyin) (1.4B speakers), Italian, Vietnamese
-- 'ou' has precedent in English and [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography)
-
-### 3. Collisions Must Be Fixed
-
-R-colored vowel rules were essential to prevent words like "air" and "her" from both mapping to "er". Fixing collisions is more important than simplicity.
-
 ## Dialect Choice
 
 Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization.
