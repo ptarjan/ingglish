@@ -27,27 +27,27 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Cache generated dictionaries
+        uses: actions/cache@v4
+        with:
+          path: |
+            packages/core/src/dictionary/cmudict.ts
+            packages/core/src/dictionary/reverse-cmudict.ts
+            packages/core/src/data/word-frequencies.ts
+          key: dictionaries-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Build core library
-        run: npm run build -w @ingglish/core
+      - name: Build core and dom libraries
+        run: npm run build:fast -w @ingglish/core && npm run build:fast -w @ingglish/dom
 
-      - name: Build dom library
-        run: npm run build -w @ingglish/dom
-
-      - name: Generate API docs
-        run: npm run docs
-
-      - name: Build extension
-        run: npm run build -w @ingglish/extension
-
-      - name: Package extension zip
+      - name: Build extension and package zip
         run: |
-          cd packages/extension/dist
-          zip -r ../../website/public/ingglish-extension.zip .
+          npm run build -w @ingglish/extension
+          cd packages/extension/dist && zip -r ../../website/public/ingglish-extension.zip .
 
-      - name: Build website
+      - name: Build website for GitHub Pages
         run: npm run build -w @ingglish/website
         env:
           BASE_URL: /ingglish/
