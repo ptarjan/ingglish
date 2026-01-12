@@ -162,10 +162,8 @@ These trade common words for other common words:
 
 Analysis scripts are in `packages/core/scripts/`:
 
-- `analyze-identical-words.ts` — Initial analysis of mapping alternatives
-- `find-best-mapping.ts` — Find optimal mapping ignoring collisions
-- `find-best-no-collisions.ts` — Find best mapping without new collisions
-- `exhaustive-search.ts` — Test all possible single-character and digraph options
+- `analyze-identical-words.ts` — Explains why maximizing identical words creates problems
+- `exhaustive-search.ts` — Exhaustively tests all possible spelling options
 
 Run with:
 ```bash
