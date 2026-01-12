@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint src",
     "test": "vitest run --no-color",
     "test:unit": "vitest run --no-color",

@@ -102,7 +102,7 @@ jobs:
         run: npm run docs
 
       - name: Build other packages
-        run: npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website
+        run: npm run build -w @ingglish/cors-proxy && npm run build:fast -w @ingglish/dom && npm run build -w @ingglish/extension -w @ingglish/website
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
