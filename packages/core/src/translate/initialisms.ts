@@ -258,8 +258,11 @@ export function translateInitialism(
     return null;
   }
 
-  // Translate each expansion word and take first letter
-  const firstLetters: string[] = [];
+  // Translate each expansion word and take first grapheme (may be digraph)
+  const firstGraphemes: string[] = [];
+
+  // Ingglish digraphs that represent single sounds
+  const DIGRAPHS = ['sh', 'ch', 'th', 'dh', 'zh', 'ng'];
 
   for (const expansionWord of expansion) {
     // Skip small connector words (a, as, of, it, etc.) - don't include in initialism
@@ -269,16 +272,21 @@ export function translateInitialism(
 
     const translated = translateWordFn(expansionWord, 'ingglish');
     if (translated && translated.length > 0) {
-      // Get the first letter of the translated word
-      firstLetters.push(translated.charAt(0).toLowerCase());
+      // Get the first grapheme (could be a digraph like "sh", "ch", etc.)
+      const firstTwo = translated.slice(0, 2).toLowerCase();
+      if (DIGRAPHS.includes(firstTwo)) {
+        firstGraphemes.push(firstTwo);
+      } else {
+        firstGraphemes.push(translated.charAt(0).toLowerCase());
+      }
     }
   }
 
-  if (firstLetters.length === 0) {
+  if (firstGraphemes.length === 0) {
     return null;
   }
 
-  const result = firstLetters.join('');
+  const result = firstGraphemes.join('');
 
   // Initialisms stay all caps (UI → YI, API → API)
   // Only lowercase if original was lowercase
