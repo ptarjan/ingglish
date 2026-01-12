@@ -126,6 +126,21 @@ describe('initialisms', () => {
       expect(result).toBe(null);
     });
 
+    it('should return null for single-word expansions (spell out letter-by-letter instead)', () => {
+      // TV = television (single word) - should return null so fallback spells it out
+      // Otherwise we'd just get 'T' from the first letter of 'television'
+      const tvResult = translateInitialism('TV', 'ingglish');
+      expect(tvResult).toBe(null);
+
+      // ID = identification (single word) - same issue
+      const idResult = translateInitialism('ID', 'ingglish');
+      expect(idResult).toBe(null);
+
+      // UV = ultraviolet (single word)
+      const uvResult = translateInitialism('UV', 'ingglish');
+      expect(uvResult).toBe(null);
+    });
+
     it('should return null for IPA format (not yet supported)', () => {
       const result = translateInitialism('UI', 'ipa');
       expect(result).toBe(null);
@@ -144,6 +159,20 @@ describe('initialisms', () => {
       const result = translateWord('AI', 'ingglish');
       // AI = Artificial Intelligence → artufishul intelijuns → AI
       expect(result).toBe('AI');
+    });
+
+    it('should spell out TV letter-by-letter (not just first letter of "television")', () => {
+      // TV has single-word expansion, should be spelled out as "Tee-Vee"
+      const result = translateWord('TV', 'ingglish');
+      // T = "tee" → Tee, V = "vee" → Vee → combined: Teevee
+      expect(result).toBe('Teevee');
+    });
+
+    it('should spell out ID letter-by-letter', () => {
+      // ID has single-word expansion, should be spelled out as "Eye-Dee"
+      const result = translateWord('ID', 'ingglish');
+      // I = "eye" → Ai, D = "dee" → Dee → combined: Aidee
+      expect(result).toBe('Aidee');
     });
   });
 

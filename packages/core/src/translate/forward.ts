@@ -10,8 +10,8 @@ import { translateContraction, setTranslateWordFn } from './contractions';
 import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
 import type { OutputFormat } from '../types';
 
-// Import translateUnknown - we'll set this up with proper dependency injection
-import { translateUnknown } from '../fallback';
+// Import translateUnknown and translateAsAcronym for fallback handling
+import { translateUnknown, translateAsAcronym } from '../fallback';
 
 /**
  * Translates a single word (or contraction) to the specified format.
@@ -43,6 +43,15 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     if (initialismResult !== null) {
       return initialismResult;
     }
+    // translateInitialism returns null for single-word expansions (like TV = television)
+    // These should be spelled out letter-by-letter, not looked up in the dictionary
+    const acronymResult = translateAsAcronym(word, format);
+    // Apply case pattern (capitalize first letter for uppercase input like "TV" → "Teevee")
+    if (format === 'ingglish') {
+      const casePattern = detectCasePattern(word);
+      return applyCasePattern(acronymResult, casePattern, word);
+    }
+    return acronymResult;
   }
 
   // Handle camelCase words by translating each component separately

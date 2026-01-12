@@ -242,7 +242,8 @@ export function isInitialism(word: string): boolean {
  * Translates an initialism using first letters of translated expansion words.
  * Example: UI = User Interface → Yoozer Interfays → YI
  *
- * Returns null if translation not possible.
+ * Returns null if translation not possible, including for single-word expansions
+ * (e.g., TV = television) which should be spelled out letter-by-letter instead.
  */
 export function translateInitialism(
   word: string,
@@ -256,6 +257,12 @@ export function translateInitialism(
   const expansion = INITIALISM_EXPANSIONS[lower];
 
   if (expansion === undefined) {
+    return null;
+  }
+
+  // Single-word expansions (like TV = television) should be spelled out letter-by-letter
+  // rather than taking the first letter. Return null to fall through to translateAsAcronym.
+  if (expansion.length === 1) {
     return null;
   }
 
