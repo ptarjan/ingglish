@@ -63,13 +63,15 @@ describe('performance optimizations', () => {
       splitSpy.mockClear();
       const result1 = lookupPronunciation('hello');
       expect(result1).toBeDefined();
-      const splitCallsFirst = splitSpy.mock.calls.filter((call) => call[0] === ' ').length;
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      const splitCallsFirst = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
 
       // Second lookup - should NOT call split (cached)
       splitSpy.mockClear();
       const result2 = lookupPronunciation('hello');
       expect(result2).toBeDefined();
-      const splitCallsSecond = splitSpy.mock.calls.filter((call) => call[0] === ' ').length;
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      const splitCallsSecond = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
 
       // First lookup should have split, second should not
       expect(splitCallsFirst).toBeGreaterThan(0);
