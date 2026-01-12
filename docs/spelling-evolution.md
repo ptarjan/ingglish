@@ -136,7 +136,6 @@ This vowel went through the most iteration.
 **Attempt 2: 'o' (caught-cot merger)**
 - Rationale: Simplify by merging with /ɑ/, reflecting American pronunciation
 - Problem:
-  - "thought" → "thot" looked too informal/texting
   - Lost distinction for speakers who maintain the difference
   - Required changing /oʊ/ to 'oh' to avoid collision
 - Verdict: ❌ Rejected - lost too much information
@@ -263,10 +262,7 @@ Several changes were specifically made to upgrade ratings:
 - 'ou' (was 'ow'): Regional → Common
 - 'oo'/'uu' swap: Both now Common
 
-### 5. Texting Conventions Should Be Avoided
-The caught-cot merger attempt ("thought" → "thot") was rejected partly because it looked like texting slang. Ingglish should look like a legitimate alternative spelling, not informal abbreviation.
-
-### 6. Reversion Is Okay
+### 5. Reversion Is Okay
 The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
 
 ---
