@@ -1,5 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Mock @ingglish/core to avoid slow dictionary loading
+vi.mock('@ingglish/core', () => ({
+  translate: vi.fn().mockResolvedValue('mocked'),
+  translateSync: vi.fn((text: string, format: string) => {
+    // Return format-specific translations so tests can verify format switching
+    const prefix = format === 'ipa' ? 'ipa' : 'ing';
+    return text
+      .split(/\s+/)
+      .map((w) => `${prefix}-${w}`)
+      .join(' ');
+  }),
+}));
+
 // Suppress console.error and console.log during tests
 vi.spyOn(console, 'error').mockImplementation(() => undefined);
 vi.spyOn(console, 'log').mockImplementation(() => undefined);
@@ -375,19 +388,16 @@ describe('background script', () => {
         sendResponse
       );
 
-      await vi.waitFor(
-        () => {
-          expect(sendResponse).toHaveBeenCalled();
-          const response = sendResponse.mock.calls[0][0] as {
-            translations: Record<string, string>;
-          };
-          expect(response.translations).toBeDefined();
-          expect(response.translations.hello).toBeDefined();
-          expect(response.translations.world).toBeDefined();
-        },
-        { timeout: 10000 }
-      );
-    }, 15000);
+      await vi.waitFor(() => {
+        expect(sendResponse).toHaveBeenCalled();
+        const response = sendResponse.mock.calls[0][0] as {
+          translations: Record<string, string>;
+        };
+        expect(response.translations).toBeDefined();
+        expect(response.translations.hello).toBeDefined();
+        expect(response.translations.world).toBeDefined();
+      });
+    });
 
     it('returns same translations when switching format and back', async () => {
       // Translate words to Ingglish
@@ -400,12 +410,9 @@ describe('background script', () => {
         ingglishResponse
       );
 
-      await vi.waitFor(
-        () => {
-          expect(ingglishResponse).toHaveBeenCalled();
-        },
-        { timeout: 10000 }
-      );
+      await vi.waitFor(() => {
+        expect(ingglishResponse).toHaveBeenCalled();
+      });
 
       const ingglishTranslations = (
         ingglishResponse.mock.calls[0][0] as { translations: Record<string, string> }
@@ -454,7 +461,7 @@ describe('background script', () => {
       expect(ingglishTranslations2.hello).toBe(ingglishTranslations.hello);
       expect(ingglishTranslations2.world).toBe(ingglishTranslations.world);
       expect(ingglishTranslations2.the).toBe(ingglishTranslations.the);
-    }, 15000);
+    });
   });
 
   describe('SET_FORMAT message', () => {
