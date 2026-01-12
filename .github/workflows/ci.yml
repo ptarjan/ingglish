@@ -223,10 +223,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Install Playwright deps (if cached)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps ${{ matrix.browser }}
-
       # Smoke test catches catastrophic failures fast before full suite
       - name: Smoke test
         if: matrix.browser == 'chromium'
