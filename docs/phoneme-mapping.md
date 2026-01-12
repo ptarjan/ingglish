@@ -31,7 +31,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | AH | u | ʌ/ə | b**u**t, c**u**p | Mid central vowel (schwa when unstressed) |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
 | AW | ow | aʊ | c**ow**, h**ow** | Diphthong |
-| AY | ie | aɪ | m**y**, t**i**me | Diphthong |
+| AY | ai | aɪ | m**y**, t**i**me | Diphthong |
 | EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
 | ER | er | ɝ/ɚ | b**ir**d, h**er** | Rhotacized mid central |
 | EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
@@ -150,7 +150,7 @@ The schwa (ə) is the most common vowel in unstressed syllables. In ARPAbet, it'
 
 ### Diphthongs
 Each diphthong gets a consistent spelling:
-- **ie** = AY (m**y**) - /aɪ/
+- **ai** = AY (m**y**) - /aɪ/
 - **ay** = EY (s**ay**) - /eɪ/
 - **ow** = AW (c**ow**) - /aʊ/
 - **oh** = OW (g**o**) - /oʊ/
@@ -158,36 +158,34 @@ Each diphthong gets a consistent spelling:
 
 ### Diphthongs: A Difficult Choice
 
-The four diphthong spellings (excluding 'oi' which is universal) were the hardest decisions in Ingglish's design. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal) or rare sounds like /θ/ and /ð/ (where no global standard exists), diphthongs have **competing conventions** across major language families.
+The diphthong spellings were among the hardest decisions in Ingglish's design. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal) or rare sounds like /θ/ and /ð/ (where no global standard exists), diphthongs have **competing conventions** across major language families.
 
 | Sound | Ingglish | Alternative | Who Uses Ingglish's Choice | Who Uses Alternative |
 |-------|----------|-------------|---------------------------|---------------------|
-| /aɪ/ (my) | **ie** | ai | English (tie, pie, die) | Pinyin, Italian, Vietnamese, IPA |
+| /aɪ/ (my) | **ai** | ie | Pinyin, Italian, Vietnamese, IPA | English (tie, pie, die) |
 | /aʊ/ (cow) | **ow** | au | English (cow, now, how) | German, Dutch, Portuguese, Spanish, IPA |
 | /eɪ/ (say) | **ay** | ei | English (say, day, play) | Pinyin, Portuguese, IPA |
 | /oʊ/ (go) | **oh** | ou | English (oh!) | Pinyin |
 
-**Why this matters for global users:**
+**Why we chose 'ai' for /aɪ/:**
 
-A Spanish speaker seeing 'ay' naturally produces /aj/ (like English "eye"), not /eɪ/. A Pinyin speaker seeing 'ie' produces /iɛ/, not /aɪ/. The alternative spellings (ai, au, ei, ou) would be more intuitive for billions of non-English speakers.
+1. **IPA alignment**: The IPA symbol /aɪ/ maps directly to 'ai'
+2. **Global precedent**: Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
+3. **Phonetic transparency**: You can "see" the glide from /a/ to /i/
+4. **Availability**: English 'ai' words (rain, paint) use /eɪ/, so 'ai' is free for /aɪ/
 
-**Why we chose English conventions anyway:**
+**Why we kept English conventions for the others:**
 
-1. **Existing English patterns**: Words like "tie," "cow," "say," and "oh" already use these spellings
+1. **Existing patterns**: Words like "cow," "say," and "oh" already use ow/ay/oh
 2. **Bidirectional readability**: Ingglish text should feel connected to traditional English
-3. **Target audience**: Many users are English speakers wanting phonetic spelling, not just ESL learners
-4. **Partial alignment**: Even the alternatives aren't universal—German uses 'ei' for /aɪ/ (opposite of Pinyin's 'ai')
+3. **Target audience**: Many users are English speakers wanting phonetic spelling
 
-**The honest trade-off:**
-
-We chose familiarity for English readers over global intuitiveness. The English-familiar spellings maintain the connection between Ingglish and traditional English spelling, which is a core design goal.
-
-| English | Current Ingglish | If We Used Global Conventions |
-|---------|------------------|------------------------------|
-| my time | mie tiem | mai taim |
-| say day | say day | sei dei |
-| go show | goh shoh | gou shou |
-| cow how | kow how | kau hau |
+| English | Ingglish |
+|---------|----------|
+| my time | mai taim |
+| say day | say day |
+| go show | goh shoh |
+| cow how | kow how |
 
 ## Example Translations
 

@@ -146,7 +146,7 @@ For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ie** | my → **mie** |
+| **Ingglish** | **ai** | my → **mai** |
 | English | ie, i, y | tie, pie, my |
 | [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
 | [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij, klein |
@@ -155,10 +155,10 @@ For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping
 | Vietnamese | ai | hai (two) |
 
 **Notes:**
-- Matches English words: "tie", "pie", "die", "lie", "vie"
-- German 'ei' is /aɪ/, but their 'ie' is /iː/—opposite pattern
-- Pinyin and Vietnamese use 'ai'—close to our choice
-- We chose 'ie' because it's already established in English
+- We chose 'ai' because it directly represents IPA /aɪ/
+- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
+- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
+- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 
 ### The 'AY' Diphthong (/eɪ/ as in "say")
 
@@ -330,7 +330,7 @@ This is distinctly American English - most languages don't have these:
 - **ch** for /tʃ/ (universal)
 - **ng** for /ŋ/ (universal)
 - **ee/uu** for long vowels (Finnish-style doubling)
-- **ie** for /aɪ/ (English: tie, pie, die, lie)
+- **ai** for /aɪ/ (Pinyin, Italian, Vietnamese, IPA)
 - **oi** for /ɔɪ/ (universal)
 - **ow** for /aʊ/ (English)
 
@@ -408,7 +408,7 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
 | uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
 | oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
-| ie | /aɪ/ | **Common** | English "tie, pie, die, lie"; matches existing English pattern |
+| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
 | ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
 | ow | /aʊ/ | **Regional** | English convention; German/Dutch use 'au' more commonly |
 | oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ow' |
@@ -511,11 +511,11 @@ This explains why English spelling is so difficult: we're mapping ~15 vowel soun
 
 1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach when single letters aren't available
 2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern for long vowels; oo matches English "book"
-3. **Diphthong spellings** (ie, ay, ow, oi, oh): Follow existing English patterns where possible
+3. **Diphthong spellings** (ai, ay, ow, oi, oh): Follow existing patterns (ai from IPA/Pinyin, others from English)
 
 ### Why English Is Harder Than Other Languages
 
-1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ie, ay, ow).
+1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ow).
 2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
 3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
 
