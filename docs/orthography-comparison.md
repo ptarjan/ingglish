@@ -1,8 +1,8 @@
-# Why Ingglish Spellings Make Sense
+# Orthography Comparison
 
-Every Ingglish spelling has a reason. This document shows that our choices aren't arbitrary—they're grounded in how other languages solve the same problems.
+This document shows how Ingglish spellings compare to other languages. Every choice has precedent in at least one major language.
 
-For the design philosophy behind Ingglish, see [Phoneme Mapping](phoneme-mapping.md).
+For the design philosophy and rationale, see [Design Decisions](design-decisions.md).
 
 ## Vowels
 
@@ -505,28 +505,7 @@ Most languages have 5-7 vowel phonemes. English has 14-15 (depending on dialect)
 
 This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 
-## Implications for Ingglish
-
-### Our Choices Are Well-Supported
-
-1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach when single letters aren't available
-2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern for long vowels; oo matches English "book"
-3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns (ai from IPA/Pinyin, others from English)
-
-### Why English Is Harder Than Other Languages
-
-1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters. Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou).
-2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
-3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
-
-### What Makes Ingglish Work
-
-1. **No new characters to learn**: Every letter is already on your keyboard
-2. **Familiar patterns**: sh, ch, th, ng—you already know these
-3. **Logical extensions**: If sh/s are voicing pairs, zh/z should be too
-4. **Bidirectional tools**: Convert any text to Ingglish and back instantly
-
-Previous reforms asked people to learn new alphabets or adopt strange-looking spellings. Ingglish asks you to be slightly more consistent with patterns you already use. For a deeper analysis of why this matters, see [Spelling Reform History](spelling-reform-comparison.md).
+For how Ingglish addresses these challenges, see [Design Decisions](design-decisions.md).
 
 ## References
 

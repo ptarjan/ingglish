@@ -6,12 +6,7 @@ This document describes how we map ARPAbet notation from the CMU Pronouncing Dic
 
 **ARPAbet** is a phonetic notation system that uses ASCII characters to represent English phonemes (speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
 
-## Design Principles
-
-1. **One sound, one spelling**: Each phoneme maps to exactly one spelling sequence
-2. **No diacritics**: Only 24 ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'
-3. **Intuitive for English readers**: Spellings should feel natural based on existing English conventions
-4. **Consistent and reversible**: The mapping is deterministic
+For the design principles and rationale behind these mappings, see [Design Decisions](design-decisions.md).
 
 ## Pronunciation Dictionary
 
@@ -131,69 +126,6 @@ With these R-colored vowel rules in place, there are **zero collisions** between
 
 That said, if Ingglish ever gains enough adoption that the R-coloring exception becomes the biggest pain point, that would be a wonderful problem to have. This rule exists to ease the transition for English readers, but it's not fundamental to the system. A future version could drop it in favor of full consistency if that's what readers prefer.
 
-## Key Design Decisions
-
-### TH vs DH Distinction
-Traditional English uses "th" for both sounds:
-- Voiceless /θ/: "**th**ink", "ba**th**"
-- Voiced /ð/: "**th**e", "**th**is"
-
-We preserve this distinction with **"th"** and **"dh"** respectively. This creates clarity while remaining readable.
-
-### Schwa Representation
-The schwa (ə) is the most common vowel in unstressed syllables. In ARPAbet, it's typically AH0 (unstressed AH). We map this to **"u"**, which matches words like "but" and "cup" where the schwa sound appears.
-
-### Doubled Vowel Spellings
-- **ee** for IY (b**ee**) - the long "ee" sound, following Finnish doubling pattern
-- **uu** for UW (t**oo**) - the long "oo" sound; longer sound gets the longer spelling
-- **oo** for UH (b**oo**k) - the short "oo" sound; matches English "book", "good", "look"
-
-### Diphthongs
-Each diphthong gets a consistent spelling:
-- **ai** = AY (m**y**) - /aɪ/
-- **ay** = EY (s**ay**) - /eɪ/
-- **ou** = AW (c**ow**) - /aʊ/
-- **oh** = OW (g**o**) - /oʊ/
-- **oi** = OY (b**oy**) - /ɔɪ/
-
-### Diphthongs: A Difficult Choice
-
-The diphthong spellings were among the hardest decisions in Ingglish's design. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal) or rare sounds like /θ/ and /ð/ (where no global standard exists), diphthongs have **competing conventions** across major language families.
-
-| Sound | Ingglish | Alternative | Who Uses Ingglish's Choice | Who Uses Alternative |
-|-------|----------|-------------|---------------------------|---------------------|
-| /aɪ/ (my) | **ai** | ie | Pinyin, Italian, Vietnamese, IPA | English (tie, pie, die) |
-| /aʊ/ (cow) | **ou** | au, ow | English (out, loud, sound), Dutch (oud) | German, Portuguese use 'au'; English also uses 'ow' |
-| /eɪ/ (say) | **ay** | ei | English (say, day, play) | Pinyin, Portuguese, IPA |
-| /oʊ/ (go) | **oh** | ou | English (oh!) | Pinyin |
-
-**Why we chose 'ai' for /aɪ/:**
-
-1. **IPA alignment**: The IPA symbol /aɪ/ maps directly to 'ai'
-2. **Global precedent**: Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
-3. **Phonetic transparency**: You can "see" the glide from /a/ to /i/
-4. **Availability**: English 'ai' words (rain, paint) use /eɪ/, so 'ai' is free for /aɪ/
-
-**Why we chose 'ou' for /aʊ/:**
-
-1. **Identical spellings**: Words like "out", "loud", "sound" remain unchanged in Ingglish
-2. **International precedent**: Dutch uses 'ou' for this sound (oud = old)
-3. **Trade-off accepted**: "cow" → "kou" looks less familiar, but having common words like "out" and "loud" be identical to English is a bigger win
-
-**Why we kept English conventions for ay/oh:**
-
-1. **Existing patterns**: Words like "say" and "oh" already use ay/oh
-2. **Bidirectional readability**: Ingglish text should feel connected to traditional English
-3. **Target audience**: Many users are English speakers wanting phonetic spelling
-
-| English | Ingglish |
-|---------|----------|
-| my time | mai taim |
-| say day | say day |
-| go show | goh shoh |
-| out loud | out loud |
-| cow how | kou hou |
-
 ## Example Translations
 
 | English | Phonemes | Ingglish |
@@ -240,7 +172,7 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 
 ## See Also
 
-- [Spelling Evolution](spelling-evolution.md) - History of spelling changes and why
+- [Design Decisions](design-decisions.md) - Why Ingglish works the way it does
+- [Spelling Evolution](spelling-evolution.md) - History of spelling changes
 - [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
 - [Architecture](architecture.md) - How translation works end-to-end
-- [Contributing](contributing.md) - How to add new phoneme mappings

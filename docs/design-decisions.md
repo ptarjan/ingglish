@@ -1,0 +1,158 @@
+# Design Decisions
+
+This document explains the core design decisions behind Ingglish: why we made specific choices, what alternatives we considered, and what we learned along the way.
+
+## Core Principles
+
+1. **One sound, one spelling**: Each phoneme maps to exactly one spelling sequence
+2. **No new characters**: Only 24 ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), 'c' only in 'ch'
+3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
+4. **Consistent and reversible**: The mapping is deterministic in both directions
+5. **Voluntary adoption**: Not trying to replace English—supplements it
+
+## Why English Is Hard
+
+English spelling is notoriously difficult because:
+
+1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou).
+
+2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
+
+3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
+
+## What Makes Ingglish Different
+
+Previous spelling reforms failed because they:
+- Required learning entirely new alphabets (Shavian, Deseret)
+- Created systems that later had to be "un-taught" (Initial Teaching Alphabet)
+- Tried to mandate change through political authority (Roosevelt, Carnegie)
+
+Ingglish avoids these traps:
+
+| Design Choice | Why It Matters |
+|--------------|----------------|
+| Standard ASCII letters | No new characters to learn |
+| Familiar digraphs (sh, ch, th, ng) | You already know these |
+| Logical extensions (zh parallels sh) | Easy to infer new patterns |
+| Bidirectional conversion | Convert any text instantly |
+| Not replacing English | No political mandate needed |
+
+## Specific Spelling Decisions
+
+### Consonant Digraphs
+
+**TH vs DH Distinction**
+
+Traditional English uses "th" for both sounds:
+- Voiceless /θ/: "**th**ink", "ba**th**"
+- Voiced /ð/: "**th**e", "**th**is"
+
+We preserve this distinction with **"th"** and **"dh"** respectively. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
+
+**ZH for /ʒ/**
+
+English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
+
+### Vowel Spellings
+
+**Doubled Vowels**
+
+| Spelling | Sound | Rationale |
+|----------|-------|-----------|
+| ee | /iː/ (bee) | Finnish/Estonian pattern for long vowels |
+| uu | /uː/ (too) | Longer sound gets longer spelling |
+| oo | /ʊ/ (book) | Matches English "book", "good", "look" |
+
+**Schwa Representation**
+
+The schwa (ə) is the most common vowel in unstressed syllables. We map it to **"u"**, which matches words like "but" and "cup".
+
+### Diphthong Decisions
+
+The diphthong spellings were among the hardest decisions. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), diphthongs have **competing conventions** across languages.
+
+| Sound | Spelling | Why This Choice |
+|-------|----------|-----------------|
+| /aɪ/ (my) | **ai** | IPA alignment; Pinyin, Italian, Vietnamese precedent |
+| /aʊ/ (cow) | **ou** | "out", "loud", "sound" stay identical; Dutch uses 'ou' |
+| /eɪ/ (say) | **ay** | Matches English "say", "day", "play" |
+| /oʊ/ (go) | **oh** | English "oh!"; needed to distinguish from 'ou' |
+| /ɔɪ/ (boy) | **oi** | Universal across languages |
+
+**Examples:**
+| English | Ingglish |
+|---------|----------|
+| my time | mai taim |
+| say day | say day |
+| out loud | out loud |
+| go show | goh shoh |
+
+### R-Colored Vowels
+
+When certain vowels are followed by R, they combine into special sounds. Without special handling, we'd get collisions:
+
+| Combination | Spelling | Why |
+|-------------|----------|-----|
+| AA + R | ar | "star" → "star" (identical!) |
+| AO + R | or | "store" → "stor" |
+| EH + R | air | Fixed 204 collisions (air vs her) |
+| AE + R | arr | Matches English "carrot", "barrel" |
+
+## Evolution and Lessons Learned
+
+We iterated extensively on spellings. Key lessons:
+
+### 1. Identical Words Are the Biggest Win
+
+When a word is spelled identically in English and Ingglish, it provides maximum familiarity:
+- out → out
+- loud → loud
+- book → book
+- law → law
+- hot → hot
+
+We prioritize mappings that create more identical words.
+
+### 2. International Precedent Matters
+
+Spellings with support from multiple languages are more defensible:
+- 'ai' has precedent in Pinyin (1.4B speakers), Italian, Vietnamese
+- 'ou' has precedent in English and Dutch
+
+### 3. Collisions Must Be Fixed
+
+R-colored vowel rules were essential to prevent words like "air" and "her" from both mapping to "er". Fixing collisions is more important than simplicity.
+
+### 4. Reversion Is Okay
+
+Some spellings went back and forth:
+- /ɔ/ (thought): aw → o → aw
+
+We weren't afraid to revert when a change didn't work out. The goal is the best final system.
+
+### 5. Avoid Texting Conventions
+
+The caught-cot merger attempt ("thought" → "thot") was rejected partly because it looked like texting slang. Ingglish should look like a legitimate alternative spelling.
+
+## Dialect Choice
+
+Ingglish uses **General American English** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization.
+
+Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
+
+## Our Choices Are Well-Supported
+
+Every Ingglish spelling has precedent in at least one major language:
+
+1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach worldwide
+2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern
+3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns
+
+For detailed language-by-language comparisons, see [Orthography Comparison](orthography-comparison.md).
+
+## See Also
+
+- [Spelling Evolution](spelling-evolution.md) - Complete history of spelling changes
+- [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
+- [Phoneme Mapping](phoneme-mapping.md) - Technical mapping tables
+- [Spelling Reform History](spelling-reform-comparison.md) - Why previous reforms failed
