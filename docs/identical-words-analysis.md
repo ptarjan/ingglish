@@ -10,7 +10,7 @@ This document analyzes whether the current Ingglish phoneme mappings maximize "i
 
 The current mapping produces **6,930 identical words** (5.13% of the CMU dictionary). Alternative mappings could theoretically produce up to **15,489 identical words** (11.47%), but these create unacceptable collisions where different words become indistinguishable.
 
-However, we found **5 safe improvements** that add **+564 identical words** without creating new collisions.
+However, we found **6 safe improvements** (including one chain) that add **+607 identical words** without creating new collisions.
 
 ## Background
 
@@ -51,16 +51,19 @@ We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combination
 
 ### Results
 
-| Phoneme | Current | Proposed | Gained | Lost | Net Gain |
-|---------|---------|----------|--------|------|----------|
-| /aɪ/ | ai | ei | +352 | -36 | **+316** |
-| /oʊ/ | oh | ow | +217 | -80 | **+137** |
-| /ɔ/ | aw | au | +203 | -140 | **+63** |
-| /uː/ | uu | eu | +43 | -2 | **+41** |
-| /ɔɪ/ | oi | oy | +118 | -108 | **+10** |
-| **Total** | | | | | **+564** |
+| Phoneme | Current | Proposed | Gained | Lost | Net Gain | Notes |
+|---------|---------|----------|--------|------|----------|-------|
+| /aɪ/ | ai | ei | +352 | -36 | **+316** | Frees 'ai' |
+| /eɪ/ | ay | ai | +293 | -245 | **+48** | Uses freed 'ai'; loses "day", "say", "way" |
+| /oʊ/ | oh | ow | +217 | -80 | **+137** | |
+| /ɔ/ | aw | au | +203 | -140 | **+63** | |
+| /uː/ | uu | eu | +43 | -2 | **+41** | |
+| /ɔɪ/ | oi | oy | +118 | -108 | **+10** | |
+| **Total** | | | | | **+607** | (not fully additive) |
 
-Combined effect: 6,930 → 7,494 identical words (5.13% → 5.54%)
+Combined effect: 6,930 → 7,537 identical words (5.13% → 5.58%)
+
+**Note:** The /eɪ/→ai change is only possible after /aɪ/→ei frees up the 'ai' spelling. This is a "chain" improvement where one change enables another.
 
 ### Trade-off Analysis
 
@@ -149,16 +152,20 @@ These have excellent gain-to-loss ratios:
 1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), keeps familiar words
 2. **/aɪ/: "ai" → "ei"** — Large gain (+316), loses only loanwords
 
+### Questionable Chain Improvement
+
+3. **/eɪ/: "ay" → "ai"** — Net +48, but **loses common words** like "day", "say", "way", "play", "stay" (245 words) to gain "aid", "aim", "bail", "rain" (293 words). Only possible after /aɪ/ frees 'ai'. **May not be worth it** given high-frequency losses.
+
 ### Moderate Confidence Changes
 
 These trade common words for other common words:
 
-3. **/oʊ/: "oh" → "ow"** — Gains everyday words (+137), loses German names
-4. **/ɔ/: "aw" → "au"** — Trade-off between "au" and "aw" words (+63)
+4. **/oʊ/: "oh" → "ow"** — Gains everyday words (+137), loses German names
+5. **/ɔ/: "aw" → "au"** — Trade-off between "au" and "aw" words (+63)
 
 ### Low Confidence Change
 
-5. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), marginal benefit
+6. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), marginal benefit
 
 ## Methodology
 
@@ -174,7 +181,7 @@ npx vite-node scripts/exhaustive-search.ts
 
 ## Conclusion
 
-The current mappings prioritize disambiguation over raw identical count, which is the right choice — collisions destroy meaning. However, there are safe optimizations available that would add +564 identical words (8% improvement) without creating new collisions.
+The current mappings prioritize disambiguation over raw identical count, which is the right choice — collisions destroy meaning. However, there are safe optimizations available that would add +607 identical words (9% improvement) without creating new collisions—though the /eɪ/→ai chain improvement is questionable due to losing common words like "day" and "say".
 
 Whether to implement these changes depends on:
 1. How much weight we give to identical word count (natural readability for English readers)
