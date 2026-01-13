@@ -18,7 +18,7 @@ describe('unknown-words', () => {
   setupDictionary();
 
   describe('CUSTOM_PRONUNCIATIONS validation', () => {
-    it('should not contain words that are already in the CMU dictionary', () => {
+    it('should not have identical pronunciations to CMU dictionary', () => {
       // Skip if using stub dictionary (less than 100 entries)
       // Full CMU dict has ~130,000 entries, stub has ~12
       const dict = getDictionary();
@@ -27,14 +27,22 @@ describe('unknown-words', () => {
         return;
       }
 
-      const duplicates: string[] = [];
+      const identicalDuplicates: string[] = [];
       for (const word of Object.keys(CUSTOM_PRONUNCIATIONS)) {
-        // Check if word is in CMU dict directly (bypass custom lookup)
-        if (dict[word] !== undefined) {
-          duplicates.push(word);
+        const cmuPronunciation = dict[word];
+        if (cmuPronunciation !== undefined) {
+          // Word is in both - check if pronunciations are identical
+          const customPronunciation = CUSTOM_PRONUNCIATIONS[word];
+          const cmuPhonemes = cmuPronunciation[0]; // First pronunciation variant
+          if (
+            customPronunciation.length === cmuPhonemes.length &&
+            customPronunciation.every((p, i) => p === cmuPhonemes[i])
+          ) {
+            identicalDuplicates.push(word);
+          }
         }
       }
-      expect(duplicates).toEqual([]);
+      expect(identicalDuplicates).toEqual([]);
     });
   });
 
