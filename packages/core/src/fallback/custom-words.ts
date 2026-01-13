@@ -9,6 +9,7 @@
 export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Abbreviations
   vs: ['V', 'ER1', 'S', 'AH0', 'S'], // versus
+  devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
   // Tech terms
   git: ['G', 'IH1', 'T'],
