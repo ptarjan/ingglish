@@ -145,6 +145,13 @@ jobs:
           name: build-output
           path: .
 
+      - name: Cache ESLint
+        uses: actions/cache@v4
+        with:
+          path: packages/*/.eslintcache
+          key: eslint-${{ runner.os }}-${{ hashFiles('eslint.config.js') }}
+          restore-keys: eslint-${{ runner.os }}-
+
       - name: Lint (type-aware)
         run: npm run lint
 

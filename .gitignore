@@ -50,3 +50,6 @@ test-results/
 *.temp
 .vite/
 
+# Lint caches
+.eslintcache
+

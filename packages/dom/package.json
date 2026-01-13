@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --tsconfig tsconfig.build.json",
     "build:fast": "tsup src/index.ts --format esm",
-    "lint": "eslint src",
+    "lint": "eslint --cache src",
     "test": "vitest run --no-color",
     "test:unit": "vitest run --no-color",
     "test:watch": "vitest",
