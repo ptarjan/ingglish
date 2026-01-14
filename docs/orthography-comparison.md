@@ -553,55 +553,10 @@ Each spelling is rated by how widely it's used across world languages:
 - **Common**: Used by multiple language families
 - **Regional**: Used by a specific language family or region
 - **Rare**: Used by few languages
-- **Novel**: Invented for Ingglish or very uncommon
 
-### Single Consonants
+### Vowels
 
-| Ingglish | Sound | Rating | Notes |
-|----------|-------|--------|-------|
-| b | /b/ | **Universal** | Standard across virtually all Latin-script languages |
-| d | /d/ | **Universal** | Standard across virtually all Latin-script languages |
-| f | /f/ | **Universal** | Standard across virtually all Latin-script languages |
-| g | /g/ | **Universal** | Always hard /g/, never /dʒ/ as in English "gem" |
-| h | /h/ | **Universal** | Standard; silent in some languages but letter is universal |
-| k | /k/ | **Universal** | Standard across virtually all Latin-script languages |
-| l | /l/ | **Universal** | Standard across virtually all Latin-script languages |
-| m | /m/ | **Universal** | Standard across virtually all Latin-script languages |
-| n | /n/ | **Universal** | Standard across virtually all Latin-script languages |
-| p | /p/ | **Universal** | Standard across virtually all Latin-script languages |
-| r | /ɹ/ | **Universal** | Letter universal; exact sound varies by language |
-| s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
-| t | /t/ | **Universal** | Standard across virtually all Latin-script languages |
-| v | /v/ | **Universal** | Standard across virtually all Latin-script languages |
-| w | /w/ | **Common** | Less common in some European languages |
-| y | /j/ | **Common** | Used for /j/ in English, German, Scandinavian |
-| z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
-
-Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlike English, 'g' is always hard, 's' is always /s/, and 'c' is not used (replaced by 'k' or 's').
-
-### Consonant Digraphs
-
-| Ingglish | Sound | Rating | Notes |
-|----------|-------|--------|-------|
-| sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
-| zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian; 350+ years in English dictionaries |
-| th | /θ/ | **Regional** | Only ~4% of languages have this sound; English, Albanian, Welsh use 'th' |
-| dh | /ð/ | **Rare** | Albanian (official letter), Cornish, Swahili; ~7% of languages have /ð/ |
-| ch | /tʃ/ | **Universal** | Spanish, English, Czech, Portuguese, and most Latin-script languages |
-| j | /dʒ/ | **Common** | English-influenced: Indonesian, Malay, Somali, Indian romanization |
-| ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
-
-### Diphthongs
-
-| Ingglish | Sound | Rating | Notes |
-|----------|-------|--------|-------|
-| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
-| ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
-| ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
-| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
-| oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
-
-### Short Vowels
+#### Short Vowels
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
@@ -611,26 +566,87 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | o | /ɑ/ | **Common** | Spanish 'o'; matches "father" vowel in many languages |
 | u | /ʌ/ | **Regional** | English convention ("but", "cup"); Spanish/Italian use 'a' for similar sound |
 
-### Long Vowels
+#### Long Vowels
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
-| ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
+| ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
+| ee | /iː/ | **Common** | Finnish/Estonian doubling principle; English "bee, see" |
+| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
+| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
 | uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
-| oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
-| aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
 
-### R-Colored Vowels
+#### Diphthongs
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
+| oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
+| aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
+| oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
+
+#### R-Colored Vowels
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
 | ar | /ɑɹ/ | **Regional** | English convention; rhotic dialects only |
 | or | /ɔɹ/ | **Regional** | English convention; rhotic dialects only |
 | air | /ɛɹ/ | **Regional** | English convention; rhotic dialects only |
-| er | /ɝ/ | **Regional** | English convention; rhotic dialects only |
 | arr | /æɹ/ | **Common** | Doubled 'r' after short vowel; matches English "carrot", "barrel" |
+| er | /ɝ/ | **Regional** | English convention; rhotic dialects only |
 
 Note: R-colored vowels are specific to rhotic English dialects. Most languages don't merge vowel + /r/ into single phonemic units.
+
+### Consonants
+
+#### Stops
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| p | /p/ | **Universal** | Standard across virtually all Latin-script languages |
+| b | /b/ | **Universal** | Standard across virtually all Latin-script languages |
+| t | /t/ | **Universal** | Standard across virtually all Latin-script languages |
+| d | /d/ | **Universal** | Standard across virtually all Latin-script languages |
+| k | /k/ | **Universal** | Standard across virtually all Latin-script languages |
+| g | /g/ | **Universal** | Always hard /g/, never /dʒ/ as in English "gem" |
+
+#### Fricatives
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| f | /f/ | **Universal** | Standard across virtually all Latin-script languages |
+| v | /v/ | **Universal** | Standard across virtually all Latin-script languages |
+| th | /θ/ | **Regional** | Only ~4% of languages have this sound; English, Albanian, Welsh use 'th' |
+| dh | /ð/ | **Rare** | Albanian (official letter), Cornish, Swahili; ~7% of languages have /ð/ |
+| s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
+| z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
+| sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
+| zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian; 350+ years in English dictionaries |
+| h | /h/ | **Universal** | Standard; silent in some languages but letter is universal |
+
+#### Affricates
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| ch | /tʃ/ | **Universal** | Spanish, English, Czech, Portuguese, and most Latin-script languages |
+| j | /dʒ/ | **Common** | English-influenced: Indonesian, Malay, Somali, Indian romanization |
+
+#### Nasals
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| m | /m/ | **Universal** | Standard across virtually all Latin-script languages |
+| n | /n/ | **Universal** | Standard across virtually all Latin-script languages |
+| ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
+
+#### Liquids & Glides
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| l | /l/ | **Universal** | Standard across virtually all Latin-script languages |
+| r | /ɹ/ | **Universal** | Letter universal; exact sound varies by language |
+| w | /w/ | **Common** | Less common in some European languages |
+| y | /j/ | **Common** | Used for /j/ in English, German, Scandinavian |
 
 ### Key Findings
 
