@@ -12,7 +12,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **a** | kat |
 | [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
-| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
+| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato — closer to /a/ |
 | [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto (cat) |
 | [German](https://en.wikipedia.org/wiki/German_orthography) | ä | männer (men) |
 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
@@ -99,8 +99,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | ee, ea, ie | bee, sea, piece |
 | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it) |
 | [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga (too much) |
-| Indonesian | i | ini (phonemic—no length distinction) |
-| Swahili | i | (no length distinction) |
+| Indonesian | i | ini — no length distinction |
+| Swahili | i | — no length distinction |
 | Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
 
 **Notes:**
@@ -116,7 +116,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | **Ingglish** | **oo** | buuk |
 | English | oo, u | book, put |
 | German | u | futter (fodder) |
-| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
+| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | — same as /uː/ |
 
 **Notes:**
 - 'oo' matches English words like "book", "good", "look"
@@ -218,7 +218,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | French | oi | roi (king) |
 | Dutch | ooi | mooi (beautiful) |
 | German | eu, äu | neu (new), häuser (houses) |
-| Indonesian | oi | (rare—mostly in loanwords) |
+| Indonesian | oi | — rare, mostly in loanwords |
 | Vietnamese | oi | nói (speak) |
 
 **Notes:**
