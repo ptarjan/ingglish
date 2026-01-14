@@ -91,6 +91,23 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - We follow English convention ("but", "cup") for familiarity
 - Turkish has a distinct /ɯ/ sound written as 'ı' (dotless i)
 
+### 'AW' Sound (/ɔ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **aw** | law, thawt |
+| English | aw, au, ough, a | law, caught, thought, all |
+| German | o | Sonne (sun) |
+| Dutch | o | zon (sun) |
+| Italian | o | cosa (thing) |
+| Spanish | o | sol (sun) |
+
+**Notes:**
+- English has wildly inconsistent spellings for this sound: "law", "caught", "thought", "all"
+- Ingglish uses 'aw' consistently—matches English "law", "saw", "raw"
+- Many languages use plain 'o' for this sound, but we reserve 'o' for /ɑ/ (father, hot)
+- The CMU dictionary encodes cot-caught merger for some speakers, but we preserve the distinction
+
 ### Long 'EE' Sound (/iː/)
 
 | Language | Spelling | Example |
@@ -337,20 +354,66 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 ## R-Colored Vowels
 
-This is distinctly American English - most languages don't have these:
+[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) are distinctly American English—most languages don't have these merged vowel+R sounds. They're one of the trickiest parts of English phonology.
 
-| Sound | IPA | Ingglish | Notes |
-|-------|-----|----------|-------|
-| star | ɑɹ | **ar** | Intuitive English spelling |
-| store | ɔɹ | **or** | Matches English conventions |
-| air | ɛɹ | **air** | Matches English conventions |
-| arrow | æɹ | **arr** | Doubled 'r' distinguishes from 'ar' |
-| bird | ɝ | **er** | Standard rhotic vowel |
+### 'AR' Sound (/ɑɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ar** | star, kar, far |
+| English | ar | star, car, far |
 
 **Notes:**
-- These combinations are specific to rhotic English dialects
-- Most other languages don't merge vowel + /r/ into single units
-- Our spellings follow English intuitions ("star", "store", "air")
+- Perfectly intuitive—matches English spelling exactly
+- "star" → "star" is identical in Ingglish
+
+### 'OR' Sound (/ɔɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **or** | stor, mor, for |
+| English | ore, or, our, oar | store, more, four, oar |
+
+**Notes:**
+- English has multiple spellings: "store", "more", "four", "oar"
+- Ingglish uses 'or' consistently
+- Clearly distinct from 'ar' (star vs stor)
+
+### 'AIR' Sound (/ɛɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **air** | air, kair, dhair |
+| English | air, are, ear, ere | air, care, bear, there |
+
+**Notes:**
+- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
+- Ingglish uses 'air' consistently—matches the word "air" itself
+- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
+
+### 'ARR' Sound (/æɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **arr** | arroh, karrut, barrul |
+| English | arr, ar | arrow, carrot, barrel |
+
+**Notes:**
+- The doubled 'rr' distinguishes this from 'ar' (star)
+- Matches English spelling pattern in "arrow", "carrot", "barrel"
+- Without this distinction: "arrow" and "are" would collide
+
+### 'ER' Sound (/ɝ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **er** | berd, her, tern |
+| English | ir, er, ur, ear, or | bird, her, turn, earth, work |
+
+**Notes:**
+- English uses five different spellings for the same sound
+- Ingglish uses 'er' consistently—the most common English spelling
+- This is the standalone r-colored vowel (not vowel + R)
 
 ## Summary: Where Ingglish Aligns and Diverges
 
