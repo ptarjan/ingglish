@@ -27,25 +27,25 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 | English | Ingglish | Frequency |
 |---------|----------|-----------|
 | a, uh | u | 1,041,179 → 2,506 |
-| of | uv | 590,439 → rare |
+| of | uv (ultraviolet) | 590,439 → rare |
 | right, write, rite | rait | 204,428 → rare |
-| how | hou | 155,867 → rare |
+| how | hou (place suffix) | 155,867 → rare |
 | yeah | ya | 152,262 → 7,664 |
-| want | wont | 140,718 → 81 |
+| want | wont (habit) | 140,718 → 81 |
 | ass | as | 11,545 → 113,068 |
-| here, hear | heer | 230,788 → 2 |
+| here, hear | heer (yarn measure) | 230,788 → 2 |
 | side, sighed | said | 10,247 → 56,531 |
 | white | wait | 8,744 → 42,343 |
 | place | plays | 30,736 → 1,521 |
-| fine | fain | 30,502 → 15 |
-| while, wile | wail | 17,821 → 44 |
-| wife | waif | 17,795 → 17 |
+| fine | fain (gladly/archaic) | 30,502 → 15 |
+| while, wile | wail (cry) | 17,821 → 44 |
+| wife | waif (homeless person) | 17,795 → 17 |
 | since | sins | 16,064 → 455 |
-| turn | tern | 15,630 → 1 |
+| turn | tern (seabird) | 15,630 → 1 |
 | case | kays | 14,403 → rare |
 | mine | main | 12,800 → 2,179 |
-| matter | mater | 18,900 → 83 |
-| else | els | 22,907 → 4 |
+| matter | mater (mother/Latin) | 18,900 → 83 |
+| else | els (elevated trains) | 22,907 → 4 |
 
 ### Notable Collisions
 
