@@ -16,6 +16,7 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 - Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll never encounter these in normal text.
 - Only 5 collisions involve two common words: white→wait, ass→as, place→plays, side→said, mine→main
+- **Part of speech differences** resolve most collisions: white (adj) → wait (verb) are grammatically distinct
 - Context resolves these just like English homophones (their/there/they're)
 
 ---
@@ -49,15 +50,15 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 
 ### Notable Collisions
 
-**white → wait**: Both common words. "The wait house" = "the white house". Note: "wait" translates to "wayt", so they don't merge.
+**white → wait**: adjective → verb. Different parts of speech make this unambiguous: "the wait house" is grammatically odd. Note: "wait" translates to "wayt", so reverse translation works.
 
-**ass → as**: Reversed direction - uncommon word translates to common word. Context handles "as" vs "as" fine.
+**ass → as**: noun → preposition. Grammar resolves this easily - "as" never appears where a noun would.
 
-**place → plays**: Both common. "In the first plays" = "in the first place".
+**place → plays**: noun → verb/noun. Same part of speech possible, but "plays" as noun means theater works. "In the first plays" sounds wrong.
 
-**side → said**: High-frequency collision. "On the said" = "on the side". Note: "said" translates to "sed", so reverse translation works.
+**side → said**: noun → verb (past tense). Different parts of speech. "On the said" is grammatically incorrect. Note: "said" translates to "sed".
 
-**mine → main**: Both common. "The main entrance" could be "the mine entrance". Note: "main" translates to "mayn", so they don't merge.
+**mine → main**: noun/pronoun → adjective. Different parts of speech. "The main entrance" vs "the mine entrance" - grammar disambiguates. Note: "main" translates to "mayn".
 
 ---
 
