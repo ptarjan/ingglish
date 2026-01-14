@@ -159,7 +159,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 
-### The /eɪ/ Diphthong (as in "say")
+### The 'AY' Diphthong (/eɪ/ as in "say")
 
 | Language | Spelling | Example |
 |----------|----------|---------|
