@@ -26,24 +26,24 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 
 | English | Ingglish | Frequency |
 |---------|----------|-----------|
-| a, uh | u | 1,041,179 → 2,506 |
+| a, uh | u (you informal) | 1,041,179 → 2,506 |
 | of | uv (ultraviolet) | 590,439 → rare |
-| right, write, rite | rait | 204,428 → rare |
+| right, write, rite | rait (not a word) | 204,428 → rare |
 | how | hou (place suffix) | 155,867 → rare |
-| yeah | ya | 152,262 → 7,664 |
+| yeah | ya (you informal) | 152,262 → 7,664 |
 | want | wont (habit) | 140,718 → 81 |
-| ass | as | 11,545 → 113,068 |
+| ass | as (preposition) | 11,545 → 113,068 |
 | here, hear | heer (yarn measure) | 230,788 → 2 |
-| side, sighed | said | 10,247 → 56,531 |
-| white | wait | 8,744 → 42,343 |
-| place | plays | 30,736 → 1,521 |
+| side, sighed | said (past of say) | 10,247 → 56,531 |
+| white | wait (verb) | 8,744 → 42,343 |
+| place | plays (verb/noun) | 30,736 → 1,521 |
 | fine | fain (gladly/archaic) | 30,502 → 15 |
 | while, wile | wail (cry) | 17,821 → 44 |
 | wife | waif (homeless person) | 17,795 → 17 |
-| since | sins | 16,064 → 455 |
+| since | sins (wrongdoings) | 16,064 → 455 |
 | turn | tern (seabird) | 15,630 → 1 |
-| case | kays | 14,403 → rare |
-| mine | main | 12,800 → 2,179 |
+| case | kays (letter K plural) | 14,403 → rare |
+| mine | main (primary) | 12,800 → 2,179 |
 | matter | mater (mother/Latin) | 18,900 → 83 |
 | else | els (elevated trains) | 22,907 → 4 |
 
