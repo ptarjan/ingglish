@@ -51,22 +51,6 @@ async function downloadDictionary(): Promise<string> {
   }
 }
 
-// Minimal stub dictionary for sandboxed environments where download fails
-const STUB_DICTIONARY: CMUDictionary = {
-  hello: ['HH', 'AH0', 'L', 'OW1'],
-  world: ['W', 'ER1', 'L', 'D'],
-  the: ['DH', 'AH0'],
-  a: ['AH0'],
-  is: ['IH1', 'Z'],
-  it: ['IH1', 'T'],
-  this: ['DH', 'IH1', 'S'],
-  that: ['DH', 'AE1', 'T'],
-  and: ['AE1', 'N', 'D'],
-  or: ['AO1', 'R'],
-  test: ['T', 'EH1', 'S', 'T'],
-  example: ['IH0', 'G', 'Z', 'AE1', 'M', 'P', 'AH0', 'L'],
-};
-
 function parseDictionary(text: string): CMUDictionary {
   console.log('Parsing dictionary...');
   const dict: CMUDictionary = {};
@@ -123,16 +107,8 @@ async function main(): Promise<void> {
   }
 
   let dict: CMUDictionary;
-  try {
-    const text = await downloadDictionary();
-    dict = parseDictionary(text);
-  } catch (error) {
-    console.warn('Failed to download dictionary:', error instanceof Error ? error.message : error);
-    console.warn(
-      'Using stub dictionary (limited functionality) - run with network access for full dictionary'
-    );
-    dict = STUB_DICTIONARY;
-  }
+  const text = await downloadDictionary();
+  dict = parseDictionary(text);
 
   const wordCount = Object.keys(dict).length;
   console.log(`Total entries: ${wordCount}`);
