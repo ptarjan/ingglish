@@ -430,19 +430,24 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | o | /ɑ/ | **Common** | Spanish 'o'; matches "father" vowel in many languages |
 | u | /ʌ/ | **Regional** | English convention ("but", "cup"); Spanish/Italian use 'a' for similar sound |
 
-### Long Vowels & Diphthongs
+### Long Vowels
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; Dutch 'ee' in open syllables |
 | uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
 | oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
+| aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
+
+### Diphthongs
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
 | ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
 | ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
 | ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
 | oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
 | oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
-| aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
 
 ### R-Colored Vowels
 
