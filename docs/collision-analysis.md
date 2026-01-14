@@ -37,17 +37,17 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 These collisions involve frequently-used words and may cause occasional confusion:
 
-| Ingglish | English Sources | Frequency Rank |
-|----------|-----------------|----------------|
-| tern | turn | #1 → #15,630 |
-| rober | robber | #1 → #239 |
-| winer | winner | #1 → #1,592 |
-| dain | dine | #1 → #219 |
-| sees | cease | #1,899 ← #445 |
-| mild | milled | #245 ← #1 |
-| rain | rhine | #2,494 ← #34 |
-| saws | sauce | #24 ← #795 |
-| bot | bought | #50 ← #4,362 |
+| English | Ingglish | Frequency Rank |
+|---------|----------|----------------|
+| turn | tern | #15,630 → #1 |
+| robber | rober | #239 → #1 |
+| winner | winer | #1,592 → #1 |
+| dine | dain | #219 → #1 |
+| cease | sees | #445 → #1,899 |
+| milled | mild | #1 → #245 |
+| rhine | rain | #34 → #2,494 |
+| sauce | saws | #795 → #24 |
+| bought | bot | #4,362 → #50 |
 
 ### Analysis of Top Collisions
 
