@@ -12,5 +12,5 @@ export function setupDictionary(): void {
   beforeAll(async () => {
     // translate() auto-loads the dictionary
     await translate('');
-  });
+  }, 30000); // 30 second timeout for dictionary loading in CI
 }
