@@ -6,7 +6,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 ## Vowels
 
-### The Short 'A' Sound (/æ/ as in "cat")
+### The Short 'A' Sound (/æ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -23,7 +23,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Nearly universal to use 'a' for open vowels across all language families
 - English /æ/ is more front than most languages' /a/, but 'a' is still the intuitive choice
 
-### The Short 'E' Sound (/ɛ/ as in "bed")
+### The Short 'E' Sound (/ɛ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -40,7 +40,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Virtually universal across Latin-script languages worldwide
 - No innovation needed here
 
-### The Short 'I' Sound (/ɪ/ as in "bit")
+### The Short 'I' Sound (/ɪ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -57,7 +57,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Standard across virtually all Latin-script languages globally
 - English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
 
-### The Short 'O' Sound (/ɑ/ as in "hot")
+### The Short 'O' Sound (/ɑ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -74,7 +74,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Nearly universal use of 'o' for back vowels worldwide
 - American English "hot" uses /ɑ/, similar to many languages' open 'o'
 
-### The Short 'U' Sound (/ʌ/ as in "but")
+### The Short 'U' Sound (/ʌ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -91,7 +91,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - We follow English convention ("but", "cup") for familiarity
 - Turkish has a distinct /ɯ/ sound written as 'ı' (dotless i)
 
-### The Long 'EE' Sound (/iː/ as in "bee")
+### The Long 'EE' Sound (/iː/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -109,7 +109,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - 'ee' already exists in English ("bee", "see", "tree")
 - Consistent pattern: double the letter to lengthen the sound
 
-### The Short 'OO' Sound (/ʊ/ as in "book")
+### The Short 'OO' Sound (/ʊ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -124,7 +124,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
 - German distinguishes long/short u but uses the same letter
 
-### The Long 'OO' Sound (/uː/ as in "too")
+### The Long 'OO' Sound (/uː/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -142,7 +142,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most non-European languages don't distinguish vowel length
 - The longer sound gets the longer spelling (uu vs oo)
 
-### The 'IE' Diphthong (/aɪ/ as in "my")
+### The 'IE' Diphthong (/aɪ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -159,7 +159,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 
-### The 'AY' Diphthong (/eɪ/ as in "say")
+### The 'AY' Diphthong (/eɪ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -175,7 +175,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Many languages don't have this exact diphthong
 - Clear and unambiguous
 
-### The 'OH' Diphthong (/oʊ/ as in "go")
+### The 'OH' Diphthong (/oʊ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -191,7 +191,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - 'oh' matches English interjection "oh!" which has this exact sound
 - Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
 
-### The 'OU' Diphthong (/aʊ/ as in "cow")
+### The 'OU' Diphthong (/aʊ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -209,7 +209,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
 - See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
 
-### The 'OI' Diphthong (/ɔɪ/ as in "boy")
+### The 'OI' Diphthong (/ɔɪ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -263,7 +263,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced) - a logical pair
 - Russian Romanization uses 'zh' for Ж, so this has precedent
 
-### The "TH" Sound (/θ/ as in "think")
+### The "TH" Sound (/θ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -278,7 +278,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
 - We keep 'th' for voiceless /θ/ — the intuitive choice
 
-### The "DH" Sound (/ð/ as in "the")
+### The "DH" Sound (/ð/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
