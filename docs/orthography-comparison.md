@@ -109,6 +109,21 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - 'ee' already exists in English ("bee", "see", "tree")
 - Consistent pattern: double the letter to lengthen the sound
 
+### The Short 'OO' Sound (/ʊ/ as in "book")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oo** | book (buuk) |
+| English | oo, u | book, put |
+| German | u | Futter (short u) |
+| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
+
+**Notes:**
+- 'oo' matches English words like "book", "good", "look"
+- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with uu vs. oo
+- Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
+- German distinguishes long/short u but uses the same letter
+
 ### The Long 'OO' Sound (/uː/ as in "too")
 
 | Language | Spelling | Example |
@@ -126,21 +141,6 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Follows Finnish/Estonian convention: 'uu' for /uː/
 - Most non-European languages don't distinguish vowel length
 - The longer sound gets the longer spelling (uu vs oo)
-
-### The Short 'OO' Sound (/ʊ/ as in "book")
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **oo** | book (buuk) |
-| English | oo, u | book, put |
-| German | u | Futter (short u) |
-| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
-
-**Notes:**
-- 'oo' matches English words like "book", "good", "look"
-- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with uu vs. oo
-- Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
-- German distinguishes long/short u but uses the same letter
 
 ### The 'IE' Diphthong (/aɪ/ as in "my")
 

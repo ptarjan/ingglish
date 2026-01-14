@@ -190,6 +190,21 @@ function extractExamples(content: string, filename: string): Example[] {
       if (!SKIP_WORDS.has(english)) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
+      continue;
+    }
+
+    // Pattern 6: word (translated) in Ingglish rows of orthography comparison tables
+    // e.g., | **Ingglish** | **a** | cat (kat) |
+    // Only match if line starts with Ingglish marker to avoid matching foreign language examples
+    if (line.includes('**Ingglish**')) {
+      const parenMatch = /\|\s*([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)\s*\|/.exec(line);
+      if (parenMatch) {
+        const english = parenMatch[1].toLowerCase();
+        const ingglish = parenMatch[2].toLowerCase();
+        if (!SKIP_WORDS.has(english)) {
+          examples.push({ english, ingglish, source: filename, line: lineNum });
+        }
+      }
     }
   }
 
