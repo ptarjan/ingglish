@@ -11,18 +11,6 @@ import { readFileSync, statSync } from 'fs';
 // Maximum file size in bytes (500KB)
 const MAX_FILE_SIZE = 500 * 1024;
 
-// Files that are allowed to be large (e.g., images, assets)
-const LARGE_FILE_ALLOWLIST = [
-  /\.png$/i,
-  /\.jpg$/i,
-  /\.jpeg$/i,
-  /\.gif$/i,
-  /\.ico$/i,
-  /\.woff2?$/i,
-  /\.ttf$/i,
-  /\.eot$/i,
-];
-
 /**
  * Get list of staged files
  */
@@ -44,11 +32,6 @@ function checkLargeFiles(files) {
   const errors = [];
 
   for (const file of files) {
-    // Skip allowlisted file types
-    if (LARGE_FILE_ALLOWLIST.some((pattern) => pattern.test(file))) {
-      continue;
-    }
-
     try {
       const stats = statSync(file);
       if (stats.size > MAX_FILE_SIZE) {
@@ -151,10 +134,7 @@ function main() {
     for (const error of largeFileErrors) {
       console.error('  ' + error);
     }
-    console.error('\nIf this file should be generated at build time, add it to .gitignore.');
-    console.error(
-      'If it must be committed, add its pattern to LARGE_FILE_ALLOWLIST in scripts/pre-commit-checks.js\n'
-    );
+    console.error('\nLarge files should be generated at build time and added to .gitignore.\n');
     hasErrors = true;
   }
 
