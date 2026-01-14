@@ -113,7 +113,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **oo** | buuk |
+| **Ingglish** | **oo** | book |
 | English | oo, u | book, put |
 | German | u | futter (fodder) |
 | Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | — same as /uː/ |
