@@ -4,6 +4,92 @@ This document shows how Ingglish spellings compare to other languages. Every cho
 
 For the design philosophy and rationale, see [Design Decisions](design-decisions.md).
 
+## Diphthongs
+
+### 'IE' Diphthong (/aɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ai** | mai |
+| English | ie, i, y | tie, pie, my |
+| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein (my) |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij (me), klein (small) |
+| Italian | ai | mai (never) |
+| Pinyin | ai | bái (white) |
+| Vietnamese | ai | hai (two) |
+
+**Notes:**
+- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
+- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
+- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
+
+### 'AY' Diphthong (/eɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ay** | sey |
+| English | ay, ai, a-e | say, rain, make |
+| Spanish | ey | rey (king) |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei (law) |
+| Pinyin | ei | bēi (cup) |
+| Indonesian | e | sate (satay) |
+
+**Notes:**
+- Matches English: "say", "day", "play", "way"
+- Many languages don't have this exact diphthong
+- Clear and unambiguous
+
+### 'OH' Diphthong (/oʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oh** | goh |
+| English | o, oa, ow | go, boat, show |
+| Dutch | oo | boot (boat) |
+| German | o | boot (boat) |
+| Pinyin | ou | dōu (all) |
+| Japanese (Romaji) | o, ō | ohayō (good morning) |
+
+**Notes:**
+- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
+- 'oh' matches English interjection "oh!" which has this exact sound
+- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
+
+### 'OU' Diphthong (/aʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ou** | kou |
+| English | ow, ou | cow, out |
+| German | au | haus (house) |
+| Dutch | au, ou | blauw (blue), oud (old) |
+| Pinyin | ao | hǎo (good) |
+| Portuguese | au | mau (bad) |
+
+**Notes:**
+- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
+- Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
+- German/Portuguese use 'au'; Pinyin uses 'ao'
+- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
+- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
+
+### 'OI' Diphthong (/ɔɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oi** | boi |
+| English | oi, oy | oil, boy |
+| French | oi | roi (king) |
+| Dutch | ooi | mooi (beautiful) |
+| German | eu, äu | neu (new), häuser (houses) |
+| Indonesian | oi | — rare, mostly in loanwords |
+| Vietnamese | oi | nói (speak) |
+
+**Notes:**
+- Very common diphthong spelling worldwide: 'oi' or 'oy'
+- German is the outlier using 'eu'
+- No innovation needed
+
 ## Vowels
 
 ### Short 'A' Sound (/æ/)
@@ -162,90 +248,6 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Follows Finnish/Estonian convention: 'uu' for /uː/
 - Most non-European languages don't distinguish vowel length
 - The longer sound gets the longer spelling (uu vs oo)
-
-### 'IE' Diphthong (/aɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ai** | mai |
-| English | ie, i, y | tie, pie, my |
-| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein (my) |
-| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij (me), klein (small) |
-| Italian | ai | mai (never) |
-| Pinyin | ai | bái (white) |
-| Vietnamese | ai | hai (two) |
-
-**Notes:**
-- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
-- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
-- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
-
-### 'AY' Diphthong (/eɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ay** | sey |
-| English | ay, ai, a-e | say, rain, make |
-| Spanish | ey | rey (king) |
-| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei (law) |
-| Pinyin | ei | bēi (cup) |
-| Indonesian | e | sate (satay) |
-
-**Notes:**
-- Matches English: "say", "day", "play", "way"
-- Many languages don't have this exact diphthong
-- Clear and unambiguous
-
-### 'OH' Diphthong (/oʊ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **oh** | goh |
-| English | o, oa, ow | go, boat, show |
-| Dutch | oo | boot (boat) |
-| German | o | boot (boat) |
-| Pinyin | ou | dōu (all) |
-| Japanese (Romaji) | o, ō | ohayō (good morning) |
-
-**Notes:**
-- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
-- 'oh' matches English interjection "oh!" which has this exact sound
-- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
-
-### 'OU' Diphthong (/aʊ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ou** | kou |
-| English | ow, ou | cow, out |
-| German | au | haus (house) |
-| Dutch | au, ou | blauw (blue), oud (old) |
-| Pinyin | ao | hǎo (good) |
-| Portuguese | au | mau (bad) |
-
-**Notes:**
-- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
-- Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
-- German/Portuguese use 'au'; Pinyin uses 'ao'
-- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
-- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
-
-### 'OI' Diphthong (/ɔɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **oi** | boi |
-| English | oi, oy | oil, boy |
-| French | oi | roi (king) |
-| Dutch | ooi | mooi (beautiful) |
-| German | eu, äu | neu (new), häuser (houses) |
-| Indonesian | oi | — rare, mostly in loanwords |
-| Vietnamese | oi | nói (speak) |
-
-**Notes:**
-- Very common diphthong spelling worldwide: 'oi' or 'oy'
-- German is the outlier using 'eu'
-- No innovation needed
 
 ## Consonants
 
