@@ -68,7 +68,7 @@ This document records all phoneme spelling changes made during Ingglish developm
 
 **Examples:**
 - out → out (identical!)
-- our → our (identical!)
+- our → ouer
 - loud → loud (identical!)
 - sound → sound (identical!)
 - cow → kou
@@ -149,7 +149,7 @@ This vowel went through the most iteration.
 **Examples:**
 - law → law (identical!)
 - thought → thawt
-- caught → kawt
+- caught → kot
 
 ---
 
@@ -238,7 +238,7 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 **Examples:**
 - arrow → arroh
-- carrot → karrot
+- carrot → karrut
 - barrel → barrul
 
 ---

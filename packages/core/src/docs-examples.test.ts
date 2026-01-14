@@ -106,9 +106,34 @@ function extractExamples(content: string, filename: string): Example[] {
   const examples: Example[] = [];
   const lines = content.split('\n');
 
+  // Track whether we're in a "rejected approach" section
+  let inRejectedSection = false;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const lineNum = i + 1;
+
+    // Track section context for spelling-evolution.md
+    // Sections starting with "Before:", "Problem:", "Original:" show rejected approaches
+    if (/^\*\*(Before|Problem|Original):?\*\*/.test(line)) {
+      inRejectedSection = true;
+      continue;
+    }
+    // Sections starting with "After", "Examples:", "Verdict:" show adopted approaches
+    if (/^\*\*(After|Examples|Verdict|Rationale):?\*\*/.test(line)) {
+      inRejectedSection = false;
+      continue;
+    }
+    // New section headers reset state
+    if (/^#{2,}/.test(line)) {
+      inRejectedSection = false;
+      continue;
+    }
+
+    // Skip examples in rejected sections
+    if (inRejectedSection) {
+      continue;
+    }
 
     // Skip hypothetical examples (lines explaining what we DON'T do)
     if (
@@ -167,7 +192,19 @@ function extractExamples(content: string, filename: string): Example[] {
       continue;
     }
 
-    // Pattern 4: | word | translated | /IPA/ | (README example table)
+    // Pattern 4: - word → word (unquoted, from spelling-evolution.md)
+    // e.g., - my → mai, - out → out (identical!)
+    const unquotedMatch = /^-\s*([a-zA-Z]{1,})\s*→\s*([a-zA-Z]+)/.exec(line);
+    if (unquotedMatch) {
+      const english = unquotedMatch[1].toLowerCase();
+      const ingglish = unquotedMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english) && english.length >= 1) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
+
+    // Pattern 5: | word | translated | /IPA/ | (README example table)
     // Only match when there's an IPA column (indicates it's the examples table)
     const readmeTableMatch = /^\|\s*([a-zA-Z]{3,})\s*\|\s*([a-zA-Z]+)\s*\|\s*\/[^/]+\/\s*\|/.exec(
       line
@@ -238,6 +275,7 @@ describe('documentation examples', () => {
     'phoneme-mapping.md',
     'orthography-comparison.md',
     'spelling-reform-comparison.md',
+    'spelling-evolution.md',
   ];
 
   for (const file of docFiles) {
