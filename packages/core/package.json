@@ -31,7 +31,7 @@
     "test:watch": "npm run update-dictionaries && vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
-    "update-dictionary": "node -e \"const fs=require('fs'); if(fs.existsSync('src/dictionary/cmudict.js')&&fs.existsSync('src/dictionary/reverse-cmudict.js')){console.log('Dictionaries exist, skipping');process.exit(0)}\" || npx tsx scripts/build-dictionary.ts",
+    "update-dictionary": "node scripts/ensure-dictionaries.js",
     "update-dictionaries": "npm run update-dictionary",
     "prepublishOnly": "npm run build"
   },
