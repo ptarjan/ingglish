@@ -6,11 +6,8 @@ import { translateSyncWithMapping } from '@ingglish/core';
 import { translateDOM, translateDOMSync, restoreDOM, applyTranslationsMap } from './translate';
 import { skipElement, unskipElement } from './utils';
 import { observeAndTranslate } from './observe';
-import { setupDictionary } from './test-setup';
 
 describe('dom-translator', () => {
-  setupDictionary();
-
   // Track stop functions to ensure cleanup even if tests fail
   let activeObservers: (() => void)[] = [];
 
