@@ -28,7 +28,6 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | AW | ou | aʊ | c**ow**, h**ow** | Diphthong |
 | AY | ai | aɪ | m**y**, t**i**me | Diphthong |
 | EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
-| ER | er | ɝ/ɚ | b**ir**d, h**er** | Rhotacized mid central |
 | EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
 | IH | i | ɪ | b**i**t, s**i**t | Near-close front vowel |
 | IY | ee | i | b**ee**, s**ee** | Close front vowel |

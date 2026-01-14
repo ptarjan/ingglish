@@ -98,16 +98,17 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **a** | kat |
 | [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
-| [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato — closer to /a/ |
-| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto (cat) |
+| [Old English](https://en.wikipedia.org/wiki/Old_English_Latin_alphabet) | æ (ash) | æsc (ash tree) |
 | [German](https://en.wikipedia.org/wiki/German_orthography) | ä | männer (men) |
-| [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
+| [Swedish](https://en.wikipedia.org/wiki/Swedish_orthography) | ä | väg (way) |
 | [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
-| [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language#Writing_system) | a | sama (same) |
+| [Azerbaijani](https://en.wikipedia.org/wiki/Azerbaijani_alphabet) | ə | səs (sound) |
+| Spanish/Italian | a | gato/gatto (cat) — closer to /a/ |
 
 **Notes:**
-- Nearly universal to use 'a' for open vowels across all language families
 - English /æ/ is more front than most languages' /a/, but 'a' is still the intuitive choice
+- Old English had a dedicated letter 'æ' (ash) for this sound—we simplify to 'a'
+- Germanic languages often use ä for similar sounds (German, Swedish)
 
 ### Short 'E' Sound (/ɛ/)
 
@@ -115,15 +116,16 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **e** | bed |
 | English | e | bed, pet |
-| Spanish | e | este (this) |
-| Italian | e | bello (beautiful) |
-| Swahili | e | embe (mango) |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | é (acute) | café (coffee) |
+| Italian | è (grave) | è (is), bello (beautiful) |
+| [Catalan](https://en.wikipedia.org/wiki/Catalan_orthography) | è | què (what) |
 | Turkish | e | ev (house) |
 | [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_alphabet) | e | xe (vehicle) |
 | [Pinyin](https://en.wikipedia.org/wiki/Pinyin) | e | hē (drink) |
 
 **Notes:**
 - Virtually universal across Latin-script languages worldwide
+- Portuguese/Italian/Catalan use accent marks to distinguish open /ɛ/ from close /e/
 - No innovation needed here
 
 ### Short 'I' Sound (/ɪ/)
@@ -132,50 +134,48 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **i** | bit |
 | English | i | bit, sit |
-| Spanish | i | si (yes) |
-| Italian | i | sì (yes) |
-| Swahili | i | nini (what) |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | i | bit (bit) |
+| German | i | biss (bite) |
 | Turkish | i | bir (one) |
 | Indonesian | i | ini (this) |
-| [Polish](https://en.wikipedia.org/wiki/Polish_orthography) | i | mi (me) |
+| Spanish/Italian | i | si/sì (yes) — closer to /i/ |
 
 **Notes:**
 - Standard across virtually all Latin-script languages globally
 - English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
+- Turkish has a distinctive dotless ı for /ɯ/, keeping dotted i for /i/
 
 ### Short 'O' Sound (/ɑ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **o** | hot |
-| English | o | hot, cot |
+| English | o, a | hot, cot, father |
 | Spanish | o | poco (little) |
 | Italian | o | otto (eight) |
-| Swahili | o | moto (fire) |
+| Dutch | o | bot (bone) |
 | Turkish | o | on (ten) |
-| Indonesian | o | bodoh (stupid) |
 | Pinyin | o | bō (wave) |
 
 **Notes:**
 - Nearly universal use of 'o' for back vowels worldwide
 - American English "hot" uses /ɑ/, similar to many languages' open 'o'
+- English "father" also has this sound—spelled 'a' in English, 'o' in Ingglish
 
 ### Short 'U' Sound (/ʌ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **u** | but |
-| English | u | but, cup |
-| Swahili | u | juu (up) |
-| Turkish | u | uzun (long) |
-| Indonesian | u | untuk (for) |
-| Vietnamese | ư | mưa (rain) — different sound |
+| English | u, o | but, cup, son, love |
+| Dutch | u | bus (bus) |
+| [Korean romanization](https://en.wikipedia.org/wiki/Romanization_of_Korean) | eo | 버스 beoseu (bus) |
 
 **Notes:**
 - The English /ʌ/ sound is relatively rare across languages
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
-- Turkish has a distinct /ɯ/ sound written as 'ı' (dotless i)
+- English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
 
 ### 'AW' Sound (/ɔ/)
 
@@ -185,7 +185,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | aw, au, ough, a | law, caught, thought, all |
 | [Swedish/Norwegian/Danish](https://en.wikipedia.org/wiki/%C3%85) | å | båt (boat), på (on) |
 | [French](https://en.wikipedia.org/wiki/French_orthography) | o | porte (door), bonne (good) |
-| [Catalan](https://en.wikipedia.org/wiki/Catalan_orthography) | ò | sòc (clog), pòsit (deposit) |
+| Catalan | ò | sòc (clog), pòsit (deposit) |
 | [Polish](https://en.wikipedia.org/wiki/Polish_orthography) | o | kot (cat), dom (house) |
 | German | o | Sonne (sun), offen (open) |
 | [Yoruba](https://en.wikipedia.org/wiki/Yoruba_alphabet) | ọ | ọjọ (day) |
@@ -204,15 +204,14 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **ee** | bee |
 | English | ee, ea, ie | bee, sea, piece |
-| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it) |
+| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it), viini (wine) |
 | [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga (too much) |
-| Indonesian | i | bisa (can) — no length distinction |
-| Swahili | i | sisi (we) — no length distinction |
+| Dutch | ie | zien (see), bier (beer) |
 | Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
 
 **Notes:**
 - Finnish/Estonian use doubled vowels for length—we follow this principle
-- Many languages (Swahili, Indonesian, Turkish) don't distinguish vowel length
+- Finnish tuuli (wind) vs. tuli (fire) shows minimal pairs distinguished only by length
 - 'ee' already exists in English ("bee", "see", "tree")
 - Consistent pattern: double the letter to lengthen the sound
 
@@ -222,14 +221,15 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **oo** | book |
 | English | oo, u | book, put |
+| Dutch | oe | boek (book) |
 | German | u | futter (fodder) |
-| Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | — same as /uː/ |
+| Most languages | u | — same as /uː/ |
 
 **Notes:**
 - 'oo' matches English words like "book", "good", "look"
 - English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with uu vs. oo
-- Most languages worldwide (Swahili, Turkish, Indonesian, Spanish, etc.) don't have this distinction
-- German distinguishes long/short u but uses the same letter
+- Dutch uses 'oe' for this sound: boek (book), goed (good)
+- Most languages worldwide don't distinguish /ʊ/ from /uː/
 
 ### Long 'OO' Sound (/uː/)
 
@@ -249,6 +249,90 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most non-European languages don't distinguish vowel length
 - The longer sound gets the longer spelling (uu vs oo)
 
+### 'IE' Diphthong (/aɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ai** | mai |
+| English | ie, i, y | tie, pie, my |
+| Pinyin | ai | bái (white), lái (come) |
+| Italian | ai | mai (never) |
+| Vietnamese | ai | hai (two) |
+| German | ei | mein (my) |
+| Dutch | ij, ei | mij (me), klein (small) |
+
+**Notes:**
+- Pinyin (1.4B+ speakers), Italian, Vietnamese all use 'ai' for this sound
+- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
+- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
+
+### 'AY' Diphthong (/eɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ay** | sey |
+| English | ay, ai, a-e | say, rain, make |
+| Spanish | ey | rey (king) |
+| Portuguese | ei | lei (law) |
+| Pinyin | ei | bēi (cup) |
+| Indonesian | e | sate (satay) |
+
+**Notes:**
+- Matches English: "say", "day", "play", "way"
+- Many languages don't have this exact diphthong
+- Clear and unambiguous
+
+### 'OH' Diphthong (/oʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oh** | goh |
+| English | o, oa, ow | go, boat, show |
+| Dutch | oo | boot (boat) |
+| German | o | boot (boat) |
+| Pinyin | ou | dōu (all) |
+| Japanese (Romaji) | o, ō | ohayō (good morning) |
+
+**Notes:**
+- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
+- 'oh' matches English interjection "oh!" which has this exact sound
+- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
+
+### 'OU' Diphthong (/aʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ou** | kou |
+| English | ow, ou | cow, out |
+| Dutch | ou, au | oud (old), blauw (blue) |
+| German | au | haus (house), laut (loud) |
+| Pinyin | ao | hǎo (good) |
+| Portuguese | au | mau (bad) |
+
+**Notes:**
+- Dutch uses 'ou' for this sound: oud (old), houd (hold)—direct precedent for Ingglish
+- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
+- German/Portuguese use 'au'; Pinyin uses 'ao'
+- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words outweigh this
+- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
+
+### 'OI' Diphthong (/ɔɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oi** | boi |
+| English | oi, oy | oil, boy |
+| French | oi | roi (king) |
+| Dutch | ooi | mooi (beautiful) |
+| German | eu, äu | neu (new), häuser (houses) |
+| Indonesian | oi | — rare, mostly in loanwords |
+| Vietnamese | oi | nói (speak) |
+
+**Notes:**
+- Very common diphthong spelling worldwide: 'oi' or 'oy'
+- German is the outlier using 'eu'
+- No innovation needed
+
 ## Consonants
 
 ### "SH" Sound (/ʃ/)
@@ -257,17 +341,20 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **sh** | ship |
 | English | sh | ship |
-| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | schiff (ship) |
+| [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) | sh | shqip (Albanian) |
+| German | sch | schiff (ship) |
 | [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła (school) |
 | [Hungarian](https://en.wikipedia.org/wiki/Hungarian_orthography) | s | só (salt) |
 | [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola (school) |
 | Italian | sc (before e/i) | pesce (fish) |
-| [French](https://en.wikipedia.org/wiki/French_orthography) | ch | chat (cat) |
+| French | ch | chat (cat) |
 | Turkish | ş | şeker (sugar) |
+| [Judaeo-Spanish](https://en.wikipedia.org/wiki/Judaeo-Spanish) | sh | debasho (under) |
 
 **Notes:**
-- We follow English convention with 'sh' - the most intuitive for English speakers
+- We follow English convention with 'sh'—also used by Albanian (official letter), Judaeo-Spanish
 - German's 'sch' is longer; Polish 'sz' might confuse English readers
+- Hungarian reverses convention: 's' for /ʃ/, 'sz' for /s/
 - Languages with diacritics (š, ş) achieve single-letter representation
 
 ### "ZH" Sound (/ʒ/)
@@ -279,12 +366,16 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | French | j, g | je (I), rouge (red) |
 | Portuguese | j, g | hoje (today), gente (people) |
 | Polish | ż, rz | żaba (frog), rzeka (river) |
+| [Czech](https://en.wikipedia.org/wiki/%C5%BD)/[Slovak](https://en.wikipedia.org/wiki/%C5%BD) | ž | žena (woman) |
+| Hungarian | zs | zseb (pocket) |
 | Turkish | j | jeton (token) |
+| Finnish/Estonian | ž or zh | žurnal (journal) |
 
 **Notes:**
-- English has no consistent spelling for /ʒ/ - we create one with 'zh'
-- 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced) - a logical pair
-- Russian Romanization uses 'zh' for Ж, so this has precedent
+- English has no consistent spelling for /ʒ/—we create one with 'zh'
+- 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced)—a logical pair
+- [Cyrillic romanization](https://en.wikipedia.org/wiki/Romanization_of_Russian) uses 'zh' for Ж
+- Finnish/Estonian officially allow 'zh' as a substitute when 'ž' is unavailable
 
 ### "TH" Sound (/θ/)
 
@@ -294,12 +385,15 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | th | think, bath |
 | [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | þ (thorn) | þakka (thank) |
 | [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | th | athro (teacher) |
+| [Greek](https://en.wikipedia.org/wiki/Greek_orthography) | θ (theta) | θάλασσα (sea) |
 | Spanish (Castilian) | c/z | cero (zero), zapato (shoe) |
+| [Bashkir](https://en.wikipedia.org/wiki/Bashkir_language)/[Turkmen](https://en.wikipedia.org/wiki/Turkmen_language) | θ/s | (Turkic languages with /θ/) |
 
 **Notes:**
-- [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19) — they're genuinely rare
+- [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19)—they're genuinely rare
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
-- We keep 'th' for voiceless /θ/ — the intuitive choice
+- We keep 'th' for voiceless /θ/—the intuitive choice
+- Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
 
 ### "DH" Sound (/ð/)
 
@@ -307,8 +401,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **dh** | dhu (the) |
 | English | th (ambiguous!) | the, this, father |
-| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | ð (eth) | faðir (father) |
-| [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | dd | tad (father) |
+| Icelandic | ð (eth) | faðir (father) |
+| Welsh | dd | tad (father) |
 
 **Notes:**
 - We use 'dh' to distinguish voiced /ð/ from voiceless /θ/
@@ -324,10 +418,15 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | German | ng | ring (ring) |
 | Spanish | n (before g/k) | tengo (I have) |
 | Vietnamese | ng, ngh | ngày (day) |
+| [Samoan](https://en.wikipedia.org/wiki/Samoan_language)/[Tongan](https://en.wikipedia.org/wiki/Tongan_language) | g | (Polynesian languages) |
+| [Bemba](https://en.wikipedia.org/wiki/Bemba_language) | ng' | ng'anda (house) |
+| Pinyin | ng | héng (constant) |
 
 **Notes:**
 - Nearly universal use of 'ng' for this sound
-- We keep 'ng' - no innovation needed here
+- Polynesian languages treat /ŋ/ as a single letter, often written 'g' or 'ng'
+- African languages often use 'ng'' (with apostrophe) to distinguish from /ng/ clusters
+- We keep 'ng'—no innovation needed here
 
 ### "CH" Sound (/tʃ/)
 
@@ -353,10 +452,14 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Italian | g (before e/i) | giorno (day) |
 | Turkish | c | cam (glass) |
 | Indonesian | j | jalan (road) |
+| [Malay](https://en.wikipedia.org/wiki/Malay_language) | j | jadi (become) |
+| [Somali](https://en.wikipedia.org/wiki/Somali_language) | j | jaar (year) |
+| [Hindi romanization](https://en.wikipedia.org/wiki/Devanagari) | j | jī (yes) |
 
 **Notes:**
 - 'j' for /dʒ/ matches English convention
-- Italian uses 'g' before front vowels; Turkish uses 'c'
+- Widely adopted in Southeast Asia (Indonesian, Malay), East Africa (Somali), and Indian romanization
+- Italian uses 'g' before front vowels; Turkish reverses: 'c' for /dʒ/, 'j' for /ʒ/
 
 ## R-Colored Vowels
 
@@ -420,7 +523,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 **Notes:**
 - English uses five different spellings for the same sound
 - Ingglish uses 'er' consistently—the most common English spelling
-- Mandarin is one of few languages with r-colored vowels (called [erhua](https://en.wikipedia.org/wiki/Erhua) 儿化)
+- Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
 - R-colored vowels occur in less than 1% of world languages
 
 ## Summary: Where Ingglish Aligns and Diverges
@@ -435,7 +538,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - **ou** for /aʊ/ (English, Dutch)
 
 ### Solving Problems English Never Did
-- **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
+- **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. Albanian already uses 'dh' officially.
 - **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
 - **oo/uu** for /ʊ/ vs /uː/ - "book" and "too" sound different. Now they look different: book vs tuu.
 - **oh** for /oʊ/ - Since 'o' alone is used for /ɑ/, we need a digraph: go (goh).
