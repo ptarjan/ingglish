@@ -42,13 +42,13 @@ The "Frequency" column shows SUBTLEX corpus occurrence counts (higher = more com
 | English | Ingglish | Collides With | Frequency |
 |---------|----------|---------------|-----------|
 | a, uh | u | u (letter) | 1,041,179 -> 2,506 |
-| of | uv | uv (?) | 590,439 -> ? |
+| of | uv | uv (ultraviolet) | 590,439 -> rare |
 | right, write, rite | rait | rait (Scottish) | 204,428 -> rare |
-| how | hou | hou (?) | 155,867 -> ? |
+| how | hou | hou (place suffix) | 155,867 -> rare |
 | yeah | ya | ya (informal) | 152,262 -> 7,664 |
 | want | wont | wont (habit) | 140,718 -> 81 |
 | ass | as | as (conjunction) | 11,545 -> 113,068 |
-| here, hear | heer | heer (?) | 230,788 -> 2 |
+| here, hear | heer | heer (yarn measure) | 230,788 -> 2 |
 | side, sighed | said | said (verb) | 10,247 -> 56,531 |
 | white | wait | wait (verb) | 8,744 -> 42,343 |
 | place | plays | plays (verb) | 30,736 -> 1,521 |
@@ -57,10 +57,10 @@ The "Frequency" column shows SUBTLEX corpus occurrence counts (higher = more com
 | wife | waif | waif (orphan) | 17,795 -> 17 |
 | since | sins | sins (noun) | 16,064 -> 455 |
 | turn | tern | tern (bird) | 15,630 -> 1 |
-| case | kays | kays (letter K's) | 14,403 -> ? |
+| case | kays | kays (letter K's) | 14,403 -> rare |
 | mine | main | main (primary) | 12,800 -> 2,179 |
 | matter | mater | mater (mother) | 18,900 -> 83 |
-| else | els | els (?) | 22,907 -> 4 |
+| else | els | els (elevated trains) | 22,907 -> 4 |
 
 Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1 or unknown). The rare word is unlikely to appear in real text, so confusion is minimal.
 
