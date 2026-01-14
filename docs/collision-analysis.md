@@ -28,7 +28,7 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 |---------|----------|-----------|
 | a, uh | u (you informal) | 1,041,179 → 2,506 |
 | of | uv (ultraviolet) | 590,439 → rare |
-| right, write, rite | rait (not a word) | 204,428 → rare |
+| right, write, rite | rait (soak flax) | 204,428 → rare |
 | how | hou (place suffix) | 155,867 → rare |
 | yeah | ya (you informal) | 152,262 → 7,664 |
 | want | wont (habit) | 140,718 → 81 |
@@ -42,7 +42,7 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 | wife | waif (homeless person) | 17,795 → 17 |
 | since | sins (wrongdoings) | 16,064 → 455 |
 | turn | tern (seabird) | 15,630 → 1 |
-| case | kays (letter K plural) | 14,403 → rare |
+| case | kays (kilometers/slang) | 14,403 → rare |
 | mine | main (primary) | 12,800 → 2,179 |
 | matter | mater (mother/Latin) | 18,900 → 83 |
 | else | els (elevated trains) | 22,907 → 4 |
