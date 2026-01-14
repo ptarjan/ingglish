@@ -690,26 +690,26 @@ Not all phonemes are equally common across world languages. Data from [PHOIBLE](
 
 ### Consonants in Ingglish
 
-| Sound | IPA | % of languages | Notes |
-|-------|-----|----------------|-------|
-| m | /m/ | 96% | Nearly universal |
-| k | /k/ | 90% | Very common |
-| n | /n/ | 88% | Very common |
-| p | /p/ | 86% | Very common |
-| t | /t/ | 85% | Very common |
-| j (as in "yes") | /j/ | 84% | Very common |
-| w | /w/ | 76% | Common |
-| s | /s/ | 75% | Common |
-| l | /l/ | 68% | Common |
-| h | /h/ | 62% | Common |
-| r | /r/ or /ɹ/ | 60% | Common (varies by type) |
-| ŋ (ng) | /ŋ/ | 51% | About half of languages |
-| ʃ (sh) | /ʃ/ | 45% | Less than half |
-| tʃ (ch) | /tʃ/ | 44% | Less than half |
-| dʒ (j) | /dʒ/ | 30% | Less common |
-| ʒ (zh) | /ʒ/ | 20% | Uncommon |
-| ð (dh) | /ð/ | 7% | Rare |
-| θ (th) | /θ/ | 4% | Rare |
+| Sound | IPA | % of languages |
+|-------|-----|----------------|
+| m | /m/ | 96% |
+| k | /k/ | 90% |
+| n | /n/ | 88% |
+| p | /p/ | 86% |
+| t | /t/ | 85% |
+| j (as in "yes") | /j/ | 84% |
+| w | /w/ | 76% |
+| s | /s/ | 75% |
+| l | /l/ | 68% |
+| h | /h/ | 62% |
+| r | /r/ or /ɹ/ | 60% |
+| ŋ (ng) | /ŋ/ | 51% |
+| ʃ (sh) | /ʃ/ | 45% |
+| tʃ (ch) | /tʃ/ | 44% |
+| dʒ (j) | /dʒ/ | 30% |
+| ʒ (zh) | /ʒ/ | 20% |
+| ð (dh) | /ð/ | 7% |
+| θ (th) | /θ/ | 4% |
 
 **Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling — few languages have these sounds.
 
