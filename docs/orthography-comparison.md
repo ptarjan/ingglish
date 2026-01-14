@@ -294,16 +294,34 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Nearly universal use of 'ng' for this sound
 - We keep 'ng' - no innovation needed here
 
-### Affricates
+### The "CH" Sound (/tʃ/)
 
-| Sound | IPA | Ingglish | Other Languages |
-|-------|-----|----------|-----------------|
-| chat | tʃ | **ch** | Universal: Spanish, Italian, English all use 'ch' |
-| just | dʒ | **j** | Italian: 'g' (before e/i), Spanish: uses different sound |
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ch** | chat |
+| English | ch | chat, church |
+| Spanish | ch | chico (boy) |
+| Italian | c (before e/i) | ciao (hello) |
+| German | tsch | deutsch (German) |
+| Portuguese | ch | chave (key) |
 
 **Notes:**
 - 'ch' for /tʃ/ is nearly universal in Latin scripts
-- 'j' for /dʒ/ matches English; Italian uses 'g' before front vowels
+- One of the most consistent spellings across languages
+
+### The "J" Sound (/dʒ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **j** | just |
+| English | j, g (before e/i) | just, gem |
+| Italian | g (before e/i) | giorno (day) |
+| Turkish | c | cam (glass) |
+| Indonesian | j | jalan (road) |
+
+**Notes:**
+- 'j' for /dʒ/ matches English convention
+- Italian uses 'g' before front vowels; Turkish uses 'c'
 
 ## R-Colored Vowels
 
