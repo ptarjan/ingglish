@@ -9,7 +9,7 @@ This document analyzes cases where translating an English word to Ingglish produ
 | Total words analyzed | 117,493 |
 | Ingglish spellings matching different English words | 1,089 |
 | Homophone groups (same pronunciation, different spelling) | 9,895 |
-| Collisions involving common words (top 5000) | 657 |
+| Collisions involving common words (freq ≥ 1000) | 172 |
 
 ### Is This a Problem?
 
@@ -41,38 +41,45 @@ The "Frequency" column shows corpus occurrence counts (higher = more common):
 
 | English | Ingglish | Collides With | Frequency |
 |---------|----------|---------------|-----------|
-| white | wait | wait (verb) | 2,547 → 8,578 |
+| right, rite, write | rait | rait (Scottish) | 204,428 → rare |
+| want | wont | wont (habit) | 140,718 → 81 |
+| white | wait | wait (verb) | 8,744 → 42,343 |
+| place | plays | plays (verb) | 30,736 → 1,521 |
+| fine | fain | fain (archaic) | 30,502 → 15 |
+| while, wile | wail | wail (cry) | 17,821 → 44 |
+| wife | waif | waif (orphan) | 17,795 → 17 |
+| since | sins | sins (noun) | 16,064 → 455 |
 | turn | tern | tern (bird) | 15,630 → 1 |
-| sauce | saws | saws (tool) | 795 → 24 |
-| bought | bot | bot (robot) | 4,362 → 50 |
-| winner | winer | winer (?) | 1,592 → 1 |
-| robber | rober | rober (?) | 239 → 1 |
-| dine | dain | dain (name) | 219 → 1 |
-| cease | sees | sees (verb) | 445 → 1,899 |
+| mine | main | main (primary) | 12,800 → 2,179 |
 
 Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1). The rare word is unlikely to appear in real text, so confusion is minimal.
 
 ### Analysis of Top Collisions
 
+#### "right" → "rait"
+The extremely common words "right" (204,428), "write" (6,467), and "rite" (74) all translate to "rait". This collides with "rait" which is a Scottish/archaic English word (meaning "wrote" in Scots dialect).
+
+**Impact**: Very Low - "rait" is essentially never used in modern English, so there's no practical confusion.
+
+#### "want" → "wont"
+The word "want" (140,718 occurrences) translates to "wont", which is an archaic English word meaning "habit" or "accustomed to" (only 81 occurrences).
+
+**Impact**: Low - "wont" is rarely used in modern English. Context makes "I wont that" clearly mean "I want that".
+
 #### "white" → "wait"
-The word "white" translates to "wait" in Ingglish. This matches the common English verb "wait". This is one of the more significant collisions because both words are very common (white: 2,547, wait: 8,578 in SUBTLEX corpus).
+The word "white" (8,744 occurrences) translates to "wait", which is the common verb (42,343 occurrences). This is significant because both words are frequently used.
 
-**Impact**: Medium - Both words are common, but context usually resolves it. "The wait house" clearly means "white house". Interestingly, "wait" itself translates to "wayt" in Ingglish, so they don't merge - but reading "wait" in Ingglish text could momentarily confuse readers expecting the English verb.
+**Impact**: Medium - Both words are common, but context resolves it. "The wait house" clearly means "white house". Note: "wait" itself translates to "wayt" in Ingglish, so the two words don't merge.
 
-#### "turn" → "tern"
-The word "turn" translates to "tern" (a seabird). This is because CMU dictionary shows "turn" as /tɜːn/ which maps to "tern" in Ingglish. The bird "tern" appears only once in the SUBTLEX corpus, making it extremely rare.
+#### "while" → "wail"
+"While" (17,821 occurrences) translates to "wail" (44 occurrences), the crying sound.
 
-**Impact**: Low - "tern" almost never appears in real text, so "turn" → "tern" won't cause confusion.
+**Impact**: Low - "wail" is uncommon. "Wail you were gone" clearly means "while you were gone".
 
-#### "winner" → "winer"
-"Winner" becomes "winer" which looks like "winer" (one who wines).
+#### "since" → "sins"
+"Since" (16,064 occurrences) translates to "sins" (455 occurrences), the noun for transgressions.
 
-**Impact**: Low - reading context ("the winer of the race") makes meaning clear.
-
-#### "sauce" → "saws"
-"Sauce" translates to "saws" (identical to "sauce" in most American accents).
-
-**Impact**: Low-Medium - both words are common, but context ("posta saws" vs "hand saws") resolves it.
+**Impact**: Low-Medium - Both are moderately common, but context ("sins yesterday" = "since yesterday") clarifies.
 
 ---
 

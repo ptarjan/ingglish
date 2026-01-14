@@ -62,29 +62,30 @@ export async function analyzeCollisions(): Promise<AnalysisResult> {
   const englishCollisions = collisions.filter((c) => c.collidesWithEnglish);
   const homophones = collisions.filter((c) => !c.collidesWithEnglish && c.sources.length > 1);
 
-  // Find collisions involving common words (top 5000 by frequency)
+  // Find collisions involving common words (frequency >= 1000 in SUBTLEX corpus)
+  const COMMON_THRESHOLD = 1000;
   const commonWordCollisions = englishCollisions.filter((c) => {
     // Check if any source word or the collision target is common
     const hasCommonSource = c.sources.some((w) => {
       const freq = getWordFrequency(w);
-      return freq !== undefined && freq <= 5000;
+      return freq !== undefined && freq >= COMMON_THRESHOLD;
     });
     const targetFreq = getWordFrequency(c.ingglish);
-    const hasCommonTarget = targetFreq !== undefined && targetFreq <= 5000;
+    const hasCommonTarget = targetFreq !== undefined && targetFreq >= COMMON_THRESHOLD;
     return hasCommonSource || hasCommonTarget;
   });
 
-  // Sort by frequency (most common first)
+  // Sort by frequency (most common first - higher frequency = more common)
   commonWordCollisions.sort((a, b) => {
-    const freqA = Math.min(
-      ...a.sources.map((w) => getWordFrequency(w) ?? Infinity),
-      getWordFrequency(a.ingglish) ?? Infinity
+    const freqA = Math.max(
+      ...a.sources.map((w) => getWordFrequency(w) ?? 0),
+      getWordFrequency(a.ingglish) ?? 0
     );
-    const freqB = Math.min(
-      ...b.sources.map((w) => getWordFrequency(w) ?? Infinity),
-      getWordFrequency(b.ingglish) ?? Infinity
+    const freqB = Math.max(
+      ...b.sources.map((w) => getWordFrequency(w) ?? 0),
+      getWordFrequency(b.ingglish) ?? 0
     );
-    return freqA - freqB;
+    return freqB - freqA; // Higher frequency first
   });
 
   return {
