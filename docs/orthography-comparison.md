@@ -99,8 +99,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | ee, ea, ie | bee, sea, piece |
 | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it) |
 | [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga (too much) |
-| Indonesian | i | ini — no length distinction |
-| Swahili | i | — no length distinction |
+| Indonesian | i | bisa (can) — no length distinction |
+| Swahili | i | sisi (we) — no length distinction |
 | Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
 
 **Notes:**
@@ -239,7 +239,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [Hungarian](https://en.wikipedia.org/wiki/Hungarian_orthography) | s | só (salt) |
 | [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola (school) |
 | Italian | sc (before e/i) | pesce (fish) |
-| [French](https://en.wikipedia.org/wiki/French_orthography) | ch | chat |
+| [French](https://en.wikipedia.org/wiki/French_orthography) | ch | chat (cat) |
 | Turkish | ş | şeker (sugar) |
 
 **Notes:**
@@ -256,7 +256,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | French | j, g | je (I), rouge (red) |
 | Portuguese | j, g | hoje (today), gente (people) |
 | Polish | ż, rz | żaba (frog), rzeka (river) |
-| Turkish | j | jeton |
+| Turkish | j | jeton (token) |
 
 **Notes:**
 - English has no consistent spelling for /ʒ/ - we create one with 'zh'
@@ -282,8 +282,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 ### The "NG" Sound (/ŋ/)
 
-| Language | Spelling | Notes |
-|----------|----------|-------|
+| Language | Spelling | Example |
+|----------|----------|---------|
 | **Ingglish** | **ng** | sing |
 | English | ng, n (before k) | sing, think |
 | German | ng | ring (ring) |
