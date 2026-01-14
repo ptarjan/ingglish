@@ -1,16 +1,13 @@
 /**
  * Shared test setup for @ingglish/dom tests
+ *
+ * Note: Dictionary is pre-loaded in vitest.setup.ts, so setupDictionary()
+ * is now a no-op kept for backwards compatibility.
  */
-import { beforeAll } from 'vitest';
-import { translate } from '@ingglish/core';
 
 /**
- * Call this in your test file to ensure the dictionary is loaded before tests run.
- * Usage: setupDictionary();
+ * @deprecated Dictionary is now pre-loaded globally. This function is a no-op.
  */
 export function setupDictionary(): void {
-  beforeAll(async () => {
-    // translate() auto-loads the dictionary
-    await translate('');
-  });
+  // Dictionary is pre-loaded in vitest.setup.ts - nothing to do here
 }

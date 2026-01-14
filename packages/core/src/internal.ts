@@ -33,3 +33,8 @@ export { arpabetPhonemeToIngglish, arpabetPhonemeToIPA } from './convert';
 // Word-level translation (advanced use)
 export { translateWord } from './translate/forward';
 export { reverseTranslateWord, reverseTranslateIPAWord } from './translate/reverse';
+
+// Dictionary loading (for test setup)
+export { loadDictionary, isDictionaryLoaded } from './dictionary/loader';
+export { loadReverseDictionary } from './dictionary/reverse';
+export { loadFrequencies } from './utils/frequency';

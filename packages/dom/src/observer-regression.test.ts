@@ -5,7 +5,7 @@
  * This test verifies that translateSync is called exactly once per text node,
  * not multiple times due to characterData mutations re-triggering the observer.
  */
-import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import type { OutputFormat } from '@ingglish/core';
 import type * as CoreModule from '@ingglish/core';
 
@@ -33,15 +33,10 @@ vi.mock('@ingglish/core', async (importOriginal) => {
 });
 
 // Import after mock is set up
-import { translate } from '@ingglish/core';
 import { observeAndTranslate } from './observe';
 
 describe('observer regression: double-translation', () => {
-  beforeAll(async () => {
-    await translate('');
-    // Reset counter after dictionary loading calls
-    mockState.count = 0;
-  });
+  // Dictionary is pre-loaded in vitest.setup.ts
 
   afterEach(() => {
     document.body.innerHTML = '';
