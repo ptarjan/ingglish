@@ -130,6 +130,9 @@ export default tseslint.config(
       '**/*.config.js',
       '**/*.config.ts',
       '**/vitest.setup.ts',
+      // Auto-generated dictionary files
+      '**/src/dictionary/**/*.js',
+      '**/src/data/**/*.js',
     ],
   }
 );

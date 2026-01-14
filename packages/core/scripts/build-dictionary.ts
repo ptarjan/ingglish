@@ -10,7 +10,11 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import wordFrequencies from 'subtlex-word-frequencies';
+
+const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Use .js extension to skip TypeScript transformation (88s -> <1s in vitest)
@@ -26,13 +30,25 @@ interface CMUDictionary {
 
 async function downloadDictionary(): Promise<string> {
   console.log('Downloading CMU dictionary from GitHub...');
-  const response = await fetch(CMUDICT_URL);
-  if (!response.ok) {
-    throw new Error(`Failed to download: ${response.status} ${response.statusText}`);
+
+  try {
+    // Use curl for reliable downloading (works in more environments than fetch/https)
+    const { stdout } = await execFileAsync('curl', ['-sL', CMUDICT_URL], {
+      maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+      encoding: 'utf8',
+    });
+
+    if (!stdout || stdout.length === 0) {
+      throw new Error('Downloaded file is empty');
+    }
+
+    console.log(`Downloaded ${stdout.length} bytes`);
+    return stdout;
+  } catch (error) {
+    throw new Error(
+      `Failed to download using curl: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
-  const text = await response.text();
-  console.log(`Downloaded ${text.length} bytes`);
-  return text;
 }
 
 // Minimal stub dictionary for sandboxed environments where download fails
