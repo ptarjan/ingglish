@@ -39,21 +39,25 @@ These collisions involve frequently-used words and may cause occasional confusio
 
 The "Frequency" column shows corpus occurrence counts (higher = more common):
 
-| English | Ingglish | Frequency |
-|---------|----------|-----------|
-| turn | tern | 15,630 → 1 |
-| robber | rober | 239 → 1 |
-| winner | winer | 1,592 → 1 |
-| dine | dain | 219 → 1 |
-| cease | sees | 445 → 1,899 |
-| milled | mild | 1 → 245 |
-| rhine | rain | 34 → 2,494 |
-| sauce | saws | 795 → 24 |
-| bought | bot | 4,362 → 50 |
+| English | Ingglish | Collides With | Frequency |
+|---------|----------|---------------|-----------|
+| white | wait | wait (verb) | both common |
+| turn | tern | tern (bird) | 15,630 → 1 |
+| sauce | saws | saws (tool) | 795 → 24 |
+| bought | bot | bot (robot) | 4,362 → 50 |
+| winner | winer | winer (?) | 1,592 → 1 |
+| robber | rober | rober (?) | 239 → 1 |
+| dine | dain | dain (name) | 219 → 1 |
+| cease | sees | sees (verb) | 445 → 1,899 |
 
 Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1). The rare word is unlikely to appear in real text, so confusion is minimal.
 
 ### Analysis of Top Collisions
+
+#### "white" → "wait"
+The most significant collision. Both "white" and "wait" are common words, and they translate to the same Ingglish spelling. This happens because most American speakers have merged the "wh" and "w" sounds (the wine-whine merger).
+
+**Impact**: Medium - Both words are common. Context usually resolves it ("wait for the bus" vs "wait paint"), but this is the clearest example of a problematic collision.
 
 #### "turn" → "tern"
 The word "turn" translates to "tern" (a seabird). This is because CMU dictionary shows "turn" as /tɜːn/ which maps to "tern" in Ingglish. The bird "tern" appears only once in the SUBTLEX corpus, making it extremely rare.
