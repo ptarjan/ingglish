@@ -13,8 +13,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | **Ingglish** | **a** | kat |
 | [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
 | [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
-| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
-| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (similar sound) |
+| [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto (cat) |
+| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (men) |
 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
 | [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
 | [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language#Writing_system) | a | sama (same) |
@@ -29,8 +29,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **e** | bed |
 | English | e | bed, pet |
-| Spanish | e | este |
-| Italian | e | bello |
+| Spanish | e | este (this) |
+| Italian | e | bello (beautiful) |
 | Swahili | e | embe (mango) |
 | Turkish | e | ev (house) |
 | [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_alphabet) | e | xe (vehicle) |
@@ -46,8 +46,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **i** | bit |
 | English | i | bit, sit |
-| Spanish | i | si |
-| Italian | i | sì |
+| Spanish | i | si (yes) |
+| Italian | i | sì (yes) |
 | Swahili | i | nini (what) |
 | Turkish | i | bir (one) |
 | Indonesian | i | ini (this) |
@@ -63,8 +63,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **o** | hot |
 | English | o | hot, cot |
-| Spanish | o | poco |
-| Italian | o | otto |
+| Spanish | o | poco (little) |
+| Italian | o | otto (eight) |
 | Swahili | o | moto (fire) |
 | Turkish | o | on (ten) |
 | Indonesian | o | bodoh (stupid) |
@@ -115,7 +115,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **oo** | buuk |
 | English | oo, u | book, put |
-| German | u | Futter (short u) |
+| German | u | Futter (fodder) |
 | Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
 
 **Notes:**
@@ -132,7 +132,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | oo, ou, ew | too, you, new |
 | Finnish | uu | suuri (big) |
 | Estonian | uu | kuul (ball) |
-| Indonesian | u | buku (phonemic—no length distinction) |
+| Indonesian | u | buku (book) |
 | Swahili | u | kuku (chicken) |
 | Japanese (Romaji) | uu, ū | sūpu (soup) |
 | Pinyin | u | wū (house) |
@@ -148,9 +148,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **ai** | mai |
 | English | ie, i, y | tie, pie, my |
-| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
-| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij, klein |
-| Italian | ai | mai |
+| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein (my) |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij (me), klein (small) |
+| Italian | ai | mai (never) |
 | Pinyin | ai | bái (white) |
 | Vietnamese | ai | hai (two) |
 
@@ -165,10 +165,10 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **ay** | sey |
 | English | ay, ai, a-e | say, rain, make |
-| Spanish | ey | rey |
-| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei |
+| Spanish | ey | rey (king) |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei (law) |
 | Pinyin | ei | bēi (cup) |
-| Indonesian | e | sate (no true diphthong) |
+| Indonesian | e | sate (satay) |
 
 **Notes:**
 - Matches English: "say", "day", "play", "way"
@@ -181,8 +181,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **oh** | goh |
 | English | o, oa, ow | go, boat, show |
-| Dutch | oo | boot |
-| German | o | Boot |
+| Dutch | oo | boot (boat) |
+| German | o | Boot (boat) |
 | Pinyin | ou | dōu (all) |
 | Japanese (Romaji) | o, ō | ohayō (good morning) |
 
@@ -197,8 +197,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **ou** | kou |
 | English | ow, ou | cow, out |
-| German | au | Haus |
-| Dutch | au, ou | blauw, oud |
+| German | au | Haus (house) |
+| Dutch | au, ou | blauw (blue), oud (old) |
 | Pinyin | ao | hǎo (good) |
 | Portuguese | au | mau (bad) |
 
@@ -215,9 +215,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **oi** | boi |
 | English | oi, oy | oil, boy |
-| French | oi | roi |
-| Dutch | ooi | mooi |
-| German | eu, äu | neu, Häuser |
+| French | oi | roi (king) |
+| Dutch | ooi | mooi (beautiful) |
+| German | eu, äu | neu (new), Häuser (houses) |
 | Indonesian | oi | (rare—mostly in loanwords) |
 | Vietnamese | oi | nói (speak) |
 
@@ -234,13 +234,13 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **sh** | ship |
 | English | sh | ship |
-| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff |
-| [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła |
+| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff (ship) |
+| [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła (school) |
 | [Hungarian](https://en.wikipedia.org/wiki/Hungarian_orthography) | s | só (salt) |
-| [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola |
-| Italian | sc (before e/i) | pesce |
+| [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola (school) |
+| Italian | sc (before e/i) | pesce (fish) |
 | [French](https://en.wikipedia.org/wiki/French_orthography) | ch | chat |
-| Turkish | ş | şeker |
+| Turkish | ş | şeker (sugar) |
 
 **Notes:**
 - We follow English convention with 'sh' - the most intuitive for English speakers
@@ -253,9 +253,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **zh** | mezher |
 | English | s, si, g | measure, vision, beige |
-| French | j, g | je, rouge |
-| Portuguese | j, g | hoje, gente |
-| Polish | ż, rz | żaba, rzeka |
+| French | j, g | je (I), rouge (red) |
+| Portuguese | j, g | hoje (today), gente (people) |
+| Polish | ż, rz | żaba (frog), rzeka (river) |
 | Turkish | j | jeton |
 
 **Notes:**
@@ -286,9 +286,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|-------|
 | **Ingglish** | **ng** | sing |
 | English | ng, n (before k) | sing, think |
-| German | ng | Ring |
-| Spanish | n (before g/k) | tengo |
-| Vietnamese | ng, ngh | ngày |
+| German | ng | Ring (ring) |
+| Spanish | n (before g/k) | tengo (I have) |
+| Vietnamese | ng, ngh | ngày (day) |
 
 **Notes:**
 - Nearly universal use of 'ng' for this sound
