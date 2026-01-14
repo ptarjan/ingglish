@@ -97,16 +97,20 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **aw** | law, thawt |
 | English | aw, au, ough, a | law, caught, thought, all |
-| German | o | Sonne (sun) |
-| Dutch | o | zon (sun) |
-| Italian | o | cosa (thing) |
-| Spanish | o | sol (sun) |
+| [Swedish/Norwegian/Danish](https://en.wikipedia.org/wiki/%C3%85) | å | båt (boat), på (on) |
+| [French](https://en.wikipedia.org/wiki/French_orthography) | o | porte (door), bonne (good) |
+| [Catalan](https://en.wikipedia.org/wiki/Catalan_orthography) | ò | sòc (clog), pòsit (deposit) |
+| [Polish](https://en.wikipedia.org/wiki/Polish_orthography) | o | kot (cat), dom (house) |
+| German | o | Sonne (sun), offen (open) |
+| [Yoruba](https://en.wikipedia.org/wiki/Yoruba_alphabet) | ọ | ọjọ (day) |
 
 **Notes:**
 - English has wildly inconsistent spellings for this sound: "law", "caught", "thought", "all"
 - Ingglish uses 'aw' consistently—matches English "law", "saw", "raw"
-- Many languages use plain 'o' for this sound, but we reserve 'o' for /ɑ/ (father, hot)
-- The CMU dictionary encodes cot-caught merger for some speakers, but we preserve the distinction
+- Scandinavian languages use the dedicated letter **å** for this sound
+- Catalan distinguishes open ò /ɔ/ from close ó /o/ with accent marks
+- Many African languages use **Ɔ** or **ọ** (open O or O with dot below)
+- We reserve plain 'o' for /ɑ/ (father, hot) to avoid collision
 
 ### Long 'EE' Sound (/iː/)
 
@@ -354,7 +358,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 ## R-Colored Vowels
 
-[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) are distinctly American English—most languages don't have these merged vowel+R sounds. They're one of the trickiest parts of English phonology.
+[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
 
 ### 'AR' Sound (/ɑɹ/)
 
@@ -409,11 +413,13 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **er** | berd, her, tern |
 | English | ir, er, ur, ear, or | bird, her, turn, earth, work |
+| [Mandarin Chinese](https://en.wikipedia.org/wiki/Erhua) | er | 二 èr (two), 儿 ér (son) |
 
 **Notes:**
 - English uses five different spellings for the same sound
 - Ingglish uses 'er' consistently—the most common English spelling
-- This is the standalone r-colored vowel (not vowel + R)
+- Mandarin is one of few languages with r-colored vowels (called [erhua](https://en.wikipedia.org/wiki/Erhua) 儿化)
+- R-colored vowels occur in less than 1% of world languages
 
 ## Summary: Where Ingglish Aligns and Diverges
 
