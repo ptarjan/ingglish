@@ -1,1 +1,2 @@
+node scripts/pre-commit-checks.js
 npx lint-staged --quiet
