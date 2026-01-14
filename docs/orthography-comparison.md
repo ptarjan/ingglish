@@ -155,7 +155,6 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Vietnamese | ai | hai (two) |
 
 **Notes:**
-- We chose 'ai' because it directly represents IPA /aɪ/
 - Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
@@ -188,10 +187,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Japanese (Romaji) | o, ō | ohayō (good morning) |
 
 **Notes:**
-- We needed to distinguish from 'ou' (/aʊ/ as in "cow")
-- 'oh' is less common but unambiguous
-- Many languages (Spanish, Swahili, Turkish) have pure /o/ without glide
-- English "oh!" already uses this spelling for the sound
+- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
+- 'oh' matches English interjection "oh!" which has this exact sound
+- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
 
 ### The 'OU' Diphthong (/aʊ/ as in "cow")
 
