@@ -41,7 +41,7 @@ npx tsx scripts/profile.ts
 
 Sample output:
 ```
-=== Inglish Core Benchmarks ===
+=== Ingglish Core Benchmarks ===
 
 Iterations: 1000, Warmup: 100
 

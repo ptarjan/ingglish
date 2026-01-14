@@ -144,7 +144,7 @@ Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and childr
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](https://paultarjan.com/ingglish/#docs/orthography-comparison), showing how each maps to IPA and compares to other languages.
+**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](orthography-comparison.md), showing how each maps to IPA and compares to other languages.
 
 ### 10. Vested Interests
 
@@ -270,11 +270,11 @@ The question isn't whether Ingglish will replace English spelling overnight. It'
 
 ---
 
-## Further Reading
+## See Also
 
-- [Orthography Comparison](https://paultarjan.com/ingglish/#docs/orthography-comparison) - How Ingglish's specific spellings compare to other languages
-- [Phoneme Mapping](https://paultarjan.com/ingglish/#docs/phoneme-mapping) - The complete sound-to-spelling reference
-- [Architecture](https://paultarjan.com/ingglish/#docs/architecture) - How the translation system works
+- [Orthography Comparison](orthography-comparison.md) - How Ingglish's specific spellings compare to other languages
+- [Phoneme Mapping](phoneme-mapping.md) - The complete sound-to-spelling reference
+- [Architecture](architecture.md) - How the translation system works
 
 ## Video Resources
 

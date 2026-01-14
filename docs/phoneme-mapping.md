@@ -113,7 +113,7 @@ The rule applies only when the vowel is immediately followed by R in the phoneme
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically - no special rules needed.
+Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically—no special rules needed.
 
 The problem is readability. These spellings would make words look like different English words:
 - "hot" → "hat" (looks like the head covering)
