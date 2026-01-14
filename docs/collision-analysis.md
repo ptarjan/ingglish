@@ -24,15 +24,12 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 1. **Merged sounds** - English has sounds that merged historically:
    - "wh" words → "w" sounds (white→wait, whine→wine)
-   - This is how most speakers actually pronounce these words
+   - This is how most American speakers actually pronounce these words
 
-2. **Vowel shifts** - Ingglish normalizes vowel sounds:
-   - Short vowels become clearer (bath→baths spelling patterns)
-   - R-colored vowels merge appropriately
-
-3. **Surname/word overlaps** - Many collisions are surnames matching common words:
-   - "Baht" (currency) → "bot" (same as "bought" pronunciation)
-   - "Bahler" → "boler" (matches obscure "boler")
+2. **Proper names matching common words** - Many collisions are surnames:
+   - "Bier" (German surname) → "beer"
+   - "Bahler" → "boler"
+   - These are unavoidable since names follow the same pronunciation rules
 
 ---
 
