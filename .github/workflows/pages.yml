@@ -31,10 +31,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            packages/core/src/dictionary/cmudict.ts
-            packages/core/src/dictionary/reverse-cmudict.ts
-            packages/core/src/data/word-frequencies.ts
-          key: dictionaries-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+            packages/core/src/dictionary/cmudict.js
+            packages/core/src/dictionary/reverse-cmudict.js
+            packages/core/src/data/word-frequencies.js
+          key: dictionaries-v2-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
 
       - name: Cache generated docs
         id: docs-cache
