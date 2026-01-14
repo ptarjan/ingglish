@@ -148,6 +148,10 @@ test.describe('URL Translator Navigation', () => {
     expect(wordCount).toBeGreaterThan(0);
   });
 
+  // Note: Gesture detection (scroll/pinch not triggering navigation) is tested manually on real iOS devices.
+  // Playwright cannot reliably test this because synthetic touch events in iframes don't trigger
+  // the same event flow as real touch interactions on iPad.
+
   // Playwright's WebKit cannot create TouchEvent objects (Illegal constructor error)
   // Real iOS Safari works fine - this is a Playwright limitation
   test('back button returns to previous page', async ({ page }, testInfo) => {
