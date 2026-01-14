@@ -80,8 +80,13 @@ async function main() {
 
   // 4. Reverse translation
   console.log('--- Reverse Translation ---');
+  const { loadReverseDictionary } = await import('../src/dictionary/reverse');
   const { reverseTranslateWord, reverseTranslateSync: reverseTranslateText } =
     await import('../src/translate/reverse');
+
+  await profileAsync('loadReverseDictionary', async () => {
+    await loadReverseDictionary();
+  });
 
   profile('reverseTranslateWord("huloh") - first call (builds cache)', () => {
     reverseTranslateWord('huloh');

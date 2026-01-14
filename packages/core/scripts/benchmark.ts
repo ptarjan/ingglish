@@ -58,18 +58,18 @@ async function main() {
   const { ingglishToArpabet } = await import('../src/convert/from-ingglish');
   const { arpabetToIPA } = await import('../src/convert/to-ipa');
   const { lookupPronunciation } = await import('../src/dictionary/lookup');
-  const { warmReverseDictionaryCache } = await import('../src/dictionary/reverse');
+  const { loadReverseDictionary } = await import('../src/dictionary/reverse');
   const { sortByFrequency } = await import('../src/utils/frequency');
 
   // Load dictionary first
   console.log('Loading dictionary...');
   await loadDictionary();
+  await loadReverseDictionary();
   const dict = getDictionary();
   console.log(`Dictionary loaded: ${Object.keys(dict).length} entries\n`);
 
   // Warm caches
   console.log('Warming caches...');
-  warmReverseDictionaryCache();
   sortByFrequency(['test', 'hello', 'world']); // Warm frequency map
   console.log('');
 

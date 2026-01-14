@@ -10,13 +10,25 @@
  *   npm run debug:roundtrip "hello world"     # Multiple words - finds failures
  */
 
-import { loadDictionary, translateWord, lookupPronunciation, translateText } from '../src/translator.js';
-import { inglishToPhonemes, reverseTranslateWord, reverseTranslateText } from '../src/reverse-translator.js';
+import { loadDictionary } from '../src/dictionary/loader.js';
+import { loadReverseDictionary } from '../src/dictionary/reverse.js';
+import { translateWord, translateSync as translateText } from '../src/translate/forward.js';
+import { lookupPronunciation } from '../src/dictionary/lookup.js';
+import { ingglishToArpabet } from '../src/convert/from-ingglish.js';
+import {
+  reverseTranslateWord,
+  reverseTranslateSync as reverseTranslateText,
+} from '../src/translate/reverse.js';
 
 const C = {
-  red: '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m',
-  blue: '\x1b[34m', cyan: '\x1b[36m', reset: '\x1b[0m',
-  bold: '\x1b[1m', dim: '\x1b[2m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
 };
 
 const color = (t: string, c: keyof typeof C) => C[c] + t + C.reset;
@@ -32,18 +44,24 @@ async function debugSingleWord(word: string) {
     return;
   }
 
-  const expected = phonemesRaw.map(p => p.replace(/[0-9]/g, ''));
+  const expected = phonemesRaw.map((p) => p.replace(/[0-9]/g, ''));
   console.log(color('1. CMU Dictionary Lookup', 'cyan'));
   console.log('   Raw: ' + color(phonemesRaw.join(' '), 'yellow'));
-  console.log('   Phonemes: [' + expected.map(p => color(p, 'green')).join(', ') + ']');
+  console.log('   Phonemes: [' + expected.map((p) => color(p, 'green')).join(', ') + ']');
 
   const ingglish = translateWord(word);
   console.log(color('\n2. English → Ingglish', 'cyan'));
   console.log('   "' + color(word, 'blue') + '" → "' + color(ingglish, 'green') + '"');
 
-  const parsed = inglishToPhonemes(ingglish);
+  const parsed = ingglishToArpabet(ingglish);
   console.log(color('\n3. Ingglish → Phonemes', 'cyan'));
-  console.log('   "' + color(ingglish, 'green') + '" → [' + (parsed?.map(p => color(p, 'yellow')).join(', ') ?? 'null') + ']');
+  console.log(
+    '   "' +
+      color(ingglish, 'green') +
+      '" → [' +
+      (parsed?.map((p) => color(p, 'yellow')).join(', ') ?? 'null') +
+      ']'
+  );
 
   console.log(color('\n4. Phoneme Comparison', 'cyan'));
   if (parsed) {
@@ -52,9 +70,14 @@ async function debugSingleWord(word: string) {
       const exp = expected[i] ?? '(missing)';
       const par = parsed[i] ?? '(missing)';
       const ok = exp === par;
-      console.log('   ' + color(ok ? '✓' : '✗', ok ? 'green' : 'red') + ' ' +
-                  color(exp, ok ? 'green' : 'red').padEnd(20) + ' vs ' +
-                  color(par, ok ? 'green' : 'red'));
+      console.log(
+        '   ' +
+          color(ok ? '✓' : '✗', ok ? 'green' : 'red') +
+          ' ' +
+          color(exp, ok ? 'green' : 'red').padEnd(20) +
+          ' vs ' +
+          color(par, ok ? 'green' : 'red')
+      );
     }
     if (expected.join(' ') !== parsed.join(' ')) {
       console.log(color('\n   ⚠ Phoneme mismatch! Check PHONEME_ALTERNATIVES', 'yellow'));
@@ -63,12 +86,26 @@ async function debugSingleWord(word: string) {
 
   const results = reverseTranslateWord(ingglish);
   console.log(color('\n5. Reverse Translation', 'cyan'));
-  console.log('   Results: [' + results.slice(0, 5).map(r => color(r, 'blue')).join(', ') + ']');
+  console.log(
+    '   Results: [' +
+      results
+        .slice(0, 5)
+        .map((r) => color(r, 'blue'))
+        .join(', ') +
+      ']'
+  );
 
   console.log(color('\n6. Round-trip Result', 'cyan'));
   const ok = results.includes(word);
-  console.log('   ' + color(ok ? '✓ SUCCESS' : '✗ FAILURE', ok ? 'green' : 'red') +
-              ' - "' + word + '" ' + (ok ? 'found' : 'NOT found') + ' in results\n');
+  console.log(
+    '   ' +
+      color(ok ? '✓ SUCCESS' : '✗ FAILURE', ok ? 'green' : 'red') +
+      ' - "' +
+      word +
+      '" ' +
+      (ok ? 'found' : 'NOT found') +
+      ' in results\n'
+  );
 }
 
 async function debugText(text: string) {
@@ -78,7 +115,7 @@ async function debugText(text: string) {
 
   // Extract words
   const words = text.match(/[a-zA-Z]+/g) || [];
-  const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))];
+  const uniqueWords = [...new Set(words.map((w) => w.toLowerCase()))];
 
   console.log(color('Input:', 'cyan'));
   console.log('   ' + text.slice(0, 100) + (text.length > 100 ? '...' : ''));
@@ -135,6 +172,7 @@ async function main() {
 
   const dictStart = performance.now();
   await loadDictionary();
+  await loadReverseDictionary();
   const dictTime = performance.now() - dictStart;
 
   // Single word vs text
@@ -147,7 +185,9 @@ async function main() {
   }
 
   const totalTime = performance.now() - startTime;
-  console.log(color(`[Timing: dict=${dictTime.toFixed(0)}ms, total=${totalTime.toFixed(0)}ms]`, 'dim'));
+  console.log(
+    color(`[Timing: dict=${dictTime.toFixed(0)}ms, total=${totalTime.toFixed(0)}ms]`, 'dim')
+  );
 }
 
 main().catch(console.error);
