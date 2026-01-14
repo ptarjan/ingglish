@@ -14,7 +14,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
 | [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
 | [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto (cat) |
-| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | Männer (men) |
+| [German](https://en.wikipedia.org/wiki/German_orthography) | ä | männer (men) |
 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language#Orthography) | a | baba (father) |
 | [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
 | [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language#Writing_system) | a | sama (same) |
@@ -115,7 +115,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **oo** | buuk |
 | English | oo, u | book, put |
-| German | u | Futter (fodder) |
+| German | u | futter (fodder) |
 | Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
 
 **Notes:**
@@ -182,7 +182,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | **Ingglish** | **oh** | goh |
 | English | o, oa, ow | go, boat, show |
 | Dutch | oo | boot (boat) |
-| German | o | Boot (boat) |
+| German | o | boot (boat) |
 | Pinyin | ou | dōu (all) |
 | Japanese (Romaji) | o, ō | ohayō (good morning) |
 
@@ -197,7 +197,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **ou** | kou |
 | English | ow, ou | cow, out |
-| German | au | Haus (house) |
+| German | au | haus (house) |
 | Dutch | au, ou | blauw (blue), oud (old) |
 | Pinyin | ao | hǎo (good) |
 | Portuguese | au | mau (bad) |
@@ -217,7 +217,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | oi, oy | oil, boy |
 | French | oi | roi (king) |
 | Dutch | ooi | mooi (beautiful) |
-| German | eu, äu | neu (new), Häuser (houses) |
+| German | eu, äu | neu (new), häuser (houses) |
 | Indonesian | oi | (rare—mostly in loanwords) |
 | Vietnamese | oi | nói (speak) |
 
@@ -234,7 +234,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|---------|
 | **Ingglish** | **sh** | ship |
 | English | sh | ship |
-| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff (ship) |
+| [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | schiff (ship) |
 | [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła (school) |
 | [Hungarian](https://en.wikipedia.org/wiki/Hungarian_orthography) | s | só (salt) |
 | [Czech](https://en.wikipedia.org/wiki/Czech_orthography)/[Slovak](https://en.wikipedia.org/wiki/Slovak_orthography) | š | škola (school) |
@@ -286,7 +286,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 |----------|----------|-------|
 | **Ingglish** | **ng** | sing |
 | English | ng, n (before k) | sing, think |
-| German | ng | Ring (ring) |
+| German | ng | ring (ring) |
 | Spanish | n (before g/k) | tengo (I have) |
 | Vietnamese | ng, ngh | ngày (day) |
 
