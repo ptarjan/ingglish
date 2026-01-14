@@ -168,7 +168,7 @@ This vowel went through the most iteration.
 - /uː/ (too) → 'uu' - longer sound gets longer spelling (Finnish pattern)
 
 **Rationale:**
-- "book" → "book" (identical!) is a huge win
+- "book" → "book" (identical!)
 - "too" → "tuu" follows the length principle
 - Both spellings now have "Common" ratings
 
