@@ -32,12 +32,6 @@ export const vowelGroups: SoundGroup[] = [
       { phoneme: 'IY', examples: 'tr**ee** (tree), f**ee**t (feet), m**e** (mee)' },
       { phoneme: 'AY', examples: 'b**i**ke (baik), k**i**te (kait), t**i**me (taim)' },
       { phoneme: 'OW', examples: 'g**o** (goh), n**o**se (nohz), c**o**ld (kohld)' },
-    ],
-  },
-  {
-    name: 'OO Sounds',
-    sounds: [
-      { phoneme: 'UH', examples: 'b**oo**k (buuk), p**u**t (puut), g**oo**d (guud)' },
       { phoneme: 'UW', examples: 't**oo** (tuu), bl**ue** (bluu), m**oo**n (muun)' },
     ],
   },
@@ -47,6 +41,7 @@ export const vowelGroups: SoundGroup[] = [
       { phoneme: 'AW', examples: 'n**ow** (nou), h**ow** (hou), **ou**t (out)' },
       { phoneme: 'OY', examples: 'b**oy** (boi), t**oy** (toi), n**oi**se (noiz)' },
       { phoneme: 'AO', examples: 'th**ough**t (thawt), l**aw** (law), c**augh**t (kawt)' },
+      { phoneme: 'UH', examples: 'b**oo**k (buuk), p**u**t (puut), g**oo**d (guud)' },
       { phoneme: 'AH0', examples: '**a**bout (ubout), sof**a** (sohfu), banan**a** (bunanu)' },
     ],
   },

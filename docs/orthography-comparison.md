@@ -10,7 +10,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **a** | cat → **kat** |
+| **Ingglish** | **a** | cat (kat) |
 | [English](https://en.wikipedia.org/wiki/English_orthography) | a | cat, hat |
 | [Spanish](https://en.wikipedia.org/wiki/Spanish_orthography) | a | gato (closer to /a/) |
 | [Italian](https://en.wikipedia.org/wiki/Italian_orthography) | a | gatto |
@@ -27,7 +27,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **e** | bed → **bed** |
+| **Ingglish** | **e** | bed (bed) |
 | English | e | bed, pet |
 | Spanish | e | este |
 | Italian | e | bello |
@@ -44,7 +44,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **i** | bit → **bit** |
+| **Ingglish** | **i** | bit (bit) |
 | English | i | bit, sit |
 | Spanish | i | si |
 | Italian | i | sì |
@@ -61,7 +61,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **o** | hot → **hot** |
+| **Ingglish** | **o** | hot (hot) |
 | English | o | hot, cot |
 | Spanish | o | poco |
 | Italian | o | otto |
@@ -78,7 +78,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **u** | but → **but** |
+| **Ingglish** | **u** | but (but) |
 | English | u | but, cup |
 | Swahili | u | juu (up) |
 | Turkish | u | uzun (long) |
@@ -95,7 +95,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ee** | bee → **bee** |
+| **Ingglish** | **ee** | bee (bee) |
 | English | ee, ea, ie | bee, sea, piece |
 | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä |
 | [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga |
@@ -113,7 +113,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **uu** | too → **tuu** |
+| **Ingglish** | **uu** | too (tuu) |
 | English | oo, ou, ew | too, you, new |
 | Finnish | uu | suuri |
 | Estonian | uu | kuul |
@@ -131,7 +131,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **oo** | book → **book** |
+| **Ingglish** | **oo** | book (buuk) |
 | English | oo, u | book, put |
 | German | u | Futter (short u) |
 | Most languages (Spanish, Italian, Swahili, Turkish) | u, uu | same as /uː/ |
@@ -146,7 +146,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ai** | my → **mai** |
+| **Ingglish** | **ai** | my (mai) |
 | English | ie, i, y | tie, pie, my |
 | [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein |
 | [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij, klein |
@@ -163,7 +163,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ay** | say → **say** |
+| **Ingglish** | **ay** | say (sey) |
 | English | ay, ai, a-e | say, rain, make |
 | Spanish | ey | rey |
 | [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei |
@@ -179,7 +179,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **oh** | go → **goh** |
+| **Ingglish** | **oh** | go (goh) |
 | English | o, oa, ow | go, boat, show |
 | Dutch | oo | boot |
 | German | o | Boot |
@@ -195,7 +195,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **ou** | cow → **kou** |
+| **Ingglish** | **ou** | cow (kou) |
 | English | ow, ou | cow, out |
 | German | au | Haus |
 | Dutch | au, ou | blauw, oud |
@@ -213,7 +213,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **oi** | boy → **boi** |
+| **Ingglish** | **oi** | boy (boi) |
 | English | oi, oy | oil, boy |
 | French | oi | roi |
 | Dutch | ooi | mooi |
@@ -232,7 +232,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **sh** | ship → **ship** |
+| **Ingglish** | **sh** | ship (ship) |
 | English | sh | ship |
 | [German](https://en.wikipedia.org/wiki/Sch_(trigraph)) | sch | Schiff |
 | [Polish](https://en.wikipedia.org/wiki/Sz_(digraph)) | sz | szkoła |
@@ -251,7 +251,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **zh** | measure → **mezher** |
+| **Ingglish** | **zh** | measure (mezher) |
 | English | s, si, g | measure, vision, beige |
 | French | j, g | je, rouge |
 | Portuguese | j, g | hoje, gente |
@@ -284,7 +284,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 | Language | Spelling | Notes |
 |----------|----------|-------|
-| **Ingglish** | **ng** | sing → **sing** |
+| **Ingglish** | **ng** | sing (sing) |
 | English | ng, n (before k) | sing, think |
 | German | ng | Ring |
 | Spanish | n (before g/k) | tengo |
@@ -337,7 +337,7 @@ This is distinctly American English - most languages don't have these:
 - **dh** for /ð/ - English uses "th" for two different sounds (think vs. the). We fix this. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
 - **zh** for /ʒ/ - English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
 - **oo/uu** for /ʊ/ vs /uː/ - "book" and "too" sound different. Now they look different: book vs tuu.
-- **oh** for /oʊ/ - Distinguishes "go" (goh) from "cow" (kou) without ambiguity.
+- **oh** for /oʊ/ - Since 'o' alone is used for /ɑ/, we need a digraph: go (goh).
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
