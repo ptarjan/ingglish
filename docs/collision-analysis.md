@@ -15,7 +15,7 @@ This document analyzes cases where translating an English word to Ingglish produ
 **Rarely.** Looking at the data:
 
 - Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll never encounter these in normal text.
-- Only ~5 collisions involve two common words: white→wait, ass→as, place→plays, side→said, mine→main
+- Only 5 collisions involve two common words: white→wait, ass→as, place→plays, side→said, mine→main
 - Context resolves these just like English homophones (their/there/they're)
 
 ---
@@ -54,6 +54,10 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 **ass → as**: Reversed direction - uncommon word translates to common word. Context handles "as" vs "as" fine.
 
 **place → plays**: Both common. "In the first plays" = "in the first place".
+
+**side → said**: High-frequency collision. "On the said" = "on the side". Note: "said" translates to "sed", so reverse translation works.
+
+**mine → main**: Both common. "The main entrance" could be "the mine entrance". Note: "main" translates to "mayn", so they don't merge.
 
 ---
 
