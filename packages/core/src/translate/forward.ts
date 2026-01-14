@@ -13,6 +13,25 @@ import type { OutputFormat } from '../types';
 // Import translateUnknown and translateAsAcronym for fallback handling
 import { translateUnknown, translateAsAcronym } from '../fallback';
 
+// Common suffixes for initialisms (plural, possessive)
+const INITIALISM_SUFFIXES = ["'s", 's'] as const;
+
+/**
+ * Checks if a word is an initialism with a suffix (e.g., "IDs", "TVs", "URLs", "API's").
+ * Returns the base initialism and suffix if matched, null otherwise.
+ */
+function parseInitialismWithSuffix(word: string): { base: string; suffix: string } | null {
+  for (const suffix of INITIALISM_SUFFIXES) {
+    if (word.length > suffix.length && word.endsWith(suffix)) {
+      const base = word.slice(0, -suffix.length);
+      if (isInitialism(base)) {
+        return { base, suffix };
+      }
+    }
+  }
+  return null;
+}
+
 /**
  * Translates a single word (or contraction) to the specified format.
  * Handles contractions like "don't", "I'm", etc.
@@ -30,6 +49,19 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   // Check if word has any letters to translate
   if (!/[a-zA-Z]/.test(word)) {
     return word;
+  }
+
+  // Handle initialisms with suffixes FIRST (IDs, TVs, URLs, API's)
+  // This must come before contraction handling to catch possessive initialisms like "API's"
+  const initialismWithSuffix = parseInitialismWithSuffix(word);
+  if (initialismWithSuffix !== null) {
+    const { base, suffix } = initialismWithSuffix;
+    const baseTranslated = translateWord(base, format);
+    // Keep suffix lowercase for Ingglish (IDs → Aidees, TVs → Teevees)
+    if (format === 'ingglish') {
+      return baseTranslated + suffix.toLowerCase();
+    }
+    return baseTranslated + suffix;
   }
 
   // Handle contractions (words with apostrophes)

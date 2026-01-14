@@ -5,7 +5,7 @@ import {
   setInitialismTranslateWordFn,
   INITIALISM_EXPANSIONS,
 } from './translate/initialisms';
-import { translateWord } from './translate/forward';
+import { translateWord, translateSync } from './translate/forward';
 import { setupDictionary } from './test-setup';
 
 describe('initialisms', () => {
@@ -235,6 +235,58 @@ describe('initialisms', () => {
     it('should handle title case Api', () => {
       const result = translateWord('Api', 'ingglish');
       expect(result).toBe('API');
+    });
+  });
+
+  describe('plural and possessive initialisms', () => {
+    it('should translate IDs as ID + s', () => {
+      const result = translateWord('IDs', 'ingglish');
+      // ID → Aidee, then add "s" → Aidees
+      expect(result).toBe('Aidees');
+    });
+
+    it('should translate TVs as TV + s', () => {
+      const result = translateWord('TVs', 'ingglish');
+      // TV → Teevee, then add "s" → Teevees
+      expect(result).toBe('Teevees');
+    });
+
+    it('should translate URLs as URL + s', () => {
+      const result = translateWord('URLs', 'ingglish');
+      // URL → YRL, then add "s" → YRLs
+      expect(result).toBe('YRLs');
+    });
+
+    it('should translate APIs as API + s', () => {
+      const result = translateWord('APIs', 'ingglish');
+      // API → API, then add "s" → APIs
+      expect(result).toBe('APIs');
+    });
+
+    it("should translate API's (possessive) correctly", () => {
+      const result = translateWord("API's", 'ingglish');
+      // API → API, then add "'s" → API's
+      expect(result).toBe("API's");
+    });
+
+    it('should handle lowercase ids', () => {
+      const result = translateWord('ids', 'ingglish');
+      // id → aidee, then add "s" → aidees
+      expect(result).toBe('aidees');
+    });
+
+    it('should handle mixed case like Ids', () => {
+      // "Ids" - base "Id" is recognized as initialism
+      const result = translateWord('Ids', 'ingglish');
+      // ID → Aidee → Aidees
+      expect(result).toBe('Aidees');
+    });
+
+    it('should handle "eve ID" context correctly', () => {
+      // This tests the phrase "eve ID" where "eve" is a word and "ID" is an initialism
+      const result = translateSync('eve ID', 'ingglish');
+      // "eve" → "eev", "ID" → "Aidee"
+      expect(result).toBe('eev Aidee');
     });
   });
 });
