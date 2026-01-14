@@ -41,7 +41,7 @@ describe('observer regression: double-translation', () => {
     await translate('');
     // Reset counter after dictionary loading calls
     mockState.count = 0;
-  }, 30000); // 30 second timeout for dictionary loading in CI
+  });
 
   afterEach(() => {
     document.body.innerHTML = '';
