@@ -727,22 +727,3 @@ Most languages have 5-7 vowel phonemes. English has 14-15 (depending on dialect)
 This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 
 For how Ingglish addresses these challenges, see [Design Decisions](design-decisions.md).
-
-## References
-
-- [Phonemic orthography - Wikipedia](https://en.wikipedia.org/wiki/Phonemic_orthography)
-- [Sh (digraph) - Wikipedia](https://en.wikipedia.org/wiki/Sh_(digraph))
-- [Ch (digraph) - Wikipedia](https://en.wikipedia.org/wiki/Ch_(digraph))
-- [Voiced dental fricative - Wikipedia](https://en.wikipedia.org/wiki/Voiced_dental_fricative)
-- [Voiced velar nasal - Wikipedia](https://en.wikipedia.org/wiki/Voiced_velar_nasal)
-- [Zhe (Cyrillic) - Wikipedia](https://en.wikipedia.org/wiki/Zhe_(Cyrillic))
-- [J - Wikipedia](https://en.wikipedia.org/wiki/J)
-- [Finnish orthography - Wikipedia](https://en.wikipedia.org/wiki/Finnish_orthography)
-- [German orthography - Wikipedia](https://en.wikipedia.org/wiki/German_orthography)
-- [Dutch orthography - Wikipedia](https://en.wikipedia.org/wiki/Dutch_orthography)
-- [WALS: Uncommon Consonants](https://wals.info/chapter/19)
-- [PHOIBLE - Phoneme Inventory Database](https://phoible.org/)
-- [Turkish alphabet - Wikipedia](https://en.wikipedia.org/wiki/Turkish_alphabet)
-- [Korean Hangul - Wikipedia](https://en.wikipedia.org/wiki/Hangul)
-- [Swahili orthography - Wikipedia](https://en.wikipedia.org/wiki/Swahili_language#Orthography)
-- [English spelling reform - Wikipedia](https://en.wikipedia.org/wiki/English-language_spelling_reform)
