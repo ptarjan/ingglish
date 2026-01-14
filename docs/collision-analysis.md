@@ -78,23 +78,23 @@ English has extensive homophones - words that sound the same but are spelled dif
 
 ### Largest Homophone Groups
 
-| Ingglish | English Words (count) |
-|----------|----------------------|
-| loree | laurey, lauri, laurie, laury, lawrie, lawry, loree, lorey, lori, lorie, lorrie, lorry, lory, lowrie (14) |
-| kairee | carey, carie, carrey, carrie, cary, kairey, kari, karry, kary, kerrey, kerri, kerry (12) |
-| shuu | hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) |
-| freez | freas, frease, frees, freese, freeze, freis, frese, friese, frieze, friis (10) |
+| English Words (count) | Ingglish |
+|-----------------------|----------|
+| laurey, lauri, laurie, laury, lawrie, lawry, loree, lorey, lori, lorie, lorrie, lorry, lory, lowrie (14) | loree |
+| carey, carie, carrey, carrie, cary, kairey, kari, karry, kary, kerrey, kerri, kerry (12) | kairee |
+| hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) | shuu |
+| freas, frease, frees, freese, freeze, freis, frese, friese, frieze, friis (10) | freez |
 
 ### Common Homophones
 
-| Ingglish | English Words |
-|----------|---------------|
-| air | aer, air, ayre, eir, ere, err, eyre, heir, ire |
-| oh | au, aux, eau, eaux, o, oh, ohh, ow, owe |
-| see | c, cie, sci, sea, see, si, sie, sieh |
-| yuu | ewe, u, uwe, yew, yoo, you, yu, yue |
-| way | way, waye, wei, weigh, wey, whey, wy |
-| roh | reaux, rheault, rho, ro, roe, roh, rohe, row, rowe |
+| English Words | Ingglish |
+|---------------|----------|
+| aer, air, ayre, eir, ere, err, eyre, heir, ire | air |
+| au, aux, eau, eaux, o, oh, ohh, ow, owe | oh |
+| c, cie, sci, sea, see, si, sie, sieh | see |
+| ewe, u, uwe, yew, yoo, you, yu, yue | yuu |
+| way, waye, wei, weigh, wey, whey, wy | way |
+| reaux, rheault, rho, ro, roe, roh, rohe, row, rowe | roh |
 
 ---
 
@@ -104,14 +104,14 @@ English has extensive homophones - words that sound the same but are spelled dif
 
 Most English speakers have merged "wh" and "w" sounds. The CMU dictionary reflects this:
 
-| Ingglish | From | Notes |
-|----------|------|-------|
-| wait | white | Both /weɪt/ in most dialects |
-| wail | whale | |
-| wine | whine | |
-| wile | while | |
-| witch | which | |
-| weather | whether | |
+| English | Ingglish | Notes |
+|---------|----------|-------|
+| white | wait | Both /weɪt/ in most dialects |
+| whale | wail | |
+| whine | wine | |
+| while | wile | |
+| which | witch | |
+| whether | weather | |
 
 **Resolution Options**:
 1. Accept the merger (reflects actual pronunciation)
@@ -120,20 +120,20 @@ Most English speakers have merged "wh" and "w" sounds. The CMU dictionary reflec
 
 ### 2. Vowel Quality Mergers
 
-| Ingglish | From | Notes |
-|----------|------|-------|
-| caught/cot | both → kot | Cot-caught merger |
-| Mary/merry/marry | various | Three-way merger in many dialects |
+| English | Ingglish | Notes |
+|---------|----------|-------|
+| caught, cot | kot | Cot-caught merger |
+| Mary, merry, marry | meree | Three-way merger in many dialects |
 
 ### 3. Proper Names → Common Words
 
 Many collisions occur because proper names translate to common word spellings:
 
-| Ingglish | Proper Name | Common Word |
-|----------|-------------|-------------|
-| rob | Robb | rob (verb) |
-| bert | Burt | bert (fabric) |
-| mark | Marc | mark |
+| Proper Name | Common Word | Ingglish |
+|-------------|-------------|----------|
+| Robb | rob (verb) | rob |
+| Burt | bert (fabric) | bert |
+| Marc | mark | mark |
 
 ---
 
