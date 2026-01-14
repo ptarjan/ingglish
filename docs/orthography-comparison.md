@@ -253,6 +253,19 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Dutch uses 'oe' for this sound: boek (book), goed (good)
 - Most languages worldwide don't distinguish /ʊ/ from /uː/
 
+#### Schwa (/ə/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **u** | ubout (about), sohfu (sofa), bunanu (banana) |
+| English | a, e, i, o, u | **a**bout, sof**a**, penc**i**l, mem**o**ry, circ**u**s |
+
+**Notes:**
+- The schwa is the most common vowel sound in English—the unstressed "uh" in many syllables
+- English spells it with any vowel letter depending on etymology
+- Ingglish uses 'u' consistently, same as the stressed /ʌ/ in "but"
+- This creates some visual repetition (banana → bunanu) but maintains phonetic accuracy
+
 ### R-Colored Vowels
 
 [R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
@@ -338,6 +351,22 @@ The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that
 - 'g' is always hard /g/, never /dʒ/ as in English "gem"
 
 ### Fricatives
+
+The simple fricatives (f, v, s, z, h) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+
+| Ingglish | IPA | Example |
+|----------|-----|---------|
+| f | /f/ | fat, after, laugh |
+| v | /v/ | van, over, love |
+| s | /s/ | sat, missing, miss |
+| z | /z/ | zoo, buzzing, is |
+| h | /h/ | hat, ahead, behind |
+
+**Notes:**
+- 's' is always /s/, never /z/ as in English "rose" (Ingglish: rohz)
+- These five consonants need no special treatment
+
+The following fricatives require digraphs and have cross-linguistic variation:
 
 #### "SH" Sound (/ʃ/)
 
@@ -449,6 +478,15 @@ The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that
 - Italian uses 'g' before front vowels; Turkish reverses: 'c' for /dʒ/, 'j' for /ʒ/
 
 ### Nasals
+
+The simple nasals (m, n) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+
+| Ingglish | IPA | Example |
+|----------|-----|---------|
+| m | /m/ | man, hammer, come |
+| n | /n/ | no, running, pen |
+
+The velar nasal requires a digraph:
 
 #### "NG" Sound (/ŋ/)
 
