@@ -35,26 +35,30 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 ## Most Problematic Collisions (Common Words)
 
-These collisions involve frequently-used words and may cause occasional confusion:
+These collisions involve frequently-used words and may cause occasional confusion.
 
-| English | Ingglish | Frequency Rank |
-|---------|----------|----------------|
-| turn | tern | #15,630 → #1 |
-| robber | rober | #239 → #1 |
-| winner | winer | #1,592 → #1 |
-| dine | dain | #219 → #1 |
-| cease | sees | #445 → #1,899 |
-| milled | mild | #1 → #245 |
-| rhine | rain | #34 → #2,494 |
-| sauce | saws | #795 → #24 |
-| bought | bot | #4,362 → #50 |
+The "Frequency" column shows corpus occurrence counts (higher = more common):
+
+| English | Ingglish | Frequency |
+|---------|----------|-----------|
+| turn | tern | 15,630 → 1 |
+| robber | rober | 239 → 1 |
+| winner | winer | 1,592 → 1 |
+| dine | dain | 219 → 1 |
+| cease | sees | 445 → 1,899 |
+| milled | mild | 1 → 245 |
+| rhine | rain | 34 → 2,494 |
+| sauce | saws | 795 → 24 |
+| bought | bot | 4,362 → 50 |
+
+Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1). The rare word is unlikely to appear in real text, so confusion is minimal.
 
 ### Analysis of Top Collisions
 
 #### "turn" → "tern"
-The word "turn" translates to "tern" (a seabird). This is because CMU dictionary shows "turn" as /tɜːn/ which maps to "tern" in Ingglish. The bird "tern" is quite rare (#1 frequency rank means it's extremely uncommon in text).
+The word "turn" translates to "tern" (a seabird). This is because CMU dictionary shows "turn" as /tɜːn/ which maps to "tern" in Ingglish. The bird "tern" appears only once in the SUBTLEX corpus, making it extremely rare.
 
-**Impact**: Low - "tern" is rarely used, context makes "turn" obvious.
+**Impact**: Low - "tern" almost never appears in real text, so "turn" → "tern" won't cause confusion.
 
 #### "winner" → "winer"
 "Winner" becomes "winer" which looks like "winer" (one who wines).
