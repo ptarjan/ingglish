@@ -489,6 +489,16 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | j | /dʒ/ | **Common** | English-influenced: Indonesian, Malay, Somali, Indian romanization |
 | ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
 
+### Diphthongs
+
+| Ingglish | Sound | Rating | Notes |
+|----------|-------|--------|-------|
+| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
+| ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
+| ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
+| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
+| oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
+
 ### Short Vowels
 
 | Ingglish | Sound | Rating | Notes |
@@ -507,16 +517,6 @@ Note: Ingglish uses consistent single-letter consonants with no ambiguity. Unlik
 | uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
 | oo | /ʊ/ | **Common** | Matches English "book", "good", "look" |
 | aw | /ɔ/ | **Common** | English "law, saw"; represents open-o sound |
-
-### Diphthongs
-
-| Ingglish | Sound | Rating | Notes |
-|----------|-------|--------|-------|
-| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
-| ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
-| ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud"; some words become identical |
-| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
-| oi | /ɔɪ/ | **Universal** | English, French, Dutch; standard across languages |
 
 ### R-Colored Vowels
 
