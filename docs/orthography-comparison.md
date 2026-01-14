@@ -4,95 +4,11 @@ This document shows how Ingglish spellings compare to other languages. Every cho
 
 For the design philosophy and rationale, see [Design Decisions](design-decisions.md).
 
-## Diphthongs
-
-### 'IE' Diphthong (/aɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ai** | mai (my) |
-| English | ie, i, y | tie, pie, my |
-| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein (my) |
-| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij (me), klein (small) |
-| Italian | ai | mai (never) |
-| Pinyin | ai | bái (white) |
-| Vietnamese | ai | hai (two) |
-
-**Notes:**
-- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
-- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
-- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
-
-### 'AY' Diphthong (/eɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ay** | mayk (make) |
-| English | ay, ai, a-e | say, rain, make |
-| Spanish | ey | rey (king) |
-| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei (law) |
-| Pinyin | ei | bēi (cup) |
-| Indonesian | e | sate (satay) |
-
-**Notes:**
-- Matches English: "say", "day", "play", "way"
-- Many languages don't have this exact diphthong
-- Clear and unambiguous
-
-### 'OH' Diphthong (/oʊ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **oh** | goh (go) |
-| English | o, oa, ow | go, boat, show |
-| Dutch | oo | boot (boat) |
-| German | o | boot (boat) |
-| Pinyin | ou | dōu (all) |
-| Japanese (Romaji) | o, ō | ohayō (good morning) |
-
-**Notes:**
-- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
-- 'oh' matches English interjection "oh!" which has this exact sound
-- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
-
-### 'OU' Diphthong (/aʊ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ou** | kou (cow) |
-| English | ow, ou | cow, out |
-| German | au | haus (house) |
-| Dutch | au, ou | blauw (blue), oud (old) |
-| Pinyin | ao | hǎo (good) |
-| Portuguese | au | mau (bad) |
-
-**Notes:**
-- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
-- Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
-- German/Portuguese use 'au'; Pinyin uses 'ao'
-- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
-- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
-
-### 'OI' Diphthong (/ɔɪ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **oi** | boi (boy) |
-| English | oi, oy | oil, boy |
-| French | oi | roi (king) |
-| Dutch | ooi | mooi (beautiful) |
-| German | eu, äu | neu (new), häuser (houses) |
-| Indonesian | oi | — rare, mostly in loanwords |
-| Vietnamese | oi | nói (speak) |
-
-**Notes:**
-- Very common diphthong spelling worldwide: 'oi' or 'oy'
-- German is the outlier using 'eu'
-- No innovation needed
-
 ## Vowels
 
-### Short 'A' Sound (/æ/)
+### Short Vowels
+
+#### Short 'A' Sound (/æ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -110,7 +26,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Old English had a dedicated letter 'æ' (ash) for this sound—we simplify to 'a'
 - Germanic languages often use ä for similar sounds (German, Swedish)
 
-### Short 'E' Sound (/ɛ/)
+#### Short 'E' Sound (/ɛ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -128,7 +44,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Portuguese/Italian/Catalan use accent marks to distinguish open /ɛ/ from close /e/
 - No innovation needed here
 
-### Short 'I' Sound (/ɪ/)
+#### Short 'I' Sound (/ɪ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -145,7 +61,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
 - Turkish has a distinctive dotless ı for /ɯ/, keeping dotted i for /i/
 
-### Short 'O' Sound (/ɑ/)
+#### Short 'O' Sound (/ɑ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -162,7 +78,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - American English "hot" uses /ɑ/, similar to many languages' open 'o'
 - English "father" also has this sound—spelled 'a' in English, 'o' in Ingglish
 
-### Short 'U' Sound (/ʌ/)
+#### Short 'U' Sound (/ʌ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -177,7 +93,130 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - We follow English convention ("but", "cup") for familiarity
 - English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
 
-### 'AW' Sound (/ɔ/)
+### Long Vowels
+
+#### 'AY' Sound (/eɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ay** | mayk (make) |
+| English | ay, ai, a-e | say, rain, make |
+| Spanish | ey | rey (king) |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_orthography) | ei | lei (law) |
+| Pinyin | ei | bēi (cup) |
+| Indonesian | e | sate (satay) |
+
+**Notes:**
+- Matches English: "say", "day", "play", "way"
+- Many languages don't have this exact diphthong
+- Clear and unambiguous
+
+#### 'EE' Sound (/iː/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ee** | bee |
+| English | ee, ea, ie | bee, sea, piece |
+| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it), viini (wine) |
+| [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga (too much) |
+| Dutch | ie | zien (see), bier (beer) |
+| Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
+
+**Notes:**
+- Finnish/Estonian use doubled vowels for length—we follow this principle
+- Finnish tuuli (wind) vs. tuli (fire) shows minimal pairs distinguished only by length
+- 'ee' already exists in English ("bee", "see", "tree")
+- Consistent pattern: double the letter to lengthen the sound
+
+#### 'AI' Sound (/aɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ai** | mai (my) |
+| English | ie, i, y | tie, pie, my |
+| [German](https://en.wikipedia.org/wiki/Ei_(digraph)) | ei | mein (my) |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) | ij, ei | mij (me), klein (small) |
+| Italian | ai | mai (never) |
+| Pinyin | ai | bái (white) |
+| Vietnamese | ai | hai (two) |
+
+**Notes:**
+- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
+- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
+- English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
+
+#### 'OH' Sound (/oʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oh** | goh (go) |
+| English | o, oa, ow | go, boat, show |
+| Dutch | oo | boot (boat) |
+| German | o | boot (boat) |
+| Pinyin | ou | dōu (all) |
+| Japanese (Romaji) | o, ō | ohayō (good morning) |
+
+**Notes:**
+- 'o' alone is used for /ɑ/ (hot), so we need a digraph for /oʊ/
+- 'oh' matches English interjection "oh!" which has this exact sound
+- Many languages (Spanish, Swahili, Turkish) have pure /o/ without the glide
+
+#### 'UU' Sound (/uː/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **uu** | tuu |
+| English | oo, ou, ew | too, you, new |
+| Finnish | uu | suuri (big) |
+| Estonian | uu | kuul (ball) |
+| Indonesian | u | buku (book) |
+| Swahili | u | kuku (chicken) |
+| Japanese (Romaji) | uu, ū | sūpu (soup) |
+| Pinyin | u | wū (house) |
+
+**Notes:**
+- Follows Finnish/Estonian convention: 'uu' for /uː/
+- Most non-European languages don't distinguish vowel length
+- The longer sound gets the longer spelling (uu vs oo)
+
+### Diphthongs
+
+#### 'OU' Sound (/aʊ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ou** | kou (cow) |
+| English | ow, ou | cow, out |
+| German | au | haus (house) |
+| Dutch | au, ou | blauw (blue), oud (old) |
+| Pinyin | ao | hǎo (good) |
+| Portuguese | au | mau (bad) |
+
+**Notes:**
+- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
+- Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
+- German/Portuguese use 'au'; Pinyin uses 'ao'
+- Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
+- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
+
+#### 'OI' Sound (/ɔɪ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **oi** | boi (boy) |
+| English | oi, oy | oil, boy |
+| French | oi | roi (king) |
+| Dutch | ooi | mooi (beautiful) |
+| German | eu, äu | neu (new), häuser (houses) |
+| Indonesian | oi | — rare, mostly in loanwords |
+| Vietnamese | oi | nói (speak) |
+
+**Notes:**
+- Very common diphthong spelling worldwide: 'oi' or 'oy'
+- German is the outlier using 'eu'
+- No innovation needed
+
+#### 'AW' Sound (/ɔ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -198,24 +237,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Many African languages use **Ɔ** or **ọ** (open O or O with dot below)
 - We reserve plain 'o' for /ɑ/ (father, hot) to avoid collision
 
-### Long 'EE' Sound (/iː/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ee** | bee |
-| English | ee, ea, ie | bee, sea, piece |
-| [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography#Vowel_length) | ii | siitä (from it), viini (wine) |
-| [Estonian](https://en.wikipedia.org/wiki/Estonian_orthography#Length) | ii | liiga (too much) |
-| Dutch | ie | zien (see), bier (beer) |
-| Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
-
-**Notes:**
-- Finnish/Estonian use doubled vowels for length—we follow this principle
-- Finnish tuuli (wind) vs. tuli (fire) shows minimal pairs distinguished only by length
-- 'ee' already exists in English ("bee", "see", "tree")
-- Consistent pattern: double the letter to lengthen the sound
-
-### Short 'OO' Sound (/ʊ/)
+#### 'OO' Sound (/ʊ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -231,27 +253,93 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Dutch uses 'oe' for this sound: boek (book), goed (good)
 - Most languages worldwide don't distinguish /ʊ/ from /uː/
 
-### Long 'OO' Sound (/uː/)
+### R-Colored Vowels
+
+[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
+
+#### 'AR' Sound (/ɑɹ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **uu** | tuu |
-| English | oo, ou, ew | too, you, new |
-| Finnish | uu | suuri (big) |
-| Estonian | uu | kuul (ball) |
-| Indonesian | u | buku (book) |
-| Swahili | u | kuku (chicken) |
-| Japanese (Romaji) | uu, ū | sūpu (soup) |
-| Pinyin | u | wū (house) |
+| **Ingglish** | **ar** | star, kar, far |
+| English | ar | star, car, far |
 
 **Notes:**
-- Follows Finnish/Estonian convention: 'uu' for /uː/
-- Most non-European languages don't distinguish vowel length
-- The longer sound gets the longer spelling (uu vs oo)
+- Perfectly intuitive—matches English spelling exactly
+- "star" → "star" is identical in Ingglish
+
+#### 'OR' Sound (/ɔɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **or** | stor, mor, for |
+| English | ore, or, our, oar | store, more, four, oar |
+
+**Notes:**
+- English has multiple spellings: "store", "more", "four", "oar"
+- Ingglish uses 'or' consistently
+- Clearly distinct from 'ar' (star vs stor)
+
+#### 'AIR' Sound (/ɛɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **air** | air, kair, dhair |
+| English | air, are, ear, ere | air, care, bear, there |
+
+**Notes:**
+- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
+- Ingglish uses 'air' consistently—matches the word "air" itself
+- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
+
+#### 'ARR' Sound (/æɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **arr** | arroh, karrut, barrul |
+| English | arr, ar | arrow, carrot, barrel |
+
+**Notes:**
+- The doubled 'rr' distinguishes this from 'ar' (star)
+- Matches English spelling pattern in "arrow", "carrot", "barrel"
+- Without this distinction: "arrow" and "are" would collide
+
+#### 'ER' Sound (/ɝ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **er** | berd, her, tern |
+| English | ir, er, ur, ear, or | bird, her, turn, earth, work |
+| [Mandarin Chinese](https://en.wikipedia.org/wiki/Erhua) | er | 二 èr (two), 儿 ér (son) |
+
+**Notes:**
+- English uses five different spellings for the same sound
+- Ingglish uses 'er' consistently—the most common English spelling
+- Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
+- R-colored vowels occur in less than 1% of world languages
 
 ## Consonants
 
-### "SH" Sound (/ʃ/)
+### Stops
+
+The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+
+| Ingglish | IPA | Example |
+|----------|-----|---------|
+| p | /p/ | pat, happy, cup |
+| b | /b/ | bat, about, cab |
+| t | /t/ | top, better, cat |
+| d | /d/ | dog, ladder, bed |
+| k | /k/ | cat, backer, back |
+| g | /g/ | go, bigger, big |
+
+**Notes:**
+- Ingglish uses 'k' instead of 'c' for the /k/ sound (no "soft c")
+- 'g' is always hard /g/, never /dʒ/ as in English "gem"
+
+### Fricatives
+
+#### "SH" Sound (/ʃ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -273,7 +361,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Hungarian reverses convention: 's' for /ʃ/, 'sz' for /s/
 - Languages with diacritics (š, ş) achieve single-letter representation
 
-### "ZH" Sound (/ʒ/)
+#### "ZH" Sound (/ʒ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -293,7 +381,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - [Cyrillic romanization](https://en.wikipedia.org/wiki/Romanization_of_Russian) uses 'zh' for Ж
 - Finnish/Estonian officially allow 'zh' as a substitute when 'ž' is unavailable
 
-### "TH" Sound (/θ/)
+#### "TH" Sound (/θ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -311,7 +399,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - We keep 'th' for voiceless /θ/—the intuitive choice
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
 
-### "DH" Sound (/ð/)
+#### "DH" Sound (/ð/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -325,7 +413,44 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/ — we considered this but 'dh' is more intuitive
 - Icelandic preserves the original Old English letter ð (eth)
 
-### "NG" Sound (/ŋ/)
+### Affricates
+
+#### "CH" Sound (/tʃ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ch** | chat |
+| English | ch | chat, church |
+| Spanish | ch | chico (boy) |
+| Italian | c (before e/i) | ciao (hello) |
+| German | tsch | deutsch (German) |
+| Portuguese | ch | chave (key) |
+
+**Notes:**
+- 'ch' for /tʃ/ is nearly universal in Latin scripts
+- One of the most consistent spellings across languages
+
+#### "J" Sound (/dʒ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **j** | just |
+| English | j, g (before e/i) | just, gem |
+| Italian | g (before e/i) | giorno (day) |
+| Turkish | c | cam (glass) |
+| Indonesian | j | jalan (road) |
+| [Malay](https://en.wikipedia.org/wiki/Malay_language) | j | jadi (become) |
+| [Somali](https://en.wikipedia.org/wiki/Somali_language) | j | jaar (year) |
+| [Hindi romanization](https://en.wikipedia.org/wiki/Devanagari) | j | jī (yes) |
+
+**Notes:**
+- 'j' for /dʒ/ matches English convention
+- Widely adopted in Southeast Asia (Indonesian, Malay), East Africa (Somali), and Indian romanization
+- Italian uses 'g' before front vowels; Turkish reverses: 'c' for /dʒ/, 'j' for /ʒ/
+
+### Nasals
+
+#### "NG" Sound (/ŋ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
@@ -344,103 +469,21 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - African languages often use 'ng'' (with apostrophe) to distinguish from /ng/ clusters
 - We keep 'ng'—no innovation needed here
 
-### "CH" Sound (/tʃ/)
+### Liquids & Glides
 
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ch** | chat |
-| English | ch | chat, church |
-| Spanish | ch | chico (boy) |
-| Italian | c (before e/i) | ciao (hello) |
-| German | tsch | deutsch (German) |
-| Portuguese | ch | chave (key) |
+The liquids (l, r) and glides (w, y) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
 
-**Notes:**
-- 'ch' for /tʃ/ is nearly universal in Latin scripts
-- One of the most consistent spellings across languages
-
-### "J" Sound (/dʒ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **j** | just |
-| English | j, g (before e/i) | just, gem |
-| Italian | g (before e/i) | giorno (day) |
-| Turkish | c | cam (glass) |
-| Indonesian | j | jalan (road) |
-| [Malay](https://en.wikipedia.org/wiki/Malay_language) | j | jadi (become) |
-| [Somali](https://en.wikipedia.org/wiki/Somali_language) | j | jaar (year) |
-| [Hindi romanization](https://en.wikipedia.org/wiki/Devanagari) | j | jī (yes) |
+| Ingglish | IPA | Example |
+|----------|-----|---------|
+| l | /l/ | let, bellow, well |
+| r | /ɹ/ | run, carry, car |
+| w | /w/ | wet, away, always |
+| y | /j/ | yes, beyond, canyon |
 
 **Notes:**
-- 'j' for /dʒ/ matches English convention
-- Widely adopted in Southeast Asia (Indonesian, Malay), East Africa (Somali), and Indian romanization
-- Italian uses 'g' before front vowels; Turkish reverses: 'c' for /dʒ/, 'j' for /ʒ/
-
-## R-Colored Vowels
-
-[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
-
-### 'AR' Sound (/ɑɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **ar** | star, kar, far |
-| English | ar | star, car, far |
-
-**Notes:**
-- Perfectly intuitive—matches English spelling exactly
-- "star" → "star" is identical in Ingglish
-
-### 'OR' Sound (/ɔɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **or** | stor, mor, for |
-| English | ore, or, our, oar | store, more, four, oar |
-
-**Notes:**
-- English has multiple spellings: "store", "more", "four", "oar"
-- Ingglish uses 'or' consistently
-- Clearly distinct from 'ar' (star vs stor)
-
-### 'AIR' Sound (/ɛɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **air** | air, kair, dhair |
-| English | air, are, ear, ere | air, care, bear, there |
-
-**Notes:**
-- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
-- Ingglish uses 'air' consistently—matches the word "air" itself
-- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
-
-### 'ARR' Sound (/æɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **arr** | arroh, karrut, barrul |
-| English | arr, ar | arrow, carrot, barrel |
-
-**Notes:**
-- The doubled 'rr' distinguishes this from 'ar' (star)
-- Matches English spelling pattern in "arrow", "carrot", "barrel"
-- Without this distinction: "arrow" and "are" would collide
-
-### 'ER' Sound (/ɝ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **er** | berd, her, tern |
-| English | ir, er, ur, ear, or | bird, her, turn, earth, work |
-| [Mandarin Chinese](https://en.wikipedia.org/wiki/Erhua) | er | 二 èr (two), 儿 ér (son) |
-
-**Notes:**
-- English uses five different spellings for the same sound
-- Ingglish uses 'er' consistently—the most common English spelling
-- Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
-- R-colored vowels occur in less than 1% of world languages
+- 'l' and 'r' are standard liquids in virtually all languages
+- 'w' is less common in some European languages but widely understood
+- 'y' for /j/ follows English/German/Scandinavian convention (Spanish uses 'y' for a different sound)
 
 ## Summary: Where Ingglish Aligns and Diverges
 
