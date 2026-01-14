@@ -203,7 +203,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Portuguese | au | mau (bad) |
 
 **Notes:**
-- **Some words become identical**: "out" → "out", "loud" → "loud", "sound" → "sound"
+- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
 - Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
 - German/Portuguese use 'au'; Pinyin uses 'ao'
 - Trade-off: "cow" → "kou" looks less familiar, but identical spellings for common words like "out" and "loud" outweigh this
