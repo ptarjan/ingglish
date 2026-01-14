@@ -20,6 +20,7 @@ import spellingEvolution from '../../../../docs/spelling-evolution.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
+import collisionAnalysis from '../../../../docs/collision-analysis.md';
 
 interface DocEntry {
   id: string;
@@ -68,6 +69,12 @@ const docs: DocEntry[] = [
     title: 'Identical Words Analysis',
     content: identicalWordsAnalysis,
     filename: 'identical-words-analysis.md',
+  },
+  {
+    id: 'collision-analysis',
+    title: 'Collision Analysis',
+    content: collisionAnalysis,
+    filename: 'collision-analysis.md',
   },
   {
     id: 'architecture',
