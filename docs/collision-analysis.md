@@ -124,41 +124,6 @@ English has extensive homophones - words that sound the same but are spelled dif
 
 ---
 
-## Collision Categories
-
-### 1. WH-W Mergers (Wine-Whine Merger)
-
-Most English speakers have merged "wh" and "w" sounds. This creates collisions where WH-words translate to spellings that match existing English words:
-
-| English | Ingglish |
-|---------|----------|
-| white | wait |
-| whine | wain |
-| while | wail |
-| which, witch | wich |
-
-Note: Some WH-words like "whale -> wayl" and "whether -> wedher" do NOT create collisions because "wayl" and "wedher" aren't English words.
-
-### 2. Vowel Quality Mergers
-
-| English | Ingglish |
-|---------|----------|
-| caught, cot | kot |
-| Mary, merry, marry | meree |
-
-### 3. Proper Names -> Common Words
-
-Many collisions occur because proper names translate to common word spellings:
-
-| English | Ingglish |
-|---------|----------|
-| Baht (currency) | bot |
-| Bier (surname) | beer |
-| Juan | won |
-| Marc | mark |
-
----
-
 ## Recommendations
 
 ### For Users
