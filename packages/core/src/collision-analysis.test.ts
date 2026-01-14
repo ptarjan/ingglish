@@ -1,0 +1,155 @@
+/**
+ * Collision analysis: Find words where Ingglish translation matches another English word.
+ * Run with: npx vitest run -t "collision analysis"
+ */
+import { describe, it, expect } from 'vitest';
+import { loadDictionary, getDictionary } from './dictionary/loader';
+import { loadFrequencies, getWordFrequency } from './utils/frequency';
+import { translateWord } from './translate/forward';
+
+interface Collision {
+  ingglish: string;
+  sources: string[];
+  collidesWithEnglish: boolean;
+}
+
+interface AnalysisResult {
+  totalWords: number;
+  englishCollisions: Collision[];
+  homophones: Collision[];
+  commonWordCollisions: Collision[];
+}
+
+/**
+ * Analyze all word collisions in the Ingglish translation.
+ */
+export async function analyzeCollisions(): Promise<AnalysisResult> {
+  await Promise.all([loadDictionary(), loadFrequencies()]);
+  const dict = getDictionary();
+
+  const words = Object.keys(dict).filter(
+    (w) => !w.includes('(') && !w.includes("'") && /^[a-z]+$/.test(w)
+  );
+
+  const englishWords = new Set(words);
+  const ingglishToEnglish = new Map<string, string[]>();
+
+  for (const word of words) {
+    try {
+      const ingglish = translateWord(word, 'ingglish').toLowerCase();
+      const existing = ingglishToEnglish.get(ingglish);
+      if (existing !== undefined) {
+        existing.push(word);
+      } else {
+        ingglishToEnglish.set(ingglish, [word]);
+      }
+    } catch {
+      // Skip errors
+    }
+  }
+
+  const collisions: Collision[] = [];
+
+  for (const [ingglish, sources] of ingglishToEnglish) {
+    const isEnglishWord = englishWords.has(ingglish);
+    const collidesWithDifferentEnglish = isEnglishWord && !sources.includes(ingglish);
+
+    if (sources.length > 1 || collidesWithDifferentEnglish) {
+      collisions.push({ ingglish, sources, collidesWithEnglish: collidesWithDifferentEnglish });
+    }
+  }
+
+  const englishCollisions = collisions.filter((c) => c.collidesWithEnglish);
+  const homophones = collisions.filter((c) => !c.collidesWithEnglish && c.sources.length > 1);
+
+  // Find collisions involving common words (top 5000 by frequency)
+  const commonWordCollisions = englishCollisions.filter((c) => {
+    // Check if any source word or the collision target is common
+    const hasCommonSource = c.sources.some((w) => {
+      const freq = getWordFrequency(w);
+      return freq !== undefined && freq <= 5000;
+    });
+    const targetFreq = getWordFrequency(c.ingglish);
+    const hasCommonTarget = targetFreq !== undefined && targetFreq <= 5000;
+    return hasCommonSource || hasCommonTarget;
+  });
+
+  // Sort by frequency (most common first)
+  commonWordCollisions.sort((a, b) => {
+    const freqA = Math.min(
+      ...a.sources.map((w) => getWordFrequency(w) ?? Infinity),
+      getWordFrequency(a.ingglish) ?? Infinity
+    );
+    const freqB = Math.min(
+      ...b.sources.map((w) => getWordFrequency(w) ?? Infinity),
+      getWordFrequency(b.ingglish) ?? Infinity
+    );
+    return freqA - freqB;
+  });
+
+  return {
+    totalWords: words.length,
+    englishCollisions,
+    homophones,
+    commonWordCollisions,
+  };
+}
+
+/* eslint-disable no-console */
+describe('collision analysis', () => {
+  it('should analyze all collisions', async () => {
+    const result = await analyzeCollisions();
+
+    console.log('\n# Ingglish Collision Analysis\n');
+    console.log('## Summary\n');
+    console.log('- Total words analyzed: %d', result.totalWords);
+    console.log(
+      '- Ingglish spellings that match different English words: %d',
+      result.englishCollisions.length
+    );
+    console.log('- Homophones (same Ingglish, different English): %d', result.homophones.length);
+    console.log(
+      '- Collisions involving common words (top 5000): %d',
+      result.commonWordCollisions.length
+    );
+    console.log('\n---\n');
+
+    console.log('## Most Problematic Collisions (Common Words)\n');
+    console.log('These involve frequently-used words:\n');
+
+    for (const c of result.commonWordCollisions.slice(0, 50)) {
+      const freqs = c.sources.map((w) => {
+        const f = getWordFrequency(w);
+        return f !== undefined ? `${w}(#${String(f)})` : w;
+      });
+      const targetFreq = getWordFrequency(c.ingglish);
+      const targetInfo =
+        targetFreq !== undefined ? `${c.ingglish}(#${String(targetFreq)})` : c.ingglish;
+      console.log('- **%s** <- %s', targetInfo, freqs.join(', '));
+    }
+
+    console.log('\n## All Collisions with English Words\n');
+
+    for (const c of result.englishCollisions) {
+      console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+    }
+
+    console.log('\n## Homophones (2+ words -> same Ingglish)\n');
+
+    // Sort homophones by size (most sources first)
+    const sortedHomophones = [...result.homophones].sort(
+      (a, b) => b.sources.length - a.sources.length
+    );
+
+    for (const c of sortedHomophones.slice(0, 100)) {
+      console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+    }
+    if (result.homophones.length > 100) {
+      console.log('\n... and %d more', result.homophones.length - 100);
+    }
+
+    // Verify the analysis ran
+    expect(result.totalWords).toBeGreaterThan(100000);
+  }, 60000);
+});
+/* eslint-enable no-console */
