@@ -93,16 +93,6 @@ const SKIP_WORDS = new Set([
   'hub',
   'run',
   'ing',
-  // Known translator issues (TODO: fix these)
-  'beautiful', // produces "beeutiful" not "byuutuful"
-  'through', // produces "throug" not "thruu"
-  'though', // produces "thoug" not "dhoh"
-  'thought', // produces "thougt" not "thawt"
-  'star', // produces "starr" not "star"
-  'store', // produces "stohr" not "stor"
-  'air', // produces "ehr" not "air"
-  'barrow', // produces "barroh" not expected
-  'enough', // produces "inaff" not "inuf"
 ]);
 
 /**
@@ -203,14 +193,14 @@ function extractExamples(content: string, filename: string): Example[] {
       continue;
     }
 
-    // Pattern 6: word (translated) in Ingglish rows of orthography comparison tables
-    // e.g., | **Ingglish** | **a** | cat (kat) |
-    // Only match if line starts with Ingglish marker to avoid matching foreign language examples
+    // Pattern 6: ingglish (english) in Ingglish rows of orthography comparison tables
+    // e.g., | **Ingglish** | **dh** | dhu (the) |
+    // The word before parens is Ingglish, the word in parens is English
     if (line.includes('**Ingglish**')) {
       const parenMatch = /\|\s*([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)\s*\|/.exec(line);
       if (parenMatch) {
-        const english = parenMatch[1].toLowerCase();
-        const ingglish = parenMatch[2].toLowerCase();
+        const ingglish = parenMatch[1].toLowerCase();
+        const english = parenMatch[2].toLowerCase();
         if (!SKIP_WORDS.has(english)) {
           examples.push({ english, ingglish, source: filename, line: lineNum });
         }
@@ -266,7 +256,6 @@ describe('documentation examples', () => {
   const uniqueExamples = Array.from(seenExamples.values());
 
   it('should find examples in documentation', () => {
-    // Note: Many examples skipped due to known translator issues
     expect(uniqueExamples.length).toBeGreaterThan(0);
   });
 
