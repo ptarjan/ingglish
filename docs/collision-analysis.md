@@ -9,26 +9,26 @@ This document analyzes cases where translating an English word to Ingglish produ
 | Total words analyzed | 117,493 |
 | Ingglish spellings matching different English words | 1,089 |
 | Homophone groups (same pronunciation, different spelling) | 9,895 |
-| Collisions involving common words (freq ≥ 1000) | 172 |
+| Collisions involving common words (freq >= 1000) | 172 |
 
 ### Is This a Problem?
 
 **Not really.** Here's why:
 
 1. **Context resolves ambiguity** - Just like English homophones (their/there/they're), context makes meaning clear
-2. **Most collisions are rare words** - Only 657 of 1,089 collisions involve common words
+2. **Most collisions are rare words** - Only 172 of 1,089 collisions involve common words
 3. **The original problem exists in English** - English already has thousands of homophones that readers handle fine
 4. **Reading direction is consistent** - When reading Ingglish, you know to interpret phonetically
 
 ### Types of Collisions
 
 1. **Merged sounds** - English has sounds that merged historically:
-   - "wh" words → "w" sounds (white→wait, whine→wine)
+   - "wh" words -> "w" sounds (white->wait, while->wail)
    - This is how most American speakers actually pronounce these words
 
 2. **Proper names matching common words** - Many collisions are surnames:
-   - "Bier" (German surname) → "beer"
-   - "Bahler" → "boler"
+   - "Bier" (German surname) -> "beer"
+   - "Baht" (Thai currency) -> "bot" (same as "bought")
    - These are unavoidable since names follow the same pronunciation rules
 
 ---
@@ -37,46 +37,61 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 These collisions involve frequently-used words and may cause occasional confusion.
 
-The "Frequency" column shows corpus occurrence counts (higher = more common):
+The "Frequency" column shows SUBTLEX corpus occurrence counts (higher = more common):
 
 | English | Ingglish | Collides With | Frequency |
 |---------|----------|---------------|-----------|
-| right, rite, write | rait | rait (Scottish) | 204,428 → rare |
-| want | wont | wont (habit) | 140,718 → 81 |
-| white | wait | wait (verb) | 8,744 → 42,343 |
-| place | plays | plays (verb) | 30,736 → 1,521 |
-| fine | fain | fain (archaic) | 30,502 → 15 |
-| while, wile | wail | wail (cry) | 17,821 → 44 |
-| wife | waif | waif (orphan) | 17,795 → 17 |
-| since | sins | sins (noun) | 16,064 → 455 |
-| turn | tern | tern (bird) | 15,630 → 1 |
-| mine | main | main (primary) | 12,800 → 2,179 |
+| a, uh | u | u (letter) | 1,041,179 -> 2,506 |
+| of | uv | uv (?) | 590,439 -> ? |
+| right, write, rite | rait | rait (Scottish) | 204,428 -> rare |
+| how | hou | hou (?) | 155,867 -> ? |
+| yeah | ya | ya (informal) | 152,262 -> 7,664 |
+| want | wont | wont (habit) | 140,718 -> 81 |
+| ass | as | as (conjunction) | 11,545 -> 113,068 |
+| here, hear | heer | heer (?) | 230,788 -> 2 |
+| side, sighed | said | said (verb) | 10,247 -> 56,531 |
+| white | wait | wait (verb) | 8,744 -> 42,343 |
+| place | plays | plays (verb) | 30,736 -> 1,521 |
+| fine | fain | fain (archaic) | 30,502 -> 15 |
+| while, wile | wail | wail (cry) | 17,821 -> 44 |
+| wife | waif | waif (orphan) | 17,795 -> 17 |
+| since | sins | sins (noun) | 16,064 -> 455 |
+| turn | tern | tern (bird) | 15,630 -> 1 |
+| case | kays | kays (letter K's) | 14,403 -> ? |
+| mine | main | main (primary) | 12,800 -> 2,179 |
+| matter | mater | mater (mother) | 18,900 -> 83 |
+| else | els | els (?) | 22,907 -> 4 |
 
-Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1). The rare word is unlikely to appear in real text, so confusion is minimal.
+Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1 or unknown). The rare word is unlikely to appear in real text, so confusion is minimal.
 
 ### Analysis of Top Collisions
 
-#### "right" → "rait"
-The extremely common words "right" (204,428), "write" (6,467), and "rite" (74) all translate to "rait". This collides with "rait" which is a Scottish/archaic English word (meaning "wrote" in Scots dialect).
+#### "a" -> "u"
+The word "a" (1,041,179 occurrences) along with "uh" translate to "u", which collides with the letter "u" (2,506 occurrences).
 
-**Impact**: Very Low - "rait" is essentially never used in modern English, so there's no practical confusion.
+**Impact**: Low - Context makes "u dog" clearly mean "a dog", not "u dog".
 
-#### "want" → "wont"
+#### "right/write/rite" -> "rait"
+The extremely common words "right" (204,428), "write" (6,467), and "rite" (74) all translate to "rait". This collides with "rait" which is a Scottish/archaic English word.
+
+**Impact**: Very Low - "rait" is essentially never used in modern English.
+
+#### "want" -> "wont"
 The word "want" (140,718 occurrences) translates to "wont", which is an archaic English word meaning "habit" or "accustomed to" (only 81 occurrences).
 
 **Impact**: Low - "wont" is rarely used in modern English. Context makes "I wont that" clearly mean "I want that".
 
-#### "white" → "wait"
+#### "white" -> "wait"
 The word "white" (8,744 occurrences) translates to "wait", which is the common verb (42,343 occurrences). This is significant because both words are frequently used.
 
 **Impact**: Medium - Both words are common, but context resolves it. "The wait house" clearly means "white house". Note: "wait" itself translates to "wayt" in Ingglish, so the two words don't merge.
 
-#### "while" → "wail"
+#### "while" -> "wail"
 "While" (17,821 occurrences) translates to "wail" (44 occurrences), the crying sound.
 
 **Impact**: Low - "wail" is uncommon. "Wail you were gone" clearly means "while you were gone".
 
-#### "since" → "sins"
+#### "since" -> "sins"
 "Since" (16,064 occurrences) translates to "sins" (455 occurrences), the noun for transgressions.
 
 **Impact**: Low-Medium - Both are moderately common, but context ("sins yesterday" = "since yesterday") clarifies.
@@ -104,7 +119,7 @@ English has extensive homophones - words that sound the same but are spelled dif
 | au, aux, eau, eaux, o, oh, ohh, ow, owe | oh |
 | c, cie, sci, sea, see, si, sie, sieh | see |
 | ewe, u, uwe, yew, yoo, you, yu, yue | yuu |
-| way, waye, wei, weigh, wey, whey, wy | way |
+| rae, ray, raye, re, rea, reay, rey, wray | ray |
 | reaux, rheault, rho, ro, roe, roh, rohe, row, rowe | roh |
 
 ---
@@ -122,7 +137,7 @@ Most English speakers have merged "wh" and "w" sounds. This creates collisions w
 | while | wail | wail (cry) |
 | which, witch | wich | wich (as in "sandwich") |
 
-Note: Some WH-words like "whale → wayl" and "whether → wedher" do NOT create collisions because "wayl" and "wedher" aren't English words.
+Note: Some WH-words like "whale -> wayl" and "whether -> wedher" do NOT create collisions because "wayl" and "wedher" aren't English words.
 
 ### 2. Vowel Quality Mergers
 
@@ -131,14 +146,15 @@ Note: Some WH-words like "whale → wayl" and "whether → wedher" do NOT create
 | caught, cot | kot | Cot-caught merger |
 | Mary, merry, marry | meree | Three-way merger in many dialects |
 
-### 3. Proper Names → Common Words
+### 3. Proper Names -> Common Words
 
 Many collisions occur because proper names translate to common word spellings:
 
-| Proper Name | Common Word | Ingglish |
-|-------------|-------------|----------|
-| Robb | rob (verb) | rob |
-| Burt | bert (fabric) | bert |
+| Proper Name | Ingglish | Collides With |
+|-------------|----------|---------------|
+| Baht (currency) | bot | bought |
+| Bier (surname) | beer | beer |
+| Juan | won | won |
 | Marc | mark | mark |
 
 ---
