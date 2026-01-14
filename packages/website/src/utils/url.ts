@@ -211,11 +211,14 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
 /**
  * Script injected into iframe to capture link clicks via postMessage.
  * Handles both touch (iOS Safari) and click events.
+ * Distinguishes taps from scroll/pinch gestures on touch devices.
  *
  * Readable version:
  * ```js
  * (function() {
  *   var touchTarget = null;
+ *   var touchStartX = 0;
+ *   var touchStartY = 0;
  *
  *   // Find closest anchor element (with IE11 fallback)
  *   function findAnchor(el) {
@@ -246,8 +249,28 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  *     parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
  *   }
  *
- *   // Track touch target for iOS Safari
- *   document.addEventListener('touchstart', function(e) { touchTarget = findAnchor(e.target); }, true);
+ *   // Track touch target for iOS Safari - only single-touch taps
+ *   document.addEventListener('touchstart', function(e) {
+ *     // Ignore multi-touch (pinch gestures)
+ *     if (e.touches.length > 1) { touchTarget = null; return; }
+ *     touchTarget = findAnchor(e.target);
+ *     var touch = e.touches[0];
+ *     touchStartX = touch ? touch.clientX : 0;
+ *     touchStartY = touch ? touch.clientY : 0;
+ *   }, true);
+ *
+ *   // Clear touch target on multi-touch or significant movement (scroll)
+ *   document.addEventListener('touchmove', function(e) {
+ *     if (!touchTarget) return;
+ *     if (e.touches.length > 1) { touchTarget = null; return; }
+ *     var touch = e.touches[0];
+ *     if (touch) {
+ *       var dx = Math.abs(touch.clientX - touchStartX);
+ *       var dy = Math.abs(touch.clientY - touchStartY);
+ *       if (dx > 10 || dy > 10) touchTarget = null;
+ *     }
+ *   }, true);
+ *
  *   document.addEventListener('touchend', function(e) {
  *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
  *   }, true);
@@ -255,7 +278,7 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  * })();
  * ```
  */
-const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){t=f(e.target)},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
+const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null,sx=0,sy=0;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){h(f(e.target),e)},true)})();</script>`;
 
 /**
  * Injects the click handler script before the closing body or html tag.
