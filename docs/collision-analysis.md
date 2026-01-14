@@ -113,18 +113,16 @@ English has extensive homophones - words that sound the same but are spelled dif
 
 ### 1. WH-W Mergers (Wine-Whine Merger)
 
-Most English speakers have merged "wh" and "w" sounds. This creates collisions where WH-words translate to spellings that match existing W-words:
+Most English speakers have merged "wh" and "w" sounds. This creates collisions where WH-words translate to spellings that match existing English words:
 
 | English | Ingglish | Collides With English Word |
 |---------|----------|---------------------------|
 | white | wait | wait (verb) |
-| whale | wayl | wail (cry) |
-| whine | wain | wane (decline) - but also "wain" is archaic for wagon |
+| whine | wain | wain (archaic: wagon) |
 | while | wail | wail (cry) |
-| which | wich | witch (spelled "wich" in Ingglish too) |
-| whether | wedher | weather (spelled "wedher" in Ingglish too) |
+| which, witch | wich | wich (as in "sandwich") |
 
-Note: Some pairs like "white/wait" translate to *different* Ingglish spellings (wait vs wayt), but "white → wait" still collides with the English word "wait".
+Note: Some WH-words like "whale → wayl" and "whether → wedher" do NOT create collisions because "wayl" and "wedher" aren't English words.
 
 ### 2. Vowel Quality Mergers
 
