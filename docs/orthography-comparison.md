@@ -263,22 +263,34 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced) - a logical pair
 - Russian Romanization uses 'zh' for Ж, so this has precedent
 
-### The "TH" Sounds (/θ/ and /ð/)
+### The "TH" Sound (/θ/ as in "think")
 
-| Language | Voiceless /θ/ | Voiced /ð/ |
-|----------|---------------|------------|
-| **Ingglish** | **th** | **dh** |
-| English | th | th (ambiguous!) |
-| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | þ (thorn) | ð (eth) |
-| [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | th | dd |
-| Spanish (Castilian) | c/z | — |
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **th** | think |
+| English | th | think, bath |
+| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | þ (thorn) | þakka (thank) |
+| [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | th | athro (teacher) |
+| Spanish (Castilian) | c/z | cero (zero), zapato (shoe) |
 
 **Notes:**
-- [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19) - they're genuinely rare
-- English's ambiguous 'th' for both sounds is unusual
-- We use 'dh' to distinguish voiced /ð/ (the, this) from voiceless /θ/ (think, bath)
-- [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/ - we considered this but 'dh' is more intuitive
-- Icelandic preserves the original letters (þ, ð) from Old English
+- [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19) — they're genuinely rare
+- English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
+- We keep 'th' for voiceless /θ/ — the intuitive choice
+
+### The "DH" Sound (/ð/ as in "the")
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **dh** | dhu (the) |
+| English | th (ambiguous!) | the, this, father |
+| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_orthography) | ð (eth) | faðir (father) |
+| [Welsh](https://en.wikipedia.org/wiki/Welsh_orthography) | dd | tad (father) |
+
+**Notes:**
+- We use 'dh' to distinguish voiced /ð/ from voiceless /θ/
+- [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/ — we considered this but 'dh' is more intuitive
+- Icelandic preserves the original Old English letter ð (eth)
 
 ### The "NG" Sound (/ŋ/)
 
