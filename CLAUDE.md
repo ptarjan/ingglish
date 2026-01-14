@@ -29,3 +29,26 @@ Add TODO comments in the code when a feature isn't complete. This helps track un
 ## Performance
 
 Profile before optimizing. Don't guess at performance solutions - measure first to identify actual bottlenecks.
+
+## Quick Translation Testing
+
+To test how words translate and round-trip:
+
+```bash
+cd packages/core
+npm run translate -- "white wait hello world"
+```
+
+Output shows each word's translation and reverse translation:
+```
+✓ "white" -> "wait" -> "white"
+✓ "wait" -> "wayt" -> "wait"
+✓ "hello" -> "huloh" -> "hello"
+```
+
+For reverse translation (Ingglish → English):
+```bash
+npm run translate -- -r "huloh werld"
+```
+
+This is useful for debugging translation issues and understanding how specific words behave.

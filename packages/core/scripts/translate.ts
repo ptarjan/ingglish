@@ -4,15 +4,15 @@
  * Usage: npm run translate "text to translate"
  *        npm run translate -- -r "ingglish text"  (reverse)
  */
-import { loadDictionary } from '../src/dictionary/loader.js';
+import { loadDictionary, loadReverseDictionary } from '../src/dictionary/index.js';
 import { lookupPronunciation } from '../src/dictionary/lookup.js';
 import { translateSync } from '../src/translate/forward.js';
 import { reverseTranslateSync } from '../src/translate/reverse.js';
 import { loadFrequencies } from '../src/utils/frequency.js';
 
 async function main() {
-  // Load dictionary and frequencies (both paths use reverse translation)
-  await Promise.all([loadDictionary(), loadFrequencies()]);
+  // Load all dictionaries needed for translation and reverse translation
+  await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
 
   const args = process.argv.slice(2);
   const reverse = args[0] === '-r';

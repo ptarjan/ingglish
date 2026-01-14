@@ -41,7 +41,6 @@ The "Frequency" column shows corpus occurrence counts (higher = more common):
 
 | English | Ingglish | Collides With | Frequency |
 |---------|----------|---------------|-----------|
-| white | wait | wait (verb) | both common |
 | turn | tern | tern (bird) | 15,630 → 1 |
 | sauce | saws | saws (tool) | 795 → 24 |
 | bought | bot | bot (robot) | 4,362 → 50 |
@@ -53,11 +52,6 @@ The "Frequency" column shows corpus occurrence counts (higher = more common):
 Most collisions are one-way problems: a common word translates to match an extremely rare word (frequency of 1). The rare word is unlikely to appear in real text, so confusion is minimal.
 
 ### Analysis of Top Collisions
-
-#### "white" → "wait"
-The most significant collision. Both "white" and "wait" are common words, and they translate to the same Ingglish spelling. This happens because most American speakers have merged the "wh" and "w" sounds (the wine-whine merger).
-
-**Impact**: Medium - Both words are common. Context usually resolves it ("wait for the bus" vs "wait paint"), but this is the clearest example of a problematic collision.
 
 #### "turn" → "tern"
 The word "turn" translates to "tern" (a seabird). This is because CMU dictionary shows "turn" as /tɜːn/ which maps to "tern" in Ingglish. The bird "tern" appears only once in the SUBTLEX corpus, making it extremely rare.
@@ -106,21 +100,18 @@ English has extensive homophones - words that sound the same but are spelled dif
 
 ### 1. WH-W Mergers (Wine-Whine Merger)
 
-Most English speakers have merged "wh" and "w" sounds. The CMU dictionary reflects this:
+Most English speakers have merged "wh" and "w" sounds. Interestingly, Ingglish often preserves the distinction through vowel spellings:
 
-| English | Ingglish | Notes |
-|---------|----------|-------|
-| white | wait | Both /weɪt/ in most dialects |
-| whale | wail | |
-| whine | wine | |
-| while | wile | |
-| which | witch | |
-| whether | weather | |
+| English Pair | Ingglish | Collision? |
+|--------------|----------|------------|
+| white / wait | wait / wayt | No - different spellings! |
+| whale / wail | wayl / wayl | Yes - both → wayl |
+| whine / wine | wain / wain | Yes - both → wain |
+| while / wile | wail / wail | Yes - both → wail |
+| which / witch | wich / wich | Yes - both → wich |
+| whether / weather | wedher / wedher | Yes - both → wedher |
 
-**Resolution Options**:
-1. Accept the merger (reflects actual pronunciation)
-2. Add custom pronunciations with /hw/ for "wh" words
-3. Use diacritics (e.g., "hwait" for "white")
+Note: "white" and "wait" do NOT collide despite sounding similar - they have different vowel representations in CMU dictionary.
 
 ### 2. Vowel Quality Mergers
 
