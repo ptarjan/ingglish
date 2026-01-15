@@ -15,8 +15,9 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     // Performance optimizations
-    pool: 'threads',
-    isolate: false, // Share global state (dictionary) across tests for speed
+    // Single worker avoids loading dictionaries multiple times (9s vs 17s)
+    maxWorkers: 1,
+    isolate: false, // Share global state (dictionary) across tests
     // Faster timeouts
     testTimeout: 10000,
     hookTimeout: 30000,
