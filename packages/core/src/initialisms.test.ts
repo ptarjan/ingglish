@@ -6,11 +6,7 @@ import {
   INITIALISM_EXPANSIONS,
 } from './translate/initialisms';
 import { translateWord, translateSync } from './translate/forward';
-import { setupDictionary } from './test-setup';
-
 describe('initialisms', () => {
-  setupDictionary();
-
   beforeAll(() => {
     // Ensure translateWordFn is set
     setInitialismTranslateWordFn(translateWord);

@@ -9,11 +9,7 @@ import { stripStress, STRESS_MARKER_REGEX } from './phonemes/arpabet';
 import { lookupPronunciation } from './dictionary/lookup';
 import { lookupPhonemeKey } from './dictionary/reverse';
 import { arpabetToIngglish } from './convert/to-ingglish';
-import { setupDictionary } from './test-setup';
-
 describe('performance optimizations', () => {
-  setupDictionary();
-
   describe('stripStress charCode optimization', () => {
     it('should use charCode 48-50 for stress markers (not regex)', () => {
       // Verify the charCode range is exactly '0'=48, '1'=49, '2'=50

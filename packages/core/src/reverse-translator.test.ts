@@ -9,11 +9,9 @@ import {
 } from './translate/reverse';
 import { isLikelyIngglish } from './detect/language';
 import { ingglishToArpabet } from './convert/from-ingglish';
-import { setupDictionary, SAMPLE_TEXT } from './test-setup';
+import { SAMPLE_TEXT } from './test-setup';
 
 describe('reverse-translator', () => {
-  setupDictionary();
-
   describe('ingglishToArpabet', () => {
     it('should parse simple Ingglish words to phonemes', () => {
       // "kat" -> K AE T

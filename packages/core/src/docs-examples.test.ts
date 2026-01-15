@@ -6,7 +6,6 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { translateSync } from './translate/forward';
-import { setupDictionary } from './test-setup';
 
 // Paths relative to repo root (vitest runs from packages/core)
 const DOCS_DIR = join(process.cwd(), '../../docs');
@@ -262,8 +261,6 @@ function getExamplesFromFile(filepath: string): Example[] {
 }
 
 describe('documentation examples', () => {
-  setupDictionary();
-
   // Collect all examples from docs
   const allExamples: Example[] = [];
 

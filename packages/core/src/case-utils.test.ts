@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { detectCasePattern, applyCasePattern, splitCamelCase } from './utils/case';
 import { translateWord } from './translate/forward';
-import { setupDictionary } from './test-setup';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {
@@ -233,8 +232,6 @@ describe('case-utils', () => {
   });
 
   describe('camelCase translation', () => {
-    setupDictionary();
-
     it('should translate iCloud with capital at component boundary', () => {
       // "iCloud" should become "aiKloud" not "aIkloud"
       // The K should be capitalized because "Cloud" starts with capital C

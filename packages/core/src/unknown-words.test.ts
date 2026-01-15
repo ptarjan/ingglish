@@ -12,11 +12,9 @@ import {
 } from './fallback';
 import { lookupPronunciation, getDictionary } from './dictionary';
 import { translateWord } from './translate/forward';
-import { setupDictionary, UNKNOWN_TECH_WORDS } from './test-setup';
+import { UNKNOWN_TECH_WORDS } from './test-setup';
 
 describe('unknown-words', () => {
-  setupDictionary();
-
   describe('CUSTOM_PRONUNCIATIONS validation', () => {
     it('should not have identical pronunciations to CMU dictionary', () => {
       // Skip if using stub dictionary (less than 100 entries)

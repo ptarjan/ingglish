@@ -2,14 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from './dictionary';
 import { translateWord, translateSync } from './translate/forward';
 import { translate, reverseTranslate } from './index';
-import { setupDictionary } from './test-setup';
 import * as dictModule from './dictionary';
 
 describe('async API loads only required dictionaries', () => {
-  // Pre-load dictionaries so we're only testing which ones are called, not loading speed
-  setupDictionary();
-
-  // Verify each async function only loads what it needs
+  // Dictionaries pre-loaded by vitest.setup.ts
 
   it('translate() should not call loadReverseDictionary', async () => {
     const loadReverseSpy = vi.spyOn(dictModule, 'loadReverseDictionary');
@@ -33,8 +29,6 @@ describe('async API loads only required dictionaries', () => {
 });
 
 describe('translator', () => {
-  setupDictionary();
-
   describe('loadDictionary', () => {
     it('should load the dictionary', async () => {
       const dict = await loadDictionary();

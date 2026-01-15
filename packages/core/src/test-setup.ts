@@ -1,30 +1,7 @@
 /**
- * Shared test setup and data for @ingglish/core tests
+ * Shared test data for @ingglish/core tests.
+ * Dictionary loading is handled by vitest.setup.ts.
  */
-import { beforeAll } from 'vitest';
-import { loadDictionary, loadReverseDictionary } from './dictionary';
-import { loadFrequencies } from './dictionary/frequency';
-
-/**
- * Call this in your test file to ensure the dictionary is loaded before tests run.
- * Also loads the reverse dictionary for reverse translation tests.
- * Usage: setupDictionary();
- */
-export function setupDictionary(): void {
-  beforeAll(async () => {
-    await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
-  });
-}
-
-/**
- * Call this in your test file to ensure word frequencies are loaded before tests run.
- * Usage: setupFrequencies();
- */
-export function setupFrequencies(): void {
-  beforeAll(async () => {
-    await loadFrequencies();
-  });
-}
 
 /**
  * Sample pangram text used for testing translations
