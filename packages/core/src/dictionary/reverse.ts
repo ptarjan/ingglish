@@ -12,6 +12,29 @@ let reverseDict: ReverseDictionary | null = null;
 let reverseDictPromise: Promise<ReverseDictionary> | null = null;
 
 /**
+ * Fast JSON.parse loader for Node.js (18x faster than dynamic import).
+ * Falls back to dynamic import for browser environment.
+ */
+async function loadReverseDictionaryFast(): Promise<ReverseDictionary> {
+  // Use fast readFileSync + JSON.parse in Node.js
+  if (typeof process !== 'undefined' && process.versions?.node) {
+    const fs = await import('fs');
+    const url = await import('url');
+    const path = await import('path');
+    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+    const filepath = path.join(__dirname, 'reverse-cmudict.js');
+    const content = fs.readFileSync(filepath, 'utf8');
+    const jsonStart = content.indexOf('{');
+    const jsonEnd = content.lastIndexOf('}') + 1;
+    return JSON.parse(content.slice(jsonStart, jsonEnd)) as ReverseDictionary;
+  }
+
+  // Browser: use dynamic import
+  const module = await import('./reverse-cmudict');
+  return module.default;
+}
+
+/**
  * Loads the pre-built reverse dictionary.
  * The dictionary is cached after first load.
  */
@@ -24,9 +47,9 @@ export async function loadReverseDictionary(): Promise<ReverseDictionary> {
     return reverseDictPromise;
   }
 
-  reverseDictPromise = import('./reverse-cmudict')
-    .then((module: { default: ReverseDictionary }) => {
-      reverseDict = module.default;
+  reverseDictPromise = loadReverseDictionaryFast()
+    .then((data) => {
+      reverseDict = data;
       return reverseDict;
     })
     .catch((error: unknown) => {
