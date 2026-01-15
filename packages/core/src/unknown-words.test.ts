@@ -300,7 +300,9 @@ describe('unknown-words', () => {
     });
   });
 
-  describe('phonemize integration', () => {
+  // Phonemize tests are slow (~460ms to load the neural model)
+  // Skip in local dev, run in CI
+  describe.skipIf(process.env.CI === undefined)('phonemize integration', () => {
     beforeAll(async () => {
       await preloadPhonemize();
     });
