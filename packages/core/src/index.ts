@@ -13,7 +13,7 @@
  */
 
 import { loadDictionary, loadReverseDictionary } from './dictionary';
-import { loadFrequencies } from './utils/frequency';
+import { loadFrequencies } from './dictionary/frequency';
 import { translateSync, reverseTranslateSync } from './translate';
 import { type OutputFormat } from './types';
 

@@ -99,7 +99,7 @@ describe('performance optimizations', () => {
 
   describe('lookupPhonemeKey pre-sorted dictionary', () => {
     it('should not call sortByFrequency at runtime (pre-sorted at build time)', async () => {
-      const frequencyModule = await import('./utils/frequency');
+      const frequencyModule = await import('./dictionary/frequency');
       const sortSpy = vi.spyOn(frequencyModule, 'sortByFrequency');
       sortSpy.mockClear();
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getWordFrequency, scoreWord, sortByFrequency } from './utils/frequency';
+import { getWordFrequency, scoreWord, sortByFrequency } from './dictionary/frequency';
 import { setupFrequencies } from './test-setup';
 
 setupFrequencies();

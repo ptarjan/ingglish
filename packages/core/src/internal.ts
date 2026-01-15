@@ -37,4 +37,4 @@ export { reverseTranslateWord, reverseTranslateIPAWord } from './translate/rever
 // Dictionary loading (for test setup)
 export { loadDictionary, isDictionaryLoaded } from './dictionary/loader';
 export { loadReverseDictionary } from './dictionary/reverse';
-export { loadFrequencies } from './utils/frequency';
+export { loadFrequencies } from './dictionary/frequency';

@@ -4,7 +4,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { loadDictionary, getDictionary } from './dictionary/loader';
-import { loadFrequencies, getWordFrequency } from './utils/frequency';
+import { loadFrequencies, getWordFrequency } from './dictionary/frequency';
 import { translateWord } from './translate/forward';
 
 interface Collision {

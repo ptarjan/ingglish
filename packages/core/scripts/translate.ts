@@ -8,7 +8,7 @@ import { loadDictionary, loadReverseDictionary } from '../src/dictionary/index.j
 import { lookupPronunciation } from '../src/dictionary/lookup.js';
 import { translateSync } from '../src/translate/forward.js';
 import { reverseTranslateSync } from '../src/translate/reverse.js';
-import { loadFrequencies } from '../src/utils/frequency.js';
+import { loadFrequencies } from '../src/dictionary/frequency.js';
 
 async function main() {
   // Load all dictionaries needed for translation and reverse translation

@@ -3,7 +3,7 @@
  */
 import { beforeAll } from 'vitest';
 import { loadDictionary, loadReverseDictionary } from './dictionary';
-import { loadFrequencies } from './utils/frequency';
+import { loadFrequencies } from './dictionary/frequency';
 
 /**
  * Call this in your test file to ensure the dictionary is loaded before tests run.

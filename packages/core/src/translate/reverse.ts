@@ -7,7 +7,7 @@
  */
 
 import { lookupPhonemeKey } from '../dictionary/reverse';
-import { sortByFrequency } from '../utils/frequency';
+import { sortByFrequency } from '../dictionary/frequency';
 import { detectCasePattern, applyCasePattern } from '../utils/case';
 import {
   normalizeApostrophes,
