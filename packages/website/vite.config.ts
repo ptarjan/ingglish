@@ -42,6 +42,8 @@ export default defineConfig({
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed
     sourcemap: !!process.env.CI,
+    // Skip gzip size reporting in CI (saves ~2s)
+    reportCompressedSize: !process.env.CI,
     // Dictionary chunk is ~6.6MB, suppress warning for it
     chunkSizeWarningLimit: 7000,
     rollupOptions: {
