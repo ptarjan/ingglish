@@ -1,11 +1,11 @@
+#!/usr/bin/env npx vite-node
 /**
  * Collision analysis: Find words where Ingglish translation matches another English word.
- * Run with: npx vitest run -t "collision analysis"
+ * Usage: npm run analyze-collisions
  */
-import { describe, it, expect } from 'vitest';
-import { loadDictionary, getDictionary } from './dictionary/loader';
-import { loadFrequencies, getWordFrequency } from './dictionary/frequency';
-import { translateWord } from './translate/forward';
+import { loadDictionary, getDictionary } from '../src/dictionary/loader.js';
+import { loadFrequencies, getWordFrequency } from '../src/dictionary/frequency.js';
+import { translateWord } from '../src/translate/forward.js';
 
 interface Collision {
   ingglish: string;
@@ -23,7 +23,7 @@ interface AnalysisResult {
 /**
  * Analyze all word collisions in the Ingglish translation.
  */
-export async function analyzeCollisions(): Promise<AnalysisResult> {
+async function analyzeCollisions(): Promise<AnalysisResult> {
   await Promise.all([loadDictionary(), loadFrequencies()]);
   const dict = getDictionary();
 
@@ -96,63 +96,56 @@ export async function analyzeCollisions(): Promise<AnalysisResult> {
   };
 }
 
-/* eslint-disable no-console */
-// Skip by default - this is a slow analysis tool, not a unit test
-// Run with: npx vitest run -t "collision analysis"
-describe.skip('collision analysis', () => {
-  it('should analyze all collisions', async () => {
-    const result = await analyzeCollisions();
+async function main() {
+  const result = await analyzeCollisions();
 
-    console.log('\n# Ingglish Collision Analysis\n');
-    console.log('## Summary\n');
-    console.log('- Total words analyzed: %d', result.totalWords);
-    console.log(
-      '- Ingglish spellings that match different English words: %d',
-      result.englishCollisions.length
-    );
-    console.log('- Homophones (same Ingglish, different English): %d', result.homophones.length);
-    console.log(
-      '- Collisions involving common words (top 5000): %d',
-      result.commonWordCollisions.length
-    );
-    console.log('\n---\n');
+  console.log('\n# Ingglish Collision Analysis\n');
+  console.log('## Summary\n');
+  console.log('- Total words analyzed: %d', result.totalWords);
+  console.log(
+    '- Ingglish spellings that match different English words: %d',
+    result.englishCollisions.length
+  );
+  console.log('- Homophones (same Ingglish, different English): %d', result.homophones.length);
+  console.log(
+    '- Collisions involving common words (top 5000): %d',
+    result.commonWordCollisions.length
+  );
+  console.log('\n---\n');
 
-    console.log('## Most Problematic Collisions (Common Words)\n');
-    console.log('These involve frequently-used words:\n');
+  console.log('## Most Problematic Collisions (Common Words)\n');
+  console.log('These involve frequently-used words:\n');
 
-    for (const c of result.commonWordCollisions.slice(0, 50)) {
-      const freqs = c.sources.map((w) => {
-        const f = getWordFrequency(w);
-        return f !== undefined ? `${w}(#${String(f)})` : w;
-      });
-      const targetFreq = getWordFrequency(c.ingglish);
-      const targetInfo =
-        targetFreq !== undefined ? `${c.ingglish}(#${String(targetFreq)})` : c.ingglish;
-      console.log('- **%s** <- %s', targetInfo, freqs.join(', '));
-    }
+  for (const c of result.commonWordCollisions.slice(0, 50)) {
+    const freqs = c.sources.map((w) => {
+      const f = getWordFrequency(w);
+      return f !== undefined ? `${w}(#${String(f)})` : w;
+    });
+    const targetFreq = getWordFrequency(c.ingglish);
+    const targetInfo =
+      targetFreq !== undefined ? `${c.ingglish}(#${String(targetFreq)})` : c.ingglish;
+    console.log('- **%s** <- %s', targetInfo, freqs.join(', '));
+  }
 
-    console.log('\n## All Collisions with English Words\n');
+  console.log('\n## All Collisions with English Words\n');
 
-    for (const c of result.englishCollisions) {
-      console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
-    }
+  for (const c of result.englishCollisions) {
+    console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+  }
 
-    console.log('\n## Homophones (2+ words -> same Ingglish)\n');
+  console.log('\n## Homophones (2+ words -> same Ingglish)\n');
 
-    // Sort homophones by size (most sources first)
-    const sortedHomophones = [...result.homophones].sort(
-      (a, b) => b.sources.length - a.sources.length
-    );
+  // Sort homophones by size (most sources first)
+  const sortedHomophones = [...result.homophones].sort(
+    (a, b) => b.sources.length - a.sources.length
+  );
 
-    for (const c of sortedHomophones.slice(0, 100)) {
-      console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
-    }
-    if (result.homophones.length > 100) {
-      console.log('\n... and %d more', result.homophones.length - 100);
-    }
+  for (const c of sortedHomophones.slice(0, 100)) {
+    console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+  }
+  if (result.homophones.length > 100) {
+    console.log('\n... and %d more', result.homophones.length - 100);
+  }
+}
 
-    // Verify the analysis ran
-    expect(result.totalWords).toBeGreaterThan(100000);
-  }, 60000);
-});
-/* eslint-enable no-console */
+main().catch(console.error);
