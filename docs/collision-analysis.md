@@ -81,8 +81,7 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 ## Running the Analysis
 
 ```bash
-cd packages/core
-npx vitest run -t "collision analysis"
+npm run analyze-collisions -w @ingglish/core
 ```
 
-The analysis script is at `packages/core/src/collision-analysis.test.ts`.
+The analysis script is at `packages/core/scripts/collision-analysis.ts`.
