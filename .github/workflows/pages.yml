@@ -29,12 +29,13 @@ jobs:
 
       - name: Cache generated dictionaries
         uses: actions/cache@v4
+        id: dict-cache
         with:
           path: |
             packages/core/src/dictionary/cmudict.js
             packages/core/src/dictionary/reverse-cmudict.js
             packages/core/src/data/word-frequencies.js
-          key: dictionaries-v2-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+          key: dictionaries-v4-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
 
       - name: Cache generated docs
         id: docs-cache
@@ -45,6 +46,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate dictionaries (if not cached)
+        if: steps.dict-cache.outputs.cache-hit != 'true'
+        run: npm run update-dictionaries -w @ingglish/core
 
       - name: Build core and dom libraries
         run: npm run build:fast -w @ingglish/core && npm run build:fast -w @ingglish/dom
