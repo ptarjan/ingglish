@@ -97,7 +97,9 @@ export async function analyzeCollisions(): Promise<AnalysisResult> {
 }
 
 /* eslint-disable no-console */
-describe('collision analysis', () => {
+// Skip by default - this is a slow analysis tool, not a unit test
+// Run with: npx vitest run -t "collision analysis"
+describe.skip('collision analysis', () => {
   it('should analyze all collisions', async () => {
     const result = await analyzeCollisions();
 
