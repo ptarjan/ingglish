@@ -42,7 +42,7 @@ export const vowelGroups: SoundGroup[] = [
     name: 'Diphthongs & Other',
     sounds: [
       { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), h**ow** (hou)' },
-      { phoneme: 'OY', examples: 't**oi**l (toil), b**oy** (boi)' },
+      { phoneme: 'OY', examples: 't**oi**l (toil), b**oy** (boi), t**oy** (toi)' },
       { phoneme: 'AO', examples: 'l**aw** (law), th**ough**t (thawt), c**augh**t (kawt)' },
       { phoneme: 'UH', examples: 'b**oo**k (book), p**u**t (poot), w**o**lf (woolf)' },
       { phoneme: 'AH0', examples: '**u**pon (upon), **a**bout (ubout), banan**a** (bunanu)' },
