@@ -330,4 +330,33 @@ describe('reverse-translator', () => {
       expect(back.toLowerCase()).toBe('hello world');
     });
   });
+
+  describe('URL and email preservation', () => {
+    it('should preserve HTTP URLs unchanged', () => {
+      const result = reverseTranslateSync('Vizit http://example.com tuday');
+      expect(result).toContain('http://example.com');
+    });
+
+    it('should preserve HTTPS URLs unchanged', () => {
+      const result = reverseTranslateSync('Vizit https://example.com/path?q=1 tuday');
+      expect(result).toContain('https://example.com/path?q=1');
+    });
+
+    it('should preserve email addresses unchanged', () => {
+      const result = reverseTranslateSync('Kontakt foo@bar.com for help');
+      expect(result).toContain('foo@bar.com');
+    });
+
+    it('should translate surrounding text while preserving URLs', () => {
+      const result = reverseTranslateSync('Vizit https://example.com tuday');
+      expect(result).toBe('Visit https://example.com today');
+    });
+
+    it('should preserve multiple URLs and emails', () => {
+      const result = reverseTranslateSync('See http://a.com and https://b.com or eemayl x@y.com');
+      expect(result).toContain('http://a.com');
+      expect(result).toContain('https://b.com');
+      expect(result).toContain('x@y.com');
+    });
+  });
 });

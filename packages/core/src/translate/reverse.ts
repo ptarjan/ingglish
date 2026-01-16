@@ -14,6 +14,8 @@ import {
   tokenizeIPA,
   WORD_SPLIT_REGEX,
   WORD_TEST_REGEX,
+  extractPreservedPatterns,
+  restorePreservedPatterns,
 } from '../utils/text';
 import { ingglishToArpabet } from '../convert/from-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
@@ -149,11 +151,15 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
 
 /**
  * Translates Ingglish text back to English.
+ * URLs and emails are preserved unchanged.
  */
 function reverseTranslateIngglishText(text: string): string {
   const normalizedText = normalizeApostrophes(text);
 
-  return normalizedText
+  // Extract URLs and emails to preserve them unchanged
+  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
+
+  const translated = textWithPlaceholders
     .split(WORD_SPLIT_REGEX)
     .map((token) => {
       if (WORD_TEST_REGEX.test(token)) {
@@ -175,6 +181,9 @@ function reverseTranslateIngglishText(text: string): string {
       return token;
     })
     .join('');
+
+  // Restore URLs and emails
+  return restorePreservedPatterns(translated, preserved);
 }
 
 /**

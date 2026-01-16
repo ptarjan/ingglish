@@ -5,7 +5,13 @@
 import { arpabetToFormat } from '../convert/to-ingglish';
 import { lookupPronunciation } from '../dictionary/lookup';
 import { detectCasePattern, applyCasePattern, splitCamelCase } from '../utils/case';
-import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '../utils/text';
+import {
+  normalizeApostrophes,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+  extractPreservedPatterns,
+  restorePreservedPatterns,
+} from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
 import type { OutputFormat } from '../types';
@@ -157,7 +163,7 @@ setInitialismTranslateWordFn(translateWord);
 
 /**
  * Translates text containing multiple words to the specified format.
- * Preserves punctuation, whitespace, and non-word characters.
+ * Preserves punctuation, whitespace, URLs, emails, and non-word characters.
  *
  * @param text - The English text to translate
  * @param format - The output format ('ingglish' or 'ipa')
@@ -167,10 +173,13 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
   // Normalize curly apostrophes to straight ones
   const normalizedText = normalizeApostrophes(text);
 
-  // Split on word boundaries, preserving punctuation, numbers, whitespace
-  const tokens = normalizedText.split(WORD_SPLIT_REGEX);
+  // Extract URLs and emails to preserve them unchanged
+  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
 
-  return tokens
+  // Split on word boundaries, preserving punctuation, numbers, whitespace
+  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
+
+  const translated = tokens
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (WORD_TEST_REGEX.test(token)) {
@@ -179,6 +188,9 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
       return token;
     })
     .join('');
+
+  // Restore URLs and emails
+  return restorePreservedPatterns(translated, preserved);
 }
 
 /**
@@ -193,30 +205,68 @@ export interface TranslatedToken {
 /**
  * Translates text and returns token-by-token mappings.
  * Used internally for DOM translation with tooltips.
+ * URLs and emails are preserved unchanged.
  */
 export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
-  const tokens = normalizedText.split(WORD_SPLIT_REGEX);
+
+  // Extract URLs and emails to preserve them unchanged
+  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
+  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
 
   // Single pass: filter and map together
   const result: TranslatedToken[] = [];
   for (const token of tokens) {
     if (token.length > 0) {
-      if (WORD_TEST_REGEX.test(token)) {
-        result.push({
-          original: token,
-          translated: translateWord(token, format),
-          isWord: true,
-        });
-      } else {
-        result.push({
-          original: token,
-          translated: token,
-          isWord: false,
-        });
+      // Check if this token contains a placeholder for a preserved pattern
+      let foundPlaceholder = false;
+      for (const [placeholder, original] of preserved) {
+        if (token.includes(placeholder)) {
+          // Token contains a placeholder - split it and handle parts
+          const parts = token.split(placeholder);
+          // Add leading non-placeholder part if present
+          if (parts[0].length > 0) {
+            result.push({
+              original: parts[0],
+              translated: parts[0],
+              isWord: false,
+            });
+          }
+          // Add the preserved URL/email
+          result.push({
+            original: original,
+            translated: original,
+            isWord: false,
+          });
+          // Add trailing non-placeholder part if present
+          if (parts[1] && parts[1].length > 0) {
+            result.push({
+              original: parts[1],
+              translated: parts[1],
+              isWord: false,
+            });
+          }
+          foundPlaceholder = true;
+          break;
+        }
+      }
+      if (!foundPlaceholder) {
+        if (WORD_TEST_REGEX.test(token)) {
+          result.push({
+            original: token,
+            translated: translateWord(token, format),
+            isWord: true,
+          });
+        } else {
+          result.push({
+            original: token,
+            translated: token,
+            isWord: false,
+          });
+        }
       }
     }
   }

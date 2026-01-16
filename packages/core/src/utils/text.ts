@@ -9,6 +9,59 @@ export const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
 export const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
 
 /**
+ * Regex to match URLs (http, https, ftp, file protocols).
+ * Matches protocol through end of URL (stops at whitespace or common punctuation at end).
+ */
+export const URL_REGEX = /(?:https?|ftp|file):\/\/[^\s<>"')\]]+/gi;
+
+/**
+ * Regex to match email addresses.
+ * Simple pattern: word characters, dots, hyphens, plus before @, domain after.
+ */
+export const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
+
+/**
+ * Extracts URLs and emails from text, replacing them with placeholders.
+ * Returns the modified text and a map to restore originals.
+ * Placeholders use non-alphanumeric characters to avoid being split by word regex.
+ */
+export function extractPreservedPatterns(text: string): {
+  text: string;
+  preserved: Map<string, string>;
+} {
+  const preserved = new Map<string, string>();
+  let counter = 0;
+
+  // Replace URLs first (they may contain email-like patterns)
+  // Use \x00 (null) and \x01 (SOH) to create non-word placeholders
+  let result = text.replace(URL_REGEX, (match) => {
+    const placeholder = `\x00\x01${counter++}\x01\x00`;
+    preserved.set(placeholder, match);
+    return placeholder;
+  });
+
+  // Replace emails
+  result = result.replace(EMAIL_REGEX, (match) => {
+    const placeholder = `\x00\x01${counter++}\x01\x00`;
+    preserved.set(placeholder, match);
+    return placeholder;
+  });
+
+  return { text: result, preserved };
+}
+
+/**
+ * Restores preserved patterns (URLs, emails) from placeholders.
+ */
+export function restorePreservedPatterns(text: string, preserved: Map<string, string>): string {
+  let result = text;
+  for (const [placeholder, original] of preserved) {
+    result = result.replace(placeholder, original);
+  }
+  return result;
+}
+
+/**
  * Normalizes various apostrophe characters to the standard straight apostrophe.
  * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
  */

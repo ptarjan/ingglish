@@ -279,4 +279,52 @@ describe('translator', () => {
       expect(tokens[2].isWord).toBe(true);
     });
   });
+
+  describe('URL and email preservation', () => {
+    it('should preserve HTTP URLs unchanged', () => {
+      const result = translateSync('Visit http://example.com today');
+      expect(result).toContain('http://example.com');
+    });
+
+    it('should preserve HTTPS URLs unchanged', () => {
+      const result = translateSync('Visit https://example.com/path?q=1 today');
+      expect(result).toContain('https://example.com/path?q=1');
+    });
+
+    it('should preserve complex URLs with fragments and params', () => {
+      const result = translateSync('See https://github.com/user/repo#readme for info');
+      expect(result).toContain('https://github.com/user/repo#readme');
+    });
+
+    it('should preserve email addresses unchanged', () => {
+      const result = translateSync('Contact foo@bar.com for help');
+      expect(result).toContain('foo@bar.com');
+    });
+
+    it('should preserve complex email addresses', () => {
+      const result = translateSync('Email user.name+tag@example.org now');
+      expect(result).toContain('user.name+tag@example.org');
+    });
+
+    it('should translate surrounding text while preserving URLs', () => {
+      const result = translateSync('Visit https://example.com today');
+      expect(result).toBe('Vizit https://example.com tuday');
+    });
+
+    it('should preserve multiple URLs and emails in same text', () => {
+      const result = translateSync('See http://a.com and https://b.com or email x@y.com');
+      expect(result).toContain('http://a.com');
+      expect(result).toContain('https://b.com');
+      expect(result).toContain('x@y.com');
+    });
+
+    it('should preserve URLs in translateSyncWithMapping', async () => {
+      const { translateSyncWithMapping } = await import('./translate/forward');
+      const tokens = translateSyncWithMapping('Visit https://example.com', 'ingglish');
+      const urlToken = tokens.find((t) => t.original === 'https://example.com');
+      expect(urlToken).toBeDefined();
+      expect(urlToken?.translated).toBe('https://example.com');
+      expect(urlToken?.isWord).toBe(false);
+    });
+  });
 });
