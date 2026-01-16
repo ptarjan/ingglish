@@ -157,6 +157,56 @@ describe('reverse-translator', () => {
     });
   });
 
+  describe('homophones (known limitations)', () => {
+    // These tests document known homophone collisions where reverse translation
+    // picks a different word than the original. This is an inherent limitation
+    // of phonetic spelling - homophones become indistinguishable.
+
+    it('to/too/two all become "tuu" and reverse to most common', () => {
+      expect(translateWord('to')).toBe('tuu');
+      expect(translateWord('too')).toBe('tuu');
+      expect(translateWord('two')).toBe('tuu');
+      // Reverse picks most common word by frequency
+      expect(reverseTranslateSync('tuu')).toBe('to');
+    });
+
+    it('their/there/they\'re all become "dhair"', () => {
+      expect(translateWord('their')).toBe('dhair');
+      expect(translateWord('there')).toBe('dhair');
+      expect(translateWord("they're")).toBe('dhair');
+      // All map to same phonetic spelling
+      const results = reverseTranslateWord('dhair');
+      expect(results.length).toBeGreaterThan(1); // Multiple options
+    });
+
+    it('sea/see both become "see"', () => {
+      expect(translateWord('sea')).toBe('see');
+      expect(translateWord('see')).toBe('see');
+    });
+
+    it('eye/I both become "ai"', () => {
+      expect(translateWord('eye')).toBe('ai');
+      expect(translateWord('I')).toBe('ai');
+      // Reverse picks "i" (most common single letter)
+      expect(reverseTranslateSync('ai')).toBe('i');
+    });
+
+    it('queue/cue both become "kyuu"', () => {
+      expect(translateWord('queue')).toBe('kyuu');
+      expect(translateWord('cue')).toBe('kyuu');
+      // Reverse may pick "q" as it's most common by frequency
+      const result = reverseTranslateSync('kyuu');
+      expect(['q', 'cue', 'queue']).toContain(result);
+    });
+
+    it('aisle becomes "ail" which reverses ambiguously', () => {
+      expect(translateWord('aisle')).toBe('ail');
+      // Could reverse to "aisle", "i'll", or "isle"
+      const results = reverseTranslateWord('ail');
+      expect(results.length).toBeGreaterThan(0);
+    });
+  });
+
   describe('reverseTranslateSync', () => {
     it('should translate text preserving punctuation', () => {
       // Basic test - translates words, keeps punctuation

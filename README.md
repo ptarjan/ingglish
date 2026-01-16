@@ -12,7 +12,7 @@ Ingglish translates English text into a consistent, phonetic spelling system whe
 
 ### Features
 
-- **Bidirectional translation** - Translate English → Ingglish and back
+- **Bidirectional translation** - Translate English → Ingglish and back (see [limitations](#limitations) for homophones)
 - **IPA support** - Output in International Phonetic Alphabet with proper stress markers
 - **URL translator** - Translate entire web pages with fullscreen viewing
 - **Word correspondence** - Interactive hover to see original/translated word pairs
@@ -142,6 +142,31 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
 > **About the name:** "Ingglish" is simply how you spell "English" in Ingglish! When speaking, you can distinguish them by stressing the first syllable and pausing briefly between the two g's: **ING·glish** vs. English.
+
+## Limitations
+
+### Homophones
+
+English has many words that sound identical but are spelled differently (homophones). Since Ingglish is purely phonetic, these words merge into a single spelling:
+
+| English | Ingglish |
+|---------|----------|
+| to, too, two | tuu |
+| their, there, they're | dhair |
+| sea, see | see |
+| eye, I | ai |
+
+**Forward translation** (English → Ingglish) works perfectly - the correct pronunciation is preserved.
+
+**Reverse translation** (Ingglish → English) uses word frequency to pick the most common word, which may not be what you intended. For example:
+- `kyuu` reverses to "q" (not "queue" or "cue")
+- `ail` could be "aisle", "I'll", or "isle" (ambiguous)
+
+This is an inherent trade-off of phonetic spelling - we gain consistency but lose the ability to distinguish homophones in writing.
+
+### Numbers
+
+Numbers remain as digits (e.g., "123" stays "123"). If you want phonetic numbers, spell them out first: "one hundred twenty three" → "wun hundred twentee three".
 
 ## Development
 
