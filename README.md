@@ -32,6 +32,18 @@ This is a monorepo containing:
 
 ## Installation
 
+### npm (recommended)
+
+```bash
+# Core library (text translation)
+npm install @ingglish/core
+
+# DOM utilities (browser translation with tooltips)
+npm install @ingglish/dom
+```
+
+### From source
+
 ```bash
 # Clone and install
 git clone https://github.com/ptarjan/ingglish.git

@@ -28,8 +28,16 @@
     "spelling",
     "pronunciation"
   ],
-  "author": "",
+  "author": "Paul Tarjan",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptarjan/ingglish.git"
+  },
+  "homepage": "https://github.com/ptarjan/ingglish#readme",
+  "bugs": {
+    "url": "https://github.com/ptarjan/ingglish/issues"
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix",

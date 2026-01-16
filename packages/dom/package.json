@@ -40,7 +40,18 @@
     "dom",
     "translation",
     "phonetic",
-    "english"
+    "english",
+    "browser"
   ],
-  "license": "MIT"
+  "author": "Paul Tarjan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptarjan/ingglish.git",
+    "directory": "packages/dom"
+  },
+  "homepage": "https://github.com/ptarjan/ingglish#readme",
+  "bugs": {
+    "url": "https://github.com/ptarjan/ingglish/issues"
+  }
 }
