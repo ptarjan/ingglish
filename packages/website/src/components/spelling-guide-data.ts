@@ -14,6 +14,9 @@ export interface SoundGroup {
 }
 
 // Organize vowels by type (following traditional English phonics)
+// Example pattern: first example should have same spelling in English and Ingglish,
+// subsequent examples show different English letter patterns for the same sound.
+// e.g., OY: toil (oi→oi), boy (oy→oi), enjoy (oy→oi)
 export const vowelGroups: SoundGroup[] = [
   {
     name: 'Short Vowels',
