@@ -16,7 +16,7 @@ export interface SoundGroup {
 // Organize vowels by type (following traditional English phonics)
 // Example pattern: first example should have same spelling in English and Ingglish,
 // subsequent examples show different English letter patterns for the same sound.
-// e.g., OY: toil (oi→oi), boy (oy→oi), enjoy (oy→oi)
+// e.g., OY: toil (oi→oi), boy (oy→oi). Fewer examples ok if English has limited patterns.
 export const vowelGroups: SoundGroup[] = [
   {
     name: 'Short Vowels',
@@ -42,7 +42,7 @@ export const vowelGroups: SoundGroup[] = [
     name: 'Diphthongs & Other',
     sounds: [
       { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), h**ow** (hou)' },
-      { phoneme: 'OY', examples: 't**oi**l (toil), b**oy** (boi), v**oi**ce (vois)' },
+      { phoneme: 'OY', examples: 't**oi**l (toil), b**oy** (boi)' },
       { phoneme: 'AO', examples: 'l**aw** (law), th**ough**t (thawt), c**augh**t (kawt)' },
       { phoneme: 'UH', examples: 'b**oo**k (book), p**u**t (poot), w**o**lf (woolf)' },
       { phoneme: 'AH0', examples: '**u**pon (upon), **a**bout (ubout), banan**a** (bunanu)' },
