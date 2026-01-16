@@ -326,5 +326,22 @@ describe('translator', () => {
       expect(urlToken?.translated).toBe('https://example.com');
       expect(urlToken?.isWord).toBe(false);
     });
+
+    it('should preserve bare domains like google.com', () => {
+      const result = translateSync('Visit google.com today');
+      expect(result).toContain('google.com');
+    });
+
+    it('should preserve bare domains with paths', () => {
+      const result = translateSync('See example.org/path?q=1 for info');
+      expect(result).toContain('example.org/path?q=1');
+    });
+
+    it('should preserve various TLDs', () => {
+      const result = translateSync('Check github.io and example.net and test.dev');
+      expect(result).toContain('github.io');
+      expect(result).toContain('example.net');
+      expect(result).toContain('test.dev');
+    });
   });
 });

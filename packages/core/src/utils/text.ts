@@ -21,6 +21,14 @@ export const URL_REGEX = /(?:https?|ftp|file):\/\/[^\s<>"')\]]+/gi;
 export const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
 
 /**
+ * Regex to match bare domain names (without protocol).
+ * Matches common TLDs to avoid false positives like "Dr. Smith".
+ * Includes optional path/query after the domain.
+ */
+export const BARE_DOMAIN_REGEX =
+  /\b[a-zA-Z0-9][-a-zA-Z0-9]*(?:\.[a-zA-Z0-9][-a-zA-Z0-9]*)*\.(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
+
+/**
  * Extracts URLs and emails from text, replacing them with placeholders.
  * Returns the modified text and a map to restore originals.
  * Placeholders use non-alphanumeric characters to avoid being split by word regex.
@@ -42,6 +50,13 @@ export function extractPreservedPatterns(text: string): {
 
   // Replace emails
   result = result.replace(EMAIL_REGEX, (match) => {
+    const placeholder = `\x00\x01${counter++}\x01\x00`;
+    preserved.set(placeholder, match);
+    return placeholder;
+  });
+
+  // Replace bare domains (after URLs and emails to avoid double-matching)
+  result = result.replace(BARE_DOMAIN_REGEX, (match) => {
     const placeholder = `\x00\x01${counter++}\x01\x00`;
     preserved.set(placeholder, match);
     return placeholder;

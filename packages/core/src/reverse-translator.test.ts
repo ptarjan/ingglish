@@ -358,5 +358,10 @@ describe('reverse-translator', () => {
       expect(result).toContain('https://b.com');
       expect(result).toContain('x@y.com');
     });
+
+    it('should preserve bare domains like google.com', () => {
+      const result = reverseTranslateSync('Vizit google.com tuday');
+      expect(result).toContain('google.com');
+    });
   });
 });
