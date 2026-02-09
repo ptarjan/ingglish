@@ -15,5 +15,7 @@ export {
   reverseTranslateWord,
   reverseTranslateIPAWord,
   reverseTranslateSync,
+  reverseTranslateSyncWithMapping,
   ipaToArpabetClean,
+  type ReverseTranslatedToken,
 } from './reverse';

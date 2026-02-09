@@ -90,7 +90,8 @@ function lookupByArpabet(arpabet: string[]): string[] {
 
 /**
  * Translates an Ingglish word back to English.
- * Returns possible English words sorted by frequency.
+ * Returns possible English words sorted by frequency, or [] if lookup failed.
+ * Non-letter tokens (numbers, punctuation) are returned as-is in a single-element array.
  */
 export function reverseTranslateWord(ingglishWord: string): string[] {
   if (!ingglishWord || !/[a-zA-Z]/.test(ingglishWord)) {
@@ -101,13 +102,13 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
   const arpabet = ingglishToArpabet(ingglishWord);
 
   if (!arpabet) {
-    return [ingglishWord];
+    return [];
   }
 
   const matches = lookupByArpabet(arpabet);
 
   if (matches.length === 0) {
-    return [ingglishWord];
+    return [];
   }
 
   return matches.map((word) => applyCasePattern(word, casePattern));
@@ -176,7 +177,7 @@ function reverseTranslateIngglishText(text: string): string {
             .join("'");
         }
         const matches = reverseTranslateWord(token);
-        return matches[0] ?? token;
+        return matches.length > 0 ? matches[0] : token;
       }
       return token;
     })
@@ -218,4 +219,99 @@ export function reverseTranslateSync(text: string, format: OutputFormat = 'inggl
     return reverseTranslateIPATextInternal(text);
   }
   return reverseTranslateIngglishText(text);
+}
+
+// ============================================================================
+// Reverse Translation with Mapping
+// ============================================================================
+
+/**
+ * Represents a reverse-translated token with match status.
+ */
+export interface ReverseTranslatedToken {
+  original: string;
+  translated: string;
+  isWord: boolean;
+  matched: boolean;
+}
+
+/**
+ * Reverse translates Ingglish text and returns token-by-token mappings
+ * with match status. Used for visual indicators on unmatched words.
+ * URLs and emails are preserved unchanged.
+ */
+export function reverseTranslateSyncWithMapping(
+  text: string,
+  _format: OutputFormat = 'ingglish'
+): ReverseTranslatedToken[] {
+  const normalizedText = normalizeApostrophes(text);
+  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
+
+  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
+  const result: ReverseTranslatedToken[] = [];
+
+  for (const token of tokens) {
+    if (token.length === 0) {
+      continue;
+    }
+
+    // Check for preserved patterns (URLs, emails)
+    let foundPlaceholder = false;
+    for (const [placeholder, original] of preserved) {
+      if (token.includes(placeholder)) {
+        const parts = token.split(placeholder);
+        if (parts[0].length > 0) {
+          result.push({ original: parts[0], translated: parts[0], isWord: false, matched: true });
+        }
+        result.push({ original, translated: original, isWord: false, matched: true });
+        if (parts[1] && parts[1].length > 0) {
+          result.push({ original: parts[1], translated: parts[1], isWord: false, matched: true });
+        }
+        foundPlaceholder = true;
+        break;
+      }
+    }
+    if (foundPlaceholder) {
+      continue;
+    }
+
+    if (WORD_TEST_REGEX.test(token)) {
+      if (token.includes("'")) {
+        // Handle contractions as a single token
+        const parts = token.split("'");
+        const translatedParts: string[] = [];
+        let allMatched = true;
+        for (const p of parts) {
+          if (!p) {
+            translatedParts.push('');
+            continue;
+          }
+          const matches = reverseTranslateWord(p);
+          if (matches.length > 0) {
+            translatedParts.push(matches[0]);
+          } else {
+            translatedParts.push(p);
+            allMatched = false;
+          }
+        }
+        result.push({
+          original: token,
+          translated: translatedParts.join("'"),
+          isWord: true,
+          matched: allMatched,
+        });
+      } else {
+        const matches = reverseTranslateWord(token);
+        if (matches.length > 0) {
+          result.push({ original: token, translated: matches[0], isWord: true, matched: true });
+        } else {
+          result.push({ original: token, translated: token, isWord: true, matched: false });
+        }
+      }
+    } else {
+      result.push({ original: token, translated: token, isWord: false, matched: true });
+    }
+  }
+
+  return result;
 }

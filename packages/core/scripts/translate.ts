@@ -7,7 +7,7 @@
 import { loadDictionary, loadReverseDictionary } from '../src/dictionary/index.js';
 import { lookupPronunciation } from '../src/dictionary/lookup.js';
 import { translateSync } from '../src/translate/forward.js';
-import { reverseTranslateSync } from '../src/translate/reverse.js';
+import { reverseTranslateSync, reverseTranslateSyncWithMapping } from '../src/translate/reverse.js';
 import { loadFrequencies } from '../src/dictionary/frequency.js';
 
 async function main() {
@@ -25,8 +25,12 @@ async function main() {
   }
 
   if (reverse) {
+    const tokens = reverseTranslateSyncWithMapping(text);
+    const english = tokens
+      .map((t) => (t.isWord && !t.matched ? `[${t.translated}]` : t.translated))
+      .join('');
     console.log('Ingglish:', text);
-    console.log('English:', reverseTranslateSync(text));
+    console.log('English:', english);
   } else {
     // Show detailed info for each word
     const words = text.match(/[a-zA-Z']+/g) || [];

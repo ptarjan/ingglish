@@ -1,5 +1,10 @@
 import { useState, useCallback, useDeferredValue, useMemo, useEffect } from 'react';
-import { translateSync, reverseTranslate } from '@ingglish/core';
+import {
+  translateSync,
+  reverseTranslate,
+  reverseTranslateSyncWithMapping,
+  type ReverseTranslatedToken,
+} from '@ingglish/core';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
 
@@ -53,6 +58,50 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
   );
 }
 
+interface ReverseWordDisplayProps {
+  tokens: ReverseTranslatedToken[];
+  hoveredWordIndex: number | null;
+  onHoverWord: (index: number | null) => void;
+  className?: string;
+}
+
+function ReverseWordDisplay({
+  tokens,
+  hoveredWordIndex,
+  onHoverWord,
+  className,
+}: ReverseWordDisplayProps) {
+  let wordIndex = 0;
+  return (
+    <div className={`word-display ${className ?? ''}`}>
+      {tokens.map((token, i) => {
+        if (token.isWord) {
+          const currentWordIndex = wordIndex++;
+          const isHighlighted = currentWordIndex === hoveredWordIndex;
+          return (
+            <span
+              key={i}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!token.matched ? 'unmatched' : ''}`}
+              onMouseEnter={() => {
+                onHoverWord(currentWordIndex);
+              }}
+              onMouseLeave={() => {
+                onHoverWord(null);
+              }}
+            >
+              {token.translated}
+            </span>
+          );
+        }
+        return <span key={i}>{token.translated}</span>;
+      })}
+      {tokens.length === 0 && (
+        <span className="placeholder">Hover to see word correspondence...</span>
+      )}
+    </div>
+  );
+}
+
 interface TextTranslatorProps {
   initialText?: string;
   onShare?: (text: string) => void;
@@ -88,9 +137,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<string | null>(null);
+  const [reverseTokens, setReverseTokens] = useState<ReverseTranslatedToken[] | null>(null);
   useEffect(() => {
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
+      setReverseTokens(null);
       return;
     }
     let cancelled = false;
@@ -98,6 +149,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);
+          // Dictionaries are loaded now, so sync mapping is safe
+          if (format === 'ingglish') {
+            setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
+          } else {
+            setReverseTokens(null);
+          }
         }
       })
       .catch((err: unknown) => {
@@ -105,6 +162,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         console.warn('Reverse translation failed:', err);
         if (!cancelled) {
           setComputedEnglish(null);
+          setReverseTokens(null);
         }
       });
     return () => {
@@ -263,12 +321,21 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             <span className="correspondence-label">Hover to see word correspondence</span>
           </div>
           <div className="correspondence-grid">
-            <WordDisplay
-              text={displayEnglish}
-              hoveredWordIndex={hoveredWordIndex}
-              onHoverWord={setHoveredWordIndex}
-              className="english-words"
-            />
+            {lastEdited === 'ingglish' && reverseTokens ? (
+              <ReverseWordDisplay
+                tokens={reverseTokens}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
+                className="english-words"
+              />
+            ) : (
+              <WordDisplay
+                text={displayEnglish}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
+                className="english-words"
+              />
+            )}
             <WordDisplay
               text={displayIngglish}
               hoveredWordIndex={hoveredWordIndex}

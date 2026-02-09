@@ -148,6 +148,11 @@
   color: white;
 }
 
+.word-token.unmatched {
+  text-decoration: underline wavy red;
+  text-underline-offset: 0.2em;
+}
+
 /* Mobile */
 @media (max-width: 640px) {
   .text-translator {

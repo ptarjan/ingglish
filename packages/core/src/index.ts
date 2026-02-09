@@ -50,4 +50,5 @@ export async function reverseTranslate(
 
 export { translateSync, translateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
-export { reverseTranslateSync } from './translate';
+export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';
+export type { ReverseTranslatedToken } from './translate';

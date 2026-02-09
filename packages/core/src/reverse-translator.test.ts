@@ -4,6 +4,7 @@ import { translateWord, translateSync } from './translate/forward';
 import {
   reverseTranslateWord,
   reverseTranslateSync,
+  reverseTranslateSyncWithMapping,
   ipaToArpabetClean,
   reverseTranslateIPAWord,
 } from './translate/reverse';
@@ -65,8 +66,8 @@ describe('reverse-translator', () => {
     });
 
     it('should handle homophones by returning multiple options', () => {
-      // "too", "to", "two" all have the same phonemes
-      const results = reverseTranslateWord('too');
+      // "tuu" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
+      const results = reverseTranslateWord('tuu');
       expect(results.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -328,6 +329,76 @@ describe('reverse-translator', () => {
       const ipa = translateSync('hello world', 'ipa');
       const back = reverseTranslateSync(ipa, 'ipa');
       expect(back.toLowerCase()).toBe('hello world');
+    });
+  });
+
+  describe('reverseTranslateWord failure behavior', () => {
+    it('should return empty array for unrecognized ingglish words', () => {
+      // "zzxq" is not valid ingglish - can't be parsed to phonemes
+      const result = reverseTranslateWord('zzxq');
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array when phonemes have no dictionary match', () => {
+      // "bral" parses to valid phonemes but has no English match
+      const result = reverseTranslateWord('bral');
+      expect(result).toEqual([]);
+    });
+
+    it('should still return results for valid ingglish words', () => {
+      const result = reverseTranslateWord('kat');
+      expect(result).toContain('cat');
+    });
+
+    it('should still return non-letter tokens as-is', () => {
+      expect(reverseTranslateWord('123')).toEqual(['123']);
+      expect(reverseTranslateWord('...')).toEqual(['...']);
+    });
+  });
+
+  describe('reverseTranslateSyncWithMapping', () => {
+    it('should return matched: true for valid ingglish words', () => {
+      const tokens = reverseTranslateSyncWithMapping('kat');
+      const wordToken = tokens.find((t) => t.isWord);
+      expect(wordToken).toBeDefined();
+      expect(wordToken?.matched).toBe(true);
+      expect(wordToken?.translated).toBe('cat');
+      expect(wordToken?.original).toBe('kat');
+    });
+
+    it('should return matched: false for invalid ingglish words', () => {
+      const tokens = reverseTranslateSyncWithMapping('zzxq');
+      const wordToken = tokens.find((t) => t.isWord);
+      expect(wordToken).toBeDefined();
+      expect(wordToken?.matched).toBe(false);
+      expect(wordToken?.translated).toBe('zzxq');
+    });
+
+    it('should preserve punctuation as non-word tokens', () => {
+      const tokens = reverseTranslateSyncWithMapping('kat, dog!');
+      const nonWords = tokens.filter((t) => !t.isWord);
+      const texts = nonWords.map((t) => t.translated);
+      expect(texts.join('')).toContain(',');
+      expect(texts.join('')).toContain('!');
+    });
+
+    it('should handle mixed matched and unmatched words', () => {
+      const tokens = reverseTranslateSyncWithMapping('dhu zzxq kat');
+      const words = tokens.filter((t) => t.isWord);
+      expect(words.length).toBe(3);
+      // "dhu" should match (-> "the")
+      expect(words[0].matched).toBe(true);
+      // "zzxq" should not match
+      expect(words[1].matched).toBe(false);
+      // "kat" should match (-> "cat")
+      expect(words[2].matched).toBe(true);
+    });
+
+    it('should preserve URLs unchanged', () => {
+      const tokens = reverseTranslateSyncWithMapping('Vizit https://example.com tuday');
+      const urlToken = tokens.find((t) => t.translated.includes('https://'));
+      expect(urlToken).toBeDefined();
+      expect(urlToken?.isWord).toBe(false);
     });
   });
 
