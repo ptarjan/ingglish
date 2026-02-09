@@ -281,8 +281,8 @@ describe('initialisms', () => {
     it('should handle "eve ID" context correctly', () => {
       // This tests the phrase "eve ID" where "eve" is a word and "ID" is an initialism
       const result = translateSync('eve ID', 'ingglish');
-      // "eve" → "eev", "ID" → "Aidee"
-      expect(result).toBe('eev Aidee');
+      // "eve" → "Eev" (capitalized as sentence start), "ID" → "Aidee"
+      expect(result).toBe('Eev Aidee');
     });
   });
 });

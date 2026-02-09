@@ -179,11 +179,27 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
   // Split on word boundaries, preserving punctuation, numbers, whitespace
   const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
 
+  // Track sentence boundaries to capitalize the first word of each sentence.
+  // Start as true so the very first word gets capitalized (beginning of text = sentence start).
+  // Only applies to multi-word text to avoid changing single-word translation behavior.
+  const hasMultipleWords = tokens.filter((t) => WORD_TEST_REGEX.test(t)).length > 1;
+  let sentenceStart = hasMultipleWords;
+
   const translated = tokens
     .map((token) => {
       // Only translate if it's a word (contains letters)
       if (WORD_TEST_REGEX.test(token)) {
-        return translateWord(token, format);
+        let result = translateWord(token, format);
+        // Capitalize first word of each sentence
+        if (sentenceStart && format === 'ingglish' && result.length > 0) {
+          result = result.charAt(0).toUpperCase() + result.slice(1);
+        }
+        sentenceStart = false;
+        return result;
+      }
+      // Detect sentence-ending punctuation
+      if (hasMultipleWords && /[.?!]/.test(token)) {
+        sentenceStart = true;
       }
       return token;
     })

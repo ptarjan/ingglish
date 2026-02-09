@@ -105,7 +105,8 @@ describe('translator', () => {
   describe('translateSync', () => {
     it('should translate multiple words', () => {
       const result = translateSync('hello world');
-      expect(result).toContain('huloh');
+      // First word of multi-word text is capitalized (sentence start)
+      expect(result).toContain('Huloh');
       expect(result).toContain('werld');
     });
 
@@ -161,6 +162,16 @@ describe('translator', () => {
       expect(translateSync("I'd")).toBe('aid');
       // Lowercase remains lowercase
       expect(translateSync('i')).toBe('ai');
+    });
+
+    it('should capitalize I at sentence start but not mid-sentence', () => {
+      // "I" at sentence start gets capitalized to "Ai"
+      expect(translateSync('I went home.')).toBe('Ai went hohm.');
+      // "I" mid-sentence stays lowercase "ai"
+      expect(translateSync('Then I left.')).toBe('Dhen ai left.');
+      // "I" after sentence-ending punctuation gets capitalized
+      expect(translateSync('Hello. I am here.')).toBe('Huloh. Ai am heer.');
+      expect(translateSync('Really? I think so.')).toBe('Rilee? Ai thingk soh.');
     });
 
     it('should handle empty string', () => {
