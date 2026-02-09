@@ -4,7 +4,7 @@ import { blockExternalNetwork } from './test-utils';
 test.describe('Text Translator', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/');
+    await page.goto('/#text');
     // Wait for dictionary to load
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
@@ -98,7 +98,7 @@ test.describe('Text Translator', () => {
 test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/');
+    await page.goto('/#text');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
 
@@ -121,9 +121,8 @@ test.describe('Tab Navigation', () => {
 test.describe('Spelling Guide', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/');
+    await page.goto('/#guide');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
-    await page.click('.tab:has-text("Spelling Guide")');
   });
 
   test('displays vowel mappings table', async ({ page }) => {
