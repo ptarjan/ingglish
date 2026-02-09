@@ -80,9 +80,9 @@ English Text
 └────────┬────────┘
          │ tokenize
          ▼
-┌─────────────────┐     ┌──────────────────┐
-│ translateWord   │────>│ lookupPronunciation
-└────────┬────────┘     └────────┬─────────┘
+┌─────────────────┐     ┌──────────────────────┐
+│ translateWord   │────>│ lookupPronunciation  │
+└────────┬────────┘     └────────┬─────────────┘
          │                       │
          │ found?                │ CMU Dictionary
          │                       │
@@ -110,13 +110,13 @@ English Text
 Ingglish    IPA
     │         │
     ▼         ▼
-┌────────┐ ┌───────────┐
-│phoneme │ │phonemesTo │
-│ToInglish│ │   IPA     │
-└────┬───┘ └─────┬─────┘
-     │           │
-     ▼           ▼
-"huloh"    "/həˈloʊ/"
+┌───────────┐ ┌───────────┐
+│ phonemes  │ │phonemesTo │
+│ToIngglish │ │   IPA     │
+└─────┬─────┘ └─────┬─────┘
+      │             │
+      ▼             ▼
+ "huloh"       "/həˈloʊ/"
 ```
 
 ### Reverse Translation Flow
@@ -133,13 +133,13 @@ Ingglish Text          IPA Text
 └────────┬────────┘  └─────────┬──────────┘
          │                     │
          ▼                     ▼
-┌─────────────────┐  ┌────────────────────┐
-│inglishToPhonemes│  │   ipaToArpabet     │
-└────────┬────────┘  └─────────┬──────────┘
-         │                     │
-         └──────────┬──────────┘
-                    │
-                    ▼
+┌────────────────────┐  ┌────────────────────┐
+│ingglishToPhonemes  │  │   ipaToArpabet     │
+└─────────┬──────────┘  └─────────┬──────────┘
+          │                       │
+          └───────────┬───────────┘
+                      │
+                      ▼
          ┌─────────────────────┐
          │  lookupByPhonemes   │  Reverse dictionary lookup
          └────────┬────────────┘

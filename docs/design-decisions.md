@@ -18,7 +18,7 @@ English spelling is notoriously difficult because:
 
 2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
 
-3. **R-colored vowels**: Sounds like "bird" and "car" are unique to American English. We follow intuitive spellings (er, ar) that English readers already expect.
+3. **R-colored vowels**: Sounds like "bird" and "car" are rare across world languages. We follow intuitive spellings (er, ar) that English readers already expect.
 
 ## What Makes Ingglish Different
 

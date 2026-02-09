@@ -144,7 +144,7 @@ This vowel went through the most iteration.
 **Examples:**
 - law → law (identical!)
 - thought → thawt
-- caught → kawt
+- call → kawl
 
 ### /ʊ/ and /uː/ Swap: oo ↔ uu
 

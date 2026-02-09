@@ -586,7 +586,7 @@ Each spelling is rated by how widely it's used across world languages:
 | ay | /eɪ/ | **Common** | English "say, day, play"; standard English spelling |
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; English "bee, see" |
 | ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, IPA; direct representation of /aɪ/ |
-| oh | /oʊ/ | **Rare** | Few precedents; needed to distinguish from 'ou' |
+| oh | /oʊ/ | **Rare** | Few precedents; needed because 'o' is used for /ɑ/ |
 | uu | /uː/ | **Common** | Finnish 'uu'; longer sound gets longer spelling |
 
 #### Diphthongs
