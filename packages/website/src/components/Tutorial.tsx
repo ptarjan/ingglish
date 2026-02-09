@@ -111,13 +111,12 @@ function OughCard({
         <span>{suffix}</span>
       </div>
       <div className={`ough-arrow ${animate ? 'shown' : ''}`}>&rarr;</div>
-      <div
-        className={`ough-ingglish-word ${animate ? 'shown' : ''}`}
-        data-orig={`${prefix}ough${suffix}`}
-      >
-        <span>{prefix}</span>
-        <span className="ough-highlight-new">{sound}</span>
-        <span>{suffix}</span>
+      <div className={`ough-ingglish-word ${animate ? 'shown' : ''}`}>
+        <span className="ough-ingglish-text" data-orig={`${prefix}ough${suffix}`}>
+          <span>{prefix}</span>
+          <span className="ough-highlight-new">{sound}</span>
+          <span>{suffix}</span>
+        </span>
       </div>
     </div>
   );

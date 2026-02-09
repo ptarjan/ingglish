@@ -89,15 +89,18 @@
 .ough-ingglish-word {
   font-size: 1.3rem;
   font-weight: 600;
+  flex: 1;
 }
 
 .ough-english-word {
   text-align: right;
-  flex: 1;
 }
 
 .ough-ingglish-word {
   text-align: left;
+}
+
+.ough-ingglish-text {
   position: relative;
   opacity: 0;
   transform: translateX(-8px);
