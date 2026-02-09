@@ -187,8 +187,9 @@ jobs:
         run: npm run test:docs -w @ingglish/website
 
       # Extension tests need @ingglish/core and @ingglish/dom built
+      # Run from root so vitest resolves workspace projects correctly
       - name: Extension unit tests
-        run: npm run test:unit -w @ingglish/extension
+        run: npx vitest run --no-color --project @ingglish/extension
 
   # Chromium e2e - runs on all events
   test-e2e:
