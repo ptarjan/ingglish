@@ -112,7 +112,8 @@ test.describe('Tab Navigation', () => {
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
-  test('subtitle link opens spelling guide', async ({ page }) => {
+  test('subtitle link opens spelling guide', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'subtitle link is hidden on mobile');
     await page.click('.subtitle-link');
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
