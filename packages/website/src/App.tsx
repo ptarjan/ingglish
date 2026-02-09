@@ -218,7 +218,7 @@ function App() {
 
   return (
     <div className="app">
-      <div className="toggle-buttons">
+      <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
         {activeTab !== 'tutorial' && (
           <button
             className="format-toggle"
