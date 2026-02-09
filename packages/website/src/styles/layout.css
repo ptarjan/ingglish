@@ -237,16 +237,23 @@
   }
 
   .tabs {
-    flex-wrap: wrap;
-    gap: 0.25rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.375rem;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .tab {
     padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    flex: 1;
-    text-align: center;
-    min-width: 0;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
   }
 
   .footer {
