@@ -781,9 +781,12 @@ function Section4_Progressive() {
         <p className="progressive-caption">
           {currentStep > 0 ? stepCaptions[currentStep] : '\u00A0'}
         </p>
-        {currentStep > 0 && (
-          <p className="progressive-caption">Hover any blue word to see the original.</p>
-        )}
+        <p
+          className="progressive-caption"
+          style={{ visibility: currentStep > 0 ? 'visible' : 'hidden' }}
+        >
+          Hover any blue word to see the original.
+        </p>
         <div className="progressive-controls">
           <button
             className="progressive-btn"
