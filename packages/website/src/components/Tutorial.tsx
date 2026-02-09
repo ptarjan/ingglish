@@ -836,9 +836,7 @@ function Section7_TryIt() {
             setInput(e.target.value);
           }}
         />
-        {tokens.length > 0 && (
-          <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
-        )}
+        <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
       </div>
     </section>
   );
