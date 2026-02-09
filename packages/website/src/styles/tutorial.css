@@ -228,27 +228,96 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 1.1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sound-word.animate {
+  opacity: 1;
 }
 
 .sound-english {
   font-weight: 500;
 }
 
+.sound-highlight-old {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+.sound-highlight-new {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
 .sound-arrow {
   color: var(--color-text-muted);
   font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
+.sound-word.animate .sound-arrow {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
+
+/* Morph area: overlays English copy and Ingglish result */
+.sound-morph {
+  display: inline-grid;
+  position: relative;
+}
+
+.sound-morph-before,
+.sound-morph-after {
+  grid-area: 1 / 1;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.sound-morph-before {
+  opacity: 0;
+}
+
+.sound-word.animate .sound-morph-before {
+  opacity: 1;
+  transition: opacity 0.3s ease 0.5s;
+}
+
+.sound-word.morphed .sound-morph-before {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sound-morph-after {
+  opacity: 0;
+}
+
+.sound-word.morphed .sound-morph-after {
+  opacity: 1;
+}
+
+/* Fallback for words that don't change (e.g., thin → thin) */
 .sound-ingglish {
   position: relative;
-  font-family: var(--font-mono);
-  color: var(--color-primary);
   font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.5s;
+}
+
+.sound-word.animate .sound-ingglish {
+  opacity: 1;
 }
 
 .sound-description {
   color: var(--color-text-muted);
   font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sound-description.animate {
+  opacity: 1;
 }
 
 /* --- Section 3c: th/dh comparison --- */
@@ -570,6 +639,12 @@
   .silent-letter,
   .silent-arrow,
   .silent-ingglish,
+  .sound-word,
+  .sound-arrow,
+  .sound-ingglish,
+  .sound-morph-before,
+  .sound-morph-after,
+  .sound-description,
   .progressive-word {
     opacity: 1 !important;
     transform: none !important;

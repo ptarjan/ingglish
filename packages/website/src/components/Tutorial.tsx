@@ -17,6 +17,7 @@ import {
   poemWords,
   readingTestWords,
   readingTestAttribution,
+  type ExampleWord,
 } from './tutorial-data';
 
 // --- Scroll reveal hooks ---
@@ -59,14 +60,16 @@ function useScrollReveal<T extends HTMLElement>(
 
 function useStaggeredReveal(count: number, visible: boolean, delayMs = 200): number {
   const [revealedCount, setRevealedCount] = useState(0);
+  const doneRef = useRef(false);
 
   useEffect(() => {
-    if (!visible) {
+    if (!visible || doneRef.current) {
       return;
     }
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setRevealedCount(count);
+      doneRef.current = true;
       return;
     }
 
@@ -76,6 +79,7 @@ function useStaggeredReveal(count: number, visible: boolean, delayMs = 200): num
       setRevealedCount(i);
       if (i >= count) {
         clearInterval(interval);
+        doneRef.current = true;
       }
     }, delayMs);
     return () => {
@@ -211,12 +215,51 @@ function SilentLetterWord({
   );
 }
 
-function Section3a_SilentLetters() {
+/**
+ * Hook: calls onComplete once revealedCount reaches total,
+ * after a delay for the last item's animation to finish.
+ */
+function useStaggerComplete(revealedCount: number, total: number, onComplete: () => void) {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    if (revealedCount >= total) {
+      const timer = setTimeout(() => {
+        onCompleteRef.current();
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [revealedCount, total]);
+}
+
+/** Once active becomes true, it stays true (prevents animation replay). */
+function useStickyActive(visible: boolean, previousDone: boolean): boolean {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    if (visible && previousDone && !active) {
+      setActive(true);
+    }
+  }, [visible, previousDone, active]);
+  return active;
+}
+
+function Section3a_SilentLetters({
+  previousDone,
+  onComplete,
+}: {
+  previousDone: boolean;
+  onComplete: () => void;
+}) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
-  const revealedCount = useStaggeredReveal(silentLetterExamples.length, visible, 1200);
+  const active = useStickyActive(visible, previousDone);
+  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 1200);
+  useStaggerComplete(revealedCount, silentLetterExamples.length, onComplete);
 
   return (
-    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
+    <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Drop the silent letters</h3>
       <p className="tutorial-caption">Every letter you see is a letter you say.</p>
       <div className="silent-list">
@@ -228,27 +271,159 @@ function Section3a_SilentLetters() {
   );
 }
 
+/**
+ * Splits a word around a highlight substring.
+ * Returns before, highlighted, and after parts.
+ */
+function splitHighlight(word: string, highlight: string | undefined) {
+  if (highlight === undefined || highlight === '') {
+    return { before: word, highlighted: '', after: '' };
+  }
+  const idx = word.toLowerCase().indexOf(highlight.toLowerCase());
+  if (idx === -1) {
+    return { before: word, highlighted: '', after: '' };
+  }
+  return {
+    before: word.slice(0, idx),
+    highlighted: word.slice(idx, idx + highlight.length),
+    after: word.slice(idx + highlight.length),
+  };
+}
+
+/** Renders a word with an optional colored highlight span. */
+function HighlightedWord({
+  word,
+  highlight,
+  className,
+}: {
+  word: string;
+  highlight: string | undefined;
+  className: string;
+}) {
+  const { before, highlighted, after } = splitHighlight(word, highlight);
+  if (!highlighted) {
+    return <>{word}</>;
+  }
+  return (
+    <>
+      {before}
+      <span className={className}>{highlighted}</span>
+      {after}
+    </>
+  );
+}
+
+function AnimatedSoundWord({
+  english,
+  ingglish,
+  highlightEn,
+  highlightIng,
+  animate,
+}: {
+  english: string;
+  ingglish: string;
+  highlightEn?: string;
+  highlightIng?: string;
+  animate: boolean;
+}) {
+  const [morphed, setMorphed] = useState(false);
+
+  useEffect(() => {
+    if (!animate) {
+      setMorphed(false);
+      return;
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setMorphed(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setMorphed(true);
+    }, 800);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [animate]);
+
+  const changed = english.toLowerCase() !== ingglish.toLowerCase();
+  const showHighlight =
+    highlightEn !== undefined &&
+    highlightEn !== '' &&
+    highlightIng !== undefined &&
+    highlightIng !== '';
+  // When highlight is the same (th→th), use blue on both sides to show "preserved"
+  // When highlight differs (th→dh), use red on English side to show "changing"
+  const sameHighlight = showHighlight && highlightEn.toLowerCase() === highlightIng.toLowerCase();
+  const enHighlightClass = sameHighlight ? 'sound-highlight-new' : 'sound-highlight-old';
+
+  return (
+    <span className={`sound-word ${animate ? 'animate' : ''} ${morphed ? 'morphed' : ''}`}>
+      <span className="sound-english">
+        <HighlightedWord
+          word={english}
+          highlight={showHighlight ? highlightEn : undefined}
+          className={enHighlightClass}
+        />
+      </span>
+      <span className="sound-arrow">&rarr;</span>
+      {changed ? (
+        <span className="sound-morph" data-orig={english}>
+          <span className="sound-morph-before">
+            <HighlightedWord
+              word={english}
+              highlight={showHighlight ? highlightEn : undefined}
+              className={enHighlightClass}
+            />
+          </span>
+          <span className="sound-morph-after">
+            <HighlightedWord
+              word={ingglish}
+              highlight={showHighlight ? highlightIng : undefined}
+              className="sound-highlight-new"
+            />
+          </span>
+        </span>
+      ) : (
+        <span className="sound-ingglish">
+          <HighlightedWord
+            word={ingglish}
+            highlight={showHighlight ? highlightIng : undefined}
+            className="sound-highlight-new"
+          />
+        </span>
+      )}
+    </span>
+  );
+}
+
 function SoundGroup({
   examples,
   sound,
+  revealedCount,
+  startIndex,
 }: {
-  examples: { english: string; ingglish: string; highlight: string }[];
+  examples: ExampleWord[];
   sound: string;
+  revealedCount: number;
+  startIndex: number;
 }) {
   return (
     <div className="sound-group">
       <div className="sound-examples">
-        {examples.map((ex) => (
-          <span key={ex.english} className="sound-word">
-            <span className="sound-english">{ex.english}</span>
-            <span className="sound-arrow">&rarr;</span>
-            <span className="sound-ingglish" data-orig={ex.english}>
-              {ex.ingglish}
-            </span>
-          </span>
+        {examples.map((ex, i) => (
+          <AnimatedSoundWord
+            key={ex.english}
+            english={ex.english}
+            ingglish={ex.ingglish}
+            highlightEn={ex.highlightEn}
+            highlightIng={ex.highlightIng}
+            animate={revealedCount > startIndex + i}
+          />
         ))}
       </div>
-      <p className="sound-description">
+      <p
+        className={`sound-description ${revealedCount >= startIndex + examples.length ? 'animate' : ''}`}
+      >
         {examples.length} different spellings for the same sound. In Ingglish, they&rsquo;re all
         &ldquo;<strong>{sound}</strong>.&rdquo;
       </p>
@@ -256,15 +431,35 @@ function SoundGroup({
   );
 }
 
-function Section3b_OneSound() {
+function Section3b_OneSound({
+  previousDone,
+  onComplete,
+}: {
+  previousDone: boolean;
+  onComplete: () => void;
+}) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
+  const active = useStickyActive(visible, previousDone);
+  const total = eeSoundExamples.length + aySoundExamples.length;
+  const revealedCount = useStaggeredReveal(total, active, 1200);
+  useStaggerComplete(revealedCount, total, onComplete);
 
   return (
-    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
+    <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">One sound, one spelling</h3>
       <p className="tutorial-caption">Same sound always written the same way.</p>
-      <SoundGroup examples={eeSoundExamples} sound="ee" />
-      <SoundGroup examples={aySoundExamples} sound="ay" />
+      <SoundGroup
+        examples={eeSoundExamples}
+        sound="ee"
+        revealedCount={revealedCount}
+        startIndex={0}
+      />
+      <SoundGroup
+        examples={aySoundExamples}
+        sound="ay"
+        revealedCount={revealedCount}
+        startIndex={eeSoundExamples.length}
+      />
     </div>
   );
 }
@@ -273,37 +468,55 @@ function SimpleRuleGroup({
   title,
   caption,
   examples,
+  previousDone,
+  onComplete,
 }: {
   title: string;
   caption: string;
-  examples: { english: string; ingglish: string }[];
+  examples: ExampleWord[];
+  previousDone: boolean;
+  onComplete: () => void;
 }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
+  const active = useStickyActive(visible, previousDone);
+  const revealedCount = useStaggeredReveal(examples.length, active, 1200);
+  useStaggerComplete(revealedCount, examples.length, onComplete);
 
   return (
-    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
+    <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">{title}</h3>
       <p className="tutorial-caption">{caption}</p>
       <div className="sound-examples">
-        {examples.map((ex) => (
-          <span key={ex.english} className="sound-word">
-            <span className="sound-english">{ex.english}</span>
-            <span className="sound-arrow">&rarr;</span>
-            <span className="sound-ingglish" data-orig={ex.english}>
-              {ex.ingglish}
-            </span>
-          </span>
+        {examples.map((ex, i) => (
+          <AnimatedSoundWord
+            key={ex.english}
+            english={ex.english}
+            ingglish={ex.ingglish}
+            highlightEn={ex.highlightEn}
+            highlightIng={ex.highlightIng}
+            animate={i < revealedCount}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function Section3c_ThDh() {
+function Section3c_ThDh({
+  previousDone,
+  onComplete,
+}: {
+  previousDone: boolean;
+  onComplete: () => void;
+}) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
+  const active = useStickyActive(visible, previousDone);
+  const total = voicelessTh.length + voicedTh.length;
+  const revealedCount = useStaggeredReveal(total, active, 1200);
+  useStaggerComplete(revealedCount, total, onComplete);
 
   return (
-    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
+    <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Two sounds hiding in &ldquo;th&rdquo;</h3>
       <p className="tutorial-caption">
         Say &ldquo;thin,&rdquo; then &ldquo;the.&rdquo; Feel your throat vibrate? Different sounds
@@ -313,28 +526,30 @@ function Section3c_ThDh() {
         <div className="thdh-column">
           <h4>Voiceless (th)</h4>
           <div className="sound-examples">
-            {voicelessTh.map((ex) => (
-              <span key={ex.english} className="sound-word">
-                <span className="sound-english">{ex.english}</span>
-                <span className="sound-arrow">&rarr;</span>
-                <span className="sound-ingglish" data-orig={ex.english}>
-                  {ex.ingglish}
-                </span>
-              </span>
+            {voicelessTh.map((ex, i) => (
+              <AnimatedSoundWord
+                key={ex.english}
+                english={ex.english}
+                ingglish={ex.ingglish}
+                highlightEn={ex.highlightEn}
+                highlightIng={ex.highlightIng}
+                animate={i < revealedCount}
+              />
             ))}
           </div>
         </div>
         <div className="thdh-column">
           <h4>Voiced (dh)</h4>
           <div className="sound-examples">
-            {voicedTh.map((ex) => (
-              <span key={ex.english} className="sound-word">
-                <span className="sound-english">{ex.english}</span>
-                <span className="sound-arrow">&rarr;</span>
-                <span className="sound-ingglish" data-orig={ex.english}>
-                  {ex.ingglish}
-                </span>
-              </span>
+            {voicedTh.map((ex, i) => (
+              <AnimatedSoundWord
+                key={ex.english}
+                english={ex.english}
+                ingglish={ex.ingglish}
+                highlightEn={ex.highlightEn}
+                highlightIng={ex.highlightIng}
+                animate={revealedCount > voicelessTh.length + i}
+              />
             ))}
           </div>
         </div>
@@ -344,32 +559,70 @@ function Section3c_ThDh() {
 }
 
 function Section3_Transform() {
+  // Track which substeps have finished their animations.
+  // Each substep only starts when the previous one completes.
+  const [completedStep, setCompletedStep] = useState(-1);
+  const markComplete = useCallback((step: number) => {
+    setCompletedStep((prev) => Math.max(prev, step));
+  }, []);
+
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">How it works</h2>
-      <Section3a_SilentLetters />
-      <Section3b_OneSound />
+      <Section3a_SilentLetters
+        previousDone
+        onComplete={() => {
+          markComplete(0);
+        }}
+      />
+      <Section3b_OneSound
+        previousDone={completedStep >= 0}
+        onComplete={() => {
+          markComplete(1);
+        }}
+      />
       <SimpleRuleGroup
         title={'"ph" is just "f"'}
         caption="Why use two letters when one already makes the sound?"
         examples={phExamples}
+        previousDone={completedStep >= 1}
+        onComplete={() => {
+          markComplete(2);
+        }}
       />
       <SimpleRuleGroup
         title="C can't make up its mind"
         caption={'Sometimes it\'s "k," sometimes it\'s "s." Ingglish picks one and sticks with it.'}
         examples={ckExamples}
+        previousDone={completedStep >= 2}
+        onComplete={() => {
+          markComplete(3);
+        }}
       />
       <SimpleRuleGroup
         title="The silent &ldquo;ght&rdquo; club"
         caption="The gh is silent, the i is really &ldquo;ai&rdquo; — so just write what you hear."
         examples={ightExamples}
+        previousDone={completedStep >= 3}
+        onComplete={() => {
+          markComplete(4);
+        }}
       />
       <SimpleRuleGroup
         title={'"Shun" hiding in disguise'}
         caption={'The "sh" sound hides behind -tion, -cean, -sure. In Ingglish, it\'s always "sh."'}
         examples={tionExamples}
+        previousDone={completedStep >= 4}
+        onComplete={() => {
+          markComplete(5);
+        }}
       />
-      <Section3c_ThDh />
+      <Section3c_ThDh
+        previousDone={completedStep >= 5}
+        onComplete={() => {
+          markComplete(6);
+        }}
+      />
     </section>
   );
 }

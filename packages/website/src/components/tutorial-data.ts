@@ -18,58 +18,65 @@ export const silentLetterExamples = [
   { english: 'gnaw', ingglish: 'naw', silent: 'g', silentPos: 'start' as const },
 ];
 
-export const eeSoundExamples = [
-  { english: 'sea', ingglish: 'see', highlight: 'ea' },
-  { english: 'key', ingglish: 'kee', highlight: 'ey' },
-  { english: 'me', ingglish: 'mee', highlight: 'e' },
-  { english: 'field', ingglish: 'feeld', highlight: 'ie' },
+export interface ExampleWord {
+  english: string;
+  ingglish: string;
+  highlightEn?: string;
+  highlightIng?: string;
+}
+
+export const eeSoundExamples: ExampleWord[] = [
+  { english: 'sea', ingglish: 'see', highlightEn: 'ea', highlightIng: 'ee' },
+  { english: 'key', ingglish: 'kee', highlightEn: 'ey', highlightIng: 'ee' },
+  { english: 'me', ingglish: 'mee', highlightEn: 'e', highlightIng: 'ee' },
+  { english: 'field', ingglish: 'feeld', highlightEn: 'ie', highlightIng: 'ee' },
 ];
 
-export const aySoundExamples = [
-  { english: 'day', ingglish: 'day', highlight: 'ay' },
-  { english: 'weigh', ingglish: 'way', highlight: 'eigh' },
-  { english: 'steak', ingglish: 'stayk', highlight: 'ea' },
-  { english: 'great', ingglish: 'grayt', highlight: 'ea' },
+export const aySoundExamples: ExampleWord[] = [
+  { english: 'day', ingglish: 'day' },
+  { english: 'weigh', ingglish: 'way', highlightEn: 'eigh', highlightIng: 'ay' },
+  { english: 'steak', ingglish: 'stayk', highlightEn: 'ea', highlightIng: 'ay' },
+  { english: 'great', ingglish: 'grayt', highlightEn: 'ea', highlightIng: 'ay' },
 ];
 
-export const phExamples = [
-  { english: 'phone', ingglish: 'fohn' },
-  { english: 'photo', ingglish: 'fohtoh' },
-  { english: 'graph', ingglish: 'graf' },
-  { english: 'elephant', ingglish: 'elufunt' },
+export const phExamples: ExampleWord[] = [
+  { english: 'phone', ingglish: 'fohn', highlightEn: 'ph', highlightIng: 'f' },
+  { english: 'photo', ingglish: 'fohtoh', highlightEn: 'ph', highlightIng: 'f' },
+  { english: 'graph', ingglish: 'graf', highlightEn: 'ph', highlightIng: 'f' },
+  { english: 'elephant', ingglish: 'elufunt', highlightEn: 'ph', highlightIng: 'f' },
 ];
 
-export const ckExamples = [
-  { english: 'cat', ingglish: 'kat' },
-  { english: 'city', ingglish: 'sitee' },
-  { english: 'queen', ingglish: 'kween' },
-  { english: 'back', ingglish: 'bak' },
+export const ckExamples: ExampleWord[] = [
+  { english: 'cat', ingglish: 'kat', highlightEn: 'c', highlightIng: 'k' },
+  { english: 'city', ingglish: 'sitee', highlightEn: 'c', highlightIng: 's' },
+  { english: 'queen', ingglish: 'kween', highlightEn: 'qu', highlightIng: 'kw' },
+  { english: 'back', ingglish: 'bak', highlightEn: 'ck', highlightIng: 'k' },
 ];
 
-export const ightExamples = [
-  { english: 'night', ingglish: 'nait' },
-  { english: 'light', ingglish: 'lait' },
-  { english: 'knight', ingglish: 'nait' },
-  { english: 'weight', ingglish: 'wayt' },
+export const ightExamples: ExampleWord[] = [
+  { english: 'night', ingglish: 'nait', highlightEn: 'igh', highlightIng: 'ai' },
+  { english: 'light', ingglish: 'lait', highlightEn: 'igh', highlightIng: 'ai' },
+  { english: 'knight', ingglish: 'nait', highlightEn: 'igh', highlightIng: 'ai' },
+  { english: 'weight', ingglish: 'wayt', highlightEn: 'eigh', highlightIng: 'ay' },
 ];
 
-export const tionExamples = [
-  { english: 'nation', ingglish: 'nayshun' },
-  { english: 'station', ingglish: 'stayshun' },
-  { english: 'ocean', ingglish: 'ohshun' },
-  { english: 'sure', ingglish: 'shoor' },
+export const tionExamples: ExampleWord[] = [
+  { english: 'nation', ingglish: 'nayshun', highlightEn: 'tion', highlightIng: 'shun' },
+  { english: 'station', ingglish: 'stayshun', highlightEn: 'tion', highlightIng: 'shun' },
+  { english: 'ocean', ingglish: 'ohshun', highlightEn: 'cean', highlightIng: 'shun' },
+  { english: 'sure', ingglish: 'shoor', highlightEn: 's', highlightIng: 'sh' },
 ];
 
-export const voicelessTh = [
-  { english: 'think', ingglish: 'thingk' },
-  { english: 'thin', ingglish: 'thin' },
-  { english: 'thought', ingglish: 'thawt' },
+export const voicelessTh: ExampleWord[] = [
+  { english: 'think', ingglish: 'thingk', highlightEn: 'th', highlightIng: 'th' },
+  { english: 'thin', ingglish: 'thin', highlightEn: 'th', highlightIng: 'th' },
+  { english: 'thought', ingglish: 'thawt', highlightEn: 'th', highlightIng: 'th' },
 ];
 
-export const voicedTh = [
-  { english: 'the', ingglish: 'dhu' },
-  { english: 'this', ingglish: 'dhis' },
-  { english: 'that', ingglish: 'dhat' },
+export const voicedTh: ExampleWord[] = [
+  { english: 'the', ingglish: 'dhu', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'this', ingglish: 'dhis', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'that', ingglish: 'dhat', highlightEn: 'th', highlightIng: 'dh' },
 ];
 
 // Progressive paragraph data
