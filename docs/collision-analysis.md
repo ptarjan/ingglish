@@ -7,8 +7,8 @@ This document analyzes cases where translating an English word to Ingglish produ
 | Metric | Count |
 |--------|-------|
 | Total words analyzed | 117,493 |
-| Collisions (Ingglish matches different English word) | 1,089 |
-| Collisions involving common words (freq >= 1000) | 172 |
+| Collisions (Ingglish matches different English word) | 1,075 |
+| Collisions involving common words (freq >= 1000) | 168 |
 
 ### Is This a Problem?
 

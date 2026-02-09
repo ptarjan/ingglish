@@ -10,7 +10,7 @@ This document analyzes whether the current Ingglish phoneme mappings maximize "i
 
 The current mapping produces **6,930 identical words** (5.13% of the CMU dictionary). Alternative mappings could theoretically produce up to **15,489 identical words** (11.47%), but these create unacceptable collisions where different words become indistinguishable.
 
-However, we found **6 safe improvements** (including one chain) that add **+607 identical words** without creating new collisions.
+However, we found **5 safe improvements** that add **+564 identical words** without creating new collisions.
 
 ## Background
 
@@ -26,9 +26,9 @@ However, not all identical words are equal. Many words in the CMU dictionary are
 
 | Metric | Value |
 |--------|-------|
-| Total words in CMU dictionary | 135,143 |
+| Total words in CMU dictionary | 135,166 |
 | Identical words | 6,930 (5.13%) |
-| Existing collisions (homophones) | 20,185 |
+| Existing collisions (homophones) | 20,180 |
 
 ## Why Not Maximize Identical Words?
 
@@ -51,19 +51,16 @@ We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combination
 
 ### Results
 
-| Phoneme | Current | Proposed | Gained | Lost | Net Gain | Notes |
-|---------|---------|----------|--------|------|----------|-------|
-| /aɪ/ | ai | ei | +352 | -36 | **+316** | Frees 'ai' |
-| /eɪ/ | ay | ai | +293 | -245 | **+48** | Uses freed 'ai'; loses "day", "say", "way" |
-| /oʊ/ | oh | ow | +217 | -80 | **+137** | |
-| /ɔ/ | aw | au | +203 | -140 | **+63** | |
-| /uː/ | uu | eu | +43 | -2 | **+41** | |
-| /ɔɪ/ | oi | oy | +118 | -108 | **+10** | |
-| **Total** | | | | | **+607** | (not fully additive) |
+| Phoneme | Current | Proposed | Gained | Lost | Net Gain |
+|---------|---------|----------|--------|------|----------|
+| /aɪ/ | ai | ei | +352 | -36 | **+316** |
+| /oʊ/ | oh | ow | +217 | -80 | **+137** |
+| /ɔ/ | aw | au | +203 | -140 | **+63** |
+| /uː/ | uu | eu | +43 | -2 | **+41** |
+| /ɔɪ/ | oi | oy | +118 | -108 | **+10** |
+| **Total** | | | | | **+564** |
 
-Combined effect: 6,930 → 7,537 identical words (5.13% → 5.58%)
-
-**Note:** The /eɪ/→ai change is only possible after /aɪ/→ei frees up the 'ai' spelling. This is a "chain" improvement where one change enables another.
+Combined effect: 6,930 → 7,494 identical words (5.13% → 5.54%)
 
 ### Trade-off Analysis
 
@@ -81,6 +78,8 @@ Each change involves gaining some identical words while losing others:
 **Assessment:** Mixed. Both gains and losses are largely loanwords. The native English gains (heist, height, seize) are valuable, but many German surname matches won't feel familiar to readers anyway.
 
 #### /oʊ/: "oh" → "ow" (+137 net)
+
+**Note:** In previous analysis, /eɪ/→ai was listed as a chain improvement enabled by /aɪ/→ei freeing the 'ai' spelling. After the R-colored vowel changes, this chain is no longer found as a valid safe improvement by the exhaustive search.
 
 **Gained (217 words):** Words with "ow" spelling
 - blow, flow, glow, grow, know, show, slow, snow, throw, below, follow, tomorrow, etc.
@@ -129,6 +128,7 @@ These changes improved identical count but were rejected:
 | /oʊ/: oh → oa | +70 | Lower gain than "ow" for same phoneme |
 | /oʊ/: oh → oe | +54 | Lower gain than "ow" for same phoneme |
 | /aɪ/: ai → ie | +5 | Lower gain than "ei" for same phoneme |
+| /eɪ/: ay → ai | +48 | Only works if /aɪ/→ei frees 'ai'; loses "day", "say", "way" |
 
 ## Collision Check
 
@@ -142,13 +142,13 @@ We verified the proposed changes don't create problematic collisions:
 | so / saw | soh / saw | sow / sau | ✓ Distinct |
 | know / now | noh / now | now / now | ⚠️ Collision! |
 
-**Note:** "know" → "now" collision already exists in English (homophones) and is counted in the baseline 20,185 collisions.
+**Note:** "know" → "now" collision already exists in English (homophones) and is counted in the baseline 20,180 collisions.
 
 ## Recommendations
 
 ### No changes recommended.
 
-All six proposed changes were investigated and rejected. The identical word count is a useful metric, but **it has a fundamental flaw**: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly. A spelling that matches more English words is harmful if those new combinations mislead readers.
+All five proposed changes were investigated and rejected. The identical word count is a useful metric, but **it has a fundamental flaw**: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly. A spelling that matches more English words is harmful if those new combinations mislead readers.
 
 ### Rejected: /oʊ/: "oh" → "ow" (+137 net)
 
@@ -161,10 +161,6 @@ Numerically the best efficiency — +41 words for only 2 losses. But `eu` in Eng
 ### Rejected: /aɪ/: "ai" → "ei" (+316 net)
 
 Most gains are German loanwords (einstein, bernstein, weinstein, klein, reich) that don't feel familiar to English readers anyway.
-
-### Rejected: /eɪ/: "ay" → "ai" (+48 net)
-
-Only possible after /aɪ/→ei frees 'ai'. **Loses high-frequency words** like "day", "say", "way", "play", "stay" (245 words) to gain "aid", "aim", "bail", "rain" (293 words). Bad trade.
 
 ### Rejected: /ɔ/: "aw" → "au" (+63 net)
 
@@ -199,6 +195,6 @@ The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because the
 
 ## Conclusion
 
-The current mappings are well-optimized. While alternative spellings can increase the identical word count by up to +607, all proposed changes either lose high-frequency words, bias toward loanwords, or — most importantly — reintroduce pronunciation ambiguity that undermines the system's core promise of "one sound, one spelling."
+The current mappings are well-optimized. While alternative spellings can increase the identical word count by up to +564, all proposed changes either lose high-frequency words, bias toward loanwords, or — most importantly — reintroduce pronunciation ambiguity that undermines the system's core promise of "one sound, one spelling."
 
 The identical word count of 6,930 (5.13%) represents the natural ceiling for a system that prioritizes unambiguous readability over string matching.
