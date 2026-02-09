@@ -31,7 +31,7 @@ interface DocEntry {
 }
 
 const GITHUB_EDIT_BASE =
-  'https://github.com/ptarjan/ingglish/edit/claude/url-translator-shared-lib-hNsxZ/docs/';
+  'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
   {

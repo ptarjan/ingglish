@@ -2,7 +2,7 @@ name: Deploy CORS Proxy
 
 on:
   push:
-    branches: [main, master, claude/url-translator-shared-lib-hNsxZ]
+    branches: [main, master]
     paths:
       - 'packages/cors-proxy/**'
   workflow_dispatch:
