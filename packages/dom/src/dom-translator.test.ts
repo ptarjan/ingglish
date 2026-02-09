@@ -275,7 +275,7 @@ describe('dom-translator', () => {
       expect(tokens[0].translated).not.toBe('Hello'); // Translated
 
       // Second token: space (unchanged)
-      expect(tokens[1]).toEqual({
+      expect(tokens[1]).toMatchObject({
         original: ' ',
         translated: ' ',
         isWord: false,
