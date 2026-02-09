@@ -52,6 +52,24 @@ export const vowelGroups: SoundGroup[] = [
     name: 'R-Colored Vowels',
     sounds: [
       {
+        phoneme: 'AE+R',
+        examples: '**arr**ow (arroh), b**arr**ow (barroh), c**arr**ot (karrut)',
+        ipaOverride: 'æɹ',
+        ingglishOverride: 'arr',
+      },
+      {
+        phoneme: 'EH+R',
+        examples: '**air** (air), c**are** (kair), th**ere** (dhair)',
+        ipaOverride: 'ɛɹ',
+        ingglishOverride: 'air',
+      },
+      {
+        phoneme: 'IH+R',
+        examples: 'b**eer** (beer), b**ear**d (beerd), f**ear** (feer)',
+        ipaOverride: 'ɪɹ',
+        ingglishOverride: 'eer',
+      },
+      {
         phoneme: 'AA+R',
         examples: 'st**ar** (star), he**ar**t (hart), gu**ar**d (gard)',
         ipaOverride: 'ɑɹ',
@@ -62,18 +80,6 @@ export const vowelGroups: SoundGroup[] = [
         examples: 'f**or** (for), w**ar** (wor), d**oor** (dor)',
         ipaOverride: 'ɔɹ',
         ingglishOverride: 'or',
-      },
-      {
-        phoneme: 'EH+R',
-        examples: '**air** (air), c**are** (kair), th**ere** (dhair)',
-        ipaOverride: 'ɛɹ',
-        ingglishOverride: 'air',
-      },
-      {
-        phoneme: 'AE+R',
-        examples: '**arr**ow (arroh), b**arr**ow (barroh), c**arr**ot (karrut)',
-        ipaOverride: 'æɹ',
-        ingglishOverride: 'arr',
       },
       { phoneme: 'ER', examples: 'h**er** (her), b**ir**d (berd), w**or**m (werm)' },
     ],
