@@ -43,7 +43,7 @@ jobs:
 
       # Core, dom, website run without build (use TS paths to resolve source)
       - name: Unit tests (core + dom + website)
-        run: npm run test:unit -w @ingglish/core -w @ingglish/dom -w @ingglish/website
+        run: npm run test -w @ingglish/core -w @ingglish/dom && npm run test:unit -w @ingglish/website
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:

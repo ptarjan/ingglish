@@ -8,8 +8,7 @@
     "lint": "eslint --cache src",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "vitest run --no-color",
-    "test:unit": "vitest run --no-color"
+    "test": "vitest run --no-color"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",

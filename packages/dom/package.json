@@ -20,7 +20,6 @@
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
-    "test:unit": "vitest run --no-color",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },

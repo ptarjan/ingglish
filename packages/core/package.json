@@ -27,13 +27,11 @@
     "lint": "eslint --cache src",
     "pretest": "npm run update-dictionaries",
     "test": "vitest run --no-color",
-    "test:unit": "vitest run --no-color",
     "test:watch": "npm run update-dictionaries && vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
     "analyze-collisions": "npx vite-node scripts/collision-analysis.ts",
-    "update-dictionary": "node scripts/ensure-dictionaries.js",
-    "update-dictionaries": "npm run update-dictionary",
+    "update-dictionaries": "node scripts/ensure-dictionaries.js",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
