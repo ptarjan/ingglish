@@ -1,0 +1,615 @@
+/**
+ * Tutorial page styles and animations.
+ */
+
+/* --- Tutorial layout --- */
+
+.tutorial {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+}
+
+.tutorial-section {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  padding: 4rem 0;
+}
+
+.tutorial-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.tutorial-subheading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.tutorial-caption {
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.tutorial-punchline {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+.tutorial-substep {
+  margin-bottom: 3rem;
+}
+
+/* --- Section 1: Ough grid --- */
+
+.ough-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ough-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  opacity: 0;
+  transform: translateY(15px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.ough-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ough-english-word,
+.ough-ingglish-word {
+  font-size: 1.3rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.ough-english-word {
+  text-align: right;
+}
+
+.ough-ingglish-word {
+  text-align: left;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity 0.6s ease 0.6s,
+    transform 0.6s ease 0.6s;
+}
+
+.ough-highlight-old {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+.ough-arrow {
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.5s ease 0.4s;
+}
+
+.ough-arrow.shown {
+  opacity: 1;
+}
+
+.ough-ingglish-word.shown {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ough-highlight-new {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* --- Section 2: What if --- */
+
+.tutorial-whatif {
+  text-align: center;
+  padding: 6rem 0;
+}
+
+.whatif-line {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.whatif-punchline {
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+/* --- Section 3a: Silent letters --- */
+
+.silent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.silent-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.silent-english {
+  font-weight: 500;
+  min-width: 4.5rem;
+}
+
+.silent-letter {
+  display: inline-block;
+  color: var(--color-error);
+  font-weight: 700;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.silent-word.animate .silent-letter {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.8);
+}
+
+.silent-arrow {
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.4s ease 0.4s;
+}
+
+.silent-word.animate .silent-arrow {
+  opacity: 1;
+}
+
+.silent-ingglish {
+  position: relative;
+  font-family: var(--font-mono);
+  color: var(--color-primary);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.4s;
+}
+
+.silent-word.animate .silent-ingglish {
+  opacity: 1;
+}
+
+/* --- Section 3b: Sound groups --- */
+
+.sound-group {
+  margin-bottom: 2rem;
+}
+
+.sound-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.sound-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.sound-english {
+  font-weight: 500;
+}
+
+.sound-arrow {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.sound-ingglish {
+  position: relative;
+  font-family: var(--font-mono);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sound-description {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* --- Section 3c: th/dh comparison --- */
+
+.thdh-comparison {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.thdh-column {
+  flex: 1;
+}
+
+.thdh-column h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.thdh-word {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.thdh-english {
+  font-weight: 500;
+  min-width: 4rem;
+}
+
+.thdh-arrow {
+  color: var(--color-text-muted);
+}
+
+.thdh-ingglish {
+  font-family: var(--font-mono);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* --- Section 4: Progressive paragraph --- */
+
+.progressive-paragraph {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.progressive-text {
+  font-size: 1.25rem;
+  line-height: 2;
+  min-height: 10rem;
+}
+
+/* --- Hover tooltips (matches URL translator style) --- */
+
+[data-orig] {
+  position: relative;
+  cursor: help;
+}
+
+[data-orig]:hover::after {
+  content: attr(data-orig);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.4;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  animation: tutorial-tooltip-fade-in 0.15s ease-out forwards;
+}
+
+[data-orig]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+  margin-bottom: -10px;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  animation: tutorial-tooltip-fade-in 0.15s ease-out forwards;
+}
+
+@keyframes tutorial-tooltip-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Section 4: Progressive paragraph --- */
+
+.progressive-word {
+  position: relative;
+  display: inline-block;
+  transition:
+    transform 0.4s ease,
+    color 0.4s ease;
+}
+
+.progressive-word.transformed {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.progressive-word.highlighted {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.progressive-caption {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  min-height: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.progressive-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.progressive-btn {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.progressive-btn:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+.progressive-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.progressive-btn-next {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.progressive-btn-next:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.progressive-indicator {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  min-width: 6rem;
+  text-align: center;
+}
+
+/* --- Section 5: Twain paragraph --- */
+
+.twain-paragraph {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.twain-text {
+  font-size: 1.2rem;
+  line-height: 2;
+}
+
+.twain-word {
+  position: relative;
+  display: inline-block;
+  transition: color 0.5s ease;
+}
+
+.twain-word.transformed {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.twain-word.highlighted {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* --- Section 6: Reading test --- */
+
+.reading-test {
+  text-align: center;
+}
+
+.reading-ingglish {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  line-height: 1.8;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+}
+
+.reading-attribution {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* --- Section 6: CTA --- */
+
+.tutorial-cta {
+  text-align: center;
+  padding: 6rem 0 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-primary,
+.cta-secondary {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.cta-primary:hover,
+.cta-secondary:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.cta-primary:active,
+.cta-secondary:active {
+  transform: translateY(0);
+}
+
+.cta-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.cta-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.cta-secondary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.cta-secondary:hover {
+  background: var(--color-surface-hover);
+}
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ough-card,
+  .ough-arrow,
+  .ough-ingglish-word,
+  .silent-letter,
+  .silent-arrow,
+  .silent-ingglish,
+  .progressive-word {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- Mobile responsive --- */
+
+@media (max-width: 640px) {
+  .tutorial {
+    padding-bottom: 2rem;
+  }
+
+  .tutorial-section {
+    padding: 2rem 0;
+  }
+
+  .tutorial-heading {
+    font-size: 1.5rem;
+  }
+
+  .tutorial-subheading {
+    font-size: 1.25rem;
+  }
+
+  .ough-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-whatif {
+    padding: 4rem 0;
+  }
+
+  .whatif-line {
+    font-size: 1.2rem;
+  }
+
+  .whatif-punchline {
+    font-size: 1.5rem;
+  }
+
+  .thdh-comparison {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .progressive-paragraph {
+    padding: 1.25rem;
+    position: static;
+  }
+
+  .progressive-text {
+    font-size: 1.1rem;
+  }
+
+  .reading-ingglish {
+    font-size: 1.1rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+}

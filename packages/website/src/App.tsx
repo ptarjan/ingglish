@@ -5,10 +5,11 @@ import UrlTranslator from './components/UrlTranslator';
 import SpellingGuide from './components/SpellingGuide';
 import Extension from './components/Extension';
 import Docs from './components/Docs';
+import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useFormat } from './contexts/FormatContext';
 
-type Tab = 'text' | 'url' | 'guide' | 'extension' | 'docs';
+type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
 
 const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
@@ -27,10 +28,16 @@ function getTabFromHash(): Tab {
   if (hash === 'docs' || hash.startsWith('docs/')) {
     return 'docs';
   }
-  if (hash === 'text' || hash === 'url' || hash === 'guide' || hash === 'extension') {
+  if (
+    hash === 'tutorial' ||
+    hash === 'text' ||
+    hash === 'url' ||
+    hash === 'guide' ||
+    hash === 'extension'
+  ) {
     return hash;
   }
-  return 'text';
+  return 'tutorial';
 }
 
 function getInitialText(): string {
@@ -106,7 +113,12 @@ function App() {
 
   // Sync tab with URL hash (docs manages its own hash for deep linking)
   useEffect(() => {
-    if (activeTab !== 'docs') {
+    if (activeTab === 'tutorial') {
+      // Keep URL clean for the landing page — no hash needed
+      if (window.location.hash && window.location.hash !== '#tutorial') {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    } else if (activeTab !== 'docs') {
       window.location.hash = activeTab;
     }
     // For docs tab, let the Docs component manage the hash
@@ -167,6 +179,10 @@ function App() {
     [buildShareUrl]
   );
 
+  const handleTabNavigate = useCallback((tab: string) => {
+    setActiveTab(tab as Tab);
+  }, []);
+
   useEffect(() => {
     // Preload dictionary by calling translate once
     translate('')
@@ -201,14 +217,16 @@ function App() {
   return (
     <div className="app">
       <div className="toggle-buttons">
-        <button
-          className="format-toggle"
-          onClick={toggleFormat}
-          aria-label="Toggle output format"
-          title={format === 'ingglish' ? 'Switch to IPA' : 'Switch to Ingglish'}
-        >
-          {format === 'ingglish' ? 'Ingglish' : 'IPA'}
-        </button>
+        {activeTab !== 'tutorial' && (
+          <button
+            className="format-toggle"
+            onClick={toggleFormat}
+            aria-label="Toggle output format"
+            title={format === 'ingglish' ? 'Switch to IPA' : 'Switch to Ingglish'}
+          >
+            {format === 'ingglish' ? 'Ingglish' : 'IPA'}
+          </button>
+        )}
         <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
           {getThemeIcon()}
         </button>
@@ -230,25 +248,31 @@ function App() {
         </div>
       </header>
 
-      <nav className="tabs">
-        <a className={`tab ${activeTab === 'text' ? 'active' : ''}`} href="#text">
-          Translate Text
-        </a>
-        <a className={`tab ${activeTab === 'url' ? 'active' : ''}`} href="#url">
-          Translate URL
-        </a>
-        <a className={`tab ${activeTab === 'extension' ? 'active' : ''}`} href="#extension">
-          Extension
-        </a>
-        <a className={`tab ${activeTab === 'guide' ? 'active' : ''}`} href="#guide">
-          Spelling Guide
-        </a>
-        <a className={`tab ${activeTab === 'docs' ? 'active' : ''}`} href="#docs">
-          Docs
-        </a>
-      </nav>
+      {activeTab !== 'tutorial' && (
+        <nav className="tabs">
+          <a className={`tab ${activeTab === 'tutorial' ? 'active' : ''}`} href="#tutorial">
+            Tutorial
+          </a>
+          <a className={`tab ${activeTab === 'text' ? 'active' : ''}`} href="#text">
+            Translate Text
+          </a>
+          <a className={`tab ${activeTab === 'url' ? 'active' : ''}`} href="#url">
+            Translate URL
+          </a>
+          <a className={`tab ${activeTab === 'extension' ? 'active' : ''}`} href="#extension">
+            Extension
+          </a>
+          <a className={`tab ${activeTab === 'guide' ? 'active' : ''}`} href="#guide">
+            Spelling Guide
+          </a>
+          <a className={`tab ${activeTab === 'docs' ? 'active' : ''}`} href="#docs">
+            Docs
+          </a>
+        </nav>
+      )}
 
       <main className="main">
+        {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
         {activeTab === 'text' && (
           <ErrorBoundary>
             <TextTranslator initialText={initialText} onShare={handleShareText} />
