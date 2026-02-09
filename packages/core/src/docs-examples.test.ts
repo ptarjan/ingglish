@@ -4,12 +4,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { translateSync } from './translate/forward';
 
-// Paths relative to repo root (vitest runs from packages/core)
-const DOCS_DIR = join(process.cwd(), '../../docs');
-const README_PATH = join(process.cwd(), '../../README.md');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DOCS_DIR = join(__dirname, '../../../docs');
+const README_PATH = join(__dirname, '../../../README.md');
 
 interface Example {
   english: string;

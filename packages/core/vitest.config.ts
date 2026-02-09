@@ -17,6 +17,7 @@ export default defineConfig({
     // Performance optimizations
     // Single worker avoids loading dictionaries multiple times (9s vs 17s)
     maxWorkers: 1,
+    sequence: { groupOrder: 1 }, // Unique group since maxWorkers differs from other packages
     isolate: false, // Share global state (dictionary) across tests
     // Faster timeouts
     testTimeout: 10000,

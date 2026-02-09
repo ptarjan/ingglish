@@ -4,10 +4,12 @@
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { translateSync } from './translate/forward';
 
-const TUTORIAL_PATH = join(process.cwd(), '../website/src/components/tutorial-data.ts');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const TUTORIAL_PATH = join(__dirname, '../../website/src/components/tutorial-data.ts');
 
 interface Example {
   english: string;
