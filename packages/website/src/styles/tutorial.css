@@ -124,7 +124,7 @@
   opacity: 1;
 }
 
-.ough-ingglish-word.shown {
+.ough-ingglish-word.shown .ough-ingglish-text {
   opacity: 1;
   transform: translateX(0);
 }
