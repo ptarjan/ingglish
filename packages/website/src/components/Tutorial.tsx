@@ -255,7 +255,7 @@ function Section3a_SilentLetters({
 }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
   const active = useStickyActive(visible, previousDone);
-  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 1200);
+  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 800);
   useStaggerComplete(revealedCount, silentLetterExamples.length, onComplete);
 
   return (
