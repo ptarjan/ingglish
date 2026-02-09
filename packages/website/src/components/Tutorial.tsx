@@ -216,7 +216,7 @@ function Section3a_SilentLetters() {
   const revealedCount = useStaggeredReveal(silentLetterExamples.length, visible, 1200);
 
   return (
-    <div ref={ref} className="tutorial-substep revealed">
+    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Drop the silent letters</h3>
       <p className="tutorial-caption">Every letter you see is a letter you say.</p>
       <div className="silent-list">
@@ -236,10 +236,10 @@ function SoundGroup({
   sound: string;
 }) {
   return (
-    <div className="sound-group revealed">
+    <div className="sound-group">
       <div className="sound-examples">
         {examples.map((ex) => (
-          <span key={ex.english} className="sound-word revealed">
+          <span key={ex.english} className="sound-word">
             <span className="sound-english">{ex.english}</span>
             <span className="sound-arrow">&rarr;</span>
             <span className="sound-ingglish" data-orig={ex.english}>
@@ -248,7 +248,7 @@ function SoundGroup({
           </span>
         ))}
       </div>
-      <p className="sound-description revealed">
+      <p className="sound-description">
         {examples.length} different spellings for the same sound. In Ingglish, they&rsquo;re all
         &ldquo;<strong>{sound}</strong>.&rdquo;
       </p>
@@ -257,8 +257,10 @@ function SoundGroup({
 }
 
 function Section3b_OneSound() {
+  const { ref, visible } = useScrollReveal<HTMLDivElement>();
+
   return (
-    <div className="tutorial-substep revealed">
+    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">One sound, one spelling</h3>
       <p className="tutorial-caption">Same sound always written the same way.</p>
       <SoundGroup examples={eeSoundExamples} sound="ee" />
@@ -276,8 +278,10 @@ function SimpleRuleGroup({
   caption: string;
   examples: { english: string; ingglish: string }[];
 }) {
+  const { ref, visible } = useScrollReveal<HTMLDivElement>();
+
   return (
-    <div className="tutorial-substep">
+    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">{title}</h3>
       <p className="tutorial-caption">{caption}</p>
       <div className="sound-examples">
@@ -296,8 +300,10 @@ function SimpleRuleGroup({
 }
 
 function Section3c_ThDh() {
+  const { ref, visible } = useScrollReveal<HTMLDivElement>();
+
   return (
-    <div className="tutorial-substep">
+    <div ref={ref} className={`tutorial-substep ${visible ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Two sounds hiding in &ldquo;th&rdquo;</h3>
       <p className="tutorial-caption">
         Say &ldquo;thin,&rdquo; then &ldquo;the.&rdquo; Feel your throat vibrate? Different sounds
