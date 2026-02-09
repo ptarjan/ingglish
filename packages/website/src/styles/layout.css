@@ -231,9 +231,19 @@
   }
 
   .toggle-buttons {
-    position: static;
-    justify-content: center;
-    margin-top: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .format-toggle {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .theme-toggle {
+    padding: 0.25rem;
+    font-size: 1rem;
   }
 
   .tabs {
