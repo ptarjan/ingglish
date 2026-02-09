@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master, claude/url-translator-shared-lib-hNsxZ]
+    branches: [main, master]
   pull_request:
     branches: [main, master]
 
@@ -293,48 +293,3 @@ jobs:
           name: playwright-report-webkit
           path: packages/website/test-results/
           retention-days: 7
-
-  deploy-preview:
-    runs-on: ubuntu-latest
-    needs: [build, lint-basic, typecheck, test-deps, test-unit, test-e2e, test-e2e-webkit]
-    if: github.event_name == 'pull_request'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
-
-      - name: Deploy to Vercel Preview
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: packages/website
-
-  deploy-production:
-    runs-on: ubuntu-latest
-    needs: [build, lint-basic, typecheck, test-deps, test-unit, test-e2e, test-e2e-webkit]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
-
-      - name: Deploy to Vercel Production
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: packages/website
