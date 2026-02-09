@@ -495,8 +495,14 @@
   color: var(--color-primary);
   font-weight: 600;
   margin-top: 1rem;
+  overflow-wrap: break-word;
   text-align: center;
   min-height: 1.5rem;
+}
+
+.try-it-output .unmatched {
+  text-decoration: underline wavy red;
+  text-underline-offset: 0.2em;
 }
 
 /* --- Section 8: CTA --- */

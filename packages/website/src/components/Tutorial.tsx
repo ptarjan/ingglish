@@ -603,7 +603,7 @@ function Section7_TryIt() {
         <input
           className="try-it-input"
           type="text"
-          placeholder="Type any English word or phrase\u2026"
+          placeholder="Type English here\u2026"
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
@@ -616,10 +616,13 @@ function Section7_TryIt() {
                 return <span key={i}>{token.translated}</span>;
               }
               const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
+              const classes = [changed ? 'transformed' : '', !token.matched ? 'unmatched' : '']
+                .filter(Boolean)
+                .join(' ');
               return (
                 <span
                   key={i}
-                  className={changed ? 'transformed' : undefined}
+                  className={classes || undefined}
                   data-orig={changed ? token.original : undefined}
                 >
                   {token.translated}
@@ -647,7 +650,7 @@ function Section8_CTA({ onNavigate }: { onNavigate: (tab: string) => void }) {
 
   return (
     <section ref={ref} className={`tutorial-section tutorial-cta ${visible ? 'revealed' : ''}`}>
-      <h2 className="tutorial-heading">See your own words in Ingglish</h2>
+      <h2 className="tutorial-heading">Try Ingglish</h2>
       <div className="cta-buttons">
         <a href="#text" className="cta-primary" onClick={handleNavigate('text')}>
           Translate Text
