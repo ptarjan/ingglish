@@ -130,8 +130,9 @@ export default tseslint.config(
       '**/*.config.js',
       '**/*.config.ts',
       '**/vitest.setup.ts',
-      // Auto-generated dictionary files and their type declarations
+      // Auto-generated dictionary/data files and their type declarations
       '**/src/dictionary/**/*.js',
+      '**/src/dictionary/**/*.d.ts',
       '**/src/data/**/*.js',
       '**/src/data/**/*.d.ts',
     ],
