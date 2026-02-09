@@ -30,8 +30,7 @@ interface DocEntry {
   firstInSection?: boolean; // adds visual separator before this item
 }
 
-const GITHUB_EDIT_BASE =
-  'https://github.com/ptarjan/ingglish/edit/main/docs/';
+const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
   {
