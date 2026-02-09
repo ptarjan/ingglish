@@ -508,10 +508,10 @@
 }
 
 .cta-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
   gap: 1rem;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .cta-primary,
@@ -628,8 +628,8 @@
   }
 
   .cta-buttons {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr;
+    justify-items: center;
   }
 
   .cta-primary,
