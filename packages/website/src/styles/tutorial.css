@@ -145,6 +145,16 @@
   font-size: 1.5rem;
   line-height: 1.6;
   margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.whatif-line.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .whatif-punchline {
@@ -307,29 +317,6 @@
   flex-direction: column;
 }
 
-.thdh-word {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-.thdh-english {
-  font-weight: 500;
-  min-width: 4rem;
-}
-
-.thdh-arrow {
-  color: var(--color-text-muted);
-}
-
-.thdh-ingglish {
-  font-family: var(--font-mono);
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
 /* --- Section 4: Progressive paragraph --- */
 
 .progressive-paragraph {
@@ -345,8 +332,6 @@
   line-height: 2;
   min-height: 10rem;
 }
-
-/* --- Section 4: Progressive paragraph --- */
 
 .progressive-word {
   position: relative;
@@ -608,7 +593,8 @@
   .tutorial-substep,
   .ough-card,
   .ough-arrow,
-  .ough-ingglish-word,
+  .ough-ingglish-text,
+  .whatif-line,
   .sound-word,
   .sound-arrow,
   .sound-ingglish,
