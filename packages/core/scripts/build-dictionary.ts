@@ -70,10 +70,18 @@ function parseDictionary(text: string): CMUDictionary {
     // Single space separates word from phonemes in cmudict.dict
     const spaceIndex = line.indexOf(' ');
     if (spaceIndex > 0) {
-      const word = line.slice(0, spaceIndex);
+      // Strip variant suffix e.g. AND(2) -> AND
+      const rawWord = line.slice(0, spaceIndex);
+      const word = rawWord.replace(/\(\d+\)$/, '');
       const phonemes = line.slice(spaceIndex + 1).trim();
       // Convert word to lowercase and pre-split phonemes into array
-      dict[word.toLowerCase()] = phonemes.split(' ');
+      // For variant pronunciations, only keep the first (most common)
+      const key = word.toLowerCase();
+      if (key in dict) {
+        parsed++;
+        continue;
+      }
+      dict[key] = phonemes.split(' ');
       parsed++;
     } else {
       skipped++;
