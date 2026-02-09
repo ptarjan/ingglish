@@ -370,12 +370,26 @@ function Section3_Transform() {
 
 function Section4_Progressive() {
   const [currentStep, setCurrentStep] = useState(0);
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+
+  // Lock the text height on mount (step 0 = English text, generally tallest)
+  // so the controls below don't shift when words transform to shorter spellings.
+  useEffect(() => {
+    if (textRef.current && lockedHeight === null) {
+      setLockedHeight(textRef.current.scrollHeight);
+    }
+  }, [lockedHeight]);
 
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">See it in action</h2>
       <div className="progressive-paragraph">
-        <p className="progressive-text">
+        <p
+          className="progressive-text"
+          ref={textRef}
+          style={lockedHeight !== null ? { minHeight: lockedHeight } : undefined}
+        >
           {paragraphWords.map((w, i) => {
             const transformed = w.step > 0 && currentStep >= w.step;
             const justTransformed = w.step > 0 && currentStep === w.step;
