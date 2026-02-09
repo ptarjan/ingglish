@@ -604,7 +604,7 @@ function Section7_TryIt() {
         <input
           className="try-it-input"
           type="text"
-          placeholder="Type English here\u2026"
+          placeholder="Type English here…"
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
