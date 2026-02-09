@@ -215,25 +215,33 @@
 .sound-morph-after {
   grid-area: 1 / 1;
   font-weight: 600;
-  transition: opacity 0.3s ease;
 }
 
 .sound-morph-before {
   opacity: 0;
+  transform: translateX(-2rem);
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s ease;
 }
 
 .sound-word.animate .sound-morph-before {
   opacity: 1;
-  transition: opacity 0.3s ease 0.5s;
+  transform: translateX(0);
+  transition:
+    opacity 0.3s ease 0.3s,
+    transform 0.4s ease 0.3s;
 }
 
 .sound-word.morphed .sound-morph-before {
   opacity: 0;
+  transform: translateX(0);
   transition: opacity 0.3s ease;
 }
 
 .sound-morph-after {
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .sound-word.morphed .sound-morph-after {
