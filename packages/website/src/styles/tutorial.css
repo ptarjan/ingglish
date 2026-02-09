@@ -283,11 +283,28 @@
   flex: 1;
 }
 
+.thdh-column-fade {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.thdh-column-fade.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .thdh-column h4 {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: var(--color-text-muted);
+}
+
+.thdh-column .sound-examples {
+  flex-direction: column;
 }
 
 .thdh-word {
@@ -593,6 +610,7 @@
   .sound-morph-before,
   .sound-morph-after,
   .sound-description,
+  .thdh-column-fade,
   .progressive-word {
     opacity: 1 !important;
     transform: none !important;

@@ -510,7 +510,9 @@ function Section3c_ThDh({
             ))}
           </div>
         </div>
-        <div className="thdh-column">
+        <div
+          className={`thdh-column thdh-column-fade ${revealedCount > voicelessTh.length ? 'revealed' : ''}`}
+        >
           <h4>Voiced (dh)</h4>
           <div className="sound-examples">
             {voicedTh.map((ex, i) => (
