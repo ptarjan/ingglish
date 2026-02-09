@@ -610,7 +610,9 @@ function Section7_TryIt() {
             setInput(e.target.value);
           }}
         />
-        <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
+        {tokens.length > 0 && (
+          <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
+        )}
       </div>
     </section>
   );
