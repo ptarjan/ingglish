@@ -407,6 +407,21 @@ function SoundGroup({
   revealedCount: number;
   startIndex: number;
 }) {
+  // Delay the description until the last word's morph animation finishes (800ms)
+  const allRevealed = revealedCount >= startIndex + examples.length;
+  const [descVisible, setDescVisible] = useState(false);
+  useEffect(() => {
+    if (!allRevealed) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setDescVisible(true);
+    }, 1000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [allRevealed]);
+
   return (
     <div className="sound-group">
       <div className="sound-examples">
@@ -421,9 +436,7 @@ function SoundGroup({
           />
         ))}
       </div>
-      <p
-        className={`sound-description ${revealedCount >= startIndex + examples.length ? 'animate' : ''}`}
-      >
+      <p className={`sound-description ${descVisible ? 'animate' : ''}`}>
         {examples.length} different spellings for the same sound. In Ingglish, they&rsquo;re all
         &ldquo;<strong>{sound}</strong>.&rdquo;
       </p>
