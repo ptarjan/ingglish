@@ -61,16 +61,18 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
 
 interface MappedWordDisplayProps {
   tokens: TranslatedToken[];
-  hoveredWordIndex: number | null;
-  onHoverWord: (index: number | null) => void;
+  hoveredWordIndex?: number | null;
+  onHoverWord?: (index: number | null) => void;
   className?: string;
+  placeholder?: string;
 }
 
-function MappedWordDisplay({
+export function MappedWordDisplay({
   tokens,
-  hoveredWordIndex,
+  hoveredWordIndex = null,
   onHoverWord,
   className,
+  placeholder = 'Hover to see word correspondence...',
 }: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
@@ -86,12 +88,20 @@ function MappedWordDisplay({
               key={i}
               className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!matched ? 'unmatched' : ''}`}
               data-orig={changed ? token.original : undefined}
-              onMouseEnter={() => {
-                onHoverWord(currentWordIndex);
-              }}
-              onMouseLeave={() => {
-                onHoverWord(null);
-              }}
+              onMouseEnter={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(currentWordIndex);
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(null);
+                    }
+                  : undefined
+              }
             >
               {token.translated}
             </span>
@@ -99,9 +109,7 @@ function MappedWordDisplay({
         }
         return <span key={i}>{token.translated}</span>;
       })}
-      {tokens.length === 0 && (
-        <span className="placeholder">Hover to see word correspondence...</span>
-      )}
+      {tokens.length === 0 && <span className="placeholder">{placeholder}</span>}
     </div>
   );
 }

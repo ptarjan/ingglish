@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { translateSyncWithMapping } from '@ingglish/core';
+import { MappedWordDisplay } from './TextTranslator';
 import {
   oughExamples,
   silentLetterExamples,
@@ -609,28 +610,7 @@ function Section7_TryIt() {
             setInput(e.target.value);
           }}
         />
-        {tokens.length > 0 && (
-          <p className="try-it-output">
-            {tokens.map((token, i) => {
-              if (!token.isWord) {
-                return <span key={i}>{token.translated}</span>;
-              }
-              const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
-              const classes = [changed ? 'transformed' : '', !token.matched ? 'unmatched' : '']
-                .filter(Boolean)
-                .join(' ');
-              return (
-                <span
-                  key={i}
-                  className={classes || undefined}
-                  data-orig={changed ? token.original : undefined}
-                >
-                  {token.translated}
-                </span>
-              );
-            })}
-          </p>
-        )}
+        <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
       </div>
     </section>
   );
