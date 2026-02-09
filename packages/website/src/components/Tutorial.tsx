@@ -511,6 +511,43 @@ function Section5_Poem() {
       <h2 className="tutorial-heading">Hints on Pronunciation for Foreigners</h2>
       <p className="poem-attribution">&mdash; attributed to T.S. Watt, 1954</p>
       <div className="poem-paragraph">
+        <div className="poem-controls">
+          {advancing && (
+            <button
+              className="poem-control-btn"
+              onClick={() => {
+                setPaused(true);
+              }}
+              title="Pause"
+            >
+              &#x23f8;
+            </button>
+          )}
+          {paused && !finished && (
+            <button
+              className="poem-control-btn"
+              onClick={() => {
+                setPaused(false);
+              }}
+              title="Play"
+            >
+              &#x25b6;
+            </button>
+          )}
+          {finished && (
+            <button
+              className="poem-control-btn"
+              onClick={() => {
+                setStep(0);
+                setPaused(false);
+                setAdvanceToken((c) => c + 1);
+              }}
+              title="Replay"
+            >
+              &#x21bb;
+            </button>
+          )}
+        </div>
         <p className="poem-text">
           {poemWords.map((w, i) => {
             if (w.e === '\n') {
@@ -532,50 +569,6 @@ function Section5_Poem() {
             );
           })}
         </p>
-      </div>
-      <div className="progressive-controls">
-        {advancing && (
-          <>
-            <button
-              className="progressive-btn"
-              onClick={() => {
-                setPaused(true);
-              }}
-            >
-              &#x23f8; Pause
-            </button>
-            <span className="progressive-indicator">
-              Line {step} of {totalSteps}
-            </span>
-          </>
-        )}
-        {paused && !finished && (
-          <>
-            <button
-              className="progressive-btn"
-              onClick={() => {
-                setPaused(false);
-              }}
-            >
-              &#x25b6; Play
-            </button>
-            <span className="progressive-indicator">
-              Line {step} of {totalSteps}
-            </span>
-          </>
-        )}
-        {finished && (
-          <button
-            className="progressive-btn"
-            onClick={() => {
-              setStep(0);
-              setPaused(false);
-              setAdvanceToken((c) => c + 1);
-            }}
-          >
-            &#x21bb; Replay
-          </button>
-        )}
       </div>
     </section>
   );
