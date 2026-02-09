@@ -1,4 +1,4 @@
-import { useState, useCallback, useDeferredValue, useMemo, useEffect } from 'react';
+import { useState, useCallback, useDeferredValue, useMemo, useEffect, useRef } from 'react';
 import {
   translateSync,
   translateSyncWithMapping,
@@ -262,6 +262,24 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
+  // Sync scroll positions between the two textareas
+  const englishRef = useRef<HTMLTextAreaElement>(null);
+  const ingglishRef = useRef<HTMLTextAreaElement>(null);
+  const scrolling = useRef(false);
+
+  const handleScroll = useCallback((source: 'english' | 'ingglish') => {
+    if (scrolling.current) {
+      return;
+    }
+    scrolling.current = true;
+    const from = source === 'english' ? englishRef.current : ingglishRef.current;
+    const to = source === 'english' ? ingglishRef.current : englishRef.current;
+    if (from && to) {
+      to.scrollTop = from.scrollTop;
+    }
+    scrolling.current = false;
+  }, []);
+
   return (
     <div className="text-translator">
       <div className="translator-grid">
@@ -294,8 +312,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             </div>
           </div>
           <textarea
+            ref={englishRef}
             value={lastEdited === 'english' ? englishText : displayEnglish}
             onChange={handleEnglishChange}
+            onScroll={() => {
+              handleScroll('english');
+            }}
             onFocus={() => {
               if (lastEdited === 'ingglish' && computedEnglish !== null) {
                 setEnglishText(computedEnglish);
@@ -322,8 +344,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             </div>
           </div>
           <textarea
+            ref={ingglishRef}
             value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             onChange={handleIngglishChange}
+            onScroll={() => {
+              handleScroll('ingglish');
+            }}
             onFocus={() => {
               if (lastEdited === 'english' && computedIngglish !== null) {
                 setIngglishText(computedIngglish);
