@@ -737,7 +737,7 @@ function Section7_TryIt() {
         <input
           className="try-it-input"
           type="text"
-          placeholder="Type English here…"
+          placeholder="Type any English sentence…"
           value={input}
           onChange={(e) => {
             setInput(e.target.value);

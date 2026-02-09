@@ -15,6 +15,7 @@
   display: grid;
   align-content: center;
   padding: 4rem 0;
+  min-width: 0;
 }
 
 .tutorial-heading {
@@ -457,6 +458,7 @@
 /* --- Section 7: Try it --- */
 
 .try-it-container {
+  width: 100%;
   max-width: 480px;
   margin: 0 auto;
 }
@@ -464,7 +466,7 @@
 .try-it-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   background: var(--color-surface);
@@ -478,15 +480,17 @@
   border-color: var(--color-primary);
 }
 
-.try-it-output {
+.try-it-output.word-display {
   font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--color-primary);
   font-weight: 600;
   margin-top: 1rem;
   overflow-wrap: break-word;
-  text-align: center;
+  overflow: visible;
+  text-align: left;
   min-height: 2.75rem;
+  max-height: none;
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
