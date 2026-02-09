@@ -371,7 +371,7 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 
 | Operation | Complexity | Notes |
 |-----------|------------|-------|
-| Dictionary loading | O(n) | ~3MB gzipped, loaded once and cached |
+| Dictionary loading | O(n) | ~1MB gzipped, loaded once and cached |
 | Word lookup | O(1) | Hash map lookup |
 | Translation | O(n) | n = word count |
 | Reverse translation | O(1) | Phoneme key lookup after initial map build |

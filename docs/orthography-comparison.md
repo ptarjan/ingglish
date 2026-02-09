@@ -630,7 +630,7 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 | f | /f/ | **Universal** | Standard across virtually all Latin-script languages |
 | v | /v/ | **Universal** | Standard across virtually all Latin-script languages |
 | th | /θ/ | **Regional** | Only ~4% of languages have this sound; English, Albanian, Welsh use 'th' |
-| dh | /ð/ | **Rare** | Albanian (official letter), Cornish, Swahili; ~7% of languages have /ð/ |
+| dh | /ð/ | **Rare** | Albanian (official letter), Cornish; ~7% of languages have /ð/ |
 | s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
 | z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
 | sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
@@ -693,7 +693,7 @@ A successful African example using Latin script:
 
 - Nearly 1:1 sound-to-letter correspondence
 - 'ng'' represents /ŋ/ (similar to our 'ng')
-- 'dh' represents /ð/ — same as Ingglish!
+- 'dh' represents a dental sound (used variously for /ð/ or /d̪/ in loanwords)
 - 'sh' represents /ʃ/ — same as Ingglish
 - High literacy rates across East Africa
 
