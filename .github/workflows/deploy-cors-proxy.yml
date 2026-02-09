@@ -2,7 +2,7 @@ name: Deploy CORS Proxy
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'packages/cors-proxy/**'
   workflow_dispatch:

@@ -4,43 +4,9 @@ This guide covers deploying the Ingglish website and Chrome extension.
 
 ## Website Deployment
 
-### Option 1: Vercel (Recommended)
+### GitHub Pages (Current)
 
-1. **Connect Repository**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Select the `packages/website` directory as the root
-
-2. **Configure Build Settings**
-   - Framework Preset: Vite
-   - Build Command: `cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website`
-   - Output Directory: `dist`
-   - Install Command: `cd ../.. && npm ci`
-
-3. **Deploy**
-   - Vercel will automatically deploy on every push to main
-
-4. **For GitHub Actions (CI/CD)**
-   Add these secrets to your repository:
-   - `VERCEL_TOKEN` - Get from Vercel account settings
-   - `VERCEL_ORG_ID` - Get from Vercel project settings
-   - `VERCEL_PROJECT_ID` - Get from Vercel project settings
-
-### Option 2: Netlify
-
-1. **Connect Repository**
-   - Go to [netlify.com](https://netlify.com)
-   - Import your GitHub repository
-
-2. **Configure Build Settings**
-   - Base directory: `packages/website`
-   - Build command: `cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website`
-   - Publish directory: `packages/website/dist`
-
-3. **Deploy**
-   - Netlify will auto-deploy on push
-
-### Option 3: GitHub Pages
+The site is deployed automatically via GitHub Actions on every push to main.
 
 1. **Enable GitHub Pages**
    - Go to repository Settings > Pages
@@ -160,20 +126,6 @@ No environment variables required for basic deployment.
 ### For URL Translation Feature
 If you want to use your own CORS proxy instead of allorigins.win:
 - `VITE_CORS_PROXY_URL` - Your CORS proxy URL (e.g., `https://your-proxy.workers.dev/?url=`)
-
-## Monitoring & Analytics
-
-### Add Vercel Analytics (Optional)
-```bash
-npm install @vercel/analytics -w @ingglish/website
-```
-
-Update `main.tsx`:
-```typescript
-import { Analytics } from '@vercel/analytics/react';
-
-// Add <Analytics /> to your app
-```
 
 ## Troubleshooting
 

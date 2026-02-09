@@ -142,15 +142,11 @@ Always profile before and after making optimization changes. See [Performance Gu
 - Every new function should have tests
 - Test edge cases (empty strings, special characters, etc.)
 - Test round-trip translations where applicable
-- Use shared test setup from `test-setup.ts`
+- Dictionary is pre-loaded globally via `vitest.setup.ts` — no manual setup needed
 
 Example:
 ```typescript
-import { setupDictionary, SAMPLE_TEXT } from './test-setup';
-
 describe('translateWord', () => {
-  setupDictionary(); // Loads CMU dictionary before tests
-
   it('should handle empty string', () => {
     expect(translateWord('')).toBe('');
   });

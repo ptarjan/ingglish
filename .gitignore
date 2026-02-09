@@ -10,7 +10,9 @@ ingglish-extension.zip
 
 # Generated dictionaries and data (created during build)
 packages/core/src/dictionary/cmudict.js
+packages/core/src/dictionary/cmudict.ts
 packages/core/src/dictionary/reverse-cmudict.js
+packages/core/src/dictionary/reverse-cmudict.ts
 packages/core/src/data/word-frequencies.js
 packages/core/src/fallback/ipa-dict-supplement.ts
 
