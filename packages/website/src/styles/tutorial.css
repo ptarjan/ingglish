@@ -309,8 +309,8 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
-  color: #fff;
+  background: #333333;
+  color: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -333,7 +333,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: #333;
+  border-top-color: #333333;
   margin-bottom: -10px;
   z-index: 100;
   pointer-events: none;
@@ -408,7 +408,7 @@
 
 .progressive-btn-next {
   background: var(--color-primary);
-  color: #fff;
+  color: #ffffff;
   border-color: var(--color-primary);
 }
 
@@ -515,7 +515,7 @@
 
 .cta-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: #ffffff;
 }
 
 .cta-primary:hover {
