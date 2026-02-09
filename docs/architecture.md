@@ -183,7 +183,7 @@ Map<string, string[]>
   "HH": "h",
   "AH": "u",
   "L": "l",
-  "OW": "o",
+  "OW": "oh",
   ...
 }
 ```

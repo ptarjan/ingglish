@@ -448,7 +448,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | **Ingglish** | **dh** | dhu (the) |
 | English | th (ambiguous!) | the, this, father |
 | Icelandic | ð (eth) | faðir (father) |
-| Welsh | dd | tad (father) |
+| Welsh | dd | dydd (day) |
 
 **Notes:**
 - We use 'dh' to distinguish voiced /ð/ from voiceless /θ/

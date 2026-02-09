@@ -190,7 +190,7 @@ npm run translate -- "Hello world"
 npm run translate -- -r "huloh werld"
 
 # Debug round-trip issues
-npm run debug:roundtrip "beautiful"
+npm run debug:roundtrip -- "beautiful"
 ```
 
 See [Performance Guide](docs/performance.md) for profiling and benchmarking scripts.
@@ -217,11 +217,17 @@ See [Deployment Guide](docs/deployment.md) for detailed instructions on deployin
 
 ## Documentation
 
+### Design
+- [Design Decisions](docs/design-decisions.md) - Why Ingglish works the way it does
+- [Spelling Reform Comparison](docs/spelling-reform-comparison.md) - How Ingglish avoids the mistakes of 250 years of failed reforms
+- [Orthography Comparison](docs/orthography-comparison.md) - How every spelling compares to other languages
+
+### Reference
+- [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA tables
 - [Architecture](docs/architecture.md) - System design, data flow, module structure
 - [Contributing](docs/contributing.md) - Development setup and workflow
 - [Deployment](docs/deployment.md) - Deploy website, extension, CORS proxy
 - [Performance](docs/performance.md) - Profiling and optimization
-- [Phoneme Mapping](docs/phoneme-mapping.md) - ARPAbet to Ingglish/IPA tables
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and fixes
 
 ## License
