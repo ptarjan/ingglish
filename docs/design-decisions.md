@@ -97,11 +97,11 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 | Combination | Spelling | Why |
 |-------------|----------|-----|
+| /æ/ + R | arr | Matches English "carrot", "barrel" |
+| /ɛ/ + R | air | Fixed 204 collisions (air vs her) |
+| /ɪ/ + R | eer | "beer" → "beer", "beard" → "beerd" (avoids "bird") |
 | /ɑ/ + R | ar | "star" → "star" (identical!) |
 | /ɔ/ + R | or | "store" → "stor" |
-| /ɛ/ + R | air | Fixed 204 collisions (air vs her) |
-| /æ/ + R | arr | Matches English "carrot", "barrel" |
-| /ɪ/ + R | eer | "beer" → "beer", "beard" → "beerd" (avoids "bird") |
 | /ɝ/ | er | "bird", "her", "turn" → "berd", "her", "tern" |
 
 ## Dialect Choice

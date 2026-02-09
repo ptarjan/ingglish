@@ -88,11 +88,11 @@ When certain vowels are followed by R, they combine into special r-colored sound
 
 | Phoneme Sequence | Ingglish | IPA | Example Words | Notes |
 |------------------|----------|-----|---------------|-------|
+| AE + R | arr | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
+| EH + R | air | ɛɹ | **air**, c**are**, th**ere** | Bed vowel + R |
+| IH + R | eer | ɪɹ | b**eer**, b**ear**d, f**ear** | NEAR vowel (bit vowel + R) |
 | AA + R | ar | ɑɹ | st**ar**, c**ar**, f**ar** | Father vowel + R |
 | AO + R | or | ɔɹ | st**ore**, m**ore**, f**or** | Thought vowel + R |
-| EH + R | air | ɛɹ | **air**, c**are**, th**ere** | Bed vowel + R |
-| AE + R | arr | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
-| IH + R | eer | ɪɹ | b**eer**, b**ear**d, f**ear** | NEAR vowel (bit vowel + R) |
 | ER | er | ɝ | b**ir**d, h**er**, t**ur**n | Standalone r-colored vowel |
 
 ### Why This Matters

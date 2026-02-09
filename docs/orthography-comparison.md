@@ -270,6 +270,43 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 [R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
 
+#### 'ARR' Sound (/æɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **arr** | arroh, karrut, barrul |
+| English | arr, ar | arrow, carrot, barrel |
+
+**Notes:**
+- The doubled 'rr' distinguishes this from 'ar' (star)
+- Matches English spelling pattern in "arrow", "carrot", "barrel"
+- Without this distinction: "arrow" and "are" would collide
+
+#### 'AIR' Sound (/ɛɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **air** | air, kair, dhair |
+| English | air, are, ear, ere | air, care, bear, there |
+
+**Notes:**
+- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
+- Ingglish uses 'air' consistently—matches the word "air" itself
+- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
+
+#### 'EER' Sound (/ɪɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **eer** | beer, beerd, feer |
+| English | eer, ear, ere, ier | beer, beard, fear, here, pier |
+
+**Notes:**
+- English uses several spellings: "beer", "beard", "fear", "here", "pier"
+- Ingglish uses 'eer' consistently—matches the word "beer" itself
+- Without this rule, "beard" would become "bird" (confusing with the animal)
+- The NEAR vowel is distinct from the KIT vowel (IH): "beer" vs "bit"
+
 #### 'AR' Sound (/ɑɹ/)
 
 | Language | Spelling | Example |
@@ -292,43 +329,6 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - English has multiple spellings: "store", "more", "four", "oar"
 - Ingglish uses 'or' consistently
 - Clearly distinct from 'ar' (star vs stor)
-
-#### 'AIR' Sound (/ɛɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **air** | air, kair, dhair |
-| English | air, are, ear, ere | air, care, bear, there |
-
-**Notes:**
-- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
-- Ingglish uses 'air' consistently—matches the word "air" itself
-- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
-
-#### 'ARR' Sound (/æɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **arr** | arroh, karrut, barrul |
-| English | arr, ar | arrow, carrot, barrel |
-
-**Notes:**
-- The doubled 'rr' distinguishes this from 'ar' (star)
-- Matches English spelling pattern in "arrow", "carrot", "barrel"
-- Without this distinction: "arrow" and "are" would collide
-
-#### 'EER' Sound (/ɪɹ/)
-
-| Language | Spelling | Example |
-|----------|----------|---------|
-| **Ingglish** | **eer** | beer, beerd, feer |
-| English | eer, ear, ere, ier | beer, beard, fear, here, pier |
-
-**Notes:**
-- English uses several spellings: "beer", "beard", "fear", "here", "pier"
-- Ingglish uses 'eer' consistently—matches the word "beer" itself
-- Without this rule, "beard" would become "bird" (confusing with the animal)
-- The NEAR vowel is distinct from the KIT vowel (IH): "beer" vs "bit"
 
 #### 'ER' Sound (/ɝ/)
 

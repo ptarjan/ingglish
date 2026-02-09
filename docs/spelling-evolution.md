@@ -191,6 +191,60 @@ This vowel went through the most iteration.
 
 R-colored vowels were added iteratively to fix collisions and improve readability.
 
+### /æ/+R: aar → arr
+
+**Attempt 1: 'aar'**
+- Rationale: Double the vowel before R
+- Problem: "arrow" → "aaroh" looked strange
+
+**Attempt 2: 'arr' (current)**
+- Rationale:
+  - English already doubles consonants after short vowels (carrot, barrel, arrow)
+  - "arrow" → "arroh" is more recognizable
+  - Upgraded from "Novel" to "Common" rating
+- Verdict: ✅ **Adopted** - matches English convention
+
+**Examples:**
+- arrow → arroh
+- carrot → karrut
+- barrel → barrul
+
+---
+
+### /ɛ/+R → 'air' (added)
+
+**Before:** No special handling
+- "air" → "er" (collision with "her")
+- "there" → "dher" (collision with "the" + "her")
+
+**After:** Look-ahead rule for /ɛ/ followed by R
+- "air" → "air" (identical!)
+- "there" → "dhair"
+- "care" → "kair"
+
+**Impact:** Fixed 204 word collisions between /ɛ/+R and /ɝ/ words
+
+**Verdict:** ✅ Essential - massive collision reduction
+
+---
+
+### /ɪ/+R → 'eer' (added)
+
+**Before:** No special handling
+- "beard" → "bird" (looks like the animal)
+- "beer" → "bir" (unrecognizable)
+- "fear" → "fir" (looks like the tree)
+
+**After:** Look-ahead rule for /ɪ/ followed by R
+- "beard" → "beerd"
+- "beer" → "beer" (identical!)
+- "fear" → "feer"
+- "near" → "neer"
+
+**Verdict:** ✅ Essential - eliminated confusing false cognates
+
+---
+
 ### /ɑ/+R → 'ar' (added)
 
 **Before:** No special handling
@@ -214,60 +268,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 - "more" → "mor"
 
 **Verdict:** ✅ Essential - natural spellings
-
----
-
-### /ɛ/+R → 'air' (added)
-
-**Before:** No special handling
-- "air" → "er" (collision with "her")
-- "there" → "dher" (collision with "the" + "her")
-
-**After:** Look-ahead rule for /ɛ/ followed by R
-- "air" → "air" (identical!)
-- "there" → "dhair"
-- "care" → "kair"
-
-**Impact:** Fixed 204 word collisions between /ɛ/+R and /ɝ/ words
-
-**Verdict:** ✅ Essential - massive collision reduction
-
----
-
-### /æ/+R: aar → arr
-
-**Attempt 1: 'aar'**
-- Rationale: Double the vowel before R
-- Problem: "arrow" → "aaroh" looked strange
-
-**Attempt 2: 'arr' (current)**
-- Rationale:
-  - English already doubles consonants after short vowels (carrot, barrel, arrow)
-  - "arrow" → "arroh" is more recognizable
-  - Upgraded from "Novel" to "Common" rating
-- Verdict: ✅ **Adopted** - matches English convention
-
-**Examples:**
-- arrow → arroh
-- carrot → karrut
-- barrel → barrul
-
----
-
-### /ɪ/+R → 'eer' (added)
-
-**Before:** No special handling
-- "beard" → "bird" (looks like the animal)
-- "beer" → "bir" (unrecognizable)
-- "fear" → "fir" (looks like the tree)
-
-**After:** Look-ahead rule for /ɪ/ followed by R
-- "beard" → "beerd"
-- "beer" → "beer" (identical!)
-- "fear" → "feer"
-- "near" → "neer"
-
-**Verdict:** ✅ Essential - eliminated confusing false cognates
 
 ---
 
