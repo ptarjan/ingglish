@@ -65,7 +65,7 @@
   margin-left: -8px;
   margin-top: -8px;
   border: 2px solid transparent;
-  border-top-color: currentColor;
+  border-top-color: currentcolor;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
