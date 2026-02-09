@@ -140,7 +140,19 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['UW1'])).toBe('uu'); // too
     });
 
-    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→arr)', () => {
+    it('should handle R-colored vowel IH+R→eer (NEAR vowel: beer, beard, fear)', () => {
+      expect(arpabetToIngglish(['B', 'IH1', 'R'])).toBe('beer'); // beer
+      expect(arpabetToIngglish(['B', 'IH1', 'R', 'D'])).toBe('beerd'); // beard
+      expect(arpabetToIngglish(['F', 'IH1', 'R'])).toBe('feer'); // fear
+      expect(arpabetToIngglish(['N', 'IH1', 'R'])).toBe('neer'); // near
+      expect(arpabetToIngglish(['D', 'IH1', 'R'])).toBe('deer'); // deer
+      expect(arpabetToIngglish(['K', 'L', 'IH1', 'R'])).toBe('kleer'); // clear
+      // Standalone IH without R is still 'i'
+      expect(arpabetToIngglish(['IH1'])).toBe('i');
+      expect(arpabetToIngglish(['B', 'IH1', 'T'])).toBe('bit');
+    });
+
+    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→arr, IH+R→eer)', () => {
       // AA+R → ar
       expect(arpabetToIngglish(['S', 'T', 'AA1', 'R'])).toBe('star');
       expect(arpabetToIngglish(['K', 'AA1', 'R'])).toBe('kar');
@@ -171,6 +183,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['AO1', 'R'])).toBe('or');
       expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
       expect(arpabetToIngglish(['AE1', 'R'])).toBe('arr');
+      expect(arpabetToIngglish(['IH1', 'R'])).toBe('eer');
 
       // R at end of word still works
       expect(arpabetToIngglish(['F', 'AA1', 'R'])).toBe('far');

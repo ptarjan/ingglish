@@ -254,6 +254,23 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 ---
 
+### /ɪ/+R → 'eer' (added)
+
+**Before:** No special handling
+- "beard" → "bird" (looks like the animal)
+- "beer" → "bir" (unrecognizable)
+- "fear" → "fir" (looks like the tree)
+
+**After:** Look-ahead rule for /ɪ/ followed by R
+- "beard" → "beerd"
+- "beer" → "beer" (identical!)
+- "fear" → "feer"
+- "near" → "neer"
+
+**Verdict:** ✅ Essential - eliminated confusing false cognates
+
+---
+
 ## Key Lessons Learned
 
 ### 1. Identical Words Are a Big Win (But Not Everything)

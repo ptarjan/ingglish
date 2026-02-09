@@ -10,7 +10,7 @@
 /**
  * ARPAbet vowels to Ingglish spellings.
  *
- * Note: R-colored vowels (AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'arr')
+ * Note: R-colored vowels (AA+R→'ar', AO+R→'or', EH+R→'air', AE+R→'arr', IH+R→'eer')
  * are handled contextually in arpabetToIngglish() via look-ahead, not here.
  */
 export const INGGLISH_VOWEL_MAP: Record<string, string> = {

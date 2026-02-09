@@ -317,6 +317,19 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Matches English spelling pattern in "arrow", "carrot", "barrel"
 - Without this distinction: "arrow" and "are" would collide
 
+#### 'EER' Sound (/ɪɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **eer** | beer, beerd, feer |
+| English | eer, ear, ere, ier | beer, beard, fear, here, pier |
+
+**Notes:**
+- English uses several spellings: "beer", "beard", "fear", "here", "pier"
+- Ingglish uses 'eer' consistently—matches the word "beer" itself
+- Without this rule, "beard" would become "bird" (confusing with the animal)
+- The NEAR vowel is distinct from the KIT vowel (IH): "beer" vs "bit"
+
 #### 'ER' Sound (/ɝ/)
 
 | Language | Spelling | Example |

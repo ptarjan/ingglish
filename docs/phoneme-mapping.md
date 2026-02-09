@@ -92,6 +92,7 @@ When certain vowels are followed by R, they combine into special r-colored sound
 | AO + R | or | ɔɹ | st**ore**, m**ore**, f**or** | Thought vowel + R |
 | EH + R | air | ɛɹ | **air**, c**are**, th**ere** | Bed vowel + R |
 | AE + R | arr | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
+| IH + R | eer | ɪɹ | b**eer**, b**ear**d, f**ear** | NEAR vowel (bit vowel + R) |
 | ER | er | ɝ | b**ir**d, h**er**, t**ur**n | Standalone r-colored vowel |
 
 ### Why This Matters
@@ -101,14 +102,16 @@ Without special handling, the vowel mappings would produce confusing results:
 - "store" (AO + R) would become "stawr" (aw + r)
 - "air" (EH + R) would become "er" (same as "her")
 - "barrow" (AE + R) would become "baroh" (same as "borrow")
+- "beard" (IH + R) would become "bird" (looks like the animal)
 
 This is problematic because spellings would collide. The R-rule ensures:
 - "star" → **star** (intuitive)
 - "store" → **stor** (clearly different from "star")
 - "air" → **air** (distinct from "her" → "her")
 - "barrow" → **barroh** (distinct from "borrow" → "baroh")
+- "beard" → **beerd** (distinct from "bird" → "berd")
 
-The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, and AE vowels use their regular spellings (o, aw, e, a).
+The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, AE, and IH vowels use their regular spellings (o, aw, e, a, i).
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 

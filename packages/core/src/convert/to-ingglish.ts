@@ -26,7 +26,7 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  * Converts an array of ARPAbet phonemes to Ingglish spelling.
  * Uses direct loop + string concat (benchmarked 60% faster than map+join).
  *
- * R-colored vowels: AA+R → 'ar', AO+R → 'or' (more intuitive than 'or'/'awr')
+ * R-colored vowels: AA+R → 'ar', AO+R → 'or', IH+R → 'eer' (more intuitive than 'or'/'awr'/'ir')
  *
  * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
  * @returns Ingglish spelling (e.g., "huloh")
@@ -56,6 +56,9 @@ export function arpabetToIngglish(arpabet: string[]): string {
           continue;
         } else if (base === 'AE') {
           result += 'ar'; // R will add 'r' next → 'arr'
+          continue;
+        } else if (base === 'IH') {
+          result += 'ee'; // R will add 'r' next → 'eer' (NEAR vowel: beer, beard, fear)
           continue;
         }
       }

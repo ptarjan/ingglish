@@ -14,6 +14,7 @@ import { INGGLISH_TO_ARPABET_MAP } from './ingglish-maps';
 const R_COLORED_3CHAR: Record<string, [string, string]> = {
   air: ['EH', 'R'], // air, care, there, where
   arr: ['AE', 'R'], // arrow, barrow, carrot
+  eer: ['IH', 'R'], // beer, beard, fear, near
 };
 
 const R_COLORED_2CHAR: Record<string, [string, string]> = {

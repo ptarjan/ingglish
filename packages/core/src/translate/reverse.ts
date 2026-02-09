@@ -32,7 +32,7 @@ import type { OutputFormat } from '../types';
  * - ER (r-colored schwa): "bird", "her"
  * - EH + R (short e + r): "welfare", "better"
  *
- * Only EH + R is valid here because IH + R -> "ir" and AH + R -> "ur"
+ * Only EH + R is valid here because IH + R -> "eer" and AH + R -> "ur"
  */
 const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   ER: [['EH', 'R']],
