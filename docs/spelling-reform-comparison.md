@@ -4,8 +4,6 @@ English spelling reform has a 250-year history of spectacular failure. From [Ben
 
 This document examines what went wrong with previous reforms and shows how Ingglish's design choices avoid the same mistakes—while being honest about what Ingglish can and can't achieve.
 
----
-
 ## The Graveyard of Spelling Reforms
 
 ### Complete Alphabet Replacements
@@ -59,8 +57,6 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 **What went wrong:** No central authority can mandate spelling changes for English. Unlike French ([Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise)) or Spanish ([Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy)), English has no official body with that power.
 
 **How Ingglish differs:** Not trying to replace English spelling. No political mandate needed. Voluntary adoption only.
-
----
 
 ## The 10 Ways Spelling Reforms Die
 
@@ -152,8 +148,6 @@ People who invested years mastering English spelling resist changes that would d
 
 **Ingglish's response:** Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature—it's a bug that we've rationalized into tradition.
 
----
-
 ## What Actually Worked: Successful Reforms
 
 ### [Turkish alphabet reform](https://en.wikipedia.org/wiki/Turkish_alphabet) (1928) - The "Big Bang"
@@ -191,8 +185,6 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 **Lesson for Ingglish:** Supplementary systems can eventually become primary. Patience and coexistence are viable strategies.
 
----
-
 ## What Ingglish Can Realistically Achieve
 
 ### The Metric Parallel
@@ -219,8 +211,6 @@ Traditional spelling may persist in casual contexts indefinitely—and that's fi
 | CMU dictionary basis | Consistent, well-documented pronunciations |
 | Supplementary positioning | No political battle required |
 | Bi-directional translation | Maintains connection to traditional spelling |
-
----
 
 ## The Unfamiliarity Hurdle
 
@@ -256,8 +246,6 @@ English spelling is the imperial system of writing. It works, but at enormous co
 
 A consistent spelling system benefits everyone, not just learners. The transition has a cost, but standardization pays dividends forever.
 
----
-
 ## Conclusion
 
 English spelling is a legacy system. Like imperial measurements, it works—but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
@@ -267,8 +255,6 @@ Ingglish offers what metric offered: a rational alternative. Not a mandate, but 
 Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can succeed in domains where consistency matters while traditional spelling persists elsewhere.
 
 The question isn't whether Ingglish will replace English spelling overnight. It's whether a better system, freely available, will gradually prove its worth. Metric took decades. Hangul took centuries. Consistency tends to win eventually.
-
----
 
 ## See Also
 

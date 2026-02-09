@@ -19,8 +19,6 @@ This document analyzes cases where translating an English word to Ingglish produ
 - **Part of speech differences** resolve most collisions: white (adj) → wait (verb) are grammatically distinct
 - Context resolves these just like English homophones (their/there/they're)
 
----
-
 ## Collisions (Common Words)
 
 Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English word.
@@ -60,8 +58,6 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 
 **mine → main**: noun/pronoun → adjective. Different parts of speech. "The main entrance" vs "the mine entrance" - grammar disambiguates. Note: "main" translates to "mayn".
 
----
-
 ## Homophone Groups
 
 Ingglish merges homophones (words that sound identical). This isn't a collision problem - it's just how phonetic spelling works.
@@ -75,8 +71,6 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 | au, aux, eau, eaux, o, oh, ohh, ow, owe | oh |
 | c, cie, sci, sea, see, si, sie, sieh | see |
 | ewe, u, uwe, yew, yoo, you, yu, yue | yuu |
-
----
 
 ## Running the Analysis
 

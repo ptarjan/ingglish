@@ -15,8 +15,6 @@ This document records all phoneme spelling changes made during Ingglish developm
 | too, blue | /uː/ | **uu** | oo → uu (swapped) |
 | arrow, carrot | /æɹ/ | **arr** | aar → arr |
 
----
-
 ## Diphthong Evolution
 
 ### /aɪ/ (my, time): ii → ie → ai
@@ -46,8 +44,6 @@ This document records all phoneme spelling changes made during Ingglish developm
 - night → nait
 - I → ai
 
----
-
 ### /aʊ/ (cow, out): ow → ou
 
 **Attempt 1: 'ow'**
@@ -74,8 +70,6 @@ This document records all phoneme spelling changes made during Ingglish developm
 - cow → kou
 - house → hous
 
----
-
 ### /oʊ/ (go, show): o → oh
 
 **Attempt 1: 'o'**
@@ -100,8 +94,6 @@ This document records all phoneme spelling changes made during Ingglish developm
 - show → shoh
 - hello → huloh
 
----
-
 ## Vowel Evolution
 
 ### /ɑ/ (father, hot): ah → o
@@ -124,8 +116,6 @@ This document records all phoneme spelling changes made during Ingglish developm
 - hot → hot (identical!)
 - rock → rok
 - father → fodher
-
----
 
 ### /ɔ/ (thought, law): aw → o → aw
 
@@ -156,8 +146,6 @@ This vowel went through the most iteration.
 - thought → thawt
 - caught → kot
 
----
-
 ### /ʊ/ and /uː/ Swap: oo ↔ uu
 
 **Original:**
@@ -185,8 +173,6 @@ This vowel went through the most iteration.
 - Lesson: **Identical word count is necessary but not sufficient** — a shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
 - Verdict: ❌ Rejected - perceptual ambiguity despite excellent numerical efficiency
 
----
-
 ## R-Colored Vowel Evolution
 
 R-colored vowels were added iteratively to fix collisions and improve readability.
@@ -209,8 +195,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 - carrot → karrut
 - barrel → barrul
 
----
-
 ### /ɛ/+R → 'air' (added)
 
 **Before:** No special handling
@@ -225,8 +209,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 **Impact:** Fixed 204 word collisions between /ɛ/+R and /ɝ/ words
 
 **Verdict:** ✅ Essential - massive collision reduction
-
----
 
 ### /ɪ/+R → 'eer' (added)
 
@@ -243,8 +225,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 **Verdict:** ✅ Essential - eliminated confusing false cognates
 
----
-
 ### /ɑ/+R → 'ar' (added)
 
 **Before:** No special handling
@@ -256,8 +236,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 **Verdict:** ✅ Essential - eliminated major collisions
 
----
-
 ### /ɔ/+R → 'or' (added)
 
 **Before:** No special handling
@@ -268,8 +246,6 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 - "more" → "mor"
 
 **Verdict:** ✅ Essential - natural spellings
-
----
 
 ## Key Lessons Learned
 
@@ -296,8 +272,6 @@ The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change d
 ### 6. Identical Word Count Can Mislead
 A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both increased identical word counts (+137 and +41) but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
 
----
-
 ## Changes Not Made (Considered and Rejected)
 
 ### Using 'au' for /aʊ/ instead of 'ou'
@@ -311,8 +285,6 @@ A spelling that matches more English words is harmful if English readers pronoun
 ### Removing R-colored vowel special handling
 - Would simplify the system
 - Rejected because collisions are unacceptable (204 /ɛ/+R vs /ɝ/ collisions alone)
-
----
 
 ## Version History
 
