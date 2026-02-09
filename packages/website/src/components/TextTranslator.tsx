@@ -5,7 +5,6 @@ import {
   reverseTranslate,
   reverseTranslateSyncWithMapping,
   type TranslatedToken,
-  type ReverseTranslatedToken,
 } from '@ingglish/core';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
@@ -61,7 +60,7 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
 }
 
 interface MappedWordDisplayProps {
-  tokens: (TranslatedToken | ReverseTranslatedToken)[];
+  tokens: TranslatedToken[];
   hoveredWordIndex: number | null;
   onHoverWord: (index: number | null) => void;
   className?: string;
@@ -152,7 +151,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<string | null>(null);
-  const [reverseTokens, setReverseTokens] = useState<ReverseTranslatedToken[] | null>(null);
+  const [reverseTokens, setReverseTokens] = useState<TranslatedToken[] | null>(null);
   useEffect(() => {
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);

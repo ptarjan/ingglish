@@ -162,12 +162,7 @@ setTranslateWordFn(translateWord);
 setInitialismTranslateWordFn(translateWord);
 
 /**
- * Translates text containing multiple words to the specified format.
- * Preserves punctuation, whitespace, URLs, emails, and non-word characters.
- *
- * @param text - The English text to translate
- * @param format - The output format ('ingglish' or 'ipa')
- * @returns The text with all words translated
+ * Synchronous version of {@link translate}. Dictionary must already be loaded.
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
   // Normalize curly apostrophes to straight ones
@@ -210,14 +205,18 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
 }
 
 /**
- * Represents a translated token with original and translated text.
+ * A single token from a translated text, preserving the mapping between
+ * original and translated forms. Used by both forward and reverse translation.
  */
 export interface TranslatedToken {
+  /** The original text of this token (English for forward, Ingglish for reverse). */
   original: string;
+  /** The translated text (Ingglish for forward, English for reverse). */
   translated: string;
+  /** Whether this token is a word (true) or punctuation/whitespace (false). */
   isWord: boolean;
-  /** Whether the word was found in the dictionary (false = fallback/unknown). */
-  matched?: boolean;
+  /** Whether the word was found in the dictionary (false = heuristic fallback). */
+  matched: boolean;
 }
 
 /**
@@ -245,9 +244,9 @@ function isWordKnown(word: string): boolean {
 }
 
 /**
- * Translates text and returns token-by-token mappings.
- * Used internally for DOM translation with tooltips.
- * URLs and emails are preserved unchanged.
+ * Like {@link translate}, but returns token-by-token mappings instead of a string.
+ * Each token includes the original text, translation, and whether it matched
+ * the dictionary. Dictionary must already be loaded.
  */
 export function translateSyncWithMapping(
   text: string,
@@ -275,6 +274,7 @@ export function translateSyncWithMapping(
               original: parts[0],
               translated: parts[0],
               isWord: false,
+              matched: true,
             });
           }
           // Add the preserved URL/email
@@ -282,6 +282,7 @@ export function translateSyncWithMapping(
             original: original,
             translated: original,
             isWord: false,
+            matched: true,
           });
           // Add trailing non-placeholder part if present
           if (parts[1] && parts[1].length > 0) {
@@ -289,6 +290,7 @@ export function translateSyncWithMapping(
               original: parts[1],
               translated: parts[1],
               isWord: false,
+              matched: true,
             });
           }
           foundPlaceholder = true;
@@ -308,6 +310,7 @@ export function translateSyncWithMapping(
             original: token,
             translated: token,
             isWord: false,
+            matched: true,
           });
         }
       }

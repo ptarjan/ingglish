@@ -21,6 +21,7 @@ import { ingglishToArpabet } from '../convert/from-ingglish';
 import { ipaToArpabet } from '../convert/from-ipa';
 import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
 import type { OutputFormat } from '../types';
+import type { TranslatedToken } from './forward';
 
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
@@ -207,12 +208,7 @@ function reverseTranslateIPATextInternal(text: string): string {
 }
 
 /**
- * Translates text back to English from the specified format.
- * For homophones, uses the most common word.
- *
- * @param text - Text in Ingglish or IPA format
- * @param format - The input format ('ingglish' or 'ipa')
- * @returns English text
+ * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
  */
 export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
   if (format === 'ipa') {
@@ -226,29 +222,19 @@ export function reverseTranslateSync(text: string, format: OutputFormat = 'inggl
 // ============================================================================
 
 /**
- * Represents a reverse-translated token with match status.
- */
-export interface ReverseTranslatedToken {
-  original: string;
-  translated: string;
-  isWord: boolean;
-  matched: boolean;
-}
-
-/**
- * Reverse translates Ingglish text and returns token-by-token mappings
- * with match status. Used for visual indicators on unmatched words.
- * URLs and emails are preserved unchanged.
+ * Like {@link reverseTranslate}, but returns token-by-token mappings instead of a string.
+ * Each token includes the original text, translation, and whether it matched
+ * the dictionary. Dictionary must already be loaded.
  */
 export function reverseTranslateSyncWithMapping(
   text: string,
   _format: OutputFormat = 'ingglish'
-): ReverseTranslatedToken[] {
+): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
 
   const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
-  const result: ReverseTranslatedToken[] = [];
+  const result: TranslatedToken[] = [];
 
   for (const token of tokens) {
     if (token.length === 0) {
