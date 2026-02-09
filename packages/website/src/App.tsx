@@ -124,6 +124,7 @@ function App() {
       window.location.hash = activeTab;
     }
     // For docs tab, let the Docs component manage the hash
+    window.scrollTo(0, 0);
   }, [activeTab]);
 
   // Handle browser back/forward
