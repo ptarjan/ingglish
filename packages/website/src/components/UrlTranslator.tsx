@@ -1,6 +1,7 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { useFormat } from '../contexts/FormatContext';
+import { useClipboard } from '../hooks/useClipboard';
 
 /**
  * Fullscreen icon (expand arrows)
@@ -69,7 +70,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
     useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
+  const [copiedShare, copyShare] = useClipboard();
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Listen for Escape key to exit fullscreen
@@ -136,12 +137,9 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   const handleShare = useCallback(() => {
     if (onShare !== undefined && url.trim().length > 0) {
       onShare(url);
-      setCopiedShare(true);
-      setTimeout(() => {
-        setCopiedShare(false);
-      }, 1500);
+      copyShare(url);
     }
-  }, [onShare, url]);
+  }, [onShare, url, copyShare]);
 
   return (
     <div className="url-translator">

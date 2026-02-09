@@ -22,6 +22,7 @@ import { ipaToArpabet } from '../convert/from-ipa';
 import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
 import type { OutputFormat } from '../types';
 import type { TranslatedToken } from './forward';
+import { expandPlaceholder } from './preserved';
 
 // ============================================================================
 // ARPAbet Alternatives (handling ambiguous spellings)
@@ -242,22 +243,9 @@ export function reverseTranslateSyncWithMapping(
     }
 
     // Check for preserved patterns (URLs, emails)
-    let foundPlaceholder = false;
-    for (const [placeholder, original] of preserved) {
-      if (token.includes(placeholder)) {
-        const parts = token.split(placeholder);
-        if (parts[0].length > 0) {
-          result.push({ original: parts[0], translated: parts[0], isWord: false, matched: true });
-        }
-        result.push({ original, translated: original, isWord: false, matched: true });
-        if (parts[1] && parts[1].length > 0) {
-          result.push({ original: parts[1], translated: parts[1], isWord: false, matched: true });
-        }
-        foundPlaceholder = true;
-        break;
-      }
-    }
-    if (foundPlaceholder) {
+    const expanded = expandPlaceholder(token, preserved);
+    if (expanded) {
+      result.push(...expanded);
       continue;
     }
 

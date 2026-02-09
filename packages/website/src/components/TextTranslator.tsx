@@ -8,6 +8,7 @@ import {
 } from '@ingglish/core';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
+import { useClipboard } from '../hooks/useClipboard';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
@@ -125,9 +126,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
   const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
-  const [copiedEnglish, setCopiedEnglish] = useState(false);
-  const [copiedIngglish, setCopiedIngglish] = useState(false);
-  const [copiedShare, setCopiedShare] = useState(false);
+  const [copiedEnglish, copyEnglish] = useClipboard();
+  const [copiedIngglish, copyIngglish] = useClipboard();
+  const [copiedShare, copyShare] = useClipboard();
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -215,35 +216,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     setLastEdited('english');
   }, []);
 
-  const handleCopyEnglish = useCallback(async () => {
-    const text = displayEnglish;
-    if (text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopiedEnglish(true);
-        setTimeout(() => {
-          setCopiedEnglish(false);
-        }, 1500);
-      } catch {
-        // Clipboard can fail in non-secure contexts or if permission denied - expected
-      }
+  const handleCopyEnglish = useCallback(() => {
+    if (displayEnglish) {
+      copyEnglish(displayEnglish);
     }
-  }, [displayEnglish]);
+  }, [displayEnglish, copyEnglish]);
 
-  const handleCopyIngglish = useCallback(async () => {
-    const text = displayIngglish;
-    if (text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopiedIngglish(true);
-        setTimeout(() => {
-          setCopiedIngglish(false);
-        }, 1500);
-      } catch {
-        // Clipboard can fail in non-secure contexts or if permission denied - expected
-      }
+  const handleCopyIngglish = useCallback(() => {
+    if (displayIngglish) {
+      copyIngglish(displayIngglish);
     }
-  }, [displayIngglish]);
+  }, [displayIngglish, copyIngglish]);
 
   const handleClear = useCallback(() => {
     setEnglishText('');
@@ -253,12 +236,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
       onShare(displayEnglish);
-      setCopiedShare(true);
-      setTimeout(() => {
-        setCopiedShare(false);
-      }, 1500);
+      copyShare(displayEnglish);
     }
-  }, [onShare, displayEnglish]);
+  }, [onShare, displayEnglish, copyShare]);
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 

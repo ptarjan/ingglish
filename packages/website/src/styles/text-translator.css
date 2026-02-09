@@ -149,7 +149,7 @@
 }
 
 .word-token.unmatched {
-  text-decoration: underline wavy red;
+  text-decoration: underline wavy var(--color-error);
   text-underline-offset: 0.2em;
 }
 

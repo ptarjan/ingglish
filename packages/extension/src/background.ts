@@ -285,39 +285,9 @@ chrome.runtime.onMessage.addListener(
           return;
         }
 
-        const isEnabled = translatedTabs.has(tabId);
-
-        if (isEnabled) {
-          // Disable translation - restore original text
-          removeTranslatedTab(tabId);
-          updateIcon(tabId, false);
-
-          // Send RESTORE message to content script
-          chrome.tabs.sendMessage(tabId, { type: 'RESTORE' }, () => {
-            // Ignore errors (content script may not be present)
-            if (chrome.runtime.lastError) {
-              // eslint-disable-next-line no-console
-              console.log('Restore message failed, page may need refresh');
-            }
-          });
-
-          sendResponse({ success: true, enabled: false });
-        } else {
-          // Enable translation - inject script and translate
-          addTranslatedTab(tabId);
-          updateIcon(tabId, true);
-
-          // Inject the translator script (async, don't block response)
-          // Skip permission check - popup already requested permission + has activeTab
-          void injectTranslator(tabId, false).then((success) => {
-            if (!success) {
-              removeTranslatedTab(tabId);
-              updateIcon(tabId, false);
-            }
-          });
-
-          sendResponse({ success: true, enabled: true });
-        }
+        const wasEnabled = translatedTabs.has(tabId);
+        toggleTab(tabId);
+        sendResponse({ success: true, enabled: !wasEnabled });
       });
       return true; // Keep channel open for async response
     }

@@ -14,6 +14,7 @@ import {
 } from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
+import { expandPlaceholder } from './preserved';
 import type { OutputFormat } from '../types';
 
 // Import translateUnknown and translateAsAcronym for fallback handling
@@ -263,41 +264,10 @@ export function translateSyncWithMapping(
   for (const token of tokens) {
     if (token.length > 0) {
       // Check if this token contains a placeholder for a preserved pattern
-      let foundPlaceholder = false;
-      for (const [placeholder, original] of preserved) {
-        if (token.includes(placeholder)) {
-          // Token contains a placeholder - split it and handle parts
-          const parts = token.split(placeholder);
-          // Add leading non-placeholder part if present
-          if (parts[0].length > 0) {
-            result.push({
-              original: parts[0],
-              translated: parts[0],
-              isWord: false,
-              matched: true,
-            });
-          }
-          // Add the preserved URL/email
-          result.push({
-            original: original,
-            translated: original,
-            isWord: false,
-            matched: true,
-          });
-          // Add trailing non-placeholder part if present
-          if (parts[1] && parts[1].length > 0) {
-            result.push({
-              original: parts[1],
-              translated: parts[1],
-              isWord: false,
-              matched: true,
-            });
-          }
-          foundPlaceholder = true;
-          break;
-        }
-      }
-      if (!foundPlaceholder) {
+      const expanded = expandPlaceholder(token, preserved);
+      if (expanded) {
+        result.push(...expanded);
+      } else {
         if (WORD_TEST_REGEX.test(token)) {
           result.push({
             original: token,

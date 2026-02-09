@@ -201,9 +201,8 @@ export default {
           'X-Proxied-URL': parsedUrl.toString(),
         }),
       });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      return new Response(`Proxy error: ${message}`, {
+    } catch {
+      return new Response('Proxy error: failed to fetch upstream resource', {
         status: 502,
         headers: corsHeaders(origin),
       });
