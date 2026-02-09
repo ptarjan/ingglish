@@ -106,6 +106,19 @@ a:hover {
   animation: tooltip-fade-in 0.15s ease-out forwards;
 }
 
+[data-orig].tooltip-below:hover::after {
+  bottom: auto;
+  top: calc(100% + 5px);
+}
+
+[data-orig].tooltip-below:hover::before {
+  bottom: auto;
+  top: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--color-tooltip-bg);
+  margin-bottom: 0;
+}
+
 @keyframes tooltip-fade-in {
   to {
     opacity: 1;

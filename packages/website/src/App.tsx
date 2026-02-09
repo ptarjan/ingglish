@@ -199,6 +199,22 @@ function App() {
       });
   }, []);
 
+  // Flip tooltips below the word when near the top of the viewport
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = (e.target as Element).closest?.('[data-orig]');
+      if (!target) {
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      target.classList.toggle('tooltip-below', rect.top < 35);
+    };
+    document.addEventListener('mouseover', handler, true);
+    return () => {
+      document.removeEventListener('mouseover', handler, true);
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <div className="loading-screen">

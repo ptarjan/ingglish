@@ -12,6 +12,7 @@ import {
   shouldSkipElement,
   collectTextNodes,
   injectTooltipStyles,
+  injectTooltipFlipBehavior,
 } from '../utils';
 import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import { createTooltipFragment } from './tooltip-fragment';
@@ -164,9 +165,10 @@ export function translateDOMSync(
   // Get the document (works for both main document and iframes)
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
 
-  // Inject tooltip CSS if showing tooltips
+  // Inject tooltip CSS and flip behavior if showing tooltips
   if (showTooltips && targetDoc !== null) {
     injectTooltipStyles(targetDoc);
+    injectTooltipFlipBehavior(targetDoc);
   }
 
   // Single walk to collect all text nodes

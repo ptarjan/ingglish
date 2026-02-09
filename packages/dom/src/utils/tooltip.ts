@@ -5,6 +5,8 @@
 
 import { WORD_SPAN_CLASS, TOOLTIP_STYLES_ID, ATTR_ORIGINAL_WORD } from '../constants';
 
+const TOOLTIP_FLIP_ID = 'ingglish-tooltip-flip';
+
 export const TOOLTIP_STYLES = `
 .${WORD_SPAN_CLASS} {
   position: relative;
@@ -48,6 +50,19 @@ export const TOOLTIP_STYLES = `
   animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
+.${WORD_SPAN_CLASS}.ingglish-tooltip-below:hover::after {
+  bottom: auto !important;
+  top: calc(100% + 5px) !important;
+}
+
+.${WORD_SPAN_CLASS}.ingglish-tooltip-below:hover::before {
+  bottom: auto !important;
+  top: 100% !important;
+  border-top-color: transparent !important;
+  border-bottom-color: #333 !important;
+  margin-bottom: 0 !important;
+}
+
 @keyframes ingglish-tooltip-fade-in {
   to { opacity: 1; }
 }
@@ -64,4 +79,32 @@ export function injectTooltipStyles(targetDoc: Document = document): void {
   style.id = TOOLTIP_STYLES_ID;
   style.textContent = TOOLTIP_STYLES;
   targetDoc.head?.appendChild(style);
+}
+
+/**
+ * Injects a mouseover listener that flips tooltips below the word
+ * when the word is near the top of the viewport (where above-tooltips
+ * would be clipped, e.g. inside iframes).
+ */
+export function injectTooltipFlipBehavior(targetDoc: Document = document): void {
+  if (targetDoc.getElementById(TOOLTIP_FLIP_ID)) {
+    return;
+  }
+  const marker = targetDoc.createElement('meta');
+  marker.id = TOOLTIP_FLIP_ID;
+  targetDoc.head?.appendChild(marker);
+
+  targetDoc.addEventListener(
+    'mouseover',
+    (e) => {
+      const target = (e.target as Element).closest?.(`.${WORD_SPAN_CLASS}`);
+      if (!target) {
+        return;
+      }
+
+      const rect = target.getBoundingClientRect();
+      target.classList.toggle('ingglish-tooltip-below', rect.top < 35);
+    },
+    true
+  );
 }

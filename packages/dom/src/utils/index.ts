@@ -23,4 +23,4 @@ export { collectTextNodes } from './text-nodes';
 export { extractWords, extractWordsFromNodes } from './extract';
 
 // Tooltip styles
-export { TOOLTIP_STYLES, injectTooltipStyles } from './tooltip';
+export { TOOLTIP_STYLES, injectTooltipStyles, injectTooltipFlipBehavior } from './tooltip';
