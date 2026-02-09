@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { translateSync } from './translate/forward';
 
-const TUTORIAL_PATH = join(process.cwd(), '../website/src/components/Tutorial.tsx');
+const TUTORIAL_PATH = join(process.cwd(), '../website/src/components/tutorial-data.ts');
 
 interface Example {
   english: string;
@@ -42,12 +42,12 @@ function extractExamples(content: string, filename: string): Example[] {
       continue;
     }
 
-    // Pattern 2: { e: 'word', i: 'translation', s: N } (twain words)
-    const twainMatch = /\{\s*e:\s*'([^']+)',\s*i:\s*'([^']+)',\s*s:\s*\d+/.exec(line);
-    if (twainMatch) {
-      const rawEnglish = twainMatch[1];
+    // Pattern 2: { e: 'word', i: 'translation', s: N } (poem words)
+    const poemMatch = /\{\s*e:\s*'([^']+)',\s*i:\s*'([^']+)',\s*s:\s*\d+/.exec(line);
+    if (poemMatch) {
+      const rawEnglish = poemMatch[1];
       const english = stripPunctuation(rawEnglish);
-      const ingglish = stripPunctuation(twainMatch[2]);
+      const ingglish = stripPunctuation(poemMatch[2]);
       // Skip line break markers and quoted meta-references like "ph", "f"
       if (rawEnglish === '\\n') {
         continue;

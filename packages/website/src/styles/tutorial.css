@@ -423,9 +423,17 @@
   text-align: center;
 }
 
-/* --- Section 5: Twain paragraph --- */
+/* --- Section 5: Poem paragraph --- */
 
-.twain-paragraph {
+.poem-attribution {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.poem-paragraph {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
@@ -433,23 +441,23 @@
   margin-bottom: 1.5rem;
 }
 
-.twain-text {
+.poem-text {
   font-size: 1.2rem;
   line-height: 2;
 }
 
-.twain-word {
+.poem-word {
   position: relative;
   display: inline-block;
   transition: color 0.5s ease;
 }
 
-.twain-word.transformed {
+.poem-word.transformed {
   color: var(--color-primary);
   font-weight: 600;
 }
 
-.twain-word.highlighted {
+.poem-word.highlighted {
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
   border-radius: 3px;
   padding: 0 2px;
@@ -475,7 +483,41 @@
   font-style: italic;
 }
 
-/* --- Section 6: CTA --- */
+/* --- Section 7: Try it --- */
+
+.try-it-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.try-it-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.try-it-input:focus {
+  border-color: var(--color-primary);
+}
+
+.try-it-output {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-top: 1rem;
+  text-align: center;
+  min-height: 1.5rem;
+}
+
+/* --- Section 8: CTA --- */
 
 .tutorial-cta {
   text-align: center;
