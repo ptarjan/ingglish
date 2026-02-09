@@ -6,12 +6,7 @@ import {
   silentLetterExamples,
   eeSoundExamples,
   aySoundExamples,
-  phExamples,
-  ckExamples,
-  ightExamples,
-  tionExamples,
-  voicelessTh,
-  voicedTh,
+  simplifyExamples,
   paragraphWords,
   stepCaptions,
   poemWords,
@@ -474,64 +469,6 @@ function SimpleRuleGroup({
   );
 }
 
-function Section3c_ThDh({
-  previousDone,
-  onComplete,
-}: {
-  previousDone: boolean;
-  onComplete: () => void;
-}) {
-  const { ref, visible } = useScrollReveal<HTMLDivElement>();
-  const active = useStickyActive(visible, previousDone);
-  const total = voicelessTh.length + voicedTh.length;
-  const revealedCount = useStaggeredReveal(total, active, 1200);
-  useStaggerComplete(revealedCount, total, onComplete);
-
-  return (
-    <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
-      <h3 className="tutorial-subheading">Two sounds hiding in &ldquo;th&rdquo;</h3>
-      <p className="tutorial-caption">
-        Say &ldquo;thin,&rdquo; then &ldquo;the.&rdquo; Feel your throat vibrate? Different sounds
-        &mdash; different spellings.
-      </p>
-      <div className="thdh-comparison">
-        <div className="thdh-column">
-          <h4>Voiceless (th)</h4>
-          <div className="sound-examples">
-            {voicelessTh.map((ex, i) => (
-              <AnimatedSoundWord
-                key={ex.english}
-                english={ex.english}
-                ingglish={ex.ingglish}
-                highlightEn={ex.highlightEn}
-                highlightIng={ex.highlightIng}
-                animate={i < revealedCount}
-              />
-            ))}
-          </div>
-        </div>
-        <div
-          className={`thdh-column thdh-column-fade ${revealedCount > voicelessTh.length ? 'revealed' : ''}`}
-        >
-          <h4>Voiced (dh)</h4>
-          <div className="sound-examples">
-            {voicedTh.map((ex, i) => (
-              <AnimatedSoundWord
-                key={ex.english}
-                english={ex.english}
-                ingglish={ex.ingglish}
-                highlightEn={ex.highlightEn}
-                highlightIng={ex.highlightIng}
-                animate={revealedCount > voicelessTh.length + i}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Section3_Transform() {
   // Track which substeps have finished their animations.
   // Each substep only starts when the previous one completes.
@@ -556,45 +493,12 @@ function Section3_Transform() {
         }}
       />
       <SimpleRuleGroup
-        title={'"ph" is just "f"'}
-        caption="Why use two letters when one already makes the sound?"
-        examples={phExamples}
+        title="Simplify the strange ones"
+        caption="Complex letter combos become what they sound like."
+        examples={simplifyExamples}
         previousDone={completedStep >= 1}
         onComplete={() => {
           markComplete(2);
-        }}
-      />
-      <SimpleRuleGroup
-        title="C can't make up its mind"
-        caption={'Sometimes it\'s "k," sometimes it\'s "s." Ingglish picks one and sticks with it.'}
-        examples={ckExamples}
-        previousDone={completedStep >= 2}
-        onComplete={() => {
-          markComplete(3);
-        }}
-      />
-      <SimpleRuleGroup
-        title="The silent &ldquo;ght&rdquo; club"
-        caption="The gh is silent, the i is really &ldquo;ai&rdquo; — so just write what you hear."
-        examples={ightExamples}
-        previousDone={completedStep >= 3}
-        onComplete={() => {
-          markComplete(4);
-        }}
-      />
-      <SimpleRuleGroup
-        title={'"Shun" hiding in disguise'}
-        caption={'The "sh" sound hides behind -tion, -cean, -sure. In Ingglish, it\'s always "sh."'}
-        examples={tionExamples}
-        previousDone={completedStep >= 4}
-        onComplete={() => {
-          markComplete(5);
-        }}
-      />
-      <Section3c_ThDh
-        previousDone={completedStep >= 5}
-        onComplete={() => {
-          markComplete(6);
         }}
       />
     </section>
@@ -815,6 +719,9 @@ function Section6_ReadingTest() {
         </p>
         <p className="reading-attribution">&mdash; {readingTestAttribution}</p>
       </div>
+      <p className="tutorial-punchline">
+        You just read Shakespeare &mdash; without learning a single rule.
+      </p>
     </section>
   );
 }
@@ -880,10 +787,10 @@ export default function Tutorial({ onNavigate }: TutorialProps) {
     <div className="tutorial">
       <Section1_Ough />
       <Section2_WhatIf />
+      <Section6_ReadingTest />
       <Section3_Transform />
       <Section4_Progressive />
       <Section5_Poem />
-      <Section6_ReadingTest />
       <Section7_TryIt />
       <Section8_CTA onNavigate={onNavigate} />
     </div>

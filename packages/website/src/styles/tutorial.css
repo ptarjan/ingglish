@@ -281,42 +281,6 @@
   opacity: 1;
 }
 
-/* --- Section 3c: th/dh comparison --- */
-
-.thdh-comparison {
-  display: flex;
-  gap: 3rem;
-  margin-bottom: 1.5rem;
-}
-
-.thdh-column {
-  flex: 1;
-}
-
-.thdh-column-fade {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
-}
-
-.thdh-column-fade.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.thdh-column h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--color-text-muted);
-}
-
-.thdh-column .sound-examples {
-  flex-direction: column;
-}
-
 /* --- Section 4: Progressive paragraph --- */
 
 .progressive-paragraph {
@@ -601,7 +565,6 @@
   .sound-morph-before,
   .sound-morph-after,
   .sound-description,
-  .thdh-column-fade,
   .progressive-word {
     opacity: 1 !important;
     transform: none !important;
@@ -642,11 +605,6 @@
 
   .whatif-punchline {
     font-size: 1.5rem;
-  }
-
-  .thdh-comparison {
-    flex-direction: column;
-    gap: 1.5rem;
   }
 
   .progressive-paragraph {

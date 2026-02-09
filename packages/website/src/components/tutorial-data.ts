@@ -39,44 +39,12 @@ export const aySoundExamples: ExampleWord[] = [
   { english: 'great', ingglish: 'grayt', highlightEn: 'ea', highlightIng: 'ay' },
 ];
 
-export const phExamples: ExampleWord[] = [
+export const simplifyExamples: ExampleWord[] = [
   { english: 'phone', ingglish: 'fohn', highlightEn: 'ph', highlightIng: 'f' },
-  { english: 'photo', ingglish: 'fohtoh', highlightEn: 'ph', highlightIng: 'f' },
-  { english: 'graph', ingglish: 'graf', highlightEn: 'ph', highlightIng: 'f' },
-  { english: 'elephant', ingglish: 'elufunt', highlightEn: 'ph', highlightIng: 'f' },
-];
-
-export const ckExamples: ExampleWord[] = [
   { english: 'cat', ingglish: 'kat', highlightEn: 'c', highlightIng: 'k' },
   { english: 'city', ingglish: 'sitee', highlightEn: 'c', highlightIng: 's' },
-  { english: 'queen', ingglish: 'kween', highlightEn: 'qu', highlightIng: 'kw' },
-  { english: 'back', ingglish: 'bak', highlightEn: 'ck', highlightIng: 'k' },
-];
-
-export const ightExamples: ExampleWord[] = [
   { english: 'night', ingglish: 'nait', highlightEn: 'igh', highlightIng: 'ai' },
-  { english: 'light', ingglish: 'lait', highlightEn: 'igh', highlightIng: 'ai' },
-  { english: 'knight', ingglish: 'nait', highlightEn: 'igh', highlightIng: 'ai' },
-  { english: 'weight', ingglish: 'wayt', highlightEn: 'eigh', highlightIng: 'ay' },
-];
-
-export const tionExamples: ExampleWord[] = [
   { english: 'nation', ingglish: 'nayshun', highlightEn: 'tion', highlightIng: 'shun' },
-  { english: 'station', ingglish: 'stayshun', highlightEn: 'tion', highlightIng: 'shun' },
-  { english: 'ocean', ingglish: 'ohshun', highlightEn: 'cean', highlightIng: 'shun' },
-  { english: 'sure', ingglish: 'shoor', highlightEn: 's', highlightIng: 'sh' },
-];
-
-export const voicelessTh: ExampleWord[] = [
-  { english: 'think', ingglish: 'thingk', highlightEn: 'th', highlightIng: 'th' },
-  { english: 'thin', ingglish: 'thin', highlightEn: 'th', highlightIng: 'th' },
-  { english: 'thought', ingglish: 'thawt', highlightEn: 'th', highlightIng: 'th' },
-];
-
-export const voicedTh: ExampleWord[] = [
-  { english: 'the', ingglish: 'dhu', highlightEn: 'th', highlightIng: 'dh' },
-  { english: 'this', ingglish: 'dhis', highlightEn: 'th', highlightIng: 'dh' },
-  { english: 'that', ingglish: 'dhat', highlightEn: 'th', highlightIng: 'dh' },
 ];
 
 // Progressive paragraph data
