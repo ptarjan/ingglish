@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { translateSync } from '@ingglish/core';
+import { translateSyncWithMapping } from '@ingglish/core';
 import {
   oughExamples,
   silentLetterExamples,
@@ -581,7 +581,7 @@ function Section6_ReadingTest() {
 
 function Section7_TryIt() {
   const [input, setInput] = useState('');
-  const output = input ? translateSync(input) : '';
+  const tokens = input ? translateSyncWithMapping(input) : [];
 
   return (
     <section className="tutorial-section">
@@ -596,7 +596,25 @@ function Section7_TryIt() {
             setInput(e.target.value);
           }}
         />
-        {output && <p className="try-it-output">{output}</p>}
+        {tokens.length > 0 && (
+          <p className="try-it-output">
+            {tokens.map((token, i) => {
+              if (!token.isWord) {
+                return <span key={i}>{token.translated}</span>;
+              }
+              const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
+              return (
+                <span
+                  key={i}
+                  className={changed ? 'transformed' : undefined}
+                  data-orig={changed ? token.original : undefined}
+                >
+                  {token.translated}
+                </span>
+              );
+            })}
+          </p>
+        )}
       </div>
     </section>
   );
