@@ -6,10 +6,11 @@ import SpellingGuide from './components/SpellingGuide';
 import Extension from './components/Extension';
 import Docs from './components/Docs';
 import Tutorial from './components/Tutorial';
+import Poems from './components/Poems';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useFormat } from './contexts/FormatContext';
 
-type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'docs';
+type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
 
 const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
@@ -33,7 +34,8 @@ function getTabFromHash(): Tab {
     hash === 'text' ||
     hash === 'url' ||
     hash === 'guide' ||
-    hash === 'extension'
+    hash === 'extension' ||
+    hash === 'poems'
   ) {
     return hash;
   }
@@ -265,6 +267,9 @@ function App() {
           <a className={`tab ${activeTab === 'guide' ? 'active' : ''}`} href="#guide">
             Spelling Guide
           </a>
+          <a className={`tab ${activeTab === 'poems' ? 'active' : ''}`} href="#poems">
+            Poems
+          </a>
           <a className={`tab ${activeTab === 'docs' ? 'active' : ''}`} href="#docs">
             Docs
           </a>
@@ -288,6 +293,7 @@ function App() {
           </ErrorBoundary>
         )}
         {activeTab === 'guide' && <SpellingGuide />}
+        {activeTab === 'poems' && <Poems />}
         {activeTab === 'extension' && <Extension />}
         {activeTab === 'docs' && (
           <ErrorBoundary>

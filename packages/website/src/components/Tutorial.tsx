@@ -627,6 +627,9 @@ function Section8_CTA({ onNavigate }: { onNavigate: (tab: string) => void }) {
         <a href="#guide" className="cta-secondary" onClick={handleNavigate('guide')}>
           Spelling Guide
         </a>
+        <a href="#poems" className="cta-secondary" onClick={handleNavigate('poems')}>
+          Poems
+        </a>
       </div>
     </section>
   );
