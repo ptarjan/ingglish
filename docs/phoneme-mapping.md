@@ -73,6 +73,11 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | N | n | n | **n**o, pe**n** |
 | NG | ng | ŋ | si**ng**, thi**ng** |
 
+### Glottal
+| ARPAbet | Ingglish | IPA | Example Words |
+|---------|----------|-----|---------------|
+| HH | h | h | **h**at, a**h**ead |
+
 ### Liquids & Glides
 | ARPAbet | Ingglish | IPA | Example Words |
 |---------|----------|-----|---------------|
@@ -80,7 +85,6 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | R | r | ɹ | **r**un, ca**r** |
 | W | w | w | **w**et, a**w**ay |
 | Y | y | j | **y**es, **y**ou |
-| HH | h | h | **h**at, a**h**ead |
 
 ## R-Colored Vowels
 

@@ -184,7 +184,7 @@ See [Contributing Guide](docs/contributing.md) for detailed development workflow
 cd packages/core
 
 # Translate text (shows word-by-word breakdown)
-npm run translate "Hello world"
+npm run translate -- "Hello world"
 
 # Reverse translate
 npm run translate -- -r "huloh werld"

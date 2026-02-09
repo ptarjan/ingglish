@@ -6,11 +6,11 @@ This document analyzes whether the current Ingglish phoneme mappings maximize "i
 
 **Question:** Does the current mapping maximize identical words?
 
-**Answer:** No, but with good reason.
+**Answer:** No, but the current mappings are well-optimized for the right reasons.
 
 The current mapping produces **6,930 identical words** (5.13% of the CMU dictionary). Alternative mappings could theoretically produce up to **15,489 identical words** (11.47%), but these create unacceptable collisions where different words become indistinguishable.
 
-However, we found **5 safe improvements** that add **+564 identical words** without creating new collisions.
+We exhaustively investigated 5 collision-free alternatives that could add **+564 identical words**, but all were rejected because they reintroduce pronunciation ambiguity for English readers -- see [Recommendations](#recommendations).
 
 ## Background
 
@@ -43,13 +43,11 @@ We tested mappings that maximize identical words:
 
 These changes create **collisions** — different words that get the same spelling. This destroys meaning and makes text ambiguous.
 
-## Safe Improvements Found
+## Collision-Free Alternatives Investigated
 
-We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that:
-1. Increase identical word count
-2. Do NOT create new collisions
+We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that increase identical word count without creating new collisions. Five candidates emerged -- all were ultimately rejected (see [Recommendations](#recommendations)), but the analysis is instructive.
 
-### Results
+### Candidates
 
 | Phoneme | Current | Proposed | Gained | Lost | Net Gain |
 |---------|---------|----------|--------|------|----------|

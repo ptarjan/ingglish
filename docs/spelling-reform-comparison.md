@@ -225,26 +225,19 @@ But "strange" isn't "wrong." Kilometers looked strange to Americans too. The que
 
 ### The Dialect Gap
 
-Ingglish is based on General American pronunciation. Speakers of British, Australian, Indian, or other varieties may find some spellings don't match their pronunciation.
-
-For example:
-- "dance" in Ingglish reflects American /æ/, not British /ɑː/
-- "schedule" reflects American "skedyool," not British "shedyool"
-
-This is an explicit trade-off: one consistent standard that everyone recognizes, rather than regional variants that would fragment the system.
+This is covered in detail in [The Dialect Problem](#1-the-dialect-problem) above. The short version: Ingglish standardizes on General American English. Non-American speakers will encounter mismatches, but this is an explicit trade-off for a single consistent standard.
 
 ### The "Why Bother?" Question
 
-Fluent English readers might ask: "I already know how to pronounce words. Why change?"
+Fluent English readers might ask: "I already know how to pronounce words. Why would I care?"
 
-The answer is similar to the metric system. Imperial units work—Americans use them daily. But the inconsistency creates friction: 12 inches to a foot, 3 feet to a yard, 5,280 feet to a mile. Once you've used metric, the elegance of base-10 is obvious.
+Because you're not the only person who reads English. There are roughly 1.5 billion English learners worldwide—more than the number of native speakers. Every one of them pays the cost of English spelling's inconsistencies:
 
-English spelling is the imperial system of writing. It works, but at enormous cost:
-- **Years of memorization** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian
-- **Constant exceptions** - "I before E except after C" has more exceptions than examples
-- **Pronunciation guessing** - "Lead" rhymes with "read" or "red" depending on context
+- **Years of extra effort** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian
+- **Rules that aren't** - "I before E except after C" has more exceptions than examples
+- **Unreadable words** - "Lead" rhymes with "read" or "red" depending on context. There's no way to know without memorizing each word.
 
-A consistent spelling system benefits everyone, not just learners. The transition has a cost, but standardization pays dividends forever.
+Fluent readers have already paid this cost. The question is whether every future generation should keep paying it too.
 
 ## Conclusion
 

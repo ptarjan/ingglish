@@ -2,13 +2,10 @@
 
 Welcome to the Ingglish documentation. These guides cover everything from getting started to deploying your own instance.
 
-## Design
-
-- [Design Decisions](design-decisions.md) - Why Ingglish works the way it does
-
 ## Overview
 
 - [Architecture](architecture.md) - System design, data flow, module structure
+- [Design Decisions](design-decisions.md) - Why Ingglish works the way it does
 
 ## Guides
 
