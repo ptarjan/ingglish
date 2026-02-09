@@ -1,8 +1,10 @@
 import { useState, useCallback, useDeferredValue, useMemo, useEffect } from 'react';
 import {
   translateSync,
+  translateSyncWithMapping,
   reverseTranslate,
   reverseTranslateSyncWithMapping,
+  type TranslatedToken,
   type ReverseTranslatedToken,
 } from '@ingglish/core';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
@@ -58,19 +60,19 @@ function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDis
   );
 }
 
-interface ReverseWordDisplayProps {
-  tokens: ReverseTranslatedToken[];
+interface MappedWordDisplayProps {
+  tokens: (TranslatedToken | ReverseTranslatedToken)[];
   hoveredWordIndex: number | null;
   onHoverWord: (index: number | null) => void;
   className?: string;
 }
 
-function ReverseWordDisplay({
+function MappedWordDisplay({
   tokens,
   hoveredWordIndex,
   onHoverWord,
   className,
-}: ReverseWordDisplayProps) {
+}: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
     <div className={`word-display ${className ?? ''}`}>
@@ -78,10 +80,11 @@ function ReverseWordDisplay({
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
           const isHighlighted = currentWordIndex === hoveredWordIndex;
+          const matched = 'matched' in token ? (token.matched ?? true) : true;
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!token.matched ? 'unmatched' : ''}`}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!matched ? 'unmatched' : ''}`}
               onMouseEnter={() => {
                 onHoverWord(currentWordIndex);
               }}
@@ -131,6 +134,18 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn('Translation failed:', err);
+      return null;
+    }
+  }, [deferredEnglish, lastEdited, format]);
+
+  // Forward token mapping for word correspondence (with matched status)
+  const forwardTokens = useMemo(() => {
+    if (lastEdited !== 'english' || !deferredEnglish.trim()) {
+      return null;
+    }
+    try {
+      return translateSyncWithMapping(deferredEnglish, format);
+    } catch {
       return null;
     }
   }, [deferredEnglish, lastEdited, format]);
@@ -322,7 +337,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           </div>
           <div className="correspondence-grid">
             {lastEdited === 'ingglish' && reverseTokens ? (
-              <ReverseWordDisplay
+              <MappedWordDisplay
                 tokens={reverseTokens}
                 hoveredWordIndex={hoveredWordIndex}
                 onHoverWord={setHoveredWordIndex}
@@ -336,12 +351,21 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 className="english-words"
               />
             )}
-            <WordDisplay
-              text={displayIngglish}
-              hoveredWordIndex={hoveredWordIndex}
-              onHoverWord={setHoveredWordIndex}
-              className="ingglish-words"
-            />
+            {lastEdited === 'english' && forwardTokens ? (
+              <MappedWordDisplay
+                tokens={forwardTokens}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
+                className="ingglish-words"
+              />
+            ) : (
+              <WordDisplay
+                text={displayIngglish}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
+                className="ingglish-words"
+              />
+            )}
           </div>
         </div>
       )}

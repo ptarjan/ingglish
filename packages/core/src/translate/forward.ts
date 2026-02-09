@@ -200,6 +200,32 @@ export interface TranslatedToken {
   original: string;
   translated: string;
   isWord: boolean;
+  /** Whether the word was found in the dictionary (false = fallback/unknown). */
+  matched?: boolean;
+}
+
+/**
+ * Checks if a word has a known translation (dictionary, contraction, or initialism).
+ * Words that fail this check are translated via heuristic fallbacks.
+ */
+function isWordKnown(word: string): boolean {
+  if (!word || !/[a-zA-Z]/.test(word)) {
+    return true;
+  }
+  if (parseInitialismWithSuffix(word) !== null) {
+    return true;
+  }
+  if (word.includes("'")) {
+    return true;
+  }
+  if (isInitialism(word)) {
+    return true;
+  }
+  const camelParts = splitCamelCase(word);
+  if (camelParts !== null && camelParts.length > 1) {
+    return camelParts.every((part) => lookupPronunciation(part) !== null);
+  }
+  return lookupPronunciation(word) !== null;
 }
 
 /**
@@ -259,6 +285,7 @@ export function translateSyncWithMapping(
             original: token,
             translated: translateWord(token, format),
             isWord: true,
+            matched: isWordKnown(token),
           });
         } else {
           result.push({
