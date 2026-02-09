@@ -169,52 +169,6 @@ function Section2_WhatIf() {
   );
 }
 
-function SilentLetterWord({
-  english,
-  ingglish,
-  silent,
-  silentPos,
-  animate,
-}: {
-  english: string;
-  ingglish: string;
-  silent: string;
-  silentPos: 'start' | 'mid' | 'end';
-  animate: boolean;
-}) {
-  // Split the word to highlight the silent letter
-  let before: string, silentChar: string, after: string;
-  if (silentPos === 'start') {
-    silentChar = english[0];
-    before = '';
-    after = english.slice(1);
-  } else if (silentPos === 'end') {
-    silentChar = english[english.length - 1];
-    before = english.slice(0, -1);
-    after = '';
-  } else {
-    // mid - find the silent letter
-    const idx = english.indexOf(silent);
-    before = english.slice(0, idx);
-    silentChar = english[idx];
-    after = english.slice(idx + 1);
-  }
-
-  return (
-    <span className={`silent-word ${animate ? 'animate' : ''}`}>
-      <span className="silent-english">
-        {before}
-        <span className="silent-letter">{silentChar}</span>
-        {after}
-      </span>
-      <span className="silent-arrow">&rarr;</span>
-      <span className="silent-ingglish" data-orig={english}>
-        {ingglish}
-      </span>
-    </span>
-  );
-}
-
 /**
  * Hook: calls onComplete once revealedCount reaches total,
  * after a delay for the last item's animation to finish.
@@ -255,16 +209,23 @@ function Section3a_SilentLetters({
 }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
   const active = useStickyActive(visible, previousDone);
-  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 800);
+  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 1200);
   useStaggerComplete(revealedCount, silentLetterExamples.length, onComplete);
 
   return (
     <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Drop the silent letters</h3>
       <p className="tutorial-caption">Every letter you see is a letter you say.</p>
-      <div className="silent-list">
+      <div className="sound-examples">
         {silentLetterExamples.map((ex, i) => (
-          <SilentLetterWord key={ex.english} {...ex} animate={i < revealedCount} />
+          <AnimatedSoundWord
+            key={ex.english}
+            english={ex.english}
+            ingglish={ex.ingglish}
+            highlightEn={ex.highlightEn}
+            highlightIng={ex.highlightIng}
+            animate={i < revealedCount}
+          />
         ))}
       </div>
     </div>
@@ -346,14 +307,12 @@ function AnimatedSoundWord({
   }, [animate]);
 
   const changed = english.toLowerCase() !== ingglish.toLowerCase();
-  const showHighlight =
-    highlightEn !== undefined &&
-    highlightEn !== '' &&
-    highlightIng !== undefined &&
-    highlightIng !== '';
+  const hasEnHighlight = highlightEn !== undefined && highlightEn !== '';
+  const hasIngHighlight = highlightIng !== undefined && highlightIng !== '';
   // When highlight is the same (th→th), use blue on both sides to show "preserved"
-  // When highlight differs (th→dh), use red on English side to show "changing"
-  const sameHighlight = showHighlight && highlightEn.toLowerCase() === highlightIng.toLowerCase();
+  // When highlight differs (th→dh) or is En-only (silent letters), use red on English side
+  const sameHighlight =
+    hasEnHighlight && hasIngHighlight && highlightEn.toLowerCase() === highlightIng.toLowerCase();
   const enHighlightClass = sameHighlight ? 'sound-highlight-new' : 'sound-highlight-old';
 
   return (
@@ -361,7 +320,7 @@ function AnimatedSoundWord({
       <span className="sound-english">
         <HighlightedWord
           word={english}
-          highlight={showHighlight ? highlightEn : undefined}
+          highlight={hasEnHighlight ? highlightEn : undefined}
           className={enHighlightClass}
         />
       </span>
@@ -371,14 +330,14 @@ function AnimatedSoundWord({
           <span className="sound-morph-before">
             <HighlightedWord
               word={english}
-              highlight={showHighlight ? highlightEn : undefined}
+              highlight={hasEnHighlight ? highlightEn : undefined}
               className={enHighlightClass}
             />
           </span>
           <span className="sound-morph-after">
             <HighlightedWord
               word={ingglish}
-              highlight={showHighlight ? highlightIng : undefined}
+              highlight={hasIngHighlight ? highlightIng : undefined}
               className="sound-highlight-new"
             />
           </span>
@@ -387,7 +346,7 @@ function AnimatedSoundWord({
         <span className="sound-ingglish">
           <HighlightedWord
             word={ingglish}
-            highlight={showHighlight ? highlightIng : undefined}
+            highlight={hasIngHighlight ? highlightIng : undefined}
             className="sound-highlight-new"
           />
         </span>

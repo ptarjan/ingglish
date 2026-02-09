@@ -10,20 +10,20 @@ export const oughExamples = [
   { prefix: 'b', suffix: '', sound: 'ow' },
 ];
 
-export const silentLetterExamples = [
-  { english: 'knee', ingglish: 'nee', silent: 'k', silentPos: 'start' as const },
-  { english: 'wrap', ingglish: 'rap', silent: 'w', silentPos: 'start' as const },
-  { english: 'lamb', ingglish: 'lam', silent: 'b', silentPos: 'end' as const },
-  { english: 'doubt', ingglish: 'dout', silent: 'b', silentPos: 'mid' as const },
-  { english: 'gnaw', ingglish: 'naw', silent: 'g', silentPos: 'start' as const },
-];
-
 export interface ExampleWord {
   english: string;
   ingglish: string;
   highlightEn?: string;
   highlightIng?: string;
 }
+
+export const silentLetterExamples: ExampleWord[] = [
+  { english: 'knee', ingglish: 'nee', highlightEn: 'k' },
+  { english: 'wrap', ingglish: 'rap', highlightEn: 'w' },
+  { english: 'lamb', ingglish: 'lam', highlightEn: 'b' },
+  { english: 'doubt', ingglish: 'dout', highlightEn: 'b' },
+  { english: 'gnaw', ingglish: 'naw', highlightEn: 'g' },
+];
 
 export const eeSoundExamples: ExampleWord[] = [
   { english: 'sea', ingglish: 'see', highlightEn: 'ea', highlightIng: 'ee' },
