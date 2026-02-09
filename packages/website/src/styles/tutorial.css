@@ -296,57 +296,6 @@
   min-height: 10rem;
 }
 
-/* --- Hover tooltips (matches URL translator style) --- */
-
-[data-orig] {
-  position: relative;
-  cursor: help;
-}
-
-[data-orig]:hover::after {
-  content: attr(data-orig);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333333;
-  color: #ffffff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  line-height: 1.4;
-  white-space: nowrap;
-  z-index: 100;
-  pointer-events: none;
-  opacity: 0;
-  animation: tutorial-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-[data-orig]:hover::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: #333333;
-  margin-bottom: -10px;
-  z-index: 100;
-  pointer-events: none;
-  opacity: 0;
-  animation: tutorial-tooltip-fade-in 0.15s ease-out forwards;
-}
-
-@keyframes tutorial-tooltip-fade-in {
-  to {
-    opacity: 1;
-  }
-}
-
 /* --- Section 4: Progressive paragraph --- */
 
 .progressive-word {

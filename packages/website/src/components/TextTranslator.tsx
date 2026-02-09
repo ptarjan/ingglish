@@ -80,10 +80,12 @@ function MappedWordDisplay({
           const currentWordIndex = wordIndex++;
           const isHighlighted = currentWordIndex === hoveredWordIndex;
           const matched = 'matched' in token ? (token.matched ?? true) : true;
+          const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
           return (
             <span
               key={i}
               className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!matched ? 'unmatched' : ''}`}
+              data-orig={changed ? token.original : undefined}
               onMouseEnter={() => {
                 onHoverWord(currentWordIndex);
               }}
