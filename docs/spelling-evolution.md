@@ -90,6 +90,11 @@ This document records all phoneme spelling changes made during Ingglish developm
   - Only option left after reserving 'o' for /ɑ/
 - Verdict: ✅ **Adopted** - necessary to avoid collision
 
+**Attempt 3: 'ow' (rejected)**
+- Rationale: Would make snow, throw, bowl, window identical to English (+137 net identical words)
+- Problem: `ow` is ambiguous in English — represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". Reintroduces the exact ambiguity ingglish is designed to eliminate.
+- Verdict: ❌ Rejected - perceptual ambiguity despite no formal collisions
+
 **Examples:**
 - go → goh
 - show → shoh
@@ -173,6 +178,12 @@ This vowel went through the most iteration.
 - Both spellings now have "Common" ratings
 
 **Verdict:** ✅ **Adopted** - identical short vowel words + logical length pattern
+
+**Later considered: 'eu' for /uː/ (rejected)**
+- Rationale: Would gain +41 identical words (feud, deuce, neutral) with only 2 losses — best efficiency of any proposed change
+- Problem: `eu` in English implies a /j/ onset — "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers.
+- Lesson: **Identical word count is necessary but not sufficient** — a shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
+- Verdict: ❌ Rejected - perceptual ambiguity despite excellent numerical efficiency
 
 ---
 
@@ -264,6 +275,9 @@ Several changes were specifically made to upgrade ratings:
 
 ### 5. Reversion Is Okay
 The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
+
+### 6. Identical Word Count Can Mislead
+A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both increased identical word counts (+137 and +41) but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
 
 ---
 

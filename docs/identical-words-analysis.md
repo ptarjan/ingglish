@@ -146,30 +146,33 @@ We verified the proposed changes don't create problematic collisions:
 
 ## Recommendations
 
-### High Confidence Changes
+### No changes recommended.
 
-These have excellent gain-to-loss ratios:
+All six proposed changes were investigated and rejected. The identical word count is a useful metric, but **it has a fundamental flaw**: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly. A spelling that matches more English words is harmful if those new combinations mislead readers.
 
-1. **/uː/: "uu" → "eu"** — Nearly pure gain (+41), minimal disruption
+### Rejected: /oʊ/: "oh" → "ow" (+137 net)
 
-### Mixed Confidence Changes
+The gains look good on paper — snow, throw, bowl, window all become identical. But `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town, brown). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow", and `stown` (stone) reads like "stoun". This reintroduces exactly the kind of ambiguity ingglish is designed to eliminate.
 
-2. **/aɪ/: "ai" → "ei"** — Large gain (+316), but many gains are German loanwords (einstein, bernstein). Native English gains (heist, height, seize) are valuable. Loses Asian loanwords (thai, chai).
+### Rejected: /uː/: "uu" → "eu" (+41 net)
 
-### Questionable Chain Improvement
+Numerically the best efficiency — +41 words for only 2 losses. But `eu` in English implies a /j/ onset: "feud", "deuce", "neural" are all /juː/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", and `teu` (too) reads as "tyoo". The mapping actively misleads rather than helps.
 
-3. **/eɪ/: "ay" → "ai"** — Net +48, but **loses common words** like "day", "say", "way", "play", "stay" (245 words) to gain "aid", "aim", "bail", "rain" (293 words). Only possible after /aɪ/ frees 'ai'. **May not be worth it** given high-frequency losses.
+### Rejected: /aɪ/: "ai" → "ei" (+316 net)
 
-### Moderate Confidence Changes
+Most gains are German loanwords (einstein, bernstein, weinstein, klein, reich) that don't feel familiar to English readers anyway.
 
-These trade common words for other common words:
+### Rejected: /eɪ/: "ay" → "ai" (+48 net)
 
-4. **/oʊ/: "oh" → "ow"** — Gains everyday words (+137), loses German names
-5. **/ɔ/: "aw" → "au"** — Trade-off between "au" and "aw" words (+63)
+Only possible after /aɪ/→ei frees 'ai'. **Loses high-frequency words** like "day", "say", "way", "play", "stay" (245 words) to gain "aid", "aim", "bail", "rain" (293 words). Bad trade.
 
-### Low Confidence Change
+### Rejected: /ɔ/: "aw" → "au" (+63 net)
 
-6. **/ɔɪ/: "oi" → "oy"** — Nearly breaks even (+10), marginal benefit
+Trades common "aw" words (dawn, draw, flaw, jaw, law, saw) for common "au" words (audit, august, author, autumn). Nearly a wash, no compelling reason to change.
+
+### Rejected: /ɔɪ/: "oi" → "oy" (+10 net)
+
+Nearly breaks even. Not worth the disruption.
 
 ## Methodology
 
@@ -183,10 +186,19 @@ Run with:
 npx vite-node scripts/exhaustive-search.ts
 ```
 
+## Key Insight: Identical Word Count Is Necessary But Not Sufficient
+
+The identical word count measures string equality, but **it doesn't measure whether the shared spelling reads correctly**. A proposed change must pass two tests:
+
+1. **No new collisions** (different words getting the same spelling) — the exhaustive search checks this
+2. **No new ambiguity** (the spelling reads as the wrong sound to English readers) — this requires human judgment
+
+The `ow` and `eu` changes both pass test 1 but fail test 2. They don't create collisions in the formal sense, but they create *perceptual* collisions where English readers' existing intuitions produce the wrong pronunciation.
+
+The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with — the Finnish "double for long" logic succeeds here because English never uses `uu`.
+
 ## Conclusion
 
-The current mappings prioritize disambiguation over raw identical count, which is the right choice — collisions destroy meaning. However, there are safe optimizations available that would add +607 identical words (9% improvement) without creating new collisions—though the /eɪ/→ai chain improvement is questionable due to losing common words like "day" and "say".
+The current mappings are well-optimized. While alternative spellings can increase the identical word count by up to +607, all proposed changes either lose high-frequency words, bias toward loanwords, or — most importantly — reintroduce pronunciation ambiguity that undermines the system's core promise of "one sound, one spelling."
 
-Whether to implement these changes depends on:
-1. How much weight we give to identical word count (natural readability for English readers)
-2. Whether the specific words lost (thai, chai, dawn, draw) matter more than words gained
+The identical word count of 6,930 (5.13%) represents the natural ceiling for a system that prioritizes unambiguous readability over string matching.

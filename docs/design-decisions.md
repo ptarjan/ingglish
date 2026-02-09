@@ -76,7 +76,7 @@ The [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings were among th
 | /aɪ/ (my) | **ai** | IPA alignment; [Pinyin](https://en.wikipedia.org/wiki/Pinyin), Italian, Vietnamese precedent |
 | /aʊ/ (cow) | **ou** | "out", "loud", "sound" stay identical; [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) uses 'ou' |
 | /eɪ/ (say) | **ay** | Matches English "say", "day", "play" |
-| /oʊ/ (go) | **oh** | English "oh!"; needed to distinguish from 'ou' |
+| /oʊ/ (go) | **oh** | Unambiguous; 'ow' was rejected (see below) |
 | /ɔɪ/ (boy) | **oi** | Universal across languages |
 
 **Examples:**
@@ -86,6 +86,10 @@ The [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings were among th
 | say day | say day |
 | out loud | out loud |
 | go show | goh shoh |
+
+**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English — it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". The `oh` spelling has no competing English interpretation, keeping it unambiguous.
+
+**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset — "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". The `uu` spelling has no English precedent to mislead readers.
 
 ### R-Colored Vowels
 
