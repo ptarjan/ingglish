@@ -9,6 +9,7 @@ import {
   collectTextNodes,
   extractWordsFromNodes,
   injectTooltipStyles,
+  injectTooltipBehavior,
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
 } from '@ingglish/dom';
@@ -186,6 +187,7 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   };
 
   injectTooltipStyles(document);
+  injectTooltipBehavior(document);
 
   const collectStart = performance.now();
   const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);

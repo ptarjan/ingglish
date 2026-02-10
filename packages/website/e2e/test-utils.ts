@@ -69,6 +69,26 @@ export const MOCK_PAGE_A_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// Mock page with overflow:hidden containers (like HN's table layout)
+export const MOCK_PAGE_OVERFLOW_HTML = `<!DOCTYPE html>
+<html>
+<head><title>Overflow Test</title></head>
+<body>
+  <table>
+    <tr>
+      <td style="overflow: hidden; height: 20px; line-height: 20px;">
+        <a class="titlelink">Beautiful morning sunshine weather today</a>
+      </td>
+    </tr>
+    <tr>
+      <td style="overflow: hidden; height: 20px; line-height: 20px;">
+        <a class="titlelink">Another wonderful headline about something</a>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
 export const MOCK_PAGE_B_HTML = `<!DOCTYPE html>
 <html>
 <head><title>Page B</title></head>
@@ -115,7 +135,13 @@ export async function setupMockProxy(page: Page) {
 
     // Mock CORS proxy requests (allorigins.win or custom proxy)
     if (url.includes('api.allorigins.win') || url.includes('ingglish-cors-proxy')) {
-      if (url.includes('page-b') || url.includes('another-page')) {
+      if (url.includes('overflow-test')) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html',
+          body: MOCK_PAGE_OVERFLOW_HTML,
+        });
+      } else if (url.includes('page-b') || url.includes('another-page')) {
         await route.fulfill({
           status: 200,
           contentType: 'text/html',

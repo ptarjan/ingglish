@@ -12,7 +12,7 @@ import {
   shouldSkipElement,
   collectTextNodes,
   injectTooltipStyles,
-  injectTooltipFlipBehavior,
+  injectTooltipBehavior,
 } from '../utils';
 import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import { createTooltipFragment } from './tooltip-fragment';
@@ -168,7 +168,7 @@ export function translateDOMSync(
   // Inject tooltip CSS and flip behavior if showing tooltips
   if (showTooltips && targetDoc !== null) {
     injectTooltipStyles(targetDoc);
-    injectTooltipFlipBehavior(targetDoc);
+    injectTooltipBehavior(targetDoc);
   }
 
   // Single walk to collect all text nodes

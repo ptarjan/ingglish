@@ -1,26 +1,20 @@
 /**
- * CSS styles for tooltip functionality.
- * Shows original text on hover for translated words.
+ * Tooltip styles and behavior for translated words.
+ * Uses JS-positioned tooltip divs appended to <body> with position:fixed
+ * so they escape overflow:hidden on ancestor elements (e.g. table cells).
  */
 
 import { WORD_SPAN_CLASS, TOOLTIP_STYLES_ID, ATTR_ORIGINAL_WORD } from '../constants';
 
-const TOOLTIP_FLIP_ID = 'ingglish-tooltip-flip';
+const TOOLTIP_BEHAVIOR_ID = 'ingglish-tooltip-behavior';
 
 export const TOOLTIP_STYLES = `
 .${WORD_SPAN_CLASS} {
-  position: relative;
-  display: inline;
   cursor: help;
-  vertical-align: baseline;
 }
 
-.${WORD_SPAN_CLASS}:hover::after {
-  content: attr(${ATTR_ORIGINAL_WORD});
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+.ingglish-tooltip {
+  position: fixed !important;
   background: #333 !important;
   color: #fff !important;
   padding: 4px 8px !important;
@@ -35,32 +29,22 @@ export const TOOLTIP_STYLES = `
   animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
-.${WORD_SPAN_CLASS}:hover::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+.ingglish-tooltip::after {
+  content: '' !important;
+  position: absolute !important;
+  left: var(--arrow-left, 50%) !important;
+  transform: translateX(-50%) !important;
   border: 5px solid transparent !important;
-  border-top-color: #333 !important;
-  margin-bottom: -10px !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-  opacity: 0;
-  animation: ingglish-tooltip-fade-in 0.15s ease-out forwards;
 }
 
-.${WORD_SPAN_CLASS}.ingglish-tooltip-below:hover::after {
-  bottom: auto !important;
-  top: calc(100% + 5px) !important;
-}
-
-.${WORD_SPAN_CLASS}.ingglish-tooltip-below:hover::before {
-  bottom: auto !important;
+.ingglish-tooltip--above::after {
   top: 100% !important;
-  border-top-color: transparent !important;
+  border-top-color: #333 !important;
+}
+
+.ingglish-tooltip--below::after {
+  bottom: 100% !important;
   border-bottom-color: #333 !important;
-  margin-bottom: 0 !important;
 }
 
 @keyframes ingglish-tooltip-fade-in {
@@ -82,29 +66,81 @@ export function injectTooltipStyles(targetDoc: Document = document): void {
 }
 
 /**
- * Injects a mouseover listener that flips tooltips below the word
- * when the word is near the top of the viewport (where above-tooltips
- * would be clipped, e.g. inside iframes).
+ * Injects tooltip behavior: creates tooltip divs on hover,
+ * positioned with position:fixed to escape overflow:hidden ancestors.
  */
-export function injectTooltipFlipBehavior(targetDoc: Document = document): void {
-  if (targetDoc.getElementById(TOOLTIP_FLIP_ID)) {
+export function injectTooltipBehavior(targetDoc: Document = document): void {
+  if (targetDoc.documentElement.hasAttribute(`data-${TOOLTIP_BEHAVIOR_ID}`)) {
     return;
   }
-  const marker = targetDoc.createElement('meta');
-  marker.id = TOOLTIP_FLIP_ID;
-  targetDoc.head?.appendChild(marker);
+  targetDoc.documentElement.setAttribute(`data-${TOOLTIP_BEHAVIOR_ID}`, 'true');
+
+  let activeTooltip: HTMLElement | null = null;
+  let activeWord: Element | null = null;
+
+  function removeTooltip(): void {
+    if (activeTooltip) {
+      activeTooltip.remove();
+      activeTooltip = null;
+      activeWord = null;
+    }
+  }
 
   targetDoc.addEventListener(
     'mouseover',
-    (e) => {
-      const target = (e.target as Element).closest?.(`.${WORD_SPAN_CLASS}`);
-      if (!target) {
+    (e: Event) => {
+      const word = (e.target as Element).closest?.(`.${WORD_SPAN_CLASS}`);
+
+      // Still on same word - do nothing
+      if (word === activeWord) {
         return;
       }
 
-      const rect = target.getBoundingClientRect();
-      target.classList.toggle('ingglish-tooltip-below', rect.top < 35);
+      // Moved to a different element - remove old tooltip
+      removeTooltip();
+
+      // Not on a word - done
+      if (!word) {
+        return;
+      }
+
+      const orig = word.getAttribute(ATTR_ORIGINAL_WORD);
+      if (orig === null || orig === '') {
+        return;
+      }
+
+      // Create tooltip div appended to body (escapes overflow:hidden)
+      const tooltip = targetDoc.createElement('div');
+      tooltip.className = 'ingglish-tooltip';
+      tooltip.textContent = orig;
+      targetDoc.body.appendChild(tooltip);
+      activeTooltip = tooltip;
+      activeWord = word;
+
+      // Measure and position
+      const wordRect = word.getBoundingClientRect();
+      const tipRect = tooltip.getBoundingClientRect();
+      const viewportWidth = targetDoc.defaultView?.innerWidth ?? 0;
+
+      // Show above if enough space, otherwise below
+      const showAbove = wordRect.top > tipRect.height + 10;
+      tooltip.classList.add(showAbove ? 'ingglish-tooltip--above' : 'ingglish-tooltip--below');
+
+      const top = showAbove ? wordRect.top - tipRect.height - 5 : wordRect.bottom + 5;
+      tooltip.style.top = `${top}px`;
+
+      // Center horizontally, clamped to viewport
+      let left = wordRect.left + wordRect.width / 2 - tipRect.width / 2;
+      left = Math.max(4, Math.min(left, viewportWidth - tipRect.width - 4));
+      tooltip.style.left = `${left}px`;
+
+      // Point arrow at word center
+      const arrowLeft = wordRect.left + wordRect.width / 2 - left;
+      tooltip.style.setProperty('--arrow-left', `${arrowLeft}px`);
     },
     true
   );
+
+  // Remove tooltip on scroll (position would be stale)
+  targetDoc.addEventListener('scroll', removeTooltip, true);
 }

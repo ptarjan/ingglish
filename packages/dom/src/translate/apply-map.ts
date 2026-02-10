@@ -3,7 +3,12 @@
  */
 
 import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
-import { requireBrowser, collectTextNodes, injectTooltipStyles } from '../utils';
+import {
+  requireBrowser,
+  collectTextNodes,
+  injectTooltipStyles,
+  injectTooltipBehavior,
+} from '../utils';
 import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
@@ -106,6 +111,7 @@ export function applyTranslationsMap(
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
   if (showTooltips && targetDoc !== null) {
     injectTooltipStyles(targetDoc);
+    injectTooltipBehavior(targetDoc);
   }
 
   // Use pre-collected nodes if provided, otherwise collect them

@@ -65,6 +65,7 @@ export {
   extractWords,
   extractWordsFromNodes,
   injectTooltipStyles,
+  injectTooltipBehavior,
 } from './utils';
 
 // Re-export text utilities from core (internal API)

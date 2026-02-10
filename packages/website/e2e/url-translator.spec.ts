@@ -278,4 +278,45 @@ test.describe('URL Translator Navigation', () => {
     expect(paragraphAfterHover?.x).toBe(paragraphBoundingBox?.x);
     expect(paragraphAfterHover?.y).toBe(paragraphBoundingBox?.y);
   });
+
+  test('tooltip is visible inside overflow:hidden containers', async ({ page }) => {
+    const input = page.locator('.url-input');
+    await input.fill('https://example.com/overflow-test');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+
+    const iframe = page.frameLocator('.page-iframe');
+
+    // Wait for translation
+    const firstWord = iframe.locator('.ingglish-word').first();
+    await expect(firstWord).toBeVisible();
+
+    // Verify the word span has the original word attribute
+    await expect(firstWord).toHaveAttribute('data-ingglish-orig');
+
+    // Verify tooltip behavior was injected
+    const hasBehavior = await page.locator('.page-iframe').evaluate((el: HTMLIFrameElement) => {
+      return (
+        el.contentDocument?.documentElement.hasAttribute('data-ingglish-tooltip-behavior') ?? false
+      );
+    });
+    expect(hasBehavior).toBe(true);
+
+    // Hover to trigger tooltip
+    await firstWord.hover();
+    await page.waitForTimeout(300);
+
+    // The JS tooltip div should exist in the iframe body
+    const tooltip = iframe.locator('.ingglish-tooltip');
+    await expect(tooltip).toBeVisible();
+
+    // Tooltip should be fully within the viewport (not clipped)
+    const tooltipBox = await tooltip.boundingBox();
+    expect(tooltipBox).not.toBeNull();
+    if (tooltipBox) {
+      expect(tooltipBox.y).toBeGreaterThanOrEqual(0);
+      expect(tooltipBox.x).toBeGreaterThanOrEqual(0);
+    }
+  });
 });
