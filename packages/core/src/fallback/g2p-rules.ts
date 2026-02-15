@@ -21,6 +21,7 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^dge/i, phonemes: ['JH'] }, // badge, bridge (d+g+e → single J sound)
   { pattern: /^tion/i, phonemes: ['SH', 'AH0', 'N'] }, // nation, action
   { pattern: /^sion/i, phonemes: ['ZH', 'AH0', 'N'] }, // vision, fusion
+  { pattern: /^ture/i, phonemes: ['CH', 'ER1'] }, // nature, picture, future
 
   // Consonant digraphs
   { pattern: /^sh/i, phonemes: ['SH'] },
@@ -30,11 +31,14 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^ph/i, phonemes: ['F'] },
   { pattern: /^gh/i, phonemes: ['G'] },
   { pattern: /^ng/i, phonemes: ['NG'] },
+  { pattern: /^nk/i, phonemes: ['NG', 'K'] }, // think, bank (n before k is /ŋ/)
   { pattern: /^ck/i, phonemes: ['K'] },
   { pattern: /^qu/i, phonemes: ['K', 'W'] },
+  { pattern: /^sc(?=[ei])/i, phonemes: ['S'] }, // scene, science (c is silent)
   { pattern: /^wr/i, phonemes: ['R'] }, // write, wrong (w is silent)
   { pattern: /^kn/i, phonemes: ['N'] }, // knot, knee (k is silent)
   { pattern: /^gn/i, phonemes: ['N'] }, // gnome, gnat (g is silent)
+  { pattern: /^rh/i, phonemes: ['R'] }, // rhyme, rhythm (h is silent)
 
   // Doubled consonants (same sound as single — English doesn't double sounds)
   { pattern: /^bb/i, phonemes: ['B'] },
@@ -67,6 +71,7 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^aw/i, phonemes: ['AO1'] },
   { pattern: /^ue/i, phonemes: ['UW1'] }, // blue, true, clue
   { pattern: /^ie/i, phonemes: ['IY1'] },
+  { pattern: /^ew/i, phonemes: ['UW1'] }, // new, grew, blew
   { pattern: /^ei/i, phonemes: ['EY1'] }, // vein, rein, reign
   { pattern: /^ey/i, phonemes: ['IY1'] },
 
@@ -124,21 +129,50 @@ const LONG_VOWELS: Record<string, string> = {
   i: 'AY1',
   o: 'OW1',
   u: 'UW1',
+  y: 'AY1',
 };
 
 // Magic-e pattern: vowel + consonant + 'e' at end of word.
+// Includes 'y' as vowel (rhyme, type, byte).
 // Excludes c and g since they change pronunciation before 'e' (soft c/g).
-const MAGIC_E_RE = /[aeiou][bdfhjklmnpqrstvwxyz]e$/;
+const MAGIC_E_RE = /[aeiouy][bdfhjklmnpqrstvwxyz]e$/;
+
+// Consonant+le pattern: consonant + 'le' at end of word (apple, table, little).
+// The 'e' is silent and 'l' gets a schwa before it.
+// Excludes 'l' to avoid matching doubled-l+e (e.g., "belle").
+const CONSONANT_LE_RE = /[bcdfghjkmnpqrstvwxz]le$/;
 
 export function wordToArpabet(word: string): string[] {
   const result: string[] = [];
   let remaining = word.toLowerCase();
 
-  // Pre-processing: strip trailing silent 'e' in VCe pattern
+  // Pre-processing: strip initial silent 'p' (psalm, psychology, pneumonia)
+  if (remaining.length > 2 && (remaining.startsWith('ps') || remaining.startsWith('pn'))) {
+    remaining = remaining.slice(1);
+  }
+
+  // Pre-processing: trailing silent 'e' patterns (mutually exclusive)
   let magicE = false;
-  if (remaining.length > 3 && MAGIC_E_RE.test(remaining)) {
+  let consonantLe = false;
+
+  // Consonant+le (apple, table, little) — check before magic-e
+  if (remaining.length > 3 && CONSONANT_LE_RE.test(remaining)) {
+    remaining = remaining.slice(0, -1); // strip 'e'
+    consonantLe = true;
+  }
+  // Skip magic-e when -ture suffix present (let the ture rule handle it)
+  else if (remaining.length > 3 && !remaining.endsWith('ture') && MAGIC_E_RE.test(remaining)) {
     remaining = remaining.slice(0, -1);
     magicE = true;
+  }
+
+  // Pre-processing: final silent consonants
+  if (remaining.length > 2) {
+    if (remaining.endsWith('mb') || remaining.endsWith('mn')) {
+      remaining = remaining.slice(0, -1); // strip last (b in mb, n in mn)
+    } else if (remaining.endsWith('bt')) {
+      remaining = remaining.slice(0, -2) + 't'; // strip b, keep t (debt→det)
+    }
   }
 
   while (remaining.length > 0) {
@@ -146,6 +180,13 @@ export function wordToArpabet(word: string): string[] {
     if (magicE && remaining.length === 2 && remaining[0] in LONG_VOWELS) {
       result.push(LONG_VOWELS[remaining[0]]);
       remaining = remaining.slice(1);
+      continue;
+    }
+
+    // Consonant+le: schwa + L at final position
+    if (consonantLe && remaining.length === 1 && remaining === 'l') {
+      result.push('AH0', 'L');
+      remaining = '';
       continue;
     }
 

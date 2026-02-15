@@ -92,6 +92,51 @@ describe('unknown-words', () => {
       expect(wordToArpabet('write')).not.toContain('W'); // wr → R
       expect(wordToArpabet('knot')).not.toContain('K'); // kn → N
       expect(wordToArpabet('gnat')).not.toContain('G'); // gn → N
+      expect(wordToArpabet('rhyme')).not.toContain('HH'); // rh → R
+    });
+
+    it('should handle initial silent p (ps, pn)', () => {
+      expect(wordToArpabet('psalm')).not.toContain('P'); // ps → S
+      expect(wordToArpabet('psychology')).not.toContain('P');
+      expect(wordToArpabet('pneumonia')).not.toContain('P'); // pn → N
+    });
+
+    it('should handle final silent consonants (mb, bt, mn)', () => {
+      expect(wordToArpabet('lamb')).not.toContain('B'); // mb → M
+      expect(wordToArpabet('climb')).not.toContain('B');
+      expect(wordToArpabet('thumb')).not.toContain('B');
+      expect(wordToArpabet('debt')).not.toContain('B'); // bt → T
+      expect(wordToArpabet('hymn')).not.toContain('N'); // mn → M
+    });
+
+    it('should produce NG K for nk', () => {
+      expect(wordToArpabet('think')).toContain('NG');
+      expect(wordToArpabet('bank')).toContain('NG');
+      expect(wordToArpabet('drink')).toContain('NG');
+    });
+
+    it('should handle sc before e/i as single S', () => {
+      const scene = wordToArpabet('scene');
+      // Should have exactly one S, not two
+      expect(scene.filter((p) => p === 'S').length).toBe(1);
+    });
+
+    it('should handle ew as UW', () => {
+      expect(wordToArpabet('new')).toContain('UW1');
+      expect(wordToArpabet('grew')).toContain('UW1');
+    });
+
+    it('should handle -ture as CH ER', () => {
+      expect(wordToArpabet('nature')).toContain('CH');
+      expect(wordToArpabet('nature')).toContain('ER1');
+      expect(wordToArpabet('picture')).toContain('CH');
+    });
+
+    it('should handle consonant+le endings', () => {
+      expect(wordToArpabet('apple')).toContain('AH0'); // schwa before L
+      expect(wordToArpabet('table')).toContain('AH0');
+      expect(wordToArpabet('little')).toContain('AH0');
+      expect(wordToArpabet('bottle')).toContain('AH0');
     });
 
     it('should collapse doubled consonants', () => {
@@ -210,7 +255,7 @@ describe('unknown-words', () => {
     it('should translate words with doubled consonants', () => {
       expect(translateWithRules('buzz')).toBe('buz');
       expect(translateWithRules('bell')).toBe('bel');
-      expect(translateWithRules('apple')).toBe('aple');
+      expect(translateWithRules('apple')).toBe('apul');
     });
 
     it('should translate words with y as vowel', () => {
@@ -234,6 +279,45 @@ describe('unknown-words', () => {
       expect(translateWithRules('gnome')).toBe('nohm');
       expect(translateWithRules('phone')).toBe('fohn');
       expect(translateWithRules('stripe')).toBe('straip');
+    });
+
+    it('should translate words with initial silent p', () => {
+      expect(translateWithRules('psalm')).toBe('salm');
+      expect(translateWithRules('psychology')).not.toMatch(/^p/);
+    });
+
+    it('should translate words with final silent consonants', () => {
+      expect(translateWithRules('lamb')).toBe('lam');
+      expect(translateWithRules('climb')).toBe('klim'); // long I is irregular, not magic-e
+      expect(translateWithRules('thumb')).toBe('thum');
+      expect(translateWithRules('debt')).toBe('det');
+      expect(translateWithRules('hymn')).toBe('him');
+    });
+
+    it('should translate nk as ngk', () => {
+      expect(translateWithRules('think')).toBe('thingk');
+      expect(translateWithRules('bank')).toBe('bangk');
+    });
+
+    it('should translate sc before e/i without double s', () => {
+      expect(translateWithRules('scene')).toBe('seen');
+    });
+
+    it('should translate ew words', () => {
+      expect(translateWithRules('new')).toBe('nuu');
+      expect(translateWithRules('grew')).toBe('gruu');
+    });
+
+    it('should translate -ture suffix', () => {
+      expect(translateWithRules('nature')).toBe('nacher');
+      expect(translateWithRules('picture')).toBe('pikcher');
+    });
+
+    it('should translate consonant+le endings', () => {
+      expect(translateWithRules('apple')).toBe('apul');
+      expect(translateWithRules('little')).toBe('litul');
+      expect(translateWithRules('bottle')).toBe('botul');
+      expect(translateWithRules('candle')).toBe('kandul');
     });
   });
 
