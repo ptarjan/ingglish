@@ -18,6 +18,29 @@
   min-width: 0;
 }
 
+.tutorial-section:first-child {
+  min-height: 60vh;
+}
+
+.scroll-hint {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+  animation: bounce 2s infinite;
+  opacity: 0.5;
+  font-size: 1.5rem;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
 .tutorial-heading {
   font-size: 2rem;
   font-weight: 700;

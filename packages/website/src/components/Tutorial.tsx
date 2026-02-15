@@ -136,6 +136,9 @@ function Section1_Ough() {
       <p className="tutorial-punchline">
         Same four letters. Six different sounds. This is English.
       </p>
+      <div className="scroll-hint" aria-hidden="true">
+        &#8595;
+      </div>
     </section>
   );
 }
