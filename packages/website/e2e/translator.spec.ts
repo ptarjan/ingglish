@@ -28,7 +28,9 @@ test.describe('Layout Stability (CLS)', () => {
     await expect(page.locator('.header h1')).toHaveText('Ingglish');
   });
 
-  test('CLS is below 0.1 during page load', async ({ page }) => {
+  // PerformanceObserver layout-shift is Chromium-only; skip on WebKit
+  test('CLS is below 0.1 during page load', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('safari'), 'WebKit has no layout-shift API');
     await blockExternalNetwork(page);
 
     // Install CLS observer BEFORE navigating.
