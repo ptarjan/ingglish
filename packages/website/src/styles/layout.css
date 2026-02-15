@@ -2,10 +2,13 @@
  * Layout styles: app shell, header, tabs, footer, loading screens.
  */
 
-.app {
+#root {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -209,7 +212,7 @@
    ============================================================================= */
 
 @media (max-width: 640px) {
-  .app {
+  #root {
     padding: 1rem;
   }
 
