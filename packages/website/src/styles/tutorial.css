@@ -345,7 +345,7 @@
   color: var(--color-text-muted);
   font-style: italic;
   font-size: 0.95rem;
-  min-height: 1.5rem;
+  min-height: 3rem;
   margin-top: 1rem;
   margin-bottom: 0.75rem;
 }
