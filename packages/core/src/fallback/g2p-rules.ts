@@ -3,6 +3,8 @@
  *
  * Basic letter-to-sound rules for converting unknown words
  * to phonemes. Used as a fallback when no other strategy works.
+ *
+ * Rules are matched left-to-right, longest patterns first.
  */
 
 import { arpabetToFormat } from '../convert/to-ingglish';
@@ -13,7 +15,14 @@ import type { OutputFormat } from '../types';
  * Used as a fallback when the word isn't in the dictionary.
  */
 export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
-  // Digraphs first (longer patterns)
+  // Trigraphs and longer patterns (must come before shorter matches)
+  { pattern: /^igh/i, phonemes: ['AY1'] }, // light, night, sight (long I, gh silent)
+  { pattern: /^tch/i, phonemes: ['CH'] }, // match, catch (t is silent)
+  { pattern: /^dge/i, phonemes: ['JH'] }, // badge, bridge (d+g+e → single J sound)
+  { pattern: /^tion/i, phonemes: ['SH', 'AH0', 'N'] }, // nation, action
+  { pattern: /^sion/i, phonemes: ['ZH', 'AH0', 'N'] }, // vision, fusion
+
+  // Consonant digraphs
   { pattern: /^sh/i, phonemes: ['SH'] },
   { pattern: /^ch/i, phonemes: ['CH'] },
   { pattern: /^th/i, phonemes: ['TH'] }, // Simplified: always voiceless
@@ -23,6 +32,25 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^ng/i, phonemes: ['NG'] },
   { pattern: /^ck/i, phonemes: ['K'] },
   { pattern: /^qu/i, phonemes: ['K', 'W'] },
+  { pattern: /^wr/i, phonemes: ['R'] }, // write, wrong (w is silent)
+  { pattern: /^kn/i, phonemes: ['N'] }, // knot, knee (k is silent)
+  { pattern: /^gn/i, phonemes: ['N'] }, // gnome, gnat (g is silent)
+
+  // Doubled consonants (same sound as single — English doesn't double sounds)
+  { pattern: /^bb/i, phonemes: ['B'] },
+  { pattern: /^cc(?=[eiy])/i, phonemes: ['K', 'S'] }, // accept, success
+  { pattern: /^cc/i, phonemes: ['K'] }, // account, occur
+  { pattern: /^dd/i, phonemes: ['D'] },
+  { pattern: /^ff/i, phonemes: ['F'] },
+  { pattern: /^gg/i, phonemes: ['G'] },
+  { pattern: /^ll/i, phonemes: ['L'] },
+  { pattern: /^mm/i, phonemes: ['M'] },
+  { pattern: /^nn/i, phonemes: ['N'] },
+  { pattern: /^pp/i, phonemes: ['P'] },
+  { pattern: /^rr/i, phonemes: ['R'] },
+  { pattern: /^ss/i, phonemes: ['S'] },
+  { pattern: /^tt/i, phonemes: ['T'] },
+  { pattern: /^zz/i, phonemes: ['Z'] },
 
   // Vowel digraphs
   { pattern: /^ee/i, phonemes: ['IY1'] },
@@ -55,14 +83,15 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^m/i, phonemes: ['M'] },
   { pattern: /^n/i, phonemes: ['N'] },
   { pattern: /^p/i, phonemes: ['P'] },
+  { pattern: /^q/i, phonemes: ['K'] }, // standalone q (rare: qi, qat)
   { pattern: /^r/i, phonemes: ['R'] },
   { pattern: /^s/i, phonemes: ['S'] },
   { pattern: /^t/i, phonemes: ['T'] },
   { pattern: /^v/i, phonemes: ['V'] },
   { pattern: /^w/i, phonemes: ['W'] },
   { pattern: /^x/i, phonemes: ['K', 'S'] },
-  { pattern: /^y(?=[aeiou])/i, phonemes: ['Y'] }, // consonant y
-  { pattern: /^y/i, phonemes: ['IY1'] }, // vowel y
+  { pattern: /^y(?=[aeiou])/i, phonemes: ['Y'] }, // consonant y (yes, yell)
+  { pattern: /^y/i, phonemes: ['IH1'] }, // vowel y: gym, myth, crypt (short I)
   { pattern: /^z/i, phonemes: ['Z'] },
 
   // Single vowels (default, short sounds)
@@ -98,7 +127,7 @@ export function wordToArpabet(word: string): string[] {
     }
 
     if (!matched) {
-      // Skip unknown characters
+      // Skip unknown characters (numbers, hyphens, etc.)
       remaining = remaining.slice(1);
     }
   }
