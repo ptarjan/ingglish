@@ -38,4 +38,4 @@ export const COMMON_TEST_WORDS = [
  * Note: The CMU dictionary is regularly updated, so some tech words may be added.
  * These are verified not to be in the dictionary as of the current version.
  */
-export const UNKNOWN_TECH_WORDS = ['kubernetes', 'airbnb', 'tiktok', 'chatgpt', 'cryptocurrency'];
+export const UNKNOWN_TECH_WORDS = ['kubernetes', 'airbnb', 'tiktok', 'cryptocurrency'];
