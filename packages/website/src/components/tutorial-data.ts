@@ -21,8 +21,6 @@ export const silentLetterExamples: ExampleWord[] = [
   { english: 'knee', ingglish: 'nee', highlightEn: 'k' },
   { english: 'wrap', ingglish: 'rap', highlightEn: 'w' },
   { english: 'lamb', ingglish: 'lam', highlightEn: 'b' },
-  { english: 'doubt', ingglish: 'dout', highlightEn: 'b' },
-  { english: 'gnaw', ingglish: 'naw', highlightEn: 'g' },
 ];
 
 export const eeSoundExamples: ExampleWord[] = [
