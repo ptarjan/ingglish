@@ -13,12 +13,19 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
   // Irregular words not in CMU dictionary
   chamois: ['SH', 'AE1', 'M', 'IY0'], // /ˈʃæm.i/
+  cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'], // /ˈtʃʌm.li/
   drachm: ['D', 'R', 'AE1', 'M'], // /dræm/ — silent ch
+  islington: ['IH1', 'Z', 'L', 'IH0', 'NG', 'T', 'AH0', 'N'], // /ˈɪz.lɪŋ.tən/
+  obsequies: ['AA1', 'B', 'S', 'IH0', 'K', 'W', 'IY0', 'Z'], // /ˈɑːb.sɪ.kwiz/
+  oppugnant: ['AH0', 'P', 'AH1', 'G', 'N', 'AH0', 'N', 'T'], // /əˈpʌɡ.nənt/
+  oppugners: ['AH0', 'P', 'AH1', 'G', 'N', 'ER0', 'Z'], // /əˈpʌɡ.nərz/
+  phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'], // /ˈfeɪ.ɪ.tən/
   piquet: ['P', 'IH0', 'K', 'EY1'], // /pɪˈkeɪ/ — French card game
   puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // /ˈpjuː.ni/ — legal term
+  streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'], // /ˈstret.əm/
+  terpsichore: ['T', 'ER1', 'P', 'S', 'IH1', 'K', 'ER0', 'IY0'], // /tɜːrpˈsɪk.ər.i/
   victual: ['V', 'IH1', 'T', 'AH0', 'L'], // /ˈvɪt.əl/ — silent c
   victuals: ['V', 'IH1', 'T', 'AH0', 'L', 'Z'],
-  phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'], // /ˈfeɪ.ɪ.tən/
 
   // Tech terms
   git: ['G', 'IH1', 'T'],
