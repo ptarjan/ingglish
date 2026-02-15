@@ -1,6 +1,101 @@
 import { test, expect } from '@playwright/test';
 import { blockExternalNetwork } from './test-utils';
 
+test.describe('Layout Stability (CLS)', () => {
+  test('app shell is present during dictionary loading', async ({ page }) => {
+    await blockExternalNetwork(page);
+
+    // Navigate and immediately check — don't wait for dictionary
+    await page.goto('/');
+
+    // The .app wrapper and header should be present from the start (static shell in index.html)
+    await expect(page.locator('.app')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.header h1')).toBeVisible();
+    await expect(page.locator('.logo')).toBeVisible();
+
+    // Loading spinner should be inside .app > .main, not replacing the whole layout
+    const spinner = page.locator('.loading-spinner');
+    if (await spinner.isVisible()) {
+      // Spinner should be a descendant of .app, not a sibling
+      await expect(page.locator('.app .loading-spinner')).toBeVisible();
+    }
+
+    // Wait for dictionary to finish loading
+    await expect(spinner).not.toBeVisible({ timeout: 15000 });
+
+    // After loading, .app wrapper and header should still be the same elements
+    await expect(page.locator('.app')).toBeVisible();
+    await expect(page.locator('.header h1')).toHaveText('Ingglish');
+  });
+
+  test('CLS is below 0.1 during page load', async ({ page }) => {
+    await blockExternalNetwork(page);
+
+    // Install CLS observer BEFORE navigating.
+    // Uses PerformanceObserver LayoutShift API (not yet in TypeScript's lib.dom).
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access,
+       @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
+       @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands,
+       @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-nullish-coalescing */
+    await page.addInitScript(() => {
+      (window as any).__cls = { total: 0, entries: [] as any[] };
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          const shift = entry as any;
+          if (!shift.hadRecentInput) {
+            const sources = (shift.sources || []).map((s: any) => {
+              const n = s.node;
+              if (!n) {
+                return '(null)';
+              }
+              const name = n.nodeName + (n.className ? '.' + n.className.split(' ').join('.') : '');
+              return `${name} [${Math.round(s.previousRect?.x)}x${Math.round(s.previousRect?.y)} → ${Math.round(s.currentRect?.x)}x${Math.round(s.currentRect?.y)}]`;
+            });
+            (window as any).__cls.total += shift.value;
+            (window as any).__cls.entries.push({
+              value: shift.value,
+              time: Math.round(entry.startTime),
+              sources,
+            });
+          }
+        }
+      });
+      observer.observe({ type: 'layout-shift', buffered: true });
+    });
+
+    await page.goto('/');
+
+    // Wait for app to fully load
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 15000 });
+
+    // Wait for any post-load layout shifts to settle
+    await page.waitForTimeout(500);
+
+    // Collect CLS score
+    const result = await page.evaluate(() => {
+      return (window as any).__cls as {
+        total: number;
+        entries: { value: number; time: number; sources: string[] }[];
+      };
+    });
+    console.log(`CLS: ${result.total.toFixed(4)}`);
+    for (const entry of result.entries) {
+      console.log(`  shift ${entry.value.toFixed(4)} @ ${String(entry.time)}ms:`);
+      for (const src of entry.sources) {
+        console.log(`    ${src}`);
+      }
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access,
+       @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
+       @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands,
+       @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-nullish-coalescing */
+
+    // Good CLS is < 0.1 per Web Vitals
+    expect(result.total).toBeLessThan(0.1);
+  });
+});
+
 test.describe('Text Translator', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);

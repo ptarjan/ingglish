@@ -215,28 +215,10 @@ function App() {
     };
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="loading-screen">
-        <div className="loading-spinner"></div>
-        <p>Loading dictionary...</p>
-      </div>
-    );
-  }
-
-  if (error !== null) {
-    return (
-      <div className="error-screen">
-        <h1>Error</h1>
-        <p>{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="app">
       <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
-        {activeTab !== 'tutorial' && (
+        {activeTab !== 'tutorial' && !isLoading && (
           <button
             className="format-toggle"
             onClick={toggleFormat}
@@ -256,20 +238,22 @@ function App() {
             <img src="logo.svg" alt="Ingglish logo" className="logo" />
             <h1>Ingglish</h1>
           </a>
-          <button
-            className="subtitle-link"
-            onClick={() => {
-              setActiveTab('guide');
-            }}
-          >
-            What if English spelling made sense?
-          </button>
+          {!isLoading && (
+            <button
+              className="subtitle-link"
+              onClick={() => {
+                setActiveTab('guide');
+              }}
+            >
+              What if English spelling made sense?
+            </button>
+          )}
         </div>
       </header>
 
-      {activeTab !== 'tutorial' && (
+      {activeTab !== 'tutorial' && !isLoading && (
         <nav className="tabs">
-          <a className={`tab ${activeTab === 'tutorial' ? 'active' : ''}`} href="#tutorial">
+          <a className="tab" href="#tutorial">
             Tutorial
           </a>
           <a className={`tab ${activeTab === 'text' ? 'active' : ''}`} href="#text">
@@ -294,28 +278,43 @@ function App() {
       )}
 
       <main className="main">
-        {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
-        {activeTab === 'text' && (
-          <ErrorBoundary>
-            <TextTranslator initialText={initialText} onShare={handleShareText} />
-          </ErrorBoundary>
+        {error !== null && (
+          <div className="error-screen">
+            <h1>Error</h1>
+            <p>{error}</p>
+          </div>
         )}
-        {activeTab === 'url' && (
-          <ErrorBoundary>
-            <UrlTranslator
-              initialUrl={initialUrl}
-              onShare={handleShareUrl}
-              onNavigate={handleUrlNavigate}
-            />
-          </ErrorBoundary>
+        {isLoading && (
+          <div className="loading-screen">
+            <div className="loading-spinner"></div>
+          </div>
         )}
-        {activeTab === 'guide' && <SpellingGuide />}
-        {activeTab === 'poems' && <Poems />}
-        {activeTab === 'extension' && <Extension />}
-        {activeTab === 'docs' && (
-          <ErrorBoundary>
-            <Docs />
-          </ErrorBoundary>
+        {!isLoading && error === null && (
+          <>
+            {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
+            {activeTab === 'text' && (
+              <ErrorBoundary>
+                <TextTranslator initialText={initialText} onShare={handleShareText} />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'url' && (
+              <ErrorBoundary>
+                <UrlTranslator
+                  initialUrl={initialUrl}
+                  onShare={handleShareUrl}
+                  onNavigate={handleUrlNavigate}
+                />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'guide' && <SpellingGuide />}
+            {activeTab === 'poems' && <Poems />}
+            {activeTab === 'extension' && <Extension />}
+            {activeTab === 'docs' && (
+              <ErrorBoundary>
+                <Docs />
+              </ErrorBoundary>
+            )}
+          </>
         )}
       </main>
 
