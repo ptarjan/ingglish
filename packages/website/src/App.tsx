@@ -252,7 +252,7 @@ function App() {
       </div>
       <header className="header">
         <div className="header-title">
-          <a className="logo-link" href="https://paultarjan.com/ingglish/">
+          <a className="logo-link" href="https://ingglish.com/">
             <img src="logo.svg" alt="Ingglish logo" className="logo" />
             <h1>Ingglish</h1>
           </a>
