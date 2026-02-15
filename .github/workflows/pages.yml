@@ -66,7 +66,7 @@ jobs:
       - name: Build website for GitHub Pages
         run: npm run build:fast -w @ingglish/website
         env:
-          BASE_URL: /ingglish/
+          BASE_URL: /
           VITE_CORS_PROXY_URL: https://ingglish-cors-proxy.curly-unit-b9e0.workers.dev/?url=
 
       - name: Setup Pages
