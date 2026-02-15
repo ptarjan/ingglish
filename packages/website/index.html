@@ -36,7 +36,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static shell shown while JS loads, replaced by React -->
+      <div class="app">
+        <header class="header">
+          <div class="header-title">
+            <a class="logo-link" href="https://ingglish.com/">
+              <img src="/logo.svg" alt="Ingglish logo" class="logo" width="56" height="56" />
+              <h1>Ingglish</h1>
+            </a>
+          </div>
+        </header>
+        <div class="loading-screen" style="min-height: auto; flex: 1;">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
