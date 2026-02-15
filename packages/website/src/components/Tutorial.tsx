@@ -7,6 +7,7 @@ import {
   eeSoundExamples,
   aySoundExamples,
   simplifyExamples,
+  thDhExamples,
   paragraphWords,
   stepCaptions,
   poemWords,
@@ -502,6 +503,17 @@ function Section3_Transform() {
         previousDone={completedStep >= 1}
         onComplete={() => {
           markComplete(2);
+        }}
+      />
+      <SimpleRuleGroup
+        title="&ldquo;Th&rdquo; hides two sounds"
+        caption={
+          'Say "thin," then "the" — feel the vibration? Different sounds, different spellings. Only 5 common words use "dh": the, that, this, with, there.'
+        }
+        examples={thDhExamples}
+        previousDone={completedStep >= 2}
+        onComplete={() => {
+          markComplete(3);
         }}
       />
     </section>

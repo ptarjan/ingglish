@@ -47,6 +47,14 @@ export const simplifyExamples: ExampleWord[] = [
   { english: 'nation', ingglish: 'nayshun', highlightEn: 'tion', highlightIng: 'shun' },
 ];
 
+export const thDhExamples: ExampleWord[] = [
+  { english: 'think', ingglish: 'thingk', highlightEn: 'th', highlightIng: 'th' },
+  { english: 'the', ingglish: 'dhu', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'this', ingglish: 'dhis', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'that', ingglish: 'dhat', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'mother', ingglish: 'mudher', highlightEn: 'th', highlightIng: 'dh' },
+];
+
 // Progressive paragraph data
 // Steps match the "How it works" teaching order:
 // 1 = silent letters, 2 = one sound one spelling (vowels),
