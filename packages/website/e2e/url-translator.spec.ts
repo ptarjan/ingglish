@@ -220,10 +220,8 @@ test.describe('URL Translator Navigation', () => {
     // URL should update to include the hash
     await expect(input).toHaveValue(/page-a#section-two/, { timeout: 5000 });
 
-    // Wait for any pending network activity to complete
-    await page.waitForLoadState('networkidle');
-
-    // No new proxy requests should have been made (this is the key assertion)
+    // Give any proxy requests a chance to fire, then verify none were made
+    await page.waitForTimeout(1000);
     expect(proxyRequestCount).toBe(0);
 
     // Page should still be translated
