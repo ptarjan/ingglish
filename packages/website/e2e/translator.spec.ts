@@ -96,6 +96,33 @@ test.describe('Layout Stability (CLS)', () => {
     // Good CLS is < 0.1 per Web Vitals
     expect(result.total).toBeLessThan(0.1);
   });
+
+  test('progressive controls do not shift when stepping', async ({ page }) => {
+    await blockExternalNetwork(page);
+    await page.goto('/');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+
+    // Scroll to the progressive section
+    const controls = page.locator('.progressive-controls');
+    await controls.scrollIntoViewIfNeeded();
+    await expect(controls).toBeVisible();
+
+    const boxBefore = await controls.boundingBox();
+    expect(boxBefore).not.toBeNull();
+
+    // Click Next through all steps
+    const nextBtn = page.locator('.progressive-btn-next');
+    for (let i = 0; i < 6; i++) {
+      await nextBtn.click();
+      await page.waitForTimeout(150);
+    }
+
+    const boxAfter = await controls.boundingBox();
+    expect(boxAfter).not.toBeNull();
+    if (boxBefore && boxAfter) {
+      expect(boxAfter.y).toBe(boxBefore.y);
+    }
+  });
 });
 
 test.describe('Text Translator', () => {
