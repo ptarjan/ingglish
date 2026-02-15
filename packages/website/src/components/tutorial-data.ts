@@ -337,7 +337,7 @@ export const poemWords: PoemWord[] = [
   { e: 'mastered', i: 'masterd', s: 24 },
   { e: 'it', i: 'it', s: 24 },
   { e: 'when', i: 'wen', s: 24 },
-  { e: 'I', i: 'ai', s: 24 },
+  { e: 'I', i: 'Ai', s: 24 },
   { e: 'was', i: 'woz', s: 24 },
   { e: 'five!', i: 'faiv!', s: 24 },
 ];
