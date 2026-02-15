@@ -60,7 +60,7 @@ function SpellingGuide(): React.JSX.Element {
           >
             spelling reforms
           </a>{' '}
-          have been proposed over the centuries—from{' '}
+          have been proposed over the centuries, from{' '}
           <a
             href="https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet"
             target="_blank"

@@ -99,12 +99,12 @@ export const paragraphWords: ParagraphWord[] = [
 
 export const stepCaptions = [
   '',
-  'Drop the silent letters \u2014 knight, could.',
-  'One sound, one spelling \u2014 consistent vowels.',
-  '"Ph" is just "f" \u2014 phone, physician.',
-  'C picks a lane \u2014 city, office, schedule.',
-  'The silent "ght" club \u2014 flight, night, caught.',
-  '"Th" vs "dh" \u2014 the gets its own sound.',
+  'Drop the silent letters: knight, could.',
+  'One sound, one spelling: consistent vowels.',
+  '"Ph" is just "f": phone, physician.',
+  'C picks a lane: city, office, schedule.',
+  'The silent "ght" club: flight, night, caught.',
+  '"Th" vs "dh": the gets its own sound.',
 ];
 
 // "Hints on Pronunciation for Foreigners" (attributed to T.S. Watt, 1954).

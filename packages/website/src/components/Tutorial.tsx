@@ -508,7 +508,7 @@ function Section3_Transform() {
       <SimpleRuleGroup
         title="&ldquo;Th&rdquo; hides two sounds"
         caption={
-          'Say "thin," then "the" — feel the vibration? Different sounds, different spellings. Only 5 common words use "dh": the, that, this, with, there.'
+          'Say "thin," then "the." Feel the vibration? Different sounds, different spellings. Only 5 common words use "dh": the, that, this, with, there.'
         }
         examples={thDhExamples}
         previousDone={completedStep >= 2}
@@ -743,7 +743,7 @@ function Section6_ReadingTest() {
         <p className="reading-attribution">&mdash; {readingTestAttribution}</p>
       </div>
       <p className="tutorial-punchline">
-        You just read Shakespeare &mdash; without learning a single rule.
+        You just read Shakespeare. Without learning a single rule.
       </p>
     </section>
   );
