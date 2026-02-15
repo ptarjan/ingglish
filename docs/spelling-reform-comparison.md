@@ -93,7 +93,7 @@ Over 1 billion people read English. Any reform makes existing text harder to rea
 
 Unlike historical reforms that required institutional buy-in, Ingglish provides tools for individual exploration:
 - **Text translator**: Paste any text to see it in Ingglish instantly
-- **URL translator**: View any webpage translated while preserving layout ([try it on Wikipedia](https://paultarjan.com/ingglish/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
+- **URL translator**: View any webpage translated while preserving layout ([try it on Wikipedia](https://ingglish.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
 - **Chrome extension**: Browse the entire web in Ingglish
 - **Bidirectional translation**: Read Ingglish back to standard English
 

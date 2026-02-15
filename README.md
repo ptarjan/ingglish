@@ -4,7 +4,7 @@
 
 Phonetic English spelling translator. Words are spelled exactly as they sound - no exceptions!
 
-**[Try it live →](https://paultarjan.com/ingglish/)** · **[Spelling Guide](https://paultarjan.com/ingglish/#guide)**
+**[Try it live →](https://ingglish.com/)** · **[Spelling Guide](https://ingglish.com/#guide)**
 
 ## Overview
 
