@@ -50,24 +50,76 @@ describe('unknown-words', () => {
       expect(phonemes.length).toBeGreaterThan(0);
     });
 
-    it('should handle digraphs', () => {
-      const phonemes = wordToArpabet('ship');
-      expect(phonemes).toContain('SH');
+    it('should handle consonant digraphs', () => {
+      expect(wordToArpabet('ship')).toContain('SH');
+      expect(wordToArpabet('chat')).toContain('CH');
+      expect(wordToArpabet('think')).toContain('TH');
+      expect(wordToArpabet('phone')).toContain('F'); // ph → F
+      expect(wordToArpabet('quick')).toContain('K'); // qu → K W
+      expect(wordToArpabet('quick')).toContain('W');
     });
 
-    it('should handle th', () => {
-      const phonemes = wordToArpabet('think');
-      expect(phonemes).toContain('TH');
+    it('should handle vowel digraphs', () => {
+      expect(wordToArpabet('see')).toContain('IY1'); // ee
+      expect(wordToArpabet('moon')).toContain('UW1'); // oo
+      expect(wordToArpabet('rain')).toContain('EY1'); // ai
+      expect(wordToArpabet('coin')).toContain('OY1'); // oi
+      expect(wordToArpabet('out')).toContain('AW1'); // ou
+      expect(wordToArpabet('boat')).toContain('OW1'); // oa
+      expect(wordToArpabet('blue')).toContain('UW1'); // ue
+      expect(wordToArpabet('vein')).toContain('EY1'); // ei
     });
 
-    it('should handle ch', () => {
-      const phonemes = wordToArpabet('chat');
-      expect(phonemes).toContain('CH');
+    it('should handle R-controlled vowels', () => {
+      expect(wordToArpabet('bird')).toContain('ER1'); // ir
+      expect(wordToArpabet('burn')).toContain('ER1'); // ur
+      expect(wordToArpabet('fern')).toContain('ER1'); // er
     });
 
-    it('should handle double vowels', () => {
-      const phonemes = wordToArpabet('see');
-      expect(phonemes).toContain('IY1');
+    it('should handle trigraphs', () => {
+      expect(wordToArpabet('night')).toContain('AY1'); // igh → long I
+      expect(wordToArpabet('match')).toContain('CH'); // tch → CH
+      expect(wordToArpabet('match')).not.toContain('T'); // t is silent in tch
+      expect(wordToArpabet('badge')).toEqual(['B', 'AE1', 'JH']); // dge → JH
+    });
+
+    it('should handle tion/sion', () => {
+      expect(wordToArpabet('tion')).toEqual(['SH', 'AH0', 'N']);
+      expect(wordToArpabet('sion')).toEqual(['ZH', 'AH0', 'N']);
+    });
+
+    it('should handle silent consonant pairs', () => {
+      expect(wordToArpabet('write')).not.toContain('W'); // wr → R
+      expect(wordToArpabet('knot')).not.toContain('K'); // kn → N
+      expect(wordToArpabet('gnat')).not.toContain('G'); // gn → N
+    });
+
+    it('should collapse doubled consonants', () => {
+      expect(wordToArpabet('buzz')).toEqual(['B', 'AH1', 'Z']); // zz → Z
+      expect(wordToArpabet('bell')).toEqual(['B', 'EH1', 'L']); // ll → L
+      expect(wordToArpabet('putt')).toEqual(['P', 'AH1', 'T']); // tt → T
+    });
+
+    it('should handle standalone q', () => {
+      expect(wordToArpabet('qi')).toEqual(['K', 'IH1']);
+      expect(wordToArpabet('qat')).toEqual(['K', 'AE1', 'T']);
+    });
+
+    it('should treat y as short I when used as vowel', () => {
+      expect(wordToArpabet('gym')).toContain('IH1'); // not IY1
+      expect(wordToArpabet('myth')).toContain('IH1');
+    });
+
+    it('should treat y as consonant before vowels', () => {
+      expect(wordToArpabet('yell')).toContain('Y');
+    });
+
+    it('should handle every letter a-z', () => {
+      for (let i = 0; i < 26; i++) {
+        const letter = String.fromCharCode(97 + i);
+        const phonemes = wordToArpabet(letter);
+        expect(phonemes.length).toBeGreaterThan(0);
+      }
     });
   });
 
@@ -79,9 +131,76 @@ describe('unknown-words', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should handle made-up words', () => {
-      const result = translateWithRules('blorg');
-      expect(result).toBeDefined();
+    it('should translate basic CVC words', () => {
+      expect(translateWithRules('bat')).toBe('bat');
+      expect(translateWithRules('kit')).toBe('kit');
+      expect(translateWithRules('dog')).toBe('dog');
+      expect(translateWithRules('map')).toBe('map');
+    });
+
+    it('should translate words with consonant digraphs', () => {
+      expect(translateWithRules('ship')).toBe('ship');
+      expect(translateWithRules('chip')).toBe('chip');
+      expect(translateWithRules('thin')).toBe('thin');
+    });
+
+    it('should translate words with vowel digraphs', () => {
+      expect(translateWithRules('boat')).toBe('boht');
+      expect(translateWithRules('rain')).toBe('rayn');
+      expect(translateWithRules('coin')).toBe('koin');
+      expect(translateWithRules('tree')).toBe('tree');
+    });
+
+    it('should translate words with new vowel digraphs (oa, ue, ei)', () => {
+      expect(translateWithRules('soap')).toBe('sohp');
+      expect(translateWithRules('coal')).toBe('kohl');
+      expect(translateWithRules('blue')).toBe('bluu');
+      expect(translateWithRules('clue')).toBe('kluu');
+      expect(translateWithRules('vein')).toBe('vayn');
+    });
+
+    it('should translate words with R-controlled vowels', () => {
+      expect(translateWithRules('bird')).toBe('berd');
+      expect(translateWithRules('burn')).toBe('bern');
+      expect(translateWithRules('fern')).toBe('fern');
+      expect(translateWithRules('her')).toBe('her');
+    });
+
+    it('should translate words with trigraphs', () => {
+      expect(translateWithRules('knight')).toBe('nait');
+      expect(translateWithRules('flight')).toBe('flait');
+      expect(translateWithRules('match')).toBe('mach');
+      expect(translateWithRules('badge')).toBe('baj');
+    });
+
+    it('should translate words with tion/sion', () => {
+      expect(translateWithRules('nation')).toBe('nashun');
+      expect(translateWithRules('vision')).toBe('vizhun');
+    });
+
+    it('should translate words with silent consonant pairs', () => {
+      expect(translateWithRules('wrong')).toBe('rong');
+      expect(translateWithRules('knot')).toBe('not');
+      expect(translateWithRules('gnat')).toBe('nat');
+    });
+
+    it('should translate words with doubled consonants', () => {
+      expect(translateWithRules('buzz')).toBe('buz');
+      expect(translateWithRules('bell')).toBe('bel');
+      expect(translateWithRules('apple')).toBe('aple');
+    });
+
+    it('should translate words with y as vowel', () => {
+      expect(translateWithRules('gym')).toBe('jim');
+      expect(translateWithRules('myth')).toBe('mith');
+      expect(translateWithRules('crypt')).toBe('kript');
+      expect(translateWithRules('glyph')).toBe('glif');
+    });
+
+    it('should translate compound-style words', () => {
+      expect(translateWithRules('hashtag')).toBe('hashtag');
+      expect(translateWithRules('fintech')).toBe('fintech');
+      expect(translateWithRules('chatbot')).toBe('chatbot');
     });
   });
 

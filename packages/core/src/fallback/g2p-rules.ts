@@ -56,6 +56,7 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^ee/i, phonemes: ['IY1'] },
   { pattern: /^ea/i, phonemes: ['IY1'] },
   { pattern: /^oo/i, phonemes: ['UW1'] },
+  { pattern: /^oa/i, phonemes: ['OW1'] }, // boat, road, coal
   { pattern: /^ou/i, phonemes: ['AW1'] },
   { pattern: /^ow/i, phonemes: ['OW1'] },
   { pattern: /^oi/i, phonemes: ['OY1'] },
@@ -64,8 +65,15 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^ay/i, phonemes: ['EY1'] },
   { pattern: /^au/i, phonemes: ['AO1'] },
   { pattern: /^aw/i, phonemes: ['AO1'] },
+  { pattern: /^ue/i, phonemes: ['UW1'] }, // blue, true, clue
   { pattern: /^ie/i, phonemes: ['IY1'] },
+  { pattern: /^ei/i, phonemes: ['EY1'] }, // vein, rein, reign
   { pattern: /^ey/i, phonemes: ['IY1'] },
+
+  // R-controlled vowels (must come before single vowels)
+  { pattern: /^ir/i, phonemes: ['ER1'] }, // bird, first, girl
+  { pattern: /^ur/i, phonemes: ['ER1'] }, // burn, turn, fur
+  { pattern: /^er/i, phonemes: ['ER1'] }, // fern, her, term
 
   // Single consonants
   { pattern: /^b/i, phonemes: ['B'] },
