@@ -1,1 +1,16 @@
-npm run lint
+remote="$1"
+url="$2"
+
+# Get files changed vs remote tracking branch
+changed_files=$(git diff --name-only --diff-filter=ACMR "$(git merge-base HEAD "@{u}" 2>/dev/null || echo HEAD~1)")
+
+ts_files=$(echo "$changed_files" | grep -E '\.(ts|tsx)$' || true)
+css_files=$(echo "$changed_files" | grep -E '\.css$' || true)
+
+if [ -n "$ts_files" ]; then
+  echo "$ts_files" | xargs npx eslint
+fi
+
+if [ -n "$css_files" ]; then
+  echo "$css_files" | xargs npx stylelint
+fi
