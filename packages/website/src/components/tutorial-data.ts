@@ -49,9 +49,9 @@ export const simplifyExamples: ExampleWord[] = [
 
 export const thDhExamples: ExampleWord[] = [
   { english: 'think', ingglish: 'thingk', highlightEn: 'th', highlightIng: 'th' },
+  { english: 'thought', ingglish: 'thawt', highlightEn: 'th', highlightIng: 'th' },
   { english: 'the', ingglish: 'dhu', highlightEn: 'th', highlightIng: 'dh' },
   { english: 'this', ingglish: 'dhis', highlightEn: 'th', highlightIng: 'dh' },
-  { english: 'that', ingglish: 'dhat', highlightEn: 'th', highlightIng: 'dh' },
   { english: 'mother', ingglish: 'mudher', highlightEn: 'th', highlightIng: 'dh' },
 ];
 
