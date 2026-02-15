@@ -406,7 +406,6 @@
 }
 
 .poem-paragraph {
-  position: relative;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
@@ -415,9 +414,8 @@
 }
 
 .poem-controls {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  float: right;
+  margin: -0.5rem -0.5rem 0 0.5rem;
 }
 
 .poem-control-btn {
@@ -449,7 +447,6 @@
 
 .poem-word.transformed {
   color: var(--color-primary);
-  font-weight: 600;
 }
 
 .poem-word.highlighted {
