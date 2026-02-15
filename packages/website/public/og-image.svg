@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+    <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8183f5"/>
+      <stop offset="100%" style="stop-color:#bb7cf9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Logo circle -->
+  <circle cx="600" cy="195" r="90" fill="url(#logo-bg)"/>
+
+  <!-- Logo: Letter I -->
+  <rect x="558" y="150" width="13" height="81" rx="4" fill="white"/>
+  <rect x="554" y="150" width="22" height="11" rx="3" fill="white"/>
+  <rect x="554" y="220" width="22" height="11" rx="3" fill="white"/>
+
+  <!-- Logo: Phonetic wave -->
+  <path d="M586 195 Q598 170 610 195 Q622 220 634 195" stroke="white" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+  <!-- Logo: Sound dot -->
+  <circle cx="648" cy="178" r="8" fill="white"/>
+
+  <!-- Title -->
+  <text x="600" y="350" font-family="Inter, system-ui, sans-serif" font-size="64" font-weight="700" fill="white" text-anchor="middle">Ingglish</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="410" font-family="Inter, system-ui, sans-serif" font-size="28" fill="rgba(255,255,255,0.85)" text-anchor="middle">What if English spelling made sense?</text>
+
+  <!-- Examples -->
+  <text x="600" y="520" font-family="Inter, system-ui, sans-serif" font-size="24" fill="rgba(255,255,255,0.65)" text-anchor="middle">though → thoh · through → throo · enough → enuf</text>
+</svg>
