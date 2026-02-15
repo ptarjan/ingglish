@@ -5,6 +5,7 @@ import {
   translateUnknown,
   translateAsAcronym,
   translateAsCompound,
+  translateAsBritish,
   wordToArpabet,
   translateWithPhonemize,
   preloadPhonemize,
@@ -358,6 +359,61 @@ describe('unknown-words', () => {
       // Too short to be a valid prefix + stem
       const result = translateWithStemming('una');
       expect(result).toBeNull();
+    });
+  });
+
+  describe('translateAsBritish', () => {
+    it('should convert -our to -or (colour→color)', () => {
+      const result = translateAsBritish('colour');
+      expect(result).not.toBeNull();
+      // Should match the CMU pronunciation of "color"
+      expect(result).toBe(translateAsBritish('colour'));
+    });
+
+    it('should convert -ise to -ize (realise→realize)', () => {
+      const result = translateAsBritish('realise');
+      expect(result).not.toBeNull();
+    });
+
+    it('should convert -re to -er (centre→center)', () => {
+      const result = translateAsBritish('centre');
+      expect(result).not.toBeNull();
+    });
+
+    it('should convert -isation to -ization', () => {
+      const result = translateAsBritish('organisation');
+      expect(result).not.toBeNull();
+    });
+
+    it('should convert -ence to -ense (defence→defense)', () => {
+      const result = translateAsBritish('defence');
+      expect(result).not.toBeNull();
+    });
+
+    it('should convert -ogue to -og (catalogue→catalog)', () => {
+      const result = translateAsBritish('catalogue');
+      expect(result).not.toBeNull();
+    });
+
+    it('should return null for words that are not British spellings', () => {
+      const result = translateAsBritish('xyzzy');
+      expect(result).toBeNull();
+    });
+
+    it('should return null when American form is not in dictionary', () => {
+      // "blorgour" → "blorgor" — not a real word
+      const result = translateAsBritish('blorgour');
+      expect(result).toBeNull();
+    });
+
+    it('should handle -oured suffix (favoured→favored)', () => {
+      const result = translateAsBritish('favoured');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle grey→gray', () => {
+      const result = translateAsBritish('grey');
+      expect(result).not.toBeNull();
     });
   });
 

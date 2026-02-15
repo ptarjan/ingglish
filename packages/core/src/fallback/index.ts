@@ -4,10 +4,11 @@
  * Strategy order:
  * 1. Custom pronunciations (tech terms, brand names)
  * 2. Initialisms (spell out letters: URL -> you-are-ell)
- * 3. Compound word splitting (github -> git + hub)
- * 4. Stemming (find known base word + known suffix)
- * 5. Neural G2P via phonemize (if available)
- * 6. Rule-based grapheme-to-phoneme
+ * 3. British spelling normalization (colour -> color)
+ * 4. Compound word splitting (github -> git + hub)
+ * 5. Stemming (find known base word + known suffix)
+ * 6. Neural G2P via phonemize (if available)
+ * 7. Rule-based grapheme-to-phoneme
  */
 
 import { arpabetToFormat } from '../convert/to-ingglish';
@@ -17,6 +18,7 @@ import {
   getCustomPronunciation,
 } from './custom-words';
 import { isInitialism, translateAsAcronym, LETTER_PHONEMES, KNOWN_INITIALISMS } from './acronyms';
+import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
@@ -34,6 +36,8 @@ export {
   KNOWN_INITIALISMS,
   isInitialism,
   translateAsAcronym,
+  // British spelling
+  translateAsBritish,
   // Compounds
   translateAsCompound,
   // Stemming
@@ -55,10 +59,11 @@ export {
  * Strategy order:
  * 1. Check custom pronunciations first
  * 2. Check if it's an acronym (spell out letters)
- * 3. Try compound word splitting (git+hub)
- * 4. Try stemming (find known base word + known suffix)
- * 5. Try phonemize (neural G2P) if available
- * 6. Try grapheme-to-phoneme rules
+ * 3. Try British spelling normalization (colour -> color)
+ * 4. Try compound word splitting (git+hub)
+ * 5. Try stemming (find known base word + known suffix)
+ * 6. Try phonemize (neural G2P) if available
+ * 7. Try grapheme-to-phoneme rules
  *
  * @param word The unknown word
  * @param format The output format
@@ -74,6 +79,12 @@ export function translateUnknown(word: string, format: OutputFormat = 'ingglish'
   // Check for initialisms (URL -> yooahrel)
   if (isInitialism(word)) {
     return translateAsAcronym(word, format);
+  }
+
+  // Try British spelling normalization (colour -> color)
+  const britishResult = translateAsBritish(word, format);
+  if (britishResult !== null && britishResult.length > 0) {
+    return britishResult;
   }
 
   // Try compound word splitting (github -> git + hub)
