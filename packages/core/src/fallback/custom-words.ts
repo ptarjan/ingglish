@@ -11,6 +11,15 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   vs: ['V', 'ER1', 'S', 'AH0', 'S'], // versus
   devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
+  // Irregular words not in CMU dictionary
+  chamois: ['SH', 'AE1', 'M', 'IY0'], // /ˈʃæm.i/
+  drachm: ['D', 'R', 'AE1', 'M'], // /dræm/ — silent ch
+  piquet: ['P', 'IH0', 'K', 'EY1'], // /pɪˈkeɪ/ — French card game
+  puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // /ˈpjuː.ni/ — legal term
+  victual: ['V', 'IH1', 'T', 'AH0', 'L'], // /ˈvɪt.əl/ — silent c
+  victuals: ['V', 'IH1', 'T', 'AH0', 'L', 'Z'],
+  phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'], // /ˈfeɪ.ɪ.tən/
+
   // Tech terms
   git: ['G', 'IH1', 'T'],
   npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // spelled out

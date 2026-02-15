@@ -84,6 +84,29 @@ describe('unknown-words', () => {
       expect(wordToArpabet('badge')).toEqual(['B', 'AE1', 'JH']); // dge → JH
     });
 
+    it('should handle eigh as long A', () => {
+      expect(wordToArpabet('weigh')).toContain('EY1'); // eigh → long A
+      expect(wordToArpabet('neigh')).toContain('EY1');
+      expect(wordToArpabet('sleigh')).toContain('EY1');
+      // gh should be silent after eigh
+      expect(wordToArpabet('weigh')).not.toContain('G');
+    });
+
+    it('should handle augh as AO', () => {
+      expect(wordToArpabet('caught')).toContain('AO1'); // augh → AO
+      expect(wordToArpabet('taught')).toContain('AO1');
+      expect(wordToArpabet('faugh')).toContain('AO1');
+      // gh should be silent after augh
+      expect(wordToArpabet('faugh')).not.toContain('G');
+    });
+
+    it('should handle ssion as SH-un', () => {
+      expect(wordToArpabet('mission')).toContain('SH');
+      expect(wordToArpabet('passion')).toContain('SH');
+      // Should not contain ZH (that's for -sion, not -ssion)
+      expect(wordToArpabet('mission')).not.toContain('ZH');
+    });
+
     it('should handle tion/sion', () => {
       expect(wordToArpabet('tion')).toEqual(['SH', 'AH0', 'N']);
       expect(wordToArpabet('sion')).toEqual(['ZH', 'AH0', 'N']);
@@ -92,8 +115,16 @@ describe('unknown-words', () => {
     it('should handle silent consonant pairs', () => {
       expect(wordToArpabet('write')).not.toContain('W'); // wr → R
       expect(wordToArpabet('knot')).not.toContain('K'); // kn → N
-      expect(wordToArpabet('gnat')).not.toContain('G'); // gn → N
+      expect(wordToArpabet('gnat')).not.toContain('G'); // gn → N (word-initial)
       expect(wordToArpabet('rhyme')).not.toContain('HH'); // rh → R
+    });
+
+    it('should only silence gn at word start, not mid-word', () => {
+      // Word-initial: g is silent (gnome, gnat)
+      expect(wordToArpabet('gnat')).not.toContain('G');
+      // Mid-word: g is pronounced (signal, oppugnant)
+      expect(wordToArpabet('signal')).toContain('G');
+      expect(wordToArpabet('oppugnant')).toContain('G');
     });
 
     it('should handle initial silent p (ps, pn)', () => {
@@ -319,6 +350,26 @@ describe('unknown-words', () => {
       expect(translateWithRules('little')).toBe('litul');
       expect(translateWithRules('bottle')).toBe('botul');
       expect(translateWithRules('candle')).toBe('kandul');
+    });
+
+    it('should translate eigh words', () => {
+      expect(translateWithRules('inveigh')).toBe('invay');
+      expect(translateWithRules('weigh')).toBe('way');
+      expect(translateWithRules('sleigh')).toBe('slay');
+    });
+
+    it('should translate augh words', () => {
+      expect(translateWithRules('faugh')).toBe('faw');
+    });
+
+    it('should translate ssion words', () => {
+      expect(translateWithRules('mission')).toBe('mishun');
+    });
+
+    it('should not silence g before n in mid-word', () => {
+      // oppugnant should have G sound, not just N
+      const result = translateWithRules('oppugnant');
+      expect(result).toContain('g');
     });
   });
 

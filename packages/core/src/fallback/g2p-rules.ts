@@ -15,10 +15,15 @@ import type { OutputFormat } from '../types';
  * Used as a fallback when the word isn't in the dictionary.
  */
 export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
-  // Trigraphs and longer patterns (must come before shorter matches)
+  // Quadgraphs and longer patterns (must come before shorter matches)
+  { pattern: /^eigh/i, phonemes: ['EY1'] }, // weigh, neigh, sleigh (long A, gh silent)
+  { pattern: /^augh/i, phonemes: ['AO1'] }, // caught, taught, faugh (aw sound, gh silent)
+
+  // Trigraphs
   { pattern: /^igh/i, phonemes: ['AY1'] }, // light, night, sight (long I, gh silent)
   { pattern: /^tch/i, phonemes: ['CH'] }, // match, catch (t is silent)
   { pattern: /^dge/i, phonemes: ['JH'] }, // badge, bridge (d+g+e → single J sound)
+  { pattern: /^ssion/i, phonemes: ['SH', 'AH0', 'N'] }, // mission, passion (like -tion)
   { pattern: /^tion/i, phonemes: ['SH', 'AH0', 'N'] }, // nation, action
   { pattern: /^sion/i, phonemes: ['ZH', 'AH0', 'N'] }, // vision, fusion
   { pattern: /^ture/i, phonemes: ['CH', 'ER1'] }, // nature, picture, future
@@ -37,7 +42,8 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^sc(?=[ei])/i, phonemes: ['S'] }, // scene, science (c is silent)
   { pattern: /^wr/i, phonemes: ['R'] }, // write, wrong (w is silent)
   { pattern: /^kn/i, phonemes: ['N'] }, // knot, knee (k is silent)
-  { pattern: /^gn/i, phonemes: ['N'] }, // gnome, gnat (g is silent)
+  // Note: gn is handled in pre-processing (word-initial only: gnome, gnat)
+  // Mid-word gn is pronounced as G+N (signal, oppugnant)
   { pattern: /^rh/i, phonemes: ['R'] }, // rhyme, rhythm (h is silent)
 
   // Doubled consonants (same sound as single — English doesn't double sounds)
@@ -146,9 +152,13 @@ export function wordToArpabet(word: string): string[] {
   const result: string[] = [];
   let remaining = word.toLowerCase();
 
-  // Pre-processing: strip initial silent 'p' (psalm, psychology, pneumonia)
-  if (remaining.length > 2 && (remaining.startsWith('ps') || remaining.startsWith('pn'))) {
-    remaining = remaining.slice(1);
+  // Pre-processing: strip initial silent consonants
+  // Silent 'p' before s/n (psalm, psychology, pneumonia)
+  // Silent 'g' before n (gnome, gnat, gnu) — only word-initial; mid-word gn is /gn/
+  if (remaining.length > 2) {
+    if (remaining.startsWith('ps') || remaining.startsWith('pn') || remaining.startsWith('gn')) {
+      remaining = remaining.slice(1);
+    }
   }
 
   // Pre-processing: trailing silent 'e' patterns (mutually exclusive)
