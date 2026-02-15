@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { startTransition, useEffect, useRef, useState, useCallback } from 'react';
 import { translateSyncWithMapping } from '@ingglish/core';
 import { MappedWordDisplay } from './TextTranslator';
 import {
@@ -561,7 +561,9 @@ function Section4_Progressive() {
           <button
             className="progressive-btn"
             onClick={() => {
-              setCurrentStep((s) => Math.max(0, s - 1));
+              startTransition(() => {
+                setCurrentStep((s) => Math.max(0, s - 1));
+              });
             }}
             disabled={currentStep === 0}
           >
@@ -573,7 +575,9 @@ function Section4_Progressive() {
           <button
             className="progressive-btn progressive-btn-next"
             onClick={() => {
-              setCurrentStep((s) => Math.min(6, s + 1));
+              startTransition(() => {
+                setCurrentStep((s) => Math.min(6, s + 1));
+              });
             }}
             disabled={currentStep === 6}
           >
