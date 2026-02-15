@@ -4,16 +4,16 @@ import worker from './index';
 
 describe('cors-proxy', () => {
   describe('isAllowedOrigin', () => {
-    const allowedOrigins = 'https://paultarjan.com,http://localhost:5173';
+    const allowedOrigins = 'https://ingglish.com,http://localhost:5173';
 
     it('should allow exact match', () => {
-      expect(isAllowedOrigin('https://paultarjan.com', allowedOrigins)).toBe(true);
+      expect(isAllowedOrigin('https://ingglish.com', allowedOrigins)).toBe(true);
       expect(isAllowedOrigin('http://localhost:5173', allowedOrigins)).toBe(true);
     });
 
     it('should reject non-matching origins', () => {
       expect(isAllowedOrigin('https://evil.com', allowedOrigins)).toBe(false);
-      expect(isAllowedOrigin('https://paultarjan.com.evil.com', allowedOrigins)).toBe(false);
+      expect(isAllowedOrigin('https://ingglish.com.evil.com', allowedOrigins)).toBe(false);
     });
 
     it('should reject null origin', () => {
@@ -91,7 +91,7 @@ describe('cors-proxy', () => {
   });
 
   describe('worker handler', () => {
-    const env = { ALLOWED_ORIGINS: 'https://paultarjan.com,http://localhost:5173' };
+    const env = { ALLOWED_ORIGINS: 'https://ingglish.com,http://localhost:5173' };
 
     beforeEach(() => {
       vi.restoreAllMocks();
@@ -100,12 +100,12 @@ describe('cors-proxy', () => {
     it('should handle OPTIONS preflight with valid origin', async () => {
       const request = new Request('https://proxy.example.com/', {
         method: 'OPTIONS',
-        headers: { Origin: 'https://paultarjan.com' },
+        headers: { Origin: 'https://ingglish.com' },
       });
 
       const response = await worker.fetch(request, env);
       expect(response.status).toBe(204);
-      expect(response.headers.get('Access-Control-Allow-Origin')).toBe('https://paultarjan.com');
+      expect(response.headers.get('Access-Control-Allow-Origin')).toBe('https://ingglish.com');
     });
 
     it('should reject OPTIONS preflight with invalid origin', async () => {
@@ -121,7 +121,7 @@ describe('cors-proxy', () => {
     it('should reject non-GET methods', async () => {
       const request = new Request('https://proxy.example.com/', {
         method: 'POST',
-        headers: { Origin: 'https://paultarjan.com' },
+        headers: { Origin: 'https://ingglish.com' },
       });
 
       const response = await worker.fetch(request, env);
@@ -150,7 +150,7 @@ describe('cors-proxy', () => {
     it('should return 400 if url parameter is missing', async () => {
       const request = new Request('https://proxy.example.com/', {
         method: 'GET',
-        headers: { Origin: 'https://paultarjan.com' },
+        headers: { Origin: 'https://ingglish.com' },
       });
 
       const response = await worker.fetch(request, env);
@@ -161,7 +161,7 @@ describe('cors-proxy', () => {
     it('should return 400 for invalid URL', async () => {
       const request = new Request('https://proxy.example.com/?url=not-a-url', {
         method: 'GET',
-        headers: { Origin: 'https://paultarjan.com' },
+        headers: { Origin: 'https://ingglish.com' },
       });
 
       const response = await worker.fetch(request, env);
@@ -172,7 +172,7 @@ describe('cors-proxy', () => {
     it('should return 400 for non-http protocols', async () => {
       const request = new Request('https://proxy.example.com/?url=ftp://example.com', {
         method: 'GET',
-        headers: { Origin: 'https://paultarjan.com' },
+        headers: { Origin: 'https://ingglish.com' },
       });
 
       const response = await worker.fetch(request, env);
@@ -192,7 +192,7 @@ describe('cors-proxy', () => {
       for (const url of privateUrls) {
         const request = new Request(`https://proxy.example.com/?url=${encodeURIComponent(url)}`, {
           method: 'GET',
-          headers: { Origin: 'https://paultarjan.com' },
+          headers: { Origin: 'https://ingglish.com' },
         });
 
         const response = await worker.fetch(request, env);
