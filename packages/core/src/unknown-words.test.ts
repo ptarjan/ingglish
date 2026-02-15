@@ -411,6 +411,21 @@ describe('unknown-words', () => {
       const result = translateWithStemming('una');
       expect(result).toBeNull();
     });
+
+    it('should handle i→y stem change (loveliest→lovely+est)', () => {
+      const result = translateWithStemming('loveliest');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle i→y stem change with -ly (happily→happy+ly)', () => {
+      const result = translateWithStemming('happily');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle i→y stem change with -er (easier→easy+er)', () => {
+      const result = translateWithStemming('easier');
+      expect(result).not.toBeNull();
+    });
   });
 
   describe('translateAsBritish', () => {

@@ -87,6 +87,7 @@ export function translateWithStemming(
         stem + 'e', // hoping -> hope
         stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
         stem.length > 0 ? stem + stem[stem.length - 1] : stem, // big -> bigg (for adding -er)
+        stem.endsWith('i') ? stem.slice(0, -1) + 'y' : '', // loveliest -> lovely (i→y)
       ].filter((v) => v.length > 0);
 
       for (const variant of stemVariants) {
