@@ -158,6 +158,10 @@ export const INITIALISM_EXPANSIONS: Record<string, string[]> = {
   nsfw: ['not', 'safe', 'for', 'work'],
   tldr: ['too', 'long', "didn't", 'read'],
 
+  // Acronyms pronounced as words (pass through unchanged like initialisms)
+  nato: ['north', 'atlantic', 'treaty', 'organization'],
+  nasa: ['national', 'aeronautics', 'space', 'administration'],
+
   // Government / organizations
   fbi: ['federal', 'bureau', 'of', 'investigation'],
   cia: ['central', 'intelligence', 'agency'],
@@ -167,6 +171,7 @@ export const INITIALISM_EXPANSIONS: Record<string, string[]> = {
   epa: ['environmental', 'protection', 'agency'],
   dea: ['drug', 'enforcement', 'administration'],
   dmv: ['department', 'of', 'motor', 'vehicles'],
+  us: ['united', 'states'],
   usa: ['united', 'states', 'of', 'america'],
   uk: ['united', 'kingdom'],
   eu: ['european', 'union'],

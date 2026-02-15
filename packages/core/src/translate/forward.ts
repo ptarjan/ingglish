@@ -13,12 +13,11 @@ import {
   restorePreservedPatterns,
 } from '../utils/text';
 import { translateContraction, setTranslateWordFn } from './contractions';
-import { isInitialism, translateInitialism, setInitialismTranslateWordFn } from './initialisms';
+import { isInitialism } from './initialisms';
 import { expandPlaceholder } from './preserved';
 import type { OutputFormat } from '../types';
 
-// Import translateUnknown and translateAsAcronym for fallback handling
-import { translateUnknown, translateAsAcronym } from '../fallback';
+import { translateUnknown } from '../fallback';
 
 // Common suffixes for initialisms (plural, possessive)
 const INITIALISM_SUFFIXES = ["'s", 's'] as const;
@@ -64,10 +63,6 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   if (initialismWithSuffix !== null) {
     const { base, suffix } = initialismWithSuffix;
     const baseTranslated = translateWord(base, format);
-    // Keep suffix lowercase for Ingglish (IDs → Aidees, TVs → Teevees)
-    if (format === 'ingglish') {
-      return baseTranslated + suffix.toLowerCase();
-    }
     return baseTranslated + suffix;
   }
 
@@ -76,21 +71,16 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     return translateContraction(word, format);
   }
 
-  // Handle known initialisms (UI, API, etc.) - translate to first letters of expansion
+  // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged.
+  // They're abbreviations, not words — translating them mangles them.
   if (isInitialism(word)) {
-    const initialismResult = translateInitialism(word, format);
-    if (initialismResult !== null) {
-      return initialismResult;
-    }
-    // translateInitialism returns null for single-word expansions (like TV = television)
-    // These should be spelled out letter-by-letter, not looked up in the dictionary
-    const acronymResult = translateAsAcronym(word, format);
-    // Apply case pattern (capitalize first letter for uppercase input like "TV" → "Teevee")
-    if (format === 'ingglish') {
-      const casePattern = detectCasePattern(word);
-      return applyCasePattern(acronymResult, casePattern, word);
-    }
-    return acronymResult;
+    return word;
+  }
+
+  // All-caps words (≥2 chars) pass through unchanged — they're acronyms,
+  // abbreviations, or intentional formatting (MQTT, USSR, NATO, HELLO).
+  if (word.length >= 2 && /^[A-Z]+$/.test(word)) {
+    return word;
   }
 
   // Handle camelCase words by translating each component separately
@@ -158,9 +148,8 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   return result;
 }
 
-// Register translateWord with modules to break circular dependencies
+// Register translateWord with contractions module to break circular dependency
 setTranslateWordFn(translateWord);
-setInitialismTranslateWordFn(translateWord);
 
 /**
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
@@ -235,6 +224,10 @@ function isWordKnown(word: string): boolean {
     return true;
   }
   if (isInitialism(word)) {
+    return true;
+  }
+  // Unknown all-caps words (≥2 chars) pass through as acronyms
+  if (word.length >= 2 && /^[A-Z]+$/.test(word)) {
     return true;
   }
   const camelParts = splitCamelCase(word);

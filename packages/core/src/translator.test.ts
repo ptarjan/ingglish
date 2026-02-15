@@ -80,9 +80,9 @@ describe('translator', () => {
       expect(translateWord('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
     });
 
-    it('should preserve all caps', () => {
-      const hello = translateWord('hello');
-      expect(translateWord('HELLO')).toBe(hello.toUpperCase());
+    it('should pass through all-caps words unchanged', () => {
+      // All-caps words (≥2 chars) pass through as acronyms/emphasis
+      expect(translateWord('HELLO')).toBe('HELLO');
     });
 
     it('should handle unknown words with fallback', () => {
