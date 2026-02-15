@@ -12,7 +12,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
   // Irregular words not in CMU dictionary
-  chamois: ['SH', 'AE1', 'M', 'IY0'], // /ˈʃæm.i/
+  chamois: ['SH', 'AE1', 'M', 'W', 'AA1'], // /ˈʃæm.wɑː/
   cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'], // /ˈtʃʌm.li/
   drachm: ['D', 'R', 'AE1', 'M'], // /dræm/ — silent ch
   islington: ['IH1', 'Z', 'L', 'IH0', 'NG', 'T', 'AH0', 'N'], // /ˈɪz.lɪŋ.tən/
