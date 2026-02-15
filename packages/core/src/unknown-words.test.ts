@@ -121,6 +121,29 @@ describe('unknown-words', () => {
         expect(phonemes.length).toBeGreaterThan(0);
       }
     });
+
+    it('should use long vowels for magic-e words', () => {
+      expect(wordToArpabet('bake')).toContain('EY1'); // long A
+      expect(wordToArpabet('bike')).toContain('AY1'); // long I
+      expect(wordToArpabet('bone')).toContain('OW1'); // long O
+      expect(wordToArpabet('cute')).toContain('UW1'); // long U
+      expect(wordToArpabet('theme')).toContain('IY1'); // long E
+    });
+
+    it('should differentiate short vs long vowels (magic-e)', () => {
+      // Without magic-e: short vowel
+      expect(wordToArpabet('kit')).toContain('IH1');
+      expect(wordToArpabet('strip')).toContain('IH1');
+      // With magic-e: long vowel
+      expect(wordToArpabet('kite')).toContain('AY1');
+      expect(wordToArpabet('stripe')).toContain('AY1');
+    });
+
+    it('should not strip e after c or g (soft c/g)', () => {
+      // 'c' and 'g' change pronunciation before 'e', so don't strip
+      const placePhonemes = wordToArpabet('place');
+      expect(placePhonemes).not.toContain('EY1'); // not magic-e long A
+    });
   });
 
   describe('translateWithRules', () => {
@@ -201,6 +224,16 @@ describe('unknown-words', () => {
       expect(translateWithRules('hashtag')).toBe('hashtag');
       expect(translateWithRules('fintech')).toBe('fintech');
       expect(translateWithRules('chatbot')).toBe('chatbot');
+    });
+
+    it('should translate magic-e words with long vowels', () => {
+      expect(translateWithRules('bake')).toBe('bayk');
+      expect(translateWithRules('bike')).toBe('baik');
+      expect(translateWithRules('bone')).toBe('bohn');
+      expect(translateWithRules('write')).toBe('rait');
+      expect(translateWithRules('gnome')).toBe('nohm');
+      expect(translateWithRules('phone')).toBe('fohn');
+      expect(translateWithRules('stripe')).toBe('straip');
     });
   });
 

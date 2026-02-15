@@ -117,11 +117,38 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
  * @param word The word to convert
  * @returns Array of ARPAbet phonemes
  */
+// Long vowel sounds used by magic-e (e.g., bake=EY1, bike=AY1)
+const LONG_VOWELS: Record<string, string> = {
+  a: 'EY1',
+  e: 'IY1',
+  i: 'AY1',
+  o: 'OW1',
+  u: 'UW1',
+};
+
+// Magic-e pattern: vowel + consonant + 'e' at end of word.
+// Excludes c and g since they change pronunciation before 'e' (soft c/g).
+const MAGIC_E_RE = /[aeiou][bdfhjklmnpqrstvwxyz]e$/;
+
 export function wordToArpabet(word: string): string[] {
   const result: string[] = [];
   let remaining = word.toLowerCase();
 
+  // Pre-processing: strip trailing silent 'e' in VCe pattern
+  let magicE = false;
+  if (remaining.length > 3 && MAGIC_E_RE.test(remaining)) {
+    remaining = remaining.slice(0, -1);
+    magicE = true;
+  }
+
   while (remaining.length > 0) {
+    // Magic-e: when we reach the final vowel+consonant, use the long vowel
+    if (magicE && remaining.length === 2 && remaining[0] in LONG_VOWELS) {
+      result.push(LONG_VOWELS[remaining[0]]);
+      remaining = remaining.slice(1);
+      continue;
+    }
+
     let matched = false;
 
     for (const { pattern, phonemes: ruleArpabet } of GRAPHEME_TO_PHONEME) {
