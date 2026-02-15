@@ -510,6 +510,7 @@ function Section3_Transform() {
 
 function Section4_Progressive() {
   const [currentStep, setCurrentStep] = useState(0);
+
   const textRef = useRef<HTMLParagraphElement>(null);
   const [lockedHeight, setLockedHeight] = useState<number | null>(null);
 
@@ -592,6 +593,7 @@ function Section4_Progressive() {
 function Section5_Poem() {
   const { ref, visible } = useScrollReveal<HTMLDivElement>(0.3);
   const [step, setStep] = useState(0);
+
   const [paused, setPaused] = useState(false);
   // Bumped to restart the auto-advance effect (replay or unpause)
   const [advanceToken, setAdvanceToken] = useState(0);
@@ -630,7 +632,9 @@ function Section5_Poem() {
       timers.push(
         setTimeout(
           () => {
-            setStep(currentStep + i);
+            startTransition(() => {
+              setStep(currentStep + i);
+            });
           },
           initialDelayMs + (i - 1) * delayMs
         )
