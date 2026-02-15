@@ -462,6 +462,11 @@ describe('unknown-words', () => {
       expect(result).not.toBeNull();
     });
 
+    it('should convert -ey to -y (curtsey→curtsy)', () => {
+      const result = translateAsBritish('curtsey');
+      expect(result).not.toBeNull();
+    });
+
     it('should handle grey→gray', () => {
       const result = translateAsBritish('grey');
       expect(result).not.toBeNull();

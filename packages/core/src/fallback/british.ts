@@ -46,6 +46,8 @@ const BRITISH_TO_AMERICAN: { pattern: RegExp; replacement: string }[] = [
   { pattern: /ae/, replacement: 'e' },
   // -oe- → -e- (foetus→fetus, oestrogen→estrogen)
   { pattern: /oe/, replacement: 'e' },
+  // -ey → -y (curtsey→curtsy)
+  { pattern: /ey$/, replacement: 'y' },
   // grey → gray
   { pattern: /grey/, replacement: 'gray' },
 ];

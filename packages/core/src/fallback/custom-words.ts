@@ -27,9 +27,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   victual: ['V', 'IH1', 'T', 'AH0', 'L'], // /ˈvɪt.əl/ — silent c
   victuals: ['V', 'IH1', 'T', 'AH0', 'L', 'Z'],
 
-  // Spelling variants not in CMU
-  curtsey: ['K', 'ER1', 'T', 'S', 'IY0'], // British variant of "curtsy"
-
   // Tech terms
   chatgpt: ['CH', 'AE1', 'T', 'JH', 'IY1', 'P', 'IY1', 'T', 'IY1'], // chat + G-P-T
   git: ['G', 'IH1', 'T'],
