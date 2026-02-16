@@ -1,6 +1,6 @@
 # Spelling Evolution History
 
-This document records all phoneme spelling changes made during Ingglish development, explaining what we tried, what worked, what didn't, and why we ended up with the current system.
+Every phoneme spelling change made during Ingglish development: what we tried, what worked, what didn't, and why.
 
 ## Summary of Changes
 
@@ -247,7 +247,7 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 **Verdict:** ✅ Essential - natural spellings
 
-## Key Lessons Learned
+## Lessons
 
 ### 1. Identical Words Are a Big Win (But Not Everything)
 When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).

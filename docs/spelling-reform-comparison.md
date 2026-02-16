@@ -1,4 +1,4 @@
-# Spelling Reform Comparison: Ingglish in the Context of Historical Reform
+# Spelling Reform Comparison
 
 English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
@@ -16,9 +16,9 @@ What went wrong with previous reforms, and how Ingglish's design choices avoid t
 
 **[English Phonotypic Alphabet](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet) (1845)** - Isaac Pitman and Alexander John Ellis created a 40-letter alphabet. Trials in Waltham, Massachusetts (1852-1860) and Syracuse, New York (1850-1866) showed students could learn literacy faster, but elements were later absorbed into the IPA instead of gaining direct adoption.
 
-**What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
+These all required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
-**How Ingglish differs:** Uses only 24 standard ASCII letters: no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
+Ingglish uses only 24 standard ASCII letters: no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
 
 ### Transitional Systems
 
@@ -28,7 +28,7 @@ Then it collapsed. Children learned ITA, but couldn't transfer to regular Englis
 
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
-**How Ingglish differs:** Not positioned for initial literacy instruction. Users already know traditional spelling. Ingglish supplements rather than replaces.
+Ingglish avoids this entirely: it's not positioned for initial literacy instruction. Users already know traditional spelling. Ingglish supplements rather than replaces.
 
 ### Simplified Spelling Systems
 
@@ -42,9 +42,7 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 **Chicago Tribune (1934-1975)** - The newspaper unilaterally adopted 80 reformed spellings including "tho," "thru," "agast," "burocrat," and "iland." After 40 years, they quietly abandoned the experiment.
 
-**What went wrong:** Even well-designed simplified systems failed to gain traction without institutional backing or network effects.
-
-**How Ingglish differs:** Provides instant bidirectional translation tools that eliminate the need for collective adoption.
+Even well-designed simplified systems failed to gain traction without institutional backing or network effects. Ingglish sidesteps this with instant bidirectional translation tools that eliminate the need for collective adoption.
 
 ### Political Failures
 
@@ -54,9 +52,7 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 **UK Parliamentary Bills (1949, 1953)** - Both failed.
 
-**What went wrong:** No central authority can mandate spelling changes for English. Unlike French ([Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise)) or Spanish ([Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy)), English has no official body with that power.
-
-**How Ingglish differs:** Not trying to replace English spelling. No political mandate needed. Voluntary adoption only.
+No central authority can mandate spelling changes for English. Unlike French ([Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise)) or Spanish ([Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy)), English has no official body with that power. Ingglish doesn't try to replace English spelling. No political mandate needed, just voluntary adoption.
 
 ## The 10 Ways Spelling Reforms Die
 
@@ -70,7 +66,7 @@ Every phonemic system must choose whose pronunciation to encode. English has rou
 
 The Shavian alphabet fragmented because speakers of different dialects would need to spell words differently to match their accents.
 
-**Ingglish's approach:** Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
+Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
 
 ### 2. Breaking Etymology
 
@@ -83,13 +79,13 @@ But here's the dirty secret: many "etymological" spellings are actually **wrong*
 - "island" - the 's' was added incorrectly (Germanic origin, not Latin "insula")
 - "ache" - respelled from "ake" based on a false Greek connection
 
-**Ingglish's approach:** Prioritizes pronunciation over etymology. This is an explicit trade-off. Ingglish is for reading aloud correctly, not for studying word origins.
+Ingglish prioritizes pronunciation over etymology. It's for reading aloud correctly, not for studying word origins.
 
 ### 3. The Transition Problem
 
 Over 1 billion people read English. Any reform makes existing text harder to read, at least initially.
 
-**Ingglish's approach:** Positioned as a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
+Ingglish is a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
 Unlike historical reforms that required institutional buy-in, Ingglish provides tools for individual exploration:
 - **Text translator**: Paste any text to see it in Ingglish instantly
@@ -103,13 +99,13 @@ You can try phonemic English today without waiting for anyone else to adopt it.
 
 There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
 
-**Ingglish's approach:** Not attempting mandatory adoption. Works through voluntary use by anyone who wants consistent, readable spelling.
+Ingglish doesn't attempt mandatory adoption. It works through voluntary use by anyone who wants consistent, readable spelling.
 
 ### 5. The Network Effect Trap
 
 The value of a spelling system depends on how many people use it. Individual adoption seems pointless without collective adoption.
 
-**Ingglish's approach:** Bidirectional translation tools eliminate the network effect problem entirely. You can:
+Bidirectional translation tools eliminate the network effect problem entirely. You can:
 - Convert any English text to Ingglish instantly
 - Convert Ingglish back to English for sharing with others
 - Read content in whichever spelling you prefer
@@ -120,13 +116,13 @@ You don't need to wait for anyone else to adopt Ingglish. The tools let you use 
 
 The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was that all typeset words had a roughly rectangular shape, making lines of Deseret text monotonous and tiring to read.
 
-**Ingglish's approach:** Uses standard Latin letters with their familiar shapes. Word silhouettes remain distinctive.
+Ingglish uses standard Latin letters with their familiar shapes. Word silhouettes remain distinctive.
 
 ### 7. Requires Learning New Characters
 
 Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-egg problem: no materials exist to learn from, and nobody creates materials because nobody can read them.
 
-**Ingglish's approach:** Zero new characters. The digraphs (sh, ch, th, ng) are already familiar to English readers.
+Ingglish has zero new characters. The digraphs (sh, ch, th, ng) are already familiar to English readers.
 
 ### 8. The "Looks Childish" Problem
 
@@ -134,19 +130,19 @@ Simplified spelling often looks childish to English readers because they associa
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and many other languages use consistent phonemic spelling. Nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
+This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and many other languages use consistent phonemic spelling. Nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
 
 ### 9. Constant Revision
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-**Ingglish's approach:** Based on stable phoneme-to-grapheme mappings from established sources (CMU dictionary). Every spelling choice is documented in the [Orthography Comparison](orthography-comparison.md), showing how each maps to IPA and compares to other languages.
+Ingglish is based on stable phoneme-to-grapheme mappings from the CMU dictionary. Every spelling choice is documented in the [Orthography Comparison](orthography-comparison.md), showing how each maps to IPA and compares to other languages.
 
 ### 10. Vested Interests
 
 People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital, hence spelling bees.
 
-**Ingglish's response:** Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature, it's a bug that we've rationalized into tradition.
+Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature, it's a bug that we've rationalized into tradition.
 
 ## What Actually Worked: Successful Reforms
 
@@ -160,7 +156,7 @@ People who invested years mastering English spelling resist changes that would d
 - Part of a broader national identity transformation
 - Personal leadership (Atatürk himself taught citizens in parks)
 
-**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want. Ingglish correctly doesn't attempt this.
+**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want.
 
 ### [German orthography reform](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996) (1996) - Modest Reform
 
@@ -225,7 +221,7 @@ But "strange" isn't "wrong." Kilometers looked strange to Americans too. The que
 
 ### The Dialect Gap
 
-This is covered in detail in [The Dialect Problem](#1-the-dialect-problem) above. The short version: Ingglish standardizes on General American English. Non-American speakers will encounter mismatches, but this is an explicit trade-off for a single consistent standard.
+This is covered in detail in [The Dialect Problem](#1-the-dialect-problem) above. The short version: Ingglish standardizes on General American English. Non-American speakers will encounter mismatches, but that's the price of picking one standard.
 
 ### The "Why Bother?" Question
 

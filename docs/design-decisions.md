@@ -53,7 +53,7 @@ Traditional English uses "th" for both sounds:
 - Voiceless [/θ/](https://en.wikipedia.org/wiki/Voiceless_dental_fricative): "**th**ink", "ba**th**"
 - Voiced [/ð/](https://en.wikipedia.org/wiki/Voiced_dental_fricative): "**th**e", "**th**is"
 
-We preserve this distinction with **"th"** and **"dh"** respectively. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
+We use **"th"** for the voiceless sound and **"dh"** for the voiced one. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
 
 **ZH for [/ʒ/](https://en.wikipedia.org/wiki/Voiced_postalveolar_fricative)**
 
@@ -124,7 +124,7 @@ Every Ingglish spelling has precedent in at least one major language:
 2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern
 3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns
 
-For detailed language-by-language comparisons, see [Orthography Comparison](orthography-comparison.md).
+See [Orthography Comparison](orthography-comparison.md) for language-by-language comparisons.
 
 ## See Also
 

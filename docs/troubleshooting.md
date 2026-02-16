@@ -1,6 +1,6 @@
 # Troubleshooting
 
-This guide covers common issues and how to resolve them.
+Common issues and how to fix them.
 
 ## Build Issues
 

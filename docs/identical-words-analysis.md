@@ -4,9 +4,7 @@ Do the current Ingglish phoneme mappings maximize "identical words," words where
 
 ## Summary
 
-**Question:** Does the current mapping maximize identical words?
-
-**Answer:** No, but the trade-offs are deliberate.
+No, and that's intentional.
 
 The current mapping produces **6,930 identical words** (5.13% of the CMU dictionary). Alternative mappings could theoretically produce up to **15,489 identical words** (11.47%), but these create unacceptable collisions where different words become indistinguishable.
 
@@ -180,7 +178,7 @@ Run with:
 npx vite-node scripts/exhaustive-search.ts
 ```
 
-## Key Insight: Identical Word Count Is Necessary But Not Sufficient
+## Why Identical Word Count Can Mislead
 
 The identical word count measures string equality, but **it doesn't measure whether the shared spelling reads correctly**. A proposed change must pass two tests:
 

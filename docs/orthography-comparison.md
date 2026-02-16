@@ -616,23 +616,23 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
-| p | /p/ | **Universal** | Standard across virtually all Latin-script languages |
-| b | /b/ | **Universal** | Standard across virtually all Latin-script languages |
-| t | /t/ | **Universal** | Standard across virtually all Latin-script languages |
-| d | /d/ | **Universal** | Standard across virtually all Latin-script languages |
-| k | /k/ | **Universal** | Standard across virtually all Latin-script languages |
+| p | /p/ | **Universal** | |
+| b | /b/ | **Universal** | |
+| t | /t/ | **Universal** | |
+| d | /d/ | **Universal** | |
+| k | /k/ | **Universal** | Ingglish uses 'k' instead of 'c' |
 | g | /g/ | **Universal** | Always hard /g/, never /dʒ/ as in English "gem" |
 
 #### Fricatives
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
-| f | /f/ | **Universal** | Standard across virtually all Latin-script languages |
-| v | /v/ | **Universal** | Standard across virtually all Latin-script languages |
+| f | /f/ | **Universal** | |
+| v | /v/ | **Universal** | |
 | th | /θ/ | **Regional** | Only ~4% of languages have this sound; English, Albanian, Welsh use 'th' |
 | dh | /ð/ | **Rare** | Albanian (official letter), Cornish; ~7% of languages have /ð/ |
 | s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
-| z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
+| z | /z/ | **Universal** | |
 | sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
 | zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian, Finnish/Estonian |
 | h | /h/ | **Universal** | Standard; silent in some languages but letter is universal |
@@ -648,34 +648,34 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
-| m | /m/ | **Universal** | Standard across virtually all Latin-script languages |
-| n | /n/ | **Universal** | Standard across virtually all Latin-script languages |
+| m | /m/ | **Universal** | |
+| n | /n/ | **Universal** | |
 | ng | /ŋ/ | **Universal** | Nearly all languages; Austronesian languages treat it as single letter |
 
 #### Liquids & Glides
 
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
-| l | /l/ | **Universal** | Standard across virtually all Latin-script languages |
+| l | /l/ | **Universal** | |
 | r | /ɹ/ | **Universal** | Letter universal; exact sound varies by language |
 | w | /w/ | **Common** | Less common in some European languages |
 | y | /j/ | **Common** | Used for /j/ in English, German, Scandinavian |
 
-### Key Findings
+### Takeaways
 
-1. **Zero Novel spellings**: Every Ingglish spelling has precedent in at least one major language
-2. **Most consonant choices are well-attested**: sh, ch, ng, j are Common or Universal
-3. **'dh' for /ð/ has real precedent**: Albanian uses it as an official alphabet letter
-4. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
-5. **'oo' for /ʊ/ matches English**: words like "book", "good", "look" already use this
-6. **'arr' for /æɹ/ matches English**: words like "carrot", "barrel", "arrow" already use this
-7. **'oh' for /oʊ/ is unusual** but necessary because 'o' is used for /ɑ/
+- Every Ingglish spelling has precedent in at least one major language (zero novel inventions)
+- sh, ch, ng, j are Common or Universal
+- 'dh' for /ð/ has real precedent: Albanian uses it as an official alphabet letter
+- Doubled vowels (ee, uu) follow Finnish/Estonian patterns
+- 'oo' for /ʊ/ matches English "book", "good", "look"
+- 'arr' for /æɹ/ matches English "carrot", "barrel", "arrow"
+- 'oh' for /oʊ/ is the most unusual choice, but necessary because 'o' is used for /ɑ/
 
 ## Phonemic Orthography Success Stories
 
 For a detailed analysis of why previous English spelling reforms failed (and succeeded), see [Spelling Reform History](spelling-reform-comparison.md).
 
-Below are examples of phonemic orthographies that use spellings similar to Ingglish.
+Some phonemic orthographies that use spellings similar to Ingglish:
 
 ### Finnish
 
@@ -723,7 +723,7 @@ Not all phonemes are equally common across world languages. Approximate frequenc
 | ð (dh) | /ð/ | 7% |
 | θ (th) | /θ/ | 4% |
 
-**Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling: few languages have these sounds.
+English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling: few languages have these sounds.
 
 ### Vowel Systems
 
@@ -740,4 +740,4 @@ Most languages have 5–7 vowel phonemes. English has 14–15 depending on diale
 
 This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 
-For how Ingglish addresses these challenges, see [Design Decisions](design-decisions.md).
+See [Design Decisions](design-decisions.md) for how Ingglish handles this.

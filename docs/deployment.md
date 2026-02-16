@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying the Ingglish website and Chrome extension.
+How to deploy the Ingglish website, Chrome extension, and CORS proxy.
 
 ## Website Deployment
 
