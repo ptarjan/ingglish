@@ -23,7 +23,7 @@ jobs:
 
       # All packages run without build (use TS paths to resolve source)
       - name: Unit tests
-        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w ingglish -w @ingglish/dom && npm run test:unit -w @ingglish/website
+        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/g2p -w @ingglish/fallback -w ingglish -w @ingglish/dom -w @ingglish/cors-proxy && npm run test:unit -w @ingglish/website
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:
