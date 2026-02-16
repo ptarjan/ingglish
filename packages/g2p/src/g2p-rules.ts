@@ -32,6 +32,8 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    // Custom: -ase at word end → EY S (base, case, chase — +4)
+    '[ASE] =/EY S/',
     '[A] =/AX/',
     ' [ARE] =/AA R/',
     ' [AR]O=/AX R/',
@@ -338,7 +340,24 @@ const NRL_RULES: Record<string, string[]> = {
     ' [IDEA]=/AY D IY/',
     ' [IN]=/IH N/',
     ' [I] =/AY/',
-    '[IN]D=/AY N/',
+    // Custom: IND at word end → AY N (find, mind, kind, blind, grind)
+    // Mid-word IND is 90% IH, handled by default I→IH. Only word-end IND is 50/50 AY/IH.
+    // Custom: -ino at word end → IY N OW (Italian names: tino, rino, casino — +76)
+    '[INO] =/IY N OW/',
+    // Custom: -ina at word end → IY N AH (Italian/Spanish names: catalina, christina — +59)
+    '[INA] =/IY N AH/',
+    // Custom: -ida at word end → IY D AH (florida, alida — +11)
+    '[IDA] =/IY D AH/',
+    // Custom: -ito at word end → IY T OW (Italian: mosquito, tito — +29)
+    '[ITO] =/IY T OW/',
+    // Custom: -ita at word end → IY T AH (bonita, senorita — +39)
+    '[ITA] =/IY T AH/',
+    // Custom: -ial/-ially suffix → IY AX L (material, editorial, industrial — +45)
+    '#:[IALLY]=/IY AX L IY/',
+    '#:[IAL]=/IY AX L/',
+    // Custom: -iate suffix → IY EY T (associate, appreciate, excoriate — +18)
+    '#:[IATE]=/IY EY T/',
+    '[IN]D =/AY N/',
     '[IER]=/IY ER/',
     '#:R[IED] =/IY D/',
     '[IED] =/AY D/',
@@ -451,6 +470,10 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[MAN] =/M AX N/',
     // Custom: -men suffix with schwa (firemen, policemen)
     '#:[MEN] =/M AX N/',
+    // Custom: MULTI- prefix → M AH L T IY (multiply, multimedia — +13)
+    ' [MULTI]=/M AH L T IY/',
+    // Custom: MINI- prefix → M IH N IY (minimize, minivan — +6)
+    ' [MINI]=/M IH N IY/',
     // Custom: MICRO- prefix → M AY K R AH (microscope, microsoft — Greek origin)
     ' [MICRO]=/M AY K R AH/',
     // Custom: collapse doubled MM
@@ -550,6 +573,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[OING]=/OW IH NX/',
     '[OI]=/OY/',
     '[OOR]=/AO R/',
+    // Custom: OOSE → UW S (goose, moose, loose — voiceless S, +11)
+    '[OOSE]=/UW S/',
     '[OOK]=/UH K/',
     '[OOD]=/UH D/',
     '[OO]=/UW/',
@@ -568,6 +593,8 @@ const NRL_RULES: Record<string, string[]> = {
     'I[ON]=/AX N/',
     '#:[ON] =/AX N/',
     '#^[ON]=/AX N/',
+    // Custom: -osis suffix → OW S IH S (diagnosis, osmosis — +1)
+    '[OSIS]=/OW S IH S/',
     '[O]ST =/OW/',
     // Custom: word-final O before S → OW (abalos, adios, aficionados — fix 377, break 1)
     '[O]S =/OW/',
@@ -584,6 +611,16 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]^O=/OW/',
     '[O]^U=/OW/',
     // Custom: O before H → OW (ohio, mohawk, cohen, bohemian — 75% OW in CMU)
+    // Custom: open-syllable O patterns (+48 combined)
+    '[O]MI=/OW/',
+    '[O]BI=/OW/',
+    '[O]DI=/OW/',
+    '[O]TI=/OW/',
+    '[O]SI=/OW/',
+    '[O]GL=/OW/',
+    '[O]BY=/OW/',
+    '[O]DY=/OW/',
+    '[O]LI=/OW/',
     '[O]H=/OW/',
     '[O]=/AA/',
   ],
@@ -644,6 +681,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#[SON] =/S AX N/',
     // Custom: DIS- prefix keeps S voiceless before vowels (disable, disagree, disappoint — 94% S in CMU)
     ' DI[S]#=/S/',
+    // Custom: RE- prefix keeps S voiceless (reset, research, resemble — +28)
+    ' RE[S]#=/S/',
     '#[S]#=/Z/',
     '[SAID]=/S EH D/',
     '^[SION]=/SH AX N/',
@@ -703,6 +742,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [TWO]=/T UW/',
     // Custom: TZ → T S for German-origin words (hertz, waltz, schwartz)
     '[TZ]=/T S/',
+    // Custom: TELE- prefix → T EH L AH (telephone, television, telegram — +29)
+    ' [TELE]=/T EH L AH/',
     // Custom: TCH trigraph (match, catch, watch)
     '[TCH]=/CH/',
     // Custom: collapse doubled TT
@@ -727,6 +768,10 @@ const NRL_RULES: Record<string, string[]> = {
     'G[U]%=/ /',
     'G[U]#=/W/',
     '#N[U]=/Y UW/',
+    // Custom: -ulate/-ulating/-ulated/-ulation suffixes (calculate, circulate, accumulate — 84% AH)
+    '[ULAT]=/Y AX L EY T/',
+    // Custom: -ulus suffix (calculus, stimulus — Latin origin)
+    '[ULUS]=/Y AX L AH S/',
     // Custom: -ular suffix (popular, regular, cellular)
     '[ULAR]=/Y AX L ER/',
     '@[U]=/UW/',
