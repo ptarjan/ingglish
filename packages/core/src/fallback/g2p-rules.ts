@@ -136,6 +136,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[E]S =/ /',
     '#:[ELY] =/L IY/',
     '#:[EMENT]=/M EH N T/',
+    // Custom: -eful suffix with schwa (careful, hopeful, graceful)
+    '#:[EFUL] =/F AX L/',
     '[EFUL]=/F UH L/',
     '[EE]=/IY/',
     '[EARN]=/ER N/',
@@ -221,10 +223,10 @@ const NRL_RULES: Record<string, string[]> = {
   L: [
     '[LO]C#=/L OW/',
     'L[L]=/ /',
+    // Custom: -less must come before L% to prevent schwa insertion
+    '#:[LESS] =/L AX S/',
     '#^:[L]%=/AX L/',
     '[LEAD]=/L IY D/',
-    // Custom: -less suffix with schwa (careless, homeless)
-    '#:[LESS] =/L AX S/',
     '[L]=/L/',
   ],
   M: [
