@@ -31,12 +31,12 @@ This document records all phoneme spelling changes made during Ingglish developm
 
 **Attempt 3: 'ai' (current)**
 - Rationale:
-  - Directly represents IPA /aɪ/ - phonetically transparent
-  - Pinyin uses 'ai' (1.4B speakers)
+  - Directly represents IPA /aɪ/ - phonemically transparent
+  - Pinyin uses 'ai' (standard romanization for Mandarin Chinese)
   - Italian and Vietnamese use 'ai'
   - You can "see" the a→i glide
   - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available
-- Verdict: ✅ **Adopted** - international precedent + phonetic clarity
+- Verdict: ✅ **Adopted** - international precedent + phonemic clarity
 
 **Examples:**
 - my → mai
@@ -73,7 +73,7 @@ This document records all phoneme spelling changes made during Ingglish developm
 ### /oʊ/ (go, show): o → oh
 
 **Attempt 1: 'o'**
-- Rationale: Simple, matches Spanish/Italian
+- Rationale: Simple; 'o' is the conventional Latin-script letter for back vowels (though English /oʊ/ is a diphthong, unlike the pure /o/ of Spanish or Italian)
 - Problem: When we changed /ɑ/ to 'o', this created a collision
 - Verdict: ❌ Rejected - collision with /ɑ/ vowel
 

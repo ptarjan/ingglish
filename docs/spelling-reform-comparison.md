@@ -8,7 +8,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 ### Complete Alphabet Replacements
 
-**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published. Nobody learned it.
+**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published (*Androcles and the Lion*, 1962). It saw minimal adoption beyond a small enthusiast community.
 
 **[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. The project's own creator abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
@@ -152,7 +152,7 @@ People who invested years mastering English spelling resist changes that would d
 
 ### [Turkish alphabet reform](https://en.wikipedia.org/wiki/Turkish_alphabet) (1928) - The "Big Bang"
 
-[Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from roughly 9% to over 30% within a decade ([Zürcher 2004](https://books.google.com/books?id=2slxnwEACAAJ), *Turkey: A Modern History*; exact figures vary by source).
+[Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from roughly 9% to over 30% within a decade ([Zürcher 2004](https://books.google.com/books/about/Turkey.html?id=gD1pAAAAMAAJ), *Turkey: A Modern History*; exact figures vary by source).
 
 **Why it worked:**
 - Authoritarian one-party state could mandate change
@@ -194,7 +194,7 @@ The US officially adopted metric in 1975. Fifty years later, Americans still use
 No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements—road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
 
 Ingglish could follow the same path:
-- **Education:** Phonetic spelling for ESL and early literacy
+- **Education:** Phonemic spelling for ESL and early literacy
 - **Accessibility:** Consistent spelling for dyslexic readers
 - **Technology:** Unambiguous input for speech synthesis and language models
 - **International:** A standard that doesn't privilege native speakers' memorized exceptions

@@ -192,7 +192,7 @@ function SpellingGuide(): React.JSX.Element {
           Initialisms like UI, API, and URL are translated by taking the first letter of each
           translated expansion word. For example, UI (User Interface) becomes YI because "user"
           translates to "yoozer" (Y) and "interface" translates to "interfays" (I). This preserves
-          the initialism format while using Ingglish phonetics. Common initialisms stay all caps: UI
+          the initialism format while using Ingglish spellings. Common initialisms stay all caps: UI
           → YI, API → API, URL → YRL.
         </p>
 

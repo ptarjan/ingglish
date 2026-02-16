@@ -30,11 +30,11 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | EH | e | ɛ | b**e**d, r**e**d | Open-mid front vowel |
 | EY | ay | eɪ | s**ay**, d**ay** | Diphthong |
 | IH | i | ɪ | b**i**t, s**i**t | Near-close front vowel |
-| IY | ee | i | b**ee**, s**ee** | Close front vowel |
+| IY | ee | i | b**ee**, s**ee** | Close front vowel (also written /iː/) |
 | OW | oh | oʊ | g**o**, sh**ow** | Diphthong |
 | OY | oi | ɔɪ | b**oy**, t**oy** | Diphthong |
 | UH | oo | ʊ | b**oo**k, p**u**t | Near-close back vowel |
-| UW | uu | u | t**oo**, bl**ue** | Close back vowel |
+| UW | uu | u | t**oo**, bl**ue** | Close back vowel (also written /uː/) |
 
 ## Consonant Mappings
 
@@ -147,7 +147,7 @@ That said, if Ingglish ever gains enough adoption that the R-coloring exception 
 
 The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish follows this convention, mapping both to **'u'**.
 
-This is phonologically defensible: /ʌ/ and /ə/ are in [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) in English — /ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables — so they can be analyzed as allophones of a single phoneme. Many phonological analyses of English take this position (e.g., [Giegerich 1992](https://books.google.com/books?id=2slxnwEACAAJ), *English Phonology*). Some analyses do treat them as separate phonemes based on vowel quality differences; the CMU dictionary and Ingglish follow the single-phoneme analysis.
+This is phonologically defensible: /ʌ/ and /ə/ are in [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) in English — /ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables — so they can be analyzed as allophones of a single phoneme. Many phonological analyses of English take this position (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*). Some analyses do treat them as separate phonemes based on vowel quality differences; the CMU dictionary and Ingglish follow the single-phoneme analysis.
 
 ## Stress Handling
 
@@ -180,8 +180,10 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 1. **Homophones**: Words that sound the same will have the same Ingglish spelling
    - "their", "there", "they're" → all become the same
    - See [Collision Analysis](collision-analysis.md) for a full breakdown of how this affects real words
-2. **Accent neutrality**: CMU dictionary represents General American English
-3. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
+2. **Digraph boundary ambiguity**: When two letters that form a digraph appear adjacent across a morpheme boundary, the spelling can be misread. For example, "hothouse" → "hothous" where 'th' represents /t/+/h/ (not /θ/), "mishap" → "mishap" where 'sh' is /s/+/h/ (not /ʃ/), and "engage" → "engayj" where 'ng' is /n/+/g/ (not /ŋ/). This is an inherent limitation of digraph-based orthographies; the same ambiguity exists in standard English (compare "hothouse" vs "nothing"). Cases where this matters are rare.
+3. **Accent neutrality**: CMU dictionary represents General American English. This includes maintaining the [cot-caught distinction](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (/ɑ/ vs /ɔ/) even though many American speakers merge these vowels. We preserve the distinction because the CMU dictionary does and because it serves speakers who maintain it.
+4. **Allophonic detail not captured**: As a phonemic (not phonetic) system, Ingglish does not represent allophonic variation such as aspiration of stops (/pʰ/ in "pin" vs /p/ in "spin"), flapping of /t/ ([ɾ] in "butter"), or vowel nasalization. These are predictable from context and don't distinguish word meanings.
+5. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
 
 ## See Also
 

@@ -92,7 +92,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
 - English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
-- The unstressed [schwa](/ə/) also maps to 'u' — see [Schwa section](#schwa-) below
+- The unstressed schwa (/ə/) also maps to 'u' — see [Schwa section](#schwa-ə) below
 
 ### Long Vowels
 
@@ -577,8 +577,8 @@ Each spelling is rated by how widely it's used across world languages:
 | a | /æ/ | **Common** | Most languages use 'a' for an open front vowel |
 | e | /ɛ/ | **Universal** | Nearly all Latin-script languages |
 | i | /ɪ/ | **Universal** | Standard across Romance, Germanic languages |
-| o | /ɑ/ | **Common** | Spanish 'o'; matches "father" vowel in many languages |
-| u | /ʌ/ | **Regional** | English convention ("but", "cup"); Spanish/Italian use 'a' for similar sound |
+| o | /ɑ/ | **Common** | Conventional Latin-script letter for back vowels; English /ɑ/ is more open than Spanish/Italian /o/ |
+| u | /ʌ/ | **Regional** | English convention ("but", "cup"); few other languages have this vowel |
 
 #### Long Vowels
 

@@ -154,7 +154,7 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 ### Homophones
 
-English has many words that sound identical but are spelled differently (homophones). Since Ingglish is purely phonetic, these words merge into a single spelling:
+English has many words that sound identical but are spelled differently (homophones). Since Ingglish is purely phonemic, these words merge into a single spelling:
 
 | English | Ingglish |
 |---------|----------|
@@ -169,7 +169,7 @@ English has many words that sound identical but are spelled differently (homopho
 - `kyuu` reverses to "q" (not "queue" or "cue")
 - `ail` could be "aisle", "I'll", or "isle" (ambiguous)
 
-This is an inherent trade-off of phonetic spelling - we gain consistency but lose the ability to distinguish homophones in writing.
+This is an inherent trade-off of phonemic spelling — we gain consistency but lose the ability to distinguish homophones in writing.
 
 ### Numbers
 

@@ -14,14 +14,14 @@ This document analyzes cases where translating an English word to Ingglish produ
 
 **Rarely.** Looking at the data:
 
-- Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll never encounter these in normal text.
+- Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll rarely encounter these in normal text.
 - Only 5 collisions involve two common words: white→wait, ass→as, place→plays, side→said, mine→main
 - **Part of speech differences** resolve most collisions: white (adj) → wait (verb) are grammatically distinct
 - Context resolves these just like English homophones (their/there/they're)
 
 ## Collisions (Common Words)
 
-Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English word.
+Frequency shows SUBTLEX-US corpus counts ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*). The Ingglish column is also an English word.
 
 | English | Ingglish | Frequency |
 |---------|----------|-----------|
