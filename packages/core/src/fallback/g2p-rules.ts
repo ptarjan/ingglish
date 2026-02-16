@@ -23,6 +23,7 @@
  */
 
 import { arpabetToFormat } from '../convert/to-ingglish';
+import { applyStressPrediction } from './stress';
 import type { OutputFormat } from '../types';
 
 // ---------------------------------------------------------------------------
@@ -658,7 +659,7 @@ export function wordToArpabet(word: string): string[] {
     }
   }
 
-  return result;
+  return applyStressPrediction(word, result);
 }
 
 /**

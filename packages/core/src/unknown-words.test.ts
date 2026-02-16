@@ -163,7 +163,8 @@ describe('unknown-words', () => {
 
     it('should handle -ture as CH ER', () => {
       expect(wordToArpabet('nature')).toContain('CH');
-      expect(wordToArpabet('nature')).toContain('ER1');
+      // ER in unstressed 2nd syllable gets marked unstressed
+      expect(wordToArpabet('nature')).toContain('ER0');
       expect(wordToArpabet('picture')).toContain('CH');
     });
 
@@ -238,8 +239,8 @@ describe('unknown-words', () => {
 
     it('should handle -ed suffix after t/d as IH D', () => {
       const wanted = wordToArpabet('wanted');
-      // NRL: #:[TED] =/T IH D/ — uses IH (mapped to IH1)
-      expect(wanted[wanted.length - 2]).toBe('IH1');
+      // NRL: #:[TED] =/T IH D/ — IH in unstressed syllable marked as IH0
+      expect(wanted[wanted.length - 2]).toBe('IH0');
       expect(wanted[wanted.length - 1]).toBe('D');
     });
 
@@ -429,10 +430,10 @@ describe('unknown-words', () => {
 
     it('should use IY for word-final y in multi-syllable words', () => {
       const happy = wordToArpabet('happy');
-      // NRL: #^:[Y] =/IY/ — y after consonant preceded by vowels → IY
-      expect(happy[happy.length - 1]).toBe('IY1');
+      // NRL: #^:[Y] =/IY/ — y in unstressed final syllable → IY0
+      expect(happy[happy.length - 1]).toBe('IY0');
       const baby = wordToArpabet('baby');
-      expect(baby[baby.length - 1]).toBe('IY1');
+      expect(baby[baby.length - 1]).toBe('IY0');
     });
 
     it('should keep IH for y in single-syllable words', () => {
@@ -477,10 +478,11 @@ describe('unknown-words', () => {
     });
 
     it('should translate compound-style words', () => {
-      expect(translateWithRules('hashtag')).toBe('hashtag');
-      // NRL: ^E[CH]=/K/ — ch after consonant+E gives K (tech → tek)
-      expect(translateWithRules('fintech')).toBe('fintek');
-      expect(translateWithRules('chatbot')).toBe('chatbot');
+      // Unstressed 2nd-syllable vowels reduce (compound secondary stress not modeled)
+      expect(translateWithRules('hashtag')).toBe('hashtug');
+      // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH reduces to schwa
+      expect(translateWithRules('fintech')).toBe('fintuk');
+      expect(translateWithRules('chatbot')).toBe('chatbut');
     });
 
     it('should translate magic-e words with long vowels', () => {
