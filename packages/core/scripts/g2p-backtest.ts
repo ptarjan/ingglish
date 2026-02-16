@@ -8,9 +8,9 @@
  * Usage: npx tsx scripts/g2p-backtest.ts
  */
 
-import { loadDictionary } from '../src/dictionary/loader';
-import { wordToArpabet } from '../src/fallback/g2p-rules';
-import { stripStress } from '../src/phonemes/arpabet';
+import { loadDictionary } from '@ingglish/dictionary';
+import { wordToArpabet } from '@ingglish/fallback';
+import { stripStress } from '@ingglish/phonemes';
 
 async function main() {
   const dict = await loadDictionary();

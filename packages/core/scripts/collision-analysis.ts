@@ -3,8 +3,12 @@
  * Collision analysis: Find words where Ingglish translation matches another English word.
  * Usage: npm run analyze-collisions
  */
-import { loadDictionary, getDictionary } from '../src/dictionary/loader.js';
-import { loadFrequencies, getWordFrequency } from '../src/dictionary/frequency.js';
+import {
+  loadDictionary,
+  getDictionary,
+  loadFrequencies,
+  getWordFrequency,
+} from '@ingglish/dictionary';
 import { translateWord } from '../src/translate/forward.js';
 
 interface Collision {

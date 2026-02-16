@@ -52,14 +52,16 @@ async function main() {
   console.log(`Iterations: ${ITERATIONS}, Warmup: ${WARMUP_ITERATIONS}\n`);
 
   // Load modules
-  const { loadDictionary, getDictionary } = await import('../src/dictionary/loader');
+  const {
+    loadDictionary,
+    getDictionary,
+    loadReverseDictionary,
+    lookupPronunciation,
+    sortByFrequency,
+  } = await import('@ingglish/dictionary');
   const { translateSync } = await import('../src/translate/forward');
   const { reverseTranslateWord, reverseTranslateSync } = await import('../src/translate/reverse');
-  const { ingglishToArpabet } = await import('../src/convert/from-ingglish');
-  const { arpabetToIPA } = await import('../src/convert/to-ipa');
-  const { lookupPronunciation } = await import('../src/dictionary/lookup');
-  const { loadReverseDictionary } = await import('../src/dictionary/reverse');
-  const { sortByFrequency } = await import('../src/utils/frequency');
+  const { ingglishToArpabet, arpabetToIPA } = await import('@ingglish/phonemes');
 
   // Load dictionary first
   console.log('Loading dictionary...');

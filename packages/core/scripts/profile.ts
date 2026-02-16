@@ -27,7 +27,7 @@ async function main() {
 
   // 1. Dictionary loading
   console.log('--- Dictionary Loading ---');
-  const { loadDictionary, getDictionary } = await import('../src/dictionary/loader');
+  const { loadDictionary, getDictionary } = await import('@ingglish/dictionary');
 
   await profileAsync('loadDictionary (first call)', async () => {
     await loadDictionary();
@@ -80,7 +80,7 @@ async function main() {
 
   // 4. Reverse translation
   console.log('--- Reverse Translation ---');
-  const { loadReverseDictionary } = await import('../src/dictionary/reverse');
+  const { loadReverseDictionary } = await import('@ingglish/dictionary');
   const { reverseTranslateWord, reverseTranslateSync: reverseTranslateText } =
     await import('../src/translate/reverse');
 
@@ -109,7 +109,7 @@ async function main() {
 
   // 5. Word frequency sorting
   console.log('--- Word Frequency ---');
-  const { sortByFrequency, getWordFrequency } = await import('../src/utils/frequency');
+  const { sortByFrequency, getWordFrequency } = await import('@ingglish/dictionary');
 
   profile('getWordFrequency("the")', () => getWordFrequency('the'));
   profile('getWordFrequency("xyzabc") - unknown', () => getWordFrequency('xyzabc'));
@@ -135,8 +135,8 @@ async function main() {
 
   // 6. Phonemize (if available)
   console.log('--- Phonemize Fallback ---');
-  const { preloadPhonemize, translateWithPhonemize } = await import('../src/fallback/phonemize');
-  const { translateWithRules } = await import('../src/fallback/g2p-rules');
+  const { preloadPhonemize, translateWithPhonemize, translateWithRules } =
+    await import('@ingglish/fallback');
 
   await profileAsync('preloadPhonemize', async () => {
     await preloadPhonemize();

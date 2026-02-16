@@ -3,8 +3,8 @@
  * Optimized: only recompute words affected by a phoneme change.
  */
 
-import { loadDictionary, getDictionary } from '../src/dictionary/loader';
-import { ARPABET_TO_INGGLISH_MAP } from '../src/convert/ingglish-maps';
+import { loadDictionary, getDictionary } from '@ingglish/dictionary';
+import { ARPABET_TO_INGGLISH_MAP } from '@ingglish/phonemes';
 
 await loadDictionary();
 const cmudict = getDictionary();

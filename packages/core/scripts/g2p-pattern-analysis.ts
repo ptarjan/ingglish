@@ -1,8 +1,8 @@
 /**
  * Analyze G2P error patterns to identify the best rules to add.
  */
-import { wordToArpabet } from '../src/fallback/g2p-rules';
-import { loadDictionary } from '../src/dictionary/loader';
+import { loadDictionary } from '@ingglish/dictionary';
+import { wordToArpabet } from '@ingglish/fallback';
 
 async function main() {
   const dict = await loadDictionary();

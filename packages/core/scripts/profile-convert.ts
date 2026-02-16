@@ -9,8 +9,8 @@ const ITERATIONS = 10000;
 async function main() {
   console.log('=== arpabetToIngglish Deep Profile ===\n');
 
-  const { STRESS_MARKER_REGEX, stripStress } = await import('../src/phonemes/arpabet');
-  const { ARPABET_TO_INGGLISH_MAP } = await import('../src/convert/ingglish-maps');
+  const { STRESS_MARKER_REGEX, stripStress, ARPABET_TO_INGGLISH_MAP } =
+    await import('@ingglish/phonemes');
 
   // Test data - typical pronunciation
   const arpabet = ['K', 'AH0', 'M', 'P', 'Y', 'UW1', 'T', 'ER0']; // "computer"

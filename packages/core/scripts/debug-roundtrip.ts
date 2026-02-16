@@ -10,11 +10,9 @@
  *   npm run debug:roundtrip "hello world"     # Multiple words - finds failures
  */
 
-import { loadDictionary } from '../src/dictionary/loader.js';
-import { loadReverseDictionary } from '../src/dictionary/reverse.js';
+import { loadDictionary, loadReverseDictionary, lookupPronunciation } from '@ingglish/dictionary';
+import { ingglishToArpabet } from '@ingglish/phonemes';
 import { translateWord, translateSync as translateText } from '../src/translate/forward.js';
-import { lookupPronunciation } from '../src/dictionary/lookup.js';
-import { ingglishToArpabet } from '../src/convert/from-ingglish.js';
 import {
   reverseTranslateWord,
   reverseTranslateSync as reverseTranslateText,

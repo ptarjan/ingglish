@@ -9,11 +9,11 @@ const ITERATIONS = 100;
 async function main() {
   console.log('=== translateSync Deep Profile ===\n');
 
-  const { loadDictionary } = await import('../src/dictionary/loader');
-  const { lookupPronunciation } = await import('../src/dictionary/lookup');
-  const { arpabetToFormat } = await import('../src/convert/to-ingglish');
-  const { normalizeApostrophes, tokenizeText } = await import('../src/utils/text');
-  const { detectCasePattern, applyCasePattern } = await import('../src/utils/case');
+  const { loadDictionary, lookupPronunciation } = await import('@ingglish/dictionary');
+  const { arpabetToFormat } = await import('@ingglish/phonemes');
+  const { tokenizeText } = await import('@ingglish/tokenize');
+  const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
+    await import('@ingglish/normalize');
 
   await loadDictionary();
 

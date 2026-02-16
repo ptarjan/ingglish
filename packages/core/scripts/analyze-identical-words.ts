@@ -5,8 +5,8 @@
  * Run with: npx vite-node scripts/analyze-identical-words.ts
  */
 
-import { loadDictionary, getDictionary } from '../src/dictionary/loader';
-import { ARPABET_TO_INGGLISH_MAP } from '../src/convert/ingglish-maps';
+import { loadDictionary, getDictionary } from '@ingglish/dictionary';
+import { ARPABET_TO_INGGLISH_MAP } from '@ingglish/phonemes';
 
 async function main() {
   // Load dictionary

@@ -8,7 +8,7 @@ const session = new Session();
 session.connect();
 
 async function main() {
-  const { loadDictionary } = await import('../src/dictionary/loader');
+  const { loadDictionary } = await import('@ingglish/dictionary');
   const { translateSync } = await import('../src/translate/forward');
 
   await loadDictionary();
