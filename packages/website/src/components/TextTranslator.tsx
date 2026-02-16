@@ -434,7 +434,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>
-              {({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[
+              {({ ingglish: 'Ingglish', ipa: 'IPA', shavian: 'Shavian' } as Record<string, string>)[
                 format
               ] ?? format}
             </h2>
