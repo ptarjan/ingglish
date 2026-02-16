@@ -279,11 +279,13 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const handleSpeakIngglish = useCallback(() => {
     if (speakingIngglish) {
       stopIngglish();
-    } else if (displayIngglish) {
+    } else if (displayEnglish) {
       stopEnglish();
-      speakIngglish(displayIngglish);
+      // Feed English text to TTS — Ingglish represents the same sounds,
+      // but the browser's speech engine expects standard English spelling.
+      speakIngglish(displayEnglish);
     }
-  }, [speakingIngglish, stopIngglish, displayIngglish, stopEnglish, speakIngglish]);
+  }, [speakingIngglish, stopIngglish, displayEnglish, stopEnglish, speakIngglish]);
 
   const handleClear = useCallback(() => {
     setEnglishText('');
@@ -386,7 +388,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 <button
                   onClick={handleSpeakIngglish}
                   className={`btn-secondary btn-icon ${speakingIngglish ? 'btn-speaking' : ''}`}
-                  disabled={!displayIngglish}
+                  disabled={!displayEnglish}
                   title={speakingIngglish ? 'Stop' : 'Listen'}
                   aria-label={speakingIngglish ? 'Stop speaking' : 'Listen to Ingglish text'}
                 >
