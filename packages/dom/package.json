@@ -16,6 +16,10 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --tsconfig tsconfig.build.json",
     "build:fast": "tsup src/index.ts --format esm",
@@ -25,6 +29,10 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@ingglish/normalize": "^1.0.0",
+    "@ingglish/tokenize": "^1.0.0"
+  },
+  "peerDependencies": {
     "@ingglish/core": "^1.0.0"
   },
   "devDependencies": {

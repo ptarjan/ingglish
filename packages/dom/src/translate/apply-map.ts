@@ -2,7 +2,7 @@
  * Apply pre-computed translations to DOM.
  */
 
-import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
+import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/normalize';
 import {
   requireBrowser,
   collectTextNodes,

@@ -23,13 +23,9 @@ async function main() {
   // @ts-expect-error - global
   global.NodeFilter = dom.window.NodeFilter;
 
-  const {
-    normalizeApostrophes,
-    detectCasePattern,
-    applyCasePattern,
-    WORD_SPLIT_REGEX,
-    WORD_TEST_REGEX,
-  } = await import('@ingglish/core/internal');
+  const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
+    await import('@ingglish/normalize');
+  const { WORD_SPLIT_REGEX, WORD_TEST_REGEX } = await import('@ingglish/tokenize');
   const { translate } = await import('@ingglish/core');
 
   // Load dictionary

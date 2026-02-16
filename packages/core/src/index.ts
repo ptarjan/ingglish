@@ -1,9 +1,6 @@
 /**
  * @ingglish/core - Phonetic English Translation Library
  *
- * IMPORTANT: Keep this file absolutely minimal. Every export here ends up in
- * the main bundle. Use internal.ts for exports needed by other packages.
- *
  * @example
  * ```typescript
  * import { translate } from '@ingglish/core';
@@ -12,16 +9,15 @@
  * ```
  */
 
-import { loadDictionary, loadReverseDictionary } from './dictionary';
-import { loadFrequencies } from './dictionary/frequency';
+import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { translateSync, reverseTranslateSync } from './translate';
-import { type OutputFormat } from './types';
+import type { OutputFormat } from '@ingglish/phonemes';
 
 // =============================================================================
 // Types
 // =============================================================================
 
-export type { OutputFormat } from './types';
+export type { OutputFormat } from '@ingglish/phonemes';
 
 // =============================================================================
 // Primary API (auto-loads dictionary)

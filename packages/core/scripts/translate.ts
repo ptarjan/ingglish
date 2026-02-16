@@ -4,11 +4,14 @@
  * Usage: npm run translate "text to translate"
  *        npm run translate -- -r "ingglish text"  (reverse)
  */
-import { loadDictionary, loadReverseDictionary } from '../src/dictionary/index.js';
-import { lookupPronunciation } from '../src/dictionary/lookup.js';
+import {
+  loadDictionary,
+  loadReverseDictionary,
+  loadFrequencies,
+  lookupPronunciation,
+} from '../../dictionary/src/index.js';
 import { translateSync } from '../src/translate/forward.js';
 import { reverseTranslateSync, reverseTranslateSyncWithMapping } from '../src/translate/reverse.js';
-import { loadFrequencies } from '../src/dictionary/frequency.js';
 
 async function main() {
   // Load all dictionaries needed for translation and reverse translation

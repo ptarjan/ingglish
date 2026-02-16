@@ -3,13 +3,8 @@
  */
 
 import { translateSyncWithMapping } from '@ingglish/core';
-import {
-  normalizeApostrophes,
-  detectCasePattern,
-  applyCasePattern,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
-} from '@ingglish/core/internal';
+import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/normalize';
+import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD } from '../constants';
 import type { OutputFormat } from '../types';
 

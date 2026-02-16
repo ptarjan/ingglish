@@ -5,10 +5,8 @@
  * slow-path operations and ensuring they're not called unnecessarily.
  */
 import { describe, it, expect, vi } from 'vitest';
-import { stripStress, STRESS_MARKER_REGEX } from './phonemes/arpabet';
-import { lookupPronunciation } from './dictionary/lookup';
-import { lookupPhonemeKey } from './dictionary/reverse';
-import { arpabetToIngglish } from './convert/to-ingglish';
+import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/phonemes';
+import { lookupPronunciation, lookupPhonemeKey } from '@ingglish/dictionary';
 describe('performance optimizations', () => {
   describe('stripStress charCode optimization', () => {
     it('should use charCode 48-50 for stress markers (not regex)', () => {
@@ -95,7 +93,7 @@ describe('performance optimizations', () => {
 
   describe('lookupPhonemeKey pre-sorted dictionary', () => {
     it('should not call sortByFrequency at runtime (pre-sorted at build time)', async () => {
-      const frequencyModule = await import('./dictionary/frequency');
+      const frequencyModule = await import('@ingglish/dictionary');
       const sortSpy = vi.spyOn(frequencyModule, 'sortByFrequency');
       sortSpy.mockClear();
 
@@ -124,8 +122,9 @@ describe('performance optimizations', () => {
       // The optimization: instead of calling stripStress(nextPhoneme) to check for R,
       // we compare directly to 'R' since R never has stress markers
 
-      // Import the module to spy on it
-      const arpabetModule = await import('./phonemes/arpabet');
+      // Import the actual arpabet module (not the barrel) so the spy intercepts
+      // internal calls from arpabetToIngglish → stripStress within the package
+      const arpabetModule = await import('../../phonemes/src/arpabet');
       const stripStressSpy = vi.spyOn(arpabetModule, 'stripStress');
 
       stripStressSpy.mockClear();
@@ -155,7 +154,7 @@ describe('performance optimizations', () => {
 
   describe('isVowel/isConsonant Set optimization', () => {
     it('should use Set.has for O(1) lookup', async () => {
-      const { isVowel, isConsonant } = await import('./phonemes/arpabet');
+      const { isVowel, isConsonant } = await import('@ingglish/phonemes');
 
       // Spy on Set.prototype.has to verify it's being used
       const hasSpy = vi.spyOn(Set.prototype, 'has');

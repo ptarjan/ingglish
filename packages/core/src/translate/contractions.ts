@@ -4,10 +4,10 @@
  * Handles words with apostrophes like "don't", "I'm", etc.
  */
 
-import { arpabetToFormat } from '../convert/to-ingglish';
-import { lookupPronunciation } from '../dictionary/lookup';
-import { detectCasePattern, applyCasePattern } from '../utils/case';
-import type { OutputFormat } from '../types';
+import { arpabetToFormat } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { lookupPronunciation } from '@ingglish/dictionary';
+import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 
 // Forward declaration - will be imported from forward.ts
 type TranslateWordFn = (word: string, format: OutputFormat) => string;

@@ -2,23 +2,22 @@
  * Forward translation: English -> Ingglish/IPA.
  */
 
-import { arpabetToFormat } from '../convert/to-ingglish';
-import { lookupPronunciation } from '../dictionary/lookup';
-import { detectCasePattern, applyCasePattern, splitCamelCase } from '../utils/case';
+import { arpabetToFormat } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { lookupPronunciation, getCustomPronunciation } from '@ingglish/dictionary';
 import {
+  detectCasePattern,
+  applyCasePattern,
+  splitCamelCase,
   normalizeApostrophes,
   stripDiacritics,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
   extractPreservedPatterns,
   restorePreservedPatterns,
-} from '../utils/text';
+} from '@ingglish/normalize';
+import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
+import { translateUnknown, isInitialism } from '@ingglish/fallback';
 import { translateContraction, setTranslateWordFn } from './contractions';
-import { isInitialism } from './initialisms';
 import { expandPlaceholder } from './preserved';
-import type { OutputFormat } from '../types';
-
-import { translateUnknown, getCustomPronunciation } from '../fallback';
 
 // Common suffixes for initialisms (plural, possessive)
 const INITIALISM_SUFFIXES = ["'s", 's'] as const;

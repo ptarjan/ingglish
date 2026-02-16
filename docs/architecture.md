@@ -7,7 +7,12 @@ This document describes the high-level architecture of the Ingglish project.
 ```
 ingglish/
 ├── packages/
-│   ├── core/           # Text translation library
+│   ├── normalize/      # Text cleanup, case handling
+│   ├── phonemes/       # Phoneme data + conversion
+│   ├── tokenize/       # Tokenization, word patterns
+│   ├── dictionary/     # CMU dict, lookup, frequency
+│   ├── fallback/       # Unknown word strategies
+│   ├── core/           # Translation API (translate + detect)
 │   ├── dom/            # DOM translation utilities
 │   ├── website/        # React web application
 │   ├── extension/      # Chrome extension
@@ -19,54 +24,91 @@ ingglish/
 ## Package Dependencies
 
 ```
-@ingglish/website ──────┬──> @ingglish/dom ──> @ingglish/core
-                        │                            │
-                        └────────────────────────────┤
-                                                     ├──> cmu-pronouncing-dictionary
-@ingglish/extension ─────────────────────────────────┘──> subtlex-word-frequencies
+@ingglish/normalize (0 deps) ◄── @ingglish/tokenize
+@ingglish/phonemes  (0 deps) ◄┐
+@ingglish/dictionary (0 deps) ◄┼── @ingglish/fallback
+                               │
+@ingglish/core ◄── all above packages
+       ▲
+@ingglish/dom ──► @ingglish/normalize + @ingglish/tokenize (peer: core)
+       ▲
+@ingglish/website ──► @ingglish/dom + @ingglish/core
+@ingglish/extension ──► @ingglish/core
 ```
 
-## Core Library (`@ingglish/core`)
+## Library Packages
 
-The core library handles text translation logic.
-
-### Module Structure
+### `@ingglish/normalize` — Text cleanup, case handling
 
 ```
 src/
-├── index.ts                    # Public API exports (minimal bundle)
-├── internal.ts                 # Exports for other packages (code-split)
-├── types.ts                    # Type definitions
-├── translate/                  # Translation logic
-│   ├── forward.ts              # English → Ingglish/IPA
-│   ├── reverse.ts              # Ingglish/IPA → English
-│   ├── contractions.ts         # Handle "don't", "I'm", etc.
-│   └── initialisms.ts          # Handle UI, API, URL, etc.
-├── convert/                    # Format conversions
-│   ├── to-ingglish.ts          # ARPAbet → Ingglish
-│   ├── to-ipa.ts               # ARPAbet → IPA with stress
-│   ├── from-ingglish.ts        # Ingglish → ARPAbet
-│   ├── from-ipa.ts             # IPA → ARPAbet
-│   └── ingglish-maps.ts        # Phoneme mapping tables
-├── dictionary/                 # Dictionary management
-│   ├── loader.ts               # Load and cache CMU dictionary
-│   ├── lookup.ts               # Word pronunciation lookup
-│   ├── reverse.ts              # Build reverse index (phoneme → words)
-│   └── frequency.ts            # Word frequency ranking
-├── fallback/                   # Unknown word strategies
-│   ├── index.ts                # Fallback orchestration
-│   ├── custom-words.ts         # Custom pronunciations (tech terms)
-│   ├── acronyms.ts             # Acronym expansion
-│   ├── compounds.ts            # Compound word splitting
-│   ├── stemming.ts             # Base word + suffix matching
-│   ├── phonemize.ts            # Neural G2P wrapper
-│   └── g2p-rules.ts            # Rule-based grapheme-to-phoneme
-├── phonemes/                   # Phoneme handling
-│   ├── arpabet.ts              # ARPAbet phoneme definitions
-│   └── phonotactics.ts         # English sound rules for stress
-└── utils/                      # Utility functions
-    ├── text.ts                 # Text tokenization and parsing
-    └── case.ts                 # Case pattern detection/application
+├── index.ts            # Barrel exports
+├── case.ts             # Case pattern detection/application, splitCamelCase
+└── text.ts             # normalizeApostrophes, stripDiacritics, URL/email preservation
+```
+
+### `@ingglish/phonemes` — Phoneme data + conversion
+
+```
+src/
+├── index.ts            # Barrel exports
+├── arpabet.ts          # ARPAbet phoneme definitions
+├── phonotactics.ts     # English sound rules for stress
+├── types.ts            # OutputFormat type
+├── to-ingglish.ts      # ARPAbet → Ingglish
+├── to-ipa.ts           # ARPAbet → IPA with stress
+├── from-ingglish.ts    # Ingglish → ARPAbet
+├── from-ipa.ts         # IPA → ARPAbet
+└── ingglish-maps.ts    # Phoneme mapping tables
+```
+
+### `@ingglish/tokenize` — Tokenization, word patterns
+
+```
+src/
+└── index.ts            # WORD_SPLIT_REGEX, WORD_TEST_REGEX, tokenizeText, tokenizeIPA, etc.
+```
+
+### `@ingglish/dictionary` — CMU dict, lookup, frequency
+
+```
+src/
+├── index.ts            # Barrel exports
+├── loader.ts           # Load and cache CMU dictionary
+├── lookup.ts           # Word pronunciation lookup
+├── reverse.ts          # Build reverse index (phoneme → words)
+├── frequency.ts        # Word frequency ranking
+├── custom-words.ts     # Custom pronunciations (tech terms)
+└── data/               # Generated dictionary and frequency data
+```
+
+### `@ingglish/fallback` — Unknown word strategies
+
+```
+src/
+├── index.ts            # Fallback orchestration
+├── acronyms.ts         # Acronym/initialism handling
+├── compounds.ts        # Compound word splitting
+├── stemming.ts         # Base word + suffix matching
+├── phonemize.ts        # Neural G2P wrapper
+├── british.ts          # British spelling variants
+└── g2p-rules.ts        # Rule-based grapheme-to-phoneme
+```
+
+### `@ingglish/core` — Translation API
+
+The core package is a thin orchestration layer. It imports from the packages above and exports the public translation API.
+
+```
+src/
+├── index.ts            # Public API: translate, reverseTranslate, Sync variants
+├── translate/          # Translation logic
+│   ├── forward.ts      # English → Ingglish/IPA
+│   ├── reverse.ts      # Ingglish/IPA → English
+│   ├── contractions.ts # Handle "don't", "I'm", etc.
+│   └── preserved.ts    # URL/email preservation during translation
+└── detect/             # Language detection
+    └── language.ts     # Detect Ingglish vs English text
 ```
 
 ### Translation Flow
@@ -350,12 +392,12 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 ## Data Flow Summary
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        Build Time                           │
-├─────────────────────────────────────────────────────────────┤
-│  CMU Dictionary (134K words) ──> bundled with @ingglish/core│
-│  SUBTLEX Frequencies (74K) ──> bundled with @ingglish/core  │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                        Build Time                                │
+├──────────────────────────────────────────────────────────────────┤
+│  CMU Dictionary (134K words) ──> bundled with @ingglish/dictionary│
+│  SUBTLEX Frequencies (74K) ──> bundled with @ingglish/dictionary  │
+└──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
@@ -377,6 +419,6 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 | Reverse translation | O(1) | Phoneme key lookup after initial map build |
 | DOM traversal | O(n) | TreeWalker, n = nodes |
 
-Bundle splitting keeps initial load fast: dictionary and word frequencies are loaded on-demand.
+Bundle splitting keeps initial load fast: `@ingglish/dictionary` data (CMU dictionary and word frequencies) is loaded on-demand via dynamic imports.
 
 See [Performance Guide](performance.md) for profiling scripts and optimization guidelines.

@@ -11,10 +11,13 @@ This guide covers common issues and how to resolve them.
 **Solutions:**
 - Ensure Node.js 20+ is installed (`node --version`)
 - Run `npm ci` to get exact dependency versions
-- Build packages in order: core must build before website
+- Build packages in dependency order:
   ```bash
+  npm run build -w @ingglish/normalize -w @ingglish/phonemes
+  npm run build -w @ingglish/tokenize -w @ingglish/dictionary
+  npm run build -w @ingglish/fallback
   npm run build -w @ingglish/core
-  npm run build -w @ingglish/website
+  npm run build -w @ingglish/dom -w @ingglish/website
   ```
 
 ### TypeScript Errors in Dependent Packages
@@ -103,7 +106,7 @@ This shows the translation pipeline step-by-step, highlighting where mismatches 
 After fixing a translation issue, add a test to prevent regression:
 
 ```typescript
-// In reverse-translator.test.ts
+// In translate/reverse.test.ts
 it('should round-trip "exhumed"', () => {
   const word = 'exhumed';
   const ingglish = translateWord(word);

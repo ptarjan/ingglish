@@ -135,6 +135,10 @@ export default tseslint.config(
       '**/src/dictionary/**/*.d.ts',
       '**/src/data/**/*.js',
       '**/src/data/**/*.d.ts',
+      'packages/dictionary/src/cmudict.js',
+      'packages/dictionary/src/cmudict.d.ts',
+      'packages/dictionary/src/reverse-cmudict.js',
+      'packages/dictionary/src/reverse-cmudict.d.ts',
     ],
   }
 );

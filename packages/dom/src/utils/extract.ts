@@ -2,7 +2,8 @@
  * Word extraction utilities.
  */
 
-import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/core/internal';
+import { normalizeApostrophes } from '@ingglish/normalize';
+import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 
 /**
  * Extracts unique words from text for batch translation.

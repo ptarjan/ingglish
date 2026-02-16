@@ -186,7 +186,7 @@ async function main() {
   console.log('\n--- Profile: Text processing only ---\n');
 
   const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
-    await import('@ingglish/core/internal');
+    await import('@ingglish/normalize');
   const WORD_REGEX = /[a-zA-Z']+/g;
 
   const processTimes: number[] = [];

@@ -10,8 +10,8 @@ import {
   translateWithPhonemize,
   preloadPhonemize,
   CUSTOM_PRONUNCIATIONS,
-} from './fallback';
-import { lookupPronunciation, getDictionary } from './dictionary';
+} from '@ingglish/fallback';
+import { lookupPronunciation, getDictionary } from '@ingglish/dictionary';
 import { translateWord } from './translate/forward';
 import { UNKNOWN_TECH_WORDS } from './test-setup';
 

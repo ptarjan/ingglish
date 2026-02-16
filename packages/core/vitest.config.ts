@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
 
 export default defineConfig({
   // Cache directory for faster subsequent runs
@@ -6,6 +7,15 @@ export default defineConfig({
   // Use esbuild for faster TypeScript transforms
   esbuild: {
     target: 'esnext', // Required for top-level await support
+  },
+  resolve: {
+    alias: {
+      '@ingglish/normalize': resolve(__dirname, '../normalize/src/index.ts'),
+      '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
+      '@ingglish/tokenize': resolve(__dirname, '../tokenize/src/index.ts'),
+      '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
+      '@ingglish/fallback': resolve(__dirname, '../fallback/src/index.ts'),
+    },
   },
   test: {
     globals: true,

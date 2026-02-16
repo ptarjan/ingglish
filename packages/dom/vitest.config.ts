@@ -4,7 +4,11 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@ingglish/core/internal': path.resolve(__dirname, '../core/src/internal.ts'),
+      '@ingglish/normalize': path.resolve(__dirname, '../normalize/src/index.ts'),
+      '@ingglish/phonemes': path.resolve(__dirname, '../phonemes/src/index.ts'),
+      '@ingglish/tokenize': path.resolve(__dirname, '../tokenize/src/index.ts'),
+      '@ingglish/dictionary': path.resolve(__dirname, '../dictionary/src/index.ts'),
+      '@ingglish/fallback': path.resolve(__dirname, '../fallback/src/index.ts'),
       '@ingglish/core': path.resolve(__dirname, '../core/src/index.ts'),
     },
   },

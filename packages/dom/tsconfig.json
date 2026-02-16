@@ -16,7 +16,9 @@
     "types": ["vitest/globals"],
     "paths": {
       "@ingglish/core": ["../core/src/index.ts"],
-      "@ingglish/core/internal": ["../core/src/internal.ts"]
+      "@ingglish/normalize": ["../normalize/src/index.ts"],
+      "@ingglish/tokenize": ["../tokenize/src/index.ts"],
+      "@ingglish/dictionary": ["../dictionary/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

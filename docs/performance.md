@@ -140,14 +140,14 @@ All paths are **linear** — no quadratic or exponential complexity.
 
 ## Bundle Splitting
 
-The core library uses dynamic imports for code splitting:
+The `@ingglish/dictionary` package uses dynamic imports for code splitting:
 
-- `index.ts` - Minimal public API (~2KB)
+- `@ingglish/core` index - Minimal public API (~2KB)
 - Forward dictionary - Loaded on first `translate()` call (~1MB gzipped)
 - Reverse dictionary - Loaded on first reverse translation (~300KB gzipped)
 - Word frequencies - Loaded on first reverse translation (~500KB)
 
-Dictionaries are pre-processed at build time:
+Dictionaries are pre-processed at build time (in `@ingglish/dictionary`):
 - Phonemes pre-split into arrays (no runtime string splitting)
 - Reverse dictionary pre-sorted by word frequency (no runtime sorting)
 

@@ -1,0 +1,46 @@
+{
+  "name": "@ingglish/dictionary",
+  "version": "1.0.0",
+  "description": "CMU dictionary loading, lookup, and word frequency scoring for Ingglish",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "prebuild": "npm run update-dictionaries",
+    "pretest": "npm run update-dictionaries",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build:fast": "npm run update-dictionaries && tsup src/index.ts --format esm",
+    "lint": "eslint --cache src",
+    "test": "vitest run --no-color",
+    "update-dictionaries": "node scripts/ensure-dictionaries.cjs"
+  },
+  "dependencies": {
+    "subtlex-word-frequencies": "^2.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.16"
+  }
+}

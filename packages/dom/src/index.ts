@@ -55,18 +55,8 @@ export { observeAndTranslate } from './observe';
 export {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
-  TRANSLATABLE_ATTRIBUTES,
-  TOOLTIP_STYLES,
-  isBrowser,
-  requireBrowser,
-  shouldSkipElement,
-  shouldSkipTextNode,
   collectTextNodes,
-  extractWords,
   extractWordsFromNodes,
   injectTooltipStyles,
   injectTooltipBehavior,
 } from './utils';
-
-// Re-export text utilities from core (internal API)
-export { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/core/internal';

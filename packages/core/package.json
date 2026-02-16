@@ -2,43 +2,47 @@
   "name": "@ingglish/core",
   "version": "1.0.0",
   "description": "Core phonetic English translation library",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "source": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./internal": {
-      "source": "./src/internal.ts",
-      "types": "./dist/internal.d.ts",
-      "import": "./dist/internal.mjs",
-      "require": "./dist/internal.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
-    "prebuild": "npm run update-dictionaries",
-    "build": "tsup src/index.ts src/internal.ts --format cjs,esm --dts",
-    "build:fast": "npm run update-dictionaries && tsup src/index.ts src/internal.ts --format esm",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
-    "pretest": "npm run update-dictionaries",
     "test": "vitest run --no-color",
-    "test:watch": "npm run update-dictionaries && vitest",
+    "test:watch": "vitest",
     "translate": "npx vite-node scripts/translate.ts",
     "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
     "analyze-collisions": "npx vite-node scripts/collision-analysis.ts",
-    "update-dictionaries": "node scripts/ensure-dictionaries.js",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "phonemize": "^1.1.0",
-    "subtlex-word-frequencies": "^2.0.0"
+    "@ingglish/normalize": "^1.0.0",
+    "@ingglish/tokenize": "^1.0.0",
+    "@ingglish/phonemes": "^1.0.0",
+    "@ingglish/dictionary": "^1.0.0",
+    "@ingglish/fallback": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",

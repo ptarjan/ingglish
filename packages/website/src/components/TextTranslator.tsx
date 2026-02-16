@@ -6,7 +6,7 @@ import {
   reverseTranslateSyncWithMapping,
   type TranslatedToken,
 } from '@ingglish/core';
-import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
+import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';

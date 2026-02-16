@@ -75,7 +75,12 @@ npm run check
 
 ```
 packages/
-├── core/           # Translation library (TypeScript, Node.js & Browser)
+├── normalize/      # Text cleanup, case handling (0 deps)
+├── phonemes/       # Phoneme data + conversion (0 deps)
+├── tokenize/       # Tokenization, word patterns (→ normalize)
+├── dictionary/     # CMU dict, lookup, frequency
+├── fallback/       # Unknown word strategies (→ phonemes + dictionary)
+├── core/           # Translation API (→ all above)
 ├── dom/            # DOM translation utilities (Browser only)
 ├── website/        # React web app (Vite + TypeScript)
 ├── extension/      # Chrome extension (Manifest V3)
@@ -107,7 +112,7 @@ See [Deployment: Chrome Extension](deployment.md#chrome-extension-deployment) fo
 
 ### Adding New ARPAbet Mappings
 
-Edit `packages/core/src/convert/ingglish-maps.ts`:
+Edit `packages/phonemes/src/ingglish-maps.ts`:
 
 ```typescript
 export const VOWEL_MAP: Record<string, string> = {
@@ -119,17 +124,18 @@ export const CONSONANT_MAP: Record<string, string> = {
 };
 ```
 
-For IPA conversion, edit `packages/core/src/convert/ipa-maps.ts`.
+For IPA conversion, edit `packages/phonemes/src/ipa-maps.ts`.
 
 ### Improving Unknown Word Handling
 
-Edit files in `packages/core/src/fallback/`:
+Edit files in `packages/fallback/src/`:
 
-- `custom-words.ts` - Add pronunciations for tech terms, brand names
 - `stemming.ts` - Add suffix rules
 - `compounds.ts` - Add compound word patterns
 - `acronyms.ts` - Add initialism handling
 - `g2p-rules.ts` - Improve rule-based grapheme-to-phoneme conversion
+
+For custom pronunciations (tech terms, brand names), edit `packages/dictionary/src/custom-words.ts`.
 
 ### Profiling Performance
 

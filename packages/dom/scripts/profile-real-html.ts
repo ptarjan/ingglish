@@ -364,7 +364,7 @@ async function main() {
 
   // Time just the text node processing (simulating what happens after DOM is collected)
   const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
-    await import('@ingglish/core/internal');
+    await import('@ingglish/normalize');
   const WORD_REGEX = /[a-zA-Z']+/g;
 
   const processTimes: number[] = [];

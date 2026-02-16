@@ -1,0 +1,371 @@
+import { describe, it, expect, vi } from 'vitest';
+import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
+import { translateWord, translateSync } from './forward';
+import { translate, reverseTranslate } from '../index';
+import * as dictModule from '@ingglish/dictionary';
+
+describe('async API loads only required dictionaries', () => {
+  // Dictionaries pre-loaded by vitest.setup.ts
+
+  it('translate() should not call loadReverseDictionary', async () => {
+    const loadReverseSpy = vi.spyOn(dictModule, 'loadReverseDictionary');
+    loadReverseSpy.mockClear();
+
+    await translate('hello world');
+
+    expect(loadReverseSpy).not.toHaveBeenCalled();
+    loadReverseSpy.mockRestore();
+  });
+
+  it('reverseTranslate() should not call loadDictionary', async () => {
+    const loadDictSpy = vi.spyOn(dictModule, 'loadDictionary');
+    loadDictSpy.mockClear();
+
+    await reverseTranslate('huloh werld');
+
+    expect(loadDictSpy).not.toHaveBeenCalled();
+    loadDictSpy.mockRestore();
+  });
+});
+
+describe('translator', () => {
+  describe('loadDictionary', () => {
+    it('should load the dictionary', async () => {
+      const dict = await loadDictionary();
+      expect(dict).toBeDefined();
+      expect(typeof dict).toBe('object');
+    });
+
+    it('should report dictionary as loaded', () => {
+      expect(isDictionaryLoaded()).toBe(true);
+    });
+  });
+
+  describe('lookupPronunciation', () => {
+    it('should find common words', () => {
+      expect(lookupPronunciation('hello')).toBeDefined();
+      expect(lookupPronunciation('world')).toBeDefined();
+      expect(lookupPronunciation('the')).toBeDefined();
+    });
+
+    it('should be case insensitive', () => {
+      expect(lookupPronunciation('Hello')).toEqual(lookupPronunciation('hello'));
+      expect(lookupPronunciation('WORLD')).toEqual(lookupPronunciation('world'));
+    });
+
+    it('should return null for unknown words', () => {
+      expect(lookupPronunciation('asdfghjkl')).toBeNull();
+      expect(lookupPronunciation('xyz123')).toBeNull();
+    });
+
+    it('should return phoneme arrays', () => {
+      const phonemes = lookupPronunciation('hello');
+      expect(Array.isArray(phonemes)).toBe(true);
+      expect(phonemes).not.toBeNull();
+      if (phonemes !== null) {
+        expect(phonemes.length).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe('translateWord', () => {
+    it('should translate common words', () => {
+      // hello = HH AH0 L OW1 -> huloh (American pronunciation)
+      expect(translateWord('hello')).toBe('huloh');
+      expect(translateWord('world')).toBe('werld');
+    });
+
+    it('should preserve capitalization', () => {
+      const hello = translateWord('hello');
+      expect(translateWord('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
+    });
+
+    it('should pass through all-caps words unchanged', () => {
+      // All-caps words (≥2 chars) pass through as acronyms/emphasis
+      expect(translateWord('HELLO')).toBe('HELLO');
+    });
+
+    it('should handle unknown words with fallback', () => {
+      // Unknown words should still return something (using fallback rules)
+      const result = translateWord('asdfgh');
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+    });
+
+    it('should translate url (not in CMU dictionary)', () => {
+      // "url" is not in CMU dictionary, should use rule-based G2P
+      // u->AH1 (u), r->R (r), l->L (l) = "url"
+      const result = translateWord('url');
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+      // The rule-based translation should produce something
+    });
+  });
+
+  describe('translateSync', () => {
+    it('should translate multiple words', () => {
+      const result = translateSync('hello world');
+      // First word of multi-word text is capitalized (sentence start)
+      expect(result).toContain('Huloh');
+      expect(result).toContain('werld');
+    });
+
+    it('should preserve punctuation', () => {
+      const result = translateSync('Hello, world!');
+      expect(result).toContain(',');
+      expect(result).toContain('!');
+    });
+
+    it('should preserve punctuation in IPA output', () => {
+      const result = translateSync('Hello, world!', 'ipa');
+      expect(result).toContain(',');
+      expect(result).toContain('!');
+    });
+
+    it('should preserve whitespace', () => {
+      const result = translateSync('hello   world');
+      expect(result).toContain('   ');
+    });
+
+    it('should preserve numbers', () => {
+      const result = translateSync('hello 123 world');
+      expect(result).toContain('123');
+    });
+
+    it('should handle contractions', () => {
+      const result = translateSync("don't");
+      // Contractions are translated as a unit - no apostrophe needed
+      // The important thing is they round-trip correctly
+      expect(result).toBe('dohnt');
+    });
+
+    it('should normalize curly apostrophes', () => {
+      // Curly apostrophe (U+2019) should be treated the same as straight
+      const curly = 'don\u2019t'; // don't with curly apostrophe
+      const straight = "don't";
+      expect(translateSync(curly)).toBe(translateSync(straight));
+    });
+
+    it('should handle possessives with curly apostrophes', () => {
+      // Common in text copied from websites like NY Times
+      const result = translateSync('China\u2019s economy');
+      expect(result).toBe('Chainuz ikonumee');
+    });
+
+    it('should use diacritics as pronunciation signals for homographs', () => {
+      // résumé (accented, French noun) ≠ resume (unaccented, English verb)
+      expect(translateSync('résumé')).toBe('rezumay');
+      expect(translateSync('resume')).toBe('rizuum');
+    });
+
+    it('should strip diacritics per-word for non-homograph loanwords', () => {
+      // café→cafe, naïve→naive, cliché→cliche — same pronunciation
+      expect(translateSync('naïve')).toBe(translateSync('naive'));
+      expect(translateSync('café')).toBe(translateSync('cafe'));
+      expect(translateSync('cliché')).toBe(translateSync('cliche'));
+    });
+
+    it('should treat I as lowercase (English capitalizes I by convention only)', () => {
+      // "I" is always capitalized in English, but it's just a pronoun
+      // In Ingglish, there's no special reason to capitalize it
+      expect(translateSync('I')).toBe('ai');
+      expect(translateSync("I'm")).toBe('aim');
+      expect(translateSync("I'll")).toBe('ail');
+      expect(translateSync("I've")).toBe('aiv');
+      expect(translateSync("I'd")).toBe('aid');
+      // Lowercase remains lowercase
+      expect(translateSync('i')).toBe('ai');
+    });
+
+    it('should capitalize I at sentence start but not mid-sentence', () => {
+      // "I" at sentence start gets capitalized to "Ai"
+      expect(translateSync('I went home.')).toBe('Ai went hohm.');
+      // "I" mid-sentence stays lowercase "ai"
+      expect(translateSync('Then I left.')).toBe('Dhen ai left.');
+      // "I" after sentence-ending punctuation gets capitalized
+      expect(translateSync('Hello. I am here.')).toBe('Huloh. Ai am heer.');
+      expect(translateSync('Really? I think so.')).toBe('Rilee? Ai thingk soh.');
+    });
+
+    it('should handle empty string', () => {
+      expect(translateSync('')).toBe('');
+    });
+
+    it('should handle only punctuation', () => {
+      expect(translateSync('!!!')).toBe('!!!');
+    });
+
+    it('should handle mixed content', () => {
+      const result = translateSync('Hello, World! How are you?');
+      expect(result).toBeDefined();
+      expect(result).toContain(',');
+      expect(result).toContain('!');
+      expect(result).toContain('?');
+    });
+  });
+
+  describe('contraction edge cases', () => {
+    it('should handle contractions with apostrophe parts', () => {
+      // Test contractions that go through the fallback path
+      // where parts are translated separately
+      const result = translateSync("y'all");
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle possessives correctly', () => {
+      // John's is in the dictionary as a complete word
+      const result = translateSync("John's");
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should handle multiple apostrophes', () => {
+      const result = translateSync("'twas");
+      expect(result).toBeDefined();
+    });
+
+    it('should preserve all caps on contractions', () => {
+      // DON'T should stay uppercase
+      const result = translateWord("DON'T");
+      expect(result).toBe(result.toUpperCase());
+    });
+
+    it('should handle contractions not in dictionary via fallback', () => {
+      // Made-up contraction that won't be in CMU dictionary
+      const result = translateWord("foo't");
+      expect(result).toBeDefined();
+      expect(result).toContain("'");
+    });
+  });
+
+  describe('case preservation for unknown words', () => {
+    it('should preserve all caps on unknown words', () => {
+      // KUBERNETES is not in CMU dictionary
+      const result = translateWord('KUBERNETES');
+      expect(result).toBe(result.toUpperCase());
+    });
+
+    it('should preserve title case on unknown words', () => {
+      // Kubernetes is not in CMU dictionary
+      const result = translateWord('Kubernetes');
+      expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
+      expect(result.slice(1)).toBe(result.slice(1).toLowerCase());
+    });
+
+    it('should preserve mixed case on unknown words like GitHub', () => {
+      // GitHub has internal capital - should preserve position-by-position
+      const result = translateWord('GitHub');
+      expect(result).toBe('GitHub');
+    });
+
+    it('should translate GitHub with correct phonetics (t+h not θ)', () => {
+      // GitHub = git + hub, the "th" should NOT become theta sound
+      const ipa = translateWord('GitHub', 'ipa');
+      expect(ipa).toContain('t'); // separate t
+      expect(ipa).toContain('h'); // separate h
+      expect(ipa).not.toContain('θ'); // NOT theta digraph
+    });
+  });
+
+  describe('edge cases for coverage', () => {
+    it('should handle empty string in translateWord', () => {
+      expect(translateWord('')).toBe('');
+    });
+
+    it('should handle contraction with leading apostrophe via fallback', () => {
+      const result = translateWord("'xyz");
+      expect(result).toBeDefined();
+      expect(result).toContain("'");
+    });
+
+    it('should handle words with only non-letter characters', () => {
+      expect(translateWord('123')).toBe('123');
+      expect(translateWord('!!!')).toBe('!!!');
+    });
+
+    it('should translate unknown words to IPA format', () => {
+      // Unknown word in IPA format should return IPA characters
+      const result = translateWord('xyzzy', 'ipa');
+      expect(result).toBeDefined();
+      expect(result.length).toBeGreaterThan(0);
+      // IPA result should contain non-ASCII characters
+      expect(result).not.toMatch(/^[a-zA-Z]+$/);
+    });
+
+    it('should use translateSyncWithMapping for token mapping', async () => {
+      // Test the mapping function used by DOM translator
+      const { translateSyncWithMapping } = await import('./forward');
+      const tokens = translateSyncWithMapping('Hello world', 'ingglish');
+      expect(tokens).toHaveLength(3);
+      expect(tokens[0].isWord).toBe(true);
+      expect(tokens[1].isWord).toBe(false);
+      expect(tokens[2].isWord).toBe(true);
+    });
+  });
+
+  describe('URL and email preservation', () => {
+    it('should preserve HTTP URLs unchanged', () => {
+      const result = translateSync('Visit http://example.com today');
+      expect(result).toContain('http://example.com');
+    });
+
+    it('should preserve HTTPS URLs unchanged', () => {
+      const result = translateSync('Visit https://example.com/path?q=1 today');
+      expect(result).toContain('https://example.com/path?q=1');
+    });
+
+    it('should preserve complex URLs with fragments and params', () => {
+      const result = translateSync('See https://github.com/user/repo#readme for info');
+      expect(result).toContain('https://github.com/user/repo#readme');
+    });
+
+    it('should preserve email addresses unchanged', () => {
+      const result = translateSync('Contact foo@bar.com for help');
+      expect(result).toContain('foo@bar.com');
+    });
+
+    it('should preserve complex email addresses', () => {
+      const result = translateSync('Email user.name+tag@example.org now');
+      expect(result).toContain('user.name+tag@example.org');
+    });
+
+    it('should translate surrounding text while preserving URLs', () => {
+      const result = translateSync('Visit https://example.com today');
+      expect(result).toBe('Vizit https://example.com tuday');
+    });
+
+    it('should preserve multiple URLs and emails in same text', () => {
+      const result = translateSync('See http://a.com and https://b.com or email x@y.com');
+      expect(result).toContain('http://a.com');
+      expect(result).toContain('https://b.com');
+      expect(result).toContain('x@y.com');
+    });
+
+    it('should preserve URLs in translateSyncWithMapping', async () => {
+      const { translateSyncWithMapping } = await import('./forward');
+      const tokens = translateSyncWithMapping('Visit https://example.com', 'ingglish');
+      const urlToken = tokens.find((t) => t.original === 'https://example.com');
+      expect(urlToken).toBeDefined();
+      expect(urlToken?.translated).toBe('https://example.com');
+      expect(urlToken?.isWord).toBe(false);
+    });
+
+    it('should preserve bare domains like google.com', () => {
+      const result = translateSync('Visit google.com today');
+      expect(result).toContain('google.com');
+    });
+
+    it('should preserve bare domains with paths', () => {
+      const result = translateSync('See example.org/path?q=1 for info');
+      expect(result).toContain('example.org/path?q=1');
+    });
+
+    it('should preserve various TLDs', () => {
+      const result = translateSync('Check github.io and example.net and test.dev');
+      expect(result).toContain('github.io');
+      expect(result).toContain('example.net');
+      expect(result).toContain('test.dev');
+    });
+  });
+});

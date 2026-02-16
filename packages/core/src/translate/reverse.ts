@@ -6,21 +6,17 @@
  * words based on frequency data.
  */
 
-import { lookupPhonemeKey } from '../dictionary/reverse';
-import { sortByFrequency } from '../dictionary/frequency';
-import { detectCasePattern, applyCasePattern } from '../utils/case';
+import { ingglishToArpabet, ipaToArpabet, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
 import {
+  detectCasePattern,
+  applyCasePattern,
   normalizeApostrophes,
-  tokenizeIPA,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
   extractPreservedPatterns,
   restorePreservedPatterns,
-} from '../utils/text';
-import { ingglishToArpabet } from '../convert/from-ingglish';
-import { ipaToArpabet } from '../convert/from-ipa';
-import { STRESS_MARKER_REGEX } from '../phonemes/arpabet';
-import type { OutputFormat } from '../types';
+} from '@ingglish/normalize';
+import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
 

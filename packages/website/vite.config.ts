@@ -107,7 +107,14 @@ export default defineConfig({
             return 'word-frequencies';
           }
           // @ingglish libraries
-          if (id.includes('packages/core') || id.includes('packages/dom')) {
+          if (
+            id.includes('packages/core') ||
+            id.includes('packages/dom') ||
+            id.includes('packages/normalize') ||
+            id.includes('packages/phonemes') ||
+            id.includes('packages/tokenize') ||
+            id.includes('packages/fallback')
+          ) {
             return 'ingglish';
           }
           // Split vendor code for better caching

@@ -1,5 +1,4 @@
-import { loadDictionary, loadReverseDictionary } from '@ingglish/core/internal';
-import { loadFrequencies } from '@ingglish/core/internal';
+import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 
 // Pre-load dictionary before any tests run in this worker
 // This avoids timeout issues in beforeAll hooks

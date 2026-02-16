@@ -1,0 +1,43 @@
+{
+  "name": "@ingglish/tokenize",
+  "version": "1.0.0",
+  "description": "Tokenization, character classification, and word patterns for Ingglish",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build:fast": "tsup src/index.ts --format esm",
+    "lint": "eslint --cache src",
+    "test": "vitest run --no-color"
+  },
+  "dependencies": {
+    "@ingglish/normalize": "^1.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.16"
+  }
+}

@@ -2,7 +2,7 @@
 // Uses message passing to background for translations and shared DOM utilities
 
 import type { OutputFormat } from '@ingglish/core';
-import { detectCasePattern, applyCasePattern } from '@ingglish/core/internal';
+import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import {
   applyTranslationsMap,
   restoreDOM,
