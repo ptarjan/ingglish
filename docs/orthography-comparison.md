@@ -141,7 +141,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Vietnamese | ai | hai (two) |
 
 **Notes:**
-- Pinyin (used for over 1 billion Mandarin speakers in mainland China), Italian, Vietnamese all use 'ai' for this sound
+- Pinyin (the standard romanization for Mandarin Chinese), Italian, Vietnamese all use 'ai' for this sound
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 

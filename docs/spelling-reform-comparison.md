@@ -10,7 +10,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published (*Androcles and the Lion*, 1962). It saw minimal adoption beyond a small enthusiast community.
 
-**[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. The project's own creator abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
+**[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. Even Brigham Young, who commissioned the project, abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
 **[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
 
@@ -48,7 +48,7 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 ### Political Failures
 
-**[Theodore Roosevelt's spelling reform](https://en.wikipedia.org/wiki/Simplified_Spelling_Board#Roosevelt_and_the_Government_Printing_Office) (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid "immediate outcry and ample mockery of President 'Rozevult.'"
+**[Theodore Roosevelt's spelling reform](https://en.wikipedia.org/wiki/Simplified_Spelling_Board#Roosevelt_and_the_Government_Printing_Office) (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid widespread outcry and mockery.
 
 **[Andrew Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board) (1906-1920)** - The steel magnate invested $283,000 (roughly $8 million today) in the Simplified Spelling Board. Result: zero lasting impact.
 
@@ -176,7 +176,7 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 ### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
-[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life — a journey of roughly **450 years**.
+[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life — a journey of over **500 years**.
 
 **Why it eventually worked:**
 - Coexisted with Chinese characters for centuries

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml/badge.svg)](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml)
 
-Phonetic English spelling translator. Every spelling always makes the same sound.
+Phonemic English spelling translator. Every spelling always makes the same sound.
 
 **[Try it live →](https://ingglish.com/)** · **[Spelling Guide](https://ingglish.com/guide)**
 
