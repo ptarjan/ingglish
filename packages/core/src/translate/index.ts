@@ -18,5 +18,5 @@ export {
   reverseTranslateSyncWithMapping,
 } from './reverse';
 
-// Re-export ipaToArpabetClean (moved to @ingglish/phonemes, kept here for API compatibility)
-export { ipaToArpabetClean } from '@ingglish/phonemes';
+// Re-export ipaToArpabetClean (from @ingglish/ipa, kept here for API compatibility)
+export { ipaToArpabetClean } from '@ingglish/ipa';

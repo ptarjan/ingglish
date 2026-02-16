@@ -8,7 +8,7 @@
 
 import { stripStress } from './arpabet';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
-import { arpabetToIPARaw } from './to-ipa';
+import { registerFormat, getFormatHandler } from './format-registry';
 import type { OutputFormat } from './types';
 
 /**
@@ -58,16 +58,20 @@ export function arpabetToIngglish(arpabet: string[]): string {
   return result;
 }
 
+// Register default format at module load
+registerFormat('ingglish', { forward: arpabetToIngglish });
+
 /**
  * Converts ARPAbet to the specified output format.
  *
  * @param arpabet Array of ARPAbet symbols
- * @param format Output format ('ingglish' or 'ipa')
+ * @param format Output format (e.g. 'ingglish', 'ipa', 'shavian')
  * @returns Formatted string
  */
 export function arpabetToFormat(arpabet: string[], format: OutputFormat = 'ingglish'): string {
-  if (format === 'ipa') {
-    return arpabetToIPARaw(arpabet);
+  const handler = getFormatHandler(format);
+  if (handler?.forward) {
+    return handler.forward(arpabet);
   }
   return arpabetToIngglish(arpabet);
 }

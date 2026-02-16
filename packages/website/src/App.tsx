@@ -316,9 +316,9 @@ function App() {
             className="format-toggle"
             onClick={toggleFormat}
             aria-label="Toggle output format"
-            title={format === 'ingglish' ? 'Switch to IPA' : 'Switch to Ingglish'}
+            title="Cycle output format"
           >
-            {format === 'ingglish' ? 'Ingglish' : 'IPA'}
+            {{ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' }[format] ?? format}
           </button>
         )}
         <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">

@@ -88,6 +88,18 @@ function showContextInvalidMessage(): void {
   document.body?.appendChild(notice);
 }
 
+// Inject Noto Sans Shavian font via @font-face
+function injectShavianFont(doc: Document): void {
+  if (doc.getElementById('ingglish-shavian-font')) {
+    return;
+  }
+  const link = doc.createElement('link');
+  link.id = 'ingglish-shavian-font';
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Shavian&display=swap';
+  doc.head.appendChild(link);
+}
+
 // Request batch translation from background script
 async function translateWordsBatch(
   words: string[],
@@ -188,6 +200,11 @@ async function performTranslation(format: OutputFormat): Promise<void> {
 
   injectTooltipStyles(document);
   injectTooltipBehavior(document);
+
+  // Inject Shavian font when needed
+  if (format === 'shavian') {
+    injectShavianFont(document);
+  }
 
   const collectStart = performance.now();
   const textNodes = collectTextNodes(document.body, EXTENSION_SKIP_TAGS, DEFAULT_SKIP_CLASSES);
@@ -384,6 +401,10 @@ function restorePage(): void {
 async function retranslatePage(format: OutputFormat): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
+
+  if (format === 'shavian') {
+    injectShavianFont(document);
+  }
 
   const perf = { start: performance.now(), query: 0, collect: 0, fetch: 0, apply: 0 };
 

@@ -1,4 +1,4 @@
 /**
  * Output format for phoneme conversion.
  */
-export type OutputFormat = 'ingglish' | 'ipa';
+export type OutputFormat = 'ingglish' | 'ipa' | (string & {});

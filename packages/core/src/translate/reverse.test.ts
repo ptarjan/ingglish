@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { ingglishToArpabet, ipaToArpabetClean } from '@ingglish/phonemes';
+import { ingglishToArpabet } from '@ingglish/phonemes';
+import { ipaToArpabetClean } from '@ingglish/ipa';
 import { translateWord, translateSync } from './forward';
 import {
   reverseTranslateWord,

@@ -5,8 +5,8 @@
  * with proper stress marker placement at syllable boundaries.
  */
 
-import { stripStress, isVowel, STRESS_MARKER_REGEX } from './arpabet';
-import { findOnsetStart } from './phonotactics';
+import { stripStress, isVowel, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
+import { findOnsetStart } from '@ingglish/phonemes';
 import { ARPABET_TO_IPA_MAP } from './ipa-maps';
 
 /**

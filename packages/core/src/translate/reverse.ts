@@ -9,9 +9,11 @@
 import {
   ingglishToArpabet,
   expandArpabetAlternatives,
-  ipaToArpabetClean,
+  registerFormat,
+  getFormatHandler,
 } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { ipaToArpabetClean } from '@ingglish/ipa';
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
 import {
   detectCasePattern,
@@ -108,6 +110,10 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
 // Unified Reverse Translation
 // ============================================================================
 
+// Register reverse handlers for built-in formats
+registerFormat('ingglish', { reverseText: reverseTranslateIngglishText });
+registerFormat('ipa', { reverseText: reverseTranslateIPATextInternal });
+
 /**
  * Translates Ingglish text back to English.
  * URLs and emails are preserved unchanged.
@@ -168,8 +174,9 @@ function reverseTranslateIPATextInternal(text: string): string {
  * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
  */
 export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
-  if (format === 'ipa') {
-    return reverseTranslateIPATextInternal(text);
+  const handler = getFormatHandler(format);
+  if (handler?.reverseText) {
+    return handler.reverseText(text);
   }
   return reverseTranslateIngglishText(text);
 }

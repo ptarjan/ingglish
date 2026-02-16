@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@ingglish/phonemes": "^1.0.0",
+    "@ingglish/ipa": "^1.0.0",
     "@ingglish/dictionary": "^1.0.0",
     "@ingglish/g2p": "^1.0.0",
     "phonemize": "^1.1.0"

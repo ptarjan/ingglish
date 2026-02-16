@@ -2,6 +2,12 @@
 
 import type { OutputFormat } from 'ingglish';
 import { translate, translateSync } from 'ingglish';
+import { registerIPA } from '@ingglish/ipa';
+import { registerShavian } from '@ingglish/shavian';
+
+// Register format plugins
+registerIPA();
+registerShavian();
 
 // Track dictionary loading state
 let dictionaryLoaded = false;

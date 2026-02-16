@@ -5,8 +5,9 @@
  * when the phonemize library is available.
  */
 
-import { arpabetToFormat, ipaToArpabet } from '@ingglish/phonemes';
+import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { ipaToArpabet } from '@ingglish/ipa';
 
 // Type for the phonemize function
 type PhonemizeFn = ((text: string) => string) | null;

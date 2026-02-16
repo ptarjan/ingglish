@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { registerIPA } from '@ingglish/ipa';
+import { registerShavian } from '@ingglish/shavian';
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import './styles/index.css';
+
+// Register format plugins
+registerIPA();
+registerShavian();
 
 const rootElement = document.getElementById('root');
 if (rootElement === null) {

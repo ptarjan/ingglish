@@ -61,7 +61,8 @@ async function main() {
   } = await import('@ingglish/dictionary');
   const { translateSync } = await import('../src/translate/forward');
   const { reverseTranslateWord, reverseTranslateSync } = await import('../src/translate/reverse');
-  const { ingglishToArpabet, arpabetToIPA } = await import('@ingglish/phonemes');
+  const { ingglishToArpabet } = await import('@ingglish/phonemes');
+  const { arpabetToIPA } = await import('@ingglish/ipa');
 
   // Load dictionary first
   console.log('Loading dictionary...');
