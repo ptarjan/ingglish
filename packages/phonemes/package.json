@@ -36,5 +36,16 @@
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "vitest": "^4.0.16"
+  },
+  "author": "Paul Tarjan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptarjan/ingglish.git",
+    "directory": "packages/phonemes"
+  },
+  "homepage": "https://github.com/ptarjan/ingglish#readme",
+  "bugs": {
+    "url": "https://github.com/ptarjan/ingglish/issues"
   }
 }

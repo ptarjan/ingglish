@@ -1,6 +1,7 @@
 {
   "name": "@ingglish/website",
   "version": "1.0.0",
+  "description": "Ingglish website — tutorial, text/URL translator, spelling guide, and docs",
   "private": true,
   "type": "module",
   "scripts": {
@@ -31,7 +32,7 @@
     "@vitejs/plugin-react-swc": "^4.2.2",
     "@vitest/coverage-v8": "^4.0.16",
     "marked": "^17.0.1",
-    "typescript": "^5.3.0",
+    "typescript": "^5.8.3",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
   }
