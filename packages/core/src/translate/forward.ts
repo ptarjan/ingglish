@@ -18,7 +18,7 @@ import { isInitialism } from './initialisms';
 import { expandPlaceholder } from './preserved';
 import type { OutputFormat } from '../types';
 
-import { translateUnknown } from '../fallback';
+import { translateUnknown, getCustomPronunciation } from '../fallback';
 
 // Common suffixes for initialisms (plural, possessive)
 const INITIALISM_SUFFIXES = ["'s", 's'] as const;
@@ -112,7 +112,9 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   // Detect case pattern for preservation
   const casePattern = detectCasePattern(word);
 
-  const phonemes = lookupPronunciation(word);
+  // Custom pronunciations override the dictionary (fixes CMU errors like "hors")
+  const customPhonemes = getCustomPronunciation(word.toLowerCase());
+  const phonemes = customPhonemes ?? lookupPronunciation(word);
 
   if (!phonemes) {
     // Word not found in dictionary - try fallback strategies

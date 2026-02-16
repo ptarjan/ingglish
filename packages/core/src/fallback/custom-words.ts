@@ -11,6 +11,9 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   vs: ['V', 'ER1', 'S', 'AH0', 'S'], // versus
   devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
+  // CMU dictionary corrections
+  hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
+
   // Irregular words not in CMU dictionary
   chamois: ['SH', 'AE1', 'M', 'W', 'AA1'], // /ˈʃæm.wɑː/
   cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'], // /ˈtʃʌm.li/
