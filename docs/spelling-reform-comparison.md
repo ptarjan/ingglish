@@ -24,7 +24,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
-Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. A 2001 BBC Radio 4 informal listener survey found adults who learned via ITA frequently reported it "hampered, rather than helped, their reading and spelling ability." (More rigorous research, such as the [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation), found mixed results — initial reading gains but inconsistent transfer to traditional orthography.)
+Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation) found mixed results — initial reading gains but inconsistent transfer to traditional orthography. A 2001 BBC Radio 4 listener survey echoed this, with adults who learned via ITA frequently reporting it "hampered, rather than helped, their reading and spelling ability."
 
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
@@ -176,12 +176,12 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 ### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
-[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. Widespread adoption came in the 1990s—**550 years later**.
+[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life — a journey of roughly **450 years**.
 
 **Why it eventually worked:**
 - Coexisted with Chinese characters for centuries
-- Gained status gradually through nationalist movements
-- Technology (computers) made Hangul more practical than Chinese characters
+- Gained status gradually through nationalist movements and government policy
+- Technology (computers, phones) further accelerated exclusive Hangul use
 
 **Lesson for Ingglish:** Supplementary systems can eventually become primary. Patience and coexistence are viable strategies.
 

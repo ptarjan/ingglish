@@ -102,17 +102,17 @@ When certain vowels are followed by R, they combine into special r-colored sound
 ### Why This Matters
 
 Without special handling, the vowel mappings would produce confusing results:
-- "star" (AA + R) would become "stor" (o + r)
+- "star" (AA + R) would become "stor" (o + r) — looks like "store"
 - "store" (AO + R) would become "stawr" (aw + r)
-- "air" (EH + R) would become "er" (same as "her")
-- "barrow" (AE + R) would become "baroh" (same as "borrow")
+- "fair" (EH + R) would become "fer" (collides with "fur" → "fer")
+- "carry" (AE + R) would become "karee" (indistinct from 'ar' words once AA+R → ar is added)
 - "beard" (IH + R) would become "bird" (looks like the animal)
 
-This is problematic because spellings would collide. The R-rule ensures:
+This is problematic because spellings would collide or create confusing false cognates. The R-rule ensures:
 - "star" → **star** (intuitive)
 - "store" → **stor** (clearly different from "star")
-- "air" → **air** (distinct from "her" → "her")
-- "barrow" → **barroh** (distinct from "borrow" → "baroh")
+- "fair" → **fair** (distinct from "fur" → "fer")
+- "carry" → **karree** (distinct from "car" → "kar")
 - "beard" → **beerd** (distinct from "bird" → "berd")
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, AE, and IH vowels use their regular spellings (o, aw, e, a, i).

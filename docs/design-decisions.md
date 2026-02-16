@@ -4,7 +4,7 @@ This document explains the core design decisions behind Ingglish: why we made sp
 
 ## Core Principles
 
-1. **One sound, one spelling**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling sequence
+1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound
 2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
 3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
 4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone

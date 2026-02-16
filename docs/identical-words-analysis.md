@@ -140,7 +140,7 @@ We verified the proposed changes don't create problematic collisions:
 | so / saw | soh / saw | sow / sau | ✓ Distinct |
 | know / now | noh / now | now / now | ⚠️ Collision! |
 
-**Note:** "know" → "now" collision already exists in English (homophones) and is counted in the baseline 20,180 collisions.
+**Note:** "know" (/noʊ/) and "now" (/naʊ/) are not homophones — this is a genuine new collision introduced by the "ow" spelling, and one of the reasons it was rejected.
 
 ## Recommendations
 

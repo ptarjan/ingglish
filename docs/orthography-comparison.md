@@ -700,7 +700,7 @@ A successful African example using Latin script:
 
 ## Phoneme Frequency: How Common Are These Sounds?
 
-Not all phonemes are equally common across world languages. Data from [PHOIBLE](https://phoible.org/) (a database of 3,000+ language phoneme inventories):
+Not all phonemes are equally common across world languages. Data from [PHOIBLE 2.0](https://phoible.org/) (a database of 3,000+ language phoneme inventories):
 
 ### Consonants in Ingglish
 

@@ -10,7 +10,7 @@ Thanks for your interest in contributing to Ingglish!
    cd ingglish
    ```
 
-2. **Install dependencies**
+2. **Install dependencies** (requires Node.js 20+)
    ```bash
    npm install
    ```
