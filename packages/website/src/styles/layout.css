@@ -218,6 +218,11 @@
 
   .header {
     margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .header-title {
+    justify-content: flex-start;
   }
 
   .header h1 {
