@@ -10,6 +10,7 @@ class MockUtterance {
   text = '';
   onend: (() => void) | null = null;
   onerror: (() => void) | null = null;
+  onboundary: ((event: { name: string; charIndex: number }) => void) | null = null;
   constructor(text: string) {
     this.text = text;
   }
@@ -196,5 +197,67 @@ describe('useSpeech', () => {
     const [, speak2, stop2] = result.current;
     expect(speak1).toBe(speak2);
     expect(stop1).toBe(stop2);
+  });
+
+  it('returns charIndex=null initially', () => {
+    const { result } = renderHook(() => useSpeech());
+    expect(result.current[4]).toBeNull();
+  });
+
+  it('updates charIndex on word boundary events', () => {
+    const { result } = renderHook(() => useSpeech());
+
+    act(() => {
+      result.current[1]('hello world');
+    });
+
+    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    act(() => {
+      utterance.onboundary?.({ name: 'word', charIndex: 0 });
+    });
+    expect(result.current[4]).toBe(0);
+
+    act(() => {
+      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+    });
+    expect(result.current[4]).toBe(6);
+  });
+
+  it('resets charIndex on stop', () => {
+    const { result } = renderHook(() => useSpeech());
+
+    act(() => {
+      result.current[1]('hello world');
+    });
+
+    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    act(() => {
+      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+    });
+    expect(result.current[4]).toBe(6);
+
+    act(() => {
+      result.current[2](); // stop
+    });
+    expect(result.current[4]).toBeNull();
+  });
+
+  it('resets charIndex on utterance end', () => {
+    const { result } = renderHook(() => useSpeech());
+
+    act(() => {
+      result.current[1]('hello world');
+    });
+
+    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    act(() => {
+      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+    });
+    expect(result.current[4]).toBe(6);
+
+    act(() => {
+      utterance.onend?.();
+    });
+    expect(result.current[4]).toBeNull();
   });
 });

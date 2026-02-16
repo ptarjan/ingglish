@@ -166,8 +166,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, copyShare] = useClipboard();
-  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported] = useSpeech();
-  const [speakingIngglish, speakIngglish, stopIngglish] = useSpeech();
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, englishCharIndex] =
+    useSpeech();
+  const [speakingIngglish, speakIngglish, stopIngglish, , ingglishCharIndex] = useSpeech();
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -301,6 +302,28 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
+  // Map TTS charIndex to word index for highlighting during speech
+  const spokenWordIndex = useMemo(() => {
+    const charIdx = englishCharIndex ?? ingglishCharIndex;
+    if (charIdx === null) {
+      return null;
+    }
+    const tokens = tokenizePhonetic(displayEnglish);
+    let pos = 0;
+    for (const token of tokens) {
+      const end = pos + token.text.length;
+      if (token.isWord && charIdx >= pos && charIdx < end) {
+        return token.wordIndex;
+      }
+      pos = end;
+    }
+    return null;
+  }, [englishCharIndex, ingglishCharIndex, displayEnglish]);
+
+  // Spoken word takes precedence over hover
+  const activeWordIndex = spokenWordIndex ?? hoveredWordIndex;
+  const isSpeaking = speakingEnglish || speakingIngglish;
+
   // Sync scroll positions between the two textareas
   const englishRef = useRef<HTMLTextAreaElement>(null);
   const ingglishRef = useRef<HTMLTextAreaElement>(null);
@@ -429,20 +452,22 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       {hasContent && (
         <div className="word-correspondence">
           <div className="correspondence-header">
-            <span className="correspondence-label">Hover to see word correspondence</span>
+            <span className="correspondence-label">
+              {isSpeaking ? 'Word correspondence' : 'Hover to see word correspondence'}
+            </span>
           </div>
           <div className="correspondence-grid">
             {lastEdited === 'ingglish' && reverseTokens ? (
               <MappedWordDisplay
                 tokens={reverseTokens}
-                hoveredWordIndex={hoveredWordIndex}
+                hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
               />
             ) : (
               <WordDisplay
                 text={displayEnglish}
-                hoveredWordIndex={hoveredWordIndex}
+                hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
               />
@@ -450,14 +475,14 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             {lastEdited === 'english' && forwardTokens ? (
               <MappedWordDisplay
                 tokens={forwardTokens}
-                hoveredWordIndex={hoveredWordIndex}
+                hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
               />
             ) : (
               <WordDisplay
                 text={displayIngglish}
-                hoveredWordIndex={hoveredWordIndex}
+                hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
               />
