@@ -339,11 +339,24 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const activeWordIndex = spokenWordIndex ?? hoveredWordIndex;
   const isSpeaking = speakingEnglish || speakingIngglish;
 
+  // Auto-scroll the highlighted word into view during TTS
+  const corrEnglishRef = useRef<HTMLDivElement>(null);
+  const corrIngglishRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (spokenWordIndex === null) {
+      return;
+    }
+    const el =
+      corrEnglishRef.current?.querySelector('.word-token.highlighted') ??
+      corrIngglishRef.current?.querySelector('.word-token.highlighted');
+    if (el) {
+      el.scrollIntoView({ block: 'nearest' });
+    }
+  }, [spokenWordIndex]);
+
   // Sync scroll positions between paired panes
   const englishRef = useRef<HTMLTextAreaElement>(null);
   const ingglishRef = useRef<HTMLTextAreaElement>(null);
-  const corrEnglishRef = useRef<HTMLDivElement>(null);
-  const corrIngglishRef = useRef<HTMLDivElement>(null);
   const scrolling = useRef(false);
 
   const syncScroll = useCallback((from: Element | null, to: Element | null) => {
