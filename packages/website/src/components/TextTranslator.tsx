@@ -47,20 +47,16 @@ function StopIcon() {
   );
 }
 
-const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
-This sentence contains every letter of the English alphabet.
+const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.
 
-"Though" and "through" are spelled similarly but sound different.
-English spelling is notoriously difficult to learn because it has
-so many exceptions. With phonetic spelling, words
-are written exactly as they sound - what you see is what you say!`;
+"Though" and "through" are spelled similarly but sound different. English spelling is notoriously difficult to learn because it has so many exceptions. With phonetic spelling, words are written exactly as they sound - what you see is what you say!`;
 
 type EditingPane = 'english' | 'ingglish';
 
 interface WordDisplayProps {
   text: string;
   hoveredWordIndex: number | null;
-  onHoverWord: (index: number | null) => void;
+  onHoverWord?: (index: number | null) => void;
   className?: string;
   scrollRef?: React.Ref<HTMLDivElement>;
   onScroll?: () => void;
@@ -85,12 +81,20 @@ function WordDisplay({
             <span
               key={i}
               className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
-              onMouseEnter={() => {
-                onHoverWord(token.wordIndex);
-              }}
-              onMouseLeave={() => {
-                onHoverWord(null);
-              }}
+              onMouseEnter={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(token.wordIndex);
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(null);
+                    }
+                  : undefined
+              }
             >
               {token.text}
             </span>
@@ -530,7 +534,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               <MappedWordDisplay
                 tokens={forwardTokens}
                 hoveredWordIndex={activeWordIndex}
-                onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}
                 onScroll={() => {
@@ -541,7 +544,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               <WordDisplay
                 text={displayIngglish}
                 hoveredWordIndex={activeWordIndex}
-                onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}
                 onScroll={() => {
