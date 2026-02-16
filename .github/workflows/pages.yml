@@ -32,27 +32,32 @@ jobs:
         id: dict-cache
         with:
           path: |
-            packages/core/src/dictionary/cmudict.js
-            packages/core/src/dictionary/reverse-cmudict.js
-            packages/core/src/data/word-frequencies.js
-          key: dictionaries-v4-${{ hashFiles('packages/core/scripts/build-dictionary.ts') }}
+            packages/dictionary/src/cmudict.js
+            packages/dictionary/src/reverse-cmudict.js
+            packages/dictionary/src/data/word-frequencies.js
+          key: dictionaries-v5-${{ hashFiles('packages/dictionary/scripts/build-dictionary.ts') }}
 
       - name: Cache generated docs
         id: docs-cache
         uses: actions/cache@v5
         with:
           path: docs/generated
-          key: docs-${{ hashFiles('packages/core/src/**/*.ts', 'typedoc.json') }}
+          key: docs-${{ hashFiles('packages/*/src/**/*.ts', 'typedoc.json') }}
 
       - name: Install dependencies
         run: npm ci
 
       - name: Generate dictionaries (if not cached)
         if: steps.dict-cache.outputs.cache-hit != 'true'
-        run: npm run update-dictionaries -w @ingglish/core
+        run: npm run update-dictionaries -w @ingglish/dictionary
 
-      - name: Build core and dom libraries
-        run: npm run build:fast -w @ingglish/core && npm run build:fast -w @ingglish/dom
+      - name: Build libraries
+        run: |
+          npm run build:fast -w @ingglish/normalize -w @ingglish/phonemes
+          npm run build:fast -w @ingglish/tokenize -w @ingglish/dictionary
+          npm run build:fast -w @ingglish/fallback
+          npm run build:fast -w @ingglish/core
+          npm run build:fast -w @ingglish/dom
 
       - name: Generate docs
         if: steps.docs-cache.outputs.cache-hit != 'true'
