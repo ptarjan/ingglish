@@ -1,15 +1,21 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
     "lib": ["ES2020", "DOM"],
-    "resolveJsonModule": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["vitest/globals", "node"]
+    "paths": {
+      "@ingglish/normalize": ["../normalize/src/index.ts"],
+      "@ingglish/phonemes": ["../phonemes/src/index.ts"],
+      "@ingglish/tokenize": ["../tokenize/src/index.ts"],
+      "@ingglish/dictionary": ["../dictionary/src/index.ts"],
+      "@ingglish/fallback": ["../fallback/src/index.ts"]
+    }
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "../phonemes/src/**/*",
+    "../normalize/src/**/*",
+    "../tokenize/src/**/*",
+    "../dictionary/src/**/*",
+    "../fallback/src/**/*"
+  ]
 }
