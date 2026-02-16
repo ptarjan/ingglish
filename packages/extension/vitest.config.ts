@@ -9,6 +9,7 @@ export default defineConfig({
       '@ingglish/tokenize': path.resolve(__dirname, '../tokenize/src/index.ts'),
       '@ingglish/dictionary': path.resolve(__dirname, '../dictionary/src/index.ts'),
       '@ingglish/fallback': path.resolve(__dirname, '../fallback/src/index.ts'),
+      '@ingglish/g2p': path.resolve(__dirname, '../g2p/src/index.ts'),
       '@ingglish/core': path.resolve(__dirname, '../core/src/index.ts'),
       '@ingglish/dom': path.resolve(__dirname, '../dom/src/index.ts'),
     },

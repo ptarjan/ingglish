@@ -102,8 +102,8 @@ jobs:
       - name: Build tokenize + dictionary
         run: npm run build:fast -w @ingglish/tokenize && npm run build:fast -w @ingglish/dictionary
 
-      - name: Build fallback
-        run: npm run build:fast -w @ingglish/fallback
+      - name: Build g2p + fallback
+        run: npm run build:fast -w @ingglish/g2p && npm run build:fast -w @ingglish/fallback
 
       # Fast build: ESM only, no DTS (TypeScript paths resolve to source)
       - name: Build core (ESM only)

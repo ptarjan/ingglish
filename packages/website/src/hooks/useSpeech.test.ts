@@ -3,8 +3,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, type RenderHookResult } from '@testing-library/react';
 import { useSpeech } from './useSpeech';
+
+type Speech = ReturnType<typeof useSpeech>;
+type SpeechHook = RenderHookResult<Speech, unknown>;
 
 // Mock SpeechSynthesisUtterance
 class MockUtterance {
@@ -43,20 +46,20 @@ describe('useSpeech', () => {
   });
 
   it('returns supported=true when speechSynthesis is available', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
     const [, , , supported] = result.current;
     expect(supported).toBe(true);
   });
 
   it('returns supported=false when speechSynthesis is unavailable', () => {
     vi.stubGlobal('speechSynthesis', undefined);
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
     const [, , , supported] = result.current;
     expect(supported).toBe(false);
   });
 
   it('speak() cancels current speech and starts new utterance', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
     act(() => {
       result.current[1]('hello world');
     });
@@ -68,7 +71,7 @@ describe('useSpeech', () => {
   });
 
   it('sets speaking=true when speak is called', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
     expect(result.current[0]).toBe(false);
 
     act(() => {
@@ -78,7 +81,7 @@ describe('useSpeech', () => {
   });
 
   it('resets speaking=false on utterance end', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -94,7 +97,7 @@ describe('useSpeech', () => {
   });
 
   it('resets speaking=false on utterance error', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -108,7 +111,7 @@ describe('useSpeech', () => {
   });
 
   it('stop() cancels speech and resets speaking', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -123,7 +126,7 @@ describe('useSpeech', () => {
   });
 
   it('cancels speech on unmount', () => {
-    const { result, unmount } = renderHook(() => useSpeech());
+    const { result, unmount } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -136,7 +139,7 @@ describe('useSpeech', () => {
 
   it('speak is a no-op when unsupported', () => {
     vi.stubGlobal('speechSynthesis', undefined);
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -146,7 +149,7 @@ describe('useSpeech', () => {
 
   it('stop is a no-op when unsupported', () => {
     vi.stubGlobal('speechSynthesis', undefined);
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     // Should not throw
     act(() => {
@@ -155,7 +158,7 @@ describe('useSpeech', () => {
   });
 
   it('sets up Chrome workaround interval while speaking', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -170,7 +173,7 @@ describe('useSpeech', () => {
   });
 
   it('clears Chrome workaround interval on stop', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('test');
@@ -192,7 +195,7 @@ describe('useSpeech', () => {
   });
 
   it('returns stable function references across renders', () => {
-    const { result, rerender } = renderHook(() => useSpeech());
+    const { result, rerender } = renderHook(() => useSpeech()) as SpeechHook;
     const [, speak1, stop1] = result.current;
     rerender();
     const [, speak2, stop2] = result.current;
@@ -201,12 +204,12 @@ describe('useSpeech', () => {
   });
 
   it('returns wordCount=null initially', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
     expect(result.current[4]).toBeNull();
   });
 
   it('counts word boundaries sequentially', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('hello world');
@@ -225,7 +228,7 @@ describe('useSpeech', () => {
   });
 
   it('resets wordCount on stop', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('hello world');
@@ -244,7 +247,7 @@ describe('useSpeech', () => {
   });
 
   it('resets wordCount on utterance end', () => {
-    const { result } = renderHook(() => useSpeech());
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('hello world');
