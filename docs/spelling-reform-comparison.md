@@ -68,7 +68,7 @@ Every phonemic system must choose whose pronunciation to encode. English has rou
 - "herbs" - silent H in American, pronounced in British
 - "Mary/marry/merry" - identical in some dialects, distinct in others
 
-The Shavian alphabet fragmented because "an American, a Scot, or an Australian would need to spell words differently to match their accent."
+The Shavian alphabet fragmented because speakers of different dialects would need to spell words differently to match their accents.
 
 **Ingglish's approach:** Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
 
@@ -118,7 +118,7 @@ You don't need to wait for anyone else to adopt Ingglish. The tools let you use 
 
 ### 6. Typography Disasters
 
-The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result: "All typeset words have a roughly rectangular shape, and lines of Deseret printing become very monotonous." It was exhausting to read.
+The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was that all typeset words had a roughly rectangular shape, making lines of Deseret text monotonous and tiring to read.
 
 **Ingglish's approach:** Uses standard Latin letters with their familiar shapes. Word silhouettes remain distinctive.
 
@@ -130,11 +130,11 @@ Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-e
 
 ### 8. The "Looks Childish" Problem
 
-"Simplified spelling always looks like a child wrote it because we associate phonetic spelling with the attempts and trials of learners trying to sound things out."
+Simplified spelling often looks childish to English readers because they associate phonemic spelling with the attempts of learners sounding things out.
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and most other languages use consistent phonetic spelling—nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
+**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and many other languages use consistent phonemic spelling — nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
 
 ### 9. Constant Revision
 

@@ -37,7 +37,6 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [Catalan](https://en.wikipedia.org/wiki/Catalan_orthography) | è | què (what) |
 | Turkish | e | ev (house) |
 | [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_alphabet) | e | xe (vehicle) |
-| [Pinyin](https://en.wikipedia.org/wiki/Pinyin) | e | hē (drink) |
 
 **Notes:**
 - Virtually universal across Latin-script languages worldwide
@@ -177,7 +176,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - Follows Finnish/Estonian convention: 'uu' for /uː/
-- Most non-European languages don't distinguish vowel length
+- Many languages don't distinguish vowel length, though some do (Japanese, Arabic, Hindi, Hawaiian)
 - The longer sound gets the longer spelling (uu vs oo)
 
 ### Diphthongs
@@ -635,7 +634,7 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 | s | /s/ | **Universal** | Always /s/, never /z/ as in English "rose" |
 | z | /z/ | **Universal** | Standard across virtually all Latin-script languages |
 | sh | /ʃ/ | **Common** | English, Albanian, Somali, Pinyin, Cyrillic romanization |
-| zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian; 350+ years in English dictionaries |
+| zh | /ʒ/ | **Common** | Cyrillic romanization (Ж→zh), Albanian, Finnish/Estonian |
 | h | /h/ | **Universal** | Standard; silent in some languages but letter is universal |
 
 #### Affricates
@@ -696,7 +695,6 @@ A successful African example using Latin script:
 - 'ng'' represents /ŋ/ (similar to our 'ng')
 - 'dh' represents a dental sound (used variously for /ð/ or /d̪/ in loanwords)
 - 'sh' represents /ʃ/ — same as Ingglish
-- High literacy rates across East Africa
 
 ## Phoneme Frequency: How Common Are These Sounds?
 
@@ -733,8 +731,8 @@ Most languages have 5–7 vowel phonemes. English has 14–15 depending on diale
 
 | Vowels | % of languages | Examples |
 |--------|----------------|----------|
-| 5 vowels | ~32% | Spanish, Japanese, Swahili |
-| 6 vowels | ~14% | Most common system |
+| 5 vowels | ~32% | Spanish, Japanese, Swahili (most common category) |
+| 6 vowels | ~14% | Arabic, many Bantu languages |
 | 7+ vowels | ~29% | German, French |
 | 10+ vowels | <5% | English, Danish |
 

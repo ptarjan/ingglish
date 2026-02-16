@@ -4,7 +4,7 @@
 
 This document describes how we map ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA (International Phonetic Alphabet).
 
-**ARPAbet** is a phonetic notation system that uses ASCII characters to represent English phonemes (speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
+**ARPAbet** is a phonemic notation system that uses ASCII characters to represent English phonemes (contrastive speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
 
 For the design principles and rationale behind these mappings, see [Design Decisions](design-decisions.md).
 
