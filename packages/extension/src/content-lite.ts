@@ -88,17 +88,22 @@ function showContextInvalidMessage(): void {
   document.body?.appendChild(notice);
 }
 
-// Inject Noto Sans Shavian font via @font-face
-function injectShavianFont(doc: Document): void {
-  if (doc.getElementById('ingglish-shavian-font')) {
+// Inject Google Fonts stylesheet for alternative scripts
+function injectScriptFont(doc: Document, id: string, family: string): void {
+  if (doc.getElementById(id)) {
     return;
   }
   const link = doc.createElement('link');
-  link.id = 'ingglish-shavian-font';
+  link.id = id;
   link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Shavian&display=swap';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}&display=swap`;
   doc.head.appendChild(link);
 }
+
+const SCRIPT_FONTS: Record<string, [string, string]> = {
+  shavian: ['ingglish-shavian-font', 'Noto Sans Shavian'],
+  deseret: ['ingglish-deseret-font', 'Noto Sans Deseret'],
+};
 
 // Request batch translation from background script
 async function translateWordsBatch(
@@ -201,9 +206,10 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   injectTooltipStyles(document);
   injectTooltipBehavior(document);
 
-  // Inject Shavian font when needed
-  if (format === 'shavian') {
-    injectShavianFont(document);
+  // Inject alternative script font when needed
+  if (format in SCRIPT_FONTS) {
+    const [id, family] = SCRIPT_FONTS[format];
+    injectScriptFont(document, id, family);
   }
 
   const collectStart = performance.now();
@@ -402,8 +408,9 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
 
-  if (format === 'shavian') {
-    injectShavianFont(document);
+  if (format in SCRIPT_FONTS) {
+    const [id, family] = SCRIPT_FONTS[format];
+    injectScriptFont(document, id, family);
   }
 
   const perf = { start: performance.now(), query: 0, collect: 0, fetch: 0, apply: 0 };
@@ -488,8 +495,12 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   const badge = document.getElementById('ingglish-badge');
   if (badge) {
     badge.textContent =
-      ({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[format] ??
-      format;
+      (
+        { ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯', deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻' } as Record<
+          string,
+          string
+        >
+      )[format] ?? format;
   }
 
   // Update observer with new translations

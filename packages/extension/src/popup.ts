@@ -84,7 +84,7 @@ toggleBtnEl.addEventListener('click', () => {
 });
 
 // Handle format button click
-const FORMAT_ORDER: OutputFormat[] = ['ingglish', 'ipa', 'shavian'];
+const FORMAT_ORDER: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
 formatBtnEl.addEventListener('click', () => {
   const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(currentFormat) + 1) % FORMAT_ORDER.length];
   chrome.runtime.sendMessage(
@@ -118,6 +118,7 @@ const FORMAT_LABELS: Record<string, string> = {
   ingglish: 'Ingglish',
   ipa: 'IPA',
   shavian: '𐑖𐑱𐑝𐑾𐑯',
+  deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
 };
 function updateFormatUI(): void {
   formatBtnEl.textContent = FORMAT_LABELS[currentFormat] ?? currentFormat;

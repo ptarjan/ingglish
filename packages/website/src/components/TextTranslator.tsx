@@ -434,9 +434,14 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>
-              {({ ingglish: 'Ingglish', ipa: 'IPA', shavian: 'Shavian' } as Record<string, string>)[
-                format
-              ] ?? format}
+              {(
+                {
+                  ingglish: 'Ingglish',
+                  ipa: 'IPA',
+                  shavian: 'Shavian',
+                  deseret: 'Deseret',
+                } as Record<string, string>
+              )[format] ?? format}
             </h2>
             <div className="button-group">
               <button
@@ -467,6 +472,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                   ingglish: 'Taip Ingglish tekst heer...',
                   ipa: '/taɪp aɪ piː eɪ hɪɹ.../',
                   shavian: '𐑑𐑲𐑐 𐑖𐑱𐑝𐑾𐑯 𐑣𐑽...',
+                  deseret: '𐐻𐐴𐐹 𐐼𐐯𐑅𐐨𐑉𐐯𐐻 𐐸𐐮𐑉...',
                 } as Record<string, string>
               )[format] ?? ''
             }

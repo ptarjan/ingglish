@@ -4,10 +4,12 @@ import type { OutputFormat } from 'ingglish';
 import { translate, translateSync } from 'ingglish';
 import { registerIPA } from '@ingglish/ipa';
 import { registerShavian } from '@ingglish/shavian';
+import { registerDeseret } from '@ingglish/deseret';
 
 // Register format plugins
 registerIPA();
 registerShavian();
+registerDeseret();
 
 // Track dictionary loading state
 let dictionaryLoaded = false;

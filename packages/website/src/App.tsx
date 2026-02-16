@@ -318,7 +318,8 @@ function App() {
             aria-label="Toggle output format"
             title="Cycle output format"
           >
-            {{ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' }[format] ?? format}
+            {{ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯', deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻' }[format] ??
+              format}
           </button>
         )}
         <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
