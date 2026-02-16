@@ -8,7 +8,7 @@
  */
 
 // Vowels that reduce to AH0 (schwa) when unstressed
-const REDUCIBLE_VOWELS = new Set(['AE', 'EH', 'AA']);
+const REDUCIBLE_VOWELS = new Set(['AE']);
 
 // Stress-attracting suffixes: stress falls on the final syllable
 const STRESS_ATTRACTING_SUFFIXES = [
@@ -32,6 +32,10 @@ interface PreStressSuffix {
 
 const PRE_STRESS_SUFFIXES: PreStressSuffix[] = [
   // Antepenultimate (3 from end) — check longer suffixes first
+  { suffix: 'ium', stressFromEnd: 3 },
+  { suffix: 'ian', stressFromEnd: 3 },
+  { suffix: 'ia', stressFromEnd: 3 },
+  { suffix: 'io', stressFromEnd: 3 },
   { suffix: 'ical', stressFromEnd: 3 },
   { suffix: 'ious', stressFromEnd: 3 },
   { suffix: 'eous', stressFromEnd: 3 },
@@ -109,6 +113,21 @@ function predictStressSyllable(word: string, syllableCount: number): number {
   for (const { prefix, minLength } of UNSTRESSED_PREFIXES) {
     if (lower.startsWith(prefix) && lower.length >= minLength) {
       return Math.min(1, syllableCount - 1);
+    }
+  }
+
+  // Try stripping -ing to expose prefix for gerunds
+  let base = lower;
+  if (base.endsWith('ings')) {
+    base = base.slice(0, -4);
+  } else if (base.endsWith('ing')) {
+    base = base.slice(0, -3);
+  }
+  if (base !== lower) {
+    for (const { prefix, minLength } of UNSTRESSED_PREFIXES) {
+      if (base.startsWith(prefix) && base.length >= minLength) {
+        return Math.min(1, syllableCount - 1);
+      }
     }
   }
 

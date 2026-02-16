@@ -202,6 +202,11 @@ const NRL_RULES: Record<string, string[]> = {
     '[I]%=/IY/',
     '[IE]=/IY/',
     // Custom: multi-char targets must come before single-char [I] rules
+    // Custom: Latin suffixes -ian, -ium, -ia, -io (media, stadium, radio)
+    '[IAN] =/IY AX N/',
+    '[IUM] =/IY AX M/',
+    '[IA] =/IY AX/',
+    '[IO] =/IY OW/',
     // Custom: -ify → schwa + F AY (modify, qualify, simplify)
     '[IFY]=/AX F AY/',
     // Custom: -ity suffix with schwa (city, quality, majority)
@@ -338,6 +343,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[OTHER]=/AH DH ER/',
     '[OSS] =/AO S/',
     '#^:[OM]=/AH M/',
+    // Custom: open-syllable O before consonant+vowel (sofa, robot, bonus, focus, yoga)
+    '[O]^A=/OW/',
+    '[O]^O=/OW/',
+    '[O]^U=/OW/',
     '[O]=/AA/',
   ],
   P: [

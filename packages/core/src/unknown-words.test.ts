@@ -198,8 +198,9 @@ describe('unknown-words', () => {
     });
 
     it('should treat word-final -fy as /faɪ/', () => {
-      expect(wordToArpabet('uglify')).toContain('AY1');
-      expect(wordToArpabet('glorify')).toContain('AY1');
+      // -ify suffix → stressFromEnd: 3, so AY is unstressed in 3-syllable words
+      expect(wordToArpabet('uglify')).toContain('AY0');
+      expect(wordToArpabet('glorify')).toContain('AY0');
     });
 
     it('should treat y as consonant before vowels', () => {
@@ -478,11 +479,11 @@ describe('unknown-words', () => {
     });
 
     it('should translate compound-style words', () => {
-      // Unstressed 2nd-syllable vowels reduce (compound secondary stress not modeled)
+      // Unstressed AE reduces to schwa, but EH and AA keep their vowel quality
       expect(translateWithRules('hashtag')).toBe('hashtug');
-      // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH reduces to schwa
-      expect(translateWithRules('fintech')).toBe('fintuk');
-      expect(translateWithRules('chatbot')).toBe('chatbut');
+      // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH stays as EH0
+      expect(translateWithRules('fintech')).toBe('fintek');
+      expect(translateWithRules('chatbot')).toBe('chatbot');
     });
 
     it('should translate magic-e words with long vowels', () => {
