@@ -71,8 +71,8 @@ export const vowelGroups: SoundGroup[] = [
   {
     name: 'Diphthongs & Other',
     sounds: [
-      { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), h**ow** (hou)' },
-      { phoneme: 'OY', examples: 't**oi**l (toil), b**oy** (boi), t**oy** (toi)' },
+      { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), pl**ough** (plou)' },
+      { phoneme: 'OY', examples: '**oil** (oil), b**oy** (boi), n**oi**se (noiz)' },
       {
         phoneme: 'AO',
         examples:
@@ -82,7 +82,10 @@ export const vowelGroups: SoundGroup[] = [
         phoneme: 'UH',
         examples: 'b**oo**k (book), p**u**t (poot), w**o**lf (woolf), c**ou**ld (kood)',
       },
-      { phoneme: 'AH0', examples: '**u**pon (upon), **a**bout (ubout), banan**a** (bunanu)' },
+      {
+        phoneme: 'AH0',
+        examples: '**a**bout (ubout), **u**pon (upon), penc**i**l (pensul), lem**o**n (lemun)',
+      },
     ],
   },
   {
@@ -172,7 +175,7 @@ export const consonantGroups: SoundGroup[] = [
   {
     name: 'Affricates',
     sounds: [
-      { phoneme: 'CH', examples: '**ch**at (chat), tea**ch**er (teecher), bat**ch** (bach)' },
+      { phoneme: 'CH', examples: '**ch**at (chat), bat**ch** (bach), na**t**ure (naycher)' },
       { phoneme: 'JH', examples: '**j**ust (just), a**g**ent (eyjunt), e**dge** (ej)' },
     ],
   },
@@ -192,7 +195,7 @@ export const consonantGroups: SoundGroup[] = [
     sounds: [
       { phoneme: 'L', examples: '**l**et (let), be**ll** (bel), wa**l**k (wawk)' },
       { phoneme: 'R', examples: '**r**un (run), ca**rr**y (karree), w**r**ite (rait)' },
-      { phoneme: 'W', examples: '**w**et (wet), a**w**ay (uwey), **wh**at (wut)' },
+      { phoneme: 'W', examples: '**w**et (wet), **wh**at (wut), **o**ne (wun)' },
       { phoneme: 'Y', examples: '**y**es (yes), be**y**ond (beeyond), c**u**te (kyuut)' },
     ],
   },
