@@ -24,11 +24,18 @@ Ingglish translates English text into a consistent, phonetic spelling system whe
 
 This is a monorepo containing:
 
-- **@ingglish/core** - Core text translation library (Node.js & Browser)
-- **@ingglish/dom** - DOM translation utilities (Browser only)
-- **@ingglish/website** - React website for text and URL translation
-- **@ingglish/extension** - Chrome extension for translating any webpage
-- **@ingglish/cors-proxy** - Cloudflare Worker CORS proxy for URL translation
+| Package | Description |
+|---------|-------------|
+| **@ingglish/core** | Translation API — translate and reverse-translate text |
+| **@ingglish/normalize** | Text cleanup, case handling |
+| **@ingglish/phonemes** | Phoneme data + ARPAbet/IPA/Ingglish conversion |
+| **@ingglish/tokenize** | Tokenization, word patterns |
+| **@ingglish/dictionary** | CMU dictionary, lookup, word frequency |
+| **@ingglish/fallback** | Unknown word strategies (G2P, stemming, compounds) |
+| **@ingglish/dom** | DOM translation utilities (Browser only) |
+| **@ingglish/website** | React website for text and URL translation |
+| **@ingglish/extension** | Chrome extension for translating any webpage |
+| **@ingglish/cors-proxy** | Cloudflare Worker CORS proxy for URL translation |
 
 ## Installation
 
