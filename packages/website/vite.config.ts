@@ -74,6 +74,11 @@ function copyRoutesToDist(): Plugin {
 }
 
 export default defineConfig({
+  resolve: {
+    // Resolve workspace packages from TypeScript source (via "source" export condition)
+    // so we don't need their dist/ to exist at build time
+    conditions: ['source'],
+  },
   test: {
     // Docs.test.ts needs generated docs, runs separately after build
     exclude: ['e2e/**', 'node_modules/**', '**/Docs.test.ts'],
