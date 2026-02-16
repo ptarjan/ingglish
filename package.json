@@ -38,8 +38,10 @@
     "url": "https://github.com/ptarjan/ingglish/issues"
   },
   "lint-staged": {
+    "packages/*/src/**/*.{ts,tsx}": [
+      "eslint --fix"
+    ],
     "*.{ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "*.css": [
