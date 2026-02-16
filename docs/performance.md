@@ -1,6 +1,6 @@
 # Performance
 
-This guide covers profiling, benchmarking, and optimization for Ingglish.
+How to profile, benchmark, and optimize Ingglish.
 
 ## Profiling Scripts
 
@@ -90,7 +90,7 @@ Total                    34.2ms
 | Reverse | O(n) | Pre-sorted at build time |
 | Full text | O(w × n) | w = word count |
 
-All paths are **linear** — no quadratic or exponential complexity.
+All paths are **linear**: no quadratic or exponential complexity.
 
 ### Forward Translation (`translateWord`)
 

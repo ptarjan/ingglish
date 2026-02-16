@@ -2,7 +2,7 @@
 
 English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
-This document examines what went wrong with previous reforms and shows how Ingglish's design choices avoid the same mistakes—while being honest about what Ingglish can and can't achieve.
+What went wrong with previous reforms, and how Ingglish's design choices avoid the same mistakes.
 
 ## The Graveyard of Spelling Reforms
 
@@ -18,13 +18,13 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **What went wrong:** These systems required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
 
-**How Ingglish differs:** Uses only 24 standard ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
+**How Ingglish differs:** Uses only 24 standard ASCII letters: no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
 
 ### Transitional Systems
 
 **[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
-Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation) found mixed results — initial reading gains but inconsistent transfer to traditional orthography. A 2001 BBC Radio 4 non-scientific listener survey echoed this anecdotally, with adults who learned via ITA frequently reporting it "hampered, rather than helped, their reading and spelling ability."
+Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation) found mixed results: initial reading gains but inconsistent transfer to traditional orthography. A 2001 BBC Radio 4 non-scientific listener survey echoed this anecdotally, with adults who learned via ITA frequently reporting it "hampered, rather than helped, their reading and spelling ability."
 
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
@@ -87,7 +87,7 @@ But here's the dirty secret: many "etymological" spellings are actually **wrong*
 
 ### 3. The Transition Problem
 
-Over 1 billion people read English. Any reform makes existing text harder to read—at least initially.
+Over 1 billion people read English. Any reform makes existing text harder to read, at least initially.
 
 **Ingglish's approach:** Positioned as a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
@@ -97,7 +97,7 @@ Unlike historical reforms that required institutional buy-in, Ingglish provides 
 - **Chrome extension**: Browse the entire web in Ingglish
 - **Bidirectional translation**: Read Ingglish back to standard English
 
-This lets anyone experience phonemic English without waiting for collective adoption.
+You can try phonemic English today without waiting for anyone else to adopt it.
 
 ### 4. No Central Authority
 
@@ -134,7 +134,7 @@ Simplified spelling often looks childish to English readers because they associa
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and many other languages use consistent phonemic spelling — nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
+**Ingglish's response:** This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, and many other languages use consistent phonemic spelling. Nobody thinks those look "childish." English speakers have been trained to see inconsistency as sophistication. That's like saying the metric system looks "too simple" because everything divides by 10.
 
 ### 9. Constant Revision
 
@@ -144,9 +144,9 @@ New Spelling, Unifon, and other systems were repeatedly revised, preventing stab
 
 ### 10. Vested Interests
 
-People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital—hence spelling bees.
+People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital, hence spelling bees.
 
-**Ingglish's response:** Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature—it's a bug that we've rationalized into tradition.
+**Ingglish's response:** Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation. English spelling difficulty isn't a feature, it's a bug that we've rationalized into tradition.
 
 ## What Actually Worked: Successful Reforms
 
@@ -160,7 +160,7 @@ People who invested years mastering English spelling resist changes that would d
 - Part of a broader national identity transformation
 - Personal leadership (Atatürk himself taught citizens in parks)
 
-**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack—and shouldn't want. Ingglish correctly doesn't attempt this.
+**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want. Ingglish correctly doesn't attempt this.
 
 ### [German orthography reform](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996) (1996) - Modest Reform
 
@@ -176,14 +176,14 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 ### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
-[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life — a journey of over **500 years**.
+[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life, a journey of over **500 years**.
 
 **Why it eventually worked:**
 - Coexisted with Chinese characters for centuries
 - Gained status gradually through nationalist movements and government policy
 - Technology (computers, phones) further accelerated exclusive Hangul use
 
-**Lesson for Ingglish:** Supplementary systems can eventually become primary. Patience and coexistence are viable strategies.
+**Lesson for Ingglish:** Supplementary systems can eventually become primary. It just takes time.
 
 ## What Ingglish Can Realistically Achieve
 
@@ -191,7 +191,7 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 
 The US officially adopted metric in 1975. Fifty years later, Americans still use miles and Fahrenheit daily. Did metric fail?
 
-No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements—road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
+No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements: road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
 
 Ingglish could follow the same path:
 - **Education:** Phonemic spelling for ESL and early literacy
@@ -200,9 +200,9 @@ Ingglish could follow the same path:
 - **International:** A standard that doesn't privilege native speakers' memorized exceptions
 - **Gradual familiarity:** Like Hangul's centuries-long rise, recognition builds over time
 
-Traditional spelling may persist in casual contexts indefinitely—and that's fine. The goal isn't to eliminate traditional spelling. It's to provide a better option where consistency matters.
+Traditional spelling may persist in casual contexts indefinitely, and that's fine. The goal is a consistent alternative for contexts where it helps, not a replacement.
 
-### Why Ingglish's Design Supports These Goals
+### Design Summary
 
 | Design Choice | Why It Matters |
 |---------------|----------------|
@@ -221,7 +221,7 @@ Some Ingglish spellings will look strange at first:
 - "through" → "thruu"
 - "beautiful" → "byuutuful"
 
-But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar—it's whether the system is better. A consistent spelling system where every spelling has one sound is objectively easier to learn than one where "ough" can be pronounced seven different ways.
+But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar; it's whether the system is better. A spelling system where every letter pattern has one sound is easier to learn than one where "ough" can be pronounced seven different ways, and the research backs this up ([Seymour et al. 2003](https://doi.org/10.1348/000712603321661859)).
 
 ### The Dialect Gap
 
@@ -231,7 +231,7 @@ This is covered in detail in [The Dialect Problem](#1-the-dialect-problem) above
 
 Fluent English readers might ask: "I already know how to pronounce words. Why would I care?"
 
-Because you're not the only person who reads English. There are roughly 1.5 billion English learners worldwide—more than the number of native speakers. Every one of them pays the cost of English spelling's inconsistencies:
+Because you're not the only person who reads English. There are roughly 1.5 billion English learners worldwide, more than the number of native speakers. Every one of them pays the cost of English spelling's inconsistencies:
 
 - **Years of extra effort** - At the end of Grade 1, English-speaking children read at roughly 34% accuracy on a standard word-reading task, compared to 95%+ for children learning transparent orthographies like Finnish or Italian ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
 - **Rules that aren't** - "I before E except after C" has more exceptions than examples
@@ -241,13 +241,13 @@ Fluent readers have already paid this cost. The question is whether every future
 
 ## Conclusion
 
-English spelling is a legacy system. Like imperial measurements, it works—but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
+English spelling is a legacy system. Like imperial measurements, it works, but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
 
-Ingglish offers what metric offered: a rational alternative. Not a mandate, but an option. The tools exist today to read and write in a consistent phonemic system without waiting for collective adoption.
+Ingglish offers what metric offered: a consistent alternative. Not a mandate, but an option. The tools exist today.
 
 Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can succeed in domains where consistency matters while traditional spelling persists elsewhere.
 
-The question isn't whether Ingglish will replace English spelling overnight. It's whether a better system, freely available, will gradually prove its worth. Metric took decades. Hangul took centuries. Consistency tends to win eventually.
+The question isn't whether it'll replace English spelling overnight. Metric took decades. Hangul took centuries. These things take time.
 
 ## See Also
 

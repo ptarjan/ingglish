@@ -148,7 +148,7 @@ Always profile before and after making optimization changes. See [Performance Gu
 - Every new function should have tests
 - Test edge cases (empty strings, special characters, etc.)
 - Test round-trip translations where applicable
-- Dictionary is pre-loaded globally via `vitest.setup.ts` — no manual setup needed
+- Dictionary is pre-loaded globally via `vitest.setup.ts` (no manual setup needed)
 
 Example:
 ```typescript

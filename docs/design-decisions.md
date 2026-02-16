@@ -1,26 +1,26 @@
 # Design Decisions: Why Ingglish Spells Things This Way
 
-This document explains the core design decisions behind Ingglish: why we made specific choices, what alternatives we considered, and what we learned along the way.
+Why we made specific spelling choices, what alternatives we considered, and what didn't work.
 
 ## Motivation
 
-My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The word "ough" alone makes 6 different sounds: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner — whether a child or a non-native speaker — pays this cost.
+My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The word "ough" alone makes 6 different sounds: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner, whether a child or a non-native speaker, pays this cost.
 
-I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign — just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
+I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign, just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
 
 ## Core Principles
 
-1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences receive dedicated spellings like "air" and "ar" — see the phoneme mapping for details.)
+1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences receive dedicated spellings like "air" and "ar"; see the phoneme mapping for details.)
 2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
 3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
 4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone
-5. **Voluntary adoption**: Not trying to replace English—supplements it
+5. **Voluntary adoption**: Not trying to replace English, supplements it
 
 ## Why English Is Hard
 
 English spelling is notoriously difficult because:
 
-1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
+1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each, no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
 
 2. **Rare consonants**: Only ~4% of languages have /θ/ and ~7% have /ð/ ([PHOIBLE 2.0](https://phoible.org/); [Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19) reports ~8% for dental fricatives broadly). There's no "standard" way to write these because most languages never needed one.
 
@@ -93,9 +93,9 @@ The [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings were among th
 | out loud | out loud |
 | go show | goh shoh |
 
-**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English — it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". The `oh` spelling has no competing English interpretation, keeping it unambiguous.
+**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English: it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". The `oh` spelling has no competing English interpretation, keeping it unambiguous.
 
-**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset — "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". The `uu` spelling has no English precedent to mislead readers.
+**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". The `uu` spelling has no English precedent to mislead readers.
 
 ### R-Colored Vowels
 
@@ -112,11 +112,11 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 ## Dialect Choice
 
-Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization.
+Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's the accent most widely heard in movies, music, and online content, so it's the practical default.
 
 Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
 
-## Our Choices Are Well-Supported
+## Precedent in Other Languages
 
 Every Ingglish spelling has precedent in at least one major language:
 

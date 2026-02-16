@@ -1,12 +1,12 @@
 # Identical Words Analysis
 
-This document analyzes whether the current Ingglish phoneme mappings maximize "identical words" — words where the Ingglish spelling equals the English spelling.
+Do the current Ingglish phoneme mappings maximize "identical words," words where the Ingglish spelling matches the English spelling?
 
 ## Summary
 
 **Question:** Does the current mapping maximize identical words?
 
-**Answer:** No, but the current mappings are well-optimized for the right reasons.
+**Answer:** No, but the trade-offs are deliberate.
 
 The current mapping produces **6,930 identical words** (5.13% of the CMU dictionary). Alternative mappings could theoretically produce up to **15,489 identical words** (11.47%), but these create unacceptable collisions where different words become indistinguishable.
 
@@ -18,9 +18,9 @@ An "identical word" is one where converting English → phonemes → Ingglish pr
 - "bit" → /bɪt/ → "bit" ✓ (identical)
 - "boat" → /boʊt/ → "boht" ✗ (changed)
 
-More identical words means more natural readability for native English readers — familiar words stay familiar.
+More identical words means more natural readability for native English readers: familiar words stay familiar.
 
-However, not all identical words are equal. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions — prioritizing spellings with broad international support rather than chasing loanword matches.
+However, not all identical words are equal. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions, prioritizing spellings with broad international support rather than chasing loanword matches.
 
 ## Current Mapping Performance
 
@@ -41,7 +41,7 @@ We tested mappings that maximize identical words:
 | /z/: z → s | +755 | "prize" becomes "prise" |
 | /ɔ/: aw → o | +532 | "saw" and "so" both become "so" |
 
-These changes create **collisions** — different words that get the same spelling. This destroys meaning and makes text ambiguous.
+These changes create **collisions**: different words that get the same spelling. This destroys meaning and makes text ambiguous.
 
 ## Collision-Free Alternatives Investigated
 
@@ -140,7 +140,7 @@ We verified the proposed changes don't create problematic collisions:
 | so / saw | soh / saw | sow / sau | ✓ Distinct |
 | know / now | noh / now | now / now | ⚠️ Collision! |
 
-**Note:** "know" (/noʊ/) and "now" (/naʊ/) are not homophones — this is a genuine new collision introduced by the "ow" spelling, and one of the reasons it was rejected.
+**Note:** "know" (/noʊ/) and "now" (/naʊ/) are not homophones. This is a genuine new collision introduced by the "ow" spelling, and one of the reasons it was rejected.
 
 ## Recommendations
 
@@ -150,11 +150,11 @@ All five proposed changes were investigated and rejected. The identical word cou
 
 ### Rejected: /oʊ/: "oh" → "ow" (+137 net)
 
-The gains look good on paper — snow, throw, bowl, window all become identical. But `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town, brown). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow", and `stown` (stone) reads like "stoun". This reintroduces exactly the kind of ambiguity ingglish is designed to eliminate.
+The gains look good on paper: snow, throw, bowl, window all become identical. But `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town, brown). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow", and `stown` (stone) reads like "stoun". This reintroduces exactly the kind of ambiguity ingglish is designed to eliminate.
 
 ### Rejected: /uː/: "uu" → "eu" (+41 net)
 
-Numerically the best efficiency — +41 words for only 2 losses. But `eu` in English implies a /j/ onset: "feud", "deuce", "neural" are all /juː/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", and `teu` (too) reads as "tyoo". The mapping actively misleads rather than helps.
+Numerically the best efficiency: +41 words for only 2 losses. But `eu` in English implies a /j/ onset: "feud", "deuce", "neural" are all /juː/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", and `teu` (too) reads as "tyoo". The mapping actively misleads rather than helps.
 
 ### Rejected: /aɪ/: "ai" → "ei" (+316 net)
 
@@ -172,8 +172,8 @@ Nearly breaks even. Not worth the disruption.
 
 Analysis scripts are in `packages/core/scripts/`:
 
-- `analyze-identical-words.ts` — Explains why maximizing identical words creates problems
-- `exhaustive-search.ts` — Exhaustively tests all possible spelling options
+- `analyze-identical-words.ts` - Explains why maximizing identical words creates problems
+- `exhaustive-search.ts` - Exhaustively tests all possible spelling options
 
 Run with:
 ```bash
@@ -184,15 +184,15 @@ npx vite-node scripts/exhaustive-search.ts
 
 The identical word count measures string equality, but **it doesn't measure whether the shared spelling reads correctly**. A proposed change must pass two tests:
 
-1. **No new collisions** (different words getting the same spelling) — the exhaustive search checks this
-2. **No new ambiguity** (the spelling reads as the wrong sound to English readers) — this requires human judgment
+1. **No new collisions** (different words getting the same spelling). The exhaustive search checks this.
+2. **No new ambiguity** (the spelling reads as the wrong sound to English readers). This requires human judgment.
 
 The `ow` and `eu` changes both pass test 1 but fail test 2. They don't create collisions in the formal sense, but they create *perceptual* collisions where English readers' existing intuitions produce the wrong pronunciation.
 
-The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with — the Finnish "double for long" logic succeeds here because English never uses `uu`.
+The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with. The Finnish "double for long" logic succeeds here because English never uses `uu`.
 
 ## Conclusion
 
-The current mappings are well-optimized. While alternative spellings can increase the identical word count by up to +564, all proposed changes either lose high-frequency words, bias toward loanwords, or — most importantly — reintroduce pronunciation ambiguity that undermines the system's core promise of "one sound, one spelling."
+The current mappings are well-optimized. Alternative spellings could add up to +564 identical words, but every proposed change either loses common words, gains mostly loanwords, or reintroduces the pronunciation ambiguity that Ingglish exists to fix.
 
-The identical word count of 6,930 (5.13%) represents the natural ceiling for a system that prioritizes unambiguous readability over string matching.
+6,930 identical words (5.13%) is roughly the limit for a system that prioritizes unambiguous readability over matching more English spellings.

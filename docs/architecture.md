@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document describes the high-level architecture of the Ingglish project.
+High-level architecture of the Ingglish project.
 
 ## Project Structure
 
@@ -38,7 +38,7 @@ ingglish ◄── all above packages
 
 ## Library Packages
 
-### `@ingglish/normalize` — Text cleanup, case handling
+### `@ingglish/normalize` -Text cleanup, case handling
 
 ```
 src/
@@ -47,7 +47,7 @@ src/
 └── text.ts             # normalizeApostrophes, stripDiacritics, URL/email preservation
 ```
 
-### `@ingglish/phonemes` — Phoneme data + conversion
+### `@ingglish/phonemes` -Phoneme data + conversion
 
 ```
 src/
@@ -62,14 +62,14 @@ src/
 └── ingglish-maps.ts    # Phoneme mapping tables
 ```
 
-### `@ingglish/tokenize` — Tokenization, word patterns
+### `@ingglish/tokenize` -Tokenization, word patterns
 
 ```
 src/
 └── index.ts            # WORD_SPLIT_REGEX, WORD_TEST_REGEX, tokenizeText, tokenizeIPA, etc.
 ```
 
-### `@ingglish/dictionary` — CMU dict, lookup, frequency
+### `@ingglish/dictionary` -CMU dict, lookup, frequency
 
 ```
 src/
@@ -82,7 +82,7 @@ src/
 └── data/               # Generated dictionary and frequency data
 ```
 
-### `@ingglish/fallback` — Unknown word strategies
+### `@ingglish/fallback` -Unknown word strategies
 
 ```
 src/
@@ -95,7 +95,7 @@ src/
 └── g2p-rules.ts        # Rule-based grapheme-to-phoneme
 ```
 
-### `ingglish` — Translation API
+### `ingglish` -Translation API
 
 The core package is a thin orchestration layer. It imports from the packages above and exports the public translation API.
 

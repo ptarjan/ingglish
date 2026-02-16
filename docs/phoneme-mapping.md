@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes how we map ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA (International Phonetic Alphabet).
+How Ingglish maps ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA.
 
 **ARPAbet** is a phonemic notation system that uses ASCII characters to represent English phonemes (contrastive speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
 
@@ -23,7 +23,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 |---------|----------|-----|---------------|-------|
 | AA | o | ɑ | f**a**ther, h**o**t, r**o**ck | Open back vowel |
 | AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
-| AH | u | ʌ/ə | b**u**t, c**u**p | Stressed /ʌ/ and unstressed /ə/ — see [note](#schwa-and-strut) below |
+| AH | u | ʌ/ə | b**u**t, c**u**p | Stressed /ʌ/ and unstressed /ə/; see [note](#schwa-and-strut) below |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
 | AW | ou | aʊ | c**ow**, h**ow** | Diphthong |
 | AY | ai | aɪ | m**y**, t**i**me | Diphthong |
@@ -88,7 +88,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 
 ## R-Colored Vowels
 
-When certain vowels are followed by R, they combine into special r-colored sounds. Ingglish uses intuitive spellings for these combinations:
+When certain vowels are followed by R, they combine into special r-colored sounds. Ingglish uses dedicated spellings for these combinations:
 
 | Phoneme Sequence | Ingglish | IPA | Example Words | Notes |
 |------------------|----------|-----|---------------|-------|
@@ -102,24 +102,24 @@ When certain vowels are followed by R, they combine into special r-colored sound
 ### Why This Matters
 
 Without special handling, the vowel mappings would produce confusing results:
-- "star" (AA + R) would become "stor" (o + r) — looks like "store"
+- "star" (AA + R) would become "stor" (o + r), which looks like "store"
 - "store" (AO + R) would become "stawr" (aw + r)
 - "fair" (EH + R) would become "fer" (collides with "fur" → "fer")
 - "carry" (AE + R) would become "karee" (indistinct from 'ar' words once AA+R → ar is added)
 - "beard" (IH + R) would become "bird" (looks like the animal)
 
-This is problematic because spellings would collide or create confusing false cognates. The R-rule ensures:
+The R-rule fixes this:
 - "star" → **star** (intuitive)
 - "store" → **stor** (clearly different from "star")
 - "fair" → **fair** (distinct from "fur" → "fer")
 - "carry" → **karree** (distinct from "car" → "kar")
-- "beer" → **beer** (identical! — without the rule it would be "bir")
+- "beer" → **beer** (identical! without the rule it would be "bir")
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, AE, and IH vowels use their regular spellings (o, aw, e, a, i).
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically—no special rules needed.
+Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically, no special rules needed.
 
 The problem is readability. These spellings would make words look like different English words:
 - "hot" → "hat" (looks like the head covering)
@@ -130,7 +130,7 @@ The R-colored spellings (ar, or, air, arr) were chosen because they match Englis
 
 With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
 
-That said, if Ingglish ever gains enough adoption that the R-coloring exception becomes the biggest pain point, that would be a wonderful problem to have. This rule exists to ease the transition for English readers, but it's not fundamental to the system. A future version could drop it in favor of full consistency if that's what readers prefer.
+If Ingglish ever gets popular enough that this exception is the biggest complaint, we'd happily revisit it. The rule helps English readers today, but a future version could drop it for full consistency.
 
 ## Example Translations
 
@@ -147,7 +147,7 @@ That said, if Ingglish ever gains enough adoption that the R-coloring exception 
 
 The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish follows this convention, mapping both to **'u'**.
 
-This is phonologically defensible: /ʌ/ and /ə/ are in [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) in English — /ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables — so they can be analyzed as allophones of a single phoneme. Many phonological analyses of English take this position (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*). Some analyses do treat them as separate phonemes based on vowel quality differences; the CMU dictionary and Ingglish follow the single-phoneme analysis.
+This is phonologically defensible: /ʌ/ and /ə/ are in [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) in English (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables), so they can be analyzed as allophones of a single phoneme. Many phonological analyses of English take this position (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*). Some analyses do treat them as separate phonemes based on vowel quality differences; the CMU dictionary and Ingglish follow the single-phoneme analysis.
 
 ## Stress Handling
 

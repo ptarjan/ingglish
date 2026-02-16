@@ -1,6 +1,6 @@
 # Orthography Comparison
 
-This document shows how Ingglish spellings compare to other languages. Every choice has precedent in at least one major language.
+How Ingglish spellings compare to other languages. Every choice has precedent in at least one major language.
 
 For the design philosophy and rationale, see [Design Decisions](design-decisions.md).
 
@@ -17,13 +17,13 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [Old English](https://en.wikipedia.org/wiki/Old_English_Latin_alphabet) | æ (ash) | æsc (ash tree) |
 | [German](https://en.wikipedia.org/wiki/German_orthography) | ä | männer (men) |
 | [Swedish](https://en.wikipedia.org/wiki/Swedish_orthography) | ä | väg (way) |
-| [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) — Turkish /a/ is more central than English /æ/ |
+| [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse); Turkish /a/ is more central than English /æ/ |
 | [Azerbaijani](https://en.wikipedia.org/wiki/Azerbaijani_alphabet) | ə | səs (sound) |
-| Spanish/Italian | a | gato/gatto (cat) — closer to /a/ |
+| Spanish/Italian | a | gato/gatto (cat); closer to /a/ |
 
 **Notes:**
 - English /æ/ is more front than most languages' /a/, but 'a' is still the intuitive choice
-- Old English had a dedicated letter 'æ' (ash) for this sound—we simplify to 'a'
+- Old English had a dedicated letter 'æ' (ash) for this sound; we simplify to 'a'
 - Germanic languages often use ä for similar sounds (German, Swedish)
 
 #### Short 'E' Sound (/ɛ/)
@@ -39,7 +39,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_alphabet) | e | xe (vehicle) |
 
 **Notes:**
-- Virtually universal across Latin-script languages worldwide
+- Universal across Latin-script languages
 - Portuguese/Italian/Catalan use accent marks to distinguish open /ɛ/ from close /e/
 - No innovation needed here
 
@@ -53,10 +53,10 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | German | i | biss (bite) |
 | Turkish | i | bir (one) |
 | Indonesian | i | ini (this) |
-| Spanish/Italian | i | si/sì (yes) — closer to /i/ |
+| Spanish/Italian | i | si/sì (yes); closer to /i/ |
 
 **Notes:**
-- Standard across virtually all Latin-script languages globally
+- Standard across Latin-script languages
 - English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
 - Turkish has a distinctive dotless ı for /ɯ/, keeping dotted i for /i/
 
@@ -73,9 +73,9 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Pinyin | o | bō (wave) |
 
 **Notes:**
-- Nearly universal use of 'o' for back vowels worldwide
+- Nearly all Latin-script languages use 'o' for back vowels
 - American English "hot" uses /ɑ/ (open back unrounded), which is more open than the /o/ (close-mid back rounded) of Spanish or Italian, but 'o' is the nearest conventional match
-- English "father" also has this sound—spelled 'a' in English, 'o' in Ingglish
+- English "father" also has this sound, spelled 'a' in English, 'o' in Ingglish
 
 #### Short 'U' Sound (/ʌ/)
 
@@ -90,8 +90,8 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - The English /ʌ/ sound is relatively rare across languages
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
-- English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
-- The unstressed schwa (/ə/) also maps to 'u' — see Schwa section below
+- English inconsistently spells this as 'o' in "son", "love", "come". Ingglish uses 'u' consistently
+- The unstressed schwa (/ə/) also maps to 'u'; see Schwa section below
 
 ### Long Vowels
 
@@ -123,7 +123,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Japanese ([Romaji](https://en.wikipedia.org/wiki/Romanization_of_Japanese)) | ii, ī | ojiisan (grandfather) |
 
 **Notes:**
-- Finnish/Estonian use doubled vowels for length—we follow this principle
+- Finnish/Estonian use doubled vowels for length; we follow this principle
 - Finnish tuuli (wind) vs. tuli (fire) shows minimal pairs distinguished only by length
 - 'ee' already exists in English ("bee", "see", "tree")
 - Consistent pattern: double the letter to lengthen the sound
@@ -142,7 +142,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - Pinyin (the standard romanization for Mandarin Chinese), Italian, Vietnamese all use 'ai' for this sound
-- German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
+- German 'ei' is /aɪ/, but their 'ie' is /iː/, confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 
 #### 'OH' Sound (/oʊ/)
@@ -208,7 +208,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | French | oi | roi (king) |
 | Dutch | ooi | mooi (beautiful) |
 | German | eu, äu | neu (new), häuser (houses) |
-| Indonesian | oi | — rare, mostly in loanwords |
+| Indonesian | oi | (rare, mostly in loanwords) |
 | Vietnamese | oi | nói (speak) |
 
 **Notes:**
@@ -231,7 +231,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - English has wildly inconsistent spellings for this sound: "law", "caught", "thought", "all"
-- Ingglish uses 'aw' consistently—matches English "law", "saw", "raw"
+- Ingglish uses 'aw' consistently, matching English "law", "saw", "raw"
 - Scandinavian languages use the dedicated letter **å** for this sound
 - Catalan distinguishes open ò /ɔ/ from close ó /o/ with accent marks
 - Many African languages use **Ɔ** or **ọ** (open O or O with dot below)
@@ -245,11 +245,11 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | oo, u | book, put |
 | Dutch | oe | boek (book) |
 | German | u | futter (fodder) |
-| Most languages | u | — same as /uː/ |
+| Most languages | u | (same as /uː/) |
 
 **Notes:**
 - 'oo' matches English words like "book", "good", "look"
-- English distinguishes "too" /uː/ from "book" /ʊ/—we preserve this with uu vs. oo
+- English distinguishes "too" /uː/ from "book" /ʊ/; we preserve this with uu vs. oo
 - Dutch uses 'oe' for this sound: boek (book), goed (good)
 - Most languages worldwide don't distinguish /ʊ/ from /uː/
 
@@ -261,14 +261,14 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | a, e, i, o, u | **a**bout, sof**a**, penc**i**l, mem**o**ry, circ**u**s |
 
 **Notes:**
-- The schwa is the most common vowel sound in English—the unstressed "uh" in many syllables
+- The schwa is the most common vowel sound in English, the unstressed "uh" in many syllables
 - English spells it with any vowel letter depending on etymology
 - Ingglish uses 'u' consistently, same as the stressed /ʌ/ in "but"
 - This creates some visual repetition (banana → bunanu) but maintains phonemic accuracy
 
 ### R-Colored Vowels
 
-[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) are rare across world languages ([Ladefoged & Maddieson 1996](https://books.google.com/books?id=ni1PnwEACAAJ), *The Sounds of the World's Languages*)—but English and Mandarin Chinese both have them, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
+[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) are rare across world languages ([Ladefoged & Maddieson 1996](https://books.google.com/books?id=ni1PnwEACAAJ), *The Sounds of the World's Languages*), but English and Mandarin Chinese both have them. They're hard to spell because the vowel and /r/ merge into a single sound.
 
 #### 'ARR' Sound (/æɹ/)
 
@@ -291,7 +291,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
-- Ingglish uses 'air' consistently—matches the word "air" itself
+- Ingglish uses 'air' consistently, matching the word "air" itself
 - This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
 
 #### 'EER' Sound (/ɪɹ/)
@@ -303,7 +303,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - English uses several spellings: "beer", "beard", "fear", "here", "pier"
-- Ingglish uses 'eer' consistently—matches the word "beer" itself
+- Ingglish uses 'eer' consistently, matching the word "beer" itself
 - Without this rule, "beard" would become "bird" (confusing with the animal)
 - The [NEAR vowel](https://en.wikipedia.org/wiki/English_phonology#NEAR) (/ɪɹ/) is distinct from the KIT vowel (IH /ɪ/): "beer" vs "bit"
 
@@ -315,7 +315,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | English | ar | star, car, far |
 
 **Notes:**
-- Perfectly intuitive—matches English spelling exactly
+- Perfectly intuitive, matches English spelling exactly
 - "star" → "star" is identical in Ingglish
 
 #### 'OR' Sound (/ɔɹ/)
@@ -340,7 +340,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - English uses five different spellings for the same sound
-- Ingglish uses 'er' consistently—the most common English spelling
+- Ingglish uses 'er' consistently, the most common English spelling
 - Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
 - R-colored vowels are rare across world languages (Ladefoged & Maddieson 1996)
 
@@ -398,7 +398,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | [Judaeo-Spanish](https://en.wikipedia.org/wiki/Judaeo-Spanish) | sh | debasho (under) |
 
 **Notes:**
-- We follow English convention with 'sh'—also used by Albanian (official letter), Judaeo-Spanish
+- We follow English convention with 'sh', also used by Albanian (official letter) and Judaeo-Spanish
 - German's 'sch' is longer; Polish 'sz' might confuse English readers
 - Hungarian reverses convention: 's' for /ʃ/, 'sz' for /s/
 - Languages with diacritics (š, ş) achieve single-letter representation
@@ -418,8 +418,8 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | Finnish/Estonian | ž or zh | žurnal (journal) |
 
 **Notes:**
-- English has no consistent spelling for /ʒ/—we create one with 'zh'
-- 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced)—a logical pair
+- English has no consistent spelling for /ʒ/; we create one with 'zh'
+- 'zh' parallels 'sh' (voiceless) vs 'zh' (voiced), a logical pair
 - [Cyrillic romanization](https://en.wikipedia.org/wiki/Romanization_of_Russian) uses 'zh' for Ж
 - Finnish/Estonian officially allow 'zh' as a substitute when 'ž' is unavailable
 
@@ -436,9 +436,9 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | [Bashkir](https://en.wikipedia.org/wiki/Bashkir_language)/[Turkmen](https://en.wikipedia.org/wiki/Turkmen_language) | θ/s | (Turkic languages with /θ/) |
 
 **Notes:**
-- Only ~8% of languages have dental fricatives ([Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19))—they're genuinely rare. PHOIBLE data suggests ~4% for /θ/ specifically and ~7% for /ð/.
+- Only ~8% of languages have dental fricatives ([Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19)). They're genuinely rare. PHOIBLE data suggests ~4% for /θ/ specifically and ~7% for /ð/.
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
-- We keep 'th' for voiceless /θ/—the intuitive choice
+- We keep 'th' for voiceless /θ/, the intuitive choice
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
 
 #### "DH" Sound (/ð/)
@@ -452,7 +452,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 
 **Notes:**
 - We use 'dh' to distinguish voiced /ð/ from voiceless /θ/
-- [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/ — we considered this but 'dh' is more intuitive
+- [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/. We considered this but 'dh' is more intuitive
 - Icelandic preserves the original Old English letter ð (eth)
 
 ### Affricates
@@ -518,7 +518,7 @@ The velar nasal requires a digraph:
 - Nearly universal use of 'ng' for this sound
 - Polynesian languages treat /ŋ/ as a single letter, often written 'g' or 'ng'
 - African languages often use 'ng'' (with apostrophe) to distinguish from /ng/ clusters
-- We keep 'ng'—no innovation needed here
+- We keep 'ng'. No innovation needed here
 
 ### Liquids & Glides
 
@@ -682,7 +682,7 @@ Below are examples of phonemic orthographies that use spellings similar to Inggl
 Finnish is often cited as having the most transparent orthography in Europe:
 
 - **Near-perfect phoneme-to-grapheme consistency** ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
-- Double letters indicate length (aa, ee, uu) — Ingglish follows this exactly
+- Double letters indicate length (aa, ee, uu). Ingglish follows this exactly
 - 'uu' for /uː/ in Finnish matches Ingglish 'uu' for the same sound
 - Finnish-speaking children achieve reading fluency significantly faster than English-speaking children (Seymour et al. 2003)
 - Dyslexia prevalence is lower in transparent orthographies ([Paulesu et al. 2001](https://doi.org/10.1126/science.1057179), "Dyslexia: Cultural Diversity and Biological Unity," *Science*)
@@ -694,7 +694,7 @@ A successful African example using Latin script:
 - Nearly 1:1 sound-to-letter correspondence
 - 'ng'' represents /ŋ/ (similar to our 'ng')
 - 'dh' represents a dental sound (used variously for /ð/ or /d̪/ in loanwords)
-- 'sh' represents /ʃ/ — same as Ingglish
+- 'sh' represents /ʃ/, same as Ingglish
 
 ## Phoneme Frequency: How Common Are These Sounds?
 
@@ -723,7 +723,7 @@ Not all phonemes are equally common across world languages. Approximate frequenc
 | ð (dh) | /ð/ | 7% |
 | θ (th) | /θ/ | 4% |
 
-**Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling — few languages have these sounds.
+**Key insight**: English's dental fricatives (/θ/ and /ð/) are among the world's rarest consonants. Most spelling systems never need to represent them. This is why there's no "standard" Latin spelling: few languages have these sounds.
 
 ### Vowel Systems
 

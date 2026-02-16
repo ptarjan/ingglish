@@ -1,8 +1,8 @@
 # Ingglish Translation Collision Analysis
 
-This document analyzes cases where translating an English word to Ingglish produces a spelling that matches a **different** existing English word.
+When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. This page analyzes those cases.
 
-## Executive Summary
+## Summary
 
 | Metric | Count |
 |--------|-------|

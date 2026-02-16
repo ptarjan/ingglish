@@ -1,6 +1,6 @@
 # Ingglish Documentation
 
-Ingglish is a phonemic English spelling system where every spelling always makes the same sound. These docs cover the design rationale, technical architecture, and development workflow.
+Ingglish is a phonemic English spelling system where every spelling always makes the same sound.
 
 ## Overview
 
