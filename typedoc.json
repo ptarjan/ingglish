@@ -1,7 +1,7 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["packages/core/src/index.ts"],
-  "tsconfig": "packages/core/tsconfig.json",
+  "tsconfig": "packages/core/tsconfig.typedoc.json",
   "out": "docs/generated",
   "plugin": ["typedoc-plugin-markdown"],
   "outputFileStrategy": "modules",
