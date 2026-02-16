@@ -34,5 +34,5 @@
   <text x="600" y="410" font-family="Inter, system-ui, sans-serif" font-size="28" fill="rgba(255,255,255,0.85)" text-anchor="middle">What if English spelling made sense?</text>
 
   <!-- Examples -->
-  <text x="600" y="520" font-family="Inter, system-ui, sans-serif" font-size="24" fill="rgba(255,255,255,0.65)" text-anchor="middle">though → thoh · through → throo · enough → enuf</text>
+  <text x="600" y="520" font-family="Inter, system-ui, sans-serif" font-size="24" fill="rgba(255,255,255,0.65)" text-anchor="middle">though → dhoh · through → thruu · enough → inuf</text>
 </svg>
