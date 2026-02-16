@@ -94,7 +94,7 @@ When certain vowels are followed by R, they combine into special r-colored sound
 |------------------|----------|-----|---------------|-------|
 | AE + R | arr | æɹ | **arr**ow, b**arr**ow, c**arr**ot | Cat vowel + R |
 | EH + R | air | ɛɹ | **air**, c**are**, th**ere** | Bed vowel + R |
-| IH + R | eer | ɪɹ | b**eer**, b**ear**d, f**ear** | NEAR vowel (bit vowel + R) |
+| IH + R | eer | ɪɹ | b**eer**, b**ear**d, f**ear** | [NEAR vowel](https://en.wikipedia.org/wiki/English_phonology#NEAR) (bit vowel + R) |
 | AA + R | ar | ɑɹ | st**ar**, c**ar**, f**ar** | Father vowel + R |
 | AO + R | or | ɔɹ | st**ore**, m**ore**, f**or** | Thought vowel + R |
 | ER | er | ɝ | b**ir**d, h**er**, t**ur**n | Standalone r-colored vowel |
@@ -173,6 +173,7 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 
 1. **Homophones**: Words that sound the same will have the same Ingglish spelling
    - "their", "there", "they're" → all become the same
+   - See [Collision Analysis](collision-analysis.md) for a full breakdown of how this affects real words
 2. **Accent neutrality**: CMU dictionary represents General American English
 3. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
 

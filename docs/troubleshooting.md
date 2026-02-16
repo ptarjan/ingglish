@@ -92,7 +92,7 @@ This shows the translation pipeline step-by-step, highlighting where mismatches 
    | `er` | ER (bird) or EH+R (welfare) | "welfer" |
    | `th` | TH (think) or T+HH (Thailand) | "tailand" |
 
-   **Fix:** Add an alternative in `PHONEME_ALTERNATIVES` in `reverse-translator.ts`.
+   **Fix:** Add an alternative in `ARPABET_ALTERNATIVES` in `translate/reverse.ts`.
 
 2. **Word not in dictionary** - The word isn't in CMU Pronouncing Dictionary. It will pass through unchanged or use fallback heuristics.
 

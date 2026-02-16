@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml/badge.svg)](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml)
 
-Phonetic English spelling translator. Words are spelled exactly as they sound - no exceptions!
+Phonetic English spelling translator. Every spelling always makes the same sound.
 
-**[Try it live →](https://ingglish.com/)** · **[Spelling Guide](https://ingglish.com/#guide)**
+**[Try it live →](https://ingglish.com/)** · **[Spelling Guide](https://ingglish.com/guide)**
 
 ## Overview
 

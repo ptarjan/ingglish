@@ -4,8 +4,8 @@
 
 /**
  * Output format for translations.
- * - 'ingglish': Phonetic English spelling (e.g., "Hulo werld")
- * - 'ipa': International Phonetic Alphabet (e.g., "/həlˈoʊ wˈɝld/")
+ * - 'ingglish': Phonetic English spelling (e.g., "Huloh, werld!")
+ * - 'ipa': International Phonetic Alphabet (e.g., "/həˈloʊ, wɝld!/")
  */
 export type OutputFormat = 'ingglish' | 'ipa';
 

@@ -288,7 +288,7 @@ A spelling that matches more English words is harmful if English readers pronoun
 
 ## Version History
 
-This document tracks the evolution up to January 2026. For the complete git history, see:
+For the complete git history, see:
 ```bash
 git log --oneline --all --grep="spelling\|phoneme\|vowel\|diphthong"
 ```

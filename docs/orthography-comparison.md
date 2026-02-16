@@ -92,6 +92,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
 - English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
+- The unstressed [schwa](/ə/) also maps to 'u' — see [Schwa section](#schwa-ə) below
 
 ### Long Vowels
 
@@ -305,7 +306,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - English uses several spellings: "beer", "beard", "fear", "here", "pier"
 - Ingglish uses 'eer' consistently—matches the word "beer" itself
 - Without this rule, "beard" would become "bird" (confusing with the animal)
-- The NEAR vowel is distinct from the KIT vowel (IH): "beer" vs "bit"
+- The [NEAR vowel](https://en.wikipedia.org/wiki/English_phonology#NEAR) (/ɪɹ/) is distinct from the KIT vowel (IH /ɪ/): "beer" vs "bit"
 
 #### 'AR' Sound (/ɑɹ/)
 
@@ -348,7 +349,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 ### Stops
 
-The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that are virtually universal across Latin-script languages.
 
 | Ingglish | IPA | Example |
 |----------|-----|---------|
@@ -365,7 +366,7 @@ The stop consonants (p, b, t, d, k, g) use standard single-letter spellings that
 
 ### Fricatives
 
-The simple fricatives (f, v, s, z, h) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+The simple fricatives (f, v, s, z, h) use standard single-letter spellings, universal across Latin-script languages.
 
 | Ingglish | IPA | Example |
 |----------|-----|---------|
@@ -492,7 +493,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 
 ### Nasals
 
-The simple nasals (m, n) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+The simple nasals (m, n) use standard single-letter spellings, universal across Latin-script languages.
 
 | Ingglish | IPA | Example |
 |----------|-----|---------|
@@ -522,7 +523,7 @@ The velar nasal requires a digraph:
 
 ### Liquids & Glides
 
-The liquids (l, r) and glides (w, y) use standard single-letter spellings that are virtually universal across Latin-script languages. No comparison tables are needed—these spellings are unambiguous worldwide.
+The liquids (l, r) and glides (w, y) use standard single-letter spellings, universal across Latin-script languages.
 
 | Ingglish | IPA | Example |
 |----------|-----|---------|

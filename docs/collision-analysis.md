@@ -54,7 +54,7 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 
 **place → plays**: noun → verb/noun. Same part of speech possible, but "plays" as noun means theater works. "In the first plays" sounds wrong.
 
-**side → said**: noun → verb (past tense). Different parts of speech. "On the said" is grammatically incorrect. Note: "said" translates to "sed".
+**side → said**: noun → verb (past tense). Different parts of speech in most contexts, though "said" can be an adjective in legal English ("the said document"). Note: "said" translates to "sed".
 
 **mine → main**: noun/pronoun → adjective. Different parts of speech. "The main entrance" vs "the mine entrance" - grammar disambiguates. Note: "main" translates to "mayn".
 

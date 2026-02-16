@@ -1,11 +1,11 @@
-# Design Decisions
+# Design Decisions: Why Ingglish Spells Things This Way
 
 This document explains the core design decisions behind Ingglish: why we made specific choices, what alternatives we considered, and what we learned along the way.
 
 ## Core Principles
 
 1. **One sound, one spelling**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling sequence
-2. **No new characters**: Only 24 ASCII letters—no 'q' (use 'kw'), no 'x' (use 'ks'), 'c' only in 'ch'
+2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
 3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
 4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone
 5. **Voluntary adoption**: Not trying to replace English—supplements it

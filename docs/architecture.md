@@ -51,7 +51,8 @@ src/
 ├── dictionary/                 # Dictionary management
 │   ├── loader.ts               # Load and cache CMU dictionary
 │   ├── lookup.ts               # Word pronunciation lookup
-│   └── reverse.ts              # Build reverse index (phoneme → words)
+│   ├── reverse.ts              # Build reverse index (phoneme → words)
+│   └── frequency.ts            # Word frequency ranking
 ├── fallback/                   # Unknown word strategies
 │   ├── index.ts                # Fallback orchestration
 │   ├── custom-words.ts         # Custom pronunciations (tech terms)
@@ -65,8 +66,7 @@ src/
 │   └── phonotactics.ts         # English sound rules for stress
 └── utils/                      # Utility functions
     ├── text.ts                 # Text tokenization and parsing
-    ├── case.ts                 # Case pattern detection/application
-    └── frequency.ts            # Word frequency ranking
+    └── case.ts                 # Case pattern detection/application
 ```
 
 ### Translation Flow

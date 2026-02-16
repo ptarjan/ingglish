@@ -1,6 +1,6 @@
 # Ingglish Documentation
 
-Welcome to the Ingglish documentation. These guides cover everything from getting started to deploying your own instance.
+Ingglish is a phonetic English spelling system where every spelling always makes the same sound. These docs cover the design rationale, technical architecture, and development workflow.
 
 ## Overview
 

@@ -1,4 +1,4 @@
-# Why Ingglish Might Actually Work
+# Spelling Reform Comparison: Why Ingglish Might Actually Work
 
 English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
@@ -24,7 +24,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
-Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. A 2001 BBC survey found adults who learned via ITA frequently reported it "hampered, rather than helped, their reading and spelling ability."
+Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. A 2001 BBC Radio 4 informal listener survey found adults who learned via ITA frequently reported it "hampered, rather than helped, their reading and spelling ability." (More rigorous research, such as the [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation), found mixed results — initial reading gains but inconsistent transfer to traditional orthography.)
 
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
