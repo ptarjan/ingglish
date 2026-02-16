@@ -83,6 +83,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[ANG]+=/EY N JH/',
     // Custom: -ance suffix with schwa (performance, distance)
     '#:[ANCE] =/AX N S/',
+    // Custom: -ator suffix → EY T ER (operator, elevator, alligator — +21)
+    '#:[ATOR]=/EY T ER/',
     // Custom: -ant/-ants suffix with schwa (important, consultant, elegant — 92% AH in CMU)
     '#:[ANTS] =/AX N T S/',
     '#:[ANT] =/AX N T/',
@@ -340,23 +342,21 @@ const NRL_RULES: Record<string, string[]> = {
     ' [IDEA]=/AY D IY/',
     ' [IN]=/IH N/',
     ' [I] =/AY/',
-    // Custom: IND at word end → AY N (find, mind, kind, blind, grind)
-    // Mid-word IND is 90% IH, handled by default I→IH. Only word-end IND is 50/50 AY/IH.
-    // Custom: -ino at word end → IY N OW (Italian names: tino, rino, casino — +76)
+    // Custom: Italian/Latin word-end patterns (I+consonant+vowel → IY)
+    '[INI] =/IY N IY/',
     '[INO] =/IY N OW/',
-    // Custom: -ina at word end → IY N AH (Italian/Spanish names: catalina, christina — +59)
     '[INA] =/IY N AH/',
-    // Custom: -ida at word end → IY D AH (florida, alida — +11)
     '[IDA] =/IY D AH/',
-    // Custom: -ito at word end → IY T OW (Italian: mosquito, tito — +29)
+    '[ISA] =/IY S AH/',
+    '[IVA] =/IY V AH/',
     '[ITO] =/IY T OW/',
-    // Custom: -ita at word end → IY T AH (bonita, senorita — +39)
     '[ITA] =/IY T AH/',
-    // Custom: -ial/-ially suffix → IY AX L (material, editorial, industrial — +45)
+    // Custom: -ial/-ially/-iate suffixes → IY
     '#:[IALLY]=/IY AX L IY/',
     '#:[IAL]=/IY AX L/',
-    // Custom: -iate suffix → IY EY T (associate, appreciate, excoriate — +18)
     '#:[IATE]=/IY EY T/',
+    // Custom: IND at word end → AY N (find, mind, kind, blind, grind)
+    // Mid-word IND is 90% IH, handled by default I→IH.
     '[IN]D =/AY N/',
     '[IER]=/IY ER/',
     '#:R[IED] =/IY D/',
@@ -432,6 +432,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[LO]C#=/L OW/',
     'L[L]=/ /',
     // Custom: -less must come before L% to prevent schwa insertion
+    // Custom: -lessly suffix (carelessly, recklessly — +10)
+    '#:[LESSLY] =/L AX S L IY/',
     '#:[LESS] =/L AX S/',
     // Custom: -ling must come before L% to prevent schwa insertion
     '[LING]=/L IH NX/',
@@ -460,7 +462,10 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: silent b after m at word end (lamb, climb, bomb, dumb)
     '[MBS] =/M Z/',
     '[MB] =/M/',
-    // Custom: silent n after m at word end (hymn, autumn, column)
+    // Custom: silent n after m — extends to suffixed forms (damning, damned, hymns)
+    '[MN]ING=/M/',
+    '[MN]ED=/M/',
+    '[MN]S=/M/',
     '[MN] =/M/',
     // Custom: -ments plural (moments, departments)
     '#:[MENTS] =/M AX N T S/',
@@ -559,6 +564,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [OU]=/AW/',
     'H[OU]S#=/AW/',
     '[OUS]=/AX S/',
+    // Custom: word-final -our → ER (honour, colour, favour — American English, +8)
+    '#:[OUR] =/ER/',
     '[OUR]=/AO R/',
     // Custom: would/could/should retain UH D; others get OW L D (boulder, shoulder, mould)
     // Trailing space ensures we don't match shoulder, boulder, etc.
@@ -819,6 +826,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' :[Y]#=/AY/',
     ' :[Y]^+:#=/IH/',
     ' :[Y]^#=/AY/',
+    // Custom: word-final Y → IY (happy, baby, city — +10)
+    '[Y] =/IY/',
     '[Y]=/IH/',
   ],
   Z: [

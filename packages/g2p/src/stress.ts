@@ -74,6 +74,9 @@ const PRE_STRESS_SUFFIXES: PreStressSuffix[] = [
   { suffix: 'ally', stressFromEnd: 3 },
   { suffix: 'ics', stressFromEnd: 2 },
   { suffix: 'ic', stressFromEnd: 2 },
+  { suffix: 'ate', stressFromEnd: 3 },
+  { suffix: 'ive', stressFromEnd: 2 },
+  { suffix: 'ible', stressFromEnd: 3 },
 ];
 
 // Unstressed prefixes: stress falls on 2nd syllable
