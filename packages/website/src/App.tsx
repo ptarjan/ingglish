@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { translate } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
@@ -13,6 +14,51 @@ const Poems = lazy(() => import('./components/Poems'));
 
 type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
+
+const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
+  tutorial: {
+    title: 'Ingglish — What if English Spelling Made Sense?',
+    description:
+      'Ingglish is phonetic English — every spelling always makes the same sound. No silent letters, no exceptions.',
+    path: '/',
+  },
+  text: {
+    title: 'Text Translator | Ingglish',
+    description:
+      'Translate any English text into phonetic Ingglish spelling instantly. Paste or type text and see it respelled.',
+    path: '/text',
+  },
+  url: {
+    title: 'URL Translator | Ingglish',
+    description:
+      'Enter any URL and read the page in phonetic Ingglish spelling. Browse the web with consistent, phonetic English.',
+    path: '/url',
+  },
+  guide: {
+    title: 'Spelling Guide | Ingglish',
+    description:
+      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonetic alphabet.',
+    path: '/guide',
+  },
+  extension: {
+    title: 'Browser Extension | Ingglish',
+    description:
+      'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
+    path: '/extension',
+  },
+  poems: {
+    title: 'Poems | Ingglish',
+    description:
+      'Classic English poems respelled in phonetic Ingglish. See how familiar verses look with consistent spelling.',
+    path: '/poems',
+  },
+  docs: {
+    title: 'Documentation | Ingglish',
+    description:
+      'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
+    path: '/docs',
+  },
+};
 
 const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
 
@@ -255,8 +301,15 @@ function App() {
     };
   }, []);
 
+  const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
+
   return (
     <div className="app">
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
+      </Helmet>
       <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
         {activeTab !== 'tutorial' && !isLoading && (
           <button

@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 interface HeadingInfo {
   id: string;
@@ -241,61 +242,71 @@ function Docs(): JSX.Element {
   }, []);
 
   return (
-    <div className="docs-container">
-      <nav className="docs-sidebar">
-        <ul>
-          {docs.map((doc) => (
-            <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
+    <>
+      <Helmet>
+        <title>{currentDoc.title} | Ingglish Docs</title>
+        <meta
+          name="description"
+          content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonetic English spelling system.`}
+        />
+        <link rel="canonical" href={`https://ingglish.com/docs/${currentDoc.id}`} />
+      </Helmet>
+      <div className="docs-container">
+        <nav className="docs-sidebar">
+          <ul>
+            {docs.map((doc) => (
+              <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
+                <a
+                  href={`/docs/${doc.id}`}
+                  className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveDoc(doc.id);
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  {doc.title}
+                </a>
+                {activeDoc === doc.id && currentHeadings.length > 0 && (
+                  <ul className="docs-subsections">
+                    {currentHeadings.map((heading) => (
+                      <li key={heading.id}>
+                        <a
+                          href={`/docs/${doc.id}#${heading.id}`}
+                          className={`docs-subsection-link docs-subsection-h${heading.level}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById(heading.id)?.scrollIntoView();
+                            window.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
+                          }}
+                        >
+                          {heading.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <article className="docs-content">
+          {currentDoc.filename !== undefined && (
+            <div className="docs-header">
               <a
-                href={`/docs/${doc.id}`}
-                className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveDoc(doc.id);
-                  window.scrollTo(0, 0);
-                }}
+                href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="docs-edit-link"
               >
-                {doc.title}
+                Edit on GitHub
               </a>
-              {activeDoc === doc.id && currentHeadings.length > 0 && (
-                <ul className="docs-subsections">
-                  {currentHeadings.map((heading) => (
-                    <li key={heading.id}>
-                      <a
-                        href={`/docs/${doc.id}#${heading.id}`}
-                        className={`docs-subsection-link docs-subsection-h${heading.level}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          document.getElementById(heading.id)?.scrollIntoView();
-                          window.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
-                        }}
-                      >
-                        {heading.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <article className="docs-content">
-        {currentDoc.filename !== undefined && (
-          <div className="docs-header">
-            <a
-              href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="docs-edit-link"
-            >
-              Edit on GitHub
-            </a>
-          </div>
-        )}
-        <div ref={contentRef} dangerouslySetInnerHTML={{ __html: currentDoc.content }} />
-      </article>
-    </div>
+            </div>
+          )}
+          <div ref={contentRef} dangerouslySetInnerHTML={{ __html: currentDoc.content }} />
+        </article>
+      </div>
+    </>
   );
 }
 

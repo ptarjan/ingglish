@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import './styles/index.css';
@@ -11,8 +12,10 @@ if (rootElement === null) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <FormatProvider>
-      <App />
-    </FormatProvider>
+    <HelmetProvider>
+      <FormatProvider>
+        <App />
+      </FormatProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );
