@@ -2,10 +2,14 @@
  * @vitest-environment jsdom
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { act } from 'react';
 import { renderHook, type RenderHookResult } from '@testing-library/react';
 import { useSpeech } from './useSpeech';
+
+beforeAll(() => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+});
 
 type Speech = ReturnType<typeof useSpeech>;
 type SpeechHook = RenderHookResult<Speech, unknown>;
