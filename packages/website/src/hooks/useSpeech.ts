@@ -13,7 +13,7 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
   const [wordCount, setWordCount] = useState<number | null>(null);
-  const workaroundRef = useRef<ReturnType<typeof setInterval>>();
+  const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
   const clearWorkaround = useCallback(() => {
     if (workaroundRef.current !== undefined) {

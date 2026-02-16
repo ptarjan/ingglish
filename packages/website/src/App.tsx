@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { translate } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
@@ -305,11 +304,9 @@ function App() {
 
   return (
     <div className="app">
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
-      </Helmet>
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
+      <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
       <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
         {activeTab !== 'tutorial' && !isLoading && (
           <button

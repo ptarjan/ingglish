@@ -26,7 +26,7 @@ interface UseUrlTranslatorResult {
   isLoading: boolean;
   hasContent: boolean;
   error: string | null;
-  iframeRef: React.RefObject<HTMLIFrameElement>;
+  iframeRef: React.RefObject<HTMLIFrameElement | null>;
   translateUrl: (targetUrl: string, pushHistory?: boolean) => Promise<void>;
   clear: () => void;
 }

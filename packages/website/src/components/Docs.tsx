@@ -1,6 +1,5 @@
 import type { JSX } from 'react';
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 
 interface HeadingInfo {
   id: string;
@@ -243,14 +242,12 @@ function Docs(): JSX.Element {
 
   return (
     <>
-      <Helmet>
-        <title>{currentDoc.title} | Ingglish Docs</title>
-        <meta
-          name="description"
-          content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
-        />
-        <link rel="canonical" href={`https://ingglish.com/docs/${currentDoc.id}`} />
-      </Helmet>
+      <title>{currentDoc.title} | Ingglish Docs</title>
+      <meta
+        name="description"
+        content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
+      />
+      <link rel="canonical" href={`https://ingglish.com/docs/${currentDoc.id}`} />
       <div className="docs-container">
         <nav className="docs-sidebar">
           <ul>
