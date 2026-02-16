@@ -158,6 +158,18 @@ const NRL_RULES: Record<string, string[]> = {
     '[EU]=/Y UW/',
     // Custom: -ence suffix with schwa (difference, conference)
     '#:[ENCE] =/AX N S/',
+    // Custom: -ield → E is part of IE digraph, silent (field, shield, yield)
+    'I[ELD]=/L D/',
+    'I[ELS] =/L Z/',
+    'I[EL] =/L/',
+    // Custom: -ens suffix with schwa (chickens, gardens, kittens)
+    '#:[ENS] =/AX N Z/',
+    // Custom: -en suffix with schwa (golden, fallen, chosen, open)
+    '#:[EN] =/AX N/',
+    // Custom: -el suffix with schwa (model, chapel, novel, angel)
+    '#:[EL] =/AX L/',
+    // Custom: -est superlative with schwa (highest, lowest, fastest)
+    '#:[EST] =/AX S T/',
     '[E]=/EH/',
   ],
   F: [
