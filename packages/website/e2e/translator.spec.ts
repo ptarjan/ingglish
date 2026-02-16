@@ -128,7 +128,7 @@ test.describe('Layout Stability (CLS)', () => {
 test.describe('Text Translator', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/#text');
+    await page.goto('/text');
     // Wait for dictionary to load
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
@@ -222,7 +222,7 @@ test.describe('Text Translator', () => {
 test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/#text');
+    await page.goto('/text');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
 
@@ -241,12 +241,18 @@ test.describe('Tab Navigation', () => {
     await page.click('.subtitle-link');
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
+
+  test('old hash URL redirects to path URL', async ({ page }) => {
+    await page.goto('/#guide');
+    await expect(page.locator('.spelling-guide')).toBeVisible();
+    expect(new URL(page.url()).pathname).toBe('/guide');
+  });
 });
 
 test.describe('Spelling Guide', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
-    await page.goto('/#guide');
+    await page.goto('/guide');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
   });
 

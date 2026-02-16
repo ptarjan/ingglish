@@ -788,16 +788,16 @@ function Section8_CTA({ onNavigate }: { onNavigate: (tab: string) => void }) {
     <section ref={ref} className={`tutorial-section tutorial-cta ${visible ? 'revealed' : ''}`}>
       <h2 className="tutorial-heading">Try Ingglish</h2>
       <div className="cta-buttons">
-        <a href="#text" className="cta-primary" onClick={handleNavigate('text')}>
+        <a href="/text" className="cta-primary" onClick={handleNavigate('text')}>
           Translate Text
         </a>
-        <a href="#url" className="cta-secondary" onClick={handleNavigate('url')}>
+        <a href="/url" className="cta-secondary" onClick={handleNavigate('url')}>
           Translate a Website
         </a>
-        <a href="#guide" className="cta-secondary" onClick={handleNavigate('guide')}>
+        <a href="/guide" className="cta-secondary" onClick={handleNavigate('guide')}>
           Spelling Guide
         </a>
-        <a href="#poems" className="cta-secondary" onClick={handleNavigate('poems')}>
+        <a href="/poems" className="cta-secondary" onClick={handleNavigate('poems')}>
           Poems
         </a>
       </div>

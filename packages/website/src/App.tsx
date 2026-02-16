@@ -23,23 +23,52 @@ function getSystemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function getTabFromHash(): Tab {
-  const hash = window.location.hash.slice(1);
-  // Handle docs deep links like #docs/contributing
-  if (hash === 'docs' || hash.startsWith('docs/')) {
+function getTabFromPath(): Tab {
+  const path = window.location.pathname.replace(/\/$/, '') || '/';
+  const segment = path.split('/')[1] || '';
+  if (segment === 'docs') {
     return 'docs';
   }
   if (
-    hash === 'tutorial' ||
-    hash === 'text' ||
-    hash === 'url' ||
-    hash === 'guide' ||
-    hash === 'extension' ||
-    hash === 'poems'
+    segment === 'tutorial' ||
+    segment === 'text' ||
+    segment === 'url' ||
+    segment === 'guide' ||
+    segment === 'extension' ||
+    segment === 'poems'
   ) {
-    return hash;
+    return segment;
   }
   return 'tutorial';
+}
+
+/** Redirect old hash-based URLs to path-based equivalents (one-time, backward compat). */
+function redirectHashUrl(): void {
+  const hash = window.location.hash.slice(1);
+  if (!hash) {
+    return;
+  }
+
+  // #docs/architecture/section → /docs/architecture#section
+  if (hash.startsWith('docs/')) {
+    const rest = hash.slice(5);
+    const slashIndex = rest.indexOf('/');
+    if (slashIndex !== -1) {
+      const docId = rest.slice(0, slashIndex);
+      const section = rest.slice(slashIndex + 1);
+      window.history.replaceState(null, '', `/docs/${docId}#${section}`);
+    } else {
+      window.history.replaceState(null, '', `/docs/${rest}`);
+    }
+    return;
+  }
+
+  // #text, #guide, etc. → /text, /guide
+  const validTabs = ['tutorial', 'text', 'url', 'guide', 'extension', 'poems', 'docs'];
+  if (validTabs.includes(hash)) {
+    const target = hash === 'tutorial' ? '/' : `/${hash}`;
+    window.history.replaceState(null, '', target + window.location.search);
+  }
 }
 
 function getInitialText(): string {
@@ -52,11 +81,23 @@ function getInitialUrl(): string {
   return params.get('url') ?? '';
 }
 
+function sendPageView(path: string): void {
+  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
+  const g = (window as any).gtag as ((...args: unknown[]) => void) | undefined;
+  /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
+  if (typeof g === 'function') {
+    g('event', 'page_view', { page_path: path });
+  }
+}
+
 function App() {
   const { format, toggleFormat } = useFormat();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>(getTabFromHash);
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    redirectHashUrl();
+    return getTabFromPath();
+  });
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
@@ -113,36 +154,33 @@ function App() {
     return '🌙';
   };
 
-  // Sync tab with URL hash (docs manages its own hash for deep linking)
+  // Sync URL path with active tab (docs manages its own sub-path)
   useEffect(() => {
-    if (activeTab === 'tutorial') {
-      // Keep URL clean for the landing page — no hash needed
-      if (window.location.hash && window.location.hash !== '#tutorial') {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
-      }
-    } else if (activeTab !== 'docs') {
-      window.location.hash = activeTab;
+    const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
+    if (window.location.pathname !== targetPath && activeTab !== 'docs') {
+      window.history.pushState(null, '', targetPath);
     }
-    // For docs tab, let the Docs component manage the hash
+    sendPageView(targetPath);
     window.scrollTo(0, 0);
   }, [activeTab]);
 
   // Handle browser back/forward
   useEffect(() => {
-    const handleHashChange = () => {
-      setActiveTab(getTabFromHash());
+    const handlePopState = () => {
+      setActiveTab(getTabFromPath());
     };
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
   // Build shareable URL
   const buildShareUrl = useCallback((targetUrl: string): string => {
     const url = new URL(window.location.href);
+    url.pathname = '/url';
     url.search = '';
-    url.hash = 'url';
+    url.hash = '';
     url.searchParams.set('url', targetUrl);
     return url.toString();
   }, []);
@@ -150,6 +188,7 @@ function App() {
   // Share functions
   const handleShareText = useCallback((text: string) => {
     const url = new URL(window.location.href);
+    url.pathname = '/text';
     url.search = '';
     url.hash = '';
     url.searchParams.set('text', text);
@@ -253,27 +292,29 @@ function App() {
 
       {activeTab !== 'tutorial' && !isLoading && (
         <nav className="tabs">
-          <a className="tab" href="#tutorial">
-            Tutorial
-          </a>
-          <a className={`tab ${activeTab === 'text' ? 'active' : ''}`} href="#text">
-            Translate Text
-          </a>
-          <a className={`tab ${activeTab === 'url' ? 'active' : ''}`} href="#url">
-            Translate URL
-          </a>
-          <a className={`tab ${activeTab === 'extension' ? 'active' : ''}`} href="#extension">
-            Extension
-          </a>
-          <a className={`tab ${activeTab === 'guide' ? 'active' : ''}`} href="#guide">
-            Spelling Guide
-          </a>
-          <a className={`tab ${activeTab === 'poems' ? 'active' : ''}`} href="#poems">
-            Poems
-          </a>
-          <a className={`tab ${activeTab === 'docs' ? 'active' : ''}`} href="#docs">
-            Docs
-          </a>
+          {(
+            [
+              ['/', 'tutorial', 'Tutorial'],
+              ['/text', 'text', 'Translate Text'],
+              ['/url', 'url', 'Translate URL'],
+              ['/extension', 'extension', 'Extension'],
+              ['/guide', 'guide', 'Spelling Guide'],
+              ['/poems', 'poems', 'Poems'],
+              ['/docs', 'docs', 'Docs'],
+            ] as const
+          ).map(([href, tab, label]) => (
+            <a
+              key={tab}
+              className={`tab ${activeTab === tab ? 'active' : ''}`}
+              href={href}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab(tab);
+              }}
+            >
+              {label}
+            </a>
+          ))}
         </nav>
       )}
 

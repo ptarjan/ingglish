@@ -4,7 +4,7 @@ import { setupMockProxy } from './test-utils';
 test.describe('URL Translator', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/#url');
+    await page.goto('/url');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('.url-translator')).toBeVisible();
   });
@@ -75,7 +75,7 @@ test.describe('URL Translator', () => {
 test.describe('URL Translator Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await setupMockProxy(page);
-    await page.goto('/#url');
+    await page.goto('/url');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('.url-translator')).toBeVisible();
   });

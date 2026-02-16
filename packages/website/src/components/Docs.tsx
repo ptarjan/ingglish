@@ -132,23 +132,20 @@ function extractHeadings(html: string): HeadingInfo[] {
   return headings;
 }
 
-function parseDocsHash(): { docId: string | null; sectionId: string | null } {
-  const hash = window.location.hash.slice(1);
-  if (hash.startsWith('docs/')) {
-    const path = hash.slice(5);
-    const slashIndex = path.indexOf('/');
-    if (slashIndex !== -1) {
-      return { docId: path.slice(0, slashIndex), sectionId: path.slice(slashIndex + 1) };
-    }
-    return { docId: path, sectionId: null };
-  }
-  return { docId: null, sectionId: null };
+function parseDocsPath(): { docId: string | null; sectionId: string | null } {
+  // Path: /docs/architecture → docId = 'architecture'
+  // Hash: #section → sectionId = 'section' (standard anchor scroll)
+  const segments = window.location.pathname.replace(/\/$/, '').split('/');
+  // segments: ['', 'docs', 'architecture']
+  const docId = segments[2] || null;
+  const sectionId = window.location.hash ? window.location.hash.slice(1) : null;
+  return { docId, sectionId };
 }
 
 function Docs(): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeDoc, setActiveDoc] = useState(() => {
-    const { docId } = parseDocsHash();
+    const { docId } = parseDocsPath();
     if (docId !== null && docs.some((d) => d.id === docId)) {
       return docId;
     }
@@ -184,21 +181,19 @@ function Docs(): JSX.Element {
         return;
       }
 
-      // Transform .md links to hash links
+      // Transform .md links to path-based links
       if (href.includes('.md')) {
         const [mdPath, section] = href.split('#');
         const filename = mdPath.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {
-          link.setAttribute('href', section ? `#docs/${docId}/${section}` : `#docs/${docId}`);
+          link.setAttribute('href', section ? `/docs/${docId}#${section}` : `/docs/${docId}`);
           return;
         }
       }
 
-      // Anchor links - transform to full docs path
+      // Anchor links - use standard #sectionId (stays on current doc page)
       if (href.startsWith('#')) {
-        const sectionId = href.slice(1);
-        link.setAttribute('href', `#docs/${activeDoc}/${sectionId}`);
         return;
       }
 
@@ -210,19 +205,17 @@ function Docs(): JSX.Element {
     });
   }, [activeDoc, currentDoc.content]);
 
-  // Update URL hash when switching docs
+  // Update URL path when switching docs
   useEffect(() => {
-    const { docId: currentDocId, sectionId } = parseDocsHash();
-    if (currentDocId !== activeDoc) {
-      window.location.hash = `docs/${activeDoc}`;
-    } else if (sectionId === null) {
-      window.location.hash = `docs/${activeDoc}`;
+    const targetPath = `/docs/${activeDoc}`;
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState(null, '', targetPath);
     }
   }, [activeDoc]);
 
   // Scroll to section on initial load
   useEffect(() => {
-    const { sectionId } = parseDocsHash();
+    const { sectionId } = parseDocsPath();
     if (sectionId !== null) {
       setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView();
@@ -232,8 +225,8 @@ function Docs(): JSX.Element {
 
   // Handle browser back/forward
   useEffect(() => {
-    const handleHashChange = () => {
-      const { docId, sectionId } = parseDocsHash();
+    const handlePopState = () => {
+      const { docId, sectionId } = parseDocsPath();
       if (docId !== null && docs.some((d) => d.id === docId)) {
         setActiveDoc(docId);
         if (sectionId !== null) {
@@ -243,9 +236,9 @@ function Docs(): JSX.Element {
         }
       }
     };
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -256,8 +249,13 @@ function Docs(): JSX.Element {
           {docs.map((doc) => (
             <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
               <a
-                href={`#docs/${doc.id}`}
+                href={`/docs/${doc.id}`}
                 className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveDoc(doc.id);
+                  window.scrollTo(0, 0);
+                }}
               >
                 {doc.title}
               </a>
@@ -266,8 +264,13 @@ function Docs(): JSX.Element {
                   {currentHeadings.map((heading) => (
                     <li key={heading.id}>
                       <a
-                        href={`#docs/${doc.id}/${heading.id}`}
+                        href={`/docs/${doc.id}#${heading.id}`}
                         className={`docs-subsection-link docs-subsection-h${heading.level}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById(heading.id)?.scrollIntoView();
+                          window.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
+                        }}
                       >
                         {heading.text}
                       </a>

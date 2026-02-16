@@ -36,8 +36,8 @@ export async function blockExternalNetwork(page: Page) {
       return;
     }
 
-    // Mock Google Analytics - return empty script
-    if (url.includes('googletagmanager.com')) {
+    // Mock Google Analytics / Tag Manager
+    if (url.includes('googletagmanager.com') || url.includes('google-analytics.com')) {
       await route.fulfill({
         status: 200,
         contentType: 'application/javascript',
@@ -143,8 +143,8 @@ export async function setupMockProxy(page: Page) {
       return;
     }
 
-    // Mock Google Analytics - return empty script
-    if (url.includes('googletagmanager.com')) {
+    // Mock Google Analytics / Tag Manager
+    if (url.includes('googletagmanager.com') || url.includes('google-analytics.com')) {
       await route.fulfill({
         status: 200,
         contentType: 'application/javascript',

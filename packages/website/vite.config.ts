@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
+import { copyFileSync, mkdirSync } from 'fs';
+import { dirname, join } from 'path';
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -28,6 +30,49 @@ function processChunks(): Plugin {
   };
 }
 
+// Copy index.html to each route path so GitHub Pages serves the SPA for all routes
+function copyRoutesToDist(): Plugin {
+  const docIds = [
+    'design-decisions',
+    'phoneme-mapping',
+    'orthography-comparison',
+    'spelling-reform-comparison',
+    'spelling-evolution',
+    'identical-words-analysis',
+    'collision-analysis',
+    'architecture',
+    'api-reference',
+    'performance',
+    'deployment',
+    'contributing',
+    'troubleshooting',
+  ];
+  const routes = [
+    'text',
+    'url',
+    'guide',
+    'extension',
+    'poems',
+    'docs',
+    ...docIds.map((id) => `docs/${id}`),
+  ];
+
+  return {
+    name: 'copy-routes-to-dist',
+    writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      const src = join(distDir, 'index.html');
+      for (const route of routes) {
+        const dest = join(distDir, route, 'index.html');
+        mkdirSync(dirname(dest), { recursive: true });
+        copyFileSync(src, dest);
+      }
+      // 404.html as catch-all fallback for GitHub Pages
+      copyFileSync(src, join(distDir, '404.html'));
+    },
+  };
+}
+
 export default defineConfig({
   test: {
     // Docs.test.ts needs generated docs, runs separately after build
@@ -37,7 +82,7 @@ export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
   // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
-  plugins: [markdown(), react(), processChunks()],
+  plugins: [markdown(), react(), processChunks(), copyRoutesToDist()],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed
