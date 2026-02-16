@@ -62,13 +62,22 @@ interface WordDisplayProps {
   hoveredWordIndex: number | null;
   onHoverWord: (index: number | null) => void;
   className?: string;
+  scrollRef?: React.Ref<HTMLDivElement>;
+  onScroll?: () => void;
 }
 
-function WordDisplay({ text, hoveredWordIndex, onHoverWord, className }: WordDisplayProps) {
+function WordDisplay({
+  text,
+  hoveredWordIndex,
+  onHoverWord,
+  className,
+  scrollRef,
+  onScroll,
+}: WordDisplayProps) {
   const tokens: IndexedToken[] = useMemo(() => tokenizePhonetic(text), [text]);
 
   return (
-    <div className={`word-display ${className ?? ''}`}>
+    <div ref={scrollRef} onScroll={onScroll} className={`word-display ${className ?? ''}`}>
       {tokens.map((token, i) => {
         if (token.isWord) {
           const isHighlighted = token.wordIndex === hoveredWordIndex;
@@ -103,6 +112,8 @@ interface MappedWordDisplayProps {
   onHoverWord?: (index: number | null) => void;
   className?: string;
   placeholder?: string;
+  scrollRef?: React.Ref<HTMLDivElement>;
+  onScroll?: () => void;
 }
 
 export function MappedWordDisplay({
@@ -111,10 +122,12 @@ export function MappedWordDisplay({
   onHoverWord,
   className,
   placeholder = 'Hover to see word correspondence...',
+  scrollRef,
+  onScroll,
 }: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
-    <div className={`word-display ${className ?? ''}`}>
+    <div ref={scrollRef} onScroll={onScroll} className={`word-display ${className ?? ''}`}>
       {tokens.map((token, i) => {
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
@@ -326,23 +339,41 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const activeWordIndex = spokenWordIndex ?? hoveredWordIndex;
   const isSpeaking = speakingEnglish || speakingIngglish;
 
-  // Sync scroll positions between the two textareas
+  // Sync scroll positions between paired panes
   const englishRef = useRef<HTMLTextAreaElement>(null);
   const ingglishRef = useRef<HTMLTextAreaElement>(null);
+  const corrEnglishRef = useRef<HTMLDivElement>(null);
+  const corrIngglishRef = useRef<HTMLDivElement>(null);
   const scrolling = useRef(false);
 
-  const handleScroll = useCallback((source: 'english' | 'ingglish') => {
-    if (scrolling.current) {
+  const syncScroll = useCallback((from: Element | null, to: Element | null) => {
+    if (scrolling.current || !from || !to) {
       return;
     }
     scrolling.current = true;
-    const from = source === 'english' ? englishRef.current : ingglishRef.current;
-    const to = source === 'english' ? ingglishRef.current : englishRef.current;
-    if (from && to) {
-      to.scrollTop = from.scrollTop;
-    }
+    to.scrollTop = from.scrollTop;
     scrolling.current = false;
   }, []);
+
+  const handleScroll = useCallback(
+    (source: 'english' | 'ingglish') => {
+      syncScroll(
+        source === 'english' ? englishRef.current : ingglishRef.current,
+        source === 'english' ? ingglishRef.current : englishRef.current
+      );
+    },
+    [syncScroll]
+  );
+
+  const handleCorrScroll = useCallback(
+    (source: 'english' | 'ingglish') => {
+      syncScroll(
+        source === 'english' ? corrEnglishRef.current : corrIngglishRef.current,
+        source === 'english' ? corrIngglishRef.current : corrEnglishRef.current
+      );
+    },
+    [syncScroll]
+  );
 
   return (
     <div className="text-translator">
@@ -465,6 +496,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
+                scrollRef={corrEnglishRef}
+                onScroll={() => {
+                  handleCorrScroll('english');
+                }}
               />
             ) : (
               <WordDisplay
@@ -472,6 +507,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
+                scrollRef={corrEnglishRef}
+                onScroll={() => {
+                  handleCorrScroll('english');
+                }}
               />
             )}
             {lastEdited === 'english' && forwardTokens ? (
@@ -480,6 +519,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
+                scrollRef={corrIngglishRef}
+                onScroll={() => {
+                  handleCorrScroll('ingglish');
+                }}
               />
             ) : (
               <WordDisplay
@@ -487,6 +530,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 hoveredWordIndex={activeWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
+                scrollRef={corrIngglishRef}
+                onScroll={() => {
+                  handleCorrScroll('ingglish');
+                }}
               />
             )}
           </div>
