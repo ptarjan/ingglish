@@ -108,7 +108,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
   }, [initialUrl, setUrl, translateUrl]);
 
   const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
+    async (e: React.SyntheticEvent) => {
       e.preventDefault();
 
       const normalized = normalizeUrl(url);
