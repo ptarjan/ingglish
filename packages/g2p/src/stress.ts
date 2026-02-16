@@ -10,6 +10,11 @@
 // Vowels that reduce to AH0 (schwa) when unstressed
 const REDUCIBLE_VOWELS = new Set(['AE']);
 
+// Vowels that take secondary stress (2) rather than unstressed (0) in
+// non-primary positions of 2-syllable words. These are "full" vowels that
+// CMU marks with secondary stress when they appear in a non-primary syllable.
+const SECONDARY_STRESS_VOWELS = new Set(['AA', 'AE', 'AO', 'AY', 'EY', 'AW', 'EH', 'UH', 'OY']);
+
 // Stress-attracting suffixes: stress falls on the final syllable
 const STRESS_ATTRACTING_SUFFIXES = [
   'eer',
@@ -87,6 +92,14 @@ const UNSTRESSED_PREFIXES: UnstressedPrefix[] = [
   { prefix: 'per', minLength: 5 },
   { prefix: 'sur', minLength: 5 },
   { prefix: 'sub', minLength: 5 },
+  // Tier 3: Latinate a- prefixes (abandon, absorb, accept, advance, etc.)
+  { prefix: 'ab', minLength: 6 },
+  { prefix: 'ac', minLength: 6 },
+  { prefix: 'ad', minLength: 6 },
+  { prefix: 'af', minLength: 6 },
+  { prefix: 'ap', minLength: 6 },
+  { prefix: 'as', minLength: 6 },
+  { prefix: 'at', minLength: 6 },
 ];
 
 /**
@@ -179,9 +192,13 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
       // Stressed syllable: keep base + 1
       result[pos] = base + '1';
     } else {
-      // Unstressed: reduce if possible, otherwise mark as unstressed
+      // Unstressed: reduce if possible, otherwise mark stress level
       if (REDUCIBLE_VOWELS.has(base)) {
         result[pos] = 'AH0';
+      } else if (SECONDARY_STRESS_VOWELS.has(base)) {
+        // Full vowels in non-primary positions get secondary stress (2)
+        // (e.g., "access" AE1 K S EH2 S, "celebrate" S EH1 L AH0 B R EY2 T)
+        result[pos] = base + '2';
       } else {
         result[pos] = base + '0';
       }

@@ -60,6 +60,13 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AL] =/AX L/',
     '#:[ALS] =/AX L Z/',
     '[ALK]=/AO K/',
+    // Custom: AL before certain consonants → AE L, not AO L (album, alcohol, alfred, algebra, alpine, valve)
+    '[AL]B=/AE L/',
+    '[AL]C=/AE L/',
+    '[AL]F=/AE L/',
+    '[AL]G=/AE L/',
+    '[AL]P=/AE L/',
+    '[AL]V=/AE L/',
     '[AL]^=/AO L/',
     ' :[ABLE]=/EY B AX L/',
     '[ABLE]=/AX B AX L/',
@@ -113,6 +120,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[DU]A=/JH UW/',
     // Custom: DGE trigraph (badge, bridge, edge)
     '[DGE]=/JH/',
+    // Custom: DG before front vowel → JH (bridging, edging, judging)
+    '[DG]+=/JH/',
+    // Custom: DJ → JH (adjoin, adjust, adjacent)
+    '[DJ]=/JH/',
     // Custom: collapse doubled DD
     '[DD]=/D/',
     '[D]=/D/',
@@ -124,6 +135,12 @@ const NRL_RULES: Record<string, string[]> = {
     '#[ED] =/D/',
     '#:[E]D =/ /',
     '[EV]ER=/EH V/',
+    // Custom: ER before suffix → ER, not IY+R (altered, filtering, wanderer)
+    '[ER]%=/ER/',
+    // Custom: -ement must come before [E]^% to avoid E+M+suffix → IY (advancement, replacement)
+    '#:[EMENT]=/M AX N T/',
+    // Custom: -eness → silent E + N schwa S (acuteness, completeness, remoteness)
+    '#:[ENESS] =/N AX S/',
     '[E]^%=/IY/',
     '[ERI]#=/IY R IY/',
     '[ERI]=/EH R IH/',
@@ -140,7 +157,6 @@ const NRL_RULES: Record<string, string[]> = {
     '#:&[ES] =/IH Z/',
     '#:[E]S =/ /',
     '#:[ELY] =/L IY/',
-    '#:[EMENT]=/M EH N T/',
     // Custom: -eful suffix with schwa (careful, hopeful, graceful)
     '#:[EFUL] =/F AX L/',
     '[EFUL]=/F UH L/',
@@ -211,6 +227,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[IEN]=/IY EH N/',
     '[IE]T=/AY EH/',
     ' :[I]%=/AY/',
+    // Custom: IE before consonant+suffix → single IY (achieve, believed, relieving)
+    '[IE]^%=/IY/',
     '[I]%=/IY/',
     '[IE]=/IY/',
     // Custom: multi-char targets must come before single-char [I] rules
@@ -236,7 +254,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[I]D%=/AY/',
     '+^[I]^+=/IH/',
     '[I]T%=/AY/',
-    '#^:[I]^+=/IH/',
+    // Removed: '#^:[I]^+=/IH/' — over-matched words like alive, alike, airline (net +103)
     '[I]^+=/AY/',
     '[IR]=/ER/',
     '[IGH]=/AY/',
@@ -258,6 +276,9 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[LESS] =/L AX S/',
     // Custom: -ling must come before L% to prevent schwa insertion
     '[LING]=/L IH NX/',
+    // Custom: consonant+L before ER/EY → syllabic L, no schwa (adler, ainsley, butler)
+    '#^:[L]ER=/L/',
+    '#^:[L]EY=/L/',
     '#^:[L]%=/AX L/',
     '[LEAD]=/L IY D/',
     '[L]=/L/',
@@ -466,6 +487,8 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: -ular suffix (popular, regular, cellular)
     '[ULAR]=/Y AX L ER/',
     '@[U]=/UW/',
+    // Custom: word-final U → UW without Y glide (tofu, bayou, peru)
+    '[U] =/UW/',
     '[U]=/Y UW/',
   ],
   V: ['[VIEW]=/V Y UW/', '[V]=/V/'],

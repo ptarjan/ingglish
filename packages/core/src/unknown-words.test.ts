@@ -198,9 +198,9 @@ describe('unknown-words', () => {
     });
 
     it('should treat word-final -fy as /faɪ/', () => {
-      // -ify suffix → stressFromEnd: 3, so AY is unstressed in 3-syllable words
-      expect(wordToArpabet('uglify')).toContain('AY0');
-      expect(wordToArpabet('glorify')).toContain('AY0');
+      // -ify suffix → stressFromEnd: 3, AY gets secondary stress (full vowel)
+      expect(wordToArpabet('uglify')).toContain('AY2');
+      expect(wordToArpabet('glorify')).toContain('AY2');
     });
 
     it('should treat y as consonant before vowels', () => {
