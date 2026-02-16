@@ -174,7 +174,7 @@ export const consonantGroups: SoundGroup[] = [
   {
     name: 'Affricates',
     sounds: [
-      { phoneme: 'CH', examples: '**ch**at (chat), bat**ch** (bach), na**t**ure (naycher)' },
+      { phoneme: 'CH', examples: '**ch**at (chat), ba**tch** (bach), na**t**ure (naycher)' },
       { phoneme: 'JH', examples: '**j**ust (just), a**g**ent (eyjunt), e**dge** (ej)' },
     ],
   },
@@ -185,7 +185,7 @@ export const consonantGroups: SoundGroup[] = [
         phoneme: 'M',
         examples: '**m**an (man), ha**mm**er (hamer), co**mb** (kohm), hy**mn** (him)',
       },
-      { phoneme: 'N', examples: 'pe**n** (pen), k**n**ife (naif), **gn**at (nat)' },
+      { phoneme: 'N', examples: 'pe**n** (pen), **kn**ife (naif), **gn**at (nat)' },
       { phoneme: 'NG', examples: 'si**ng** (sing), thi**n**k (thingk), to**ngue** (tung)' },
     ],
   },
@@ -193,7 +193,7 @@ export const consonantGroups: SoundGroup[] = [
     name: 'Liquids & Glides',
     sounds: [
       { phoneme: 'L', examples: '**l**et (let), be**ll** (bel), wa**l**k (wawk)' },
-      { phoneme: 'R', examples: '**r**un (run), ca**rr**y (karree), w**r**ite (rait)' },
+      { phoneme: 'R', examples: '**r**un (run), ca**rr**y (karree), **wr**ite (rait)' },
       { phoneme: 'W', examples: '**w**et (wet), **wh**at (wut), **o**ne (wun)' },
       { phoneme: 'Y', examples: '**y**es (yes), c**u**te (kyuut)' },
     ],

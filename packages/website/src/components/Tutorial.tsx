@@ -517,7 +517,7 @@ function Section4_Transform() {
       <SimpleRuleGroup
         title="&ldquo;Th&rdquo; hides two sounds"
         caption={
-          'Say "thin," then "the." Feel the vibration? Different sounds, different spellings. Common "dh" words: the, that, this, they, them, their, there, these, those, other, mother, father, brother, than, then, though, either, neither, rather, whether, together, another, with.'
+          'Say "thin," then "the." Feel the vibration? Different sounds, different spellings. Only about 20 common words use "dh" — the, this, that, they, mother, other — but they\'re among the most frequent in English.'
         }
         examples={thDhExamples}
         previousDone={completedStep >= 2}
