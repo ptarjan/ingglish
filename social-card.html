@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    color: #eee;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .card {
+    width: 800px;
+    padding: 48px 56px;
+    background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+    border-radius: 20px;
+  }
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 16px;
+    color: #94a3b8;
+    margin-bottom: 36px;
+  }
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 12px;
+  }
+  .english {
+    font-size: 22px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin-bottom: 28px;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    border-left: 3px solid #475569;
+  }
+  .english .ough { color: #f87171; font-weight: 600; }
+  .ingglish {
+    font-size: 22px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin-bottom: 32px;
+    padding: 20px 24px;
+    background: rgba(74, 222, 128, 0.06);
+    border-radius: 12px;
+    border-left: 3px solid #4ade80;
+  }
+  .ingglish .sound { color: #4ade80; font-weight: 600; }
+  .breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .breakdown .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.06);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+  .chip .word { color: #94a3b8; }
+  .chip .arrow { color: #475569; }
+  .chip .result { color: #4ade80; font-weight: 600; }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo { font-size: 20px; font-weight: 700; color: #e2e8f0; }
+  .url { font-size: 16px; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="title">One spelling, six sounds.</div>
+  <div class="subtitle">The letters "ough" are pronounced differently in every word below.</div>
+
+  <div class="section-label">English</div>
+  <div class="english">
+    Th<span class="ough">ough</span> I th<span class="ough">ough</span>t the r<span class="ough">ough</span> c<span class="ough">ough</span> was en<span class="ough">ough</span>, I pl<span class="ough">ough</span>ed thr<span class="ough">ough</span>.
+  </div>
+
+  <div class="section-label">Ingglish</div>
+  <div class="ingglish">
+    Dh<span class="sound">oh</span> ai th<span class="sound">aw</span>t dhu r<span class="sound">u</span>f k<span class="sound">o</span>f woz in<span class="sound">u</span>f, ai pl<span class="sound">ou</span>d thr<span class="sound">uu</span>.
+  </div>
+
+  <div class="section-label">Each "ough" → its actual sound</div>
+  <div class="breakdown">
+    <div class="chip"><span class="word">though</span><span class="arrow">→</span><span class="result">oh</span></div>
+    <div class="chip"><span class="word">thought</span><span class="arrow">→</span><span class="result">aw</span></div>
+    <div class="chip"><span class="word">rough</span><span class="arrow">→</span><span class="result">u</span></div>
+    <div class="chip"><span class="word">cough</span><span class="arrow">→</span><span class="result">o</span></div>
+    <div class="chip"><span class="word">enough</span><span class="arrow">→</span><span class="result">u</span></div>
+    <div class="chip"><span class="word">ploughed</span><span class="arrow">→</span><span class="result">ou</span></div>
+    <div class="chip"><span class="word">through</span><span class="arrow">→</span><span class="result">uu</span></div>
+  </div>
+
+  <div class="footer">
+    <div class="logo">Ingglish</div>
+    <div class="url">ingglish.com</div>
+  </div>
+</div>
+</body>
+</html>
