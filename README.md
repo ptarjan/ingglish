@@ -26,7 +26,7 @@ This is a monorepo containing:
 
 | Package | Description |
 |---------|-------------|
-| **@ingglish/core** | Translation API — translate and reverse-translate text |
+| **ingglish** | Translation API — translate and reverse-translate text |
 | **@ingglish/normalize** | Text cleanup, case handling |
 | **@ingglish/phonemes** | Phoneme data + ARPAbet/IPA/Ingglish conversion |
 | **@ingglish/tokenize** | Tokenization, word patterns |
@@ -43,7 +43,7 @@ This is a monorepo containing:
 
 ```bash
 # Core library (text translation)
-npm install @ingglish/core
+npm install ingglish
 
 # DOM utilities (browser translation with tooltips)
 npm install @ingglish/dom
@@ -66,7 +66,7 @@ npm run build
 ### Core Library
 
 ```typescript
-import { translate, reverseTranslate } from '@ingglish/core';
+import { translate, reverseTranslate } from 'ingglish';
 
 // Translate English → Ingglish (async, auto-loads dictionary)
 const ingglish = await translate('Hello, world!');

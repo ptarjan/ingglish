@@ -77,7 +77,7 @@ export default defineConfig({
   resolve: {
     // Resolve workspace packages to source (avoids needing full DTS builds in CI)
     alias: {
-      '@ingglish/core': resolve(__dirname, '../core/src/index.ts'),
+      ingglish: resolve(__dirname, '../core/src/index.ts'),
       '@ingglish/dom': resolve(__dirname, '../dom/src/index.ts'),
       '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
       '@ingglish/tokenize': resolve(__dirname, '../tokenize/src/index.ts'),

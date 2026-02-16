@@ -43,7 +43,7 @@ jobs:
 
       # All packages run without build (use TS paths to resolve source)
       - name: Unit tests
-        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/core -w @ingglish/dom && npm run test:unit -w @ingglish/website
+        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w ingglish -w @ingglish/dom && npm run test:unit -w @ingglish/website
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:
@@ -107,7 +107,7 @@ jobs:
 
       # Fast build: ESM only, no DTS (TypeScript paths resolve to source)
       - name: Build core (ESM only)
-        run: npm run build:fast -w @ingglish/core
+        run: npm run build:fast -w ingglish
 
       - name: Generate docs
         run: npm run docs
@@ -195,7 +195,7 @@ jobs:
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
 
-      # Extension tests need @ingglish/core and @ingglish/dom built
+      # Extension tests need ingglish and @ingglish/dom built
       # Run from root so vitest resolves workspace projects correctly
       - name: Extension unit tests
         run: npx vitest run --no-color --project @ingglish/extension

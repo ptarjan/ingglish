@@ -12,7 +12,7 @@
     "watch": "npm run build -- --watch"
   },
   "dependencies": {
-    "@ingglish/core": "^1.0.0",
+    "ingglish": "^1.0.0",
     "@ingglish/dom": "^1.0.0",
     "@ingglish/normalize": "^1.0.0"
   },

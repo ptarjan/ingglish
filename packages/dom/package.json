@@ -38,7 +38,7 @@
     "@ingglish/tokenize": "^1.0.0"
   },
   "peerDependencies": {
-    "@ingglish/core": "^1.0.0"
+    "ingglish": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",

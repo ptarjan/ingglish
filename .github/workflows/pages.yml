@@ -56,7 +56,7 @@ jobs:
           npm run build:fast -w @ingglish/normalize -w @ingglish/phonemes
           npm run build:fast -w @ingglish/tokenize -w @ingglish/dictionary
           npm run build:fast -w @ingglish/fallback
-          npm run build:fast -w @ingglish/core
+          npm run build:fast -w ingglish
           npm run build:fast -w @ingglish/dom
 
       - name: Generate docs

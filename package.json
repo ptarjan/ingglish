@@ -10,7 +10,7 @@
   "scripts": {
     "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "npm run test --workspaces --if-present",
-    "build": "npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/g2p && npm run build -w @ingglish/fallback && npm run build -w @ingglish/core && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",
+    "build": "npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/g2p && npm run build -w @ingglish/fallback && npm run build -w ingglish && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
@@ -18,7 +18,7 @@
     "ci": "npm run build && npm run lint && npm run lint:css && npm run format:check && npm run test && npm run test:docs -w @ingglish/website",
     "lint:css": "stylelint \"packages/*/src/**/*.css\"",
     "lint:css:fix": "stylelint \"packages/*/src/**/*.css\" --fix",
-    "debug:roundtrip": "npm run debug:roundtrip -w @ingglish/core --",
+    "debug:roundtrip": "npm run debug:roundtrip -w ingglish --",
     "prepare": "husky"
   },
   "keywords": [

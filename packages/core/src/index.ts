@@ -1,9 +1,9 @@
 /**
- * @ingglish/core - Phonetic English Translation Library
+ * ingglish - Phonetic English Translation Library
  *
  * @example
  * ```typescript
- * import { translate } from '@ingglish/core';
+ * import { translate } from 'ingglish';
  *
  * await translate('Hello, world!'); // 'Huloh, werld!'
  * ```

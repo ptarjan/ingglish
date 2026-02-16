@@ -24,10 +24,10 @@ jobs:
         run: npm ci
 
       - name: Test
-        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/core -w @ingglish/dom
+        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w ingglish -w @ingglish/dom
 
       - name: Build
-        run: npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/fallback && npm run build -w @ingglish/core -w @ingglish/dom
+        run: npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/fallback && npm run build -w ingglish -w @ingglish/dom
 
       - name: Publish @ingglish/normalize
         run: npm publish --workspace=packages/normalize --access public --provenance
@@ -54,7 +54,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @ingglish/core
+      - name: Publish ingglish
         run: npm publish --workspace=packages/core --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

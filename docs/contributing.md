@@ -42,13 +42,13 @@ Open http://localhost:3000
 npm test
 
 # Core library only
-npm test -w @ingglish/core
+npm test -w ingglish
 
 # Website e2e tests
 npm test -w @ingglish/website
 
 # Watch mode (core)
-npm run test:watch -w @ingglish/core
+npm run test:watch -w ingglish
 ```
 
 ### Linting & Formatting
@@ -93,8 +93,8 @@ packages/
 
 1. Make changes in `packages/core/src/`
 2. Add tests in the corresponding `.test.ts` file
-3. Run `npm run build -w @ingglish/core` to rebuild
-4. Run `npm test -w @ingglish/core` to verify
+3. Run `npm run build -w ingglish` to rebuild
+4. Run `npm test -w ingglish` to verify
 
 ### Website Changes
 

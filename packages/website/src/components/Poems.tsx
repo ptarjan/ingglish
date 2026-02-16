@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { translateSync } from '@ingglish/core';
+import { translateSync } from 'ingglish';
 import { poems } from './poems-data';
 
 interface TranslatedWord {

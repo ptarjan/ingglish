@@ -6,8 +6,8 @@
  * not multiple times due to characterData mutations re-triggering the observer.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import type { OutputFormat } from '@ingglish/core';
-import type * as CoreModule from '@ingglish/core';
+import type { OutputFormat } from 'ingglish';
+import type * as CoreModule from 'ingglish';
 
 // Use vi.hoisted to create state accessible in the hoisted mock factory
 const { mockState } = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ const { mockState } = vi.hoisted(() => ({
   },
 }));
 
-vi.mock('@ingglish/core', async (importOriginal) => {
+vi.mock('ingglish', async (importOriginal) => {
   const mod = await importOriginal<typeof CoreModule>();
   mockState.originalTranslateSync = mod.translateSync;
   return {

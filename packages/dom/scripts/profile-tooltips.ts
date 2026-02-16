@@ -35,7 +35,7 @@ async function main() {
   // @ts-expect-error - global
   global.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
 
-  const { translate } = await import('@ingglish/core');
+  const { translate } = await import('ingglish');
   const { applyTranslationsMap } = await import('../src/translate/apply-map');
   const { collectTextNodes } = await import('../src/utils/text-nodes');
   const { extractWordsFromNodes } = await import('../src/utils/extract');

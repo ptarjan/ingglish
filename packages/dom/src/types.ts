@@ -1,7 +1,7 @@
 /**
  * Shared types for @ingglish/dom
  */
-import type { OutputFormat } from '@ingglish/core';
+import type { OutputFormat } from 'ingglish';
 
 // Re-export OutputFormat for convenience
 export type { OutputFormat };

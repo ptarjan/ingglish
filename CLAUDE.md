@@ -8,7 +8,7 @@ When e2e tests fail in CI, download the `playwright-report` artifact from the fa
 
 ## Cross-Package Changes
 
-This monorepo uses lint-staged for pre-commit hooks, which only lints staged files. When changing exports or interfaces in `@ingglish/core`, dependent packages (`dom`, `website`, `extension`) won't be automatically linted because they weren't modified.
+This monorepo uses lint-staged for pre-commit hooks, which only lints staged files. When changing exports or interfaces in `ingglish`, dependent packages (`dom`, `website`, `extension`) won't be automatically linted because they weren't modified.
 
 **Before pushing changes that affect cross-package APIs**, run a full lint to catch breakages:
 

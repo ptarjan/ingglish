@@ -1,6 +1,6 @@
 [build]
   base = "packages/website"
-  command = "cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website"
+  command = "cd ../.. && npm run build -w ingglish && npm run build -w @ingglish/website"
   publish = "dist"
 
 [build.environment]

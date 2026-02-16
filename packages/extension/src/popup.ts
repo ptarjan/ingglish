@@ -1,6 +1,6 @@
 // Popup script for Ingglish extension
 
-import type { OutputFormat } from '@ingglish/core';
+import type { OutputFormat } from 'ingglish';
 import type { StateResponse, ToggleResponse, FormatResponse } from './types';
 
 const toggleBtn = document.getElementById('toggle-btn') as HTMLButtonElement | null;

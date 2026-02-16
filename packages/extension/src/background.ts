@@ -1,7 +1,7 @@
 // Background service worker for Ingglish extension
 
-import type { OutputFormat } from '@ingglish/core';
-import { translate, translateSync } from '@ingglish/core';
+import type { OutputFormat } from 'ingglish';
+import { translate, translateSync } from 'ingglish';
 
 // Track dictionary loading state
 let dictionaryLoaded = false;

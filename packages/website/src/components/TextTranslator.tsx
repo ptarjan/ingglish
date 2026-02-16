@@ -5,7 +5,7 @@ import {
   reverseTranslate,
   reverseTranslateSyncWithMapping,
   type TranslatedToken,
-} from '@ingglish/core';
+} from 'ingglish';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';

@@ -1,5 +1,5 @@
 {
-  "name": "@ingglish/core",
+  "name": "ingglish",
   "version": "1.0.0",
   "description": "Core phonetic English translation library",
   "type": "module",

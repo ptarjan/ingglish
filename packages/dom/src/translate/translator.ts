@@ -2,7 +2,7 @@
  * Core DOM translation functionality.
  */
 
-import { translate, translateSync } from '@ingglish/core';
+import { translate, translateSync } from 'ingglish';
 import type { DOMTranslatorOptions, OutputFormat } from '../types';
 import {
   requireBrowser,

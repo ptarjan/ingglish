@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import type { OutputFormat } from '@ingglish/core';
+import type { OutputFormat } from 'ingglish';
 
 interface FormatContextType {
   format: OutputFormat;

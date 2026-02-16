@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock @ingglish/core to avoid slow dictionary loading
-vi.mock('@ingglish/core', () => ({
+// Mock ingglish to avoid slow dictionary loading
+vi.mock('ingglish', () => ({
   translate: vi.fn().mockResolvedValue('mocked'),
   translateSync: vi.fn((text: string, format: string) => {
     // Return format-specific translations so tests can verify format switching

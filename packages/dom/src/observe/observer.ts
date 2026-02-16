@@ -2,7 +2,7 @@
  * MutationObserver-based DOM translation for dynamic content.
  */
 
-import { translateSync } from '@ingglish/core';
+import { translateSync } from 'ingglish';
 import { translateDOMSync } from '../translate/translator';
 import { createTooltipFragment } from '../translate/tooltip-fragment';
 import type { DOMTranslatorOptions } from '../types';

@@ -28,12 +28,12 @@ ingglish/
 @ingglish/phonemes  (0 deps) ◄┐
 @ingglish/dictionary (0 deps) ◄┼── @ingglish/fallback
                                │
-@ingglish/core ◄── all above packages
+ingglish ◄── all above packages
        ▲
 @ingglish/dom ──► @ingglish/normalize + @ingglish/tokenize (peer: core)
        ▲
-@ingglish/website ──► @ingglish/dom + @ingglish/core
-@ingglish/extension ──► @ingglish/core
+@ingglish/website ──► @ingglish/dom + ingglish
+@ingglish/extension ──► ingglish
 ```
 
 ## Library Packages
@@ -95,7 +95,7 @@ src/
 └── g2p-rules.ts        # Rule-based grapheme-to-phoneme
 ```
 
-### `@ingglish/core` — Translation API
+### `ingglish` — Translation API
 
 The core package is a thin orchestration layer. It imports from the packages above and exports the public translation API.
 

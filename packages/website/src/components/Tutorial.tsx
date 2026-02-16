@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useRef, useState, useCallback } from 'react';
-import { translateSyncWithMapping } from '@ingglish/core';
+import { translateSyncWithMapping } from 'ingglish';
 import { MappedWordDisplay } from './TextTranslator';
 import {
   oughExamples,

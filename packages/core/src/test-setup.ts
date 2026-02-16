@@ -1,5 +1,5 @@
 /**
- * Shared test data for @ingglish/core tests.
+ * Shared test data for ingglish tests.
  * Dictionary loading is handled by vitest.setup.ts.
  */
 

@@ -1,12 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && npm run build -w @ingglish/core && npm run build -w @ingglish/website",
+  "buildCommand": "cd ../.. && npm run build -w ingglish && npm run build -w @ingglish/website",
   "outputDirectory": "dist",
   "installCommand": "cd ../.. && npm ci",
   "framework": "vite",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "headers": [
     {
       "source": "/(.*)",

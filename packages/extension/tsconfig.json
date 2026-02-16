@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@ingglish/core": ["../core/src/index.ts"],
+      "ingglish": ["../core/src/index.ts"],
       "@ingglish/normalize": ["../normalize/src/index.ts"],
       "@ingglish/phonemes": ["../phonemes/src/index.ts"],
       "@ingglish/tokenize": ["../tokenize/src/index.ts"],

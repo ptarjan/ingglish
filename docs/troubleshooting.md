@@ -16,13 +16,13 @@ This guide covers common issues and how to resolve them.
   npm run build -w @ingglish/normalize -w @ingglish/phonemes
   npm run build -w @ingglish/tokenize -w @ingglish/dictionary
   npm run build -w @ingglish/fallback
-  npm run build -w @ingglish/core
+  npm run build -w ingglish
   npm run build -w @ingglish/dom -w @ingglish/website
   ```
 
 ### TypeScript Errors in Dependent Packages
 
-**Symptoms:** After changing exports in `@ingglish/core`, you get type errors in other packages.
+**Symptoms:** After changing exports in `ingglish`, you get type errors in other packages.
 
 **Cause:** Pre-commit hooks only lint staged files. Changes to core's exports won't trigger linting of dependent packages.
 
@@ -81,7 +81,7 @@ npm run lint
 
 **Debug command:**
 ```bash
-npm run debug:roundtrip -w @ingglish/core <word>
+npm run debug:roundtrip -w ingglish <word>
 ```
 
 This shows the translation pipeline step-by-step, highlighting where mismatches occur.

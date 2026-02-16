@@ -142,7 +142,7 @@ All paths are **linear** — no quadratic or exponential complexity.
 
 The `@ingglish/dictionary` package uses dynamic imports for code splitting:
 
-- `@ingglish/core` index - Minimal public API (~2KB)
+- `ingglish` index - Minimal public API (~2KB)
 - Forward dictionary - Loaded on first `translate()` call (~1MB gzipped)
 - Reverse dictionary - Loaded on first reverse translation (~300KB gzipped)
 - Word frequencies - Loaded on first reverse translation (~500KB)
