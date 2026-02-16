@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, act, type RenderHookResult } from '@testing-library/react';
+import { act } from 'react';
+import { renderHook, type RenderHookResult } from '@testing-library/react';
 import { useSpeech } from './useSpeech';
 
 type Speech = ReturnType<typeof useSpeech>;
