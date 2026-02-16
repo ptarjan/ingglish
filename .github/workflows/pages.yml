@@ -70,7 +70,7 @@ jobs:
           VITE_CORS_PROXY_URL: https://ingglish-cors-proxy.curly-unit-b9e0.workers.dev/?url=
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
