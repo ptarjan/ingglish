@@ -9,6 +9,43 @@ import {
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/core/internal';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
+import { useSpeech } from '../hooks/useSpeech';
+
+function SpeakerIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="6" y="6" width="12" height="12" rx="1" />
+    </svg>
+  );
+}
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
@@ -129,6 +166,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, copyShare] = useClipboard();
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported] = useSpeech();
+  const [speakingIngglish, speakIngglish, stopIngglish] = useSpeech();
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -228,6 +267,24 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [displayIngglish, copyIngglish]);
 
+  const handleSpeakEnglish = useCallback(() => {
+    if (speakingEnglish) {
+      stopEnglish();
+    } else if (displayEnglish) {
+      stopIngglish();
+      speakEnglish(displayEnglish);
+    }
+  }, [speakingEnglish, stopEnglish, displayEnglish, stopIngglish, speakEnglish]);
+
+  const handleSpeakIngglish = useCallback(() => {
+    if (speakingIngglish) {
+      stopIngglish();
+    } else if (displayIngglish) {
+      stopEnglish();
+      speakIngglish(displayIngglish);
+    }
+  }, [speakingIngglish, stopIngglish, displayIngglish, stopEnglish, speakIngglish]);
+
   const handleClear = useCallback(() => {
     setEnglishText('');
     setIngglishText('');
@@ -267,6 +324,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           <div className="section-header">
             <h2>English</h2>
             <div className="button-group">
+              {speechSupported && (
+                <button
+                  onClick={handleSpeakEnglish}
+                  className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
+                  disabled={!displayEnglish}
+                  title={speakingEnglish ? 'Stop' : 'Listen'}
+                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen to English text'}
+                >
+                  {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
+                </button>
+              )}
               <button onClick={handleSample} className="btn-secondary">
                 Sample
               </button>
@@ -314,6 +382,17 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           <div className="section-header">
             <h2>{format === 'ingglish' ? 'Ingglish' : 'IPA'}</h2>
             <div className="button-group">
+              {speechSupported && (
+                <button
+                  onClick={handleSpeakIngglish}
+                  className={`btn-secondary btn-icon ${speakingIngglish ? 'btn-speaking' : ''}`}
+                  disabled={!displayIngglish}
+                  title={speakingIngglish ? 'Stop' : 'Listen'}
+                  aria-label={speakingIngglish ? 'Stop speaking' : 'Listen to Ingglish text'}
+                >
+                  {speakingIngglish ? <StopIcon /> : <SpeakerIcon />}
+                </button>
+              )}
               <button
                 onClick={handleCopyIngglish}
                 className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
