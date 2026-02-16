@@ -33,20 +33,15 @@ export function injectBaseTag(html: string, baseUrl: string): string {
 
 /**
  * Gets the base URL for a page (URL up to and including the last slash).
- * For https://example.com/path/page.html → https://example.com/path/
+ * Uses standard URL resolution: strip everything after the last slash.
+ * For https://example.com/path/page → https://example.com/path/
  * For https://example.com/path/ → https://example.com/path/
  */
 export function getBaseUrl(url: string): string {
   const parsed = new URL(url);
-  const pathParts = parsed.pathname.split('/');
-  // If pathname ends with slash or has no extension, keep it as-is
-  // Otherwise, remove the filename part
-  if (parsed.pathname.endsWith('/') || !pathParts[pathParts.length - 1].includes('.')) {
-    return parsed.origin + parsed.pathname + (parsed.pathname.endsWith('/') ? '' : '/');
-  }
-  // Remove filename, keep directory
-  pathParts.pop();
-  return parsed.origin + pathParts.join('/') + '/';
+  const lastSlash = parsed.pathname.lastIndexOf('/');
+  const basePath = parsed.pathname.substring(0, lastSlash + 1);
+  return parsed.origin + basePath;
 }
 
 /**

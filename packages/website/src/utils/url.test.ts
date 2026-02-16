@@ -133,12 +133,12 @@ describe('getBaseUrl', () => {
     );
   });
 
-  it('handles URLs without extension as directories', () => {
-    expect(getBaseUrl('https://example.com/nerdiversary')).toBe(
-      'https://example.com/nerdiversary/'
-    );
-    expect(getBaseUrl('https://example.com/path/segment')).toBe(
-      'https://example.com/path/segment/'
+  it('handles URLs without extension (strip last segment)', () => {
+    expect(getBaseUrl('https://example.com/nerdiversary')).toBe('https://example.com/');
+    expect(getBaseUrl('https://example.com/path/segment')).toBe('https://example.com/path/');
+    // HN-style: /item?id=123 → base is /
+    expect(getBaseUrl('https://news.ycombinator.com/item?id=47025011')).toBe(
+      'https://news.ycombinator.com/'
     );
   });
 
