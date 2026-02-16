@@ -182,9 +182,19 @@ describe('unknown-words', () => {
       expect(wordToArpabet('qat')).toEqual(['K', 'AE1', 'T']);
     });
 
-    it('should treat y as short I when used as vowel', () => {
-      expect(wordToArpabet('gym')).toContain('IH1'); // not IY1
+    it('should treat y as short I when used as vowel mid-word', () => {
+      expect(wordToArpabet('gym')).toContain('IH1');
       expect(wordToArpabet('myth')).toContain('IH1');
+    });
+
+    it('should treat word-final y as unstressed /i/', () => {
+      expect(wordToArpabet('sulky')).toContain('IY0');
+      expect(wordToArpabet('ugly')).toContain('IY0');
+    });
+
+    it('should treat word-final -fy as /faɪ/', () => {
+      expect(wordToArpabet('uglify')).toContain('AY1');
+      expect(wordToArpabet('glorify')).toContain('AY1');
     });
 
     it('should treat y as consonant before vowels', () => {
@@ -424,6 +434,21 @@ describe('unknown-words', () => {
 
     it('should handle i→y stem change with -er (easier→easy+er)', () => {
       const result = translateWithStemming('easier');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle -ify suffix (uglify→ugly+ify)', () => {
+      const result = translateWithStemming('uglify');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle -ification suffix (uglification→ugly+ification)', () => {
+      const result = translateWithStemming('uglification');
+      expect(result).not.toBeNull();
+    });
+
+    it('should handle -ifying suffix (uglifying→ugly+ifying)', () => {
+      const result = translateWithStemming('uglifying');
       expect(result).not.toBeNull();
     });
   });

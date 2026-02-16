@@ -14,6 +14,11 @@ import type { OutputFormat } from '../types';
  * Used when trying to stem unknown words.
  */
 export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] }[] = [
+  // Long suffixes first (must come before shorter matches: -ification before -tion, -ifying before -ing)
+  { suffix: 'ification', phonemes: ['IH0', 'F', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'] },
+  { suffix: 'ifying', phonemes: ['IH0', 'F', 'AY1', 'IH0', 'NG'] },
+  { suffix: 'ify', phonemes: ['IH0', 'F', 'AY1'] },
+
   // Verb suffixes
   { suffix: 'ing', phonemes: ['IH0', 'NG'] },
   { suffix: 'ed', phonemes: ['D'] }, // or T or IH0 D depending on context
@@ -88,6 +93,7 @@ export function translateWithStemming(
         stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
         stem.length > 0 ? stem + stem[stem.length - 1] : stem, // big -> bigg (for adding -er)
         stem.endsWith('i') ? stem.slice(0, -1) + 'y' : '', // loveliest -> lovely (i→y)
+        stem + 'y', // uglify -> ugly (suffix starts with i, replacing y)
       ].filter((v) => v.length > 0);
 
       for (const variant of stemVariants) {

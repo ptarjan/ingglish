@@ -91,6 +91,7 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^c(?=[eiy])/i, phonemes: ['S'] }, // soft c
   { pattern: /^c/i, phonemes: ['K'] }, // hard c
   { pattern: /^d/i, phonemes: ['D'] },
+  { pattern: /^fy$/i, phonemes: ['F', 'AY1'] }, // word-final -fy: uglify, simplify (always /faɪ/)
   { pattern: /^f/i, phonemes: ['F'] },
   // Soft g before e/y, but NOT before i (too many exceptions: give, gift, girl, git)
   { pattern: /^g(?=[ey])/i, phonemes: ['JH'] }, // soft g (gem, gym)
@@ -110,7 +111,8 @@ export const GRAPHEME_TO_PHONEME: { pattern: RegExp; phonemes: string[] }[] = [
   { pattern: /^w/i, phonemes: ['W'] },
   { pattern: /^x/i, phonemes: ['K', 'S'] },
   { pattern: /^y(?=[aeiou])/i, phonemes: ['Y'] }, // consonant y (yes, yell)
-  { pattern: /^y/i, phonemes: ['IH1'] }, // vowel y: gym, myth, crypt (short I)
+  { pattern: /^y$/i, phonemes: ['IY0'] }, // word-final y: happy, sulky, ugly (unstressed /i/)
+  { pattern: /^y/i, phonemes: ['IH1'] }, // vowel y mid-word: gym, myth, crypt (short I)
   { pattern: /^z/i, phonemes: ['Z'] },
 
   // Single vowels (default, short sounds)
