@@ -91,6 +91,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[CI]EN=/SH/',
     '[C]+=/S/',
     '[CK]=/K/',
+    // Custom: CQU → K W to prevent double K from C + QU (acquire, acquaint)
+    '[CQU]=/K W/',
     '[COM]%=/K AH M/',
     // Custom: CC before front vowel → /ks/ (accent, accept, accident)
     '[CC]+=/K S/',
@@ -124,6 +126,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]^%=/IY/',
     '[ERI]#=/IY R IY/',
     '[ERI]=/EH R IH/',
+    // Custom: ERR consumes double-R to prevent phoneme doubling (error, terrace)
+    '[ERR]=/EH R/',
     '#:[ER]#=/ER/',
     '[ER]#=/EH R/',
     '[ER]=/ER/',
@@ -206,6 +210,8 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: -ious suffix (curious, previous, serious)
     '[IOUS]=/IY AX S/',
     '[I]^+:#=/IH/',
+    // Custom: IRR consumes double-R to prevent phoneme doubling (mirror, stirring)
+    '[IRR]=/ER/',
     '[IR]#=/AY R/',
     '[IZ]%=/AY Z/',
     '[IS]%=/AY Z/',
@@ -226,7 +232,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[I]=/IH/',
   ],
   J: ['[J]=/JH/'],
-  K: [' [K]N=/ /', '[K]=/K/'],
+  K: [' [K]N=/ /', '[KK]=/K/', '[K]=/K/'],
   L: [
     '[LO]C#=/L OW/',
     'L[L]=/ /',
@@ -239,6 +245,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    // Custom: Mc- prefix in names (McAdam, McAllister, McCain) → M-schwa-K
+    ' [MCC]=/M AX K/',
+    ' [MC]=/M AX K/',
     '[MOV]=/M UW V/',
     // Custom: silent b after m at word end (lamb, climb, bomb, dumb)
     '[MB] =/M/',
@@ -277,6 +286,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ORY] =/ER IY/',
     '#:[OR] =/ER/',
     '#:[ORS] =/ER Z/',
+    // Custom: ORR consumes double-R to prevent phoneme doubling (correct, corridor)
+    '[ORR]=/AO R/',
     '[OR]=/AO R/',
     ' [ONE]=/W AH N/',
     '[OW]=/OW/',
@@ -320,6 +331,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ON] =/AX N/',
     '#^[ON]=/AX N/',
     '[O]ST =/OW/',
+    // Custom: OFF consumes all 3 chars to prevent double-F (off, offer, office)
+    '[OFF]=/AO F/',
     '[OF]^=/AO F/',
     '[OTHER]=/AH DH ER/',
     '[OSS] =/AO S/',
@@ -416,6 +429,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [UN]I=/Y UW N/',
     ' [UN]=/AH N/',
     ' [UPON]=/AX P AO N/',
+    // Custom: URR consumes double-R to prevent phoneme doubling (current, hurry)
+    '[URR]=/ER/',
     '@[UR]#=/UH R/',
     '[UR]#=/Y UH R/',
     '[UR]=/ER/',
