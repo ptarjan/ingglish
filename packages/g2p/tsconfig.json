@@ -4,9 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@ingglish/phonemes": ["../phonemes/src/index.ts"],
-      "@ingglish/dictionary": ["../dictionary/src/index.ts"],
-      "@ingglish/g2p": ["../g2p/src/index.ts"]
+      "@ingglish/phonemes": ["../phonemes/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

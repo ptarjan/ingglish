@@ -5,7 +5,7 @@
  */
 
 import { loadDictionary } from '@ingglish/dictionary';
-import { wordToArpabet } from '@ingglish/fallback';
+import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 
 interface PatternAnalysis {

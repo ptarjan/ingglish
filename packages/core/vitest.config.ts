@@ -15,6 +15,7 @@ export default defineConfig({
       '@ingglish/tokenize': resolve(__dirname, '../tokenize/src/index.ts'),
       '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
       '@ingglish/fallback': resolve(__dirname, '../fallback/src/index.ts'),
+      '@ingglish/g2p': resolve(__dirname, '../g2p/src/index.ts'),
     },
   },
   test: {

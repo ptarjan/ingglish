@@ -10,6 +10,7 @@ export default defineConfig({
     alias: {
       '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
       '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
+      '@ingglish/g2p': resolve(__dirname, '../g2p/src/index.ts'),
     },
   },
   test: {

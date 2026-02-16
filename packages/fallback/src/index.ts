@@ -30,7 +30,7 @@ import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
-import { translateWithRules, wordToArpabet } from './g2p-rules';
+import { translateWithRules, wordToArpabet } from '@ingglish/g2p';
 
 // Re-export everything for consumers who need specific strategies
 export {

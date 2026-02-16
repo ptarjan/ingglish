@@ -2,7 +2,7 @@
  * Analyze G2P error patterns to identify the best rules to add.
  */
 import { loadDictionary } from '@ingglish/dictionary';
-import { wordToArpabet } from '@ingglish/fallback';
+import { wordToArpabet } from '@ingglish/g2p';
 
 async function main() {
   const dict = await loadDictionary();

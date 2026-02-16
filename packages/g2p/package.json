@@ -1,7 +1,7 @@
 {
-  "name": "@ingglish/fallback",
+  "name": "@ingglish/g2p",
   "version": "1.0.0",
-  "description": "Unknown word translation strategies for Ingglish (G2P, stemming, compounds, etc.)",
+  "description": "NRL/Elovitz grapheme-to-phoneme rules for English",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -33,25 +33,11 @@
     "test": "vitest run --no-color --passWithNoTests"
   },
   "dependencies": {
-    "@ingglish/phonemes": "^1.0.0",
-    "@ingglish/dictionary": "^1.0.0",
-    "@ingglish/g2p": "^1.0.0",
-    "phonemize": "^1.1.0"
+    "@ingglish/phonemes": "^1.0.0"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "vitest": "^4.0.16"
-  },
-  "author": "Paul Tarjan",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ptarjan/ingglish.git",
-    "directory": "packages/fallback"
-  },
-  "homepage": "https://github.com/ptarjan/ingglish#readme",
-  "bugs": {
-    "url": "https://github.com/ptarjan/ingglish/issues"
   }
 }
