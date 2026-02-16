@@ -21,7 +21,7 @@ export const vowelGroups: SoundGroup[] = [
   {
     name: 'Short Vowels',
     sounds: [
-      { phoneme: 'AE', examples: 'b**a**d (bad), pl**ai**d (plad), s**a**lmon (samun)' },
+      { phoneme: 'AE', examples: 'b**a**d (bad), pl**ai**d (plad), s**al**mon (samun)' },
       {
         phoneme: 'EH',
         examples:
