@@ -311,7 +311,7 @@ function App() {
       <meta name="description" content={meta.description} />
       <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
       <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
-        {activeTab !== 'tutorial' && !isLoading && (
+        {(activeTab === 'text' || activeTab === 'url' || activeTab === 'poems') && !isLoading && (
           <button
             className="format-toggle"
             onClick={toggleFormat}
