@@ -273,7 +273,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       stopEnglish();
     } else if (displayEnglish) {
       stopIngglish();
-      speakEnglish(displayEnglish);
+      // Collapse newlines to spaces so TTS doesn't pause at each line
+      speakEnglish(displayEnglish.replace(/\n+/g, ' '));
     }
   }, [speakingEnglish, stopEnglish, displayEnglish, stopIngglish, speakEnglish]);
 
@@ -284,7 +285,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       stopEnglish();
       // Feed English text to TTS — Ingglish represents the same sounds,
       // but the browser's speech engine expects standard English spelling.
-      speakIngglish(displayEnglish);
+      speakIngglish(displayEnglish.replace(/\n+/g, ' '));
     }
   }, [speakingIngglish, stopIngglish, displayEnglish, stopEnglish, speakIngglish]);
 
@@ -308,7 +309,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (charIdx === null) {
       return null;
     }
-    const tokens = tokenizePhonetic(displayEnglish);
+    // Use the same collapsed text that was sent to TTS
+    const tokens = tokenizePhonetic(displayEnglish.replace(/\n+/g, ' '));
     let pos = 0;
     for (const token of tokens) {
       const end = pos + token.text.length;
@@ -450,7 +452,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       </div>
 
       {hasContent && (
-        <div className="word-correspondence">
+        <div className={`word-correspondence ${isSpeaking ? 'speaking' : ''}`}>
           <div className="correspondence-header">
             <span className="correspondence-label">
               {isSpeaking ? 'Word correspondence' : 'Hover to see word correspondence'}

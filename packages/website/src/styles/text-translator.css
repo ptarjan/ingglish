@@ -148,6 +148,11 @@
   color: white;
 }
 
+/* During TTS playback, disable transitions so highlighting feels instant */
+.word-correspondence.speaking .word-token {
+  transition: none;
+}
+
 .word-token.unmatched {
   text-decoration: underline wavy var(--color-error);
   text-underline-offset: 0.2em;
