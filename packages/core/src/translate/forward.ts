@@ -132,8 +132,9 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
       }
     }
 
-    // Word not found in dictionary - try fallback strategies
-    const fallbackResult = translateUnknown(word, format);
+    // Word not found in dictionary - try fallback strategies.
+    // Use stripped form so G2P gets clean ASCII (brûlée→brulee, piñata→pinata).
+    const fallbackResult = translateUnknown(stripped, format);
 
     // Return original if fallback failed
     if (!fallbackResult || fallbackResult.length === 0) {
