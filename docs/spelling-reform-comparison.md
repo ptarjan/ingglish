@@ -233,7 +233,7 @@ Fluent English readers might ask: "I already know how to pronounce words. Why wo
 
 Because you're not the only person who reads English. There are roughly 1.5 billion English learners worldwide—more than the number of native speakers. Every one of them pays the cost of English spelling's inconsistencies:
 
-- **Years of extra effort** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian ([Seymour, Aro & Erskine, 2003](https://doi.org/10.1348/000709903321668246))
+- **Years of extra effort** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian ([Seymour, Aro & Erskine, 2003](https://doi.org/10.1348/000712603321661859))
 - **Rules that aren't** - "I before E except after C" has more exceptions than examples
 - **Unreadable words** - "Lead" rhymes with "read" or "red" depending on context. There's no way to know without memorizing each word.
 
