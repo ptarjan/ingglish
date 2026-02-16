@@ -91,7 +91,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
 - English inconsistently spells this as 'o' in "son", "love", "come"—Ingglish uses 'u' consistently
-- The unstressed schwa (/ə/) also maps to 'u' — see [Schwa section](#schwa-ə) below
+- The unstressed schwa (/ə/) also maps to 'u' — see [Schwa section](#schwa-) below
 
 ### Long Vowels
 
