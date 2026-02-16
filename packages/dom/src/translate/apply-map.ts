@@ -2,7 +2,12 @@
  * Apply pre-computed translations to DOM.
  */
 
-import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
+import {
+  detectCasePattern,
+  applyCasePattern,
+  normalizeApostrophes,
+  stripDiacritics,
+} from '@ingglish/core/internal';
 import {
   requireBrowser,
   collectTextNodes,
@@ -55,7 +60,7 @@ function processTextNode(
   } else {
     // Simple text replacement using regex exec (30% faster than split+test)
     const text = textNode.textContent ?? '';
-    const normalized = normalizeApostrophes(text);
+    const normalized = stripDiacritics(normalizeApostrophes(text));
     let result = '';
     let lastIndex = 0;
     let match;

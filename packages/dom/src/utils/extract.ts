@@ -2,7 +2,12 @@
  * Word extraction utilities.
  */
 
-import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/core/internal';
+import {
+  normalizeApostrophes,
+  stripDiacritics,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+} from '@ingglish/core/internal';
 
 /**
  * Extracts unique words from text for batch translation.
@@ -11,7 +16,7 @@ import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@inggli
  * @returns Array of unique lowercase words (no duplicates)
  */
 export function extractWords(text: string): string[] {
-  const normalized = normalizeApostrophes(text);
+  const normalized = stripDiacritics(normalizeApostrophes(text));
   const tokens = normalized.split(WORD_SPLIT_REGEX);
   // Single pass: filter, lowercase, and deduplicate
   const uniqueWords = new Set<string>();
@@ -34,7 +39,7 @@ export function extractWordsFromNodes(textNodes: Text[]): string[] {
   const uniqueWords = new Set<string>();
   for (const node of textNodes) {
     const text = node.textContent ?? '';
-    const normalized = normalizeApostrophes(text);
+    const normalized = stripDiacritics(normalizeApostrophes(text));
     const tokens = normalized.split(WORD_SPLIT_REGEX);
     for (const token of tokens) {
       if (token !== '' && WORD_TEST_REGEX.test(token)) {

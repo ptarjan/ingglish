@@ -7,6 +7,7 @@ import { lookupPronunciation } from '../dictionary/lookup';
 import { detectCasePattern, applyCasePattern, splitCamelCase } from '../utils/case';
 import {
   normalizeApostrophes,
+  stripDiacritics,
   WORD_SPLIT_REGEX,
   WORD_TEST_REGEX,
   extractPreservedPatterns,
@@ -155,8 +156,8 @@ setTranslateWordFn(translateWord);
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
-  // Normalize curly apostrophes to straight ones
-  const normalizedText = normalizeApostrophes(text);
+  // Normalize curly apostrophes and strip diacritics (résumé→resume, café→cafe)
+  const normalizedText = stripDiacritics(normalizeApostrophes(text));
 
   // Extract URLs and emails to preserve them unchanged
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
@@ -246,7 +247,7 @@ export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
-  const normalizedText = normalizeApostrophes(text);
+  const normalizedText = stripDiacritics(normalizeApostrophes(text));
 
   // Extract URLs and emails to preserve them unchanged
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);

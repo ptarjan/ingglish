@@ -4,7 +4,14 @@
 
 export { type CasePattern, detectCasePattern, applyCasePattern } from './case';
 
-export { normalizeApostrophes, isIPAChar, type TextToken, tokenizeIPA, tokenizeText } from './text';
+export {
+  normalizeApostrophes,
+  stripDiacritics,
+  isIPAChar,
+  type TextToken,
+  tokenizeIPA,
+  tokenizeText,
+} from './text';
 
 export {
   getWordFrequency,

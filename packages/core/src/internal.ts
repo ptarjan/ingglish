@@ -13,6 +13,7 @@
 // Text utilities
 export {
   normalizeApostrophes,
+  stripDiacritics,
   isIPAChar,
   isPhoneticChar,
   tokenizeIPA,

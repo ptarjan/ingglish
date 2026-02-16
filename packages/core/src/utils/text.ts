@@ -84,6 +84,15 @@ export function normalizeApostrophes(text: string): string {
   return text.replace(/[\u2018\u2019\u02BC]/g, "'");
 }
 
+/**
+ * Strips diacritics/accents from text, preserving base letters.
+ * Converts résumé→resume, naïve→naive, cliché→cliche, café→cafe.
+ * Uses Unicode NFD decomposition to separate base letters from combining marks.
+ */
+export function stripDiacritics(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 // Common IPA symbols used in phonetic transcription (Set for O(1) lookup)
 const IPA_SYMBOLS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ');
 

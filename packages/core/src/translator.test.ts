@@ -152,6 +152,14 @@ describe('translator', () => {
       expect(result).toBe('Chainuz ikonumee');
     });
 
+    it('should strip diacritics so accented loanwords hit the dictionary', () => {
+      // résumé → resume, naïve → naive, café → cafe, cliché → cliche
+      expect(translateSync('résumé')).toBe(translateSync('resume'));
+      expect(translateSync('naïve')).toBe(translateSync('naive'));
+      expect(translateSync('café')).toBe(translateSync('cafe'));
+      expect(translateSync('cliché')).toBe(translateSync('cliche'));
+    });
+
     it('should treat I as lowercase (English capitalizes I by convention only)', () => {
       // "I" is always capitalized in English, but it's just a pronoun
       // In Ingglish, there's no special reason to capitalize it
