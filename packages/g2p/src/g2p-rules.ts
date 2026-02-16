@@ -349,6 +349,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[IDA] =/IY D AH/',
     '[ISA] =/IY S AH/',
     '[IVA] =/IY V AH/',
+    '[IMA] =/IY M AH/',
     '[ITO] =/IY T OW/',
     '[ITA] =/IY T AH/',
     // Custom: -ial/-ially/-iate suffixes → IY
@@ -674,6 +675,8 @@ const NRL_RULES: Record<string, string[]> = {
   S: [
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
+    // Custom: SCH before OO → S K (school, schooner — +21)
+    '[SCH]OO=/S K/',
     '[SOME]=/S AH M/',
     '#[SUR]#=/ZH ER/',
     '[SUR]#=/SH ER/',
@@ -777,7 +780,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#N[U]=/Y UW/',
     // Custom: -ulate/-ulating/-ulated/-ulation suffixes (calculate, circulate, accumulate — 84% AH)
     '[ULAT]=/Y AX L EY T/',
-    // Custom: -ulus suffix (calculus, stimulus — Latin origin)
+    // Custom: -ulous/-ulus suffix (calculus, stimulus, fabulous — Latin origin)
+    '[ULOUS]=/Y AX L AH S/',
     '[ULUS]=/Y AX L AH S/',
     // Custom: -ular suffix (popular, regular, cellular)
     '[ULAR]=/Y AX L ER/',
