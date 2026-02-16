@@ -68,7 +68,8 @@ describe('unknown-words', () => {
       expect(wordToArpabet('out')).toContain('AW1'); // ou
       expect(wordToArpabet('boat')).toContain('OW1'); // oa
       expect(wordToArpabet('blue')).toContain('UW1'); // ue
-      expect(wordToArpabet('vein')).toContain('EY1'); // ei
+      // NRL treats EI as IY (vein → veen), not EY
+      expect(wordToArpabet('vein')).toContain('IY1'); // ei
     });
 
     it('should handle R-controlled vowels', () => {
@@ -109,7 +110,9 @@ describe('unknown-words', () => {
 
     it('should handle tion/sion', () => {
       expect(wordToArpabet('tion')).toEqual(['SH', 'AH0', 'N']);
-      expect(wordToArpabet('sion')).toEqual(['ZH', 'AH0', 'N']);
+      // NRL's #[SION] rule requires a preceding vowel; standalone sion doesn't match
+      // Test sion in context instead (vision is tested in translateWithRules)
+      expect(wordToArpabet('vision')).toContain('ZH');
     });
 
     it('should handle silent consonant pairs', () => {
@@ -201,11 +204,72 @@ describe('unknown-words', () => {
       expect(wordToArpabet('yell')).toContain('Y');
     });
 
+    it('should handle ar as AA R (car, star)', () => {
+      expect(wordToArpabet('car')).toEqual(['K', 'AA1', 'R']);
+      expect(wordToArpabet('star')).toEqual(['S', 'T', 'AA1', 'R']);
+      expect(wordToArpabet('bark')).toEqual(['B', 'AA1', 'R', 'K']);
+    });
+
+    it('should handle or as AO R (for, born)', () => {
+      expect(wordToArpabet('fork')).toEqual(['F', 'AO1', 'R', 'K']);
+      expect(wordToArpabet('born')).toEqual(['B', 'AO1', 'R', 'N']);
+      expect(wordToArpabet('sport')).toEqual(['S', 'P', 'AO1', 'R', 'T']);
+    });
+
+    it('should handle word-final o as OW (go, no)', () => {
+      expect(wordToArpabet('go')).toContain('OW1');
+      expect(wordToArpabet('no')).toContain('OW1');
+      // Mid-word o should still be AA
+      expect(wordToArpabet('dog')).toContain('AA1');
+    });
+
+    it('should handle -ed suffix after voiceless consonants as T', () => {
+      const walked = wordToArpabet('walked');
+      expect(walked[walked.length - 1]).toBe('T');
+      expect(walked).not.toContain('EH1'); // no full vowel for 'e'
+    });
+
+    it('should handle -ed suffix after voiced consonants as D', () => {
+      const turned = wordToArpabet('turned');
+      expect(turned[turned.length - 1]).toBe('D');
+      expect(turned).not.toContain('EH1');
+    });
+
+    it('should handle -ed suffix after t/d as IH D', () => {
+      const wanted = wordToArpabet('wanted');
+      // NRL: #:[TED] =/T IH D/ — uses IH (mapped to IH1)
+      expect(wanted[wanted.length - 2]).toBe('IH1');
+      expect(wanted[wanted.length - 1]).toBe('D');
+    });
+
+    it('should not strip -ed from short words (bed, shed)', () => {
+      // "bed" should keep its 'e' vowel
+      expect(wordToArpabet('bed')).toEqual(['B', 'EH1', 'D']);
+    });
+
+    it('should voice final S to Z after voiced sounds', () => {
+      const dogs = wordToArpabet('dogs');
+      expect(dogs[dogs.length - 1]).toBe('Z');
+
+      const runs = wordToArpabet('runs');
+      expect(runs[runs.length - 1]).toBe('Z');
+    });
+
+    it('should keep final S after voiceless sounds', () => {
+      const cats = wordToArpabet('cats');
+      expect(cats[cats.length - 1]).toBe('S');
+    });
+
     it('should handle every letter a-z', () => {
       for (let i = 0; i < 26; i++) {
         const letter = String.fromCharCode(97 + i);
         const phonemes = wordToArpabet(letter);
-        expect(phonemes.length).toBeGreaterThan(0);
+        // NRL: H[H]=/ / means standalone 'h' produces empty (silent)
+        if (letter === 'h') {
+          expect(phonemes.length).toBe(0);
+        } else {
+          expect(phonemes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -226,10 +290,10 @@ describe('unknown-words', () => {
       expect(wordToArpabet('stripe')).toContain('AY1');
     });
 
-    it('should not strip e after c or g (soft c/g)', () => {
-      // 'c' and 'g' change pronunciation before 'e', so don't strip
+    it('should handle place with NRL rules', () => {
+      // NRL: [A]^%=/EY/ — A before consonant + suffix marker gives long A
       const placePhonemes = wordToArpabet('place');
-      expect(placePhonemes).not.toContain('EY1'); // not magic-e long A
+      expect(placePhonemes).toEqual(['P', 'L', 'EY1', 'S']);
     });
   });
 
@@ -266,7 +330,8 @@ describe('unknown-words', () => {
       expect(translateWithRules('coal')).toBe('kohl');
       expect(translateWithRules('blue')).toBe('bluu');
       expect(translateWithRules('clue')).toBe('kluu');
-      expect(translateWithRules('vein')).toBe('vayn');
+      // NRL treats EI as IY (vein → veen)
+      expect(translateWithRules('vein')).toBe('veen');
     });
 
     it('should translate words with R-controlled vowels', () => {
@@ -274,6 +339,10 @@ describe('unknown-words', () => {
       expect(translateWithRules('burn')).toBe('bern');
       expect(translateWithRules('fern')).toBe('fern');
       expect(translateWithRules('her')).toBe('her');
+      expect(translateWithRules('car')).toBe('kar');
+      expect(translateWithRules('star')).toBe('star');
+      expect(translateWithRules('fork')).toBe('fork');
+      expect(translateWithRules('born')).toBe('born');
     });
 
     it('should translate words with trigraphs', () => {
@@ -284,12 +353,13 @@ describe('unknown-words', () => {
     });
 
     it('should translate words with tion/sion', () => {
-      expect(translateWithRules('nation')).toBe('nashun');
+      // NRL: A before TIO gets long A treatment → nayshun
+      expect(translateWithRules('nation')).toBe('nayshun');
       expect(translateWithRules('vision')).toBe('vizhun');
     });
 
     it('should translate words with silent consonant pairs', () => {
-      expect(translateWithRules('wrong')).toBe('rong');
+      expect(translateWithRules('wrong')).toBe('rawng');
       expect(translateWithRules('knot')).toBe('not');
       expect(translateWithRules('gnat')).toBe('nat');
     });
@@ -307,9 +377,108 @@ describe('unknown-words', () => {
       expect(translateWithRules('glyph')).toBe('glif');
     });
 
+    it('should translate word-final o as long O', () => {
+      expect(translateWithRules('go')).toBe('goh');
+      expect(translateWithRules('no')).toBe('noh');
+    });
+
+    it('should translate -ed suffix words', () => {
+      expect(translateWithRules('walked')).toBe('wawkt');
+      expect(translateWithRules('turned')).toBe('ternd');
+      expect(translateWithRules('wanted')).toBe('wantid');
+    });
+
+    it('should voice final s after voiced sounds', () => {
+      expect(translateWithRules('dogs')).toBe('dogz');
+      expect(translateWithRules('runs')).toBe('runz');
+      // Voiceless: keep S
+      expect(translateWithRules('cats')).toBe('kats');
+    });
+
+    it('should translate -ous suffix as schwa', () => {
+      // -ous → AH S (not AA AH S)
+      const famous = wordToArpabet('famous');
+      expect(famous[famous.length - 2]).toBe('AH0');
+      expect(famous[famous.length - 1]).toBe('S'); // not voiced to Z
+    });
+
+    it('should translate -ness suffix', () => {
+      const sadness = wordToArpabet('sadness');
+      // Custom: -ness suffix → schwa (AH0)
+      expect(sadness.slice(-3)).toEqual(['N', 'AH0', 'S']);
+    });
+
+    it('should translate -ment suffix', () => {
+      const moment = wordToArpabet('moment');
+      // Custom: -ment suffix → schwa (AH0)
+      expect(moment.slice(-4)).toEqual(['M', 'AH0', 'N', 'T']);
+    });
+
+    it('should translate -less suffix', () => {
+      const careless = wordToArpabet('careless');
+      // Custom: -less suffix → schwa (AH0)
+      expect(careless.slice(-3)).toEqual(['L', 'AH0', 'S']);
+    });
+
+    it('should translate alk with silent l', () => {
+      expect(translateWithRules('walk')).toBe('wawk');
+      expect(translateWithRules('talk')).toBe('tawk');
+      expect(translateWithRules('chalk')).toBe('chawk');
+    });
+
+    it('should use IY for word-final y in multi-syllable words', () => {
+      const happy = wordToArpabet('happy');
+      // NRL: #^:[Y] =/IY/ — y after consonant preceded by vowels → IY
+      expect(happy[happy.length - 1]).toBe('IY1');
+      const baby = wordToArpabet('baby');
+      expect(baby[baby.length - 1]).toBe('IY1');
+    });
+
+    it('should keep IH for y in single-syllable words', () => {
+      // "gym" → y as IH (not at word end preceded by vowel... actually gym ends in 'm')
+      expect(wordToArpabet('gym')).toContain('IH1');
+    });
+
+    it('should handle old pattern as OW L D', () => {
+      expect(wordToArpabet('bold')).toEqual(['B', 'OW1', 'L', 'D']);
+      expect(wordToArpabet('cold')).toEqual(['K', 'OW1', 'L', 'D']);
+      expect(wordToArpabet('gold')).toEqual(['G', 'OW1', 'L', 'D']);
+    });
+
+    it('should handle olt pattern as OW L T', () => {
+      expect(wordToArpabet('bolt')).toEqual(['B', 'OW1', 'L', 'T']);
+      expect(wordToArpabet('colt')).toEqual(['K', 'OW1', 'L', 'T']);
+      // jolt also works
+      expect(wordToArpabet('jolt')).toContain('OW1');
+    });
+
+    it('should handle olk with silent l', () => {
+      expect(wordToArpabet('folk')).toEqual(['F', 'OW1', 'K']);
+      expect(wordToArpabet('yolk')).toEqual(['Y', 'OW1', 'K']);
+    });
+
+    it('should handle word-final ign with silent g', () => {
+      expect(wordToArpabet('sign')).toEqual(['S', 'AY1', 'N']);
+      // ign mid-word should NOT match (e.g., ignite)
+      expect(wordToArpabet('ignite')).toContain('G');
+    });
+
+    it('should use long vowels before consonant+le where NRL matches', () => {
+      // table: NRL ABLE rule gives long A
+      expect(translateWithRules('table')).toBe('taybul');
+      // noble/title: NRL doesn't have specific -oble/-itle long vowel rules
+      expect(translateWithRules('noble')).toBe('nobul');
+      expect(translateWithRules('title')).toBe('titul');
+      // Short vowel (doubled consonant): little, apple, bottle stay short
+      expect(translateWithRules('little')).toBe('litul');
+      expect(translateWithRules('apple')).toBe('apul');
+      expect(translateWithRules('bottle')).toBe('botul');
+    });
+
     it('should translate compound-style words', () => {
       expect(translateWithRules('hashtag')).toBe('hashtag');
-      expect(translateWithRules('fintech')).toBe('fintech');
+      // NRL: ^E[CH]=/K/ — ch after consonant+E gives K (tech → tek)
+      expect(translateWithRules('fintech')).toBe('fintek');
       expect(translateWithRules('chatbot')).toBe('chatbot');
     });
 
@@ -321,16 +490,18 @@ describe('unknown-words', () => {
       expect(translateWithRules('gnome')).toBe('nohm');
       expect(translateWithRules('phone')).toBe('fohn');
       expect(translateWithRules('stripe')).toBe('straip');
+      // NRL: A before consonant + suffix-like ending → long A
+      expect(translateWithRules('place')).toBe('plays');
     });
 
     it('should translate words with initial silent p', () => {
-      expect(translateWithRules('psalm')).toBe('salm');
+      expect(translateWithRules('psalm')).toBe('sawlm');
       expect(translateWithRules('psychology')).not.toMatch(/^p/);
     });
 
     it('should translate words with final silent consonants', () => {
       expect(translateWithRules('lamb')).toBe('lam');
-      expect(translateWithRules('climb')).toBe('klim'); // long I is irregular, not magic-e
+      expect(translateWithRules('climb')).toBe('klim');
       expect(translateWithRules('thumb')).toBe('thum');
       expect(translateWithRules('debt')).toBe('det');
       expect(translateWithRules('hymn')).toBe('him');
@@ -360,6 +531,7 @@ describe('unknown-words', () => {
       expect(translateWithRules('little')).toBe('litul');
       expect(translateWithRules('bottle')).toBe('botul');
       expect(translateWithRules('candle')).toBe('kandul');
+      expect(translateWithRules('table')).toBe('taybul');
     });
 
     it('should translate eigh words', () => {

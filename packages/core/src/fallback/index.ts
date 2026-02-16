@@ -22,7 +22,7 @@ import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
-import { translateWithRules, wordToArpabet, GRAPHEME_TO_PHONEME } from './g2p-rules';
+import { translateWithRules, wordToArpabet } from './g2p-rules';
 import type { OutputFormat } from '../types';
 
 // Re-export everything for consumers who need specific strategies
@@ -48,7 +48,6 @@ export {
   translateWithPhonemize,
   preloadPhonemize,
   // G2P rules
-  GRAPHEME_TO_PHONEME,
   wordToArpabet,
   translateWithRules,
 };
