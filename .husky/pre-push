@@ -4,7 +4,8 @@ url="$2"
 # Get files changed vs remote tracking branch
 changed_files=$(git diff --name-only --diff-filter=ACMR "$(git merge-base HEAD "@{u}" 2>/dev/null || echo HEAD~1)")
 
-ts_files=$(echo "$changed_files" | grep -E '\.(ts|tsx)$' || true)
+# Only lint source files (skip config files, setup files, and generated files that eslint ignores)
+ts_files=$(echo "$changed_files" | grep -E '\.(ts|tsx)$' | grep -v '\.config\.' | grep -v 'vitest\.setup\.' | grep -v '/scripts/' || true)
 css_files=$(echo "$changed_files" | grep -E '\.css$' || true)
 
 if [ -n "$ts_files" ]; then
