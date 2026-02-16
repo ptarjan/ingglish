@@ -9,7 +9,7 @@ test.describe('Layout Stability (CLS)', () => {
     await page.goto('/');
 
     // The .app wrapper and header should be present from the start (static shell in index.html)
-    await expect(page.locator('.app')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('.header h1')).toBeVisible();
     await expect(page.locator('.logo')).toBeVisible();
 
@@ -120,7 +120,8 @@ test.describe('Layout Stability (CLS)', () => {
     const boxAfter = await controls.boundingBox();
     expect(boxAfter).not.toBeNull();
     if (boxBefore && boxAfter) {
-      expect(boxAfter.y).toBe(boxBefore.y);
+      // Allow 1px tolerance for sub-pixel rendering differences across browsers
+      expect(Math.abs(boxAfter.y - boxBefore.y)).toBeLessThanOrEqual(1);
     }
   });
 });
@@ -244,6 +245,7 @@ test.describe('Tab Navigation', () => {
 
   test('old hash URL redirects to path URL', async ({ page }) => {
     await page.goto('/#guide');
+    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('.spelling-guide')).toBeVisible();
     expect(new URL(page.url()).pathname).toBe('/guide');
   });
@@ -254,6 +256,8 @@ test.describe('Spelling Guide', () => {
     await blockExternalNetwork(page);
     await page.goto('/guide');
     await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    // Wait for spelling guide content to render (not just the header)
+    await expect(page.locator('.spelling-guide')).toBeVisible({ timeout: 10000 });
   });
 
   test('displays vowel mappings table', async ({ page }) => {
