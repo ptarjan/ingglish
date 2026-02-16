@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsup src/content-lite.ts src/background.ts src/popup.ts --format iife --outDir dist --clean",
+    "build": "tsup",
     "postbuild": "node scripts/copy-assets.js && node scripts/generate-icons.js",
     "build:icons": "node scripts/generate-icons.js",
     "lint": "eslint --cache src",
