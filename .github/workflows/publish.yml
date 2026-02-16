@@ -27,39 +27,12 @@ jobs:
         run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w ingglish -w @ingglish/dom
 
       - name: Build
-        run: npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/fallback && npm run build -w ingglish -w @ingglish/dom
+        run: npm run build:libs && npm run build -w @ingglish/dom
 
-      - name: Publish @ingglish/normalize
-        run: npm publish --workspace=packages/normalize --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @ingglish/phonemes
-        run: npm publish --workspace=packages/phonemes --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @ingglish/tokenize
-        run: npm publish --workspace=packages/tokenize --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @ingglish/dictionary
-        run: npm publish --workspace=packages/dictionary --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @ingglish/fallback
-        run: npm publish --workspace=packages/fallback --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish ingglish
-        run: npm publish --workspace=packages/core --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @ingglish/dom
-        run: npm publish --workspace=packages/dom --access public --provenance
+      - name: Publish packages
+        run: |
+          for pkg in normalize phonemes tokenize dictionary g2p fallback core dom; do
+            npm publish --workspace=packages/$pkg --access public --provenance
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

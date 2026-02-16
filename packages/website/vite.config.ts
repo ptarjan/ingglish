@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 import { copyFileSync, mkdirSync } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { dirname, join } from 'path';
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -75,17 +75,10 @@ function copyRoutesToDist(): Plugin {
 
 export default defineConfig({
   resolve: {
-    // Resolve workspace packages to source (avoids needing full DTS builds in CI)
-    alias: {
-      ingglish: resolve(__dirname, '../core/src/index.ts'),
-      '@ingglish/dom': resolve(__dirname, '../dom/src/index.ts'),
-      '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
-      '@ingglish/tokenize': resolve(__dirname, '../tokenize/src/index.ts'),
-      '@ingglish/normalize': resolve(__dirname, '../normalize/src/index.ts'),
-      '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
-      '@ingglish/fallback': resolve(__dirname, '../fallback/src/index.ts'),
-      '@ingglish/g2p': resolve(__dirname, '../g2p/src/index.ts'),
-    },
+    conditions: ['source'],
+  },
+  ssr: {
+    resolve: { conditions: ['source'] },
   },
   test: {
     // Docs.test.ts needs generated docs, runs separately after build

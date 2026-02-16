@@ -1,13 +1,13 @@
 import { defineConfig } from 'vitest/config';
-import { resolve } from 'path';
 
 export default defineConfig({
   test: {
     include: ['src/**/*.test.ts'],
   },
   resolve: {
-    alias: {
-      '@ingglish/normalize': resolve(__dirname, '../normalize/src/index.ts'),
-    },
+    conditions: ['source'],
+  },
+  ssr: {
+    resolve: { conditions: ['source'] },
   },
 });

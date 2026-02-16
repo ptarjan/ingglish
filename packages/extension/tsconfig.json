@@ -1,24 +1,9 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
     "lib": ["ES2020", "DOM"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "paths": {
-      "ingglish": ["../core/src/index.ts"],
-      "@ingglish/normalize": ["../normalize/src/index.ts"],
-      "@ingglish/phonemes": ["../phonemes/src/index.ts"],
-      "@ingglish/tokenize": ["../tokenize/src/index.ts"],
-      "@ingglish/dictionary": ["../dictionary/src/index.ts"],
-      "@ingglish/fallback": ["../fallback/src/index.ts"],
-      "@ingglish/dom": ["../dom/src/index.ts"]
-    }
+    "rootDir": "./src"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

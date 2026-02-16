@@ -32,11 +32,6 @@
     "lint": "eslint --cache src",
     "test": "vitest run --no-color"
   },
-  "devDependencies": {
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.3",
-    "vitest": "^4.0.16"
-  },
   "author": "Paul Tarjan",
   "license": "MIT",
   "repository": {

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import { resolve } from 'node:path';
 
 export default defineConfig({
   // Cache directory for faster subsequent runs
@@ -9,14 +8,10 @@ export default defineConfig({
     target: 'esnext', // Required for top-level await support
   },
   resolve: {
-    alias: {
-      '@ingglish/normalize': resolve(__dirname, '../normalize/src/index.ts'),
-      '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
-      '@ingglish/tokenize': resolve(__dirname, '../tokenize/src/index.ts'),
-      '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
-      '@ingglish/fallback': resolve(__dirname, '../fallback/src/index.ts'),
-      '@ingglish/g2p': resolve(__dirname, '../g2p/src/index.ts'),
-    },
+    conditions: ['source'],
+  },
+  ssr: {
+    resolve: { conditions: ['source'] },
   },
   test: {
     globals: true,

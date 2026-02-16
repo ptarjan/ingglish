@@ -10,7 +10,9 @@
   "scripts": {
     "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "npm run test --workspaces --if-present",
-    "build": "npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/g2p && npm run build -w @ingglish/fallback && npm run build -w ingglish && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",
+    "build": "npm run build:libs && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",
+    "build:libs": "npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary && npm run build -w @ingglish/g2p && npm run build -w @ingglish/fallback && npm run build -w @ingglish/core",
+    "build:fast": "npm run build:fast -w @ingglish/normalize -w @ingglish/phonemes && npm run build:fast -w @ingglish/tokenize && npm run build:fast -w @ingglish/dictionary && npm run build:fast -w @ingglish/g2p && npm run build:fast -w @ingglish/fallback && npm run build:fast -w @ingglish/core && npm run build:fast -w @ingglish/dom",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
@@ -54,6 +56,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@vitest/coverage-v8": "^4.0.16",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -65,8 +68,11 @@
     "prettier": "^3.7.4",
     "stylelint": "^17.3.0",
     "stylelint-config-standard": "^40.0.0",
+    "tsup": "^8.4.0",
     "typedoc": "^0.28.15",
     "typedoc-plugin-markdown": "^4.9.0",
-    "typescript-eslint": "^8.55.0"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.55.0",
+    "vitest": "^4.0.16"
   }
 }

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import { resolve } from 'path';
 
 export default defineConfig({
   cacheDir: './node_modules/.vite',
@@ -7,11 +6,10 @@ export default defineConfig({
     target: 'esnext',
   },
   resolve: {
-    alias: {
-      '@ingglish/phonemes': resolve(__dirname, '../phonemes/src/index.ts'),
-      '@ingglish/dictionary': resolve(__dirname, '../dictionary/src/index.ts'),
-      '@ingglish/g2p': resolve(__dirname, '../g2p/src/index.ts'),
-    },
+    conditions: ['source'],
+  },
+  ssr: {
+    resolve: { conditions: ['source'] },
   },
   test: {
     include: ['src/**/*.test.ts'],
