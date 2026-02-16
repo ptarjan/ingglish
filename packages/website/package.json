@@ -11,7 +11,7 @@
     "build:fast": "vite build",
     "lint": "eslint --cache src",
     "preview": "vite preview",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "vitest run --no-color",
     "test:unit": "vitest run --no-color",
     "test:docs": "vitest run src/components/Docs.test.ts --config vitest.docs.config.ts --no-color",
     "test:e2e": "playwright test",

@@ -8,6 +8,7 @@
     "build": "tsup",
     "postbuild": "node scripts/copy-assets.js && node scripts/generate-icons.js",
     "build:icons": "node scripts/generate-icons.js",
+    "test": "vitest run --no-color",
     "lint": "eslint --cache src",
     "watch": "npm run build -- --watch"
   },

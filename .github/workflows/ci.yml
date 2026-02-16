@@ -21,9 +21,9 @@ jobs:
         with:
           dict-cache: true
 
-      # All packages run without build (use TS paths to resolve source)
+      # Run all workspace test scripts automatically (no manual package list to maintain).
       - name: Unit tests
-        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/g2p -w @ingglish/fallback -w ingglish -w @ingglish/dom -w @ingglish/cors-proxy && npm run test:unit -w @ingglish/website
+        run: npm test --workspaces --if-present
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:
@@ -121,11 +121,6 @@ jobs:
       # Docs link validation needs generated docs
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
-
-      # Extension tests need ingglish and @ingglish/dom built
-      # Run from root so vitest resolves workspace projects correctly
-      - name: Extension unit tests
-        run: npx vitest run --no-color --project @ingglish/extension
 
   # E2E tests - chromium and webkit via matrix
   test-e2e:
