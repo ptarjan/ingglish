@@ -2,12 +2,7 @@
  * Apply pre-computed translations to DOM.
  */
 
-import {
-  detectCasePattern,
-  applyCasePattern,
-  normalizeApostrophes,
-  stripDiacritics,
-} from '@ingglish/core/internal';
+import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/core/internal';
 import {
   requireBrowser,
   collectTextNodes,
@@ -24,7 +19,7 @@ const DEFAULT_CHUNK_SIZE = 100;
 const SYNC_THRESHOLD = 500;
 
 // Word matching regex for exec-based processing (faster than split+test)
-const WORD_REGEX = /[a-zA-Z']+/g;
+const WORD_REGEX = /(?<!\d)[a-zA-Z\u00C0-\u024F']+(?!\d)/g;
 
 /**
  * Options for applying pre-computed translations.
@@ -60,7 +55,7 @@ function processTextNode(
   } else {
     // Simple text replacement using regex exec (30% faster than split+test)
     const text = textNode.textContent ?? '';
-    const normalized = stripDiacritics(normalizeApostrophes(text));
+    const normalized = normalizeApostrophes(text);
     let result = '';
     let lastIndex = 0;
     let match;

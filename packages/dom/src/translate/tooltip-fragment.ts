@@ -5,7 +5,6 @@
 import { translateSyncWithMapping } from '@ingglish/core';
 import {
   normalizeApostrophes,
-  stripDiacritics,
   detectCasePattern,
   applyCasePattern,
   WORD_SPLIT_REGEX,
@@ -82,7 +81,7 @@ export function createTooltipFragmentFromMap(
   translations: Record<string, string>
 ): DocumentFragment {
   const fragment = document.createDocumentFragment();
-  const normalized = stripDiacritics(normalizeApostrophes(text));
+  const normalized = normalizeApostrophes(text);
 
   // Split into words and non-words
   const tokens = normalized.split(WORD_SPLIT_REGEX);

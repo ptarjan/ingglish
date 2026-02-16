@@ -13,7 +13,9 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
   // CMU dictionary corrections
   buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — French noun (food), not the verb "to strike"
+  fiancee: ['F', 'IY0', 'AA1', 'N', 'S', 'EY1'], // /fiːɑːnˈseɪ/ — CMU has /si/ but should end in /seɪ/
   hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
+  résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY1'], // /ˈɹɛz.əˌmeɪ/ — French noun (CV), not verb "to resume"
 
   // Foreign loanwords not in CMU dictionary
   doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE1', 'NG', 'ER0'], // /ˈdɑː.pəl.ɡæŋ.ər/

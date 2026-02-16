@@ -3,10 +3,11 @@
  */
 
 // Shared regex patterns for word tokenization (exported for use in dom package)
-/** Regex to split text into word and non-word tokens */
-export const WORD_SPLIT_REGEX = /(\b[a-zA-Z']+\b)/;
-/** Regex to test if a token is a word */
-export const WORD_TEST_REGEX = /^[a-zA-Z']+$/;
+/** Regex to split text into word and non-word tokens (includes accented Latin chars).
+ *  Digit lookaround prevents matching letters in escape sequences like \u2014. */
+export const WORD_SPLIT_REGEX = /((?<!\d)[a-zA-Z\u00C0-\u024F']+(?!\d))/;
+/** Regex to test if a token is a word (includes accented Latin chars) */
+export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F']+$/;
 
 /**
  * Regex to match URLs (http, https, ftp, file protocols).

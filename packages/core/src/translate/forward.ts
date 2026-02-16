@@ -117,6 +117,21 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   const phonemes = customPhonemes ?? lookupPronunciation(word);
 
   if (!phonemes) {
+    // Try stripping diacritics (café→cafe, naïve→naive) before fallback.
+    // This preserves accented forms as pronunciation signals (résumé ≠ resume).
+    const stripped = stripDiacritics(word);
+    if (stripped !== word) {
+      const strippedCustom = getCustomPronunciation(stripped.toLowerCase());
+      const strippedPhonemes = strippedCustom ?? lookupPronunciation(stripped);
+      if (strippedPhonemes) {
+        let strippedResult = arpabetToFormat(strippedPhonemes, format);
+        if (format === 'ingglish') {
+          strippedResult = applyCasePattern(strippedResult, casePattern, word);
+        }
+        return strippedResult;
+      }
+    }
+
     // Word not found in dictionary - try fallback strategies
     const fallbackResult = translateUnknown(word, format);
 
@@ -158,8 +173,8 @@ setTranslateWordFn(translateWord);
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
-  // Normalize curly apostrophes and strip diacritics (résumé→resume, café→cafe)
-  const normalizedText = stripDiacritics(normalizeApostrophes(text));
+  // Normalize curly apostrophes (diacritics are stripped per-word in translateWord)
+  const normalizedText = normalizeApostrophes(text);
 
   // Extract URLs and emails to preserve them unchanged
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
@@ -237,7 +252,23 @@ function isWordKnown(word: string): boolean {
   if (camelParts !== null && camelParts.length > 1) {
     return camelParts.every((part) => lookupPronunciation(part) !== null);
   }
-  return lookupPronunciation(word) !== null;
+  if (lookupPronunciation(word) !== null) {
+    return true;
+  }
+  if (getCustomPronunciation(word.toLowerCase()) !== undefined) {
+    return true;
+  }
+  // Try stripping diacritics (café→cafe)
+  const stripped = stripDiacritics(word);
+  if (stripped !== word) {
+    if (getCustomPronunciation(stripped.toLowerCase()) !== undefined) {
+      return true;
+    }
+    if (lookupPronunciation(stripped) !== null) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -249,7 +280,7 @@ export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
-  const normalizedText = stripDiacritics(normalizeApostrophes(text));
+  const normalizedText = normalizeApostrophes(text);
 
   // Extract URLs and emails to preserve them unchanged
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);

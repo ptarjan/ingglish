@@ -152,9 +152,14 @@ describe('translator', () => {
       expect(result).toBe('Chainuz ikonumee');
     });
 
-    it('should strip diacritics so accented loanwords hit the dictionary', () => {
-      // résumé → resume, naïve → naive, café → cafe, cliché → cliche
-      expect(translateSync('résumé')).toBe(translateSync('resume'));
+    it('should use diacritics as pronunciation signals for homographs', () => {
+      // résumé (accented, French noun) ≠ resume (unaccented, English verb)
+      expect(translateSync('résumé')).toBe('rezumay');
+      expect(translateSync('resume')).toBe('rizuum');
+    });
+
+    it('should strip diacritics per-word for non-homograph loanwords', () => {
+      // café→cafe, naïve→naive, cliché→cliche — same pronunciation
       expect(translateSync('naïve')).toBe(translateSync('naive'));
       expect(translateSync('café')).toBe(translateSync('cafe'));
       expect(translateSync('cliché')).toBe(translateSync('cliche'));
