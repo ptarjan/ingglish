@@ -1,6 +1,30 @@
 import { test, expect } from '@playwright/test';
 import { blockExternalNetwork } from './test-utils';
 
+// Minimal types for the LayoutShift PerformanceObserver API (Chromium-only, not in lib.dom)
+interface LayoutShiftSource {
+  node: Element | null;
+  previousRect: DOMRectReadOnly;
+  currentRect: DOMRectReadOnly;
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+  sources: LayoutShiftSource[];
+}
+
+interface CLSData {
+  total: number;
+  entries: { value: number; time: number; sources: string[] }[];
+}
+
+declare global {
+  interface Window {
+    __cls?: CLSData;
+  }
+}
+
 /**
  * Helper: wait for the app to fully load (header visible, spinner gone).
  * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
@@ -43,27 +67,27 @@ test.describe('Layout Stability (CLS)', () => {
     await blockExternalNetwork(page);
 
     // Install CLS observer BEFORE navigating.
-    // Uses PerformanceObserver LayoutShift API (not yet in TypeScript's lib.dom).
-    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access,
-       @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
-       @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands,
-       @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-nullish-coalescing */
+    // Uses PerformanceObserver LayoutShift API (Chromium-only, not in lib.dom).
     await page.addInitScript(() => {
-      (window as any).__cls = { total: 0, entries: [] as any[] };
+      (window as unknown as { __cls: CLSData }).__cls = { total: 0, entries: [] };
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          const shift = entry as any;
+          const shift = entry as LayoutShiftEntry;
           if (!shift.hadRecentInput) {
-            const sources = (shift.sources || []).map((s: any) => {
+            const sources = shift.sources.map((s) => {
               const n = s.node;
               if (!n) {
                 return '(null)';
               }
               const name = n.nodeName + (n.className ? '.' + n.className.split(' ').join('.') : '');
-              return `${name} [${Math.round(s.previousRect?.x)}x${Math.round(s.previousRect?.y)} → ${Math.round(s.currentRect?.x)}x${Math.round(s.currentRect?.y)}]`;
+              const px = String(Math.round(s.previousRect.x));
+              const py = String(Math.round(s.previousRect.y));
+              const cx = String(Math.round(s.currentRect.x));
+              const cy = String(Math.round(s.currentRect.y));
+              return `${name} [${px}x${py} → ${cx}x${cy}]`;
             });
-            (window as any).__cls.total += shift.value;
-            (window as any).__cls.entries.push({
+            (window as unknown as { __cls: CLSData }).__cls.total += shift.value;
+            (window as unknown as { __cls: CLSData }).__cls.entries.push({
               value: shift.value,
               time: Math.round(entry.startTime),
               sources,
@@ -82,10 +106,7 @@ test.describe('Layout Stability (CLS)', () => {
 
     // Collect CLS score
     const result = await page.evaluate(() => {
-      return (window as any).__cls as {
-        total: number;
-        entries: { value: number; time: number; sources: string[] }[];
-      };
+      return (window as unknown as { __cls: CLSData }).__cls;
     });
     console.log(`CLS: ${result.total.toFixed(4)}`);
     for (const entry of result.entries) {
@@ -94,10 +115,6 @@ test.describe('Layout Stability (CLS)', () => {
         console.log(`    ${src}`);
       }
     }
-    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access,
-       @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
-       @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands,
-       @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-nullish-coalescing */
 
     // Good CLS is < 0.1 per Web Vitals
     expect(result.total).toBeLessThan(0.1);

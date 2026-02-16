@@ -83,8 +83,9 @@ describe('performance optimizations', () => {
       lookupPronunciation('test');
 
       // No space-splitting should happen (dictionary values are already arrays)
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      const spaceSplitCalls = splitSpy.mock.calls.filter((call) => String(call[0]) === ' ').length;
+      const spaceSplitCalls = splitSpy.mock.calls.filter(
+        (call) => typeof call[0] === 'string' && call[0] === ' '
+      ).length;
       expect(spaceSplitCalls).toBe(0);
 
       splitSpy.mockRestore();

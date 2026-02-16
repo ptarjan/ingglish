@@ -565,15 +565,12 @@ describe('background script', () => {
 
       // Should update icon to enabled state
       await vi.waitFor(() => {
-        expect(mockChrome.action.setIcon).toHaveBeenCalledWith(
-          expect.objectContaining({
-            tabId,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            path: expect.objectContaining({
-              16: 'icons/icon16.png',
-            }),
-          })
-        );
+        expect(mockChrome.action.setIcon).toHaveBeenCalled();
+        const iconCall = mockChrome.action.setIcon.mock.calls.find(
+          (call) => (call[0] as { tabId: number }).tabId === tabId
+        ) as [{ tabId: number; path: Record<number, string> }] | undefined;
+        expect(iconCall).toBeDefined();
+        expect(iconCall?.[0].path).toMatchObject({ 16: 'icons/icon16.png' });
       });
     });
 
@@ -617,15 +614,12 @@ describe('background script', () => {
 
       // Should update icon to disabled state
       await vi.waitFor(() => {
-        expect(mockChrome.action.setIcon).toHaveBeenCalledWith(
-          expect.objectContaining({
-            tabId,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            path: expect.objectContaining({
-              16: 'icons/icon16-off.png',
-            }),
-          })
-        );
+        expect(mockChrome.action.setIcon).toHaveBeenCalled();
+        const iconCall = mockChrome.action.setIcon.mock.calls.find(
+          (call) => (call[0] as { tabId: number }).tabId === tabId
+        ) as [{ tabId: number; path: Record<number, string> }] | undefined;
+        expect(iconCall).toBeDefined();
+        expect(iconCall?.[0].path).toMatchObject({ 16: 'icons/icon16-off.png' });
       });
     });
 

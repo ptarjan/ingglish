@@ -127,12 +127,15 @@ function getInitialUrl(): string {
   return params.get('url') ?? '';
 }
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 function sendPageView(path: string): void {
-  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
-  const g = (window as any).gtag as ((...args: unknown[]) => void) | undefined;
-  /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
-  if (typeof g === 'function') {
-    g('event', 'page_view', { page_path: path });
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', { page_path: path });
   }
 }
 
