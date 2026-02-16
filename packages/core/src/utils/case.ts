@@ -118,15 +118,10 @@ export function splitCamelCase(word: string): string[] | null {
   let start = 0;
 
   for (let i = 1; i < word.length; i++) {
-    const prev = word[i - 1];
-    const curr = word[i];
-    // Boundary: previous char is lowercase, current is uppercase
-    if (
-      prev === prev.toLowerCase() &&
-      prev !== prev.toUpperCase() &&
-      curr === curr.toUpperCase() &&
-      curr !== curr.toLowerCase()
-    ) {
+    const prevCode = word.charCodeAt(i - 1);
+    const currCode = word.charCodeAt(i);
+    // Boundary: previous char is lowercase (a-z), current is uppercase (A-Z)
+    if (prevCode >= 97 && prevCode <= 122 && currCode >= 65 && currCode <= 90) {
       parts.push(word.slice(start, i));
       start = i;
     }

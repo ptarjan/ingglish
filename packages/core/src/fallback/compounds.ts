@@ -7,6 +7,7 @@
 
 import { arpabetToFormat } from '../convert/to-ingglish';
 import { lookupPronunciation } from '../dictionary/lookup';
+import { getWordFrequency } from '../dictionary/frequency';
 import { getCustomPronunciation } from './custom-words';
 import type { OutputFormat } from '../types';
 
@@ -42,39 +43,61 @@ export function translateAsCompound(
 ): string | null {
   const lowerWord = word.toLowerCase();
 
-  // Try each possible split point (minimum 1 char on left for prefixes like "i", 2 on right)
-  for (let i = 1; i < lowerWord.length - 1; i++) {
+  // Collect all valid splits, then pick the best by combined word frequency
+  let bestSplit: {
+    i: number;
+    leftPhonemes: string[];
+    rightPhonemes: string[];
+    score: number;
+  } | null = null;
+
+  // Minimum part length of 2 to avoid single-letter grabs like "a"+"theist"
+  for (let i = 2; i < lowerWord.length - 1; i++) {
     const left = lowerWord.slice(0, i);
     const right = lowerWord.slice(i);
+
+    if (right.length < 2) {
+      continue;
+    }
 
     // Look up in custom dictionary first, then CMU
     const leftPhonemes = getCustomPronunciation(left) ?? lookupPronunciation(left);
     const rightPhonemes = getCustomPronunciation(right) ?? lookupPronunciation(right);
 
     if (leftPhonemes && rightPhonemes) {
-      // Both parts are known words - translate each part
-      let leftTranslated = arpabetToFormat(leftPhonemes, format);
-      let rightTranslated = arpabetToFormat(rightPhonemes, format);
+      const leftFreq = getWordFrequency(left) ?? 0;
+      const rightFreq = getWordFrequency(right) ?? 0;
+      const score = leftFreq + rightFreq;
 
-      // For Ingglish output, preserve case per component
-      if (format === 'ingglish') {
-        const originalLeft = word.slice(0, i);
-        const originalRight = word.slice(i);
-
-        // If the left part started uppercase, capitalize it
-        if (originalLeft.length > 0 && isUpperCase(originalLeft[0])) {
-          leftTranslated = capitalize(leftTranslated);
-        }
-
-        // If the right part started uppercase, capitalize it
-        if (originalRight.length > 0 && isUpperCase(originalRight[0])) {
-          rightTranslated = capitalize(rightTranslated);
-        }
+      if (bestSplit === null || score > bestSplit.score) {
+        bestSplit = { i, leftPhonemes, rightPhonemes, score };
       }
-
-      return leftTranslated + rightTranslated;
     }
   }
 
-  return null;
+  if (bestSplit === null) {
+    return null;
+  }
+
+  const { i, leftPhonemes, rightPhonemes } = bestSplit;
+  let leftTranslated = arpabetToFormat(leftPhonemes, format);
+  let rightTranslated = arpabetToFormat(rightPhonemes, format);
+
+  // For Ingglish output, preserve case per component
+  if (format === 'ingglish') {
+    const originalLeft = word.slice(0, i);
+    const originalRight = word.slice(i);
+
+    // If the left part started uppercase, capitalize it
+    if (originalLeft.length > 0 && isUpperCase(originalLeft[0])) {
+      leftTranslated = capitalize(leftTranslated);
+    }
+
+    // If the right part started uppercase, capitalize it
+    if (originalRight.length > 0 && isUpperCase(originalRight[0])) {
+      rightTranslated = capitalize(rightTranslated);
+    }
+  }
+
+  return leftTranslated + rightTranslated;
 }

@@ -7,6 +7,7 @@
 
 import { arpabetToFormat } from '../convert/to-ingglish';
 import { lookupPronunciation } from '../dictionary/lookup';
+import { stripStress } from '../phonemes/arpabet';
 import type { OutputFormat } from '../types';
 
 /**
@@ -99,7 +100,10 @@ export function translateWithStemming(
       for (const variant of stemVariants) {
         const baseArpabet = lookupPronunciation(variant);
         if (baseArpabet) {
-          const fullArpabet = [...baseArpabet, ...suffixArpabet];
+          // Strip stress from base word phonemes so they don't conflict
+          // with the suffix's unstressed (0) markers
+          const strippedBase = baseArpabet.map(stripStress);
+          const fullArpabet = [...strippedBase, ...suffixArpabet];
           return arpabetToFormat(fullArpabet, format);
         }
       }

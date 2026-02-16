@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { translate } from '@ingglish/core';
 import TextTranslator from './components/TextTranslator';
-import UrlTranslator from './components/UrlTranslator';
-import SpellingGuide from './components/SpellingGuide';
-import Extension from './components/Extension';
-import Docs from './components/Docs';
 import Tutorial from './components/Tutorial';
-import Poems from './components/Poems';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useFormat } from './contexts/FormatContext';
+
+const UrlTranslator = lazy(() => import('./components/UrlTranslator'));
+const SpellingGuide = lazy(() => import('./components/SpellingGuide'));
+const Extension = lazy(() => import('./components/Extension'));
+const Docs = lazy(() => import('./components/Docs'));
+const Poems = lazy(() => import('./components/Poems'));
 
 type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
@@ -338,23 +339,31 @@ function App() {
                 <TextTranslator initialText={initialText} onShare={handleShareText} />
               </ErrorBoundary>
             )}
-            {activeTab === 'url' && (
-              <ErrorBoundary>
-                <UrlTranslator
-                  initialUrl={initialUrl}
-                  onShare={handleShareUrl}
-                  onNavigate={handleUrlNavigate}
-                />
-              </ErrorBoundary>
-            )}
-            {activeTab === 'guide' && <SpellingGuide />}
-            {activeTab === 'poems' && <Poems />}
-            {activeTab === 'extension' && <Extension />}
-            {activeTab === 'docs' && (
-              <ErrorBoundary>
-                <Docs />
-              </ErrorBoundary>
-            )}
+            <Suspense
+              fallback={
+                <div className="loading-screen">
+                  <div className="loading-spinner"></div>
+                </div>
+              }
+            >
+              {activeTab === 'url' && (
+                <ErrorBoundary>
+                  <UrlTranslator
+                    initialUrl={initialUrl}
+                    onShare={handleShareUrl}
+                    onNavigate={handleUrlNavigate}
+                  />
+                </ErrorBoundary>
+              )}
+              {activeTab === 'guide' && <SpellingGuide />}
+              {activeTab === 'poems' && <Poems />}
+              {activeTab === 'extension' && <Extension />}
+              {activeTab === 'docs' && (
+                <ErrorBoundary>
+                  <Docs />
+                </ErrorBoundary>
+              )}
+            </Suspense>
           </>
         )}
       </main>

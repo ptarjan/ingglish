@@ -39,23 +39,24 @@ function parseInitialismWithSuffix(word: string): { base: string; suffix: string
   return null;
 }
 
+interface TranslateResult {
+  translated: string;
+  matched: boolean;
+}
+
 /**
- * Translates a single word (or contraction) to the specified format.
- * Handles contractions like "don't", "I'm", etc.
- *
- * @param word - The English word to translate
- * @param format - The output format ('ingglish' or 'ipa')
- * @returns The translated word, or the original word if not found
+ * Internal translation that returns both the translated word and whether it
+ * was found in a known source (dictionary, contraction, initialism, custom).
  */
-export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
+function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
   // Handle empty strings
   if (!word) {
-    return word;
+    return { translated: word, matched: true };
   }
 
   // Check if word has any letters to translate
   if (!/[a-zA-Z]/.test(word)) {
-    return word;
+    return { translated: word, matched: true };
   }
 
   // Handle initialisms with suffixes FIRST (IDs, TVs, URLs, API's)
@@ -64,32 +65,39 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
   if (initialismWithSuffix !== null) {
     const { base, suffix } = initialismWithSuffix;
     const baseTranslated = translateWord(base, format);
-    return baseTranslated + suffix;
+    return { translated: baseTranslated + suffix, matched: true };
   }
 
   // Handle contractions (words with apostrophes)
   if (word.includes("'")) {
-    return translateContraction(word, format);
+    return { translated: translateContraction(word, format), matched: true };
   }
 
   // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged.
   // They're abbreviations, not words — translating them mangles them.
   if (isInitialism(word)) {
-    return word;
+    return { translated: word, matched: true };
   }
 
   // All-caps words (≥2 chars) pass through unchanged — they're acronyms,
   // abbreviations, or intentional formatting (MQTT, USSR, NATO, HELLO).
   if (word.length >= 2 && /^[A-Z]+$/.test(word)) {
-    return word;
+    return { translated: word, matched: true };
   }
 
   // Handle camelCase words by translating each component separately
   // This preserves case at component boundaries (e.g., "iCloud" -> "ieKlowd")
   const camelParts = splitCamelCase(word);
   if (camelParts !== null && camelParts.length > 1) {
+    let allPartsMatched = true;
+
     // Translate each part and preserve its case
     const translatedParts = camelParts.map((part) => {
+      // All-caps parts (≥2 chars) pass through unchanged — acronyms like "GPT" in "ChatGPT"
+      if (part.length >= 2 && /^[A-Z]+$/.test(part)) {
+        return part;
+      }
+
       const partCasePattern = detectCasePattern(part);
       const partPhonemes = lookupPronunciation(part);
       let translated: string;
@@ -97,6 +105,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
       if (partPhonemes) {
         translated = arpabetToFormat(partPhonemes, format);
       } else {
+        allPartsMatched = false;
         translated = translateUnknown(part, format);
       }
 
@@ -106,7 +115,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
       return translated;
     });
 
-    return translatedParts.join('');
+    return { translated: translatedParts.join(''), matched: allPartsMatched };
   }
 
   // Detect case pattern for preservation
@@ -128,7 +137,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
         if (format === 'ingglish') {
           strippedResult = applyCasePattern(strippedResult, casePattern, word);
         }
-        return strippedResult;
+        return { translated: strippedResult, matched: true };
       }
     }
 
@@ -138,7 +147,7 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
 
     // Return original if fallback failed
     if (!fallbackResult || fallbackResult.length === 0) {
-      return word;
+      return { translated: word, matched: false };
     }
 
     // Apply original case pattern to fallback result (only for Ingglish)
@@ -150,11 +159,11 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
         fallbackResult !== fallbackResult.toUpperCase() &&
         !/^[A-Z][a-z]*$/.test(fallbackResult);
       if (resultHasMixedCase) {
-        return fallbackResult;
+        return { translated: fallbackResult, matched: false };
       }
-      return applyCasePattern(fallbackResult, casePattern, word);
+      return { translated: applyCasePattern(fallbackResult, casePattern, word), matched: false };
     }
-    return fallbackResult;
+    return { translated: fallbackResult, matched: false };
   }
 
   let result = arpabetToFormat(phonemes, format);
@@ -164,7 +173,19 @@ export function translateWord(word: string, format: OutputFormat = 'ingglish'): 
     result = applyCasePattern(result, casePattern, word);
   }
 
-  return result;
+  return { translated: result, matched: true };
+}
+
+/**
+ * Translates a single word (or contraction) to the specified format.
+ * Handles contractions like "don't", "I'm", etc.
+ *
+ * @param word - The English word to translate
+ * @param format - The output format ('ingglish' or 'ipa')
+ * @returns The translated word, or the original word if not found
+ */
+export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
+  return translateWordInternal(word, format).translated;
 }
 
 // Register translateWord with contractions module to break circular dependency
@@ -229,50 +250,6 @@ export interface TranslatedToken {
 }
 
 /**
- * Checks if a word has a known translation (dictionary, contraction, or initialism).
- * Words that fail this check are translated via heuristic fallbacks.
- */
-function isWordKnown(word: string): boolean {
-  if (!word || !/[a-zA-Z]/.test(word)) {
-    return true;
-  }
-  if (parseInitialismWithSuffix(word) !== null) {
-    return true;
-  }
-  if (word.includes("'")) {
-    return true;
-  }
-  if (isInitialism(word)) {
-    return true;
-  }
-  // Unknown all-caps words (≥2 chars) pass through as acronyms
-  if (word.length >= 2 && /^[A-Z]+$/.test(word)) {
-    return true;
-  }
-  const camelParts = splitCamelCase(word);
-  if (camelParts !== null && camelParts.length > 1) {
-    return camelParts.every((part) => lookupPronunciation(part) !== null);
-  }
-  if (lookupPronunciation(word) !== null) {
-    return true;
-  }
-  if (getCustomPronunciation(word.toLowerCase()) !== undefined) {
-    return true;
-  }
-  // Try stripping diacritics (café→cafe)
-  const stripped = stripDiacritics(word);
-  if (stripped !== word) {
-    if (getCustomPronunciation(stripped.toLowerCase()) !== undefined) {
-      return true;
-    }
-    if (lookupPronunciation(stripped) !== null) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
  * Like {@link translate}, but returns token-by-token mappings instead of a string.
  * Each token includes the original text, translation, and whether it matched
  * the dictionary. Dictionary must already be loaded.
@@ -297,11 +274,12 @@ export function translateSyncWithMapping(
         result.push(...expanded);
       } else {
         if (WORD_TEST_REGEX.test(token)) {
+          const { translated, matched } = translateWordInternal(token, format);
           result.push({
             original: token,
-            translated: translateWord(token, format),
+            translated,
             isWord: true,
-            matched: isWordKnown(token),
+            matched,
           });
         } else {
           result.push({
