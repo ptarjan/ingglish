@@ -169,7 +169,7 @@ function SpellingGuide(): React.JSX.Element {
 
       <div className="guide-section">
         <h3>Special Cases</h3>
-        <p>Beyond basic phonetic translation, Ingglish handles several edge cases:</p>
+        <p>Beyond basic phonemic translation, Ingglish handles several edge cases:</p>
 
         <h4>Contractions</h4>
         <p>
@@ -183,8 +183,8 @@ function SpellingGuide(): React.JSX.Element {
         <p>
           Capitalization patterns are preserved during translation. ALL CAPS stays all caps, Title
           Case stays title case, and lowercase stays lowercase. For mixed case like "GitHub", the
-          exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ie"
-          since the capitalization is just an English convention, not phonetic.
+          exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ai"
+          since the capitalization is just an English convention, not phonemic.
         </p>
 
         <h4>Initialisms</h4>
@@ -201,12 +201,12 @@ function SpellingGuide(): React.JSX.Element {
           Words not in the dictionary (like tech terms, brand names, or neologisms) are handled
           through multiple fallback strategies: compound word splitting (GitHub → Git + Hub), known
           suffixes and prefixes (-tion, -ing, un-, re-), and rule-based grapheme-to-phoneme
-          conversion. This ensures even invented words get reasonable phonetic spellings.
+          conversion. This ensures even invented words get reasonable phonemic spellings.
         </p>
 
         <h4>Reverse Translation</h4>
         <p>
-          Ingglish can be translated back to English. The system matches phonetic spellings against
+          Ingglish can be translated back to English. The system matches phonemic spellings against
           the dictionary to find the original words. For homophones like "too", "to", and "two" (all
           spelled "tuu" in Ingglish), the most common word is chosen based on frequency data. Case
           patterns are preserved during reverse translation.

@@ -1,4 +1,4 @@
-# Spelling Reform Comparison: Why Ingglish Might Actually Work
+# Spelling Reform Comparison: Ingglish in the Context of Historical Reform
 
 English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
@@ -24,7 +24,7 @@ This document examines what went wrong with previous reforms and shows how Inggl
 
 **[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
 
-Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation) found mixed results — initial reading gains but inconsistent transfer to traditional orthography. A 2001 BBC Radio 4 listener survey echoed this, with adults who learned via ITA frequently reporting it "hampered, rather than helped, their reading and spelling ability."
+Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The [Warburton & Southgate 1969 evaluation](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet#Warburton_and_Southgate_evaluation) found mixed results — initial reading gains but inconsistent transfer to traditional orthography. A 2001 BBC Radio 4 non-scientific listener survey echoed this anecdotally, with adults who learned via ITA frequently reporting it "hampered, rather than helped, their reading and spelling ability."
 
 The fundamental problem: teaching something that must later be "un-taught" violates basic pedagogy.
 
@@ -62,7 +62,7 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 ### 1. The Dialect Problem
 
-Every phonetic system must choose whose pronunciation to encode. English has 14-22 vowel phonemes depending on dialect.
+Every phonemic system must choose whose pronunciation to encode. English has roughly 14–20 vowel phonemes depending on dialect and analysis.
 
 - "dance" - /æ/ in American, /ɑː/ in British
 - "herbs" - silent H in American, pronounced in British
@@ -152,7 +152,7 @@ People who invested years mastering English spelling resist changes that would d
 
 ### [Turkish alphabet reform](https://en.wikipedia.org/wiki/Turkish_alphabet) (1928) - The "Big Bang"
 
-[Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from 9% to 33% in just ten years.
+[Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from roughly 9% to over 30% within a decade ([Zürcher 2004](https://books.google.com/books?id=2slxnwEACAAJ), *Turkey: A Modern History*; exact figures vary by source).
 
 **Why it worked:**
 - Authoritarian one-party state could mandate change
@@ -233,7 +233,7 @@ Fluent English readers might ask: "I already know how to pronounce words. Why wo
 
 Because you're not the only person who reads English. There are roughly 1.5 billion English learners worldwide—more than the number of native speakers. Every one of them pays the cost of English spelling's inconsistencies:
 
-- **Years of extra effort** - English-speaking children take 2-3 years longer to reach reading fluency than children learning consistent orthographies like Finnish or Italian ([Seymour, Aro & Erskine, 2003](https://doi.org/10.1348/000712603321661859))
+- **Years of extra effort** - At the end of Grade 1, English-speaking children read at roughly 34% accuracy on a standard word-reading task, compared to 95%+ for children learning transparent orthographies like Finnish or Italian ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
 - **Rules that aren't** - "I before E except after C" has more exceptions than examples
 - **Unreadable words** - "Lead" rhymes with "read" or "red" depending on context. There's no way to know without memorizing each word.
 

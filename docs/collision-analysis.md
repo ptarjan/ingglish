@@ -60,7 +60,7 @@ Frequency shows SUBTLEX corpus counts. The Ingglish column is also an English wo
 
 ## Homophone Groups
 
-Ingglish merges homophones (words that sound identical). This isn't a collision problem - it's just how phonetic spelling works.
+Ingglish merges homophones (words that sound identical). This isn't a collision problem - it's just how phonemic spelling works.
 
 | English | Ingglish |
 |---------|----------|

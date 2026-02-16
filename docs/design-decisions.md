@@ -4,7 +4,7 @@ This document explains the core design decisions behind Ingglish: why we made sp
 
 ## Core Principles
 
-1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound
+1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences receive dedicated spellings like "air" and "ar" — see the phoneme mapping for details.)
 2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
 3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
 4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone
@@ -14,9 +14,9 @@ This document explains the core design decisions behind Ingglish: why we made sp
 
 English spelling is notoriously difficult because:
 
-1. **Too many vowels**: English has 14-15 vowel sounds but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou).
+1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each—no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
 
-2. **Rare consonants**: Only 4% of languages have /θ/ (think) and 7% have /ð/ (the). There's no "standard" way to write these because most languages never needed one.
+2. **Rare consonants**: Only ~4% of languages have /θ/ and ~7% have /ð/ ([PHOIBLE 2.0](https://phoible.org/); [Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19) reports ~8% for dental fricatives broadly). There's no "standard" way to write these because most languages never needed one.
 
 3. **R-colored vowels**: Sounds like "bird" and "car" are rare across world languages. We follow intuitive spellings (er, ar) that English readers already expect.
 

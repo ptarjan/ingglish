@@ -8,7 +8,7 @@ Phonetic English spelling translator. Every spelling always makes the same sound
 
 ## Overview
 
-Ingglish translates English text into a consistent, phonetic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
+Ingglish translates English text into a consistent, phonemic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
 
 ### Features
 
@@ -163,7 +163,7 @@ English has many words that sound identical but are spelled differently (homopho
 | sea, see | see |
 | eye, I | ai |
 
-**Forward translation** (English → Ingglish) works perfectly - the correct pronunciation is preserved.
+**Forward translation** (English → Ingglish) is deterministic — each word always produces the same Ingglish spelling based on its CMU dictionary pronunciation.
 
 **Reverse translation** (Ingglish → English) uses word frequency to pick the most common word, which may not be what you intended. For example:
 - `kyuu` reverses to "q" (not "queue" or "cue")

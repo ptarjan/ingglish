@@ -17,7 +17,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | [Old English](https://en.wikipedia.org/wiki/Old_English_Latin_alphabet) | æ (ash) | æsc (ash tree) |
 | [German](https://en.wikipedia.org/wiki/German_orthography) | ä | männer (men) |
 | [Swedish](https://en.wikipedia.org/wiki/Swedish_orthography) | ä | väg (way) |
-| [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) |
+| [Turkish](https://en.wikipedia.org/wiki/Turkish_alphabet) | a | at (horse) — Turkish /a/ is more central than English /æ/ |
 | [Azerbaijani](https://en.wikipedia.org/wiki/Azerbaijani_alphabet) | ə | səs (sound) |
 | Spanish/Italian | a | gato/gatto (cat) — closer to /a/ |
 
@@ -75,7 +75,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 
 **Notes:**
 - Nearly universal use of 'o' for back vowels worldwide
-- American English "hot" uses /ɑ/, similar to many languages' open 'o'
+- American English "hot" uses /ɑ/ (open back unrounded), which is more open than the /o/ (close-mid back rounded) of Spanish or Italian, but 'o' is the nearest conventional match
 - English "father" also has this sound—spelled 'a' in English, 'o' in Ingglish
 
 #### Short 'U' Sound (/ʌ/)
@@ -142,7 +142,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 | Vietnamese | ai | hai (two) |
 
 **Notes:**
-- Pinyin (1.4B speakers), Italian, Vietnamese all use 'ai' for this sound
+- Pinyin (used for over 1 billion Mandarin speakers in mainland China), Italian, Vietnamese all use 'ai' for this sound
 - German 'ei' is /aɪ/, but their 'ie' is /iː/—confusing for learners
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/
 
@@ -265,11 +265,11 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - The schwa is the most common vowel sound in English—the unstressed "uh" in many syllables
 - English spells it with any vowel letter depending on etymology
 - Ingglish uses 'u' consistently, same as the stressed /ʌ/ in "but"
-- This creates some visual repetition (banana → bunanu) but maintains phonetic accuracy
+- This creates some visual repetition (banana → bunanu) but maintains phonemic accuracy
 
 ### R-Colored Vowels
 
-[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) occur in less than 1% of world languages—but two of those are English and Mandarin Chinese, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
+[R-colored vowels](https://en.wikipedia.org/wiki/R-colored_vowel) (also called rhotic vowels) are rare across world languages ([Ladefoged & Maddieson 1996](https://books.google.com/books?id=ni1PnwEACAAJ), *The Sounds of the World's Languages*)—but English and Mandarin Chinese both have them, making them important despite their rarity. They're one of the trickiest parts of English phonology because the vowel and /r/ merge into a single sound.
 
 #### 'ARR' Sound (/æɹ/)
 
@@ -343,7 +343,7 @@ For the design philosophy and rationale, see [Design Decisions](design-decisions
 - English uses five different spellings for the same sound
 - Ingglish uses 'er' consistently—the most common English spelling
 - Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
-- R-colored vowels occur in less than 1% of world languages
+- R-colored vowels are rare across world languages (Ladefoged & Maddieson 1996)
 
 ## Consonants
 
@@ -437,7 +437,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | [Bashkir](https://en.wikipedia.org/wiki/Bashkir_language)/[Turkmen](https://en.wikipedia.org/wiki/Turkmen_language) | θ/s | (Turkic languages with /θ/) |
 
 **Notes:**
-- [Only ~8% of languages have dental fricatives](https://wals.info/chapter/19)—they're genuinely rare
+- Only ~8% of languages have dental fricatives ([Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19))—they're genuinely rare. PHOIBLE data suggests ~4% for /θ/ specifically and ~7% for /ð/.
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
 - We keep 'th' for voiceless /θ/—the intuitive choice
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
@@ -682,11 +682,11 @@ Below are examples of phonemic orthographies that use spellings similar to Inggl
 
 Finnish is often cited as having the most transparent orthography in Europe:
 
-- **99% phoneme-to-grapheme consistency**
+- **Near-perfect phoneme-to-grapheme consistency** ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
 - Double letters indicate length (aa, ee, uu) — Ingglish follows this exactly
 - 'uu' for /uː/ in Finnish matches Ingglish 'uu' for the same sound
-- Children achieve reading fluency by end of first grade
-- Dyslexia rates are significantly lower than in English-speaking countries
+- Finnish-speaking children achieve reading fluency significantly faster than English-speaking children (Seymour et al. 2003)
+- Dyslexia prevalence is lower in transparent orthographies ([Paulesu et al. 2001](https://doi.org/10.1126/science.1057179), "Dyslexia: Cultural Diversity and Biological Unity," *Science*)
 
 ### Swahili
 
@@ -700,7 +700,7 @@ A successful African example using Latin script:
 
 ## Phoneme Frequency: How Common Are These Sounds?
 
-Not all phonemes are equally common across world languages. Data from [PHOIBLE 2.0](https://phoible.org/) (a database of 3,000+ language phoneme inventories):
+Not all phonemes are equally common across world languages. Approximate frequencies from [PHOIBLE 2.0](https://phoible.org/) (a database of 3,000+ language phoneme inventories). Exact percentages vary depending on which inventories are included and how allophones are counted; these figures are indicative rather than precise:
 
 ### Consonants in Ingglish
 
@@ -729,14 +729,16 @@ Not all phonemes are equally common across world languages. Data from [PHOIBLE 2
 
 ### Vowel Systems
 
-Most languages have 5-7 vowel phonemes. English has 14-15 (depending on dialect), making it unusually complex:
+Most languages have 5–7 vowel phonemes. English has 14–15 depending on dialect and analysis ([Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ)), making it unusually complex:
 
 | Vowels | % of languages | Examples |
 |--------|----------------|----------|
-| 5 vowels | 32% | Spanish, Japanese, Swahili |
-| 6 vowels | 14% | Most common system |
-| 7+ vowels | 29% | German, French |
+| 5 vowels | ~32% | Spanish, Japanese, Swahili |
+| 6 vowels | ~14% | Most common system |
+| 7+ vowels | ~29% | German, French |
 | 10+ vowels | <5% | English, Danish |
+
+(Data from [Maddieson 2013, WALS Chapter 2](https://wals.info/chapter/2).)
 
 This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 

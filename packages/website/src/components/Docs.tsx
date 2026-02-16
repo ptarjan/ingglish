@@ -247,7 +247,7 @@ function Docs(): JSX.Element {
         <title>{currentDoc.title} | Ingglish Docs</title>
         <meta
           name="description"
-          content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonetic English spelling system.`}
+          content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
         />
         <link rel="canonical" href={`https://ingglish.com/docs/${currentDoc.id}`} />
       </Helmet>

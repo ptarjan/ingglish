@@ -109,7 +109,7 @@ This document records all phoneme spelling changes made during Ingglish developm
 - Rationale:
   - "rock" → "rok" looks natural
   - "hot" → "hot" (identical!)
-  - Matches Spanish/Italian use of 'o'
+  - 'o' is the conventional Latin-script letter for back vowels across languages
 - Verdict: ✅ **Adopted** - familiar results
 
 **Examples:**

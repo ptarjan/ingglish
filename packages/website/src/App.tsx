@@ -19,7 +19,7 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
   tutorial: {
     title: 'Ingglish — What if English Spelling Made Sense?',
     description:
-      'Ingglish is phonetic English — every spelling always makes the same sound. No silent letters, no exceptions.',
+      'Ingglish is phonemic English — every spelling always makes the same sound. No silent letters, no memorization.',
     path: '/',
   },
   text: {
@@ -37,7 +37,7 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
   guide: {
     title: 'Spelling Guide | Ingglish',
     description:
-      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonetic alphabet.',
+      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonemic alphabet.',
     path: '/guide',
   },
   extension: {
@@ -427,7 +427,7 @@ function App() {
           <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
             CMU Pronouncing Dictionary
           </a>{' '}
-          (134,000+ words) to convert English words to their phonetic spellings.{' '}
+          (134,000+ words) to convert English words to their phonemic spellings.{' '}
           <a href="https://github.com/ptarjan/ingglish" target="_blank" rel="noopener noreferrer">
             View on GitHub
           </a>
