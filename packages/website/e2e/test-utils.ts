@@ -36,6 +36,16 @@ export async function blockExternalNetwork(page: Page) {
       return;
     }
 
+    // Mock Google Analytics - return empty script
+    if (url.includes('googletagmanager.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: '/* Mocked GA */',
+      });
+      return;
+    }
+
     // Block all other external requests with a clear error
     await route.abort('blockedbyclient');
     throw new Error(
@@ -129,6 +139,16 @@ export async function setupMockProxy(page: Page) {
         status: 200,
         contentType: 'font/woff2',
         body: '',
+      });
+      return;
+    }
+
+    // Mock Google Analytics - return empty script
+    if (url.includes('googletagmanager.com')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: '/* Mocked GA */',
       });
       return;
     }
