@@ -74,7 +74,7 @@ This document records all phoneme spelling changes made during Ingglish developm
 
 **Attempt 1: 'o'**
 - Rationale: Simple; 'o' is the conventional Latin-script letter for back vowels (though English /oʊ/ is a diphthong, unlike the pure /o/ of Spanish or Italian)
-- Problem: When we changed /ɑ/ to 'o', this created a collision
+- Problem: We originally used 'ah' for /ɑ/ (hot → "haht", rock → "rahk"), but feedback was that 'ah' looked too foreign. Changing /ɑ/ to 'o' made those words natural (hot → "hot", rock → "rok") but meant 'o' was taken, creating a collision here.
 - Verdict: ❌ Rejected - collision with /ɑ/ vowel
 
 **Attempt 2: 'oh' (current)**
