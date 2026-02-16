@@ -221,7 +221,7 @@ Some Ingglish spellings will look strange at first:
 - "through" → "thruu"
 - "beautiful" → "byuutuful"
 
-But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar—it's whether the system is better. A consistent spelling system where every letter has one sound is objectively easier to learn than one where "ough" can be pronounced seven different ways.
+But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar—it's whether the system is better. A consistent spelling system where every spelling has one sound is objectively easier to learn than one where "ough" can be pronounced seven different ways.
 
 ### The Dialect Gap
 

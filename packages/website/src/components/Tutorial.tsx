@@ -223,7 +223,7 @@ function Section4a_SilentLetters({
   return (
     <div ref={ref} className={`tutorial-substep ${active ? 'revealed' : ''}`}>
       <h3 className="tutorial-subheading">Drop the silent letters</h3>
-      <p className="tutorial-caption">Every letter you see is a letter you say.</p>
+      <p className="tutorial-caption">No silent letters. Every letter contributes to the sound.</p>
       <div className="sound-examples">
         {silentLetterExamples.map((ex, i) => (
           <AnimatedSoundWord

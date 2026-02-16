@@ -109,7 +109,7 @@ function SpellingGuide(): React.JSX.Element {
         <h3>Key Principles</h3>
         <ul className="principles-list">
           <li>
-            <strong>No silent letters</strong> - every letter is pronounced
+            <strong>No silent letters</strong> - every letter contributes to the pronunciation
           </li>
           <li>
             <strong>Consistent spelling</strong> - same sound = same spelling, always
