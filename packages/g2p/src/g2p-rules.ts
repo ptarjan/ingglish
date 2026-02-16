@@ -81,6 +81,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[ANG]+=/EY N JH/',
     // Custom: -ance suffix with schwa (performance, distance)
     '#:[ANCE] =/AX N S/',
+    // Custom: -ant/-ants suffix with schwa (important, consultant, elegant — 92% AH in CMU)
+    '#:[ANTS] =/AX N T S/',
+    '#:[ANT] =/AX N T/',
     // Custom: AA digraph (aardvark, baal, kraal)
     '[AA]=/AA/',
     // Custom: AE Latin digraph → EH (aegis, aesthetic, aeon — 358 words, 0% accuracy without)
@@ -152,6 +155,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[CQU]=/K W/',
     // Custom: -ically suffix → K L IY (basically, logically, physically — schwa dropped after I)
     'I[CALLY] =/K L IY/',
+    // Custom: CYCL root → S AY K AH L (cycle, bicycle, encyclopedia — Greek origin)
+    '[CYCL]=/S AY K AH L/',
     '[COM]%=/K AH M/',
     // Custom: CCH → K without HH (Italian: bacchi, zucchini, pinocchio — 65 words)
     '[CCH]=/K/',
@@ -167,6 +172,12 @@ const NRL_RULES: Record<string, string[]> = {
     "' [DH]=/D/",
     '.E[D] =/D/',
     '#^:E[D] =/T/',
+    // Custom: DIAG root → D AY AH G (diagnose, diagonal, diagram — Greek origin)
+    '[DIAG]=/D AY AH G/',
+    // Custom: DIAL root → D AY AH L (dial, dialect, dialogue — Greek origin)
+    '[DIAL]=/D AY AH L/',
+    // Custom: DIVE- → D AY V (diverge, diverse, divert — Latin origin)
+    ' [DIVE]R=/D AY V/',
     ' [DE]^#=/D IH/',
     ' [DO] =/D UW/',
     ' [DOES]=/D AH Z/',
@@ -260,6 +271,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[EU]=/UW/',
     // Custom: -ence suffix with schwa (difference, conference)
     '#:[ENCE] =/AX N S/',
+    // Custom: -ent/-ents suffix with schwa (accident, component, environment — 89% AH in CMU)
+    '#:[ENTS] =/AX N T S/',
+    '#:[ENT] =/AX N T/',
     // Custom: -ield → E is part of IE digraph, silent (field, shield, yield)
     'I[ELD]=/L D/',
     'I[ELS] =/L Z/',
@@ -287,6 +301,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[GIV]=/G IH V/',
     // Custom: silent g before n at word start (gnat, gnome, gnu)
     ' [GN]=/N/',
+    // Custom: GHOST → G OW S T (ghost, ghostly, ghostbusters)
+    ' [GHOST]=/G OW S T/',
     // Custom: GH at word start → G only (ghost, ghetto, ghana — 17 fix, 1 break)
     ' [GH]=/G/',
     ' [G]I^=/G/',
@@ -304,6 +320,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    // Custom: HYPER- prefix → HH AY P ER (hyperactive, hyperbole — Greek origin)
+    ' [HYPER]=/HH AY P ER/',
+    // Custom: HYDR- prefix → HH AY D R (hydrogen, hydraulic — Greek origin)
+    ' [HYDR]=/HH AY D R/',
     ' [HAV]=/HH AE V/',
     ' [HERE]=/HH IY R/',
     ' [HOUR]=/AW ER/',
@@ -312,6 +332,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    // Custom: ISO- prefix → AY S AH (isolate, isomer, isobar — Greek origin)
+    ' [ISO]=/AY S AH/',
+    // Custom: IDEA root → AY D IY (idea, ideal, idealism)
+    ' [IDEA]=/AY D IY/',
     ' [IN]=/IH N/',
     ' [I] =/AY/',
     '[IN]D=/AY N/',
@@ -427,6 +451,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[MAN] =/M AX N/',
     // Custom: -men suffix with schwa (firemen, policemen)
     '#:[MEN] =/M AX N/',
+    // Custom: MICRO- prefix → M AY K R AH (microscope, microsoft — Greek origin)
+    ' [MICRO]=/M AY K R AH/',
     // Custom: collapse doubled MM
     '[MM]=/M/',
     '[M]=/M/',
@@ -465,6 +491,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[ORR]=/AO R/',
     '[OR]=/AO R/',
     ' [ONE]=/W AH N/',
+    // Custom: O before WSK → AH (Polish names: kowalski, grabowski — prevent OW digraph)
+    '[O]WSK=/AH/',
     '[OW]=/OW/',
     ' [OVER]=/OW V ER/',
     '[OV]=/AH V/',
@@ -476,8 +504,7 @@ const NRL_RULES: Record<string, string[]> = {
     'I[ONERS]=/AX N ER Z/',
     '[O]^%=/OW/',
     '[O]^EN=/OW/',
-    // Broadened from [O]^I# — O before consonant+I regardless of what follows (aerobic, tobin, tropics)
-    '[O]^I=/OW/',
+    '[O]^I#=/OW/',
     // Custom: OLK with silent L (folk, yolk)
     '[OLK]=/OW K/',
     // Custom: OLT as long O (bolt, colt, jolt)
@@ -556,6 +583,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]^A=/OW/',
     '[O]^O=/OW/',
     '[O]^U=/OW/',
+    // Custom: O before H → OW (ohio, mohawk, cohen, bohemian — 75% OW in CMU)
+    '[O]H=/OW/',
     '[O]=/AA/',
   ],
   P: [
@@ -565,6 +594,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[PUT] =/P UH T/',
     // Custom: silent p before f at word start (Pfizer, Pfeiffer, Pfaff)
     ' [PF]=/F/',
+    // Custom: PSYCH → S AY K (psychology, psycho, psychiatric — Greek origin)
+    // Custom: POST- prefix → P OW S T (postal, postage, poster — not "post" word which has [O]ST rule)
+    ' [POST]#=/P OW S T/',
+    ' [PSYCH]=/S AY K/',
     // Custom: silent p before s at word start (psalm, psychology)
     ' [PS]=/S/',
     // Custom: silent p before n at word start (pneumonia, pneumatic)
@@ -584,6 +617,8 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   R: [
     ' [RE]^#=/R IY/',
+    // Custom: ROLL → R OW L (roll, stroll, scroll, enroll, bankroll — 80+ words need OW)
+    '[ROLL]=/R OW L/',
     // Custom: rh → R (rhyme, rhythm, rhino)
     '[RH]=/R/',
     // Custom: RDT at word end → R T (German surnames: bernhardt, reinhardt — 19 fix, 0 break)
@@ -603,8 +638,12 @@ const NRL_RULES: Record<string, string[]> = {
     '#[SED] =/Z D/',
     // Custom: S before IVE always voiceless (abrasive, decisive, massive — 0 exceptions)
     '[S]IVE=/S/',
+    // Custom: -ius ending → voiceless S (agius, aloysius, celsius — Latin origin)
+    'IU[S] =/S/',
     // Custom: -son after vowel has voiceless S (addison, eason, mason — 203 S vs 33 Z)
     '#[SON] =/S AX N/',
+    // Custom: DIS- prefix keeps S voiceless before vowels (disable, disagree, disappoint — 94% S in CMU)
+    ' DI[S]#=/S/',
     '#[S]#=/Z/',
     '[SAID]=/S EH D/',
     '^[SION]=/SH AX N/',
@@ -695,7 +734,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[U] =/UW/',
     '[U]=/Y UW/',
   ],
-  V: ['[VIEW]=/V Y UW/', '[V]=/V/'],
+  V: [
+    '[VIEW]=/V Y UW/',
+    // Custom: VIOL root → V AY AH L (violence, violin, violate — Latin origin)
+    '[VIOL]=/V AY AH L/',
+    '[V]=/V/',
+  ],
   W: [
     ' [WERE]=/W ER/',
     '[WA]S=/W AA/',
