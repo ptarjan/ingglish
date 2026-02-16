@@ -12,7 +12,7 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
 export function useSpeech(): [boolean, (text: string) => void, () => void, boolean, number | null] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
-  const [charIndex, setCharIndex] = useState<number | null>(null);
+  const [wordCount, setWordCount] = useState<number | null>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>();
 
   const clearWorkaround = useCallback(() => {
@@ -29,7 +29,7 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
     speechSynthesis.cancel();
     clearWorkaround();
     setSpeaking(false);
-    setCharIndex(null);
+    setWordCount(null);
   }, [supported, clearWorkaround]);
 
   const speak = useCallback(
@@ -42,20 +42,21 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
       clearWorkaround();
 
       const utterance = new SpeechSynthesisUtterance(text);
+      let wordsSeen = 0;
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
-          setCharIndex(event.charIndex);
+          setWordCount(wordsSeen++);
         }
       };
       utterance.onend = () => {
         clearWorkaround();
         setSpeaking(false);
-        setCharIndex(null);
+        setWordCount(null);
       };
       utterance.onerror = () => {
         clearWorkaround();
         setSpeaking(false);
-        setCharIndex(null);
+        setWordCount(null);
       };
 
       speechSynthesis.speak(utterance);
@@ -80,5 +81,5 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
     };
   }, [supported, clearWorkaround]);
 
-  return [speaking, speak, stop, supported, charIndex];
+  return [speaking, speak, stop, supported, wordCount];
 }

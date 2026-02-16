@@ -148,6 +148,14 @@
   color: white;
 }
 
+/* TTS spoken word: underline so it's visible alongside hover highlight */
+.word-token.spoken {
+  background: var(--color-primary);
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 /* During TTS playback, disable transitions so highlighting feels instant */
 .word-correspondence.speaking .word-token {
   transition: none;

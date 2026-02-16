@@ -56,6 +56,7 @@ type EditingPane = 'english' | 'ingglish';
 interface WordDisplayProps {
   text: string;
   hoveredWordIndex: number | null;
+  spokenWordIndex?: number | null;
   onHoverWord?: (index: number | null) => void;
   className?: string;
   scrollRef?: React.Ref<HTMLDivElement>;
@@ -65,6 +66,7 @@ interface WordDisplayProps {
 function WordDisplay({
   text,
   hoveredWordIndex,
+  spokenWordIndex = null,
   onHoverWord,
   className,
   scrollRef,
@@ -77,10 +79,11 @@ function WordDisplay({
       {tokens.map((token, i) => {
         if (token.isWord) {
           const isHighlighted = token.wordIndex === hoveredWordIndex;
+          const isSpoken = token.wordIndex === spokenWordIndex;
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
               onMouseEnter={
                 onHoverWord
                   ? () => {
@@ -113,6 +116,7 @@ function WordDisplay({
 interface MappedWordDisplayProps {
   tokens: TranslatedToken[];
   hoveredWordIndex?: number | null;
+  spokenWordIndex?: number | null;
   onHoverWord?: (index: number | null) => void;
   className?: string;
   placeholder?: string;
@@ -124,6 +128,7 @@ interface MappedWordDisplayProps {
 export function MappedWordDisplay({
   tokens,
   hoveredWordIndex = null,
+  spokenWordIndex = null,
   onHoverWord,
   className,
   placeholder = 'Hover to see word correspondence...',
@@ -138,12 +143,13 @@ export function MappedWordDisplay({
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
           const isHighlighted = currentWordIndex === hoveredWordIndex;
+          const isSpoken = currentWordIndex === spokenWordIndex;
           const matched = 'matched' in token ? (token.matched ?? true) : true;
           const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!matched ? 'unmatched' : ''}`}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''}`}
               data-orig={showTooltip && changed ? token.original : undefined}
               onMouseEnter={
                 onHoverWord
@@ -185,9 +191,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, copyShare] = useClipboard();
-  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, englishCharIndex] =
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount] =
     useSpeech();
-  const [speakingIngglish, speakIngglish, stopIngglish, , ingglishCharIndex] = useSpeech();
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -287,26 +292,14 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [displayIngglish, copyIngglish]);
 
-  const handleSpeakEnglish = useCallback(() => {
+  const handleSpeak = useCallback(() => {
     if (speakingEnglish) {
       stopEnglish();
     } else if (displayEnglish) {
-      stopIngglish();
       // Collapse newlines to spaces so TTS doesn't pause at each line
       speakEnglish(displayEnglish.replace(/\n+/g, ' '));
     }
-  }, [speakingEnglish, stopEnglish, displayEnglish, stopIngglish, speakEnglish]);
-
-  const handleSpeakIngglish = useCallback(() => {
-    if (speakingIngglish) {
-      stopIngglish();
-    } else if (displayEnglish) {
-      stopEnglish();
-      // Feed English text to TTS — Ingglish represents the same sounds,
-      // but the browser's speech engine expects standard English spelling.
-      speakIngglish(displayEnglish.replace(/\n+/g, ' '));
-    }
-  }, [speakingIngglish, stopIngglish, displayEnglish, stopEnglish, speakIngglish]);
+  }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish]);
 
   const handleClear = useCallback(() => {
     setEnglishText('');
@@ -322,28 +315,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
-  // Map TTS charIndex to word index for highlighting during speech
-  const spokenWordIndex = useMemo(() => {
-    const charIdx = englishCharIndex ?? ingglishCharIndex;
-    if (charIdx === null) {
-      return null;
-    }
-    // Use the same collapsed text that was sent to TTS
-    const tokens = tokenizePhonetic(displayEnglish.replace(/\n+/g, ' '));
-    let pos = 0;
-    for (const token of tokens) {
-      const end = pos + token.text.length;
-      if (token.isWord && charIdx >= pos && charIdx < end) {
-        return token.wordIndex;
-      }
-      pos = end;
-    }
-    return null;
-  }, [englishCharIndex, ingglishCharIndex, displayEnglish]);
+  // TTS word count maps directly to word index in the correspondence display
+  const spokenWordIndex = spokenWordCount;
 
-  // Hover takes precedence over TTS so users can explore during playback
-  const activeWordIndex = hoveredWordIndex ?? spokenWordIndex;
-  const isSpeaking = speakingEnglish || speakingIngglish;
+  // Both hover and TTS highlights work independently
+  const isSpeaking = speakingEnglish;
 
   // Auto-scroll the highlighted word into view during TTS
   const corrEnglishRef = useRef<HTMLDivElement>(null);
@@ -353,8 +329,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return;
     }
     const el =
-      corrEnglishRef.current?.querySelector('.word-token.highlighted') ??
-      corrIngglishRef.current?.querySelector('.word-token.highlighted');
+      corrEnglishRef.current?.querySelector('.word-token.spoken') ??
+      corrIngglishRef.current?.querySelector('.word-token.spoken');
     if (el) {
       el.scrollIntoView({ block: 'nearest' });
     }
@@ -403,7 +379,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             <div className="button-group">
               {speechSupported && (
                 <button
-                  onClick={handleSpeakEnglish}
+                  onClick={handleSpeak}
                   className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
                   disabled={!displayEnglish}
                   title={speakingEnglish ? 'Stop' : 'Listen'}
@@ -459,17 +435,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           <div className="section-header">
             <h2>{format === 'ingglish' ? 'Ingglish' : 'IPA'}</h2>
             <div className="button-group">
-              {speechSupported && (
-                <button
-                  onClick={handleSpeakIngglish}
-                  className={`btn-secondary btn-icon ${speakingIngglish ? 'btn-speaking' : ''}`}
-                  disabled={!displayEnglish}
-                  title={speakingIngglish ? 'Stop' : 'Listen'}
-                  aria-label={speakingIngglish ? 'Stop speaking' : 'Listen to Ingglish text'}
-                >
-                  {speakingIngglish ? <StopIcon /> : <SpeakerIcon />}
-                </button>
-              )}
               <button
                 onClick={handleCopyIngglish}
                 className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
@@ -512,7 +477,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             {lastEdited === 'ingglish' && reverseTokens ? (
               <MappedWordDisplay
                 tokens={reverseTokens}
-                hoveredWordIndex={activeWordIndex}
+                hoveredWordIndex={hoveredWordIndex}
+                spokenWordIndex={spokenWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
                 scrollRef={corrEnglishRef}
@@ -523,7 +489,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             ) : (
               <WordDisplay
                 text={displayEnglish}
-                hoveredWordIndex={activeWordIndex}
+                hoveredWordIndex={hoveredWordIndex}
+                spokenWordIndex={spokenWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="english-words"
                 scrollRef={corrEnglishRef}
@@ -535,7 +502,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             {lastEdited === 'english' && forwardTokens ? (
               <MappedWordDisplay
                 tokens={forwardTokens}
-                hoveredWordIndex={activeWordIndex}
+                hoveredWordIndex={hoveredWordIndex}
+                spokenWordIndex={spokenWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 showTooltip={false}
                 className="ingglish-words"
@@ -547,7 +515,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             ) : (
               <WordDisplay
                 text={displayIngglish}
-                hoveredWordIndex={activeWordIndex}
+                hoveredWordIndex={hoveredWordIndex}
+                spokenWordIndex={spokenWordIndex}
                 onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}

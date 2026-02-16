@@ -199,12 +199,12 @@ describe('useSpeech', () => {
     expect(stop1).toBe(stop2);
   });
 
-  it('returns charIndex=null initially', () => {
+  it('returns wordCount=null initially', () => {
     const { result } = renderHook(() => useSpeech());
     expect(result.current[4]).toBeNull();
   });
 
-  it('updates charIndex on word boundary events', () => {
+  it('counts word boundaries sequentially', () => {
     const { result } = renderHook(() => useSpeech());
 
     act(() => {
@@ -220,10 +220,10 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ name: 'word', charIndex: 6 });
     });
-    expect(result.current[4]).toBe(6);
+    expect(result.current[4]).toBe(1);
   });
 
-  it('resets charIndex on stop', () => {
+  it('resets wordCount on stop', () => {
     const { result } = renderHook(() => useSpeech());
 
     act(() => {
@@ -234,7 +234,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ name: 'word', charIndex: 6 });
     });
-    expect(result.current[4]).toBe(6);
+    expect(result.current[4]).toBe(0);
 
     act(() => {
       result.current[2](); // stop
@@ -242,7 +242,7 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('resets charIndex on utterance end', () => {
+  it('resets wordCount on utterance end', () => {
     const { result } = renderHook(() => useSpeech());
 
     act(() => {
@@ -251,9 +251,9 @@ describe('useSpeech', () => {
 
     const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
     act(() => {
-      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+      utterance.onboundary?.({ name: 'word', charIndex: 0 });
     });
-    expect(result.current[4]).toBe(6);
+    expect(result.current[4]).toBe(0);
 
     act(() => {
       utterance.onend?.();
