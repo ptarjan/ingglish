@@ -222,6 +222,9 @@ jobs:
           name: build-output
           path: .
 
+      - name: Verify website dist exists
+        run: ls -la packages/website/dist/index.html
+
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(npm ls @playwright/test --json | jq -r '.. | .["@playwright/test"]? | .version? // empty' | head -1)" >> $GITHUB_OUTPUT
@@ -273,6 +276,9 @@ jobs:
         with:
           name: build-output
           path: .
+
+      - name: Verify website dist exists
+        run: ls -la packages/website/dist/index.html
 
       - name: Get Playwright version
         id: playwright-version
