@@ -68,8 +68,8 @@ describe('unknown-words', () => {
       expect(wordToArpabet('out')).toContain('AW1'); // ou
       expect(wordToArpabet('boat')).toContain('OW1'); // oa
       expect(wordToArpabet('blue')).toContain('UW1'); // ue
-      // NRL treats EI as IY (vein → veen), not EY
-      expect(wordToArpabet('vein')).toContain('IY1'); // ei
+      // EI → AY (German pronunciation: vein → vain, stein → stain)
+      expect(wordToArpabet('vein')).toContain('AY1'); // ei
     });
 
     it('should handle R-controlled vowels', () => {
@@ -333,8 +333,8 @@ describe('unknown-words', () => {
       expect(translateWithRules('coal')).toBe('kohl');
       expect(translateWithRules('blue')).toBe('bluu');
       expect(translateWithRules('clue')).toBe('kluu');
-      // NRL treats EI as IY (vein → veen)
-      expect(translateWithRules('vein')).toBe('veen');
+      // EI → AY (German pronunciation: vein → vain)
+      expect(translateWithRules('vein')).toBe('vain');
     });
 
     it('should translate words with R-controlled vowels', () => {
@@ -388,7 +388,8 @@ describe('unknown-words', () => {
     it('should translate -ed suffix words', () => {
       expect(translateWithRules('walked')).toBe('wawkt');
       expect(translateWithRules('turned')).toBe('ternd');
-      expect(translateWithRules('wanted')).toBe('wantid');
+      // WA before N/M/D → broad A (AA): wanted → wontid
+      expect(translateWithRules('wanted')).toBe('wontid');
     });
 
     it('should voice final s after voiced sounds', () => {
@@ -499,7 +500,8 @@ describe('unknown-words', () => {
     });
 
     it('should translate words with initial silent p', () => {
-      expect(translateWithRules('psalm')).toBe('sawlm');
+      // Silent L in -alm: psalm → som (S AA M)
+      expect(translateWithRules('psalm')).toBe('som');
       expect(translateWithRules('psychology')).not.toMatch(/^p/);
     });
 
