@@ -80,9 +80,28 @@ export const ARPABET_TO_IPA_MAP: Record<string, string> = {
 };
 
 /**
- * IPA to ARPAbet reverse mapping.
- * Built from the forward map for consistency.
+ * Additional IPA symbols that map to ARPAbet but aren't produced by the
+ * forward (ARPAbet→IPA) map. These handle real-world IPA variants and
+ * common transcription differences.
  */
-export const IPA_TO_ARPABET_MAP: Record<string, string> = Object.fromEntries(
-  Object.entries(ARPABET_TO_IPA_MAP).map(([arpabet, ipa]) => [ipa, arpabet])
-);
+export const IPA_VARIANT_MAP: Record<string, string> = {
+  ə: 'AH0', // schwa (unstressed) — forward map uses ʌ→AH for the stressed variant
+  ɚ: 'ER', // r-colored schwa variant — forward map uses ɝ→ER
+  g: 'G', // ASCII g — forward map uses ɡ (U+0261)
+  ɫ: 'L', // dark l
+  r: 'R', // common variant — forward map uses ɹ (alveolar approximant)
+  y: 'Y', // common variant — forward map uses j (palatal approximant)
+  e: 'EY', // some IPA uses plain e for face vowel
+  o: 'OW', // some IPA uses plain o for goat vowel
+  a: 'AE', // fallback for plain a
+};
+
+/**
+ * IPA to ARPAbet reverse mapping.
+ * Built from the forward map, plus additional IPA variants for
+ * handling real-world transcriptions.
+ */
+export const IPA_TO_ARPABET_MAP: Record<string, string> = {
+  ...Object.fromEntries(Object.entries(ARPABET_TO_IPA_MAP).map(([arpabet, ipa]) => [ipa, arpabet])),
+  ...IPA_VARIANT_MAP,
+};

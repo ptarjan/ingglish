@@ -1,12 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { ingglishToArpabet } from '@ingglish/phonemes';
+import { ingglishToArpabet, ipaToArpabetClean } from '@ingglish/phonemes';
 import { translateWord, translateSync } from './forward';
 import {
   reverseTranslateWord,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
-  ipaToArpabetClean,
   reverseTranslateIPAWord,
 } from './reverse';
 import { isLikelyIngglish } from '../detect/language';

@@ -7,7 +7,7 @@
  */
 
 import { stripStress } from './arpabet';
-import { ARPABET_TO_INGGLISH_MAP } from './ingglish-maps';
+import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 import { arpabetToIPARaw } from './to-ipa';
 import type { OutputFormat } from './types';
 
@@ -45,20 +45,9 @@ export function arpabetToIngglish(arpabet: string[]): string {
       const next = arpabet[i + 1];
       // R is always 'R' (no stress variants), so direct check works
       if (next === 'R') {
-        if (base === 'AA') {
-          result += 'a'; // R will add 'r' next
-          continue;
-        } else if (base === 'AO') {
-          result += 'o'; // R will add 'r' next
-          continue;
-        } else if (base === 'EH') {
-          result += 'ai'; // R will add 'r' next
-          continue;
-        } else if (base === 'AE') {
-          result += 'ar'; // R will add 'r' next → 'arr'
-          continue;
-        } else if (base === 'IH') {
-          result += 'ee'; // R will add 'r' next → 'eer' (NEAR vowel: beer, beard, fear)
+        const rPrefix = R_COLORED_FORWARD.get(base);
+        if (rPrefix !== undefined) {
+          result += rPrefix; // R will add 'r' next iteration
           continue;
         }
       }

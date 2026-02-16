@@ -275,6 +275,25 @@ export function isInitialism(word: string): boolean {
   return KNOWN_INITIALISMS.has(word.toLowerCase());
 }
 
+// Common suffixes for initialisms (plural, possessive)
+const INITIALISM_SUFFIXES = ["'s", 's'] as const;
+
+/**
+ * Checks if a word is an initialism with a suffix (e.g., "IDs", "TVs", "URLs", "API's").
+ * Returns the base initialism and suffix if matched, null otherwise.
+ */
+export function parseInitialismWithSuffix(word: string): { base: string; suffix: string } | null {
+  for (const suffix of INITIALISM_SUFFIXES) {
+    if (word.length > suffix.length && word.endsWith(suffix)) {
+      const base = word.slice(0, -suffix.length);
+      if (isInitialism(base)) {
+        return { base, suffix };
+      }
+    }
+  }
+  return null;
+}
+
 /**
  * Translates a word by spelling out each letter.
  * Used for acronyms like URL, HTML, API.

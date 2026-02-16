@@ -92,3 +92,49 @@ export const ARPABET_TO_INGGLISH_MAP: Record<string, string> = {
 export const INGGLISH_TO_ARPABET_MAP: Record<string, string> = Object.fromEntries(
   Object.entries(ARPABET_TO_INGGLISH_MAP).map(([arpabet, ingglish]) => [ingglish, arpabet])
 );
+
+// ============================================================================
+// R-colored vowels
+// ============================================================================
+
+/**
+ * R-colored vowel mappings — single source of truth.
+ *
+ * Each entry maps an ARPAbet vowel to its Ingglish prefix when followed by R.
+ * The full Ingglish spelling is `prefix + 'r'` (since R maps to 'r').
+ *
+ * Example: AA+R → prefix 'a' → full spelling 'ar' (star, car)
+ */
+export const R_COLORED_VOWELS: { arpabet: string; prefix: string }[] = [
+  { arpabet: 'AA', prefix: 'a' }, // star, car, far → 'ar'
+  { arpabet: 'AO', prefix: 'o' }, // store, more, for → 'or'
+  { arpabet: 'EH', prefix: 'ai' }, // air, care, there → 'air'
+  { arpabet: 'AE', prefix: 'ar' }, // arrow, barrow, carrot → 'arr'
+  { arpabet: 'IH', prefix: 'ee' }, // beer, beard, fear → 'eer'
+];
+
+/**
+ * Forward lookup: ARPAbet vowel → Ingglish prefix (before 'r').
+ * Used by arpabetToIngglish() to handle VOWEL+R sequences.
+ */
+export const R_COLORED_FORWARD = new Map<string, string>(
+  R_COLORED_VOWELS.map(({ arpabet, prefix }) => [arpabet, prefix])
+);
+
+/**
+ * Reverse lookup: full Ingglish spelling → [ARPAbet vowel, 'R'].
+ * Split by length for efficient prefix matching in ingglishToArpabet().
+ */
+export const R_COLORED_REVERSE_3CHAR: Record<string, [string, string]> = Object.fromEntries(
+  R_COLORED_VOWELS.filter(({ prefix }) => prefix.length === 2).map(({ arpabet, prefix }) => [
+    prefix + 'r',
+    [arpabet, 'R'],
+  ])
+);
+
+export const R_COLORED_REVERSE_2CHAR: Record<string, [string, string]> = Object.fromEntries(
+  R_COLORED_VOWELS.filter(({ prefix }) => prefix.length === 1).map(({ arpabet, prefix }) => [
+    prefix + 'r',
+    [arpabet, 'R'],
+  ])
+);

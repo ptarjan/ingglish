@@ -6,7 +6,11 @@
  * words based on frequency data.
  */
 
-import { ingglishToArpabet, ipaToArpabet, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
+import {
+  ingglishToArpabet,
+  expandArpabetAlternatives,
+  ipaToArpabetClean,
+} from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
 import {
@@ -19,42 +23,6 @@ import {
 import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
-
-// ============================================================================
-// ARPAbet Alternatives (handling ambiguous spellings)
-// ============================================================================
-
-/**
- * Some Ingglish spellings are ambiguous because the same letters can
- * represent different ARPAbet sequences. For example, "er" could be:
- * - ER (r-colored schwa): "bird", "her"
- * - EH + R (short e + r): "welfare", "better"
- *
- * Only EH + R is valid here because IH + R -> "eer" and AH + R -> "ur"
- */
-const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
-  ER: [['EH', 'R']],
-  SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
-};
-
-/**
- * Generates alternative ARPAbet sequences for ambiguous spellings.
- */
-function expandArpabetAlternatives(arpabet: string[]): string[][] {
-  const results: string[][] = [arpabet];
-
-  for (let i = 0; i < arpabet.length; i++) {
-    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
-    if (alternatives !== undefined) {
-      for (const alt of alternatives) {
-        const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
-        results.push(expanded);
-      }
-    }
-  }
-
-  return results;
-}
 
 // ============================================================================
 // Core Translation Functions
@@ -110,14 +78,6 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
   }
 
   return matches.map((word) => applyCasePattern(word, casePattern));
-}
-
-/**
- * Converts IPA text to ARPAbet (stripping stress markers).
- */
-export function ipaToArpabetClean(ipa: string): string[] | null {
-  const arpabet = ipaToArpabet(ipa).map((p) => p.replace(STRESS_MARKER_REGEX, ''));
-  return arpabet.length > 0 ? arpabet : null;
 }
 
 /**

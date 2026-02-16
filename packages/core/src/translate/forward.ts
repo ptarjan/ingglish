@@ -15,28 +15,9 @@ import {
   restorePreservedPatterns,
 } from '@ingglish/normalize';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
-import { translateUnknown, isInitialism } from '@ingglish/fallback';
+import { translateUnknown, isInitialism, parseInitialismWithSuffix } from '@ingglish/fallback';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { expandPlaceholder } from './preserved';
-
-// Common suffixes for initialisms (plural, possessive)
-const INITIALISM_SUFFIXES = ["'s", 's'] as const;
-
-/**
- * Checks if a word is an initialism with a suffix (e.g., "IDs", "TVs", "URLs", "API's").
- * Returns the base initialism and suffix if matched, null otherwise.
- */
-function parseInitialismWithSuffix(word: string): { base: string; suffix: string } | null {
-  for (const suffix of INITIALISM_SUFFIXES) {
-    if (word.length > suffix.length && word.endsWith(suffix)) {
-      const base = word.slice(0, -suffix.length);
-      if (isInitialism(base)) {
-        return { base, suffix };
-      }
-    }
-  }
-  return null;
-}
 
 interface TranslateResult {
   translated: string;

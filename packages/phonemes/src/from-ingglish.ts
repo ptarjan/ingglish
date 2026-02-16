@@ -5,22 +5,47 @@
  * for reverse translation (Ingglish -> English).
  */
 
-import { INGGLISH_TO_ARPABET_MAP } from './ingglish-maps';
+import {
+  INGGLISH_TO_ARPABET_MAP,
+  R_COLORED_REVERSE_3CHAR,
+  R_COLORED_REVERSE_2CHAR,
+} from './ingglish-maps';
+
+// ============================================================================
+// ARPAbet Alternatives (handling ambiguous spellings)
+// ============================================================================
 
 /**
- * R-colored vowel sequences by length.
- * Check 3-char first (air), then 2-char (ar, or).
+ * Some Ingglish spellings are ambiguous because the same letters can
+ * represent different ARPAbet sequences. For example, "er" could be:
+ * - ER (r-colored schwa): "bird", "her"
+ * - EH + R (short e + r): "welfare", "better"
+ *
+ * Only EH + R is valid here because IH + R -> "eer" and AH + R -> "ur"
  */
-const R_COLORED_3CHAR: Record<string, [string, string]> = {
-  air: ['EH', 'R'], // air, care, there, where
-  arr: ['AE', 'R'], // arrow, barrow, carrot
-  eer: ['IH', 'R'], // beer, beard, fear, near
+const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
+  ER: [['EH', 'R']],
+  SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
 };
 
-const R_COLORED_2CHAR: Record<string, [string, string]> = {
-  ar: ['AA', 'R'], // star, car, far
-  or: ['AO', 'R'], // store, more, for
-};
+/**
+ * Generates alternative ARPAbet sequences for ambiguous spellings.
+ */
+export function expandArpabetAlternatives(arpabet: string[]): string[][] {
+  const results: string[][] = [arpabet];
+
+  for (let i = 0; i < arpabet.length; i++) {
+    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
+    if (alternatives !== undefined) {
+      for (const alt of alternatives) {
+        const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
+        results.push(expanded);
+      }
+    }
+  }
+
+  return results;
+}
 
 /**
  * Pre-built Sets for O(1) lookup by spelling length.
@@ -46,16 +71,16 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
   while (remaining.length > 0) {
     // Check for 3-char R-colored vowels first (air)
     const threeChar = remaining.slice(0, 3);
-    if (remaining.length >= 3 && threeChar in R_COLORED_3CHAR) {
-      result.push(...R_COLORED_3CHAR[threeChar]);
+    if (remaining.length >= 3 && threeChar in R_COLORED_REVERSE_3CHAR) {
+      result.push(...R_COLORED_REVERSE_3CHAR[threeChar]);
       remaining = remaining.slice(3);
       continue;
     }
 
     // Check for 2-char R-colored vowels (ar, or)
     const twoChar = remaining.slice(0, 2);
-    if (remaining.length >= 2 && twoChar in R_COLORED_2CHAR) {
-      result.push(...R_COLORED_2CHAR[twoChar]);
+    if (remaining.length >= 2 && twoChar in R_COLORED_REVERSE_2CHAR) {
+      result.push(...R_COLORED_REVERSE_2CHAR[twoChar]);
       remaining = remaining.slice(2);
       continue;
     }

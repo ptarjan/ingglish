@@ -20,6 +20,7 @@ import {
 } from '@ingglish/dictionary';
 import {
   isInitialism,
+  parseInitialismWithSuffix,
   translateAsAcronym,
   LETTER_PHONEMES,
   KNOWN_INITIALISMS,
@@ -42,6 +43,7 @@ export {
   KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
   isInitialism,
+  parseInitialismWithSuffix,
   translateAsAcronym,
   // British spelling
   translateAsBritish,
