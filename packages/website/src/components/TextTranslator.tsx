@@ -431,7 +431,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           />
         </div>
 
-        <div className="input-section">
+        <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>{format === 'ingglish' ? 'Ingglish' : 'IPA'}</h2>
             <div className="button-group">

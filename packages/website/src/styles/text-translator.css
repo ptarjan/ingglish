@@ -17,6 +17,32 @@
 @media (max-width: 768px) {
   .translator-grid {
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .translator-grid .input-section {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+  }
+
+  .translator-grid .input-section:first-child {
+    border-radius: 0.5rem 0.5rem 0 0;
+    border-bottom: none;
+  }
+
+  .translator-grid .ingglish-section {
+    border-radius: 0 0 0.5rem 0.5rem;
+    background: var(--color-surface-hover);
+  }
+
+  .translator-grid .input-section .text-input {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .translator-grid .input-section .text-input:focus {
+    box-shadow: inset 0 0 0 1px var(--color-primary);
   }
 }
 
