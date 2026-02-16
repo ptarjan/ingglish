@@ -12,6 +12,7 @@
 .docs-sidebar {
   flex-shrink: 0;
   width: 200px;
+  overflow: hidden;
 }
 
 .docs-sidebar > ul {
@@ -21,7 +22,12 @@
   position: sticky;
   top: 1rem;
   max-height: calc(100vh - 2rem);
-  overflow-y: auto;
+  overflow: hidden auto;
+  scrollbar-width: none;
+}
+
+.docs-sidebar > ul::-webkit-scrollbar {
+  display: none;
 }
 
 .docs-sidebar li {
@@ -77,6 +83,9 @@
   text-decoration: none;
   border-radius: 0.25rem;
   transition: all 0.15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .docs-subsection-link:hover {
