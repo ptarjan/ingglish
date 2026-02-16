@@ -25,7 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Cache generated dictionaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: dict-cache-test
         with:
           path: |
@@ -85,7 +85,7 @@ jobs:
         run: npm ci
 
       - name: Cache generated dictionaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: dict-cache
         with:
           path: |
@@ -151,7 +151,7 @@ jobs:
           path: .
 
       - name: Cache ESLint
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: packages/*/.eslintcache
           key: eslint-${{ runner.os }}-${{ hashFiles('eslint.config.js') }}
@@ -218,7 +218,7 @@ jobs:
         run: echo "version=$(npm ls @playwright/test --json | jq -r '.. | .["@playwright/test"]? | .version? // empty' | head -1)" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -270,7 +270,7 @@ jobs:
         run: echo "version=$(npm ls @playwright/test --json | jq -r '.. | .["@playwright/test"]? | .version? // empty' | head -1)" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright

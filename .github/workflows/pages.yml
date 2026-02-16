@@ -28,7 +28,7 @@ jobs:
           cache: 'npm'
 
       - name: Cache generated dictionaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: dict-cache
         with:
           path: |
@@ -39,7 +39,7 @@ jobs:
 
       - name: Cache generated docs
         id: docs-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: docs/generated
           key: docs-${{ hashFiles('packages/core/src/**/*.ts', 'typedoc.json') }}
