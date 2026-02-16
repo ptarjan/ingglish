@@ -20,36 +20,45 @@ import {
 
 function useScrollReveal<T extends HTMLElement>(
   threshold = 0.15
-): { ref: React.RefObject<T | null>; visible: boolean } {
-  const ref = useRef<T>(null);
+): { ref: React.RefCallback<T>; visible: boolean } {
+  const elRef = useRef<T | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) {
-      return;
-    }
+  const ref = useCallback(
+    (node: T | null) => {
+      // Clean up previous observer
+      if (observerRef.current !== null) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
 
-    // Respect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true);
-      return;
-    }
+      elRef.current = node;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold }
-    );
-    observer.observe(el);
-    return () => {
-      observer.disconnect();
-    };
-  }, [threshold]);
+      if (node === null || visible) {
+        return;
+      }
+
+      // Respect prefers-reduced-motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setVisible(true);
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold }
+      );
+      observer.observe(node);
+      observerRef.current = observer;
+    },
+    [threshold, visible]
+  );
 
   return { ref, visible };
 }
@@ -149,7 +158,7 @@ function Section2_WhatIf() {
   const revealedCount = useStaggeredReveal(3, visible, 1200);
 
   const lines = [
-    'What if every letter always made the same sound?',
+    'What if every spelling always made the same sound?',
     "What if you could read any word correctly\u2009\u2014\u2009even one you'd never seen before?",
     "That's Ingglish.",
   ];
@@ -199,7 +208,7 @@ function useStickyActive(visible: boolean, previousDone: boolean): boolean {
   return active;
 }
 
-function Section3a_SilentLetters({
+function Section4a_SilentLetters({
   previousDone,
   onComplete,
 }: {
@@ -402,7 +411,7 @@ function SoundGroup({
   );
 }
 
-function Section3b_OneSound({
+function Section4b_OneSound({
   previousDone,
   onComplete,
 }: {
@@ -473,7 +482,7 @@ function SimpleRuleGroup({
   );
 }
 
-function Section3_Transform() {
+function Section4_Transform() {
   // Track which substeps have finished their animations.
   // Each substep only starts when the previous one completes.
   const [completedStep, setCompletedStep] = useState(-1);
@@ -484,13 +493,13 @@ function Section3_Transform() {
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">How it works</h2>
-      <Section3a_SilentLetters
+      <Section4a_SilentLetters
         previousDone
         onComplete={() => {
           markComplete(0);
         }}
       />
-      <Section3b_OneSound
+      <Section4b_OneSound
         previousDone={completedStep >= 0}
         onComplete={() => {
           markComplete(1);
@@ -520,7 +529,8 @@ function Section3_Transform() {
   );
 }
 
-function Section4_Progressive() {
+function Section5_Progressive() {
+  const totalSteps = stepCaptions.length - 1;
   const [currentStep, setCurrentStep] = useState(0);
 
   const textRef = useRef<HTMLParagraphElement>(null);
@@ -583,16 +593,16 @@ function Section4_Progressive() {
             &larr; Back
           </button>
           <span className="progressive-indicator">
-            {currentStep === 0 ? 'Original' : `Step ${currentStep} of 6`}
+            {currentStep === 0 ? 'Original' : `Step ${currentStep} of ${totalSteps}`}
           </span>
           <button
             className="progressive-btn progressive-btn-next"
             onClick={() => {
               startTransition(() => {
-                setCurrentStep((s) => Math.min(6, s + 1));
+                setCurrentStep((s) => Math.min(totalSteps, s + 1));
               });
             }}
-            disabled={currentStep === 6}
+            disabled={currentStep === totalSteps}
           >
             Next &rarr;
           </button>
@@ -602,8 +612,8 @@ function Section4_Progressive() {
   );
 }
 
-function Section5_Poem() {
-  const { ref, visible } = useScrollReveal<HTMLDivElement>(0.3);
+function Section6_Poem() {
+  const { ref, visible } = useScrollReveal<HTMLElement>(0.3);
   const [step, setStep] = useState(0);
 
   const [paused, setPaused] = useState(false);
@@ -728,7 +738,7 @@ function Section5_Poem() {
   );
 }
 
-function Section6_ReadingTest() {
+function Section3_ReadingTest() {
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">Can you read this?</h2>
@@ -766,7 +776,7 @@ function Section7_TryIt() {
             setInput(e.target.value);
           }}
         />
-        <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />
+        {input && <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />}
       </div>
     </section>
   );
@@ -810,10 +820,10 @@ export default function Tutorial({ onNavigate }: TutorialProps) {
     <div className="tutorial">
       <Section1_Ough />
       <Section2_WhatIf />
-      <Section6_ReadingTest />
-      <Section3_Transform />
-      <Section4_Progressive />
-      <Section5_Poem />
+      <Section3_ReadingTest />
+      <Section4_Transform />
+      <Section5_Progressive />
+      <Section6_Poem />
       <Section7_TryIt />
       <Section8_CTA onNavigate={onNavigate} />
     </div>

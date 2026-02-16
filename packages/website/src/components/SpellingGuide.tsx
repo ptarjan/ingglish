@@ -161,7 +161,7 @@ function SpellingGuide(): React.JSX.Element {
             <tr>
               <td className="ingglish-cell">x</td>
               <td className="examples-cell">ks or z</td>
-              <td className="examples-cell">box → boks, xylophone → zailufown</td>
+              <td className="examples-cell">box → boks, xylophone → zailufohn</td>
             </tr>
           </tbody>
         </table>

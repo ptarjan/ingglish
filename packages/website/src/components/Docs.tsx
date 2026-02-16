@@ -198,10 +198,8 @@ function Docs(): JSX.Element {
       }
 
       // External links open in new tab
-      if (!href.startsWith('#')) {
-        link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noopener noreferrer');
-      }
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
     });
   }, [activeDoc, currentDoc.content]);
 
