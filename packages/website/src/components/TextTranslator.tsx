@@ -118,6 +118,7 @@ interface MappedWordDisplayProps {
   placeholder?: string;
   scrollRef?: React.Ref<HTMLDivElement>;
   onScroll?: () => void;
+  showTooltip?: boolean;
 }
 
 export function MappedWordDisplay({
@@ -128,6 +129,7 @@ export function MappedWordDisplay({
   placeholder = 'Hover to see word correspondence...',
   scrollRef,
   onScroll,
+  showTooltip = true,
 }: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
@@ -142,7 +144,7 @@ export function MappedWordDisplay({
             <span
               key={i}
               className={`word-token ${isHighlighted ? 'highlighted' : ''} ${!matched ? 'unmatched' : ''}`}
-              data-orig={changed ? token.original : undefined}
+              data-orig={showTooltip && changed ? token.original : undefined}
               onMouseEnter={
                 onHoverWord
                   ? () => {
@@ -534,6 +536,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               <MappedWordDisplay
                 tokens={forwardTokens}
                 hoveredWordIndex={activeWordIndex}
+                onHoverWord={setHoveredWordIndex}
+                showTooltip={false}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}
                 onScroll={() => {
@@ -544,6 +548,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               <WordDisplay
                 text={displayIngglish}
                 hoveredWordIndex={activeWordIndex}
+                onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}
                 onScroll={() => {

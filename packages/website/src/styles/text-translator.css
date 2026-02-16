@@ -138,14 +138,9 @@
     color 0.15s;
 }
 
-.english-words .word-token:hover {
+.word-token:hover {
   background: var(--color-primary);
   color: white;
-}
-
-/* Ingglish side: not interactive, only highlighted via English hover or TTS */
-.ingglish-words .word-token {
-  cursor: default;
 }
 
 .word-token.highlighted {
