@@ -222,15 +222,6 @@ jobs:
           name: build-output
           path: .
 
-      - name: Verify website dist exists
-        run: |
-          echo "=== Check dist ==="
-          ls packages/website/dist/index.html 2>&1 || true
-          echo "=== Find dist files ==="
-          find . -path '*/website/dist/*' -name 'index.html' 2>/dev/null | head -5 || true
-          echo "=== Artifact root ==="
-          ls -d packages/*/dist 2>/dev/null || true
-
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(npm ls @playwright/test --json | jq -r '.. | .["@playwright/test"]? | .version? // empty' | head -1)" >> $GITHUB_OUTPUT
