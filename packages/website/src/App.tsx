@@ -331,16 +331,15 @@ function App() {
             <img src="/logo.svg" alt="Ingglish logo" className="logo" />
             <h1>Ingglish</h1>
           </a>
-          {!isLoading && (
-            <button
-              className="subtitle-link"
-              onClick={() => {
-                setActiveTab('guide');
-              }}
-            >
-              What if English spelling made sense?
-            </button>
-          )}
+          <button
+            className="subtitle-link"
+            style={isLoading ? { visibility: 'hidden' } : undefined}
+            onClick={() => {
+              setActiveTab('guide');
+            }}
+          >
+            What if English spelling made sense?
+          </button>
         </div>
       </header>
 
