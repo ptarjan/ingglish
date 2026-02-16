@@ -436,7 +436,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | [Bashkir](https://en.wikipedia.org/wiki/Bashkir_language)/[Turkmen](https://en.wikipedia.org/wiki/Turkmen_language) | θ/s | (Turkic languages with /θ/) |
 
 **Notes:**
-- [Only ~4% of languages have dental fricatives](https://wals.info/chapter/19)—they're genuinely rare
+- [Only ~8% of languages have dental fricatives](https://wals.info/chapter/19)—they're genuinely rare
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
 - We keep 'th' for voiceless /θ/—the intuitive choice
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
@@ -483,7 +483,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | Indonesian | j | jalan (road) |
 | [Malay](https://en.wikipedia.org/wiki/Malay_language) | j | jadi (become) |
 | [Somali](https://en.wikipedia.org/wiki/Somali_language) | j | jaar (year) |
-| [Hindi romanization](https://en.wikipedia.org/wiki/Devanagari) | j | jī (yes) |
+| [Hindi romanization](https://en.wikipedia.org/wiki/Hindi_romanization) | j | jī (yes) |
 
 **Notes:**
 - 'j' for /dʒ/ matches English convention

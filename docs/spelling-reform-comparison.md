@@ -36,7 +36,7 @@ The fundamental problem: teaching something that must later be "un-taught" viola
 
 **[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A collaboration between the Spelling Reform Association and the English Spelling Society with Swedish professor R.E. Zachrisson. Attempted to create a simplified system that preserved word recognition while improving phonetic consistency.
 
-**[Cut Spelling](https://www.spellingsociety.org/) (1992)** - Christopher Upward's system focused on *removing* unnecessary letters rather than respelling. Claimed to eliminate 50% of common spelling errors by cutting redundant letters. Example: "accommodation" → "acomodation."
+**[Cut Spelling](https://en.wikipedia.org/wiki/Cut_Spelling) (1992)** - Christopher Upward's system focused on *removing* unnecessary letters rather than respelling. Claimed to eliminate 50% of common spelling errors by cutting redundant letters. Example: "accommodation" → "acomodation."
 
 **[SoundSpel](https://en.wikipedia.org/wiki/SoundSpel) (1910)** - One of many systems based on Pitman and Ellis's phonogram foundations. Like Truespel and others, attempted full phonetic representation but never achieved adoption.
 
