@@ -669,7 +669,7 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 4. **Doubled vowels follow Finnish/Estonian patterns**: ee, uu are principled choices
 5. **'oo' for /ʊ/ matches English**: words like "book", "good", "look" already use this
 6. **'arr' for /æɹ/ matches English**: words like "carrot", "barrel", "arrow" already use this
-7. **'oh' for /oʊ/ is unusual** but necessary to distinguish from 'ou' (/aʊ/)
+7. **'oh' for /oʊ/ is unusual** but necessary because 'o' is used for /ɑ/
 
 ## Phonemic Orthography Success Stories
 
