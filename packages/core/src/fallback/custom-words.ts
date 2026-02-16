@@ -15,14 +15,25 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — French noun (food), not the verb "to strike"
   fiancee: ['F', 'IY0', 'AA1', 'N', 'S', 'EY1'], // /fiːɑːnˈseɪ/ — CMU has /si/ but should end in /seɪ/
   hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
+  touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU has T UW1 SH (missing final syllable)
+
+  // Accented homographs (diacritics signal different pronunciation)
   résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY1'], // /ˈɹɛz.əˌmeɪ/ — French noun (CV), not verb "to resume"
+  exposé: ['EH2', 'K', 'S', 'P', 'OW2', 'Z', 'EY1'], // /ˌɛk.spoʊˈzeɪ/ — French noun (report), not verb "to expose"
 
   // Foreign loanwords not in CMU dictionary
-  doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE1', 'NG', 'ER0'], // /ˈdɑː.pəl.ɡæŋ.ər/
+  brulee: ['B', 'R', 'UW0', 'L', 'EY1'], // /bɹuːˈleɪ/ — as in crème brûlée
+  doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE2', 'NG', 'ER0'], // /ˈdɑː.pəl.ˌɡæŋ.ər/
+  flambe: ['F', 'L', 'AA0', 'M', 'B', 'EY1'], // /flɑːmˈbeɪ/
   gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'], // /ɡəˈʃtɑːlt/
+  manana: ['M', 'AA0', 'N', 'Y', 'AA1', 'N', 'AH0'], // /mɑːˈnjɑːnə/ — Spanish: tomorrow
+  negligee: ['N', 'EH1', 'G', 'L', 'AH0', 'ZH', 'EY2'], // /ˈnɛɡlɪˌʒeɪ/
+  patisserie: ['P', 'AH0', 'T', 'IH1', 'S', 'ER0', 'IY0'], // /pəˈtɪsəɹi/
+  pinata: ['P', 'IH0', 'N', 'Y', 'AA1', 'T', 'AH0'], // /pɪnˈjɑːtə/ — Spanish: party game
+  soupcon: ['S', 'UW1', 'P', 'S', 'AA0', 'N'], // /ˈsuːpsɒn/ — French: a tiny amount
 
   // Irregular words not in CMU dictionary
-  chamois: ['SH', 'AE1', 'M', 'W', 'AA1'], // /ˈʃæm.wɑː/
+  chamois: ['SH', 'AE1', 'M', 'W', 'AA0'], // /ˈʃæm.wɑː/
   cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'], // /ˈtʃʌm.li/
   drachm: ['D', 'R', 'AE1', 'M'], // /dræm/ — silent ch
   islington: ['IH1', 'Z', 'L', 'IH0', 'NG', 'T', 'AH0', 'N'], // /ˈɪz.lɪŋ.tən/
