@@ -113,7 +113,7 @@ This is problematic because spellings would collide or create confusing false co
 - "store" → **stor** (clearly different from "star")
 - "fair" → **fair** (distinct from "fur" → "fer")
 - "carry" → **karree** (distinct from "car" → "kar")
-- "beard" → **beerd** (distinct from "bird" → "berd")
+- "beer" → **beer** (identical! — without the rule it would be "bir")
 
 The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, AE, and IH vowels use their regular spellings (o, aw, e, a, i).
 
