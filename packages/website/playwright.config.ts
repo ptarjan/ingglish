@@ -8,19 +8,19 @@ export default defineConfig({
   // More workers since tests are I/O-bound (waiting for pages, not CPU)
   workers: process.env.CI ? 4 : undefined,
   reporter: 'list',
-  // Reasonable timeouts - allow for React hydration + dictionary load
-  timeout: 10000,
+  // Timeouts: dictionary load + React hydration can take 10-15s on slow CI webkit
+  timeout: 30000,
   expect: {
-    timeout: 5000,
+    timeout: 10000,
   },
   use: {
     baseURL: 'http://localhost:3000',
     // Capture on failure for debugging
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    // Allow time for React to render
-    actionTimeout: 5000,
-    navigationTimeout: 5000,
+    // Allow time for React to render + dictionary load
+    actionTimeout: 10000,
+    navigationTimeout: 15000,
   },
   projects: [
     {

@@ -1,6 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { blockExternalNetwork } from './test-utils';
 
+/**
+ * Helper: wait for the app to fully load (header visible, spinner gone).
+ * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
+ */
+async function waitForAppLoad(page: import('@playwright/test').Page) {
+  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
+}
+
 test.describe('Layout Stability (CLS)', () => {
   test('app shell is present during dictionary loading', async ({ page }) => {
     await blockExternalNetwork(page);
@@ -9,7 +18,7 @@ test.describe('Layout Stability (CLS)', () => {
     await page.goto('/');
 
     // The .app wrapper and header should be present from the start (static shell in index.html)
-    await expect(page.locator('.app')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.app')).toBeVisible({ timeout: 20000 });
     await expect(page.locator('.header h1')).toBeVisible();
     await expect(page.locator('.logo')).toBeVisible();
 
@@ -21,7 +30,7 @@ test.describe('Layout Stability (CLS)', () => {
     }
 
     // Wait for dictionary to finish loading
-    await expect(spinner).not.toBeVisible({ timeout: 15000 });
+    await expect(spinner).not.toBeVisible({ timeout: 20000 });
 
     // After loading, .app wrapper and header should still be the same elements
     await expect(page.locator('.app')).toBeVisible();
@@ -66,10 +75,7 @@ test.describe('Layout Stability (CLS)', () => {
     });
 
     await page.goto('/');
-
-    // Wait for app to fully load
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
 
     // Wait for any post-load layout shifts to settle
     await page.waitForTimeout(500);
@@ -100,7 +106,7 @@ test.describe('Layout Stability (CLS)', () => {
   test('progressive controls do not shift when stepping', async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
 
     // Scroll to the progressive section
     const controls = page.locator('.progressive-controls');
@@ -130,8 +136,7 @@ test.describe('Text Translator', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/text');
-    // Wait for dictionary to load
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
   });
 
   test('displays header with logo and title', async ({ page }) => {
@@ -224,7 +229,7 @@ test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/text');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
   });
 
   test('switches to URL translator tab', async ({ page }) => {
@@ -245,7 +250,7 @@ test.describe('Tab Navigation', () => {
 
   test('old hash URL redirects to path URL', async ({ page }) => {
     await page.goto('/#guide');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
     await expect(page.locator('.spelling-guide')).toBeVisible();
     expect(new URL(page.url()).pathname).toBe('/guide');
   });
@@ -255,9 +260,9 @@ test.describe('Spelling Guide', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/guide');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
-    // Wait for spelling guide content to render (not just the header)
-    await expect(page.locator('.spelling-guide')).toBeVisible({ timeout: 10000 });
+    await waitForAppLoad(page);
+    // Wait for spelling guide content to render
+    await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
   test('displays vowel mappings table', async ({ page }) => {
