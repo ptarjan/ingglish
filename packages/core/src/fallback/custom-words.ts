@@ -12,7 +12,12 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
   // CMU dictionary corrections
+  buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — French noun (food), not the verb "to strike"
   hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
+
+  // Foreign loanwords not in CMU dictionary
+  doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE1', 'NG', 'ER0'], // /ˈdɑː.pəl.ɡæŋ.ər/
+  gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'], // /ɡəˈʃtɑːlt/
 
   // Irregular words not in CMU dictionary
   chamois: ['SH', 'AE1', 'M', 'W', 'AA1'], // /ˈʃæm.wɑː/
