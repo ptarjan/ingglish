@@ -2,6 +2,12 @@
 
 This document explains the core design decisions behind Ingglish: why we made specific choices, what alternatives we considered, and what we learned along the way.
 
+## Motivation
+
+My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The word "ough" alone makes 6 different sounds: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner — whether a child or a non-native speaker — pays this cost.
+
+I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign — just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
+
 ## Core Principles
 
 1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences receive dedicated spellings like "air" and "ar" — see the phoneme mapping for details.)
