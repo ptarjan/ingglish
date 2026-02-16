@@ -341,8 +341,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     return null;
   }, [englishCharIndex, ingglishCharIndex, displayEnglish]);
 
-  // Spoken word takes precedence over hover
-  const activeWordIndex = spokenWordIndex ?? hoveredWordIndex;
+  // Hover takes precedence over TTS so users can explore during playback
+  const activeWordIndex = hoveredWordIndex ?? spokenWordIndex;
   const isSpeaking = speakingEnglish || speakingIngglish;
 
   // Auto-scroll the highlighted word into view during TTS
