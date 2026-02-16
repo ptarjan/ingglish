@@ -9,11 +9,16 @@ interface TranslatedWord {
 }
 
 function translateLine(line: string): TranslatedWord[] {
-  return line.split(/(\s+)/).map((token) => {
+  // Translate the full line so sentence-start capitalization applies
+  const fullTranslation = translateSync(line, 'ingglish');
+  const englishTokens = line.split(/(\s+)/);
+  const ingglishTokens = fullTranslation.split(/(\s+)/);
+
+  return englishTokens.map((token, i) => {
     if (/^\s+$/.test(token)) {
       return { english: token, ingglish: token, changed: false };
     }
-    const translated = translateSync(token, 'ingglish');
+    const translated = ingglishTokens[i] ?? token;
     return {
       english: token,
       ingglish: translated,
