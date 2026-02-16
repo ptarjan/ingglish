@@ -487,7 +487,9 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // Update badge
   const badge = document.getElementById('ingglish-badge');
   if (badge) {
-    badge.textContent = format === 'ingglish' ? 'Ingglish' : 'IPA';
+    badge.textContent =
+      ({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[format] ??
+      format;
   }
 
   // Update observer with new translations
@@ -517,7 +519,9 @@ function addTranslationBadge(format: OutputFormat): void {
 
   const badge = document.createElement('div');
   badge.id = 'ingglish-badge';
-  badge.textContent = format === 'ingglish' ? 'Ingglish' : 'IPA';
+  badge.textContent =
+    ({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[format] ??
+    format;
   badge.style.cssText = `
     position: fixed;
     bottom: 20px;

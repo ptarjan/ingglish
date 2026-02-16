@@ -433,7 +433,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
         <div className="input-section ingglish-section">
           <div className="section-header">
-            <h2>{format === 'ingglish' ? 'Ingglish' : 'IPA'}</h2>
+            <h2>
+              {({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[
+                format
+              ] ?? format}
+            </h2>
             <div className="button-group">
               <button
                 onClick={handleCopyIngglish}
@@ -458,7 +462,13 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               }
             }}
             placeholder={
-              format === 'ingglish' ? 'Taip Ingglish tekst heer...' : '/taɪp aɪ piː eɪ hɪɹ.../'
+              (
+                {
+                  ingglish: 'Taip Ingglish tekst heer...',
+                  ipa: '/taɪp aɪ piː eɪ hɪɹ.../',
+                  shavian: '𐑑𐑲𐑐 𐑖𐑱𐑝𐑾𐑯 𐑣𐑽...',
+                } as Record<string, string>
+              )[format] ?? ''
             }
             className="text-input"
             spellCheck={false}
