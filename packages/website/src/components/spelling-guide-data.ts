@@ -184,7 +184,7 @@ export const consonantGroups: SoundGroup[] = [
         examples: '**m**an (man), ha**mm**er (hamer), co**mb** (kohm), hy**mn** (him)',
       },
       { phoneme: 'N', examples: 'pe**n** (pen), **n**o (noh), k**n**ife (naif), **gn**at (nat)' },
-      { phoneme: 'NG', examples: 'si**ng** (sing), si**ng**er (singer), thi**n**k (thingk)' },
+      { phoneme: 'NG', examples: 'si**ng** (sing), thi**n**k (thingk), to**ngue** (tung)' },
     ],
   },
   {
