@@ -134,7 +134,7 @@ function PoemCard({
 }
 
 export default function Poems() {
-  const { format } = useFormat();
+  const { format, toggleFormat } = useFormat();
   const formatLabel = FORMAT_LABELS[format] ?? format;
 
   return (
@@ -142,7 +142,11 @@ export default function Poems() {
       <h2>Poems About English Spelling</h2>
       <p className="poems-page-subtitle">
         Famous poems that highlight the absurdities of English spelling and pronunciation. Toggle
-        each poem to see its {formatLabel} translation.
+        each poem to see its{' '}
+        <button className="format-cycle-btn format-cycle-inline" onClick={toggleFormat}>
+          {formatLabel} <span aria-hidden="true">&#x21C5;</span>
+        </button>{' '}
+        translation.
       </p>
       {poems.map((poem) => (
         <PoemCard

@@ -65,7 +65,7 @@ interface UrlTranslatorProps {
 }
 
 function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorProps) {
-  const { format } = useFormat();
+  const { format, toggleFormat } = useFormat();
   const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
     useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
@@ -141,6 +141,14 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
     }
   }, [onShare, url, copyShare]);
 
+  const formatLabel =
+    (
+      { ingglish: 'Ingglish', ipa: 'IPA', shavian: 'Shavian', deseret: 'Deseret' } as Record<
+        string,
+        string
+      >
+    )[format] ?? format;
+
   return (
     <div className="url-translator">
       <form ref={formRef} onSubmit={handleSubmit} className="url-form">
@@ -159,6 +167,9 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
           disabled={isLoading}
         >
           {isLoading ? 'Loading...' : 'Translate'}
+        </button>
+        <button type="button" className="btn-secondary format-cycle-btn" onClick={toggleFormat}>
+          {formatLabel} &#x21C5;
         </button>
         <button type="button" onClick={clear} className="btn-secondary">
           Clear

@@ -11,6 +11,13 @@ import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';
 
+const FORMAT_LABELS = {
+  ingglish: 'Ingglish',
+  ipa: 'IPA',
+  shavian: 'Shavian',
+  deseret: 'Deseret',
+};
+
 function SpeakerIcon() {
   return (
     <svg
@@ -183,7 +190,7 @@ interface TextTranslatorProps {
 }
 
 function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
-  const { format } = useFormat();
+  const { format, toggleFormat } = useFormat();
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
@@ -434,14 +441,16 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>
-              {(
-                {
-                  ingglish: 'Ingglish',
-                  ipa: 'IPA',
-                  shavian: 'Shavian',
-                  deseret: 'Deseret',
-                } as Record<string, string>
-              )[format] ?? format}
+              <button
+                className="format-cycle-btn"
+                onClick={toggleFormat}
+                title="Cycle output format"
+              >
+                {(FORMAT_LABELS as Record<string, string>)[format] ?? format}
+                <span className="format-cycle-icon" aria-hidden="true">
+                  &#x21C5;
+                </span>
+              </button>
             </h2>
             <div className="button-group">
               <button

@@ -3,7 +3,6 @@ import { translate } from 'ingglish';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
-import { useFormat } from './contexts/FormatContext';
 
 const UrlTranslator = lazy(() => import('./components/UrlTranslator'));
 const SpellingGuide = lazy(() => import('./components/SpellingGuide'));
@@ -140,7 +139,6 @@ function sendPageView(path: string): void {
 }
 
 function App() {
-  const { format, toggleFormat } = useFormat();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -310,18 +308,7 @@ function App() {
       <title>{meta.title}</title>
       <meta name="description" content={meta.description} />
       <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
-      <div className={`toggle-buttons${activeTab === 'tutorial' ? ' tutorial-only' : ''}`}>
-        {(activeTab === 'text' || activeTab === 'url' || activeTab === 'poems') && !isLoading && (
-          <button
-            className="format-toggle"
-            onClick={toggleFormat}
-            aria-label="Toggle output format"
-            title="Cycle output format"
-          >
-            {{ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯', deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻' }[format] ??
-              format}
-          </button>
-        )}
+      <div className="toggle-buttons">
         <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
           {getThemeIcon()}
         </button>
