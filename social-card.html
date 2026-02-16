@@ -5,7 +5,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #1a1a2e;
+    background: #0f172a;
     color: #eee;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     display: flex;
@@ -14,110 +14,231 @@
     min-height: 100vh;
   }
   .card {
-    width: 800px;
-    padding: 48px 56px;
-    background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
-    border-radius: 20px;
+    width: 900px;
+    padding: 52px 60px;
+    background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 24px;
   }
   .title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #e2e8f0;
-    margin-bottom: 8px;
+    font-size: 36px;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
   }
   .subtitle {
-    font-size: 16px;
+    font-size: 18px;
     color: #94a3b8;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
   }
-  .section-label {
-    font-size: 13px;
-    font-weight: 600;
+
+  /* The sentence section */
+  .sentence-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .row-label {
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: #64748b;
-    margin-bottom: 12px;
+    padding-top: 22px;
   }
-  .english {
-    font-size: 22px;
-    line-height: 1.6;
+  .sentence {
+    font-size: 21px;
+    line-height: 1.7;
+    padding: 18px 24px;
+    border-radius: 12px;
+  }
+  .sentence.english {
     color: #cbd5e1;
-    margin-bottom: 28px;
-    padding: 20px 24px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 12px;
-    border-left: 3px solid #475569;
+    background: rgba(248, 113, 113, 0.06);
+    border-left: 3px solid #f87171;
   }
-  .english .ough { color: #f87171; font-weight: 600; }
-  .ingglish {
-    font-size: 22px;
-    line-height: 1.6;
+  .sentence.phonemic {
     color: #e2e8f0;
-    margin-bottom: 32px;
-    padding: 20px 24px;
     background: rgba(74, 222, 128, 0.06);
-    border-radius: 12px;
     border-left: 3px solid #4ade80;
+    margin-top: 8px;
   }
-  .ingglish .sound { color: #4ade80; font-weight: 600; }
-  .breakdown {
-    display: flex;
-    flex-wrap: wrap;
+  .ough { color: #f87171; font-weight: 700; }
+  .sound { color: #4ade80; font-weight: 700; }
+
+  /* Guide table */
+  .guide-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+  .guide-table {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 10px;
     margin-bottom: 36px;
   }
-  .breakdown .chip {
+  .guide-cell {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .guide-cell .eng-word {
+    font-size: 16px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+  }
+  .guide-cell .eng-word .ough { font-size: 16px; }
+  .guide-cell .arrow {
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+  .guide-cell .phonemic-sound {
+    font-size: 22px;
+    font-weight: 800;
+    color: #4ade80;
+  }
+  .guide-cell .ipa {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* More examples */
+  .more-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+  .more-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .more-cell {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.06);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 15px;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 16px;
   }
-  .chip .word { color: #94a3b8; }
-  .chip .arrow { color: #475569; }
-  .chip .result { color: #4ade80; font-weight: 600; }
+  .more-cell .from { color: #94a3b8; }
+  .more-cell .to { color: #4ade80; font-weight: 600; }
+  .more-cell .arr { color: #475569; font-size: 13px; }
+
   .footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
   }
-  .logo { font-size: 20px; font-weight: 700; color: #e2e8f0; }
-  .url { font-size: 16px; color: #64748b; }
+  .footer-left {
+    font-size: 13px;
+    color: #475569;
+  }
+  .footer-right {
+    font-size: 14px;
+    color: #64748b;
+  }
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="title">One spelling, six sounds.</div>
-  <div class="subtitle">The letters "ough" are pronounced differently in every word below.</div>
+  <div class="title">A guide to the 7 sounds of "ough"</div>
+  <div class="subtitle">Same four letters, seven completely different pronunciations</div>
 
-  <div class="section-label">English</div>
-  <div class="english">
-    Th<span class="ough">ough</span> I th<span class="ough">ough</span>t the r<span class="ough">ough</span> c<span class="ough">ough</span> was en<span class="ough">ough</span>, I pl<span class="ough">ough</span>ed thr<span class="ough">ough</span>.
+  <!-- Sentence comparison -->
+  <div class="sentence-row">
+    <div class="row-label">English</div>
+    <div class="sentence english">
+      Th<span class="ough">ough</span> I th<span class="ough">ough</span>t the r<span class="ough">ough</span> c<span class="ough">ough</span> was en<span class="ough">ough</span>, I pl<span class="ough">ough</span>ed thr<span class="ough">ough</span>.
+    </div>
+  </div>
+  <div class="sentence-row" style="margin-top: -24px;">
+    <div class="row-label">Sounds</div>
+    <div class="sentence phonemic">
+      Dh<span class="sound">oh</span> ai th<span class="sound">aw</span>t dhu r<span class="sound">u</span>f k<span class="sound">o</span>f woz in<span class="sound">u</span>f, ai pl<span class="sound">ou</span>d thr<span class="sound">uu</span>.
+    </div>
   </div>
 
-  <div class="section-label">Ingglish</div>
-  <div class="ingglish">
-    Dh<span class="sound">oh</span> ai th<span class="sound">aw</span>t dhu r<span class="sound">u</span>f k<span class="sound">o</span>f woz in<span class="sound">u</span>f, ai pl<span class="sound">ou</span>d thr<span class="sound">uu</span>.
+  <!-- Guide table -->
+  <div class="guide-label">Each "ough" decoded</div>
+  <div class="guide-table">
+    <div class="guide-cell">
+      <div class="eng-word">th<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">oh</div>
+      <div class="ipa">/oʊ/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">th<span class="ough">ough</span>t</div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">aw</div>
+      <div class="ipa">/ɔː/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">r<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">uf</div>
+      <div class="ipa">/ʌf/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">c<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">of</div>
+      <div class="ipa">/ɔf/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">en<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">uf</div>
+      <div class="ipa">/ʌf/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">pl<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">ou</div>
+      <div class="ipa">/aʊ/</div>
+    </div>
+    <div class="guide-cell">
+      <div class="eng-word">thr<span class="ough">ough</span></div>
+      <div class="arrow">sounds like</div>
+      <div class="phonemic-sound">uu</div>
+      <div class="ipa">/uː/</div>
+    </div>
   </div>
 
-  <div class="section-label">Each "ough" → its actual sound</div>
-  <div class="breakdown">
-    <div class="chip"><span class="word">though</span><span class="arrow">→</span><span class="result">oh</span></div>
-    <div class="chip"><span class="word">thought</span><span class="arrow">→</span><span class="result">aw</span></div>
-    <div class="chip"><span class="word">rough</span><span class="arrow">→</span><span class="result">u</span></div>
-    <div class="chip"><span class="word">cough</span><span class="arrow">→</span><span class="result">o</span></div>
-    <div class="chip"><span class="word">enough</span><span class="arrow">→</span><span class="result">u</span></div>
-    <div class="chip"><span class="word">ploughed</span><span class="arrow">→</span><span class="result">ou</span></div>
-    <div class="chip"><span class="word">through</span><span class="arrow">→</span><span class="result">uu</span></div>
+  <!-- More examples of English weirdness -->
+  <div class="more-label">More English spelling vs actual sounds</div>
+  <div class="more-grid">
+    <div class="more-cell"><span class="from">knife</span><span class="arr">→</span><span class="to">naif</span></div>
+    <div class="more-cell"><span class="from">colonel</span><span class="arr">→</span><span class="to">kernul</span></div>
+    <div class="more-cell"><span class="from">island</span><span class="arr">→</span><span class="to">ailund</span></div>
+    <div class="more-cell"><span class="from">psychology</span><span class="arr">→</span><span class="to">saikolujee</span></div>
+    <div class="more-cell"><span class="from">queue</span><span class="arr">→</span><span class="to">kyuu</span></div>
+    <div class="more-cell"><span class="from">Wednesday</span><span class="arr">→</span><span class="to">Wenzdee</span></div>
+    <div class="more-cell"><span class="from">receipt</span><span class="arr">→</span><span class="to">riseet</span></div>
+    <div class="more-cell"><span class="from">February</span><span class="arr">→</span><span class="to">Febyuwairee</span></div>
   </div>
 
   <div class="footer">
-    <div class="logo">Ingglish</div>
-    <div class="url">ingglish.com</div>
+    <div class="footer-left">Phonemic spellings based on the CMU Pronouncing Dictionary</div>
+    <div class="footer-right">ingglish.com</div>
   </div>
 </div>
 </body>
