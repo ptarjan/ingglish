@@ -181,7 +181,8 @@ describe('unknown-words', () => {
     });
 
     it('should handle standalone q', () => {
-      expect(wordToArpabet('qi')).toEqual(['K', 'IH1']);
+      // Custom: word-final I → IY (qi is /tʃiː/)
+      expect(wordToArpabet('qi')).toEqual(['K', 'IY1']);
       expect(wordToArpabet('qat')).toEqual(['K', 'AE1', 'T']);
     });
 

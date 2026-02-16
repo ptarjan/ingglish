@@ -196,6 +196,15 @@ const NRL_RULES: Record<string, string[]> = {
     ' :[I]%=/AY/',
     '[I]%=/IY/',
     '[IE]=/IY/',
+    // Custom: multi-char targets must come before single-char [I] rules
+    // Custom: -ify → schwa + F AY (modify, qualify, simplify)
+    '[IFY]=/AX F AY/',
+    // Custom: -ity suffix with schwa (city, quality, majority)
+    '[ITY] =/AX T IY/',
+    // Custom: -ible suffix with schwa (possible, terrible)
+    '[IBLE]=/AX B AX L/',
+    // Custom: -ious suffix (curious, previous, serious)
+    '[IOUS]=/IY AX S/',
     '[I]^+:#=/IH/',
     '[IR]#=/AY R/',
     '[IZ]%=/AY Z/',
@@ -212,10 +221,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[IGN]^=/AY N/',
     '[IGN]%=/AY N/',
     '[IQUE]=/IY K/',
-    // Custom: -ible suffix with schwa (possible, terrible)
-    '[IBLE]=/AX B AX L/',
-    // Custom: -ious suffix (curious, previous, serious)
-    '[IOUS]=/IY AX S/',
+    // Custom: word-final I → IY (taxi, sushi, bikini)
+    '^[I] =/IY/',
     '[I]=/IH/',
   ],
   J: ['[J]=/JH/'],
@@ -225,6 +232,8 @@ const NRL_RULES: Record<string, string[]> = {
     'L[L]=/ /',
     // Custom: -less must come before L% to prevent schwa insertion
     '#:[LESS] =/L AX S/',
+    // Custom: -ling must come before L% to prevent schwa insertion
+    '[LING]=/L IH NX/',
     '#^:[L]%=/AX L/',
     '[LEAD]=/L IY D/',
     '[L]=/L/',
@@ -235,6 +244,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[MB] =/M/',
     // Custom: silent n after m at word end (hymn, autumn, column)
     '[MN] =/M/',
+    // Custom: -ments plural (moments, departments)
+    '#:[MENTS] =/M AX N T S/',
     // Custom: -ment suffix with schwa (moment, department)
     '#:[MENT] =/M AX N T/',
     // Custom: -man suffix with schwa (fireman, policeman)
@@ -262,6 +273,8 @@ const NRL_RULES: Record<string, string[]> = {
   O: [
     '[OF] =/AX V/',
     '[OROUGH]=/ER OW/',
+    // Custom: -ory suffix (history, story, category) — must be before #:[OR]
+    '#:[ORY] =/ER IY/',
     '#:[OR] =/ER/',
     '#:[ORS] =/ER Z/',
     '[OR]=/AO R/',
@@ -354,9 +367,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#^:#[S] =/S/',
     'U[S] =/S/',
     ' :#[S] =/Z/',
-    // Custom: SCH before consonant → /ʃ/ (schnapps, schnauzer, schmaltz)
-    ' [SCH]^=/SH/',
-    ' [SCH]=/S K/',
+    // Custom: SCH → /ʃ/ (schafer, schmidt, school — most SCH words are German)
+    ' [SCH]=/SH/',
     '[S]C+=/ /',
     '#[SM]=/Z M/',
     "#[SN] '=/Z AX N/",
@@ -429,6 +441,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[WHOL]=/HH OW L/',
     '[WHO]=/HH UW/',
     '[WH]=/WH/',
+    // Custom: -ward suffix (forward, backward, awkward)
+    '#:[WARD] =/W ER D/',
     '[WAR]=/W AO R/',
     '[WOR]^=/W ER/',
     '[WR]=/R/',
