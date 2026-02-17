@@ -21,7 +21,7 @@ describe('async API loads only required dictionaries', () => {
     const loadDictSpy = vi.spyOn(dictModule, 'loadDictionary');
     loadDictSpy.mockClear();
 
-    await reverseTranslate('huloh werld');
+    await reverseTranslate('haloh werld');
 
     expect(loadDictSpy).not.toHaveBeenCalled();
     loadDictSpy.mockRestore();

@@ -354,7 +354,7 @@ describe('unknown-words', () => {
     });
 
     it('should translate words with tion/sion', () => {
-      // NRL: A before TIO gets long A treatment → nayshun
+      // NRL: A before TIO gets long A treatment → nayshan
       expect(translateWithRules('nation')).toBe('nayshan');
       expect(translateWithRules('vision')).toBe('vizhan');
     });

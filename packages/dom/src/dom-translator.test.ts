@@ -473,7 +473,7 @@ describe('dom-translator', () => {
   describe('restoreDOM', () => {
     it('should restore text content from word spans', () => {
       document.body.innerHTML =
-        '<p><span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></p>';
+        '<p><span class="ingglish-word" data-ingglish-orig="Hello">Haloh</span> <span class="ingglish-word" data-ingglish-orig="world">werld</span></p>';
 
       restoreDOM(document.body);
 
@@ -483,7 +483,7 @@ describe('dom-translator', () => {
 
     it('should restore attributes from data-ingglish-original-* attributes', () => {
       document.body.innerHTML =
-        '<img alt="Huloh" data-ingglish-original-alt="Hello" title="Klik" data-ingglish-original-title="Click">' +
+        '<img alt="Haloh" data-ingglish-original-alt="Hello" title="Klik" data-ingglish-original-title="Click">' +
         '<input placeholder="Tiep" data-ingglish-original-placeholder="Type">';
 
       restoreDOM(document.body);
@@ -503,7 +503,7 @@ describe('dom-translator', () => {
     it('should preserve nested DOM structure when restoring', () => {
       document.body.innerHTML = `
         <p>
-          <span class="ingglish-word" data-ingglish-orig="Hello">Huloh</span>
+          <span class="ingglish-word" data-ingglish-orig="Hello">Haloh</span>
           <strong>important</strong>
           <span class="ingglish-word" data-ingglish-orig="world">werld</span>
         </p>
@@ -543,7 +543,7 @@ describe('dom-translator', () => {
       // First cycle
       await applyTranslationsMap(
         document.body,
-        { hello: 'huloh', world: 'werld' },
+        { hello: 'haloh', world: 'werld' },
         { showTooltips: true }
       );
       expect(document.body.textContent).not.toBe(originalText);
@@ -582,7 +582,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'huloh', world: 'werld', test: 'tust' },
+        { hello: 'haloh', world: 'werld', test: 'tust' },
         { showTooltips: true }
       );
 
@@ -606,7 +606,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'huloh', world: 'werld', how: 'how', are: 'ar', you: 'yuu' },
+        { hello: 'haloh', world: 'werld', how: 'how', are: 'ar', you: 'yuu' },
         { showTooltips: true }
       );
 
@@ -667,7 +667,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'huloh', world: 'werld' },
+        { hello: 'haloh', world: 'werld' },
         { showTooltips: true }
       );
 

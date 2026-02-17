@@ -43,12 +43,12 @@ Output shows each word's translation and reverse translation:
 ```
 ✓ "white" -> "wait" -> "white"
 ✓ "wait" -> "wayt" -> "wait"
-✓ "hello" -> "huloh" -> "hello"
+✓ "hello" -> "haloh" -> "hello"
 ```
 
 For reverse translation (Ingglish → English):
 ```bash
-npm run translate -- -r "huloh werld"
+npm run translate -- -r "haloh werld"
 ```
 
 This is useful for debugging translation issues and understanding how specific words behave.

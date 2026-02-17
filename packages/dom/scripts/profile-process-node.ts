@@ -37,7 +37,7 @@ async function main() {
   const testText =
     'The quick brown fox jumps over the lazy dog. This is a test sentence with words.';
   const translations: Record<string, string> = {
-    the: 'dhuh',
+    the: 'dha',
     quick: 'kwik',
     brown: 'brown',
     fox: 'foks',
@@ -47,9 +47,9 @@ async function main() {
     dog: 'dog',
     this: 'dhis',
     is: 'iz',
-    a: 'uh',
+    a: 'a',
     test: 'test',
-    sentence: 'sentens',
+    sentence: 'sentans',
     with: 'with',
     words: 'werdz',
   };

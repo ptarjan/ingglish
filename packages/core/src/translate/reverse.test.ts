@@ -235,7 +235,7 @@ describe('reverse-translator', () => {
 
   describe('isLikelyIngglish', () => {
     it('should detect Ingglish patterns', () => {
-      expect(isLikelyIngglish('dhu kat')).toBe(true); // "dh" pattern
+      expect(isLikelyIngglish('dha kat')).toBe(true); // "dh" pattern
     });
 
     it('should detect English patterns', () => {
@@ -387,7 +387,7 @@ describe('reverse-translator', () => {
       const tokens = reverseTranslateSyncWithMapping('dha zzxq kat');
       const words = tokens.filter((t) => t.isWord);
       expect(words.length).toBe(3);
-      // "dhu" should match (-> "the")
+      // "dha" should match (-> "the")
       expect(words[0].matched).toBe(true);
       // "zzxq" should not match
       expect(words[1].matched).toBe(false);

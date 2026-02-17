@@ -21,7 +21,7 @@ export const vowelGroups: SoundGroup[] = [
   {
     name: 'Short Vowels',
     sounds: [
-      { phoneme: 'AE', examples: 'b**a**d (bad), pl**ai**d (plad), s**al**mon (samun)' },
+      { phoneme: 'AE', examples: 'b**a**d (bad), pl**ai**d (plad), s**al**mon (saman)' },
       {
         phoneme: 'EH',
         examples:
@@ -35,7 +35,7 @@ export const vowelGroups: SoundGroup[] = [
       { phoneme: 'AA', examples: 'h**o**t (hot), w**a**tch (woch)' },
       {
         phoneme: 'AH',
-        examples: 'b**u**t (but), l**o**ve (luv), bl**oo**d (blud), d**ou**ble (dubul)',
+        examples: 'b**u**t (but), l**o**ve (luv), bl**oo**d (blud), d**ou**ble (dubal)',
       },
     ],
   },
@@ -84,7 +84,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         phoneme: 'AH0',
-        examples: '**a**bout (ubout), **u**pon (upon), penc**i**l (pensul), lem**o**n (lemun)',
+        examples: '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman)',
       },
     ],
   },
@@ -156,7 +156,7 @@ export const consonantGroups: SoundGroup[] = [
       },
       { phoneme: 'V', examples: '**v**an (van)' },
       { phoneme: 'TH', examples: '**th**ink (thingk)' },
-      { phoneme: 'DH', examples: '**th**e (dhu)' },
+      { phoneme: 'DH', examples: '**th**e (dha)' },
       {
         phoneme: 'S',
         examples: '**s**at (sat), mi**ss** (mis), **c**ity (sitee), **sc**ene (seen)',
@@ -165,9 +165,9 @@ export const consonantGroups: SoundGroup[] = [
       {
         phoneme: 'SH',
         examples:
-          '**sh**e (shee), na**ti**on (nayshun), o**ce**an (ohshun), mi**ssi**on (mishun), **su**gar (shooger)',
+          '**sh**e (shee), na**ti**on (nayshan), o**ce**an (ohshan), mi**ssi**on (mishan), **su**gar (shooger)',
       },
-      { phoneme: 'ZH', examples: 'mea**s**ure (mezher), vi**s**ion (vizhun), bei**ge** (beyzh)' },
+      { phoneme: 'ZH', examples: 'mea**s**ure (mezher), vi**s**ion (vizhan), bei**ge** (bayzh)' },
       { phoneme: 'HH', examples: '**h**at (hat), w**h**o (huu)' },
     ],
   },
@@ -175,7 +175,7 @@ export const consonantGroups: SoundGroup[] = [
     name: 'Affricates',
     sounds: [
       { phoneme: 'CH', examples: '**ch**at (chat), ba**tch** (bach), na**t**ure (naycher)' },
-      { phoneme: 'JH', examples: '**j**ust (just), a**g**ent (eyjunt), e**dge** (ej)' },
+      { phoneme: 'JH', examples: '**j**ust (just), a**g**ent (ayjant), e**dge** (ej)' },
     ],
   },
   {

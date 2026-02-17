@@ -18,7 +18,7 @@ describe('language detection', () => {
     });
 
     it('should return false for Ingglish', () => {
-      expect(isLikelyIPA('huloh werld')).toBe(false);
+      expect(isLikelyIPA('haloh werld')).toBe(false);
     });
   });
 
@@ -29,7 +29,7 @@ describe('language detection', () => {
     });
 
     it('should detect Ingglish', () => {
-      expect(detectFormat('dhu kat')).toBe('ingglish');
+      expect(detectFormat('dha kat')).toBe('ingglish');
     });
 
     it('should detect English', () => {

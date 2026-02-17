@@ -88,19 +88,19 @@ async function main() {
     await loadReverseDictionary();
   });
 
-  profile('reverseTranslateWord("huloh") - first call (builds cache)', () => {
-    reverseTranslateWord('huloh');
+  profile('reverseTranslateWord("haloh") - first call (builds cache)', () => {
+    reverseTranslateWord('haloh');
   });
 
-  profile('reverseTranslateWord("huloh") - cached', () => {
-    reverseTranslateWord('huloh');
+  profile('reverseTranslateWord("haloh") - cached', () => {
+    reverseTranslateWord('haloh');
   });
 
   profile('reverseTranslateWord("werld")', () => {
     reverseTranslateWord('werld');
   });
 
-  const inglishText = 'Dhu kwik brown foks jumps over dhu layzee dawg.';
+  const inglishText = 'Dha kwik brown foks jumps over dha layzee dawg.';
   profile(`reverseTranslateText (${inglishText.length} chars)`, () => {
     reverseTranslateText(inglishText);
   });

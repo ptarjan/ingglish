@@ -255,14 +255,14 @@ For why we chose these spellings, see [Design Decisions](design-decisions.md). F
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **u** | ubout (about), sohfu (sofa), bunanu (banana) |
+| **Ingglish** | **a** | about (about), sohfa (sofa), banana (banana) |
 | English | a, e, i, o, u | **a**bout, sof**a**, penc**i**l, mem**o**ry, circ**u**s |
 
 **Notes:**
 - The schwa is the most common vowel sound in English, the unstressed "uh" in many syllables
 - English spells it with any vowel letter depending on etymology
-- Ingglish uses 'u' consistently, same as the stressed /ʌ/ in "but"
-- This creates some visual repetition (banana → bunanu) but maintains phonemic accuracy
+- Ingglish uses 'a' for unstressed schwa (AH0) and 'u' for stressed /ʌ/ (AH1/AH2, as in "but")
+- This creates many identical words (about, banana, again, around) while preserving the schwa/STRUT distinction
 
 ### R-Colored Vowels
 

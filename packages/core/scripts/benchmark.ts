@@ -83,7 +83,7 @@ async function main() {
   const mediumText = 'The quick brown fox jumps over the lazy dog';
   const longText = mediumText.repeat(10);
   const commonWords = ['the', 'hello', 'world', 'computer', 'language'];
-  const ingglishWords = ['huloh', 'werld', 'kumpyooter', 'langwij'];
+  const ingglishWords = ['haloh', 'werld', 'kumpyooter', 'langwij'];
 
   console.log('--- Forward Translation ---');
 
@@ -110,7 +110,7 @@ async function main() {
 
   results.push(
     benchmark('reverseTranslateWord(single)', () => {
-      reverseTranslateWord('huloh');
+      reverseTranslateWord('haloh');
     })
   );
 
@@ -124,7 +124,7 @@ async function main() {
 
   results.push(
     benchmark('reverseTranslateSync(medium text)', () => {
-      reverseTranslateSync('Dhuh kwik brown foks jumps ohver dhuh layzee dog');
+      reverseTranslateSync('Dha kwik brown foks jumps ohver dha layzee dog');
     })
   );
 
@@ -133,7 +133,7 @@ async function main() {
 
   results.push(
     benchmark('ingglishToArpabet(single word)', () => {
-      ingglishToArpabet('huloh');
+      ingglishToArpabet('haloh');
     })
   );
 

@@ -231,14 +231,14 @@ function extractExamples(content: string, filename: string): Example[] {
     }
 
     // Pattern 6: ingglish (english) in Ingglish rows of orthography comparison tables
-    // e.g., | **Ingglish** | **dh** | dhu (the) |
+    // e.g., | **Ingglish** | **dh** | dha (the) |
+    // Also handles comma-separated: | **Ingglish** | **a** | about (about), sohfa (sofa) |
     // The word before parens is Ingglish, the word in parens is English
     if (line.includes('**Ingglish**')) {
-      const parenMatch = /\|\s*([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)\s*\|/.exec(line);
-      if (parenMatch) {
+      for (const parenMatch of line.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
         const ingglish = parenMatch[1].toLowerCase();
         const english = parenMatch[2].toLowerCase();
-        if (!SKIP_WORDS.has(english)) {
+        if (!SKIP_WORDS.has(english) && !SKIP_WORDS.has(ingglish)) {
           examples.push({ english, ingglish, source: filename, line: lineNum });
         }
       }
@@ -261,6 +261,44 @@ function getExamplesFromFile(filepath: string): Example[] {
   }
 }
 
+/**
+ * Extract examples from spelling-guide-data.ts.
+ * Format: 'b**a**d (bad), s**al**mon (saman)' where parenthetical is Ingglish.
+ */
+function extractSpellingGuideExamples(filepath: string): Example[] {
+  try {
+    const content = readFileSync(filepath, 'utf-8');
+    const filename = filepath.split('/').pop() ?? filepath;
+    const examples: Example[] = [];
+    const lines = content.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line.includes('examples:')) {continue;}
+
+      // Strip bold markers: **a**bout → about
+      const stripped = line.replace(/\*\*/g, '');
+
+      // Match all "english (ingglish)" pairs
+      for (const m of stripped.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
+        const english = m[1].toLowerCase();
+        const ingglish = m[2].toLowerCase();
+        if (!SKIP_WORDS.has(english) && english !== ingglish) {
+          examples.push({ english, ingglish, source: filename, line: i + 1 });
+        }
+      }
+    }
+    return examples;
+  } catch {
+    return [];
+  }
+}
+
+const SPELLING_GUIDE_PATH = join(
+  __dirname,
+  '../../../packages/website/src/components/spelling-guide-data.ts'
+);
+
 describe('documentation examples', () => {
   // Collect all examples from docs
   const allExamples: Example[] = [];
@@ -279,6 +317,9 @@ describe('documentation examples', () => {
   for (const file of docFiles) {
     allExamples.push(...getExamplesFromFile(join(DOCS_DIR, file)));
   }
+
+  // Spelling guide data (TypeScript, not markdown)
+  allExamples.push(...extractSpellingGuideExamples(SPELLING_GUIDE_PATH));
 
   // Deduplicate examples (same word may appear multiple times)
   const seenExamples = new Map<string, Example>();

@@ -78,9 +78,9 @@ describe('text utilities', () => {
 
   describe('tokenizePhonetic', () => {
     it('should tokenize with word indices', () => {
-      const tokens = tokenizePhonetic('huloh werld');
+      const tokens = tokenizePhonetic('haloh werld');
       expect(tokens).toHaveLength(3);
-      expect(tokens[0]).toEqual({ text: 'huloh', isWord: true, wordIndex: 0 });
+      expect(tokens[0]).toEqual({ text: 'haloh', isWord: true, wordIndex: 0 });
       expect(tokens[1]).toEqual({ text: ' ', isWord: false, wordIndex: null });
       expect(tokens[2]).toEqual({ text: 'werld', isWord: true, wordIndex: 1 });
     });
@@ -92,13 +92,13 @@ describe('text utilities', () => {
     });
 
     it('should handle accented Ingglish vowels', () => {
-      const tokens = tokenizePhonetic('húloh');
+      const tokens = tokenizePhonetic('háloh');
       expect(tokens).toHaveLength(1);
-      expect(tokens[0].text).toBe('húloh');
+      expect(tokens[0].text).toBe('háloh');
     });
 
     it('should handle punctuation', () => {
-      const tokens = tokenizePhonetic('huloh, werld!');
+      const tokens = tokenizePhonetic('haloh, werld!');
       const words = tokens.filter((t) => t.isWord);
       const nonWords = tokens.filter((t) => !t.isWord);
       expect(words).toHaveLength(2);

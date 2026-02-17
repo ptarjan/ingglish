@@ -158,8 +158,8 @@ describe('translateWord', () => {
   });
 
   it('should preserve case', () => {
-    expect(translateWord('Hello')).toBe('Huloh');
-    expect(translateWord('HELLO')).toBe('HULOH');
+    expect(translateWord('Hello')).toBe('Haloh');
+    expect(translateWord('HELLO')).toBe('HALOH');
   });
 });
 ```

@@ -3,8 +3,8 @@ import { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
 
 describe('ingglishToArpabet', () => {
   it('converts known Ingglish spellings to ARPAbet', () => {
-    // "huloh" = HH AH L OW
-    const result = ingglishToArpabet('huloh');
+    // "haloh" = HH AH L OW
+    const result = ingglishToArpabet('haloh');
     expect(result).not.toBeNull();
     expect(result).toContain('HH');
     expect(result).toContain('L');
@@ -37,8 +37,8 @@ describe('ingglishToArpabet', () => {
   });
 
   it('is case-insensitive', () => {
-    const lower = ingglishToArpabet('huloh');
-    const upper = ingglishToArpabet('HULOH');
+    const lower = ingglishToArpabet('haloh');
+    const upper = ingglishToArpabet('HALOH');
     expect(lower).toEqual(upper);
   });
 
