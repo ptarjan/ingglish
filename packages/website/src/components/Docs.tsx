@@ -188,13 +188,24 @@ function Docs(): JSX.Element {
         return;
       }
 
-      // Transform .md links to path-based links
+      // Transform .md links to path-based links with SPA navigation
       if (href.includes('.md')) {
         const [mdPath, section] = href.split('#');
         const filename = mdPath.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {
           link.setAttribute('href', section ? `/docs/${docId}#${section}` : `/docs/${docId}`);
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveDoc(docId);
+            if (section) {
+              setTimeout(() => {
+                document.getElementById(section)?.scrollIntoView();
+              }, 100);
+            } else {
+              window.scrollTo(0, 0);
+            }
+          });
           return;
         }
       }

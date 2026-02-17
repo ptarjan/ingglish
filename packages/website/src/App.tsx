@@ -315,7 +315,14 @@ function App() {
       </div>
       <header className="header">
         <div className="header-title">
-          <a className="logo-link" href="https://ingglish.com/">
+          <a
+            className="logo-link"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('tutorial');
+            }}
+          >
             <img src="/logo.svg" alt="Ingglish logo" className="logo" />
             <h1>Ingglish</h1>
           </a>
