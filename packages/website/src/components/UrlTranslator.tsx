@@ -168,7 +168,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         >
           {isLoading ? 'Loading...' : 'Translate'}
         </button>
-        <button type="button" className="btn-secondary format-cycle-btn" onClick={toggleFormat}>
+        <button type="button" className="btn-secondary" onClick={toggleFormat}>
           {formatLabel} &#x21C5;
         </button>
         <button type="button" onClick={clear} className="btn-secondary">
