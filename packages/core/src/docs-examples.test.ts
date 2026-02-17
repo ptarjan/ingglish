@@ -274,7 +274,9 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (!line.includes('examples:')) {continue;}
+      if (!line.includes('examples:')) {
+        continue;
+      }
 
       // Strip bold markers: **a**bout → about
       const stripped = line.replace(/\*\*/g, '');
