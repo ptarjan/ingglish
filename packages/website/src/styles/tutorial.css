@@ -422,6 +422,21 @@
   background: var(--color-surface-hover);
 }
 
+/* Grid overlay: both the visible and hidden poem texts occupy the same cell.
+   The taller one (English or Ingglish) sets the container height. */
+.poem-text-sizer {
+  display: grid;
+}
+
+.poem-text-sizer > .poem-text {
+  grid-area: 1 / 1;
+}
+
+.poem-text-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .poem-text {
   font-size: 1.2rem;
   line-height: 2;

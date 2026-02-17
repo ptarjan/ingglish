@@ -615,23 +615,12 @@ function Section5_Progressive() {
 function Section6_Poem() {
   const { ref, visible } = useScrollReveal<HTMLElement>(0.3);
   const [step, setStep] = useState(0);
-  const poemRef = useRef<HTMLDivElement>(null);
-  const lockedHeight = useRef(0);
-
   const [paused, setPaused] = useState(false);
   // Bumped to restart the auto-advance effect (replay or unpause)
   const [advanceToken, setAdvanceToken] = useState(0);
 
   const totalSteps = 24;
   const finished = step > totalSteps;
-
-  // Lock the poem container height before the first word transforms
-  useEffect(() => {
-    if (visible && lockedHeight.current === 0 && poemRef.current) {
-      lockedHeight.current = poemRef.current.offsetHeight;
-      poemRef.current.style.minHeight = `${lockedHeight.current}px`;
-    }
-  }, [visible]);
   const advancing = visible && !finished && !paused;
 
   // Auto-advance steps once visible (24 lines, one at a time).
@@ -684,7 +673,7 @@ function Section6_Poem() {
     <section ref={ref} className="tutorial-section">
       <h2 className="tutorial-heading">Hints on Pronunciation for Foreigners</h2>
       <p className="poem-attribution">&mdash; attributed to T.S. Watt, 1954</p>
-      <div ref={poemRef} className="poem-paragraph">
+      <div className="poem-paragraph">
         <div className="poem-controls">
           {advancing && (
             <button
@@ -722,27 +711,43 @@ function Section6_Poem() {
             </button>
           )}
         </div>
-        <p className="poem-text">
-          {poemWords.map((w, i) => {
-            if (w.e === '\n') {
-              return <br key={i} />;
-            }
-            const transformed = step >= w.s && w.s > 0;
-            const actuallyChanged = w.e.toLowerCase() !== w.i.toLowerCase();
-            const justChanged = step === w.s && w.s > 0 && actuallyChanged;
-            const display = transformed ? w.i : w.e;
-            return (
-              <span key={i}>
-                <span
-                  className={`poem-word${transformed && actuallyChanged ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
-                  data-orig={transformed && actuallyChanged ? w.e : undefined}
-                >
-                  {display}
-                </span>{' '}
-              </span>
-            );
-          })}
-        </p>
+        <div className="poem-text-sizer">
+          {/* Hidden sizer: renders fully-translated text to reserve max height */}
+          <p className="poem-text poem-text-hidden" aria-hidden="true">
+            {poemWords.map((w, i) => {
+              if (w.e === '\n') {
+                return <br key={i} />;
+              }
+              return (
+                <span key={i}>
+                  <span className="poem-word">{w.s > 0 ? w.i : w.e}</span>{' '}
+                </span>
+              );
+            })}
+          </p>
+          {/* Visible poem with animation */}
+          <p className="poem-text">
+            {poemWords.map((w, i) => {
+              if (w.e === '\n') {
+                return <br key={i} />;
+              }
+              const transformed = step >= w.s && w.s > 0;
+              const actuallyChanged = w.e.toLowerCase() !== w.i.toLowerCase();
+              const justChanged = step === w.s && w.s > 0 && actuallyChanged;
+              const display = transformed ? w.i : w.e;
+              return (
+                <span key={i}>
+                  <span
+                    className={`poem-word${transformed && actuallyChanged ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
+                    data-orig={transformed && actuallyChanged ? w.e : undefined}
+                  >
+                    {display}
+                  </span>{' '}
+                </span>
+              );
+            })}
+          </p>
+        </div>
       </div>
     </section>
   );
