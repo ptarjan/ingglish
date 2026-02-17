@@ -2,7 +2,7 @@
 
 How Ingglish spellings compare to other languages. Every choice has precedent in at least one major language.
 
-For the design philosophy and rationale, see [Design Decisions](design-decisions.md).
+For why we chose these spellings, see [Design Decisions](design-decisions.md).
 
 ## Vowels
 
@@ -556,7 +556,7 @@ The liquids (l, r) and glides (w, y) use standard single-letter spellings, unive
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
 - We use **digraphs** rather than diacritics for ASCII compatibility
-- For detailed discussion of diphthong alternatives considered, see [Design Decisions: Diphthongs](design-decisions.md#diphthong-decisions)
+- For more on the diphthong choices, see [Design Decisions: Diphthongs](design-decisions.md#diphthong-decisions)
 
 ## Commonality Ratings Summary
 
@@ -671,9 +671,9 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 - 'arr' for /æɹ/ matches English "carrot", "barrel", "arrow"
 - 'oh' for /oʊ/ is the most unusual choice, but necessary because 'o' is used for /ɑ/
 
-## Phonemic Orthography Success Stories
+## Phonemic Orthographies That Work
 
-For a detailed analysis of why previous English spelling reforms failed (and succeeded), see [Spelling Reform History](spelling-reform-comparison.md).
+For why previous reforms failed and succeeded, see [Spelling Reform History](spelling-reform-comparison.md).
 
 Some phonemic orthographies that use spellings similar to Ingglish:
 

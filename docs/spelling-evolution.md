@@ -170,7 +170,7 @@ This vowel went through the most iteration.
 **Later considered: 'eu' for /uː/ (rejected)**
 - Rationale: Would gain +41 identical words (feud, deuce, neutral) with only 2 losses, the best efficiency of any proposed change
 - Problem: `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers.
-- Lesson: **Identical word count is necessary but not sufficient**: a shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
+- Lesson: Identical word count isn't enough on its own. A shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
 - Verdict: ❌ Rejected - perceptual ambiguity despite excellent numerical efficiency
 
 ## R-Colored Vowel Evolution

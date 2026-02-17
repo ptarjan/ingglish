@@ -10,7 +10,7 @@ I wanted a system where you could look at any word and know exactly how to say i
 
 ## Core Principles
 
-1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences receive dedicated spellings like "air" and "ar"; see the phoneme mapping for details.)
+1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences get their own spellings like "air" and "ar"; see the phoneme mapping for details.)
 2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
 3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
 4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone
@@ -114,7 +114,7 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's the accent most widely heard in movies, music, and online content, so it's the practical default.
 
-Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
+Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from American media.
 
 ## Precedent in Other Languages
 

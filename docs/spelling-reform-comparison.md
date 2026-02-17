@@ -2,7 +2,7 @@
 
 English spelling reform has a 250-year history of spectacular failure. From [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, every major attempt has crashed and burned. So why would Ingglish be any different?
 
-What went wrong with previous reforms, and how Ingglish's design choices avoid the same mistakes.
+What went wrong, and what Ingglish does differently.
 
 ## The Graveyard of Spelling Reforms
 
@@ -42,7 +42,7 @@ Ingglish avoids this entirely: it's not positioned for initial literacy instruct
 
 **Chicago Tribune (1934-1975)** - The newspaper unilaterally adopted 80 reformed spellings including "tho," "thru," "agast," "burocrat," and "iland." After 40 years, they quietly abandoned the experiment.
 
-Even well-designed simplified systems failed to gain traction without institutional backing or network effects. Ingglish sidesteps this with instant bidirectional translation tools that eliminate the need for collective adoption.
+Even well-designed simplified systems failed without institutional backing or network effects. Ingglish sidesteps this: bidirectional translation tools mean you can use it alone.
 
 ### Political Failures
 
@@ -66,7 +66,7 @@ Every phonemic system must choose whose pronunciation to encode. English has rou
 
 The Shavian alphabet fragmented because speakers of different dialects would need to spell words differently to match their accents.
 
-Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). This accent dominates global media and the internet, making it the practical choice for standardization. Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from movies, music, and online content.
+Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's the accent most people hear in movies and online. Non-American speakers will find some mismatches, but the sounds will be familiar.
 
 ### 2. Breaking Etymology
 
@@ -87,36 +87,31 @@ Over 1 billion people read English. Any reform makes existing text harder to rea
 
 Ingglish is a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
-Unlike historical reforms that required institutional buy-in, Ingglish provides tools for individual exploration:
-- **Text translator**: Paste any text to see it in Ingglish instantly
-- **URL translator**: View any webpage translated while preserving layout ([try it on Wikipedia](https://ingglish.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
-- **Chrome extension**: Browse the entire web in Ingglish
-- **Bidirectional translation**: Read Ingglish back to standard English
+You don't need institutional buy-in. The tools exist:
+- **Text translator**: Paste any text to see it in Ingglish
+- **URL translator**: View any webpage translated ([try it on Wikipedia](https://ingglish.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
+- **Chrome extension**: Browse the whole web in Ingglish
+- **Bidirectional translation**: Convert Ingglish back to standard English
 
-You can try phonemic English today without waiting for anyone else to adopt it.
+Try it today. No adoption required.
 
 ### 4. No Central Authority
 
 There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
 
-Ingglish doesn't attempt mandatory adoption. It works through voluntary use by anyone who wants consistent, readable spelling.
+No mandatory adoption needed. Use it if you want, ignore it if you don't.
 
 ### 5. The Network Effect Trap
 
 The value of a spelling system depends on how many people use it. Individual adoption seems pointless without collective adoption.
 
-Bidirectional translation tools eliminate the network effect problem entirely. You can:
-- Convert any English text to Ingglish instantly
-- Convert Ingglish back to English for sharing with others
-- Read content in whichever spelling you prefer
-
-You don't need to wait for anyone else to adopt Ingglish. The tools let you use it today.
+Bidirectional translation breaks the network effect. You can convert English to Ingglish and back instantly, so you never need anyone else to adopt it first.
 
 ### 6. Typography Disasters
 
 The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was that all typeset words had a roughly rectangular shape, making lines of Deseret text monotonous and tiring to read.
 
-Ingglish uses standard Latin letters with their familiar shapes. Word silhouettes remain distinctive.
+Standard Latin letters. Familiar shapes. Word silhouettes stay distinctive.
 
 ### 7. Requires Learning New Characters
 
@@ -136,7 +131,7 @@ This is a cultural bias, not a fundamental problem. Finnish, Italian, Spanish, a
 
 New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
 
-Ingglish is based on stable phoneme-to-grapheme mappings from the CMU dictionary. Every spelling choice is documented in the [Orthography Comparison](orthography-comparison.md), showing how each maps to IPA and compares to other languages.
+Ingglish is based on stable phoneme-to-grapheme mappings from the CMU dictionary. Every spelling is documented with IPA equivalents and cross-language comparisons in the [Orthography Comparison](orthography-comparison.md).
 
 ### 10. Vested Interests
 
@@ -196,16 +191,16 @@ Ingglish could follow the same path:
 - A standard that doesn't privilege native speakers' memorized exceptions
 - Like Hangul's centuries-long rise, recognition builds over time
 
-Traditional spelling may persist in casual contexts indefinitely, and that's fine. The goal is a consistent alternative for contexts where it helps, not a replacement.
+Traditional spelling will probably stick around in casual contexts forever, and that's fine.
 
 ### Design Summary
 
 | Design Choice | Why It Matters |
 |---------------|----------------|
-| 24 ASCII letters only | Works on any keyboard, any device, any platform |
+| 24 ASCII letters only | Works on any keyboard, any device |
 | Standard digraphs (sh, ch, th) | Already familiar to English readers |
 | CMU dictionary basis | Consistent, well-documented pronunciations |
-| Supplementary positioning | No political battle required |
+| Supplements, doesn't replace | No political battle required |
 | Bi-directional translation | Maintains connection to traditional spelling |
 
 ## The Unfamiliarity Hurdle
@@ -233,17 +228,17 @@ Because you're not the only person who reads English. There are roughly 1.5 bill
 - **Rules that aren't** - "I before E except after C" has more exceptions than examples
 - **Unreadable words** - "Lead" rhymes with "read" or "red" depending on context. There's no way to know without memorizing each word.
 
-Fluent readers have already paid this cost. The question is whether every future generation should keep paying it too.
+Fluent readers have already paid this cost. Should every future generation keep paying it too?
 
 ## Conclusion
 
 English spelling is a legacy system. Like imperial measurements, it works, but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
 
-Ingglish offers what metric offered: a consistent alternative. Not a mandate, but an option. The tools exist today.
+Ingglish offers what metric offered: a consistent alternative. Not a mandate, but an option.
 
 Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can succeed in domains where consistency matters while traditional spelling persists elsewhere.
 
-The question isn't whether it'll replace English spelling overnight. Metric took decades. Hangul took centuries. These things take time.
+It won't replace English spelling overnight. Metric took decades. Hangul took centuries.
 
 ## See Also
 
