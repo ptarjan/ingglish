@@ -299,6 +299,12 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ESS] =/AX S/',
     // Custom: -est superlative with schwa (highest, lowest, fastest)
     '#:[EST] =/AX S T/',
+    // Custom: word-end -els/-ets/-ems/-em/-et with schwa (models, tickets, problems)
+    '#:[ELS] =/AX L Z/',
+    '#:[ETS] =/AH T S/',
+    '#:[EMS] =/AX M Z/',
+    '#:[EM] =/AX M/',
+    '#:[ET] =/AH T/',
     '[E]=/EH/',
   ],
   F: [
@@ -646,6 +652,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]DY=/OW/',
     '[O]LI=/OW/',
     '[O]H=/OW/',
+    // Custom: word-end -ot with schwa (carrot, ballot — +10/+16)
+    '#:[OT] =/AH T/',
     '[O]=/AA/',
   ],
   P: [
