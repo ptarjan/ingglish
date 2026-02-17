@@ -42,7 +42,6 @@ export {
   translateWithStemming,
   translateWithPhonemize,
   preloadPhonemize,
-  translateWithRules,
 };
 
 /**

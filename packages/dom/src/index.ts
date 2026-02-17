@@ -13,7 +13,7 @@
 // Types
 // =============================================================================
 
-export type { DOMTranslatorOptions, OutputFormat } from './types';
+export type { DOMTranslatorOptions } from './types';
 
 // =============================================================================
 // Constants
