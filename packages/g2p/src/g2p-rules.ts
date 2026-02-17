@@ -191,17 +191,13 @@ const NRL_RULES: Record<string, string[]> = {
     '[DIAG]=/D AY AH G/',
     // Custom: DIAL root → D AY AH L (dial, dialect, dialogue — Greek origin)
     '[DIAL]=/D AY AH L/',
-    // Custom: DIVE- → D AY V (diverge, diverse, divert — Latin origin)
-    ' [DIVE]R=/D AY V/',
     ' [DE]^#=/D IH/',
     ' [DO] =/D UW/',
     ' [DOES]=/D AH Z/',
     ' [DOING]=/D UW IH NX/',
     ' [DOW]=/D AW/',
     '[DU]A=/JH UW/',
-    // Custom: DGE trigraph (badge, bridge, edge)
-    '[DGE]=/JH/',
-    // Custom: DG before front vowel → JH (bridging, edging, judging)
+    // Custom: DG before front vowel → JH (badge, bridging, edging, judging)
     '[DG]+=/JH/',
     // Custom: DJ → JH (adjoin, adjust, adjacent)
     '[DJ]=/JH/',
