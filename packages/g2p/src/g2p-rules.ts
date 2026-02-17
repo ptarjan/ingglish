@@ -40,6 +40,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[AR]#=/EH R/',
     ' ^[AS]#=/EY S/',
     '[A]WA=/AX/',
+    '[AWL]=/AO L/',
     '[AW]=/AO/',
     ' :[ANY]=/EH N IY/',
     '[A]^+#=/EY/',
@@ -152,6 +153,7 @@ const NRL_RULES: Record<string, string[]> = {
     ' S[CI]#=/S AY/',
     // Custom: CIAL → SH AX L (special, social, official — +2)
     '[CIAL]=/SH AX L/',
+    ' [CYBER]=/S AY B ER/',
     '[CI]A=/SH/',
     '[CI]O=/SH/',
     '[CI]EN=/SH/',
@@ -218,6 +220,7 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: ER before suffix → ER, not IY+R (altered, filtering, wanderer)
     '[ER]%=/ER/',
     // Custom: -ement must come before [E]^% to avoid E+M+suffix → IY (advancement, replacement)
+    ' [ELECTR]=/IH L EH K T R/',
     '#:[EMENT]=/M AX N T/',
     // Custom: -ened past tense → schwa+N+D (blackened, brightened, burdened)
     '#:[ENED] =/AX N D/',
@@ -301,7 +304,8 @@ const NRL_RULES: Record<string, string[]> = {
   F: [
     // Custom: -ford suffix → F ER D (bedford, oxford, stanford — 195 vs 16 with AO R D)
     '#:[FORD] =/F ER D/',
-    // Custom: -ful suffix with schwa (beautiful, wonderful)
+    // Custom: -fully/-ful suffix with schwa (beautifully, wonderful)
+    '#:[FULLY] =/F AX L IY/',
     '#:[FUL] =/F AX L/',
     '[FUL]=/F UH L/',
     '[FF]=/F/',
@@ -442,6 +446,7 @@ const NRL_RULES: Record<string, string[]> = {
     'L[L]=/ /',
     // Custom: -less must come before L% to prevent schwa insertion
     // Custom: -lessly suffix (carelessly, recklessly — +10)
+    '#:[LINE] =/L AY N/',
     '#:[LESSLY] =/L AX S L IY/',
     '#:[LESS] =/L AX S/',
     // Custom: -ling must come before L% to prevent schwa insertion
@@ -490,6 +495,7 @@ const NRL_RULES: Record<string, string[]> = {
     ' [MINI]=/M IH N IY/',
     // Custom: MICRO- prefix → M AY K R AH (microscope, microsoft — Greek origin)
     ' [MICRO]=/M AY K R AH/',
+    ' [MONO]=/M AA N AH/',
     // Custom: collapse doubled MM
     '[MM]=/M/',
     '[M]=/M/',
@@ -689,6 +695,7 @@ const NRL_RULES: Record<string, string[]> = {
   S: [
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
+    '#:[SIDE] =/S AY D/',
     // Custom: SCH before OO → S K (school, schooner — +21)
     '[SCH]OO=/S K/',
     '[SOME]=/S AH M/',
@@ -772,6 +779,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [TELE]=/T EH L AH/',
     // Custom: TSCH → CH (German: Tschaikowsky, Nitschke — +59)
     '[TSCH]=/CH/',
+    '#:[TOWN] =/T AW N/',
+    '#:[TIME] =/T AY M/',
     // Custom: TCH trigraph (match, catch, watch)
     '[TCH]=/CH/',
     // Custom: collapse doubled TT
@@ -830,6 +839,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[WHO]=/HH UW/',
     '[WH]=/WH/',
     // Custom: -ward suffix (forward, backward, awkward)
+    '#:[WARDS] =/W ER D Z/',
     '#:[WARD] =/W ER D/',
     '[WAR]=/W AO R/',
     '[WOR]^=/W ER/',
