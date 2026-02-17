@@ -2,7 +2,7 @@
 
 A survey of English spelling reform proposals from [r/conorthography](https://www.reddit.com/r/conorthography/) (February 2026), where dozens of independent designers have published their own systems. This provides a useful comparison point: where Ingglish's choices are mainstream, where they're unusual, and what criticisms any reform should expect.
 
-The subreddit has ~92 English spelling reform posts alongside hundreds of other orthography projects (Ukrainian Latin, Korean Cyrillic, etc.). The analysis below draws from the ~30 highest-engagement English spelling reform posts and their comment threads.
+The subreddit has 133+ English spelling reform posts alongside hundreds of other orthography projects (Ukrainian Latin, Korean Cyrillic, etc.). The analysis below draws from ~54 Latin-script English spelling reform posts and their comment threads.
 
 ## Design Choices Across Reforms
 
@@ -33,11 +33,14 @@ GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "go
 |-------|-------------|----------|------------|
 | /ʃ/ | sh | sh | Near-universal |
 | /tʃ/ | ch | ch | Universal |
+| /dʒ/ | j (retained from English) | j | Strong |
 | /ŋ/ | ng | ng | Universal |
 | /ʒ/ | zh | zh | Moderate |
 | /θ/ vs /ð/ | th for both (conservative) or th/dh (phonemic) | th/dh | Split |
 
-The th/dh question is the most debated consonant choice. Conservative reforms keep "th" for both sounds, arguing English speakers can tell which is which from context. Phonemic reforms split them. Both sides have vocal advocates.
+The th/dh question is the most debated consonant choice. Conservative reforms keep "th" for both sounds, arguing English speakers can tell which is which from context — niels_singh's well-iterated Ðietsċ Eanglisċ system deliberately uses one symbol, arguing "the distinction between /θ/ and /ð/ is too rarely important in English to justify using two letters." Phonemic reforms split them. Both sides have vocal advocates.
+
+A few systems represent /dʒ/ as a digraph (dj, dž, or even jz) to expose the affricate structure, but most keep English `j`.
 
 ### ASCII vs. Diacritics vs. New Characters
 
@@ -55,6 +58,8 @@ Ingglish is in the pure ASCII camp, which is unusual but pragmatically well-defe
 
 General American is the most common target, followed by Australian English (3-4 well-developed systems from u/Plupsnup and u/yeahthatguyashton). A few target RP or specific American dialects. Targeting any specific dialect draws criticism from speakers of other dialects — this is unavoidable.
 
+One novel approach: u/markjsno1 posted a consonant-only reform, deliberately ignoring vowels because "accents are mainly vowel shifts." This sidesteps the dialect problem entirely by reforming only the half of English spelling that everyone agrees on.
+
 ## Where Ingglish Sits
 
 ### Mainstream choices
@@ -71,11 +76,11 @@ Most of Ingglish's design decisions are well within the mainstream:
 
 Three Ingglish choices stand out as unusual or unique:
 
-**"oh" for GOAT** — Possibly unique among the ~92 reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar. No other system in the corpus makes this choice.
+**"oh" for GOAT** — Unique among the 133+ reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The most common alternatives are ō (macron), ou, ow, and oe — GOAT remains the vowel with zero consensus. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar.
 
-**Schwa mapped to "u"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping creates results like "bunanu" (banana) and "ubout" (about) that will trigger the "looks childish" or "looks like a different language" reaction. The principled consistency is unusual.
+**Schwa mapped to "u"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping creates results like "bunanu" (banana) and "ubout" (about) that will trigger the "looks childish" or "looks like a different language" reaction. The principled consistency is unusual, though the underlying phonological analysis (schwa = unstressed STRUT) has support — InEcclesiaSatan's Dutch-style reform and others independently merge /ʌ/ and /ə/ as allophones.
 
-**"oo" for FOOT (not GOOSE)** — Most systems that use "oo" assign it to the longer vowel (/uː/, as in "too"). Ingglish assigns "oo" to the shorter /ʊ/ (book) and "uu" to the longer /uː/ (too). The logic is that "oo" already appears in English "book/good/look", but the reversal relative to expectation may confuse people.
+**"oo" for FOOT (not GOOSE)** — Many systems that use "oo" assign it to the longer vowel (/uː/, as in "too"). Ingglish assigns "oo" to the shorter /ʊ/ (book) and "uu" to the longer /uː/ (too). The logic is that "oo" already appears in English "book/good/look". The broader principle of "shorter symbol for shorter vowel" has support in the corpus — several systems assign plain `u` to FOOT and a digraph to GOOSE — but the specific "oo" reversal may still confuse people.
 
 ### Strongest differentiators
 
@@ -87,7 +92,7 @@ Two things set Ingglish apart from every other system in the corpus:
 
 ## Criticism Patterns
 
-Five criticisms appear repeatedly across posts, roughly in order of frequency:
+Eight criticisms appear repeatedly across posts, roughly in order of frequency:
 
 ### 1. "Whose English?"
 
@@ -117,9 +122,11 @@ Systems that reassign letter values or use unfamiliar characters get dismissed:
 
 > "Kinda bugs me how people create an alphabet and call it an orthography." (u/curious-scribe-2828)
 
-### 4. "Looks weird"
+### 4. "Looks weird" (the uncanny valley)
 
 Universal for phonemic systems. The "(Not so) Basic English Spelling Reform" (77 upvotes, highest-scoring post) drew reactions like "Oh my pord what the hepp." The more phonemically consistent a system is, the stranger it looks to English readers.
+
+Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this — they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "bunanu" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
 
 Specific design choices that drew the harshest reactions:
 - Using Q as a vowel: "Q should NOT be a vowel" (19 upvotes)
@@ -134,12 +141,44 @@ Phonetic (surface-level) systems get criticized for making unnecessary distincti
 
 Ingglish's phonemic approach avoids this — it represents meaningful sound distinctions, not surface phonetic detail.
 
+### 6. Internal inconsistency
+
+Systems whose diacritics or letter assignments lack a coherent organizing principle get called out by technically rigorous commenters:
+
+> "Silly. The acute accent marks ⟨u⟩ sound /U/ in 'gúd' (so it marks a short vowel), but it also marks diphthongs? This makes no sense." (u/martinribot on Lindgren's reform)
+
+> "The use of diacritics doesn't seem to follow any logic when compared with unmarked vowels." (u/martinribot on Anooj4021's system)
+
+Ingglish's consistent rules (digraphs for complex sounds, doubling for length) are well-defended against this criticism.
+
+### 7. European alignment pressure
+
+A vocal camp argues reforms should align English vowels with continental European / IPA conventions (a=/a/, e=/e/, i=/i/, o=/o/, u=/u/):
+
+> "Whenever I see the proposals for spelling reforms of English, it always surprises me why nobody thinks it would be best to align vowels with other European languages?" (u/hendrixbridge)
+
+> "Using ⟨é⟩ for a long i is criminal. It bothers me enough that it is called an 'e' in English. But shouldn't a reform make it better?" (u/thriceness, 7 upvotes)
+
+Ingglish falls in the "English logic" camp — respecting how English speakers already think about vowel letters rather than adopting continental values.
+
+### 8. Accessibility and dyslexia
+
+A smaller but notable concern for systems using confusable letter shapes:
+
+> "bþpdαqƿyð Kind of difficult for dyslexics. I'm *not* dyslexic, and seeing that line of letters strung together still makes my eyes go funny." (u/Kendota_Tanassian, 10 upvotes)
+
+> "Using Ǝ/ǝ seems sensible on the surface, but the small case letter is not very dyslexia-friendly." (u/Anooj4021)
+
+Ingglish's pure ASCII approach avoids confusable letter shapes entirely.
+
 ### What commenters want
 
 Across all posts, the community responds well to:
-- **Sample text.** Multiple commenters request it; systems without it get less constructive feedback.
+- **Sample text.** Multiple commenters request it; systems without it get less constructive feedback. The North Wind & Sun passage is the subreddit standard.
+- **Visual presentation.** The highest-scoring posts all have images — phoneme charts as graphics, posters, custom keyboard layouts. Text-only posts with raw phoneme tables rarely break 20 upvotes.
 - **Organized tables.** One well-documented conservative reform got 8 upvotes for its presentation alone: "I'm tired of lazy posts here in the sub, so, thanks for that."
 - **Internal consistency.** One designer's guarantee that "one letter or set of letters only corresponds to only one consonant or vowel, no exception" was noted approvingly.
+- **Iteration.** Systems that show visible evolution across multiple posts get credit — Plupsnup (3 posts), niels_singh (3 posts), and CreepingTuna all earn respect for refinement.
 - **Alignment with European languages.** Several commenters suggest looking at Dutch, Finnish, or Albanian conventions.
 
 ## Notable Systems
@@ -171,6 +210,22 @@ Adds a single diacritic (dot below: ǹ for /ŋ/) but otherwise stays close to En
 ### Harry Lindgren's reform (21 upvotes, 21 comments)
 
 A published academic reform by an Australian linguist, using diacritics for vowel quality. Drew harsh criticism for internal inconsistency — the acute accent marks both short vowels and diphthongs, which is contradictory. Multiple commenters described it as "not functional at all" (5 upvotes). Demonstrates that academic credentials don't guarantee good design.
+
+### InEcclesiaSatan's Dutch-style reform (41 upvotes, 14 comments)
+
+"As revenge for anglophones calling Dutch 'goofy', I have revised English orthography." GenAm-based, uses Dutch/Frisian conventions: `sj` for /ʃ/, `tj` for /tʃ/, `dj` for /dʒ/, `dh` for /ð/. Merges /ʌ/ and /ə/. A commenter said: "It's more legible than most English spelling reforms and I don't totally hate it." Demonstrates that borrowing conventions from a closely related language can produce surprisingly readable results.
+
+### niels_singh's Ðietsċ Eanglisċ (3 posts: 18, 17, 12 upvotes)
+
+The most iterated system in the corpus — reached version 29 across multiple years. Naturalistic, etymology-preserving reform with heavy Dutch/Frisian influence. Uses ð but not þ, and diacritics selectively. Deliberately does NOT split th/dh. The author's philosophy: "I want to keep words recognisable to speakers that are not familiar with the reform while still regularising how phonology is represented." Represents the "recognizability-first" end of the spectrum; Ingglish represents the "consistency-first" end.
+
+### Anooj4021's maximalist system (5 upvotes, 15 comments across versions)
+
+The most phonologically sophisticated system in the corpus. Splits FACE into PANE (historically /eː/) vs PAIN (historically /ej/), and GOAT into TOE vs TOW, to "cancel historical vowel mergers" and distinguish homophones in writing. Uses th/dh, sh/zh, and ø for schwa. The 13-comment debate with martinribot is the most technically dense exchange in the dataset. Sits at the opposite extreme from Ingglish — maximum historical distinctions vs. maximum consistency.
+
+### u/martinribot (power commenter)
+
+Not a system author but the single most technically influential voice in the corpus. Appears in 10+ threads, always writing in their own reform, consistently providing the most substantive critiques. Pushes back on inconsistent diacritic logic, identifies where systems' own patterns break down, and argues that diacritics should encode "some systematic relationship." Their implicit standards (internal consistency, principled diacritics, dialect awareness) function as community norms.
 
 ## See Also
 
