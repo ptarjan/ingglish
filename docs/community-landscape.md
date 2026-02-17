@@ -58,7 +58,7 @@ Ingglish is in the pure ASCII camp, which is unusual but pragmatically well-defe
 
 General American is the most common target, followed by Australian English (3-4 well-developed systems from u/Plupsnup and u/yeahthatguyashton). A few target RP or specific American dialects. Targeting any specific dialect draws criticism from speakers of other dialects — this is unavoidable.
 
-One novel approach: u/markjsno1 posted a consonant-only reform, deliberately ignoring vowels because "accents are mainly vowel shifts." This sidesteps the dialect problem entirely by reforming only the half of English spelling that everyone agrees on.
+One novel approach: u/markjsno1 posted a [consonant-only reform](https://www.reddit.com/r/conorthography/comments/1jdzlkw/another_rework_of_the_english_alphabet_consonants/), deliberately ignoring vowels because "accents are mainly vowel shifts." This sidesteps the dialect problem entirely by reforming only the half of English spelling that everyone agrees on.
 
 ## Where Ingglish Sits
 
@@ -124,7 +124,7 @@ Systems that reassign letter values or use unfamiliar characters get dismissed:
 
 ### 4. "Looks weird" (the uncanny valley)
 
-Universal for phonemic systems. The "(Not so) Basic English Spelling Reform" (77 upvotes, highest-scoring post) drew reactions like "Oh my pord what the hepp." The more phonemically consistent a system is, the stranger it looks to English readers.
+Universal for phonemic systems. The ["(Not so) Basic English Spelling Reform"](https://www.reddit.com/r/conorthography/comments/1qsb2tk/not_so_basic_english_spelling_reform/) (77 upvotes, highest-scoring post) drew reactions like "Oh my pord what the hepp." The more phonemically consistent a system is, the stranger it looks to English readers.
 
 Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this — they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "bunanu" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
 
@@ -183,43 +183,43 @@ Across all posts, the community responds well to:
 
 ## Notable Systems
 
-### Ashtonian Alphabet (69 upvotes, 38 comments)
+### [Ashtonian Alphabet](https://www.reddit.com/r/conorthography/comments/1hu0qx9/after_months_of_tweaking_i_recreated_my/) (69 upvotes, 38 comments)
 
 Phonetic (not phonemic) transcription of Standard Australian English. Distinguishes light/dark L, onset/coda nasals, and glottal stops. Uses extensive IPA-derived characters with a custom keyboard layout. The most maximalist system in the corpus. Drew significant criticism for overcomplexity: "Your reform complicates a lot of things" (11 upvotes). Demonstrates why Ingglish's phonemic approach works better than a phonetic one.
 
-### CreepingTuna's reform (24 upvotes, 5 comments)
+### [CreepingTuna's reform](https://www.reddit.com/r/conorthography/comments/1aopvn3/highly_controversial_english_orthography_reform/) (24 upvotes, 5 comments)
 
 The most similar system to Ingglish in the corpus. Pure ASCII, no diacritics, 1:1 sound-spelling mapping. Plans to adopt th/dh split. The author independently reached the same anti-diacritic conclusion: "many programs still only allow basic English alphabets." Key difference from Ingglish: retains more silent-e patterns from English.
 
-### Plupsnup's Australian reforms (3 posts: 59, 24, 13 upvotes)
+### Plupsnup's Australian reforms ([v1](https://www.reddit.com/r/conorthography/comments/1p3n7ne/my_easy_spelling_reform_of_australian_english/), [v2](https://www.reddit.com/r/conorthography/comments/1p4fym8/i_designed_a_poster_for_my_easy_spelling_reform/), [v3](https://www.reddit.com/r/conorthography/comments/1qbc8q1/update_to_my_spelling_reform_of_australian/)) (59, 24, 13 upvotes)
 
 Three iterations targeting Standard Australian English. Uses IPA-derived characters (ŋ, ə). Deliberately allows different regional spellings: "Yes, I've intended that different regional dialects have different spellings of the same words." Opposite of Ingglish's "pick a winner" approach. Later versions drew criticism for strange letter reassignments (v for /j/, p for /l/): "What's the point of the random letter switching?"
 
-### Inglisce (6 upvotes, 8 comments)
+### [Inglisce](https://www.reddit.com/r/conorthography/comments/1ohpaw7/inglisce_spelling_reforme/) (6 upvotes, 8 comments)
 
 Heavy use of diacritics (grave, acute, circumflex), drops W and K, brings back thorn. Based on Great Lakes Dialect. Prioritizes etymology and European convention over phonemic clarity — opposite philosophy from Ingglish. Gets praised for its "ye olde Englisce" aesthetic but criticized for inconsistency: learners "would just have to learn when 's' is voiced vs unvoiced."
 
-### The asasnow "Conservative" reform (30 upvotes, 12 comments)
+### [The asasnow "Conservative" reform](https://www.reddit.com/r/conorthography/comments/1l9an1t/my_very_amateur_attempt_at_a_more_conservative/) (30 upvotes, 12 comments)
 
 Explicitly preserves as much existing English spelling as possible while fixing the worst inconsistencies. Uses "th" for both /θ/ and /ð/ (intentionally). Well-documented with rules and tables. Praised for thoroughness. Represents the "minimal change" end of the spectrum; Ingglish represents the "full phonemic consistency" end.
 
-### Iǹglic (14 upvotes, 17 comments)
+### [Iǹglic](https://www.reddit.com/r/conorthography/comments/1qrsy1d/idea_for_an_english_spelling_reform_iǹglic/) (14 upvotes, 17 comments)
 
-Adds a single diacritic (dot below: ǹ for /ŋ/) but otherwise stays close to English spelling. The author describes it as "close to phonetic as possible without being too complicated." The "(Not so) Basic English Spelling Reform" (77 upvotes) cites Iǹglic as inspiration.
+Adds a single diacritic (dot below: ǹ for /ŋ/) but otherwise stays close to English spelling. The author describes it as "close to phonetic as possible without being too complicated." The ["(Not so) Basic English Spelling Reform"](https://www.reddit.com/r/conorthography/comments/1qsb2tk/not_so_basic_english_spelling_reform/) (77 upvotes) cites Iǹglic as inspiration.
 
-### Harry Lindgren's reform (21 upvotes, 21 comments)
+### [Harry Lindgren's reform](https://www.reddit.com/r/conorthography/comments/1ayt4oj/harry_lindgrens_spellimg_reform/) (21 upvotes, 21 comments)
 
 A published academic reform by an Australian linguist, using diacritics for vowel quality. Drew harsh criticism for internal inconsistency — the acute accent marks both short vowels and diphthongs, which is contradictory. Multiple commenters described it as "not functional at all" (5 upvotes). Demonstrates that academic credentials don't guarantee good design.
 
-### InEcclesiaSatan's Dutch-style reform (41 upvotes, 14 comments)
+### [InEcclesiaSatan's Dutch-style reform](https://www.reddit.com/r/conorthography/comments/1ktfjia/as_revenge_for_anglophones_calling_dutch_goofy_i/) (41 upvotes, 14 comments)
 
 "As revenge for anglophones calling Dutch 'goofy', I have revised English orthography." GenAm-based, uses Dutch/Frisian conventions: `sj` for /ʃ/, `tj` for /tʃ/, `dj` for /dʒ/, `dh` for /ð/. Merges /ʌ/ and /ə/. A commenter said: "It's more legible than most English spelling reforms and I don't totally hate it." Demonstrates that borrowing conventions from a closely related language can produce surprisingly readable results.
 
-### niels_singh's Ðietsċ Eanglisċ (3 posts: 18, 17, 12 upvotes)
+### niels_singh's Ðietsċ Eanglisċ ([v17](https://www.reddit.com/r/conorthography/comments/17h40ag/ðietsçeanglisç_spelling_reform_v17_faikipédia/), [v28](https://www.reddit.com/r/conorthography/comments/1py8y89/ðeetsċ_eanglisċ_spelling_reform_v28_demo_excerpt/), [v29](https://www.reddit.com/r/conorthography/comments/1qabu6e/ðietsċ_eanglisċ_spelling_reform_v29_sample_ðe/)) (18, 17, 12 upvotes)
 
 The most iterated system in the corpus — reached version 29 across multiple years. Naturalistic, etymology-preserving reform with heavy Dutch/Frisian influence. Uses ð but not þ, and diacritics selectively. Deliberately does NOT split th/dh. The author's philosophy: "I want to keep words recognisable to speakers that are not familiar with the reform while still regularising how phonology is represented." Represents the "recognizability-first" end of the spectrum; Ingglish represents the "consistency-first" end.
 
-### Anooj4021's maximalist system (5 upvotes, 15 comments across versions)
+### Anooj4021's maximalist system ([v1](https://www.reddit.com/r/conorthography/comments/1mrsi30/my_revised_orthography_for_english/), [v2](https://www.reddit.com/r/conorthography/comments/1oz2dy3/my_revised_english_orthography_version_20/)) (5 upvotes, 15 comments across versions)
 
 The most phonologically sophisticated system in the corpus. Splits FACE into PANE (historically /eː/) vs PAIN (historically /ej/), and GOAT into TOE vs TOW, to "cancel historical vowel mergers" and distinguish homophones in writing. Uses th/dh, sh/zh, and ø for schwa. The 13-comment debate with martinribot is the most technically dense exchange in the dataset. Sits at the opposite extreme from Ingglish — maximum historical distinctions vs. maximum consistency.
 
