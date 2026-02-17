@@ -304,6 +304,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ESS] =/AX S/',
     // Custom: -est superlative with schwa (highest, lowest, fastest)
     '#:[EST] =/AX S T/',
+    // Custom: EX- prefix before consonant (exact, example, express — +36/+89)
+    ' [EX]^=/IH K S/',
     // Custom: word-end -els/-ets/-ems/-em/-et with schwa (models, tickets, problems)
     '#:[ELS] =/AX L Z/',
     '#:[ETS] =/AH T S/',
