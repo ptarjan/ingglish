@@ -102,6 +102,8 @@ const UNSTRESSED_PREFIXES: UnstressedPrefix[] = [
   { prefix: 'ex', minLength: 4 },
   { prefix: 'sur', minLength: 7 },
   { prefix: 'sub', minLength: 5 },
+  { prefix: 'per', minLength: 6 },
+  { prefix: 'con', minLength: 6 },
   // Tier 3: Latinate a- prefixes (abandon, absorb, accept, advance, etc.)
   { prefix: 'ab', minLength: 6 },
   { prefix: 'ac', minLength: 6 },
@@ -196,7 +198,8 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
     result[vowelPositions[actualStressed]] === 'AH0'
   ) {
     let found = false;
-    for (let j = actualStressed + 1; j < vowelPositions.length; j++) {
+    // Search backward first (stressed syllables tend to be earlier in English)
+    for (let j = actualStressed - 1; j >= 0; j--) {
       if (result[vowelPositions[j]] !== 'AH0') {
         actualStressed = j;
         found = true;
@@ -204,7 +207,7 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
       }
     }
     if (!found) {
-      for (let j = actualStressed - 1; j >= 0; j--) {
+      for (let j = actualStressed + 1; j < vowelPositions.length; j++) {
         if (result[vowelPositions[j]] !== 'AH0') {
           actualStressed = j;
           break;

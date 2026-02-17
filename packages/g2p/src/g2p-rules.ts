@@ -170,6 +170,8 @@ const NRL_RULES: Record<string, string[]> = {
     'I[CALLY] =/K L IY/',
     // Custom: CYCL root → S AY K AH L (cycle, bicycle, encyclopedia — Greek origin)
     '[CYCL]=/S AY K AH L/',
+    // Custom: CON- prefix before consonant (conduct, connect, consider — +135 SL)
+    ' [CON]^=/K AH N/',
     '[COM]%=/K AH M/',
     // Custom: CCH → K without HH (Italian: bacchi, zucchini, pinocchio — 65 words)
     '[CCH]=/K/',
