@@ -90,6 +90,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ANT] =/AX N T/',
     // Custom: AA digraph (aardvark, baal, kraal)
     '[AA]=/AA/',
+    // Custom: AERO- prefix → EH R OW (aerospace, aerobic — +2)
+    ' [AERO]=/EH R OW/',
     // Custom: AE Latin digraph → EH (aegis, aesthetic, aeon — 358 words, 0% accuracy without)
     '[AE]=/EH/',
     '[A]=/AE/',
@@ -148,6 +150,8 @@ const NRL_RULES: Record<string, string[]> = {
     'S[CH]KE=/K/',
     '[CH]=/CH/',
     ' S[CI]#=/S AY/',
+    // Custom: CIAL → SH AX L (special, social, official — +2)
+    '[CIAL]=/SH AX L/',
     '[CI]A=/SH/',
     '[CI]O=/SH/',
     '[CI]EN=/SH/',
@@ -653,6 +657,10 @@ const NRL_RULES: Record<string, string[]> = {
     ' [PS]=/S/',
     // Custom: silent p before n at word start (pneumonia, pneumatic)
     ' [PN]=/N/',
+    // Custom: PARA- prefix → P EH R AH (paradise, parallel — +7)
+    ' [PARA]=/P EH R AH/',
+    // Custom: PER- prefix before consonant → P ER (perform, perhaps — +8)
+    ' [PER]^=/P ER/',
     // Custom: collapse doubled PP
     '[PP]=/P/',
     '[P]=/P/',
@@ -751,6 +759,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[TED] =/T IH D/',
     'S[TI]#N=/CH/',
     '[TI]O=/SH/',
+    // Custom: TIAL → SH AX L (partial, essential — +4)
+    '[TIAL]=/SH AX L/',
     '[TI]A=/SH/',
     '[TIEN]=/SH AX N/',
     '[TUR]#=/CH ER/',
@@ -760,6 +770,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[TZ]=/T S/',
     // Custom: TELE- prefix → T EH L AH (telephone, television, telegram — +29)
     ' [TELE]=/T EH L AH/',
+    // Custom: TSCH → CH (German: Tschaikowsky, Nitschke — +59)
+    '[TSCH]=/CH/',
     // Custom: TCH trigraph (match, catch, watch)
     '[TCH]=/CH/',
     // Custom: collapse doubled TT
@@ -824,7 +836,11 @@ const NRL_RULES: Record<string, string[]> = {
     '[WR]=/R/',
     '[W]=/W/',
   ],
-  X: ['[X]=/K S/'],
+  X: [
+    // Custom: X at word start → Z (xavier, xylophone, xerox — Greek origin, +12)
+    ' [X]=/Z/',
+    '[X]=/K S/',
+  ],
   Y: [
     '[YOUNG]=/Y AH NX/',
     ' [YOU]=/Y UW/',
