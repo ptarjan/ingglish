@@ -8,6 +8,20 @@ My 5-year-old is learning to read and I keep having to say "yeah sorry, that let
 
 I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign, just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
 
+## Sample Text: The North Wind and the Sun
+
+The standard passage used to compare writing systems, shown in English and Ingglish side by side.
+
+**English:**
+
+> The North Wind and the Sun were disputing which was the stronger, when a traveler came along wrapped in a warm cloak. They agreed that the one who first succeeded in making the traveler take off his cloak should be considered stronger than the other. Then the North Wind blew as hard as he could, but the more he blew the more closely did the traveler wrap his cloak around him; and at last the North Wind gave up the attempt. Then the Sun shone out warmly, and immediately the traveler took off his cloak. And so the North Wind was obliged to confess that the Sun was the stronger of the two.
+
+**Ingglish:**
+
+> Dha North Waind and dha Sun wer dispyuuting wich woz dha strawnger, wen a travaler kaym alawng rapt in a worm klohk. Dhay agreed dhat dha wun huu ferst sakseedid in mayking dha travaler tayk awf hiz klohk shood bee kansiderd strawnger dhan dha udher. Dhen dha North Waind bluu az hard az hee kood, but dha mor hee bluu dha mor klohslee did dha travaler rap hiz klohk eround him; and at last dha North Waind gayv up dha atempt. Dhen dha Sun shohn out wormlee, and imeedeeatlee dha travaler took awf hiz klohk. And soh dha North Waind woz ablaijd tuu kanfes dhat dha Sun woz dha strawnger uv dha tuu.
+
+Notice how many words stay identical or nearly identical: "North", "and", "in", "a", "agreed", "hard", "him", "at", "last", "up", "out", "took". The biggest visual changes are "the" → "dha" (the th/dh split) and phonemically spelled vowels like "klohk" (cloak) and "strawnger" (stronger).
+
 ## Core Principles
 
 1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences get their own spellings like "air" and "ar"; see the phoneme mapping for details.)
@@ -71,7 +85,7 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 
 **Schwa Representation**
 
-The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"u"**, which matches words like "but" and "cup".
+The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change added +2,016 identical words. The stressed /ʌ/ vowel ("but", "cup") stays "u". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
 
 ### Diphthong Decisions
 
