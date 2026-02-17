@@ -17,6 +17,14 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
   touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU has T UW1 SH (missing final syllable)
 
+  // CMU variant ordering fixes — v1 has IY0 ("ee") but standard AmE uses EY ("ay")
+  // See scripts/analyze-variants.js for the full analysis
+  friday: ['F', 'R', 'AY1', 'D', 'EY2'],
+  monday: ['M', 'AH1', 'N', 'D', 'EY2'],
+  saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'],
+  tuesday: ['T', 'UW1', 'Z', 'D', 'EY2'],
+  wednesday: ['W', 'EH1', 'N', 'Z', 'D', 'EY2'],
+
   // Accented homographs (diacritics signal different pronunciation)
   résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY2'], // /ˈɹɛz.əˌmeɪ/ — French noun (CV), not verb "to resume"
   exposé: ['EH2', 'K', 'S', 'P', 'OW0', 'Z', 'EY1'], // /ˌɛkspoʊˈzeɪ/ — French noun (report), not verb "to expose"
