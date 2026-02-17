@@ -6,6 +6,10 @@ inputs:
     description: Whether to cache and conditionally generate dictionaries
     required: false
     default: 'false'
+  registry-url:
+    description: npm registry URL (needed for publishing)
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -15,6 +19,7 @@ runs:
       with:
         node-version: '20'
         cache: 'npm'
+        registry-url: ${{ inputs.registry-url }}
 
     - name: Cache generated dictionaries
       if: inputs.dict-cache == 'true'

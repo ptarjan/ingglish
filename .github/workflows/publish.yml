@@ -13,18 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: ./.github/actions/setup
         with:
-          node-version: '20'
-          cache: 'npm'
+          dict-cache: true
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Test
-        run: npm run test -w @ingglish/normalize -w @ingglish/phonemes -w @ingglish/tokenize -w @ingglish/dictionary -w ingglish -w @ingglish/dom
+        run: npm test --workspaces --if-present
 
       - name: Build
         run: npm run build:libs && npm run build -w @ingglish/dom
