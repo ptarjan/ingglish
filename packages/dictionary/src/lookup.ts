@@ -22,7 +22,8 @@ export function lookupPronunciation(word: string): string[] | null {
 
   const dict = getDictionary();
   // Dictionary values are already pre-split arrays (done at build time)
-  return dict[key] ?? null;
+  // Use hasOwn to avoid prototype properties like "constructor", "toString"
+  return Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : null;
 }
 
 /**
@@ -30,5 +31,5 @@ export function lookupPronunciation(word: string): string[] | null {
  */
 export function hasWord(word: string): boolean {
   const dict = getDictionary();
-  return dict[word.toLowerCase()] !== undefined;
+  return Object.prototype.hasOwnProperty.call(dict, word.toLowerCase());
 }

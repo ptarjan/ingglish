@@ -69,7 +69,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
  * @param word The word to look up (should be lowercase for best performance)
  */
 export function hasCustomPronunciation(word: string): boolean {
-  return CUSTOM_PRONUNCIATIONS[word] !== undefined;
+  return Object.prototype.hasOwnProperty.call(CUSTOM_PRONUNCIATIONS, word);
 }
 
 /**
@@ -77,5 +77,7 @@ export function hasCustomPronunciation(word: string): boolean {
  * @param word The word to look up (should be lowercase for best performance)
  */
 export function getCustomPronunciation(word: string): string[] | undefined {
-  return CUSTOM_PRONUNCIATIONS[word];
+  return Object.prototype.hasOwnProperty.call(CUSTOM_PRONUNCIATIONS, word)
+    ? CUSTOM_PRONUNCIATIONS[word]
+    : undefined;
 }

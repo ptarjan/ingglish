@@ -1,100 +1,107 @@
 /**
- * Backtest G2P rules against the CMU dictionary.
+ * Backtest the full fallback chain against the CMU dictionary.
  *
- * For each word in the CMU dictionary, run the G2P rules to produce
- * phonemes, then compare to the actual CMU pronunciation. Report
- * accuracy and common error patterns.
+ * For each word in CMUdict, temporarily hides it from the dictionary
+ * so the production fallback chain fires (compound → stemming → G2P).
+ * Compares the result to the actual CMU pronunciation.
  *
- * Usage: npx tsx scripts/g2p-backtest.ts
+ * Usage: npx tsx --conditions=source scripts/g2p-backtest.ts
  */
 
-import { loadDictionary } from '@ingglish/dictionary';
+import { loadDictionary, getDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
-import { stripStress } from '@ingglish/phonemes';
+import { stripStress, registerFormat } from '@ingglish/phonemes';
+import { translateUnknown } from '@ingglish/fallback';
+
+// Register an 'arpabet' format that returns phonemes joined with spaces
+registerFormat('arpabet', {
+  forward: (phonemes: string[]) => phonemes.join(' '),
+});
 
 async function main() {
   const dict = await loadDictionary();
+  await loadFrequencies();
   const words = Object.keys(dict);
 
   let total = 0;
   let exactMatch = 0;
   let stresslessMatch = 0;
+  let g2pOnlyMatch = 0;
 
-  // Track error patterns: which grapheme→phoneme mappings are most wrong
   const phonemeErrors: Record<string, number> = {};
-  // Track which word patterns cause errors
   const suffixErrors: Record<string, number> = {};
   const prefixErrors: Record<string, number> = {};
-  // Sample wrong words for review
-  const wrongSamples: { word: string; g2p: string; cmu: string }[] = [];
+  const wrongSamples: { word: string; got: string; want: string }[] = [];
 
   for (const word of words) {
-    // Skip words with numbers, hyphens, or apostrophes
     if (/[^a-z]/i.test(word)) continue;
-    // Skip very short words (1-2 chars) — too ambiguous
     if (word.length < 3) continue;
 
     total++;
 
     const cmuPhonemes = dict[word];
-    const g2pPhonemes = wordToArpabet(word);
-
     const cmuStr = cmuPhonemes.join(' ');
-    const g2pStr = g2pPhonemes.join(' ');
+    const cmuNoStress = cmuPhonemes.map(stripStress).join(' ');
 
-    if (cmuStr === g2pStr) {
+    // Also track G2P-only for comparison
+    const g2pNoStress = wordToArpabet(word).map(stripStress).join(' ');
+    if (g2pNoStress === cmuNoStress) g2pOnlyMatch++;
+
+    // Temporarily hide the word from the dictionary so fallback chain fires
+    const saved = dict[word];
+    delete dict[word];
+
+    const fallbackStr = translateUnknown(word, 'arpabet' as 'ingglish');
+
+    // Restore the word
+    dict[word] = saved;
+
+    if (fallbackStr === cmuStr) {
       exactMatch++;
       stresslessMatch++;
       continue;
     }
 
-    // Compare without stress markers
-    const cmuNoStress = cmuPhonemes.map(stripStress).join(' ');
-    const g2pNoStress = g2pPhonemes.map(stripStress).join(' ');
-
-    if (cmuNoStress === g2pNoStress) {
+    const fbNoStress = fallbackStr.split(' ').map(stripStress).join(' ');
+    if (fbNoStress === cmuNoStress) {
       stresslessMatch++;
       continue;
     }
 
-    // It's wrong — analyze the error
-    // Find first differing phoneme
+    // Error analysis
     const cmuArr = cmuNoStress.split(' ');
-    const g2pArr = g2pNoStress.split(' ');
-    const minLen = Math.min(cmuArr.length, g2pArr.length);
+    const fbArr = fbNoStress.split(' ');
+    const minLen = Math.min(cmuArr.length, fbArr.length);
 
     for (let i = 0; i < minLen; i++) {
-      if (cmuArr[i] !== g2pArr[i]) {
-        const key = `${g2pArr[i]} should be ${cmuArr[i]}`;
+      if (cmuArr[i] !== fbArr[i]) {
+        const key = `${fbArr[i]} should be ${cmuArr[i]}`;
         phonemeErrors[key] = (phonemeErrors[key] ?? 0) + 1;
         break;
       }
     }
-    if (cmuArr.length !== g2pArr.length) {
-      const key = `len ${g2pArr.length} should be ${cmuArr.length}`;
+    if (cmuArr.length !== fbArr.length) {
+      const key = `len ${fbArr.length} should be ${cmuArr.length}`;
       phonemeErrors[key] = (phonemeErrors[key] ?? 0) + 1;
     }
 
-    // Track suffix patterns (last 3 chars)
     if (word.length >= 4) {
       const suffix = word.slice(-3);
       suffixErrors[suffix] = (suffixErrors[suffix] ?? 0) + 1;
     }
-    // Track prefix patterns (first 3 chars)
     if (word.length >= 4) {
       const prefix = word.slice(0, 3);
       prefixErrors[prefix] = (prefixErrors[prefix] ?? 0) + 1;
     }
 
-    // Collect samples (limit to keep output manageable)
     if (wrongSamples.length < 200) {
-      wrongSamples.push({ word, g2p: g2pStr, cmu: cmuStr });
+      wrongSamples.push({ word, got: fallbackStr, want: cmuStr });
     }
   }
 
   const wrongCount = total - stresslessMatch;
 
-  console.log('=== G2P Backtest Results ===\n');
+  console.log('=== Fallback Chain Backtest Results ===\n');
   console.log(`Total words tested: ${total}`);
   console.log(
     `Exact match (with stress): ${exactMatch} (${((exactMatch / total) * 100).toFixed(1)}%)`
@@ -103,6 +110,7 @@ async function main() {
     `Match (ignoring stress): ${stresslessMatch} (${((stresslessMatch / total) * 100).toFixed(1)}%)`
   );
   console.log(`Wrong: ${wrongCount} (${((wrongCount / total) * 100).toFixed(1)}%)`);
+  console.log(`G2P-only baseline: ${g2pOnlyMatch} (${((g2pOnlyMatch / total) * 100).toFixed(1)}%)`);
 
   console.log('\n=== Top 30 Phoneme Error Patterns ===\n');
   const sortedErrors = Object.entries(phonemeErrors).sort((a, b) => b[1] - a[1]);
@@ -123,8 +131,8 @@ async function main() {
   }
 
   console.log('\n=== Sample Wrong Words (first 50) ===\n');
-  for (const { word, g2p, cmu } of wrongSamples.slice(0, 50)) {
-    console.log(`  ${word.padEnd(20)} G2P: ${g2p.padEnd(35)} CMU: ${cmu}`);
+  for (const { word, got, want } of wrongSamples.slice(0, 50)) {
+    console.log(`  ${word.padEnd(20)} got: ${got.padEnd(35)} want: ${want}`);
   }
 }
 
