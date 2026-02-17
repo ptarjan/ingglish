@@ -8,17 +8,17 @@ What went wrong, and what Ingglish does differently.
 
 ### Complete Alphabet Replacements
 
-**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published (*Androcles and the Lion*, 1962). It saw minimal adoption beyond a small enthusiast community.
+**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published (*Androcles and the Lion*, 1962). Almost nobody used it.
 
 **[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. Even Brigham Young, who commissioned the project, abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
-**[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. No academic validation was ever published. The system was repeatedly revised, creating incompatible versions.
+**[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. Nobody published any academic validation, and the system kept getting revised, creating incompatible versions.
 
 **[English Phonotypic Alphabet](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet) (1845)** - Isaac Pitman and Alexander John Ellis created a 40-letter alphabet. Trials in Waltham, Massachusetts (1852-1860) and Syracuse, New York (1850-1866) showed students could learn literacy faster, but elements were later absorbed into the IPA instead of gaining direct adoption.
 
-These all required learning entirely new characters. No reading materials existed. Once you learned the new alphabet, you couldn't read any existing books, signs, or websites.
+These all had the same problem: no reading material existed in the new script, and once you learned it you couldn't read anything already written.
 
-Ingglish uses only 24 standard ASCII letters: no 'q' (use 'kw'), no 'x' (use 'ks'), and 'c' only appears in 'ch'. Anyone literate in English can start reading Ingglish immediately.
+Ingglish uses standard Latin letters (no 'q', no 'x', 'c' only in 'ch'). If you can read English, you can read Ingglish.
 
 ### Transitional Systems
 
@@ -26,9 +26,9 @@ Ingglish uses only 24 standard ASCII letters: no 'q' (use 'kw'), no 'x' (use 'ks
 
 Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The Warburton & Southgate (1969) evaluation (*i.t.a.: An Independent Evaluation*, London: John Murray) found mixed results: initial reading gains but inconsistent transfer to traditional orthography.
 
-The core criticism: teaching a system that must later be replaced risks negative transfer, where the first system interferes with learning the second.
+Teaching a system that must later be replaced risks negative transfer — the first system interferes with learning the second.
 
-Ingglish avoids this entirely: it's not positioned for initial literacy instruction. Users already know traditional spelling. Ingglish supplements rather than replaces.
+Ingglish isn't an initial literacy tool. Users already know traditional spelling; Ingglish supplements it.
 
 ### Simplified Spelling Systems
 
@@ -42,7 +42,7 @@ Ingglish avoids this entirely: it's not positioned for initial literacy instruct
 
 **Chicago Tribune (1934-1975)** - The newspaper unilaterally adopted 80 reformed spellings including "tho," "thru," "agast," "burocrat," and "iland." After 40 years, they quietly abandoned the experiment.
 
-Even well-designed simplified systems failed without institutional backing or network effects. Ingglish sidesteps this: bidirectional translation tools mean you can use it alone.
+Even well-designed simplified systems failed without institutional backing or network effects.
 
 ### Political Failures
 
@@ -74,14 +74,14 @@ Critics argue that spelling preserves word relationships:
 - "sign" / "signature" - the silent 'g' shows the connection
 - "nation" / "national" - consistent spelling despite vowel changes
 
-This is a real benefit. [Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) argued that English spelling's morphophonemic properties actually aid reading comprehension by making related words visually similar.
+[Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) went further, arguing that English spelling's morphophonemic properties actually *aid* reading comprehension by making related words visually similar.
 
 That said, some well-known "etymological" spellings are actually wrong ([Crystal 2012](https://books.google.com/books?id=jkYmhKwRALkC), *Spell It Out*):
 - "debt" - the 'b' was added based on Latin "debitum," but the word came through French without it
 - "island" - the 's' was added incorrectly (Germanic origin, not Latin "insula")
 - "ache" - respelled from "ake" based on a false Greek connection
 
-Ingglish prioritizes pronunciation over etymology. The trade-off is real: you lose morphological connections ("sign"→"sain" no longer looks like "signature"→"signuchur"). But for learners who can't yet pronounce the words, those connections aren't useful anyway.
+Ingglish prioritizes pronunciation over etymology. The trade-off: you lose morphological connections ("sign"→"sain" no longer looks like "signature"→"signuchur"). But for learners who can't yet pronounce the words, those connections aren't useful anyway.
 
 ### 3. The Transition Problem
 
@@ -89,19 +89,11 @@ An estimated 1.5 billion people speak English as a first or second language ([Cr
 
 Ingglish is a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
-You don't need institutional buy-in. The tools exist:
-- **Text translator**: Paste any text to see it in Ingglish
-- **URL translator**: View any webpage translated ([try it on Wikipedia](https://ingglish.com/?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEnglish_language#url))
-- **Chrome extension**: Browse the whole web in Ingglish
-- **Bidirectional translation**: Convert Ingglish back to standard English
-
-Try it today. No adoption required.
+You don't need institutional buy-in. Bidirectional translation tools let you convert between English and Ingglish at any time — no one else needs to adopt it first.
 
 ### 4. No Central Authority
 
-There's no English Academy that can decree changes. Every attempt at mandatory reform has failed.
-
-No mandatory adoption needed. Use it if you want, ignore it if you don't.
+There's no English Academy that can decree changes. Every attempt at mandatory reform has failed. Ingglish doesn't need one — use it if you want, ignore it if you don't.
 
 ### 5. The Network Effect Trap
 
@@ -111,9 +103,9 @@ Bidirectional translation breaks the network effect. You can convert English to 
 
 ### 6. Typography Disasters
 
-The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was that all typeset words had a roughly rectangular shape, making lines of Deseret text monotonous and tiring to read.
+The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was monotonous, rectangular blocks of text that were tiring to read.
 
-Standard Latin letters. Familiar shapes. Word silhouettes stay distinctive.
+Ingglish uses standard Latin letters, so words keep their familiar shapes.
 
 ### 7. Requires Learning New Characters
 
@@ -127,7 +119,7 @@ Simplified spelling often looks childish to English readers because they associa
 
 Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
 
-This perception appears specific to English. Finnish, Italian, and Spanish have far more transparent orthographies, and their speakers don't perceive phonemic spelling as childish. The association exists in English because phonemic spelling resembles the attempts of beginning readers sounding words out. It's a cultural bias, not a linguistic one.
+This seems to be an English-specific thing. Finnish, Italian, and Spanish have far more transparent orthographies, and their speakers don't perceive phonemic spelling as childish. The association exists in English because phonemic spelling resembles the attempts of beginning readers sounding words out. It's a cultural bias, not a linguistic one.
 
 ### 9. Constant Revision
 
@@ -186,7 +178,7 @@ The US officially adopted metric in 1975. Fifty years later, Americans still use
 
 No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements: road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
 
-Ingglish could follow the same path. Hypothesized applications (which would benefit from empirical validation):
+Ingglish could follow the same path. Possible applications (not yet formally tested):
 - Phonemic spelling for ESL and early literacy
 - Consistent spelling for dyslexic readers (transparent orthographies correlate with lower dyslexia impact; [Paulesu et al. 2001](https://doi.org/10.1126/science.1057179))
 - Unambiguous input for speech synthesis and language models
@@ -233,13 +225,9 @@ Fluent readers have already paid this cost. Should every future generation keep 
 
 ## Conclusion
 
-English spelling is a legacy system. Like imperial measurements, it works, but at unnecessary cost. Every generation of English learners pays the price for inconsistencies baked in centuries ago.
+English spelling works, but at unnecessary cost. Every generation of learners pays for inconsistencies baked in centuries ago.
 
-Ingglish offers what metric offered: a consistent alternative. Not a mandate, but an option.
-
-Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can succeed in domains where consistency matters while traditional spelling persists elsewhere.
-
-It won't replace English spelling overnight. Metric took decades. Hangul took centuries.
+Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can find a foothold in domains where consistency matters while traditional spelling persists elsewhere. Metric took decades. Hangul took centuries.
 
 ## See Also
 

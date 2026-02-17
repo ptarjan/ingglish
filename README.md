@@ -8,11 +8,11 @@ Phonemic English spelling translator. Every spelling always makes the same sound
 
 ## Why?
 
-My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." English spelling is broken — "ough" alone makes 6 different sounds (though, through, rough, cough, thought, bough). Ingglish fixes that.
+My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." English spelling is broken — "ough" alone has at least six pronunciations (though, through, rough, cough, thought, bough). Ingglish fixes that.
 
 ## Overview
 
-Ingglish translates English text into a consistent, phonemic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it eliminates the irregularities and exceptions that make English spelling notoriously difficult.
+Ingglish translates English text into a consistent, phonemic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it strips away the inconsistencies that make English spelling so hard to learn.
 
 ### Features
 

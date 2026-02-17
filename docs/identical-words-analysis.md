@@ -39,11 +39,11 @@ We tested mappings that maximize identical words:
 | /z/: z → s | +755 | "prize" becomes "prise" |
 | /ɔ/: aw → o | +532 | "saw" and "so" both become "so" |
 
-These changes create **collisions**: different words that get the same spelling. This destroys meaning and makes text ambiguous.
+These changes create **collisions**: different words that get the same spelling, making text ambiguous.
 
 ## Collision-Free Alternatives Investigated
 
-We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that increase identical word count without creating new collisions. Five candidates emerged -- all were ultimately rejected (see [Recommendations](#recommendations)).
+We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that increase identical word count without creating new collisions. Five candidates emerged -- all were rejected (see [Recommendations](#recommendations)).
 
 ### Candidates
 
@@ -185,7 +185,7 @@ The identical word count measures string equality, but **it doesn't measure whet
 
 The `ow` and `eu` changes both pass test 1 but fail test 2. They don't create collisions in the formal sense, but they create *perceptual* collisions where English readers' existing intuitions produce the wrong pronunciation.
 
-The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with. The Finnish "double for long" logic succeeds here because English never uses `uu`.
+The current mappings (`oh` for /oʊ/, `uu` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with. The Finnish "double for long" logic succeeds here because English never uses `uu`.
 
 ## Conclusion
 

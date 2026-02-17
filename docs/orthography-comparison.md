@@ -41,7 +41,6 @@ For why we chose these spellings, see [Design Decisions](design-decisions.md).
 **Notes:**
 - Universal across Latin-script languages
 - Portuguese/Italian/Catalan use accent marks to distinguish open /ɛ/ from close /e/
-- No innovation needed here
 
 #### Short 'I' Sound (/ɪ/)
 
@@ -214,7 +213,6 @@ For why we chose these spellings, see [Design Decisions](design-decisions.md).
 **Notes:**
 - Very common diphthong spelling worldwide: 'oi' or 'oy'
 - German is the outlier using 'eu'
-- No innovation needed
 
 #### 'AW' Sound (/ɔ/)
 
@@ -517,7 +515,7 @@ The velar nasal requires a digraph:
 - Nearly universal use of 'ng' for this sound
 - Polynesian languages treat /ŋ/ as a single letter, often written 'g' or 'ng'
 - African languages often use 'ng'' (with apostrophe) to distinguish from /ng/ clusters
-- We keep 'ng'. No innovation needed here
+- Ingglish uses 'ng', the standard approach
 
 ### Liquids & Glides
 
@@ -737,6 +735,6 @@ Most languages have 5–7 vowel phonemes. English has 14–15 depending on diale
 
 (Data from [Maddieson 2013, WALS Chapter 2](https://wals.info/chapter/2).)
 
-This explains why English spelling is so difficult: we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
+English spelling is hard because we're mapping ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 
 See [Design Decisions](design-decisions.md) for how Ingglish handles this.

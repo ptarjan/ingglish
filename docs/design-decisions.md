@@ -1,6 +1,6 @@
 # Design Decisions: Why Ingglish Spells Things This Way
 
-Why we made specific spelling choices, what alternatives we considered, and what didn't work.
+Why we made these spelling choices, and what we tried that didn't work.
 
 ## Motivation
 
@@ -75,7 +75,7 @@ The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel i
 
 ### Diphthong Decisions
 
-The [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings were among the hardest decisions. Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), diphthongs have **competing conventions** across languages.
+Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings have competing conventions across languages.
 
 | Sound | Spelling | Why This Choice |
 |-------|----------|-----------------|
@@ -93,9 +93,9 @@ The [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings were among th
 | out loud | out loud |
 | go show | goh shoh |
 
-**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English: it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". The `oh` spelling has no competing English interpretation, keeping it unambiguous.
+**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English: it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". Nothing else in English reads as `oh`, so it's unambiguous.
 
-**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". The `uu` spelling has no English precedent to mislead readers.
+**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". English has no existing `uu` convention to conflict with, so the spelling can't mislead.
 
 ### R-Colored Vowels
 
@@ -112,7 +112,7 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 ## Dialect Choice
 
-Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's widely used in American media and internationally recognized ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC)), making it a practical default.
+Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's widely used in American media and internationally recognized ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC)), so it's a practical default.
 
 Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from American media.
 
