@@ -118,7 +118,7 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 | Combination | Spelling | Why |
 |-------------|----------|-----|
 | /æ/ + R | arr | Matches English "carrot", "barrel" |
-| /ɛ/ + R | air | Fixed 204 collisions (air vs her) |
+| /ɛ/ + R | air | Prevents "air" vs "her" collisions |
 | /ɪ/ + R | eer | "beer" → "beer", "beard" → "beerd" (avoids "bird") |
 | /ɑ/ + R | ar | "star" → "star" (identical!) |
 | /ɔ/ + R | or | "store" → "stor" |
