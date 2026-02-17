@@ -3,7 +3,8 @@
  */
 
 import { translate, translateSync } from 'ingglish';
-import type { DOMTranslatorOptions, OutputFormat } from '../types';
+import type { DOMTranslatorOptions } from '../types';
+import type { OutputFormat } from '@ingglish/phonemes';
 import {
   requireBrowser,
   DEFAULT_SKIP_TAGS,
