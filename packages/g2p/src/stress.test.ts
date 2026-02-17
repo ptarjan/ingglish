@@ -80,11 +80,12 @@ describe('applyStressPrediction', () => {
 
   it('reduces AE to AH0 when unstressed', () => {
     // "abstract" = AE1 B S T R AE1 K T — 2 vowels
+    // ab- prefix rule → stress falls on 2nd syllable
     const phonemes = ['AE1', 'B', 'S', 'T', 'R', 'AE1', 'K', 'T'];
     const result = applyStressPrediction('abstract', phonemes);
-    // First syllable stressed, second AE should reduce to AH0
-    expect(result[0]).toBe('AE1');
-    expect(result[5]).toBe('AH0');
+    // Second syllable stressed (ab- prefix), first AE reduces to AH0
+    expect(result[0]).toBe('AH0');
+    expect(result[5]).toBe('AE1');
   });
 
   it('handles -ing gerund with prefix detection', () => {

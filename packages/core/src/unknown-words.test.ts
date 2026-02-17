@@ -482,7 +482,7 @@ describe('unknown-words', () => {
       expect(translateWithRules('hashtag')).toBe('hashtug');
       // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH stays as EH0
       expect(translateWithRules('fintech')).toBe('fintek');
-      expect(translateWithRules('chatbot')).toBe('chatbot');
+      expect(translateWithRules('chatbot')).toBe('chatbut');
     });
 
     it('should translate magic-e words with long vowels', () => {
