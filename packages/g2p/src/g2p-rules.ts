@@ -95,6 +95,9 @@ const NRL_RULES: Record<string, string[]> = {
     ' [AERO]=/EH R OW/',
     // Custom: AE Latin digraph → EH (aegis, aesthetic, aeon — 358 words, 0% accuracy without)
     '[AE]=/EH/',
+    // Custom: word-end -as/-an with schwa (atlas, organ)
+    '#:[AS] =/AH Z/',
+    '#:[AN] =/AX N/',
     '[A]=/AE/',
   ],
   B: [
@@ -652,7 +655,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]DY=/OW/',
     '[O]LI=/OW/',
     '[O]H=/OW/',
-    // Custom: word-end -ot with schwa (carrot, ballot — +10/+16)
+    // Custom: word-end -ons/-ol/-ot with schwa (persons, control, carrot)
+    '#:[ONS] =/AH N Z/',
+    '#:[OL] =/AO L/',
     '#:[OT] =/AH T/',
     '[O]=/AA/',
   ],
