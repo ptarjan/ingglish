@@ -71,15 +71,11 @@
 .tutorial-substep {
   margin-bottom: 3rem;
   opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  transition: opacity 0.6s ease;
 }
 
 .tutorial-substep.revealed {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* --- Section 1: Ough grid --- */
@@ -99,15 +95,11 @@
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   opacity: 0;
-  transform: translateY(15px);
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
+  transition: opacity 0.4s ease;
 }
 
 .ough-card.revealed {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .ough-english-word,
@@ -171,15 +163,11 @@
   line-height: 1.6;
   margin-bottom: 1.5rem;
   opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  transition: opacity 0.6s ease;
 }
 
 .whatif-line.revealed {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .whatif-punchline {
@@ -591,7 +579,7 @@
   .sound-description,
   .progressive-word {
     opacity: 1 !important;
-    transform: none !important;
+    transform: none !important; /* for inline translateX animations */
     transition: none !important;
   }
 }
