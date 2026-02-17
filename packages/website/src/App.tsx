@@ -1,14 +1,30 @@
+import type { ComponentType, LazyExoticComponent } from 'react';
 import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { translate } from 'ingglish';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
 
-const UrlTranslator = lazy(() => import('./components/UrlTranslator'));
-const SpellingGuide = lazy(() => import('./components/SpellingGuide'));
-const Extension = lazy(() => import('./components/Extension'));
-const Docs = lazy(() => import('./components/Docs'));
-const Poems = lazy(() => import('./components/Poems'));
+// Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
+function lazyWithReload<T extends { default: ComponentType<never> }>(
+  factory: () => Promise<T>
+): LazyExoticComponent<T['default']> {
+  return lazy(() =>
+    factory().catch(() => {
+      // Chunk failed to load (likely stale after deploy) — reload to get fresh HTML
+      window.location.reload();
+      // Return a never-resolving promise so React doesn't render before reload completes
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return new Promise<T>(() => {});
+    })
+  );
+}
+
+const UrlTranslator = lazyWithReload(() => import('./components/UrlTranslator'));
+const SpellingGuide = lazyWithReload(() => import('./components/SpellingGuide'));
+const Extension = lazyWithReload(() => import('./components/Extension'));
+const Docs = lazyWithReload(() => import('./components/Docs'));
+const Poems = lazyWithReload(() => import('./components/Poems'));
 
 type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs';
 type ThemeMode = 'light' | 'dark' | 'auto';
