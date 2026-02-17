@@ -58,6 +58,7 @@ const PRE_STRESS_SUFFIXES: PreStressSuffix[] = [
   { suffix: 'ogy', stressFromEnd: 3 },
   { suffix: 'omy', stressFromEnd: 3 },
   { suffix: 'ony', stressFromEnd: 3 },
+  { suffix: 'ory', stressFromEnd: 3 },
   // Penultimate (2 from end) — Italian/Polish names and common patterns
   { suffix: 'iano', stressFromEnd: 3 },
   { suffix: 'ella', stressFromEnd: 2 },
@@ -77,6 +78,7 @@ const PRE_STRESS_SUFFIXES: PreStressSuffix[] = [
   { suffix: 'ate', stressFromEnd: 3 },
   { suffix: 'ive', stressFromEnd: 2 },
   { suffix: 'ible', stressFromEnd: 3 },
+  { suffix: 'ment', stressFromEnd: 2 },
 ];
 
 // Unstressed prefixes: stress falls on 2nd syllable
@@ -87,18 +89,18 @@ interface UnstressedPrefix {
 
 const UNSTRESSED_PREFIXES: UnstressedPrefix[] = [
   // Tier 1: reliable
-  { prefix: 'dis', minLength: 5 },
-  { prefix: 'mis', minLength: 5 },
+  { prefix: 'dis', minLength: 7 },
+  { prefix: 'mis', minLength: 7 },
   { prefix: 'be', minLength: 4 },
   { prefix: 'de', minLength: 4 },
-  { prefix: 're', minLength: 4 },
+  { prefix: 're', minLength: 5 },
   // Tier 2: mostly reliable — check longer prefixes first
   { prefix: 'under', minLength: 7 },
   { prefix: 'inter', minLength: 7 },
   { prefix: 'over', minLength: 6 },
   { prefix: 'un', minLength: 4 },
   { prefix: 'ex', minLength: 4 },
-  { prefix: 'sur', minLength: 5 },
+  { prefix: 'sur', minLength: 7 },
   { prefix: 'sub', minLength: 5 },
   // Tier 3: Latinate a- prefixes (abandon, absorb, accept, advance, etc.)
   { prefix: 'ab', minLength: 6 },
@@ -186,6 +188,31 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
   const stressedSyllable = predictStressSyllable(word, vowelPositions.length);
   const result = [...phonemes];
 
+  // If the predicted stress syllable is already AH0 (schwa from NRL rules),
+  // reassign primary stress to the nearest non-AH0 vowel
+  let actualStressed = stressedSyllable;
+  if (
+    vowelPositions[actualStressed] !== undefined &&
+    result[vowelPositions[actualStressed]] === 'AH0'
+  ) {
+    let found = false;
+    for (let j = actualStressed + 1; j < vowelPositions.length; j++) {
+      if (result[vowelPositions[j]] !== 'AH0') {
+        actualStressed = j;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      for (let j = actualStressed - 1; j >= 0; j--) {
+        if (result[vowelPositions[j]] !== 'AH0') {
+          actualStressed = j;
+          break;
+        }
+      }
+    }
+  }
+
   for (let i = 0; i < vowelPositions.length; i++) {
     const pos = vowelPositions[i];
     const phoneme = result[pos];
@@ -196,7 +223,7 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
       continue;
     }
 
-    if (i === stressedSyllable) {
+    if (i === actualStressed) {
       // Stressed syllable: keep base + 1
       result[pos] = base + '1';
     } else {

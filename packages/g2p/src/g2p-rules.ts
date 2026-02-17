@@ -288,6 +288,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[EN] =/AX N/',
     // Custom: -el suffix with schwa (model, chapel, novel, angel)
     '#:[EL] =/AX L/',
+    // Custom: -ess suffix with schwa (actress, princess, goddess — +11 S)
+    '#:[ESS] =/AX S/',
     // Custom: -est superlative with schwa (highest, lowest, fastest)
     '#:[EST] =/AX S T/',
     '[E]=/EH/',
@@ -316,6 +318,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[GEON]=/JH AX N/',
     '[GE]T=/G EH/',
     'SU[GGES]=/G JH EH S/',
+    // Custom: GU before I → G only, U is silent (guide, guilt, guitar — +10)
+    '[GU]I=/G/',
     '[GG]=/G/',
     ' B#[G]=/G/',
     '[G]+=/JH/',
@@ -626,6 +630,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]TI=/OW/',
     '[O]SI=/OW/',
     '[O]GL=/OW/',
+    '[O]FI=/OW/',
+    '[O]KI=/OW/',
     '[O]BY=/OW/',
     '[O]DY=/OW/',
     '[O]LI=/OW/',
