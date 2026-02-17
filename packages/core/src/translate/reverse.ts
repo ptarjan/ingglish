@@ -14,7 +14,7 @@ import {
 } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { ipaToArpabetClean } from '@ingglish/ipa';
-import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
+import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
 import {
   detectCasePattern,
   applyCasePattern,
@@ -32,9 +32,10 @@ import { expandPlaceholder } from './preserved';
 
 /**
  * Looks up English words matching an ARPAbet sequence.
- * Tries primary interpretation first; only falls back to alternatives
- * when the primary has no matches. This prevents alternatives (e.g.,
- * AE→AH ambiguity) from overshadowing correct primary matches.
+ * Tries primary interpretation first. Only considers alternatives (e.g.,
+ * AE↔AH ambiguity from schwa='a') when the alternative's best match is
+ * overwhelmingly more common than the primary's best match (>5x frequency).
+ * This prevents "kat" → "cut" (3.5x) while allowing "haloh" → "hello" (3000x).
  */
 function lookupByArpabet(arpabet: string[]): string[] {
   const variants = expandArpabetAlternatives(arpabet);
@@ -42,28 +43,50 @@ function lookupByArpabet(arpabet: string[]): string[] {
   // Try primary (first variant) first
   const primaryKey = variants[0].join(' ');
   const primaryMatches = lookupPhonemeKey(primaryKey);
-  if (primaryMatches && primaryMatches.length > 0) {
-    return primaryMatches;
+
+  if (!primaryMatches || primaryMatches.length === 0) {
+    // Primary had no matches — try alternatives
+    const allMatches: string[] = [];
+    const seen = new Set<string>();
+    for (let i = 1; i < variants.length; i++) {
+      const key = variants[i].join(' ');
+      const matches = lookupPhonemeKey(key);
+      if (matches) {
+        for (const match of matches) {
+          if (!seen.has(match)) {
+            seen.add(match);
+            allMatches.push(match);
+          }
+        }
+      }
+    }
+    return allMatches.length > 1 ? sortByFrequency(allMatches) : allMatches;
   }
 
-  // Primary had no matches — try alternatives
-  const allMatches: string[] = [];
-  const seen = new Set<string>();
+  // Primary has matches — check if any alternative has a much better match
+  const primaryBestFreq = getWordFrequency(primaryMatches[0]) ?? 0;
 
   for (let i = 1; i < variants.length; i++) {
     const key = variants[i].join(' ');
     const matches = lookupPhonemeKey(key);
-    if (matches) {
-      for (const match of matches) {
-        if (!seen.has(match)) {
-          seen.add(match);
-          allMatches.push(match);
+    if (matches && matches.length > 0) {
+      const altBestFreq = getWordFrequency(matches[0]) ?? 0;
+      if (altBestFreq > primaryBestFreq * 5) {
+        // Alternative is overwhelmingly more common — merge and sort
+        const allMatches = [...primaryMatches];
+        const seen = new Set(primaryMatches);
+        for (const match of matches) {
+          if (!seen.has(match)) {
+            seen.add(match);
+            allMatches.push(match);
+          }
         }
+        return sortByFrequency(allMatches);
       }
     }
   }
 
-  return allMatches.length > 1 ? sortByFrequency(allMatches) : allMatches;
+  return primaryMatches;
 }
 
 /**
