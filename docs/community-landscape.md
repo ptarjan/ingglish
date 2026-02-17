@@ -23,7 +23,7 @@ Most reforms converge on the same consonant spellings but diverge wildly on vowe
 | STRUT /ʌ/ | u | u | Strong |
 | GOOSE /uː/ | uu, oo (tied) | uu | Split |
 | FOOT /ʊ/ | oo, u (tied) | oo | Split |
-| Schwa /ə/ | most dodge it | u | None |
+| Schwa /ə/ | most dodge it | a | None |
 
 GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "got" — some use diacritics (ō, ô), some use digraphs (oa, ow, oh), some repurpose letters. Ingglish's "oh" appears to be unique across the corpus. The schwa is the second hardest; most systems avoid addressing it at all.
 
@@ -78,7 +78,7 @@ Three Ingglish choices stand out as unusual or unique:
 
 **"oh" for GOAT** — Unique among the 133+ reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The most common alternatives are ō (macron), ou, ow, and oe — GOAT remains the vowel with zero consensus. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar.
 
-**Schwa mapped to "u"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping creates results like "bunanu" (banana) and "ubout" (about) that will trigger the "looks childish" or "looks like a different language" reaction. The principled consistency is unusual, though the underlying phonological analysis (schwa = unstressed STRUT) has support — InEcclesiaSatan's Dutch-style reform and others independently merge /ʌ/ and /ə/ as allophones.
+**Schwa mapped to "a"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping to "a" is the most common single-letter choice for schwa cross-linguistically (it's the default unstressed vowel in many languages), and it preserves many familiar spellings ("about", "banana" stay unchanged). Words where schwa was previously spelled with other letters do change: "problem" → "problam", "computer" → "kampyuuter". The principled consistency is unusual regardless of which letter is chosen.
 
 **"oo" for FOOT (not GOOSE)** — Many systems that use "oo" assign it to the longer vowel (/uː/, as in "too"). Ingglish assigns "oo" to the shorter /ʊ/ (book) and "uu" to the longer /uː/ (too). The logic is that "oo" already appears in English "book/good/look". The broader principle of "shorter symbol for shorter vowel" has support in the corpus — several systems assign plain `u` to FOOT and a digraph to GOOSE — but the specific "oo" reversal may still confuse people.
 
@@ -126,7 +126,7 @@ Systems that reassign letter values or use unfamiliar characters get dismissed:
 
 Universal for phonemic systems. The ["(Not so) Basic English Spelling Reform"](https://www.reddit.com/r/conorthography/comments/1qsb2tk/not_so_basic_english_spelling_reform/) (77 upvotes, highest-scoring post) drew reactions like "Oh my pord what the hepp." The more phonemically consistent a system is, the stranger it looks to English readers.
 
-Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this — they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "bunanu" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
+Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this — they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "problam" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
 
 Specific design choices that drew the harshest reactions:
 - Using Q as a vowel: "Q should NOT be a vowel" (19 upvotes)
