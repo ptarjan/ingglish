@@ -720,14 +720,25 @@ function Section6_Poem() {
             const transformed = step >= w.s && w.s > 0;
             const actuallyChanged = w.e.toLowerCase() !== w.i.toLowerCase();
             const justChanged = step === w.s && w.s > 0 && actuallyChanged;
-            const display = transformed ? w.i : w.e;
+            if (!actuallyChanged || w.s === 0) {
+              return (
+                <span key={i}>
+                  <span className="poem-word">{w.e}</span>{' '}
+                </span>
+              );
+            }
             return (
               <span key={i}>
                 <span
-                  className={`poem-word${transformed && actuallyChanged ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
-                  data-orig={transformed && actuallyChanged ? w.e : undefined}
+                  className={`poem-word poem-word-morph${transformed ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
+                  data-orig={transformed ? w.e : undefined}
                 >
-                  {display}
+                  <span className="poem-word-eng" aria-hidden={transformed}>
+                    {w.e}
+                  </span>
+                  <span className="poem-word-ing" aria-hidden={!transformed}>
+                    {w.i}
+                  </span>
                 </span>{' '}
               </span>
             );
