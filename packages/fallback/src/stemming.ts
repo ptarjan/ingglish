@@ -9,11 +9,43 @@ import { arpabetToFormat, stripStress } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation } from '@ingglish/dictionary';
 
+/** Voiceless consonants for -ed allomorph selection */
+const VOICELESS = new Set(['P', 'T', 'K', 'CH', 'F', 'TH', 'S', 'SH', 'HH']);
+
+/** Sibilants for -s allomorph selection */
+const SIBILANTS = new Set(['S', 'Z', 'SH', 'ZH', 'CH', 'JH']);
+
+/**
+ * Select the correct -ed allomorph based on the last phoneme of the stem.
+ * - /T/ after voiceless consonants (walked, kissed)
+ * - /IH0 D/ after /T/ or /D/ (wanted, needed)
+ * - /D/ after voiced consonants and vowels (played, called)
+ */
+function selectEdPhonemes(lastPhoneme: string): string[] {
+  const base = stripStress(lastPhoneme);
+  if (base === 'T' || base === 'D') {return ['IH0', 'D'];}
+  if (VOICELESS.has(base)) {return ['T'];}
+  return ['D'];
+}
+
+/**
+ * Select the correct -s allomorph based on the last phoneme of the stem.
+ * - /IH0 Z/ after sibilants (dishes, judges)
+ * - /S/ after voiceless consonants (cats, walks)
+ * - /Z/ after voiced consonants and vowels (dogs, plays)
+ */
+function selectSPhonemes(lastPhoneme: string): string[] {
+  const base = stripStress(lastPhoneme);
+  if (SIBILANTS.has(base)) {return ['IH0', 'Z'];}
+  if (VOICELESS.has(base)) {return ['S'];}
+  return ['Z'];
+}
+
 /**
  * Common English suffixes and their phonetic representations.
  * Used when trying to stem unknown words.
  */
-export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] }[] = [
+export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] | null }[] = [
   // Long suffixes first (must come before shorter matches: -ification before -tion, -ifying before -ing)
   { suffix: 'ification', phonemes: ['IH0', 'F', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'] },
   { suffix: 'ifying', phonemes: ['IH0', 'F', 'AY1', 'IH0', 'NG'] },
@@ -21,9 +53,9 @@ export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] }[] = [
 
   // Verb suffixes
   { suffix: 'ing', phonemes: ['IH0', 'NG'] },
-  { suffix: 'ed', phonemes: ['D'] }, // or T or IH0 D depending on context
+  { suffix: 'ed', phonemes: null }, // allomorph: T/D/IH0 D (selected dynamically)
   { suffix: 'es', phonemes: ['IH0', 'Z'] },
-  { suffix: 's', phonemes: ['Z'] }, // or S
+  { suffix: 's', phonemes: null }, // allomorph: S/Z/IH0 Z (selected dynamically)
 
   // Noun suffixes
   { suffix: 'tion', phonemes: ['SH', 'AH0', 'N'] },
@@ -49,6 +81,12 @@ export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] }[] = [
 
   // Comparative/superlative
   { suffix: 'est', phonemes: ['AH0', 'S', 'T'] },
+
+  // Additional suffixes
+  { suffix: 'ally', phonemes: ['AH0', 'L', 'IY0'] },
+  { suffix: 'ology', phonemes: ['AA1', 'L', 'AH0', 'JH', 'IY0'] },
+  { suffix: 'ize', phonemes: ['AY1', 'Z'] },
+  { suffix: 'ise', phonemes: ['AY1', 'Z'] },
 ];
 
 /**
@@ -102,7 +140,22 @@ export function translateWithStemming(
           // Strip stress from base word phonemes so they don't conflict
           // with the suffix's unstressed (0) markers
           const strippedBase = baseArpabet.map(stripStress);
-          const fullArpabet = [...strippedBase, ...suffixArpabet];
+
+          // Select allomorph for -ed and -s based on last phoneme of stem
+          let resolvedSuffix: string[];
+          if (suffixArpabet === null) {
+            const lastPhoneme = baseArpabet[baseArpabet.length - 1];
+            if (suffix === 'ed') {
+              resolvedSuffix = selectEdPhonemes(lastPhoneme);
+            } else {
+              // suffix === 's'
+              resolvedSuffix = selectSPhonemes(lastPhoneme);
+            }
+          } else {
+            resolvedSuffix = suffixArpabet;
+          }
+
+          const fullArpabet = [...strippedBase, ...resolvedSuffix];
           return arpabetToFormat(fullArpabet, format);
         }
       }

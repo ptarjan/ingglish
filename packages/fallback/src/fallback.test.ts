@@ -45,9 +45,9 @@ describe('translateAsCompound', () => {
     expect(translateAsCompound('xyzabc')).toBeNull();
   });
 
-  it('picks the best split by frequency', () => {
-    // "into" can split as "in"+"to" — both high-frequency words
-    const result = translateAsCompound('into');
+  it('splits compound words with N parts', () => {
+    // "nevertheless" can split as "never"+"the"+"less"
+    const result = translateAsCompound('nevertheless');
     expect(result).toBeTruthy();
   });
 });

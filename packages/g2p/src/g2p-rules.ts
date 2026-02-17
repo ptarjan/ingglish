@@ -676,6 +676,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [PSYCH]=/S AY K/',
     // Custom: silent p before s at word start (psalm, psychology)
     ' [PS]=/S/',
+    // Custom: silent p before t at word start (pterodactyl, ptarmigan, ptolemy)
+    ' [PT]=/T/',
     // Custom: silent p before n at word start (pneumonia, pneumatic)
     ' [PN]=/N/',
     // Custom: PARA- prefix → P EH R AH (paradise, parallel — +7)
