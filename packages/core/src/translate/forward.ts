@@ -15,7 +15,12 @@ import {
   restorePreservedPatterns,
 } from '@ingglish/normalize';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
-import { translateUnknown, isInitialism, parseInitialismWithSuffix } from '@ingglish/fallback';
+import {
+  translateUnknown,
+  isInitialism,
+  parseInitialismWithSuffix,
+  translateAsAcronym,
+} from '@ingglish/fallback';
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { expandPlaceholder } from './preserved';
 
@@ -39,13 +44,23 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     return { translated: word, matched: true };
   }
 
+  // Latin-script formats (Ingglish, IPA) can pass words through unchanged.
+  // Non-Latin scripts (Shavian, Deseret) must translate everything so no
+  // Latin characters leak into the output.
+  const isLatinScript = format === 'ingglish' || format === 'ipa';
+
   // Handle initialisms with suffixes FIRST (IDs, TVs, URLs, API's)
   // This must come before contraction handling to catch possessive initialisms like "API's"
   const initialismWithSuffix = parseInitialismWithSuffix(word);
   if (initialismWithSuffix !== null) {
-    const { base, suffix } = initialismWithSuffix;
-    const baseTranslated = translateWord(base, format);
-    return { translated: baseTranslated + suffix, matched: true };
+    // For Latin scripts, all initialism+suffix forms pass through.
+    // For non-Latin scripts, only uppercase bases are initialisms —
+    // lowercase "it's" should fall through to contraction handling.
+    if (isLatinScript || initialismWithSuffix.base === initialismWithSuffix.base.toUpperCase()) {
+      const { base, suffix } = initialismWithSuffix;
+      const baseTranslated = translateWord(base, format);
+      return { translated: baseTranslated + suffix, matched: true };
+    }
   }
 
   // Handle contractions (words with apostrophes)
@@ -53,15 +68,23 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     return { translated: translateContraction(word, format), matched: true };
   }
 
-  // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged.
-  // They're abbreviations, not words — translating them mangles them.
+  // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged
+  // for Latin-script formats. For non-Latin scripts, spell them out in the
+  // target script. Only match uppercase for non-Latin to avoid treating
+  // lowercase "it", "us", "am" as initialisms.
   if (isInitialism(word)) {
-    return { translated: word, matched: true };
+    if (isLatinScript) {
+      return { translated: word, matched: true };
+    }
+    if (word === word.toUpperCase()) {
+      return { translated: translateAsAcronym(word, format), matched: true };
+    }
   }
 
-  // All-caps words (≥2 chars) pass through unchanged — they're acronyms,
-  // abbreviations, or intentional formatting (MQTT, USSR, NATO, HELLO).
-  if (word.length >= 2 && /^[A-Z]+$/.test(word)) {
+  // All-caps words (≥2 chars) pass through unchanged for Latin-script formats —
+  // they're acronyms, abbreviations, or intentional formatting (MQTT, USSR, NATO).
+  // For non-Latin scripts, fall through to normal translation.
+  if (isLatinScript && word.length >= 2 && /^[A-Z]+$/.test(word)) {
     return { translated: word, matched: true };
   }
 
