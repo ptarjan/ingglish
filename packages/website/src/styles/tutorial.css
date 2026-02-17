@@ -429,41 +429,15 @@
 
 .poem-word {
   position: relative;
-  display: inline;
-}
-
-/* Morph wrapper: overlays both texts so the wider one reserves space */
-.poem-word-morph {
-  display: inline-grid;
+  display: inline-block;
   transition: color 0.5s ease;
 }
 
-.poem-word-morph > span {
-  grid-area: 1 / 1;
-}
-
-.poem-word-eng {
-  transition: opacity 0.3s ease;
-}
-
-.poem-word-ing {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.poem-word-morph.transformed .poem-word-eng {
-  opacity: 0;
-}
-
-.poem-word-morph.transformed .poem-word-ing {
-  opacity: 1;
-}
-
-.poem-word-morph.transformed {
+.poem-word.transformed {
   color: var(--color-primary);
 }
 
-.poem-word-morph.highlighted {
+.poem-word.highlighted {
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
   border-radius: 3px;
   padding: 0 2px;

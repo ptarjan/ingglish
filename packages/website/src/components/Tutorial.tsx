@@ -615,6 +615,8 @@ function Section5_Progressive() {
 function Section6_Poem() {
   const { ref, visible } = useScrollReveal<HTMLElement>(0.3);
   const [step, setStep] = useState(0);
+  const poemRef = useRef<HTMLDivElement>(null);
+  const lockedHeight = useRef(0);
 
   const [paused, setPaused] = useState(false);
   // Bumped to restart the auto-advance effect (replay or unpause)
@@ -622,6 +624,14 @@ function Section6_Poem() {
 
   const totalSteps = 24;
   const finished = step > totalSteps;
+
+  // Lock the poem container height before the first word transforms
+  useEffect(() => {
+    if (visible && lockedHeight.current === 0 && poemRef.current) {
+      lockedHeight.current = poemRef.current.offsetHeight;
+      poemRef.current.style.minHeight = `${lockedHeight.current}px`;
+    }
+  }, [visible]);
   const advancing = visible && !finished && !paused;
 
   // Auto-advance steps once visible (24 lines, one at a time).
@@ -674,7 +684,7 @@ function Section6_Poem() {
     <section ref={ref} className="tutorial-section">
       <h2 className="tutorial-heading">Hints on Pronunciation for Foreigners</h2>
       <p className="poem-attribution">&mdash; attributed to T.S. Watt, 1954</p>
-      <div className="poem-paragraph">
+      <div ref={poemRef} className="poem-paragraph">
         <div className="poem-controls">
           {advancing && (
             <button
@@ -720,25 +730,14 @@ function Section6_Poem() {
             const transformed = step >= w.s && w.s > 0;
             const actuallyChanged = w.e.toLowerCase() !== w.i.toLowerCase();
             const justChanged = step === w.s && w.s > 0 && actuallyChanged;
-            if (!actuallyChanged || w.s === 0) {
-              return (
-                <span key={i}>
-                  <span className="poem-word">{w.e}</span>{' '}
-                </span>
-              );
-            }
+            const display = transformed ? w.i : w.e;
             return (
               <span key={i}>
                 <span
-                  className={`poem-word poem-word-morph${transformed ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
-                  data-orig={transformed ? w.e : undefined}
+                  className={`poem-word${transformed && actuallyChanged ? ' transformed' : ''}${justChanged ? ' highlighted' : ''}`}
+                  data-orig={transformed && actuallyChanged ? w.e : undefined}
                 >
-                  <span className="poem-word-eng" aria-hidden={transformed}>
-                    {w.e}
-                  </span>
-                  <span className="poem-word-ing" aria-hidden={!transformed}>
-                    {w.i}
-                  </span>
+                  {display}
                 </span>{' '}
               </span>
             );
