@@ -203,7 +203,7 @@ describe('initialisms', () => {
 
     it('should handle mixed initialisms and words', () => {
       const result = translateSync('the US and UK', 'ingglish');
-      expect(result).toBe('Dhu US und UK');
+      expect(result).toBe('Dha US and UK');
     });
   });
 });

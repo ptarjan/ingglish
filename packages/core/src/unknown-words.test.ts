@@ -355,8 +355,8 @@ describe('unknown-words', () => {
 
     it('should translate words with tion/sion', () => {
       // NRL: A before TIO gets long A treatment → nayshun
-      expect(translateWithRules('nation')).toBe('nayshun');
-      expect(translateWithRules('vision')).toBe('vizhun');
+      expect(translateWithRules('nation')).toBe('nayshan');
+      expect(translateWithRules('vision')).toBe('vizhan');
     });
 
     it('should translate words with silent consonant pairs', () => {
@@ -368,7 +368,7 @@ describe('unknown-words', () => {
     it('should translate words with doubled consonants', () => {
       expect(translateWithRules('buzz')).toBe('buz');
       expect(translateWithRules('bell')).toBe('bel');
-      expect(translateWithRules('apple')).toBe('apul');
+      expect(translateWithRules('apple')).toBe('apal');
     });
 
     it('should translate words with y as vowel', () => {
@@ -467,22 +467,22 @@ describe('unknown-words', () => {
 
     it('should use long vowels before consonant+le where NRL matches', () => {
       // table: NRL ABLE rule gives long A
-      expect(translateWithRules('table')).toBe('taybul');
+      expect(translateWithRules('table')).toBe('taybal');
       // noble/title: NRL doesn't have specific -oble/-itle long vowel rules
-      expect(translateWithRules('noble')).toBe('nobul');
-      expect(translateWithRules('title')).toBe('titul');
+      expect(translateWithRules('noble')).toBe('nobal');
+      expect(translateWithRules('title')).toBe('tital');
       // Short vowel (doubled consonant): little, apple, bottle stay short
-      expect(translateWithRules('little')).toBe('litul');
-      expect(translateWithRules('apple')).toBe('apul');
-      expect(translateWithRules('bottle')).toBe('botul');
+      expect(translateWithRules('little')).toBe('lital');
+      expect(translateWithRules('apple')).toBe('apal');
+      expect(translateWithRules('bottle')).toBe('botal');
     });
 
     it('should translate compound-style words', () => {
       // Unstressed AE reduces to schwa, but EH and AA keep their vowel quality
-      expect(translateWithRules('hashtag')).toBe('hashtug');
+      expect(translateWithRules('hashtag')).toBe('hashtag');
       // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH stays as EH0
       expect(translateWithRules('fintech')).toBe('fintek');
-      expect(translateWithRules('chatbot')).toBe('chatbut');
+      expect(translateWithRules('chatbot')).toBe('chatbat');
     });
 
     it('should translate magic-e words with long vowels', () => {
@@ -531,11 +531,11 @@ describe('unknown-words', () => {
     });
 
     it('should translate consonant+le endings', () => {
-      expect(translateWithRules('apple')).toBe('apul');
-      expect(translateWithRules('little')).toBe('litul');
-      expect(translateWithRules('bottle')).toBe('botul');
-      expect(translateWithRules('candle')).toBe('kandul');
-      expect(translateWithRules('table')).toBe('taybul');
+      expect(translateWithRules('apple')).toBe('apal');
+      expect(translateWithRules('little')).toBe('lital');
+      expect(translateWithRules('bottle')).toBe('botal');
+      expect(translateWithRules('candle')).toBe('kandal');
+      expect(translateWithRules('table')).toBe('taybal');
     });
 
     it('should translate eigh words', () => {
@@ -549,7 +549,7 @@ describe('unknown-words', () => {
     });
 
     it('should translate ssion words', () => {
-      expect(translateWithRules('mission')).toBe('mishun');
+      expect(translateWithRules('mission')).toBe('mishan');
     });
 
     it('should not silence g before n in mid-word', () => {
@@ -941,7 +941,7 @@ describe('unknown-words', () => {
         expect(lookupPronunciation('hello')).not.toBeNull();
 
         const result = translateWord('hello');
-        expect(result).toBe('huloh'); // Known correct translation
+        expect(result).toBe('haloh'); // Known correct translation
       });
     });
 

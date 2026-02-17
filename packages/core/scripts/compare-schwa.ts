@@ -314,6 +314,230 @@ async function main() {
       `  ${pad(item.english, 20)}  ${pad(ahPhonemes, 15)}  ${pad(item.current, 20)}  ${pad(item.proposed, 20)}  ${item.frequency}`
     );
   }
+  console.log('');
+
+  // --- DEEP ANALYSIS ---
+
+  // 1. Frequency-weighted impact: what % of running text is affected?
+  console.log('## Frequency-Weighted Analysis\n');
+  console.log('How much running text improves vs gets worse?\n');
+
+  let totalFreq = 0;
+  let improvedFreq = 0;
+  let worsenedFreq = 0;
+  let changedFreq = 0;
+  let unchangedFreq = 0;
+  let gainIdenticalFreq = 0;
+  let loseIdenticalFreq = 0;
+
+  for (const word of allWords) {
+    const freq = getWordFrequency(word) ?? 0;
+    totalFreq += freq;
+  }
+
+  for (const item of affected) {
+    if (item.current !== item.proposed) {
+      changedFreq += item.frequency;
+      if (item.proposed === item.english && item.current !== item.english) {
+        gainIdenticalFreq += item.frequency;
+      }
+      if (item.current === item.english && item.proposed !== item.english) {
+        loseIdenticalFreq += item.frequency;
+      }
+    } else {
+      unchangedFreq += item.frequency;
+    }
+  }
+
+  const changedPct = ((changedFreq / totalFreq) * 100).toFixed(1);
+  const gainPct = ((gainIdenticalFreq / totalFreq) * 100).toFixed(2);
+  const losePct = ((loseIdenticalFreq / totalFreq) * 100).toFixed(2);
+  console.log(`- Total word frequency in corpus: ${totalFreq.toLocaleString()}`);
+  console.log(
+    `- Frequency of words that CHANGE spelling: ${changedFreq.toLocaleString()} (${changedPct}% of all text)`
+  );
+  console.log(
+    `- Frequency of words that GAIN identity: ${gainIdenticalFreq.toLocaleString()} (${gainPct}% of all text)`
+  );
+  console.log(
+    `- Frequency of words that LOSE identity: ${loseIdenticalFreq.toLocaleString()} (${losePct}% of all text)`
+  );
+  console.log(
+    `- Ratio of gain to loss (by frequency): ${(gainIdenticalFreq / (loseIdenticalFreq || 1)).toFixed(1)}x`
+  );
+  console.log('');
+
+  // 2. Pattern analysis: what prefixes/suffixes cause losses?
+  console.log('## Pattern Analysis: What Causes Losses?\n');
+
+  const lossPrefixes = new Map<string, number>();
+  const lossSuffixes = new Map<string, number>();
+
+  for (const item of lostIdentical) {
+    // Check common prefixes
+    for (const prefix of ['un', 'up', 'us', 'um', 'ul', 'ur']) {
+      if (item.english.startsWith(prefix)) {
+        lossPrefixes.set(prefix, (lossPrefixes.get(prefix) ?? 0) + 1);
+      }
+    }
+    // Check common suffixes
+    for (const suffix of [
+      'ful',
+      'ful',
+      'um',
+      'us',
+      'ub',
+      'up',
+      'ut',
+      'ung',
+      'unk',
+      'unt',
+      'und',
+      'ung',
+    ]) {
+      if (item.english.endsWith(suffix)) {
+        lossSuffixes.set(suffix, (lossSuffixes.get(suffix) ?? 0) + 1);
+      }
+    }
+  }
+
+  console.log('Prefixes that cause identity loss (English starts with un-, up-, etc.):');
+  for (const [prefix, count] of [...lossPrefixes.entries()].sort((a, b) => b[1] - a[1])) {
+    const examples = lostIdentical
+      .filter((i) => i.english.startsWith(prefix))
+      .sort((a, b) => b.frequency - a.frequency)
+      .slice(0, 5)
+      .map((i) => `${i.english}(${i.frequency})`);
+    console.log(`  ${prefix}-: ${count} words. Top: ${examples.join(', ')}`);
+  }
+  console.log('');
+  console.log('Suffixes that cause identity loss (English ends with -ful, -um, etc.):');
+  for (const [suffix, count] of [...lossSuffixes.entries()].sort((a, b) => b[1] - a[1])) {
+    const examples = lostIdentical
+      .filter((i) => i.english.endsWith(suffix))
+      .sort((a, b) => b.frequency - a.frequency)
+      .slice(0, 5)
+      .map((i) => `${i.english}(${i.frequency})`);
+    console.log(`  -${suffix}: ${count} words. Top: ${examples.join(', ')}`);
+  }
+  console.log('');
+
+  // 3. Collision quality: are new collisions between real words or obscure names?
+  console.log('## Collision Quality Analysis\n');
+  console.log('Are new collisions between common words or obscure ones?\n');
+
+  let bothCommon = 0; // both words freq > 100
+  let oneCommon = 0; // one word freq > 100
+  let bothUncommon = 0; // neither word freq > 100
+  const dangerousCollisions: [string, string[]][] = [];
+
+  for (const [ingglish, sources] of newCollisions) {
+    const freqs = sources.map((w) => getWordFrequency(w) ?? 0);
+    const commonCount = freqs.filter((f) => f > 100).length;
+    if (commonCount >= 2) {
+      bothCommon++;
+      dangerousCollisions.push([ingglish, sources]);
+    } else if (commonCount === 1) {
+      oneCommon++;
+    } else {
+      bothUncommon++;
+    }
+  }
+
+  console.log(`- Both words common (freq > 100): ${bothCommon} collisions`);
+  console.log(`- One word common: ${oneCommon} collisions`);
+  console.log(`- Both words uncommon: ${bothUncommon} collisions`);
+  console.log('');
+
+  if (dangerousCollisions.length > 0) {
+    console.log('### Dangerous Collisions (both words common):\n');
+    sortByMaxFreq(dangerousCollisions);
+    for (const [ingglish, sources] of dangerousCollisions.slice(0, 30)) {
+      const freqs = sources.map((w) => {
+        const f = getWordFrequency(w);
+        return f ? `${w}(${f})` : w;
+      });
+      console.log(`  ${pad(ingglish, 20)}  <- ${freqs.join(', ')}`);
+    }
+    console.log('');
+  }
+
+  // 4. Sample paragraph comparison
+  console.log('## Sample Paragraph Comparison\n');
+
+  const sampleWords = [
+    'the',
+    'quick',
+    'brown',
+    'fox',
+    'jumped',
+    'about',
+    'a',
+    'beautiful',
+    'garden',
+    'and',
+    'the',
+    'little',
+    'animal',
+    'was',
+    'afraid',
+    'of',
+    'the',
+    'woman',
+    'until',
+    'she',
+    'opened',
+    'the',
+    'banana',
+    'and',
+    'gave',
+    'away',
+    'another',
+    'important',
+    'signal',
+    'to',
+    'the',
+    'people',
+    'around',
+    'the',
+    'hospital',
+  ];
+
+  const currentSentence: string[] = [];
+  const proposedSentence: string[] = [];
+
+  for (const w of sampleWords) {
+    const phonemes = dict[w];
+    if (phonemes) {
+      const hasAH0 = phonemes.includes('AH0');
+      currentSentence.push(arpabetToIngglishWithSchwa(phonemes, 'u'));
+      proposedSentence.push(
+        hasAH0
+          ? arpabetToIngglishWithSchwa(phonemes, 'a')
+          : arpabetToIngglishWithSchwa(phonemes, 'u')
+      );
+    } else {
+      currentSentence.push(w);
+      proposedSentence.push(w);
+    }
+  }
+
+  console.log('English:');
+  console.log(`  ${sampleWords.join(' ')}\n`);
+  console.log('Current (schwa=u):');
+  console.log(`  ${currentSentence.join(' ')}\n`);
+  console.log('Proposed (schwa=a):');
+  console.log(`  ${proposedSentence.join(' ')}\n`);
+
+  // 5. All words that lose identity, sorted by frequency
+  console.log('## ALL Words That Lose Identity (sorted by frequency)\n');
+  const allLost = lostIdentical.sort((a, b) => b.frequency - a.frequency);
+  for (const item of allLost) {
+    const freqStr = item.frequency > 0 ? `  (freq: ${item.frequency})` : '';
+    console.log(
+      `  ${pad(item.english, 25)}  ${pad(item.current, 20)} -> ${pad(item.proposed, 20)}${freqStr}`
+    );
+  }
 }
 
 main().catch(console.error);

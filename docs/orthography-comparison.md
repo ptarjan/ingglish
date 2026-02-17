@@ -272,7 +272,7 @@ For why we chose these spellings, see [Design Decisions](design-decisions.md). F
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **arr** | arroh, karrut, barrul |
+| **Ingglish** | **arr** | arroh, karrat, barral |
 | English | arr, ar | arrow, carrot, barrel |
 
 **Notes:**
@@ -443,7 +443,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 
 | Language | Spelling | Example |
 |----------|----------|---------|
-| **Ingglish** | **dh** | dhu (the) |
+| **Ingglish** | **dh** | dha (the) |
 | English | th (ambiguous!) | the, this, father |
 | Icelandic | ð (eth) | faðir (father) |
 | Welsh | dd | dydd (day) |

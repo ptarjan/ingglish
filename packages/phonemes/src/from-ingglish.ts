@@ -22,24 +22,53 @@ import {
  * - EH + R (short e + r): "welfare", "better"
  *
  * Only EH + R is valid here because IH + R -> "eer" and AH + R -> "ur"
+ *
+ * AE/AH ambiguity: unstressed schwa (AH0) maps to 'a', same as AE (cat).
+ * Reverse parser gets AE from the map; AH alternative covers schwa words.
  */
 const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   ER: [['EH', 'R']],
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
+  AE: [['AH']], // "a" could be AE (cat) or AH (schwa: about, the)
 };
 
 /**
  * Generates alternative ARPAbet sequences for ambiguous spellings.
+ *
+ * For length-changing alternatives (ER→EH+R, SH→S+HH), generates
+ * single-position substitutions. For same-length alternatives (AE→AH),
+ * also generates an "all-replaced" variant to handle words with multiple
+ * ambiguous vowels (e.g., "difakalt" → D IH F AH K AH L T).
  */
 export function expandArpabetAlternatives(arpabet: string[]): string[][] {
   const results: string[][] = [arpabet];
 
+  // Single-position substitutions
   for (let i = 0; i < arpabet.length; i++) {
     const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
     if (alternatives !== undefined) {
       for (const alt of alternatives) {
         const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
         results.push(expanded);
+      }
+    }
+  }
+
+  // All-replaced variant for same-length (1:1) alternatives like AE→AH.
+  // Needed when a word has multiple ambiguous vowels (e.g., "difficult"
+  // has two AH0→'a', so both AE positions must be replaced to match).
+  for (const [phoneme, alts] of Object.entries(ARPABET_ALTERNATIVES)) {
+    for (const alt of alts) {
+      if (alt.length === 1) {
+        let count = 0;
+        for (const p of arpabet) {
+          if (p === phoneme) {
+            count++;
+          }
+        }
+        if (count >= 2) {
+          results.push(arpabet.map((p) => (p === phoneme ? alt[0] : p)));
+        }
       }
     }
   }
@@ -61,7 +90,7 @@ const ONE_CHAR_SPELLINGS = new Set(
 /**
  * Converts an Ingglish spelling to ARPAbet phonemes.
  *
- * @param ingglish - Ingglish string (e.g., "huloh" for "hello")
+ * @param ingglish - Ingglish string (e.g., "haloh" for "hello")
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH", "L", "OW"]), or null if empty
  */
 export function ingglishToArpabet(ingglish: string): string[] | null {

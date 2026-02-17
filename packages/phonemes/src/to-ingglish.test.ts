@@ -93,7 +93,7 @@ describe('phoneme-map', () => {
   describe('arpabetToIngglish', () => {
     it('should convert "hello" phonemes correctly', () => {
       const phonemes = ['HH', 'AH0', 'L', 'OW1'];
-      expect(arpabetToIngglish(phonemes)).toBe('huloh');
+      expect(arpabetToIngglish(phonemes)).toBe('haloh');
     });
 
     it('should convert "world" phonemes correctly', () => {
@@ -103,7 +103,7 @@ describe('phoneme-map', () => {
 
     it('should convert "the" phonemes correctly', () => {
       const phonemes = ['DH', 'AH0'];
-      expect(arpabetToIngglish(phonemes)).toBe('dhu');
+      expect(arpabetToIngglish(phonemes)).toBe('dha');
     });
 
     it('should convert "think" phonemes correctly', () => {
@@ -113,7 +113,7 @@ describe('phoneme-map', () => {
 
     it('should convert "beautiful" phonemes correctly', () => {
       const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
-      expect(arpabetToIngglish(phonemes)).toBe('byuutuful');
+      expect(arpabetToIngglish(phonemes)).toBe('byuutafal');
     });
 
     it('should handle vowel sounds correctly', () => {
@@ -155,7 +155,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['DH', 'EH1', 'R'])).toBe('dhair');
       expect(arpabetToIngglish(['AE1', 'R', 'OW0'])).toBe('arroh');
       expect(arpabetToIngglish(['B', 'AE1', 'R', 'OW0'])).toBe('barroh');
-      expect(arpabetToIngglish(['K', 'AE1', 'R', 'AH0', 'T'])).toBe('karrut');
+      expect(arpabetToIngglish(['K', 'AE1', 'R', 'AH0', 'T'])).toBe('karrat');
       expect(arpabetToIngglish(['AA1'])).toBe('o');
       expect(arpabetToIngglish(['AO1'])).toBe('aw');
       expect(arpabetToIngglish(['EH1'])).toBe('e');

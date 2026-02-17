@@ -70,8 +70,8 @@ describe('translator', () => {
 
   describe('translateWord', () => {
     it('should translate common words', () => {
-      // hello = HH AH0 L OW1 -> huloh (American pronunciation)
-      expect(translateWord('hello')).toBe('huloh');
+      // hello = HH AH0 L OW1 -> haloh (American pronunciation)
+      expect(translateWord('hello')).toBe('haloh');
       expect(translateWord('world')).toBe('werld');
     });
 
@@ -106,7 +106,7 @@ describe('translator', () => {
     it('should translate multiple words', () => {
       const result = translateSync('hello world');
       // First word of multi-word text is capitalized (sentence start)
-      expect(result).toContain('Huloh');
+      expect(result).toContain('Haloh');
       expect(result).toContain('werld');
     });
 
@@ -149,12 +149,12 @@ describe('translator', () => {
     it('should handle possessives with curly apostrophes', () => {
       // Common in text copied from websites like NY Times
       const result = translateSync('China\u2019s economy');
-      expect(result).toBe('Chainuz ikonumee');
+      expect(result).toBe('Chainaz ikonamee');
     });
 
     it('should use diacritics as pronunciation signals for homographs', () => {
       // résumé (accented, French noun) ≠ resume (unaccented, English verb)
-      expect(translateSync('résumé')).toBe('rezumay');
+      expect(translateSync('résumé')).toBe('rezamay');
       expect(translateSync('resume')).toBe('rizuum');
     });
 
@@ -183,7 +183,7 @@ describe('translator', () => {
       // "I" mid-sentence stays lowercase "ai"
       expect(translateSync('Then I left.')).toBe('Dhen ai left.');
       // "I" after sentence-ending punctuation gets capitalized
-      expect(translateSync('Hello. I am here.')).toBe('Huloh. Ai am heer.');
+      expect(translateSync('Hello. I am here.')).toBe('Haloh. Ai am heer.');
       expect(translateSync('Really? I think so.')).toBe('Rilee? Ai thingk soh.');
     });
 
@@ -332,7 +332,7 @@ describe('translator', () => {
 
     it('should translate surrounding text while preserving URLs', () => {
       const result = translateSync('Visit https://example.com today');
-      expect(result).toBe('Vizit https://example.com tuday');
+      expect(result).toBe('Vizit https://example.com taday');
     });
 
     it('should preserve multiple URLs and emails in same text', () => {

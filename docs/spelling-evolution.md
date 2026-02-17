@@ -14,6 +14,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
 | book, put | /ʊ/ | **oo** | uu → oo (swapped) |
 | too, blue | /uː/ | **uu** | oo → uu (swapped) |
 | arrow, carrot | /æɹ/ | **arr** | aar → arr |
+| schwa (about, sofa) | /ə/ | **a** | u → a (AH0 only) |
 
 ## Diphthong Evolution
 
@@ -92,7 +93,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
 **Examples:**
 - go → goh
 - show → shoh
-- hello → huloh
+- hello → haloh
 
 ## Vowel Evolution
 
@@ -173,6 +174,45 @@ This vowel went through the most iteration.
 - Lesson: Identical word count isn't enough on its own. A shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
 - Verdict: ❌ Rejected - perceptual ambiguity despite excellent numerical efficiency
 
+### /ə/ (about, sofa): u → a
+
+The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (ARPAbet AH0), not the stressed /ʌ/ STRUT vowel (AH1/AH2) used in "but", "cup", "run" — those remain 'u'.
+
+**Attempt 1: 'u'**
+- Rationale: Both /ə/ and /ʌ/ are represented as 'AH' in ARPAbet, so mapping all AH → 'u' was the simplest approach
+- Problem:
+  - "the" → "dhu" (unrecognizable — "the" is the most common English word)
+  - "about" → "ubout" (lost the identical English spelling)
+  - "hello" → "huloh" (the 'u' in the first syllable looked odd)
+  - "nation" → "nayshun" (the '-un' ending felt wrong for a word ending in /-ən/)
+  - "beautiful" → "byuutuful" (three u's in one word)
+- Verdict: ❌ Rejected — schwa words looked too unfamiliar
+
+**Attempt 2: 'a' (current)**
+- Rationale:
+  - "about" → "about" (identical!), "and" → "and" (identical!), "the" → "dha" (natural)
+  - 'a' is phonetically close to schwa — many languages use 'a' for their neutral vowel
+  - English already spells schwa as 'a' in the most common words: **a**, **about**, **again**, **along**, **away**, **around** — all identical in Ingglish
+  - Stressed /ʌ/ stays 'u' (but, cup, run unchanged), so no collisions with STRUT words
+- Impact:
+  - **+2,016 net identical words** with English (the largest gain from any single change)
+  - **67.6× frequency-weighted improvement** — gains overwhelmingly in high-frequency words
+  - Only +96 net collision groups (acceptable; most are low-frequency)
+  - Top gains: "a" (1M freq), "and" (683K), "about" (185K), "around" (71K)
+  - Losses cluster in predictable patterns: un- prefix (until→antil), up- prefix (upset→apset), -ful suffix (handful→handfal), -um suffix (museum→myuuzeam)
+- Trade-off: AH0+R must remain 'ur' (not 'ar') to avoid collision with AA+R→'ar'. This is handled by a special R-colored vowel rule that overrides the schwa mapping before R.
+- Verdict: ✅ **Adopted** — massive familiarity gain with minimal downside
+
+**Examples:**
+- about → about (identical!)
+- and → and (identical!)
+- the → dha
+- again → agen (identical!)
+- hello → haloh
+- beautiful → byuutafal
+- difficult → difakalt
+- nation → nayshan
+
 ## R-Colored Vowel Evolution
 
 R-colored vowels were added iteratively to fix collisions and improve readability.
@@ -192,8 +232,8 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 
 **Examples:**
 - arrow → arroh
-- carrot → karrut
-- barrel → barrul
+- carrot → karrat
+- barrel → barral
 
 ### /ɛ/+R → 'air' (added)
 
@@ -252,7 +292,7 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 ### 1. Identical Words Are a Big Win (But Not Everything)
 When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).
 
-Current status: **6,930 identical words** (5.13% of dictionary). See [Identical Words Analysis](identical-words-analysis.md) for details on potential improvements.
+Current status: **~8,946 identical words** (~6.6% of dictionary). The schwa change (AH0 → 'a') alone added +2,016 identical words. See [Identical Words Analysis](identical-words-analysis.md) for details on potential improvements.
 
 ### 2. International Precedent Matters
 Spellings with support from multiple languages (like 'ai' from Pinyin/Italian/Vietnamese) are more defensible than purely English-based choices.
@@ -271,6 +311,9 @@ The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change d
 
 ### 6. Identical Word Count Can Mislead
 A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both increased identical word counts (+137 and +41) but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
+
+### 7. Stress-Conditioned Splits Can Unlock Big Wins
+The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'u'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was the single largest identical-word gain (+2,016) of any change. When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
 
 ## Changes Not Made (Considered and Rejected)
 

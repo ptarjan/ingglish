@@ -173,7 +173,7 @@ test('translates text', async ({ page }) => {
   await page.goto('/');
   await page.fill('[data-testid="english-input"]', 'hello');
   await expect(page.locator('[data-testid="ingglish-output"]'))
-    .toHaveValue('huloh');
+    .toHaveValue('haloh');
 });
 ```
 

@@ -17,7 +17,7 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   // Monophthongs
   AA: 'o', // father, hot, rock (but AA+R → 'ar' in star, car)
   AE: 'a', // cat, bat, had (but AE+R → 'arr' in arrow, barrow)
-  AH: 'u', // but, cup, son
+  AH: 'u', // but, cup, son (stressed /ʌ/; unstressed /ə/ AH0 → 'a' in conversion)
   AO: 'aw', // thought, caught, law (but AO+R → 'or' in store, more)
   EH: 'e', // bed, red, said (but EH+R → 'air' in air, care, there)
   ER: 'er', // bird, her, nurse
@@ -111,6 +111,7 @@ export const R_COLORED_VOWELS: { arpabet: string; prefix: string }[] = [
   { arpabet: 'EH', prefix: 'ai' }, // air, care, there → 'air'
   { arpabet: 'AE', prefix: 'ar' }, // arrow, barrow, carrot → 'arr'
   { arpabet: 'IH', prefix: 'ee' }, // beer, beard, fear → 'eer'
+  { arpabet: 'AH', prefix: 'u' }, // fur, current → 'ur' (prevents AH0+R collision with 'ar')
 ];
 
 /**

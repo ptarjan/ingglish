@@ -203,7 +203,7 @@ Traditional spelling will probably stick around in casual contexts forever, and 
 Some Ingglish spellings will look strange at first:
 - "enough" → "inuf"
 - "through" → "thruu"
-- "beautiful" → "byuutuful"
+- "beautiful" → "byuutafal"
 
 But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar; it's whether the system is better. A spelling system where every letter pattern has one sound is easier to learn than one where "ough" can be pronounced seven different ways, and the research backs this up ([Seymour et al. 2003](https://doi.org/10.1348/000712603321661859)).
 

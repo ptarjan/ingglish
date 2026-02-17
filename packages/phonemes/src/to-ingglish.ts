@@ -15,9 +15,13 @@ import type { OutputFormat } from './types';
  * Converts a single ARPAbet phoneme to Ingglish spelling.
  *
  * @param phoneme ARPAbet phoneme (e.g., "AH0", "EY1", "B")
- * @returns Ingglish spelling (e.g., "u", "ay", "b")
+ * @returns Ingglish spelling (e.g., "a", "ay", "b")
  */
 export function arpabetPhonemeToIngglish(phoneme: string): string {
+  // Unstressed schwa AH0 → 'a' (stressed /ʌ/ AH1/AH2 → 'u' via map)
+  if (phoneme === 'AH0') {
+    return 'a';
+  }
   const base = stripStress(phoneme);
   return ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
 }
@@ -29,7 +33,7 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  * R-colored vowels: AA+R → 'ar', AO+R → 'or', IH+R → 'eer' (more intuitive than 'or'/'awr'/'ir')
  *
  * @param arpabet Array of ARPAbet symbols (e.g., ["HH", "AH0", "L", "OW1"])
- * @returns Ingglish spelling (e.g., "huloh")
+ * @returns Ingglish spelling (e.g., "haloh")
  */
 export function arpabetToIngglish(arpabet: string[]): string {
   let result = '';
@@ -51,6 +55,12 @@ export function arpabetToIngglish(arpabet: string[]): string {
           continue;
         }
       }
+    }
+
+    // Unstressed schwa AH0 → 'a' (stressed /ʌ/ AH1/AH2 → 'u' via map)
+    if (phoneme === 'AH0') {
+      result += 'a';
+      continue;
     }
 
     result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();

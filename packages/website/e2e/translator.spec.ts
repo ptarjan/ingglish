@@ -167,7 +167,7 @@ test.describe('Text Translator', () => {
     const ingglishInput = page.locator('.text-input').last();
 
     await englishInput.fill('hello');
-    await expect(ingglishInput).toHaveValue('huloh');
+    await expect(ingglishInput).toHaveValue('haloh');
   });
 
   test('preserves capitalization', async ({ page }) => {
@@ -175,7 +175,7 @@ test.describe('Text Translator', () => {
     const ingglishInput = page.locator('.text-input').last();
 
     await englishInput.fill('Hello');
-    await expect(ingglishInput).toHaveValue('Huloh');
+    await expect(ingglishInput).toHaveValue('Haloh');
   });
 
   test('handles sample text button', async ({ page }) => {
@@ -221,7 +221,7 @@ test.describe('Text Translator', () => {
 
     // Focus Ingglish input and type a known word
     await ingglishInput.focus();
-    await ingglishInput.fill('huloh');
+    await ingglishInput.fill('haloh');
 
     // Wait for reverse translation to complete
     await expect(englishInput).toHaveValue('hello');

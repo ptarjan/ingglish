@@ -158,7 +158,7 @@ Ingglish    IPA
 └─────┬─────┘ └─────┬─────┘
       │             │
       ▼             ▼
- "huloh"       "/həˈloʊ/"
+ "haloh"       "/həˈloʊ/"
 ```
 
 ### Reverse Translation Flow

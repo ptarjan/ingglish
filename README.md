@@ -74,14 +74,14 @@ import { translate, reverseTranslate } from 'ingglish';
 
 // Translate English → Ingglish (async, auto-loads dictionary)
 const ingglish = await translate('Hello, world!');
-console.log(ingglish); // "Huloh, werld!"
+console.log(ingglish); // "Haloh, werld!"
 
 // Translate English → IPA
 const ipa = await translate('Hello, world!', 'ipa');
 console.log(ipa); // "/həˈloʊ, wɝld!/"
 
 // Translate Ingglish → English (async, loads dictionary + word frequencies)
-const english = await reverseTranslate('huloh, werld!');
+const english = await reverseTranslate('haloh, werld!');
 console.log(english); // "hello, world!"
 
 // Translate IPA → English
@@ -143,13 +143,13 @@ See [docs/phoneme-mapping.md](docs/phoneme-mapping.md) for the complete mapping.
 
 | English | Ingglish | IPA |
 |---------|---------|-----|
-| hello | huloh | /həˈloʊ/ |
+| hello | haloh | /həˈloʊ/ |
 | world | werld | /wɝld/ |
-| beautiful | byuutuful | /ˈbjutəfəl/ |
+| beautiful | byuutafal | /ˈbjutəfəl/ |
 | through | thruu | /θɹu/ |
 | though | dhoh | /ðoʊ/ |
 | thought | thawt | /θɔt/ |
-| the | dhu | /ðə/ |
+| the | dha | /ðə/ |
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
 > **About the name:** "Ingglish" is simply how you spell "English" in Ingglish! When speaking, you can distinguish them by stressing the first syllable and pausing briefly between the two g's: **ING·glish** vs. English.
@@ -198,7 +198,7 @@ cd packages/core
 npm run translate -- "Hello world"
 
 # Reverse translate
-npm run translate -- -r "huloh werld"
+npm run translate -- -r "haloh werld"
 
 # Debug round-trip issues
 npm run debug:roundtrip -- "beautiful"

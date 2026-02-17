@@ -32,15 +32,26 @@ import { expandPlaceholder } from './preserved';
 
 /**
  * Looks up English words matching an ARPAbet sequence.
- * Tries all alternative ARPAbet interpretations and combines results.
+ * Tries primary interpretation first; only falls back to alternatives
+ * when the primary has no matches. This prevents alternatives (e.g.,
+ * AE→AH ambiguity) from overshadowing correct primary matches.
  */
 function lookupByArpabet(arpabet: string[]): string[] {
   const variants = expandArpabetAlternatives(arpabet);
+
+  // Try primary (first variant) first
+  const primaryKey = variants[0].join(' ');
+  const primaryMatches = lookupPhonemeKey(primaryKey);
+  if (primaryMatches && primaryMatches.length > 0) {
+    return primaryMatches;
+  }
+
+  // Primary had no matches — try alternatives
   const allMatches: string[] = [];
   const seen = new Set<string>();
 
-  for (const variant of variants) {
-    const key = variant.join(' ');
+  for (let i = 1; i < variants.length; i++) {
+    const key = variants[i].join(' ');
     const matches = lookupPhonemeKey(key);
     if (matches) {
       for (const match of matches) {
@@ -52,8 +63,7 @@ function lookupByArpabet(arpabet: string[]): string[] {
     }
   }
 
-  // Re-sort combined results by frequency (only if multiple variants matched)
-  return allMatches.length > 0 && variants.length > 1 ? sortByFrequency(allMatches) : allMatches;
+  return allMatches.length > 1 ? sortByFrequency(allMatches) : allMatches;
 }
 
 /**

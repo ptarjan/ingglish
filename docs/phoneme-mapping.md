@@ -23,7 +23,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 |---------|----------|-----|---------------|-------|
 | AA | o | ɑ | f**a**ther, h**o**t, r**o**ck | Open back vowel |
 | AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
-| AH | u | ʌ/ə | b**u**t, c**u**p | Stressed /ʌ/ and unstressed /ə/; see [note](#schwa-and-strut) below |
+| AH | u/a | ʌ/ə | b**u**t, c**u**p / **a**bout, sof**a** | Stressed /ʌ/ → 'u'; unstressed /ə/ (AH0) → 'a'; see [note](#schwa-and-strut) below |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
 | AW | ou | aʊ | c**ow**, h**ow** | Diphthong |
 | AY | ai | aɪ | m**y**, t**i**me | Diphthong |
@@ -136,18 +136,23 @@ If Ingglish ever gets popular enough that this exception is the biggest complain
 
 | English | Phonemes | Ingglish |
 |---------|----------|---------|
-| hello | HH AH0 L OW1 | huloh |
+| hello | HH AH0 L OW1 | haloh |
 | world | W ER1 L D | werld |
-| beautiful | B Y UW1 T AH0 F AH0 L | byuutuful |
+| beautiful | B Y UW1 T AH0 F AH0 L | byuutafal |
 | think | TH IH1 NG K | thingk |
-| the | DH AH0 | dhu |
+| the | DH AH0 | dha |
 | English | IH1 NG G L IH0 SH | Ingglish |
 
 ## Schwa and STRUT
 
-The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish follows this convention, mapping both to **'u'**.
+The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish splits these by stress level:
 
-This works because /ʌ/ and /ə/ are in [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) in English (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables), so they can be analyzed as allophones of a single phoneme. Many phonological analyses of English take this position (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*). Some analyses do treat them as separate phonemes based on vowel quality differences; the CMU dictionary and Ingglish follow the single-phoneme analysis.
+- **AH1/AH2** (stressed /ʌ/) → **'u'**: but, cup, run, son
+- **AH0** (unstressed /ə/) → **'a'**: about, sofa, the, and
+
+This split exploits their [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables). Many phonological analyses treat them as allophones of a single phoneme (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*).
+
+Using 'a' for schwa preserves the English spelling of extremely common words: "a", "and", "about", "away", "important", "hospital", "normal", "signal". See [Spelling Evolution](spelling-evolution.md#schwa-ə-about-sofa-u--a) for the full rationale.
 
 ## Stress Handling
 

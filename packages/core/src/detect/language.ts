@@ -21,7 +21,7 @@ const ENGLISH_PATTERNS = [
   /tion\b/i, // "-tion" ending
   /ight\b/i, // "-ight" ending
   /ough/i, // "ough" pattern
-  /\bthe\b/i, // "the" (would be "dhu" in Ingglish)
+  /\bthe\b/i, // "the" (would be "dha" in Ingglish)
   /\bwh/i, // "wh-" words
 ];
 
