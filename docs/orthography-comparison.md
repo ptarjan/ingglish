@@ -1,6 +1,6 @@
 # Orthography Comparison
 
-How Ingglish spellings compare to other languages. Every choice has precedent in at least one major language.
+How Ingglish spellings compare to other languages. Nearly every choice has precedent in at least one major language.
 
 For why we chose these spellings, see [Design Decisions](design-decisions.md).
 
@@ -436,7 +436,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | [Bashkir](https://en.wikipedia.org/wiki/Bashkir_language)/[Turkmen](https://en.wikipedia.org/wiki/Turkmen_language) | θ/s | (Turkic languages with /θ/) |
 
 **Notes:**
-- Only ~8% of languages have dental fricatives ([Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19)). They're genuinely rare. PHOIBLE data suggests ~4% for /θ/ specifically and ~7% for /ð/.
+- Only ~8% of languages have dental fricatives ([Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19)). They're genuinely rare. [PHOIBLE 2.0](https://phoible.org/) ([Moran & McCloy 2019](https://doi.org/10.5281/zenodo.2677911)) shows ~4% of language inventories contain /θ/ and ~7% contain /ð/.
 - English uses 'th' ambiguously for both voiceless /θ/ and voiced /ð/
 - We keep 'th' for voiceless /θ/, the intuitive choice
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
@@ -469,8 +469,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 | Portuguese | ch | chave (key) |
 
 **Notes:**
-- 'ch' for /tʃ/ is nearly universal in Latin scripts
-- One of the most consistent spellings across languages
+- 'ch' for /tʃ/ is used in many major Latin-script languages (Spanish, English, Portuguese), though its value varies (French 'ch' = /ʃ/, Czech 'ch' = /x/)
 
 #### "J" Sound (/dʒ/)
 
@@ -663,7 +662,7 @@ Note: R-colored vowels are specific to rhotic English dialects. Most languages d
 
 ### Takeaways
 
-- Every Ingglish spelling has precedent in at least one major language (zero novel inventions)
+- Nearly every Ingglish spelling has precedent in at least one major language
 - sh, ch, ng, j are Common or Universal
 - 'dh' for /ð/ has real precedent: Albanian uses it as an official alphabet letter
 - Doubled vowels (ee, uu) follow Finnish/Estonian patterns
@@ -684,7 +683,7 @@ Finnish is often cited as having the most transparent orthography in Europe:
 - **Near-perfect phoneme-to-grapheme consistency** ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
 - Double letters indicate length (aa, ee, uu). Ingglish follows this exactly
 - 'uu' for /uː/ in Finnish matches Ingglish 'uu' for the same sound
-- Finnish-speaking children achieve reading fluency significantly faster than English-speaking children (Seymour et al. 2003)
+- Finnish-speaking children achieve reading fluency significantly faster than English-speaking children (Seymour et al. 2003; [Ziegler et al. 2010](https://doi.org/10.1037/a0019978))
 - Dyslexia prevalence is lower in transparent orthographies ([Paulesu et al. 2001](https://doi.org/10.1126/science.1057179), "Dyslexia: Cultural Diversity and Biological Unity," *Science*)
 
 ### Swahili

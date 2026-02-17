@@ -24,7 +24,7 @@ Not all identical words are equal, though. Many words in the CMU dictionary are 
 
 | Metric | Value |
 |--------|-------|
-| Total words in CMU dictionary | 135,166 |
+| Total entries in CMU dictionary | 135,166 (126,051 unique words) |
 | Identical words | 6,930 (5.13%) |
 | Existing collisions (homophones) | 20,180 |
 
@@ -191,4 +191,4 @@ The current mappings (`oh` for /oʊ/, `uu` for /uː/) work precisely because the
 
 The current mappings are well-optimized. Alternative spellings could add up to +564 identical words, but every proposed change either loses common words, gains mostly loanwords, or reintroduces the pronunciation ambiguity that Ingglish exists to fix.
 
-6,930 identical words (5.13%) is roughly the limit for a system that prioritizes unambiguous readability over matching more English spellings.
+6,930 identical words (5.13%) appears to be near the practical limit given Ingglish's design constraints (unambiguous readability, ASCII-only, no new characters), based on our exhaustive search of 2,730 candidate mappings.

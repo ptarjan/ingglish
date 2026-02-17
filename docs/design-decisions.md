@@ -4,7 +4,7 @@ Why we made specific spelling choices, what alternatives we considered, and what
 
 ## Motivation
 
-My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The word "ough" alone makes 6 different sounds: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner, whether a child or a non-native speaker, pays this cost.
+My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The sequence "ough" alone has at least six pronunciations: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner, whether a child or a non-native speaker, pays this cost.
 
 I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign, just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
 
@@ -112,7 +112,7 @@ When certain vowels are followed by R, they combine into special [r-colored soun
 
 ## Dialect Choice
 
-Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's the accent most widely heard in movies, music, and online content, so it's the practical default.
+Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's widely used in American media and internationally recognized ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC)), making it a practical default.
 
 Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from American media.
 
