@@ -51,6 +51,20 @@ function extractHeadings(content: string): string[] {
   return headings;
 }
 
+describe('Docs sidebar completeness', () => {
+  it('every doc file in docs/ is imported in Docs.tsx', () => {
+    const docsComponent = fs.readFileSync(
+      path.resolve(process.cwd(), 'src/components/Docs.tsx'),
+      'utf-8'
+    );
+
+    const docFiles = getDocFiles().filter((f) => f !== 'README.md');
+    const missing = docFiles.filter((f) => !docsComponent.includes(`'../../../../docs/${f}'`));
+
+    expect(missing, `Docs not in sidebar: ${missing.join(', ')}`).toEqual([]);
+  });
+});
+
 describe('Docs links', () => {
   const docFiles = getDocFiles();
 
