@@ -4,9 +4,9 @@
 
 How Ingglish maps ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA.
 
-**ARPAbet** is a phonemic notation system that uses ASCII characters to represent English phonemes (contrastive speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription that we use as our canonical representation.
+**ARPAbet** is a phonemic notation system that uses ASCII characters to represent English phonemes (contrastive speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription.
 
-For the design principles and rationale behind these mappings, see [Design Decisions](design-decisions.md).
+For why we chose these spellings, see [Design Decisions](design-decisions.md).
 
 ## Pronunciation Dictionary
 
@@ -128,7 +128,7 @@ The problem is readability. These spellings would make words look like different
 
 The R-colored spellings (ar, or, air, arr) were chosen because they match English conventions *in the R context* - "star", "store", "air", "arrow" all look natural. But using their base vowels everywhere would create confusing false cognates.
 
-With these R-colored vowel rules in place, there are **zero collisions** between any vowel+R combinations in the dictionary.
+With these R-colored vowel rules in place, there are zero collisions between any vowel+R combinations in the dictionary.
 
 If Ingglish ever gets popular enough that this exception is the biggest complaint, we'd happily revisit it. The rule helps English readers today, but a future version could drop it for full consistency.
 

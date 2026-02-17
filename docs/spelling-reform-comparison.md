@@ -34,7 +34,7 @@ Ingglish avoids this entirely: it's not positioned for initial literacy instruct
 
 **[Fonetic Advocat](https://exhibits.lib.ku.edu/exhibits/show/english-language/item/7259) (1850s)** - Published in "Sinsinati" (Cincinnati) by E. Longley, director of the American Phonetic Society. Promoted the English Phonotypic Alphabet. George Bernard Shaw himself owned a copy, showing the continuity of reform interest across generations.
 
-**[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A collaboration between the Spelling Reform Association and the English Spelling Society with Swedish professor R.E. Zachrisson. Attempted to create a simplified system that preserved word recognition while improving phonetic consistency.
+**[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A collaboration between the Spelling Reform Association and the English Spelling Society with Swedish professor R.E. Zachrisson. Tried to simplify spelling while keeping words recognizable.
 
 **[Cut Spelling](https://en.wikipedia.org/wiki/Cut_Spelling) (1992)** - Christopher Upward's system focused on *removing* unnecessary letters rather than respelling. Claimed to eliminate 50% of common spelling errors by cutting redundant letters. Example: "accommodation" → "acomodation."
 
@@ -156,7 +156,7 @@ Mechanics who learned imperial tools made the same argument against metric. The 
 - Part of a broader national identity transformation
 - Personal leadership (Atatürk himself taught citizens in parks)
 
-**Lesson for Ingglish:** Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want.
+Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want.
 
 ### [German orthography reform](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996) (1996) - Modest Reform
 
@@ -168,7 +168,7 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 - A "reform of the reform" in 2006 reverted controversial changes
 - But it stuck in schools, creating a new generation using the new spellings
 
-**Lesson for Ingglish:** Even **minor** mandatory reforms face massive resistance. Voluntary adoption avoids the backlash.
+Even **minor** mandatory reforms face massive resistance. Voluntary adoption avoids the backlash.
 
 ### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
@@ -179,7 +179,7 @@ Changed ß→ss in some words, simplified compound consonants, etc.
 - Gained status gradually through nationalist movements and government policy
 - Technology (computers, phones) further accelerated exclusive Hangul use
 
-**Lesson for Ingglish:** Supplementary systems can eventually become primary. It just takes time.
+Supplementary systems can eventually become primary. It just takes time.
 
 ## What Ingglish Can Realistically Achieve
 
@@ -190,11 +190,11 @@ The US officially adopted metric in 1975. Fifty years later, Americans still use
 No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements: road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
 
 Ingglish could follow the same path:
-- **Education:** Phonemic spelling for ESL and early literacy
-- **Accessibility:** Consistent spelling for dyslexic readers
-- **Technology:** Unambiguous input for speech synthesis and language models
-- **International:** A standard that doesn't privilege native speakers' memorized exceptions
-- **Gradual familiarity:** Like Hangul's centuries-long rise, recognition builds over time
+- Phonemic spelling for ESL and early literacy
+- Consistent spelling for dyslexic readers
+- Unambiguous input for speech synthesis and language models
+- A standard that doesn't privilege native speakers' memorized exceptions
+- Like Hangul's centuries-long rise, recognition builds over time
 
 Traditional spelling may persist in casual contexts indefinitely, and that's fine. The goal is a consistent alternative for contexts where it helps, not a replacement.
 

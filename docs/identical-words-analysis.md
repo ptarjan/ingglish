@@ -18,7 +18,7 @@ An "identical word" is one where converting English → phonemes → Ingglish pr
 
 More identical words means more natural readability for native English readers: familiar words stay familiar.
 
-However, not all identical words are equal. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions, prioritizing spellings with broad international support rather than chasing loanword matches.
+Not all identical words are equal, though. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions, prioritizing spellings with broad international support rather than chasing loanword matches.
 
 ## Current Mapping Performance
 
@@ -43,7 +43,7 @@ These changes create **collisions**: different words that get the same spelling.
 
 ## Collision-Free Alternatives Investigated
 
-We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that increase identical word count without creating new collisions. Five candidates emerged -- all were ultimately rejected (see [Recommendations](#recommendations)), but the analysis is instructive.
+We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find changes that increase identical word count without creating new collisions. Five candidates emerged -- all were ultimately rejected (see [Recommendations](#recommendations)).
 
 ### Candidates
 
@@ -60,8 +60,6 @@ Combined effect: 6,930 → 7,494 identical words (5.13% → 5.54%)
 
 ### Trade-off Analysis
 
-Each change involves gaining some identical words while losing others:
-
 #### /aɪ/: "ai" → "ei" (+316 net)
 
 **Gained (352 words):** Words with "ei" spelling
@@ -71,7 +69,7 @@ Each change involves gaining some identical words while losing others:
 **Lost (36 words):** Words with "ai" for the /aɪ/ sound
 - Asian loanwords: thai, chai, bonsai, mai, kai, samurai, shanghai
 
-**Assessment:** Mixed. Both gains and losses are largely loanwords. The native English gains (heist, height, seize) are valuable, but many German surname matches won't feel familiar to readers anyway.
+Mixed. Both gains and losses are largely loanwords. The native English gains (heist, height, seize) are valuable, but many German surname matches won't feel familiar to readers anyway.
 
 #### /oʊ/: "oh" → "ow" (+137 net)
 
@@ -83,7 +81,7 @@ Each change involves gaining some identical words while losing others:
 **Lost (80 words):** German-origin names with "oh" spelling
 - bohn, bohner, groh, stroh, doh, etc.
 
-**Assessment:** Good trade. Gains common English words, loses mostly German surnames.
+Good trade. Gains common English words, loses mostly German surnames.
 
 #### /ɔ/: "aw" → "au" (+63 net)
 
@@ -93,7 +91,7 @@ Each change involves gaining some identical words while losing others:
 **Lost (140 words):** Words with "aw" spelling
 - dawn, draw, flaw, jaw, law, paw, raw, saw, straw, etc.
 
-**Assessment:** Mixed trade. Both sets contain common words. The "au" words are slightly more frequent in formal text.
+Mixed. Both sets contain common words.
 
 #### /uː/: "uu" → "eu" (+41 net, Best Efficiency)
 
@@ -103,7 +101,7 @@ Each change involves gaining some identical words while losing others:
 **Lost (2 words):**
 - Only loses "uu" (the interjection) and one other rare word
 
-**Assessment:** Excellent efficiency. Almost pure gain with minimal loss.
+Almost pure gain. Best ratio of any candidate.
 
 #### /ɔɪ/: "oi" → "oy" (+10 net)
 
@@ -113,7 +111,7 @@ Each change involves gaining some identical words while losing others:
 **Lost (108 words):** Words with "oi" spelling
 - oil, boil, coin, join, point, voice, choice, noise, etc.
 
-**Assessment:** Marginal trade. Nearly breaks even. Both "oi" and "oy" are common spellings.
+Nearly breaks even. Both "oi" and "oy" are common spellings.
 
 ## Alternative Improvements Not Recommended
 
@@ -144,7 +142,7 @@ We verified the proposed changes don't create problematic collisions:
 
 ### No changes recommended.
 
-All five proposed changes were investigated and rejected. The identical word count is a useful metric, but **it has a fundamental flaw**: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly. A spelling that matches more English words is harmful if those new combinations mislead readers.
+All five proposed changes were investigated and rejected. The identical word count is useful but has a blind spot: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly. A spelling that matches more English words is harmful if those new combinations mislead readers.
 
 ### Rejected: /oʊ/: "oh" → "ow" (+137 net)
 
