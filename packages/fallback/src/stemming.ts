@@ -23,8 +23,12 @@ const SIBILANTS = new Set(['S', 'Z', 'SH', 'ZH', 'CH', 'JH']);
  */
 function selectEdPhonemes(lastPhoneme: string): string[] {
   const base = stripStress(lastPhoneme);
-  if (base === 'T' || base === 'D') {return ['IH0', 'D'];}
-  if (VOICELESS.has(base)) {return ['T'];}
+  if (base === 'T' || base === 'D') {
+    return ['IH0', 'D'];
+  }
+  if (VOICELESS.has(base)) {
+    return ['T'];
+  }
   return ['D'];
 }
 
@@ -36,8 +40,12 @@ function selectEdPhonemes(lastPhoneme: string): string[] {
  */
 function selectSPhonemes(lastPhoneme: string): string[] {
   const base = stripStress(lastPhoneme);
-  if (SIBILANTS.has(base)) {return ['IH0', 'Z'];}
-  if (VOICELESS.has(base)) {return ['S'];}
+  if (SIBILANTS.has(base)) {
+    return ['IH0', 'Z'];
+  }
+  if (VOICELESS.has(base)) {
+    return ['S'];
+  }
   return ['Z'];
 }
 
