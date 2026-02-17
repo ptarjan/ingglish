@@ -18,6 +18,7 @@ import performanceDoc from '../../../../docs/performance.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 import spellingEvolution from '../../../../docs/spelling-evolution.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
+import communityLandscape from '../../../../docs/community-landscape.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
 import collisionAnalysis from '../../../../docs/collision-analysis.md';
@@ -56,6 +57,12 @@ const docs: DocEntry[] = [
     title: 'Spelling Reform History',
     content: spellingReformComparison,
     filename: 'spelling-reform-comparison.md',
+  },
+  {
+    id: 'community-landscape',
+    title: 'Community Landscape',
+    content: communityLandscape,
+    filename: 'community-landscape.md',
   },
   {
     id: 'spelling-evolution',
