@@ -237,6 +237,7 @@ Previous reforms failed because they required everyone to switch at once. Inggli
 
 ## Video Resources
 
+- [Why the 'K' in 'Knife' is silent](https://youtu.be/vEFpZmChbGw) - RobWords - Why English words like "knife", "knight", and "know" have a silent K (spoiler: it used to be pronounced)
 - [The Screwed-Up History of English Spelling](https://www.pbs.org/video/the-screwed-up-history-of-english-spelling-iake2v/) - PBS Otherwords (8 min) - Excellent overview of how English spelling became such a mess
 - [Ghoti and the Ministry of Helth: Spelling Reform](https://www.youtube.com/watch?v=AfRJVF-bRwQ) - Tom Scott (3 min) - Quick introduction to spelling reform history
 - [Most English spelling reforms are bad](https://www.youtube.com/watch?v=TEsqY4MH40s) - Jan Misali (17 min) - Critical analysis of why reforms fail, plus a creative alternative approach
