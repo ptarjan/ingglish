@@ -19,6 +19,7 @@ Ingglish is a phonemic English spelling system where every spelling always makes
 - [Spelling Evolution](spelling-evolution.md) - History of spelling changes and why
 - [Orthography Comparison](orthography-comparison.md) - Detailed analysis of each sound's spelling
 - [Spelling Reform Comparison](spelling-reform-comparison.md) - How Ingglish compares to other reforms
+- [Community Landscape](community-landscape.md) - Survey of r/conorthography spelling reform proposals
 - [Collision Analysis](collision-analysis.md) - Words that translate to existing English words
 - [Identical Words Analysis](identical-words-analysis.md) - Words spelled the same in both systems
 - [Troubleshooting](troubleshooting.md) - Common issues and solutions

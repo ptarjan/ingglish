@@ -2,7 +2,7 @@
 
 How Ingglish spellings compare to other languages. Nearly every choice has precedent in at least one major language.
 
-For why we chose these spellings, see [Design Decisions](design-decisions.md).
+For why we chose these spellings, see [Design Decisions](design-decisions.md). For how these choices compare to other contemporary spelling reform proposals, see [Community Landscape](community-landscape.md).
 
 ## Vowels
 

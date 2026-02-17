@@ -231,6 +231,7 @@ Previous reforms failed because they required everyone to switch at once. Inggli
 
 ## See Also
 
+- [Contemporary Community Landscape](community-landscape.md) - Survey of ~92 spelling reform proposals from r/conorthography and how Ingglish compares
 - [Orthography Comparison](orthography-comparison.md) - How Ingglish's specific spellings compare to other languages
 - [Phoneme Mapping](phoneme-mapping.md) - The complete sound-to-spelling reference
 - [Architecture](architecture.md) - How the translation system works
