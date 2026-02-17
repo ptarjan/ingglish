@@ -3,6 +3,8 @@
  */
 import type { OutputFormat } from '@ingglish/phonemes';
 
+export type { OutputFormat };
+
 /**
  * Configuration options for DOM translation.
  */
