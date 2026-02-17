@@ -13,9 +13,8 @@ function lazyWithReload<T extends { default: ComponentType<never> }>(
     factory().catch(() => {
       // Chunk failed to load (likely stale after deploy) — reload to get fresh HTML
       window.location.reload();
-      // Return a never-resolving promise so React doesn't render before reload completes
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      return new Promise<T>(() => {});
+      // Never resolves — page is reloading
+      return new Promise<T>(() => void 0);
     })
   );
 }
