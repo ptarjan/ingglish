@@ -17,6 +17,3 @@ export {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from './reverse';
-
-// Re-export ipaToArpabetClean (from @ingglish/ipa, kept here for API compatibility)
-export { ipaToArpabetClean } from '@ingglish/ipa';

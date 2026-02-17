@@ -1,17 +1,15 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   translateWithStemming,
-  translateWithRules,
   translateUnknown,
   translateAsAcronym,
   translateAsCompound,
   translateAsBritish,
-  wordToArpabet,
   translateWithPhonemize,
   preloadPhonemize,
-  CUSTOM_PRONUNCIATIONS,
 } from '@ingglish/fallback';
-import { lookupPronunciation, getDictionary } from '@ingglish/dictionary';
+import { translateWithRules, wordToArpabet } from '@ingglish/g2p';
+import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import { translateWord } from './translate/forward';
 import { UNKNOWN_TECH_WORDS } from './test-setup';
 

@@ -13,11 +13,7 @@
 
 import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
-import {
-  CUSTOM_PRONUNCIATIONS,
-  hasCustomPronunciation,
-  getCustomPronunciation,
-} from '@ingglish/dictionary';
+import { getCustomPronunciation } from '@ingglish/dictionary';
 import {
   isInitialism,
   parseInitialismWithSuffix,
@@ -30,34 +26,22 @@ import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
-import { translateWithRules, wordToArpabet } from '@ingglish/g2p';
+import { translateWithRules } from '@ingglish/g2p';
 
-// Re-export everything for consumers who need specific strategies
 export {
-  // Custom words (from dictionary)
-  CUSTOM_PRONUNCIATIONS,
-  hasCustomPronunciation,
-  getCustomPronunciation,
-  // Acronyms
   LETTER_PHONEMES,
   KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
   isInitialism,
   parseInitialismWithSuffix,
   translateAsAcronym,
-  // British spelling
   translateAsBritish,
-  // Compounds
   translateAsCompound,
-  // Stemming
   SUFFIX_PHONEMES,
   PREFIX_PHONEMES,
   translateWithStemming,
-  // Phonemize
   translateWithPhonemize,
   preloadPhonemize,
-  // G2P rules
-  wordToArpabet,
   translateWithRules,
 };
 

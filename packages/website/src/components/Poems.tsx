@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { translateSync } from 'ingglish';
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { poems } from './poems-data';
 

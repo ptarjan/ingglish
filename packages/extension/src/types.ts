@@ -1,6 +1,6 @@
 // Message types for Chrome extension communication
 
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 
 export interface GetStateMessage {
   type: 'GET_STATE';

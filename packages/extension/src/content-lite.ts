@@ -1,7 +1,7 @@
 // Lightweight content script for Ingglish extension
 // Uses message passing to background for translations and shared DOM utilities
 
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import {
   applyTranslationsMap,

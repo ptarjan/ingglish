@@ -1,9 +1,8 @@
 /**
  * Shared types for @ingglish/dom
  */
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 
-// Re-export OutputFormat for convenience
 export type { OutputFormat };
 
 /**

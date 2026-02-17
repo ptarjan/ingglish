@@ -14,12 +14,6 @@ import { translateSync, reverseTranslateSync } from './translate';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // =============================================================================
-// Types
-// =============================================================================
-
-export type { OutputFormat } from '@ingglish/phonemes';
-
-// =============================================================================
 // Primary API (auto-loads dictionary)
 // =============================================================================
 

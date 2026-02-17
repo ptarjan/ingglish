@@ -16,6 +16,7 @@
     "ingglish": "^1.0.0",
     "@ingglish/dom": "^1.0.0",
     "@ingglish/normalize": "^1.0.0",
+    "@ingglish/phonemes": "^1.0.0",
     "@ingglish/ipa": "^1.0.0",
     "@ingglish/shavian": "^1.0.0",
     "@ingglish/deseret": "^1.0.0"

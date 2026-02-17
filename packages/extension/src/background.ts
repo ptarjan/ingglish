@@ -1,6 +1,6 @@
 // Background service worker for Ingglish extension
 
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 import { translate, translateSync } from 'ingglish';
 import { registerIPA } from '@ingglish/ipa';
 import { registerShavian } from '@ingglish/shavian';

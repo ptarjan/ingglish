@@ -6,7 +6,7 @@
  * not multiple times due to characterData mutations re-triggering the observer.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import type { OutputFormat } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
 import type * as CoreModule from 'ingglish';
 
 // Use vi.hoisted to create state accessible in the hoisted mock factory
