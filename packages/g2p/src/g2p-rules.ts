@@ -657,6 +657,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]DY=/OW/',
     '[O]LI=/OW/',
     '[O]H=/OW/',
+    // Custom: OB- prefix (observe, obtain, object — +33 SL)
+    ' [OB]^=/AH B/',
     // Custom: word-end -ons/-ol/-ot with schwa (persons, control, carrot)
     '#:[ONS] =/AH N Z/',
     '#:[OL] =/AO L/',

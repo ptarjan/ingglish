@@ -104,6 +104,7 @@ const UNSTRESSED_PREFIXES: UnstressedPrefix[] = [
   { prefix: 'sub', minLength: 5 },
   { prefix: 'per', minLength: 6 },
   { prefix: 'con', minLength: 6 },
+  { prefix: 'pro', minLength: 6 },
   // Tier 3: Latinate a- prefixes (abandon, absorb, accept, advance, etc.)
   { prefix: 'ab', minLength: 6 },
   { prefix: 'ac', minLength: 6 },
