@@ -46,6 +46,10 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // CMU missing W
   unknowns: ['AH0', 'N', 'N', 'OW1', 'N', 'Z'], // CMU missing second N
   convulsant: ['K', 'AH0', 'N', 'V', 'AH1', 'L', 'S', 'AH0', 'N', 'T'], // CMU missing N before V
+  temptation: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N'], // CMU missing P in /mpt/ cluster
+  temptations: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N', 'Z'],
+  roommate: ['R', 'UW1', 'M', 'M', 'EY2', 'T'], // CMU missing geminate M at compound boundary
+  roommates: ['R', 'UW1', 'M', 'M', 'EY2', 'T', 'S'],
 
   // N→NG + additional vowel fix (N→NG alone handled by normalizeVelarNasal)
   inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // CMU has N K and wrong vowels
@@ -62,8 +66,17 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has Y, should be IY0
 
   // Wrong vowel
+  president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // CMU has AH0 for /ɪ/ and EH2 for /ə/
   cuckoo: ['K', 'UW1', 'K', 'UW0'], // CMU has AH1 for first vowel
   finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // CMU missing EY diphthong
+  nemo: ['N', 'IY1', 'M', 'OW0'], // CMU has EH1 (/ɛ/) for /iː/
+  valium: ['V', 'AE1', 'L', 'IY0', 'AH0', 'M'], // CMU has EY1 (/eɪ/) for /æ/
+  legit: ['L', 'AH0', 'JH', 'IH1', 'T'], // CMU has stress on wrong syllable
+  legalese: ['L', 'IY2', 'G', 'AH0', 'L', 'IY1', 'Z'], // CMU has wrong vowels, stress, and final consonant
+  bocce: ['B', 'AA1', 'CH', 'IY0'], // CMU has OW1 (/oʊ/) for /ɑː/
+  padre: ['P', 'AA1', 'D', 'R', 'EY0'], // CMU has AE1 (/æ/) for /ɑː/
+  africa: ['AE1', 'F', 'R', 'IH0', 'K', 'AH0'], // CMU has AH0 (/ə/) for /ɪ/ and AA0 (/ɑ/) for /ə/
+  abele: ['AH0', 'B', 'IY1', 'L'], // CMU has EH1 (/ɛ/) for /iː/
   revaluations: ['R', 'IY0', 'V', 'AE2', 'L', 'Y', 'UW0', 'EY1', 'SH', 'AH0', 'N', 'Z'], // CMU has extra IH0
   ow: ['AW1'], // CMU has OW1, but interjection is /aʊ/ ("ouch")
 
