@@ -13,8 +13,14 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
   // CMU dictionary corrections
   buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — French noun (food), not the verb "to strike"
+  cuckoo: ['K', 'UW1', 'K', 'UW0'], // /ˈkuːku/ — CMU has AH1 (ʌ) for first vowel
   fiancee: ['F', 'IY0', 'AA0', 'N', 'S', 'EY1'], // /fiɑnˈseɪ/ — CMU has /si/ but should end in /seɪ/
+  finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // /fɪˈneɪɡəl/ — CMU has IH1 N AH0 (missing diphthong)
+  grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // /ˈɡɹænmɑ/ — CMU has spurious /d/
   hors: ['AO1', 'R'], // /ɔːr/ — French: silent h and silent s (hors d'oeuvres)
+  intention: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ɪnˈtɛnʃən/ — CMU has CH (tʃ) instead of SH (ʃ)
+  ow: ['AW1'], // /aʊ/ — CMU has OW1 (oʊ) but interjection is "ouch" sound
+  thyme: ['T', 'AY1', 'M'], // /taɪm/ — CMU has TH but h is silent (like "time")
   touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU has T UW1 SH (missing final syllable)
 
   // CMU variant ordering fixes — v1 has IY0 ("ee") but standard AmE uses EY ("ay")
