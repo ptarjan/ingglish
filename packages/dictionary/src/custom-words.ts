@@ -13,147 +13,147 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // CMU corrections — wrong consonant
   // ---------------------------------------------------------------------------
 
-  // CH should be SH in -tion/-sion suffix after N (S+CH is correct, e.g. "question")
-  intention: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH
-  intentions: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH
-  tensions: ['T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH (singular is correct)
-  mansions: ['M', 'AE1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH (singular is correct)
-  abstention: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH
-  abstentions: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH
-  contravention: ['K', 'AA2', 'N', 'T', 'R', 'AH0', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH
-  inattention: ['IH2', 'N', 'AH0', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH
-  circumvention: ['S', 'ER2', 'K', 'AH0', 'M', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH
-  conscientiously: ['K', 'AA2', 'N', 'SH', 'IY0', 'EH1', 'N', 'SH', 'AH0', 'S', 'L', 'IY0'], // CMU has CH
+  // CMU has /tʃ/ instead of /ʃ/ in -tion/-sion suffix after N
+  intention: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ɪnˈtɛnʃən/ — CMU has /tʃ/
+  intentions: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ɪnˈtɛnʃənz/ — CMU has /tʃ/
+  tensions: ['T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ˈtɛnʃənz/ — CMU has /tʃ/ (singular is correct)
+  mansions: ['M', 'AE1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ˈmænʃənz/ — CMU has /tʃ/ (singular is correct)
+  abstention: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /əbˈstɛnʃən/ — CMU has /tʃ/
+  abstentions: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /əbˈstɛnʃənz/ — CMU has /tʃ/
+  contravention: ['K', 'AA2', 'N', 'T', 'R', 'AH0', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌkɑntrəˈvɛnʃən/ — CMU has /tʃ/
+  inattention: ['IH2', 'N', 'AH0', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌɪnəˈtɛnʃən/ — CMU has /tʃ/
+  circumvention: ['S', 'ER2', 'K', 'AH0', 'M', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌsɝkəmˈvɛnʃən/ — CMU has /tʃ/
+  conscientiously: ['K', 'AA2', 'N', 'SH', 'IY0', 'EH1', 'N', 'SH', 'AH0', 'S', 'L', 'IY0'], // /ˌkɑnʃiˈɛnʃəsli/ — CMU has /tʃ/
 
-  // Voicing errors (S↔Z, TH↔DH)
-  presidentially: ['P', 'R', 'EH2', 'Z', 'IH0', 'D', 'EH1', 'N', 'SH', 'AH0', 'L', 'IY0'], // CMU has S, should be Z
-  resolutely: ['R', 'EH1', 'Z', 'AH0', 'L', 'UW2', 'T', 'L', 'IY0'], // CMU has S, should be Z
-  ceaselessly: ['S', 'IY1', 'S', 'L', 'AH0', 'S', 'L', 'IY0'], // CMU has Z, should be S
-  reschedulings: ['R', 'IY0', 'S', 'K', 'EH1', 'JH', 'UW0', 'L', 'IH0', 'NG', 'Z'], // CMU has SH (British), AmE is S
-  withdrawals: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'AH0', 'L', 'Z'], // CMU has TH, should be DH
+  // Voicing errors (/s/↔/z/, /θ/↔/ð/)
+  presidentially: ['P', 'R', 'EH2', 'Z', 'IH0', 'D', 'EH1', 'N', 'SH', 'AH0', 'L', 'IY0'], // /ˌprɛzɪˈdɛnʃəli/ — CMU has /s/
+  resolutely: ['R', 'EH1', 'Z', 'AH0', 'L', 'UW2', 'T', 'L', 'IY0'], // /ˈrɛzəˌlutli/ — CMU has /s/
+  ceaselessly: ['S', 'IY1', 'S', 'L', 'AH0', 'S', 'L', 'IY0'], // /ˈsisləsli/ — CMU has /z/
+  reschedulings: ['R', 'IY0', 'S', 'K', 'EH1', 'JH', 'UW0', 'L', 'IH0', 'NG', 'Z'], // /riˈskɛdʒulɪŋz/ — CMU has /ʃ/ (British)
+  withdrawals: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'AH0', 'L', 'Z'], // /wɪðˈdrɔəlz/ — CMU has /θ/
 
   // Wrong consonant
-  fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has D, should be JH
-  haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // CMU has F, should be P HH
-  engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // CMU has NG G, should be N JH
-  thyme: ['T', 'AY1', 'M'], // CMU has TH, but h is silent (like "time")
-  grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // CMU has spurious /d/
-  actuator: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0'], // CMU has T Y UW, should be CH UW
-  actuators: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0', 'Z'], // CMU has T Y UW, should be CH UW
+  fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈfrɔdʒələntli/ — CMU has /d/
+  haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // /hæpˈhæzɝdli/ — CMU has /f/
+  engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // /ɛnˈdʒɛndɝz/ — CMU has /ŋɡ/
+  thyme: ['T', 'AY1', 'M'], // /taɪm/ — CMU has /θ/, but h is silent
+  grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // /ˈɡrænˌmɑ/ — CMU has spurious /d/
+  actuator: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0'], // /ˈæktʃuˌeɪtɝ/ — CMU has /tj/
+  actuators: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0', 'Z'], // /ˈæktʃuˌeɪtɝz/ — CMU has /tj/
 
-  // Missing phoneme in derived form
-  forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // CMU missing R
-  headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // CMU missing W
-  unknowns: ['AH0', 'N', 'N', 'OW1', 'N', 'Z'], // CMU missing second N
-  convulsant: ['K', 'AH0', 'N', 'V', 'AH1', 'L', 'S', 'AH0', 'N', 'T'], // CMU missing N before V
-  temptation: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N'], // CMU missing P in /mpt/ cluster
-  temptations: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N', 'Z'],
-  roommate: ['R', 'UW1', 'M', 'M', 'EY2', 'T'], // CMU missing geminate M at compound boundary
-  roommates: ['R', 'UW1', 'M', 'M', 'EY2', 'T', 'S'],
+  // Missing phoneme
+  forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // /ˈfɔrdʒɪŋz/ — CMU missing /r/
+  headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // /ˈhɛdˌkwɔrtɝd/ — CMU missing /w/
+  unknowns: ['AH0', 'N', 'N', 'OW1', 'N', 'Z'], // /ənˈnoʊnz/ — CMU missing second /n/
+  convulsant: ['K', 'AH0', 'N', 'V', 'AH1', 'L', 'S', 'AH0', 'N', 'T'], // /kənˈvʌlsənt/ — CMU missing /n/
+  temptation: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N'], // /tɛmpˈteɪʃən/ — CMU missing /p/
+  temptations: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N', 'Z'], // /tɛmpˈteɪʃənz/ — CMU missing /p/
+  roommate: ['R', 'UW1', 'M', 'M', 'EY2', 'T'], // /ˈrumˌmeɪt/ — CMU missing geminate /mm/
+  roommates: ['R', 'UW1', 'M', 'M', 'EY2', 'T', 'S'], // /ˈrumˌmeɪts/ — CMU missing geminate /mm/
 
   // N→NG + additional vowel fix (N→NG alone handled by normalizeVelarNasal)
-  inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // CMU has N K and wrong vowels
+  inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // /ˌɪŋkəŋˈklusɪvli/ — CMU has /nk/
 
   // ---------------------------------------------------------------------------
   // CMU corrections — wrong vowel or glide
   // ---------------------------------------------------------------------------
 
-  // Spurious Y glide (British /juː/ where AmE uses /uː/)
-  duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // CMU has D Y UW, AmE is /duː/
-  duplicates: ['D', 'UW1', 'P', 'L', 'AH0', 'K', 'EY2', 'T', 'S'], // CMU has D Y UW, AmE is /duː/
-  tuition: ['T', 'UW0', 'IH1', 'SH', 'AH0', 'N'], // CMU has T Y UW, AmE is /tuː/
-  alienate: ['EY1', 'L', 'IY0', 'AH0', 'N', 'EY2', 'T'], // CMU has Y, should be IY0
-  leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has Y, should be IY0
+  // Spurious /j/ glide (British /juː/ where AmE uses /uː/)
+  duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /ˌdupləˈkeɪʃən/ — CMU has /dju/
+  duplicates: ['D', 'UW1', 'P', 'L', 'AH0', 'K', 'EY2', 'T', 'S'], // /ˈdupləˌkeɪts/ — CMU has /dju/
+  tuition: ['T', 'UW0', 'IH1', 'SH', 'AH0', 'N'], // /tuˈɪʃən/ — CMU has /tju/
+  alienate: ['EY1', 'L', 'IY0', 'AH0', 'N', 'EY2', 'T'], // /ˈeɪliəˌneɪt/ — CMU has /j/ for /i/
+  leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈliniəntli/ — CMU has /j/ for /i/
 
   // Wrong vowel
-  president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // CMU has AH0 for /ɪ/ and EH2 for /ə/
-  cuckoo: ['K', 'UW1', 'K', 'UW0'], // CMU has AH1 for first vowel
-  finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // CMU missing EY diphthong
-  nemo: ['N', 'IY1', 'M', 'OW0'], // CMU has EH1 (/ɛ/) for /iː/
-  valium: ['V', 'AE1', 'L', 'IY0', 'AH0', 'M'], // CMU has EY1 (/eɪ/) for /æ/
-  legit: ['L', 'AH0', 'JH', 'IH1', 'T'], // CMU has stress on wrong syllable
-  legalese: ['L', 'IY2', 'G', 'AH0', 'L', 'IY1', 'Z'], // CMU has wrong vowels, stress, and final consonant
-  bocce: ['B', 'AA1', 'CH', 'IY0'], // CMU has OW1 (/oʊ/) for /ɑː/
-  padre: ['P', 'AA1', 'D', 'R', 'EY0'], // CMU has AE1 (/æ/) for /ɑː/
-  africa: ['AE1', 'F', 'R', 'IH0', 'K', 'AH0'], // CMU has AH0 (/ə/) for /ɪ/ and AA0 (/ɑ/) for /ə/
-  abele: ['AH0', 'B', 'IY1', 'L'], // CMU has EH1 (/ɛ/) for /iː/
-  revaluations: ['R', 'IY0', 'V', 'AE2', 'L', 'Y', 'UW0', 'EY1', 'SH', 'AH0', 'N', 'Z'], // CMU has extra IH0
-  ow: ['AW1'], // CMU has OW1, but interjection is /aʊ/ ("ouch")
+  president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // /ˈprɛzɪdənt/ — CMU has /ə/ for /ɪ/ and /ɛ/ for /ə/
+  cuckoo: ['K', 'UW1', 'K', 'UW0'], // /ˈkuku/ — CMU has /ʌ/ for first vowel
+  finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // /fɪˈneɪɡəl/ — CMU has /ə/ for /eɪ/, wrong stress
+  nemo: ['N', 'IY1', 'M', 'OW0'], // /ˈnimoʊ/ — CMU has /ɛ/ for /i/
+  valium: ['V', 'AE1', 'L', 'IY0', 'AH0', 'M'], // /ˈvæliəm/ — CMU has /eɪ/ for /æ/
+  legit: ['L', 'AH0', 'JH', 'IH1', 'T'], // /ləˈdʒɪt/ — CMU has /ɛ/ and wrong stress
+  legalese: ['L', 'IY2', 'G', 'AH0', 'L', 'IY1', 'Z'], // /ˌliɡəˈliz/ — CMU has /ɛ/, /s/, wrong stress
+  bocce: ['B', 'AA1', 'CH', 'IY0'], // /ˈbɑtʃi/ — CMU has /oʊ/ for /ɑ/
+  padre: ['P', 'AA1', 'D', 'R', 'EY0'], // /ˈpɑdreɪ/ — CMU has /æ/ for /ɑ/
+  africa: ['AE1', 'F', 'R', 'IH0', 'K', 'AH0'], // /ˈæfrɪkə/ — CMU has /ə/ for /ɪ/ and /ɑ/ for /ə/
+  abele: ['AH0', 'B', 'IY1', 'L'], // /əˈbil/ — CMU has /ɛ/ for /i/
+  revaluations: ['R', 'IY0', 'V', 'AE2', 'L', 'Y', 'UW0', 'EY1', 'SH', 'AH0', 'N', 'Z'], // /riˌvæljueɪʃənz/ — CMU has extra /ɪ/
+  ow: ['AW1'], // /aʊ/ — CMU has /oʊ/
 
   // ---------------------------------------------------------------------------
   // CMU corrections — wrong word sense or incomplete entry
   // ---------------------------------------------------------------------------
 
-  buffet: ['B', 'AH0', 'F', 'EY1'], // CMU has verb "to strike", should be noun (food) /bʌˈfeɪ/
-  fiancee: ['F', 'IY0', 'AA0', 'N', 'S', 'EY1'], // CMU has wrong final syllable
-  hors: ['AO1', 'R'], // CMU wrong — French: silent h and s (hors d'oeuvres)
-  touche: ['T', 'UW0', 'SH', 'EY1'], // CMU missing final syllable
+  buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — CMU has verb "to strike", should be noun (food)
+  fiancee: ['F', 'IY0', 'AA0', 'N', 'S', 'EY1'], // /fiɑnˈseɪ/ — CMU has wrong final syllable
+  hors: ['AO1', 'R'], // /ɔr/ — CMU wrong; French: silent h and s (hors d'oeuvres)
+  touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU missing final syllable
 
   // ---------------------------------------------------------------------------
   // CMU corrections — variant ordering (v1 wrong for standard AmE)
   // ---------------------------------------------------------------------------
 
-  // Days of the week: CMU v1 has IY0 ("ee") but standard AmE uses EY ("ay")
-  friday: ['F', 'R', 'AY1', 'D', 'EY2'],
-  monday: ['M', 'AH1', 'N', 'D', 'EY2'],
-  saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'],
-  tuesday: ['T', 'UW1', 'Z', 'D', 'EY2'],
-  wednesday: ['W', 'EH1', 'N', 'Z', 'D', 'EY2'],
+  // Days of the week: CMU v1 has /i/ but standard AmE uses /eɪ/
+  friday: ['F', 'R', 'AY1', 'D', 'EY2'], // /ˈfraɪˌdeɪ/
+  monday: ['M', 'AH1', 'N', 'D', 'EY2'], // /ˈmʌnˌdeɪ/
+  saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'], // /ˈsætɝˌdeɪ/
+  tuesday: ['T', 'UW1', 'Z', 'D', 'EY2'], // /ˈtuzˌdeɪ/
+  wednesday: ['W', 'EH1', 'N', 'Z', 'D', 'EY2'], // /ˈwɛnzˌdeɪ/
 
   // Accented homographs: diacritics signal a different word than CMU's default
-  résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY2'], // French noun (CV), not verb "to resume"
-  exposé: ['EH2', 'K', 'S', 'P', 'OW0', 'Z', 'EY1'], // French noun (report), not verb "to expose"
+  résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY2'], // /ˈrɛzəˌmeɪ/ — French noun (CV), not verb "to resume"
+  exposé: ['EH2', 'K', 'S', 'P', 'OW0', 'Z', 'EY1'], // /ˌɛkspoʊˈzeɪ/ — French noun (report), not verb "to expose"
 
   // ---------------------------------------------------------------------------
   // Additions — words not in CMU dictionary
   // ---------------------------------------------------------------------------
 
   // Abbreviations
-  vs: ['V', 'ER1', 'S', 'AH0', 'S'], // "versus" — prevents "de" + "vs" compound split
-  devs: ['D', 'EH1', 'V', 'Z'], // "developers"
+  vs: ['V', 'ER1', 'S', 'AH0', 'S'], // /ˈvɝsəs/
+  devs: ['D', 'EH1', 'V', 'Z'], // /dɛvz/
 
   // Tech terms
-  async: ['EY1', 'S', 'IH0', 'NG', 'K'],
-  blog: ['B', 'L', 'AO1', 'G'],
-  chatgpt: ['CH', 'AE1', 'T', 'JH', 'IY1', 'P', 'IY1', 'T', 'IY1'],
-  emoji: ['IH0', 'M', 'OW1', 'JH', 'IY0'],
-  git: ['G', 'IH1', 'T'],
-  github: ['G', 'IH1', 'T', 'HH', 'AH1', 'B'],
-  localhost: ['L', 'OW1', 'K', 'AH0', 'L', 'HH', 'OW2', 'S', 'T'],
-  meme: ['M', 'IY1', 'M'],
-  npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'],
-  oauth: ['OW1', 'AO1', 'TH'],
-  podcast: ['P', 'AA1', 'D', 'K', 'AE2', 'S', 'T'],
-  sudo: ['S', 'UW1', 'D', 'OW0'],
-  vlog: ['V', 'L', 'AO1', 'G'],
-  webpack: ['W', 'EH1', 'B', 'P', 'AE1', 'K'],
+  async: ['EY1', 'S', 'IH0', 'NG', 'K'], // /ˈeɪsɪŋk/
+  blog: ['B', 'L', 'AO1', 'G'], // /blɔɡ/
+  chatgpt: ['CH', 'AE1', 'T', 'JH', 'IY1', 'P', 'IY1', 'T', 'IY1'], // /tʃæt dʒi pi ti/
+  emoji: ['IH0', 'M', 'OW1', 'JH', 'IY0'], // /ɪˈmoʊdʒi/
+  git: ['G', 'IH1', 'T'], // /ɡɪt/
+  github: ['G', 'IH1', 'T', 'HH', 'AH1', 'B'], // /ˈɡɪtˌhʌb/
+  localhost: ['L', 'OW1', 'K', 'AH0', 'L', 'HH', 'OW2', 'S', 'T'], // /ˈloʊkəlˌhoʊst/
+  meme: ['M', 'IY1', 'M'], // /mim/
+  npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // /ɛn pi ɛm/
+  oauth: ['OW1', 'AO1', 'TH'], // /oʊɔθ/
+  podcast: ['P', 'AA1', 'D', 'K', 'AE2', 'S', 'T'], // /ˈpɑdˌkæst/
+  sudo: ['S', 'UW1', 'D', 'OW0'], // /ˈsudoʊ/
+  vlog: ['V', 'L', 'AO1', 'G'], // /vlɔɡ/
+  webpack: ['W', 'EH1', 'B', 'P', 'AE1', 'K'], // /ˈwɛbˌpæk/
 
   // Foreign loanwords
-  brulee: ['B', 'R', 'UW0', 'L', 'EY1'], // as in crème brûlée
-  doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE2', 'NG', 'ER0'],
-  flambe: ['F', 'L', 'AA0', 'M', 'B', 'EY1'],
-  gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'],
-  manana: ['M', 'AE0', 'N', 'Y', 'AA1', 'N', 'AH0'], // Spanish: tomorrow
-  negligee: ['N', 'EH1', 'G', 'L', 'AH0', 'ZH', 'EY2'],
-  patisserie: ['P', 'AH0', 'T', 'IH1', 'S', 'ER0', 'IY0'],
-  pinata: ['P', 'IH0', 'N', 'Y', 'AA1', 'T', 'AH0'], // Spanish: party game
-  soupcon: ['S', 'UW1', 'P', 'S', 'AA0', 'N'], // French: a tiny amount
+  brulee: ['B', 'R', 'UW0', 'L', 'EY1'], // /bruˈleɪ/
+  doppelganger: ['D', 'AA1', 'P', 'AH0', 'L', 'G', 'AE2', 'NG', 'ER0'], // /ˈdɑpəlˌɡæŋɝ/
+  flambe: ['F', 'L', 'AA0', 'M', 'B', 'EY1'], // /flɑmˈbeɪ/
+  gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'], // /ɡəˈʃtɑlt/
+  manana: ['M', 'AE0', 'N', 'Y', 'AA1', 'N', 'AH0'], // /mænˈjɑnə/
+  negligee: ['N', 'EH1', 'G', 'L', 'AH0', 'ZH', 'EY2'], // /ˈnɛɡləˌʒeɪ/
+  patisserie: ['P', 'AH0', 'T', 'IH1', 'S', 'ER0', 'IY0'], // /pəˈtɪsɝi/
+  pinata: ['P', 'IH0', 'N', 'Y', 'AA1', 'T', 'AH0'], // /pɪnˈjɑtə/
+  soupcon: ['S', 'UW1', 'P', 'S', 'AA0', 'N'], // /ˈsupsɑn/
 
   // Irregular English words
-  chamois: ['SH', 'AE1', 'M', 'IY0'],
-  cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'],
-  drachm: ['D', 'R', 'AE1', 'M'], // silent ch
-  islington: ['IH1', 'Z', 'L', 'IH0', 'NG', 'T', 'AH0', 'N'],
-  obsequies: ['AA1', 'B', 'S', 'IH0', 'K', 'W', 'IY0', 'Z'],
-  oppugnant: ['AH0', 'P', 'AH1', 'G', 'N', 'AH0', 'N', 'T'],
-  oppugners: ['AH0', 'P', 'Y', 'UW1', 'N', 'ER0', 'Z'], // silent g (like "impugn")
-  phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'],
-  piquet: ['P', 'IH0', 'K', 'EY1'], // French card game
-  puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // legal term
-  streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'],
-  terpsichore: ['T', 'ER0', 'P', 'S', 'IH1', 'K', 'ER0', 'IY0'],
-  victual: ['V', 'IH1', 'T', 'AH0', 'L'], // silent c
-  victuals: ['V', 'IH1', 'T', 'AH0', 'L', 'Z'],
+  chamois: ['SH', 'AE1', 'M', 'IY0'], // /ˈʃæmi/
+  cholmondeley: ['CH', 'AH1', 'M', 'L', 'IY0'], // /ˈtʃʌmli/
+  drachm: ['D', 'R', 'AE1', 'M'], // /dræm/ — silent ch
+  islington: ['IH1', 'Z', 'L', 'IH0', 'NG', 'T', 'AH0', 'N'], // /ˈɪzlɪŋtən/
+  obsequies: ['AA1', 'B', 'S', 'IH0', 'K', 'W', 'IY0', 'Z'], // /ˈɑbsɪkwiz/
+  oppugnant: ['AH0', 'P', 'AH1', 'G', 'N', 'AH0', 'N', 'T'], // /əˈpʌɡnənt/
+  oppugners: ['AH0', 'P', 'Y', 'UW1', 'N', 'ER0', 'Z'], // /əˈpjunɝz/ — silent g
+  phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'], // /ˈfeɪɪtən/
+  piquet: ['P', 'IH0', 'K', 'EY1'], // /pɪˈkeɪ/
+  puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // /ˈpjuni/
+  streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'], // /ˈstrɛtəm/
+  terpsichore: ['T', 'ER0', 'P', 'S', 'IH1', 'K', 'ER0', 'IY0'], // /tɝpˈsɪkɝi/
+  victual: ['V', 'IH1', 'T', 'AH0', 'L'], // /ˈvɪtəl/ — silent c
+  victuals: ['V', 'IH1', 'T', 'AH0', 'L', 'Z'], // /ˈvɪtəlz/ — silent c
 };
 
 /**
