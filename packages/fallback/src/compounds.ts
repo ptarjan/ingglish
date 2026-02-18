@@ -34,6 +34,15 @@ function capitalize(str: string): string {
 const MIN_PART_LENGTH = 3;
 
 /**
+ * Minimum SUBTLEX frequency for a word to be a valid compound part.
+ * Parts not in the SUBTLEX corpus (freq undefined) are also rejected.
+ * This prevents false splits using obscure dictionary words
+ * (e.g., "contest" → "con"+"test" when neither is the intended meaning).
+ * Threshold chosen by backtest optimization: 500 is the peak for stressless accuracy.
+ */
+const MIN_PART_FREQUENCY = 500;
+
+/**
  * Look up a word's pronunciation in custom dictionary or CMU.
  */
 function lookupWord(word: string): string[] | null {
@@ -70,7 +79,11 @@ function dpDecompose(word: string): string[] | null {
         continue;
       }
 
-      const freq = getWordFrequency(chunk) ?? 0;
+      const freq = getWordFrequency(chunk);
+      // Skip parts that are obscure (not in SUBTLEX or below frequency threshold)
+      if (freq === undefined || freq < MIN_PART_FREQUENCY) {
+        continue;
+      }
       const newScore = prev.score + freq;
       const newParts = prev.parts.length + 1;
       const current = dp[i];
@@ -140,5 +153,8 @@ export function translateAsCompound(
     pos += part.length;
   }
 
-  return translations.join('');
+  // Ingglish format: join without separator (e.g., "ehron" + "suhn" = "ehronsuhn")
+  // Other formats (arpabet): join with space to keep phonemes separated
+  const separator = format === 'ingglish' ? '' : ' ';
+  return translations.join(separator);
 }

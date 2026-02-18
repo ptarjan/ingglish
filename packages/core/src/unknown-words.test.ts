@@ -714,21 +714,14 @@ describe('unknown-words', () => {
       expect(result).toBe('devz'); // D EH1 V Z -> devz
     });
 
-    // These tests require "hub" in dictionary (full CMU dict, not stub)
-    it('should handle compound words like github', () => {
-      if (lookupPronunciation('hub') === null) {
-        return; // Skip with stub dictionary
-      }
-      // github = git (custom) + hub (CMU) -> github
+    it('should handle github via custom pronunciation', () => {
+      // github is now a custom pronunciation (G IH1 T HH AH1 B)
       const result = translateUnknown('github');
       expect(result).toBe('github'); // git + hub
     });
 
     it('should produce correct IPA for github', () => {
-      if (lookupPronunciation('hub') === null) {
-        return; // Skip with stub dictionary
-      }
-      // github should be /ɡɪthʌb/ NOT /ɡɪθʌb/
+      // github custom pronunciation: G IH1 T HH AH1 B → /ɡɪthʌb/
       const result = translateUnknown('github', 'ipa');
       expect(result).toContain('t'); // separate t
       expect(result).toContain('h'); // separate h
@@ -738,14 +731,13 @@ describe('unknown-words', () => {
 
   describe('translateAsCompound', () => {
     it('should split compound words into known parts', () => {
-      if (lookupPronunciation('hub') === null) {
+      if (lookupPronunciation('bed') === null) {
         return; // Skip with stub dictionary
       }
-      // "github" = git (custom) + hub (CMU dict)
-      const result = translateAsCompound('github');
+      // "bedpost" = bed (CMU) + post (CMU) — both have high SUBTLEX frequency
+      const result = translateAsCompound('bedpost');
       expect(result).toBeDefined();
       expect(result).not.toBeNull();
-      expect(result).toBe('github');
     });
 
     it('should return null for non-compound words', () => {
@@ -753,12 +745,11 @@ describe('unknown-words', () => {
       expect(result).toBeNull();
     });
 
-    it('should handle github with custom git', () => {
-      if (lookupPronunciation('hub') === null) {
-        return; // Skip with stub dictionary
-      }
-      const result = translateAsCompound('github');
-      expect(result).toBe('github');
+    it('should reject splits with obscure parts', () => {
+      // Compound splitter requires parts with SUBTLEX frequency ≥ 500.
+      // Words made of obscure dictionary entries should not be split.
+      const result = translateAsCompound('abacus');
+      expect(result).toBeNull();
     });
   });
 

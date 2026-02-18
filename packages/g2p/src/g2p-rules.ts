@@ -61,6 +61,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[AIGN]=/EY N/',
     '[AI]=/EY/',
     '[AY]=/EY/',
+    // Custom: AUER → AW ER (German names: bauer, sauer, lauer — 49 fix, 0 break)
+    '[AUER]=/AW ER/',
     '[AU]=/AO/',
     '#:[AL] =/AX L/',
     '#:[ALS] =/AX L Z/',
@@ -201,6 +203,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[DG]+=/JH/',
     // Custom: DJ → JH (adjoin, adjust, adjacent)
     '[DJ]=/JH/',
+    // Custom: doubled DD before -ed at word end → D IH D (added, budded, studded)
+    '#:[DDED] =/D IH D/',
     // Custom: collapse doubled DD
     '[DD]=/D/',
     // Custom: silent D in German -ardt suffix (barnhardt, bernhardt, borgwardt — 20 words)
@@ -216,6 +220,10 @@ const NRL_RULES: Record<string, string[]> = {
     "' ^:[E] =/ /",
     ' :[E] =/IY/',
     '#[ED] =/D/',
+    // Custom: past tense -ed after T or D needs extra syllable (belted, fated, bonded, grounded)
+    // Without this, #:[E]D silences the E, producing T D instead of T IH D
+    'T[ED] =/IH D/',
+    'D[ED] =/IH D/',
     '#:[E]D =/ /',
     '[EV]ER=/EH V/',
     // Custom: ER before suffix → ER, not IY+R (altered, filtering, wanderer)
@@ -339,6 +347,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[GU]I=/G/',
     '[GG]=/G/',
     ' B#[G]=/G/',
+    // Custom: GEI at word start → G AY (German: geiger, geist — hard G, 20 fix, 0 break)
+    "' [GEI]=/G AY/",
     '[G]+=/JH/',
     '[GREAT]=/G R EY T/',
     '#[GH]=/ /',
@@ -361,6 +371,8 @@ const NRL_RULES: Record<string, string[]> = {
     ' [ISO]=/AY S AH/',
     // Custom: IDEA root → AY D IY (idea, ideal, idealism)
     ' [IDEA]=/AY D IY/',
+    // Custom: ID at word start → AY D (identify, identity, idle, idol — 74% AY, +12 net)
+    "' [ID]=/AY D/",
     ' [IN]=/IH N/',
     ' [I] =/AY/',
     // Custom: Italian/Latin word-end patterns (I+consonant+vowel → IY)
@@ -545,6 +557,11 @@ const NRL_RULES: Record<string, string[]> = {
     ' [ONE]=/W AH N/',
     // Custom: O before WSK → AH (Polish names: kowalski, grabowski — prevent OW digraph)
     '[O]WSK=/AH/',
+    // Custom: consonant+OWN → AW N (town, down, brown, gown — 80%+ AW)
+    'T[OWN]=/AW N/',
+    'D[OWN]=/AW N/',
+    'R[OWN]=/AW N/',
+    'G[OWN]=/AW N/',
     '[OW]=/OW/',
     ' [OVER]=/OW V ER/',
     '[OV]=/AH V/',
@@ -614,6 +631,8 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: word-final OH → OW (oh, stroh, pharaoh — 26 fix vs 3 break)
     '#:[OH] =/OW/',
     '[O] =/OW/',
+    // Custom: OAR → AO R (board, oar, soar, roar — OA before R is always AO)
+    '[OAR]=/AO R/',
     '[OA]=/OW/',
     ' [ONLY]=/OW N L IY/',
     ' [ONCE]=/W AH N S/',
@@ -764,7 +783,8 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   T: [
     ' [THE] =/DH AX/',
-    '[TO] =/T UW/',
+    // Word-start space required: only match standalone "to", not word-ending -to
+    ' [TO] =/T UW/',
     '[THAT] =/DH AE T/',
     ' [THIS] =/DH IH S/',
     ' [THEY]=/DH EY/',
@@ -800,6 +820,9 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[TIME] =/T AY M/',
     // Custom: TCH trigraph (match, catch, watch)
     '[TCH]=/CH/',
+    // Custom: doubled TT before -ed at word end → T IH D (batted, committed, abetted)
+    // Must come before [TT] to avoid TT collapsing and losing the IH D allomorph
+    '#:[TTED] =/T IH D/',
     // Custom: collapse doubled TT
     '[TT]=/T/',
     '[T]=/T/',

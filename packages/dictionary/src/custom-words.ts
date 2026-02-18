@@ -59,6 +59,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Tech terms
   chatgpt: ['CH', 'AE1', 'T', 'JH', 'IY1', 'P', 'IY1', 'T', 'IY1'], // chat + G-P-T
   git: ['G', 'IH1', 'T'],
+  github: ['G', 'IH1', 'T', 'HH', 'AH1', 'B'],
   npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // spelled out
   oauth: ['OW1', 'AO1', 'TH'],
   async: ['EY1', 'S', 'IH0', 'NG', 'K'],

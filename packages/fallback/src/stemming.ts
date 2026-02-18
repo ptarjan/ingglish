@@ -53,6 +53,21 @@ function selectSPhonemes(lastPhoneme: string): string[] {
  * Common English suffixes and their phonetic representations.
  * Used when trying to stem unknown words.
  */
+/** Inflectional suffixes that should try aggressive stem variants
+ * (stem+e, stem-1char, stem+doubled, i→y, stem+y) */
+const INFLECTIONAL_SUFFIXES = new Set([
+  'ing',
+  'ed',
+  'es',
+  's',
+  'er',
+  'or',
+  'est',
+  'ify',
+  'ifying',
+  'ification',
+]);
+
 export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] | null }[] = [
   // Long suffixes first (must come before shorter matches: -ification before -tion, -ifying before -ing)
   { suffix: 'ification', phonemes: ['IH0', 'F', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'] },
@@ -62,7 +77,7 @@ export const SUFFIX_PHONEMES: { suffix: string; phonemes: string[] | null }[] = 
   // Verb suffixes
   { suffix: 'ing', phonemes: ['IH0', 'NG'] },
   { suffix: 'ed', phonemes: null }, // allomorph: T/D/IH0 D (selected dynamically)
-  { suffix: 'es', phonemes: ['IH0', 'Z'] },
+  { suffix: 'es', phonemes: null }, // allomorph: same as -s (S/Z/IH0 Z based on stem)
   { suffix: 's', phonemes: null }, // allomorph: S/Z/IH0 Z (selected dynamically)
 
   // Noun suffixes
@@ -132,38 +147,41 @@ export function translateWithStemming(
     if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
       const stem = lowerWord.slice(0, -suffix.length);
 
-      // Try various stem modifications
-      const stemVariants = [
-        stem,
-        stem + 'e', // hoping -> hope
-        stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
-        stem.length > 0 ? stem + stem[stem.length - 1] : stem, // big -> bigg (for adding -er)
-        stem.endsWith('i') ? stem.slice(0, -1) + 'y' : '', // loveliest -> lovely (i→y)
-        stem + 'y', // uglify -> ugly (suffix starts with i, replacing y)
-      ].filter((v) => v.length > 0);
+      // Try various stem modifications.
+      // Inflectional suffixes try aggressive variants (stem+e, stem-1, etc.)
+      // Derivational suffixes only try direct stem to avoid false matches.
+      const stemVariants: string[] = [stem];
+      if (INFLECTIONAL_SUFFIXES.has(suffix)) {
+        stemVariants.push(
+          stem + 'e', // hoping -> hope
+          stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
+          stem.length > 0 ? stem + stem[stem.length - 1] : stem // big -> bigg (for adding -er)
+        );
+      }
+      // i→y and stem+y work for both inflectional and derivational
+      if (stem.endsWith('i')) {
+        stemVariants.push(stem.slice(0, -1) + 'y'); // loveliest -> lovely
+      }
+      stemVariants.push(stem + 'y'); // uglify -> ugly
 
       for (const variant of stemVariants) {
         const baseArpabet = lookupPronunciation(variant);
         if (baseArpabet) {
-          // Strip stress from base word phonemes so they don't conflict
-          // with the suffix's unstressed (0) markers
-          const strippedBase = baseArpabet.map(stripStress);
-
-          // Select allomorph for -ed and -s based on last phoneme of stem
+          // Select allomorph for -ed, -es, and -s based on last phoneme of stem
           let resolvedSuffix: string[];
           if (suffixArpabet === null) {
             const lastPhoneme = baseArpabet[baseArpabet.length - 1];
             if (suffix === 'ed') {
               resolvedSuffix = selectEdPhonemes(lastPhoneme);
             } else {
-              // suffix === 's'
+              // suffix === 's' or 'es' — same allomorph logic
               resolvedSuffix = selectSPhonemes(lastPhoneme);
             }
           } else {
             resolvedSuffix = suffixArpabet;
           }
 
-          const fullArpabet = [...strippedBase, ...resolvedSuffix];
+          const fullArpabet = [...baseArpabet, ...resolvedSuffix];
           return arpabetToFormat(fullArpabet, format);
         }
       }
