@@ -23,15 +23,23 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   thyme: ['T', 'AY1', 'M'], // /taɪm/ — CMU has TH but h is silent (like "time")
   touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU has T UW1 SH (missing final syllable)
 
-  // CMU dictionary corrections — N→NG before K/G (verified vs Cambridge/Wiktionary)
-  // In English, /n/ always assimilates to [ŋ] before velar consonants /k,g/.
-  // CMU convention uses NG before K/G (e.g., "think"=TH IH1 NG K).
-  incompetent: ['IH2', 'NG', 'K', 'AA1', 'M', 'P', 'AH0', 'T', 'AH0', 'N', 'T'], // CMU has N K, should be NG K
-  increment: ['IH1', 'NG', 'K', 'R', 'AH0', 'M', 'AH0', 'N', 'T'], // CMU has N K, should be NG K
-  inconclusive: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V'], // CMU has N K at both positions
+  // CMU dictionary corrections — N→NG before K/G
+  // Most N-before-velar errors are fixed automatically by normalizeVelarNasal() in lookup.ts.
+  // Only entries here have ADDITIONAL fixes beyond N→NG.
   inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // CMU has N K and wrong vowels
-  conquests: ['K', 'AA1', 'NG', 'K', 'W', 'EH2', 'S', 'T', 'S'], // CMU has N K, "conquest" correctly has NG K
   engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // CMU entry corrupted (NG G instead of N JH)
+
+  // CMU dictionary corrections — CH→SH in -tion/-sion suffix (verified vs Cambridge)
+  // The -tion/-sion suffix is always /ʃ/ after N, but CMU incorrectly uses CH (/tʃ/) for some words.
+  // Note: S+CH in -stion words (question, combustion, bastion) is correct — /stʃ/.
+  intentions: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH, should be SH (like "intention")
+  tensions: ['T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH, should be SH (singular "tension" is correct)
+  mansions: ['M', 'AE1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH, should be SH (singular "mansion" is correct)
+  abstention: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH, should be SH
+  abstentions: ['AH0', 'B', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // CMU has CH, should be SH
+  contravention: ['K', 'AA2', 'N', 'T', 'R', 'AH0', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH, should be SH
+  inattention: ['IH2', 'N', 'AH0', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH, should be SH
+  circumvention: ['S', 'ER2', 'K', 'AH0', 'M', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // CMU has CH, should be SH
 
   // CMU dictionary corrections — consonant errors (verified vs Cambridge/Wiktionary)
   fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has D UW0, should be JH AH0 (like "fraudulent")
@@ -44,6 +52,8 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   ceaselessly: ['S', 'IY1', 'S', 'L', 'AH0', 'S', 'L', 'IY0'], // CMU has Z, should be S (like "ceaseless")
   reschedulings: ['R', 'IY0', 'S', 'K', 'EH1', 'JH', 'UW0', 'L', 'IH0', 'NG', 'Z'], // CMU has SH (British), should be S (AmE, like "rescheduling")
   headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // CMU missing W (present in "headquarter")
+  actuator: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0'], // CMU has T Y UW, should be CH UW (yod-coalescence /tʃ/)
+  actuators: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0', 'Z'], // CMU has T Y UW, should be CH UW
 
   // CMU dictionary corrections — vowel/glide errors (verified vs Cambridge/Wiktionary)
   duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // CMU has Y glide (British), AmE is /duː/ (like "duplications")
