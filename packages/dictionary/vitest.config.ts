@@ -5,6 +5,7 @@ export default defineConfig({
   esbuild: {
     target: 'esnext',
   },
+  resolve: { conditions: ['source'] },
   test: {
     include: ['src/**/*.test.ts'],
     setupFiles: ['./vitest.setup.ts'],
@@ -12,5 +13,6 @@ export default defineConfig({
     isolate: false,
     testTimeout: 10000,
     hookTimeout: 30000,
+    conditions: ['source'],
   },
 });
