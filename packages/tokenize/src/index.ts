@@ -46,7 +46,7 @@ export function isIPAChar(char: string): boolean {
 /**
  * Checks if a character is a phonetic text character (Ingglish or IPA).
  * This includes Latin letters, accented vowels used in Ingglish stress marking,
- * IPA symbols, and stress markers.
+ * IPA symbols, stress markers, and apostrophes (for contractions/possessives).
  *
  * Use this for tokenizing mixed Ingglish/IPA text in bidirectional translation.
  */
@@ -55,6 +55,12 @@ export function isPhoneticChar(char: string): boolean {
 
   // Basic Latin letters (A-Z, a-z)
   if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
+    return true;
+  }
+
+  // Apostrophe (U+0027) - keeps contractions/possessives as single tokens
+  // (matches WORD_SPLIT_REGEX which includes ' in word characters)
+  if (code === 0x27) {
     return true;
   }
 

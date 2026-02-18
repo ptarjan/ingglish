@@ -25,6 +25,10 @@ describe('text utilities', () => {
       expect(isPhoneticChar('ˌ')).toBe(true);
     });
 
+    it('should return true for apostrophes', () => {
+      expect(isPhoneticChar("'")).toBe(true);
+    });
+
     it('should return true for word joiner', () => {
       expect(isPhoneticChar('\u2060')).toBe(true);
     });
@@ -104,6 +108,20 @@ describe('text utilities', () => {
       expect(words).toHaveLength(2);
       expect(nonWords).toHaveLength(2);
       expect(nonWords.every((t) => t.wordIndex === null)).toBe(true);
+    });
+
+    it('should keep apostrophes as part of words', () => {
+      const tokens = tokenizePhonetic("foo's");
+      expect(tokens).toHaveLength(1);
+      expect(tokens[0]).toEqual({ text: "foo's", isWord: true, wordIndex: 0 });
+    });
+
+    it('should keep contractions as single words', () => {
+      const tokens = tokenizePhonetic("don't stop");
+      const words = tokens.filter((t) => t.isWord);
+      expect(words).toHaveLength(2);
+      expect(words[0].text).toBe("don't");
+      expect(words[1].text).toBe('stop');
     });
   });
 
