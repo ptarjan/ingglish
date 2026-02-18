@@ -5,7 +5,27 @@
  * Pre-built at build time with words sorted by frequency.
  */
 
+import { stripStress } from '@ingglish/phonemes';
+import { CUSTOM_PRONUNCIATIONS } from './custom-words';
 import type { ReverseDictionary } from './types';
+
+/**
+ * Build a reverse map from custom pronunciations (phoneme key -> words).
+ * Computed once and cached. Custom words are prepended so they take priority.
+ */
+let customReverseMap: Record<string, string[]> | null = null;
+function getCustomReverseMap(): Record<string, string[]> {
+  if (customReverseMap) {
+    return customReverseMap;
+  }
+  customReverseMap = {};
+  for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+    const key = phonemes.map(stripStress).join(' ');
+    customReverseMap[key] ??= [];
+    customReverseMap[key].push(word);
+  }
+  return customReverseMap;
+}
 
 // The reverse dictionary will be loaded once and cached
 let reverseDict: ReverseDictionary | null = null;
@@ -74,11 +94,25 @@ export function getReverseDictionary(): ReverseDictionary {
 
 /**
  * Looks up words for a phoneme key.
- * Returns words sorted by frequency (pre-sorted at build time).
+ * Custom pronunciations are checked first, then the pre-built reverse dictionary.
+ * Results are merged with custom words taking priority.
  */
 export function lookupPhonemeKey(key: string): string[] | undefined {
+  const customMap = getCustomReverseMap();
+  const customMatches = customMap[key];
   const dict = getReverseDictionary();
-  return dict[key];
+  const dictMatches = dict[key];
+
+  if (customMatches === undefined) {
+    return dictMatches;
+  }
+  if (dictMatches === undefined) {
+    return customMatches;
+  }
+
+  // Merge: custom words first, then dict words (excluding duplicates)
+  const seen = new Set(customMatches);
+  return [...customMatches, ...dictMatches.filter((w) => !seen.has(w))];
 }
 
 /**

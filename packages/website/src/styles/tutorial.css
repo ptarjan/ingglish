@@ -11,15 +11,19 @@
 }
 
 .tutorial-section {
-  min-height: 100vh;
   display: grid;
   align-content: center;
   padding: 4rem 0;
   min-width: 0;
 }
 
+/* Only the hook sections (ough + what-if) get full viewport height */
 .tutorial-section:first-child {
   min-height: 60vh;
+}
+
+.tutorial-section:nth-child(2) {
+  min-height: 80vh;
 }
 
 .scroll-hint {
@@ -521,6 +525,19 @@
   box-sizing: border-box;
 }
 
+/* --- Try-it inline CTA --- */
+
+.tutorial-try-it {
+  min-height: 80vh;
+}
+
+.try-it-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 /* --- Section 8: CTA --- */
 
 .tutorial-cta {
@@ -654,6 +671,18 @@
 
   .cta-primary,
   .cta-secondary {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  .try-it-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .try-it-cta .cta-primary,
+  .try-it-cta .cta-secondary {
     width: 100%;
     max-width: 300px;
     text-align: center;

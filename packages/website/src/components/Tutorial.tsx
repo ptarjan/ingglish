@@ -133,7 +133,7 @@ function OughCard({
 
 function Section1_Ough() {
   const { ref, visible } = useScrollReveal<HTMLElement>();
-  const revealedCount = useStaggeredReveal(oughExamples.length, visible, 1500);
+  const revealedCount = useStaggeredReveal(oughExamples.length, visible, 700);
 
   return (
     <section ref={ref} className={`tutorial-section ${visible ? 'revealed' : ''}`}>
@@ -155,7 +155,7 @@ function Section1_Ough() {
 
 function Section2_WhatIf() {
   const { ref, visible } = useScrollReveal<HTMLElement>(0.05);
-  const revealedCount = useStaggeredReveal(3, visible, 1200);
+  const revealedCount = useStaggeredReveal(3, visible, 800);
 
   const lines = [
     'What if every spelling always made the same sound?',
@@ -208,7 +208,7 @@ function useStickyActive(visible: boolean, previousDone: boolean): boolean {
   return active;
 }
 
-function Section4a_SilentLetters({
+function Section5a_SilentLetters({
   previousDone,
   onComplete,
 }: {
@@ -217,7 +217,7 @@ function Section4a_SilentLetters({
 }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
   const active = useStickyActive(visible, previousDone);
-  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 1200);
+  const revealedCount = useStaggeredReveal(silentLetterExamples.length, active, 600);
   useStaggerComplete(revealedCount, silentLetterExamples.length, onComplete);
 
   return (
@@ -411,7 +411,7 @@ function SoundGroup({
   );
 }
 
-function Section4b_OneSound({
+function Section5b_OneSound({
   previousDone,
   onComplete,
 }: {
@@ -421,7 +421,7 @@ function Section4b_OneSound({
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
   const active = useStickyActive(visible, previousDone);
   const total = eeSoundExamples.length + aySoundExamples.length;
-  const revealedCount = useStaggeredReveal(total, active, 1200);
+  const revealedCount = useStaggeredReveal(total, active, 600);
   useStaggerComplete(revealedCount, total, onComplete);
 
   return (
@@ -459,7 +459,7 @@ function SimpleRuleGroup({
 }) {
   const { ref, visible } = useScrollReveal<HTMLDivElement>();
   const active = useStickyActive(visible, previousDone);
-  const revealedCount = useStaggeredReveal(examples.length, active, 1200);
+  const revealedCount = useStaggeredReveal(examples.length, active, 600);
   useStaggerComplete(revealedCount, examples.length, onComplete);
 
   return (
@@ -482,7 +482,7 @@ function SimpleRuleGroup({
   );
 }
 
-function Section4_Transform() {
+function Section5_Transform() {
   // Track which substeps have finished their animations.
   // Each substep only starts when the previous one completes.
   const [completedStep, setCompletedStep] = useState(-1);
@@ -493,13 +493,13 @@ function Section4_Transform() {
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">How it works</h2>
-      <Section4a_SilentLetters
+      <Section5a_SilentLetters
         previousDone
         onComplete={() => {
           markComplete(0);
         }}
       />
-      <Section4b_OneSound
+      <Section5b_OneSound
         previousDone={completedStep >= 0}
         onComplete={() => {
           markComplete(1);
@@ -529,7 +529,7 @@ function Section4_Transform() {
   );
 }
 
-function Section5_Progressive() {
+function Section6_Progressive() {
   const totalSteps = stepCaptions.length - 1;
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -612,7 +612,7 @@ function Section5_Progressive() {
   );
 }
 
-function Section6_Poem() {
+function Section7_Poem() {
   const { ref, visible } = useScrollReveal<HTMLElement>(0.3);
   const [step, setStep] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -639,8 +639,8 @@ function Section6_Poem() {
       return;
     }
 
-    const delayMs = 1500;
-    const initialDelayMs = currentStep === 0 ? 2000 : delayMs;
+    const delayMs = 1000;
+    const initialDelayMs = currentStep === 0 ? 1500 : delayMs;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setStep(totalSteps + 1);
@@ -753,7 +753,7 @@ function Section6_Poem() {
   );
 }
 
-function Section3_ReadingTest() {
+function Section4_ReadingTest() {
   return (
     <section className="tutorial-section">
       <h2 className="tutorial-heading">Can you read this?</h2>
@@ -774,12 +774,21 @@ function Section3_ReadingTest() {
   );
 }
 
-function Section7_TryIt() {
+function Section3_TryIt({ onNavigate }: { onNavigate?: (tab: string) => void }) {
   const [input, setInput] = useState('');
   const tokens = input ? translateSyncWithMapping(input) : [];
 
+  const handleNavigate = useCallback(
+    (tab: string) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      window.scrollTo(0, 0);
+      onNavigate?.(tab);
+    },
+    [onNavigate]
+  );
+
   return (
-    <section className="tutorial-section">
+    <section className="tutorial-section tutorial-try-it">
       <h2 className="tutorial-heading">Try it yourself</h2>
       <div className="try-it-container">
         <input
@@ -793,6 +802,16 @@ function Section7_TryIt() {
         />
         {input && <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />}
       </div>
+      {onNavigate && (
+        <div className="try-it-cta">
+          <a href="/text" className="cta-primary" onClick={handleNavigate('text')}>
+            Translate Text
+          </a>
+          <a href="/url" className="cta-secondary" onClick={handleNavigate('url')}>
+            Translate a Website
+          </a>
+        </div>
+      )}
     </section>
   );
 }
@@ -835,11 +854,11 @@ export default function Tutorial({ onNavigate }: TutorialProps) {
     <div className="tutorial">
       <Section1_Ough />
       <Section2_WhatIf />
-      <Section3_ReadingTest />
-      <Section4_Transform />
-      <Section5_Progressive />
-      <Section6_Poem />
-      <Section7_TryIt />
+      <Section3_TryIt onNavigate={onNavigate} />
+      <Section4_ReadingTest />
+      <Section5_Transform />
+      <Section6_Progressive />
+      <Section7_Poem />
       <Section8_CTA onNavigate={onNavigate} />
     </div>
   );
