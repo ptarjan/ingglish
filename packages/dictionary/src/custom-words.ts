@@ -11,7 +11,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   vs: ['V', 'ER1', 'S', 'AH0', 'S'], // versus
   devs: ['D', 'EH1', 'V', 'Z'], // developers (prevents "de" + "vs" compound split)
 
-  // CMU dictionary corrections
+  // CMU dictionary corrections — original
   buffet: ['B', 'AH0', 'F', 'EY1'], // /bʌˈfeɪ/ — French noun (food), not the verb "to strike"
   cuckoo: ['K', 'UW1', 'K', 'UW0'], // /ˈkuːku/ — CMU has AH1 (ʌ) for first vowel
   fiancee: ['F', 'IY0', 'AA0', 'N', 'S', 'EY1'], // /fiɑnˈseɪ/ — CMU has /si/ but should end in /seɪ/
@@ -22,6 +22,38 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   ow: ['AW1'], // /aʊ/ — CMU has OW1 (oʊ) but interjection is "ouch" sound
   thyme: ['T', 'AY1', 'M'], // /taɪm/ — CMU has TH but h is silent (like "time")
   touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU has T UW1 SH (missing final syllable)
+
+  // CMU dictionary corrections — N→NG before K/G (verified vs Cambridge/Wiktionary)
+  // In English, /n/ always assimilates to [ŋ] before velar consonants /k,g/.
+  // CMU convention uses NG before K/G (e.g., "think"=TH IH1 NG K).
+  incompetent: ['IH2', 'NG', 'K', 'AA1', 'M', 'P', 'AH0', 'T', 'AH0', 'N', 'T'], // CMU has N K, should be NG K
+  increment: ['IH1', 'NG', 'K', 'R', 'AH0', 'M', 'AH0', 'N', 'T'], // CMU has N K, should be NG K
+  inconclusive: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V'], // CMU has N K at both positions
+  inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // CMU has N K and wrong vowels
+  conquests: ['K', 'AA1', 'NG', 'K', 'W', 'EH2', 'S', 'T', 'S'], // CMU has N K, "conquest" correctly has NG K
+  engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // CMU entry corrupted (NG G instead of N JH)
+
+  // CMU dictionary corrections — consonant errors (verified vs Cambridge/Wiktionary)
+  fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has D UW0, should be JH AH0 (like "fraudulent")
+  haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // CMU has F, should be P HH (like "haphazard")
+  conscientiously: ['K', 'AA2', 'N', 'SH', 'IY0', 'EH1', 'N', 'SH', 'AH0', 'S', 'L', 'IY0'], // CMU has CH, should be SH (like "conscientious")
+  forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // CMU missing R (present in "forging")
+  withdrawals: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'AH0', 'L', 'Z'], // CMU has TH (voiceless), should be DH (voiced, like "withdrawal")
+  presidentially: ['P', 'R', 'EH2', 'Z', 'IH0', 'D', 'EH1', 'N', 'SH', 'AH0', 'L', 'IY0'], // CMU has S, should be Z (like "presidential")
+  resolutely: ['R', 'EH1', 'Z', 'AH0', 'L', 'UW2', 'T', 'L', 'IY0'], // CMU has S, should be Z (like "resolute")
+  ceaselessly: ['S', 'IY1', 'S', 'L', 'AH0', 'S', 'L', 'IY0'], // CMU has Z, should be S (like "ceaseless")
+  reschedulings: ['R', 'IY0', 'S', 'K', 'EH1', 'JH', 'UW0', 'L', 'IH0', 'NG', 'Z'], // CMU has SH (British), should be S (AmE, like "rescheduling")
+  headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // CMU missing W (present in "headquarter")
+
+  // CMU dictionary corrections — vowel/glide errors (verified vs Cambridge/Wiktionary)
+  duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // CMU has Y glide (British), AmE is /duː/ (like "duplications")
+  duplicates: ['D', 'UW1', 'P', 'L', 'AH0', 'K', 'EY2', 'T', 'S'], // CMU has Y glide (British), AmE is /duː/ (like "duplicate")
+  tuition: ['T', 'UW0', 'IH1', 'SH', 'AH0', 'N'], // CMU has Y glide, AmE is /tuː/ (like "tuitions")
+  unknowns: ['AH0', 'N', 'N', 'OW1', 'N', 'Z'], // CMU missing second N (present in "unknown" /ʌnˈnoʊn/)
+  convulsant: ['K', 'AH0', 'N', 'V', 'AH1', 'L', 'S', 'AH0', 'N', 'T'], // CMU missing N before V (present in "convulsants")
+  revaluations: ['R', 'IY0', 'V', 'AE2', 'L', 'Y', 'UW0', 'EY1', 'SH', 'AH0', 'N', 'Z'], // CMU has extra IH0 (not in "revaluation")
+  alienate: ['EY1', 'L', 'IY0', 'AH0', 'N', 'EY2', 'T'], // CMU has Y, should be IY0 (like "alienated"/"alienates")
+  leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // CMU has Y, should be IY0 (like "lenient")
 
   // CMU variant ordering fixes — v1 has IY0 ("ee") but standard AmE uses EY ("ay")
   // See scripts/analyze-variants.js for the full analysis
