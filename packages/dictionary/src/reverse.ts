@@ -5,14 +5,8 @@
  * Pre-built at build time with words sorted by frequency.
  */
 
+import { stripStress } from '@ingglish/phonemes';
 import { CUSTOM_PRONUNCIATIONS } from './custom-words';
-
-/** Strip trailing stress digit (0/1/2) from an ARPAbet phoneme. */
-function stripStress(phoneme: string): string {
-  const lastChar = phoneme.charCodeAt(phoneme.length - 1);
-  // '0'=48, '1'=49, '2'=50
-  return lastChar >= 48 && lastChar <= 50 ? phoneme.slice(0, -1) : phoneme;
-}
 import type { ReverseDictionary } from './types';
 
 /**
