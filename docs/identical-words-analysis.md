@@ -82,7 +82,7 @@ Mixed. Both gains and losses are largely loanwords. The native English gains (he
 **Lost (103 words):** German-origin names with "oh" spelling
 - bohn, bohner, groh, stroh, doh, etc.
 
-Good trade on paper. But `ow` is **ambiguous in English** — see [rejection rationale](#rejected-oʊ-oh--ow-134-net).
+Good trade on paper. But `ow` is **ambiguous in English** — see [rejection rationale](#rejected-o-oh--ow-134-net).
 
 #### /ɔ/: "aw" → "au" (+85 net)
 
