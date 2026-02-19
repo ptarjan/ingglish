@@ -1,25 +1,25 @@
-# Ingglish Translation Collision Analysis
+# Ingglish False Friends Analysis
 
-When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. This page analyzes those cases.
+When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. These are [false friends](https://en.wikipedia.org/wiki/False_friend) — they look like familiar English words but have different pronunciations in Ingglish. They are **not** collisions: each Ingglish spelling maps to exactly one pronunciation, so there is no ambiguity in the system.
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
 | Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's 135,166 entries) |
-| Collisions (Ingglish matches different English word) | 1,360 |
-| Collisions involving common words (freq >= 20 /M) | 175 |
+| False friends (Ingglish matches different English word) | 1,360 |
+| False friends involving common words (freq >= 20 /M) | 175 |
 
 ### Is This a Problem?
 
 **Rarely.** Looking at the data:
 
-- Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll rarely encounter these in normal text.
-- Only 7 collisions involve two common words: uh→u, yeah→ya, white→wait, ass→as, place→plays, side→said, mine→main
-- **Part of speech differences** resolve most collisions: white (adj) → wait (verb) are grammatically distinct
+- Most false friends translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll rarely encounter these in normal text.
+- Only 7 involve two common words: uh→u, yeah→ya, white→wait, ass→as, place→plays, side→said, mine→main
+- **Part of speech differences** resolve most cases: white (adj) → wait (verb) are grammatically distinct
 - Context resolves these just like English homophones (their/there/they're)
 
-## Collisions (Common Words)
+## False Friends (Common Words)
 
 Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*). The Ingglish column is also an English word.
 
@@ -46,7 +46,7 @@ Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2
 | matter | mater (mother/Latin) | 380 → 2 |
 | else | els (elevated trains) | 461 → <1 |
 
-### Notable Collisions
+### Notable False Friends
 
 **white → wait**: adjective → verb. Different parts of speech make this unambiguous: "the wait house" is grammatically odd. Note: "wait" translates to "wayt", so reverse translation works.
 
