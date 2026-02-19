@@ -334,6 +334,6 @@ test.describe('Spelling Guide', () => {
 
   test('displays key principles', async () => {
     await expect(page.locator('h3:has-text("Key Principles")')).toBeVisible();
-    await expect(page.locator('.principles-list li')).toHaveCount(4);
+    await expect(page.locator('.principles-list li')).toHaveCount(5);
   });
 });

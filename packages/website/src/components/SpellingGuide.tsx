@@ -121,6 +121,10 @@ function SpellingGuide(): React.JSX.Element {
           <li>
             <strong>Standardized</strong> - pronunciations from linguistic research
           </li>
+          <li>
+            <strong>Disambiguating</strong> - words that look alike but sound different get distinct
+            spellings (woman → wooman, women → wiman)
+          </li>
         </ul>
       </div>
 
