@@ -160,8 +160,8 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
       return { translated: word, matched: false };
     }
 
-    // Apply original case pattern to fallback result (only for Ingglish)
-    if (format === 'ingglish') {
+    // Apply original case pattern to fallback result (Latin-script formats)
+    if (isLatinScript && format !== 'ipa') {
       // Skip case application if result already has mixed case (e.g., compound words)
       // This prevents re-applying position-based casing to properly-cased compounds
       const resultHasMixedCase =
@@ -178,8 +178,8 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   let result = arpabetToFormat(phonemes, format);
 
-  // Apply original case pattern (only for Ingglish, IPA doesn't use case)
-  if (format === 'ingglish') {
+  // Apply original case pattern (Latin-script formats preserve case; IPA doesn't)
+  if (isLatinScript && format !== 'ipa') {
     result = applyCasePattern(result, casePattern, word);
   }
 
@@ -219,6 +219,7 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
   // Only applies to multi-word text to avoid changing single-word translation behavior.
   const hasMultipleWords = tokens.filter((t) => WORD_TEST_REGEX.test(t)).length > 1;
   let sentenceStart = hasMultipleWords;
+  const latinScript = getFormatIsLatinScript(format);
 
   const translated = tokens
     .map((token) => {
@@ -226,7 +227,7 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
       if (WORD_TEST_REGEX.test(token)) {
         let result = translateWord(token, format);
         // Capitalize first word of each sentence
-        if (sentenceStart && format === 'ingglish' && result.length > 0) {
+        if (sentenceStart && latinScript && format !== 'ipa' && result.length > 0) {
           result = result.charAt(0).toUpperCase() + result.slice(1);
         }
         sentenceStart = false;
