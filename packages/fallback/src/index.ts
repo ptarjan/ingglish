@@ -91,8 +91,14 @@ export function translateUnknown(word: string, format: OutputFormat = 'ingglish'
   }
 
   // Try phonemize if loaded
+  // Skip if the result round-trips back to the original word (e.g. phonemize
+  // maps "splonk" → IPA → arpabet → ingglish "splonk" unchanged).
   const phonemizeResult = translateWithPhonemize(word, format);
-  if (phonemizeResult !== null && phonemizeResult.length > 0) {
+  if (
+    phonemizeResult !== null &&
+    phonemizeResult.length > 0 &&
+    phonemizeResult.toLowerCase() !== word.toLowerCase()
+  ) {
     return phonemizeResult;
   }
 

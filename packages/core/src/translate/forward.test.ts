@@ -90,7 +90,7 @@ describe('translator', () => {
       // Exact G2P results are covered by 134+ tests in unknown-words.test.ts
       const result = translateWord('splonk');
       expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+      expect(result).not.toBe('splonk'); // Should be transformed by G2P
     });
 
     it('should translate url from dictionary', () => {
