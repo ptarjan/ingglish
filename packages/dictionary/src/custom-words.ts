@@ -31,8 +31,12 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   ceaselessly: ['S', 'IY1', 'S', 'L', 'AH0', 'S', 'L', 'IY0'], // /ˈsisləsli/ — CMU has /z/
   reschedulings: ['R', 'IY0', 'S', 'K', 'EH1', 'JH', 'UW0', 'L', 'IH0', 'NG', 'Z'], // /riˈskɛdʒulɪŋz/ — CMU has /ʃ/ (British)
   withdrawals: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'AH0', 'L', 'Z'], // /wɪðˈdrɔəlz/ — CMU has /θ/
+  withdrawing: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'IH0', 'NG'], // /wɪðˈdrɔɪŋ/ — CMU has /θ/
+  withdrawn: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'N'], // /wɪðˈdrɔn/ — CMU has /θ/
 
-  // Wrong consonant
+  // Wrong consonant in derived form
+  deliciously: ['D', 'IH0', 'L', 'IH1', 'SH', 'AH0', 'S', 'L', 'IY0'], // /dɪˈlɪʃəsli/ — CMU has /ʃ/ for final /s/
+  potshots: ['P', 'AA1', 'SH', 'AA2', 'T', 'S'], // /ˈpɑtˌʃɑts/ — CMU has /tʃ/, should match potshot's /ʃ/
   fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈfrɔdʒələntli/ — CMU has /d/
   haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // /hæpˈhæzɝdli/ — CMU has /f/
   engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // /ɛnˈdʒɛndɝz/ — CMU has /ŋɡ/
@@ -59,6 +63,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // ---------------------------------------------------------------------------
 
   // Spurious /j/ glide (British /juː/ where AmE uses /uː/)
+  dudes: ['D', 'UW1', 'D', 'Z'], // /duːdz/ — CMU has /dju/, should match dude's /du/
   duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /ˌdupləˈkeɪʃən/ — CMU has /dju/
   duplicates: ['D', 'UW1', 'P', 'L', 'AH0', 'K', 'EY2', 'T', 'S'], // /ˈdupləˌkeɪts/ — CMU has /dju/
   tuition: ['T', 'UW0', 'IH1', 'SH', 'AH0', 'N'], // /tuˈɪʃən/ — CMU has /tju/
@@ -66,6 +71,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈliniəntli/ — CMU has /j/ for /i/
 
   // Wrong vowel
+  leisure: ['L', 'IY1', 'ZH', 'ER0'], // /ˈliʒɝ/ — CMU has British /ɛ/, AmE is /i/
   president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // /ˈprɛzɪdənt/ — CMU has /ə/ for /ɪ/ and /ɛ/ for /ə/
   cuckoo: ['K', 'UW1', 'K', 'UW0'], // /ˈkuku/ — CMU has /ʌ/ for first vowel
   finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // /fɪˈneɪɡəl/ — CMU has /ə/ for /eɪ/, wrong stress
