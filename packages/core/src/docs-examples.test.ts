@@ -3,7 +3,7 @@
  * This prevents documentation drift when phoneme mappings change.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { translateSync } from './translate/forward';
@@ -351,6 +351,97 @@ const SPELLING_GUIDE_PATH = join(
   '../../../packages/website/src/components/spelling-guide-data.ts'
 );
 
+/**
+ * Extract examples from any markdown table with "English" and "Ingglish" column headers.
+ * Handles comma-separated English words and parenthetical descriptions in Ingglish column.
+ * Multi-word cells (e.g., "mai taim") are split into individual word pairs.
+ */
+function extractTableExamples(content: string, filename: string): Example[] {
+  const examples: Example[] = [];
+  const lines = content.split('\n');
+
+  let englishCol = -1;
+  let ingglishCol = -1;
+  let inTable = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineNum = i + 1;
+
+    // Detect table header rows with both English and Ingglish columns
+    if (line.startsWith('|') && /\bEnglish\b/i.test(line) && /\bIngglish\b/i.test(line)) {
+      const cells = line.split('|').map((c) => c.trim());
+      englishCol = cells.findIndex((c) => /^English$/i.test(c));
+      ingglishCol = cells.findIndex((c) => /^Ingglish$/i.test(c));
+      inTable = englishCol !== -1 && ingglishCol !== -1;
+      continue;
+    }
+
+    // Skip separator rows (|---|---|)
+    if (inTable && /^\|[\s\-:|]+\|$/.test(line)) {
+      continue;
+    }
+
+    // End of table
+    if (inTable && !line.startsWith('|')) {
+      inTable = false;
+      continue;
+    }
+
+    if (!inTable) {
+      continue;
+    }
+
+    const cells = line.split('|').map((c) => c.trim());
+    const rawEnglish = cells[englishCol];
+    const rawIngglish = cells[ingglishCol];
+    if (!rawEnglish || !rawIngglish) {
+      continue;
+    }
+
+    // Parse English column: may be comma-separated ("right, write, rite")
+    // Strip count annotations like "(14)" at the end
+    const englishClean = rawEnglish.replace(/\s*\(\d+\)\s*$/, '');
+    const englishWords = englishClean.includes(',')
+      ? englishClean.split(',').map((w) => w.trim().toLowerCase())
+      : englishClean.toLowerCase().split(/\s+/);
+
+    // Parse Ingglish column: may have parenthetical ("rait (soak flax)")
+    // Strip description in parens, then split by space for multi-word phrases
+    const ingglishClean = rawIngglish.replace(/\s*\(.*\)/, '').trim();
+    const ingglishWords = ingglishClean.toLowerCase().split(/\s+/);
+
+    // Multi-word phrases: pair up positionally ("my time" → "mai taim")
+    if (englishWords.length === ingglishWords.length && englishWords.length > 1) {
+      for (let j = 0; j < englishWords.length; j++) {
+        const eng = englishWords[j];
+        const ing = ingglishWords[j];
+        if (/^[a-z]+$/.test(eng) && /^[a-z]+$/.test(ing) && !SKIP_WORDS.has(eng)) {
+          examples.push({ english: eng, ingglish: ing, source: filename, line: lineNum });
+        }
+      }
+    } else {
+      // Comma-separated English words all map to the single Ingglish word
+      const ingglish = ingglishWords[0];
+      if (!ingglish || !/^[a-z]+$/.test(ingglish) || SKIP_WORDS.has(ingglish)) {
+        continue;
+      }
+      for (const eng of englishWords) {
+        if (/^[a-z]+$/.test(eng) && !SKIP_WORDS.has(eng)) {
+          examples.push({ english: eng, ingglish, source: filename, line: lineNum });
+        }
+      }
+    }
+  }
+
+  return examples;
+}
+
+// Auto-discover all markdown files in docs/
+const allDocFiles = readdirSync(DOCS_DIR)
+  .filter((f) => f.endsWith('.md'))
+  .sort();
+
 describe('documentation examples', () => {
   // Collect all examples from docs
   const allExamples: Example[] = [];
@@ -358,8 +449,8 @@ describe('documentation examples', () => {
   // README
   allExamples.push(...getExamplesFromFile(README_PATH));
 
-  // Doc files
-  const docFiles = [
+  // Doc files — inline pattern extraction (curated list for pattern-based parsing)
+  const patternDocFiles = [
     'phoneme-mapping.md',
     'orthography-comparison.md',
     'spelling-reform-comparison.md',
@@ -367,8 +458,25 @@ describe('documentation examples', () => {
     'collision-analysis.md',
   ];
 
-  for (const file of docFiles) {
+  for (const file of patternDocFiles) {
     allExamples.push(...getExamplesFromFile(join(DOCS_DIR, file)));
+  }
+
+  // All docs — generic table extraction (auto-discovers any English|Ingglish table)
+  for (const file of allDocFiles) {
+    try {
+      const content = readFileSync(join(DOCS_DIR, file), 'utf-8');
+      allExamples.push(...extractTableExamples(content, file));
+    } catch {
+      // skip unreadable files
+    }
+  }
+  // Also check README tables
+  try {
+    const readmeContent = readFileSync(README_PATH, 'utf-8');
+    allExamples.push(...extractTableExamples(readmeContent, 'README.md'));
+  } catch {
+    // skip
   }
 
   // Spelling guide data (TypeScript, not markdown)

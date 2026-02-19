@@ -79,6 +79,9 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   roommate: ['R', 'UW1', 'M', 'M', 'EY2', 'T'], // /ˈrumˌmeɪt/ — CMU missing geminate /mm/
   roommates: ['R', 'UW1', 'M', 'M', 'EY2', 'T', 'S'], // /ˈrumˌmeɪts/ — CMU missing geminate /mm/
 
+  // Missing contracted "is" — "this'" = "this is", needs epenthetic /əz/ since base ends in /s/
+  "this'": ['DH', 'IH1', 'S', 'AH0', 'Z'], // /ðɪsəz/ — CMU has /ðɪs/ (same as "this", missing "is")
+
   // N→NG + additional vowel fix (N→NG alone handled by normalizeVelarNasal)
   inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // /ˌɪŋkəŋˈklusɪvli/ — CMU has /nk/
 

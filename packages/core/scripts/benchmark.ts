@@ -1,5 +1,5 @@
 /**
- * Comprehensive benchmark suite for Inglish core library.
+ * Comprehensive benchmark suite for Ingglish core library.
  * Runs multiple iterations to get statistically meaningful results.
  */
 
@@ -48,7 +48,7 @@ function formatResult(r: BenchmarkResult): string {
 }
 
 async function main() {
-  console.log('=== Inglish Core Benchmarks ===\n');
+  console.log('=== Ingglish Core Benchmarks ===\n');
   console.log(`Iterations: ${ITERATIONS}, Warmup: ${WARMUP_ITERATIONS}\n`);
 
   // Load modules
