@@ -70,6 +70,10 @@ const SKIP_WORDS = new Set([
   'spelling',
   'notes',
   'sound',
+  'english',
+  'frequency',
+  'metric',
+  'count',
   // Language names (from comparison tables)
   'spanish',
   'italian',
@@ -243,6 +247,52 @@ function extractExamples(content: string, filename: string): Example[] {
         }
       }
     }
+
+    // Pattern 7: Collision table — | english, english | ingglish (description) | freq |
+    // e.g., | right, write, rite | rait (soak flax) | 204,428 → rare |
+    const collisionTableMatch = /^\|\s*([a-zA-Z, ]+?)\s*\|\s*([a-zA-Z]+)\s*\(/.exec(line);
+    if (collisionTableMatch) {
+      const englishWords = collisionTableMatch[1].split(',').map((w) => w.trim().toLowerCase());
+      const ingglish = collisionTableMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(ingglish)) {
+        for (const english of englishWords) {
+          if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
+            examples.push({ english, ingglish, source: filename, line: lineNum });
+          }
+        }
+      }
+      continue;
+    }
+
+    // Pattern 8: Homophone table — | word, word, ... | ingglish |
+    // e.g., | aer, air, ayre, eir, ere, err, eyre, heir, ire | air |
+    // Matches rows with comma-separated words and a single Ingglish result
+    const homophoneTableMatch =
+      /^\|\s*([a-zA-Z]+(?:,\s*[a-zA-Z]+)+)(?:\s*\(\d+\))?\s*\|\s*([a-zA-Z]+)\s*\|$/.exec(line);
+    if (homophoneTableMatch) {
+      const englishWords = homophoneTableMatch[1].split(',').map((w) => w.trim().toLowerCase());
+      const ingglish = homophoneTableMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(ingglish)) {
+        for (const english of englishWords) {
+          if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
+            examples.push({ english, ingglish, source: filename, line: lineNum });
+          }
+        }
+      }
+      continue;
+    }
+
+    // Pattern 9: Notable collision — **word → word**: description
+    // e.g., **white → wait**: adjective → verb.
+    const notableCollisionMatch = /^\*\*([a-zA-Z]+)\s*→\s*([a-zA-Z]+)\*\*:/.exec(line);
+    if (notableCollisionMatch) {
+      const english = notableCollisionMatch[1].toLowerCase();
+      const ingglish = notableCollisionMatch[2].toLowerCase();
+      if (!SKIP_WORDS.has(english)) {
+        examples.push({ english, ingglish, source: filename, line: lineNum });
+      }
+      continue;
+    }
   }
 
   return examples;
@@ -314,6 +364,7 @@ describe('documentation examples', () => {
     'orthography-comparison.md',
     'spelling-reform-comparison.md',
     'spelling-evolution.md',
+    'collision-analysis.md',
   ];
 
   for (const file of docFiles) {

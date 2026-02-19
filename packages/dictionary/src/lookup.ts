@@ -19,7 +19,9 @@ function normalizeVelarNasal(phonemes: string[]): string[] {
       break;
     }
   }
-  if (!needsFix) {return phonemes;}
+  if (!needsFix) {
+    return phonemes;
+  }
 
   const result = phonemes.slice();
   for (let i = 0; i < result.length - 1; i++) {
@@ -48,7 +50,9 @@ export function lookupPronunciation(word: string): string[] | null {
   const dict = getDictionary();
   // Dictionary values are already pre-split arrays (done at build time)
   // Use hasOwn to avoid prototype properties like "constructor", "toString"
-  if (!Object.prototype.hasOwnProperty.call(dict, key)) {return null;}
+  if (!Object.prototype.hasOwnProperty.call(dict, key)) {
+    return null;
+  }
 
   // Fix systematic CMU error: N before K/G should be NG
   return normalizeVelarNasal(dict[key]);

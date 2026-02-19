@@ -7,15 +7,15 @@ When an English word is translated to Ingglish, it sometimes produces a spelling
 | Metric | Count |
 |--------|-------|
 | Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's 135,166 entries) |
-| Collisions (Ingglish matches different English word) | 1,075 |
-| Collisions involving common words (freq >= 1000) | 168 |
+| Collisions (Ingglish matches different English word) | 1,360 |
+| Collisions involving common words (freq >= 1000) | 175 |
 
 ### Is This a Problem?
 
 **Rarely.** Looking at the data:
 
 - Most collisions translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll rarely encounter these in normal text.
-- Only 5 collisions involve two common words: white→wait, ass→as, place→plays, side→said, mine→main
+- Only 7 collisions involve two common words: uh→u, yeah→ya, white→wait, ass→as, place→plays, side→said, mine→main
 - **Part of speech differences** resolve most collisions: white (adj) → wait (verb) are grammatically distinct
 - Context resolves these just like English homophones (their/there/they're)
 
@@ -25,7 +25,7 @@ Frequency shows SUBTLEX-US corpus counts ([Brysbaert & New 2009](https://doi.org
 
 | English | Ingglish | Frequency |
 |---------|----------|-----------|
-| a, uh | u (you informal) | 1,041,179 → 2,506 |
+| uh | u (you informal) | 36,579 → 2,506 |
 | of | uv (ultraviolet) | 590,439 → rare |
 | right, write, rite | rait (soak flax) | 204,428 → rare |
 | how | hou (place suffix) | 155,867 → rare |
@@ -68,7 +68,7 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 | carey, carie, carrey, carrie, cary, kairey, kari, karry, kary, kerrey, kerri, kerry (12) | kairee |
 | hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) | shuu |
 | aer, air, ayre, eir, ere, err, eyre, heir, ire | air |
-| au, aux, eau, eaux, o, oh, ohh, ow, owe | oh |
+| au, aux, eau, eaux, o, oh, ohh, owe | oh |
 | c, cie, sci, sea, see, si, sie, sieh | see |
 | ewe, u, uwe, yew, yoo, you, yu, yue | yuu |
 
