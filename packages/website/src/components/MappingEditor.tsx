@@ -255,11 +255,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
                         type="text"
                         value={mapping.phonemeMap[stressedPhoneme] ?? ''}
                         onChange={(e) => {
-                          if (e.target.value.length > 0) {
-                            mapping.setPhonemeSpelling(stressedPhoneme, e.target.value);
-                          } else {
-                            mapping.setPhonemeSpelling(stressedPhoneme, defaultSpelling);
-                          }
+                          mapping.setPhonemeSpelling(stressedPhoneme, e.target.value);
                         }}
                         className="cell-input"
                         placeholder={currentSpelling}

@@ -214,10 +214,16 @@ export function useCustomMapping(): UseCustomMappingReturn {
 
   const setPhonemeSpelling = useCallback((phoneme: string, spelling: string) => {
     setConfig((prev) => {
-      const fullMap = buildFullPhonemeMap(prev.phonemeMap);
-      fullMap[phoneme] = spelling;
-      const newDiffs = computePhonemeMapDiffs(fullMap);
-      return { ...prev, phonemeMap: newDiffs };
+      if (spelling.length > 0) {
+        const fullMap = buildFullPhonemeMap(prev.phonemeMap);
+        fullMap[phoneme] = spelling;
+        return { ...prev, phonemeMap: computePhonemeMapDiffs(fullMap) };
+      }
+      // Empty spelling = remove any override for this phoneme
+      const filtered = Object.fromEntries(
+        Object.entries(prev.phonemeMap).filter(([k]) => k !== phoneme)
+      );
+      return { ...prev, phonemeMap: filtered };
     });
     setVersion((v) => v + 1);
   }, []);
