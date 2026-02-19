@@ -91,7 +91,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 
 **Notes:**
 - Standard across all Latin-script languages
-- English /ɪ/ is slightly different from Continental /i/, but 'i' works for both
+- English /ɪ/ is slightly more open than the /i/ of most other languages, but 'i' works for both
 - Polish 'y' represents /ɨ/ (a central vowel near /ɪ/); Ukrainian romanization uses 'y' for и /ɪ/
 - Turkish has a distinctive dotless ı for /ɯ/, keeping dotted i for /i/
 
@@ -117,7 +117,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | ă | Romanian, Vietnamese |
 
 **Notes:**
-- The English /ʌ/ sound is relatively rare across languages
+- The English /ʌ/ sound is relatively rare across languages — most of the 37 compared languages lack it entirely
 - Most languages use 'u' for /u/ (as in "too"), not /ʌ/
 - We follow English convention ("but", "cup") for familiarity
 - English inconsistently spells this as 'o' in "son", "love", "come"; Ingglish uses 'u' consistently
@@ -228,8 +228,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 - Dutch also uses 'ou' for this sound (oud = old), giving us international precedent
 - German/Portuguese use 'au' (Haus, mau); Pinyin uses 'ao' (hǎo = good)
 - Many languages (Spanish, French, Finnish, Swahili, Turkish, Vietnamese, Japanese, Korean) lack this diphthong entirely
-- Some words become identical: "out" → "out", "loud" → "loud", "sound" → "sound"
-- See [Identical Words Analysis](identical-words-analysis.md) for detailed statistics on unchanged words
+- Some English words are already spelled phonetically for this sound: "out", "loud", "sound"
 
 #### 'OI' Sound (/ɔɪ/)
 
@@ -283,16 +282,22 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 |----------|-----------|
 | **a** (Ingglish) | — |
 | a, e, i, o, u | English |
+| e (unstressed) | Indonesian, Portuguese, German, French, Dutch, Catalan |
 | ă | Romanian |
-| e | German, Dutch, French |
+| ë | Albanian |
+| ơ | Vietnamese |
+| y (in some positions) | Welsh |
+| unstressed vowel reduction | Russian, Ukrainian |
 
 **Notes:**
 - The schwa is the most common vowel sound in English, the unstressed "uh" in many syllables
 - English spells it with any vowel letter depending on etymology
 - Ingglish uses 'a' for unstressed schwa (AH0) and 'u' for stressed /ʌ/ (AH1/AH2, as in "but")
 - This creates many identical words (about, banana, again, around) while preserving the schwa/STRUT distinction
-- Romanian 'ă' is a dedicated letter for /ə/; German/Dutch/French use unstressed 'e' for schwa
-- Most languages lack schwa as a distinct phoneme
+- Romanian 'ă' and Albanian 'ë' are dedicated letters for /ə/
+- Indonesian 'e' (called "e pepet") represents /ə/ in many common words
+- Portuguese and Catalan reduce unstressed vowels to schwa; Russian/Ukrainian reduce unstressed 'o' and 'a' to /ɐ/ (near-schwa)
+- Many languages (Spanish, Italian, Finnish, Turkish, Polish, etc.) lack schwa entirely — every vowel is pronounced fully regardless of stress
 
 ### R-Colored Vowels
 
@@ -303,36 +308,37 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **arr** | arroh, karrat, barral |
+| Ingglish (naive) | ar (a + r) | aroh, karat, baral |
 | English | arr, ar | arrow, carrot, barrel |
 
 **Notes:**
-- The doubled 'rr' distinguishes this from 'ar' (star)
+- Using regular Ingglish vowel rules, /æ/ + /r/ would be 'ar' — but 'ar' is already used for /ɑɹ/ (star). The doubled 'rr' avoids the collision.
 - Matches English spelling pattern in "arrow", "carrot", "barrel"
-- Without this distinction: "arrow" and "are" would collide
 
 #### 'AIR' Sound (/ɛɹ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **air** | air, kair, dhair |
+| Ingglish (naive) | er (e + r) | er, ker, dher |
 | English | air, are, ear, ere | air, care, bear, there |
 
 **Notes:**
-- English has wildly inconsistent spellings: "air", "care", "bear", "there", "their"
+- Using regular rules, /ɛ/ + /r/ would be 'er' — but 'er' is already used for /ɝ/ (her). "care" and "her" would both become "ker"/"her".
 - Ingglish uses 'air' consistently, matching the word "air" itself
-- This spelling fixed 204 collisions (air vs her would both be "er" otherwise)
+- This spelling fixed 204 collisions
 
 #### 'EER' Sound (/ɪɹ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **eer** | beer, beerd, feer |
+| Ingglish (naive) | ir (i + r) | bir, bird, fir |
 | English | eer, ear, ere, ier | beer, beard, fear, here, pier |
 
 **Notes:**
-- English uses several spellings: "beer", "beard", "fear", "here", "pier"
+- Using regular rules, /ɪ/ + /r/ would be 'ir' — but "beard" would become "bird", colliding with the animal
 - Ingglish uses 'eer' consistently, matching the word "beer" itself
-- Without this rule, "beard" would become "bird" (confusing with the animal)
 - The [NEAR vowel](https://en.wikipedia.org/wiki/English_phonology#NEAR) (/ɪɹ/) is distinct from the KIT vowel (IH /ɪ/): "beer" vs "bit"
 
 #### 'AR' Sound (/ɑɹ/)
@@ -340,22 +346,24 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **ar** | star, kar, far |
+| Ingglish (naive) | or (o + r) | stor, kor, for |
 | English | ar | star, car, far |
 
 **Notes:**
-- Perfectly intuitive, matches English spelling exactly
-- "star" → "star" is identical in Ingglish
+- Using regular rules, /ɑ/ + /r/ would be 'or' (since Ingglish uses 'o' for /ɑ/) — but 'or' is already used for /ɔɹ/ (store). "star" and "store" would both have 'or'.
+- Instead, Ingglish uses 'ar', matching English spelling exactly. "star" → "star" is identical.
 
 #### 'OR' Sound (/ɔɹ/)
 
 | Language | Spelling | Example |
 |----------|----------|---------|
 | **Ingglish** | **or** | stor, mor, for |
+| Ingglish (naive) | awr (aw + r) | stawr, mawr, fawr |
 | English | ore, or, our, oar | store, more, four, oar |
 
 **Notes:**
-- English has multiple spellings: "store", "more", "four", "oar"
-- Ingglish uses 'or' consistently
+- Using regular rules, /ɔ/ + /r/ would be 'awr' (since Ingglish uses 'aw' for /ɔ/) — but 'awr' is awkward and unfamiliar
+- 'or' is intuitive and available (since /ɑɹ/ uses 'ar' instead)
 - Clearly distinct from 'ar' (star vs stor)
 
 #### 'ER' Sound (/ɝ/)
@@ -367,10 +375,9 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | [Mandarin Chinese](https://en.wikipedia.org/wiki/Erhua) | er | 二 èr (two), 儿 ér (son) |
 
 **Notes:**
-- English uses five different spellings for the same sound
-- Ingglish uses 'er' consistently, the most common English spelling
+- No naive spelling conflict — 'er' works as-is for this merged vowel+r sound
+- English uses five different spellings for the same sound; Ingglish uses 'er' consistently
 - Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
-- R-colored vowels are rare across world languages (Ladefoged & Maddieson 1996)
 
 ## Consonants
 
