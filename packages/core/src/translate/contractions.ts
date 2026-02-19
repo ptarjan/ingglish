@@ -4,7 +4,7 @@
  * Handles words with apostrophes like "don't", "I'm", etc.
  */
 
-import { arpabetToFormat } from '@ingglish/phonemes';
+import { arpabetToFormat, getFormatPreservesCase } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
@@ -38,8 +38,8 @@ export function translateContraction(token: string, format: OutputFormat = 'ingg
     // Found the whole contraction - translate it as a unit
     const translated = arpabetToFormat(phonemes, format);
 
-    // Preserve case (only for Ingglish)
-    if (format === 'ingglish') {
+    // Preserve case (only for formats that preserve case)
+    if (getFormatPreservesCase(format)) {
       // Special case: I-contractions (I'm, I'll, I've, I'd) should be lowercase
       // because "I" is only capitalized in English by convention, not phonetically special
       if (token.toLowerCase().startsWith("i'")) {

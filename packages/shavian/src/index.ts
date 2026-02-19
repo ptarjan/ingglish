@@ -7,6 +7,8 @@ export function registerShavian(): void {
     forward: arpabetToShavian,
     reverseText: reverseTranslateShavianText,
     isLatinScript: false,
+    preservesCase: false,
+    label: 'Shavian',
   });
 }
 

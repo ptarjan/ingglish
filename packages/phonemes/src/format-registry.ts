@@ -5,6 +5,12 @@ export interface FormatHandler {
   forward?: ForwardConverter;
   reverseText?: ReverseTextConverter;
   isLatinScript?: boolean;
+  /** Whether case is preserved (caps, sentence start). Defaults to isLatinScript. */
+  preservesCase?: boolean;
+  /** Display name ('Ingglish', 'IPA', etc.) */
+  label?: string;
+  /** Compound word join separator. Default '' */
+  joinSeparator?: string;
 }
 
 const registry = new Map<string, FormatHandler>();
@@ -24,4 +30,29 @@ export function getFormatHandler(name: string): FormatHandler | undefined {
  */
 export function getFormatIsLatinScript(name: string): boolean {
   return registry.get(name)?.isLatinScript ?? true;
+}
+
+/**
+ * Returns whether a format preserves case (capitalization, sentence start).
+ * Falls back to isLatinScript, then true for unknown formats.
+ */
+export function getFormatPreservesCase(name: string): boolean {
+  const handler = registry.get(name);
+  return handler?.preservesCase ?? handler?.isLatinScript ?? true;
+}
+
+/**
+ * Returns the display label for a format (e.g. 'Ingglish', 'IPA').
+ * Falls back to the raw format name.
+ */
+export function getFormatLabel(name: string): string {
+  return registry.get(name)?.label ?? name;
+}
+
+/**
+ * Returns the join separator for compound word parts.
+ * Defaults to '' (no separator).
+ */
+export function getFormatJoinSeparator(name: string): string {
+  return registry.get(name)?.joinSeparator ?? '';
 }

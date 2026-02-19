@@ -13,7 +13,14 @@ export {
 export { VALID_ONSETS, isValidOnset, findOnsetStart } from './phonotactics';
 
 // Format registry
-export { registerFormat, getFormatHandler, getFormatIsLatinScript } from './format-registry';
+export {
+  registerFormat,
+  getFormatHandler,
+  getFormatIsLatinScript,
+  getFormatPreservesCase,
+  getFormatLabel,
+  getFormatJoinSeparator,
+} from './format-registry';
 export type { FormatHandler } from './format-registry';
 
 // Conversion maps
@@ -29,7 +36,12 @@ export {
 } from './ingglish-maps';
 
 // Conversion functions
-export { arpabetPhonemeToIngglish, arpabetToIngglish, arpabetToFormat } from './to-ingglish';
+export {
+  arpabetPhonemeToIngglish,
+  arpabetToIngglish,
+  arpabetToFormat,
+  convertArpabetLoop,
+} from './to-ingglish';
 export { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
 
 // Custom format builder

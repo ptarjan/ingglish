@@ -5,8 +5,8 @@
  * Mirrors arpabetToIngglish() logic but uses merged custom mappings.
  */
 
-import { stripStress } from './arpabet';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
+import { convertArpabetLoop } from './to-ingglish';
 
 /**
  * Configuration for a custom phoneme-to-spelling mapping.
@@ -46,32 +46,6 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
     }
   }
 
-  return (arpabet: string[]): string => {
-    let result = '';
-    const len = arpabet.length;
-
-    for (let i = 0; i < len; i++) {
-      const phoneme = arpabet[i];
-      const base = stripStress(phoneme);
-
-      // R-colored vowel check
-      if (i + 1 < len && arpabet[i + 1] === 'R') {
-        const rPrefix = mergedRColored.get(base);
-        if (rPrefix !== undefined) {
-          result += rPrefix;
-          continue;
-        }
-      }
-
-      // Check exact phoneme with stress (AH0, EY0, etc.)
-      const stressOverride = stressOverrides.get(phoneme);
-      if (stressOverride !== undefined) {
-        result += stressOverride;
-        continue;
-      }
-
-      result += mergedMap[base] ?? phoneme.toLowerCase();
-    }
-    return result;
-  };
+  return (arpabet: string[]): string =>
+    convertArpabetLoop(arpabet, mergedMap, mergedRColored, stressOverrides);
 }

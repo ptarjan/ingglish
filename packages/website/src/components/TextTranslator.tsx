@@ -7,17 +7,10 @@ import {
   type TranslatedToken,
 } from 'ingglish';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
+import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';
-
-const FORMAT_LABELS = {
-  ingglish: 'Ingglish',
-  ipa: 'IPA',
-  shavian: 'Shavian',
-  deseret: 'Deseret',
-  experiment: 'Experiment',
-};
 
 function SpeakerIcon() {
   return (
@@ -290,7 +283,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);
-          // Dictionaries are loaded now, so sync mapping is safe
+          // TODO: reverseTranslateSyncWithMapping only supports Ingglish tokenization,
+          // so we can't use a registry check here yet.
           if (format === 'ingglish') {
             setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
           } else {
@@ -491,7 +485,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 onClick={toggleFormat}
                 title="Cycle output format"
               >
-                {(FORMAT_LABELS as Record<string, string>)[format] ?? format}
+                {getFormatLabel(format)}
                 <span className="format-cycle-icon" aria-hidden="true">
                   &#x21C5;
                 </span>

@@ -27,6 +27,58 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
 }
 
 /**
+ * Core conversion loop shared by arpabetToIngglish and custom format converters.
+ *
+ * Checks phonemes in this order:
+ * 1. R-colored vowel prefix (if next phoneme is R)
+ * 2. Exact phoneme with stress digit (AH0, EY0) via stressOverrides
+ * 3. Stress-stripped base via phonemeMap
+ * 4. Lowercase phoneme as fallback
+ *
+ * @param arpabet Array of ARPAbet symbols
+ * @param phonemeMap Base phoneme → spelling map (stress-stripped keys)
+ * @param rColoredMap Vowel base → R-colored prefix map
+ * @param stressOverrides Exact phoneme (with stress digit) → spelling overrides
+ * @returns Converted string
+ */
+export function convertArpabetLoop(
+  arpabet: string[],
+  phonemeMap: Record<string, string>,
+  rColoredMap: Map<string, string>,
+  stressOverrides: Map<string, string>
+): string {
+  let result = '';
+  const len = arpabet.length;
+
+  for (let i = 0; i < len; i++) {
+    const phoneme = arpabet[i];
+    const base = stripStress(phoneme);
+
+    // R-colored vowel check: only if next phoneme is R
+    if (i + 1 < len && arpabet[i + 1] === 'R') {
+      const rPrefix = rColoredMap.get(base);
+      if (rPrefix !== undefined) {
+        result += rPrefix; // R will add 'r' next iteration
+        continue;
+      }
+    }
+
+    // Check exact phoneme with stress (AH0, EY0, etc.)
+    const stressOverride = stressOverrides.get(phoneme);
+    if (stressOverride !== undefined) {
+      result += stressOverride;
+      continue;
+    }
+
+    result += phonemeMap[base] ?? phoneme.toLowerCase();
+  }
+  return result;
+}
+
+/** Default stress overrides: unstressed schwa AH0 → 'a' */
+const DEFAULT_STRESS_OVERRIDES = new Map<string, string>([['AH0', 'a']]);
+
+/**
  * Converts an array of ARPAbet phonemes to Ingglish spelling.
  * Uses direct loop + string concat (benchmarked 60% faster than map+join).
  *
@@ -36,40 +88,21 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  * @returns Ingglish spelling (e.g., "haloh")
  */
 export function arpabetToIngglish(arpabet: string[]): string {
-  let result = '';
-  const len = arpabet.length;
-
-  for (let i = 0; i < len; i++) {
-    const phoneme = arpabet[i];
-    const base = stripStress(phoneme);
-
-    // R-colored vowel check: only if next phoneme is R (or R0/R1/R2)
-    // Check raw phoneme first to avoid stripStress call when not needed
-    if (i + 1 < len) {
-      const next = arpabet[i + 1];
-      // R is always 'R' (no stress variants), so direct check works
-      if (next === 'R') {
-        const rPrefix = R_COLORED_FORWARD.get(base);
-        if (rPrefix !== undefined) {
-          result += rPrefix; // R will add 'r' next iteration
-          continue;
-        }
-      }
-    }
-
-    // Unstressed schwa AH0 → 'a' (stressed /ʌ/ AH1/AH2 → 'u' via map)
-    if (phoneme === 'AH0') {
-      result += 'a';
-      continue;
-    }
-
-    result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
-  }
-  return result;
+  return convertArpabetLoop(
+    arpabet,
+    ARPABET_TO_INGGLISH_MAP,
+    R_COLORED_FORWARD,
+    DEFAULT_STRESS_OVERRIDES
+  );
 }
 
 // Register default format at module load
-registerFormat('ingglish', { forward: arpabetToIngglish, isLatinScript: true });
+registerFormat('ingglish', {
+  forward: arpabetToIngglish,
+  isLatinScript: true,
+  preservesCase: true,
+  label: 'Ingglish',
+});
 
 /**
  * Converts ARPAbet to the specified output format.

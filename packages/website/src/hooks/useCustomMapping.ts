@@ -142,7 +142,12 @@ function saveToStorage(config: CustomMappingConfig): void {
 /** Register the experiment format with the given config */
 function registerExperimentFormat(config: CustomMappingConfig): void {
   const converter = createCustomConverter(config);
-  registerFormat('experiment', { forward: converter, isLatinScript: true });
+  registerFormat('experiment', {
+    forward: converter,
+    isLatinScript: true,
+    preservesCase: true,
+    label: 'Experiment',
+  });
 }
 
 /** Full phoneme map = defaults merged with diffs */

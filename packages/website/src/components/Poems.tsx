@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { translateSync } from 'ingglish';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { poems } from './poems-data';
 
@@ -28,13 +29,6 @@ function translateLine(line: string, format: OutputFormat): TranslatedWord[] {
     };
   });
 }
-
-const FORMAT_LABELS: Record<string, string> = {
-  ingglish: 'Ingglish',
-  ipa: 'IPA',
-  shavian: 'Shavian',
-  deseret: 'Deseret',
-};
 
 function PoemCard({
   title,
@@ -98,7 +92,7 @@ function PoemCard({
                 setShowTranslated(true);
               }}
             >
-              {FORMAT_LABELS[format] ?? format}
+              {getFormatLabel(format)}
             </button>
           </div>
           <div className="poem-lines">
@@ -135,7 +129,7 @@ function PoemCard({
 
 export default function Poems() {
   const { format, toggleFormat } = useFormat();
-  const formatLabel = FORMAT_LABELS[format] ?? format;
+  const formatLabel = getFormatLabel(format);
 
   return (
     <div className="poems-page">

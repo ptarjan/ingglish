@@ -1,5 +1,6 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
+import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 
@@ -141,16 +142,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
     }
   }, [onShare, url, copyShare]);
 
-  const formatLabel =
-    (
-      {
-        ingglish: 'Ingglish',
-        ipa: 'IPA',
-        shavian: 'Shavian',
-        deseret: 'Deseret',
-        experiment: 'Experiment',
-      } as Record<string, string>
-    )[format] ?? format;
+  const formatLabel = getFormatLabel(format);
 
   return (
     <div className="url-translator">

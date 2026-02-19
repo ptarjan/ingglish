@@ -5,7 +5,11 @@
  * Preserves camelCase: "iCloud" -> "ie" + "Klowd" = "ieKlowd"
  */
 
-import { arpabetToFormat } from '@ingglish/phonemes';
+import {
+  arpabetToFormat,
+  getFormatPreservesCase,
+  getFormatJoinSeparator,
+} from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
   lookupPronunciation,
@@ -142,8 +146,8 @@ export function translateAsCompound(
     } // shouldn't happen but be safe
     let translated = arpabetToFormat(phonemes, format);
 
-    // For Ingglish output, preserve case per component
-    if (format === 'ingglish') {
+    // Preserve case per component for formats that support it
+    if (getFormatPreservesCase(format)) {
       const originalPart = word.slice(pos, pos + part.length);
       if (originalPart.length > 0 && isUpperCase(originalPart[0])) {
         translated = capitalize(translated);
@@ -153,8 +157,5 @@ export function translateAsCompound(
     pos += part.length;
   }
 
-  // Ingglish format: join without separator (e.g., "ehron" + "suhn" = "ehronsuhn")
-  // Other formats (arpabet): join with space to keep phonemes separated
-  const separator = format === 'ingglish' ? '' : ' ';
-  return translations.join(separator);
+  return translations.join(getFormatJoinSeparator(format));
 }

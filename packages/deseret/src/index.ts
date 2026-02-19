@@ -7,6 +7,8 @@ export function registerDeseret(): void {
     forward: arpabetToDeseret,
     reverseText: reverseTranslateDeseretText,
     isLatinScript: false,
+    preservesCase: false,
+    label: 'Deseret',
   });
 }
 

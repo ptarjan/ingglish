@@ -16,6 +16,8 @@ import { translateUnknown } from '@ingglish/fallback';
 // Register an 'arpabet' format that returns phonemes joined with spaces
 registerFormat('arpabet', {
   forward: (phonemes: string[]) => phonemes.join(' '),
+  joinSeparator: ' ',
+  label: 'ARPAbet',
 });
 
 async function main() {
