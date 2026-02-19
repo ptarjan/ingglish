@@ -63,7 +63,7 @@ export const vowelGroups: SoundGroup[] = [
       {
         phoneme: 'OW',
         examples:
-          '**oh** (oh), n**o**se (nohz), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh)',
+          '**oh** (oh), n**o**se (nohz), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh), plat**eau** (platoh), d**ough** (doh)',
       },
       {
         phoneme: 'UW',
@@ -143,17 +143,13 @@ export const consonantGroups: SoundGroup[] = [
     sounds: [
       { phoneme: 'P', examples: '**p**at (pat), ha**pp**y (hapee)' },
       { phoneme: 'B', examples: '**b**at (bat)' },
-      {
-        phoneme: 'T',
-        examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt), ri**ght** (rait)',
-      },
+      { phoneme: 'T', examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt)' },
       { phoneme: 'D', examples: 'be**d** (bed), la**dd**er (lader), play**ed** (playd)' },
       {
         phoneme: 'K',
-        examples:
-          '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skuul), uni**que** (yuuneek)',
+        examples: '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skuul)',
       },
-      { phoneme: 'G', examples: 'bi**g** (big), **gh**ost (gohst), lea**gue** (leeg)' },
+      { phoneme: 'G', examples: 'bi**g** (big), **gh**ost (gohst)' },
     ],
   },
   {
