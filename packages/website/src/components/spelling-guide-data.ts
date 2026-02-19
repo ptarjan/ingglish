@@ -21,7 +21,10 @@ export const vowelGroups: SoundGroup[] = [
   {
     name: 'Short Vowels',
     sounds: [
-      { phoneme: 'AE', examples: 'b**a**d (bad), pl**ai**d (plad), s**al**mon (saman)' },
+      {
+        phoneme: 'AE',
+        examples: 'b**a**d (bad), pl**ai**d (plad), l**au**gh (laf), s**al**mon (saman)',
+      },
       {
         phoneme: 'EH',
         examples:
@@ -30,7 +33,7 @@ export const vowelGroups: SoundGroup[] = [
       {
         phoneme: 'IH',
         examples:
-          'b**i**t (bit), g**y**m (jim), b**u**ild (bild), pr**e**tty (pritee), b**u**sy (bizee)',
+          'b**i**t (bit), g**y**m (jim), b**ui**ld (bild), pr**e**tty (pritee), b**u**sy (bizee)',
       },
       { phoneme: 'AA', examples: 'h**o**t (hot), w**a**tch (woch)' },
       {
@@ -45,26 +48,27 @@ export const vowelGroups: SoundGroup[] = [
       {
         phoneme: 'EY',
         examples:
-          'd**ay** (day), c**a**ke (kayk), w**ei**gh (way), r**ai**n (rayn), th**ey** (dhay)',
+          'd**ay** (day), c**a**ke (kayk), w**ei**gh (way), r**ai**n (rayn), th**ey** (dhay), gr**ea**t (grayt)',
       },
       {
         phoneme: 'IY',
         examples:
-          's**ee** (see), f**ie**ld (feeld), happ**y** (hapee), b**ea**ch (beech), k**ey** (kee)',
+          's**ee** (see), f**ie**ld (feeld), happ**y** (hapee), b**ea**ch (beech), k**ey** (kee), p**eo**ple (peepal)',
       },
       {
         phoneme: 'AY',
         examples:
-          'bons**ai** (bonsai), l**i**fe (laif), b**uy** (bai), h**igh** (hai), t**ie** (tai)',
+          'bons**ai** (bonsai), l**i**fe (laif), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid)',
       },
       {
         phoneme: 'OW',
-        examples: '**oh** (oh), n**o**se (nohz), s**ew** (soh), b**oa**t (boht), g**o** (goh)',
+        examples:
+          '**oh** (oh), n**o**se (nohz), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh)',
       },
       {
         phoneme: 'UW',
         examples:
-          't**oo** (tuu), bl**ue** (bluu), thr**ough** (thruu), n**ew** (nuu), sh**oe** (shuu)',
+          't**oo** (tuu), bl**ue** (bluu), thr**ough** (thruu), n**ew** (nuu), sh**oe** (shuu), fr**ui**t (fruut)',
       },
     ],
   },
@@ -106,7 +110,8 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         phoneme: 'IH+R',
-        examples: 'b**eer** (beer), b**ear**d (beerd), h**ere** (heer), p**ier** (peer)',
+        examples:
+          'b**eer** (beer), b**ear**d (beerd), h**ere** (heer), p**ier** (peer), w**eir**d (weerd)',
         ipaOverride: 'ɪɹ',
         ingglishOverride: 'eer',
       },
