@@ -31,25 +31,7 @@ function getCustomReverseMap(): Record<string, string[]> {
 let reverseDict: ReverseDictionary | null = null;
 let reverseDictPromise: Promise<ReverseDictionary> | null = null;
 
-/**
- * Fast JSON.parse loader for Node.js (18x faster than dynamic import).
- * Falls back to dynamic import for browser environment.
- */
-async function loadReverseDictionaryFast(): Promise<ReverseDictionary> {
-  // Use fast readFileSync + JSON.parse in Node.js
-  if (typeof process !== 'undefined' && process.versions?.node) {
-    const fs = await import('fs');
-    const url = await import('url');
-    const path = await import('path');
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const filepath = path.join(__dirname, 'reverse-cmudict.js');
-    const content = fs.readFileSync(filepath, 'utf8');
-    const jsonStart = content.indexOf('{');
-    const jsonEnd = content.lastIndexOf('}') + 1;
-    return JSON.parse(content.slice(jsonStart, jsonEnd)) as ReverseDictionary;
-  }
-
-  // Browser: use dynamic import
+async function loadReverseDictionaryData(): Promise<ReverseDictionary> {
   const module = await import('./reverse-cmudict');
   return module.default;
 }
@@ -67,7 +49,7 @@ export async function loadReverseDictionary(): Promise<ReverseDictionary> {
     return reverseDictPromise;
   }
 
-  reverseDictPromise = loadReverseDictionaryFast()
+  reverseDictPromise = loadReverseDictionaryData()
     .then((data) => {
       reverseDict = data;
       return reverseDict;

@@ -8,25 +8,7 @@ let wordFrequencies: Record<string, number> | null = null;
 let frequenciesPromise: Promise<Record<string, number>> | null = null;
 let frequencyMap: Map<string, number> | null = null;
 
-/**
- * Fast JSON.parse loader for Node.js (18x faster than dynamic import).
- * Falls back to dynamic import for browser environment.
- */
-async function loadFrequenciesFast(): Promise<Record<string, number>> {
-  // Use fast readFileSync + JSON.parse in Node.js
-  if (typeof process !== 'undefined' && process.versions?.node) {
-    const fs = await import('fs');
-    const url = await import('url');
-    const path = await import('path');
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const filepath = path.join(__dirname, 'data', 'word-frequencies.js');
-    const content = fs.readFileSync(filepath, 'utf8');
-    const jsonStart = content.indexOf('{');
-    const jsonEnd = content.lastIndexOf('}') + 1;
-    return JSON.parse(content.slice(jsonStart, jsonEnd)) as Record<string, number>;
-  }
-
-  // Browser: use dynamic import
+async function loadFrequencyData(): Promise<Record<string, number>> {
   const module = await import('./data/word-frequencies');
   return module.default;
 }
@@ -44,7 +26,7 @@ export async function loadFrequencies(): Promise<Record<string, number>> {
     return frequenciesPromise;
   }
 
-  frequenciesPromise = loadFrequenciesFast()
+  frequenciesPromise = loadFrequencyData()
     .then((data) => {
       wordFrequencies = data;
       return wordFrequencies;

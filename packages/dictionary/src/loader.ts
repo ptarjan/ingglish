@@ -10,26 +10,7 @@ import type { CMUDictionary } from './types';
 let dictionary: CMUDictionary | null = null;
 let dictionaryPromise: Promise<CMUDictionary> | null = null;
 
-/**
- * Fast JSON.parse loader for Node.js (18x faster than dynamic import).
- * Falls back to dynamic import for browser environment.
- */
-async function loadDictionaryFast(): Promise<CMUDictionary> {
-  // Use fast readFileSync + JSON.parse in Node.js
-  if (typeof process !== 'undefined' && process.versions?.node) {
-    const fs = await import('fs');
-    const url = await import('url');
-    const path = await import('path');
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const filepath = path.join(__dirname, 'cmudict.js');
-    const content = fs.readFileSync(filepath, 'utf8');
-    // Extract JSON from JS file (skip "const cmudict = " and ";\nexport...")
-    const jsonStart = content.indexOf('{');
-    const jsonEnd = content.lastIndexOf('}') + 1;
-    return JSON.parse(content.slice(jsonStart, jsonEnd)) as CMUDictionary;
-  }
-
-  // Browser: use dynamic import
+async function loadDictionaryData(): Promise<CMUDictionary> {
   const module = await import('./cmudict');
   return module.default;
 }
@@ -47,7 +28,7 @@ export async function loadDictionary(): Promise<CMUDictionary> {
     return dictionaryPromise;
   }
 
-  dictionaryPromise = loadDictionaryFast()
+  dictionaryPromise = loadDictionaryData()
     .then((data) => {
       dictionary = data;
       return dictionary;
