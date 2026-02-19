@@ -4,12 +4,19 @@
  * Supports stress-conditioned overrides (e.g. AH0→'a' vs AH1/2→'u').
  */
 
-import { loadDictionary, getDictionary } from '@ingglish/dictionary';
-import { ARPABET_TO_INGGLISH_MAP } from '@ingglish/phonemes';
+import {
+  loadDictionary,
+  getDictionary,
+  loadFrequencies,
+  getWordFrequency,
+} from '@ingglish/dictionary';
+import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
 
-await loadDictionary();
+const [, freqData] = await Promise.all([loadDictionary(), loadFrequencies()]);
 const cmudict = getDictionary();
 const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0);
+const corpusTotal = Object.values(freqData).reduce((sum, v) => sum + v, 0);
+const perMillion = (raw: number) => (raw / corpusTotal) * 1_000_000;
 
 function stripStress(phoneme: string): string {
   return phoneme.replace(/[0-2]$/, '');
@@ -37,13 +44,36 @@ function phonemesToSpelling(
   map: Record<string, string>,
   stressOverrides?: Record<string, string>
 ): string {
-  return rawPhonemes
-    .map((p) => {
-      if (stressOverrides && p in stressOverrides) return stressOverrides[p];
-      const base = stripStress(p);
-      return map[base] || base.toLowerCase();
-    })
-    .join('');
+  let result = '';
+  const len = rawPhonemes.length;
+  for (let i = 0; i < len; i++) {
+    const p = rawPhonemes[i];
+    // Stress overrides first (e.g. AH0 → 'a')
+    if (stressOverrides && p in stressOverrides) {
+      // But R-colored override takes precedence: AH0+R → 'ur' not 'ar'
+      if (i + 1 < len && rawPhonemes[i + 1] === 'R') {
+        const base = stripStress(p);
+        const rPrefix = R_COLORED_FORWARD.get(base);
+        if (rPrefix !== undefined) {
+          result += rPrefix;
+          continue;
+        }
+      }
+      result += stressOverrides[p];
+      continue;
+    }
+    const base = stripStress(p);
+    // R-colored vowel check
+    if (i + 1 < len && rawPhonemes[i + 1] === 'R') {
+      const rPrefix = R_COLORED_FORWARD.get(base);
+      if (rPrefix !== undefined) {
+        result += rPrefix;
+        continue;
+      }
+    }
+    result += map[base] || base.toLowerCase();
+  }
+  return result;
 }
 
 function getCollisionCount(
@@ -113,15 +143,23 @@ for (const word of allWords) {
   if (spelling.toLowerCase() === word.toLowerCase()) baselineIdentical.add(word);
 }
 
+type DeltaResult = {
+  gained: string[];
+  lost: string[];
+  netGain: number;
+  freqGained: number;
+  freqLost: number;
+  freqNet: number;
+};
+
 // Fast incremental check for base phoneme changes
-function getIdenticalDelta(
-  phoneme: string,
-  newValue: string
-): { gained: string[]; lost: string[]; netGain: number } {
+function getIdenticalDelta(phoneme: string, newValue: string): DeltaResult {
   const affected = wordsWithPhoneme.get(phoneme) || [];
   const testMap = { ...ARPABET_TO_INGGLISH_MAP, [phoneme]: newValue };
   const gained: string[] = [];
   const lost: string[] = [];
+  let freqGained = 0;
+  let freqLost = 0;
 
   for (const word of affected) {
     const rawPhonemes = wordRawPhonemes.get(word)!;
@@ -129,22 +167,34 @@ function getIdenticalDelta(
     const wasIdentical = baselineIdentical.has(word);
     const isIdentical = newSpelling.toLowerCase() === word.toLowerCase();
 
-    if (!wasIdentical && isIdentical) gained.push(word);
-    if (wasIdentical && !isIdentical) lost.push(word);
+    if (!wasIdentical && isIdentical) {
+      gained.push(word);
+      freqGained += getWordFrequency(word) ?? 0;
+    }
+    if (wasIdentical && !isIdentical) {
+      lost.push(word);
+      freqLost += getWordFrequency(word) ?? 0;
+    }
   }
 
-  return { gained, lost, netGain: gained.length - lost.length };
+  return {
+    gained,
+    lost,
+    netGain: gained.length - lost.length,
+    freqGained,
+    freqLost,
+    freqNet: freqGained - freqLost,
+  };
 }
 
 // Incremental check for stress-specific changes
-function getStressIdenticalDelta(
-  rawPhoneme: string,
-  newValue: string
-): { gained: string[]; lost: string[]; netGain: number } {
+function getStressIdenticalDelta(rawPhoneme: string, newValue: string): DeltaResult {
   const affected = wordsWithRawPhoneme.get(rawPhoneme) || [];
   const testOverrides = { ...baselineStressOverrides, [rawPhoneme]: newValue };
   const gained: string[] = [];
   const lost: string[] = [];
+  let freqGained = 0;
+  let freqLost = 0;
 
   for (const word of affected) {
     const rawPhonemes = wordRawPhonemes.get(word)!;
@@ -152,11 +202,24 @@ function getStressIdenticalDelta(
     const wasIdentical = baselineIdentical.has(word);
     const isIdentical = newSpelling.toLowerCase() === word.toLowerCase();
 
-    if (!wasIdentical && isIdentical) gained.push(word);
-    if (wasIdentical && !isIdentical) lost.push(word);
+    if (!wasIdentical && isIdentical) {
+      gained.push(word);
+      freqGained += getWordFrequency(word) ?? 0;
+    }
+    if (wasIdentical && !isIdentical) {
+      lost.push(word);
+      freqLost += getWordFrequency(word) ?? 0;
+    }
   }
 
-  return { gained, lost, netGain: gained.length - lost.length };
+  return {
+    gained,
+    lost,
+    netGain: gained.length - lost.length,
+    freqGained,
+    freqLost,
+    freqNet: freqGained - freqLost,
+  };
 }
 
 // Full identical words check (only used for final reporting)
@@ -176,7 +239,10 @@ function getIdenticalWords(
 
 const baselineCollisions = getCollisionCount(ARPABET_TO_INGGLISH_MAP, baselineStressOverrides);
 
-console.log(`Baseline: ${baselineIdentical.size} identical, ${baselineCollisions} collisions\n`);
+console.log(`Baseline: ${baselineIdentical.size} identical, ${baselineCollisions} collisions`);
+console.log(
+  `Frequency unit: per million words of text (SUBTLEX-US, ${(corpusTotal / 1_000_000).toFixed(1)}M word corpus)\n`
+);
 
 // Generate ALL possible single-character and two-character options
 const allChars = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -246,6 +312,9 @@ const improvements: {
   netGain: number;
   gained: string[];
   lost: string[];
+  freqGained: number;
+  freqLost: number;
+  freqNet: number;
 }[] = [];
 let tested = 0;
 let skippedNotBetter = 0;
@@ -287,6 +356,9 @@ for (let pi = 0; pi < phonemes.length; pi++) {
       netGain: delta.netGain,
       gained: delta.gained,
       lost: delta.lost,
+      freqGained: delta.freqGained,
+      freqLost: delta.freqLost,
+      freqNet: delta.freqNet,
     });
   }
 }
@@ -297,36 +369,70 @@ console.log(`  - ${skippedNotBetter} skipped (not better)`);
 console.log(`  - ${skippedCollisions} skipped (would add collisions)`);
 console.log(`  - ${improvements.length} valid improvements found`);
 
-// Sort by net gain
-improvements.sort((a, b) => b.netGain - a.netGain);
+// Sort by frequency-weighted net gain
+improvements.sort((a, b) => b.freqNet - a.freqNet);
 
-console.log(`\n${'='.repeat(60)}`);
+/** Format a raw frequency value as per-million (always positive; caller adds sign) */
+function fmtPM(raw: number): string {
+  const pm = perMillion(Math.abs(raw));
+  if (pm >= 1000) return `${(pm / 1000).toFixed(1)}K`;
+  if (pm >= 1) return pm.toFixed(0);
+  if (pm >= 0.1) return pm.toFixed(1);
+  if (Math.abs(raw) > 0) return '<1';
+  return '0';
+}
+
+function signedPM(raw: number): string {
+  if (raw === 0) return '0';
+  return `${raw >= 0 ? '+' : '-'}${fmtPM(raw)}`;
+}
+
+function topWordsByFreq(words: string[], n: number): string {
+  return words
+    .map((w) => ({ word: w, freq: getWordFrequency(w) ?? 0 }))
+    .sort((a, b) => b.freq - a.freq)
+    .slice(0, n)
+    .map((w) => `${w.word}(${fmtPM(w.freq)})`)
+    .join(', ');
+}
+
+console.log(`\n${'='.repeat(90)}`);
 console.log(`ALL SAFE BASE IMPROVEMENTS FOUND: ${improvements.length}`);
-console.log(`${'='.repeat(60)}\n`);
+console.log(`${'='.repeat(90)}\n`);
 
 if (improvements.length === 0) {
   console.log('No base improvements possible without creating new collisions.');
 } else {
-  console.log('Phoneme | Current | Better  | Net Gain | Gained | Lost');
-  console.log('─'.repeat(60));
-  for (const { phoneme, from, to, netGain, gained, lost } of improvements) {
+  console.log(
+    'Phoneme | Current | Better  | Net Gain | Gained | Lost  | Gained/M | Lost/M  | Net/M'
+  );
+  console.log('─'.repeat(90));
+  for (const {
+    phoneme,
+    from,
+    to,
+    netGain,
+    gained,
+    lost,
+    freqGained,
+    freqLost,
+    freqNet,
+  } of improvements) {
     console.log(
-      `  ${phoneme.padEnd(5)} | ${from.padEnd(7)} | ${to.padEnd(7)} | +${String(netGain).padEnd(6)} | +${String(gained.length).padEnd(5)} | -${lost.length}`
+      `  ${phoneme.padEnd(5)} | ${from.padEnd(7)} | ${to.padEnd(7)} | +${String(netGain).padEnd(6)} | +${String(gained.length).padEnd(5)} | -${String(lost.length).padEnd(4)} | +${fmtPM(freqGained).padEnd(9)} | -${fmtPM(freqLost).padEnd(8)} | ${signedPM(freqNet)}`
     );
   }
 
-  // Show sample gained/lost words for top improvements
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`DETAILS FOR TOP BASE IMPROVEMENTS`);
-  console.log(`${'='.repeat(60)}`);
-  for (const { phoneme, from, to, netGain, gained, lost } of improvements.slice(0, 5)) {
-    console.log(`\n${phoneme}: "${from}" → "${to}" (net +${netGain})`);
+  // Show sample gained/lost words for top improvements, sorted by frequency
+  console.log(`\n${'='.repeat(90)}`);
+  console.log(`DETAILS FOR TOP BASE IMPROVEMENTS (by frequency)`);
+  console.log(`${'='.repeat(90)}`);
+  for (const { phoneme, from, to, netGain, gained, lost, freqNet } of improvements.slice(0, 5)) {
     console.log(
-      `  Gained (${gained.length}): ${gained.slice(0, 20).join(', ')}${gained.length > 20 ? '...' : ''}`
+      `\n${phoneme}: "${from}" → "${to}" (net +${netGain} words, ${signedPM(freqNet)} /M)`
     );
-    console.log(
-      `  Lost (${lost.length}): ${lost.slice(0, 20).join(', ')}${lost.length > 20 ? '...' : ''}`
-    );
+    console.log(`  Top gained: ${topWordsByFreq(gained, 10)}`);
+    console.log(`  Top lost:   ${topWordsByFreq(lost, 10)}`);
   }
 }
 
@@ -360,6 +466,9 @@ const stressImprovements: {
   netGain: number;
   gained: string[];
   lost: string[];
+  freqGained: number;
+  freqLost: number;
+  freqNet: number;
 }[] = [];
 
 let stressTested = 0;
@@ -403,6 +512,9 @@ for (let si = 0; si < sortedStress0.length; si++) {
       netGain: delta.netGain,
       gained: delta.gained,
       lost: delta.lost,
+      freqGained: delta.freqGained,
+      freqLost: delta.freqLost,
+      freqNet: delta.freqNet,
     });
   }
 }
@@ -413,30 +525,44 @@ console.log(`  - ${stressSkippedNotBetter} skipped (not better)`);
 console.log(`  - ${stressSkippedCollisions} skipped (would add collisions)`);
 console.log(`  - ${stressImprovements.length} valid improvements found`);
 
-stressImprovements.sort((a, b) => b.netGain - a.netGain);
+stressImprovements.sort((a, b) => b.freqNet - a.freqNet);
 
 if (stressImprovements.length === 0) {
   console.log('\nNo stress-conditioned improvements found.');
 } else {
-  console.log('\nRaw Ph. | Base | Current | Better  | Net Gain | Gained | Lost');
-  console.log('─'.repeat(65));
-  for (const { rawPhoneme, basePhoneme, from, to, netGain, gained, lost } of stressImprovements) {
+  console.log(
+    '\nRaw Ph. | Base | Current | Better  | Net Gain | Gained | Lost  | Gained/M | Lost/M  | Net/M'
+  );
+  console.log('─'.repeat(95));
+  for (const {
+    rawPhoneme,
+    basePhoneme,
+    from,
+    to,
+    netGain,
+    gained,
+    lost,
+    freqGained,
+    freqLost,
+    freqNet,
+  } of stressImprovements) {
     console.log(
-      `  ${rawPhoneme.padEnd(5)} | ${basePhoneme.padEnd(4)} | ${from.padEnd(7)} | ${to.padEnd(7)} | +${String(netGain).padEnd(6)} | +${String(gained.length).padEnd(5)} | -${lost.length}`
+      `  ${rawPhoneme.padEnd(5)} | ${basePhoneme.padEnd(4)} | ${from.padEnd(7)} | ${to.padEnd(7)} | +${String(netGain).padEnd(6)} | +${String(gained.length).padEnd(5)} | -${String(lost.length).padEnd(4)} | +${fmtPM(freqGained).padEnd(9)} | -${fmtPM(freqLost).padEnd(8)} | ${signedPM(freqNet)}`
     );
   }
 
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`DETAILS FOR TOP STRESS-CONDITIONED IMPROVEMENTS`);
-  console.log(`${'='.repeat(60)}`);
-  for (const { rawPhoneme, from, to, netGain, gained, lost } of stressImprovements.slice(0, 5)) {
-    console.log(`\n${rawPhoneme}: "${from}" → "${to}" (net +${netGain})`);
+  console.log(`\n${'='.repeat(90)}`);
+  console.log(`DETAILS FOR TOP STRESS-CONDITIONED IMPROVEMENTS (by frequency)`);
+  console.log(`${'='.repeat(90)}`);
+  for (const { rawPhoneme, from, to, netGain, gained, lost, freqNet } of stressImprovements.slice(
+    0,
+    5
+  )) {
     console.log(
-      `  Gained (${gained.length}): ${gained.slice(0, 20).join(', ')}${gained.length > 20 ? '...' : ''}`
+      `\n${rawPhoneme}: "${from}" → "${to}" (net +${netGain} words, ${signedPM(freqNet)} /M)`
     );
-    console.log(
-      `  Lost (${lost.length}): ${lost.slice(0, 20).join(', ')}${lost.length > 20 ? '...' : ''}`
-    );
+    console.log(`  Top gained: ${topWordsByFreq(gained, 10)}`);
+    console.log(`  Top lost:   ${topWordsByFreq(lost, 10)}`);
   }
 }
 
@@ -457,6 +583,9 @@ type UnifiedImprovement = {
   netGain: number;
   gained: string[];
   lost: string[];
+  freqGained: number;
+  freqLost: number;
+  freqNet: number;
 };
 
 const allImprovements: UnifiedImprovement[] = [
@@ -468,6 +597,9 @@ const allImprovements: UnifiedImprovement[] = [
     netGain: imp.netGain,
     gained: imp.gained,
     lost: imp.lost,
+    freqGained: imp.freqGained,
+    freqLost: imp.freqLost,
+    freqNet: imp.freqNet,
   })),
   ...stressImprovements.map((imp) => ({
     type: 'stress' as const,
@@ -477,9 +609,12 @@ const allImprovements: UnifiedImprovement[] = [
     netGain: imp.netGain,
     gained: imp.gained,
     lost: imp.lost,
+    freqGained: imp.freqGained,
+    freqLost: imp.freqLost,
+    freqNet: imp.freqNet,
   })),
 ];
-allImprovements.sort((a, b) => b.netGain - a.netGain);
+allImprovements.sort((a, b) => b.freqNet - a.freqNet);
 
 // Apply all non-conflicting improvements (one per phoneme, best first)
 let bestMap = { ...ARPABET_TO_INGGLISH_MAP };
@@ -499,7 +634,7 @@ for (const imp of allImprovements) {
       bestMap[imp.key] = imp.to;
       appliedChanges.push(imp);
       basePhonemesSeen.add(imp.key);
-      console.log(`✓ Applied ${imp.key}: ${imp.from} → ${imp.to} (+${imp.netGain})`);
+      console.log(`✓ Applied ${imp.key}: ${imp.from} → ${imp.to} (${signedPM(imp.freqNet)} /M)`);
     } else {
       console.log(`✗ Skipped ${imp.key}: ${imp.from} → ${imp.to} (would add collisions)`);
     }
@@ -513,7 +648,9 @@ for (const imp of allImprovements) {
       bestStressOverrides[imp.key] = imp.to;
       appliedChanges.push(imp);
       stressPhonemesSeen.add(imp.key);
-      console.log(`✓ Applied ${imp.key}: ${imp.from} → ${imp.to} (+${imp.netGain}) [stress]`);
+      console.log(
+        `✓ Applied ${imp.key}: ${imp.from} → ${imp.to} (${signedPM(imp.freqNet)} /M) [stress]`
+      );
     } else {
       console.log(`✗ Skipped ${imp.key}: ${imp.from} → ${imp.to} (would add collisions) [stress]`);
     }
@@ -535,12 +672,12 @@ console.log(
 console.log(`Gain:   +${finalIdentical.size - baselineIdentical.size} words`);
 console.log(`\nCollisions: ${finalCollisions} (was ${baselineCollisions})`);
 
-console.log(`\n${'='.repeat(60)}`);
-console.log(`RECOMMENDED CHANGES`);
-console.log(`${'='.repeat(60)}\n`);
+console.log(`\n${'='.repeat(90)}`);
+console.log(`RECOMMENDED CHANGES (sorted by frequency impact)`);
+console.log(`${'='.repeat(90)}\n`);
 for (const imp of appliedChanges) {
   const label = imp.type === 'stress' ? ' [stress-conditioned]' : '';
-  console.log(
-    `  ${imp.key}: "${imp.from}" → "${imp.to}" (+${imp.gained.length} gained, -${imp.lost.length} lost = net +${imp.netGain})${label}`
-  );
+  console.log(`  ${imp.key}: "${imp.from}" → "${imp.to}" (${signedPM(imp.freqNet)} /M)${label}`);
+  console.log(`    Top gained: ${topWordsByFreq(imp.gained, 5)}`);
+  console.log(`    Top lost:   ${topWordsByFreq(imp.lost, 5)}`);
 }

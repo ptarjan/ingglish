@@ -6,9 +6,17 @@ Do the current Ingglish phoneme mappings maximize "identical words," words where
 
 No, and that's intentional.
 
-The current mapping produces **8,644 identical words** (6.86% of the CMU dictionary). Alternative mappings could theoretically produce more, but most changes either create unacceptable collisions or reintroduce pronunciation ambiguity for English readers.
+The current mapping produces **10,150 identical words** (8.05% of the CMU dictionary). Alternative mappings could theoretically produce more, but most changes either create unacceptable collisions or reintroduce pronunciation ambiguity for English readers.
 
-We exhaustively investigated **base phoneme changes** (7 collision-free candidates, up to +667 combined) and **stress-conditioned changes** (24 collision-free candidates, including IY0→'y' at +647 and OW0→'o' at +467). All base changes were rejected because they reintroduce pronunciation ambiguity — see [Recommendations](#recommendations). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (AH0→'a').
+We exhaustively tested 2,730 collision-free spelling alternatives, weighted by word frequency (per million words of text). Only two candidates have positive frequency impact, and both fail on perceptual ambiguity. The rest are net negative:
+
+- /ɔɪ/→oy: **+235 /M** — marginal; "oi" and "oy" are both common English spellings
+- /uː/→eu: **+19 /M** — negligible, and `eu` misleads English readers (`meun` reads as "mew-n")
+- /oʊ/→ow: **-1,330 /M** — "oh" alone (3,374 /M) outweighs all gains
+- /ɔ/→au: **-555 /M** — loses saw (413 /M), law (119 /M)
+- /aɪ/→ei: **-1 /M** — shuffles rare German surnames, essentially zero real-text impact
+
+All five candidates were rejected — see [Recommendations](#recommendations). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (AH0→'a').
 
 ## Background
 
@@ -18,109 +26,74 @@ An "identical word" is one where converting English → phonemes → Ingglish pr
 
 More identical words means more natural readability for native English readers: familiar words stay familiar.
 
-Not all identical words are equal, though. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). Biasing spellings toward these source languages might increase the identical count, but these words won't feel familiar to English readers anyway. We use the [orthography comparison](orthography-comparison.md) to guide decisions, prioritizing spellings with broad international support rather than chasing loanword matches.
+Not all identical words are equal, though. Many words in the CMU dictionary are loanwords (German surnames like "Einstein", French words like "chateau"). **Frequency weighting** reveals the true impact of a change on real text: gaining 200 rare words but losing "say", "day", "way" is terrible. We use word frequency data (SUBTLEX-US corpus, per million words of text) alongside the [orthography comparison](orthography-comparison.md) to guide decisions, prioritizing impact on actual text over raw dictionary counts.
 
 ## Current Mapping Performance
 
 | Metric | Value |
 |--------|-------|
-| Total entries in CMU dictionary | 135,166 (126,051 unique words) |
-| Identical words | 8,644 (6.86%) |
-| Existing collisions (homophones) | 18,974 |
+| Total unique words in CMU dictionary | 126,051 |
+| Identical words | 10,150 (8.05%) |
+| Existing collisions (homophones) | 18,847 |
 
-Note: The baseline includes the stress-conditioned AH0→'a' override (unstressed schwa → 'a'), which is already implemented in the converter. This accounts for +2,016 identical words compared to a naive AH→'u' mapping. See [phoneme mapping](phoneme-mapping.md#schwa-and-strut) for details.
+Note: The baseline includes the stress-conditioned AH0→'a' override (unstressed schwa → 'a'), which is already implemented in the converter. This produced a 67.6× frequency-weighted improvement — the largest gain from any single change. See [phoneme mapping](phoneme-mapping.md#schwa-and-strut) for details.
 
 ## Why Not Maximize Identical Words?
 
 We tested mappings that maximize identical words:
 
-| Change | Identical Gain | Problem |
-|--------|---------------|---------|
-| /oʊ/: oh → o | +1,200 | "go" and "got" both become "go" |
-| /ʌ/: u → a | +782 | "cup" and "cap" both become "cap" |
-| /z/: z → s | +755 | "prize" becomes "prise" |
-| /ɔ/: aw → o | +532 | "saw" and "so" both become "so" |
+| Change | Freq Impact /M | Problem |
+|--------|----------------|---------|
+| /oʊ/: oh → o | +20,998 | "go" and "got" both become "go" |
+| /z/: z → s | +19,772 | "prize" becomes "prise" |
+| /ɔ/: aw → o | +845 | "saw" and "so" both become "so" |
 
-These changes create **collisions**: different words that get the same spelling, making text ambiguous.
+These changes create **collisions**: different words that get the same spelling, making text ambiguous. Even though their frequency impact is large, the ambiguity cost is unacceptable.
 
 ## Collision-Free Base Phoneme Alternatives
 
-We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find base phoneme changes that increase identical word count without creating new collisions. Seven candidates emerged — all were rejected (see [Recommendations](#recommendations)).
+We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combinations) to find collision-free changes. Only two have positive frequency impact (+235 /M and +19 /M), and both fail the perceptual ambiguity test. The other three are frequency-negative. All five were rejected (see [Recommendations](#recommendations)).
 
-### Candidates
+### Candidates (sorted by frequency impact)
 
-| Phoneme | Current | Proposed | Gained | Lost | Net Gain |
-|---------|---------|----------|--------|------|----------|
-| /aɪ/ | ai | ei | +416 | -52 | **+364** |
-| /oʊ/ | oh | ow | +237 | -103 | **+134** |
-| /ɔ/ | aw | au | +229 | -144 | **+85** |
-| /uː/ | uu | ue | +60 | -2 | **+58** |
-| /uː/ | uu | eu | +53 | -2 | **+51** |
-| /oʊ/ | oh | oe | +141 | -103 | **+38** |
-| /ɔɪ/ | oi | oy | +154 | -128 | **+26** |
+| Phoneme | Current | Proposed | Net /M | Top Gains (/M) | Top Losses (/M) |
+|---------|---------|----------|--------|-----------------|-----------------|
+| /ɔɪ/ | oi | oy | **+235** | boy (543), enjoy (85), joy (29) | point (243), join (86), oil (42) |
+| /uː/ | uu | eu | **+19** | zeus (6), neutral (4), maneuver (3) | bruun (0), ruud (0) |
+| /aɪ/ | ai | ei | **-1** | einstein (5), heist (3), stein (3) | shanghai (5), saigon (4), ai (4) |
+| /ɔ/ | aw | au | **-555** | fault (107), paul (97), launch (20) | saw (413), law (119), lawyer (82) |
+| /oʊ/ | oh | ow | **-1,330** | show (501), own (471), throw (132) | oh (3,374) |
 
-Best per phoneme, combined: up to +667 identical words (8,644 → ~9,311).
+The two positive-frequency candidates (/ɔɪ/→oy and /uː/→eu) still fail the perceptual ambiguity test — see below.
 
 ### Trade-off Analysis
 
-#### /aɪ/: "ai" → "ei" (+364 net)
+#### /ɔɪ/: "oi" → "oy" (+235 /M)
 
-**Gained (416 words):** Words with "ei" spelling
-- German surnames: bernstein, einstein, weinstein, klein, reich (loanwords)
-- Native English: heist, seize, feisty, height, sleight, vein, rein
+Best frequency trade: gains boy (543 /M), enjoy (85 /M), joy (29 /M), royal (24 /M) while losing point (243 /M), join (86 /M), oil (42 /M). But both "oi" and "oy" are common English spellings with similar total frequency — it's nearly a wash. Not compelling enough to change.
 
-**Lost (52 words):** Words with "ai" for the /aɪ/ sound
-- Asian loanwords: thai, chai, bonsai, mai, kai, samurai, shanghai
+#### /uː/: "uu" → "eu" (+19 /M)
 
-Mixed. Both gains and losses are largely loanwords. The native English gains (heist, height, seize) are valuable, but many German surname matches won't feel familiar to readers anyway.
+Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M) with negligible losses. At only +19 /M, this change would affect 0.002% of real text — barely measurable. And `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n", `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers for a negligible frequency gain.
 
-#### /oʊ/: "oh" → "ow" (+134 net)
+#### /aɪ/: "ai" → "ei" (-1 /M)
 
-**Gained (237 words):** Words with "ow" spelling
-- blow, flow, glow, grow, know, show, slow, snow, throw, below, follow, tomorrow, etc.
+The clearest example of frequency revealing what raw count hides. The top gain is "einstein" at 5 /M. Most gains are German surnames (bernstein, weinstein, klein, reich). Losses are also rare (shanghai 5 /M, saigon 4 /M). This change would affect almost no real text.
 
-**Lost (103 words):** German-origin names with "oh" spelling
-- bohn, bohner, groh, stroh, doh, etc.
+#### /ɔ/: "aw" → "au" (-555 /M)
 
-Good trade on paper. But `ow` is **ambiguous in English** — see [rejection rationale](#rejected-o-oh--ow-134-net).
+Gains fault (107 /M), paul (97 /M), launch (20 /M), trauma (17 /M), vault (12 /M) but loses saw (413 /M), law (119 /M), lawyer (82 /M), aw (42 /M), draw (41 /M). The losses are more common everyday words — a bad trade for real text.
 
-#### /ɔ/: "aw" → "au" (+85 net)
+#### /oʊ/: "oh" → "ow" (-1,330 /M)
 
-**Gained (229 words):** Words with "au" spelling
-- audit, august, author, autumn, because, caught, daughter, fault, haul, etc.
+Gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M), window (88 /M) — good words. But the single word "oh" at 3,374 /M outweighs them all. Plus `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow". Both frequency (-1,330 /M) and perceptual ambiguity argue against this change.
 
-**Lost (144 words):** Words with "aw" spelling
-- dawn, draw, flaw, jaw, law, paw, raw, saw, straw, etc.
+## Alternative Improvements Not Recommended
 
-Mixed. Both sets contain common words.
-
-#### /uː/: "uu" → "ue" (+58 net)
-
-**Gained (60 words):** Words with "ue" spelling
-- blue, clue, due, flue, glue, true, value, continue, argue, etc.
-
-**Lost (2 words):** bruun, ruud
-
-Almost pure gain. But `ue` in English has competing readings — "duet" and "fuel" suggest multi-syllable or /j/-onset interpretations.
-
-#### /uː/: "uu" → "eu" (+51 net)
-
-**Gained (53 words):** Words with "eu" spelling
-- deuce, feud, neutral, neuron, pneumonia, pseudo, therapeutic, etc.
-
-**Lost (2 words):** bruun, ruud
-
-`eu` in English implies a /j/ onset: "feud", "deuce", "neural" are all /juː/. So `meun` (moon) reads as "mew-n".
-
-#### /ɔɪ/: "oi" → "oy" (+26 net)
-
-**Gained (154 words):** Words with "oy" spelling
-- boy, joy, toy, enjoy, destroy, employ, royal, loyal, etc.
-
-**Lost (128 words):** Words with "oi" spelling
-- oil, boil, coin, join, point, voice, choice, noise, etc.
-
-Nearly breaks even. Both "oi" and "oy" are common spellings.
+| Change | Net /M | Reason Rejected |
+|--------|--------|-----------------|
+| /oʊ/: oh → oe | -3,210 | Worse than "ow" in every dimension |
+| /oʊ/: oh → oa | — | Lower gain than "ow" for same phoneme |
 
 ## Stress-Conditioned Alternatives
 
@@ -138,6 +111,8 @@ We tested all 15 stress-0 vowel phonemes × 70 options (1,036 combinations). Twe
 | OW0 (unstressed /oʊ/) | oh | o | +469 | -2 | **+467** |
 | UW0 (unstressed /uː/) | uu | u | +95 | -0 | **+95** |
 | AO0 (unstressed /ɔː/) | aw | o | +102 | -10 | **+92** |
+
+TODO: Convert these raw word counts to frequency-weighted /M rates by re-running the exhaustive search script.
 
 ### Analysis
 
@@ -181,35 +156,38 @@ Unstressed /ɔː/ spelled as 'o': "almost", "already", "autopsy", "chocolate", "
 
 Note: Both OW0 and AO0 would map to 'o' in unstressed position. The script confirmed this doesn't create collisions — unstressed /oʊ/ and /ɔː/ rarely form minimal pairs, and many English dialects merge them in unstressed position anyway.
 
+## Collision Check
+
+We verified the proposed changes don't create problematic collisions:
+
+| Word Pair | Current | Proposed | Status |
+|-----------|---------|----------|--------|
+| cup / cap | kup / kap | kup / kap | ✓ Distinct |
+| cut / cat | kut / kat | kut / kat | ✓ Distinct |
+| go / got | goh / got | gow / got | ✓ Distinct |
+| so / saw | soh / saw | sow / sau | ✓ Distinct |
+| know / now | noh / now | now / now | ⚠️ Collision! |
+
+**Note:** "know" (/noʊ/) and "now" (/naʊ/) are not homophones. This is a genuine new collision introduced by the "ow" spelling, and one of the reasons it was rejected.
+
 ## Recommendations
 
 ### Base phoneme changes: No changes recommended.
 
-All seven proposed base changes were investigated and rejected. The identical word count has a blind spot: it counts string matches without checking whether an English reader would *pronounce* the shared spelling correctly.
+All five proposed changes were investigated and rejected. Every candidate fails at least one of two tests:
 
-#### Rejected: /oʊ/: "oh" → "ow" (+134 net)
+1. **Frequency impact** — Does the change help or hurt in real text?
+   - /ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M (net negative)
+   - /aɪ/→ei: -1 /M (negligible)
+   - /ɔɪ/→oy: +235 /M (marginal — nearly a wash)
 
-The gains look good on paper: snow, throw, bowl, window all become identical. But `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town, brown). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow", and `stown` (stone) reads like "stoun". This reintroduces exactly the kind of ambiguity Ingglish is designed to eliminate.
-
-#### Rejected: /uː/: "uu" → "ue" (+58 net) / "eu" (+51 net)
-
-`eu` in English implies a /j/ onset: "feud", "deuce", "neural" are all /juː/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", and `teu` (too) reads as "tyoo". `ue` is somewhat better but "duet" and "fuel" show it can imply multi-syllable readings. The current `uu` has no competing English interpretation.
-
-#### Rejected: /aɪ/: "ai" → "ei" (+364 net)
-
-Most gains are German loanwords (einstein, bernstein, weinstein, klein, reich) that don't feel familiar to English readers anyway.
-
-#### Rejected: /ɔ/: "aw" → "au" (+85 net)
-
-Trades common "aw" words (dawn, draw, flaw, jaw, law, saw) for common "au" words (audit, august, author, autumn). Nearly a wash, no compelling reason to change.
-
-#### Rejected: /ɔɪ/: "oi" → "oy" (+26 net)
-
-Nearly breaks even. Not worth the disruption.
+2. **Perceptual ambiguity** — Would an English reader pronounce the new spellings correctly?
+   - /oʊ/→ow: `bownz` reads as "bowns", `howm` reads like "cow"
+   - /uː/→eu: `meun` reads as "mew-n", `teu` reads as "tyoo"
 
 ### Stress-conditioned changes: Promising, needs further investigation.
 
-The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates (IY0→'y' at +647, OW0→'o' at +467) have strong linguistic justification and massive gains with minimal losses.
+The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates (IY0→'y', OW0→'o') have strong linguistic justification and massive gains with minimal losses.
 
 Key questions before implementing:
 
@@ -221,8 +199,10 @@ Key questions before implementing:
 
 Analysis scripts are in `packages/core/scripts/`:
 
-- `analyze-identical-words.ts` - Explains why maximizing identical words creates problems
-- `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides
+- `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
+- `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
+
+Both scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
 
 The exhaustive search runs in three phases:
 
@@ -235,23 +215,22 @@ Run with:
 npx vite-node scripts/exhaustive-search.ts
 ```
 
-## Why Identical Word Count Can Mislead
+## Why Raw Identical Word Count Misleads
 
-The identical word count measures string equality, but **it doesn't measure whether the shared spelling reads correctly**. A proposed change must pass two tests:
+Raw identical word count has two blind spots:
 
-1. **No new collisions** (different words getting the same spelling). The exhaustive search checks this.
-2. **No new ambiguity** (the spelling reads as the wrong sound to English readers). This requires human judgment.
+1. **All words count equally.** Gaining 200 rare surnames and losing "say", "day", "way" looks like +197 on paper but is terrible for real text. Frequency weighting fixes this: it measures impact per million words of actual language usage.
 
-The `ow` and `eu` changes both pass test 1 but fail test 2. They don't create collisions in the formal sense, but they create *perceptual* collisions where English readers' existing intuitions produce the wrong pronunciation.
+2. **It doesn't measure readability.** A proposed change must not create perceptual ambiguity — the spelling must read correctly to English speakers. The `ow` and `eu` changes both pass the collision check but fail the readability test: English readers' existing intuitions produce wrong pronunciations (`bownz` → "bowns", `meun` → "mew-n").
 
-The current mappings (`oh` for /oʊ/, `uu` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with. The Finnish "double for long" logic succeeds here because English never uses `uu`.
+The current mappings (`oh` for /oʊ/, `uu` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with.
 
 Stress-conditioned changes may be an exception to this caution: 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English already spells these sounds, so the "perceptual ambiguity" test is more likely to pass.
 
 ## Conclusion
 
-The current base phoneme mappings are well-optimized. Alternative base spellings could add up to +667 identical words, but every proposed change either loses common words, gains mostly loanwords, or reintroduces pronunciation ambiguity.
+The current base phoneme mappings are well-optimized. Frequency-weighted analysis shows that every proposed collision-free change either has negligible real-text impact (/aɪ/→ei: -1 /M), loses more common words than it gains (/ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M), or introduces perceptual ambiguity for English readers (/uː/→eu, /oʊ/→ow).
 
-Stress-conditioned splits are the most promising avenue for improvement. The AH0→'a' split already added +2,016 words. The exhaustive search found that IY0→'y' (+647), OW0→'o' (+467), UW0→'u' (+95), and AO0→'o' (+92) could collectively add over 1,300 more identical words. These follow the same linguistic principle: when CMU dictionary uses one phoneme label for sounds that English speakers perceive as different in stressed vs. unstressed positions, splitting by stress can unlock large gains without creating ambiguity.
+Stress-conditioned splits are the most promising avenue for improvement. The AH0→'a' split produced a 67.6× frequency-weighted improvement — the single largest gain of any change. The exhaustive search found that IY0→'y' (+647 words), OW0→'o' (+467 words), UW0→'u' (+95 words), and AO0→'o' (+92 words) could collectively add over 1,300 more identical words. These follow the same linguistic principle: when CMU dictionary uses one phoneme label for sounds that English speakers perceive as different in stressed vs. unstressed positions, splitting by stress can unlock large gains without creating ambiguity.
 
-8,644 identical words (6.86%) is the current baseline. With stress-conditioned improvements, this could potentially reach ~10,000 while maintaining Ingglish's design constraints.
+10,150 identical words (8.05%) is the current baseline. With stress-conditioned improvements, this could potentially reach ~11,400 while maintaining Ingglish's design constraints (unambiguous readability, ASCII-only, no new characters).

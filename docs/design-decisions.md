@@ -85,7 +85,7 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 
 **Schwa Representation**
 
-The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change added +2,016 identical words. The stressed /ʌ/ vowel ("but", "cup") stays "u". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
+The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change produced a 67.6× frequency-weighted improvement — the largest gain from any spelling decision. The stressed /ʌ/ vowel ("but", "cup") stays "u". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
 
 ### Diphthong Decisions
 

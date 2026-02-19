@@ -103,6 +103,18 @@ async function analyzeCollisions(): Promise<AnalysisResult> {
 async function main() {
   const result = await analyzeCollisions();
 
+  // Compute corpus total for per-million rates
+  const freqData = await loadFrequencies();
+  const corpusTotal = Object.values(freqData).reduce((sum, v) => sum + v, 0);
+  const fmtPM = (raw: number): string => {
+    const pm = (raw / corpusTotal) * 1_000_000;
+    if (pm >= 1000) return `${(pm / 1000).toFixed(1)}K`;
+    if (pm >= 1) return pm.toFixed(0);
+    if (pm >= 0.1) return pm.toFixed(1);
+    if (raw > 0) return '<1';
+    return '0';
+  };
+
   console.log('\n# Ingglish Collision Analysis\n');
   console.log('## Summary\n');
   console.log('- Total words analyzed: %d', result.totalWords);
@@ -112,7 +124,7 @@ async function main() {
   );
   console.log('- Homophones (same Ingglish, different English): %d', result.homophones.length);
   console.log(
-    '- Collisions involving common words (top 5000): %d',
+    '- Collisions involving common words (freq >= 20 /M): %d',
     result.commonWordCollisions.length
   );
   console.log('\n---\n');
@@ -123,11 +135,11 @@ async function main() {
   for (const c of result.commonWordCollisions.slice(0, 50)) {
     const freqs = c.sources.map((w) => {
       const f = getWordFrequency(w);
-      return f !== undefined ? `${w}(#${String(f)})` : w;
+      return f !== undefined ? `${w}(${fmtPM(f)} /M)` : w;
     });
     const targetFreq = getWordFrequency(c.ingglish);
     const targetInfo =
-      targetFreq !== undefined ? `${c.ingglish}(#${String(targetFreq)})` : c.ingglish;
+      targetFreq !== undefined ? `${c.ingglish}(${fmtPM(targetFreq)} /M)` : c.ingglish;
     console.log('- **%s** <- %s', targetInfo, freqs.join(', '));
   }
 

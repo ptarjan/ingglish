@@ -5,28 +5,68 @@
  * Run with: npx vite-node scripts/analyze-identical-words.ts
  */
 
-import { loadDictionary, getDictionary } from '@ingglish/dictionary';
-import { ARPABET_TO_INGGLISH_MAP } from '@ingglish/phonemes';
+import {
+  loadDictionary,
+  getDictionary,
+  loadFrequencies,
+  getWordFrequency,
+} from '@ingglish/dictionary';
+import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
 
 async function main() {
-  // Load dictionary
-  await loadDictionary();
+  // Load dictionary and frequencies
+  const [, freqData] = await Promise.all([loadDictionary(), loadFrequencies()]);
   const cmudict = getDictionary();
+  const corpusTotal = Object.values(freqData).reduce((sum, v) => sum + v, 0);
+  const toPerMillion = (raw: number) => (raw / corpusTotal) * 1_000_000;
 
   // Get all words from the dictionary
   const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0);
   console.log(`Total words in dictionary: ${allWords.length}`);
+  console.log(
+    `Frequency unit: per million words of text (SUBTLEX-US, ${(corpusTotal / 1_000_000).toFixed(1)}M word corpus)`
+  );
 
   /**
-   * Convert phonemes to Ingglish using a custom mapping
+   * Convert phonemes to Ingglish using a custom mapping.
+   * Includes R-colored vowel rules and AH0→'a' schwa split
+   * to match the actual arpabetToIngglish() translation.
    */
   function phonemesToIngglish(phonemes: string[], customMap: Record<string, string>): string {
-    return phonemes
-      .map((p) => {
-        const base = p.replace(/[0-2]$/, '');
-        return customMap[base] || ARPABET_TO_INGGLISH_MAP[base] || base.toLowerCase();
-      })
-      .join('');
+    let result = '';
+    const len = phonemes.length;
+    for (let i = 0; i < len; i++) {
+      const p = phonemes[i];
+      const base = p.replace(/[0-2]$/, '');
+
+      // R-colored vowel check: if next phoneme is R
+      if (i + 1 < len && phonemes[i + 1] === 'R') {
+        const rPrefix = R_COLORED_FORWARD.get(base);
+        if (rPrefix !== undefined) {
+          result += rPrefix;
+          continue;
+        }
+      }
+
+      // Unstressed schwa AH0 → 'a'
+      if (p === 'AH0') {
+        result += 'a';
+        continue;
+      }
+
+      result += customMap[base] || ARPABET_TO_INGGLISH_MAP[base] || base.toLowerCase();
+    }
+    return result;
+  }
+
+  /** Format a per-million frequency value */
+  function fmtPM(raw: number): string {
+    const pm = toPerMillion(raw);
+    if (pm >= 1000) return `${(pm / 1000).toFixed(1)}K`;
+    if (pm >= 1) return pm.toFixed(0);
+    if (pm >= 0.1) return pm.toFixed(1);
+    if (raw > 0) return '<0.1';
+    return '0';
   }
 
   /**
@@ -34,10 +74,12 @@ async function main() {
    */
   function countIdenticalWithMapping(override: Record<string, string>): {
     count: number;
+    totalFreq: number;
     examples: string[];
   } {
     const customMap = { ...ARPABET_TO_INGGLISH_MAP, ...override };
     let count = 0;
+    let totalFreq = 0;
     const examples: string[] = [];
 
     for (const word of allWords) {
@@ -47,11 +89,12 @@ async function main() {
       const ingglish = phonemesToIngglish(phonemes, customMap);
       if (ingglish.toLowerCase() === word.toLowerCase()) {
         count++;
+        totalFreq += getWordFrequency(word) ?? 0;
         if (examples.length < 5) examples.push(word);
       }
     }
 
-    return { count, examples };
+    return { count, totalFreq, examples };
   }
 
   // Current mappings baseline
@@ -88,27 +131,25 @@ async function main() {
     { phoneme: 'JH', current: 'j', alternatives: ['g', 'dge'] },
   ];
 
-  console.log(`\nPhoneme | Current | Alt   | Current Count | Alt Count | Diff    | Winner`);
-  console.log(`${'─'.repeat(75)}`);
+  console.log(`\nPhoneme | Current | Alt   | Net /M      | Winner`);
+  console.log(`${'─'.repeat(55)}`);
 
-  let totalPotentialGain = 0;
-  const improvements: { phoneme: string; from: string; to: string; gain: number }[] = [];
+  const improvements: { phoneme: string; from: string; to: string; freqDiff: number }[] = [];
 
   for (const { phoneme, current, alternatives: alts } of alternatives) {
     const currentResult = countIdenticalWithMapping({});
 
     for (const alt of alts) {
       const altResult = countIdenticalWithMapping({ [phoneme]: alt });
-      const diff = altResult.count - currentResult.count;
-      const winner = diff > 0 ? '← ALT' : diff < 0 ? 'CURRENT →' : 'TIE';
+      const freqDiff = altResult.totalFreq - currentResult.totalFreq;
+      const winner = freqDiff > 0 ? '← ALT' : freqDiff < 0 ? 'CURRENT →' : 'TIE';
 
       console.log(
-        `  ${phoneme.padEnd(5)} | ${current.padEnd(7)} | ${alt.padEnd(5)} | ${String(currentResult.count).padEnd(13)} | ${String(altResult.count).padEnd(9)} | ${(diff >= 0 ? '+' : '') + diff.toString().padEnd(7)} | ${winner}`
+        `  ${phoneme.padEnd(5)} | ${current.padEnd(7)} | ${alt.padEnd(5)} | ${(freqDiff >= 0 ? '+' : '-') + fmtPM(Math.abs(freqDiff)).padEnd(10)} | ${winner}`
       );
 
-      if (diff > 0) {
-        totalPotentialGain += diff;
-        improvements.push({ phoneme, from: current, to: alt, gain: diff });
+      if (freqDiff > 0) {
+        improvements.push({ phoneme, from: current, to: alt, freqDiff });
       }
     }
   }
@@ -118,16 +159,19 @@ async function main() {
   console.log(`${'='.repeat(70)}`);
 
   if (improvements.length === 0) {
-    console.log(`\n✓ VERIFIED: Current mappings are OPTIMAL for maximizing identical words.`);
-    console.log(`  No alternative mapping produces more identical words.`);
+    console.log(
+      `\n✓ VERIFIED: Current mappings are OPTIMAL by frequency-weighted identical words.`
+    );
+    console.log(`  No alternative mapping produces higher frequency-weighted identical words.`);
   } else {
-    console.log(`\nPotential improvements found:`);
-    improvements.sort((a, b) => b.gain - a.gain);
-    for (const { phoneme, from, to, gain } of improvements.slice(0, 10)) {
-      console.log(`  ${phoneme}: ${from} → ${to} would add ${gain} identical words`);
+    console.log(`\nAlternatives with positive frequency impact:`);
+    improvements.sort((a, b) => b.freqDiff - a.freqDiff);
+    for (const { phoneme, from, to, freqDiff } of improvements.slice(0, 10)) {
+      console.log(
+        `  ${phoneme}: ${from} → ${to} (${freqDiff >= 0 ? '+' : ''}${fmtPM(freqDiff)} /M)`
+      );
     }
-    console.log(`\nTotal potential gain: ${totalPotentialGain} words`);
-    console.log(`(Note: gains may not be additive - changing one may affect others)`);
+    console.log(`\n(Note: gains may not be additive - changing one may affect others)`);
   }
 
   console.log(
@@ -140,11 +184,11 @@ async function main() {
   console.log(`${'='.repeat(70)}`);
 
   const combinedMappings = {
-    OW: 'o', // +1200
-    AH: 'a', // +782
-    Z: 's', // +755
-    AO: 'o', // +532
-    AA: 'a', // +304
+    OW: 'o',
+    AH: 'a',
+    Z: 's',
+    AO: 'o',
+    AA: 'a',
   };
 
   const combined = countIdenticalWithMapping(combinedMappings);
@@ -153,7 +197,7 @@ async function main() {
   console.log(
     `  Result: ${combined.count} identical words (${((combined.count / allWords.length) * 100).toFixed(2)}%)`
   );
-  console.log(`  Gain over current: +${combined.count - baseline.count} words`);
+  console.log(`  Freq gain over current: +${fmtPM(combined.totalFreq - baseline.totalFreq)} /M`);
 
   console.log(`\n${'='.repeat(70)}`);
   console.log(`WHY DON'T WE USE THESE MAPPINGS?`);

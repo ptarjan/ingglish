@@ -37,7 +37,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - Italian and Vietnamese use 'ai'
   - You can "see" the a→i glide
   - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available
-- Impact: +57 net identical words vs 'ii', +17 vs 'ie'. ('ei' would gain +381 more identical words, but those are mostly German surnames like Bernstein and Alzheimer — not useful gains.)
+- Impact: More identical words than 'ii' or 'ie'. ('ei' looks better by raw dictionary count, but frequency analysis shows net -1 /M — gains are mostly rare German surnames like Bernstein and Alzheimer, essentially zero real-text impact.)
 - Verdict: ✅ **Adopted** - international precedent + phonemic clarity
 
 **Examples:**
@@ -61,7 +61,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - Words like "out", "loud", "sound" become IDENTICAL to English
   - Dutch also uses 'ou' for this sound (oud = old)
   - Upgraded from "Regional" to "Common" rating
-- Impact: +114 net identical words vs 'ow'
+- Impact: Large frequency gain vs 'ow': out (3,965 /M), about (3,725 /M), our (1,308 /M), sound (141 /M), found (121 /M) are among the most common English words
 - Trade-off: "cow" → "kou" looks less familiar
 - Verdict: ✅ **Adopted** - identical common words outweigh unfamiliar rare words
 
@@ -85,11 +85,11 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - English "oh!" already uses this for the exclamation
   - Distinguishes "go" (goh) from "cow" (kou) without ambiguity
   - Only option left after reserving 'o' for /ɑ/
-- Trade-off: 'ow' would gain +177 identical words, 'oa' would gain +59, but both introduce perceptual ambiguity (see attempt 3 below)
+- Trade-off: 'ow' gains show (501 /M), own (471 /M), throw (132 /M) but loses "oh" (3,374 /M) — net -1,330 /M. 'oa' is even worse. Both introduce perceptual ambiguity (see attempt 3 below)
 - Verdict: ✅ **Adopted** - necessary to avoid collision
 
 **Attempt 3: 'ow' (rejected)**
-- Rationale: Would make snow, throw, bowl, window identical to English (+177 net identical words)
+- Rationale: Would make snow, throw, bowl, window identical to English. Gains show (501 /M), own (471 /M), throw (132 /M) but net -1,330 /M because "oh" alone is 3,374 /M
 - Problem: `ow` is ambiguous in English: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". Reintroduces the exact ambiguity ingglish is designed to eliminate.
 - Verdict: ❌ Rejected - perceptual ambiguity despite no formal collisions
 
@@ -114,7 +114,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - "rock" → "rok" looks natural
   - "hot" → "hot" (identical!)
   - 'o' is the conventional Latin-script letter for back vowels across languages
-- Impact: +840 net identical words vs 'ah'
+- Impact: Massive frequency gain vs 'ah': hot (195 /M), got (222 /M), job (153 /M), lot (141 /M) are all high-frequency words that become identical
 - Verdict: ✅ **Adopted** - familiar results
 
 **Examples:**
@@ -144,7 +144,7 @@ This vowel went through the most iteration.
   - "law" → "law" (identical!)
   - Preserves distinction for non-merged speakers
   - Common rating - matches English "law", "saw"
-- Impact: Merging to 'o' would gain +93 identical words but add +176 collision groups. 'au' would gain +64 identical words with no new collisions, but loses "law" → "lau", "saw" → "sau".
+- Impact: Merging to 'o' would add +176 collision groups. 'au' avoids collisions but loses -555 /M — saw (413 /M), law (119 /M), lawyer (82 /M) outweigh the gains fault (107 /M), paul (97 /M), launch (20 /M).
 - Verdict: ✅ **Adopted** - maintains distinction, familiar results
 
 **Examples:**
@@ -171,15 +171,15 @@ This vowel went through the most iteration.
 - "too" → "tuu" follows the length principle
 - Both spellings now have "Common" ratings
 
-**Impact:** The swap costs 100 net identical words (the original uu/oo assignment produces more identical spellings overall). But the familiarity gain from keeping "book", "good", "look" as identical outweighs the count — those are among the most common English words.
+**Impact:** The original uu/oo assignment produces more identical spellings by raw count. But frequency tells the real story: the swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M), "looking" (476 /M) as identical — these high-frequency words far outweigh the low-frequency words lost.
 
 **Verdict:** ✅ **Adopted** - identical short vowel words + logical length pattern
 
 **Later considered: 'eu' for /uː/ (rejected)**
-- Rationale: Would gain +53 net identical words (feud, deuce, neutral) with minimal losses
+- Rationale: Would gain +19 /M (zeus 6 /M, neutral 4 /M, maneuver 3 /M) with minimal losses
 - Problem: `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers.
 - Lesson: Identical word count isn't enough on its own. A shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
-- Verdict: ❌ Rejected - perceptual ambiguity despite excellent numerical efficiency
+- Verdict: ❌ Rejected - perceptual ambiguity, and the +19 /M gain is negligible anyway
 
 ### /ə/ (about, sofa): u → a
 
@@ -202,10 +202,9 @@ The schwa (/ə/) is the most common vowel in English — it appears in nearly ev
   - English already spells schwa as 'a' in the most common words: **a**, **about**, **again**, **along**, **away**, **around** — all identical in Ingglish
   - Stressed /ʌ/ stays 'u' (but, cup, run unchanged), so no collisions with STRUT words
 - Impact:
-  - **+2,009 net identical words** with English (the largest gain from any single change)
-  - **67.6× frequency-weighted improvement** — gains overwhelmingly in high-frequency words
+  - **67.6× frequency-weighted improvement** — the largest gain from any single change
+  - Top gains: "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M), "around" (1,428 /M)
   - Only +93 net collision groups (acceptable; most are low-frequency)
-  - Top gains: "a" (1M freq), "and" (683K), "about" (185K), "around" (71K)
   - Losses cluster in predictable patterns: un- prefix (until→antil), up- prefix (upset→apset), -ful suffix (handful→handfal), -um suffix (museum→myuuzeam)
 - Trade-off: AH0+R must remain 'ur' (not 'ar') to avoid collision with AA+R→'ar'. This is handled by a special R-colored vowel rule that overrides the schwa mapping before R.
 - Verdict: ✅ **Adopted** — massive familiarity gain with minimal downside
@@ -222,7 +221,7 @@ The schwa (/ə/) is the most common vowel in English — it appears in nearly ev
 
 ## R-Colored Vowel Evolution
 
-R-colored vowels were added iteratively to fix collisions and improve readability. Collectively, the R-colored vowel rules (air, eer, ar, or, arr) add **+1,506 identical words** and prevent 25 collision groups.
+R-colored vowels were added iteratively to fix collisions and improve readability. Collectively, the R-colored vowel rules (air, eer, ar, or, arr) produce a large frequency-weighted identical word gain and prevent 25 collision groups.
 
 ### /æ/+R: aar → arr
 
@@ -297,7 +296,7 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 ### 1. Identical Words Are a Big Win (But Not Everything)
 When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).
 
-Current status: **10,150 identical words** (8.64% of 117,492 dictionary words). The schwa change (AH0 → 'a') alone added +2,009 identical words. See [Identical Words Analysis](identical-words-analysis.md) for details on potential improvements.
+Current status: **10,150 identical words** (8.05% of 126,051 dictionary words). The schwa change (AH0 → 'a') alone produced the largest frequency-weighted gain of any change (67.6×). See [Identical Words Analysis](identical-words-analysis.md) for frequency-weighted analysis of potential improvements.
 
 ### 2. International Precedent Matters
 Spellings with support from multiple languages (like 'ai' from Pinyin/Italian/Vietnamese) are more defensible than purely English-based choices.
@@ -315,16 +314,16 @@ Several changes were specifically made to upgrade ratings:
 The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
 
 ### 6. Identical Word Count Can Mislead
-A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both increased identical word counts (+177 and +53) but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
+A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both look good by raw count but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). Frequency analysis reinforces this: `ow` is net -1,330 /M, `eu` is only +19 /M. The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
 
 ### 7. Stress-Conditioned Splits Can Unlock Big Wins
-The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'u'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was the single largest identical-word gain (+2,009) of any change. When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
+The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'u'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was a 67.6× frequency-weighted improvement — the single largest gain of any change, driven by "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M). When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
 
 ## Changes Not Made (Considered and Rejected)
 
 ### Using 'au' for /aʊ/ instead of 'ou'
 - Would match German/Dutch/Portuguese
-- Rejected because 'ou' creates 115 more identical English words than 'au' would
+- Rejected because 'ou' preserves high-frequency identical words (out 3,965 /M, about 3,725 /M, our 1,308 /M, sound 141 /M) that 'au' would lose
 
 ### Using pure IPA-style spellings throughout
 - Would be more internationally consistent
@@ -332,7 +331,7 @@ The schwa change split AH into two spellings based on stress: AH0 (unstressed) �
 
 ### Removing R-colored vowel special handling
 - Would simplify the system
-- Rejected because it would lose 1,506 identical words and add 25 collision groups
+- Rejected because it would lose high-frequency identical words (star, air, beer, store, etc.) and add 25 collision groups
 
 ## Version History
 

@@ -8,7 +8,7 @@ When an English word is translated to Ingglish, it sometimes produces a spelling
 |--------|-------|
 | Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's 135,166 entries) |
 | Collisions (Ingglish matches different English word) | 1,360 |
-| Collisions involving common words (freq >= 1000) | 175 |
+| Collisions involving common words (freq >= 20 /M) | 175 |
 
 ### Is This a Problem?
 
@@ -21,30 +21,30 @@ When an English word is translated to Ingglish, it sometimes produces a spelling
 
 ## Collisions (Common Words)
 
-Frequency shows SUBTLEX-US corpus counts ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*). The Ingglish column is also an English word.
+Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*). The Ingglish column is also an English word.
 
-| English | Ingglish | Frequency |
-|---------|----------|-----------|
-| uh | u (you informal) | 36,579 → 2,506 |
-| of | uv (ultraviolet) | 590,439 → rare |
-| right, write, rite | rait (soak flax) | 204,428 → rare |
-| how | hou (place suffix) | 155,867 → rare |
-| yeah | ya (you informal) | 152,262 → 7,664 |
-| want | wont (habit) | 140,718 → 81 |
-| ass | as (preposition) | 11,545 → 113,068 |
-| here, hear | heer (yarn measure) | 230,788 → 2 |
-| side, sighed | said (past of say) | 10,247 → 56,531 |
-| white | wait (verb) | 8,744 → 42,343 |
-| place | plays (verb/noun) | 30,736 → 1,521 |
-| fine | fain (gladly/archaic) | 30,502 → 15 |
-| while, wile | wail (cry) | 17,821 → 44 |
-| wife | waif (homeless person) | 17,795 → 17 |
-| since | sins (wrongdoings) | 16,064 → 455 |
-| turn | tern (seabird) | 15,630 → 1 |
-| case | kays (kilometers/slang) | 14,403 → rare |
-| mine | main (primary) | 12,800 → 2,179 |
-| matter | mater (mother/Latin) | 18,900 → 83 |
-| else | els (elevated trains) | 22,907 → 4 |
+| English | Ingglish | Freq /M |
+|---------|----------|---------|
+| uh | u (you informal) | 736 → 50 |
+| of | uv (ultraviolet) | 11,882 → rare |
+| right, write, rite | rait (soak flax) | 4,114 → rare |
+| how | hou (place suffix) | 3,136 → rare |
+| yeah | ya (you informal) | 3,063 → 154 |
+| want | wont (habit) | 2,831 → 2 |
+| here, hear | heer (yarn measure) | 4,644 → <1 |
+| ass | as (preposition) | 232 → 2,274 |
+| side, sighed | said (past of say) | 206 → 1,138 |
+| white | wait (verb) | 176 → 852 |
+| place | plays (verb/noun) | 619 → 31 |
+| fine | fain (gladly/archaic) | 614 → <1 |
+| while, wile | wail (cry) | 359 → 1 |
+| wife | waif (homeless person) | 358 → <1 |
+| since | sins (wrongdoings) | 323 → 9 |
+| turn | tern (seabird) | 315 → <1 |
+| case | kays (kilometers/slang) | 290 → rare |
+| mine | main (primary) | 258 → 44 |
+| matter | mater (mother/Latin) | 380 → 2 |
+| else | els (elevated trains) | 461 → <1 |
 
 ### Notable Collisions
 
@@ -67,10 +67,10 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 | laurey, lauri, laurie, laury, lawrie, lawry, loree, lorey, lori, lorie, lorrie, lorry, lory, lowrie (14) | loree |
 | carey, carie, carrey, carrie, cary, kairey, kari, karry, kary, kerrey, kerri, kerry (12) | kairee |
 | hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) | shuu |
-| aer, air, ayre, eir, ere, err, eyre, heir, ire | air |
-| au, aux, eau, eaux, o, oh, ohh, owe | oh |
-| c, cie, sci, sea, see, si, sie, sieh | see |
-| ewe, u, uwe, yew, yoo, you, yu, yue | yuu |
+| aer, air, ayre, eir, ere, err, eyre, heir, ire (9) | air |
+| au, aux, eau, eaux, o, oh, ohh, owe (8) | oh |
+| c, cie, sci, sea, see, si, sie, sieh (8) | see |
+| ewe, u, uwe, yew, yoo, you, yu, yue (8) | yuu |
 
 ## Running the Analysis
 
