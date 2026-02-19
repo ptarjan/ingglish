@@ -28,6 +28,11 @@ function computeStats(format: 'experiment' | 'ingglish'): {
   let identicalCount = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
+    // Skip entries with punctuation (contractions, abbreviations)
+    if (/[^a-z]/i.test(word)) {
+      continue;
+    }
+
     const spelling = arpabetToFormat(phonemes, format);
 
     // Track letters used
