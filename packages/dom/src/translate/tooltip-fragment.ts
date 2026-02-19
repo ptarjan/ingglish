@@ -5,7 +5,7 @@
 import { translateSyncWithMapping } from 'ingglish';
 import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
-import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD } from '../constants';
+import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD, EXPERIMENT_DIFF_CLASS } from '../constants';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // Template span for cloneNode (faster than createElement)
@@ -32,10 +32,14 @@ export function createTooltipFragment(
   const fragment = document.createDocumentFragment();
   const tokens = translateSyncWithMapping(text, format);
 
+  // For non-default formats, get standard Ingglish tokens to detect experiment diffs
+  const stdTokens = format !== 'ingglish' ? translateSyncWithMapping(text, 'ingglish') : null;
+
   // Accumulate adjacent non-translated text to reduce DOM node count
   let pendingText = '';
 
-  for (const token of tokens) {
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
     if (token.isWord && token.original !== token.translated) {
       // Flush any pending text before the span
       if (pendingText) {
@@ -43,11 +47,20 @@ export function createTooltipFragment(
         pendingText = '';
       }
 
+      // Check if this word differs from standard Ingglish
+      const stdSpelling = stdTokens?.[i]?.translated;
+      const isDiff =
+        stdSpelling !== undefined && stdSpelling.toLowerCase() !== token.translated.toLowerCase();
+
       // Word that was translated - wrap in tooltip span
       // ATTR_ORIGINAL_WORD stores original text AND marks as translated (prevents re-processing)
       // Use cloneNode for better performance than createElement
       const span = getTemplateSpan().cloneNode(false) as HTMLSpanElement;
-      span.setAttribute(ATTR_ORIGINAL_WORD, token.original);
+      const tooltip = isDiff ? `${token.original} (Ingglish: ${stdSpelling})` : token.original;
+      span.setAttribute(ATTR_ORIGINAL_WORD, tooltip);
+      if (isDiff) {
+        span.classList.add(EXPERIMENT_DIFF_CLASS);
+      }
       span.textContent = token.translated;
       fragment.appendChild(span);
     } else {
