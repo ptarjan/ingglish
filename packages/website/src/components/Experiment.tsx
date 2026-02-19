@@ -30,9 +30,9 @@ function Experiment() {
     <div className="experiment-page">
       <div className="experiment-intro">
         <p>
-          Create your own phoneme-to-spelling mapping and see how it translates English text.
-          Customize any sound's spelling, then test with sample passages and compare statistics
-          against the default Ingglish mapping.
+          Design your own phonetic spelling system. Click any cell in the <strong>Spelling</strong>{' '}
+          column to change how a sound is written, then see your changes applied to sample text on
+          the right.
         </p>
       </div>
 
