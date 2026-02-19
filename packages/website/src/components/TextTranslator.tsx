@@ -184,6 +184,11 @@ export function MappedWordDisplay({
   );
 }
 
+function isAllCaps(text: string): boolean {
+  const letters = text.replace(/[^a-zA-Z]/g, '');
+  return letters.length >= 2 && letters === letters.toUpperCase();
+}
+
 interface TextTranslatorProps {
   initialText?: string;
   onShare?: (text: string) => void;
@@ -490,6 +495,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           />
         </div>
       </div>
+
+      {lastEdited === 'english' && isAllCaps(englishText) && (
+        <div className="warning-message">
+          Ingglish is case-sensitive — type in normal case for accurate translations.
+        </div>
+      )}
 
       {hasContent && (
         <div className={`word-correspondence ${isSpeaking ? 'speaking' : ''}`}>

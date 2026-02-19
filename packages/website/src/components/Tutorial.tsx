@@ -774,6 +774,11 @@ function Section4_ReadingTest() {
   );
 }
 
+function isAllCaps(text: string): boolean {
+  const letters = text.replace(/[^a-zA-Z]/g, '');
+  return letters.length >= 2 && letters === letters.toUpperCase();
+}
+
 function Section3_TryIt({ onNavigate }: { onNavigate?: (tab: string) => void }) {
   const [input, setInput] = useState('');
   const tokens = input ? translateSyncWithMapping(input) : [];
@@ -801,6 +806,11 @@ function Section3_TryIt({ onNavigate }: { onNavigate?: (tab: string) => void }) 
           }}
         />
         {input && <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />}
+        {isAllCaps(input) && (
+          <div className="warning-message">
+            Ingglish is case-sensitive — type in normal case for accurate translations.
+          </div>
+        )}
       </div>
       {onNavigate && (
         <div className="try-it-cta">

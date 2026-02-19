@@ -109,6 +109,19 @@
   color: var(--color-success);
 }
 
+.warning-message {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid #eab308;
+  color: #a16207;
+  font-size: 0.875rem;
+}
+
+[data-theme='dark'] .warning-message {
+  color: #facc15;
+}
+
 /* Info Box */
 .info-box {
   background: var(--color-surface);
