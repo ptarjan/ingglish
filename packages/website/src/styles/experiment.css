@@ -38,6 +38,8 @@
   gap: 1.5rem;
   position: sticky;
   top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
 /* Editor */
