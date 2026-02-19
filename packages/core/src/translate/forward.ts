@@ -144,6 +144,13 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
       }
     }
 
+    // Pass through obvious non-words before running G2P:
+    // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
+    // - no vowels (a/e/i/o/u/y) — real vowelless words (hmm, shh) are in the dictionary
+    if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
+      return { translated: word, matched: false };
+    }
+
     // Word not found in dictionary - try fallback strategies.
     // Use stripped form so G2P gets clean ASCII (brûlée→brulee, piñata→pinata).
     const fallbackResult = translateUnknown(stripped, format);

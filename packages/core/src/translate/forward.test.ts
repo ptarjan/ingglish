@@ -304,6 +304,39 @@ describe('translator', () => {
     });
   });
 
+  describe('non-word passthrough', () => {
+    it('should pass through words with 3+ repeated characters', () => {
+      expect(translateWord('ssssss')).toBe('ssssss');
+      expect(translateWord('dddddddddd')).toBe('dddddddddd');
+      expect(translateWord('hellooo')).toBe('hellooo');
+      expect(translateWord('nooo')).toBe('nooo');
+    });
+
+    it('should still translate dictionary words with 3+ repeated chars', () => {
+      // oooh and hmmm are in CMU dictionary
+      expect(translateWord('oooh')).not.toBe('oooh');
+      expect(translateWord('hmmm')).not.toBe('hmmm');
+    });
+
+    it('should pass through vowelless strings not in dictionary', () => {
+      expect(translateWord('bcdfghjk')).toBe('bcdfghjk');
+      expect(translateWord('xkcd')).toBe('xkcd');
+    });
+
+    it('should still translate dictionary words without vowels', () => {
+      // hmm, shh, nth are in CMU dictionary
+      expect(translateWord('hmm')).not.toBe('hmm');
+      expect(translateWord('shh')).not.toBe('shh');
+      expect(translateWord('nth')).not.toBe('nth');
+    });
+
+    it('should not affect normal words with doubled letters', () => {
+      expect(translateWord('hello')).toBe('haloh');
+      expect(translateWord('running')).toBe('runing');
+      expect(translateWord('butter')).toBe('buter');
+    });
+  });
+
   describe('URL and email preservation', () => {
     it('should preserve HTTP URLs unchanged', () => {
       const result = translateSync('Visit http://example.com today');

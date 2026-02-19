@@ -94,7 +94,16 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   alienate: ['EY1', 'L', 'IY0', 'AH0', 'N', 'EY2', 'T'], // /ˈeɪliəˌneɪt/ — CMU has /j/ for /i/
   leniently: ['L', 'IY1', 'N', 'IY0', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈliniəntli/ — CMU has /j/ for /i/
 
+  // Wrong syllable count
+  doer: ['D', 'UW1', 'ER0'], // /ˈduɝ/ — CMU has 1 syllable (D UW1 R), should be 2 like doers
+  'well-doer': ['W', 'EH1', 'L', 'D', 'UW1', 'ER0'], // /ˈwɛlˌduɝ/ — CMU has 1-syllable doer
+
   // Wrong vowel
+  dedicate: ['D', 'EH1', 'D', 'IH0', 'K', 'EY2', 'T'], // /ˈdɛdɪˌkeɪt/ — CMU has /ə/ for /ɪ/
+  dedicated: ['D', 'EH1', 'D', 'IH0', 'K', 'EY0', 'T', 'IH0', 'D'], // /ˈdɛdɪkeɪtɪd/ — CMU has /ə/ for /ɪ/
+  dedication: ['D', 'EH2', 'D', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /ˌdɛdɪˈkeɪʃən/ — CMU has /ə/ for /ɪ/
+  rededicate: ['R', 'IY2', 'D', 'EH1', 'D', 'IH0', 'K', 'EY2', 'T'], // /ˌriˈdɛdɪˌkeɪt/ — CMU has /ə/ for /ɪ/
+  rededication: ['R', 'IY0', 'D', 'EH2', 'D', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /riˌdɛdɪˈkeɪʃən/ — CMU has /ə/ for /ɪ/
   leisure: ['L', 'IY1', 'ZH', 'ER0'], // /ˈliʒɝ/ — CMU has British /ɛ/, AmE is /i/
   president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // /ˈprɛzɪdənt/ — CMU has /ə/ for /ɪ/ and /ɛ/ for /ə/
   cuckoo: ['K', 'UW1', 'K', 'UW0'], // /ˈkuku/ — CMU has /ʌ/ for first vowel
