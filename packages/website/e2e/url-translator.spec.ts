@@ -1,38 +1,90 @@
-import { test, expect, type Locator } from '@playwright/test';
+import { test, expect, type Locator, type Page, type BrowserContext } from '@playwright/test';
 import { setupMockProxy } from './test-utils';
 
+/**
+ * Helper: wait for the app to fully load (header visible, spinner gone).
+ */
+async function waitForAppLoad(page: Page) {
+  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
+}
+
+// Helper to click a link using direct event dispatch (works on all platforms)
+async function clickLink(link: Locator) {
+  await link.evaluate((el) => {
+    // Dispatch touchstart
+    const touchStart = new TouchEvent('touchstart', {
+      bubbles: true,
+      cancelable: true,
+      touches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
+    });
+    el.dispatchEvent(touchStart);
+
+    // Dispatch touchend
+    const touchEnd = new TouchEvent('touchend', {
+      bubbles: true,
+      cancelable: true,
+      changedTouches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
+    });
+    el.dispatchEvent(touchEnd);
+  });
+}
+
+// Share a single page across tests to avoid re-loading the 10MB dictionary each time.
+// Tests run serially and clear state between runs.
 test.describe('URL Translator', () => {
-  test.beforeEach(async ({ page }) => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await setupMockProxy(page);
     await page.goto('/url');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
     await expect(page.locator('.url-translator')).toBeVisible();
   });
 
-  test('displays URL input form', async ({ page }) => {
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test.beforeEach(async () => {
+    // Clear any loaded URL/content between tests
+    const input = page.locator('.url-input');
+    const value = await input.inputValue();
+    if (value) {
+      await page.click('button:has-text("Clear")');
+      await expect(input).toHaveValue('');
+    }
+  });
+
+  test('displays URL input form', async () => {
     await expect(page.locator('.url-input')).toBeVisible();
     await expect(page.locator('.url-form button[type="submit"]')).toBeVisible();
   });
 
-  test('displays example URLs', async ({ page }) => {
+  test('displays example URLs', async () => {
     await expect(page.locator('.example-urls')).toBeVisible();
     await expect(page.locator('.example-link')).toHaveCount(9);
   });
 
-  test('can enter a URL', async ({ page }) => {
+  test('can enter a URL', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com');
     await expect(input).toHaveValue('https://example.com');
   });
 
-  test('clear button clears URL and content', async ({ page }) => {
+  test('clear button clears URL and content', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com');
     await page.click('button:has-text("Clear")');
     await expect(input).toHaveValue('');
   });
 
-  test('loads and translates a page', async ({ page }) => {
+  test('loads and translates a page', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
@@ -45,7 +97,7 @@ test.describe('URL Translator', () => {
     expect(wordCount).toBeGreaterThan(0);
   });
 
-  test('clicking example URL fills input and translates', async ({ page }) => {
+  test('clicking example URL fills input and translates', async () => {
     const input = page.locator('.url-input');
     await expect(input).toHaveValue('');
 
@@ -59,7 +111,7 @@ test.describe('URL Translator', () => {
     await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
   });
 
-  test('shows loading state while translating', async ({ page }) => {
+  test('shows loading state while translating', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/page-a');
 
@@ -73,35 +125,35 @@ test.describe('URL Translator', () => {
 });
 
 test.describe('URL Translator Navigation', () => {
-  test.beforeEach(async ({ page }) => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await setupMockProxy(page);
     await page.goto('/url');
-    await expect(page.locator('.header h1')).toBeVisible({ timeout: 15000 });
+    await waitForAppLoad(page);
     await expect(page.locator('.url-translator')).toBeVisible();
   });
 
-  // Helper to click a link using direct event dispatch (works on all platforms)
-  async function clickLink(link: Locator) {
-    await link.evaluate((el) => {
-      // Dispatch touchstart
-      const touchStart = new TouchEvent('touchstart', {
-        bubbles: true,
-        cancelable: true,
-        touches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
-      });
-      el.dispatchEvent(touchStart);
+  test.afterAll(async () => {
+    await context.close();
+  });
 
-      // Dispatch touchend
-      const touchEnd = new TouchEvent('touchend', {
-        bubbles: true,
-        cancelable: true,
-        changedTouches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
-      });
-      el.dispatchEvent(touchEnd);
-    });
-  }
+  test.beforeEach(async () => {
+    // Clear any loaded URL/content between tests
+    const input = page.locator('.url-input');
+    const value = await input.inputValue();
+    if (value) {
+      await page.click('button:has-text("Clear")');
+      await expect(input).toHaveValue('');
+    }
+  });
 
-  test('click handler script is injected', async ({ page }) => {
+  test('click handler script is injected', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
@@ -120,7 +172,7 @@ test.describe('URL Translator Navigation', () => {
 
   // Playwright's WebKit cannot create TouchEvent objects (Illegal constructor error)
   // Real iOS Safari works fine - this is a Playwright limitation
-  test('link click navigates and translates', async ({ page }, testInfo) => {
+  test('link click navigates and translates', async (_fixtures, testInfo) => {
     test.skip(
       testInfo.project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
@@ -152,7 +204,7 @@ test.describe('URL Translator Navigation', () => {
 
   // Playwright's WebKit cannot create TouchEvent objects (Illegal constructor error)
   // Real iOS Safari works fine - this is a Playwright limitation
-  test('back button returns to previous page', async ({ page }, testInfo) => {
+  test('back button returns to previous page', async (_fixtures, testInfo) => {
     test.skip(
       testInfo.project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
@@ -187,7 +239,7 @@ test.describe('URL Translator Navigation', () => {
     expect(wordCount).toBeGreaterThan(0);
   });
 
-  test('anchor link scrolls without refetching', async ({ page }, testInfo) => {
+  test('anchor link scrolls without refetching', async (_fixtures, testInfo) => {
     test.skip(
       testInfo.project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
@@ -239,7 +291,7 @@ test.describe('URL Translator Navigation', () => {
   // but cannot be reliably tested with Playwright due to how it handles clicks in srcdoc iframes.
   // The click handler is verified in the 'click handler script is injected' test above.
 
-  test('hovering over words does not cause layout shift', async ({ page }) => {
+  test('hovering over words does not cause layout shift', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
@@ -277,7 +329,7 @@ test.describe('URL Translator Navigation', () => {
     expect(paragraphAfterHover?.y).toBe(paragraphBoundingBox?.y);
   });
 
-  test('tooltip is visible inside overflow:hidden containers', async ({ page }) => {
+  test('tooltip is visible inside overflow:hidden containers', async () => {
     const input = page.locator('.url-input');
     await input.fill('https://example.com/overflow-test');
     await page.click('button[type="submit"]');

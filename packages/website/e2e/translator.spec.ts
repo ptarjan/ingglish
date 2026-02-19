@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page, type BrowserContext } from '@playwright/test';
 import { blockExternalNetwork } from './test-utils';
 
 // Minimal types for the LayoutShift PerformanceObserver API (Chromium-only, not in lib.dom)
@@ -29,11 +29,12 @@ declare global {
  * Helper: wait for the app to fully load (header visible, spinner gone).
  * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
  */
-async function waitForAppLoad(page: import('@playwright/test').Page) {
+async function waitForAppLoad(page: Page) {
   await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
 }
 
+// CLS tests need fresh pages to test loading behavior — keep isolated
 test.describe('Layout Stability (CLS)', () => {
   test('app shell is present during dictionary loading', async ({ page }) => {
     await blockExternalNetwork(page);
@@ -149,19 +150,38 @@ test.describe('Layout Stability (CLS)', () => {
   });
 });
 
+// Share a single page across tests to avoid re-loading the 10MB dictionary each time.
+// Tests run serially and clear state between runs.
 test.describe('Text Translator', () => {
-  test.beforeEach(async ({ page }) => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await blockExternalNetwork(page);
     await page.goto('/text');
     await waitForAppLoad(page);
   });
 
-  test('displays header with logo and title', async ({ page }) => {
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test.beforeEach(async () => {
+    // Clear inputs between tests
+    const englishInput = page.locator('.text-input').first();
+    await englishInput.fill('');
+  });
+
+  test('displays header with logo and title', async () => {
     await expect(page.locator('.logo')).toBeVisible();
     await expect(page.locator('.header h1')).toHaveText('Ingglish');
   });
 
-  test('translates text when typed', async ({ page }) => {
+  test('translates text when typed', async () => {
     // With bidirectional translation, we have two text-input textareas
     const englishInput = page.locator('.text-input').first();
     const ingglishInput = page.locator('.text-input').last();
@@ -170,7 +190,7 @@ test.describe('Text Translator', () => {
     await expect(ingglishInput).toHaveValue('haloh');
   });
 
-  test('preserves capitalization', async ({ page }) => {
+  test('preserves capitalization', async () => {
     const englishInput = page.locator('.text-input').first();
     const ingglishInput = page.locator('.text-input').last();
 
@@ -178,23 +198,21 @@ test.describe('Text Translator', () => {
     await expect(ingglishInput).toHaveValue('Haloh');
   });
 
-  test('handles sample text button', async ({ page }) => {
+  test('handles sample text button', async () => {
     // Click the first Sample button (English side)
     await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
     const englishInput = page.locator('.text-input').first();
     await expect(englishInput).not.toBeEmpty();
   });
 
-  test('clears text with clear button', async ({ page }) => {
+  test('clears text with clear button', async () => {
     const englishInput = page.locator('.text-input').first();
     await englishInput.fill('test');
     await page.locator('.input-section').first().locator('button:has-text("Clear")').click();
     await expect(englishInput).toBeEmpty();
   });
 
-  test('English text does not flash empty when focusing Ingglish after sample', async ({
-    page,
-  }) => {
+  test('English text does not flash empty when focusing Ingglish after sample', async () => {
     // Load sample text
     await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
 
@@ -215,7 +233,7 @@ test.describe('Text Translator', () => {
     await expect(englishInput).not.toBeEmpty();
   });
 
-  test('reverse translation works', async ({ page }) => {
+  test('reverse translation works', async () => {
     const ingglishInput = page.locator('.text-input').last();
     const englishInput = page.locator('.text-input').first();
 
@@ -227,7 +245,7 @@ test.describe('Text Translator', () => {
     await expect(englishInput).toHaveValue('hello');
   });
 
-  test('handles unknown words not in dictionary', async ({ page }) => {
+  test('handles unknown words not in dictionary', async () => {
     const englishInput = page.locator('.text-input').first();
     const ingglishInput = page.locator('.text-input').last();
 
@@ -243,29 +261,42 @@ test.describe('Text Translator', () => {
 });
 
 test.describe('Tab Navigation', () => {
-  test.beforeEach(async ({ page }) => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await blockExternalNetwork(page);
     await page.goto('/text');
     await waitForAppLoad(page);
   });
 
-  test('switches to URL translator tab', async ({ page }) => {
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test('switches to URL translator tab', async () => {
     await page.click('.tab:has-text("Translate URL")');
     await expect(page.locator('.url-translator')).toBeVisible();
   });
 
-  test('switches to spelling guide tab', async ({ page }) => {
+  test('switches to spelling guide tab', async () => {
     await page.click('.tab:has-text("Spelling Guide")');
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
-  test('subtitle link opens spelling guide', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'subtitle link is hidden on mobile');
+  test('subtitle link opens spelling guide', async (_fixtures, testInfo) => {
+    test.skip(testInfo.project.name.includes('mobile'), 'subtitle link is hidden on mobile');
+    // Navigate back to text tab first
+    await page.click('.tab:has-text("Translate Text")');
     await page.click('.subtitle-link');
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
-  test('old hash URL redirects to path URL', async ({ page }) => {
+  test('old hash URL redirects to path URL', async () => {
     await page.goto('/#guide');
     await waitForAppLoad(page);
     await expect(page.locator('.spelling-guide')).toBeVisible();
@@ -274,24 +305,34 @@ test.describe('Tab Navigation', () => {
 });
 
 test.describe('Spelling Guide', () => {
-  test.beforeEach(async ({ page }) => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await blockExternalNetwork(page);
     await page.goto('/guide');
     await waitForAppLoad(page);
-    // Wait for spelling guide content to render
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
-  test('displays vowel mappings table', async ({ page }) => {
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test('displays vowel mappings table', async () => {
     await expect(page.locator('h3:has-text("Vowels")')).toBeVisible();
     await expect(page.locator('.mapping-table').first()).toBeVisible();
   });
 
-  test('displays consonant mappings table', async ({ page }) => {
+  test('displays consonant mappings table', async () => {
     await expect(page.locator('h3:has-text("Consonants")')).toBeVisible();
   });
 
-  test('displays key principles', async ({ page }) => {
+  test('displays key principles', async () => {
     await expect(page.locator('h3:has-text("Key Principles")')).toBeVisible();
     await expect(page.locator('.principles-list li')).toHaveCount(4);
   });
