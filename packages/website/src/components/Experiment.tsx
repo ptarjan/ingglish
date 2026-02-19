@@ -10,7 +10,20 @@ function Experiment() {
   const [copiedShare, copyShare] = useClipboard();
 
   const handleShare = useCallback(() => {
-    copyShare(mapping.shareUrl);
+    if (typeof navigator.share === 'function') {
+      navigator
+        .share({
+          title: 'My custom Ingglish spelling',
+          text: 'Check out my custom phonetic spelling mapping!',
+          url: mapping.shareUrl,
+        })
+        .catch(() => {
+          // User cancelled or share failed — fall back to clipboard
+          copyShare(mapping.shareUrl);
+        });
+    } else {
+      copyShare(mapping.shareUrl);
+    }
   }, [copyShare, mapping.shareUrl]);
 
   return (
