@@ -1,6 +1,5 @@
 import { useState, useMemo, useDeferredValue, useCallback } from 'react';
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
-import { MappedWordDisplay } from './TextTranslator';
 
 const SAMPLE_PASSAGES: { label: string; text: string }[] = [
   {
@@ -29,6 +28,48 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
   },
 ];
 
+function ExperimentWordDisplay({
+  tokens,
+  diffIndices,
+  hoveredWordIndex,
+  onHoverWord,
+}: {
+  tokens: TranslatedToken[];
+  diffIndices: Set<number>;
+  hoveredWordIndex: number | null;
+  onHoverWord: (index: number | null) => void;
+}) {
+  let wordIndex = 0;
+  return (
+    <div className="word-display experiment-words">
+      {tokens.map((token, i) => {
+        if (token.isWord) {
+          const currentWordIndex = wordIndex++;
+          const isHighlighted = currentWordIndex === hoveredWordIndex;
+          const isDiff = diffIndices.has(currentWordIndex);
+          const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
+          return (
+            <span
+              key={i}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isDiff ? 'experiment-diff' : ''}`}
+              data-orig={changed ? token.original : undefined}
+              onMouseEnter={() => {
+                onHoverWord(currentWordIndex);
+              }}
+              onMouseLeave={() => {
+                onHoverWord(null);
+              }}
+            >
+              {token.translated}
+            </span>
+          );
+        }
+        return <span key={i}>{token.translated}</span>;
+      })}
+    </div>
+  );
+}
+
 interface ExperimentTranslatorProps {
   version: number;
 }
@@ -40,14 +81,33 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   const deferredText = useDeferredValue(text);
 
   // Use version as a dependency to force re-translation when mapping changes
-  const tokens: TranslatedToken[] = useMemo(() => {
+  const { tokens, diffIndices } = useMemo(() => {
     if (deferredText.trim().length === 0) {
-      return [];
+      return { tokens: [] as TranslatedToken[], diffIndices: new Set<number>() };
     }
     try {
-      return translateSyncWithMapping(deferredText, 'experiment');
+      const expTokens = translateSyncWithMapping(deferredText, 'experiment');
+      const stdTokens = translateSyncWithMapping(deferredText, 'ingglish');
+
+      // Build set of word indices where experiment differs from standard
+      const diffs = new Set<number>();
+      let wordIdx = 0;
+      for (let i = 0; i < expTokens.length; i++) {
+        const expTok = expTokens[i];
+        const stdTok = stdTokens[i];
+        if (expTok?.isWord) {
+          if (
+            stdTok?.isWord &&
+            expTok.translated.toLowerCase() !== stdTok.translated.toLowerCase()
+          ) {
+            diffs.add(wordIdx);
+          }
+          wordIdx++;
+        }
+      }
+      return { tokens: expTokens, diffIndices: diffs };
     } catch {
-      return [];
+      return { tokens: [] as TranslatedToken[], diffIndices: new Set<number>() };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredText, version]);
@@ -91,12 +151,11 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
       {hasContent && (
         <div className="experiment-output">
           <div className="experiment-output-label">Translated:</div>
-          <MappedWordDisplay
+          <ExperimentWordDisplay
             tokens={tokens}
+            diffIndices={diffIndices}
             hoveredWordIndex={hoveredWordIndex}
             onHoverWord={setHoveredWordIndex}
-            className="experiment-words"
-            placeholder=""
           />
         </div>
       )}

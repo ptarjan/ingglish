@@ -255,6 +255,11 @@
   line-height: 1.6;
 }
 
+.experiment-diff {
+  border-bottom: 1.5px dotted var(--color-primary);
+  opacity: 0.9;
+}
+
 .experiment-plain-output {
   margin-top: 0.75rem;
 }
