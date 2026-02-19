@@ -255,6 +255,12 @@
   line-height: 1.6;
 }
 
+.experiment-words .word-token:hover,
+.experiment-words .word-token.highlighted {
+  background: transparent;
+  color: inherit;
+}
+
 .experiment-diff {
   border-bottom: 1.5px dotted var(--color-primary);
   opacity: 0.9;

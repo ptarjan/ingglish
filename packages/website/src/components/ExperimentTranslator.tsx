@@ -31,13 +31,9 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
 function ExperimentWordDisplay({
   tokens,
   diffIndices,
-  hoveredWordIndex,
-  onHoverWord,
 }: {
   tokens: TranslatedToken[];
   diffIndices: Set<number>;
-  hoveredWordIndex: number | null;
-  onHoverWord: (index: number | null) => void;
 }) {
   let wordIndex = 0;
   return (
@@ -45,20 +41,13 @@ function ExperimentWordDisplay({
       {tokens.map((token, i) => {
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
-          const isHighlighted = currentWordIndex === hoveredWordIndex;
           const isDiff = diffIndices.has(currentWordIndex);
           const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isDiff ? 'experiment-diff' : ''}`}
+              className={`word-token ${isDiff ? 'experiment-diff' : ''}`}
               data-orig={changed ? token.original : undefined}
-              onMouseEnter={() => {
-                onHoverWord(currentWordIndex);
-              }}
-              onMouseLeave={() => {
-                onHoverWord(null);
-              }}
             >
               {token.translated}
             </span>
@@ -76,7 +65,6 @@ interface ExperimentTranslatorProps {
 
 function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   const [text, setText] = useState('');
-  const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
 
   const deferredText = useDeferredValue(text);
 
@@ -151,12 +139,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
       {hasContent && (
         <div className="experiment-output">
           <div className="experiment-output-label">Translated:</div>
-          <ExperimentWordDisplay
-            tokens={tokens}
-            diffIndices={diffIndices}
-            hoveredWordIndex={hoveredWordIndex}
-            onHoverWord={setHoveredWordIndex}
-          />
+          <ExperimentWordDisplay tokens={tokens} diffIndices={diffIndices} />
         </div>
       )}
     </div>
