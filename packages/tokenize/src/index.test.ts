@@ -76,7 +76,7 @@ describe('text utilities', () => {
     it('should normalize curly apostrophes', () => {
       const tokens = tokenizeText('don\u2019t');
       expect(tokens).toHaveLength(1);
-      expect(tokens[0].text).toBe("don't");
+      expect(tokens[0]!.text).toBe("don't");
     });
   });
 
@@ -92,13 +92,13 @@ describe('text utilities', () => {
     it('should handle IPA text with stress markers', () => {
       const tokens = tokenizePhonetic('həˈloʊ');
       expect(tokens).toHaveLength(1);
-      expect(tokens[0].isWord).toBe(true);
+      expect(tokens[0]!.isWord).toBe(true);
     });
 
     it('should handle accented Ingglish vowels', () => {
       const tokens = tokenizePhonetic('háloh');
       expect(tokens).toHaveLength(1);
-      expect(tokens[0].text).toBe('háloh');
+      expect(tokens[0]!.text).toBe('háloh');
     });
 
     it('should handle punctuation', () => {
@@ -120,8 +120,8 @@ describe('text utilities', () => {
       const tokens = tokenizePhonetic("don't stop");
       const words = tokens.filter((t) => t.isWord);
       expect(words).toHaveLength(2);
-      expect(words[0].text).toBe("don't");
-      expect(words[1].text).toBe('stop');
+      expect(words[0]!.text).toBe("don't");
+      expect(words[1]!.text).toBe('stop');
     });
   });
 
@@ -129,9 +129,9 @@ describe('text utilities', () => {
     it('should tokenize IPA text', () => {
       const tokens = tokenizeIPA('həˈloʊ wɝld');
       expect(tokens).toHaveLength(3);
-      expect(tokens[0].isWord).toBe(true);
-      expect(tokens[1].isWord).toBe(false);
-      expect(tokens[2].isWord).toBe(true);
+      expect(tokens[0]!.isWord).toBe(true);
+      expect(tokens[1]!.isWord).toBe(false);
+      expect(tokens[2]!.isWord).toBe(true);
     });
   });
 });
