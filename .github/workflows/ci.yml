@@ -50,11 +50,11 @@ jobs:
         with:
           dict-cache: true
 
-      - name: Build
-        run: npm run build:fast
-
       - name: Generate docs
         run: npm run docs
+
+      - name: Build
+        run: npm run build:fast
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
