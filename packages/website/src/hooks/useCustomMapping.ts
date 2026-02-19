@@ -272,3 +272,13 @@ export function useCustomMapping(): UseCustomMappingReturn {
 export function hasExperimentMapping(): boolean {
   return loadFromStorage() !== null;
 }
+
+// Eagerly register the experiment format at module load so that
+// getFormatLabel('experiment') returns 'Experiment' on every page,
+// not just the Experiment page where useCustomMapping mounts.
+{
+  const stored = loadFromStorage();
+  if (stored !== null) {
+    registerExperimentFormat(stored);
+  }
+}
