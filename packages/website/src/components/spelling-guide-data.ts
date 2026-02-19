@@ -33,7 +33,7 @@ export const vowelGroups: SoundGroup[] = [
       {
         phoneme: 'IH',
         examples:
-          'b**i**t (bit), g**y**m (jim), b**ui**ld (bild), pr**e**tty (pritee), b**u**sy (bizee), w**o**men (wiman)',
+          'b**i**t (bit), g**y**m (jim), b**ui**ld (bild), pr**e**tty (pritee), b**u**sy (bizee)',
       },
       { phoneme: 'AA', examples: 'h**o**t (hot), w**a**tch (woch)' },
       {
