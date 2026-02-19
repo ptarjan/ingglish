@@ -5,48 +5,25 @@ import { translateContraction, setTranslateWordFn } from './contractions';
 setTranslateWordFn((word) => word);
 
 describe('translateContraction', () => {
-  it('translates "don\'t" as a unit', () => {
-    const result = translateContraction("don't");
-    expect(result.length).toBeGreaterThan(0);
-    // Should not contain apostrophe (removed for round-tripping)
-    expect(result).not.toContain("'");
+  it('translates common contractions', () => {
+    expect(translateContraction("don't")).toBe('dohnt');
+    expect(translateContraction("can't")).toBe('kant');
+    expect(translateContraction("won't")).toBe('wohnt');
   });
 
-  it('translates "can\'t" as a unit', () => {
-    const result = translateContraction("can't");
-    expect(result.length).toBeGreaterThan(0);
-    expect(result).not.toContain("'");
-  });
-
-  it('translates "won\'t" as a unit', () => {
-    const result = translateContraction("won't");
-    expect(result.length).toBeGreaterThan(0);
-    expect(result).not.toContain("'");
-  });
-
-  it('translates "I\'m" with lowercase output', () => {
-    const result = translateContraction("I'm");
-    expect(result.length).toBeGreaterThan(0);
-    // I-contractions should be lowercase (I is only capitalized in English by convention)
-    expect(result).toBe(result.toLowerCase());
-  });
-
-  it('translates "I\'ll" with lowercase output', () => {
-    const result = translateContraction("I'll");
-    expect(result.length).toBeGreaterThan(0);
-    expect(result).toBe(result.toLowerCase());
-  });
-
-  it('translates "I\'ve" with lowercase output', () => {
-    const result = translateContraction("I've");
-    expect(result.length).toBeGreaterThan(0);
-    expect(result).toBe(result.toLowerCase());
+  it('translates I-contractions as lowercase', () => {
+    // I is only capitalized in English by convention
+    expect(translateContraction("I'm")).toBe('aim');
+    expect(translateContraction("I'll")).toBe('ail');
+    expect(translateContraction("I've")).toBe('aiv');
   });
 
   it('produces stable output for the same input', () => {
     const first = translateContraction("don't");
     const second = translateContraction("don't");
+    const third = translateContraction("don't");
     expect(first).toBe(second);
+    expect(second).toBe(third);
   });
 
   it('falls back to translating parts when contraction not in dictionary', () => {
@@ -66,6 +43,7 @@ describe('translateContraction', () => {
   it('respects IPA format', () => {
     const ingglish = translateContraction("don't", 'ingglish');
     const ipa = translateContraction("don't", 'ipa');
-    expect(ingglish).not.toBe(ipa);
+    expect(ingglish).toBe('dohnt');
+    expect(ipa).not.toBe(ingglish);
   });
 });

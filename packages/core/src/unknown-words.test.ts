@@ -10,6 +10,7 @@ import {
 } from '@ingglish/fallback';
 import { translateWithRules, wordToArpabet } from '@ingglish/g2p';
 import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
+import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
 import { translateWord } from './translate/forward';
 import { UNKNOWN_TECH_WORDS } from './test-setup';
 
@@ -40,6 +41,54 @@ describe('unknown-words', () => {
         }
       }
       expect(identicalDuplicates).toEqual([]);
+    });
+
+    it('should only contain valid ARPAbet phonemes', () => {
+      const validPhonemes = new Set<string>([...ARPABET_VOWELS, ...ARPABET_CONSONANTS]);
+      const invalid: string[] = [];
+
+      for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+        for (const p of phonemes) {
+          const bare = p.replace(STRESS_MARKER_REGEX, '');
+          if (!validPhonemes.has(bare)) {
+            invalid.push(`${word}: invalid phoneme "${p}"`);
+          }
+        }
+      }
+
+      expect(invalid).toEqual([]);
+    });
+
+    it('should have stress markers on vowels only', () => {
+      const vowelSet = new Set<string>(ARPABET_VOWELS as readonly string[]);
+      const errors: string[] = [];
+
+      for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+        for (const p of phonemes) {
+          const bare = p.replace(STRESS_MARKER_REGEX, '');
+          const hasStress = STRESS_MARKER_REGEX.test(p);
+          if (hasStress && !vowelSet.has(bare)) {
+            errors.push(`${word}: stress on consonant "${p}"`);
+          }
+        }
+      }
+
+      expect(errors).toEqual([]);
+    });
+  });
+
+  describe('normalizeVelarNasal', () => {
+    it('should correct N before K to NG K', () => {
+      // "think" in CMU has N K which should be normalized to NG K
+      const phonemes = lookupPronunciation('think');
+      expect(phonemes).toContain('NG');
+      expect(phonemes).not.toContain('N');
+    });
+
+    it('should not change N in other positions', () => {
+      // "run" has N at end, should stay N
+      const phonemes = lookupPronunciation('run');
+      expect(phonemes).toContain('N');
     });
   });
 
@@ -561,131 +610,101 @@ describe('unknown-words', () => {
 
   describe('translateWithStemming', () => {
     it('should handle -ing suffix with known base', () => {
-      const result = translateWithStemming('running');
-      expect(result === null || typeof result === 'string').toBe(true);
+      expect(translateWithStemming('running')).toBe('runing');
     });
 
     it('should handle -ly suffix with known base', () => {
-      const result = translateWithStemming('quickly');
-      expect(result === null || typeof result === 'string').toBe(true);
+      expect(translateWithStemming('quickly')).toBe('kwiklee');
     });
 
     it('should handle -ed suffix', () => {
-      const result = translateWithStemming('walked');
-      expect(result === null || typeof result === 'string').toBe(true);
+      expect(translateWithStemming('walked')).toBe('wawkt');
     });
 
     it('should handle un- prefix with known base', () => {
-      // "unhappy" = un- + happy (both known)
-      const result = translateWithStemming('unhappy');
-      expect(result === null || typeof result === 'string').toBe(true);
+      expect(translateWithStemming('unhappy')).toBe('anhapee');
     });
 
     it('should handle re- prefix with known base', () => {
-      // "rebuild" = re- + build
-      const result = translateWithStemming('rebuild');
-      expect(result === null || typeof result === 'string').toBe(true);
+      expect(translateWithStemming('rebuild')).toBe('reebild');
     });
 
     it('should return null for words without recognizable stems', () => {
-      const result = translateWithStemming('xyzzy');
-      expect(result).toBeNull();
+      expect(translateWithStemming('xyzzy')).toBeNull();
     });
 
     it('should return null for short prefixed words', () => {
-      // Too short to be a valid prefix + stem
-      const result = translateWithStemming('una');
-      expect(result).toBeNull();
+      expect(translateWithStemming('una')).toBeNull();
     });
 
     it('should handle i→y stem change (loveliest→lovely+est)', () => {
-      const result = translateWithStemming('loveliest');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('loveliest')).toBe('luvleeast');
     });
 
     it('should handle i→y stem change with -ly (happily→happy+ly)', () => {
-      const result = translateWithStemming('happily');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('happily')).toBe('hapeelee');
     });
 
     it('should handle i→y stem change with -er (easier→easy+er)', () => {
-      const result = translateWithStemming('easier');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('easier')).toBe('eezeeer');
     });
 
     it('should handle -ify suffix (uglify→ugly+ify)', () => {
-      const result = translateWithStemming('uglify');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('uglify')).toBe('ugleeifai');
     });
 
     it('should handle -ification suffix (uglification→ugly+ification)', () => {
-      const result = translateWithStemming('uglification');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('uglification')).toBe('ugleeifikayshan');
     });
 
     it('should handle -ifying suffix (uglifying→ugly+ifying)', () => {
-      const result = translateWithStemming('uglifying');
-      expect(result).not.toBeNull();
+      expect(translateWithStemming('uglifying')).toBe('ugleeifaiing');
     });
   });
 
   describe('translateAsBritish', () => {
     it('should convert -our to -or (colour→color)', () => {
-      const result = translateAsBritish('colour');
-      expect(result).not.toBeNull();
-      // Should match the CMU pronunciation of "color"
-      expect(result).toBe(translateAsBritish('colour'));
+      expect(translateAsBritish('colour')).toBe('kuler');
     });
 
     it('should convert -ise to -ize (realise→realize)', () => {
-      const result = translateAsBritish('realise');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('realise')).toBe('reealaiz');
     });
 
     it('should convert -re to -er (centre→center)', () => {
-      const result = translateAsBritish('centre');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('centre')).toBe('senter');
     });
 
     it('should convert -isation to -ization', () => {
-      const result = translateAsBritish('organisation');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('organisation')).toBe('organazayshan');
     });
 
     it('should convert -ence to -ense (defence→defense)', () => {
-      const result = translateAsBritish('defence');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('defence')).toBe('difens');
     });
 
     it('should convert -ogue to -og (catalogue→catalog)', () => {
-      const result = translateAsBritish('catalogue');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('catalogue')).toBe('katalawg');
     });
 
     it('should return null for words that are not British spellings', () => {
-      const result = translateAsBritish('xyzzy');
-      expect(result).toBeNull();
+      expect(translateAsBritish('xyzzy')).toBeNull();
     });
 
     it('should return null when American form is not in dictionary', () => {
-      // "blorgour" → "blorgor" — not a real word
-      const result = translateAsBritish('blorgour');
-      expect(result).toBeNull();
+      expect(translateAsBritish('blorgour')).toBeNull();
     });
 
     it('should handle -oured suffix (favoured→favored)', () => {
-      const result = translateAsBritish('favoured');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('favoured')).toBe('fayverd');
     });
 
     it('should convert -ey to -y (curtsey→curtsy)', () => {
-      const result = translateAsBritish('curtsey');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('curtsey')).toBe('kertsee');
     });
 
     it('should handle grey→gray', () => {
-      const result = translateAsBritish('grey');
-      expect(result).not.toBeNull();
+      expect(translateAsBritish('grey')).toBe('gray');
     });
   });
 
@@ -716,16 +735,7 @@ describe('unknown-words', () => {
 
     it('should handle github via custom pronunciation', () => {
       // github is now a custom pronunciation (G IH1 T HH AH1 B)
-      const result = translateUnknown('github');
-      expect(result).toBe('github'); // git + hub
-    });
-
-    it('should produce correct IPA for github', () => {
-      // github custom pronunciation: G IH1 T HH AH1 B → /ɡɪthʌb/
-      const result = translateUnknown('github', 'ipa');
-      expect(result).toContain('t'); // separate t
-      expect(result).toContain('h'); // separate h
-      expect(result).not.toContain('θ'); // NOT theta
+      expect(translateUnknown('github')).toBe('github');
     });
   });
 

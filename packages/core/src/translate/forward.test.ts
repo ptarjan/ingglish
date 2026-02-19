@@ -86,19 +86,13 @@ describe('translator', () => {
     });
 
     it('should handle unknown words with fallback', () => {
-      // Unknown words should still return something (using fallback rules)
-      const result = translateWord('asdfgh');
-      expect(result).toBeDefined();
-      expect(typeof result).toBe('string');
+      // Unknown words use G2P rules to produce a phonetic translation
+      expect(translateWord('asdfgh')).toBe('asdfg');
     });
 
-    it('should translate url (not in CMU dictionary)', () => {
-      // "url" is not in CMU dictionary, should use rule-based G2P
-      // u->AH1 (u), r->R (r), l->L (l) = "url"
-      const result = translateWord('url');
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
-      // The rule-based translation should produce something
+    it('should translate url from dictionary', () => {
+      // "url" is in CMU dictionary
+      expect(translateWord('url')).toBe('url');
     });
   });
 
@@ -196,11 +190,12 @@ describe('translator', () => {
     });
 
     it('should handle mixed content', () => {
-      const result = translateSync('Hello, World! How are you?');
-      expect(result).toBeDefined();
-      expect(result).toContain(',');
-      expect(result).toContain('!');
-      expect(result).toContain('?');
+      expect(translateSync('Hello, World! How are you?')).toBe('Haloh, Werld! Hou ar yuu?');
+    });
+
+    it('should capitalize first word of each sentence', () => {
+      expect(translateSync('hello. world')).toBe('Haloh. Werld');
+      expect(translateSync('stop! go now.')).toBe('Stop! Goh nou.');
     });
   });
 
@@ -269,10 +264,6 @@ describe('translator', () => {
   });
 
   describe('edge cases for coverage', () => {
-    it('should handle empty string in translateWord', () => {
-      expect(translateWord('')).toBe('');
-    });
-
     it('should handle contraction with leading apostrophe via fallback', () => {
       const result = translateWord("'xyz");
       expect(result).toBeDefined();
