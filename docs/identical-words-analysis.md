@@ -101,58 +101,45 @@ Following the precedent of splitting AH by stress (AH0→'a' for schwa vs AH1/2�
 
 The linguistic justification: English unstressed vowels often sound different from their stressed counterparts. Just as schwa (/ə/) and strut (/ʌ/) are technically the same CMU phoneme but sound different, unstressed /iː/ in "happy" sounds different from stressed /iː/ in "bee", and unstressed /oʊ/ in "avocado" sounds different from stressed /oʊ/ in "go". English speakers generally perceive these as different sounds.
 
-We tested all 15 stress-0 vowel phonemes × 70 options (1,036 combinations). Twenty-four collision-free improvements were found.
+We tested all 15 stress-0 vowel phonemes × 70 options (1,036 combinations). Twenty-five collision-free improvements were found, but frequency weighting reveals that only three have significant real-text impact.
 
-### Top Candidates
+### Top Candidates (sorted by frequency impact)
 
-| Unstressed Phoneme | Current | Proposed | Gained | Lost | Net Gain |
-|---------------------|---------|----------|--------|------|----------|
-| IY0 (unstressed /iː/) | ee | y | +708 | -61 | **+647** |
-| OW0 (unstressed /oʊ/) | oh | o | +469 | -2 | **+467** |
-| UW0 (unstressed /uː/) | uu | u | +95 | -0 | **+95** |
-| AO0 (unstressed /ɔː/) | aw | o | +102 | -10 | **+92** |
+| Unstressed Phoneme | Current | Proposed | Net /M | Top Gains (/M) | Top Losses (/M) |
+|---------------------|---------|----------|--------|-----------------|-----------------|
+| IY0 (unstressed /iː/) | ee | y | **+2,700** | every (563), party (239), story (226), body (201) | frisbee (2), godspeed (1), chimpanzee (1) |
+| UW0 (unstressed /uː/) | uu | o | **+912** | into (866), onto (38), unto (8) | — |
+| OW0 (unstressed /oʊ/) | oh | o | **+246** | hotel (106), noel (19), motel (19), november (9) | — |
+| UW0 (unstressed /uː/) | uu | u | **+9** | flu (<1), tofu (<1), tutu (<1) | — |
+| AO0 (unstressed /ɔː/) | aw | o | **+0.5** | menthol (<1), oblong (<1) | — |
 
-TODO: Convert these raw word counts to frequency-weighted /M rates by re-running the exhaustive search script.
+Frequency weighting dramatically reshuffles the raw count rankings. UW0→'u' gains 97 words but only +9 /M (all rare). UW0→'o' gains just 3 words but +912 /M — because "into" alone is 866 /M. AO0→'o' gains 28 words but only +0.5 /M — essentially zero real-text impact.
 
 ### Analysis
 
-#### IY0: "ee" → "y" (+647 net)
+#### IY0: "ee" → "y" (+2,700 /M)
 
-The largest single improvement found. Unstressed /iː/ at the end of words like "happy", "body", "city", "baby" is already spelled 'y' in English. English speakers perceive this as a different sound from stressed /iː/ in "bee" — it's shorter and lighter. Many phonologists treat it as a distinct phoneme ([happy tensing](https://en.wikipedia.org/wiki/Happy-tensing)).
+The largest stress-conditioned improvement by far. Unstressed /iː/ at the end of words like "happy", "body", "city", "baby" is already spelled 'y' in English. English speakers perceive this as a different sound from stressed /iː/ in "bee" — it's shorter and lighter. Many phonologists treat it as a distinct phoneme ([happy tensing](https://en.wikipedia.org/wiki/Happy-tensing)).
 
-**Gained (708 words):** body, happy, city, baby, army, crazy, easy, every, family, heavy, party, sorry, study, etc.
+Top gains: every (563 /M), party (239 /M), story (226 /M), body (201 /M), army (88 /M), henry (79 /M), plenty (64 /M), hardly (53 /M), study (50 /M).
 
-**Lost (61 words):** adweek, banerjee, bisbee, chimpanzee, estee, marquee,essee, etc.
+Top losses: frisbee (2 /M), godspeed (1 /M), chimpanzee (1 /M) — all rare.
 
 The gains are extremely common English words; the losses are mostly proper nouns and rare words. This is the strongest stress-conditioned candidate.
 
-#### OW0: "oh" → "o" (+467 net)
+#### UW0: "uu" → "o" (+912 /M)
+
+A surprising find: just three words — into (866 /M), onto (38 /M), unto (8 /M) — but "into" is so common that it dominates. No losses.
+
+This is a better candidate than UW0→'u' (+9 /M), which gains 97 words that are all rare (flu, tofu, tutu, bayou, caribou). Frequency reveals that 3 common words vastly outweigh 97 rare ones.
+
+#### OW0: "oh" → "o" (+246 /M)
 
 Unstressed /oʊ/ is already spelled 'o' in most English words: "also", "avocado", "tomato", "potato". English speakers hear unstressed /oʊ/ as a simple 'o' sound.
 
-**Gained (469 words):** also, avocado, buffalo, casino, colorado, dynamo, espresso, fiasco, gusto, lingo, macho, memo, motto, pinto, portfolio, pseudo, studio, tornado, volcano, etc.
+Top gains: hotel (106 /M), noel (19 /M), motel (19 /M), november (9 /M), limo (9 /M), nemo (5 /M), porno (5 /M), info (4 /M). No losses.
 
-**Lost (2 words):** eroh, marohl
-
-Almost pure gain of common words for two obscure losses.
-
-#### UW0: "uu" → "u" (+95 net)
-
-Unstressed /uː/ spelled as 'u': "flu", "tofu", "tutu". Natural English spelling.
-
-**Gained (95 words):** flu, tofu, tutu, bayou, caribou, impromptu, peru, etc.
-
-**Lost (0 words):** Pure gain.
-
-Note: 'u' is already used for stressed /ʌ/ (AH1/2→'u'). This works because they're in complementary distribution: stressed 'u' = /ʌ/, unstressed 'u' = /uː/. This parallels the AH split where unstressed 'a' = /ə/ and stressed 'a' = /æ/ (via AE).
-
-#### AO0: "aw" → "o" (+92 net)
-
-Unstressed /ɔː/ spelled as 'o': "almost", "already", "autopsy", "chocolate", "dinosaur".
-
-**Gained (102 words):** almost, already, autopsy, chocolate, dinosaur, etc.
-
-**Lost (10 words).**
+Almost pure gain of common words.
 
 Note: Both OW0 and AO0 would map to 'o' in unstressed position. The script confirmed this doesn't create collisions — unstressed /oʊ/ and /ɔː/ rarely form minimal pairs, and many English dialects merge them in unstressed position anyway.
 
@@ -187,7 +174,7 @@ All five proposed changes were investigated and rejected. Every candidate fails 
 
 ### Stress-conditioned changes: Promising, needs further investigation.
 
-The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates (IY0→'y', OW0→'o') have strong linguistic justification and massive gains with minimal losses.
+The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates — IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M) — have strong linguistic justification and massive gains with minimal losses.
 
 Key questions before implementing:
 
@@ -231,6 +218,6 @@ Stress-conditioned changes may be an exception to this caution: 'y' for unstress
 
 The current base phoneme mappings are well-optimized. Frequency-weighted analysis shows that every proposed collision-free change either has negligible real-text impact (/aɪ/→ei: -1 /M), loses more common words than it gains (/ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M), or introduces perceptual ambiguity for English readers (/uː/→eu, /oʊ/→ow).
 
-Stress-conditioned splits are the most promising avenue for improvement. The AH0→'a' split produced a 67.6× frequency-weighted improvement — the single largest gain of any change. The exhaustive search found that IY0→'y' (+647 words), OW0→'o' (+467 words), UW0→'u' (+95 words), and AO0→'o' (+92 words) could collectively add over 1,300 more identical words. These follow the same linguistic principle: when CMU dictionary uses one phoneme label for sounds that English speakers perceive as different in stressed vs. unstressed positions, splitting by stress can unlock large gains without creating ambiguity.
+Stress-conditioned splits are the most promising avenue for improvement. The AH0→'a' split produced a 67.6× frequency-weighted improvement — the single largest gain of any change. The exhaustive search found three candidates with significant real-text impact: IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), and OW0→'o' (+246 /M). These follow the same linguistic principle: when CMU dictionary uses one phoneme label for sounds that English speakers perceive as different in stressed vs. unstressed positions, splitting by stress can unlock large gains without creating ambiguity.
 
-10,150 identical words (8.05%) is the current baseline. With stress-conditioned improvements, this could potentially reach ~11,400 while maintaining Ingglish's design constraints (unambiguous readability, ASCII-only, no new characters).
+10,150 identical words (8.05%) is the current baseline. With the top three stress-conditioned improvements (+3,858 /M combined), the identical word count would increase while maintaining Ingglish's design constraints (unambiguous readability, ASCII-only, no new characters).
