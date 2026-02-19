@@ -52,8 +52,6 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredText, version]);
 
-  const translatedText = useMemo(() => tokens.map((t) => t.translated).join(''), [tokens]);
-
   const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     const index = parseInt(e.target.value, 10);
     if (!isNaN(index) && SAMPLE_PASSAGES[index] !== undefined) {
@@ -100,13 +98,6 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
             className="experiment-words"
             placeholder=""
           />
-        </div>
-      )}
-
-      {hasContent && translatedText.length > 0 && (
-        <div className="experiment-plain-output">
-          <div className="experiment-output-label">Plain text:</div>
-          <div className="experiment-plain-text">{translatedText}</div>
         </div>
       )}
     </div>
