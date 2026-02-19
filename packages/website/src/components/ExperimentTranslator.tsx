@@ -1,5 +1,7 @@
-import { useState, useMemo, useDeferredValue, useCallback } from 'react';
+import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
+
+const STORAGE_KEY = 'ingglish-experiment-text';
 
 const SAMPLE_PASSAGES: { label: string; text: string }[] = [
   {
@@ -71,7 +73,15 @@ interface ExperimentTranslatorProps {
 }
 
 function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
-  const [text, setText] = useState('');
+  const [text, setText] = useState(() => localStorage.getItem(STORAGE_KEY) ?? '');
+
+  useEffect(() => {
+    if (text.length > 0) {
+      localStorage.setItem(STORAGE_KEY, text);
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [text]);
 
   const deferredText = useDeferredValue(text);
 
