@@ -1,7 +1,7 @@
 // Lightweight content script for Ingglish extension
 // Uses message passing to background for translations and shared DOM utilities
 
-import type { OutputFormat } from '@ingglish/phonemes';
+import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import {
   applyTranslationsMap,
@@ -207,9 +207,9 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   injectTooltipBehavior(document);
 
   // Inject alternative script font when needed
-  if (format in SCRIPT_FONTS) {
-    const [id, family] = SCRIPT_FONTS[format];
-    injectScriptFont(document, id, family);
+  const scriptFont = SCRIPT_FONTS[format];
+  if (scriptFont !== undefined) {
+    injectScriptFont(document, scriptFont[0], scriptFont[1]);
   }
 
   const collectStart = performance.now();
@@ -408,9 +408,9 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
 
-  if (format in SCRIPT_FONTS) {
-    const [id, family] = SCRIPT_FONTS[format];
-    injectScriptFont(document, id, family);
+  const scriptFont = SCRIPT_FONTS[format];
+  if (scriptFont !== undefined) {
+    injectScriptFont(document, scriptFont[0], scriptFont[1]);
   }
 
   const perf = { start: performance.now(), query: 0, collect: 0, fetch: 0, apply: 0 };
@@ -494,13 +494,7 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   // Update badge
   const badge = document.getElementById('ingglish-badge');
   if (badge) {
-    badge.textContent =
-      (
-        { ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯', deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻' } as Record<
-          string,
-          string
-        >
-      )[format] ?? format;
+    badge.textContent = getFormatNativeLabel(format);
   }
 
   // Update observer with new translations
@@ -530,9 +524,7 @@ function addTranslationBadge(format: OutputFormat): void {
 
   const badge = document.createElement('div');
   badge.id = 'ingglish-badge';
-  badge.textContent =
-    ({ ingglish: 'Ingglish', ipa: 'IPA', shavian: '𐑖𐑱𐑝𐑾𐑯' } as Record<string, string>)[format] ??
-    format;
+  badge.textContent = getFormatNativeLabel(format);
   badge.style.cssText = `
     position: fixed;
     bottom: 20px;

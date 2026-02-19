@@ -9,6 +9,8 @@ export interface FormatHandler {
   preservesCase?: boolean;
   /** Display name ('Ingglish', 'IPA', etc.) */
   label?: string;
+  /** Display name in the format's own script (e.g. '𐑖𐑱𐑝𐑾𐑯' for Shavian) */
+  nativeLabel?: string;
   /** Compound word join separator. Default '' */
   joinSeparator?: string;
 }
@@ -47,6 +49,15 @@ export function getFormatPreservesCase(name: string): boolean {
  */
 export function getFormatLabel(name: string): string {
   return registry.get(name)?.label ?? name;
+}
+
+/**
+ * Returns the native-script label for a format (e.g. '𐑖𐑱𐑝𐑾𐑯' for Shavian).
+ * Falls back to the standard label, then the raw format name.
+ */
+export function getFormatNativeLabel(name: string): string {
+  const handler = registry.get(name);
+  return handler?.nativeLabel ?? handler?.label ?? name;
 }
 
 /**

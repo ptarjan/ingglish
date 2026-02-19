@@ -9,6 +9,7 @@ export function registerDeseret(): void {
     isLatinScript: false,
     preservesCase: false,
     label: 'Deseret',
+    nativeLabel: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
   });
 }
 

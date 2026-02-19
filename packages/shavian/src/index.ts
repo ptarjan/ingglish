@@ -9,6 +9,7 @@ export function registerShavian(): void {
     isLatinScript: false,
     preservesCase: false,
     label: 'Shavian',
+    nativeLabel: '𐑖𐑱𐑝𐑾𐑯',
   });
 }
 

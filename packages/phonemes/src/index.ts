@@ -19,6 +19,7 @@ export {
   getFormatIsLatinScript,
   getFormatPreservesCase,
   getFormatLabel,
+  getFormatNativeLabel,
   getFormatJoinSeparator,
 } from './format-registry';
 export type { FormatHandler } from './format-registry';
