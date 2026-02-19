@@ -27,7 +27,7 @@
 /* Two-column grid */
 .experiment-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 2rem;
   align-items: start;
 }
@@ -42,7 +42,8 @@
 
 /* Editor */
 .mapping-editor {
-  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .editor-controls {
