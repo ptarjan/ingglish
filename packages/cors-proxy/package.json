@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
+    "build:fast": "tsc --noEmit",
     "lint": "eslint --cache src",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
