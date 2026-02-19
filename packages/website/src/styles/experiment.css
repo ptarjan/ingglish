@@ -272,7 +272,7 @@
   color: inherit;
 }
 
-.experiment-diff {
+.format-diff {
   text-decoration: underline dotted var(--color-primary);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.2em;

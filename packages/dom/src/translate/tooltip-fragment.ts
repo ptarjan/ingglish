@@ -5,7 +5,7 @@
 import { translateSyncWithMapping } from 'ingglish';
 import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
-import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD, EXPERIMENT_DIFF_CLASS } from '../constants';
+import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD, FORMAT_DIFF_CLASS } from '../constants';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // Template span for cloneNode (faster than createElement)
@@ -32,7 +32,7 @@ export function createTooltipFragment(
   const fragment = document.createDocumentFragment();
   const tokens = translateSyncWithMapping(text, format);
 
-  // For non-default formats, get standard Ingglish tokens to detect experiment diffs
+  // For non-default formats, get standard Ingglish tokens to detect format diffs
   const stdTokens = format !== 'ingglish' ? translateSyncWithMapping(text, 'ingglish') : null;
 
   // Accumulate adjacent non-translated text to reduce DOM node count
@@ -59,7 +59,7 @@ export function createTooltipFragment(
       const tooltip = isDiff ? `${token.original} (Ingglish: ${stdSpelling})` : token.original;
       span.setAttribute(ATTR_ORIGINAL_WORD, tooltip);
       if (isDiff) {
-        span.classList.add(EXPERIMENT_DIFF_CLASS);
+        span.classList.add(FORMAT_DIFF_CLASS);
       }
       span.textContent = token.translated;
       fragment.appendChild(span);

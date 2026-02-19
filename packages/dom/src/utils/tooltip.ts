@@ -8,7 +8,7 @@ import {
   WORD_SPAN_CLASS,
   TOOLTIP_STYLES_ID,
   ATTR_ORIGINAL_WORD,
-  EXPERIMENT_DIFF_CLASS,
+  FORMAT_DIFF_CLASS,
 } from '../constants';
 
 const TOOLTIP_BEHAVIOR_ID = 'ingglish-tooltip-behavior';
@@ -56,7 +56,7 @@ export const TOOLTIP_STYLES = `
   to { opacity: 1; }
 }
 
-.${EXPERIMENT_DIFF_CLASS} {
+.${FORMAT_DIFF_CLASS} {
   border-bottom: 1.5px dotted currentColor;
 }
 `;

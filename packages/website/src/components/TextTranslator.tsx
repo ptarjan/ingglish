@@ -162,7 +162,7 @@ export function MappedWordDisplay({
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''} ${isDiff ? 'experiment-diff' : ''}`}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''} ${isDiff ? 'format-diff' : ''}`}
               data-orig={tooltip}
               onMouseEnter={
                 onHoverWord
