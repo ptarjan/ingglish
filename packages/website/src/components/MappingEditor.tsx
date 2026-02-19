@@ -149,17 +149,26 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         );
       }
 
+      // Skip AH0 — it's shown as a sub-row under AH instead
+      if (phoneme === 'AH0') {
+        return null;
+      }
+
       // Regular phonemes
       const currentSpelling = mapping.phonemeMap[phoneme] ?? getDefault(phoneme);
       const defaultSpelling = getDefault(phoneme);
 
+      // AH always shows AH0 (schwa) as an editable sub-row, since it has a distinct default
+      const showSchwa = phoneme === 'AH';
+
       // In advanced mode, show stress variants for vowels
       if (
-        advancedMode &&
-        phoneme !== 'AH0' &&
+        (advancedMode || showSchwa) &&
         ARPABET_TO_INGGLISH_MAP[phoneme] !== undefined &&
         VOWEL_PHONEMES.has(phoneme)
       ) {
+        // Which stress variants to show
+        const variants = advancedMode ? STRESS_VARIANTS : showSchwa ? ['0'] : [];
         return (
           <>
             <tr key={phoneme}>
@@ -175,39 +184,56 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               <td className="default-cell">{defaultSpelling}</td>
               <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>
-            {STRESS_VARIANTS.map((stress) => {
+            {variants.map((stress) => {
               const stressedPhoneme = `${phoneme}${stress}`;
-              const stressedValue = mapping.phonemeMap[stressedPhoneme];
-              const currentVal = stressedValue ?? '';
+              const stressedDefault = getDefault(stressedPhoneme);
+              const stressedValue = mapping.phonemeMap[stressedPhoneme] ?? stressedDefault;
               const stressLabel =
                 stress === '0' ? 'unstressed' : stress === '1' ? 'primary' : 'secondary';
+              // AH0 has a real default ('a'), other stress variants default to base
+              const hasOwnDefault = stressedDefault !== defaultSpelling;
               return (
                 <tr key={stressedPhoneme} className="stress-variant-row">
                   <td className="ipa-cell stress-label">
                     {phoneme}
                     {stress}
                   </td>
-                  <td
-                    className={`ingglish-cell editable-cell ${currentVal.length > 0 && currentVal !== defaultSpelling ? 'cell-changed' : ''}`}
-                  >
-                    <input
-                      type="text"
-                      value={currentVal}
-                      onChange={(e) => {
-                        if (e.target.value.length > 0) {
-                          mapping.setPhonemeSpelling(stressedPhoneme, e.target.value);
-                        } else {
-                          // Clear override by setting to default
-                          mapping.setPhonemeSpelling(stressedPhoneme, defaultSpelling);
-                        }
+                  {hasOwnDefault ? (
+                    <EditableCell
+                      value={stressedValue}
+                      defaultValue={stressedDefault}
+                      onChange={(v) => {
+                        mapping.setPhonemeSpelling(stressedPhoneme, v);
                       }}
-                      className="cell-input"
-                      placeholder={currentSpelling}
-                      spellCheck={false}
+                      isDuplicate={isDuplicate(stressedValue)}
                     />
+                  ) : (
+                    <td
+                      className={`ingglish-cell editable-cell ${stressedValue !== defaultSpelling && stressedValue.length > 0 ? 'cell-changed' : ''}`}
+                    >
+                      <input
+                        type="text"
+                        value={mapping.phonemeMap[stressedPhoneme] ?? ''}
+                        onChange={(e) => {
+                          if (e.target.value.length > 0) {
+                            mapping.setPhonemeSpelling(stressedPhoneme, e.target.value);
+                          } else {
+                            mapping.setPhonemeSpelling(stressedPhoneme, defaultSpelling);
+                          }
+                        }}
+                        className="cell-input"
+                        placeholder={currentSpelling}
+                        spellCheck={false}
+                      />
+                    </td>
+                  )}
+                  <td className="default-cell">{hasOwnDefault ? stressedDefault : stressLabel}</td>
+                  <td className="examples-cell">
+                    {stressedPhoneme === 'AH0' &&
+                      renderExamples(
+                        '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman)'
+                      )}
                   </td>
-                  <td className="default-cell">{stressLabel}</td>
-                  <td className="examples-cell"></td>
                 </tr>
               );
             })}
