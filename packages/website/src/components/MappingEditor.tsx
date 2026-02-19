@@ -154,6 +154,41 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         return null;
       }
 
+      // ER is an r-colored vowel — force 'r' suffix like the compound R-colored phonemes
+      if (phoneme === 'ER') {
+        const currentSpelling = mapping.phonemeMap[phoneme] ?? getDefault(phoneme);
+        const defaultSpelling = getDefault(phoneme);
+        const currentPrefix = currentSpelling.endsWith('r')
+          ? currentSpelling.slice(0, -1)
+          : currentSpelling;
+        const defaultPrefix = defaultSpelling.endsWith('r')
+          ? defaultSpelling.slice(0, -1)
+          : defaultSpelling;
+        const isChanged = currentPrefix !== defaultPrefix;
+
+        return (
+          <tr key={phoneme}>
+            <td className="ipa-cell">{getIPA(phoneme)}</td>
+            <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
+              <div className="r-colored-input">
+                <input
+                  type="text"
+                  value={currentPrefix}
+                  onChange={(e) => {
+                    mapping.setPhonemeSpelling(phoneme, e.target.value + 'r');
+                  }}
+                  className="cell-input"
+                  spellCheck={false}
+                />
+                <span className="r-suffix">r</span>
+              </div>
+            </td>
+            <td className="default-cell">{defaultSpelling}</td>
+            <td className="examples-cell">{renderExamples(sound.examples)}</td>
+          </tr>
+        );
+      }
+
       // Regular phonemes
       const currentSpelling = mapping.phonemeMap[phoneme] ?? getDefault(phoneme);
       const defaultSpelling = getDefault(phoneme);
