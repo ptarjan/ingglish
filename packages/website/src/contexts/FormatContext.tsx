@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { hasExperimentMapping } from '../hooks/useCustomMapping';
 
 interface FormatContextType {
   format: OutputFormat;
@@ -17,7 +18,13 @@ export function FormatProvider({ children }: FormatProviderProps) {
   const [format, setFormatState] = useState<OutputFormat>(() => {
     try {
       const saved = localStorage.getItem('outputFormat');
-      if (saved === 'ingglish' || saved === 'ipa' || saved === 'shavian' || saved === 'deseret') {
+      if (
+        saved === 'ingglish' ||
+        saved === 'ipa' ||
+        saved === 'shavian' ||
+        saved === 'deseret' ||
+        (saved === 'experiment' && hasExperimentMapping())
+      ) {
         return saved;
       }
     } catch {
@@ -37,7 +44,8 @@ export function FormatProvider({ children }: FormatProviderProps) {
 
   const toggleFormat = useCallback(() => {
     setFormatState((prev) => {
-      const FORMAT_ORDER: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
+      const base: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
+      const FORMAT_ORDER: OutputFormat[] = hasExperimentMapping() ? [...base, 'experiment'] : base;
       const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(prev) + 1) % FORMAT_ORDER.length];
       try {
         localStorage.setItem('outputFormat', newFormat);

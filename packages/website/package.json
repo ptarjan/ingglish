@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "ingglish": "^1.0.0",
+    "@ingglish/dictionary": "^1.0.0",
     "@ingglish/dom": "^1.0.0",
     "@ingglish/ipa": "^1.0.0",
     "@ingglish/phonemes": "^1.0.0",

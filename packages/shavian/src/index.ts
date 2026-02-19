@@ -6,6 +6,7 @@ export function registerShavian(): void {
   registerFormat('shavian', {
     forward: arpabetToShavian,
     reverseText: reverseTranslateShavianText,
+    isLatinScript: false,
   });
 }
 

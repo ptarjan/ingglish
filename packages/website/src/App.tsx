@@ -4,6 +4,7 @@ import { translate } from 'ingglish';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
+import { useFormat } from './contexts/FormatContext';
 
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,8 +26,9 @@ const SpellingGuide = lazyWithReload(() => import('./components/SpellingGuide'))
 const Extension = lazyWithReload(() => import('./components/Extension'));
 const Docs = lazyWithReload(() => import('./components/Docs'));
 const Poems = lazyWithReload(() => import('./components/Poems'));
+const Experiment = lazyWithReload(() => import('./components/Experiment'));
 
-type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs';
+type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs' | 'experiment';
 type ThemeMode = 'light' | 'dark' | 'auto';
 
 const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
@@ -72,6 +74,12 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
       'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
     path: '/docs',
   },
+  experiment: {
+    title: 'Experiment | Ingglish',
+    description:
+      'Create custom phoneme-to-spelling mappings and test them with translated text. See statistics and share your mapping.',
+    path: '/experiment',
+  },
 };
 
 const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
@@ -96,7 +104,8 @@ function getTabFromPath(): Tab {
     segment === 'url' ||
     segment === 'guide' ||
     segment === 'extension' ||
-    segment === 'poems'
+    segment === 'poems' ||
+    segment === 'experiment'
   ) {
     return segment;
   }
@@ -125,7 +134,16 @@ function redirectHashUrl(): void {
   }
 
   // #text, #guide, etc. → /text, /guide
-  const validTabs = ['tutorial', 'text', 'url', 'guide', 'extension', 'poems', 'docs'];
+  const validTabs = [
+    'tutorial',
+    'text',
+    'url',
+    'guide',
+    'extension',
+    'poems',
+    'docs',
+    'experiment',
+  ];
   if (validTabs.includes(hash)) {
     const target = hash === 'tutorial' ? '/' : `/${hash}`;
     window.history.replaceState(null, '', target + window.location.search);
@@ -155,6 +173,7 @@ function sendPageView(path: string): void {
 }
 
 function App() {
+  const { format, setFormat } = useFormat();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -365,6 +384,7 @@ function App() {
               ['/guide', 'guide', 'Spelling Guide'],
               ['/poems', 'poems', 'Poems'],
               ['/docs', 'docs', 'Docs'],
+              ['/experiment', 'experiment', 'Experiment'],
             ] as const
           ).map(([href, tab, label]) => (
             <a
@@ -380,6 +400,28 @@ function App() {
             </a>
           ))}
         </nav>
+      )}
+
+      {format === 'experiment' && activeTab !== 'experiment' && !isLoading && (
+        <div className="experiment-banner">
+          <span>Using custom mapping</span>
+          <button
+            className="btn-secondary btn-small"
+            onClick={() => {
+              setActiveTab('experiment');
+            }}
+          >
+            Edit Mapping
+          </button>
+          <button
+            className="btn-secondary btn-small"
+            onClick={() => {
+              setFormat('ingglish');
+            }}
+          >
+            Reset to Ingglish
+          </button>
+        </div>
       )}
 
       <main className="main">
@@ -421,6 +463,11 @@ function App() {
               {activeTab === 'guide' && <SpellingGuide />}
               {activeTab === 'poems' && <Poems />}
               {activeTab === 'extension' && <Extension />}
+              {activeTab === 'experiment' && (
+                <ErrorBoundary>
+                  <Experiment />
+                </ErrorBoundary>
+              )}
               {activeTab === 'docs' && (
                 <ErrorBoundary>
                   <Docs />

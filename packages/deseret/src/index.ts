@@ -6,6 +6,7 @@ export function registerDeseret(): void {
   registerFormat('deseret', {
     forward: arpabetToDeseret,
     reverseText: reverseTranslateDeseretText,
+    isLatinScript: false,
   });
 }
 

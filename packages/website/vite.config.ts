@@ -53,6 +53,7 @@ function copyRoutesToDist(): Plugin {
     'guide',
     'extension',
     'poems',
+    'experiment',
     'docs',
     ...docIds.map((id) => `docs/${id}`),
   ];

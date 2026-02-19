@@ -69,7 +69,7 @@ export function arpabetToIngglish(arpabet: string[]): string {
 }
 
 // Register default format at module load
-registerFormat('ingglish', { forward: arpabetToIngglish });
+registerFormat('ingglish', { forward: arpabetToIngglish, isLatinScript: true });
 
 /**
  * Converts ARPAbet to the specified output format.

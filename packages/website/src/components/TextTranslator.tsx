@@ -16,6 +16,7 @@ const FORMAT_LABELS = {
   ipa: 'IPA',
   shavian: 'Shavian',
   deseret: 'Deseret',
+  experiment: 'Experiment',
 };
 
 function SpeakerIcon() {

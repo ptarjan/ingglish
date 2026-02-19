@@ -13,7 +13,8 @@ export {
 export { VALID_ONSETS, isValidOnset, findOnsetStart } from './phonotactics';
 
 // Format registry
-export { registerFormat, getFormatHandler } from './format-registry';
+export { registerFormat, getFormatHandler, getFormatIsLatinScript } from './format-registry';
+export type { FormatHandler } from './format-registry';
 
 // Conversion maps
 export {
@@ -30,6 +31,10 @@ export {
 // Conversion functions
 export { arpabetPhonemeToIngglish, arpabetToIngglish, arpabetToFormat } from './to-ingglish';
 export { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
+
+// Custom format builder
+export { createCustomConverter } from './custom-format';
+export type { CustomMappingConfig } from './custom-format';
 
 // Types
 export type { OutputFormat } from './types';

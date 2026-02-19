@@ -2,7 +2,7 @@
  * Forward translation: English -> Ingglish/IPA.
  */
 
-import { arpabetToFormat } from '@ingglish/phonemes';
+import { arpabetToFormat, getFormatIsLatinScript } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation, getCustomPronunciation } from '@ingglish/dictionary';
 import {
@@ -47,7 +47,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
   // Latin-script formats (Ingglish, IPA) can pass words through unchanged.
   // Non-Latin scripts (Shavian, Deseret) must translate everything so no
   // Latin characters leak into the output.
-  const isLatinScript = format === 'ingglish' || format === 'ipa';
+  const isLatinScript = getFormatIsLatinScript(format);
 
   // Handle initialisms with suffixes FIRST (IDs, TVs, URLs, API's)
   // This must come before contraction handling to catch possessive initialisms like "API's"

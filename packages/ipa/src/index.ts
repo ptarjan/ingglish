@@ -2,7 +2,7 @@ import { registerFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw } from './to-ipa';
 
 export function registerIPA(): void {
-  registerFormat('ipa', { forward: arpabetToIPARaw });
+  registerFormat('ipa', { forward: arpabetToIPARaw, isLatinScript: true });
 }
 
 // Export individual functions for direct use
