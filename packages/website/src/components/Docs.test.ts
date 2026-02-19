@@ -93,7 +93,7 @@ describe('Docs links', () => {
             expect(fs.existsSync(targetFile), `File not found: ${mdPath}`).toBe(true);
 
             // Check if section anchor exists in target file
-            if (section) {
+            if (section !== undefined && section !== '') {
               const targetContent = fs.readFileSync(targetFile, 'utf-8');
               const headings = extractHeadings(targetContent);
               expect(
@@ -101,7 +101,7 @@ describe('Docs links', () => {
                 `Section "#${section}" not found in ${mdPath}. Available: ${headings.join(', ')}`
               ).toBe(true);
             }
-          } else if (mdPath === '' && section) {
+          } else if (mdPath === '' && section !== undefined && section !== '') {
             // Internal anchor link like #some-section
             const headings = extractHeadings(content);
             expect(

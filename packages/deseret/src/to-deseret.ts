@@ -34,10 +34,8 @@ export function arpabetToDeseret(arpabet: string[]): string {
     if (base === 'ER') {
       const lastChar = phoneme.charCodeAt(phoneme.length - 1);
       // '0' = 48 → unstressed schwa + R
-      const ahChar = ARPABET_TO_DESERET_MAP.AH!;
-      const rChar = ARPABET_TO_DESERET_MAP.R!;
-      result += lastChar === 48 ? DESERET_SCHWA : ahChar;
-      result += rChar;
+      result += lastChar === 48 ? DESERET_SCHWA : ARPABET_TO_DESERET_MAP.AH!;
+      result += ARPABET_TO_DESERET_MAP.R!;
       continue;
     }
 

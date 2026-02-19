@@ -70,7 +70,7 @@ function processTextNode(
 
       const word = match[0];
       const translated = translations[word.toLowerCase()];
-      if (translated) {
+      if (translated !== undefined) {
         const pattern = detectCasePattern(word);
         result += applyCasePattern(translated, pattern, word);
       } else {

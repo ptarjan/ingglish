@@ -395,7 +395,12 @@ function extractTableExamples(content: string, filename: string): Example[] {
     const cells = line.split('|').map((c) => c.trim());
     const rawEnglish = cells[englishCol];
     const rawIngglish = cells[ingglishCol];
-    if (!rawEnglish || !rawIngglish) {
+    if (
+      rawEnglish === undefined ||
+      rawEnglish === '' ||
+      rawIngglish === undefined ||
+      rawIngglish === ''
+    ) {
       continue;
     }
 
@@ -414,16 +419,16 @@ function extractTableExamples(content: string, filename: string): Example[] {
     // Multi-word phrases: pair up positionally ("my time" → "mai taim")
     if (englishWords.length === ingglishWords.length && englishWords.length > 1) {
       for (let j = 0; j < englishWords.length; j++) {
-        const eng = englishWords[j];
-        const ing = ingglishWords[j];
-        if (/^[a-z]+$/.test(eng!) && /^[a-z]+$/.test(ing!) && !SKIP_WORDS.has(eng!)) {
-          examples.push({ english: eng!, ingglish: ing!, source: filename, line: lineNum });
+        const eng = englishWords[j]!;
+        const ing = ingglishWords[j]!;
+        if (/^[a-z]+$/.test(eng) && /^[a-z]+$/.test(ing) && !SKIP_WORDS.has(eng)) {
+          examples.push({ english: eng, ingglish: ing, source: filename, line: lineNum });
         }
       }
     } else {
       // Comma-separated English words all map to the single Ingglish word
       const ingglish = ingglishWords[0];
-      if (!ingglish || !/^[a-z]+$/.test(ingglish) || SKIP_WORDS.has(ingglish)) {
+      if (ingglish === undefined || !/^[a-z]+$/.test(ingglish) || SKIP_WORDS.has(ingglish)) {
         continue;
       }
       for (const eng of englishWords) {

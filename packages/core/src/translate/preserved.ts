@@ -18,12 +18,14 @@ export function expandPlaceholder(
     if (token.includes(placeholder)) {
       const result: TranslatedToken[] = [];
       const parts = token.split(placeholder);
-      if (parts[0]!.length > 0) {
-        result.push({ original: parts[0]!, translated: parts[0]!, isWord: false, matched: true });
+      const before = parts[0] ?? '';
+      const after = parts[1] ?? '';
+      if (before.length > 0) {
+        result.push({ original: before, translated: before, isWord: false, matched: true });
       }
       result.push({ original, translated: original, isWord: false, matched: true });
-      if (parts[1] && parts[1].length > 0) {
-        result.push({ original: parts[1], translated: parts[1], isWord: false, matched: true });
+      if (after.length > 0) {
+        result.push({ original: after, translated: after, isWord: false, matched: true });
       }
       return result;
     }

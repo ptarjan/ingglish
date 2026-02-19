@@ -194,11 +194,14 @@ function Docs(): JSX.Element {
         const filename = mdPath.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {
-          link.setAttribute('href', section ? `/docs/${docId}#${section}` : `/docs/${docId}`);
+          link.setAttribute(
+            'href',
+            section !== undefined && section !== '' ? `/docs/${docId}#${section}` : `/docs/${docId}`
+          );
           link.addEventListener('click', (e) => {
             e.preventDefault();
             setActiveDoc(docId);
-            if (section) {
+            if (section !== undefined && section !== '') {
               setTimeout(() => {
                 document.getElementById(section)?.scrollIntoView();
               }, 100);
