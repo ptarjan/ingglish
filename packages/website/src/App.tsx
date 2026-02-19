@@ -4,8 +4,6 @@ import { translate } from 'ingglish';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
-import { useFormat } from './contexts/FormatContext';
-
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function lazyWithReload<T extends { default: ComponentType<any> }>(
@@ -173,7 +171,6 @@ function sendPageView(path: string): void {
 }
 
 function App() {
-  const { format, setFormat } = useFormat();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -400,28 +397,6 @@ function App() {
             </a>
           ))}
         </nav>
-      )}
-
-      {format === 'experiment' && activeTab !== 'experiment' && !isLoading && (
-        <div className="experiment-banner">
-          <span>Using custom mapping</span>
-          <button
-            className="btn-secondary btn-small"
-            onClick={() => {
-              setActiveTab('experiment');
-            }}
-          >
-            Edit Mapping
-          </button>
-          <button
-            className="btn-secondary btn-small"
-            onClick={() => {
-              setFormat('ingglish');
-            }}
-          >
-            Reset to Ingglish
-          </button>
-        </div>
       )}
 
       <main className="main">
