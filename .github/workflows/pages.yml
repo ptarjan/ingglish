@@ -36,16 +36,13 @@ jobs:
         if: steps.docs-cache.outputs.cache-hit != 'true'
         run: npm run docs
 
-      - name: Build all packages
-        run: npm run build:fast
-        env:
-          BASE_URL: /
-          VITE_CORS_PROXY_URL: https://ingglish-cors-proxy.curly-unit-b9e0.workers.dev/?url=
+      - name: Build libraries and extension
+        run: npx turbo build:fast --filter='!@ingglish/website'
 
       - name: Package extension zip
         run: cd packages/extension/dist && zip -r ../../website/public/ingglish-extension.zip .
 
-      - name: Rebuild website with extension zip
+      - name: Build website
         run: npm run build:fast -w @ingglish/website
         env:
           BASE_URL: /

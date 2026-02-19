@@ -39,7 +39,7 @@ jobs:
         run: npm run format:check
 
   # ============================================================================
-  # BUILD - Generates artifacts needed for type-checking and e2e tests
+  # BUILD - Generates artifacts needed for type-checking and docs tests
   # ============================================================================
 
   build:
@@ -69,10 +69,10 @@ jobs:
           retention-days: 1
 
   # ============================================================================
-  # POST-BUILD CHECKS - Need build artifacts (run in parallel)
+  # POST-BUILD CHECKS
   # ============================================================================
 
-  # Type-aware linting needs .d.ts files
+  # Type-aware linting needs .d.ts files from build
   typecheck:
     runs-on: ubuntu-latest
     needs: build
@@ -96,8 +96,9 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit -p packages/website/tsconfig.json
 
+      # Run lint in parallel across workspaces via turbo
       - name: Lint (type-aware)
-        run: npm run lint
+        run: npx turbo lint
 
   # Tests that need build artifacts (docs, extension)
   test-deps:
@@ -117,10 +118,12 @@ jobs:
       - name: Test docs links
         run: npm run test:docs -w @ingglish/website
 
-  # E2E tests - chromium and webkit via matrix
+  # ============================================================================
+  # E2E TESTS - Start immediately, build from turbo cache (no needs: build)
+  # ============================================================================
+
   test-e2e:
     runs-on: ubuntu-latest
-    needs: build
     strategy:
       matrix:
         include:
@@ -131,12 +134,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v7
         with:
-          name: build-output
-          path: .
+          dict-cache: true
+
+      # Build from turbo cache instead of waiting for build job + downloading artifacts
+      - name: Generate docs
+        run: npm run docs
+
+      - name: Build (from turbo cache)
+        run: npm run build:fast
 
       - uses: ./.github/actions/playwright
         with:
