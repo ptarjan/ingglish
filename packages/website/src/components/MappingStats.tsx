@@ -161,19 +161,31 @@ function MappingStats({ version }: MappingStatsProps) {
       <h3>Statistics {computing && <span className="stats-updating">(updating...)</span>}</h3>
 
       <div className="stats-cards">
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          title="Words that map to the same spelling as another word (e.g. to/too/two all become 'tuu')"
+        >
           <div className="stat-value">{stats.collisionCount.toLocaleString()}</div>
           <div className="stat-label">Collisions</div>
         </div>
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          title="Words whose spelling stays exactly the same after translation (e.g. 'bed' stays 'bed')"
+        >
           <div className="stat-value">{stats.identicalCount.toLocaleString()}</div>
           <div className="stat-label">Identical words</div>
         </div>
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          title="Groups of 2+ words that share the same translated spelling"
+        >
           <div className="stat-value">{stats.homophoneGroups.toLocaleString()}</div>
           <div className="stat-label">Homophone groups</div>
         </div>
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          title="How many of the 26 Latin letters appear in translated output"
+        >
           <div className="stat-value">{stats.lettersUsed} / 26</div>
           <div className="stat-label">Letters used</div>
         </div>
