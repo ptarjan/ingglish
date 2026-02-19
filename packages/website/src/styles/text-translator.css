@@ -223,6 +223,7 @@
 
 .word-token.unmatched {
   text-decoration: underline wavy var(--color-error);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 0.2em;
 }
 

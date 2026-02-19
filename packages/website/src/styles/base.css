@@ -80,7 +80,7 @@ a:hover {
   color: var(--color-tooltip-text);
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 0.85em;
   font-family:
     system-ui,
     -apple-system,
