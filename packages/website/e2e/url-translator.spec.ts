@@ -172,9 +172,9 @@ test.describe('URL Translator Navigation', () => {
 
   // Playwright's WebKit cannot create TouchEvent objects (Illegal constructor error)
   // Real iOS Safari works fine - this is a Playwright limitation
-  test('link click navigates and translates', async (_fixtures, testInfo) => {
+  test('link click navigates and translates', async () => {
     test.skip(
-      testInfo.project.name.includes('safari'),
+      test.info().project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
     );
     const input = page.locator('.url-input');
@@ -204,9 +204,9 @@ test.describe('URL Translator Navigation', () => {
 
   // Playwright's WebKit cannot create TouchEvent objects (Illegal constructor error)
   // Real iOS Safari works fine - this is a Playwright limitation
-  test('back button returns to previous page', async (_fixtures, testInfo) => {
+  test('back button returns to previous page', async () => {
     test.skip(
-      testInfo.project.name.includes('safari'),
+      test.info().project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
     );
     const input = page.locator('.url-input');
@@ -239,9 +239,9 @@ test.describe('URL Translator Navigation', () => {
     expect(wordCount).toBeGreaterThan(0);
   });
 
-  test('anchor link scrolls without refetching', async (_fixtures, testInfo) => {
+  test('anchor link scrolls without refetching', async () => {
     test.skip(
-      testInfo.project.name.includes('safari'),
+      test.info().project.name.includes('safari'),
       'Playwright WebKit cannot create TouchEvent'
     );
     const input = page.locator('.url-input');

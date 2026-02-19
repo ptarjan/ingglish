@@ -288,8 +288,8 @@ test.describe('Tab Navigation', () => {
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
 
-  test('subtitle link opens spelling guide', async (_fixtures, testInfo) => {
-    test.skip(testInfo.project.name.includes('mobile'), 'subtitle link is hidden on mobile');
+  test('subtitle link opens spelling guide', async () => {
+    test.skip(test.info().project.name.includes('mobile'), 'subtitle link is hidden on mobile');
     // Navigate back to text tab first
     await page.click('.tab:has-text("Translate Text")');
     await page.click('.subtitle-link');
