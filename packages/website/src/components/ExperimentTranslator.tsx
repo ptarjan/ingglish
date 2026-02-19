@@ -30,10 +30,10 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
 
 function ExperimentWordDisplay({
   tokens,
-  diffIndices,
+  diffMap,
 }: {
   tokens: TranslatedToken[];
-  diffIndices: Set<number>;
+  diffMap: Map<number, string>;
 }) {
   let wordIndex = 0;
   return (
@@ -41,13 +41,20 @@ function ExperimentWordDisplay({
       {tokens.map((token, i) => {
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
-          const isDiff = diffIndices.has(currentWordIndex);
-          const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
+          const stdSpelling = diffMap.get(currentWordIndex);
+          const isDiff = stdSpelling !== undefined;
+          // Show original English word, and Ingglish spelling if different
+          let tooltip: string | undefined;
+          if (isDiff) {
+            tooltip = `${token.original} (Ingglish: ${stdSpelling})`;
+          } else if (token.original.toLowerCase() !== token.translated.toLowerCase()) {
+            tooltip = token.original;
+          }
           return (
             <span
               key={i}
               className={`word-token ${isDiff ? 'experiment-diff' : ''}`}
-              data-orig={changed ? token.original : undefined}
+              data-orig={tooltip}
             >
               {token.translated}
             </span>
@@ -69,16 +76,16 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   const deferredText = useDeferredValue(text);
 
   // Use version as a dependency to force re-translation when mapping changes
-  const { tokens, diffIndices } = useMemo(() => {
+  const { tokens, diffMap } = useMemo(() => {
     if (deferredText.trim().length === 0) {
-      return { tokens: [] as TranslatedToken[], diffIndices: new Set<number>() };
+      return { tokens: [] as TranslatedToken[], diffMap: new Map<number, string>() };
     }
     try {
       const expTokens = translateSyncWithMapping(deferredText, 'experiment');
       const stdTokens = translateSyncWithMapping(deferredText, 'ingglish');
 
-      // Build set of word indices where experiment differs from standard
-      const diffs = new Set<number>();
+      // Map word indices that differ to their standard Ingglish spelling
+      const diffs = new Map<number, string>();
       let wordIdx = 0;
       for (let i = 0; i < expTokens.length; i++) {
         const expTok = expTokens[i];
@@ -88,14 +95,14 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
             stdTok?.isWord &&
             expTok.translated.toLowerCase() !== stdTok.translated.toLowerCase()
           ) {
-            diffs.add(wordIdx);
+            diffs.set(wordIdx, stdTok.translated);
           }
           wordIdx++;
         }
       }
-      return { tokens: expTokens, diffIndices: diffs };
+      return { tokens: expTokens, diffMap: diffs };
     } catch {
-      return { tokens: [] as TranslatedToken[], diffIndices: new Set<number>() };
+      return { tokens: [] as TranslatedToken[], diffMap: new Map<number, string>() };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredText, version]);
@@ -139,7 +146,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
       {hasContent && (
         <div className="experiment-output">
           <div className="experiment-output-label">Translated:</div>
-          <ExperimentWordDisplay tokens={tokens} diffIndices={diffIndices} />
+          <ExperimentWordDisplay tokens={tokens} diffMap={diffMap} />
         </div>
       )}
     </div>

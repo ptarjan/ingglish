@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
+import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
 import { arpabetPhonemeToIPA } from '@ingglish/ipa';
 import {
   vowelGroups,
@@ -18,7 +18,12 @@ function getDefault(phoneme: string): string {
   if (phoneme === 'AH0') {
     return 'a';
   }
-  return ARPABET_TO_INGGLISH_MAP[phoneme] ?? phoneme.toLowerCase();
+  // For stress variants (EY0, EY1, etc.), fall back to the base phoneme's spelling
+  return (
+    ARPABET_TO_INGGLISH_MAP[phoneme] ??
+    ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
+    phoneme.toLowerCase()
+  );
 }
 
 function renderExamples(examples: string): React.ReactNode {
