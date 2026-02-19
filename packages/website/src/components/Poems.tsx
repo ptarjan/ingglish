@@ -1,33 +1,24 @@
 import { useState, useMemo } from 'react';
-import { translateSync } from 'ingglish';
+import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { poems } from './poems-data';
+import { MappedWordDisplay } from './TextTranslator';
+import { buildDiffMap } from '../utils/diff-map';
 
-interface TranslatedWord {
-  english: string;
-  translated: string;
-  changed: boolean;
+interface TranslatedLine {
+  tokens: TranslatedToken[];
+  diffMap: Map<number, string> | undefined;
 }
 
-function translateLine(line: string, format: OutputFormat): TranslatedWord[] {
-  // Translate the full line so sentence-start capitalization applies
-  const fullTranslation = translateSync(line, format);
-  const englishTokens = line.split(/(\s+)/);
-  const translatedTokens = fullTranslation.split(/(\s+)/);
-
-  return englishTokens.map((token, i) => {
-    if (/^\s+$/.test(token)) {
-      return { english: token, translated: token, changed: false };
-    }
-    const translated = translatedTokens[i] ?? token;
-    return {
-      english: token,
-      translated,
-      changed: token.toLowerCase() !== translated.toLowerCase(),
-    };
-  });
+function translateLine(line: string, format: OutputFormat): TranslatedLine {
+  if (line === '') {
+    return { tokens: [], diffMap: undefined };
+  }
+  const tokens = translateSyncWithMapping(line, format);
+  const diffMap = buildDiffMap(tokens, line, format);
+  return { tokens, diffMap };
 }
 
 function PoemCard({
@@ -96,26 +87,30 @@ function PoemCard({
             </button>
           </div>
           <div className="poem-lines">
-            {translatedLines.map((words, li) => {
-              // Empty line = stanza break
-              if (words.length === 1 && words[0].english === '') {
+            {lines.map((line, li) => {
+              if (line === '') {
                 return <div key={li} className="poem-stanza-break" />;
               }
+              if (!showTranslated) {
+                return (
+                  <div key={li} className="poem-line">
+                    {line}
+                  </div>
+                );
+              }
+              const translated = translatedLines[li];
+              if (translated === undefined) {
+                return null;
+              }
+              const { tokens, diffMap } = translated;
               return (
                 <div key={li} className="poem-line">
-                  {words.map((w, wi) => {
-                    if (!showTranslated) {
-                      return <span key={wi}>{w.english}</span>;
-                    }
-                    if (!w.changed) {
-                      return <span key={wi}>{w.translated}</span>;
-                    }
-                    return (
-                      <span key={wi} className="poem-word-changed" data-orig={w.english}>
-                        {w.translated}
-                      </span>
-                    );
-                  })}
+                  <MappedWordDisplay
+                    tokens={tokens}
+                    diffMap={diffMap}
+                    showTooltip
+                    className="poem-words"
+                  />
                 </div>
               );
             })}

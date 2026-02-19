@@ -124,10 +124,33 @@
   height: 1rem;
 }
 
+/* Override word-display wrapper styles in poem context */
+.poem-line .word-display {
+  padding: 0;
+  background: transparent;
+  min-height: 0;
+  max-height: none;
+  overflow-y: visible;
+  white-space: normal;
+  display: inline;
+}
+
+/* Neutralize word-token hover effect in poems */
+.poem-lines .word-token {
+  cursor: default;
+  padding: 0;
+}
+
+.poem-lines .word-token:hover {
+  background: transparent;
+  color: inherit;
+}
+
 /* Translated words with tooltips */
-.poem-word-changed {
+.poem-lines .word-token[data-orig] {
   color: var(--color-primary);
   font-weight: 600;
+  cursor: help;
 }
 
 .poem-hint {

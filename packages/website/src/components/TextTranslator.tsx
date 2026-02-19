@@ -11,6 +11,7 @@ import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';
+import { buildDiffMap } from '../utils/diff-map';
 
 function SpeakerIcon() {
   return (
@@ -241,32 +242,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [deferredEnglish, lastEdited, format]);
 
-  // Diff map: word index → standard Ingglish spelling (only when format is 'experiment')
+  // Diff map: word index → standard Ingglish spelling (for non-ingglish formats)
   const diffMap = useMemo(() => {
-    if (format !== 'experiment' || forwardTokens === null) {
+    if (forwardTokens === null) {
       return undefined;
     }
-    try {
-      const stdTokens = translateSyncWithMapping(deferredEnglish, 'ingglish');
-      const diffs = new Map<number, string>();
-      let wordIdx = 0;
-      for (let i = 0; i < forwardTokens.length; i++) {
-        const expTok = forwardTokens[i];
-        const stdTok = stdTokens[i];
-        if (expTok?.isWord === true) {
-          if (
-            stdTok?.isWord === true &&
-            expTok.translated.toLowerCase() !== stdTok.translated.toLowerCase()
-          ) {
-            diffs.set(wordIdx, stdTok.translated);
-          }
-          wordIdx++;
-        }
-      }
-      return diffs.size > 0 ? diffs : undefined;
-    } catch {
-      return undefined;
-    }
+    return buildDiffMap(forwardTokens, deferredEnglish, format);
   }, [format, forwardTokens, deferredEnglish]);
 
   // Async reverse translation with useEffect
