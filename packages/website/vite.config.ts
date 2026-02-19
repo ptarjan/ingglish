@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
-import { copyFileSync, mkdirSync } from 'fs';
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 
 // Skip sourcemaps for data and vendor chunks
@@ -28,6 +28,72 @@ function processChunks(): Plugin {
       }
     },
   };
+}
+
+// Per-route OG metadata overrides
+interface RouteMeta {
+  title: string;
+  description: string;
+}
+
+const ROUTE_META: Record<string, RouteMeta> = {
+  text: {
+    title: 'Ingglish Text Translator',
+    description:
+      'Translate any English text to phonetic spelling instantly. See how words look when every spelling always makes the same sound.',
+  },
+  url: {
+    title: 'Ingglish URL Translator',
+    description:
+      'Paste any URL and read the page in phonetic English. Every spelling always makes the same sound.',
+  },
+  guide: {
+    title: 'Ingglish Spelling Guide',
+    description:
+      'Complete guide to the Ingglish phonetic alphabet. See how every English sound maps to a consistent spelling.',
+  },
+  poems: {
+    title: 'Ingglish Poems',
+    description:
+      'Classic poems translated into phonetic English. See how poetry sounds when every spelling always makes the same sound.',
+  },
+  experiment: {
+    title: 'Ingglish Experiment - Design Your Own Spelling',
+    description:
+      'Create your own phonetic spelling system. Customize how each sound is written, test with sample text, and compare statistics against standard Ingglish.',
+  },
+  docs: {
+    title: 'Ingglish Documentation',
+    description:
+      'Technical documentation for the Ingglish phonetic English project. Design decisions, architecture, and API reference.',
+  },
+};
+
+function customizeHtml(html: string, route: string): string {
+  const meta = ROUTE_META[route];
+  if (meta === undefined) {
+    return html;
+  }
+  const url = `https://ingglish.com/${route}`;
+  return html
+    .replace(
+      /<meta property="og:title" content="[^"]*"/,
+      `<meta property="og:title" content="${meta.title}"`
+    )
+    .replace(
+      /<meta property="og:description" content="[^"]*"/,
+      `<meta property="og:description" content="${meta.description}"`
+    )
+    .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
+    .replace(
+      /<meta name="twitter:title" content="[^"]*"/,
+      `<meta name="twitter:title" content="${meta.title}"`
+    )
+    .replace(
+      /<meta name="twitter:description" content="[^"]*"/,
+      `<meta name="twitter:description" content="${meta.description}"`
+    )
+    .replace(/<title>[^<]*<\/title>/, `<title>${meta.title}</title>`);
 }
 
 // Copy index.html to each route path so GitHub Pages serves the SPA for all routes
@@ -62,14 +128,18 @@ function copyRoutesToDist(): Plugin {
     name: 'copy-routes-to-dist',
     writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
-      const src = join(distDir, 'index.html');
+      const srcPath = join(distDir, 'index.html');
+      const baseHtml = readFileSync(srcPath, 'utf-8');
       for (const route of routes) {
         const dest = join(distDir, route, 'index.html');
         mkdirSync(dirname(dest), { recursive: true });
-        copyFileSync(src, dest);
+        // Use first path segment for metadata lookup (e.g. 'docs/foo' → 'docs')
+        const metaKey = route.split('/')[0];
+        const html = customizeHtml(baseHtml, metaKey);
+        writeFileSync(dest, html);
       }
       // 404.html as catch-all fallback for GitHub Pages
-      copyFileSync(src, join(distDir, '404.html'));
+      copyFileSync(srcPath, join(distDir, '404.html'));
     },
   };
 }
