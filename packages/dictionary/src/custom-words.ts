@@ -34,6 +34,30 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   withdrawing: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'IH0', 'NG'], // /wɪðˈdrɔɪŋ/ — CMU has /θ/
   withdrawn: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'N'], // /wɪðˈdrɔn/ — CMU has /θ/
 
+  // CMU has /s/ instead of /ʃ/ in -ciate/-ciation suffix
+  associate: ['AH0', 'S', 'OW1', 'SH', 'IY0', 'AH0', 'T'], // /əˈsoʊʃiˌət/ — CMU has /s/
+  associated: ['AH0', 'S', 'OW1', 'SH', 'IY0', 'EY2', 'T', 'IH0', 'D'], // /əˈsoʊʃiˌeɪtɪd/ — CMU has /s/
+  associates: ['AH0', 'S', 'OW1', 'SH', 'IY0', 'AH0', 'T', 'S'], // /əˈsoʊʃiˌəts/ — CMU has /s/
+  associating: ['AH0', 'S', 'OW1', 'SH', 'IY0', 'EY2', 'T', 'IH0', 'NG'], // /əˈsoʊʃiˌeɪtɪŋ/ — CMU has /s/
+  association: ['AH0', 'S', 'OW2', 'SH', 'IY0', 'EY1', 'SH', 'AH0', 'N'], // /əˌsoʊʃiˈeɪʃən/ — CMU has /s/
+  associations: ['AH0', 'S', 'OW2', 'SH', 'IY0', 'EY1', 'SH', 'AH0', 'N', 'Z'], // /əˌsoʊʃiˈeɪʃənz/ — CMU has /s/
+  excruciatingly: [
+    'EH2',
+    'K',
+    'S',
+    'K',
+    'R',
+    'UW1',
+    'SH',
+    'IY0',
+    'EY2',
+    'T',
+    'IH0',
+    'NG',
+    'L',
+    'IY0',
+  ], // /ɪkˈskruʃiˌeɪtɪŋli/ — CMU has /s/ (excruciating is correct)
+
   // Wrong consonant in derived form
   deliciously: ['D', 'IH0', 'L', 'IH1', 'SH', 'AH0', 'S', 'L', 'IY0'], // /dɪˈlɪʃəsli/ — CMU has /ʃ/ for final /s/
   potshots: ['P', 'AA1', 'SH', 'AA2', 'T', 'S'], // /ˈpɑtˌʃɑts/ — CMU has /tʃ/, should match potshot's /ʃ/
@@ -105,6 +129,15 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'], // /ˈsætɝˌdeɪ/
   tuesday: ['T', 'UW1', 'Z', 'D', 'EY2'], // /ˈtuzˌdeɪ/
   wednesday: ['W', 'EH1', 'N', 'Z', 'D', 'EY2'], // /ˈwɛnzˌdeɪ/
+
+  // Homographs: CMU default is the less common sense
+  read: ['R', 'IY1', 'D'], // /riːd/ — CMU default is past tense /rɛd/
+  live: ['L', 'IH1', 'V'], // /lɪv/ — CMU default is adjective /laɪv/
+  lead: ['L', 'IY1', 'D'], // /liːd/ — CMU default is metal /lɛd/
+  wind: ['W', 'IH1', 'N', 'D'], // /wɪnd/ — CMU default is verb /waɪnd/
+  use: ['Y', 'UW1', 'Z'], // /juːz/ — CMU default is noun /juːs/
+  close: ['K', 'L', 'OW1', 'Z'], // /kloʊz/ — CMU default is adjective /kloʊs/
+  record: ['R', 'EH1', 'K', 'ER0', 'D'], // /ˈrɛkɝd/ — CMU default is verb /rɪˈkɔrd/
 
   // Accented homographs: diacritics signal a different word than CMU's default
   résumé: ['R', 'EH1', 'Z', 'AH0', 'M', 'EY2'], // /ˈrɛzəˌmeɪ/ — French noun (CV), not verb "to resume"
