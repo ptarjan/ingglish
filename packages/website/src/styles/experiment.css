@@ -227,6 +227,7 @@
 }
 
 .experiment-input {
+  width: 100%;
   min-height: 5rem;
   resize: vertical;
 }
