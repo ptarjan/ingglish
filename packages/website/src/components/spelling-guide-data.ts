@@ -48,7 +48,7 @@ export const vowelGroups: SoundGroup[] = [
       {
         phoneme: 'EY',
         examples:
-          'd**ay** (day), c**a**ke (kayk), w**ei**gh (way), r**ai**n (rayn), th**ey** (dhay), gr**ea**t (grayt)',
+          'd**ay** (day), c**a**ke (kayk), w**eigh** (way), r**ai**n (rayn), th**ey** (dhay), gr**ea**t (grayt), str**aigh**t (strayt)',
       },
       {
         phoneme: 'IY',
@@ -143,13 +143,17 @@ export const consonantGroups: SoundGroup[] = [
     sounds: [
       { phoneme: 'P', examples: '**p**at (pat), ha**pp**y (hapee)' },
       { phoneme: 'B', examples: '**b**at (bat)' },
-      { phoneme: 'T', examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt)' },
+      {
+        phoneme: 'T',
+        examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt), ri**ght** (rait)',
+      },
       { phoneme: 'D', examples: 'be**d** (bed), la**dd**er (lader), play**ed** (playd)' },
       {
         phoneme: 'K',
-        examples: '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skuul)',
+        examples:
+          '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skuul), uni**que** (yuuneek)',
       },
-      { phoneme: 'G', examples: 'bi**g** (big), **gh**ost (gohst)' },
+      { phoneme: 'G', examples: 'bi**g** (big), **gh**ost (gohst), lea**gue** (leeg)' },
     ],
   },
   {
@@ -198,7 +202,10 @@ export const consonantGroups: SoundGroup[] = [
     name: 'Liquids & Glides',
     sounds: [
       { phoneme: 'L', examples: '**l**et (let), be**ll** (bel), wa**l**k (wawk)' },
-      { phoneme: 'R', examples: '**r**un (run), ca**rr**y (karree), **wr**ite (rait)' },
+      {
+        phoneme: 'R',
+        examples: '**r**un (run), ca**rr**y (karree), **wr**ite (rait), **rh**yme (raim)',
+      },
       { phoneme: 'W', examples: '**w**et (wet), **wh**at (wut), **o**ne (wun)' },
       { phoneme: 'Y', examples: '**y**es (yes), c**u**te (kyuut)' },
     ],
