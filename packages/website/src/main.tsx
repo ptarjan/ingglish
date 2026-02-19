@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { registerIPA } from '@ingglish/ipa';
 import { registerShavian } from '@ingglish/shavian';
 import { registerDeseret } from '@ingglish/deseret';
+import { registerExperiment } from './hooks/useCustomMapping';
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import './styles/index.css';
@@ -11,6 +12,7 @@ import './styles/index.css';
 registerIPA();
 registerShavian();
 registerDeseret();
+registerExperiment();
 
 const rootElement = document.getElementById('root');
 if (rootElement === null) {

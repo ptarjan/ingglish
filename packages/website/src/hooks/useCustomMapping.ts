@@ -273,12 +273,8 @@ export function hasExperimentMapping(): boolean {
   return loadFromStorage() !== null;
 }
 
-// Eagerly register the experiment format at module load so that
-// getFormatLabel('experiment') returns 'Experiment' on every page,
-// not just the Experiment page where useCustomMapping mounts.
-{
+/** Register the experiment format from localStorage (if any). Call at app startup. */
+export function registerExperiment(): void {
   const stored = loadFromStorage();
-  if (stored !== null) {
-    registerExperimentFormat(stored);
-  }
+  registerExperimentFormat(stored ?? { phonemeMap: {}, rColoredPrefixes: {} });
 }
