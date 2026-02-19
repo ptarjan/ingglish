@@ -16,7 +16,7 @@ function parseExample(example: string): {
     return { word: example, highlighted: '', isValid: false };
   }
 
-  const highlighted = match[1];
+  const highlighted = match[1]!;
   // Remove the ** markers to get the plain word
   const word = example.replace(/\*\*/g, '');
 

@@ -20,11 +20,11 @@ export function arpabetToDeseret(arpabet: string[]): string {
   const len = arpabet.length;
 
   for (let i = 0; i < len; i++) {
-    const phoneme = arpabet[i];
+    const phoneme = arpabet[i]!;
     const base = stripStress(phoneme);
 
     // Y+UW → Ew ligature
-    if (base === 'Y' && i + 1 < len && stripStress(arpabet[i + 1]) === 'UW') {
+    if (base === 'Y' && i + 1 < len && stripStress(arpabet[i + 1]!) === 'UW') {
       result += DESERET_EW;
       i++; // Skip the UW
       continue;
@@ -34,8 +34,10 @@ export function arpabetToDeseret(arpabet: string[]): string {
     if (base === 'ER') {
       const lastChar = phoneme.charCodeAt(phoneme.length - 1);
       // '0' = 48 → unstressed schwa + R
-      result += lastChar === 48 ? DESERET_SCHWA : ARPABET_TO_DESERET_MAP.AH;
-      result += ARPABET_TO_DESERET_MAP.R;
+      const ahChar = ARPABET_TO_DESERET_MAP.AH!;
+      const rChar = ARPABET_TO_DESERET_MAP.R!;
+      result += lastChar === 48 ? DESERET_SCHWA : ahChar;
+      result += rChar;
       continue;
     }
 

@@ -155,7 +155,7 @@ export function translateWithStemming(
         stemVariants.push(
           stem + 'e', // hoping -> hope
           stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
-          stem.length > 0 ? stem + stem[stem.length - 1] : stem // big -> bigg (for adding -er)
+          stem.length > 0 ? stem + stem[stem.length - 1]! : stem // big -> bigg (for adding -er)
         );
       }
       // i→y and stem+y work for both inflectional and derivational
@@ -170,7 +170,7 @@ export function translateWithStemming(
           // Select allomorph for -ed, -es, and -s based on last phoneme of stem
           let resolvedSuffix: string[];
           if (suffixArpabet === null) {
-            const lastPhoneme = baseArpabet[baseArpabet.length - 1];
+            const lastPhoneme = baseArpabet[baseArpabet.length - 1]!;
             if (suffix === 'ed') {
               resolvedSuffix = selectEdPhonemes(lastPhoneme);
             } else {

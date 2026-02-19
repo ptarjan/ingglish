@@ -108,10 +108,10 @@ export function tokenizeIPA(text: string): TextToken[] {
   let i = 0;
 
   while (i < text.length) {
-    if (isIPAChar(text[i])) {
+    if (isIPAChar(text[i]!)) {
       // Collect IPA word
       let wordEnd = i + 1;
-      while (wordEnd < text.length && isIPAChar(text[wordEnd])) {
+      while (wordEnd < text.length && isIPAChar(text[wordEnd]!)) {
         wordEnd++;
       }
       tokens.push({ text: text.slice(i, wordEnd), isWord: true });
@@ -119,7 +119,7 @@ export function tokenizeIPA(text: string): TextToken[] {
     } else {
       // Collect non-IPA characters (punctuation, whitespace)
       let nonWordEnd = i + 1;
-      while (nonWordEnd < text.length && !isIPAChar(text[nonWordEnd])) {
+      while (nonWordEnd < text.length && !isIPAChar(text[nonWordEnd]!)) {
         nonWordEnd++;
       }
       tokens.push({ text: text.slice(i, nonWordEnd), isWord: false });
@@ -170,10 +170,10 @@ export function tokenizePhonetic(text: string): IndexedToken[] {
   let i = 0;
 
   while (i < text.length) {
-    if (isPhoneticChar(text[i])) {
+    if (isPhoneticChar(text[i]!)) {
       // Collect word characters
       let wordEnd = i + 1;
-      while (wordEnd < text.length && isPhoneticChar(text[wordEnd])) {
+      while (wordEnd < text.length && isPhoneticChar(text[wordEnd]!)) {
         wordEnd++;
       }
       tokens.push({
@@ -185,7 +185,7 @@ export function tokenizePhonetic(text: string): IndexedToken[] {
     } else {
       // Collect non-word characters (punctuation, whitespace)
       let nonWordEnd = i + 1;
-      while (nonWordEnd < text.length && !isPhoneticChar(text[nonWordEnd])) {
+      while (nonWordEnd < text.length && !isPhoneticChar(text[nonWordEnd]!)) {
         nonWordEnd++;
       }
       tokens.push({

@@ -144,10 +144,10 @@ function applyMixedCase(translated: string, original: string): string {
   let result = '';
 
   for (let i = 0; i < lowerTranslated.length; i++) {
-    const char = lowerTranslated[i];
+    const char = lowerTranslated[i]!;
     // Use original's case pattern if within bounds, otherwise lowercase
-    result +=
-      i < original.length && original[i] === original[i].toUpperCase() ? char.toUpperCase() : char;
+    const origChar = i < original.length ? original[i]! : '';
+    result += origChar === origChar.toUpperCase() ? char.toUpperCase() : char;
   }
 
   return result;

@@ -388,11 +388,11 @@ describe('reverse-translator', () => {
       const words = tokens.filter((t) => t.isWord);
       expect(words.length).toBe(3);
       // "dha" should match (-> "the")
-      expect(words[0].matched).toBe(true);
+      expect(words[0]!.matched).toBe(true);
       // "zzxq" should not match
-      expect(words[1].matched).toBe(false);
+      expect(words[1]!.matched).toBe(false);
       // "kat" should match (-> "cat")
-      expect(words[2].matched).toBe(true);
+      expect(words[2]!.matched).toBe(true);
     });
 
     it('should preserve URLs unchanged', () => {

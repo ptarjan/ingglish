@@ -33,9 +33,10 @@ export function ipaToArpabet(ipa: string): string[] {
     }
 
     // Try single character
-    const oneChar = clean[i];
-    if (IPA_TO_ARPABET_MAP[oneChar] !== undefined) {
-      result.push(IPA_TO_ARPABET_MAP[oneChar]);
+    const oneChar = clean[i]!;
+    const oneCharArpabet = IPA_TO_ARPABET_MAP[oneChar];
+    if (oneCharArpabet !== undefined) {
+      result.push(oneCharArpabet);
     }
     // Skip unknown characters (punctuation, etc.)
     i++;

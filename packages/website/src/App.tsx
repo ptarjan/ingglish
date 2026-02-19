@@ -92,7 +92,7 @@ function getSystemTheme(): 'light' | 'dark' {
 
 function getTabFromPath(): Tab {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  const segment = path.split('/')[1] || '';
+  const segment = path.split('/')[1] ?? '';
   if (segment === 'docs') {
     return 'docs';
   }

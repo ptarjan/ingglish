@@ -292,9 +292,9 @@ describe('translator', () => {
       const { translateSyncWithMapping } = await import('./forward');
       const tokens = translateSyncWithMapping('Hello world', 'ingglish');
       expect(tokens).toHaveLength(3);
-      expect(tokens[0].isWord).toBe(true);
-      expect(tokens[1].isWord).toBe(false);
-      expect(tokens[2].isWord).toBe(true);
+      expect(tokens[0]!.isWord).toBe(true);
+      expect(tokens[1]!.isWord).toBe(false);
+      expect(tokens[2]!.isWord).toBe(true);
     });
   });
 

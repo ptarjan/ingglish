@@ -72,7 +72,7 @@ function translateNodesChunked(
 
       // Process this chunk
       while (index < endIndex) {
-        translateTextNode(textNodes[index], showTooltips, outputFormat);
+        translateTextNode(textNodes[index]!, showTooltips, outputFormat);
         index++;
 
         // Note: totalNodes > 0 is always true here since we only enter processChunk when totalNodes > 0
@@ -188,7 +188,7 @@ export function translateDOMSync(
 
   // Sync mode: translate all nodes immediately
   for (let i = 0; i < totalNodes; i++) {
-    translateTextNode(textNodes[i], showTooltips, outputFormat);
+    translateTextNode(textNodes[i]!, showTooltips, outputFormat);
 
     if (onProgress) {
       onProgress(i + 1, totalNodes);

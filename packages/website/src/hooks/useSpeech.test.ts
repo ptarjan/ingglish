@@ -71,7 +71,7 @@ describe('useSpeech', () => {
 
     expect(mockSynthesis.cancel).toHaveBeenCalled();
     expect(mockSynthesis.speak).toHaveBeenCalledWith(expect.any(MockUtterance));
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     expect(utterance.text).toBe('hello world');
   });
 
@@ -94,7 +94,7 @@ describe('useSpeech', () => {
     expect(result.current[0]).toBe(true);
 
     // Simulate the utterance ending
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
       utterance.onend?.();
     });
@@ -108,7 +108,7 @@ describe('useSpeech', () => {
       result.current[1]('test');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
       utterance.onerror?.();
     });
@@ -220,7 +220,7 @@ describe('useSpeech', () => {
       result.current[1]('hello world');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
       utterance.onboundary?.({ name: 'word', charIndex: 0 });
     });
@@ -239,7 +239,7 @@ describe('useSpeech', () => {
       result.current[1]('hello world');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
       utterance.onboundary?.({ name: 'word', charIndex: 6 });
     });
@@ -258,7 +258,7 @@ describe('useSpeech', () => {
       result.current[1]('hello world');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0][0] as MockUtterance;
+    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
       utterance.onboundary?.({ name: 'word', charIndex: 0 });
     });

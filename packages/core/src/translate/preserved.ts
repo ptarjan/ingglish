@@ -18,8 +18,8 @@ export function expandPlaceholder(
     if (token.includes(placeholder)) {
       const result: TranslatedToken[] = [];
       const parts = token.split(placeholder);
-      if (parts[0].length > 0) {
-        result.push({ original: parts[0], translated: parts[0], isWord: false, matched: true });
+      if (parts[0]!.length > 0) {
+        result.push({ original: parts[0]!, translated: parts[0]!, isWord: false, matched: true });
       }
       result.push({ original, translated: original, isWord: false, matched: true });
       if (parts[1] && parts[1].length > 0) {

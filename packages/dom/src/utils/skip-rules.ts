@@ -66,7 +66,7 @@ function checkElementSkip(
   const classList = element.classList;
   const classCount = classList.length;
   for (let i = 0; i < classCount; i++) {
-    if (skipClassesSet.has(classList[i])) {
+    if (skipClassesSet.has(classList[i]!)) {
       return true;
     }
   }

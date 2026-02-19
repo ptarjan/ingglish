@@ -30,8 +30,8 @@ describe('unknown-words', () => {
         const cmuPronunciation = dict[word];
         if (cmuPronunciation !== undefined) {
           // Word is in both - check if pronunciations are identical
-          const customPronunciation = CUSTOM_PRONUNCIATIONS[word];
-          const cmuPhonemes = cmuPronunciation[0]; // First pronunciation variant
+          const customPronunciation = CUSTOM_PRONUNCIATIONS[word]!;
+          const cmuPhonemes = cmuPronunciation[0]!; // First pronunciation variant
           if (
             customPronunciation.length === cmuPhonemes.length &&
             customPronunciation.every((p, i) => p === cmuPhonemes[i])

@@ -19,8 +19,8 @@ function extractLinks(content: string): { text: string; href: string; line: numb
   for (let i = 0; i < lines.length; i++) {
     const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
     let match;
-    while ((match = regex.exec(lines[i])) !== null) {
-      links.push({ text: match[1], href: match[2], line: i + 1 });
+    while ((match = regex.exec(lines[i]!)) !== null) {
+      links.push({ text: match[1]!, href: match[2]!, line: i + 1 });
     }
   }
 
@@ -44,7 +44,7 @@ function extractHeadings(content: string): string[] {
   for (const line of lines) {
     const match = /^#{1,6}\s+(.+)/.exec(line);
     if (match) {
-      headings.push(createHeadingId(match[1].trim()));
+      headings.push(createHeadingId(match[1]!.trim()));
     }
   }
 
@@ -85,7 +85,7 @@ describe('Docs links', () => {
     describe(file, () => {
       for (const link of internalLinks) {
         it(`line ${link.line}: "${link.text}" -> ${link.href}`, () => {
-          const [mdPath, section] = link.href.split('#');
+          const [mdPath, section] = link.href.split('#') as [string, string | undefined];
 
           // Check if target .md file exists
           if (mdPath.endsWith('.md')) {

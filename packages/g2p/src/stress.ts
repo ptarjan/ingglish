@@ -178,7 +178,7 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
   // Find all vowel positions
   const vowelPositions: number[] = [];
   for (let i = 0; i < phonemes.length; i++) {
-    if (/[012]$/.test(phonemes[i])) {
+    if (/[012]$/.test(phonemes[i]!)) {
       vowelPositions.push(i);
     }
   }
@@ -196,12 +196,12 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
   let actualStressed = stressedSyllable;
   if (
     vowelPositions[actualStressed] !== undefined &&
-    result[vowelPositions[actualStressed]] === 'AH0'
+    result[vowelPositions[actualStressed]!] === 'AH0'
   ) {
     let found = false;
     // Search backward first (stressed syllables tend to be earlier in English)
     for (let j = actualStressed - 1; j >= 0; j--) {
-      if (result[vowelPositions[j]] !== 'AH0') {
+      if (result[vowelPositions[j]!] !== 'AH0') {
         actualStressed = j;
         found = true;
         break;
@@ -209,7 +209,7 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
     }
     if (!found) {
       for (let j = actualStressed + 1; j < vowelPositions.length; j++) {
-        if (result[vowelPositions[j]] !== 'AH0') {
+        if (result[vowelPositions[j]!] !== 'AH0') {
           actualStressed = j;
           break;
         }
@@ -218,8 +218,8 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
   }
 
   for (let i = 0; i < vowelPositions.length; i++) {
-    const pos = vowelPositions[i];
-    const phoneme = result[pos];
+    const pos = vowelPositions[i]!;
+    const phoneme = result[pos]!;
     const base = vowelBase(phoneme);
 
     // Skip phonemes already reduced by NRL's explicit AX rules (AH0)

@@ -22,7 +22,7 @@ export function arpabetToShavian(arpabet: string[]): string {
   const len = arpabet.length;
 
   for (let i = 0; i < len; i++) {
-    const phoneme = arpabet[i];
+    const phoneme = arpabet[i]!;
     const base = stripStress(phoneme);
 
     // R-colored vowel check: only if next phoneme is R

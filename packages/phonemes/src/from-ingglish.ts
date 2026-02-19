@@ -45,7 +45,7 @@ export function expandArpabetAlternatives(arpabet: string[]): string[][] {
 
   // Single-position substitutions
   for (let i = 0; i < arpabet.length; i++) {
-    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]];
+    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]!];
     if (alternatives !== undefined) {
       for (const alt of alternatives) {
         const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
@@ -67,7 +67,7 @@ export function expandArpabetAlternatives(arpabet: string[]): string[][] {
           }
         }
         if (count >= 2) {
-          results.push(arpabet.map((p) => (p === phoneme ? alt[0] : p)));
+          results.push(arpabet.map((p) => (p === phoneme ? alt[0]! : p)));
         }
       }
     }
@@ -101,7 +101,7 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
     // Check for 3-char R-colored vowels first (air)
     const threeChar = remaining.slice(0, 3);
     if (remaining.length >= 3 && threeChar in R_COLORED_REVERSE_3CHAR) {
-      result.push(...R_COLORED_REVERSE_3CHAR[threeChar]);
+      result.push(...R_COLORED_REVERSE_3CHAR[threeChar]!);
       remaining = remaining.slice(3);
       continue;
     }
@@ -109,22 +109,22 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
     // Check for 2-char R-colored vowels (ar, or)
     const twoChar = remaining.slice(0, 2);
     if (remaining.length >= 2 && twoChar in R_COLORED_REVERSE_2CHAR) {
-      result.push(...R_COLORED_REVERSE_2CHAR[twoChar]);
+      result.push(...R_COLORED_REVERSE_2CHAR[twoChar]!);
       remaining = remaining.slice(2);
       continue;
     }
 
     // Try 2-char spelling (e.g., "sh" before "s")
     if (remaining.length >= 2 && TWO_CHAR_SPELLINGS.has(twoChar)) {
-      result.push(INGGLISH_TO_ARPABET_MAP[twoChar]);
+      result.push(INGGLISH_TO_ARPABET_MAP[twoChar]!);
       remaining = remaining.slice(2);
       continue;
     }
 
     // Try 1-char spelling
-    const oneChar = remaining[0];
+    const oneChar = remaining[0]!;
     if (ONE_CHAR_SPELLINGS.has(oneChar)) {
-      result.push(INGGLISH_TO_ARPABET_MAP[oneChar]);
+      result.push(INGGLISH_TO_ARPABET_MAP[oneChar]!);
       remaining = remaining.slice(1);
       continue;
     }

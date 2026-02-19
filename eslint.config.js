@@ -51,7 +51,7 @@ export default tseslint.config(
           allowNumber: false,
           allowNullableObject: true,
           allowNullableBoolean: false,
-          allowNullableString: false,
+          allowNullableString: true,
           allowNullableNumber: false,
           allowAny: false,
         },
@@ -66,6 +66,7 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'off', // Needed for noUncheckedIndexedAccess
       '@typescript-eslint/no-unnecessary-condition': 'off', // Too many false positives
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',

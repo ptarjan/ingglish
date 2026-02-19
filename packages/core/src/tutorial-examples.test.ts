@@ -28,7 +28,7 @@ function extractExamples(content: string, filename: string): Example[] {
   const lines = content.split('\n');
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i]!;
     const lineNum = i + 1;
 
     // Pattern 1: english: 'word', ingglish: 'translation'
@@ -36,8 +36,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // ckExamples, ightExamples, tionExamples, voicelessTh, voicedTh, paragraphWords
     const engIngMatch = /english:\s*'([^']+)',\s*ingglish:\s*'([^']+)'/.exec(line);
     if (engIngMatch) {
-      const english = stripPunctuation(engIngMatch[1]);
-      const ingglish = stripPunctuation(engIngMatch[2]);
+      const english = stripPunctuation(engIngMatch[1]!);
+      const ingglish = stripPunctuation(engIngMatch[2]!);
       if (english.length > 0 && ingglish.length > 0) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -47,9 +47,9 @@ function extractExamples(content: string, filename: string): Example[] {
     // Pattern 2: { e: 'word', i: 'translation', s: N } (poem words)
     const poemMatch = /\{\s*e:\s*'([^']+)',\s*i:\s*'([^']+)',\s*s:\s*\d+/.exec(line);
     if (poemMatch) {
-      const rawEnglish = poemMatch[1];
+      const rawEnglish = poemMatch[1]!;
       const english = stripPunctuation(rawEnglish);
-      const ingglish = stripPunctuation(poemMatch[2]);
+      const ingglish = stripPunctuation(poemMatch[2]!);
       // Skip line break markers and quoted meta-references like "ph", "f"
       if (rawEnglish === '\\n') {
         continue;

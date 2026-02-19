@@ -55,7 +55,7 @@ export function lookupPronunciation(word: string): string[] | null {
   }
 
   // Fix systematic CMU error: N before K/G should be NG
-  return normalizeVelarNasal(dict[key]);
+  return normalizeVelarNasal(dict[key]!);
 }
 
 /**

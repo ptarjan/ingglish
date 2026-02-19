@@ -149,7 +149,7 @@ export function translateAsCompound(
     // Preserve case per component for formats that support it
     if (getFormatPreservesCase(format)) {
       const originalPart = word.slice(pos, pos + part.length);
-      if (originalPart.length > 0 && isUpperCase(originalPart[0])) {
+      if (originalPart.length > 0 && isUpperCase(originalPart[0]!)) {
         translated = capitalize(translated);
       }
     }

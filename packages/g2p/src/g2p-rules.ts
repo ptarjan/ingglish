@@ -992,7 +992,7 @@ function expandContext(ctx: string): string {
   let result = '';
   for (const ch of ctx) {
     if (SPECIAL_CHARS.has(ch)) {
-      result += CLASSES[ch];
+      result += CLASSES[ch]!;
     } else {
       result += escapeRegex(ch);
     }
@@ -1008,7 +1008,10 @@ function compileRule(ruleStr: string): CompiledRule | null {
     return null;
   }
 
-  const [, leftCtx, target, rightCtx, phonemeStr] = m;
+  const leftCtx = m[1]!;
+  const target = m[2]!;
+  const rightCtx = m[3]!;
+  const phonemeStr = m[4]!;
 
   // Build left regex (anchored at end of parsed text)
   const leftPattern = expandContext(leftCtx);
@@ -1065,7 +1068,7 @@ export function wordToArpabet(word: string): string[] {
     // trailing space is a boundary, not a character to process
     const parsed = text.substring(0, pos);
     const rest = text.substring(pos);
-    const ch = text[pos];
+    const ch = text[pos]!;
 
     // Look up rules for this letter
     const rules = COMPILED_RULES[ch] as CompiledRule[] | undefined;

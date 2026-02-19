@@ -39,7 +39,7 @@ export function createTooltipFragment(
   let pendingText = '';
 
   for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
+    const token = tokens[i]!;
     if (token.isWord && token.original !== token.translated) {
       // Flush any pending text before the span
       if (pendingText) {

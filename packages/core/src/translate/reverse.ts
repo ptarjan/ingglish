@@ -41,7 +41,7 @@ function lookupByArpabet(arpabet: string[]): string[] {
   const variants = expandArpabetAlternatives(arpabet);
 
   // Try primary (first variant) first
-  const primaryKey = variants[0].join(' ');
+  const primaryKey = variants[0]!.join(' ');
   const primaryMatches = lookupPhonemeKey(primaryKey);
 
   if (!primaryMatches || primaryMatches.length === 0) {
@@ -49,7 +49,7 @@ function lookupByArpabet(arpabet: string[]): string[] {
     const allMatches: string[] = [];
     const seen = new Set<string>();
     for (let i = 1; i < variants.length; i++) {
-      const key = variants[i].join(' ');
+      const key = variants[i]!.join(' ');
       const matches = lookupPhonemeKey(key);
       if (matches) {
         for (const match of matches) {
@@ -64,13 +64,13 @@ function lookupByArpabet(arpabet: string[]): string[] {
   }
 
   // Primary has matches — check if any alternative has a much better match
-  const primaryBestFreq = getWordFrequency(primaryMatches[0]) ?? 0;
+  const primaryBestFreq = getWordFrequency(primaryMatches[0]!) ?? 0;
 
   for (let i = 1; i < variants.length; i++) {
-    const key = variants[i].join(' ');
+    const key = variants[i]!.join(' ');
     const matches = lookupPhonemeKey(key);
     if (matches && matches.length > 0) {
-      const altBestFreq = getWordFrequency(matches[0]) ?? 0;
+      const altBestFreq = getWordFrequency(matches[0]!) ?? 0;
       if (altBestFreq > primaryBestFreq * 5) {
         // Alternative is overwhelmingly more common — merge and sort
         const allMatches = [...primaryMatches];
@@ -258,7 +258,7 @@ export function reverseTranslateSyncWithMapping(
           }
           const matches = reverseTranslateWord(p);
           if (matches.length > 0) {
-            translatedParts.push(matches[0]);
+            translatedParts.push(matches[0]!);
           } else {
             translatedParts.push(p);
             allMatched = false;
@@ -273,7 +273,7 @@ export function reverseTranslateSyncWithMapping(
       } else {
         const matches = reverseTranslateWord(token);
         if (matches.length > 0) {
-          result.push({ original: token, translated: matches[0], isWord: true, matched: true });
+          result.push({ original: token, translated: matches[0]!, isWord: true, matched: true });
         } else {
           result.push({ original: token, translated: token, isWord: true, matched: false });
         }

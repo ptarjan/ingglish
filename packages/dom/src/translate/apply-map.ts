@@ -121,7 +121,7 @@ export function applyTranslationsMap(
   // For small pages, process synchronously to avoid RAF overhead
   if (totalNodes <= SYNC_THRESHOLD) {
     for (let i = 0; i < totalNodes; i++) {
-      processTextNode(textNodes[i], translations, showTooltips);
+      processTextNode(textNodes[i]!, translations, showTooltips);
       if (onProgress) {
         onProgress(i + 1, totalNodes);
       }
@@ -137,7 +137,7 @@ export function applyTranslationsMap(
       const endIndex = Math.min(index + chunkSize, totalNodes);
 
       while (index < endIndex) {
-        processTextNode(textNodes[index], translations, showTooltips);
+        processTextNode(textNodes[index]!, translations, showTooltips);
         index++;
 
         if (onProgress) {

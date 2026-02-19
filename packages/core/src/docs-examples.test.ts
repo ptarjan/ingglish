@@ -114,7 +114,7 @@ function extractExamples(content: string, filename: string): Example[] {
   let inRejectedSection = false;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i]!;
     const lineNum = i + 1;
 
     // Track section context for spelling-evolution.md
@@ -166,8 +166,8 @@ function extractExamples(content: string, filename: string): Example[] {
       line
     );
     if (distinctMatch) {
-      const english = distinctMatch[1].toLowerCase();
-      const ingglish = distinctMatch[2].toLowerCase();
+      const english = distinctMatch[1]!.toLowerCase();
+      const ingglish = distinctMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english) && english.length >= 3) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -177,8 +177,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // Pattern 2: - "word" → **translated** (intuitive) or similar
     const intuitiveMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*\*\*([a-zA-Z]+)\*\*/.exec(line);
     if (intuitiveMatch) {
-      const english = intuitiveMatch[1].toLowerCase();
-      const ingglish = intuitiveMatch[2].toLowerCase();
+      const english = intuitiveMatch[1]!.toLowerCase();
+      const ingglish = intuitiveMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -188,8 +188,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // Pattern 3: - "word" → "translated" (text-speak association) etc
     const quotedMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*"([a-zA-Z]+)"/.exec(line);
     if (quotedMatch) {
-      const english = quotedMatch[1].toLowerCase();
-      const ingglish = quotedMatch[2].toLowerCase();
+      const english = quotedMatch[1]!.toLowerCase();
+      const ingglish = quotedMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -200,8 +200,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // e.g., - my → mai, - out → out (identical!)
     const unquotedMatch = /^-\s*([a-zA-Z]{1,})\s*→\s*([a-zA-Z]+)/.exec(line);
     if (unquotedMatch) {
-      const english = unquotedMatch[1].toLowerCase();
-      const ingglish = unquotedMatch[2].toLowerCase();
+      const english = unquotedMatch[1]!.toLowerCase();
+      const ingglish = unquotedMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english) && english.length >= 1) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -214,8 +214,8 @@ function extractExamples(content: string, filename: string): Example[] {
       line
     );
     if (readmeTableMatch) {
-      const english = readmeTableMatch[1].toLowerCase();
-      const ingglish = readmeTableMatch[2].toLowerCase();
+      const english = readmeTableMatch[1]!.toLowerCase();
+      const ingglish = readmeTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english) && english !== 'english') {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -226,8 +226,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // e.g., | **Ingglish** | **a** | cat → **kat** |
     const inlineMatch = /\|\s*([a-zA-Z]{3,})\s*→\s*\*\*([a-zA-Z]+)\*\*\s*\|/.exec(line);
     if (inlineMatch) {
-      const english = inlineMatch[1].toLowerCase();
-      const ingglish = inlineMatch[2].toLowerCase();
+      const english = inlineMatch[1]!.toLowerCase();
+      const ingglish = inlineMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -240,8 +240,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // The word before parens is Ingglish, the word in parens is English
     if (line.includes('**Ingglish**')) {
       for (const parenMatch of line.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
-        const ingglish = parenMatch[1].toLowerCase();
-        const english = parenMatch[2].toLowerCase();
+        const ingglish = parenMatch[1]!.toLowerCase();
+        const english = parenMatch[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && !SKIP_WORDS.has(ingglish)) {
           examples.push({ english, ingglish, source: filename, line: lineNum });
         }
@@ -252,8 +252,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // e.g., | right, write, rite | rait (soak flax) | 204,428 → rare |
     const collisionTableMatch = /^\|\s*([a-zA-Z, ]+?)\s*\|\s*([a-zA-Z]+)\s*\(/.exec(line);
     if (collisionTableMatch) {
-      const englishWords = collisionTableMatch[1].split(',').map((w) => w.trim().toLowerCase());
-      const ingglish = collisionTableMatch[2].toLowerCase();
+      const englishWords = collisionTableMatch[1]!.split(',').map((w) => w.trim().toLowerCase());
+      const ingglish = collisionTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(ingglish)) {
         for (const english of englishWords) {
           if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
@@ -270,8 +270,8 @@ function extractExamples(content: string, filename: string): Example[] {
     const homophoneTableMatch =
       /^\|\s*([a-zA-Z]+(?:,\s*[a-zA-Z]+)+)(?:\s*\(\d+\))?\s*\|\s*([a-zA-Z]+)\s*\|$/.exec(line);
     if (homophoneTableMatch) {
-      const englishWords = homophoneTableMatch[1].split(',').map((w) => w.trim().toLowerCase());
-      const ingglish = homophoneTableMatch[2].toLowerCase();
+      const englishWords = homophoneTableMatch[1]!.split(',').map((w) => w.trim().toLowerCase());
+      const ingglish = homophoneTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(ingglish)) {
         for (const english of englishWords) {
           if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
@@ -286,8 +286,8 @@ function extractExamples(content: string, filename: string): Example[] {
     // e.g., **white → wait**: adjective → verb.
     const notableCollisionMatch = /^\*\*([a-zA-Z]+)\s*→\s*([a-zA-Z]+)\*\*:/.exec(line);
     if (notableCollisionMatch) {
-      const english = notableCollisionMatch[1].toLowerCase();
-      const ingglish = notableCollisionMatch[2].toLowerCase();
+      const english = notableCollisionMatch[1]!.toLowerCase();
+      const ingglish = notableCollisionMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
         examples.push({ english, ingglish, source: filename, line: lineNum });
       }
@@ -323,7 +323,7 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
     const lines = content.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      const line = lines[i]!;
       if (!line.includes('examples:')) {
         continue;
       }
@@ -333,8 +333,8 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
 
       // Match all "english (ingglish)" pairs
       for (const m of stripped.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
-        const english = m[1].toLowerCase();
-        const ingglish = m[2].toLowerCase();
+        const english = m[1]!.toLowerCase();
+        const ingglish = m[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && english !== ingglish) {
           examples.push({ english, ingglish, source: filename, line: i + 1 });
         }
@@ -365,7 +365,7 @@ function extractTableExamples(content: string, filename: string): Example[] {
   let inTable = false;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i]!;
     const lineNum = i + 1;
 
     // Detect table header rows with both English and Ingglish columns
@@ -416,8 +416,8 @@ function extractTableExamples(content: string, filename: string): Example[] {
       for (let j = 0; j < englishWords.length; j++) {
         const eng = englishWords[j];
         const ing = ingglishWords[j];
-        if (/^[a-z]+$/.test(eng) && /^[a-z]+$/.test(ing) && !SKIP_WORDS.has(eng)) {
-          examples.push({ english: eng, ingglish: ing, source: filename, line: lineNum });
+        if (/^[a-z]+$/.test(eng!) && /^[a-z]+$/.test(ing!) && !SKIP_WORDS.has(eng!)) {
+          examples.push({ english: eng!, ingglish: ing!, source: filename, line: lineNum });
         }
       }
     } else {

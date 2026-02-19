@@ -126,9 +126,9 @@ function extractHeadings(html: string): HeadingInfo[] {
   const regex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
   let match;
   while ((match = regex.exec(html)) !== null) {
-    const level = parseInt(match[1], 10);
+    const level = parseInt(match[1]!, 10);
     // Strip HTML tags and decode entities to get plain text
-    const rawText = match[2].replace(/<[^>]+>/g, '').trim();
+    const rawText = match[2]!.replace(/<[^>]+>/g, '').trim();
     const text = decodeHtmlEntities(rawText);
     const id = text
       .toLowerCase()
@@ -144,7 +144,7 @@ function parseDocsPath(): { docId: string | null; sectionId: string | null } {
   // Hash: #section → sectionId = 'section' (standard anchor scroll)
   const segments = window.location.pathname.replace(/\/$/, '').split('/');
   // segments: ['', 'docs', 'architecture']
-  const docId = segments[2] || null;
+  const docId = segments[2] ?? null;
   const sectionId = window.location.hash ? window.location.hash.slice(1) : null;
   return { docId, sectionId };
 }
@@ -156,10 +156,10 @@ function Docs(): JSX.Element {
     if (docId !== null && docs.some((d) => d.id === docId)) {
       return docId;
     }
-    return docs[0].id;
+    return docs[0]!.id;
   });
 
-  const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0];
+  const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0]!;
 
   // Extract headings from current doc for TOC
   const currentHeadings = useMemo(() => extractHeadings(currentDoc.content), [currentDoc.content]);
@@ -190,7 +190,7 @@ function Docs(): JSX.Element {
 
       // Transform .md links to path-based links with SPA navigation
       if (href.includes('.md')) {
-        const [mdPath, section] = href.split('#');
+        const [mdPath, section] = href.split('#') as [string, string | undefined];
         const filename = mdPath.split('/').pop() ?? '';
         const docId = filenameToId[filename];
         if (docId !== undefined) {

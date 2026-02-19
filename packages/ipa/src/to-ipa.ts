@@ -52,7 +52,7 @@ export function arpabetPhonemeToIPA(phoneme: string): string {
   // Add stress marker before the vowel if stressed (stress '1' or '2')
   // Note: stress '0' has empty marker, so we can skip the check
   if (stress === '1' || stress === '2') {
-    return STRESS_MARKERS[stress] + ipa;
+    return STRESS_MARKERS[stress]! + ipa;
   }
 
   return ipa;
@@ -72,7 +72,7 @@ export function arpabetToIPA(arpabet: string[]): string {
   const stressPositions: { index: number; marker: string }[] = [];
 
   for (let i = 0; i < arpabet.length; i++) {
-    const symbol = arpabet[i];
+    const symbol = arpabet[i]!;
     const base = stripStress(symbol);
     const stressMatch = STRESS_MARKER_REGEX.exec(symbol);
     const stress = stressMatch !== null ? stressMatch[0] : null;
@@ -101,8 +101,8 @@ export function arpabetToIPA(arpabet: string[]): string {
         let j = i - 1;
         const consonants: string[] = [];
         // Collect consecutive consonants before this vowel (push + reverse is O(n) vs unshift O(n²))
-        while (j >= 0 && !isVowel(arpabet[j])) {
-          consonants.push(stripStress(arpabet[j]));
+        while (j >= 0 && !isVowel(arpabet[j]!)) {
+          consonants.push(stripStress(arpabet[j]!));
           j--;
         }
         consonants.reverse();
@@ -129,12 +129,12 @@ export function arpabetToIPA(arpabet: string[]): string {
 
   for (let i = 0; i <= ipaSegments.length; i++) {
     // Insert any stress markers at this position
-    while (stressIdx < sortedStress.length && sortedStress[stressIdx].index === i) {
-      result.push(sortedStress[stressIdx].marker);
+    while (stressIdx < sortedStress.length && sortedStress[stressIdx]!.index === i) {
+      result.push(sortedStress[stressIdx]!.marker);
       stressIdx++;
     }
     if (i < ipaSegments.length) {
-      result.push(ipaSegments[i]);
+      result.push(ipaSegments[i]!);
     }
   }
 

@@ -46,7 +46,7 @@ export function FormatProvider({ children }: FormatProviderProps) {
     setFormatState((prev) => {
       const base: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
       const FORMAT_ORDER: OutputFormat[] = hasExperimentMapping() ? [...base, 'experiment'] : base;
-      const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(prev) + 1) % FORMAT_ORDER.length];
+      const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(prev) + 1) % FORMAT_ORDER.length]!;
       try {
         localStorage.setItem('outputFormat', newFormat);
       } catch {

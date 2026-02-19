@@ -25,7 +25,6 @@ export function deseretToArpabet(text: string): string[] | null {
     }
 
     // Normalize uppercase to lowercase (offset is 0x28)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by isDeseretChar above
     const cp = char.codePointAt(0)!;
     const normalized = cp < 0x10428 ? String.fromCodePoint(cp + 0x28) : char;
 
