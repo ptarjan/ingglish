@@ -143,10 +143,13 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
 
   const formatLabel =
     (
-      { ingglish: 'Ingglish', ipa: 'IPA', shavian: 'Shavian', deseret: 'Deseret' } as Record<
-        string,
-        string
-      >
+      {
+        ingglish: 'Ingglish',
+        ipa: 'IPA',
+        shavian: 'Shavian',
+        deseret: 'Deseret',
+        experiment: 'Experiment',
+      } as Record<string, string>
     )[format] ?? format;
 
   return (

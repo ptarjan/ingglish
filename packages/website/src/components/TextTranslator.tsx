@@ -131,6 +131,8 @@ interface MappedWordDisplayProps {
   scrollRef?: React.Ref<HTMLDivElement>;
   onScroll?: () => void;
   showTooltip?: boolean;
+  /** Map of word index → standard Ingglish spelling for words that differ from experiment */
+  diffMap?: Map<number, string>;
 }
 
 export function MappedWordDisplay({
@@ -143,6 +145,7 @@ export function MappedWordDisplay({
   scrollRef,
   onScroll,
   showTooltip = true,
+  diffMap,
 }: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
@@ -154,11 +157,19 @@ export function MappedWordDisplay({
           const isSpoken = currentWordIndex === spokenWordIndex;
           const matched = 'matched' in token ? (token.matched ?? true) : true;
           const changed = token.original.toLowerCase() !== token.translated.toLowerCase();
+          const stdSpelling = diffMap?.get(currentWordIndex);
+          const isDiff = stdSpelling !== undefined;
+
+          let tooltip: string | undefined;
+          if (showTooltip && changed) {
+            tooltip = isDiff ? `${token.original} (Ingglish: ${stdSpelling})` : token.original;
+          }
+
           return (
             <span
               key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''}`}
-              data-orig={showTooltip && changed ? token.original : undefined}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''} ${isDiff ? 'experiment-diff' : ''}`}
+              data-orig={tooltip}
               onMouseEnter={
                 onHoverWord
                   ? () => {
@@ -236,6 +247,34 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       return null;
     }
   }, [deferredEnglish, lastEdited, format]);
+
+  // Diff map: word index → standard Ingglish spelling (only when format is 'experiment')
+  const diffMap = useMemo(() => {
+    if (format !== 'experiment' || forwardTokens === null) {
+      return undefined;
+    }
+    try {
+      const stdTokens = translateSyncWithMapping(deferredEnglish, 'ingglish');
+      const diffs = new Map<number, string>();
+      let wordIdx = 0;
+      for (let i = 0; i < forwardTokens.length; i++) {
+        const expTok = forwardTokens[i];
+        const stdTok = stdTokens[i];
+        if (expTok?.isWord) {
+          if (
+            stdTok?.isWord &&
+            expTok.translated.toLowerCase() !== stdTok.translated.toLowerCase()
+          ) {
+            diffs.set(wordIdx, stdTok.translated);
+          }
+          wordIdx++;
+        }
+      }
+      return diffs.size > 0 ? diffs : undefined;
+    } catch {
+      return undefined;
+    }
+  }, [format, forwardTokens, deferredEnglish]);
 
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<string | null>(null);
@@ -542,12 +581,13 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 hoveredWordIndex={hoveredWordIndex}
                 spokenWordIndex={spokenWordIndex}
                 onHoverWord={setHoveredWordIndex}
-                showTooltip={false}
+                showTooltip={diffMap !== undefined}
                 className="ingglish-words"
                 scrollRef={corrIngglishRef}
                 onScroll={() => {
                   handleCorrScroll('ingglish');
                 }}
+                diffMap={diffMap}
               />
             ) : (
               <WordDisplay
