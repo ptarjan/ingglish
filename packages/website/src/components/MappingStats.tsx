@@ -11,7 +11,10 @@ interface Stats {
   identicalCount: number;
   homophoneGroups: number;
   lettersUsed: number;
+  falseFriends: number;
+  identicalTextPct: number;
   ingglishCollisionCount: number;
+  ingglishIdenticalTextPct: number;
   topCollisions: { spelling: string; words: string[] }[];
 }
 
@@ -20,12 +23,17 @@ function computeStats(format: 'experiment' | 'ingglish'): {
   identicalCount: number;
   homophoneGroups: number;
   lettersUsed: number;
+  falseFriends: number;
+  identicalTextPct: number;
   collisionMap: Map<string, string[]>;
 } {
   const dict = getDictionary();
+  const allWords = new Set<string>();
   const spellingToWords = new Map<string, string[]>();
   const lettersSet = new Set<string>();
   let identicalCount = 0;
+  let identicalFreqSum = 0;
+  let totalFreqSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     // Skip entries with punctuation (contractions, abbreviations)
@@ -33,6 +41,8 @@ function computeStats(format: 'experiment' | 'ingglish'): {
       continue;
     }
 
+    const wordLower = word.toLowerCase();
+    allWords.add(wordLower);
     const spelling = arpabetToFormat(phonemes, format);
 
     // Track letters used
@@ -42,9 +52,12 @@ function computeStats(format: 'experiment' | 'ingglish'): {
       }
     }
 
-    // Check if word is identical to its translation
-    if (word.toLowerCase() === spelling.toLowerCase()) {
+    // Track identical words and frequency-weighted coverage
+    const freq = getWordFrequency(wordLower) ?? 0;
+    totalFreqSum += freq;
+    if (wordLower === spelling.toLowerCase()) {
       identicalCount++;
+      identicalFreqSum += freq;
     }
 
     // Group words by spelling
@@ -56,21 +69,34 @@ function computeStats(format: 'experiment' | 'ingglish'): {
     }
   }
 
-  // Count collisions (groups with >1 word)
+  // Count collisions and false friends
   let collisionCount = 0;
   let homophoneGroups = 0;
-  for (const words of spellingToWords.values()) {
+  let falseFriends = 0;
+  for (const [spelling, words] of spellingToWords) {
     if (words.length > 1) {
       collisionCount += words.length;
       homophoneGroups++;
     }
+    // False friend: translated spelling matches a different English word
+    const spellingLower = spelling.toLowerCase();
+    if (allWords.has(spellingLower)) {
+      const isOwnWord = words.some((w) => w.toLowerCase() === spellingLower);
+      if (!isOwnWord) {
+        falseFriends++;
+      }
+    }
   }
+
+  const identicalTextPct = totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0;
 
   return {
     collisionCount,
     identicalCount,
     homophoneGroups,
     lettersUsed: lettersSet.size,
+    falseFriends,
+    identicalTextPct,
     collisionMap: spellingToWords,
   };
 }
@@ -122,7 +148,10 @@ function MappingStats({ version }: MappingStatsProps) {
         identicalCount: experiment.identicalCount,
         homophoneGroups: experiment.homophoneGroups,
         lettersUsed: experiment.lettersUsed,
+        falseFriends: experiment.falseFriends,
+        identicalTextPct: experiment.identicalTextPct,
         ingglishCollisionCount: ingglish.collisionCount,
+        ingglishIdenticalTextPct: ingglish.identicalTextPct,
         topCollisions: getTopCollisions(experiment.collisionMap, 10),
       });
       setComputing(false);
@@ -137,14 +166,21 @@ function MappingStats({ version }: MappingStatsProps) {
     if (stats === null) {
       return null;
     }
-    const diff = stats.collisionCount - stats.ingglishCollisionCount;
-    if (diff > 0) {
-      return `${diff} more collisions than standard Ingglish`;
+    const parts: string[] = [];
+    const cDiff = stats.collisionCount - stats.ingglishCollisionCount;
+    if (cDiff > 0) {
+      parts.push(`${cDiff} more collisions`);
+    } else if (cDiff < 0) {
+      parts.push(`${Math.abs(cDiff)} fewer collisions`);
     }
-    if (diff < 0) {
-      return `${Math.abs(diff)} fewer collisions than standard Ingglish`;
+    const tDiff = stats.identicalTextPct - stats.ingglishIdenticalTextPct;
+    if (Math.abs(tDiff) >= 0.1) {
+      parts.push(`${tDiff > 0 ? '+' : ''}${tDiff.toFixed(1)}% text unchanged`);
     }
-    return 'Same collision count as standard Ingglish';
+    if (parts.length === 0) {
+      return 'Same as standard Ingglish';
+    }
+    return `${parts.join(', ')} vs standard Ingglish`;
   }, [stats]);
 
   if (stats === null) {
@@ -174,6 +210,20 @@ function MappingStats({ version }: MappingStatsProps) {
         >
           <div className="stat-value">{stats.identicalCount.toLocaleString()}</div>
           <div className="stat-label">Identical words</div>
+        </div>
+        <div
+          className="stat-card"
+          title="Translated spellings that match a different English word (e.g. 'wait' for 'white') — can confuse English readers"
+        >
+          <div className="stat-value">{stats.falseFriends.toLocaleString()}</div>
+          <div className="stat-label">False friends</div>
+        </div>
+        <div
+          className="stat-card"
+          title="What percentage of real-world text (by word frequency) stays identical after translation"
+        >
+          <div className="stat-value">{stats.identicalTextPct.toFixed(1)}%</div>
+          <div className="stat-label">Text unchanged</div>
         </div>
         <div
           className="stat-card"
