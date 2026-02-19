@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
+    "build:fast": "tsup",
     "postbuild": "node scripts/copy-assets.js && node scripts/generate-icons.js",
     "build:icons": "node scripts/generate-icons.js",
     "test": "vitest run --no-color",

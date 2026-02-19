@@ -55,3 +55,6 @@ test-results/
 # Lint caches
 .eslintcache
 
+# Turbo
+.turbo
+

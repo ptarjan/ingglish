@@ -50,19 +50,11 @@ jobs:
         with:
           dict-cache: true
 
-      - name: Build libraries
+      - name: Build
         run: npm run build:fast
 
       - name: Generate docs
         run: npm run docs
-
-      # Run builds in parallel - website uses build:fast (skips tsc prebuild, done in lint)
-      - name: Build other packages
-        run: |
-          npm run build -w @ingglish/cors-proxy &
-          npm run build -w @ingglish/extension &
-          npm run build:fast -w @ingglish/website &
-          wait
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6

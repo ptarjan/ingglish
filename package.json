@@ -4,15 +4,15 @@
   "description": "Phonetic English spelling translator",
   "private": true,
   "type": "module",
+  "packageManager": "npm@10.9.4",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "npm run test --workspaces --if-present",
-    "build": "npm run build:libs && npm run docs && npm run build -w @ingglish/cors-proxy -w @ingglish/dom -w @ingglish/extension -w @ingglish/website",
-    "build:libs": "npm run build -w @ingglish/normalize -w @ingglish/phonemes && npm run build -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/ipa && npm run build -w @ingglish/g2p -w @ingglish/shavian -w @ingglish/deseret && npm run build -w @ingglish/fallback && npm run build -w ingglish",
-    "build:fast": "npm run build:fast -w @ingglish/normalize -w @ingglish/phonemes && npm run build:fast -w @ingglish/tokenize -w @ingglish/dictionary -w @ingglish/ipa && npm run build:fast -w @ingglish/g2p -w @ingglish/shavian -w @ingglish/deseret && npm run build:fast -w @ingglish/fallback && npm run build:fast -w ingglish -w @ingglish/dom",
+    "build": "turbo build && npm run docs",
+    "build:fast": "turbo build:fast",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
@@ -69,6 +69,7 @@
     "stylelint": "^17.3.0",
     "stylelint-config-standard": "^40.0.0",
     "tsup": "^8.4.0",
+    "turbo": "^2.8.10",
     "typedoc": "^0.28.15",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.8.3",
