@@ -236,7 +236,7 @@
 
 .experiment-output {
   margin-top: 0.75rem;
-  padding: 0.75rem;
+  padding: 1.75rem 0.75rem 0.75rem;
   background: var(--color-surface-hover);
   border-radius: 0.375rem;
 }
