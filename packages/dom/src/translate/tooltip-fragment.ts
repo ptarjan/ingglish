@@ -106,7 +106,7 @@ export function createTooltipFragmentFromMap(
       const lowerToken = token.toLowerCase();
       const translated = translations[lowerToken];
 
-      if (translated && translated !== lowerToken) {
+      if (translated !== undefined && translated !== lowerToken) {
         // Flush any pending text before the span
         if (pendingText) {
           fragment.appendChild(document.createTextNode(pendingText));

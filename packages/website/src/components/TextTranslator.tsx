@@ -253,9 +253,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       for (let i = 0; i < forwardTokens.length; i++) {
         const expTok = forwardTokens[i];
         const stdTok = stdTokens[i];
-        if (expTok?.isWord) {
+        if (expTok?.isWord === true) {
           if (
-            stdTok?.isWord &&
+            stdTok?.isWord === true &&
             expTok.translated.toLowerCase() !== stdTok.translated.toLowerCase()
           ) {
             diffs.set(wordIdx, stdTok.translated);
