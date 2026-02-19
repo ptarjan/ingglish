@@ -101,6 +101,9 @@ jobs:
           key: eslint-${{ runner.os }}-${{ hashFiles('eslint.config.js') }}
           restore-keys: eslint-${{ runner.os }}-
 
+      - name: Type check
+        run: npx tsc --noEmit -p packages/website/tsconfig.json
+
       - name: Lint (type-aware)
         run: npm run lint
 

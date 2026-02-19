@@ -8,7 +8,7 @@ import { renderHook, type RenderHookResult } from '@testing-library/react';
 import { useSpeech } from './useSpeech';
 
 beforeAll(() => {
-  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
 });
 
 type Speech = ReturnType<typeof useSpeech>;

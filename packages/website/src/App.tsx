@@ -6,7 +6,8 @@ import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
-function lazyWithReload<T extends { default: ComponentType<never> }>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function lazyWithReload<T extends { default: ComponentType<any> }>(
   factory: () => Promise<T>
 ): LazyExoticComponent<T['default']> {
   return lazy(() =>
