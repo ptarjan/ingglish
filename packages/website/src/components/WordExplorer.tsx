@@ -18,6 +18,7 @@ import {
   decomposeCompound,
   diagnoseStemming,
   diagnoseBritish,
+  translateAsAcronym,
   LETTER_PHONEMES,
 } from '@ingglish/fallback';
 import type { FallbackStrategy, StemmingResult } from '@ingglish/fallback';
@@ -70,6 +71,10 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     let stemmingResult: StemmingResult | undefined;
     let britishSpelling: string | undefined;
     let customPhonemes: string[] | null = null;
+    // Override formatted/ingglish for initialisms — they pass through unchanged
+    // in Latin formats, but the Word Explorer should show the spelled-out pronunciation
+    let overrideFormatted = formatted;
+    let overrideIngglish = ingglish;
 
     if (strategy === 'g2p') {
       g2pTrace = wordToArpabetTraced(lower);
@@ -81,14 +86,18 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
       britishSpelling = diagnoseBritish(lower) ?? undefined;
     } else if (strategy === 'custom') {
       customPhonemes = getCustomPronunciation(lower) ?? null;
+    } else if (strategy === 'initialism') {
+      overrideFormatted = translateAsAcronym(lower, format);
+      overrideIngglish = translateAsAcronym(lower, 'ingglish');
+      ipa = translateAsAcronym(lower, 'ipa').replace(/^\/|\/$/g, '');
     }
 
     return {
       word: lower,
       phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? customPhonemes,
       ipa,
-      ingglish,
-      formatted,
+      ingglish: overrideIngglish,
+      formatted: overrideFormatted,
       matched: false,
       isCustom,
       homophones,
@@ -180,75 +189,61 @@ function G2PRuleTrace({ trace, format }: { trace: G2PTrace; format: OutputFormat
   );
 }
 
-function CompoundBreakdown({ parts, format }: { parts: string[]; format: OutputFormat }) {
+function CompoundBreakdown({
+  parts,
+  format,
+  onWordClick,
+}: {
+  parts: string[];
+  format: OutputFormat;
+  onWordClick: (word: string) => void;
+}) {
   return (
     <div className="explorer-section">
       <h4>Compound Breakdown</h4>
-      <p className="section-note">{parts.join(' + ')}</p>
-      <div className="phoneme-chain">
-        <table className="chain-table">
-          <thead>
-            <tr>
-              <th>Part</th>
-              <th>{getFormatLabel(format)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parts.map((part, i) => (
-              <tr key={i}>
-                <td className="mono">{part}</td>
-                <td className="mono highlight">{translateWord(part, format)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="homophone-list">
+        {parts.map((part, i) => (
+          <button key={i} className="homophone-chip" onClick={() => { onWordClick(part); }}>
+            <span className="chip-english">{part}</span>
+            <span className="chip-arrow">&rarr;</span>
+            <span className="chip-translated">{translateWord(part, format)}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
 }
 
-function StemmingBreakdown({ result, format }: { result: StemmingResult; format: OutputFormat }) {
-  const parts = [
-    result.prefix && `${result.prefix}-`,
-    result.stem,
-    result.suffix && `-${result.suffix}`,
-  ].filter(Boolean);
-
+function StemmingBreakdown({
+  result,
+  format,
+  onWordClick,
+}: {
+  result: StemmingResult;
+  format: OutputFormat;
+  onWordClick: (word: string) => void;
+}) {
   return (
     <div className="explorer-section">
       <h4>Stemming Breakdown</h4>
-      <p className="section-note">{parts.join(' + ')}</p>
-      <div className="phoneme-chain">
-        <table className="chain-table">
-          <thead>
-            <tr>
-              <th>Part</th>
-              <th>Role</th>
-              <th>{getFormatLabel(format)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {result.prefix !== undefined && (
-              <tr>
-                <td className="mono">{result.prefix}-</td>
-                <td className="type-label">prefix</td>
-                <td className="mono highlight">&mdash;</td>
-              </tr>
-            )}
-            <tr>
-              <td className="mono">{result.stem}</td>
-              <td className="type-label">stem</td>
-              <td className="mono highlight">{translateWord(result.stem, format)}</td>
-            </tr>
-            {result.suffix !== undefined && (
-              <tr>
-                <td className="mono">-{result.suffix}</td>
-                <td className="type-label">suffix</td>
-                <td className="mono highlight">&mdash;</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="homophone-list">
+        {result.prefix !== undefined && (
+          <span className="homophone-chip" style={{ cursor: 'default' }}>
+            <span className="chip-english">{result.prefix}-</span>
+            <span className="chip-arrow">prefix</span>
+          </span>
+        )}
+        <button className="homophone-chip" onClick={() => { onWordClick(result.stem); }}>
+          <span className="chip-english">{result.stem}</span>
+          <span className="chip-arrow">&rarr;</span>
+          <span className="chip-translated">{translateWord(result.stem, format)}</span>
+        </button>
+        {result.suffix !== undefined && (
+          <span className="homophone-chip" style={{ cursor: 'default' }}>
+            <span className="chip-english">-{result.suffix}</span>
+            <span className="chip-arrow">suffix</span>
+          </span>
+        )}
       </div>
     </div>
   );
@@ -294,10 +289,12 @@ function BritishBreakdown({
   original,
   american,
   format,
+  onWordClick,
 }: {
   original: string;
   american: string;
   format: OutputFormat;
+  onWordClick: (word: string) => void;
 }) {
   return (
     <div className="explorer-section">
@@ -305,28 +302,12 @@ function BritishBreakdown({
       <p className="section-note">
         Normalized to American spelling: {original} &rarr; {american}
       </p>
-      <div className="phoneme-chain">
-        <table className="chain-table">
-          <thead>
-            <tr>
-              <th>Spelling</th>
-              <th>Variant</th>
-              <th>{getFormatLabel(format)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="mono">{original}</td>
-              <td className="type-label">British</td>
-              <td className="mono">&mdash;</td>
-            </tr>
-            <tr>
-              <td className="mono">{american}</td>
-              <td className="type-label">American</td>
-              <td className="mono highlight">{translateWord(american, format)}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="homophone-list">
+        <button className="homophone-chip" onClick={() => { onWordClick(american); }}>
+          <span className="chip-english">{american}</span>
+          <span className="chip-arrow">&rarr;</span>
+          <span className="chip-translated">{translateWord(american, format)}</span>
+        </button>
       </div>
     </div>
   );
@@ -516,11 +497,19 @@ export default function WordExplorer() {
           )}
 
           {result.compoundParts !== undefined && (
-            <CompoundBreakdown parts={result.compoundParts} format={format} />
+            <CompoundBreakdown
+              parts={result.compoundParts}
+              format={format}
+              onWordClick={handleWordClick}
+            />
           )}
 
           {result.stemmingResult !== undefined && (
-            <StemmingBreakdown result={result.stemmingResult} format={format} />
+            <StemmingBreakdown
+              result={result.stemmingResult}
+              format={format}
+              onWordClick={handleWordClick}
+            />
           )}
 
           {result.fallbackStrategy === 'initialism' && (
@@ -532,6 +521,7 @@ export default function WordExplorer() {
               original={result.word}
               american={result.britishSpelling}
               format={format}
+              onWordClick={handleWordClick}
             />
           )}
 
