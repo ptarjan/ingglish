@@ -29,6 +29,7 @@ const Docs = lazyWithReload(() => import('./components/Docs'));
 const Poems = lazyWithReload(() => import('./components/Poems'));
 const Experiment = lazyWithReload(() => import('./components/Experiment'));
 const WordExplorer = lazyWithReload(() => import('./components/WordExplorer'));
+const ReadingChallenge = lazyWithReload(() => import('./components/ReadingChallenge'));
 
 type Tab =
   | 'tutorial'
@@ -39,7 +40,8 @@ type Tab =
   | 'poems'
   | 'docs'
   | 'experiment'
-  | 'explore';
+  | 'explore'
+  | 'challenge';
 const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
   tutorial: {
     title: 'Ingglish — What if English Spelling Made Sense?',
@@ -95,6 +97,12 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
       'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
     path: '/explore',
   },
+  challenge: {
+    title: 'Reading Challenge | Ingglish',
+    description:
+      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
+    path: '/challenge',
+  },
 };
 
 function getTabFromPath(): Tab {
@@ -111,7 +119,8 @@ function getTabFromPath(): Tab {
     segment === 'extension' ||
     segment === 'poems' ||
     segment === 'experiment' ||
-    segment === 'explore'
+    segment === 'explore' ||
+    segment === 'challenge'
   ) {
     return segment;
   }
@@ -296,6 +305,7 @@ function App() {
               ['/docs', 'docs', 'Docs'],
               ['/explore', 'explore', 'Word Explorer'],
               ['/experiment', 'experiment', 'Experiment'],
+              ['/challenge', 'challenge', 'Challenge'],
             ] as const
           ).map(([href, tab, label]) => (
             <a
@@ -360,6 +370,11 @@ function App() {
               {activeTab === 'experiment' && (
                 <ErrorBoundary>
                   <Experiment />
+                </ErrorBoundary>
+              )}
+              {activeTab === 'challenge' && (
+                <ErrorBoundary>
+                  <ReadingChallenge />
                 </ErrorBoundary>
               )}
               {activeTab === 'docs' && (
