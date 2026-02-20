@@ -57,6 +57,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AG]E=/IH JH/',
     ' :[A]^+ =/EY/',
     '[A]^%=/EY/',
+    'M[ARR]IE=/EH R/',
     '[ARR]=/AE R/',
     ' :[AR] =/AA R/',
     '[AR] =/ER/',
@@ -97,6 +98,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BUSINESS]=/B IH Z N AX S/',
     ' [BOTH] =/B OW TH/',
     ' [BEEN] =/B IH N/',
     ' [BE]^#=/B IH/',
@@ -112,6 +114,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CAPTAIN]=/K AE P T AX N/',
     ' [CHA]R=/CH AA/',
     ' [CH]^=/K/',
     '^E[CH]=/K/',
@@ -269,6 +272,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HUSBAND]=/HH AH Z B AX N D/',
     ' [HOUR]=/AW ER/',
     ' [HEART]=/HH AA R T/',
     ' [HEARD] =/HH ER D/',
@@ -343,6 +347,7 @@ const NRL_RULES: Record<string, string[]> = {
     '^[I] =/IY/',
     '#:[ISMS] =/IH Z AX M Z/',
     '#:[ISM] =/IH Z AX M/',
+    'FAM[I]LY=/AH/',
     '[I]=/IH/',
   ],
   J: ['[J]=/JH/'],
@@ -358,6 +363,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#^:[L]ER=/L/',
     '#^:[L]EY=/L/',
     '[LEAD]=/L IY D/',
+    'OB[L]EM=/L/',
     'OB[L]EM=/L/',
     '#^:[L]%=/AX L/',
     '[LDT] =/L T/',
