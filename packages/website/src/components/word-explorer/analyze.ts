@@ -4,23 +4,13 @@ import {
   sortByFrequency,
   getWordFrequency,
   hasCustomPronunciation,
-  getCustomPronunciation,
 } from '@ingglish/dictionary';
 import { stripStress } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
-import { wordToArpabetTraced } from '@ingglish/g2p';
-import type { G2PTrace } from '@ingglish/g2p';
-import {
-  diagnoseFallback,
-  decomposeCompound,
-  diagnoseStemming,
-  diagnoseBritish,
-  isInitialism,
-  translateAsAcronym,
-} from '@ingglish/fallback';
-import type { FallbackStrategy, StemmingResult } from '@ingglish/fallback';
+import { diagnoseUnknown, matchBritish, isInitialism, translateAsAcronym } from '@ingglish/fallback';
+import type { WordDiagnosis } from '@ingglish/fallback';
 
 export interface WordResult {
   word: string;
@@ -32,11 +22,8 @@ export interface WordResult {
   isCustom: boolean;
   homophones: string[];
   frequency: number | undefined;
-  g2pTrace?: G2PTrace;
-  fallbackStrategy?: FallbackStrategy | null;
-  compoundParts?: string[];
-  stemmingResult?: StemmingResult;
-  britishSpelling?: string;
+  diagnosis?: WordDiagnosis;
+  britishSpelling?: string; // dictionary-word British badge only
 }
 
 export function analyzeWord(word: string, format: OutputFormat): WordResult {
@@ -45,13 +32,6 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
   const isCustom = hasCustomPronunciation(lower);
   const formatted = translateWord(lower, format);
   const ingglish = translateWord(lower, 'ingglish');
-  let ipa = '';
-  let homophones: string[] = [];
-  let phonemes: string[] | null = dictPhonemes;
-  let g2pTrace: G2PTrace | undefined;
-  let fallbackStrategy: FallbackStrategy | null | undefined;
-  let compoundParts: string[] | undefined;
-  let stemmingResult: StemmingResult | undefined;
 
   // Initialisms (URL, API, etc.) pass through unchanged in the translation,
   // but we tag them so the breakdown shows how they're pronounced letter-by-letter.
@@ -67,46 +47,49 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
       isCustom,
       homophones: [],
       frequency: getWordFrequency(lower),
-      fallbackStrategy: 'initialism',
+      diagnosis: { strategy: 'initialism' },
     };
   }
 
   if (dictPhonemes !== null) {
-    ipa = arpabetToIPARaw(dictPhonemes);
+    const ipa = arpabetToIPARaw(dictPhonemes);
     const key = dictPhonemes.map(stripStress).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
-    if (reverseMatches !== undefined) {
-      homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
-    }
-  } else {
-    ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
-    fallbackStrategy = diagnoseFallback(lower);
+    const homophones =
+      reverseMatches !== undefined ? sortByFrequency(reverseMatches).filter((w) => w !== lower) : [];
 
-    switch (fallbackStrategy) {
-      case 'g2p': {
-        const trace = wordToArpabetTraced(lower);
-        g2pTrace = trace;
-        phonemes = trace.phonemes;
-        break;
-      }
-      case 'compound':
-        compoundParts = decomposeCompound(lower) ?? undefined;
-        break;
-      case 'stemming':
-        stemmingResult = diagnoseStemming(lower) ?? undefined;
-        break;
-      case 'custom':
-        phonemes = getCustomPronunciation(lower) ?? null;
-        break;
-      case 'british':
-      case 'initialism':
-      case 'phonemize':
-      case null:
-        break;
-    }
+    // Check if this dictionary word is a British variant (colour→color, centre→center)
+    const britishMatch = matchBritish(lower);
+
+    return {
+      word: lower,
+      phonemes: dictPhonemes,
+      ipa,
+      ingglish,
+      formatted,
+      matched: true,
+      isCustom,
+      homophones,
+      frequency: getWordFrequency(lower),
+      britishSpelling: britishMatch?.american,
+    };
   }
 
-  const britishSpelling = diagnoseBritish(lower) ?? undefined;
+  // Word not in dictionary — diagnose which fallback strategy handles it
+  const ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
+  const diagnosis = diagnoseUnknown(lower) ?? undefined;
+
+  // Extract phonemes from diagnosis for the PhonemeChain display
+  const phonemes =
+    diagnosis?.strategy === 'custom'
+      ? diagnosis.phonemes
+      : diagnosis?.strategy === 'british'
+        ? diagnosis.phonemes
+        : diagnosis?.strategy === 'phonemize'
+          ? diagnosis.phonemes
+          : diagnosis?.strategy === 'g2p'
+            ? diagnosis.trace.phonemes
+            : null;
 
   return {
     word: lower,
@@ -114,15 +97,11 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
     ipa,
     ingglish,
     formatted,
-    matched: dictPhonemes !== null,
+    matched: false,
     isCustom,
-    homophones,
+    homophones: [],
     frequency: getWordFrequency(lower),
-    g2pTrace,
-    fallbackStrategy,
-    compoundParts,
-    stemmingResult,
-    britishSpelling,
+    diagnosis,
   };
 }
 
@@ -136,7 +115,7 @@ export function formatFrequency(freq: number | undefined): string {
   return String(freq);
 }
 
-export function fallbackLabel(strategy: FallbackStrategy | null | undefined): string {
+export function fallbackLabel(strategy: WordDiagnosis['strategy'] | undefined): string {
   switch (strategy) {
     case 'custom':
       return 'custom override';
@@ -152,7 +131,6 @@ export function fallbackLabel(strategy: FallbackStrategy | null | undefined): st
       return 'neural G2P';
     case 'g2p':
       return 'G2P rules';
-    case null:
     case undefined:
       return 'passthrough';
   }

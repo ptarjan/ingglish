@@ -1,58 +1,91 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { diagnoseFallback } from './index';
+import { diagnoseUnknown, diagnoseFallback } from './index';
 
 // These tests use words NOT in the CMU dictionary, so they actually reach
-// diagnoseFallback in the Word Explorer. Words already in the dictionary
+// diagnoseUnknown in the Word Explorer. Words already in the dictionary
 // show "dictionary" or "custom override" badges instead.
 
-describe('diagnoseFallback', () => {
-  it('returns "initialism" for spelled-out letter sequences', () => {
-    // omg, diy, eta, faq — not in CMU dictionary
+describe('diagnoseUnknown', () => {
+  it('returns { strategy: "initialism" } for spelled-out letter sequences', () => {
     for (const w of ['omg', 'diy', 'eta', 'faq']) {
       expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseFallback(w)).toBe('initialism');
+      expect(diagnoseUnknown(w)).toEqual({ strategy: 'initialism' });
     }
   });
 
-  it('returns "british" for British spellings with American equivalents', () => {
-    // organise, specialise, categorise, normalise — not in CMU
+  it('returns { strategy: "british" } with americanSpelling for British spellings', () => {
     for (const w of ['organise', 'specialise', 'categorise', 'normalise']) {
       expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseFallback(w)).toBe('british');
+      const result = diagnoseUnknown(w);
+      expect(result).not.toBeNull();
+      expect(result!.strategy).toBe('british');
+      if (result!.strategy === 'british') {
+        expect(result!.americanSpelling).toEqual(expect.any(String));
+        expect(result!.phonemes.length).toBeGreaterThan(0);
+      }
     }
   });
 
-  it('returns "compound" for words that split into known parts', () => {
-    // treehouse — not in CMU dictionary
-    for (const w of ['treehouse']) {
-      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseFallback(w)).toBe('compound');
+  it('returns americanSpelling "organize" for "organise"', () => {
+    const result = diagnoseUnknown('organise');
+    expect(result).toEqual(
+      expect.objectContaining({ strategy: 'british', americanSpelling: 'organize' })
+    );
+  });
+
+  it('returns { strategy: "compound" } with parts for compound words', () => {
+    expect(lookupPronunciation('treehouse'), 'treehouse should NOT be in dictionary').toBeNull();
+    const result = diagnoseUnknown('treehouse');
+    expect(result).not.toBeNull();
+    expect(result!.strategy).toBe('compound');
+    if (result!.strategy === 'compound') {
+      expect(result!.parts).toEqual(['tree', 'house']);
     }
   });
 
-  it('returns "stemming" for words with known base + known suffix', () => {
-    // retweet, youtubing, adulting, ghosting, onboarding — not in CMU
-    for (const w of ['retweet', 'youtubing', 'adulting', 'ghosting', 'onboarding']) {
-      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseFallback(w)).toBe('stemming');
+  it('returns { strategy: "stemming" } with stem/suffix for stemmed words', () => {
+    expect(lookupPronunciation('ghosting'), 'ghosting should NOT be in dictionary').toBeNull();
+    const result = diagnoseUnknown('ghosting');
+    expect(result).not.toBeNull();
+    expect(result!.strategy).toBe('stemming');
+    if (result!.strategy === 'stemming') {
+      expect(result!.stem).toBe('ghost');
+      expect(result!.suffix).toBe('ing');
     }
   });
 
-  it('returns "g2p" for unknown words handled by grapheme-to-phoneme rules', () => {
+  it('returns { strategy: "g2p" } with trace for unknown words', () => {
     for (const w of ['splonk', 'blorft', 'zazzle', 'crebbit']) {
       expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseFallback(w)).toBe('g2p');
+      const result = diagnoseUnknown(w);
+      expect(result).not.toBeNull();
+      expect(result!.strategy).toBe('g2p');
+      if (result!.strategy === 'g2p') {
+        expect(result!.trace).toBeDefined();
+        expect(result!.trace.phonemes.length).toBeGreaterThan(0);
+      }
     }
   });
 
   it('returns null for obvious non-words (passthrough)', () => {
     // 3+ consecutive identical characters
-    expect(diagnoseFallback('ssssssss')).toBeNull();
-    expect(diagnoseFallback('brrr')).toBeNull();
+    expect(diagnoseUnknown('ssssssss')).toBeNull();
+    expect(diagnoseUnknown('brrr')).toBeNull();
     // No vowels (a/e/i/o/u/y)
-    expect(diagnoseFallback('bcdfg')).toBeNull();
-    expect(diagnoseFallback('tsk')).toBeNull();
-    expect(diagnoseFallback('pfft')).toBeNull();
+    expect(diagnoseUnknown('bcdfg')).toBeNull();
+    expect(diagnoseUnknown('tsk')).toBeNull();
+    expect(diagnoseUnknown('pfft')).toBeNull();
+  });
+});
+
+describe('diagnoseFallback (backward compat)', () => {
+  it('returns strategy string matching diagnoseUnknown', () => {
+    expect(diagnoseFallback('omg')).toBe('initialism');
+    expect(diagnoseFallback('organise')).toBe('british');
+    expect(diagnoseFallback('treehouse')).toBe('compound');
+    expect(diagnoseFallback('ghosting')).toBe('stemming');
+    expect(diagnoseFallback('splonk')).toBe('g2p');
+    expect(diagnoseFallback('ssssssss')).toBeNull();
   });
 });

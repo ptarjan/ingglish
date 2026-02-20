@@ -6,7 +6,6 @@ import { getWordFrequency } from '@ingglish/dictionary';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { LETTER_PHONEMES } from '@ingglish/fallback';
 import type { G2PTrace } from '@ingglish/g2p';
-import type { StemmingResult } from '@ingglish/fallback';
 import { formatFrequency } from './analyze';
 
 export function PhonemeChain({ phonemes, format }: { phonemes: string[]; format: OutputFormat }) {
@@ -101,7 +100,7 @@ export function StemmingBreakdown({
   format,
   onWordClick,
 }: {
-  result: StemmingResult;
+  result: { prefix?: string; stem: string; suffix?: string };
   format: OutputFormat;
   onWordClick: (word: string) => void;
 }) {

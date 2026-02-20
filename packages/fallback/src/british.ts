@@ -52,17 +52,26 @@ const BRITISH_TO_AMERICAN: { pattern: RegExp; replacement: string }[] = [
   { pattern: /grey/, replacement: 'gray' },
 ];
 
+export interface BritishMatch {
+  american: string;
+  phonemes: string[];
+}
+
 /**
- * Finds the American spelling for a British word, or null if no match.
+ * Matches a word against British-to-American spelling rules.
+ * Returns the American spelling and its phonemes, or null if no match.
  */
-export function diagnoseBritish(word: string): string | null {
+export function matchBritish(word: string): BritishMatch | null {
   const lower = word.toLowerCase();
 
   for (const { pattern, replacement } of BRITISH_TO_AMERICAN) {
     if (pattern.test(lower)) {
       const american = lower.replace(pattern, replacement);
-      if (american !== lower && lookupPronunciation(american)) {
-        return american;
+      if (american !== lower) {
+        const phonemes = lookupPronunciation(american);
+        if (phonemes) {
+          return { american, phonemes };
+        }
       }
     }
   }
@@ -79,10 +88,9 @@ export function diagnoseBritish(word: string): string | null {
  * @returns The translated word, or null if no American variant was found
  */
 export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): string | null {
-  const american = diagnoseBritish(word);
-  if (american === null) {
+  const match = matchBritish(word);
+  if (match === null) {
     return null;
   }
-  const phonemes = lookupPronunciation(american);
-  return phonemes ? arpabetToFormat(phonemes, format) : null;
+  return arpabetToFormat(match.phonemes, format);
 }

@@ -22,18 +22,13 @@ import {
   KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
 } from './acronyms';
-import { translateAsBritish, diagnoseBritish } from './british';
+import { translateAsBritish, matchBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { dpDecompose } from './compounds';
-import {
-  translateWithStemming,
-  diagnoseStemming,
-  SUFFIX_PHONEMES,
-  PREFIX_PHONEMES,
-} from './stemming';
-import type { StemmingResult } from './stemming';
-import { translateWithPhonemize, preloadPhonemize } from './phonemize';
-import { translateWithRules, hasWordRule } from '@ingglish/g2p';
+import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
+import { translateWithPhonemize, phonemizeToArpabet, preloadPhonemize } from './phonemize';
+import { translateWithRules, hasWordRule, wordToArpabetTraced } from '@ingglish/g2p';
+import type { G2PTrace } from '@ingglish/g2p';
 
 export type FallbackStrategy =
   | 'custom'
@@ -49,6 +44,15 @@ export interface FallbackResult {
   translated: string;
 }
 
+export type WordDiagnosis =
+  | { strategy: 'custom'; phonemes: string[] }
+  | { strategy: 'initialism' }
+  | { strategy: 'british'; americanSpelling: string; phonemes: string[] }
+  | { strategy: 'compound'; parts: string[] }
+  | { strategy: 'stemming'; prefix?: string; stem: string; suffix?: string }
+  | { strategy: 'phonemize'; phonemes: string[] }
+  | { strategy: 'g2p'; trace: G2PTrace };
+
 export {
   LETTER_PHONEMES,
   KNOWN_INITIALISMS,
@@ -57,22 +61,19 @@ export {
   parseInitialismWithSuffix,
   translateAsAcronym,
   translateAsBritish,
-  diagnoseBritish,
+  matchBritish,
   translateAsCompound,
-  dpDecompose as decomposeCompound,
   SUFFIX_PHONEMES,
   PREFIX_PHONEMES,
   translateWithStemming,
-  diagnoseStemming,
   translateWithPhonemize,
   preloadPhonemize,
 };
-export type { StemmingResult };
 
 /**
  * Core implementation that returns both the strategy used and the translated word.
  */
-function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
+export function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
   // Check custom pronunciations first
   const customPhonemes = getCustomPronunciation(word);
   if (customPhonemes !== undefined) {
@@ -145,13 +146,45 @@ export function translateUnknown(word: string, format: OutputFormat = 'ingglish'
 }
 
 /**
+ * Diagnoses an unknown word by determining which fallback strategy handles it
+ * and collecting diagnostic data for display.
+ *
+ * Delegates strategy determination to translateUnknownCore (single source of truth),
+ * then collects diagnostic data via the shared match* functions.
+ *
+ * Returns null for obvious non-words (3+ repeated chars, no vowels).
+ */
+export function diagnoseUnknown(word: string): WordDiagnosis | null {
+  if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
+    return null;
+  }
+  const { strategy } = translateUnknownCore(word, 'ingglish');
+  switch (strategy) {
+    case 'custom':
+      return { strategy: 'custom', phonemes: getCustomPronunciation(word)! };
+    case 'initialism':
+      return { strategy: 'initialism' };
+    case 'british': {
+      const m = matchBritish(word)!;
+      return { strategy: 'british', americanSpelling: m.american, phonemes: m.phonemes };
+    }
+    case 'compound':
+      return { strategy: 'compound', parts: dpDecompose(word.toLowerCase())! };
+    case 'stemming': {
+      const m = matchStemming(word)!;
+      return { strategy: 'stemming', prefix: m.prefix, stem: m.stem, suffix: m.suffix };
+    }
+    case 'phonemize':
+      return { strategy: 'phonemize', phonemes: phonemizeToArpabet(word)! };
+    case 'g2p':
+      return { strategy: 'g2p', trace: wordToArpabetTraced(word) };
+  }
+}
+
+/**
  * Diagnoses which fallback strategy would be used for a word.
  * Returns null for obvious non-words (3+ repeated chars, no vowels).
  */
 export function diagnoseFallback(word: string): FallbackStrategy | null {
-  // Pass through obvious non-words (mirrors check in forward.ts)
-  if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
-    return null;
-  }
-  return translateUnknownCore(word, 'ingglish').strategy;
+  return diagnoseUnknown(word)?.strategy ?? null;
 }

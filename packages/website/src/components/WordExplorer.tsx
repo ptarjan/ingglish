@@ -115,9 +115,9 @@ export default function WordExplorer() {
                 ? 'custom override'
                 : result.matched
                   ? 'dictionary'
-                  : fallbackLabel(result.fallbackStrategy)}
+                  : fallbackLabel(result.diagnosis?.strategy)}
             </span>
-            {result.britishSpelling !== undefined && result.fallbackStrategy !== 'british' && (
+            {result.britishSpelling !== undefined && result.diagnosis?.strategy !== 'british' && (
               <span className="badge badge-fallback">British variant</span>
             )}
             {result.frequency !== undefined && (
@@ -130,37 +130,41 @@ export default function WordExplorer() {
             )}
           </div>
 
-          {result.g2pTrace !== undefined && (
+          {result.diagnosis?.strategy === 'g2p' && (
             <div className="explorer-section">
               <h4>G2P Rules Applied</h4>
-              <G2PRuleTrace trace={result.g2pTrace} format={format} />
+              <G2PRuleTrace trace={result.diagnosis.trace} format={format} />
             </div>
           )}
 
-          {result.compoundParts !== undefined && (
+          {result.diagnosis?.strategy === 'compound' && (
             <CompoundBreakdown
-              parts={result.compoundParts}
+              parts={result.diagnosis.parts}
               format={format}
               onWordClick={handleWordClick}
             />
           )}
 
-          {result.stemmingResult !== undefined && (
+          {result.diagnosis?.strategy === 'stemming' && (
             <StemmingBreakdown
-              result={result.stemmingResult}
+              result={result.diagnosis}
               format={format}
               onWordClick={handleWordClick}
             />
           )}
 
-          {result.fallbackStrategy === 'initialism' && (
+          {result.diagnosis?.strategy === 'initialism' && (
             <InitialismBreakdown word={result.word} format={format} />
           )}
 
-          {result.britishSpelling !== undefined && (
+          {(result.diagnosis?.strategy === 'british' || result.britishSpelling !== undefined) && (
             <BritishBreakdown
               original={result.word}
-              american={result.britishSpelling}
+              american={
+                result.diagnosis?.strategy === 'british'
+                  ? result.diagnosis.americanSpelling
+                  : result.britishSpelling!
+              }
               format={format}
               onWordClick={handleWordClick}
             />

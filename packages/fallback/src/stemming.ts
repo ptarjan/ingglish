@@ -128,10 +128,11 @@ export const PREFIX_PHONEMES: { prefix: string; phonemes: string[] }[] = [
   { prefix: 'super', phonemes: ['S', 'UW1', 'P', 'ER0'] },
 ];
 
-export interface StemmingResult {
+export interface StemmingMatch {
   prefix?: string;
   stem: string;
   suffix?: string;
+  phonemes: string[];
 }
 
 /**
@@ -156,36 +157,6 @@ function getStemVariants(stem: string, suffix: string): string[] {
 }
 
 /**
- * Diagnoses how stemming would decompose a word.
- * Returns the matched prefix/stem/suffix, or null if no match.
- */
-export function diagnoseStemming(word: string): StemmingResult | null {
-  const lowerWord = word.toLowerCase();
-
-  for (const { suffix } of SUFFIX_PHONEMES) {
-    if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
-      const stem = lowerWord.slice(0, -suffix.length);
-      for (const variant of getStemVariants(stem, suffix)) {
-        if (lookupPronunciation(variant)) {
-          return { stem: variant, suffix };
-        }
-      }
-    }
-  }
-
-  for (const { prefix } of PREFIX_PHONEMES) {
-    if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
-      const stem = lowerWord.slice(prefix.length);
-      if (lookupPronunciation(stem)) {
-        return { prefix, stem };
-      }
-    }
-  }
-
-  return null;
-}
-
-/**
  * Resolves the suffix phonemes, selecting the correct allomorph for -ed, -es, -s.
  */
 function resolveSuffixPhonemes(
@@ -205,6 +176,47 @@ function resolveSuffixPhonemes(
 }
 
 /**
+ * Matches a word against stemming rules (suffix/prefix removal + allomorph selection).
+ * Returns the matched components and combined phonemes, or null if no match.
+ */
+export function matchStemming(word: string): StemmingMatch | null {
+  const lowerWord = word.toLowerCase();
+
+  for (const { suffix, phonemes: suffixArpabet } of SUFFIX_PHONEMES) {
+    if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
+      const stem = lowerWord.slice(0, -suffix.length);
+      for (const variant of getStemVariants(stem, suffix)) {
+        const baseArpabet = lookupPronunciation(variant);
+        if (baseArpabet) {
+          const resolvedSuffix = resolveSuffixPhonemes(suffix, suffixArpabet, baseArpabet);
+          return {
+            stem: variant,
+            suffix,
+            phonemes: [...baseArpabet, ...resolvedSuffix],
+          };
+        }
+      }
+    }
+  }
+
+  for (const { prefix, phonemes: prefixArpabet } of PREFIX_PHONEMES) {
+    if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
+      const stem = lowerWord.slice(prefix.length);
+      const baseArpabet = lookupPronunciation(stem);
+      if (baseArpabet) {
+        return {
+          prefix,
+          stem,
+          phonemes: [...prefixArpabet, ...baseArpabet],
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
  * Attempts to translate an unknown word using stemming.
  * Tries to find a known base word and apply suffix rules.
  *
@@ -216,30 +228,9 @@ export function translateWithStemming(
   word: string,
   format: OutputFormat = 'ingglish'
 ): string | null {
-  const lowerWord = word.toLowerCase();
-
-  for (const { suffix, phonemes: suffixArpabet } of SUFFIX_PHONEMES) {
-    if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
-      const stem = lowerWord.slice(0, -suffix.length);
-      for (const variant of getStemVariants(stem, suffix)) {
-        const baseArpabet = lookupPronunciation(variant);
-        if (baseArpabet) {
-          const resolvedSuffix = resolveSuffixPhonemes(suffix, suffixArpabet, baseArpabet);
-          return arpabetToFormat([...baseArpabet, ...resolvedSuffix], format);
-        }
-      }
-    }
+  const match = matchStemming(word);
+  if (match === null) {
+    return null;
   }
-
-  for (const { prefix, phonemes: prefixArpabet } of PREFIX_PHONEMES) {
-    if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
-      const stem = lowerWord.slice(prefix.length);
-      const baseArpabet = lookupPronunciation(stem);
-      if (baseArpabet) {
-        return arpabetToFormat([...prefixArpabet, ...baseArpabet], format);
-      }
-    }
-  }
-
-  return null;
+  return arpabetToFormat(match.phonemes, format);
 }

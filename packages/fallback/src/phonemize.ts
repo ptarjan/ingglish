@@ -50,17 +50,10 @@ function getPhonemize(): PhonemizeFn {
 }
 
 /**
- * Translates an unknown word using the phonemize library (neural G2P).
- * This provides better accuracy than rule-based G2P for unusual words.
- *
- * @param word The unknown word
- * @param format The output format
- * @returns The translation, or null if phonemize is not available
+ * Converts a word to ARPAbet phonemes using the phonemize library (neural G2P).
+ * Returns the phoneme array, or null if phonemize is not available.
  */
-export function translateWithPhonemize(
-  word: string,
-  format: OutputFormat = 'ingglish'
-): string | null {
+export function phonemizeToArpabet(word: string): string[] | null {
   const fn = getPhonemize();
   if (fn === null) {
     return null;
@@ -72,10 +65,29 @@ export function translateWithPhonemize(
     if (arpabet.length === 0) {
       return null;
     }
-    return arpabetToFormat(arpabet, format);
+    return arpabet;
   } catch {
     return null;
   }
+}
+
+/**
+ * Translates an unknown word using the phonemize library (neural G2P).
+ * This provides better accuracy than rule-based G2P for unusual words.
+ *
+ * @param word The unknown word
+ * @param format The output format
+ * @returns The translation, or null if phonemize is not available
+ */
+export function translateWithPhonemize(
+  word: string,
+  format: OutputFormat = 'ingglish'
+): string | null {
+  const arpabet = phonemizeToArpabet(word);
+  if (arpabet === null) {
+    return null;
+  }
+  return arpabetToFormat(arpabet, format);
 }
 
 /**
