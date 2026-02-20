@@ -32,6 +32,8 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [AND] =/AH N D/',
+    ' [ARE] =/AA R/',
     '[ASTE] =/EY S T/',
     '[ASE] =/EY S/',
     '[A] =/AX/',
@@ -88,6 +90,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BEEN] =/B IH N/',
     ' [BE]^#=/B IH/',
     '[BEING]=/B IY IH NX/',
     ' [BUS]#=/B IH Z/',
@@ -143,6 +146,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DOES] =/D AH Z/',
     '#:[DED] =/D IH D/',
     '.E[D] =/D/',
     '#^:E[D] =/T/',
@@ -224,6 +228,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    ' [FROM]=/F R AH M/',
     '#:[FORD] =/F ER D/',
     '#:[FULLY] =/F AX L IY/',
     '#:[FUL] =/F AX L/',
@@ -245,7 +250,15 @@ const NRL_RULES: Record<string, string[]> = {
     '#[GH]=/ /',
     '[G]=/G/',
   ],
-  H: ['[HOW]=/HH AW/', '[H]#=/HH/', '[H]=/ /'],
+  H: [
+    ' [HAVE]=/HH AE V/',
+    ' [HER] =/HH ER/',
+    ' [HIM] =/HH IH M/',
+    ' [HIS] =/HH IH Z/',
+    '[HOW]=/HH AW/',
+    '[H]#=/HH/',
+    '[H]=/ /',
+  ],
   I: [
     '[INI] =/IY N IY/',
     '[INO] =/IY N OW/',
@@ -304,7 +317,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ISM] =/IH Z AX M/',
     '[I]=/IH/',
   ],
-  J: [],
+  J: ['[J]=/JH/'],
   K: [' [K]N=/ /', '[KK]=/K/', '[K]=/K/'],
   L: [
     '[LO]C#=/L OW/',
@@ -337,6 +350,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[M]=/M/',
   ],
   N: [
+    ' [NOW]=/N AW/',
     'E[NG]+=/N JH/',
     '[NG]ING=/NX/',
     '[NG]ED=/NX/',
@@ -352,6 +366,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[N]=/N/',
   ],
   O: [
+    ' [ONE] =/W AH N/',
+    ' [OUR]=/AW ER/',
     '[OROUGH]=/ER OW/',
     '#:[ORY] =/ER IY/',
     '#:[OR] =/ER/',
@@ -491,6 +507,14 @@ const NRL_RULES: Record<string, string[]> = {
     '[S]=/S/',
   ],
   T: [
+    ' [THE] =/DH AX/',
+    ' [THIS] =/DH IH S/',
+    ' [THEY]=/DH EY/',
+    ' [THERE]=/DH EH R/',
+    ' [THEN]=/DH EH N/',
+    ' [THAN] =/DH AE N/',
+    ' [THEM] =/DH EH M/',
+    ' [TWO]=/T UW/',
     '[THAT] =/DH AE T/',
     '[THER]=/DH ER/',
     '[THEIR]=/DH EH R/',
@@ -540,6 +564,7 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   V: ['[VIEW]=/V Y UW/', '[VIOL]=/V AY AH L/', '[V]=/V/'],
   W: [
+    ' [WITH] =/W IH DH/',
     '[WA]S=/W AA/',
     '[WA]T=/W AA/',
     '[WA]N=/W AA/',
@@ -561,6 +586,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#^:[Y] =/IY/',
     '#^:[Y]I=/IY/',
     ' :[Y] =/AY/',
+    ' [Y]#=/Y/',
     ' :[Y]#=/AY/',
     ' :[Y]^+:#=/IH/',
     ' :[Y]^#=/AY/',
