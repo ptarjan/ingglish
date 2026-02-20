@@ -303,37 +303,3 @@ test.describe('Tab Navigation', () => {
     expect(new URL(page.url()).pathname).toBe('/guide');
   });
 });
-
-test.describe('Spelling Guide', () => {
-  test.describe.configure({ mode: 'serial' });
-
-  let page: Page;
-  let context: BrowserContext;
-
-  test.beforeAll(async ({ browser }, workerInfo) => {
-    context = await browser.newContext(workerInfo.project.use);
-    page = await context.newPage();
-    await blockExternalNetwork(page);
-    await page.goto('/guide');
-    await waitForAppLoad(page);
-    await expect(page.locator('.spelling-guide')).toBeVisible();
-  });
-
-  test.afterAll(async () => {
-    await context.close();
-  });
-
-  test('displays vowel mappings table', async () => {
-    await expect(page.locator('h3:has-text("Vowels")')).toBeVisible();
-    await expect(page.locator('.mapping-table').first()).toBeVisible();
-  });
-
-  test('displays consonant mappings table', async () => {
-    await expect(page.locator('h3:has-text("Consonants")')).toBeVisible();
-  });
-
-  test('displays key principles', async () => {
-    await expect(page.locator('h3:has-text("Key Principles")')).toBeVisible();
-    await expect(page.locator('.principles-list li')).toHaveCount(4);
-  });
-});

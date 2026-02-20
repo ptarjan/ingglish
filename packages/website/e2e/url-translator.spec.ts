@@ -1,5 +1,5 @@
 import { test, expect, type Locator, type Page, type BrowserContext } from '@playwright/test';
-import { setupMockProxy } from './test-utils';
+import { blockExternalNetwork, setupMockProxy } from './test-utils';
 
 /**
  * Helper: wait for the app to fully load (header visible, spinner gone).
@@ -368,5 +368,105 @@ test.describe('URL Translator Navigation', () => {
       expect(tooltipBox.y).toBeGreaterThanOrEqual(0);
       expect(tooltipBox.x).toBeGreaterThanOrEqual(0);
     }
+  });
+});
+
+test.describe('URL Translator Error States', () => {
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
+    await blockExternalNetwork(page);
+
+    // Mock proxy to return errors for specific URLs
+    await page.route('**/*', async (route) => {
+      const url = route.request().url();
+
+      if (url.includes('api.allorigins.win') || url.includes('ingglish-cors-proxy')) {
+        if (url.includes('server-error')) {
+          await route.fulfill({ status: 500, body: 'Internal Server Error' });
+        } else if (url.includes('not-found')) {
+          await route.fulfill({ status: 404, body: 'Not Found' });
+        } else {
+          await route.abort('connectionfailed');
+        }
+        return;
+      }
+
+      // Fall through to blockExternalNetwork's handler for other URLs
+      await route.fallback();
+    });
+
+    await page.goto('/url');
+    await waitForAppLoad(page);
+  });
+
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test.beforeEach(async () => {
+    const input = page.locator('.url-input');
+    const value = await input.inputValue();
+    if (value) {
+      await page.click('button:has-text("Clear")');
+      await expect(input).toHaveValue('');
+    }
+    // Clear any previous error
+    await expect(page.locator('.error-message')).not.toBeVisible();
+  });
+
+  test('shows error for network failure', async () => {
+    const input = page.locator('.url-input');
+    await input.fill('https://network-fail.example.com');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toContainText('Failed to load page');
+  });
+
+  test('shows error for server error (500)', async () => {
+    const input = page.locator('.url-input');
+    await input.fill('https://server-error.example.com');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toContainText('Failed to load page');
+  });
+
+  test('shows error for 404', async () => {
+    const input = page.locator('.url-input');
+    await input.fill('https://not-found.example.com');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toContainText('Failed to load page');
+  });
+
+  test('error clears when user clicks Clear', async () => {
+    const input = page.locator('.url-input');
+    await input.fill('https://server-error.example.com');
+    await page.click('button[type="submit"]');
+
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+
+    await page.click('button:has-text("Clear")');
+    await expect(page.locator('.error-message')).not.toBeVisible();
+    await expect(input).toHaveValue('');
+  });
+
+  test('does nothing for empty URL', async () => {
+    const input = page.locator('.url-input');
+    await expect(input).toHaveValue('');
+
+    await page.click('button[type="submit"]');
+
+    // No error, no loading — normalizeUrl returns null for empty input
+    await expect(page.locator('.error-message')).not.toBeVisible();
+    await expect(page.locator('.btn-loading')).not.toBeVisible();
   });
 });
