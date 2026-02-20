@@ -46,7 +46,7 @@ export function renderDynamicExamples(
       );
     }
 
-    const englishPart = match[1]!; // e.g. "b**a**d"
+    const englishPart = match[1] ?? ''; // e.g. "b**a**d"
     // Strip bold markers to get the plain English word
     const plainWord = englishPart.replace(/\*\*/g, '');
     const translated = translate(plainWord);

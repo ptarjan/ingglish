@@ -74,6 +74,8 @@ interface EditableCellProps {
 }
 
 function EditableCell({ value, defaultValue, onChange, isDuplicate = false }: EditableCellProps) {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
   const isChanged = value !== defaultValue;
   return (
     <td
@@ -81,13 +83,57 @@ function EditableCell({ value, defaultValue, onChange, isDuplicate = false }: Ed
     >
       <input
         type="text"
-        value={value}
+        value={editing ? editValue : value}
         onChange={(e) => {
+          setEditValue(e.target.value);
           onChange(e.target.value);
+        }}
+        onFocus={() => {
+          setEditing(true);
+          setEditValue(value);
+        }}
+        onBlur={() => {
+          setEditing(false);
         }}
         className="cell-input"
         spellCheck={false}
       />
+    </td>
+  );
+}
+
+interface RColoredCellProps {
+  prefix: string;
+  isChanged: boolean;
+  onChangePrefix: (value: string) => void;
+}
+
+function RColoredCell({ prefix, isChanged, onChangePrefix }: RColoredCellProps) {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+
+  return (
+    <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
+      <div className="r-colored-input">
+        <input
+          type="text"
+          value={editing ? editValue : prefix}
+          onChange={(e) => {
+            setEditValue(e.target.value);
+            onChangePrefix(e.target.value);
+          }}
+          onFocus={() => {
+            setEditing(true);
+            setEditValue(prefix);
+          }}
+          onBlur={() => {
+            setEditing(false);
+          }}
+          className="cell-input"
+          spellCheck={false}
+        />
+        <span className="r-suffix">r</span>
+      </div>
     </td>
   );
 }
@@ -129,20 +175,13 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         return (
           <tr key={phoneme}>
             <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(phoneme)}</td>
-            <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
-              <div className="r-colored-input">
-                <input
-                  type="text"
-                  value={currentPrefix}
-                  onChange={(e) => {
-                    mapping.setRColoredPrefix(base, e.target.value);
-                  }}
-                  className="cell-input"
-                  spellCheck={false}
-                />
-                <span className="r-suffix">r</span>
-              </div>
-            </td>
+            <RColoredCell
+              prefix={currentPrefix}
+              isChanged={isChanged}
+              onChangePrefix={(v) => {
+                mapping.setRColoredPrefix(base, v);
+              }}
+            />
             <td className="default-cell">{defaultSpelling}</td>
             <td className="examples-cell">
               {renderDynamicExamples(sound.examples, translateWord)}
@@ -171,20 +210,13 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         return (
           <tr key={phoneme}>
             <td className="ipa-cell">{getCleanIPA(phoneme)}</td>
-            <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
-              <div className="r-colored-input">
-                <input
-                  type="text"
-                  value={currentPrefix}
-                  onChange={(e) => {
-                    mapping.setPhonemeSpelling(phoneme, e.target.value + 'r');
-                  }}
-                  className="cell-input"
-                  spellCheck={false}
-                />
-                <span className="r-suffix">r</span>
-              </div>
-            </td>
+            <RColoredCell
+              prefix={currentPrefix}
+              isChanged={isChanged}
+              onChangePrefix={(v) => {
+                mapping.setPhonemeSpelling(phoneme, v + 'r');
+              }}
+            />
             <td className="default-cell">{defaultSpelling}</td>
             <td className="examples-cell">
               {renderDynamicExamples(sound.examples, translateWord)}
