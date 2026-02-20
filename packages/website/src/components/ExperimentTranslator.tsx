@@ -50,7 +50,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   return (
     <div className="experiment-translator">
       <div className="experiment-translator-header">
-        <h3>Test Translation</h3>
+        <h3>Test</h3>
         <select
           onChange={handleSample}
           value={selectedIndex >= 0 ? String(selectedIndex) : ''}
@@ -78,7 +78,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
         placeholder="Type or paste English text here..."
         className="text-input experiment-input"
         spellCheck={false}
-        rows={3}
+        rows={4}
       />
 
       {hasContent && (
