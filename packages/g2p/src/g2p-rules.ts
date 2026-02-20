@@ -25,11 +25,11 @@
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { applyStressPrediction } from './stress';
 import { NRL_WORD_RULES as RULES_AB } from './g2p-word-rules-ab';
-import { NRL_WORD_RULES as RULES_CF } from './g2p-word-rules-cf';
-import { NRL_WORD_RULES as RULES_GL } from './g2p-word-rules-gl';
-import { NRL_WORD_RULES as RULES_MQ } from './g2p-word-rules-mq';
-import { NRL_WORD_RULES as RULES_RV } from './g2p-word-rules-rv';
-import { NRL_WORD_RULES as RULES_WZ } from './g2p-word-rules-wz';
+import { NRL_WORD_RULES as RULES_CE } from './g2p-word-rules-ce';
+import { NRL_WORD_RULES as RULES_FK } from './g2p-word-rules-fk';
+import { NRL_WORD_RULES as RULES_LO } from './g2p-word-rules-lo';
+import { NRL_WORD_RULES as RULES_PR } from './g2p-word-rules-pr';
+import { NRL_WORD_RULES as RULES_SZ } from './g2p-word-rules-sz';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -1037,11 +1037,11 @@ const COMPILED_RULES: Record<string, CompiledRule[]> = {};
 for (const [letter, patternRules] of Object.entries(NRL_RULES)) {
   const wordRules = [
     ...(RULES_AB[letter] ?? []),
-    ...(RULES_CF[letter] ?? []),
-    ...(RULES_GL[letter] ?? []),
-    ...(RULES_MQ[letter] ?? []),
-    ...(RULES_RV[letter] ?? []),
-    ...(RULES_WZ[letter] ?? []),
+    ...(RULES_CE[letter] ?? []),
+    ...(RULES_FK[letter] ?? []),
+    ...(RULES_LO[letter] ?? []),
+    ...(RULES_PR[letter] ?? []),
+    ...(RULES_SZ[letter] ?? []),
   ];
   const rules = [...wordRules, ...patternRules];
   const compiled: CompiledRule[] = [];
