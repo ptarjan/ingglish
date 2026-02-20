@@ -15,7 +15,7 @@ import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
 import { buildDiffMap } from '../utils/diff-map';
 import { isAllCaps } from '../utils/text';
-import { SAMPLE_TEXT } from '../utils/sample-text';
+import { pickRandomPassage } from '../utils/sample-text';
 import { trackTextTranslate, trackShare, trackSpeak } from '../utils/analytics';
 
 function SpeakerIcon() {
@@ -217,11 +217,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     setLastEdited('ingglish');
   }, []);
 
-  const handleSample = useCallback(() => {
-    setEnglishText(SAMPLE_TEXT);
+  const handleRandom = useCallback(() => {
+    const text = pickRandomPassage(englishText);
+    setEnglishText(text);
     setLastEdited('english');
-    trackTextTranslate(SAMPLE_TEXT.length, format);
-  }, [format]);
+    trackTextTranslate(text.length, format);
+  }, [format, englishText]);
 
   const handleCopyEnglish = useCallback(() => {
     if (displayEnglish) {
@@ -346,8 +347,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                   {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
                 </button>
               )}
-              <button onClick={handleSample} className="btn-secondary">
-                Sample
+              <button onClick={handleRandom} className="btn-secondary">
+                Random
               </button>
               <button
                 onClick={handleCopyEnglish}

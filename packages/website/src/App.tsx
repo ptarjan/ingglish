@@ -26,7 +26,6 @@ const UrlTranslator = lazyWithReload(() => import('./components/UrlTranslator'))
 const SpellingGuide = lazyWithReload(() => import('./components/SpellingGuide'));
 const Extension = lazyWithReload(() => import('./components/Extension'));
 const Docs = lazyWithReload(() => import('./components/Docs'));
-const Poems = lazyWithReload(() => import('./components/Poems'));
 const Experiment = lazyWithReload(() => import('./components/Experiment'));
 const WordExplorer = lazyWithReload(() => import('./components/WordExplorer'));
 const ReadingChallenge = lazyWithReload(() => import('./components/ReadingChallenge'));
@@ -37,7 +36,6 @@ type Tab =
   | 'url'
   | 'guide'
   | 'extension'
-  | 'poems'
   | 'docs'
   | 'experiment'
   | 'explore'
@@ -72,12 +70,6 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
     description:
       'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
     path: '/extension',
-  },
-  poems: {
-    title: 'Poems | Ingglish',
-    description:
-      'Classic English poems respelled in phonetic Ingglish. See how familiar verses look with consistent spelling.',
-    path: '/poems',
   },
   docs: {
     title: 'Documentation | Ingglish',
@@ -117,7 +109,6 @@ function getTabFromPath(): Tab {
     segment === 'url' ||
     segment === 'guide' ||
     segment === 'extension' ||
-    segment === 'poems' ||
     segment === 'experiment' ||
     segment === 'explore' ||
     segment === 'challenge'
@@ -301,7 +292,6 @@ function App() {
               ['/url', 'url', 'Translate URL'],
               ['/extension', 'extension', 'Extension'],
               ['/guide', 'guide', 'Spelling Guide'],
-              ['/poems', 'poems', 'Poems'],
               ['/docs', 'docs', 'Docs'],
               ['/explore', 'explore', 'Word Explorer'],
               ['/experiment', 'experiment', 'Experiment'],
@@ -360,7 +350,6 @@ function App() {
                 </ErrorBoundary>
               )}
               {activeTab === 'guide' && <SpellingGuide />}
-              {activeTab === 'poems' && <Poems />}
               {activeTab === 'extension' && <Extension />}
               {activeTab === 'explore' && (
                 <ErrorBoundary>
