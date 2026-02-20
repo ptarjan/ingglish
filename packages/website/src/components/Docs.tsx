@@ -22,6 +22,9 @@ import communityLandscape from '../../../../docs/community-landscape.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
 import collisionAnalysis from '../../../../docs/collision-analysis.md';
+import orthographicTransparency from '../../../../docs/orthographic-transparency.md';
+import morphologicalAnalysis from '../../../../docs/morphological-analysis.md';
+import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
 
 interface DocEntry {
   id: string;
@@ -81,6 +84,24 @@ const docs: DocEntry[] = [
     title: 'Collision Analysis',
     content: collisionAnalysis,
     filename: 'collision-analysis.md',
+  },
+  {
+    id: 'orthographic-transparency',
+    title: 'Orthographic Transparency',
+    content: orthographicTransparency,
+    filename: 'orthographic-transparency.md',
+  },
+  {
+    id: 'morphological-analysis',
+    title: 'Morphological Analysis',
+    content: morphologicalAnalysis,
+    filename: 'morphological-analysis.md',
+  },
+  {
+    id: 'dialect-assumptions',
+    title: 'Dialect Assumptions',
+    content: dialectAssumptions,
+    filename: 'dialect-assumptions.md',
   },
   {
     id: 'architecture',
