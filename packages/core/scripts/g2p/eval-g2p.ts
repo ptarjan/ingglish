@@ -65,16 +65,17 @@ export function parseNRLRules(filePath: string = RULES_FILE): Record<string, str
       rules[currentLetter] = [];
     }
 
-    // Match rule string: `'leftCtx[TARGET]rightCtx=/PHONEMES/'`
+    // Match all rule strings on this line (handles single-line sections too)
     if (currentLetter !== null) {
-      const ruleMatch = /'([^']*\[[^\]]+\][^']*=\/[^']*\/)'\s*,?\s*$/.exec(line);
-      if (ruleMatch) {
+      const ruleRe = /'([^']*\[[^\]]+\][^']*=\/[^']*\/)'/g;
+      let ruleMatch;
+      while ((ruleMatch = ruleRe.exec(line)) !== null) {
         rules[currentLetter]!.push(ruleMatch[1]!);
       }
     }
 
-    // Detect closing of a letter section
-    if (currentLetter !== null && /^\s+\],?\s*$/.test(line)) {
+    // Detect closing of a letter section (multi-line `  ],` or single-line `X: [...],`)
+    if (currentLetter !== null && /\],?\s*$/.test(line) && !/:\s*\[$/.test(line)) {
       currentLetter = null;
     }
   }
