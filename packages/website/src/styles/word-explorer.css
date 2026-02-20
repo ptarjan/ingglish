@@ -207,6 +207,12 @@
   color: var(--color-text-muted);
 }
 
+.chain-table .rule-code {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
 .vowel-row {
   background: rgba(79, 70, 229, 0.04);
 }

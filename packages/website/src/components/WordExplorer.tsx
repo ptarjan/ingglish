@@ -10,6 +10,8 @@ import {
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw, arpabetPhonemeToIPA } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
+import { wordToArpabetTraced } from '@ingglish/g2p';
+import type { G2PTrace } from '@ingglish/g2p';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { stripStress, isVowel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
@@ -25,29 +27,39 @@ interface WordResult {
   isCustom: boolean;
   homophones: string[];
   frequency: number | undefined;
+  g2pTrace?: G2PTrace;
 }
 
 function analyzeWord(word: string, format: OutputFormat): WordResult {
   const lower = word.toLowerCase().trim();
-  const phonemes = lookupPronunciation(lower);
+  const dictPhonemes = lookupPronunciation(lower);
   const isCustom = hasCustomPronunciation(lower);
-  const formatted = translateWord(lower, format);
-  const ingglish = translateWord(lower, 'ingglish');
 
   let ipa = '';
   let homophones: string[] = [];
+  let phonemes: string[] | null = dictPhonemes;
+  let g2pTrace: G2PTrace | undefined;
+  let formatted: string;
+  let ingglish: string;
 
-  if (phonemes !== null) {
-    ipa = arpabetToIPARaw(phonemes);
+  if (dictPhonemes !== null) {
+    ipa = arpabetToIPARaw(dictPhonemes);
+    formatted = translateWord(lower, format);
+    ingglish = translateWord(lower, 'ingglish');
     // Find homophones via reverse dictionary
-    const key = phonemes.map(stripStress).join(' ');
+    const key = dictPhonemes.map(stripStress).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
     if (reverseMatches !== undefined) {
       homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
     }
   } else {
-    // Word not in dictionary — still translate it
-    ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
+    // Word not in dictionary — use G2P with trace
+    const trace = wordToArpabetTraced(lower);
+    g2pTrace = trace;
+    phonemes = trace.phonemes;
+    ipa = arpabetToIPARaw(trace.phonemes);
+    formatted = arpabetToFormat(trace.phonemes, format);
+    ingglish = arpabetToFormat(trace.phonemes, 'ingglish');
   }
 
   return {
@@ -56,10 +68,11 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     ipa,
     ingglish,
     formatted,
-    matched: phonemes !== null,
+    matched: dictPhonemes !== null,
     isCustom,
     homophones,
     frequency: getWordFrequency(lower),
+    g2pTrace,
   };
 }
 
@@ -92,6 +105,35 @@ function PhonemeChain({ phonemes, format }: { phonemes: string[]; format: Output
               <td className="mono">{arpabetPhonemeToIPA(p).replace(/\u2060/g, '')}</td>
               <td className="mono highlight">{arpabetToFormat([p], format)}</td>
               <td className="type-label">{isVowel(p) ? 'vowel' : 'consonant'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function G2PRuleTrace({ trace, format }: { trace: G2PTrace; format: OutputFormat }) {
+  return (
+    <div className="phoneme-chain">
+      <table className="chain-table">
+        <thead>
+          <tr>
+            <th>Letters</th>
+            <th>Rule</th>
+            <th>Phonemes</th>
+            <th>{getFormatLabel(format)}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {trace.steps.map((step, i) => (
+            <tr key={i}>
+              <td className="mono">{step.letters}</td>
+              <td className="mono rule-code">{step.rule}</td>
+              <td className="mono">{step.phonemes.join(' ')}</td>
+              <td className="mono highlight">
+                {step.phonemes.length > 0 ? arpabetToFormat(step.phonemes, format) : '\u2014'}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -251,6 +293,13 @@ export default function WordExplorer() {
               </span>
             )}
           </div>
+
+          {result.g2pTrace !== undefined && (
+            <div className="explorer-section">
+              <h4>G2P Rules Applied</h4>
+              <G2PRuleTrace trace={result.g2pTrace} format={format} />
+            </div>
+          )}
 
           {result.phonemes !== null && (
             <div className="explorer-section">
