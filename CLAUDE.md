@@ -55,3 +55,11 @@ npm run translate -- -r "haloh werld"
 ```
 
 This is useful for debugging translation issues and understanding how specific words behave.
+
+## Example Translation
+
+> Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much.
+
+becomes:
+
+> Mister. And Misiz. Derslee, uv number for, Praivat Draiv, wer proud tuu say dhat dhay wer perfaktlee normal, thangk yuu vairee much.
