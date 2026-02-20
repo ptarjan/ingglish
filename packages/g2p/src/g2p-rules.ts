@@ -474,6 +474,7 @@ const NRL_RULES: Record<string, string[]> = {
   Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
   R: [' [RE]^#=/R IY/', '[ROLL]=/R OW L/', '[RH]=/R/', '[RDT] =/R T/', '[RR]=/R/', '[R]=/R/'],
   S: [
+    ' [SURE]=/SH UH R/',
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
     '#:[SIDE] =/S AY D/',
@@ -589,6 +590,9 @@ const NRL_RULES: Record<string, string[]> = {
     '#^:[Y] =/IY/',
     '#^:[Y]I=/IY/',
     ' :[Y] =/AY/',
+    ' [YOU] =/Y UW/',
+    ' [YOUR]=/Y AO R/',
+    ' [YEAH]=/Y AE/',
     ' [Y]#=/Y/',
     ' :[Y]#=/AY/',
     ' :[Y]^+:#=/IH/',
