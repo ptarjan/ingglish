@@ -25,4 +25,8 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     label: 'English spelling absurdities',
     text: `Though through thorough thought, I ought to understand the cough brought on by the dough. The rough bough of a plough can cause hiccoughs. A knight might write about the right way to knit, but the psychology of a gnome is a subtle thing.`,
   },
+  {
+    label: 'Harry Potter',
+    text: `Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.`,
+  },
 ];
