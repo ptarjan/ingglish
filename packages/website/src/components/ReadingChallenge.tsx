@@ -120,7 +120,7 @@ function ReadingChallenge() {
   const overallPct = Math.round(overallScore * 100);
 
   const handleShareResult = useCallback(() => {
-    const text = `I scored ${overallPct}% reading Ingglish on my first try! Can you beat that?\n\nhttps://ingglish.com/challenge`;
+    const text = `I scored ${overallPct}% on the Ingglish Reading Challenge! Can you beat that?\n\nhttps://ingglish.com/challenge`;
     shareLink('https://ingglish.com/challenge', 'Ingglish Reading Challenge', text);
   }, [overallPct, shareLink]);
 
