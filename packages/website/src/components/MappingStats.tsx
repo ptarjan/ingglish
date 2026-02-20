@@ -14,40 +14,157 @@ interface FormatStats {
   textPreservedPct: number;
   /** % of unique spellings that don't match a different English word */
   clarityPct: number;
-  /** Collision map for top-collisions table */
+  /** Collision map for collision analysis */
   collisionMap: Map<string, string[]>;
 }
 
-function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
+interface WordChange {
+  word: string;
+  standard: string;
+  experiment: string;
+}
+
+/** Pre-compiled regex for filtering dictionary entries with punctuation */
+const NON_ALPHA = /[^a-z]/i;
+
+/**
+ * Pre-computed standard Ingglish data. Computed once on first use since the
+ * standard mapping never changes during a session.
+ */
+let cachedIngglish: {
+  stats: FormatStats;
+  /** word → standard spelling, for diff detection */
+  spellings: Map<string, string>;
+  /** For each word, the set of words it collides with */
+  collisionGroupOf: Map<string, Set<string>>;
+} | null = null;
+
+function getIngglishCache() {
+  if (cachedIngglish !== null) {
+    return cachedIngglish;
+  }
+
   const dict = getDictionary();
   const allWords = new Set<string>();
   const spellingToWords = new Map<string, string[]>();
+  const spellings = new Map<string, string>();
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
-    // Skip entries with punctuation (contractions, abbreviations)
-    if (/[^a-z]/i.test(word)) {
+    if (NON_ALPHA.test(word)) {
       continue;
     }
 
     const wordLower = word.toLowerCase();
     allWords.add(wordLower);
-    const spelling = arpabetToFormat(phonemes, format);
+    const spelling = arpabetToFormat(phonemes, 'ingglish');
+    spellings.set(wordLower, spelling);
 
-    // Track frequency-weighted text preservation
     const freq = getWordFrequency(wordLower) ?? 0;
     totalFreqSum += freq;
     if (wordLower === spelling.toLowerCase()) {
       identicalFreqSum += freq;
     }
 
-    // Group words by spelling
     const existing = spellingToWords.get(spelling);
     if (existing) {
       existing.push(word);
     } else {
       spellingToWords.set(spelling, [word]);
+    }
+  }
+
+  const totalWords = allWords.size;
+
+  let collidingWords = 0;
+  let falseFriends = 0;
+  let totalUniqueSpellings = 0;
+  for (const [spelling, words] of spellingToWords) {
+    totalUniqueSpellings++;
+    if (words.length > 1) {
+      collidingWords += words.length;
+    }
+    const spellingLower = spelling.toLowerCase();
+    if (allWords.has(spellingLower)) {
+      const isOwnWord = words.some((w) => w.toLowerCase() === spellingLower);
+      if (!isOwnWord) {
+        falseFriends++;
+      }
+    }
+  }
+
+  // Build collision group lookup for new-collision detection
+  const collisionGroupOf = new Map<string, Set<string>>();
+  for (const words of spellingToWords.values()) {
+    if (words.length > 1) {
+      const lowerWords = new Set(words.map((w) => w.toLowerCase()));
+      for (const w of lowerWords) {
+        collisionGroupOf.set(w, lowerWords);
+      }
+    }
+  }
+
+  cachedIngglish = {
+    stats: {
+      totalWords,
+      uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
+      textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
+      clarityPct:
+        totalUniqueSpellings > 0
+          ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
+          : 100,
+      collisionMap: spellingToWords,
+    },
+    spellings,
+    collisionGroupOf,
+  };
+  return cachedIngglish;
+}
+
+/**
+ * Single-pass computation: experiment stats + top changes + new collisions.
+ * Uses cached standard Ingglish data to avoid redundant dictionary iteration.
+ */
+function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCache>): {
+  stats: FormatStats;
+  topChanges: WordChange[];
+  topCollisions: { spelling: string; words: string[] }[];
+} {
+  const dict = getDictionary();
+  const allWords = new Set<string>();
+  const spellingToWords = new Map<string, string[]>();
+  const changes: { word: string; standard: string; experiment: string; freq: number }[] = [];
+  let identicalFreqSum = 0;
+  let totalFreqSum = 0;
+
+  for (const [word, phonemes] of Object.entries(dict)) {
+    if (NON_ALPHA.test(word)) {
+      continue;
+    }
+
+    const wordLower = word.toLowerCase();
+    allWords.add(wordLower);
+    const expSpelling = arpabetToFormat(phonemes, 'experiment');
+
+    const freq = getWordFrequency(wordLower) ?? 0;
+    totalFreqSum += freq;
+    if (wordLower === expSpelling.toLowerCase()) {
+      identicalFreqSum += freq;
+    }
+
+    // Group words by experiment spelling
+    const existing = spellingToWords.get(expSpelling);
+    if (existing) {
+      existing.push(word);
+    } else {
+      spellingToWords.set(expSpelling, [word]);
+    }
+
+    // Collect changes vs standard (using cached standard spellings)
+    const stdSpelling = ingglishCache.spellings.get(wordLower);
+    if (stdSpelling !== undefined && stdSpelling !== expSpelling) {
+      changes.push({ word, standard: stdSpelling, experiment: expSpelling, freq });
     }
   }
 
@@ -62,7 +179,6 @@ function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
     if (words.length > 1) {
       collidingWords += words.length;
     }
-    // False friend: translated spelling matches a different English word
     const spellingLower = spelling.toLowerCase();
     if (allWords.has(spellingLower)) {
       const isOwnWord = words.some((w) => w.toLowerCase() === spellingLower);
@@ -72,99 +188,50 @@ function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
     }
   }
 
-  return {
-    totalWords,
-    uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
-    textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
-    clarityPct:
-      totalUniqueSpellings > 0
-        ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
-        : 100,
-    collisionMap: spellingToWords,
-  };
-}
-
-/** Find collisions in experiment that don't exist in standard Ingglish.
- *  A collision is "not new" if every word in the group already collided
- *  together in standard Ingglish (i.e. the group is a subset of an existing
- *  standard collision group). This handles both exact matches and groups that
- *  shrank because a word's spelling changed. */
-function getNewCollisions(
-  experimentMap: Map<string, string[]>,
-  ingglishMap: Map<string, string[]>,
-  count: number
-): { spelling: string; words: string[] }[] {
-  // For each word, record which other words it collides with in standard Ingglish
-  const ingglishGroupOf = new Map<string, Set<string>>();
-  for (const words of ingglishMap.values()) {
-    if (words.length > 1) {
-      const lowerWords = new Set(words.map((w) => w.toLowerCase()));
-      for (const w of lowerWords) {
-        ingglishGroupOf.set(w, lowerWords);
-      }
-    }
-  }
-
-  const results: { spelling: string; words: string[]; score: number }[] = [];
-
-  for (const [spelling, expWords] of experimentMap) {
+  // Find new collisions (not present in standard Ingglish)
+  const newCollisions: { spelling: string; words: string[]; score: number }[] = [];
+  for (const [spelling, expWords] of spellingToWords) {
     if (expWords.length <= 1) {
       continue;
     }
-
-    // Check if every word in this group already collided together in standard.
-    // Pick any word and check if all others are in its standard collision group.
+    // Check if every word already collided together in standard
     const lowerWords = expWords.map((w) => w.toLowerCase());
-    const standardGroup = ingglishGroupOf.get(lowerWords[0]!);
+    const standardGroup = ingglishCache.collisionGroupOf.get(lowerWords[0]!);
     if (standardGroup !== undefined && lowerWords.every((w) => standardGroup.has(w))) {
-      continue; // All these words already collided in standard — not new
-    }
-
-    // Score by max word frequency in the group
-    let maxFreq = 0;
-    for (const word of expWords) {
-      const freq = getWordFrequency(word) ?? 0;
-      if (freq > maxFreq) {
-        maxFreq = freq;
-      }
-    }
-
-    results.push({ spelling, words: expWords, score: maxFreq });
-  }
-
-  results.sort((a, b) => b.score - a.score);
-  return results.slice(0, count).map(({ spelling, words }) => ({ spelling, words }));
-}
-
-interface WordChange {
-  word: string;
-  standard: string;
-  experiment: string;
-}
-
-/** Find the most common words whose spelling changed between standard and experiment */
-function getTopChanges(count: number): WordChange[] {
-  const dict = getDictionary();
-  const changes: { word: string; standard: string; experiment: string; freq: number }[] = [];
-
-  for (const [word, phonemes] of Object.entries(dict)) {
-    if (/[^a-z]/i.test(word)) {
       continue;
     }
-    const standard = arpabetToFormat(phonemes, 'ingglish');
-    const experiment = arpabetToFormat(phonemes, 'experiment');
-    if (standard !== experiment) {
-      const freq = getWordFrequency(word) ?? 0;
-      changes.push({ word, standard, experiment, freq });
+    let maxFreq = 0;
+    for (const w of expWords) {
+      const f = getWordFrequency(w) ?? 0;
+      if (f > maxFreq) {
+        maxFreq = f;
+      }
     }
+    newCollisions.push({ spelling, words: expWords, score: maxFreq });
   }
+  newCollisions.sort((a, b) => b.score - a.score);
 
+  // Sort changes by frequency and take top 20
   changes.sort((a, b) => b.freq - a.freq);
-  return changes.slice(0, count).map(({ word, standard, experiment }) => ({
-    word,
-    standard,
-    experiment,
-  }));
+
+  return {
+    stats: {
+      totalWords,
+      uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
+      textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
+      clarityPct:
+        totalUniqueSpellings > 0
+          ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
+          : 100,
+      collisionMap: spellingToWords,
+    },
+    topChanges: changes.slice(0, 20).map(({ word, standard, experiment }) => ({
+      word,
+      standard,
+      experiment,
+    })),
+    topCollisions: newCollisions.slice(0, 10).map(({ spelling, words }) => ({ spelling, words })),
+  };
 }
 
 interface Stats {
@@ -199,14 +266,16 @@ function MappingStats({ version }: MappingStatsProps) {
     clearTimeout(timerRef.current);
     setComputing(true);
     timerRef.current = setTimeout(() => {
-      const experiment = computeStats('experiment');
-      const ingglish = computeStats('ingglish');
+      // Standard Ingglish is cached after first computation
+      const ingglishCache = getIngglishCache();
+      // Single pass for experiment stats + changes + new collisions
+      const { stats: expStats, topChanges, topCollisions } = computeExperimentStats(ingglishCache);
 
       setStats({
-        experiment,
-        ingglish,
-        topCollisions: getNewCollisions(experiment.collisionMap, ingglish.collisionMap, 10),
-        topChanges: getTopChanges(20),
+        experiment: expStats,
+        ingglish: ingglishCache.stats,
+        topCollisions,
+        topChanges,
       });
       setComputing(false);
     }, 500);
