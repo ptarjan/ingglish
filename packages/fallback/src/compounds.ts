@@ -46,6 +46,9 @@ const MIN_PART_LENGTH = 3;
  */
 const MIN_PART_FREQUENCY = 500;
 
+/** Maximum length of a single compound part (avoids scanning the full word at each position) */
+const MAX_PART_LENGTH = 15;
+
 /**
  * Look up a word's pronunciation in custom dictionary or CMU.
  */
@@ -68,7 +71,7 @@ export function dpDecompose(word: string): string[] | null {
   dp[0] = { parts: [], score: 0 };
 
   for (let i = MIN_PART_LENGTH; i <= n; i++) {
-    for (let j = Math.max(0, i - 15); j <= i - MIN_PART_LENGTH; j++) {
+    for (let j = Math.max(0, i - MAX_PART_LENGTH); j <= i - MIN_PART_LENGTH; j++) {
       // Skip whole-word match (j=0, i=n) — we want splits, not the word itself
       if (j === 0 && i === n) {
         continue;

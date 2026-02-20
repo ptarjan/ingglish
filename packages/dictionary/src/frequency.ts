@@ -3,64 +3,30 @@
  * Used for selecting the most common word among homophones.
  */
 
-// Lazy-loaded frequency data and map
-let wordFrequencies: Record<string, number> | null = null;
-let frequenciesPromise: Promise<Record<string, number>> | null = null;
-let frequencyMap: Map<string, number> | null = null;
+import { createLazyLoader } from './lazy-loader';
 
-async function loadFrequencyData(): Promise<Record<string, number>> {
-  const module = await import('./data/word-frequencies');
-  return module.default;
+interface FrequencyData {
+  raw: Record<string, number>;
+  map: Map<string, number>;
 }
+
+const loader = createLazyLoader<FrequencyData>(async () => {
+  const module = await import('./data/word-frequencies');
+  const raw = module.default;
+  const map = new Map<string, number>();
+  for (const [word, count] of Object.entries(raw)) {
+    map.set(word.toLowerCase(), count);
+  }
+  return { raw, map };
+}, 'word frequencies');
 
 /**
  * Loads word frequency data.
  * The data is cached after first load.
  */
 export async function loadFrequencies(): Promise<Record<string, number>> {
-  if (wordFrequencies) {
-    return wordFrequencies;
-  }
-
-  if (frequenciesPromise) {
-    return frequenciesPromise;
-  }
-
-  frequenciesPromise = loadFrequencyData()
-    .then((data) => {
-      wordFrequencies = data;
-      // Build frequency map eagerly (avoids latency spike on first getWordFrequency call)
-      frequencyMap = new Map<string, number>();
-      for (const [word, count] of Object.entries(data)) {
-        frequencyMap.set(word.toLowerCase(), count);
-      }
-      return wordFrequencies;
-    })
-    .catch((error: unknown) => {
-      frequenciesPromise = null; // Reset so retry is possible
-      const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to load word frequencies: ${message}`);
-    });
-
-  return frequenciesPromise;
-}
-
-/**
- * Gets the frequency map, building it lazily from loaded data.
- */
-function getFrequencyMap(): Map<string, number> | null {
-  if (frequencyMap) {
-    return frequencyMap;
-  }
-  if (!wordFrequencies) {
-    return null;
-  }
-
-  frequencyMap = new Map<string, number>();
-  for (const [word, count] of Object.entries(wordFrequencies)) {
-    frequencyMap.set(word.toLowerCase(), count);
-  }
-  return frequencyMap;
+  const data = await loader.load();
+  return data.raw;
 }
 
 /**
@@ -68,8 +34,10 @@ function getFrequencyMap(): Map<string, number> | null {
  * Returns undefined if word is not in the corpus or data hasn't loaded yet.
  */
 export function getWordFrequency(word: string): number | undefined {
-  const map = getFrequencyMap();
-  return map?.get(word.toLowerCase());
+  if (!loader.isLoaded()) {
+    return undefined;
+  }
+  return loader.get().map.get(word.toLowerCase());
 }
 
 // Common English contractions that should be preferred over homophones

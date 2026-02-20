@@ -8,6 +8,7 @@
 import { stripStress } from '@ingglish/phonemes';
 import { CUSTOM_PRONUNCIATIONS } from './custom-words';
 import type { ReverseDictionary } from './types';
+import { createLazyLoader } from './lazy-loader';
 
 /**
  * Build a reverse map from custom pronunciations (phoneme key -> words).
@@ -27,52 +28,22 @@ function getCustomReverseMap(): Record<string, string[]> {
   return customReverseMap;
 }
 
-// The reverse dictionary will be loaded once and cached
-let reverseDict: ReverseDictionary | null = null;
-let reverseDictPromise: Promise<ReverseDictionary> | null = null;
-
-async function loadReverseDictionaryData(): Promise<ReverseDictionary> {
-  const module = await import('./reverse-cmudict');
-  return module.default;
-}
+const loader = createLazyLoader<ReverseDictionary>(
+  async () => (await import('./reverse-cmudict')).default,
+  'Reverse dictionary'
+);
 
 /**
  * Loads the pre-built reverse dictionary.
  * The dictionary is cached after first load.
  */
-export async function loadReverseDictionary(): Promise<ReverseDictionary> {
-  if (reverseDict) {
-    return reverseDict;
-  }
-
-  if (reverseDictPromise) {
-    return reverseDictPromise;
-  }
-
-  reverseDictPromise = loadReverseDictionaryData()
-    .then((data) => {
-      reverseDict = data;
-      return reverseDict;
-    })
-    .catch((error: unknown) => {
-      reverseDictPromise = null;
-      const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to load reverse dictionary: ${message}`);
-    });
-
-  return reverseDictPromise;
-}
+export const loadReverseDictionary = loader.load.bind(loader);
 
 /**
  * Gets the reverse dictionary synchronously.
  * Throws if dictionary hasn't been loaded yet.
  */
-export function getReverseDictionary(): ReverseDictionary {
-  if (!reverseDict) {
-    throw new Error('Reverse dictionary not loaded. Call loadReverseDictionary() first.');
-  }
-  return reverseDict;
-}
+export const getReverseDictionary = loader.get.bind(loader);
 
 /**
  * Looks up words for a phoneme key.
@@ -102,6 +73,5 @@ export function lookupPhonemeKey(key: string): string[] | undefined {
  * Useful for testing.
  */
 export function clearReverseDictionaryCache(): void {
-  reverseDict = null;
-  reverseDictPromise = null;
+  loader.reset();
 }

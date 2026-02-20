@@ -135,6 +135,27 @@ export interface StemmingResult {
 }
 
 /**
+ * Generates stem variants for a given stem and suffix.
+ * Inflectional suffixes try aggressive variants (stem+e, stem-1char, doubled consonant, i→y).
+ * All suffixes also try stem+y.
+ */
+function getStemVariants(stem: string, suffix: string): string[] {
+  const variants: string[] = [stem];
+  if (INFLECTIONAL_SUFFIXES.has(suffix)) {
+    variants.push(
+      stem + 'e', // hoping -> hope
+      stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
+      stem.length > 0 ? stem + stem[stem.length - 1]! : stem // big -> bigg (for adding -er)
+    );
+  }
+  if (stem.endsWith('i')) {
+    variants.push(stem.slice(0, -1) + 'y'); // loveliest -> lovely
+  }
+  variants.push(stem + 'y'); // uglify -> ugly
+  return variants;
+}
+
+/**
  * Diagnoses how stemming would decompose a word.
  * Returns the matched prefix/stem/suffix, or null if no match.
  */
@@ -144,20 +165,7 @@ export function diagnoseStemming(word: string): StemmingResult | null {
   for (const { suffix } of SUFFIX_PHONEMES) {
     if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
       const stem = lowerWord.slice(0, -suffix.length);
-      const stemVariants: string[] = [stem];
-      if (INFLECTIONAL_SUFFIXES.has(suffix)) {
-        stemVariants.push(
-          stem + 'e',
-          stem.length > 1 ? stem.slice(0, -1) : stem,
-          stem.length > 0 ? stem + stem[stem.length - 1]! : stem
-        );
-      }
-      if (stem.endsWith('i')) {
-        stemVariants.push(stem.slice(0, -1) + 'y');
-      }
-      stemVariants.push(stem + 'y');
-
-      for (const variant of stemVariants) {
+      for (const variant of getStemVariants(stem, suffix)) {
         if (lookupPronunciation(variant)) {
           return { stem: variant, suffix };
         }
@@ -178,6 +186,25 @@ export function diagnoseStemming(word: string): StemmingResult | null {
 }
 
 /**
+ * Resolves the suffix phonemes, selecting the correct allomorph for -ed, -es, -s.
+ */
+function resolveSuffixPhonemes(
+  suffix: string,
+  suffixArpabet: string[] | null,
+  baseArpabet: string[]
+): string[] {
+  if (suffixArpabet !== null) {
+    return suffixArpabet;
+  }
+  const lastPhoneme = baseArpabet[baseArpabet.length - 1]!;
+  if (suffix === 'ed') {
+    return selectEdPhonemes(lastPhoneme);
+  }
+  // suffix === 's' or 'es' — same allomorph logic
+  return selectSPhonemes(lastPhoneme);
+}
+
+/**
  * Attempts to translate an unknown word using stemming.
  * Tries to find a known base word and apply suffix rules.
  *
@@ -191,60 +218,25 @@ export function translateWithStemming(
 ): string | null {
   const lowerWord = word.toLowerCase();
 
-  // Try removing suffixes and finding base word
   for (const { suffix, phonemes: suffixArpabet } of SUFFIX_PHONEMES) {
     if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
       const stem = lowerWord.slice(0, -suffix.length);
-
-      // Try various stem modifications.
-      // Inflectional suffixes try aggressive variants (stem+e, stem-1, etc.)
-      // Derivational suffixes only try direct stem to avoid false matches.
-      const stemVariants: string[] = [stem];
-      if (INFLECTIONAL_SUFFIXES.has(suffix)) {
-        stemVariants.push(
-          stem + 'e', // hoping -> hope
-          stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
-          stem.length > 0 ? stem + stem[stem.length - 1]! : stem // big -> bigg (for adding -er)
-        );
-      }
-      // i→y and stem+y work for both inflectional and derivational
-      if (stem.endsWith('i')) {
-        stemVariants.push(stem.slice(0, -1) + 'y'); // loveliest -> lovely
-      }
-      stemVariants.push(stem + 'y'); // uglify -> ugly
-
-      for (const variant of stemVariants) {
+      for (const variant of getStemVariants(stem, suffix)) {
         const baseArpabet = lookupPronunciation(variant);
         if (baseArpabet) {
-          // Select allomorph for -ed, -es, and -s based on last phoneme of stem
-          let resolvedSuffix: string[];
-          if (suffixArpabet === null) {
-            const lastPhoneme = baseArpabet[baseArpabet.length - 1]!;
-            if (suffix === 'ed') {
-              resolvedSuffix = selectEdPhonemes(lastPhoneme);
-            } else {
-              // suffix === 's' or 'es' — same allomorph logic
-              resolvedSuffix = selectSPhonemes(lastPhoneme);
-            }
-          } else {
-            resolvedSuffix = suffixArpabet;
-          }
-
-          const fullArpabet = [...baseArpabet, ...resolvedSuffix];
-          return arpabetToFormat(fullArpabet, format);
+          const resolvedSuffix = resolveSuffixPhonemes(suffix, suffixArpabet, baseArpabet);
+          return arpabetToFormat([...baseArpabet, ...resolvedSuffix], format);
         }
       }
     }
   }
 
-  // Try removing prefixes
   for (const { prefix, phonemes: prefixArpabet } of PREFIX_PHONEMES) {
     if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
       const stem = lowerWord.slice(prefix.length);
       const baseArpabet = lookupPronunciation(stem);
       if (baseArpabet) {
-        const fullArpabet = [...prefixArpabet, ...baseArpabet];
-        return arpabetToFormat(fullArpabet, format);
+        return arpabetToFormat([...prefixArpabet, ...baseArpabet], format);
       }
     }
   }

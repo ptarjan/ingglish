@@ -20,7 +20,6 @@ import {
   applyCasePattern,
   normalizeApostrophes,
   extractPreservedPatterns,
-  restorePreservedPatterns,
 } from '@ingglish/normalize';
 import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
@@ -28,6 +27,10 @@ import { expandPlaceholder } from './preserved';
 
 // Pre-compiled regex patterns
 const HAS_LETTER = /[a-zA-Z]/;
+
+// Alternative phoneme interpretation must be this many times more common
+// than the primary to override it (prevents "kat" → "cut" while allowing "haloh" → "hello")
+const ALT_FREQUENCY_THRESHOLD = 5;
 
 // ============================================================================
 // Core Translation Functions
@@ -74,7 +77,7 @@ function lookupByArpabet(arpabet: string[]): string[] {
     const matches = lookupPhonemeKey(key);
     if (matches && matches.length > 0) {
       const altBestFreq = getWordFrequency(matches[0]!) ?? 0;
-      if (altBestFreq > primaryBestFreq * 5) {
+      if (altBestFreq > primaryBestFreq * ALT_FREQUENCY_THRESHOLD) {
         // Alternative is overwhelmingly more common — merge and sort
         const allMatches = [...primaryMatches];
         const seen = new Set(primaryMatches);
@@ -161,36 +164,9 @@ registerFormat('ipa', {
  * URLs and emails are preserved unchanged.
  */
 function reverseTranslateIngglishText(text: string): string {
-  const normalizedText = normalizeApostrophes(text);
-
-  // Extract URLs and emails to preserve them unchanged
-  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
-
-  const translated = textWithPlaceholders
-    .split(WORD_SPLIT_REGEX)
-    .map((token) => {
-      if (WORD_TEST_REGEX.test(token)) {
-        if (token.includes("'")) {
-          const parts = token.split("'");
-          return parts
-            .map((p) => {
-              if (!p) {
-                return '';
-              }
-              const matches = reverseTranslateWord(p);
-              return matches[0] ?? p;
-            })
-            .join("'");
-        }
-        const matches = reverseTranslateWord(token);
-        return matches.length > 0 ? matches[0] : token;
-      }
-      return token;
-    })
+  return reverseTranslateIngglishTextWithMapping(text)
+    .map((t) => t.translated)
     .join('');
-
-  // Restore URLs and emails
-  return restorePreservedPatterns(translated, preserved);
 }
 
 /**

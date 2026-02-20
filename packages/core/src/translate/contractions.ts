@@ -9,28 +9,21 @@ import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 
-// Forward declaration - will be imported from forward.ts
-type TranslateWordFn = (word: string, format: OutputFormat) => string;
-let translateWordFn: TranslateWordFn | null = null;
-
-/**
- * Sets the translateWord function reference.
- * Called by forward.ts to avoid circular dependency.
- */
-export function setTranslateWordFn(fn: TranslateWordFn): void {
-  translateWordFn = fn;
-}
-
 /**
  * Translates a contraction (word with apostrophe).
  * First tries to look up the whole contraction in the dictionary.
- * Returns the translation without apostrophe for consistent round-tripping.
+ * Falls back to translating parts separately while preserving the apostrophe.
  *
  * @param token - The contraction to translate (e.g., "don't")
  * @param format - The output format ('ingglish' or 'ipa')
+ * @param translateWord - Function to translate individual word parts
  * @returns The translated contraction
  */
-export function translateContraction(token: string, format: OutputFormat = 'ingglish'): string {
+export function translateContraction(
+  token: string,
+  format: OutputFormat,
+  translateWord: (word: string, format: OutputFormat) => string
+): string {
   // Try to look up the whole contraction (with apostrophe) in dictionary
   const phonemes = lookupPronunciation(token);
 
@@ -61,11 +54,7 @@ export function translateContraction(token: string, format: OutputFormat = 'ingg
       if (i > 0 && p.toLowerCase() === 't') {
         return 't'; // Keep 't' as-is for n't contractions not in dictionary
       }
-      // Use the registered translateWord function
-      if (translateWordFn) {
-        return translateWordFn(p, format);
-      }
-      return p;
+      return translateWord(p, format);
     })
     .join("'");
 }

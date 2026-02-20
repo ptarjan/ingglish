@@ -25,7 +25,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { translateContraction, setTranslateWordFn } from './contractions';
+import { translateContraction } from './contractions';
 import { expandPlaceholder } from './preserved';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
@@ -77,7 +77,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   // Handle contractions (words with apostrophes)
   if (word.includes("'")) {
-    return { translated: translateContraction(word, format), matched: true };
+    return { translated: translateContraction(word, format, translateWord), matched: true };
   }
 
   // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged
@@ -211,9 +211,6 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
   return translateWordInternal(word, format).translated;
 }
-
-// Register translateWord with contractions module to break circular dependency
-setTranslateWordFn(translateWord);
 
 /**
  * Synchronous version of {@link translate}. Dictionary must already be loaded.

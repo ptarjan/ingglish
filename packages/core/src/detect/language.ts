@@ -30,6 +30,9 @@ const ENGLISH_PATTERNS = [
  */
 const IPA_CHARS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ');
 
+// Fraction of characters that must be IPA-specific to classify text as IPA
+const IPA_CHAR_THRESHOLD = 0.1;
+
 /**
  * Heuristically detects if text is Ingglish vs English.
  *
@@ -73,8 +76,7 @@ export function isLikelyIPA(text: string): boolean {
     }
   }
 
-  // If more than 10% of characters are IPA-specific, likely IPA
-  return ipaCount > text.length * 0.1;
+  return ipaCount > text.length * IPA_CHAR_THRESHOLD;
 }
 
 /**

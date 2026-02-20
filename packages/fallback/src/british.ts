@@ -53,34 +53,7 @@ const BRITISH_TO_AMERICAN: { pattern: RegExp; replacement: string }[] = [
 ];
 
 /**
- * Attempts to translate a word by converting British spelling to American
- * and looking up the American form in the dictionary.
- *
- * @param word The unknown word (possibly British spelling)
- * @param format The output format
- * @returns The translated word, or null if no American variant was found
- */
-export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): string | null {
-  const lower = word.toLowerCase();
-
-  for (const { pattern, replacement } of BRITISH_TO_AMERICAN) {
-    if (pattern.test(lower)) {
-      const american = lower.replace(pattern, replacement);
-      if (american !== lower) {
-        const phonemes = lookupPronunciation(american);
-        if (phonemes) {
-          return arpabetToFormat(phonemes, format);
-        }
-      }
-    }
-  }
-
-  return null;
-}
-
-/**
- * Diagnoses British spelling normalization.
- * Returns the American spelling if a match is found, or null.
+ * Finds the American spelling for a British word, or null if no match.
  */
 export function diagnoseBritish(word: string): string | null {
   const lower = word.toLowerCase();
@@ -95,4 +68,21 @@ export function diagnoseBritish(word: string): string | null {
   }
 
   return null;
+}
+
+/**
+ * Attempts to translate a word by converting British spelling to American
+ * and looking up the American form in the dictionary.
+ *
+ * @param word The unknown word (possibly British spelling)
+ * @param format The output format
+ * @returns The translated word, or null if no American variant was found
+ */
+export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): string | null {
+  const american = diagnoseBritish(word);
+  if (american === null) {
+    return null;
+  }
+  const phonemes = lookupPronunciation(american);
+  return phonemes ? arpabetToFormat(phonemes, format) : null;
 }

@@ -5,57 +5,26 @@
  */
 
 import type { CMUDictionary } from './types';
+import { createLazyLoader } from './lazy-loader';
 
-// The dictionary will be loaded once and cached
-let dictionary: CMUDictionary | null = null;
-let dictionaryPromise: Promise<CMUDictionary> | null = null;
-
-async function loadDictionaryData(): Promise<CMUDictionary> {
-  const module = await import('./cmudict');
-  return module.default;
-}
+const loader = createLazyLoader<CMUDictionary>(
+  async () => (await import('./cmudict')).default,
+  'CMU dictionary'
+);
 
 /**
  * Loads the CMU Pronouncing Dictionary.
  * The dictionary is cached after first load.
  */
-export async function loadDictionary(): Promise<CMUDictionary> {
-  if (dictionary) {
-    return dictionary;
-  }
-
-  if (dictionaryPromise) {
-    return dictionaryPromise;
-  }
-
-  dictionaryPromise = loadDictionaryData()
-    .then((data) => {
-      dictionary = data;
-      return dictionary;
-    })
-    .catch((error: unknown) => {
-      dictionaryPromise = null; // Reset so retry is possible
-      const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to load CMU dictionary: ${message}`);
-    });
-
-  return dictionaryPromise;
-}
+export const loadDictionary = loader.load.bind(loader);
 
 /**
  * Gets the dictionary synchronously.
  * Throws if dictionary hasn't been loaded yet.
  */
-export function getDictionary(): CMUDictionary {
-  if (!dictionary) {
-    throw new Error('Dictionary not loaded. Call loadDictionary() first.');
-  }
-  return dictionary;
-}
+export const getDictionary = loader.get.bind(loader);
 
 /**
  * Checks if the dictionary is loaded.
  */
-export function isDictionaryLoaded(): boolean {
-  return dictionary !== null;
-}
+export const isDictionaryLoaded = loader.isLoaded.bind(loader);
