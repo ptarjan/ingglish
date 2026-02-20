@@ -2,7 +2,7 @@ import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'rea
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from '../utils/diff-map';
-import { pickRandomPassage } from '../utils/sample-text';
+import { SAMPLE_PASSAGES, pickRandomPassage } from '../utils/sample-text';
 
 const STORAGE_KEY = 'ingglish-experiment-text';
 
@@ -33,6 +33,13 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredText, version]);
 
+  const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const index = parseInt(e.target.value, 10);
+    if (!isNaN(index) && SAMPLE_PASSAGES[index] !== undefined) {
+      setText(SAMPLE_PASSAGES[index].text);
+    }
+  }, []);
+
   const handleRandom = useCallback(() => {
     setText(pickRandomPassage(text));
   }, [text]);
@@ -43,6 +50,16 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
     <div className="experiment-translator">
       <div className="experiment-translator-header">
         <h3>Test Translation</h3>
+        <select onChange={handleSample} defaultValue="" className="sample-select">
+          <option value="" disabled>
+            Load sample...
+          </option>
+          {SAMPLE_PASSAGES.map((p, i) => (
+            <option key={i} value={i}>
+              {p.label}
+            </option>
+          ))}
+        </select>
         <button onClick={handleRandom} className="btn-secondary">
           Random
         </button>
