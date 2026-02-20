@@ -845,12 +845,13 @@ const NRL_RULES: Record<string, string[]> = {
     ' [COMB] =/K OW M/',
     ' [COST] =/K AA S T/',
     ' [COZY]=/K OW Z IY/',
+    // CHA pattern: AA before R/LK (charm, charge, chalk), AE elsewhere
+    ' [CHA] =/CH AA/',
+    ' [CHA]R=/CH AA/',
+    ' [CHA]LK=/CH AA/',
     ' [CHA]=/CH AE/',
     ' [CHI] =/K AY/',
     ' [COS] =/K AO S/',
-    // CH word rules (before CHA pattern)
-    // CHA pattern: AA before R (charm, charge), AE elsewhere (default)
-    ' [CHA]R=/CH AA/',
     // Custom: common word fixes
     ' [CH]^=/K/',
     '^E[CH]=/K/',
@@ -3231,6 +3232,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[STEIN] =/S T AY N/',
     // Custom: -son suffix with schwa (johnson, wilson, anderson)
     '#:[SON] =/S AX N/',
+    // Collapse doubled SS (message, possible, lesson)
+    '[SS]=/S/',
     '[S]=/S/',
   ],
   T: [
