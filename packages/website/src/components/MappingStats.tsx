@@ -265,9 +265,9 @@ function MappingStats({ version }: MappingStatsProps) {
             <tbody>
               {stats.topChanges.map(({ word, standard, experiment: exp }) => (
                 <tr key={word}>
-                  <td className="examples-cell">{word}</td>
-                  <td className="default-cell">{standard}</td>
-                  <td className="ingglish-cell">{exp}</td>
+                  <td>{word}</td>
+                  <td>{standard}</td>
+                  <td>{exp}</td>
                 </tr>
               ))}
             </tbody>

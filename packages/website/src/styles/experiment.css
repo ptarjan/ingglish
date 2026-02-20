@@ -379,8 +379,9 @@
   margin-bottom: 0.5rem;
 }
 
-.changes-table th:nth-child(1) {
-  width: 6rem;
+.changes-table th,
+.changes-table td {
+  text-align: left;
 }
 
 .top-collisions {
