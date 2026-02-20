@@ -51,10 +51,13 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
   const isCustom = hasCustomPronunciation(lower);
   const formatted = translateWord(lower, format);
   const ingglish = translateWord(lower, 'ingglish');
-
   let ipa = '';
   let homophones: string[] = [];
+  let phonemes: string[] | null = dictPhonemes;
   let g2pTrace: G2PTrace | undefined;
+  let fallbackStrategy: FallbackStrategy | null | undefined;
+  let compoundParts: string[] | undefined;
+  let stemmingResult: StemmingResult | undefined;
 
   // Initialisms (URL, API, etc.) pass through unchanged in the translation,
   // but we tag them so the breakdown shows how they're pronounced letter-by-letter.
@@ -76,57 +79,44 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
 
   if (dictPhonemes !== null) {
     ipa = arpabetToIPARaw(dictPhonemes);
-    // Find homophones via reverse dictionary
     const key = dictPhonemes.map(stripStress).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
     if (reverseMatches !== undefined) {
       homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
     }
   } else {
-    // Word not in dictionary — diagnose which fallback strategy handles it
     ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
-    const strategy = diagnoseFallback(lower);
-    let compoundParts: string[] | undefined;
-    let stemmingResult: StemmingResult | undefined;
-    let britishSpelling: string | undefined;
-    let customPhonemes: string[] | null = null;
+    fallbackStrategy = diagnoseFallback(lower);
 
-    if (strategy === 'g2p') {
-      g2pTrace = wordToArpabetTraced(lower);
-    } else if (strategy === 'compound') {
-      compoundParts = decomposeCompound(lower) ?? undefined;
-    } else if (strategy === 'stemming') {
-      stemmingResult = diagnoseStemming(lower) ?? undefined;
-    } else if (strategy === 'british') {
-      britishSpelling = diagnoseBritish(lower) ?? undefined;
-    } else if (strategy === 'custom') {
-      customPhonemes = getCustomPronunciation(lower) ?? null;
+    switch (fallbackStrategy) {
+      case 'g2p': {
+        const trace = wordToArpabetTraced(lower);
+        g2pTrace = trace;
+        phonemes = trace.phonemes;
+        break;
+      }
+      case 'compound':
+        compoundParts = decomposeCompound(lower) ?? undefined;
+        break;
+      case 'stemming':
+        stemmingResult = diagnoseStemming(lower) ?? undefined;
+        break;
+      case 'custom':
+        phonemes = getCustomPronunciation(lower) ?? null;
+        break;
+      case 'british':
+      case 'initialism':
+      case 'phonemize':
+      case null:
+        break;
     }
-
-    return {
-      word: lower,
-      phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? customPhonemes,
-      ipa,
-      ingglish,
-      formatted,
-      matched: false,
-      isCustom,
-      homophones,
-      frequency: getWordFrequency(lower),
-      g2pTrace,
-      fallbackStrategy: strategy,
-      compoundParts,
-      stemmingResult,
-      britishSpelling,
-    };
   }
 
-  // Check if this dictionary word is a British variant (colour→color, centre→center)
   const britishSpelling = diagnoseBritish(lower) ?? undefined;
 
   return {
     word: lower,
-    phonemes: dictPhonemes,
+    phonemes,
     ipa,
     ingglish,
     formatted,
@@ -134,6 +124,10 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     isCustom,
     homophones,
     frequency: getWordFrequency(lower),
+    g2pTrace,
+    fallbackStrategy,
+    compoundParts,
+    stemmingResult,
     britishSpelling,
   };
 }
@@ -510,7 +504,7 @@ export default function WordExplorer() {
                   ? 'dictionary'
                   : fallbackLabel(result.fallbackStrategy)}
             </span>
-            {result.matched && result.britishSpelling !== undefined && (
+            {result.britishSpelling !== undefined && result.fallbackStrategy !== 'british' && (
               <span className="badge badge-fallback">British variant</span>
             )}
             {result.frequency !== undefined && (
