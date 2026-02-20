@@ -12,6 +12,7 @@ import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';
 import { buildDiffMap } from '../utils/diff-map';
+import { isAllCaps } from '../utils/text';
 
 function SpeakerIcon() {
   return (
@@ -188,11 +189,6 @@ export function MappedWordDisplay({
       {tokens.length === 0 && <span className="placeholder">{placeholder}</span>}
     </div>
   );
-}
-
-function isAllCaps(text: string): boolean {
-  const letters = text.replace(/[^a-zA-Z]/g, '');
-  return letters.length >= 2 && letters === letters.toUpperCase();
 }
 
 interface TextTranslatorProps {
