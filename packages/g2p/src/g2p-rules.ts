@@ -267,8 +267,9 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ENESS] =/N AX S/',
     // Custom: -eman suffix → silent E (fireman→M AH N, foreman, policeman — 160/166 in CMU)
     '#:[EMAN] =/M AX N/',
-    // Removed by hill-climb: [E]^%=/IY/ (+63), [ERI]=/EH R IH/ (+54)
+    '[E]^%=/IY/',
     '[ERI]#=/IY R IY/',
+    '[ERI]=/EH R IH/',
     // Custom: ERR consumes double-R to prevent phoneme doubling (error, terrace)
     '[ERR]=/EH R/',
     '#:[ER]#=/ER/',
@@ -581,7 +582,7 @@ const NRL_RULES: Record<string, string[]> = {
     'V[OW]=/AW/',
     'F[OW]L=/AW/',
     '[OW]=/OW/',
-    // Removed by hill-climb: [OV]=/AH V/ (+240)
+    '[OV]=/AH V/',
     // Custom: -ioned/-ioning/-ioner suffixes → schwa (mentioned, stationed, conditioned)
     // Must come before [O]^% which otherwise produces OW for these
     'I[ONED] =/AX N D/',
@@ -760,7 +761,7 @@ const NRL_RULES: Record<string, string[]> = {
     ' DI[S]#=/S/',
     // Custom: RE- prefix keeps S voiceless (reset, research, resemble — +28)
     ' RE[S]#=/S/',
-    // Removed by hill-climb: #[S]#=/Z/ (+30)
+    '#[S]#=/Z/',
     '[SAID]=/S EH D/',
     '^[SION]=/SH AX N/',
     '[S]S=/ /',
