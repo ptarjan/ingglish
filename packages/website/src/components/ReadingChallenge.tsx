@@ -78,7 +78,7 @@ function ReadingChallenge() {
 
     const score = scoreSentence(sentences[round].tokens, input);
     setCurrentFeedback(score);
-    setResults((prev) => [...prev, { sentence: sentences[round], score }]);
+    setResults((prev) => [...prev, { sentence: sentences[round]!, score }]);
   }, [sentences, round, input]);
 
   const handleNext = useCallback(() => {

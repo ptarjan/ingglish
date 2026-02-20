@@ -120,9 +120,9 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
 ];
 
 export function pickRandomPassage(currentText: string): string {
-  let pick;
+  let pick = SAMPLE_PASSAGES[0]!;
   do {
-    pick = SAMPLE_PASSAGES[Math.floor(Math.random() * SAMPLE_PASSAGES.length)];
+    pick = SAMPLE_PASSAGES[Math.floor(Math.random() * SAMPLE_PASSAGES.length)]!;
   } while (SAMPLE_PASSAGES.length > 1 && pick.text === currentText);
   return pick.text;
 }
