@@ -214,16 +214,21 @@ export function useCustomMapping(): UseCustomMappingReturn {
 
   const setPhonemeSpelling = useCallback((phoneme: string, spelling: string) => {
     setConfig((prev) => {
+      let next: CustomMappingConfig;
       if (spelling.length > 0) {
         const fullMap = buildFullPhonemeMap(prev.phonemeMap);
         fullMap[phoneme] = spelling;
-        return { ...prev, phonemeMap: computePhonemeMapDiffs(fullMap) };
+        next = { ...prev, phonemeMap: computePhonemeMapDiffs(fullMap) };
+      } else {
+        // Empty spelling = remove any override for this phoneme
+        const filtered = Object.fromEntries(
+          Object.entries(prev.phonemeMap).filter(([k]) => k !== phoneme)
+        );
+        next = { ...prev, phonemeMap: filtered };
       }
-      // Empty spelling = remove any override for this phoneme
-      const filtered = Object.fromEntries(
-        Object.entries(prev.phonemeMap).filter(([k]) => k !== phoneme)
-      );
-      return { ...prev, phonemeMap: filtered };
+      // Register eagerly so translateSync sees the new format during this render
+      registerExperimentFormat(next);
+      return next;
     });
     setVersion((v) => v + 1);
   }, []);
@@ -233,7 +238,10 @@ export function useCustomMapping(): UseCustomMappingReturn {
       const fullMap = buildFullRColoredMap(prev.rColoredPrefixes);
       fullMap[vowel] = prefix;
       const newDiffs = computeRColoredDiffs(fullMap);
-      return { ...prev, rColoredPrefixes: newDiffs };
+      const next = { ...prev, rColoredPrefixes: newDiffs };
+      // Register eagerly so translateSync sees the new format during this render
+      registerExperimentFormat(next);
+      return next;
     });
     setVersion((v) => v + 1);
   }, []);
