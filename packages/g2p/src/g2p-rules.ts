@@ -267,9 +267,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[ENESS] =/N AX S/',
     // Custom: -eman suffix → silent E (fireman→M AH N, foreman, policeman — 160/166 in CMU)
     '#:[EMAN] =/M AX N/',
-    '[E]^%=/IY/',
+    // Removed by hill-climb: [E]^%=/IY/ (+63), [ERI]=/EH R IH/ (+54)
     '[ERI]#=/IY R IY/',
-    '[ERI]=/EH R IH/',
     // Custom: ERR consumes double-R to prevent phoneme doubling (error, terrace)
     '[ERR]=/EH R/',
     '#:[ER]#=/ER/',
@@ -412,7 +411,7 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: INDS at word end → AY N D Z (kinds, minds, finds, blinds, grinds)
     '[INDS] =/AY N D Z/',
     '[IN]D =/AY N/',
-    '[IER]=/IY ER/',
+    // Removed by hill-climb: [IER]=/IY ER/ (+26)
     '#:R[IED] =/IY D/',
     '[IED] =/AY D/',
     // Custom: FRIEN → EH N (friend, boyfriend, friendly — 16 words, freq 47K)
@@ -428,10 +427,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[IE]P=/IY/',
     '[IE]B=/IY/',
     '[IE]L=/IY/',
-    '[IE]T=/AY EH/',
-    ' :[I]%=/AY/',
-    // Custom: IE before consonant+suffix → single IY (achieve, believed, relieving)
+    // Removed by hill-climb: [IE]T=/AY EH/ (+19)
+    // Reordered by hill-climb: [IE]^%=/IY/ before :[I]%=/AY/ (+61)
     '[IE]^%=/IY/',
+    ' :[I]%=/AY/',
     '[I]%=/IY/',
     '[IE]=/IY/',
     // Custom: multi-char targets must come before single-char [I] rules
@@ -582,7 +581,7 @@ const NRL_RULES: Record<string, string[]> = {
     'V[OW]=/AW/',
     'F[OW]L=/AW/',
     '[OW]=/OW/',
-    '[OV]=/AH V/',
+    // Removed by hill-climb: [OV]=/AH V/ (+240)
     // Custom: -ioned/-ioning/-ioner suffixes → schwa (mentioned, stationed, conditioned)
     // Must come before [O]^% which otherwise produces OW for these
     'I[ONED] =/AX N D/',
@@ -654,9 +653,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[OAR]=/AO R/',
     '[OA]=/OW/',
     "[ON ' T]=/OW N T/",
-    'C[O]N=/AA/',
+    // Removed by hill-climb: C[O]N=/AA/ (+30), ^:[O]N=/AH/ (+399)
     '[O]NG=/AO/',
-    ' ^:[O]N=/AH/',
     'I[ON]=/AX N/',
     '#:[ON] =/AX N/',
     '#^[ON]=/AX N/',
@@ -762,7 +760,7 @@ const NRL_RULES: Record<string, string[]> = {
     ' DI[S]#=/S/',
     // Custom: RE- prefix keeps S voiceless (reset, research, resemble — +28)
     ' RE[S]#=/S/',
-    '#[S]#=/Z/',
+    // Removed by hill-climb: #[S]#=/Z/ (+30)
     '[SAID]=/S EH D/',
     '^[SION]=/SH AX N/',
     '[S]S=/ /',
@@ -781,7 +779,7 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: SCH → /ʃ/ (schafer, schmidt, altschul, fleischer — German origin, 90%+ are SH)
     '[SCH]=/SH/',
     '[S]C+=/ /',
-    '#[SM]=/Z M/',
+    // Removed by hill-climb: #[SM]=/Z M/ (+40)
     "#[SN] '=/Z AX N/",
     // Custom: silent T in -stle (castle, whistle, bristle)
     '[STLE]=/S AX L/',
