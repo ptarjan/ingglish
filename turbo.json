@@ -10,8 +10,10 @@
       "outputs": ["dist/**"]
     },
     "lint": {
-      "cache": false
+      "inputs": ["src/**", "eslint.config.*", "tsconfig*.json"]
     },
-    "test": {}
+    "test": {
+      "inputs": ["src/**", "tsconfig*.json"]
+    }
   }
 }
