@@ -525,6 +525,50 @@
   box-sizing: border-box;
 }
 
+/* --- Try-it auto-typing demo --- */
+
+.try-it-input-wrapper {
+  position: relative;
+}
+
+.try-it-input.demo-cursor {
+  caret-color: transparent;
+}
+
+.try-it-input.demo-cursor::after {
+  content: '';
+}
+
+/* Blinking cursor overlay for demo state */
+.try-it-input-wrapper::after {
+  content: '';
+  display: none;
+}
+
+.try-it-input.demo-cursor + .try-it-cursor-blink,
+.try-it-input-wrapper:has(.demo-cursor)::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 1.4em;
+  background: var(--color-text);
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 /* --- Try-it inline CTA --- */
 
 .tutorial-try-it {
@@ -533,9 +577,18 @@
 
 .try-it-cta {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
   margin-top: 2rem;
+}
+
+.try-it-cta-prompt {
+  width: 100%;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin: 0;
 }
 
 /* --- Section 8: CTA --- */
