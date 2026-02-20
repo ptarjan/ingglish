@@ -24,6 +24,24 @@ This catches type errors in dependent packages that lint-staged misses.
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
 
+Run all tests (parallelized via turbo, cached across runs):
+
+```bash
+npm test
+```
+
+Run tests for a single package:
+
+```bash
+npx vitest run packages/core
+```
+
+Run all linting (parallelized via turbo, cached across runs):
+
+```bash
+npm run lint
+```
+
 ## Code Comments
 
 Add TODO comments in the code when a feature isn't complete. This helps track unfinished work.
