@@ -32,6 +32,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [AYE] =/AY/',
     ' [AMAZING]=/AH M EY Z IH NG/',
     ' [ATTORNEY]=/AH T ER N IY/',
     ' [ASLEEP]=/AH S L IY P/',
@@ -149,6 +150,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [COMMON]=/K AA M AH N/',
+    ' [CLOSER] =/K L OW S ER/',
     ' [CONVERSATION]=/K AA N V ER S EY SH AH N/',
     ' [CONSIDER]=/K AH N S IH D ER/',
     ' [COMFORTABLE]=/K AH M F ER T AH B AH L/',
@@ -243,6 +246,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [ESCAPE]=/IH S K EY P/',
     ' [EXCEPT]=/IH K S EH P T/',
     ' [ESPECIALLY]=/AH S P EH SH L IY/',
     ' [EXCELLENT]=/EH K S AH L AH N T/',
@@ -409,6 +413,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[F]=/F/',
   ],
   G: [
+    ' [GRANDMA]=/G R AE N D M AA/',
     ' [GOVERNMENT]=/G AH V ER M AH N T/',
     ' [GAS] =/G AE S/',
     ' [GUEST]=/G EH S T/',
@@ -429,6 +434,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HMM]=/HH M/',
     ' [HUNDRED]=/HH AH N D R AH D/',
     ' [HONEY]=/HH AH N IY/',
     ' [HOLY]=/HH OW L IY/',
@@ -457,6 +463,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [IMMEDIATELY]=/IH M IY D IY AH T L IY/',
     ' [INFORMATION]=/IH N F ER M EY SH AH N/',
     ' [INTERESTED]=/IH N T R AH S T IH D/',
     ' [INNOCENT]=/IH N AH S AH N T/',
@@ -820,6 +827,7 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
   R: [
+    ' [RESPONSIBLE]=/R IY S P AA N S AH B AH L/',
     ' [RESTAURANT]=/R EH S T ER AA N T/',
     ' [RELAX]=/R IH L AE K S/',
     ' [ROBERT]=/R AA B ER T/',
