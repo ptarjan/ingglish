@@ -465,7 +465,7 @@ export default function WordExplorer() {
         <div className="explorer-empty">
           <p>Try some interesting words:</p>
           <div className="suggestion-chips">
-            {['colonel', 'treehouse', 'ghosting', 'URL', 'colour', 'psychology'].map((w) => (
+            {['colonel', 'treehouse', 'ghosting', 'URL', 'favourable', 'psychology'].map((w) => (
               <button
                 key={w}
                 className="suggestion-chip"
