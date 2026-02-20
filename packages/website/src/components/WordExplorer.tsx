@@ -447,7 +447,9 @@ export default function WordExplorer() {
             setInput(e.target.value);
           }}
           placeholder={
-            reverseDictReady ? 'Type a word (e.g., knight, through, read)' : 'Loading dictionary...'
+            reverseDictReady
+              ? 'Type a word (e.g., knight, treehouse, URL)'
+              : 'Loading dictionary...'
           }
           className="explorer-input"
           spellCheck={false}
@@ -462,7 +464,7 @@ export default function WordExplorer() {
         <div className="explorer-empty">
           <p>Try some interesting words:</p>
           <div className="suggestion-chips">
-            {['knight', 'through', 'queue', 'colonel', 'schedule', 'psychology'].map((w) => (
+            {['knight', 'through', 'treehouse', 'ghosting', 'URL', 'colour'].map((w) => (
               <button
                 key={w}
                 className="suggestion-chip"
