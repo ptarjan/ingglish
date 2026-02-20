@@ -22,7 +22,9 @@ import { applyStressPrediction } from '../../../g2p/src/stress';
 // Rule parsing
 // ---------------------------------------------------------------------------
 
-const RULES_FILE = path.resolve(import.meta.dirname, '../../../g2p/src/g2p-rules.ts');
+const RULES_FILE = import.meta.dirname
+  ? path.resolve(import.meta.dirname, '../../../g2p/src/g2p-rules.ts')
+  : path.resolve(process.cwd(), 'packages/g2p/src/g2p-rules.ts');
 
 /**
  * Parse NRL_RULES from the g2p-rules.ts source file.
@@ -398,6 +400,55 @@ export function traceAllWords(
   }
 
   return { ruleWords, baselineCorrect, baselineCorrectCount, baselineFreqCorrect };
+}
+
+/**
+ * Write modified NRL rules back to g2p-rules.ts source file.
+ * Replaces only the NRL_RULES section, preserving all other code.
+ */
+export function writeNRLRules(
+  rules: Record<string, string[]>,
+  filePath: string = RULES_FILE
+): void {
+  const source = fs.readFileSync(filePath, 'utf-8');
+
+  // Find the start of NRL_RULES
+  const startIdx = source.indexOf('const NRL_RULES');
+  if (startIdx === -1) throw new Error('NRL_RULES not found in ' + filePath);
+
+  // Find the closing `};` of NRL_RULES
+  const afterStart = source.substring(startIdx);
+  let depth = 0;
+  let endIdx = 0;
+  for (let i = afterStart.indexOf('{'); i < afterStart.length; i++) {
+    if (afterStart[i] === '{') depth++;
+    else if (afterStart[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        endIdx = i;
+        break;
+      }
+    }
+  }
+
+  // Generate new NRL_RULES block
+  const letters = Object.keys(rules).sort();
+  const lines: string[] = [];
+  lines.push('const NRL_RULES: Record<string, string[]> = {');
+  for (const letter of letters) {
+    const letterRules = rules[letter]!;
+    lines.push(`  ${letter}: [`);
+    for (const rule of letterRules) {
+      lines.push(`    '${rule}',`);
+    }
+    lines.push('  ],');
+  }
+  lines.push('}');
+
+  const newBlock = lines.join('\n');
+  const before = source.substring(0, startIdx);
+  const after = source.substring(startIdx + endIdx + 1);
+  fs.writeFileSync(filePath, before + newBlock + after, 'utf-8');
 }
 
 export { getWordFrequency, stripStress };

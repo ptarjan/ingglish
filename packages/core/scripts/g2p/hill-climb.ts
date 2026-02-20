@@ -24,6 +24,7 @@ import {
   evaluateWordTraced,
   traceAllWords,
   loadTestData,
+  writeNRLRules,
   stripStress,
   type CompiledRuleSet,
   type TestData,
@@ -299,9 +300,10 @@ async function main() {
     );
   }
 
-  if (doApply) {
-    console.log('\n--apply flag set: writing changes to g2p-rules.ts is not yet implemented.');
-    console.log('Use the output above to manually apply the changes.');
+  if (doApply && appliedChanges.length > 0) {
+    console.log('\nWriting optimized rules to g2p-rules.ts...');
+    writeNRLRules(rules);
+    console.log('Done! Rules written to g2p-rules.ts.');
   }
 }
 
