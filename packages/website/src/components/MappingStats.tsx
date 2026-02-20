@@ -291,18 +291,18 @@ function MappingStats({ version }: MappingStatsProps) {
       {stats.topCollisions.length > 0 && (
         <div className="top-collisions">
           <h4>New collisions from your changes</h4>
-          <table className="mapping-table collision-table">
+          <table className="changes-table">
             <thead>
               <tr>
-                <th>Spelling</th>
-                <th>Words</th>
+                <th>English words</th>
+                <th>Now both spell</th>
               </tr>
             </thead>
             <tbody>
               {stats.topCollisions.map(({ spelling, words }) => (
                 <tr key={spelling}>
-                  <td className="ingglish-cell">{spelling}</td>
-                  <td className="examples-cell">{words.join(', ')}</td>
+                  <td>{words.join(', ')}</td>
+                  <td>{spelling}</td>
                 </tr>
               ))}
             </tbody>
