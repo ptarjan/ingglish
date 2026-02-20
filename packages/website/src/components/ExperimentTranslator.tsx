@@ -45,12 +45,17 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   }, [text]);
 
   const hasContent = text.trim().length > 0;
+  const selectedIndex = SAMPLE_PASSAGES.findIndex((p) => p.text === text);
 
   return (
     <div className="experiment-translator">
       <div className="experiment-translator-header">
         <h3>Test Translation</h3>
-        <select onChange={handleSample} defaultValue="" className="sample-select">
+        <select
+          onChange={handleSample}
+          value={selectedIndex >= 0 ? String(selectedIndex) : ''}
+          className="sample-select"
+        >
           <option value="" disabled>
             Load sample...
           </option>
