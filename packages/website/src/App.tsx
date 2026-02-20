@@ -140,8 +140,12 @@ function App() {
   // Sync URL path with active tab (docs manages its own sub-path)
   useEffect(() => {
     const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
-    if (window.location.pathname !== targetPath && activeTab !== 'docs') {
-      window.history.pushState(null, '', targetPath);
+    const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+    if (currentPath !== targetPath && activeTab !== 'docs') {
+      // Preserve existing query string (e.g. ?word=hello on /explore)
+      const url = new URL(window.location.href);
+      url.pathname = targetPath;
+      window.history.pushState(null, '', url.pathname + url.search);
     }
     trackPageView(targetPath);
     window.scrollTo(0, 0);
