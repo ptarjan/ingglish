@@ -1,6 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
-import { arpabetPhonemeToIPA } from '@ingglish/ipa';
 import {
   vowelGroups,
   consonantGroups,
@@ -8,10 +7,7 @@ import {
   type SoundEntry,
 } from './spelling-guide-data';
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
-
-function getIPA(phoneme: string): string {
-  return arpabetPhonemeToIPA(phoneme).replace(/\u2060/g, '');
-}
+import { getCleanIPA, renderExamples } from '../utils/phoneme-display';
 
 /** Get the default spelling for a phoneme */
 function getDefault(phoneme: string): string {
@@ -24,16 +20,6 @@ function getDefault(phoneme: string): string {
     ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
     phoneme.toLowerCase()
   );
-}
-
-function renderExamples(examples: string): React.ReactNode {
-  const parts = examples.split(/(\*\*[^*]+\*\*)/);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
 }
 
 /** Check for duplicate spellings (two phonemes mapped to same spelling) */
@@ -133,7 +119,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
         return (
           <tr key={phoneme}>
-            <td className="ipa-cell">{sound.ipaOverride ?? getIPA(phoneme)}</td>
+            <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(phoneme)}</td>
             <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
               <div className="r-colored-input">
                 <input
@@ -173,7 +159,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
         return (
           <tr key={phoneme}>
-            <td className="ipa-cell">{getIPA(phoneme)}</td>
+            <td className="ipa-cell">{getCleanIPA(phoneme)}</td>
             <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
               <div className="r-colored-input">
                 <input
@@ -212,7 +198,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         return (
           <>
             <tr key={phoneme}>
-              <td className="ipa-cell">{getIPA(phoneme)}</td>
+              <td className="ipa-cell">{getCleanIPA(phoneme)}</td>
               <EditableCell
                 value={currentSpelling}
                 defaultValue={defaultSpelling}
@@ -279,7 +265,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
       return (
         <tr key={phoneme}>
-          <td className="ipa-cell">{sound.ipaOverride ?? getIPA(phoneme)}</td>
+          <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(phoneme)}</td>
           <EditableCell
             value={currentSpelling}
             defaultValue={defaultSpelling}

@@ -4,6 +4,7 @@ import { translate } from 'ingglish';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
+import { useTheme } from './hooks/useTheme';
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function lazyWithReload<T extends { default: ComponentType<any> }>(
@@ -27,8 +28,6 @@ const Poems = lazyWithReload(() => import('./components/Poems'));
 const Experiment = lazyWithReload(() => import('./components/Experiment'));
 
 type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs' | 'experiment';
-type ThemeMode = 'light' | 'dark' | 'auto';
-
 const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
   tutorial: {
     title: 'Ingglish — What if English Spelling Made Sense?',
@@ -79,16 +78,6 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
     path: '/experiment',
   },
 };
-
-const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
-
-function isValidThemeMode(value: string | null): value is ThemeMode {
-  return value !== null && VALID_THEME_MODES.includes(value as ThemeMode);
-}
-
-function getSystemTheme(): 'light' | 'dark' {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
 
 function getTabFromPath(): Tab {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
@@ -179,59 +168,7 @@ function App() {
   });
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
-  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-    try {
-      const saved = localStorage.getItem('themeMode');
-      return isValidThemeMode(saved) ? saved : 'auto';
-    } catch {
-      return 'auto'; // localStorage unavailable (private browsing)
-    }
-  });
-
-  useEffect(() => {
-    const applyTheme = () => {
-      const effectiveTheme = themeMode === 'auto' ? getSystemTheme() : themeMode;
-      document.documentElement.setAttribute('data-theme', effectiveTheme);
-    };
-
-    applyTheme();
-    try {
-      localStorage.setItem('themeMode', themeMode);
-    } catch {
-      // localStorage unavailable (private browsing)
-    }
-
-    // Listen for OS theme changes when in auto mode
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    if (themeMode === 'auto') {
-      mediaQuery.addEventListener('change', applyTheme);
-      return () => {
-        mediaQuery.removeEventListener('change', applyTheme);
-      };
-    }
-  }, [themeMode]);
-
-  const cycleTheme = () => {
-    setThemeMode((prev) => {
-      if (prev === 'auto') {
-        return 'light';
-      }
-      if (prev === 'light') {
-        return 'dark';
-      }
-      return 'auto';
-    });
-  };
-
-  const getThemeIcon = () => {
-    if (themeMode === 'auto') {
-      return '🌓';
-    }
-    if (themeMode === 'light') {
-      return '☀️';
-    }
-    return '🌙';
-  };
+  const { cycleTheme, getThemeIcon } = useTheme();
 
   // Sync URL path with active tab (docs manages its own sub-path)
   useEffect(() => {

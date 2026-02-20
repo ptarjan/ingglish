@@ -1,26 +1,6 @@
 import { arpabetPhonemeToIngglish } from '@ingglish/phonemes';
-import { arpabetPhonemeToIPA } from '@ingglish/ipa';
 import { vowelGroups, consonantGroups, type SoundGroup } from './spelling-guide-data';
-
-/**
- * Get clean IPA symbol for a phoneme (without word joiners used for line-break prevention)
- */
-function getIPA(phoneme: string): string {
-  return arpabetPhonemeToIPA(phoneme).replace(/\u2060/g, '');
-}
-
-/**
- * Renders example text with **bold** markers converted to <strong> elements
- */
-function renderExamples(examples: string): React.ReactNode {
-  const parts = examples.split(/(\*\*[^*]+\*\*)/);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
-}
+import { getCleanIPA, renderExamples } from '../utils/phoneme-display';
 
 function SpellingGuide(): React.JSX.Element {
   const renderGroup = (group: SoundGroup): React.JSX.Element => (
@@ -37,7 +17,7 @@ function SpellingGuide(): React.JSX.Element {
         <tbody>
           {group.sounds.map((sound) => (
             <tr key={sound.phoneme}>
-              <td className="ipa-cell">{sound.ipaOverride ?? getIPA(sound.phoneme)}</td>
+              <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(sound.phoneme)}</td>
               <td className="ingglish-cell">
                 {sound.ingglishOverride ?? arpabetPhonemeToIngglish(sound.phoneme)}
               </td>
