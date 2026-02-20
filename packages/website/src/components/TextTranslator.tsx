@@ -13,6 +13,7 @@ import { useClipboard } from '../hooks/useClipboard';
 import { useSpeech } from '../hooks/useSpeech';
 import { buildDiffMap } from '../utils/diff-map';
 import { isAllCaps } from '../utils/text';
+import { SAMPLE_TEXT } from '../utils/sample-text';
 
 function SpeakerIcon() {
   return (
@@ -49,10 +50,6 @@ function StopIcon() {
     </svg>
   );
 }
-
-const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.
-
-"Though" and "through" are spelled similarly but sound different. English spelling is notoriously difficult to learn because it has so many exceptions. With phonetic spelling, words are written exactly as they sound - what you see is what you say!`;
 
 type EditingPane = 'english' | 'ingglish';
 
