@@ -41,163 +41,208 @@ interface TranslateResult {
   matched: boolean;
 }
 
+// ============================================================================
+// Word Translation Helpers
+// ============================================================================
+
+/**
+ * Handle initialisms with suffixes like IDs, TVs, URLs, API's.
+ * Returns null if not an initialism+suffix.
+ */
+function tryInitialismWithSuffix(
+  word: string,
+  format: OutputFormat,
+  isLatinScript: boolean
+): TranslateResult | null {
+  const parsed = parseInitialismWithSuffix(word);
+  if (parsed === null) {
+    return null;
+  }
+  // For Latin scripts, all initialism+suffix forms pass through.
+  // For non-Latin scripts, only uppercase bases are initialisms —
+  // lowercase "it's" should fall through to contraction handling.
+  if (isLatinScript || parsed.base === parsed.base.toUpperCase()) {
+    const baseTranslated = translateWord(parsed.base, format);
+    return { translated: baseTranslated + parsed.suffix, matched: true };
+  }
+  return null;
+}
+
+/**
+ * Handle bare initialisms (UI, API, HTML, etc.).
+ * Returns null if not an initialism or if it should fall through.
+ */
+function tryInitialism(
+  word: string,
+  format: OutputFormat,
+  isLatinScript: boolean
+): TranslateResult | null {
+  if (!isInitialism(word)) {
+    return null;
+  }
+  if (isLatinScript) {
+    return { translated: word, matched: true };
+  }
+  if (word === word.toUpperCase()) {
+    return { translated: translateAsAcronym(word, format), matched: true };
+  }
+  return null;
+}
+
+/**
+ * Handle camelCase words by translating each component separately.
+ * Returns null if not camelCase.
+ */
+function tryCamelCase(word: string, format: OutputFormat): TranslateResult | null {
+  const parts = splitCamelCase(word);
+  if (parts === null || parts.length <= 1) {
+    return null;
+  }
+
+  let allMatched = true;
+  const translatedParts = parts.map((part) => {
+    // All-caps parts (≥2 chars) pass through unchanged — acronyms like "GPT" in "ChatGPT"
+    if (part.length >= 2 && ALL_UPPER.test(part)) {
+      return part;
+    }
+    const partCase = detectCasePattern(part);
+    const phonemes = lookupPronunciation(part);
+    let translated: string;
+    if (phonemes) {
+      translated = arpabetToFormat(phonemes, format);
+    } else {
+      allMatched = false;
+      translated = translateUnknown(part, format);
+    }
+    return getFormatPreservesCase(format)
+      ? applyCasePattern(translated, partCase, part)
+      : translated;
+  });
+
+  return { translated: translatedParts.join(''), matched: allMatched };
+}
+
+/**
+ * Look up a word in custom pronunciations or the dictionary.
+ * Tries stripping diacritics as a fallback (café→cafe, naïve→naive).
+ * Returns null if not found in any dictionary.
+ */
+function tryDictionaryLookup(
+  word: string,
+  format: OutputFormat,
+  casePattern: string
+): TranslateResult | null {
+  const wordLower = word.toLowerCase();
+  const phonemes = getCustomPronunciation(wordLower) ?? lookupPronunciation(wordLower);
+
+  if (phonemes) {
+    let result = arpabetToFormat(phonemes, format);
+    if (getFormatPreservesCase(format)) {
+      result = applyCasePattern(result, casePattern, word);
+    }
+    return { translated: result, matched: true };
+  }
+
+  // Try stripping diacritics (café→cafe, naïve→naive) before fallback
+  const stripped = stripDiacritics(word);
+  if (stripped !== word) {
+    const strippedLower = stripped.toLowerCase();
+    const strippedPhonemes =
+      getCustomPronunciation(strippedLower) ?? lookupPronunciation(strippedLower);
+    if (strippedPhonemes) {
+      let result = arpabetToFormat(strippedPhonemes, format);
+      if (getFormatPreservesCase(format)) {
+        result = applyCasePattern(result, casePattern, word);
+      }
+      return { translated: result, matched: true };
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Translate an unknown word using fallback strategies (compounds, stemming, G2P, etc.).
+ * Pass-through words that are clearly non-words (triple chars, no vowels).
+ */
+function translateWithFallback(
+  word: string,
+  format: OutputFormat,
+  casePattern: string
+): TranslateResult {
+  // Pass through obvious non-words before running G2P:
+  // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
+  // - no vowels (a/e/i/o/u/y) — real vowelless words (hmm, shh) are in the dictionary
+  if (TRIPLE_CHAR.test(word) || !HAS_VOWEL.test(word)) {
+    return { translated: word, matched: false };
+  }
+
+  // Use stripped form so G2P gets clean ASCII (brûlée→brulee, piñata→pinata)
+  const stripped = stripDiacritics(word);
+  const fallbackResult = translateUnknown(stripped, format);
+
+  if (!fallbackResult || fallbackResult.length === 0) {
+    return { translated: word, matched: false };
+  }
+
+  if (getFormatPreservesCase(format)) {
+    // Skip case application if result already has mixed case (e.g., compound words)
+    const hasInternalMixedCase =
+      fallbackResult !== fallbackResult.toLowerCase() &&
+      fallbackResult !== fallbackResult.toUpperCase() &&
+      !TITLE_CASE.test(fallbackResult);
+    if (hasInternalMixedCase) {
+      return { translated: fallbackResult, matched: false };
+    }
+    return { translated: applyCasePattern(fallbackResult, casePattern, word), matched: false };
+  }
+  return { translated: fallbackResult, matched: false };
+}
+
+// ============================================================================
+// Main Translation Pipeline
+// ============================================================================
+
 /**
  * Internal translation that returns both the translated word and whether it
  * was found in a known source (dictionary, contraction, initialism, custom).
  */
 function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
-  // Handle empty strings
-  if (!word) {
+  if (!word || !HAS_LETTER.test(word)) {
     return { translated: word, matched: true };
   }
 
-  // Check if word has any letters to translate
-  if (!HAS_LETTER.test(word)) {
-    return { translated: word, matched: true };
-  }
-
-  // Latin-script formats (Ingglish, IPA) can pass words through unchanged.
-  // Non-Latin scripts (Shavian, Deseret) must translate everything so no
-  // Latin characters leak into the output.
   const isLatinScript = getFormatIsLatinScript(format);
 
-  // Handle initialisms with suffixes FIRST (IDs, TVs, URLs, API's)
-  // This must come before contraction handling to catch possessive initialisms like "API's"
-  const initialismWithSuffix = parseInitialismWithSuffix(word);
-  if (initialismWithSuffix !== null) {
-    // For Latin scripts, all initialism+suffix forms pass through.
-    // For non-Latin scripts, only uppercase bases are initialisms —
-    // lowercase "it's" should fall through to contraction handling.
-    if (isLatinScript || initialismWithSuffix.base === initialismWithSuffix.base.toUpperCase()) {
-      const { base, suffix } = initialismWithSuffix;
-      const baseTranslated = translateWord(base, format);
-      return { translated: baseTranslated + suffix, matched: true };
-    }
-  }
+  // Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
+  const initialismSuffix = tryInitialismWithSuffix(word, format, isLatinScript);
+  if (initialismSuffix) {return initialismSuffix;}
 
-  // Handle contractions (words with apostrophes)
+  // Contractions (don't, I'm, etc.)
   if (word.includes("'")) {
     return { translated: translateContraction(word, format, translateWord), matched: true };
   }
 
-  // Known initialisms (UI, API, HTML, US, etc.) pass through unchanged
-  // for Latin-script formats. For non-Latin scripts, spell them out in the
-  // target script. Only match uppercase for non-Latin to avoid treating
-  // lowercase "it", "us", "am" as initialisms.
-  if (isInitialism(word)) {
-    if (isLatinScript) {
-      return { translated: word, matched: true };
-    }
-    if (word === word.toUpperCase()) {
-      return { translated: translateAsAcronym(word, format), matched: true };
-    }
-  }
+  // Bare initialisms (UI, API, HTML)
+  const initialism = tryInitialism(word, format, isLatinScript);
+  if (initialism) {return initialism;}
 
-  // All-caps words (≥2 chars) pass through unchanged for Latin-script formats —
-  // they're acronyms, abbreviations, or intentional formatting (MQTT, USSR, NATO).
-  // For non-Latin scripts, fall through to normal translation.
+  // All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
   if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
     return { translated: word, matched: true };
   }
 
-  // Handle camelCase words by translating each component separately
-  // This preserves case at component boundaries (e.g., "iCloud" -> "ieKlowd")
-  const camelParts = splitCamelCase(word);
-  if (camelParts !== null && camelParts.length > 1) {
-    let allPartsMatched = true;
+  // CamelCase words (iPhone, MacBook, ChatGPT)
+  const camel = tryCamelCase(word, format);
+  if (camel) {return camel;}
 
-    // Translate each part and preserve its case
-    const translatedParts = camelParts.map((part) => {
-      // All-caps parts (≥2 chars) pass through unchanged — acronyms like "GPT" in "ChatGPT"
-      if (part.length >= 2 && ALL_UPPER.test(part)) {
-        return part;
-      }
-
-      const partCasePattern = detectCasePattern(part);
-      const partPhonemes = lookupPronunciation(part);
-      let translated: string;
-
-      if (partPhonemes) {
-        translated = arpabetToFormat(partPhonemes, format);
-      } else {
-        allPartsMatched = false;
-        translated = translateUnknown(part, format);
-      }
-
-      if (getFormatPreservesCase(format)) {
-        return applyCasePattern(translated, partCasePattern, part);
-      }
-      return translated;
-    });
-
-    return { translated: translatedParts.join(''), matched: allPartsMatched };
-  }
-
-  // Detect case pattern for preservation
+  // Dictionary / custom pronunciation lookup (with diacritics fallback)
   const casePattern = detectCasePattern(word);
+  const dictResult = tryDictionaryLookup(word, format, casePattern);
+  if (dictResult) {return dictResult;}
 
-  // Custom pronunciations override the dictionary (fixes CMU errors like "hors")
-  const wordLower = word.toLowerCase();
-  const customPhonemes = getCustomPronunciation(wordLower);
-  const phonemes = customPhonemes ?? lookupPronunciation(wordLower);
-
-  if (!phonemes) {
-    // Try stripping diacritics (café→cafe, naïve→naive) before fallback.
-    // This preserves accented forms as pronunciation signals (résumé ≠ resume).
-    const stripped = stripDiacritics(word);
-    if (stripped !== word) {
-      const strippedLower = stripped.toLowerCase();
-      const strippedCustom = getCustomPronunciation(strippedLower);
-      const strippedPhonemes = strippedCustom ?? lookupPronunciation(strippedLower);
-      if (strippedPhonemes) {
-        let strippedResult = arpabetToFormat(strippedPhonemes, format);
-        if (getFormatPreservesCase(format)) {
-          strippedResult = applyCasePattern(strippedResult, casePattern, word);
-        }
-        return { translated: strippedResult, matched: true };
-      }
-    }
-
-    // Pass through obvious non-words before running G2P:
-    // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
-    // - no vowels (a/e/i/o/u/y) — real vowelless words (hmm, shh) are in the dictionary
-    if (TRIPLE_CHAR.test(word) || !HAS_VOWEL.test(word)) {
-      return { translated: word, matched: false };
-    }
-
-    // Word not found in dictionary - try fallback strategies.
-    // Use stripped form so G2P gets clean ASCII (brûlée→brulee, piñata→pinata).
-    const fallbackResult = translateUnknown(stripped, format);
-
-    // Return original if fallback failed
-    if (!fallbackResult || fallbackResult.length === 0) {
-      return { translated: word, matched: false };
-    }
-
-    // Apply original case pattern to fallback result
-    if (getFormatPreservesCase(format)) {
-      // Skip case application if result already has mixed case (e.g., compound words)
-      // This prevents re-applying position-based casing to properly-cased compounds
-      const resultHasMixedCase =
-        fallbackResult !== fallbackResult.toLowerCase() &&
-        fallbackResult !== fallbackResult.toUpperCase() &&
-        !TITLE_CASE.test(fallbackResult);
-      if (resultHasMixedCase) {
-        return { translated: fallbackResult, matched: false };
-      }
-      return { translated: applyCasePattern(fallbackResult, casePattern, word), matched: false };
-    }
-    return { translated: fallbackResult, matched: false };
-  }
-
-  let result = arpabetToFormat(phonemes, format);
-
-  // Apply original case pattern (formats with preservesCase preserve caps)
-  if (getFormatPreservesCase(format)) {
-    result = applyCasePattern(result, casePattern, word);
-  }
-
-  return { translated: result, matched: true };
+  // Fallback strategies (compounds, stemming, G2P)
+  return translateWithFallback(word, format, casePattern);
 }
 
 /**
