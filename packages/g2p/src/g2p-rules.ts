@@ -495,6 +495,7 @@ const NRL_RULES: Record<string, string[]> = {
     'L[L]=/ /',
     '#:[LINE] =/L AY N/',
     '#:[LESSLY] =/L AX S L IY/',
+    'UN[LESS]=/L EH S/',
     '#:[LESS] =/L AX S/',
     '[LING]=/L IH NX/',
     '#^:[L]ER=/L/',
@@ -505,6 +506,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#^:[L]%=/AX L/',
     '[LDT] =/L T/',
     '[LL]=/L/',
+    'EA[L]IZ=/AH L/',
     '[L]=/L/',
   ],
   M: [
