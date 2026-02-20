@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { trackExperimentCustomize } from '../utils/analytics';
 import {
   registerFormat,
   createCustomConverter,
@@ -201,6 +202,19 @@ export function useCustomMapping(): UseCustomMappingReturn {
   });
 
   const [version, setVersion] = useState(0);
+
+  // Track experiment customizations with debounce (skip initial version 0)
+  useEffect(() => {
+    if (version === 0) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      trackExperimentCustomize();
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [version]);
 
   // Keep a ref to avoid stale closures
   const configRef = useRef(config);

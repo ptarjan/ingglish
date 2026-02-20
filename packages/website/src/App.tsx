@@ -5,6 +5,7 @@ import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useTheme } from './hooks/useTheme';
+import { trackPageView } from './utils/analytics';
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function lazyWithReload<T extends { default: ComponentType<any> }>(
@@ -147,18 +148,6 @@ function getInitialUrl(): string {
   return params.get('url') ?? '';
 }
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
-
-function sendPageView(path: string): void {
-  if (typeof window.gtag === 'function') {
-    window.gtag('event', 'page_view', { page_path: path });
-  }
-}
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -176,7 +165,7 @@ function App() {
     if (window.location.pathname !== targetPath && activeTab !== 'docs') {
       window.history.pushState(null, '', targetPath);
     }
-    sendPageView(targetPath);
+    trackPageView(targetPath);
     window.scrollTo(0, 0);
   }, [activeTab]);
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { trackBookmarkletCopy } from '../utils/analytics';
 
 const BOOKMARKLET_CODE = `javascript:void(function(){var s=document.createElement('script');s.src='https://ingglish.com/bookmarklet.js';document.head.appendChild(s)})()`;
 
@@ -8,6 +9,7 @@ function Extension(): React.JSX.Element {
   function handleCopy(): void {
     void navigator.clipboard.writeText(BOOKMARKLET_CODE).then(() => {
       setCopied(true);
+      trackBookmarkletCopy();
       setTimeout(() => {
         setCopied(false);
       }, 2000);

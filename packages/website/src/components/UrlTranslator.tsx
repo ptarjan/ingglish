@@ -3,6 +3,7 @@ import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useShare } from '../hooks/useShare';
+import { trackUrlTranslate, trackShare } from '../utils/analytics';
 
 /**
  * Fullscreen icon (expand arrows)
@@ -117,6 +118,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         return;
       }
 
+      trackUrlTranslate(normalized);
       try {
         // translateUrl handles pushState and onNavigate internally
         await translateUrl(normalized);
@@ -139,6 +141,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
     if (onShare !== undefined && url.trim().length > 0) {
       const shareUrl = onShare(url);
       shareLink(shareUrl, 'Ingglish URL Translation');
+      trackShare('url', typeof navigator.share === 'function' ? 'webshare' : 'clipboard');
     }
   }, [onShare, url, shareLink]);
 

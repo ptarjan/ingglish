@@ -15,6 +15,7 @@ import { useSpeech } from '../hooks/useSpeech';
 import { buildDiffMap } from '../utils/diff-map';
 import { isAllCaps } from '../utils/text';
 import { SAMPLE_TEXT } from '../utils/sample-text';
+import { trackTextTranslate, trackShare, trackSpeak } from '../utils/analytics';
 
 function SpeakerIcon() {
   return (
@@ -293,7 +294,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const handleSample = useCallback(() => {
     setEnglishText(SAMPLE_TEXT);
     setLastEdited('english');
-  }, []);
+    trackTextTranslate(SAMPLE_TEXT.length, format);
+  }, [format]);
 
   const handleCopyEnglish = useCallback(() => {
     if (displayEnglish) {
@@ -311,6 +313,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (speakingEnglish) {
       stopEnglish();
     } else if (displayEnglish) {
+      trackSpeak();
       // Collapse newlines to spaces so TTS doesn't pause at each line
       speakEnglish(displayEnglish.replace(/\n+/g, ' '));
     }
@@ -325,8 +328,22 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (onShare && displayEnglish.trim()) {
       const url = onShare(displayEnglish);
       shareUrl(url, 'Ingglish Text Translation');
+      trackShare('text', typeof navigator.share === 'function' ? 'webshare' : 'clipboard');
     }
   }, [onShare, displayEnglish, shareUrl]);
+
+  // Track typed text with debounce
+  useEffect(() => {
+    if (lastEdited !== 'english' || !deferredEnglish.trim()) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      trackTextTranslate(deferredEnglish.length, format);
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [deferredEnglish, lastEdited, format]);
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 

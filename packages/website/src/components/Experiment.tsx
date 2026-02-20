@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useCustomMapping } from '../hooks/useCustomMapping';
 import { useShare } from '../hooks/useShare';
+import { trackExperimentReset } from '../utils/analytics';
 import MappingEditor from './MappingEditor';
 import ExperimentTranslator from './ExperimentTranslator';
 import MappingStats from './MappingStats';
@@ -8,6 +9,11 @@ import MappingStats from './MappingStats';
 function Experiment() {
   const mapping = useCustomMapping();
   const [copiedShare, shareLink] = useShare();
+
+  const handleReset = useCallback(() => {
+    mapping.reset();
+    trackExperimentReset();
+  }, [mapping]);
 
   const handleShare = useCallback(() => {
     shareLink(
@@ -29,7 +35,7 @@ function Experiment() {
 
       <div className="experiment-share-bar">
         <button
-          onClick={mapping.reset}
+          onClick={handleReset}
           className="btn-secondary"
           disabled={!mapping.hasCustomizations}
         >
