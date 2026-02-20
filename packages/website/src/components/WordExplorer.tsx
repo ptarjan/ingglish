@@ -18,6 +18,7 @@ import {
   decomposeCompound,
   diagnoseStemming,
   diagnoseBritish,
+  isInitialism,
   translateAsAcronym,
   LETTER_PHONEMES,
 } from '@ingglish/fallback';
@@ -55,6 +56,24 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
   let homophones: string[] = [];
   let g2pTrace: G2PTrace | undefined;
 
+  // Initialisms pass through unchanged in Latin formats, but the Word Explorer
+  // should show the spelled-out pronunciation. Check before the dictionary branch
+  // since some initialisms (e.g. "url") are also in the CMU dictionary.
+  if (isInitialism(lower)) {
+    return {
+      word: lower,
+      phonemes: null,
+      ipa: translateAsAcronym(lower, 'ipa').replace(/^\/|\/$/g, ''),
+      ingglish: translateAsAcronym(lower, 'ingglish'),
+      formatted: translateAsAcronym(lower, format),
+      matched: false,
+      isCustom,
+      homophones: [],
+      frequency: getWordFrequency(lower),
+      fallbackStrategy: 'initialism',
+    };
+  }
+
   if (dictPhonemes !== null) {
     ipa = arpabetToIPARaw(dictPhonemes);
     // Find homophones via reverse dictionary
@@ -71,10 +90,6 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     let stemmingResult: StemmingResult | undefined;
     let britishSpelling: string | undefined;
     let customPhonemes: string[] | null = null;
-    // Override formatted/ingglish for initialisms — they pass through unchanged
-    // in Latin formats, but the Word Explorer should show the spelled-out pronunciation
-    let overrideFormatted = formatted;
-    let overrideIngglish = ingglish;
 
     if (strategy === 'g2p') {
       g2pTrace = wordToArpabetTraced(lower);
@@ -86,18 +101,14 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
       britishSpelling = diagnoseBritish(lower) ?? undefined;
     } else if (strategy === 'custom') {
       customPhonemes = getCustomPronunciation(lower) ?? null;
-    } else if (strategy === 'initialism') {
-      overrideFormatted = translateAsAcronym(lower, format);
-      overrideIngglish = translateAsAcronym(lower, 'ingglish');
-      ipa = translateAsAcronym(lower, 'ipa').replace(/^\/|\/$/g, '');
     }
 
     return {
       word: lower,
       phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? customPhonemes,
       ipa,
-      ingglish: overrideIngglish,
-      formatted: overrideFormatted,
+      ingglish,
+      formatted,
       matched: false,
       isCustom,
       homophones,
