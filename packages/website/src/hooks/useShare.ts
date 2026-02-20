@@ -19,13 +19,17 @@ export function useShare(): [boolean, (url: string, title?: string, text?: strin
 
   const share = useCallback(
     (url: string, title?: string, text?: string) => {
+      // Build clipboard text: use text + url when text is provided, otherwise just url.
+      // Avoid duplicating the URL if text already contains it.
+      const clipboardText = text ? (text.includes(url) ? text : `${text}\n\n${url}`) : url;
+
       if (typeof navigator.share === 'function') {
         navigator.share({ title, text, url }).catch(() => {
           // User cancelled or share failed — fall back to clipboard
-          void navigator.clipboard.writeText(url).then(showCopied);
+          void navigator.clipboard.writeText(clipboardText).then(showCopied);
         });
       } else {
-        void navigator.clipboard.writeText(url).then(showCopied);
+        void navigator.clipboard.writeText(clipboardText).then(showCopied);
       }
     },
     [showCopied]
