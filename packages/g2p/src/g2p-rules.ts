@@ -489,6 +489,8 @@ const NRL_RULES: Record<string, string[]> = {
     'D[E]SC=/IH/',
     'EL[E]BR=/AH/',
     'EL[E]PH=/AH/',
+    '[E]NB=/AH/',
+    '[E]NSTE=/AH/',
     '[E]=/EH/',
   ],
   F: [
@@ -552,6 +554,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[GG]=/G/',
     ' B#[G]=/G/',
     'ER[G]ER=/G/',
+    '[G]ERN=/G/',
     '[G]+=/JH/',
     '[GREAT]=/G R EY T/',
     '#[GH]=/ /',
