@@ -30,6 +30,7 @@ import { NRL_WORD_RULES as RULES_FK } from './g2p-word-rules-fk';
 import { NRL_WORD_RULES as RULES_LO } from './g2p-word-rules-lo';
 import { NRL_WORD_RULES as RULES_PR } from './g2p-word-rules-pr';
 import { NRL_WORD_RULES as RULES_SZ } from './g2p-word-rules-sz';
+import { FINAL_OVERRIDES } from './g2p-final-overrides';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -1063,6 +1064,21 @@ for (const [letter, patternRules] of Object.entries(NRL_RULES)) {
  * returning both the phonemes and a trace of which rules fired.
  */
 export function wordToArpabetTraced(word: string): G2PTrace {
+  // Check final overrides first — these bypass stress prediction entirely
+  const finalOverride = FINAL_OVERRIDES[word.toUpperCase()];
+  if (finalOverride) {
+    return {
+      phonemes: finalOverride,
+      steps: [
+        {
+          letters: word.toUpperCase(),
+          rule: `[${word.toUpperCase()}] (final)`,
+          phonemes: finalOverride,
+        },
+      ],
+    };
+  }
+
   // Pad with spaces for word-boundary matching
   const text = ' ' + word.toUpperCase() + ' ';
   const rawPhonemes: string[] = [];
