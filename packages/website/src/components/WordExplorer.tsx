@@ -34,18 +34,15 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
   const lower = word.toLowerCase().trim();
   const dictPhonemes = lookupPronunciation(lower);
   const isCustom = hasCustomPronunciation(lower);
+  const formatted = translateWord(lower, format);
+  const ingglish = translateWord(lower, 'ingglish');
 
   let ipa = '';
   let homophones: string[] = [];
-  let phonemes: string[] | null = dictPhonemes;
   let g2pTrace: G2PTrace | undefined;
-  let formatted: string;
-  let ingglish: string;
 
   if (dictPhonemes !== null) {
     ipa = arpabetToIPARaw(dictPhonemes);
-    formatted = translateWord(lower, format);
-    ingglish = translateWord(lower, 'ingglish');
     // Find homophones via reverse dictionary
     const key = dictPhonemes.map(stripStress).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
@@ -53,18 +50,14 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
       homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
     }
   } else {
-    // Word not in dictionary — use G2P with trace
-    const trace = wordToArpabetTraced(lower);
-    g2pTrace = trace;
-    phonemes = trace.phonemes;
-    ipa = arpabetToIPARaw(trace.phonemes);
-    formatted = arpabetToFormat(trace.phonemes, format);
-    ingglish = arpabetToFormat(trace.phonemes, 'ingglish');
+    // Word not in dictionary — use full pipeline for output, G2P trace for insight
+    ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
+    g2pTrace = wordToArpabetTraced(lower);
   }
 
   return {
     word: lower,
-    phonemes,
+    phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? null,
     ipa,
     ingglish,
     formatted,
