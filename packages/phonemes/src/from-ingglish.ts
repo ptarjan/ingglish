@@ -89,48 +89,55 @@ const ONE_CHAR_SPELLINGS = new Set(
 
 /**
  * Converts an Ingglish spelling to ARPAbet phonemes.
+ * Uses index-based parsing to avoid intermediate string allocations.
  *
  * @param ingglish - Ingglish string (e.g., "haloh" for "hello")
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH", "L", "OW"]), or null if empty
  */
 export function ingglishToArpabet(ingglish: string): string[] | null {
   const result: string[] = [];
-  let remaining = ingglish.toLowerCase();
+  const str = ingglish.toLowerCase();
+  const len = str.length;
+  let pos = 0;
 
-  while (remaining.length > 0) {
+  while (pos < len) {
     // Check for 3-char R-colored vowels first (air)
-    const threeChar = remaining.slice(0, 3);
-    if (remaining.length >= 3 && threeChar in R_COLORED_REVERSE_3CHAR) {
-      result.push(...R_COLORED_REVERSE_3CHAR[threeChar]!);
-      remaining = remaining.slice(3);
-      continue;
+    if (pos + 3 <= len) {
+      const threeChar = str.substring(pos, pos + 3);
+      if (threeChar in R_COLORED_REVERSE_3CHAR) {
+        result.push(...R_COLORED_REVERSE_3CHAR[threeChar]!);
+        pos += 3;
+        continue;
+      }
     }
 
-    // Check for 2-char R-colored vowels (ar, or)
-    const twoChar = remaining.slice(0, 2);
-    if (remaining.length >= 2 && twoChar in R_COLORED_REVERSE_2CHAR) {
-      result.push(...R_COLORED_REVERSE_2CHAR[twoChar]!);
-      remaining = remaining.slice(2);
-      continue;
-    }
+    // Check for 2-char R-colored vowels (ar, or) and digraphs (sh, th)
+    if (pos + 2 <= len) {
+      const twoChar = str.substring(pos, pos + 2);
+      if (twoChar in R_COLORED_REVERSE_2CHAR) {
+        result.push(...R_COLORED_REVERSE_2CHAR[twoChar]!);
+        pos += 2;
+        continue;
+      }
 
-    // Try 2-char spelling (e.g., "sh" before "s")
-    if (remaining.length >= 2 && TWO_CHAR_SPELLINGS.has(twoChar)) {
-      result.push(INGGLISH_TO_ARPABET_MAP[twoChar]!);
-      remaining = remaining.slice(2);
-      continue;
+      // Try 2-char spelling (e.g., "sh" before "s")
+      if (TWO_CHAR_SPELLINGS.has(twoChar)) {
+        result.push(INGGLISH_TO_ARPABET_MAP[twoChar]!);
+        pos += 2;
+        continue;
+      }
     }
 
     // Try 1-char spelling
-    const oneChar = remaining[0]!;
+    const oneChar = str[pos]!;
     if (ONE_CHAR_SPELLINGS.has(oneChar)) {
       result.push(INGGLISH_TO_ARPABET_MAP[oneChar]!);
-      remaining = remaining.slice(1);
+      pos += 1;
       continue;
     }
 
     // Skip unknown characters
-    remaining = remaining.slice(1);
+    pos += 1;
   }
 
   return result.length > 0 ? result : null;

@@ -28,6 +28,14 @@ import {
 import { translateContraction, setTranslateWordFn } from './contractions';
 import { expandPlaceholder } from './preserved';
 
+// Pre-compiled regex patterns (avoid per-call RegExp object creation)
+const HAS_LETTER = /[a-zA-Z]/;
+const ALL_UPPER = /^[A-Z]+$/;
+const TRIPLE_CHAR = /(.)\1\1/i;
+const HAS_VOWEL = /[aeiouy]/i;
+const TITLE_CASE = /^[A-Z][a-z]*$/;
+const SENTENCE_END = /[.?!]/;
+
 interface TranslateResult {
   translated: string;
   matched: boolean;
@@ -44,7 +52,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
   }
 
   // Check if word has any letters to translate
-  if (!/[a-zA-Z]/.test(word)) {
+  if (!HAS_LETTER.test(word)) {
     return { translated: word, matched: true };
   }
 
@@ -88,7 +96,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
   // All-caps words (≥2 chars) pass through unchanged for Latin-script formats —
   // they're acronyms, abbreviations, or intentional formatting (MQTT, USSR, NATO).
   // For non-Latin scripts, fall through to normal translation.
-  if (isLatinScript && word.length >= 2 && /^[A-Z]+$/.test(word)) {
+  if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
     return { translated: word, matched: true };
   }
 
@@ -101,7 +109,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     // Translate each part and preserve its case
     const translatedParts = camelParts.map((part) => {
       // All-caps parts (≥2 chars) pass through unchanged — acronyms like "GPT" in "ChatGPT"
-      if (part.length >= 2 && /^[A-Z]+$/.test(part)) {
+      if (part.length >= 2 && ALL_UPPER.test(part)) {
         return part;
       }
 
@@ -129,16 +137,18 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
   const casePattern = detectCasePattern(word);
 
   // Custom pronunciations override the dictionary (fixes CMU errors like "hors")
-  const customPhonemes = getCustomPronunciation(word.toLowerCase());
-  const phonemes = customPhonemes ?? lookupPronunciation(word);
+  const wordLower = word.toLowerCase();
+  const customPhonemes = getCustomPronunciation(wordLower);
+  const phonemes = customPhonemes ?? lookupPronunciation(wordLower);
 
   if (!phonemes) {
     // Try stripping diacritics (café→cafe, naïve→naive) before fallback.
     // This preserves accented forms as pronunciation signals (résumé ≠ resume).
     const stripped = stripDiacritics(word);
     if (stripped !== word) {
-      const strippedCustom = getCustomPronunciation(stripped.toLowerCase());
-      const strippedPhonemes = strippedCustom ?? lookupPronunciation(stripped);
+      const strippedLower = stripped.toLowerCase();
+      const strippedCustom = getCustomPronunciation(strippedLower);
+      const strippedPhonemes = strippedCustom ?? lookupPronunciation(strippedLower);
       if (strippedPhonemes) {
         let strippedResult = arpabetToFormat(strippedPhonemes, format);
         if (getFormatPreservesCase(format)) {
@@ -151,7 +161,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     // Pass through obvious non-words before running G2P:
     // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
     // - no vowels (a/e/i/o/u/y) — real vowelless words (hmm, shh) are in the dictionary
-    if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
+    if (TRIPLE_CHAR.test(word) || !HAS_VOWEL.test(word)) {
       return { translated: word, matched: false };
     }
 
@@ -171,7 +181,7 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
       const resultHasMixedCase =
         fallbackResult !== fallbackResult.toLowerCase() &&
         fallbackResult !== fallbackResult.toUpperCase() &&
-        !/^[A-Z][a-z]*$/.test(fallbackResult);
+        !TITLE_CASE.test(fallbackResult);
       if (resultHasMixedCase) {
         return { translated: fallbackResult, matched: false };
       }
@@ -237,7 +247,7 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
         return result;
       }
       // Detect sentence-ending punctuation
-      if (hasMultipleWords && /[.?!]/.test(token)) {
+      if (hasMultipleWords && SENTENCE_END.test(token)) {
         sentenceStart = true;
       }
       return token;

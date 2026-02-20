@@ -26,6 +26,9 @@ import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokeni
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
 
+// Pre-compiled regex patterns
+const HAS_LETTER = /[a-zA-Z]/;
+
 // ============================================================================
 // Core Translation Functions
 // ============================================================================
@@ -95,7 +98,7 @@ function lookupByArpabet(arpabet: string[]): string[] {
  * Non-letter tokens (numbers, punctuation) are returned as-is in a single-element array.
  */
 export function reverseTranslateWord(ingglishWord: string): string[] {
-  if (!ingglishWord || !/[a-zA-Z]/.test(ingglishWord)) {
+  if (!ingglishWord || !HAS_LETTER.test(ingglishWord)) {
     return ingglishWord ? [ingglishWord] : [];
   }
 

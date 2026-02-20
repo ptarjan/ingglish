@@ -29,6 +29,11 @@ export async function loadFrequencies(): Promise<Record<string, number>> {
   frequenciesPromise = loadFrequencyData()
     .then((data) => {
       wordFrequencies = data;
+      // Build frequency map eagerly (avoids latency spike on first getWordFrequency call)
+      frequencyMap = new Map<string, number>();
+      for (const [word, count] of Object.entries(data)) {
+        frequencyMap.set(word.toLowerCase(), count);
+      }
       return wordFrequencies;
     })
     .catch((error: unknown) => {

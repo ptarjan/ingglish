@@ -120,6 +120,7 @@ export function isConsonant(phoneme: string): boolean {
 /**
  * Extracts the stress level from a phoneme.
  * Returns null for consonants or vowels without explicit stress.
+ * Uses charCode check instead of regex (consistent with stripStress).
  *
  * @example
  * getStress('AH0') // 0
@@ -128,9 +129,10 @@ export function isConsonant(phoneme: string): boolean {
  * getStress('B')   // null
  */
 export function getStress(phoneme: string): 0 | 1 | 2 | null {
-  const match = STRESS_MARKER_REGEX.exec(phoneme);
-  if (match === null) {
-    return null;
+  const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+  // '0'=48, '1'=49, '2'=50
+  if (lastChar >= 48 && lastChar <= 50) {
+    return (lastChar - 48) as 0 | 1 | 2;
   }
-  return parseInt(match[0], 10) as 0 | 1 | 2;
+  return null;
 }
