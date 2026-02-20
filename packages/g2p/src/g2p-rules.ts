@@ -73,6 +73,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[A] =/AX/',
     ' [AR]OU=/ER/',
     ' [AR]EN =/AA R/',
+    'EP[AR]AT=/ER/',
     '[AR]#=/EH R/',
     ' [AR]O=/AX R/',
     ' ^[AS]#=/EY S/',
@@ -273,8 +274,10 @@ const NRL_RULES: Record<string, string[]> = {
     ' [CON]^=/K AH N/',
     '[COM]%=/K AH M/',
     '[CCH]=/K/',
+    'M[CC]=/AH K/',
     '[CC]+=/K S/',
     '[CC]=/K/',
+    'M[C]^=/AH K/',
     '[C]=/K/',
   ],
   D: [
