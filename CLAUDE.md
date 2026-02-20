@@ -2,41 +2,24 @@
 
 ## CI/CD
 
-No need to build and test after every change - CI will handle that on push.
-
 Push directly to main — don't create PRs or feature branches.
 
 When e2e tests fail in CI, download the `playwright-report` artifact from the failed run to see screenshots and traces of what went wrong.
 
-## Cross-Package Changes
-
-This monorepo uses lint-staged for pre-commit hooks, which only lints staged files. When changing exports or interfaces in `ingglish`, dependent packages (`dom`, `website`, `extension`) won't be automatically linted because they weren't modified.
-
-**Before pushing changes that affect cross-package APIs**, run a full lint to catch breakages:
-
-```bash
-npm run lint
-```
-
-This catches type errors in dependent packages that lint-staged misses.
-
-## Testing
+## Testing & Linting
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
 
-Run all tests (parallelized via turbo, cached across runs):
+All commands use turbo for parallelism and caching (~2s when cached):
 
 ```bash
-npm test
+npm test                    # run all tests across all packages
+npx vitest run packages/core  # run tests for a single package
+npm run lint                # lint all packages
+npm run build:fast          # build all packages (type-check + bundle)
 ```
 
-Run tests for a single package:
-
-```bash
-npx vitest run packages/core
-```
-
-Run all linting (parallelized via turbo, cached across runs):
+**Before pushing cross-package changes**, run lint to catch type errors in dependent packages (lint-staged only checks staged files):
 
 ```bash
 npm run lint
