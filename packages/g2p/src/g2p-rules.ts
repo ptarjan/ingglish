@@ -39,6 +39,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[ASTE] =/EY S T/',
     '[ASE] =/EY S/',
     '[A] =/AX/',
+    ' [AR]OU=/ER/',
     '[AR]#=/EH R/',
     ' [AR]O=/AX R/',
     ' ^[AS]#=/EY S/',
@@ -168,6 +169,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [EVERY]^=/EH V R IY/',
     ' [E]NO=/IH/',
     ' [EX]#=/IH G Z/',
     '#:[E] =/ /',
@@ -209,6 +211,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[EAUX]=/OW/',
     '[EAU]=/OW/',
     '[EA]SU=/EH/',
+    'D[EA]TH=/EH/',
+    'BR[EA]K=/EY/',
     '[EA]=/IY/',
     '[EIGH]=/EY/',
     'C[EI]=/IY/',
@@ -244,6 +248,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[F]=/F/',
   ],
   G: [
+    ' [GONE] =/G AO N/',
     '[GIV]=/G IH V/',
     ' [G]I^=/G/',
     '[GEON]=/JH AX N/',
@@ -258,6 +263,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HEART]=/HH AA R T/',
+    ' [HEARD] =/HH ER D/',
     ' [HELLO]=/HH AH L OW/',
     ' [HEAR] =/HH IY R/',
     ' [HEY] =/HH EY/',
@@ -333,6 +340,7 @@ const NRL_RULES: Record<string, string[]> = {
   J: ['[J]=/JH/'],
   K: [' [K]N=/ /', '[KK]=/K/', '[K]=/K/'],
   L: [
+    ' [LOST] =/L AO S T/',
     '[LO]C#=/L OW/',
     'L[L]=/ /',
     '#:[LINE] =/L AY N/',
@@ -469,6 +477,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[OSS] =/AO S/',
     '#^:[OM]=/AH M/',
     '[OLOGY]=/AA L AH JH IY/',
+    'T[O]DA=/AH/',
+    'W[O]MA=/UH/',
     '[O]^A=/OW/',
     '[O]^O=/OW/',
     '[O]BI=/OW/',
@@ -494,6 +504,7 @@ const NRL_RULES: Record<string, string[]> = {
   Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
   R: [
     ' [REALLY]=/R IH L IY/',
+    ' [RE]ME=/R IH/',
     ' [RE]^#=/R IY/',
     '[ROLL]=/R OW L/',
     '[RH]=/R/',
@@ -502,6 +513,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SAYS] =/S EH Z/',
     ' [SORRY]=/S AA R IY/',
     ' [SON] =/S AH N/',
     ' [SURE]=/SH UH R/',
@@ -575,6 +587,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    'P[U]LL=/UH/',
+    'B[U]LL=/UH/',
     ' [UN]I=/Y UW N/',
     '[UIT]=/UW T/',
     '[URR]=/ER/',
@@ -599,6 +613,7 @@ const NRL_RULES: Record<string, string[]> = {
   V: ['[VIEW]=/V Y UW/', '[VIOL]=/V AY AH L/', '[V]=/V/'],
   W: [
     ' [WATER]=/W AO T ER/',
+    ' [WORRY]=/W ER IY/',
     ' [WON] =/W AH N/',
     ' [WITH] =/W IH DH/',
     '[WA]S=/W AA/',
@@ -619,6 +634,7 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   X: ['[X]=/K S/'],
   Y: [
+    ' [YET] =/Y EH T/',
     ' [YES] =/Y EH S/',
     '#^:[Y] =/IY/',
     '#^:[Y]I=/IY/',
