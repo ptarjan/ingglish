@@ -32,10 +32,20 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    // Custom: common word fixes
+    ' [AND] =/AH N D/',
+    ' [ABOUT]=/AH B AW T/',
+    ' [ANOTHER]=/AH N AH DH ER/',
+    ' [ACTUALLY]=/AE K CH UW AH L IY/',
+    ' [ABSOLUTELY]=/AE B S AH L UW T L IY/',
+    ' [AMERICAN]=/AH M EH R AH K AH N/',
+    ' [ASKING]=/AE S K IH NG/',
     // Custom: -ase at word end → EY S (base, case, chase — +4)
     '[ASE] =/EY S/',
     '[A] =/AX/',
     ' [ARE] =/AA R/',
+    // Custom: AROU → ER AW (around, arouse, arousal — 6 words, freq 37K)
+    ' [AROU]=/ER AW/',
     ' [AR]O=/AX R/',
     '[AR]#=/EH R/',
     ' ^[AS]#=/EY S/',
@@ -103,6 +113,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[A]=/AE/',
   ],
   B: [
+    // Custom: common word fixes
+    ' [BEEN] =/B IH N/',
+    ' [BUSINESS]=/B IH Z N AH S/',
     ' [BE]^#=/B IH/',
     '[BEING]=/B IY IH NX/',
     ' [BOTH] =/B OW TH/',
@@ -123,6 +136,14 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    // Custom: common word fixes
+    ' [CLOTHES] =/K L OW DH Z/',
+    ' [CHRISTMAS]=/K R IH S M AH S/',
+    ' [COFFEE]=/K AA F IY/',
+    ' [CANNOT]=/K AE N AA T/',
+    ' [CERTAINLY]=/S ER T AH N L IY/',
+    ' [CONTROL]=/K AH N T R OW L/',
+    ' [COLONEL]=/K ER N AH L/',
     ' [CH]^=/K/',
     '^E[CH]=/K/',
     // Custom: CHR is always Greek → K (synchronize, monochrome, chrome, Christ)
@@ -184,6 +205,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    // Custom: common word fixes
+    ' [DONE] =/D AH N/',
+    ' [DAVID]=/D EY V IH D/',
     '#:[DED] =/D IH D/',
     // Custom: DH at word start → D only (dhabi, dharma, dhillon — Arabic/Hindi origin, H silent)
     "' [DH]=/D/",
@@ -212,6 +236,11 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    // Custom: common word fixes
+    ' [ENOUGH]=/IH N AH F/',
+    ' [EVEN]=/IY V IH N/',
+    ' [EVERYTHING]=/EH V R IY TH IH NG/',
+    ' [EVERYBODY]=/EH V R IY B AA D IY/',
     // Custom: EXH → IH G Z (exhaust, exhibit, exhort — H is silent, X voices to GZ)
     ' [EXH]=/IH G Z/',
     // Custom: EX before vowel → IH G Z (exact, exam, exist — 73% GZ in CMU)
@@ -319,6 +348,14 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    // Custom: common word fixes
+    ' [FROM] =/F R AH M/',
+    ' [FATHER]=/F AA DH ER/',
+    ' [FAMILY]=/F AE M AH L IY/',
+    ' [FINALLY]=/F AY N AH L IY/',
+    ' [FIGURE]=/F IH G Y ER/',
+    ' [FINISH]=/F IH N IH SH/',
+    ' [FOOD] =/F UW D/',
     // Custom: -ford suffix → F ER D (bedford, oxford, stanford — 195 vs 16 with AO R D)
     '#:[FORD] =/F ER D/',
     // Custom: -fully/-ful suffix with schwa (beautifully, wonderful)
@@ -329,6 +366,14 @@ const NRL_RULES: Record<string, string[]> = {
     '[F]=/F/',
   ],
   G: [
+    // Custom: common word fixes
+    ' [GONNA]=/G AA N AH/',
+    ' [GONE] =/G AO N/',
+    ' [GOODBYE]=/G UH D B AY/',
+    ' [GUESS] =/G EH S/',
+    ' [GUESSING]=/G EH S IH NG/',
+    ' [GENERAL]=/JH EH N ER AH L/',
+    ' [GENTLEMEN]=/JH EH N T AH L M IH N/',
     '[GIV]=/G IH V/',
     // Custom: silent g before n at word start (gnat, gnome, gnu)
     ' [GN]=/N/',
@@ -355,6 +400,17 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    // Custom: common word fixes
+    ' [HEY] =/HH EY/',
+    ' [HI] =/HH AY/',
+    ' [HELLO]=/HH AH L OW/',
+    ' [HONEY]=/HH AH N IY/',
+    ' [HONOR]=/AA N ER/',
+    ' [HOTEL]=/HH OW T EH L/',
+    ' [HAVEN]=/HH EY V AH N/',
+    ' [HEAR] =/HH IY R/',
+    ' [HEARD] =/HH ER D/',
+    ' [HEARING]=/HH IY R IH NG/',
     // Custom: HYPER- prefix → HH AY P ER (hyperactive, hyperbole — Greek origin)
     ' [HYPER]=/HH AY P ER/',
     // Custom: HYDR- prefix → HH AY D R (hydrogen, hydraulic — Greek origin)
@@ -367,6 +423,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    // Custom: common word fixes
+    ' [INTO] =/IH N T UW/',
     // Custom: ISO- prefix → AY S AH (isolate, isomer, isobar — Greek origin)
     ' [ISO]=/AY S AH/',
     // Custom: IDEA root → AY D IY (idea, ideal, idealism)
@@ -395,6 +453,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[IER]=/IY ER/',
     '#:R[IED] =/IY D/',
     '[IED] =/AY D/',
+    // Custom: FRIEN → EH N (friend, boyfriend, friendly — 16 words, freq 47K)
+    'FR[IEN]=/EH N/',
     // Custom: IEN → IY N (drop EH — alien, bien, orient — 46 fix vs 9 break)
     '[IEN]=/IY N/',
     // Custom: IE before consonants that are 100% IY in CMU (brief, siege, grieve, piece, field, shield, view)
@@ -484,6 +544,15 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    // Custom: common word fixes
+    ' [MAYBE]=/M EY B IY/',
+    ' [MONEY]=/M AH N IY/',
+    ' [MINUTE] =/M IH N AH T/',
+    ' [MYSELF]=/M AY S EH L F/',
+    ' [MAJOR]=/M EY JH ER/',
+    ' [MAMA]=/M AA M AH/',
+    ' [MEANT] =/M EH N T/',
+    ' [MILLION]=/M IH L Y AH N/',
     // Custom: Mc- prefix in names (McAdam, McAllister, McCain) → M-schwa-K
     ' [MCC]=/M AX K/',
     // Custom: McK- → single K (McKay, McKain, McKenzie)
@@ -522,6 +591,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[M]=/M/',
   ],
   N: [
+    // Custom: common word fixes
+    ' [NOTHING]=/N AH TH IH NG/',
+    ' [NONE] =/N AH N/',
     'E[NG]+=/N JH/',
     // Custom: -nger/-ngers → NG ER without hard G (307 words like singer, banger vs 31 with hard G like finger)
     '[NGER]=/NG ER/',
@@ -545,6 +617,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[N]=/N/',
   ],
   O: [
+    // Custom: common word fixes
+    ' [OUR] =/AW ER/',
+    ' [OK] =/OW K EY/',
     '[OF] =/AX V/',
     '[OROUGH]=/ER OW/',
     // Custom: -ory suffix (history, story, category) — must be before #:[OR]
@@ -670,8 +745,6 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]GL=/OW/',
     '[O]FI=/OW/',
     '[O]KI=/OW/',
-    '[O]BY=/OW/',
-    '[O]DY=/OW/',
     '[O]LI=/OW/',
     '[O]H=/OW/',
     // Custom: OB- prefix (observe, obtain, object — +33 SL)
@@ -683,6 +756,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]=/AA/',
   ],
   P: [
+    // Custom: common word fixes
+    ' [PRETTY]=/P R IH T IY/',
+    ' [PROBLEM]=/P R AA B L AH M/',
+    ' [PROMISE]=/P R AA M AH S/',
+    ' [PULL]=/P UH L/',
+    ' [POOR] =/P UW R/',
     '[PH]=/F/',
     '[PEOP]=/P IY P/',
     '[POW]=/P AW/',
@@ -717,6 +796,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[Q]=/K/',
   ],
   R: [
+    // Custom: common word fixes
+    ' [REALLY]=/R IH L IY/',
+    ' [REMEMBER]=/R IH M EH M B ER/',
     ' [RE]^#=/R IY/',
     // Custom: ROLL → R OW L (roll, stroll, scroll, enroll, bankroll — 80+ words need OW)
     '[ROLL]=/R OW L/',
@@ -729,6 +811,14 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    // Custom: common word fixes
+    ' [SORRY]=/S AA R IY/',
+    ' [SURE] =/SH UH R/',
+    ' [SAYS] =/S EH Z/',
+    ' [SOMEONE]=/S AH M W AH N/',
+    ' [SECRET]=/S IY K R AH T/',
+    ' [SEVEN]=/S EH V AH N/',
+    ' [SERIOUS]=/S IH R IY AH S/',
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
     '#:[SIDE] =/S AY D/',
@@ -782,6 +872,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[S]=/S/',
   ],
   T: [
+    // Custom: common word fixes
+    ' [TODAY]=/T AH D EY/',
+    ' [TOGETHER]=/T AH G EH DH ER/',
+    ' [TOMORROW]=/T AH M AA R OW/',
+    ' [TOUCH]=/T AH CH/',
+    ' [TIRED]=/T AY ER D/',
     ' [THE] =/DH AX/',
     // Word-start space required: only match standalone "to", not word-ending -to
     ' [TO] =/T UW/',
@@ -828,6 +924,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    // Custom: common word fixes
+    ' [UNCLE]=/AH NG K AH L/',
+    ' [UNLESS]=/AH N L EH S/',
     ' [UN]I=/Y UW N/',
     ' [UN]=/AH N/',
     ' [UPON]=/AX P AO N/',
@@ -864,6 +963,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[V]=/V/',
   ],
   W: [
+    // Custom: common word fixes
+    ' [WITH]=/W IH DH/',
+    ' [WOMAN] =/W UH M AH N/',
+    ' [WANTED]=/W AO N T IH D/',
+    ' [WEIRD]=/W IH R D/',
+    ' [WEAR]=/W EH R/',
     ' [WERE]=/W ER/',
     '[WA]S=/W AA/',
     '[WA]T=/W AA/',
@@ -874,7 +979,8 @@ const NRL_RULES: Record<string, string[]> = {
     // Custom: WA before D → W AA (squad, waddle)
     '[WA]D=/W AA/',
     '[WHERE]=/WH EH R/',
-    '[WHAT]=/WH AA T/',
+    // Custom: "what" is /wʌt/ not /wɑt/ (what, whatever, somewhat — 8 words, freq 515K)
+    '[WHAT]=/WH AH T/',
     '[WHOL]=/HH OW L/',
     '[WHO]=/HH UW/',
     '[WH]=/WH/',
@@ -892,6 +998,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[X]=/K S/',
   ],
   Y: [
+    // Custom: common word fixes
+    ' [YOUR] =/Y AO R/',
+    ' [YOURS] =/Y AO R Z/',
+    ' [YOURSELF]=/Y ER S EH L F/',
+    ' [YEAH] =/Y AE/',
+    ' [YET] =/Y EH T/',
     '[YOUNG]=/Y AH NX/',
     ' [YOU]=/Y UW/',
     ' [YES]=/Y EH S/',
