@@ -275,6 +275,7 @@ const NRL_RULES: Record<string, string[]> = {
     'D[E]SI=/IH/',
     'D[E]TE=/IH/',
     'R[E]SU=/IH/',
+    'R[E]GA=/IH/',
     'OT[EL]=/EH L/',
     'B[E]TW=/IH/',
     'PR[E]TT=/IH/',
