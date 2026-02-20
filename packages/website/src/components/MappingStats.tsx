@@ -84,33 +84,43 @@ function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
   };
 }
 
-function getTopCollisions(
-  collisionMap: Map<string, string[]>,
+/** Find collisions in experiment that don't exist in standard Ingglish */
+function getNewCollisions(
+  experimentMap: Map<string, string[]>,
+  ingglishMap: Map<string, string[]>,
   count: number
 ): { spelling: string; words: string[] }[] {
-  const collisions: { spelling: string; words: string[]; score: number }[] = [];
+  const results: { spelling: string; words: string[]; score: number }[] = [];
 
-  for (const [spelling, words] of collisionMap) {
-    if (words.length <= 1) {
+  for (const [spelling, expWords] of experimentMap) {
+    if (expWords.length <= 1) {
       continue;
+    }
+
+    // Check if this exact collision group already exists in standard Ingglish
+    const ingWords = ingglishMap.get(spelling);
+    if (ingWords !== undefined) {
+      const expSet = new Set(expWords.map((w) => w.toLowerCase()));
+      const ingSet = new Set(ingWords.map((w) => w.toLowerCase()));
+      if (expSet.size === ingSet.size && [...expSet].every((w) => ingSet.has(w))) {
+        continue; // Same collision exists in standard — skip
+      }
     }
 
     // Score by max word frequency in the group
     let maxFreq = 0;
-    for (const word of words) {
+    for (const word of expWords) {
       const freq = getWordFrequency(word) ?? 0;
       if (freq > maxFreq) {
         maxFreq = freq;
       }
     }
 
-    collisions.push({ spelling, words, score: maxFreq });
+    results.push({ spelling, words: expWords, score: maxFreq });
   }
 
-  // Sort by frequency score (most impactful collisions first)
-  collisions.sort((a, b) => b.score - a.score);
-
-  return collisions.slice(0, count).map(({ spelling, words }) => ({ spelling, words }));
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, count).map(({ spelling, words }) => ({ spelling, words }));
 }
 
 interface Stats {
@@ -150,7 +160,7 @@ function MappingStats({ version }: MappingStatsProps) {
       setStats({
         experiment,
         ingglish,
-        topCollisions: getTopCollisions(experiment.collisionMap, 10),
+        topCollisions: getNewCollisions(experiment.collisionMap, ingglish.collisionMap, 10),
       });
       setComputing(false);
     }, 500);
@@ -210,7 +220,7 @@ function MappingStats({ version }: MappingStatsProps) {
 
       {stats.topCollisions.length > 0 && (
         <div className="top-collisions">
-          <h4>Top collisions (by word frequency)</h4>
+          <h4>New collisions from your changes</h4>
           <table className="mapping-table collision-table">
             <thead>
               <tr>
