@@ -1,6 +1,6 @@
 import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
-import { MappedWordDisplay } from './TextTranslator';
+import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from '../utils/diff-map';
 import { SAMPLE_PASSAGES } from '../utils/sample-text';
 

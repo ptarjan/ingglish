@@ -3,8 +3,8 @@ import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
-import { poems } from './poems-data';
-import { MappedWordDisplay } from './TextTranslator';
+import { poems } from '../data/poems-data';
+import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from '../utils/diff-map';
 
 interface TranslatedLine {

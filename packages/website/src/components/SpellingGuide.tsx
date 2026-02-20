@@ -1,5 +1,5 @@
 import { arpabetPhonemeToIngglish } from '@ingglish/phonemes';
-import { vowelGroups, consonantGroups, type SoundGroup } from './spelling-guide-data';
+import { vowelGroups, consonantGroups, type SoundGroup } from '../data/spelling-guide-data';
 import { getCleanIPA, renderExamples } from '../utils/phoneme-display';
 
 function SpellingGuide(): React.JSX.Element {

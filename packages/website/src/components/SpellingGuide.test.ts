@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { vowelGroups, consonantGroups } from './spelling-guide-data';
+import { vowelGroups, consonantGroups } from '../data/spelling-guide-data';
 
 /**
  * Parse an example string like "c**a**t" and verify the highlighted letters

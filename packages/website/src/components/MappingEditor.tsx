@@ -6,7 +6,7 @@ import {
   consonantGroups,
   type SoundGroup,
   type SoundEntry,
-} from './spelling-guide-data';
+} from '../data/spelling-guide-data';
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
 import { getCleanIPA, renderDynamicExamples } from '../utils/phoneme-display';
 
