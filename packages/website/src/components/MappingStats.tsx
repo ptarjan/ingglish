@@ -123,10 +123,42 @@ function getNewCollisions(
   return results.slice(0, count).map(({ spelling, words }) => ({ spelling, words }));
 }
 
+interface WordChange {
+  word: string;
+  standard: string;
+  experiment: string;
+}
+
+/** Find the most common words whose spelling changed between standard and experiment */
+function getTopChanges(count: number): WordChange[] {
+  const dict = getDictionary();
+  const changes: { word: string; standard: string; experiment: string; freq: number }[] = [];
+
+  for (const [word, phonemes] of Object.entries(dict)) {
+    if (/[^a-z]/i.test(word)) {
+      continue;
+    }
+    const standard = arpabetToFormat(phonemes, 'ingglish');
+    const experiment = arpabetToFormat(phonemes, 'experiment');
+    if (standard !== experiment) {
+      const freq = getWordFrequency(word) ?? 0;
+      changes.push({ word, standard, experiment, freq });
+    }
+  }
+
+  changes.sort((a, b) => b.freq - a.freq);
+  return changes.slice(0, count).map(({ word, standard, experiment }) => ({
+    word,
+    standard,
+    experiment,
+  }));
+}
+
 interface Stats {
   experiment: FormatStats;
   ingglish: FormatStats;
   topCollisions: { spelling: string; words: string[] }[];
+  topChanges: WordChange[];
 }
 
 /** Format a delta between experiment and ingglish (positive = better) */
@@ -161,6 +193,7 @@ function MappingStats({ version }: MappingStatsProps) {
         experiment,
         ingglish,
         topCollisions: getNewCollisions(experiment.collisionMap, ingglish.collisionMap, 10),
+        topChanges: getTopChanges(20),
       });
       setComputing(false);
     }, 500);
@@ -217,6 +250,30 @@ function MappingStats({ version }: MappingStatsProps) {
           <div className="stat-label">Clarity</div>
         </div>
       </div>
+
+      {stats.topChanges.length > 0 && (
+        <div className="top-changes">
+          <h4>Most common words affected</h4>
+          <table className="mapping-table changes-table">
+            <thead>
+              <tr>
+                <th>Word</th>
+                <th>Standard</th>
+                <th>Yours</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stats.topChanges.map(({ word, standard, experiment: exp }) => (
+                <tr key={word}>
+                  <td className="examples-cell">{word}</td>
+                  <td className="default-cell">{standard}</td>
+                  <td className="ingglish-cell">{exp}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {stats.topCollisions.length > 0 && (
         <div className="top-collisions">

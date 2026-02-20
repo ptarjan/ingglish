@@ -368,6 +368,21 @@
   color: #f87171;
 }
 
+.top-changes {
+  margin-top: 1rem;
+}
+
+.top-changes h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.changes-table th:nth-child(1) {
+  width: 6rem;
+}
+
 .top-collisions {
   margin-top: 1rem;
 }
