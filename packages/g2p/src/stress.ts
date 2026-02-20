@@ -138,22 +138,16 @@ function predictStressSyllable(word: string, syllableCount: number): number {
   }
 
   // Check unstressed prefixes → stress 2nd syllable
-  for (const { prefix, minLength } of UNSTRESSED_PREFIXES) {
-    if (lower.startsWith(prefix) && lower.length >= minLength) {
-      return Math.min(1, syllableCount - 1);
-    }
-  }
-
-  // Try stripping -ing to expose prefix for gerunds
+  // Also try stripping -ing/-ings to expose prefix for gerunds (e.g., "misunderstanding")
   let base = lower;
   if (base.endsWith('ings')) {
     base = base.slice(0, -4);
   } else if (base.endsWith('ing')) {
     base = base.slice(0, -3);
   }
-  if (base !== lower) {
+  for (const word of base !== lower ? [lower, base] : [lower]) {
     for (const { prefix, minLength } of UNSTRESSED_PREFIXES) {
-      if (base.startsWith(prefix) && base.length >= minLength) {
+      if (word.startsWith(prefix) && word.length >= minLength) {
         return Math.min(1, syllableCount - 1);
       }
     }

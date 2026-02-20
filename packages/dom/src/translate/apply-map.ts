@@ -11,6 +11,7 @@ import {
 } from '../utils';
 import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
+import { processChunked } from './chunked';
 
 // Default chunk size for chunked DOM updates (consistent with translator.ts)
 const DEFAULT_CHUNK_SIZE = 100;
@@ -116,42 +117,14 @@ export function applyTranslationsMap(
 
   // Use pre-collected nodes if provided, otherwise collect them
   const textNodes = preCollectedNodes ?? collectTextNodes(root);
-  const totalNodes = textNodes.length;
 
-  // For small pages, process synchronously to avoid RAF overhead
-  if (totalNodes <= SYNC_THRESHOLD) {
-    for (let i = 0; i < totalNodes; i++) {
-      processTextNode(textNodes[i]!, translations, showTooltips);
-      if (onProgress) {
-        onProgress(i + 1, totalNodes);
-      }
-    }
-    return Promise.resolve();
-  }
-
-  // For larger pages, chunk the work across animation frames
-  return new Promise((resolve) => {
-    let index = 0;
-
-    function processChunk(): void {
-      const endIndex = Math.min(index + chunkSize, totalNodes);
-
-      while (index < endIndex) {
-        processTextNode(textNodes[index]!, translations, showTooltips);
-        index++;
-
-        if (onProgress) {
-          onProgress(index, totalNodes);
-        }
-      }
-
-      if (index < totalNodes) {
-        requestAnimationFrame(processChunk);
-      } else {
-        resolve();
-      }
-    }
-
-    requestAnimationFrame(processChunk);
-  });
+  return processChunked(
+    textNodes,
+    (node) => {
+      processTextNode(node, translations, showTooltips);
+    },
+    chunkSize,
+    onProgress,
+    SYNC_THRESHOLD
+  );
 }

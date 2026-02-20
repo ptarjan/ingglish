@@ -17,6 +17,7 @@ import {
 } from '../utils';
 import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import { createTooltipFragment } from './tooltip-fragment';
+import { processChunked } from './chunked';
 
 // Default chunk size for chunked DOM updates
 const DEFAULT_CHUNK_SIZE = 100;
@@ -51,51 +52,6 @@ function translateTextNode(
     }
     textNode.textContent = translateSync(originalText, outputFormat);
   }
-}
-
-/**
- * Processes text nodes in chunks using requestAnimationFrame for smooth rendering.
- */
-function translateNodesChunked(
-  textNodes: Text[],
-  showTooltips: boolean,
-  outputFormat: OutputFormat,
-  chunkSize: number,
-  onProgress?: (processed: number, total: number) => void
-): Promise<void> {
-  return new Promise((resolve) => {
-    const totalNodes = textNodes.length;
-    let index = 0;
-
-    function processChunk(): void {
-      const endIndex = Math.min(index + chunkSize, totalNodes);
-
-      // Process this chunk
-      while (index < endIndex) {
-        translateTextNode(textNodes[index]!, showTooltips, outputFormat);
-        index++;
-
-        // Note: totalNodes > 0 is always true here since we only enter processChunk when totalNodes > 0
-        if (onProgress) {
-          onProgress(index, totalNodes);
-        }
-      }
-
-      // Schedule next chunk or complete
-      if (index < totalNodes) {
-        requestAnimationFrame(processChunk);
-      } else {
-        resolve();
-      }
-    }
-
-    // Start processing
-    if (totalNodes > 0) {
-      requestAnimationFrame(processChunk);
-    } else {
-      resolve();
-    }
-  });
 }
 
 /**
@@ -183,7 +139,14 @@ export function translateDOMSync(
 
   // Chunked mode: use requestAnimationFrame for smooth rendering
   if (chunked) {
-    return translateNodesChunked(textNodes, showTooltips, outputFormat, chunkSize, onProgress);
+    return processChunked(
+      textNodes,
+      (node) => {
+        translateTextNode(node, showTooltips, outputFormat);
+      },
+      chunkSize,
+      onProgress
+    );
   }
 
   // Sync mode: translate all nodes immediately
