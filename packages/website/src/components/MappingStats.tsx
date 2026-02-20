@@ -267,7 +267,7 @@ function MappingStats({ version }: MappingStatsProps) {
       {stats.topChanges.length > 0 && (
         <div className="top-changes">
           <h4>Most common words affected</h4>
-          <table className="mapping-table changes-table">
+          <table className="changes-table">
             <thead>
               <tr>
                 <th>Word</th>

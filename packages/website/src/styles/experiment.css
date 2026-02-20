@@ -379,9 +379,31 @@
   margin-bottom: 0.5rem;
 }
 
+.changes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
 .changes-table th,
 .changes-table td {
+  padding: 0.5rem 0.75rem;
   text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.changes-table th {
+  background: var(--color-surface-hover);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.changes-table tr:last-child td {
+  border-bottom: none;
 }
 
 .top-collisions {
