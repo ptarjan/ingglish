@@ -96,7 +96,7 @@ async function main() {
       prefixErrors[prefix] = (prefixErrors[prefix] ?? 0) + 1;
     }
 
-    if (wrongSamples.length < 200) {
+    if (wrongSamples.length < 1000) {
       wrongSamples.push({ word, got: fallbackStr, want: cmuStr });
     }
   }

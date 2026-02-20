@@ -84,16 +84,16 @@ function translateUnknownCore(word: string, format: OutputFormat): FallbackResul
     return { strategy: 'initialism', translated: translateAsAcronym(word, format) };
   }
 
+  // If G2P has a word-specific rule or guard, skip british/compound/stemming
+  // (which may produce worse results by incorrectly decomposing or normalizing)
+  if (hasWordRule(word)) {
+    return { strategy: 'g2p', translated: translateWithRules(word, format) };
+  }
+
   // Try British spelling normalization (colour -> color)
   const britishResult = translateAsBritish(word, format);
   if (britishResult !== null && britishResult.length > 0) {
     return { strategy: 'british', translated: britishResult };
-  }
-
-  // If G2P has a word-specific rule, skip compound/stemming (which may produce
-  // worse results by incorrectly decomposing the word)
-  if (hasWordRule(word)) {
-    return { strategy: 'g2p', translated: translateWithRules(word, format) };
   }
 
   // Try compound word splitting (github -> git + hub)

@@ -115,8 +115,8 @@ describe('unknown-words', () => {
       expect(wordToArpabet('out')).toContain('AW1'); // ou
       expect(wordToArpabet('boat')).toContain('OW1'); // oa
       expect(wordToArpabet('blue')).toContain('UW1'); // ue
-      // EI → AY (German pronunciation: vein → vain, stein → stain)
-      expect(wordToArpabet('vein')).toContain('AY1'); // ei
+      // EI → EY (CMU: vein = V EY1 N)
+      expect(wordToArpabet('vein')).toContain('EY1'); // ei
     });
 
     it('should handle R-controlled vowels', () => {
@@ -140,8 +140,10 @@ describe('unknown-words', () => {
       expect(wordToArpabet('weigh')).not.toContain('G');
     });
 
-    it('should handle augh as AO', () => {
-      expect(wordToArpabet('caught')).toContain('AO1'); // augh → AO
+    it('should handle augh as AA or AO', () => {
+      // CMU: caught = K AA1 T, taught = T AO1 T (cot-caught merger)
+      const caught = wordToArpabet('caught');
+      expect(caught.some((p) => p === 'AO1' || p === 'AA1')).toBe(true);
       expect(wordToArpabet('taught')).toContain('AO1');
       expect(wordToArpabet('faugh')).toContain('AO1');
       // gh should be silent after augh
@@ -269,8 +271,9 @@ describe('unknown-words', () => {
     it('should handle word-final o as OW (go, no)', () => {
       expect(wordToArpabet('go')).toContain('OW1');
       expect(wordToArpabet('no')).toContain('OW1');
-      // Mid-word o should still be AA
-      expect(wordToArpabet('dog')).toContain('AA1');
+      // Mid-word o: dog = D AO1 G (CMU)
+      const dog = wordToArpabet('dog');
+      expect(dog.some((p) => p === 'AA1' || p === 'AO1')).toBe(true);
     });
 
     it('should handle -ed suffix after voiceless consonants as T', () => {
@@ -358,7 +361,8 @@ describe('unknown-words', () => {
     it('should translate basic CVC words', () => {
       expect(translateWithRules('bat')).toBe('bat');
       expect(translateWithRules('kit')).toBe('kit');
-      expect(translateWithRules('dog')).toBe('dog');
+      // dog: CMU has D AO1 G → "dawg" in ingglish
+      expect(translateWithRules('dog')).toBe('dawg');
       expect(translateWithRules('map')).toBe('map');
     });
 
@@ -380,8 +384,8 @@ describe('unknown-words', () => {
       expect(translateWithRules('coal')).toBe('kohl');
       expect(translateWithRules('blue')).toBe('bluu');
       expect(translateWithRules('clue')).toBe('kluu');
-      // EI → AY (German pronunciation: vein → vain)
-      expect(translateWithRules('vein')).toBe('vain');
+      // EI → EY (CMU: vein = V EY1 N → "vayn")
+      expect(translateWithRules('vein')).toBe('vayn');
     });
 
     it('should translate words with R-controlled vowels', () => {
@@ -435,8 +439,8 @@ describe('unknown-words', () => {
     it('should translate -ed suffix words', () => {
       expect(translateWithRules('walked')).toBe('wawkt');
       expect(translateWithRules('turned')).toBe('ternd');
-      // WA before N/M/D → broad A (AA): wanted → wontid
-      expect(translateWithRules('wanted')).toBe('wontid');
+      // CMU: wanted = W AO1 N T IH0 D → "wawntid"
+      expect(translateWithRules('wanted')).toBe('wawntid');
     });
 
     it('should voice final s after voiced sounds', () => {
@@ -474,7 +478,8 @@ describe('unknown-words', () => {
     it('should translate alk with silent l', () => {
       expect(translateWithRules('walk')).toBe('wawk');
       expect(translateWithRules('talk')).toBe('tawk');
-      expect(translateWithRules('chalk')).toBe('chawk');
+      // CMU: chalk = CH AA1 K → "chok" (silent L, AA vowel)
+      expect(translateWithRules('chalk')).toBe('chok');
     });
 
     it('should use IY for word-final y in multi-syllable words', () => {
@@ -517,9 +522,9 @@ describe('unknown-words', () => {
     it('should use long vowels before consonant+le where NRL matches', () => {
       // table: NRL ABLE rule gives long A
       expect(translateWithRules('table')).toBe('taybal');
-      // noble/title: NRL doesn't have specific -oble/-itle long vowel rules
-      expect(translateWithRules('noble')).toBe('nobal');
-      expect(translateWithRules('title')).toBe('tital');
+      // CMU: noble = N OW1 B AH0 L → "nohbal", title = T AY1 T AH0 L → "taital"
+      expect(translateWithRules('noble')).toBe('nohbal');
+      expect(translateWithRules('title')).toBe('taital');
       // Short vowel (doubled consonant): little, apple, bottle stay short
       expect(translateWithRules('little')).toBe('lital');
       expect(translateWithRules('apple')).toBe('apal');
@@ -547,14 +552,15 @@ describe('unknown-words', () => {
     });
 
     it('should translate words with initial silent p', () => {
-      // Silent L in -alm: psalm → som (S AA M)
-      expect(translateWithRules('psalm')).toBe('som');
+      // CMU: psalm = S AA1 L M → "solm" (L included in CMU)
+      expect(translateWithRules('psalm')).toBe('solm');
       expect(translateWithRules('psychology')).not.toMatch(/^p/);
     });
 
     it('should translate words with final silent consonants', () => {
       expect(translateWithRules('lamb')).toBe('lam');
-      expect(translateWithRules('climb')).toBe('klim');
+      // CMU: climb = K L AY1 M → "klaim"
+      expect(translateWithRules('climb')).toBe('klaim');
       expect(translateWithRules('thumb')).toBe('thum');
       expect(translateWithRules('debt')).toBe('det');
       expect(translateWithRules('hymn')).toBe('him');
@@ -575,7 +581,8 @@ describe('unknown-words', () => {
     });
 
     it('should translate -ture suffix', () => {
-      expect(translateWithRules('nature')).toBe('nacher');
+      // CMU: nature = N EY1 CH ER0 → "naycher"
+      expect(translateWithRules('nature')).toBe('naycher');
       expect(translateWithRules('picture')).toBe('pikcher');
     });
 

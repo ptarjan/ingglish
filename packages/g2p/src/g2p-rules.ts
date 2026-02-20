@@ -31,6 +31,7 @@ import { NRL_WORD_RULES as RULES_LO } from './g2p-word-rules-lo';
 import { NRL_WORD_RULES as RULES_PR } from './g2p-word-rules-pr';
 import { NRL_WORD_RULES as RULES_SZ } from './g2p-word-rules-sz';
 import { FINAL_OVERRIDES } from './g2p-final-overrides';
+import { G2P_GUARD_SET } from './g2p-guard-set';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -1156,23 +1157,47 @@ export function translateWithRules(word: string, format: OutputFormat = 'ingglis
   return arpabetToFormat(arpabet, format);
 }
 
-// Build a set of words that have word-specific NRL rules at module load time
+// Build data structures for word-specific NRL rule lookup at module load time.
+// WORD_RULE_SET stores exact words, WORD_RULE_PREFIXES stores words grouped by
+// first letter for efficient prefix matching (NRL word rules match prefixes).
 const WORD_RULE_SET = new Set<string>();
+const WORD_RULE_PREFIXES: Record<string, string[]> = {};
 const wordRuleExtractRe = /^\s*' \[([A-Z]+)\]\s*=\//;
 for (const rules of [RULES_AB, RULES_CE, RULES_FK, RULES_LO, RULES_PR, RULES_SZ]) {
   for (const letterRules of Object.values(rules)) {
     for (const rule of letterRules) {
       const m = wordRuleExtractRe.exec(rule);
-      if (m) {WORD_RULE_SET.add(m[1]);}
+      if (m?.[1]) {
+        const w = m[1];
+        WORD_RULE_SET.add(w);
+        const first = w[0]!;
+        (WORD_RULE_PREFIXES[first] ??= []).push(w);
+      }
     }
   }
 }
+// Sort each letter's prefixes longest-first so we match the most specific rule
+for (const prefixes of Object.values(WORD_RULE_PREFIXES)) {
+  prefixes.sort((a, b) => b.length - a.length);
+}
 
 /**
- * Returns true if the G2P has a word-specific rule (final override or NRL word rule)
- * for this word, meaning the G2P result is likely more accurate than compound/stemming.
+ * Returns true if the G2P has a word-specific rule (final override, NRL word rule,
+ * or guard set entry) for this word, meaning the G2P result is likely more accurate
+ * than compound/stemming. Checks exact matches, prefix matches (NRL word rules use
+ * prefix matching), and the guard set (words where stemming/compound is known wrong).
  */
 export function hasWordRule(word: string): boolean {
   const upper = word.toUpperCase();
-  return upper in FINAL_OVERRIDES || WORD_RULE_SET.has(upper);
+  if (upper in FINAL_OVERRIDES) {return true;}
+  if (WORD_RULE_SET.has(upper)) {return true;}
+  if (G2P_GUARD_SET.has(upper)) {return true;}
+  // Check if any word rule is a prefix of this word (NRL prefix matching)
+  const prefixes = WORD_RULE_PREFIXES[upper[0]!];
+  if (prefixes !== undefined) {
+    for (const prefix of prefixes) {
+      if (upper.startsWith(prefix)) {return true;}
+    }
+  }
+  return false;
 }
