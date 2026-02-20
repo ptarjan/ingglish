@@ -1155,3 +1155,24 @@ export function translateWithRules(word: string, format: OutputFormat = 'ingglis
   const arpabet = wordToArpabet(word);
   return arpabetToFormat(arpabet, format);
 }
+
+// Build a set of words that have word-specific NRL rules at module load time
+const WORD_RULE_SET = new Set<string>();
+const wordRuleExtractRe = /^\s*' \[([A-Z]+)\]\s*=\//;
+for (const rules of [RULES_AB, RULES_CE, RULES_FK, RULES_LO, RULES_PR, RULES_SZ]) {
+  for (const letterRules of Object.values(rules)) {
+    for (const rule of letterRules) {
+      const m = wordRuleExtractRe.exec(rule);
+      if (m) {WORD_RULE_SET.add(m[1]);}
+    }
+  }
+}
+
+/**
+ * Returns true if the G2P has a word-specific rule (final override or NRL word rule)
+ * for this word, meaning the G2P result is likely more accurate than compound/stemming.
+ */
+export function hasWordRule(word: string): boolean {
+  const upper = word.toUpperCase();
+  return upper in FINAL_OVERRIDES || WORD_RULE_SET.has(upper);
+}

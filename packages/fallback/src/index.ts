@@ -33,7 +33,7 @@ import {
 } from './stemming';
 import type { StemmingResult } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
-import { translateWithRules } from '@ingglish/g2p';
+import { translateWithRules, hasWordRule } from '@ingglish/g2p';
 
 export type FallbackStrategy =
   | 'custom'
@@ -88,6 +88,12 @@ function translateUnknownCore(word: string, format: OutputFormat): FallbackResul
   const britishResult = translateAsBritish(word, format);
   if (britishResult !== null && britishResult.length > 0) {
     return { strategy: 'british', translated: britishResult };
+  }
+
+  // If G2P has a word-specific rule, skip compound/stemming (which may produce
+  // worse results by incorrectly decomposing the word)
+  if (hasWordRule(word)) {
+    return { strategy: 'g2p', translated: translateWithRules(word, format) };
   }
 
   // Try compound word splitting (github -> git + hub)
