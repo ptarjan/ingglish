@@ -18,6 +18,7 @@ import {
   extractPreservedPatterns,
   restorePreservedPatterns,
 } from '@ingglish/normalize';
+import type { CasePattern } from '@ingglish/normalize';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import {
   translateUnknown,
@@ -130,7 +131,7 @@ function tryCamelCase(word: string, format: OutputFormat): TranslateResult | nul
 function tryDictionaryLookup(
   word: string,
   format: OutputFormat,
-  casePattern: string
+  casePattern: CasePattern
 ): TranslateResult | null {
   const wordLower = word.toLowerCase();
   const phonemes = getCustomPronunciation(wordLower) ?? lookupPronunciation(wordLower);
@@ -168,7 +169,7 @@ function tryDictionaryLookup(
 function translateWithFallback(
   word: string,
   format: OutputFormat,
-  casePattern: string
+  casePattern: CasePattern
 ): TranslateResult {
   // Pass through obvious non-words before running G2P:
   // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
@@ -216,7 +217,9 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   // Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
   const initialismSuffix = tryInitialismWithSuffix(word, format, isLatinScript);
-  if (initialismSuffix) {return initialismSuffix;}
+  if (initialismSuffix) {
+    return initialismSuffix;
+  }
 
   // Contractions (don't, I'm, etc.)
   if (word.includes("'")) {
@@ -225,7 +228,9 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   // Bare initialisms (UI, API, HTML)
   const initialism = tryInitialism(word, format, isLatinScript);
-  if (initialism) {return initialism;}
+  if (initialism) {
+    return initialism;
+  }
 
   // All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
   if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
@@ -234,12 +239,16 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   // CamelCase words (iPhone, MacBook, ChatGPT)
   const camel = tryCamelCase(word, format);
-  if (camel) {return camel;}
+  if (camel) {
+    return camel;
+  }
 
   // Dictionary / custom pronunciation lookup (with diacritics fallback)
   const casePattern = detectCasePattern(word);
   const dictResult = tryDictionaryLookup(word, format, casePattern);
-  if (dictResult) {return dictResult;}
+  if (dictResult) {
+    return dictResult;
+  }
 
   // Fallback strategies (compounds, stemming, G2P)
   return translateWithFallback(word, format, casePattern);
