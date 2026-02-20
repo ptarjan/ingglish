@@ -24,28 +24,6 @@
 
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { applyStressPrediction } from './stress';
-import { NRL_WORD_RULES as RULES_AB } from './g2p-word-rules-ab';
-import { NRL_WORD_RULES as RULES_CE } from './g2p-word-rules-ce';
-import { NRL_WORD_RULES as RULES_FK } from './g2p-word-rules-fk';
-import { NRL_WORD_RULES as RULES_LO } from './g2p-word-rules-lo';
-import { NRL_WORD_RULES as RULES_PR } from './g2p-word-rules-pr';
-import { NRL_WORD_RULES as RULES_SZ } from './g2p-word-rules-sz';
-import { FINAL_OVERRIDES as OVERRIDES_AB } from './g2p-final-overrides-ab';
-import { FINAL_OVERRIDES as OVERRIDES_CE } from './g2p-final-overrides-ce';
-import { FINAL_OVERRIDES as OVERRIDES_FK } from './g2p-final-overrides-fk';
-import { FINAL_OVERRIDES as OVERRIDES_LO } from './g2p-final-overrides-lo';
-import { FINAL_OVERRIDES as OVERRIDES_PS } from './g2p-final-overrides-ps';
-import { FINAL_OVERRIDES as OVERRIDES_TZ } from './g2p-final-overrides-tz';
-import { G2P_GUARD_SET } from './g2p-guard-set';
-
-const FINAL_OVERRIDES: Record<string, string[]> = {
-  ...OVERRIDES_AB,
-  ...OVERRIDES_CE,
-  ...OVERRIDES_FK,
-  ...OVERRIDES_LO,
-  ...OVERRIDES_PS,
-  ...OVERRIDES_TZ,
-};
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -54,16 +32,11 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
-    // Custom: common word fixes
-    // Custom: -aste at word end → EY S T (taste, waste, paste, haste)
-    // Must have word-end space to avoid breaking faster, master, disaster
     '[ASTE] =/EY S T/',
-    // Custom: -ase at word end → EY S (base, case, chase — +4)
     '[ASE] =/EY S/',
     '[A] =/AX/',
-    // Custom: AROU → ER AW (around, arouse, arousal — 6 words, freq 37K)
-    ' [AR]O=/AX R/',
     '[AR]#=/EH R/',
+    ' [AR]O=/AX R/',
     ' ^[AS]#=/EY S/',
     '[A]WA=/AX/',
     '[AWL]=/AO L/',
@@ -74,7 +47,6 @@ const NRL_RULES: Record<string, string[]> = {
     ' [AL]#=/AX L/',
     '[AGAIN]=/AX G EH N/',
     '#:[AG]E=/IH JH/',
-    '[A]^+:#=/AE/',
     ' :[A]^+ =/EY/',
     '[A]^%=/EY/',
     '[ARR]=/AE R/',
@@ -82,88 +54,57 @@ const NRL_RULES: Record<string, string[]> = {
     '[AR] =/ER/',
     '[AR]=/AA R/',
     '[AIR]=/EH R/',
-    // Custom: AIGN → EY N (campaign, arraign, champagne — G is silent, 15 words)
     '[AIGN]=/EY N/',
     '[AI]=/EY/',
     '[AY]=/EY/',
-    // Custom: LAUGH has unique pronunciation (laugh, laughing, laughter — AE F)
-    // Space before L ensures we don't match slaughter, manslaughter
     ' L[AUGH]=/AE F/',
-    // Custom: AUGH → AO (daughter, slaughter, taught, naught — GH silent, A→AO)
     '[AUGH]=/AO/',
-    // Custom: AUER → AW ER (German names: bauer, sauer, lauer — 49 fix, 0 break)
     '[AUER]=/AW ER/',
     '[AU]=/AO/',
     '#:[AL] =/AX L/',
     '#:[ALS] =/AX L Z/',
     '[ALK]=/AO K/',
-    // Custom: AL before certain consonants → AE L, not AO L (album, alcohol, alfred, algebra, alpine, valve)
     '[AL]B=/AE L/',
     '[AL]C=/AE L/',
-    // Custom: silent L in half/calf (half, halfway, calf — L not pronounced before F)
     'H[ALF]=/AE F/',
     'C[ALF]=/AE F/',
     '[AL]F=/AE L/',
     '[AL]G=/AE L/',
     '[AL]P=/AE L/',
     '[AL]V=/AE L/',
-    // Custom: silent L in -alm at word end (calm, palm, balm, psalm, napalm — 158/172 wrong)
     '[ALM] =/AA M/',
     '[ALM]S =/AA M/',
     '[AL]^=/AO L/',
     ' :[ABLE]=/EY B AX L/',
     '[ABLE]=/AX B AX L/',
     '[ANG]+=/EY N JH/',
-    // Custom: -ance suffix with schwa (performance, distance)
     '#:[ANCE] =/AX N S/',
-    // Custom: -ator suffix → EY T ER (operator, elevator, alligator — +21)
-    '#:[ATOR]=/EY T ER/',
-    // Custom: -ant/-ants suffix with schwa (important, consultant, elegant — 92% AH in CMU)
     '#:[ANTS] =/AX N T S/',
     '#:[ANT] =/AX N T/',
-    // Custom: AA digraph (aardvark, baal, kraal)
     '[AA]=/AA/',
-    // Custom: AERO- prefix → EH R OW (aerospace, aerobic — +2)
-    // Custom: AE Latin digraph → EH (aegis, aesthetic, aeon — 358 words, 0% accuracy without)
     '[AE]=/EH/',
-    // Custom: word-end -as/-an with schwa (atlas, organ)
     '#:[AS] =/AH Z/',
-    '#:[AN] =/AX N/',
     '[A]=/AE/',
+    '#:[AN] =/AX N/',
   ],
   B: [
-    // Custom: common word fixes
     ' [BE]^#=/B IH/',
     '[BEING]=/B IY IH NX/',
     ' [BUS]#=/B IH Z/',
     '[BUIL]=/B IH L/',
-    // Custom: silent b in bt (debt, doubt, subtle)
     '[BT]=/T/',
-    // Custom: -berg suffix → B ER G (goldberg, steinberg — 320/320 in CMU)
     '#:[BERG] =/B ER G/',
-    // Custom: -burg/-burgh suffix → B ER G (hamburg, pittsburgh — 115/118 in CMU)
     '#:[BURG] =/B ER G/',
-    // Custom: -bury suffix → B EH R IY (canterbury, salisbury — 57/60 in CMU)
     '#:[BURY] =/B EH R IY/',
-    // Custom: collapse doubled BB
     '[BB]=/B/',
-    // Custom: silent B after M at word end (comb, lamb, climb, bomb — 56 silent, 0 pronounced)
     'M[B] =/ /',
     '[B]=/B/',
   ],
   C: [
-    // CHA pattern: AA before R/LK (charm, charge, chalk), AE elsewhere
     ' [CHA]R=/CH AA/',
-    ' [CHA]LK=/CH AA/',
-    // Custom: common word fixes
     ' [CH]^=/K/',
     '^E[CH]=/K/',
-    // Custom: CHR is always Greek → K (synchronize, monochrome, chrome, Christ)
-    '[CHR]=/K R/',
-    // Custom: CHEM is always Greek → K (chemical, alchemy, agrochemical)
     '[CHEM]=/K EH M/',
-    // Custom: word-end -ach after A/E consonant pairs → K for German names
-    // -bach (98K/0CH), -tech (46K/0CH), -eich (18K/0CH), -loch (12K/0CH), -roch (5K/0CH)
     'BA[CH] =/K/',
     'TE[CH] =/K/',
     'EI[CH] =/K/',
@@ -174,169 +115,107 @@ const NRL_RULES: Record<string, string[]> = {
     'NO[CH] =/K/',
     'DO[CH] =/K/',
     'ZE[CH] =/K/',
-    // Custom: mid-word CH → K in Greek/Latin contexts
     'I[CH]T=/K/',
     'I[CH]EL=/K/',
     'I[CH]OL=/K/',
-    'A[CH]ER=/K/',
     'A[CH]EN=/K/',
     'A[CH]TE=/K/',
-    'A[CH]MA=/K/',
-    // Custom: ARCH- prefix with following vowel → K (archangel, architect, archive)
     'R[CH]IV=/K/',
     'R[CH]IT=/K/',
-    // Custom: SCHK → K (blaschke, geschke — German names)
     'S[CH]KE=/K/',
     '[CH]=/CH/',
     ' S[CI]#=/S AY/',
-    // Custom: CIAL → SH AX L (special, social, official — +2)
     '[CIAL]=/SH AX L/',
     '[CI]A=/SH/',
     '[CI]O=/SH/',
     '[CI]EN=/SH/',
     '[C]+=/S/',
     '[CK]=/K/',
-    // Custom: CZ → CH for Polish names (czar, adamczyk, barczak — 179/204 in CMU)
     '[CZ]=/CH/',
-    // Custom: CQU → K W to prevent double K from C + QU (acquire, acquaint)
     '[CQU]=/K W/',
-    // Custom: -ically suffix → K L IY (basically, logically, physically — schwa dropped after I)
     'I[CALLY] =/K L IY/',
-    // Custom: CYCL root → S AY K AH L (cycle, bicycle, encyclopedia — Greek origin)
     '[CYCL]=/S AY K AH L/',
-    // Custom: CON- prefix before consonant (conduct, connect, consider — +135 SL)
     ' [CON]^=/K AH N/',
     '[COM]%=/K AH M/',
-    // Custom: CCH → K without HH (Italian: bacchi, zucchini, pinocchio — 65 words)
     '[CCH]=/K/',
-    // Custom: CC before front vowel → /ks/ (accent, accept, accident)
     '[CC]+=/K S/',
-    // Custom: collapse doubled CC (account, accommodate)
     '[CC]=/K/',
     '[C]=/K/',
   ],
   D: [
-    // Custom: common word fixes
     '#:[DED] =/D IH D/',
-    // Custom: DH at word start → D only (dhabi, dharma, dhillon — Arabic/Hindi origin, H silent)
-    "' [DH]=/D/",
     '.E[D] =/D/',
     '#^:E[D] =/T/',
-    // Custom: DIAG root → D AY AH G (diagnose, diagonal, diagram — Greek origin)
     '[DIAG]=/D AY AH G/',
-    // Custom: DIAL root → D AY AH L (dial, dialect, dialogue — Greek origin)
     '[DIAL]=/D AY AH L/',
     ' [DE]^#=/D IH/',
     '[DU]A=/JH UW/',
-    // Custom: DG before front vowel → JH (badge, bridging, edging, judging)
     '[DG]+=/JH/',
-    // Custom: DJ → JH (adjoin, adjust, adjacent)
     '[DJ]=/JH/',
-    // Custom: doubled DD before -ed at word end → D IH D (added, budded, studded)
     '#:[DDED] =/D IH D/',
-    // Custom: collapse doubled DD
     '[DD]=/D/',
-    // Custom: silent D in German -ardt suffix (barnhardt, bernhardt, borgwardt — 20 words)
     '[D]T =/ /',
     '[D]=/D/',
   ],
   E: [
-    // Custom: common word fixes
-    // Custom: EXH → IH G Z (exhaust, exhibit, exhort — H is silent, X voices to GZ)
-    // Custom: EX before vowel → IH G Z (exact, exam, exist — 73% GZ in CMU)
     ' [EX]#=/IH G Z/',
     '#:[E] =/ /',
-    "' ^:[E] =/ /",
     ' :[E] =/IY/',
     '#[ED] =/D/',
-    // Custom: past tense -ed after T or D needs extra syllable (belted, fated, bonded, grounded)
-    // Without this, #:[E]D silences the E, producing T D instead of T IH D
-    'T[ED] =/IH D/',
     'D[ED] =/IH D/',
     '#:[E]D =/ /',
     '[EV]ER=/EH V/',
-    // Custom: ER before suffix → ER, not IY+R (altered, filtering, wanderer)
     '[ER]%=/ER/',
-    // Custom: -ement must come before [E]^% to avoid E+M+suffix → IY (advancement, replacement)
     '#:[EMENT]=/M AX N T/',
-    // Custom: -ened past tense → schwa+N+D (blackened, brightened, burdened)
     '#:[ENED] =/AX N D/',
-    // Custom: -ening progressive → schwa+N+IH+NG (awakening, frightening, threatening)
     '#:[ENING]=/AX N IH NX/',
-    // Custom: -eness → silent E + N schwa S (acuteness, completeness, remoteness)
     '#:[ENESS] =/N AX S/',
-    // Custom: -eman suffix → silent E (fireman→M AH N, foreman, policeman — 160/166 in CMU)
     '#:[EMAN] =/M AX N/',
-    '[E]^%=/IY/',
-    '[ERI]#=/IY R IY/',
-    '[ERI]=/EH R IH/',
-    // Custom: ERR consumes double-R to prevent phoneme doubling (error, terrace)
     '[ERR]=/EH R/',
     '#:[ER]#=/ER/',
     '[ER]#=/EH R/',
     '[ER]=/ER/',
-    '#:[E]W=/ /',
     '@[EW]=/UW/',
+    '#:[E]W=/ /',
     '[EW]=/Y UW/',
     '[E]O=/IY/',
     '#:&[ES] =/IH Z/',
     '#:[E]S =/ /',
     '#:[ELY] =/L IY/',
-    // Custom: -eful suffix with schwa (careful, hopeful, graceful)
     '#:[EFUL] =/F AX L/',
     '[EFUL]=/F UH L/',
-    // Custom: EER → IH R (beer, deer, steer, engineer — 82/83 wrong without this)
     '[EER]=/IH R/',
     '[EE]=/IY/',
     '[EARN]=/ER N/',
-    // Custom: EAR before specific consonants → ER (earth, early, search, heart)
     '[EAR]TH=/ER/',
     '[EAR]L=/ER/',
     '[EAR]CH=/ER/',
     '[EAR]T=/ER/',
-    ' [EAR]^=/ER/',
-    // Custom: word-end EAR → IH R (hear, near, clear, fear, dear — 46/87 IH R in CMU)
     '[EAR] =/IH R/',
     '[EAR]S =/IH R/',
     '[EAD]=/EH D/',
     '#:[EA] =/IY AX/',
-    // Custom: French -eau/-eaux → OW (chateau, bureau, beauchamp, beautiful — 153 word-end + 91 mid-word)
     '[EAUX]=/OW/',
     '[EAU]=/OW/',
     '[EA]SU=/EH/',
     '[EA]=/IY/',
     '[EIGH]=/EY/',
-    // Custom: EI after C → IY (receive, ceiling, deceive — "i before e except after c")
     'C[EI]=/IY/',
-    // Custom: EI → AY in most contexts (German: stein, wein, klein — 85%+ AY in CMU)
     '[EI]=/AY/',
     '[EY]=/IY/',
-    // Custom: -eur suffix → ER (amateur, chauffeur, entrepreneur — French origin)
     '[EUR] =/ER/',
-    // Custom: EU → UW without Y glide (neutral, deuce, feudal — fix 98, break ~54)
     '[EU]=/UW/',
-    // Custom: -ence suffix with schwa (difference, conference)
     '#:[ENCE] =/AX N S/',
-    // Custom: -ent/-ents suffix with schwa (accident, component, environment — 89% AH in CMU)
     '#:[ENTS] =/AX N T S/',
     '#:[ENT] =/AX N T/',
-    // Custom: -ield → E is part of IE digraph, silent (field, shield, yield)
     'I[ELD]=/L D/',
     'I[ELS] =/L Z/',
     'I[EL] =/L/',
-    // Custom: -ens suffix with schwa (chickens, gardens, kittens)
     '#:[ENS] =/AX N Z/',
-    // Custom: -en suffix with schwa (golden, fallen, chosen, open)
     '#:[EN] =/AX N/',
-    // Custom: -el suffix with schwa (model, chapel, novel, angel)
     '#:[EL] =/AX L/',
-    // Custom: -ess suffix with schwa (actress, princess, goddess — +11 S)
-    '#:[ESS] =/AX S/',
-    // Custom: -est superlative with schwa (highest, lowest, fastest)
     '#:[EST] =/AX S T/',
-    // Custom: EX- prefix before consonant (exact, example, express — +36/+89)
     ' [EX]^=/IH K S/',
-    // Custom: word-end -els/-ets/-ems/-em/-et with schwa (models, tickets, problems)
     '#:[ELS] =/AX L Z/',
     '#:[ETS] =/AH T S/',
     '#:[EMS] =/AX M Z/',
@@ -345,10 +224,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
-    // Custom: common word fixes
-    // Custom: -ford suffix → F ER D (bedford, oxford, stanford — 195 vs 16 with AO R D)
     '#:[FORD] =/F ER D/',
-    // Custom: -fully/-ful suffix with schwa (beautifully, wonderful)
     '#:[FULLY] =/F AX L IY/',
     '#:[FUL] =/F AX L/',
     '[FUL]=/F UH L/',
@@ -356,70 +232,37 @@ const NRL_RULES: Record<string, string[]> = {
     '[F]=/F/',
   ],
   G: [
-    // Custom: common word fixes
     '[GIV]=/G IH V/',
-    // Custom: silent g before n at word start (gnat, gnome, gnu)
-    // Custom: GHOST → G OW S T (ghost, ghostly, ghostbusters)
-    // Custom: GH at word start → G only (ghost, ghetto, ghana — 17 fix, 1 break)
     ' [G]I^=/G/',
-    // Custom: GER → hard G + ER (tiger, lager, berger — 234 fix vs 90 break)
-    '[GER]=/G ER/',
-    // Custom: -geon → JH AH N (surgeon, pigeon, bludgeon — E is silent in -geon)
     '[GEON]=/JH AX N/',
     '[GE]T=/G EH/',
     'SU[GGES]=/G JH EH S/',
-    // Custom: GU before I → G only, U is silent (guide, guilt, guitar — +10)
     '[GU]I=/G/',
     '[GG]=/G/',
     ' B#[G]=/G/',
-    // Custom: GEI at word start → G AY (German: geiger, geist — hard G, 20 fix, 0 break)
-    "' [GEI]=/G AY/",
     '[G]+=/JH/',
     '[GREAT]=/G R EY T/',
     '#[GH]=/ /',
     '[G]=/G/',
   ],
-  H: [
-    // Custom: common word fixes
-    // Custom: HYPER- prefix → HH AY P ER (hyperactive, hyperbole — Greek origin)
-    // Custom: HYDR- prefix → HH AY D R (hydrogen, hydraulic — Greek origin)
-    '[HOW]=/HH AW/',
-    '[H]#=/HH/',
-    '[H]=/ /',
-  ],
+  H: ['[HOW]=/HH AW/', '[H]#=/HH/', '[H]=/ /'],
   I: [
-    // Custom: common word fixes
-    // Custom: ISO- prefix → AY S AH (isolate, isomer, isobar — Greek origin)
-    // Custom: IDEA root → AY D IY (idea, ideal, idealism)
-    // Custom: ID at word start → AY D (identify, identity, idle, idol — 74% AY, +12 net)
-    "' [ID]=/AY D/",
-    // Custom: Italian/Latin word-end patterns (I+consonant+vowel → IY)
     '[INI] =/IY N IY/',
     '[INO] =/IY N OW/',
     '[INA] =/IY N AH/',
-    '[IDA] =/IY D AH/',
     '[ISA] =/IY S AH/',
     '[IVA] =/IY V AH/',
     '[IMA] =/IY M AH/',
     '[ITO] =/IY T OW/',
     '[ITA] =/IY T AH/',
-    // Custom: -ial/-ially/-iate suffixes → IY
     '#:[IALLY]=/IY AX L IY/',
     '#:[IAL]=/IY AX L/',
     '#:[IATE]=/IY EY T/',
-    // Custom: IND at word end → AY N (find, mind, kind, blind, grind)
-    // Mid-word IND is 90% IH, handled by default I→IH.
-    // Custom: INDS at word end → AY N D Z (kinds, minds, finds, blinds, grinds)
     '[INDS] =/AY N D Z/',
     '[IN]D =/AY N/',
-    // Removed by hill-climb: [IER]=/IY ER/ (+26)
     '#:R[IED] =/IY D/',
     '[IED] =/AY D/',
-    // Custom: FRIEN → EH N (friend, boyfriend, friendly — 16 words, freq 47K)
     'FR[IEN]=/EH N/',
-    // Custom: IEN → IY N (drop EH — alien, bien, orient — 46 fix vs 9 break)
-    '[IEN]=/IY N/',
-    // Custom: IE before consonants that are 100% IY in CMU (brief, siege, grieve, piece, field, shield, view)
     '[IE]F=/IY/',
     '[IE]G=/IY/',
     '[IE]V=/IY/',
@@ -428,37 +271,24 @@ const NRL_RULES: Record<string, string[]> = {
     '[IE]P=/IY/',
     '[IE]B=/IY/',
     '[IE]L=/IY/',
-    // Removed by hill-climb: [IE]T=/AY EH/ (+19)
-    // Reordered by hill-climb: [IE]^%=/IY/ before :[I]%=/AY/ (+61)
     '[IE]^%=/IY/',
     ' :[I]%=/AY/',
     '[I]%=/IY/',
     '[IE]=/IY/',
-    // Custom: multi-char targets must come before single-char [I] rules
-    // Custom: Latin suffixes -ian, -ium, -ia, -io (media, stadium, radio)
     '[IAN] =/IY AX N/',
     '[IUM] =/IY AX M/',
     '[IA] =/IY AX/',
     '[IO] =/IY OW/',
-    // Custom: -ify → schwa + F AY (modify, qualify, simplify)
     '[IFY]=/AX F AY/',
-    // Custom: -ity suffix with schwa (city, quality, majority)
     '[ITY] =/AX T IY/',
-    // Custom: -ible suffix with schwa (possible, terrible)
     '[IBLE]=/AX B AX L/',
-    // Custom: -ious suffix (curious, previous, serious)
     '[IOUS]=/IY AX S/',
     '[I]^+:#=/IH/',
-    // Custom: IRR consumes double-R to prevent phoneme doubling (mirror, stirring)
     '[IRR]=/ER/',
     '[IR]#=/AY R/',
     '[IZ]%=/AY Z/',
-    '[IS]%=/AY Z/',
     '[I]D%=/AY/',
-    '+^[I]^+=/IH/',
     '[I]T%=/AY/',
-    // Removed: '#^:[I]^+=/IH/' — over-matched words like alive, alike, airline (net +103)
-    // Custom: -tive/-sive suffix → IH not AY (active, native, creative, massive, passive)
     'T[I]VE=/IH/',
     'S[I]VE=/IH/',
     '[I]^+=/AY/',
@@ -469,122 +299,74 @@ const NRL_RULES: Record<string, string[]> = {
     '[IGN]^=/AY N/',
     '[IGN]%=/AY N/',
     '[IQUE]=/IY K/',
-    // Custom: word-final I → IY (taxi, sushi, bikini)
     '^[I] =/IY/',
-    // Custom: -ism/-isms suffix → IH Z AX M (activism, tourism — 268/268 wrong without schwa)
     '#:[ISMS] =/IH Z AX M Z/',
     '#:[ISM] =/IH Z AX M/',
     '[I]=/IH/',
   ],
-  J: ['[J]=/JH/'],
-  K: [
-    ' [K]N=/ /',
-    // Custom: KH at word start → K (khan, khaki, khmer — Arabic/Persian origin, H silent)
-    '[KK]=/K/',
-    '[K]=/K/',
-  ],
+  J: [],
+  K: [' [K]N=/ /', '[KK]=/K/', '[K]=/K/'],
   L: [
     '[LO]C#=/L OW/',
     'L[L]=/ /',
-    // Custom: -less must come before L% to prevent schwa insertion
-    // Custom: -lessly suffix (carelessly, recklessly — +10)
     '#:[LINE] =/L AY N/',
     '#:[LESSLY] =/L AX S L IY/',
     '#:[LESS] =/L AX S/',
-    // Custom: -ling must come before L% to prevent schwa insertion
     '[LING]=/L IH NX/',
-    // Custom: consonant+L before ER/EY → syllabic L, no schwa (adler, ainsley, butler)
     '#^:[L]ER=/L/',
     '#^:[L]EY=/L/',
-    '#^:[L]%=/AX L/',
     '[LEAD]=/L IY D/',
-    // Custom: LDT at word end → L T (German surnames: boldt, humboldt — 13 fix, 0 break)
+    '#^:[L]%=/AX L/',
     '[LDT] =/L T/',
-    // Custom: collapse doubled LL
     '[LL]=/L/',
     '[L]=/L/',
   ],
   M: [
-    // Custom: common word fixes
-    // Custom: Mc- prefix in names (McAdam, McAllister, McCain) → M-schwa-K
-    // Custom: McK- → single K (McKay, McKain, McKenzie)
-    // Custom: McGr, McGl etc → no K before G (mcgrady, mcgrath — 37 words)
-    // Custom: McQu → M AX K W (mcquade, mcqueen — 17 words)
     '[MOV]=/M UW V/',
-    // Custom: silent b after m at word end (lamb, climb, bomb, dumb)
     '[MBS] =/M Z/',
     '[MB] =/M/',
-    // Custom: silent n after m — extends to suffixed forms (damning, damned, hymns)
     '[MN]ING=/M/',
     '[MN]ED=/M/',
     '[MN]S=/M/',
     '[MN] =/M/',
-    // Custom: -ments plural (moments, departments)
     '#:[MENTS] =/M AX N T S/',
-    // Custom: -ment suffix with schwa (moment, department)
     '#:[MENT] =/M AX N T/',
-    // Custom: -man suffix with schwa (fireman, policeman)
     '#:[MAN] =/M AX N/',
-    // Custom: -men suffix with schwa (firemen, policemen)
     '#:[MEN] =/M AX N/',
-    // Custom: MULTI- prefix → M AH L T IY (multiply, multimedia — +13)
-    // Custom: MINI- prefix → M IH N IY (minimize, minivan — +6)
-    // Custom: MICRO- prefix → M AY K R AH (microscope, microsoft — Greek origin)
-    // Custom: collapse doubled MM
     '[MM]=/M/',
     '[M]=/M/',
   ],
   N: [
-    // Custom: common word fixes
     'E[NG]+=/N JH/',
-    // Custom: -nger/-ngers → NG ER without hard G (307 words like singer, banger vs 31 with hard G like finger)
-    '[NGER]=/NG ER/',
-    // Custom: NG before -ing/-ed suffix → NX without hard G (belonging, belonged, longing)
     '[NG]ING=/NX/',
     '[NG]ED=/NX/',
     '[NG]R=/NX G/',
     '[NG]#=/NX G/',
     '[NGL]%=/NX G AX L/',
     '[NG]=/NX/',
-    // Custom: NKC → single K (bankcard, bankcorp)
     '[NKC]=/NX K/',
     '[NK]=/NX K/',
-    // Custom: -ness suffix with schwa (darkness, kindness)
     '#:[NESS] =/N AX S/',
-    // Custom: NDT at word end → N T (German surnames: arndt, brandt — 26 fix vs 1 break)
     '[NDT] =/N T/',
-    // Custom: collapse doubled NN
     '[NN]=/N/',
     '[N]=/N/',
   ],
   O: [
-    // Custom: common word fixes
-    '[OF] =/AX V/',
     '[OROUGH]=/ER OW/',
-    // Custom: -ory suffix (history, story, category) — must be before #:[OR]
     '#:[ORY] =/ER IY/',
     '#:[OR] =/ER/',
     '#:[ORS] =/ER Z/',
-    // Custom: ORR consumes double-R to prevent phoneme doubling (correct, corridor)
     '[ORR]=/AO R/',
     '[OR]=/AO R/',
-    // Custom: O before WSK → AH (Polish names: kowalski, grabowski — prevent OW digraph)
-    '[O]WSK=/AH/',
-    // Custom: consonant+OWN → AW N (town, down, brown, gown — 80%+ AW)
     'T[OWN]=/AW N/',
     'D[OWN]=/AW N/',
     'R[OWN]=/AW N/',
     'G[OWN]=/AW N/',
-    // Custom: OW → AW after certain consonants (pow, cow, vow, fowl)
-    // Note: H[OW] can't be used because SH ends with H (breaks show, shower)
     'P[OW]=/AW/',
     'C[OW]=/AW/',
     'V[OW]=/AW/',
     'F[OW]L=/AW/',
     '[OW]=/OW/',
-    '[OV]=/AH V/',
-    // Custom: -ioned/-ioning/-ioner suffixes → schwa (mentioned, stationed, conditioned)
-    // Must come before [O]^% which otherwise produces OW for these
     'I[ONED] =/AX N D/',
     'I[ONING]=/AX N IH NX/',
     'I[ONER]=/AX N ER/',
@@ -592,43 +374,29 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]^%=/OW/',
     '[O]^EN=/OW/',
     '[O]^I#=/OW/',
-    // Custom: OLK with silent L (folk, yolk)
     '[OLK]=/OW K/',
-    // Custom: OLT as long O (bolt, colt, jolt)
     '[OL]T=/OW L/',
     '[OL]D=/OW L/',
-    // Custom: OL before consonants → OW L (like bolt/cold patterns)
     '[OL]Z=/OW L/',
-    '[OL]G=/OW L/',
     '[OL]S=/OW L/',
     '[OL]B=/OW L/',
     '[OL]M=/OW L/',
     '[OL]N=/OW L/',
     '[OL]P=/OW L/',
-    '[OL]F=/OW L/',
     '[OUGHT]=/AO T/',
-    // Custom: D before OUGH → OW (dough, doughnut, doughy — 8 fix, 0 break)
     'D[OUGH]=/OW/',
-    // Custom: B before OUGH at word end → AW (bough, clabough — 11 fix, 0 break)
     'B[OUGH] =/AW/',
-    // Custom: tough/rough/enough keep AH F at word end
-    // Custom: cough → K AA F (cough, coughing, coughed)
     'C[OUGH]=/AA F/',
     'T[OUGH] =/AH F/',
     'R[OUGH] =/AH F/',
     'N[OUGH] =/AH F/',
-    // Custom: word-end -ough → AW default (brough, plough, clough — fix 34, break 7→0 with exceptions)
     '[OUGH] =/AW/',
     '[OUGH]=/AH F/',
-    // Custom: -ouse → AW S (unvoiced) — house, mouse, blouse (106 words vs 4 with Z)
     '[OUSE]=/AW S/',
     'H[OU]S#=/AW/',
     '[OUS]=/AX S/',
-    // Custom: word-final -our → ER (honour, colour, favour — American English, +8)
     '#:[OUR] =/ER/',
     '[OUR]=/AO R/',
-    // Custom: would/could/should retain UH D; others get OW L D (boulder, shoulder, mould)
-    // Trailing space ensures we don't match shoulder, boulder, etc.
     'W[OULD] =/UH D/',
     'C[OULD] =/UH D/',
     'SH[OULD] =/UH D/',
@@ -640,110 +408,56 @@ const NRL_RULES: Record<string, string[]> = {
     '[OING]=/OW IH NX/',
     '[OI]=/OY/',
     '[OOR]=/AO R/',
-    // Custom: OOSE → UW S (goose, moose, loose — voiceless S, +11)
     '[OOSE]=/UW S/',
     '[OOK]=/UH K/',
     '[OOD]=/UH D/',
     '[OO]=/UW/',
-    // Changed from [O]E to [OE] to consume both chars (fixes German OE digraph: boehl, goethe, roebuck)
     '[OE]=/OW/',
-    // Custom: word-final OH → OW (oh, stroh, pharaoh — 26 fix vs 3 break)
     '#:[OH] =/OW/',
     '[O] =/OW/',
-    // Custom: OAR → AO R (board, oar, soar, roar — OA before R is always AO)
     '[OAR]=/AO R/',
     '[OA]=/OW/',
-    "[ON ' T]=/OW N T/",
-    // Removed by hill-climb: C[O]N=/AA/ (+30), ^:[O]N=/AH/ (+399)
     '[O]NG=/AO/',
     'I[ON]=/AX N/',
     '#:[ON] =/AX N/',
     '#^[ON]=/AX N/',
-    // Custom: -osis suffix → OW S IH S (diagnosis, osmosis — +1)
     '[OSIS]=/OW S IH S/',
     '[O]ST =/OW/',
-    // Custom: word-final O before S → OW (abalos, adios, aficionados — fix 377, break 1)
     '[O]S =/OW/',
-    // Custom: OFF consumes all 3 chars to prevent double-F (off, offer, office)
     '[OFF]=/AO F/',
-    '[OF]^=/AO F/',
     '[OTHER]=/AH DH ER/',
     '[OSS] =/AO S/',
     '#^:[OM]=/AH M/',
-    // Custom: -ology suffix (biology, technology, psychology)
     '[OLOGY]=/AA L AH JH IY/',
-    // Custom: open-syllable O before consonant+vowel (sofa, robot, bonus, focus, yoga)
     '[O]^A=/OW/',
     '[O]^O=/OW/',
-    '[O]^U=/OW/',
-    // Custom: O before H → OW (ohio, mohawk, cohen, bohemian — 75% OW in CMU)
-    // Custom: open-syllable O patterns (+48 combined)
-    '[O]MI=/OW/',
     '[O]BI=/OW/',
-    '[O]DI=/OW/',
     '[O]TI=/OW/',
     '[O]SI=/OW/',
     '[O]GL=/OW/',
     '[O]FI=/OW/',
     '[O]KI=/OW/',
-    '[O]LI=/OW/',
     '[O]H=/OW/',
-    // Custom: OB- prefix (observe, obtain, object — +33 SL)
-    ' [OB]^=/AH B/',
-    // Custom: word-end -ons/-ol/-ot with schwa (persons, control, carrot)
     '#:[ONS] =/AH N Z/',
     '#:[OL] =/AO L/',
-    '#:[OT] =/AH T/',
     '[O]=/AA/',
+    '#:[OT] =/AH T/',
   ],
   P: [
-    // Custom: common word fixes
     '[PH]=/F/',
     '[PEOP]=/P IY P/',
     '[POW]=/P AW/',
     '[PUT] =/P UH T/',
-    // Custom: silent p before f at word start (Pfizer, Pfeiffer, Pfaff)
-    // Custom: PSYCH → S AY K (psychology, psycho, psychiatric — Greek origin)
-    // Custom: POST- prefix → P OW S T (postal, postage, poster — not "post" word which has [O]ST rule)
     ' [POST]#=/P OW S T/',
-    // Custom: silent p before s at word start (psalm, psychology)
-    // Custom: silent p before t at word start (pterodactyl, ptarmigan, ptolemy)
-    // Custom: silent p before n at word start (pneumonia, pneumatic)
-    // Custom: PARA- prefix → P EH R AH (paradise, parallel — +7)
-    // Custom: PER- prefix before consonant → P ER (perform, perhaps — +8)
-    ' [PER]^=/P ER/',
-    // Custom: collapse doubled PP
     '[PP]=/P/',
     '[P]=/P/',
   ],
-  Q: [
-    '[QUAR]=/K W AO R/',
-    // Custom: QUA before L → K W AA L (qualify, quality, equal — broad A)
-    '[QUA]L=/K W AA/',
-    // Custom: QUE at word end → K (basque, mosque, torque, plaque — no W sound)
-    '[QUE] =/K/',
-    '[QU]=/K W/',
-    '[Q]=/K/',
-  ],
-  R: [
-    // Custom: common word fixes
-    ' [RE]^#=/R IY/',
-    // Custom: ROLL → R OW L (roll, stroll, scroll, enroll, bankroll — 80+ words need OW)
-    '[ROLL]=/R OW L/',
-    // Custom: rh → R (rhyme, rhythm, rhino)
-    '[RH]=/R/',
-    // Custom: RDT at word end → R T (German surnames: bernhardt, reinhardt — 19 fix, 0 break)
-    '[RDT] =/R T/',
-    // Custom: collapse doubled RR
-    '[RR]=/R/',
-    '[R]=/R/',
-  ],
+  Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
+  R: [' [RE]^#=/R IY/', '[ROLL]=/R OW L/', '[RH]=/R/', '[RDT] =/R T/', '[RR]=/R/', '[R]=/R/'],
   S: [
-    // Custom: common word fixes
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
     '#:[SIDE] =/S AY D/',
-    // Custom: SCH before OO → S K (school, schooner — +21)
     '[SCH]OO=/S K/',
     '[SOME]=/S AH M/',
     '#[SUR]#=/ZH ER/',
@@ -751,15 +465,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#[SU]#=/ZH UW/',
     '#[SSU]#=/SH UW/',
     '#[SED] =/Z D/',
-    // Custom: S before IVE always voiceless (abrasive, decisive, massive — 0 exceptions)
     '[S]IVE=/S/',
-    // Custom: -ius ending → voiceless S (agius, aloysius, celsius — Latin origin)
     'IU[S] =/S/',
-    // Custom: -son after vowel has voiceless S (addison, eason, mason — 203 S vs 33 Z)
-    '#[SON] =/S AX N/',
-    // Custom: DIS- prefix keeps S voiceless before vowels (disable, disagree, disappoint — 94% S in CMU)
-    ' DI[S]#=/S/',
-    // Custom: RE- prefix keeps S voiceless (reset, research, resemble — +28)
     ' RE[S]#=/S/',
     '#[S]#=/Z/',
     '[SAID]=/S EH D/',
@@ -768,35 +475,22 @@ const NRL_RULES: Record<string, string[]> = {
     '.[S] =/Z/',
     '#:.E[S] =/Z/',
     '#^:##[S] =/Z/',
-    // Custom: word-final -as → Z (68% Z in CMU: atlas→Z, alias→Z — net +176)
     'A[S] =/Z/',
-    // Custom: word-final -os → Z (65% Z in CMU: abalos→Z, aficionados→Z — net +115)
     'O[S] =/Z/',
     '#^:#[S] =/S/',
     'U[S] =/S/',
     ' :#[S] =/Z/',
-    // Custom: silent W in "answer" (answer, answered, answering — 6 words)
     'AN[SWER]=/S ER/',
-    // Custom: SCH → /ʃ/ (schafer, schmidt, altschul, fleischer — German origin, 90%+ are SH)
     '[SCH]=/SH/',
     '[S]C+=/ /',
-    // Removed by hill-climb: #[SM]=/Z M/ (+40)
-    "#[SN] '=/Z AX N/",
-    // Custom: silent T in -stle (castle, whistle, bristle)
     '[STLE]=/S AX L/',
-    // Custom: silent T in -sten (listen, fasten, glisten)
     '#:[STEN]=/S AX N/',
-    // Custom: -stein surname suffix → S T AY N (goldstein, weinstein — 85/125 AY vs 40/125 IY)
     '#:[STEIN] =/S T AY N/',
-    // Custom: -son suffix with schwa (johnson, wilson, anderson)
     '#:[SON] =/S AX N/',
-    // Collapse doubled SS (message, possible, lesson)
     '[SS]=/S/',
     '[S]=/S/',
   ],
   T: [
-    // Custom: common word fixes
-    // Word-start space required: only match standalone "to", not word-ending -to
     '[THAT] =/DH AE T/',
     '[THER]=/DH ER/',
     '[THEIR]=/DH EH R/',
@@ -808,34 +502,23 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[TED] =/T IH D/',
     'S[TI]#N=/CH/',
     '[TI]O=/SH/',
-    // Custom: TIAL → SH AX L (partial, essential — +4)
     '[TIAL]=/SH AX L/',
     '[TI]A=/SH/',
     '[TIEN]=/SH AX N/',
     '[TUR]#=/CH ER/',
     '[TU]A=/CH UW/',
-    // Custom: TZ → T S for German-origin words (hertz, waltz, schwartz)
     '[TZ]=/T S/',
-    // Custom: TELE- prefix → T EH L AH (telephone, television, telegram — +29)
-    // Custom: TSCH → CH (German: Tschaikowsky, Nitschke — +59)
     '[TSCH]=/CH/',
     '#:[TOWN] =/T AW N/',
     '#:[TIME] =/T AY M/',
-    // Custom: TCH trigraph (match, catch, watch)
     '[TCH]=/CH/',
-    // Custom: doubled TT before -ed at word end → T IH D (batted, committed, abetted)
-    // Must come before [TT] to avoid TT collapsing and losing the IH D allomorph
     '#:[TTED] =/T IH D/',
-    // Custom: collapse doubled TT
     '[TT]=/T/',
     '[T]=/T/',
   ],
   U: [
-    // Custom: common word fixes
     ' [UN]I=/Y UW N/',
-    // Custom: UIT → UW T (fruit, suit, pursuit — silent I in UIT)
     '[UIT]=/UW T/',
-    // Custom: URR consumes double-R to prevent phoneme doubling (current, hurry)
     '[URR]=/ER/',
     '@[UR]#=/UH R/',
     '[UR]#=/Y UH R/',
@@ -847,41 +530,25 @@ const NRL_RULES: Record<string, string[]> = {
     'G[U]%=/ /',
     'G[U]#=/W/',
     '#N[U]=/Y UW/',
-    // Custom: -ulate/-ulating/-ulated/-ulation suffixes (calculate, circulate, accumulate — 84% AH)
     '[ULAT]=/Y AX L EY T/',
-    // Custom: -ulous/-ulus suffix (calculus, stimulus, fabulous — Latin origin)
     '[ULOUS]=/Y AX L AH S/',
     '[ULUS]=/Y AX L AH S/',
-    // Custom: -ular suffix (popular, regular, cellular)
     '[ULAR]=/Y AX L ER/',
     '@[U]=/UW/',
-    // Custom: word-final U → UW without Y glide (tofu, bayou, peru)
     '[U] =/UW/',
     '[U]=/Y UW/',
   ],
-  V: [
-    '[VIEW]=/V Y UW/',
-    // Custom: VIOL root → V AY AH L (violence, violin, violate — Latin origin)
-    '[VIOL]=/V AY AH L/',
-    '[V]=/V/',
-  ],
+  V: ['[VIEW]=/V Y UW/', '[VIOL]=/V AY AH L/', '[V]=/V/'],
   W: [
-    // Custom: common word fixes
     '[WA]S=/W AA/',
     '[WA]T=/W AA/',
-    // Custom: WA before N → W AA (wand, wander, want, swan — broad A after W)
     '[WA]N=/W AA/',
-    // Custom: WA before M → W AA (swamp, wampum)
     '[WA]M=/W AA/',
-    // Custom: WA before D → W AA (squad, waddle)
-    '[WA]D=/W AA/',
     '[WHERE]=/WH EH R/',
-    // Custom: "what" is /wʌt/ not /wɑt/ (what, whatever, somewhat — 8 words, freq 515K)
     '[WHAT]=/WH AH T/',
     '[WHOL]=/HH OW L/',
     '[WHO]=/HH UW/',
     '[WH]=/WH/',
-    // Custom: -ward suffix (forward, backward, awkward)
     '#:[WARDS] =/W ER D Z/',
     '#:[WARD] =/W ER D/',
     '[WAR]=/W AO R/',
@@ -889,28 +556,18 @@ const NRL_RULES: Record<string, string[]> = {
     '[WR]=/R/',
     '[W]=/W/',
   ],
-  X: [
-    // Custom: X at word start → Z (xavier, xylophone, xerox — Greek origin, +12)
-    '[X]=/K S/',
-  ],
+  X: ['[X]=/K S/'],
   Y: [
-    // Word rules (longest first)
-    // Pattern rules
     '#^:[Y] =/IY/',
     '#^:[Y]I=/IY/',
     ' :[Y] =/AY/',
     ' :[Y]#=/AY/',
     ' :[Y]^+:#=/IH/',
     ' :[Y]^#=/AY/',
-    // Custom: word-final Y → IY (happy, baby, city — +10)
     '[Y] =/IY/',
     '[Y]=/IH/',
   ],
-  Z: [
-    // Custom: collapse doubled ZZ
-    '[ZZ]=/Z/',
-    '[Z]=/Z/',
-  ],
+  Z: ['[ZZ]=/Z/', '[Z]=/Z/'],
 };
 
 // ---------------------------------------------------------------------------
@@ -1049,16 +706,7 @@ function compileRule(ruleStr: string): CompiledRule | null {
 
 const COMPILED_RULES: Record<string, CompiledRule[]> = {};
 
-for (const [letter, patternRules] of Object.entries(NRL_RULES)) {
-  const wordRules = [
-    ...(RULES_AB[letter] ?? []),
-    ...(RULES_CE[letter] ?? []),
-    ...(RULES_FK[letter] ?? []),
-    ...(RULES_LO[letter] ?? []),
-    ...(RULES_PR[letter] ?? []),
-    ...(RULES_SZ[letter] ?? []),
-  ];
-  const rules = [...wordRules, ...patternRules];
+for (const [letter, rules] of Object.entries(NRL_RULES)) {
   const compiled: CompiledRule[] = [];
   for (const rule of rules) {
     const c = compileRule(rule);
@@ -1078,21 +726,6 @@ for (const [letter, patternRules] of Object.entries(NRL_RULES)) {
  * returning both the phonemes and a trace of which rules fired.
  */
 export function wordToArpabetTraced(word: string): G2PTrace {
-  // Check final overrides first — these bypass stress prediction entirely
-  const finalOverride = FINAL_OVERRIDES[word.toUpperCase()];
-  if (finalOverride) {
-    return {
-      phonemes: finalOverride,
-      steps: [
-        {
-          letters: word.toUpperCase(),
-          rule: `[${word.toUpperCase()}] (final)`,
-          phonemes: finalOverride,
-        },
-      ],
-    };
-  }
-
   // Pad with spaces for word-boundary matching
   const text = ' ' + word.toUpperCase() + ' ';
   const rawPhonemes: string[] = [];
@@ -1168,57 +801,4 @@ export function wordToArpabet(word: string): string[] {
 export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
   const arpabet = wordToArpabet(word);
   return arpabetToFormat(arpabet, format);
-}
-
-// Build data structures for word-specific NRL rule lookup at module load time.
-// WORD_RULE_SET stores exact words, WORD_RULE_PREFIXES stores words grouped by
-// first letter for efficient prefix matching (NRL word rules match prefixes).
-const WORD_RULE_SET = new Set<string>();
-const WORD_RULE_PREFIXES: Record<string, string[]> = {};
-const wordRuleExtractRe = /^\s*' \[([A-Z]+)\]\s*=\//;
-for (const rules of [RULES_AB, RULES_CE, RULES_FK, RULES_LO, RULES_PR, RULES_SZ]) {
-  for (const letterRules of Object.values(rules)) {
-    for (const rule of letterRules) {
-      const m = wordRuleExtractRe.exec(rule);
-      if (m?.[1]) {
-        const w = m[1];
-        WORD_RULE_SET.add(w);
-        const first = w[0]!;
-        (WORD_RULE_PREFIXES[first] ??= []).push(w);
-      }
-    }
-  }
-}
-// Sort each letter's prefixes longest-first so we match the most specific rule
-for (const prefixes of Object.values(WORD_RULE_PREFIXES)) {
-  prefixes.sort((a, b) => b.length - a.length);
-}
-
-/**
- * Returns true if the G2P has a word-specific rule (final override, NRL word rule,
- * or guard set entry) for this word, meaning the G2P result is likely more accurate
- * than compound/stemming. Checks exact matches, prefix matches (NRL word rules use
- * prefix matching), and the guard set (words where stemming/compound is known wrong).
- */
-export function hasWordRule(word: string): boolean {
-  const upper = word.toUpperCase();
-  if (upper in FINAL_OVERRIDES) {
-    return true;
-  }
-  if (WORD_RULE_SET.has(upper)) {
-    return true;
-  }
-  if (G2P_GUARD_SET.has(upper)) {
-    return true;
-  }
-  // Check if any word rule is a prefix of this word (NRL prefix matching)
-  const prefixes = WORD_RULE_PREFIXES[upper[0]!];
-  if (prefixes !== undefined) {
-    for (const prefix of prefixes) {
-      if (upper.startsWith(prefix)) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
