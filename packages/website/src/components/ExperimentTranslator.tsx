@@ -78,7 +78,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
         placeholder="Type or paste English text here..."
         className="text-input experiment-input"
         spellCheck={false}
-        rows={4}
+        rows={3}
       />
 
       {hasContent && (
