@@ -118,45 +118,6 @@ function getTabFromPath(): Tab {
   return 'tutorial';
 }
 
-/** Redirect old hash-based URLs to path-based equivalents (one-time, backward compat). */
-function redirectHashUrl(): void {
-  const hash = window.location.hash.slice(1);
-  if (!hash) {
-    return;
-  }
-
-  // #docs/architecture/section → /docs/architecture#section
-  if (hash.startsWith('docs/')) {
-    const rest = hash.slice(5);
-    const slashIndex = rest.indexOf('/');
-    if (slashIndex !== -1) {
-      const docId = rest.slice(0, slashIndex);
-      const section = rest.slice(slashIndex + 1);
-      window.history.replaceState(null, '', `/docs/${docId}#${section}`);
-    } else {
-      window.history.replaceState(null, '', `/docs/${rest}`);
-    }
-    return;
-  }
-
-  // #text, #guide, etc. → /text, /guide
-  const validTabs = [
-    'tutorial',
-    'text',
-    'url',
-    'guide',
-    'extension',
-    'poems',
-    'docs',
-    'experiment',
-    'explore',
-  ];
-  if (validTabs.includes(hash)) {
-    const target = hash === 'tutorial' ? '/' : `/${hash}`;
-    window.history.replaceState(null, '', target + window.location.search);
-  }
-}
-
 function getInitialText(): string {
   const params = new URLSearchParams(window.location.search);
   return params.get('text') ?? '';
@@ -170,10 +131,7 @@ function getInitialUrl(): string {
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>(() => {
-    redirectHashUrl();
-    return getTabFromPath();
-  });
+  const [activeTab, setActiveTab] = useState<Tab>(getTabFromPath);
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
   const { cycleTheme, getThemeIcon } = useTheme();

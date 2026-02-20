@@ -295,11 +295,4 @@ test.describe('Tab Navigation', () => {
     await page.click('.subtitle-link');
     await expect(page.locator('.spelling-guide')).toBeVisible();
   });
-
-  test('old hash URL redirects to path URL', async () => {
-    await page.goto('/#guide');
-    await waitForAppLoad(page);
-    await expect(page.locator('.spelling-guide')).toBeVisible();
-    expect(new URL(page.url()).pathname).toBe('/guide');
-  });
 });
