@@ -1,0 +1,321 @@
+/**
+ * Word Explorer page styles.
+ */
+
+.word-explorer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.explorer-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.explorer-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1.1rem;
+  border: 2px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.explorer-input:focus {
+  border-color: var(--color-primary);
+}
+
+/* Empty state */
+.explorer-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.suggestion-chip {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.suggestion-chip:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary);
+}
+
+/* Word card */
+.word-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.word-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.word-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.word-english {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.word-arrow {
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+}
+
+.word-translated {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.word-ipa {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+}
+
+/* Metadata badges */
+.word-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-dict {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--color-success);
+}
+
+.badge-fallback {
+  background: rgba(234, 179, 8, 0.15);
+  color: #b45309;
+}
+
+[data-theme='dark'] .badge-fallback {
+  color: #fbbf24;
+}
+
+.badge-freq {
+  background: var(--color-surface-hover);
+  color: var(--color-text-muted);
+}
+
+.badge-homo {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--color-primary);
+}
+
+/* Sections within a card */
+.explorer-section {
+  margin-top: 1.25rem;
+}
+
+.explorer-section h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.section-note {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* Phoneme chain table */
+.chain-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.chain-table th {
+  text-align: left;
+  padding: 0.375rem 0.75rem;
+  border-bottom: 2px solid var(--color-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.chain-table td {
+  padding: 0.375rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chain-table .mono {
+  font-family: var(--font-mono);
+}
+
+.chain-table .highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.chain-table .type-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.vowel-row {
+  background: rgba(79, 70, 229, 0.04);
+}
+
+[data-theme='dark'] .vowel-row {
+  background: rgba(129, 140, 248, 0.06);
+}
+
+/* Format comparison */
+.format-comparison {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.format-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.format-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.format-value {
+  font-size: 1.1rem;
+}
+
+.format-value.mono {
+  font-family: var(--font-mono);
+}
+
+/* Homophone list */
+.homophone-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.homophone-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.homophone-chip:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary);
+}
+
+.chip-english {
+  font-weight: 600;
+}
+
+.chip-arrow {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.chip-translated {
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+.chip-freq {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  margin-left: 0.125rem;
+}
+
+.more-count {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  padding: 0.3rem 0.5rem;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .word-card-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .word-english,
+  .word-translated {
+    font-size: 1.25rem;
+  }
+
+  .explorer-input-row {
+    flex-direction: column;
+  }
+
+  .format-comparison {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

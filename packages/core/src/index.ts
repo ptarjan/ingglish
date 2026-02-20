@@ -51,6 +51,6 @@ export async function reverseTranslate(
 // Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateSync, translateSyncWithMapping } from './translate';
+export { translateWord, translateSync, translateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
 export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';

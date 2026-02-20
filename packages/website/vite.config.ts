@@ -66,6 +66,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       'Create your own phonetic spelling system. Customize how each sound is written, test with sample text, and compare statistics against standard Ingglish.',
   },
+  explore: {
+    title: 'Ingglish Word Explorer',
+    description:
+      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
+  },
   extension: {
     title: 'Ingglish Bookmarklet & Extension',
     description:
@@ -131,6 +136,7 @@ function copyRoutesToDist(): Plugin {
     'guide',
     'extension',
     'poems',
+    'explore',
     'experiment',
     'docs',
     ...docIds.map((id) => `docs/${id}`),

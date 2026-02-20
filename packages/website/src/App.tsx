@@ -28,8 +28,18 @@ const Extension = lazyWithReload(() => import('./components/Extension'));
 const Docs = lazyWithReload(() => import('./components/Docs'));
 const Poems = lazyWithReload(() => import('./components/Poems'));
 const Experiment = lazyWithReload(() => import('./components/Experiment'));
+const WordExplorer = lazyWithReload(() => import('./components/WordExplorer'));
 
-type Tab = 'tutorial' | 'text' | 'url' | 'guide' | 'extension' | 'poems' | 'docs' | 'experiment';
+type Tab =
+  | 'tutorial'
+  | 'text'
+  | 'url'
+  | 'guide'
+  | 'extension'
+  | 'poems'
+  | 'docs'
+  | 'experiment'
+  | 'explore';
 const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
   tutorial: {
     title: 'Ingglish — What if English Spelling Made Sense?',
@@ -79,6 +89,12 @@ const ROUTE_META: Record<Tab, { title: string; description: string; path: string
       'Create custom phoneme-to-spelling mappings and test them with translated text. See statistics and share your mapping.',
     path: '/experiment',
   },
+  explore: {
+    title: 'Word Explorer | Ingglish',
+    description:
+      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
+    path: '/explore',
+  },
 };
 
 function getTabFromPath(): Tab {
@@ -94,7 +110,8 @@ function getTabFromPath(): Tab {
     segment === 'guide' ||
     segment === 'extension' ||
     segment === 'poems' ||
-    segment === 'experiment'
+    segment === 'experiment' ||
+    segment === 'explore'
   ) {
     return segment;
   }
@@ -132,6 +149,7 @@ function redirectHashUrl(): void {
     'poems',
     'docs',
     'experiment',
+    'explore',
   ];
   if (validTabs.includes(hash)) {
     const target = hash === 'tutorial' ? '/' : `/${hash}`;
@@ -318,6 +336,7 @@ function App() {
               ['/guide', 'guide', 'Spelling Guide'],
               ['/poems', 'poems', 'Poems'],
               ['/docs', 'docs', 'Docs'],
+              ['/explore', 'explore', 'Word Explorer'],
               ['/experiment', 'experiment', 'Experiment'],
             ] as const
           ).map(([href, tab, label]) => (
@@ -375,6 +394,11 @@ function App() {
               {activeTab === 'guide' && <SpellingGuide />}
               {activeTab === 'poems' && <Poems />}
               {activeTab === 'extension' && <Extension />}
+              {activeTab === 'explore' && (
+                <ErrorBoundary>
+                  <WordExplorer />
+                </ErrorBoundary>
+              )}
               {activeTab === 'experiment' && (
                 <ErrorBoundary>
                   <Experiment />

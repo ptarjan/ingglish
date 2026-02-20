@@ -1,0 +1,276 @@
+import { useState, useCallback, useMemo } from 'react';
+import {
+  lookupPronunciation,
+  lookupPhonemeKey,
+  sortByFrequency,
+  getWordFrequency,
+  hasCustomPronunciation,
+} from '@ingglish/dictionary';
+import { arpabetToFormat } from '@ingglish/phonemes';
+import { arpabetToIPARaw, arpabetPhonemeToIPA } from '@ingglish/ipa';
+import { translateWord } from 'ingglish';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { stripStress, isVowel } from '@ingglish/phonemes';
+import { useFormat } from '../contexts/FormatContext';
+import { getFormatLabel } from '@ingglish/phonemes';
+
+interface WordResult {
+  word: string;
+  phonemes: string[] | null;
+  ipa: string;
+  ingglish: string;
+  formatted: string;
+  matched: boolean;
+  isCustom: boolean;
+  homophones: string[];
+  frequency: number | undefined;
+}
+
+function analyzeWord(word: string, format: OutputFormat): WordResult {
+  const lower = word.toLowerCase().trim();
+  const phonemes = lookupPronunciation(lower);
+  const isCustom = hasCustomPronunciation(lower);
+  const formatted = translateWord(lower, format);
+  const ingglish = translateWord(lower, 'ingglish');
+
+  let ipa = '';
+  let homophones: string[] = [];
+
+  if (phonemes !== null) {
+    ipa = arpabetToIPARaw(phonemes);
+    // Find homophones via reverse dictionary
+    const key = phonemes.map(stripStress).join(' ');
+    const reverseMatches = lookupPhonemeKey(key);
+    if (reverseMatches !== undefined) {
+      homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
+    }
+  } else {
+    // Word not in dictionary — still translate it
+    ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
+  }
+
+  return {
+    word: lower,
+    phonemes,
+    ipa,
+    ingglish,
+    formatted,
+    matched: phonemes !== null,
+    isCustom,
+    homophones,
+    frequency: getWordFrequency(lower),
+  };
+}
+
+function formatFrequency(freq: number | undefined): string {
+  if (freq === undefined) {
+    return 'rare';
+  }
+  if (freq >= 1000) {
+    return `${(freq / 1000).toFixed(1)}k`;
+  }
+  return String(freq);
+}
+
+function PhonemeChain({ phonemes, format }: { phonemes: string[]; format: OutputFormat }) {
+  return (
+    <div className="phoneme-chain">
+      <table className="chain-table">
+        <thead>
+          <tr>
+            <th>ARPAbet</th>
+            <th>IPA</th>
+            <th>{getFormatLabel(format)}</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {phonemes.map((p, i) => (
+            <tr key={i} className={isVowel(p) ? 'vowel-row' : ''}>
+              <td className="mono">{p}</td>
+              <td className="mono">{arpabetPhonemeToIPA(p).replace(/\u2060/g, '')}</td>
+              <td className="mono highlight">{arpabetToFormat([p], format)}</td>
+              <td className="type-label">{isVowel(p) ? 'vowel' : 'consonant'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function HomophoneList({
+  homophones,
+  format,
+  onWordClick,
+}: {
+  homophones: string[];
+  format: OutputFormat;
+  onWordClick: (word: string) => void;
+}) {
+  if (homophones.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="explorer-section">
+      <h4>Homophones ({homophones.length})</h4>
+      <p className="section-note">Other words with the same pronunciation:</p>
+      <div className="homophone-list">
+        {homophones.slice(0, 20).map((w) => (
+          <button
+            key={w}
+            className="homophone-chip"
+            onClick={() => {
+              onWordClick(w);
+            }}
+          >
+            <span className="chip-english">{w}</span>
+            <span className="chip-arrow">&rarr;</span>
+            <span className="chip-translated">{translateWord(w, format)}</span>
+            <span className="chip-freq">{formatFrequency(getWordFrequency(w))}</span>
+          </button>
+        ))}
+        {homophones.length > 20 && (
+          <span className="more-count">+{homophones.length - 20} more</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function getInitialWord(): string {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('word') ?? '';
+}
+
+export default function WordExplorer() {
+  const { format, toggleFormat } = useFormat();
+  const [input, setInput] = useState(getInitialWord);
+  const formatLabel = getFormatLabel(format);
+
+  const results = useMemo(() => {
+    const trimmed = input.trim();
+    if (trimmed.length === 0) {
+      return [];
+    }
+    // Split on spaces to support multi-word lookups
+    return trimmed.split(/\s+/).map((w) => analyzeWord(w, format));
+  }, [input, format]);
+
+  const handleWordClick = useCallback((word: string) => {
+    setInput(word);
+  }, []);
+
+  return (
+    <div className="word-explorer">
+      <div className="guide-intro">
+        <h2>Word Explorer</h2>
+        <p>
+          Look up any English word to see its full translation pipeline: spelling &rarr; phonemes
+          &rarr; IPA &rarr; {formatLabel}. See homophones, frequency data, and how each phoneme
+          maps.
+        </p>
+      </div>
+
+      <div className="explorer-input-row">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
+          placeholder="Type a word (e.g., knight, through, read)"
+          className="explorer-input"
+          spellCheck={false}
+        />
+        <button type="button" className="btn-secondary" onClick={toggleFormat}>
+          {formatLabel} &#x21C5;
+        </button>
+      </div>
+
+      {results.length === 0 && input.trim().length === 0 && (
+        <div className="explorer-empty">
+          <p>Try some interesting words:</p>
+          <div className="suggestion-chips">
+            {['knight', 'through', 'queue', 'colonel', 'schedule', 'psychology'].map((w) => (
+              <button
+                key={w}
+                className="suggestion-chip"
+                onClick={() => {
+                  setInput(w);
+                }}
+              >
+                {w}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {results.map((result) => (
+        <div key={result.word} className="word-card">
+          <div className="word-card-header">
+            <div className="word-main">
+              <span className="word-english">{result.word}</span>
+              <span className="word-arrow">&rarr;</span>
+              <span className="word-translated">{result.formatted}</span>
+            </div>
+            <div className="word-ipa">/{result.ipa}/</div>
+          </div>
+
+          <div className="word-meta">
+            <span className={`badge ${result.matched ? 'badge-dict' : 'badge-fallback'}`}>
+              {result.isCustom
+                ? 'custom override'
+                : result.matched
+                  ? 'dictionary'
+                  : 'fallback (G2P)'}
+            </span>
+            {result.frequency !== undefined && (
+              <span className="badge badge-freq">freq: {formatFrequency(result.frequency)}</span>
+            )}
+            {result.homophones.length > 0 && (
+              <span className="badge badge-homo">
+                {result.homophones.length} homophone{result.homophones.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+
+          {result.phonemes !== null && (
+            <div className="explorer-section">
+              <h4>Phoneme-by-Phoneme Mapping</h4>
+              <PhonemeChain phonemes={result.phonemes} format={format} />
+            </div>
+          )}
+
+          {format !== 'ingglish' && result.phonemes !== null && (
+            <div className="explorer-section">
+              <h4>All Formats</h4>
+              <div className="format-comparison">
+                <div className="format-item">
+                  <span className="format-label">Ingglish</span>
+                  <span className="format-value mono">{result.ingglish}</span>
+                </div>
+                <div className="format-item">
+                  <span className="format-label">IPA</span>
+                  <span className="format-value mono">/{result.ipa}/</span>
+                </div>
+                <div className="format-item">
+                  <span className="format-label">{formatLabel}</span>
+                  <span className="format-value mono">{result.formatted}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <HomophoneList
+            homophones={result.homophones}
+            format={format}
+            onWordClick={handleWordClick}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
