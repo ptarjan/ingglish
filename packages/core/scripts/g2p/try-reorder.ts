@@ -8,7 +8,7 @@
  * Usage: npx tsx --conditions=source packages/core/scripts/g2p/try-reorder.ts [LETTER]
  *   LETTER = optional single letter to test (default: all letters)
  *
- * Output is sorted by biggest positive delta first (best reorders on top).
+ * Output is sorted by biggest positive freq delta first (best reorders on top).
  *
  * TODO: Also test moving rules to other positions (not just adjacent swaps).
  * TODO: Test promoting rules from later letter sections (cross-letter reorder).
@@ -16,12 +16,11 @@
 import {
   parseNRLRules,
   compileRules,
+  patchCompiledRules,
   evaluateWordTraced,
   traceAllWords,
   loadTestData,
-  getWordFrequency,
   stripStress,
-  type CompiledRuleSet,
 } from './eval-g2p';
 
 async function main() {
@@ -39,14 +38,16 @@ async function main() {
   const baselineCompiled = compileRules(rules);
 
   console.log('Tracing all words against baseline...');
-  const { ruleWords, baselineCorrect, baselineCorrectCount } = traceAllWords(
+  const { ruleWords, baselineCorrect, baselineCorrectCount, baselineFreqCorrect } = traceAllWords(
     baselineCompiled,
     testData
   );
 
+  const freqTotal = Object.values(testData.freqs).reduce((s, f) => s + f, 0);
   console.log(
     `Baseline: ${baselineCorrectCount}/${testData.words.length} = ` +
-      `${((baselineCorrectCount / testData.words.length) * 100).toFixed(2)}%\n`
+      `${((baselineCorrectCount / testData.words.length) * 100).toFixed(2)}% words, ` +
+      `${((baselineFreqCorrect / freqTotal) * 100).toFixed(2)}% freq\n`
   );
 
   interface ReorderResult {
@@ -70,24 +71,20 @@ async function main() {
 
     console.log(`Testing ${letter} (${letterRules.length} rules)...`);
 
-    // For each adjacent pair (i, i+1), try swapping
     for (let i = 0; i < letterRules.length - 1; i++) {
       const ruleA = letterRules[i]!;
       const ruleB = letterRules[i + 1]!;
 
-      // Get affected words: union of words using either rule
       const wordsA = new Set(ruleWords[ruleA] ?? []);
       const wordsB = new Set(ruleWords[ruleB] ?? []);
       const affectedSet = new Set([...wordsA, ...wordsB]);
 
       if (affectedSet.size === 0) continue;
 
-      // Build modified rule set with adjacent swap
       const swapped = [...letterRules];
       swapped[i] = ruleB;
       swapped[i + 1] = ruleA;
-      const modifiedRules = { ...rules, [letter]: swapped };
-      const modifiedCompiled = compileRules(modifiedRules);
+      const modifiedCompiled = patchCompiledRules(baselineCompiled, letter, swapped);
 
       let gained = 0;
       let lost = 0;
@@ -98,9 +95,8 @@ async function main() {
         const wasCorrect = baselineCorrect.has(word);
         const newTrace = evaluateWordTraced(modifiedCompiled, word);
         const newG2P = newTrace.phonemes.map(stripStress).join(' ');
-        const cmu = testData.dict[word]!.map(stripStress).join(' ');
-        const nowCorrect = newG2P === cmu;
-        const freq = getWordFrequency(word) ?? 0;
+        const nowCorrect = newG2P === testData.cmuStressless[word];
+        const freq = testData.freqs[word]!;
 
         if (!wasCorrect && nowCorrect) {
           gained++;
@@ -113,7 +109,8 @@ async function main() {
       }
 
       const delta = gained - lost;
-      if (delta !== 0 || freqGained - freqLost !== 0) {
+      const freqDelta = freqGained - freqLost;
+      if (delta !== 0 || freqDelta !== 0) {
         results.push({
           letter,
           fromIdx: i + 1,
@@ -123,40 +120,42 @@ async function main() {
           delta,
           gained,
           lost,
-          freqDelta: freqGained - freqLost,
+          freqDelta,
           affected: affectedSet.size,
         });
       }
     }
   }
 
-  // Sort by delta descending
-  results.sort((a, b) => b.delta - a.delta || b.freqDelta - a.freqDelta);
+  // Sort by freq delta descending (primary), then word delta (secondary)
+  results.sort((a, b) => b.freqDelta - a.freqDelta || b.delta - a.delta);
 
-  console.log('\n=== Adjacent Swap Results (sorted by word delta) ===\n');
-  console.log('delta  | +gained  -lost  | freq delta | affected | swap');
-  console.log('-'.repeat(100));
+  console.log('\n=== Adjacent Swap Results (sorted by freq delta) ===\n');
+  console.log('freq delta | delta  | +gained  -lost  | affected | swap');
+  console.log('-'.repeat(110));
 
   for (const r of results) {
-    const deltaStr = (r.delta >= 0 ? '+' : '') + r.delta.toString();
     const freqStr = (r.freqDelta >= 0 ? '+' : '') + r.freqDelta.toString();
+    const deltaStr = (r.delta >= 0 ? '+' : '') + r.delta.toString();
     console.log(
-      `${deltaStr.padStart(6)} | ` +
+      `${freqStr.padStart(10)} | ` +
+        `${deltaStr.padStart(6)} | ` +
         `+${r.gained.toString().padStart(5)} -${r.lost.toString().padStart(5)} | ` +
-        `${freqStr.padStart(10)} | ` +
         `${r.affected.toString().padStart(8)} | ` +
         `${r.letter}[${r.fromIdx}→${r.toIdx}] move "${r.ruleFrom}" before "${r.ruleTo}"`
     );
   }
 
-  const positive = results.filter((r) => r.delta > 0);
-  const negative = results.filter((r) => r.delta < 0);
-  console.log(`\nSummary: ${positive.length} beneficial, ${negative.length} harmful swaps`);
+  const freqPositive = results.filter((r) => r.freqDelta > 0);
+  const freqNegative = results.filter((r) => r.freqDelta < 0);
+  console.log(
+    `\nSummary: ${freqPositive.length} freq-positive, ${freqNegative.length} freq-negative swaps`
+  );
   console.log(`(${results.length} swaps had non-zero effect)`);
 
-  if (positive.length > 0) {
+  if (freqPositive.length > 0) {
     console.log(
-      `\nBest swap: ${positive[0]!.letter}[${positive[0]!.fromIdx}→${positive[0]!.toIdx}] → +${positive[0]!.delta} words`
+      `\nBest swap: ${freqPositive[0]!.letter}[${freqPositive[0]!.fromIdx}→${freqPositive[0]!.toIdx}] → freq +${freqPositive[0]!.freqDelta}, +${freqPositive[0]!.delta} words`
     );
   }
 }

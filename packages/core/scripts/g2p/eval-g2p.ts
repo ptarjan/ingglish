@@ -190,13 +190,34 @@ export type CompiledRuleSet = Record<string, CompiledRule[]>;
 export function compileRules(rules: Record<string, string[]>): CompiledRuleSet {
   const compiled: CompiledRuleSet = {};
   for (const [letter, ruleStrs] of Object.entries(rules)) {
-    compiled[letter] = [];
-    for (const ruleStr of ruleStrs) {
-      const c = compileRule(ruleStr);
-      if (c !== null) compiled[letter]!.push(c);
-    }
+    compiled[letter] = compileLetterRules(ruleStrs);
   }
   return compiled;
+}
+
+/**
+ * Compile rules for a single letter section. Use with patchCompiledRules
+ * to avoid recompiling all 26 letters when only one changes.
+ */
+export function compileLetterRules(ruleStrs: string[]): CompiledRule[] {
+  const compiled: CompiledRule[] = [];
+  for (const ruleStr of ruleStrs) {
+    const c = compileRule(ruleStr);
+    if (c !== null) compiled.push(c);
+  }
+  return compiled;
+}
+
+/**
+ * Create a new compiled rule set with one letter section replaced.
+ * Much faster than compileRules() when only testing single-letter changes.
+ */
+export function patchCompiledRules(
+  base: CompiledRuleSet,
+  letter: string,
+  newRules: string[]
+): CompiledRuleSet {
+  return { ...base, [letter]: compileLetterRules(newRules) };
 }
 
 // ---------------------------------------------------------------------------
@@ -271,22 +292,31 @@ export function evaluateWord(compiledRules: CompiledRuleSet, word: string): stri
 export interface TestData {
   dict: Record<string, string[]>;
   words: string[];
+  /** Precomputed stressless CMU phonemes for each word (avoids recomputing per evaluation). */
+  cmuStressless: Record<string, string>;
+  /** Precomputed frequencies for each word. */
+  freqs: Record<string, number>;
 }
 
 /**
  * Load dictionary and frequencies. Returns filtered word list (alpha-only, len >= 3).
+ * Precomputes stressless CMU strings and frequencies for fast repeated evaluation.
  */
 export async function loadTestData(): Promise<TestData> {
   const dict = await loadDictionary();
   await loadFrequencies();
 
   const words: string[] = [];
+  const cmuStressless: Record<string, string> = {};
+  const freqs: Record<string, number> = {};
   for (const word of Object.keys(dict)) {
     if (/[^a-z]/i.test(word) || word.length < 3) continue;
     words.push(word);
+    cmuStressless[word] = dict[word]!.map(stripStress).join(' ');
+    freqs[word] = getWordFrequency(word) ?? 0;
   }
 
-  return { dict, words };
+  return { dict, words, cmuStressless, freqs };
 }
 
 export interface AccuracyResult {
@@ -312,12 +342,11 @@ export function measureAccuracy(
 
   for (const word of testData.words) {
     total++;
-    const freq = getWordFrequency(word) ?? 0;
+    const freq = testData.freqs[word]!;
     freqTotal += freq;
 
     const g2p = evaluateWord(compiledRules, word);
-    const cmu = testData.dict[word]!.map(stripStress).join(' ');
-    if (g2p === cmu) {
+    if (g2p === testData.cmuStressless[word]) {
       correct++;
       freqCorrect += freq;
     }
@@ -354,9 +383,8 @@ export function traceAllWords(
   for (const word of testData.words) {
     const trace = evaluateWordTraced(compiledRules, word);
     const g2p = trace.phonemes.map(stripStress).join(' ');
-    const cmu = testData.dict[word]!.map(stripStress).join(' ');
-    const freq = getWordFrequency(word) ?? 0;
-    const isCorrect = g2p === cmu;
+    const freq = testData.freqs[word]!;
+    const isCorrect = g2p === testData.cmuStressless[word];
 
     if (isCorrect) {
       baselineCorrect.add(word);

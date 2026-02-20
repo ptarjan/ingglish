@@ -20,10 +20,10 @@
 import {
   parseNRLRules,
   compileRules,
+  patchCompiledRules,
   evaluateWordTraced,
   traceAllWords,
   loadTestData,
-  getWordFrequency,
   stripStress,
   type CompiledRuleSet,
   type TestData,
@@ -37,6 +37,15 @@ interface Change {
   freqDelta: number;
   gained: number;
   lost: number;
+}
+
+function isBetter(candidate: Change, current: Change | null): boolean {
+  if (current === null) return true;
+  // Primary: frequency-weighted delta
+  if (candidate.freqDelta > current.freqDelta) return true;
+  if (candidate.freqDelta < current.freqDelta) return false;
+  // Secondary: word count delta
+  return candidate.delta > current.delta;
 }
 
 function findBestRemoval(
@@ -54,9 +63,8 @@ function findBestRemoval(
       const affected = ruleWords[ruleStr];
       if (!affected || affected.length === 0) continue;
 
-      const modifiedRules = { ...rules };
-      modifiedRules[letter] = [...letterRules.slice(0, i), ...letterRules.slice(i + 1)];
-      const modifiedCompiled = compileRules(modifiedRules);
+      const newLetterRules = [...letterRules.slice(0, i), ...letterRules.slice(i + 1)];
+      const modifiedCompiled = patchCompiledRules(baselineCompiled, letter, newLetterRules);
 
       let gained = 0;
       let lost = 0;
@@ -67,9 +75,8 @@ function findBestRemoval(
         const wasCorrect = baselineCorrect.has(word);
         const newTrace = evaluateWordTraced(modifiedCompiled, word);
         const newG2P = newTrace.phonemes.map(stripStress).join(' ');
-        const cmu = testData.dict[word]!.map(stripStress).join(' ');
-        const nowCorrect = newG2P === cmu;
-        const freq = getWordFrequency(word) ?? 0;
+        const nowCorrect = newG2P === testData.cmuStressless[word];
+        const freq = testData.freqs[word]!;
 
         if (!wasCorrect && nowCorrect) {
           gained++;
@@ -81,22 +88,20 @@ function findBestRemoval(
         }
       }
 
+      const freqDelta = freqGained - freqLost;
       const delta = gained - lost;
-      if (
-        delta > 0 &&
-        (best === null ||
-          delta > best.delta ||
-          (delta === best.delta && freqGained - freqLost > best.freqDelta))
-      ) {
-        best = {
+      // Accept changes that improve frequency-weighted accuracy OR word count (with non-negative freq)
+      if (freqDelta > 0 || (delta > 0 && freqDelta >= 0)) {
+        const candidate: Change = {
           type: 'removal',
           letter,
           description: `Remove ${letter}[${i}] ${ruleStr}`,
           delta,
-          freqDelta: freqGained - freqLost,
+          freqDelta,
           gained,
           lost,
         };
+        if (isBetter(candidate, best)) best = candidate;
       }
     }
   }
@@ -128,8 +133,7 @@ function findBestSwap(
       const swapped = [...letterRules];
       swapped[i] = ruleB;
       swapped[i + 1] = ruleA;
-      const modifiedRules = { ...rules, [letter]: swapped };
-      const modifiedCompiled = compileRules(modifiedRules);
+      const modifiedCompiled = patchCompiledRules(baselineCompiled, letter, swapped);
 
       let gained = 0;
       let lost = 0;
@@ -140,9 +144,8 @@ function findBestSwap(
         const wasCorrect = baselineCorrect.has(word);
         const newTrace = evaluateWordTraced(modifiedCompiled, word);
         const newG2P = newTrace.phonemes.map(stripStress).join(' ');
-        const cmu = testData.dict[word]!.map(stripStress).join(' ');
-        const nowCorrect = newG2P === cmu;
-        const freq = getWordFrequency(word) ?? 0;
+        const nowCorrect = newG2P === testData.cmuStressless[word];
+        const freq = testData.freqs[word]!;
 
         if (!wasCorrect && nowCorrect) {
           gained++;
@@ -154,22 +157,19 @@ function findBestSwap(
         }
       }
 
+      const freqDelta = freqGained - freqLost;
       const delta = gained - lost;
-      if (
-        delta > 0 &&
-        (best === null ||
-          delta > best.delta ||
-          (delta === best.delta && freqGained - freqLost > best.freqDelta))
-      ) {
-        best = {
+      if (freqDelta > 0 || (delta > 0 && freqDelta >= 0)) {
+        const candidate: Change = {
           type: 'swap',
           letter,
           description: `Swap ${letter}[${i}↔${i + 1}]: move "${ruleB}" before "${ruleA}"`,
           delta,
-          freqDelta: freqGained - freqLost,
+          freqDelta,
           gained,
           lost,
         };
+        if (isBetter(candidate, best)) best = candidate;
       }
     }
   }
@@ -225,9 +225,10 @@ async function main() {
       testData
     );
 
+    const freqTotal = Object.values(testData.freqs).reduce((s, f) => s + f, 0);
     const totalRules = Object.values(rules).reduce((s, r) => s + r.length, 0);
     console.log(
-      `Rules: ${totalRules}, Accuracy: ${baselineCorrectCount}/${testData.words.length} = ${((baselineCorrectCount / testData.words.length) * 100).toFixed(2)}%`
+      `Rules: ${totalRules}, Words: ${baselineCorrectCount}/${testData.words.length} = ${((baselineCorrectCount / testData.words.length) * 100).toFixed(2)}%, Freq: ${((baselineFreqCorrect / freqTotal) * 100).toFixed(2)}%`
     );
 
     console.log('Testing removals...');
@@ -256,17 +257,10 @@ async function main() {
       console.log('  No beneficial swaps found');
     }
 
-    // Pick the best change
+    // Pick the best change (primary: freq delta, secondary: word count)
     let best: Change | null = null;
     if (bestRemoval && bestSwap) {
-      best =
-        bestRemoval.delta > bestSwap.delta
-          ? bestRemoval
-          : bestSwap.delta > bestRemoval.delta
-            ? bestSwap
-            : bestRemoval.freqDelta >= bestSwap.freqDelta
-              ? bestRemoval
-              : bestSwap;
+      best = isBetter(bestRemoval, bestSwap) ? bestRemoval : bestSwap;
     } else {
       best = bestRemoval ?? bestSwap;
     }
@@ -276,7 +270,9 @@ async function main() {
       break;
     }
 
-    console.log(`\n→ Applying: ${best.description} (+${best.delta} words)`);
+    console.log(
+      `\n→ Applying: ${best.description} (freq ${best.freqDelta >= 0 ? '+' : ''}${best.freqDelta}, ${best.delta >= 0 ? '+' : ''}${best.delta} words)`
+    );
     rules = applyChange(rules, best);
     appliedChanges.push(best);
   }
@@ -289,14 +285,18 @@ async function main() {
   console.log(`\n${'='.repeat(60)}`);
   console.log('HILL-CLIMBING SUMMARY');
   console.log('='.repeat(60));
+  const freqTotal = Object.values(testData.freqs).reduce((s, f) => s + f, 0);
+  const { baselineFreqCorrect: finalFreqCorrect } = traceAllWords(finalCompiled, testData);
   console.log(`Rounds: ${appliedChanges.length}`);
   console.log(`Final rules: ${totalRules}`);
   console.log(
-    `Final accuracy: ${finalCorrect}/${testData.words.length} = ${((finalCorrect / testData.words.length) * 100).toFixed(2)}%`
+    `Final: ${finalCorrect}/${testData.words.length} = ${((finalCorrect / testData.words.length) * 100).toFixed(2)}% words, ${((finalFreqCorrect / freqTotal) * 100).toFixed(2)}% freq`
   );
   console.log(`\nApplied changes:`);
   for (const c of appliedChanges) {
-    console.log(`  +${c.delta} words: ${c.description}`);
+    console.log(
+      `  freq ${c.freqDelta >= 0 ? '+' : ''}${c.freqDelta}, ${c.delta >= 0 ? '+' : ''}${c.delta} words: ${c.description}`
+    );
   }
 
   if (doApply) {
