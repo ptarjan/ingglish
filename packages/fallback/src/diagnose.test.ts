@@ -1,40 +1,49 @@
 import { describe, it, expect } from 'vitest';
+import { lookupPronunciation } from '@ingglish/dictionary';
 import { diagnoseFallback } from './index';
 
-describe('diagnoseFallback', () => {
-  it('returns "custom" for words with custom pronunciations', () => {
-    expect(diagnoseFallback('github')).toBe('custom');
-    expect(diagnoseFallback('emoji')).toBe('custom');
-    expect(diagnoseFallback('webpack')).toBe('custom');
-  });
+// These tests use words NOT in the CMU dictionary, so they actually reach
+// diagnoseFallback in the Word Explorer. Words already in the dictionary
+// show "dictionary" or "custom override" badges instead.
 
+describe('diagnoseFallback', () => {
   it('returns "initialism" for spelled-out letter sequences', () => {
-    expect(diagnoseFallback('url')).toBe('initialism');
-    expect(diagnoseFallback('api')).toBe('initialism');
+    // omg, diy, eta, faq — not in CMU dictionary
+    for (const w of ['omg', 'diy', 'eta', 'faq']) {
+      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+      expect(diagnoseFallback(w)).toBe('initialism');
+    }
   });
 
   it('returns "british" for British spellings with American equivalents', () => {
-    expect(diagnoseFallback('colour')).toBe('british');
-    expect(diagnoseFallback('honour')).toBe('british');
-    expect(diagnoseFallback('defence')).toBe('british');
+    // organise, specialise, categorise, normalise — not in CMU
+    for (const w of ['organise', 'specialise', 'categorise', 'normalise']) {
+      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+      expect(diagnoseFallback(w)).toBe('british');
+    }
   });
 
   it('returns "compound" for words that split into known parts', () => {
-    expect(diagnoseFallback('sunflower')).toBe('compound');
-    expect(diagnoseFallback('popcorn')).toBe('compound');
+    // treehouse — not in CMU dictionary
+    for (const w of ['treehouse']) {
+      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+      expect(diagnoseFallback(w)).toBe('compound');
+    }
   });
 
   it('returns "stemming" for words with known base + known suffix', () => {
-    expect(diagnoseFallback('googling')).toBe('stemming');
-    expect(diagnoseFallback('podcasting')).toBe('stemming');
-    expect(diagnoseFallback('retweet')).toBe('stemming');
+    // retweet, youtubing, adulting, ghosting, onboarding — not in CMU
+    for (const w of ['retweet', 'youtubing', 'adulting', 'ghosting', 'onboarding']) {
+      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+      expect(diagnoseFallback(w)).toBe('stemming');
+    }
   });
 
   it('returns "g2p" for unknown words handled by grapheme-to-phoneme rules', () => {
-    expect(diagnoseFallback('splonk')).toBe('g2p');
-    expect(diagnoseFallback('blorft')).toBe('g2p');
-    expect(diagnoseFallback('zazzle')).toBe('g2p');
-    expect(diagnoseFallback('crebbit')).toBe('g2p');
+    for (const w of ['splonk', 'blorft', 'zazzle', 'crebbit']) {
+      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+      expect(diagnoseFallback(w)).toBe('g2p');
+    }
   });
 
   it('returns null for obvious non-words (passthrough)', () => {
@@ -43,7 +52,7 @@ describe('diagnoseFallback', () => {
     expect(diagnoseFallback('brrr')).toBeNull();
     // No vowels (a/e/i/o/u/y)
     expect(diagnoseFallback('bcdfg')).toBeNull();
-    expect(diagnoseFallback('html')).toBeNull();
-    expect(diagnoseFallback('sql')).toBeNull();
+    expect(diagnoseFallback('tsk')).toBeNull();
+    expect(diagnoseFallback('pfft')).toBeNull();
   });
 });
