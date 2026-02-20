@@ -13,16 +13,16 @@ Use test-driven development (TDD). When possible, write a failing test first, th
 All commands use turbo for parallelism and caching (~2s when cached):
 
 ```bash
-npm test                    # run all tests across all packages
+npx turbo test                    # run all tests across all packages
 npx vitest run packages/core  # run tests for a single package
-npm run lint                # lint all packages
-npm run build:fast          # build all packages (type-check + bundle)
+npx turbo lint                # lint all packages
+npx turbo build:fast          # build all packages (type-check + bundle)
 ```
 
 **Before pushing cross-package changes**, run lint to catch type errors in dependent packages (lint-staged only checks staged files):
 
 ```bash
-npm run lint
+npx turbo lint
 ```
 
 ## Code Comments
