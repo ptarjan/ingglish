@@ -604,6 +604,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    'IN[U]TE=/AH/',
     'TR[U]TH=/UW/',
     'P[U]LL=/UH/',
     'B[U]LL=/UH/',
