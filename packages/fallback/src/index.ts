@@ -28,6 +28,20 @@ import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemm
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
 import { translateWithRules } from '@ingglish/g2p';
 
+export type FallbackStrategy =
+  | 'custom'
+  | 'initialism'
+  | 'british'
+  | 'compound'
+  | 'stemming'
+  | 'phonemize'
+  | 'g2p';
+
+export interface FallbackResult {
+  strategy: FallbackStrategy;
+  translated: string;
+}
+
 export {
   LETTER_PHONEMES,
   KNOWN_INITIALISMS,
@@ -43,6 +57,55 @@ export {
   translateWithPhonemize,
   preloadPhonemize,
 };
+
+/**
+ * Core implementation that returns both the strategy used and the translated word.
+ */
+function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
+  // Check custom pronunciations first
+  const customPhonemes = getCustomPronunciation(word);
+  if (customPhonemes !== undefined) {
+    return { strategy: 'custom', translated: arpabetToFormat(customPhonemes, format) };
+  }
+
+  // Check for initialisms (URL -> yooahrel)
+  if (isInitialism(word)) {
+    return { strategy: 'initialism', translated: translateAsAcronym(word, format) };
+  }
+
+  // Try British spelling normalization (colour -> color)
+  const britishResult = translateAsBritish(word, format);
+  if (britishResult !== null && britishResult.length > 0) {
+    return { strategy: 'british', translated: britishResult };
+  }
+
+  // Try compound word splitting (github -> git + hub)
+  const compoundResult = translateAsCompound(word, format);
+  if (compoundResult !== null && compoundResult.length > 0) {
+    return { strategy: 'compound', translated: compoundResult };
+  }
+
+  // Try stemming
+  const stemmedResult = translateWithStemming(word, format);
+  if (stemmedResult !== null && stemmedResult.length > 0) {
+    return { strategy: 'stemming', translated: stemmedResult };
+  }
+
+  // Try phonemize if loaded
+  // Skip if the result round-trips back to the original word (e.g. phonemize
+  // maps "splonk" → IPA → arpabet → ingglish "splonk" unchanged).
+  const phonemizeResult = translateWithPhonemize(word, format);
+  if (
+    phonemizeResult !== null &&
+    phonemizeResult.length > 0 &&
+    phonemizeResult.toLowerCase() !== word.toLowerCase()
+  ) {
+    return { strategy: 'phonemize', translated: phonemizeResult };
+  }
+
+  // Fall back to grapheme-to-phoneme rules
+  return { strategy: 'g2p', translated: translateWithRules(word, format) };
+}
 
 /**
  * Attempts all strategies to translate an unknown word.
@@ -61,47 +124,17 @@ export {
  * @returns The translated word
  */
 export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
-  // Check custom pronunciations first
-  const customPhonemes = getCustomPronunciation(word);
-  if (customPhonemes !== undefined) {
-    return arpabetToFormat(customPhonemes, format);
-  }
+  return translateUnknownCore(word, format).translated;
+}
 
-  // Check for initialisms (URL -> yooahrel)
-  if (isInitialism(word)) {
-    return translateAsAcronym(word, format);
+/**
+ * Diagnoses which fallback strategy would be used for a word.
+ * Returns null for obvious non-words (3+ repeated chars, no vowels).
+ */
+export function diagnoseFallback(word: string): FallbackStrategy | null {
+  // Pass through obvious non-words (mirrors check in forward.ts)
+  if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
+    return null;
   }
-
-  // Try British spelling normalization (colour -> color)
-  const britishResult = translateAsBritish(word, format);
-  if (britishResult !== null && britishResult.length > 0) {
-    return britishResult;
-  }
-
-  // Try compound word splitting (github -> git + hub)
-  const compoundResult = translateAsCompound(word, format);
-  if (compoundResult !== null && compoundResult.length > 0) {
-    return compoundResult;
-  }
-
-  // Try stemming
-  const stemmedResult = translateWithStemming(word, format);
-  if (stemmedResult !== null && stemmedResult.length > 0) {
-    return stemmedResult;
-  }
-
-  // Try phonemize if loaded
-  // Skip if the result round-trips back to the original word (e.g. phonemize
-  // maps "splonk" → IPA → arpabet → ingglish "splonk" unchanged).
-  const phonemizeResult = translateWithPhonemize(word, format);
-  if (
-    phonemizeResult !== null &&
-    phonemizeResult.length > 0 &&
-    phonemizeResult.toLowerCase() !== word.toLowerCase()
-  ) {
-    return phonemizeResult;
-  }
-
-  // Fall back to grapheme-to-phoneme rules
-  return translateWithRules(word, format);
+  return translateUnknownCore(word, 'ingglish').strategy;
 }

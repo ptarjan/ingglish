@@ -12,6 +12,8 @@ import { arpabetToIPARaw, arpabetPhonemeToIPA } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
+import { diagnoseFallback } from '@ingglish/fallback';
+import type { FallbackStrategy } from '@ingglish/fallback';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { stripStress, isVowel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
@@ -28,6 +30,7 @@ interface WordResult {
   homophones: string[];
   frequency: number | undefined;
   g2pTrace?: G2PTrace;
+  fallbackStrategy?: FallbackStrategy | null;
 }
 
 function analyzeWord(word: string, format: OutputFormat): WordResult {
@@ -50,14 +53,30 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
       homophones = sortByFrequency(reverseMatches).filter((w) => w !== lower);
     }
   } else {
-    // Word not in dictionary — use full pipeline for output, G2P trace for insight
+    // Word not in dictionary — diagnose which fallback strategy handles it
     ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
-    g2pTrace = wordToArpabetTraced(lower);
+    const strategy = diagnoseFallback(lower);
+    if (strategy === 'g2p') {
+      g2pTrace = wordToArpabetTraced(lower);
+    }
+    return {
+      word: lower,
+      phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? null,
+      ipa,
+      ingglish,
+      formatted,
+      matched: false,
+      isCustom,
+      homophones,
+      frequency: getWordFrequency(lower),
+      g2pTrace,
+      fallbackStrategy: strategy,
+    };
   }
 
   return {
     word: lower,
-    phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? null,
+    phonemes: dictPhonemes,
     ipa,
     ingglish,
     formatted,
@@ -65,7 +84,6 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     isCustom,
     homophones,
     frequency: getWordFrequency(lower),
-    g2pTrace,
   };
 }
 
@@ -175,6 +193,28 @@ function HomophoneList({
   );
 }
 
+function fallbackLabel(strategy: FallbackStrategy | null | undefined): string {
+  switch (strategy) {
+    case 'custom':
+      return 'custom override';
+    case 'initialism':
+      return 'initialism';
+    case 'british':
+      return 'British spelling';
+    case 'compound':
+      return 'compound word';
+    case 'stemming':
+      return 'stemmed';
+    case 'phonemize':
+      return 'neural G2P';
+    case 'g2p':
+      return 'G2P rules';
+    case null:
+    case undefined:
+      return 'passthrough';
+  }
+}
+
 function getInitialWord(): string {
   const params = new URLSearchParams(window.location.search);
   return params.get('word') ?? '';
@@ -275,7 +315,7 @@ export default function WordExplorer() {
                 ? 'custom override'
                 : result.matched
                   ? 'dictionary'
-                  : 'fallback (G2P)'}
+                  : fallbackLabel(result.fallbackStrategy)}
             </span>
             {result.frequency !== undefined && (
               <span className="badge badge-freq">freq: {formatFrequency(result.frequency)}</span>
