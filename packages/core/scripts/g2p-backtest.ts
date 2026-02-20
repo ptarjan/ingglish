@@ -132,8 +132,8 @@ async function main() {
     console.log(`  ${count.toString().padStart(5)} : ${prefix}-`);
   }
 
-  console.log('\n=== Sample Wrong Words (first 50) ===\n');
-  for (const { word, got, want } of wrongSamples.slice(0, 50)) {
+  console.log(`\n=== Sample Wrong Words (all ${wrongSamples.length}) ===\n`);
+  for (const { word, got, want } of wrongSamples.slice(0, 200)) {
     console.log(`  ${word.padEnd(20)} got: ${got.padEnd(35)} want: ${want}`);
   }
 }
