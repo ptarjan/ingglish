@@ -27,7 +27,7 @@ import { translateAsCompound } from './compounds';
 import { dpDecompose } from './compounds';
 import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
 import { translateWithPhonemize, phonemizeToArpabet, preloadPhonemize } from './phonemize';
-import { translateWithRules, hasWordRule, wordToArpabetTraced } from '@ingglish/g2p';
+import { translateWithRules, wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
 
 export type FallbackStrategy =
@@ -78,12 +78,6 @@ export function translateUnknownCore(word: string, format: OutputFormat): Fallba
   const customPhonemes = getCustomPronunciation(word);
   if (customPhonemes !== undefined) {
     return { strategy: 'custom', translated: arpabetToFormat(customPhonemes, format) };
-  }
-
-  // If G2P has a word-specific rule or guard, prefer G2P over initialism/british/
-  // compound/stemming (which may produce worse results)
-  if (hasWordRule(word)) {
-    return { strategy: 'g2p', translated: translateWithRules(word, format) };
   }
 
   // Check for initialisms (URL -> yooahrel)
