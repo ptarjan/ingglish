@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
+import { translateSync } from 'ingglish';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
 import {
   vowelGroups,
@@ -7,7 +8,7 @@ import {
   type SoundEntry,
 } from './spelling-guide-data';
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
-import { getCleanIPA, renderExamples } from '../utils/phoneme-display';
+import { getCleanIPA, renderDynamicExamples } from '../utils/phoneme-display';
 
 /** Get the default spelling for a phoneme */
 function getDefault(phoneme: string): string {
@@ -105,6 +106,14 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
   const isDuplicate = useCallback((spelling: string) => duplicates.has(spelling), [duplicates]);
 
+  // Translate example words using current experiment format.
+  // Version dependency ensures re-render when mappings change.
+  const translateWord = useCallback(
+    (word: string) => translateSync(word, 'experiment'),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [mapping.version]
+  );
+
   const renderPhonemeRow = useCallback(
     (sound: SoundEntry) => {
       const { phoneme } = sound;
@@ -135,7 +144,9 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               </div>
             </td>
             <td className="default-cell">{defaultSpelling}</td>
-            <td className="examples-cell">{renderExamples(sound.examples)}</td>
+            <td className="examples-cell">
+              {renderDynamicExamples(sound.examples, translateWord)}
+            </td>
           </tr>
         );
       }
@@ -175,7 +186,9 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               </div>
             </td>
             <td className="default-cell">{defaultSpelling}</td>
-            <td className="examples-cell">{renderExamples(sound.examples)}</td>
+            <td className="examples-cell">
+              {renderDynamicExamples(sound.examples, translateWord)}
+            </td>
           </tr>
         );
       }
@@ -208,7 +221,9 @@ function MappingEditor({ mapping }: MappingEditorProps) {
                 isDuplicate={isDuplicate(currentSpelling)}
               />
               <td className="default-cell">{defaultSpelling}</td>
-              <td className="examples-cell">{renderExamples(sound.examples)}</td>
+              <td className="examples-cell">
+                {renderDynamicExamples(sound.examples, translateWord)}
+              </td>
             </tr>
             {variants.map((stress) => {
               const stressedPhoneme = `${phoneme}${stress}`;
@@ -252,8 +267,9 @@ function MappingEditor({ mapping }: MappingEditorProps) {
                   <td className="default-cell">{hasOwnDefault ? stressedDefault : stressLabel}</td>
                   <td className="examples-cell">
                     {stressedPhoneme === 'AH0' &&
-                      renderExamples(
-                        '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman)'
+                      renderDynamicExamples(
+                        '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman)',
+                        translateWord
                       )}
                   </td>
                 </tr>
@@ -275,11 +291,11 @@ function MappingEditor({ mapping }: MappingEditorProps) {
             isDuplicate={isDuplicate(currentSpelling)}
           />
           <td className="default-cell">{defaultSpelling}</td>
-          <td className="examples-cell">{renderExamples(sound.examples)}</td>
+          <td className="examples-cell">{renderDynamicExamples(sound.examples, translateWord)}</td>
         </tr>
       );
     },
-    [mapping, advancedMode, isDuplicate]
+    [mapping, advancedMode, isDuplicate, translateWord]
   );
 
   const renderGroup = useCallback(
