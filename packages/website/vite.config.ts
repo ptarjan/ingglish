@@ -4,6 +4,7 @@ import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
+import { build as esbuild } from 'esbuild';
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -61,6 +62,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
     title: 'Ingglish Experiment - Design Your Own Spelling',
     description:
       'Create your own phonetic spelling system. Customize how each sound is written, test with sample text, and compare statistics against standard Ingglish.',
+  },
+  extension: {
+    title: 'Ingglish Bookmarklet & Extension',
+    description:
+      'Translate any webpage to phonetic English with one click. Drag the bookmarklet to your bookmarks bar or install the Chrome extension.',
   },
   docs: {
     title: 'Ingglish Documentation',
@@ -144,6 +150,25 @@ function copyRoutesToDist(): Plugin {
   };
 }
 
+// Build bookmarklet.js as a self-contained IIFE (includes dictionary, ~3MB gzipped)
+function buildBookmarklet(): Plugin {
+  return {
+    name: 'build-bookmarklet',
+    async writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      await esbuild({
+        entryPoints: [join(__dirname, 'src/bookmarklet.ts')],
+        bundle: true,
+        format: 'iife',
+        outfile: join(distDir, 'bookmarklet.js'),
+        minify: true,
+        conditions: ['source'],
+        logLevel: 'info',
+      });
+    },
+  };
+}
+
 export default defineConfig({
   resolve: {
     conditions: ['source'],
@@ -159,7 +184,7 @@ export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
   // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
-  plugins: [markdown(), react(), processChunks(), copyRoutesToDist()],
+  plugins: [markdown(), react(), processChunks(), copyRoutesToDist(), buildBookmarklet()],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed

@@ -59,6 +59,59 @@
   font-size: 0.85rem;
 }
 
+/* Bookmarklet */
+.bookmarklet-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.bookmarklet-button {
+  display: inline-block;
+  padding: 0.625rem 1.5rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: grab;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.bookmarklet-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.bookmarklet-button:active {
+  cursor: grabbing;
+}
+
+.bookmarklet-hint {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link-button:hover {
+  color: var(--color-primary-hover, var(--color-primary));
+}
+
 /* Mobile */
 @media (max-width: 640px) {
   .install-steps li {
