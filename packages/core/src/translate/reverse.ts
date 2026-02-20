@@ -144,8 +144,14 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
 // ============================================================================
 
 // Register reverse handlers for built-in formats
-registerFormat('ingglish', { reverseText: reverseTranslateIngglishText });
-registerFormat('ipa', { reverseText: reverseTranslateIPATextInternal });
+registerFormat('ingglish', {
+  reverseText: reverseTranslateIngglishText,
+  reverseTextWithMapping: reverseTranslateIngglishTextWithMapping,
+});
+registerFormat('ipa', {
+  reverseText: reverseTranslateIPATextInternal,
+  reverseTextWithMapping: reverseTranslateIPATextWithMapping,
+});
 
 /**
  * Translates Ingglish text back to English.
@@ -219,14 +225,47 @@ export function reverseTranslateSync(text: string, format: OutputFormat = 'inggl
 // ============================================================================
 
 /**
+ * Translates IPA text back to English with token-by-token mapping.
+ */
+function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
+  const cleanText = text.replace(/^[/[\]]+|[/[\]]+$/g, '');
+  const tokens = tokenizeIPA(cleanText);
+
+  return tokens.map((token) => {
+    if (token.isWord) {
+      const matches = reverseTranslateIPAWord(token.text);
+      const translated = matches[0] ?? token.text;
+      return {
+        original: token.text,
+        translated,
+        isWord: true,
+        matched: translated !== token.text,
+      };
+    }
+    return { original: token.text, translated: token.text, isWord: false, matched: true };
+  });
+}
+
+/**
  * Like {@link reverseTranslate}, but returns token-by-token mappings instead of a string.
  * Each token includes the original text, translation, and whether it matched
  * the dictionary. Dictionary must already be loaded.
  */
 export function reverseTranslateSyncWithMapping(
   text: string,
-  _format: OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
+  const handler = getFormatHandler(format);
+  if (handler?.reverseTextWithMapping) {
+    return handler.reverseTextWithMapping(text) as TranslatedToken[];
+  }
+  return reverseTranslateIngglishTextWithMapping(text);
+}
+
+/**
+ * Ingglish reverse translation with token-by-token mapping.
+ */
+function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
   const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
 

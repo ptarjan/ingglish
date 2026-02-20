@@ -257,13 +257,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);
-          // TODO: reverseTranslateSyncWithMapping only supports Ingglish tokenization,
-          // so we can't use a registry check here yet.
-          if (format === 'ingglish') {
-            setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
-          } else {
-            setReverseTokens(null);
-          }
+          setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
         }
       })
       .catch((err: unknown) => {

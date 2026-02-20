@@ -401,6 +401,36 @@ describe('reverse-translator', () => {
       expect(urlToken).toBeDefined();
       expect(urlToken?.isWord).toBe(false);
     });
+
+    it('should work for IPA format', () => {
+      const tokens = reverseTranslateSyncWithMapping('həˈloʊ wɝld', 'ipa');
+      const words = tokens.filter((t) => t.isWord);
+      expect(words.length).toBe(2);
+      expect(words[0]!.matched).toBe(true);
+      expect(words[0]!.translated).toBe('hello');
+      expect(words[1]!.matched).toBe(true);
+    });
+
+    it('should work for Shavian format', () => {
+      // Forward translate to get correct Shavian text, then reverse it
+      const shavian = translateSync('hello world', 'shavian');
+      const tokens = reverseTranslateSyncWithMapping(shavian, 'shavian');
+      const words = tokens.filter((t) => t.isWord);
+      expect(words.length).toBe(2);
+      expect(words[0]!.matched).toBe(true);
+      expect(words[0]!.translated.toLowerCase()).toBe('hello');
+      expect(words[1]!.matched).toBe(true);
+    });
+
+    it('should work for Deseret format', () => {
+      const deseret = translateSync('hello world', 'deseret');
+      const tokens = reverseTranslateSyncWithMapping(deseret, 'deseret');
+      const words = tokens.filter((t) => t.isWord);
+      expect(words.length).toBe(2);
+      expect(words[0]!.matched).toBe(true);
+      expect(words[0]!.translated.toLowerCase()).toBe('hello');
+      expect(words[1]!.matched).toBe(true);
+    });
   });
 
   describe('URL and email preservation', () => {

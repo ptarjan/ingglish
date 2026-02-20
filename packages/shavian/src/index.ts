@@ -1,11 +1,15 @@
 import { registerFormat } from '@ingglish/phonemes';
 import { arpabetToShavian } from './to-shavian';
-import { reverseTranslateShavianText } from './from-shavian';
+import {
+  reverseTranslateShavianText,
+  reverseTranslateShavianTextWithMapping,
+} from './from-shavian';
 
 export function registerShavian(): void {
   registerFormat('shavian', {
     forward: arpabetToShavian,
     reverseText: reverseTranslateShavianText,
+    reverseTextWithMapping: reverseTranslateShavianTextWithMapping,
     isLatinScript: false,
     preservesCase: false,
     label: 'Shavian',
@@ -19,6 +23,7 @@ export {
   shavianToArpabet,
   reverseTranslateShavianWord,
   reverseTranslateShavianText,
+  reverseTranslateShavianTextWithMapping,
 } from './from-shavian';
 export { isShavianChar, tokenizeShavian } from './tokenize';
 export {

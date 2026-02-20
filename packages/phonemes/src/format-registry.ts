@@ -1,9 +1,20 @@
 type ForwardConverter = (arpabet: string[]) => string;
 type ReverseTextConverter = (text: string) => string;
 
+/** Token returned by reverse-with-mapping translation */
+export interface ReverseToken {
+  original: string;
+  translated: string;
+  isWord: boolean;
+  matched?: boolean;
+}
+
+type ReverseTextWithMappingConverter = (text: string) => ReverseToken[];
+
 export interface FormatHandler {
   forward?: ForwardConverter;
   reverseText?: ReverseTextConverter;
+  reverseTextWithMapping?: ReverseTextWithMappingConverter;
   isLatinScript?: boolean;
   /** Whether case is preserved (caps, sentence start). Defaults to isLatinScript. */
   preservesCase?: boolean;

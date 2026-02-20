@@ -1,11 +1,15 @@
 import { registerFormat } from '@ingglish/phonemes';
 import { arpabetToDeseret } from './to-deseret';
-import { reverseTranslateDeseretText } from './from-deseret';
+import {
+  reverseTranslateDeseretText,
+  reverseTranslateDeseretTextWithMapping,
+} from './from-deseret';
 
 export function registerDeseret(): void {
   registerFormat('deseret', {
     forward: arpabetToDeseret,
     reverseText: reverseTranslateDeseretText,
+    reverseTextWithMapping: reverseTranslateDeseretTextWithMapping,
     isLatinScript: false,
     preservesCase: false,
     label: 'Deseret',
@@ -19,6 +23,7 @@ export {
   deseretToArpabet,
   reverseTranslateDeseretWord,
   reverseTranslateDeseretText,
+  reverseTranslateDeseretTextWithMapping,
 } from './from-deseret';
 export { isDeseretChar, tokenizeDeseret } from './tokenize';
 export {

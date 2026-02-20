@@ -6,6 +6,7 @@
  */
 
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
+import type { ReverseToken } from '@ingglish/phonemes';
 import { SHAVIAN_TO_ARPABET_MAP } from './shavian-maps';
 import { tokenizeShavian, isShavianChar } from './tokenize';
 
@@ -67,4 +68,25 @@ export function reverseTranslateShavianText(text: string): string {
       return token.text;
     })
     .join('');
+}
+
+/**
+ * Translates Shavian text back to English with token-by-token mapping.
+ */
+export function reverseTranslateShavianTextWithMapping(text: string): ReverseToken[] {
+  const tokens = tokenizeShavian(text);
+
+  return tokens.map((token) => {
+    if (token.isWord) {
+      const matches = reverseTranslateShavianWord(token.text);
+      const translated = matches[0] ?? token.text;
+      return {
+        original: token.text,
+        translated,
+        isWord: true,
+        matched: translated !== token.text,
+      };
+    }
+    return { original: token.text, translated: token.text, isWord: false, matched: true };
+  });
 }

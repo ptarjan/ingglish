@@ -22,7 +22,7 @@ export {
   getFormatNativeLabel,
   getFormatJoinSeparator,
 } from './format-registry';
-export type { FormatHandler } from './format-registry';
+export type { FormatHandler, ReverseToken } from './format-registry';
 
 // Conversion maps
 export {

@@ -6,6 +6,7 @@
  */
 
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
+import type { ReverseToken } from '@ingglish/phonemes';
 import { DESERET_TO_ARPABET_MAP } from './deseret-maps';
 import { tokenizeDeseret, isDeseretChar } from './tokenize';
 
@@ -71,4 +72,25 @@ export function reverseTranslateDeseretText(text: string): string {
       return token.text;
     })
     .join('');
+}
+
+/**
+ * Translates Deseret text back to English with token-by-token mapping.
+ */
+export function reverseTranslateDeseretTextWithMapping(text: string): ReverseToken[] {
+  const tokens = tokenizeDeseret(text);
+
+  return tokens.map((token) => {
+    if (token.isWord) {
+      const matches = reverseTranslateDeseretWord(token.text);
+      const translated = matches[0] ?? token.text;
+      return {
+        original: token.text,
+        translated,
+        isWord: true,
+        matched: translated !== token.text,
+      };
+    }
+    return { original: token.text, translated: token.text, isWord: false, matched: true };
+  });
 }
