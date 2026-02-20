@@ -203,7 +203,13 @@ function CompoundBreakdown({
       <h4>Compound Breakdown</h4>
       <div className="homophone-list">
         {parts.map((part, i) => (
-          <button key={i} className="homophone-chip" onClick={() => { onWordClick(part); }}>
+          <button
+            key={i}
+            className="homophone-chip"
+            onClick={() => {
+              onWordClick(part);
+            }}
+          >
             <span className="chip-english">{part}</span>
             <span className="chip-arrow">&rarr;</span>
             <span className="chip-translated">{translateWord(part, format)}</span>
@@ -233,7 +239,12 @@ function StemmingBreakdown({
             <span className="chip-arrow">prefix</span>
           </span>
         )}
-        <button className="homophone-chip" onClick={() => { onWordClick(result.stem); }}>
+        <button
+          className="homophone-chip"
+          onClick={() => {
+            onWordClick(result.stem);
+          }}
+        >
           <span className="chip-english">{result.stem}</span>
           <span className="chip-arrow">&rarr;</span>
           <span className="chip-translated">{translateWord(result.stem, format)}</span>
@@ -303,7 +314,12 @@ function BritishBreakdown({
         Normalized to American spelling: {original} &rarr; {american}
       </p>
       <div className="homophone-list">
-        <button className="homophone-chip" onClick={() => { onWordClick(american); }}>
+        <button
+          className="homophone-chip"
+          onClick={() => {
+            onWordClick(american);
+          }}
+        >
           <span className="chip-english">{american}</span>
           <span className="chip-arrow">&rarr;</span>
           <span className="chip-translated">{translateWord(american, format)}</span>
@@ -445,7 +461,7 @@ export default function WordExplorer() {
         <div className="explorer-empty">
           <p>Try some interesting words:</p>
           <div className="suggestion-chips">
-            {['knight', 'through', 'treehouse', 'ghosting', 'URL', 'colour'].map((w) => (
+            {['colonel', 'treehouse', 'ghosting', 'URL', 'colour', 'psychology'].map((w) => (
               <button
                 key={w}
                 className="suggestion-chip"
