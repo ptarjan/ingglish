@@ -2,7 +2,7 @@ import { useCallback, useRef, useEffect, useState } from 'react';
 import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
-import { useClipboard } from '../hooks/useClipboard';
+import { useShare } from '../hooks/useShare';
 
 /**
  * Fullscreen icon (expand arrows)
@@ -61,7 +61,7 @@ const EXAMPLE_URLS = [
 
 interface UrlTranslatorProps {
   initialUrl?: string;
-  onShare?: (url: string) => void;
+  onShare?: (url: string) => string;
   onNavigate?: (url: string) => void;
 }
 
@@ -71,7 +71,7 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
     useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
-  const [copiedShare, copyShare] = useClipboard();
+  const [copiedShare, shareLink] = useShare();
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Listen for Escape key to exit fullscreen
@@ -137,10 +137,10 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
 
   const handleShare = useCallback(() => {
     if (onShare !== undefined && url.trim().length > 0) {
-      onShare(url);
-      copyShare(url);
+      const shareUrl = onShare(url);
+      shareLink(shareUrl, 'Ingglish URL Translation');
     }
-  }, [onShare, url, copyShare]);
+  }, [onShare, url, shareLink]);
 
   const formatLabel = getFormatLabel(format);
 

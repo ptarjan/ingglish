@@ -1,30 +1,21 @@
 import { useCallback } from 'react';
 import { useCustomMapping } from '../hooks/useCustomMapping';
-import { useClipboard } from '../hooks/useClipboard';
+import { useShare } from '../hooks/useShare';
 import MappingEditor from './MappingEditor';
 import ExperimentTranslator from './ExperimentTranslator';
 import MappingStats from './MappingStats';
 
 function Experiment() {
   const mapping = useCustomMapping();
-  const [copiedShare, copyShare] = useClipboard();
+  const [copiedShare, shareLink] = useShare();
 
   const handleShare = useCallback(() => {
-    if (typeof navigator.share === 'function') {
-      navigator
-        .share({
-          title: 'My custom Ingglish spelling',
-          text: 'Check out my custom phonetic spelling mapping!',
-          url: mapping.shareUrl,
-        })
-        .catch(() => {
-          // User cancelled or share failed — fall back to clipboard
-          copyShare(mapping.shareUrl);
-        });
-    } else {
-      copyShare(mapping.shareUrl);
-    }
-  }, [copyShare, mapping.shareUrl]);
+    shareLink(
+      mapping.shareUrl,
+      'My custom Ingglish spelling',
+      'Check out my custom phonetic spelling mapping!'
+    );
+  }, [shareLink, mapping.shareUrl]);
 
   return (
     <div className="experiment-page">

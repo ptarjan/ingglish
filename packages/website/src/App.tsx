@@ -201,27 +201,24 @@ function App() {
     return url.toString();
   }, []);
 
-  // Share functions
-  const handleShareText = useCallback((text: string) => {
+  // Share functions — build URL, update history, return URL for the component to share
+  const handleShareText = useCallback((text: string): string => {
     const url = new URL(window.location.href);
     url.pathname = '/text';
     url.search = '';
     url.hash = '';
     url.searchParams.set('text', text);
-    navigator.clipboard.writeText(url.toString()).catch(() => {
-      // Fallback: just update URL
-    });
-    window.history.replaceState(null, '', url.toString());
+    const shareUrl = url.toString();
+    window.history.replaceState(null, '', shareUrl);
+    return shareUrl;
   }, []);
 
   const handleShareUrl = useCallback(
-    (targetUrl: string) => {
+    (targetUrl: string): string => {
       const shareUrl = buildShareUrl(targetUrl);
-      navigator.clipboard.writeText(shareUrl).catch(() => {
-        // Fallback: clipboard might not be available
-      });
       // Preserve translator state so back button still works after sharing
       window.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
+      return shareUrl;
     },
     [buildShareUrl]
   );

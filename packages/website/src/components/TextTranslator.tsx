@@ -10,6 +10,7 @@ import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
+import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
 import { buildDiffMap } from '../utils/diff-map';
 import { isAllCaps } from '../utils/text';
@@ -190,7 +191,7 @@ export function MappedWordDisplay({
 
 interface TextTranslatorProps {
   initialText?: string;
-  onShare?: (text: string) => void;
+  onShare?: (text: string) => string;
 }
 
 function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
@@ -201,7 +202,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
-  const [copiedShare, copyShare] = useClipboard();
+  const [copiedShare, shareUrl] = useShare();
   const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount] =
     useSpeech();
 
@@ -322,10 +323,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
-      onShare(displayEnglish);
-      copyShare(displayEnglish);
+      const url = onShare(displayEnglish);
+      shareUrl(url, 'Ingglish Text Translation');
     }
-  }, [onShare, displayEnglish, copyShare]);
+  }, [onShare, displayEnglish, shareUrl]);
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
