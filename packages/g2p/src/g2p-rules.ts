@@ -32,6 +32,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [AMERICAN]=/AH M EH R AH K AH N/',
     ' [ANYONE]=/EH N IY W AH N/',
     ' [ANYBODY]=/EH N IY B AH D IY/',
     ' [AND] =/AH N D/',
@@ -122,6 +123,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [COLONEL]=/K ER N AH L/',
+    ' [CLOTHES]=/K L OW DH Z/',
     ' [CHRISTMAS]=/K R IH S M AH S/',
     ' [CITY]=/S IH T IY/',
     ' [CAPTAIN]=/K AE P T AX N/',
@@ -167,6 +170,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DAVID]=/D EY V IH D/',
     ' [DONE] =/D AH N/',
     ' [DOING]=/D UW IH NX/',
     ' [DOES] =/D AH Z/',
@@ -309,6 +313,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    ' [FINISH]=/F IH N IH SH/',
     ' [FROM]=/F R AH M/',
     '#:[FORD] =/F ER D/',
     '#:[FULLY] =/F AX L IY/',
@@ -449,6 +454,7 @@ const NRL_RULES: Record<string, string[]> = {
   J: [' [JESUS]=/JH IY Z AH S/', '[J]=/JH/'],
   K: [' [K]N=/ /', '[KK]=/K/', '[K]=/K/'],
   L: [
+    ' [LIEUTENANT]=/L UW T EH N AH N T/',
     ' [LOST] =/L AO S T/',
     '[LO]C#=/L OW/',
     'L[L]=/ /',
@@ -467,6 +473,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    ' [MICHAEL]=/M AY K AH L/',
+    ' [MAMA]=/M AA M AH/',
+    ' [MEANT] =/M EH N T/',
+    ' [MARRY]=/M EH R IY/',
     ' [MRS]=/M IH S IH Z/',
     ' [MARRIED]=/M EH R IY D/',
     ' [MINUTE]=/M IH N AH T/',
@@ -644,6 +654,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [PERSONAL]=/P ER S AH N AH L/',
     ' [POLICE]=/P AH L IY S/',
     ' [PROMISE]=/P R AA M AH S/',
     ' [PN]=/N/',
@@ -673,6 +684,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SWEAR]=/S W EH R/',
     ' [SOMEONE]=/S AH M W AH N/',
     ' [SERIOUS]=/S IH R IY AH S/',
     ' [SECRET]=/S IY K R AH T/',
@@ -783,6 +795,8 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   V: ['[VIEW]=/V Y UW/', '[VIOL]=/V AY AH L/', '[V]=/V/'],
   W: [
+    ' [WEIRD]=/W IH R D/',
+    ' [WEAR]=/W EH R/',
     ' [WANTED]=/W AO N T IH D/',
     ' [WHOA]=/W OW/',
     ' [WOMEN]=/W IH M AH N/',
