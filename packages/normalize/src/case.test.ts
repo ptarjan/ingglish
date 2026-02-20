@@ -206,9 +206,10 @@ describe('case-utils', () => {
       detectCasePattern('hello');
       expect(toLowerCaseSpy).toHaveBeenCalledTimes(1);
 
+      // Capitalized words now use charCode loop instead of slice+toLowerCase
       toLowerCaseSpy.mockClear();
       detectCasePattern('Hello');
-      expect(toLowerCaseSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+      expect(toLowerCaseSpy).toHaveBeenCalledTimes(0);
 
       toLowerCaseSpy.mockRestore();
     });

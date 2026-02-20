@@ -5,7 +5,7 @@
  * with proper stress marker placement at syllable boundaries.
  */
 
-import { stripStress, isVowel, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
+import { stripStress, isVowel, getStress } from '@ingglish/phonemes';
 import { findOnsetStart } from '@ingglish/phonemes';
 import { ARPABET_TO_IPA_MAP } from './ipa-maps';
 
@@ -20,10 +20,10 @@ const WORD_JOINER = '\u2060';
  * Primary stress: ˈ (U+02C8)
  * Secondary stress: ˌ (U+02CC)
  */
-const STRESS_MARKERS: Record<string, string> = {
-  '1': WORD_JOINER + 'ˈ' + WORD_JOINER,
-  '2': WORD_JOINER + 'ˌ' + WORD_JOINER,
-  '0': '',
+const STRESS_MARKERS: Record<number, string> = {
+  1: WORD_JOINER + 'ˈ' + WORD_JOINER,
+  2: WORD_JOINER + 'ˌ' + WORD_JOINER,
+  0: '',
 };
 
 /**
@@ -35,8 +35,7 @@ const STRESS_MARKERS: Record<string, string> = {
  */
 export function arpabetPhonemeToIPA(phoneme: string): string {
   const base = stripStress(phoneme);
-  const stressMatch = STRESS_MARKER_REGEX.exec(phoneme);
-  const stress = stressMatch !== null ? stressMatch[0] : null;
+  const stress = getStress(phoneme);
 
   const ipa = ARPABET_TO_IPA_MAP[base];
   if (ipa === undefined) {
@@ -45,13 +44,12 @@ export function arpabetPhonemeToIPA(phoneme: string): string {
   }
 
   // For unstressed schwa (AH0), use the schwa symbol
-  if (base === 'AH' && stress === '0') {
+  if (base === 'AH' && stress === 0) {
     return 'ə';
   }
 
-  // Add stress marker before the vowel if stressed (stress '1' or '2')
-  // Note: stress '0' has empty marker, so we can skip the check
-  if (stress === '1' || stress === '2') {
+  // Add stress marker before the vowel if stressed (stress 1 or 2)
+  if (stress === 1 || stress === 2) {
     return STRESS_MARKERS[stress]! + ipa;
   }
 
@@ -74,8 +72,7 @@ export function arpabetToIPA(arpabet: string[]): string {
   for (let i = 0; i < arpabet.length; i++) {
     const symbol = arpabet[i]!;
     const base = stripStress(symbol);
-    const stressMatch = STRESS_MARKER_REGEX.exec(symbol);
-    const stress = stressMatch !== null ? stressMatch[0] : null;
+    const stress = getStress(symbol);
 
     const ipa = ARPABET_TO_IPA_MAP[base];
     if (ipa === undefined) {
@@ -84,15 +81,15 @@ export function arpabetToIPA(arpabet: string[]): string {
     }
 
     // Handle schwa for unstressed AH
-    if (base === 'AH' && stress === '0') {
+    if (base === 'AH' && stress === 0) {
       ipaSegments.push('ə');
       continue;
     }
 
     // Record stress position for later insertion at syllable boundary
-    if (stress === '1' || stress === '2') {
+    if (stress === 1 || stress === 2) {
       const marker =
-        stress === '1' ? WORD_JOINER + 'ˈ' + WORD_JOINER : WORD_JOINER + 'ˌ' + WORD_JOINER;
+        stress === 1 ? WORD_JOINER + 'ˈ' + WORD_JOINER : WORD_JOINER + 'ˌ' + WORD_JOINER;
       // Find where to place the stress marker (at syllable onset)
       let onsetIndex = ipaSegments.length;
 

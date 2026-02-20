@@ -7,6 +7,8 @@
  * unstressed vowels to schwa where appropriate.
  */
 
+import { stripStress } from '@ingglish/phonemes';
+
 // Vowels that reduce to AH0 (schwa) when unstressed
 const REDUCIBLE_VOWELS = new Set(['AE']);
 
@@ -161,10 +163,7 @@ function predictStressSyllable(word: string, syllableCount: number): number {
   return 0;
 }
 
-/** Extract the base vowel from a stressed phoneme (e.g., "AE1" → "AE") */
-function vowelBase(phoneme: string): string {
-  return phoneme.replace(/[012]$/, '');
-}
+// vowelBase replaced by stripStress import (charCode-based, avoids regex)
 
 /**
  * Apply stress prediction to a phoneme array produced by NRL rules.
@@ -175,10 +174,13 @@ function vowelBase(phoneme: string): string {
  * - Marks other unstressed vowels with 0
  */
 export function applyStressPrediction(word: string, phonemes: string[]): string[] {
-  // Find all vowel positions
+  // Find all vowel positions (phonemes with stress markers 0/1/2)
   const vowelPositions: number[] = [];
   for (let i = 0; i < phonemes.length; i++) {
-    if (/[012]$/.test(phonemes[i]!)) {
+    const p = phonemes[i]!;
+    const lastChar = p.charCodeAt(p.length - 1);
+    // '0'=48, '1'=49, '2'=50
+    if (lastChar >= 48 && lastChar <= 50) {
       vowelPositions.push(i);
     }
   }
@@ -220,7 +222,7 @@ export function applyStressPrediction(word: string, phonemes: string[]): string[
   for (let i = 0; i < vowelPositions.length; i++) {
     const pos = vowelPositions[i]!;
     const phoneme = result[pos]!;
-    const base = vowelBase(phoneme);
+    const base = stripStress(phoneme);
 
     // Skip phonemes already reduced by NRL's explicit AX rules (AH0)
     if (phoneme === 'AH0') {

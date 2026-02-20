@@ -49,9 +49,21 @@ export function detectCasePattern(word: string): CasePattern {
     return 'upper';
   }
 
-  // Capitalized: first uppercase, rest lowercase
-  if (isFirstUpper && word.slice(1) === word.slice(1).toLowerCase()) {
-    return 'capitalized';
+  // Capitalized: first uppercase, rest all lowercase
+  // Use charCode loop to avoid creating two temporary strings from slice(1)
+  if (isFirstUpper) {
+    let restIsLower = true;
+    for (let i = 1; i < word.length; i++) {
+      const c = word.charCodeAt(i);
+      if (c >= 65 && c <= 90) {
+        // A-Z
+        restIsLower = false;
+        break;
+      }
+    }
+    if (restIsLower) {
+      return 'capitalized';
+    }
   }
 
   // Mixed case (like "GitHub", "iPhone", "McDonald")
