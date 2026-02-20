@@ -3,8 +3,11 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { build as esbuild } from 'esbuild';
+
+const BUILD_ID = randomUUID();
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -150,6 +153,17 @@ function copyRoutesToDist(): Plugin {
   };
 }
 
+// Write build-id.txt to dist so the app can poll for new deploys
+function writeBuildId(): Plugin {
+  return {
+    name: 'write-build-id',
+    writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      writeFileSync(join(distDir, 'build-id.txt'), BUILD_ID + '\n');
+    },
+  };
+}
+
 // Build bookmarklet.js as a self-contained IIFE (includes dictionary, ~3MB gzipped)
 function buildBookmarklet(): Plugin {
   return {
@@ -163,7 +177,7 @@ function buildBookmarklet(): Plugin {
         outfile: join(distDir, 'bookmarklet.js'),
         minify: true,
         conditions: ['source'],
-        logLevel: 'info',
+        logLevel: 'error',
       });
     },
   };
@@ -180,11 +194,21 @@ export default defineConfig({
     // Docs.test.ts needs generated docs, runs separately after build
     exclude: ['e2e/**', 'node_modules/**', '**/Docs.test.ts'],
   },
+  define: {
+    __BUILD_ID__: JSON.stringify(BUILD_ID),
+  },
   // Use BASE_URL env var for GitHub Pages, otherwise default to '/'
   base: process.env.BASE_URL ?? '/',
   // SWC is ~20x faster than Babel for React compilation
   // markdown() converts .md imports to HTML at build time (saves ~150KB vs react-markdown)
-  plugins: [markdown(), react(), processChunks(), copyRoutesToDist(), buildBookmarklet()],
+  plugins: [
+    markdown(),
+    react(),
+    processChunks(),
+    copyRoutesToDist(),
+    writeBuildId(),
+    buildBookmarklet(),
+  ],
   build: {
     outDir: 'dist',
     // Enable sourcemaps in CI for debugging, skip locally for speed

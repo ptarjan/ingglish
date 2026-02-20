@@ -6,6 +6,7 @@ import Tutorial from './components/Tutorial';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useTheme } from './hooks/useTheme';
 import { trackPageView } from './utils/analytics';
+import { useUpdateCheck } from './hooks/useUpdateCheck';
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function lazyWithReload<T extends { default: ComponentType<any> }>(
@@ -158,6 +159,7 @@ function App() {
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
   const { cycleTheme, getThemeIcon } = useTheme();
+  const updateAvailable = useUpdateCheck();
 
   // Sync URL path with active tab (docs manages its own sub-path)
   useEffect(() => {
@@ -260,6 +262,18 @@ function App() {
 
   return (
     <div className="app">
+      {updateAvailable && (
+        <div className="update-banner">
+          A new version is available.{' '}
+          <button
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            Reload
+          </button>
+        </div>
+      )}
       <title>{meta.title}</title>
       <meta name="description" content={meta.description} />
       <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
