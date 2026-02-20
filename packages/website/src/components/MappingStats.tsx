@@ -84,12 +84,26 @@ function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
   };
 }
 
-/** Find collisions in experiment that don't exist in standard Ingglish */
+/** Find collisions in experiment that don't exist in standard Ingglish.
+ *  Compares by word groups, not spelling — so a renamed collision (wood→wuhd)
+ *  that contains the same words is still filtered out. */
 function getNewCollisions(
   experimentMap: Map<string, string[]>,
   ingglishMap: Map<string, string[]>,
   count: number
 ): { spelling: string; words: string[] }[] {
+  // Build a set of collision groups in standard Ingglish (by sorted word list)
+  const ingglishGroups = new Set<string>();
+  for (const words of ingglishMap.values()) {
+    if (words.length > 1) {
+      const key = words
+        .map((w) => w.toLowerCase())
+        .sort()
+        .join('\0');
+      ingglishGroups.add(key);
+    }
+  }
+
   const results: { spelling: string; words: string[]; score: number }[] = [];
 
   for (const [spelling, expWords] of experimentMap) {
@@ -97,14 +111,13 @@ function getNewCollisions(
       continue;
     }
 
-    // Check if this exact collision group already exists in standard Ingglish
-    const ingWords = ingglishMap.get(spelling);
-    if (ingWords !== undefined) {
-      const expSet = new Set(expWords.map((w) => w.toLowerCase()));
-      const ingSet = new Set(ingWords.map((w) => w.toLowerCase()));
-      if (expSet.size === ingSet.size && [...expSet].every((w) => ingSet.has(w))) {
-        continue; // Same collision exists in standard — skip
-      }
+    // Check if this same group of words already collides in standard Ingglish
+    const key = expWords
+      .map((w) => w.toLowerCase())
+      .sort()
+      .join('\0');
+    if (ingglishGroups.has(key)) {
+      continue;
     }
 
     // Score by max word frequency in the group
