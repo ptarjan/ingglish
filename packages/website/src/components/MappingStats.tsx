@@ -271,7 +271,7 @@ function MappingStats({ version }: MappingStatsProps) {
             <thead>
               <tr>
                 <th>Word</th>
-                <th>Standard</th>
+                <th>Ingglish</th>
                 <th>Yours</th>
               </tr>
             </thead>
