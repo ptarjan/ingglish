@@ -85,22 +85,23 @@ function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
 }
 
 /** Find collisions in experiment that don't exist in standard Ingglish.
- *  Compares by word groups, not spelling — so a renamed collision (wood→wuhd)
- *  that contains the same words is still filtered out. */
+ *  A collision is "not new" if every word in the group already collided
+ *  together in standard Ingglish (i.e. the group is a subset of an existing
+ *  standard collision group). This handles both exact matches and groups that
+ *  shrank because a word's spelling changed. */
 function getNewCollisions(
   experimentMap: Map<string, string[]>,
   ingglishMap: Map<string, string[]>,
   count: number
 ): { spelling: string; words: string[] }[] {
-  // Build a set of collision groups in standard Ingglish (by sorted word list)
-  const ingglishGroups = new Set<string>();
+  // For each word, record which other words it collides with in standard Ingglish
+  const ingglishGroupOf = new Map<string, Set<string>>();
   for (const words of ingglishMap.values()) {
     if (words.length > 1) {
-      const key = words
-        .map((w) => w.toLowerCase())
-        .sort()
-        .join('\0');
-      ingglishGroups.add(key);
+      const lowerWords = new Set(words.map((w) => w.toLowerCase()));
+      for (const w of lowerWords) {
+        ingglishGroupOf.set(w, lowerWords);
+      }
     }
   }
 
@@ -111,13 +112,12 @@ function getNewCollisions(
       continue;
     }
 
-    // Check if this same group of words already collides in standard Ingglish
-    const key = expWords
-      .map((w) => w.toLowerCase())
-      .sort()
-      .join('\0');
-    if (ingglishGroups.has(key)) {
-      continue;
+    // Check if every word in this group already collided together in standard.
+    // Pick any word and check if all others are in its standard collision group.
+    const lowerWords = expWords.map((w) => w.toLowerCase());
+    const standardGroup = ingglishGroupOf.get(lowerWords[0]!);
+    if (standardGroup !== undefined && lowerWords.every((w) => standardGroup.has(w))) {
+      continue; // All these words already collided in standard — not new
     }
 
     // Score by max word frequency in the group
