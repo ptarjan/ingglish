@@ -21,9 +21,8 @@ jobs:
         with:
           dict-cache: true
 
-      # Run all workspace test scripts automatically (no manual package list to maintain).
       - name: Unit tests
-        run: npm test --workspaces --if-present
+        run: npm test
 
   # Basic lint checks (formatting, CSS) - no type checking needed
   lint-basic:
