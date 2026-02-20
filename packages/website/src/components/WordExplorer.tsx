@@ -31,6 +31,18 @@ export default function WordExplorer() {
     });
   }, []);
 
+  // Sync input to URL for shareable links
+  useEffect(() => {
+    const trimmed = input.trim();
+    const url = new URL(window.location.href);
+    if (trimmed) {
+      url.searchParams.set('word', trimmed);
+    } else {
+      url.searchParams.delete('word');
+    }
+    window.history.replaceState(null, '', url);
+  }, [input]);
+
   const results = useMemo(() => {
     if (!reverseDictReady) {
       return [];
