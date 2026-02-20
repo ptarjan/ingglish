@@ -23,6 +23,9 @@ function ReadingChallenge() {
   const [currentFeedback, setCurrentFeedback] = useState<SentenceScore | null>(null);
   const [reverseDictReady, setReverseDictReady] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const startRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, shareLink] = useShare();
 
   // Load reverse dictionary on mount (needed for homophone scoring)
@@ -31,6 +34,27 @@ function ReadingChallenge() {
       setReverseDictReady(true);
     });
   }, []);
+
+  // Auto-focus Start button once dictionary is ready
+  useEffect(() => {
+    if (reverseDictReady && phase === 'intro') {
+      startRef.current?.focus();
+    }
+  }, [reverseDictReady, phase]);
+
+  // Auto-focus Next button when feedback appears
+  useEffect(() => {
+    if (currentFeedback) {
+      setTimeout(() => nextRef.current?.focus(), 0);
+    }
+  }, [currentFeedback]);
+
+  // Auto-focus Share button on results screen
+  useEffect(() => {
+    if (phase === 'results') {
+      setTimeout(() => shareRef.current?.focus(), 0);
+    }
+  }, [phase]);
 
   const startChallenge = useCallback((newSeed: number) => {
     setSeed(newSeed);
@@ -118,7 +142,12 @@ function ReadingChallenge() {
             <li>Type what you think it says in English</li>
             <li>Get scored word-by-word (homophones accepted!)</li>
           </ol>
-          <button className="btn-primary" onClick={handleStart} disabled={!reverseDictReady}>
+          <button
+            ref={startRef}
+            className="btn-primary"
+            onClick={handleStart}
+            disabled={!reverseDictReady}
+          >
             {reverseDictReady ? 'Start Challenge' : 'Loading...'}
           </button>
         </div>
@@ -175,6 +204,7 @@ function ReadingChallenge() {
               New Challenge
             </button>
             <button
+              ref={shareRef}
               className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
               onClick={handleShareResult}
             >
@@ -238,7 +268,7 @@ function ReadingChallenge() {
             Check
           </button>
         ) : (
-          <button className="btn-primary" onClick={handleNext}>
+          <button ref={nextRef} className="btn-primary" onClick={handleNext}>
             {round + 1 >= sentences.length ? 'See Results' : 'Next'}
           </button>
         )}
