@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { translateSync } from './translate/forward';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const TUTORIAL_PATH = join(__dirname, '../../website/src/components/tutorial-data.ts');
+const TUTORIAL_PATH = join(__dirname, '../../website/src/data/tutorial-data.ts');
 
 interface Example {
   english: string;

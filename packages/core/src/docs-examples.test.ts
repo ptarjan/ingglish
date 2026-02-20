@@ -348,7 +348,7 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
 
 const SPELLING_GUIDE_PATH = join(
   __dirname,
-  '../../../packages/website/src/components/spelling-guide-data.ts'
+  '../../../packages/website/src/data/spelling-guide-data.ts'
 );
 
 /**
