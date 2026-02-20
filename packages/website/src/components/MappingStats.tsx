@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
 
@@ -6,32 +6,22 @@ interface MappingStatsProps {
   version: number;
 }
 
-interface Stats {
-  collisionCount: number;
-  identicalCount: number;
-  homophoneGroups: number;
-  lettersUsed: number;
-  falseFriends: number;
-  identicalTextPct: number;
-  ingglishCollisionCount: number;
-  ingglishIdenticalTextPct: number;
-  topCollisions: { spelling: string; words: string[] }[];
+interface FormatStats {
+  totalWords: number;
+  /** % of words with unique (non-colliding) spellings */
+  uniquePct: number;
+  /** % of real-world text (by frequency) that stays identical */
+  textPreservedPct: number;
+  /** % of unique spellings that don't match a different English word */
+  clarityPct: number;
+  /** Collision map for top-collisions table */
+  collisionMap: Map<string, string[]>;
 }
 
-function computeStats(format: 'experiment' | 'ingglish'): {
-  collisionCount: number;
-  identicalCount: number;
-  homophoneGroups: number;
-  lettersUsed: number;
-  falseFriends: number;
-  identicalTextPct: number;
-  collisionMap: Map<string, string[]>;
-} {
+function computeStats(format: 'experiment' | 'ingglish'): FormatStats {
   const dict = getDictionary();
   const allWords = new Set<string>();
   const spellingToWords = new Map<string, string[]>();
-  const lettersSet = new Set<string>();
-  let identicalCount = 0;
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
 
@@ -45,18 +35,10 @@ function computeStats(format: 'experiment' | 'ingglish'): {
     allWords.add(wordLower);
     const spelling = arpabetToFormat(phonemes, format);
 
-    // Track letters used
-    for (const ch of spelling.toLowerCase()) {
-      if (ch >= 'a' && ch <= 'z') {
-        lettersSet.add(ch);
-      }
-    }
-
-    // Track identical words and frequency-weighted coverage
+    // Track frequency-weighted text preservation
     const freq = getWordFrequency(wordLower) ?? 0;
     totalFreqSum += freq;
     if (wordLower === spelling.toLowerCase()) {
-      identicalCount++;
       identicalFreqSum += freq;
     }
 
@@ -69,14 +51,16 @@ function computeStats(format: 'experiment' | 'ingglish'): {
     }
   }
 
+  const totalWords = allWords.size;
+
   // Count collisions and false friends
-  let collisionCount = 0;
-  let homophoneGroups = 0;
+  let collidingWords = 0;
   let falseFriends = 0;
+  let totalUniqueSpellings = 0;
   for (const [spelling, words] of spellingToWords) {
+    totalUniqueSpellings++;
     if (words.length > 1) {
-      collisionCount += words.length;
-      homophoneGroups++;
+      collidingWords += words.length;
     }
     // False friend: translated spelling matches a different English word
     const spellingLower = spelling.toLowerCase();
@@ -88,15 +72,14 @@ function computeStats(format: 'experiment' | 'ingglish'): {
     }
   }
 
-  const identicalTextPct = totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0;
-
   return {
-    collisionCount,
-    identicalCount,
-    homophoneGroups,
-    lettersUsed: lettersSet.size,
-    falseFriends,
-    identicalTextPct,
+    totalWords,
+    uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
+    textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
+    clarityPct:
+      totalUniqueSpellings > 0
+        ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
+        : 100,
     collisionMap: spellingToWords,
   };
 }
@@ -130,6 +113,27 @@ function getTopCollisions(
   return collisions.slice(0, count).map(({ spelling, words }) => ({ spelling, words }));
 }
 
+interface Stats {
+  experiment: FormatStats;
+  ingglish: FormatStats;
+  topCollisions: { spelling: string; words: string[] }[];
+}
+
+/** Format a delta between experiment and ingglish (positive = better) */
+function DeltaBadge({ value }: { value: number }) {
+  if (Math.abs(value) < 0.05) {
+    return null;
+  }
+  const sign = value > 0 ? '+' : '';
+  const className = value > 0 ? 'stat-delta stat-delta-better' : 'stat-delta stat-delta-worse';
+  return (
+    <span className={className}>
+      {sign}
+      {value.toFixed(1)}
+    </span>
+  );
+}
+
 function MappingStats({ version }: MappingStatsProps) {
   const [stats, setStats] = useState<Stats | null>(null);
   const [computing, setComputing] = useState(false);
@@ -144,14 +148,8 @@ function MappingStats({ version }: MappingStatsProps) {
       const ingglish = computeStats('ingglish');
 
       setStats({
-        collisionCount: experiment.collisionCount,
-        identicalCount: experiment.identicalCount,
-        homophoneGroups: experiment.homophoneGroups,
-        lettersUsed: experiment.lettersUsed,
-        falseFriends: experiment.falseFriends,
-        identicalTextPct: experiment.identicalTextPct,
-        ingglishCollisionCount: ingglish.collisionCount,
-        ingglishIdenticalTextPct: ingglish.identicalTextPct,
+        experiment,
+        ingglish,
         topCollisions: getTopCollisions(experiment.collisionMap, 10),
       });
       setComputing(false);
@@ -162,27 +160,6 @@ function MappingStats({ version }: MappingStatsProps) {
     };
   }, [version]);
 
-  const collisionDiff = useMemo(() => {
-    if (stats === null) {
-      return null;
-    }
-    const parts: string[] = [];
-    const cDiff = stats.collisionCount - stats.ingglishCollisionCount;
-    if (cDiff > 0) {
-      parts.push(`${cDiff} more collisions`);
-    } else if (cDiff < 0) {
-      parts.push(`${Math.abs(cDiff)} fewer collisions`);
-    }
-    const tDiff = stats.identicalTextPct - stats.ingglishIdenticalTextPct;
-    if (Math.abs(tDiff) >= 0.1) {
-      parts.push(`${tDiff > 0 ? '+' : ''}${tDiff.toFixed(1)}% text unchanged`);
-    }
-    if (parts.length === 0) {
-      return 'Same as standard Ingglish';
-    }
-    return `${parts.join(', ')} vs standard Ingglish`;
-  }, [stats]);
-
   if (stats === null) {
     return (
       <div className="mapping-stats">
@@ -192,6 +169,8 @@ function MappingStats({ version }: MappingStatsProps) {
     );
   }
 
+  const { experiment, ingglish } = stats;
+
   return (
     <div className="mapping-stats">
       <h3>Statistics {computing && <span className="stats-updating">(updating...)</span>}</h3>
@@ -199,49 +178,35 @@ function MappingStats({ version }: MappingStatsProps) {
       <div className="stats-cards">
         <div
           className="stat-card"
-          title="Words that map to the same spelling as another word (e.g. to/too/two all become 'tuu')"
+          title="What percentage of real-world text (by word frequency) stays identical after translation — higher means more familiar to English readers"
         >
-          <div className="stat-value">{stats.collisionCount.toLocaleString()}</div>
-          <div className="stat-label">Collisions</div>
+          <div className="stat-value">
+            {experiment.textPreservedPct.toFixed(1)}%
+            <DeltaBadge value={experiment.textPreservedPct - ingglish.textPreservedPct} />
+          </div>
+          <div className="stat-label">Text preserved</div>
         </div>
         <div
           className="stat-card"
-          title="Words whose spelling stays exactly the same after translation (e.g. 'bed' stays 'bed')"
+          title="What percentage of dictionary words have a unique (non-colliding) spelling — higher means fewer ambiguous words"
         >
-          <div className="stat-value">{stats.identicalCount.toLocaleString()}</div>
-          <div className="stat-label">Identical words</div>
+          <div className="stat-value">
+            {experiment.uniquePct.toFixed(1)}%
+            <DeltaBadge value={experiment.uniquePct - ingglish.uniquePct} />
+          </div>
+          <div className="stat-label">Unique spellings</div>
         </div>
         <div
           className="stat-card"
-          title="Translated spellings that match a different English word (e.g. 'wait' for 'white') — can confuse English readers"
+          title="What percentage of translated spellings don't accidentally look like a different English word — higher means less confusion"
         >
-          <div className="stat-value">{stats.falseFriends.toLocaleString()}</div>
-          <div className="stat-label">False friends</div>
-        </div>
-        <div
-          className="stat-card"
-          title="What percentage of real-world text (by word frequency) stays identical after translation"
-        >
-          <div className="stat-value">{stats.identicalTextPct.toFixed(1)}%</div>
-          <div className="stat-label">Text unchanged</div>
-        </div>
-        <div
-          className="stat-card"
-          title="Groups of 2+ words that share the same translated spelling"
-        >
-          <div className="stat-value">{stats.homophoneGroups.toLocaleString()}</div>
-          <div className="stat-label">Homophone groups</div>
-        </div>
-        <div
-          className="stat-card"
-          title="How many of the 26 Latin letters appear in translated output"
-        >
-          <div className="stat-value">{stats.lettersUsed} / 26</div>
-          <div className="stat-label">Letters used</div>
+          <div className="stat-value">
+            {experiment.clarityPct.toFixed(1)}%
+            <DeltaBadge value={experiment.clarityPct - ingglish.clarityPct} />
+          </div>
+          <div className="stat-label">Clarity</div>
         </div>
       </div>
-
-      {collisionDiff !== null && <p className="stats-comparison">{collisionDiff}</p>}
 
       {stats.topCollisions.length > 0 && (
         <div className="top-collisions">

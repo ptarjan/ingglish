@@ -320,7 +320,7 @@
 
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
@@ -345,11 +345,27 @@
   letter-spacing: 0.05em;
 }
 
-.stats-comparison {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  margin-bottom: 1rem;
-  font-style: italic;
+.stat-delta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  vertical-align: super;
+}
+
+.stat-delta-better {
+  color: #16a34a;
+}
+
+.stat-delta-worse {
+  color: #dc2626;
+}
+
+[data-theme='dark'] .stat-delta-better {
+  color: #4ade80;
+}
+
+[data-theme='dark'] .stat-delta-worse {
+  color: #f87171;
 }
 
 .top-collisions {
@@ -378,7 +394,7 @@
   }
 
   .stats-cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .experiment-table th,
