@@ -79,15 +79,15 @@ function translateUnknownCore(word: string, format: OutputFormat): FallbackResul
     return { strategy: 'custom', translated: arpabetToFormat(customPhonemes, format) };
   }
 
+  // If G2P has a word-specific rule or guard, prefer G2P over initialism/british/
+  // compound/stemming (which may produce worse results)
+  if (hasWordRule(word)) {
+    return { strategy: 'g2p', translated: translateWithRules(word, format) };
+  }
+
   // Check for initialisms (URL -> yooahrel)
   if (isInitialism(word)) {
     return { strategy: 'initialism', translated: translateAsAcronym(word, format) };
-  }
-
-  // If G2P has a word-specific rule or guard, skip british/compound/stemming
-  // (which may produce worse results by incorrectly decomposing or normalizing)
-  if (hasWordRule(word)) {
-    return { strategy: 'g2p', translated: translateWithRules(word, format) };
   }
 
   // Try British spelling normalization (colour -> color)

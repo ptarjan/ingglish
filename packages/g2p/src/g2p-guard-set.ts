@@ -1,7 +1,32 @@
-// Words where G2P is correct but stemming/compound produces wrong results.
-// 13251 entries. hasWordRule() should return true for these.
+// Words where G2P is correct but stemming/compound/british/initialism produces wrong results.
+// 13275 entries. hasWordRule() should return true for these.
 
 export const G2P_GUARD_SET = new Set<string>([
+  // Words that are both initialisms and real words — CMU uses word pronunciation
+  'AKA',
+  'COO',
+  'CRUD',
+  'DEA',
+  'FYI',
+  'GAN',
+  'GPS',
+  'HIV',
+  'IDE',
+  'IMO',
+  'LAN',
+  'LED',
+  'NASA',
+  'NATO',
+  'NIC',
+  'OOP',
+  'RAG',
+  'RAM',
+  'RIP',
+  'ROI',
+  'ROM',
+  'SAAS',
+  'URI',
+  'WAN',
   'ABBAS',
   'ABBS',
   'ABDICATING',
