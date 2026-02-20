@@ -231,7 +231,13 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
   // Track sentence boundaries to capitalize the first word of each sentence.
   // Start as true so the very first word gets capitalized (beginning of text = sentence start).
   // Only applies to multi-word text to avoid changing single-word translation behavior.
-  const hasMultipleWords = tokens.filter((t) => WORD_TEST_REGEX.test(t)).length > 1;
+  let wordCount = 0;
+  for (const t of tokens) {
+    if (WORD_TEST_REGEX.test(t) && ++wordCount > 1) {
+      break;
+    }
+  }
+  const hasMultipleWords = wordCount > 1;
   let sentenceStart = hasMultipleWords;
 
   const translated = tokens
