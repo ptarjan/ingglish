@@ -199,8 +199,8 @@ test.describe('Text Translator', () => {
   });
 
   test('handles sample text button', async () => {
-    // Click the first Sample button (English side)
-    await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
+    // Click the Random button (English side)
+    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
     const englishInput = page.locator('.text-input').first();
     await expect(englishInput).not.toBeEmpty();
   });
@@ -214,7 +214,7 @@ test.describe('Text Translator', () => {
 
   test('English text does not flash empty when focusing Ingglish after sample', async () => {
     // Load sample text
-    await page.locator('.input-section').first().locator('button:has-text("Sample")').click();
+    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
 
     const englishInput = page.locator('.text-input').first();
     const ingglishInput = page.locator('.text-input').last();
