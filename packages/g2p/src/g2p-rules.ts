@@ -146,6 +146,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DOING]=/D UW IH NX/',
     ' [DOES] =/D AH Z/',
     '#:[DED] =/D IH D/',
     '.E[D] =/D/',
@@ -252,6 +253,7 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   H: [
     ' [HAVE]=/HH AE V/',
+    ' [HERE] =/HH IY R/',
     ' [HER] =/HH ER/',
     ' [HIM] =/HH IH M/',
     ' [HIS] =/HH IH Z/',
@@ -260,6 +262,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [INTO] =/IH N T UW/',
     '[INI] =/IY N IY/',
     '[INO] =/IY N OW/',
     '[INA] =/IY N AH/',
@@ -366,6 +369,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[N]=/N/',
   ],
   O: [
+    ' [ONLY]=/OW N L IY/',
     ' [ONE] =/W AH N/',
     ' [OUR]=/AW ER/',
     '[OROUGH]=/ER OW/',
@@ -453,7 +457,6 @@ const NRL_RULES: Record<string, string[]> = {
     '[O]GL=/OW/',
     '[O]FI=/OW/',
     '[O]KI=/OW/',
-    '[O]H=/OW/',
     '#:[ONS] =/AH N Z/',
     '#:[OL] =/AO L/',
     '[O]=/AA/',
