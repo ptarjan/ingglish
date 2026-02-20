@@ -56,17 +56,17 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
   let homophones: string[] = [];
   let g2pTrace: G2PTrace | undefined;
 
-  // Initialisms pass through unchanged in Latin formats, but the Word Explorer
-  // should show the spelled-out pronunciation. Check before the dictionary branch
-  // since some initialisms (e.g. "url") are also in the CMU dictionary.
+  // Initialisms (URL, API, etc.) pass through unchanged in the translation,
+  // but we tag them so the breakdown shows how they're pronounced letter-by-letter.
+  // Check before the dictionary branch since some (e.g. "url") are also in CMU.
   if (isInitialism(lower)) {
     return {
       word: lower,
       phonemes: null,
       ipa: translateAsAcronym(lower, 'ipa').replace(/^\/|\/$/g, ''),
-      ingglish: translateAsAcronym(lower, 'ingglish'),
-      formatted: translateAsAcronym(lower, format),
-      matched: false,
+      ingglish,
+      formatted,
+      matched: true,
       isCustom,
       homophones: [],
       frequency: getWordFrequency(lower),
