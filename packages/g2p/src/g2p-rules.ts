@@ -30,8 +30,22 @@ import { NRL_WORD_RULES as RULES_FK } from './g2p-word-rules-fk';
 import { NRL_WORD_RULES as RULES_LO } from './g2p-word-rules-lo';
 import { NRL_WORD_RULES as RULES_PR } from './g2p-word-rules-pr';
 import { NRL_WORD_RULES as RULES_SZ } from './g2p-word-rules-sz';
-import { FINAL_OVERRIDES } from './g2p-final-overrides';
+import { FINAL_OVERRIDES as OVERRIDES_AB } from './g2p-final-overrides-ab';
+import { FINAL_OVERRIDES as OVERRIDES_CE } from './g2p-final-overrides-ce';
+import { FINAL_OVERRIDES as OVERRIDES_FK } from './g2p-final-overrides-fk';
+import { FINAL_OVERRIDES as OVERRIDES_LO } from './g2p-final-overrides-lo';
+import { FINAL_OVERRIDES as OVERRIDES_PS } from './g2p-final-overrides-ps';
+import { FINAL_OVERRIDES as OVERRIDES_TZ } from './g2p-final-overrides-tz';
 import { G2P_GUARD_SET } from './g2p-guard-set';
+
+const FINAL_OVERRIDES: Record<string, string[]> = {
+  ...OVERRIDES_AB,
+  ...OVERRIDES_CE,
+  ...OVERRIDES_FK,
+  ...OVERRIDES_LO,
+  ...OVERRIDES_PS,
+  ...OVERRIDES_TZ,
+};
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -1189,14 +1203,22 @@ for (const prefixes of Object.values(WORD_RULE_PREFIXES)) {
  */
 export function hasWordRule(word: string): boolean {
   const upper = word.toUpperCase();
-  if (upper in FINAL_OVERRIDES) {return true;}
-  if (WORD_RULE_SET.has(upper)) {return true;}
-  if (G2P_GUARD_SET.has(upper)) {return true;}
+  if (upper in FINAL_OVERRIDES) {
+    return true;
+  }
+  if (WORD_RULE_SET.has(upper)) {
+    return true;
+  }
+  if (G2P_GUARD_SET.has(upper)) {
+    return true;
+  }
   // Check if any word rule is a prefix of this word (NRL prefix matching)
   const prefixes = WORD_RULE_PREFIXES[upper[0]!];
   if (prefixes !== undefined) {
     for (const prefix of prefixes) {
-      if (upper.startsWith(prefix)) {return true;}
+      if (upper.startsWith(prefix)) {
+        return true;
+      }
     }
   }
   return false;
