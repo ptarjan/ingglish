@@ -24,8 +24,12 @@
 
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { applyStressPrediction } from './stress';
-import { NRL_WORD_RULES as RULES_AK } from './g2p-word-rules-ak';
-import { NRL_WORD_RULES as RULES_LZ } from './g2p-word-rules-lz';
+import { NRL_WORD_RULES as RULES_AB } from './g2p-word-rules-ab';
+import { NRL_WORD_RULES as RULES_CF } from './g2p-word-rules-cf';
+import { NRL_WORD_RULES as RULES_GL } from './g2p-word-rules-gl';
+import { NRL_WORD_RULES as RULES_MQ } from './g2p-word-rules-mq';
+import { NRL_WORD_RULES as RULES_RV } from './g2p-word-rules-rv';
+import { NRL_WORD_RULES as RULES_WZ } from './g2p-word-rules-wz';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // ---------------------------------------------------------------------------
@@ -1031,7 +1035,14 @@ function compileRule(ruleStr: string): CompiledRule | null {
 const COMPILED_RULES: Record<string, CompiledRule[]> = {};
 
 for (const [letter, patternRules] of Object.entries(NRL_RULES)) {
-  const wordRules = [...(RULES_AK[letter] ?? []), ...(RULES_LZ[letter] ?? [])];
+  const wordRules = [
+    ...(RULES_AB[letter] ?? []),
+    ...(RULES_CF[letter] ?? []),
+    ...(RULES_GL[letter] ?? []),
+    ...(RULES_MQ[letter] ?? []),
+    ...(RULES_RV[letter] ?? []),
+    ...(RULES_WZ[letter] ?? []),
+  ];
   const rules = [...wordRules, ...patternRules];
   const compiled: CompiledRule[] = [];
   for (const rule of rules) {
