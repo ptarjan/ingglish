@@ -5,6 +5,7 @@ import {
   sortByFrequency,
   getWordFrequency,
   hasCustomPronunciation,
+  getCustomPronunciation,
   loadReverseDictionary,
 } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
@@ -12,8 +13,14 @@ import { arpabetToIPARaw, arpabetPhonemeToIPA } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
-import { diagnoseFallback } from '@ingglish/fallback';
-import type { FallbackStrategy } from '@ingglish/fallback';
+import {
+  diagnoseFallback,
+  decomposeCompound,
+  diagnoseStemming,
+  diagnoseBritish,
+  LETTER_PHONEMES,
+} from '@ingglish/fallback';
+import type { FallbackStrategy, StemmingResult } from '@ingglish/fallback';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { stripStress, isVowel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
@@ -31,6 +38,9 @@ interface WordResult {
   frequency: number | undefined;
   g2pTrace?: G2PTrace;
   fallbackStrategy?: FallbackStrategy | null;
+  compoundParts?: string[];
+  stemmingResult?: StemmingResult;
+  britishSpelling?: string;
 }
 
 function analyzeWord(word: string, format: OutputFormat): WordResult {
@@ -56,12 +66,26 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     // Word not in dictionary — diagnose which fallback strategy handles it
     ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
     const strategy = diagnoseFallback(lower);
+    let compoundParts: string[] | undefined;
+    let stemmingResult: StemmingResult | undefined;
+    let britishSpelling: string | undefined;
+    let customPhonemes: string[] | null = null;
+
     if (strategy === 'g2p') {
       g2pTrace = wordToArpabetTraced(lower);
+    } else if (strategy === 'compound') {
+      compoundParts = decomposeCompound(lower) ?? undefined;
+    } else if (strategy === 'stemming') {
+      stemmingResult = diagnoseStemming(lower) ?? undefined;
+    } else if (strategy === 'british') {
+      britishSpelling = diagnoseBritish(lower) ?? undefined;
+    } else if (strategy === 'custom') {
+      customPhonemes = getCustomPronunciation(lower) ?? null;
     }
+
     return {
       word: lower,
-      phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? null,
+      phonemes: dictPhonemes ?? g2pTrace?.phonemes ?? customPhonemes,
       ipa,
       ingglish,
       formatted,
@@ -71,6 +95,9 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
       frequency: getWordFrequency(lower),
       g2pTrace,
       fallbackStrategy: strategy,
+      compoundParts,
+      stemmingResult,
+      britishSpelling,
     };
   }
 
@@ -149,6 +176,158 @@ function G2PRuleTrace({ trace, format }: { trace: G2PTrace; format: OutputFormat
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function CompoundBreakdown({ parts, format }: { parts: string[]; format: OutputFormat }) {
+  return (
+    <div className="explorer-section">
+      <h4>Compound Breakdown</h4>
+      <p className="section-note">{parts.join(' + ')}</p>
+      <div className="phoneme-chain">
+        <table className="chain-table">
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th>{getFormatLabel(format)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {parts.map((part, i) => (
+              <tr key={i}>
+                <td className="mono">{part}</td>
+                <td className="mono highlight">{translateWord(part, format)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function StemmingBreakdown({ result, format }: { result: StemmingResult; format: OutputFormat }) {
+  const parts = [
+    result.prefix && `${result.prefix}-`,
+    result.stem,
+    result.suffix && `-${result.suffix}`,
+  ].filter(Boolean);
+
+  return (
+    <div className="explorer-section">
+      <h4>Stemming Breakdown</h4>
+      <p className="section-note">{parts.join(' + ')}</p>
+      <div className="phoneme-chain">
+        <table className="chain-table">
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th>Role</th>
+              <th>{getFormatLabel(format)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {result.prefix !== undefined && (
+              <tr>
+                <td className="mono">{result.prefix}-</td>
+                <td className="type-label">prefix</td>
+                <td className="mono highlight">&mdash;</td>
+              </tr>
+            )}
+            <tr>
+              <td className="mono">{result.stem}</td>
+              <td className="type-label">stem</td>
+              <td className="mono highlight">{translateWord(result.stem, format)}</td>
+            </tr>
+            {result.suffix !== undefined && (
+              <tr>
+                <td className="mono">-{result.suffix}</td>
+                <td className="type-label">suffix</td>
+                <td className="mono highlight">&mdash;</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function InitialismBreakdown({ word, format }: { word: string; format: OutputFormat }) {
+  const letters = word.toLowerCase().split('');
+
+  return (
+    <div className="explorer-section">
+      <h4>Initialism Breakdown</h4>
+      <p className="section-note">{letters.map((l) => l.toUpperCase()).join(' \u00B7 ')}</p>
+      <div className="phoneme-chain">
+        <table className="chain-table">
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Phonemes</th>
+              <th>{getFormatLabel(format)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {letters.map((letter, i) => {
+              const phonemes = LETTER_PHONEMES[letter];
+              return (
+                <tr key={i}>
+                  <td className="mono">{letter.toUpperCase()}</td>
+                  <td className="mono">{phonemes ? phonemes.join(' ') : '\u2014'}</td>
+                  <td className="mono highlight">
+                    {phonemes ? arpabetToFormat(phonemes, format) : '\u2014'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function BritishBreakdown({
+  original,
+  american,
+  format,
+}: {
+  original: string;
+  american: string;
+  format: OutputFormat;
+}) {
+  return (
+    <div className="explorer-section">
+      <h4>British Spelling</h4>
+      <p className="section-note">
+        Normalized to American spelling: {original} &rarr; {american}
+      </p>
+      <div className="phoneme-chain">
+        <table className="chain-table">
+          <thead>
+            <tr>
+              <th>Spelling</th>
+              <th>Variant</th>
+              <th>{getFormatLabel(format)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="mono">{original}</td>
+              <td className="type-label">British</td>
+              <td className="mono">&mdash;</td>
+            </tr>
+            <tr>
+              <td className="mono">{american}</td>
+              <td className="type-label">American</td>
+              <td className="mono highlight">{translateWord(american, format)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -332,6 +511,26 @@ export default function WordExplorer() {
               <h4>G2P Rules Applied</h4>
               <G2PRuleTrace trace={result.g2pTrace} format={format} />
             </div>
+          )}
+
+          {result.compoundParts !== undefined && (
+            <CompoundBreakdown parts={result.compoundParts} format={format} />
+          )}
+
+          {result.stemmingResult !== undefined && (
+            <StemmingBreakdown result={result.stemmingResult} format={format} />
+          )}
+
+          {result.fallbackStrategy === 'initialism' && (
+            <InitialismBreakdown word={result.word} format={format} />
+          )}
+
+          {result.britishSpelling !== undefined && (
+            <BritishBreakdown
+              original={result.word}
+              american={result.britishSpelling}
+              format={format}
+            />
           )}
 
           {result.phonemes !== null && (

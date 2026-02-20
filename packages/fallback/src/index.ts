@@ -22,9 +22,16 @@ import {
   KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
 } from './acronyms';
-import { translateAsBritish } from './british';
+import { translateAsBritish, diagnoseBritish } from './british';
 import { translateAsCompound } from './compounds';
-import { translateWithStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
+import { dpDecompose } from './compounds';
+import {
+  translateWithStemming,
+  diagnoseStemming,
+  SUFFIX_PHONEMES,
+  PREFIX_PHONEMES,
+} from './stemming';
+import type { StemmingResult } from './stemming';
 import { translateWithPhonemize, preloadPhonemize } from './phonemize';
 import { translateWithRules } from '@ingglish/g2p';
 
@@ -50,13 +57,17 @@ export {
   parseInitialismWithSuffix,
   translateAsAcronym,
   translateAsBritish,
+  diagnoseBritish,
   translateAsCompound,
+  dpDecompose as decomposeCompound,
   SUFFIX_PHONEMES,
   PREFIX_PHONEMES,
   translateWithStemming,
+  diagnoseStemming,
   translateWithPhonemize,
   preloadPhonemize,
 };
+export type { StemmingResult };
 
 /**
  * Core implementation that returns both the strategy used and the translated word.

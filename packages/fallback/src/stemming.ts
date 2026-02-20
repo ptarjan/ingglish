@@ -128,6 +128,55 @@ export const PREFIX_PHONEMES: { prefix: string; phonemes: string[] }[] = [
   { prefix: 'super', phonemes: ['S', 'UW1', 'P', 'ER0'] },
 ];
 
+export interface StemmingResult {
+  prefix?: string;
+  stem: string;
+  suffix?: string;
+}
+
+/**
+ * Diagnoses how stemming would decompose a word.
+ * Returns the matched prefix/stem/suffix, or null if no match.
+ */
+export function diagnoseStemming(word: string): StemmingResult | null {
+  const lowerWord = word.toLowerCase();
+
+  for (const { suffix } of SUFFIX_PHONEMES) {
+    if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
+      const stem = lowerWord.slice(0, -suffix.length);
+      const stemVariants: string[] = [stem];
+      if (INFLECTIONAL_SUFFIXES.has(suffix)) {
+        stemVariants.push(
+          stem + 'e',
+          stem.length > 1 ? stem.slice(0, -1) : stem,
+          stem.length > 0 ? stem + stem[stem.length - 1]! : stem
+        );
+      }
+      if (stem.endsWith('i')) {
+        stemVariants.push(stem.slice(0, -1) + 'y');
+      }
+      stemVariants.push(stem + 'y');
+
+      for (const variant of stemVariants) {
+        if (lookupPronunciation(variant)) {
+          return { stem: variant, suffix };
+        }
+      }
+    }
+  }
+
+  for (const { prefix } of PREFIX_PHONEMES) {
+    if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
+      const stem = lowerWord.slice(prefix.length);
+      if (lookupPronunciation(stem)) {
+        return { prefix, stem };
+      }
+    }
+  }
+
+  return null;
+}
+
 /**
  * Attempts to translate an unknown word using stemming.
  * Tries to find a known base word and apply suffix rules.

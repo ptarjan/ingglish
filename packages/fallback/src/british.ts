@@ -77,3 +77,22 @@ export function translateAsBritish(word: string, format: OutputFormat = 'ingglis
 
   return null;
 }
+
+/**
+ * Diagnoses British spelling normalization.
+ * Returns the American spelling if a match is found, or null.
+ */
+export function diagnoseBritish(word: string): string | null {
+  const lower = word.toLowerCase();
+
+  for (const { pattern, replacement } of BRITISH_TO_AMERICAN) {
+    if (pattern.test(lower)) {
+      const american = lower.replace(pattern, replacement);
+      if (american !== lower && lookupPronunciation(american)) {
+        return american;
+      }
+    }
+  }
+
+  return null;
+}

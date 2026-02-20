@@ -59,7 +59,7 @@ function lookupWord(word: string): string[] | null {
  *
  * Returns an array of parts, or null if no complete decomposition exists.
  */
-function dpDecompose(word: string): string[] | null {
+export function dpDecompose(word: string): string[] | null {
   const n = word.length;
   // dp[i] = best decomposition for word[0..i-1], or undefined if none
   const dp: ({ parts: string[]; score: number } | undefined)[] = new Array<undefined>(n + 1).fill(
