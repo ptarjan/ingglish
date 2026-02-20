@@ -1,10 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   lookupPronunciation,
   lookupPhonemeKey,
   sortByFrequency,
   getWordFrequency,
   hasCustomPronunciation,
+  loadReverseDictionary,
 } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw, arpabetPhonemeToIPA } from '@ingglish/ipa';
@@ -147,16 +148,27 @@ function getInitialWord(): string {
 export default function WordExplorer() {
   const { format, toggleFormat } = useFormat();
   const [input, setInput] = useState(getInitialWord);
+  const [reverseDictReady, setReverseDictReady] = useState(false);
   const formatLabel = getFormatLabel(format);
 
+  // Load reverse dictionary on mount (needed for homophone lookups)
+  useEffect(() => {
+    void loadReverseDictionary().then(() => {
+      setReverseDictReady(true);
+    });
+  }, []);
+
   const results = useMemo(() => {
+    if (!reverseDictReady) {
+      return [];
+    }
     const trimmed = input.trim();
     if (trimmed.length === 0) {
       return [];
     }
     // Split on spaces to support multi-word lookups
     return trimmed.split(/\s+/).map((w) => analyzeWord(w, format));
-  }, [input, format]);
+  }, [input, format, reverseDictReady]);
 
   const handleWordClick = useCallback((word: string) => {
     setInput(word);
@@ -180,9 +192,12 @@ export default function WordExplorer() {
           onChange={(e) => {
             setInput(e.target.value);
           }}
-          placeholder="Type a word (e.g., knight, through, read)"
+          placeholder={
+            reverseDictReady ? 'Type a word (e.g., knight, through, read)' : 'Loading dictionary...'
+          }
           className="explorer-input"
           spellCheck={false}
+          disabled={!reverseDictReady}
         />
         <button type="button" className="btn-secondary" onClick={toggleFormat}>
           {formatLabel} &#x21C5;
