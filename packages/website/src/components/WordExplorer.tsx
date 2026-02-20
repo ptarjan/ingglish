@@ -110,6 +110,9 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     };
   }
 
+  // Check if this dictionary word is a British variant (colour→color, centre→center)
+  const britishSpelling = diagnoseBritish(lower) ?? undefined;
+
   return {
     word: lower,
     phonemes: dictPhonemes,
@@ -120,6 +123,7 @@ function analyzeWord(word: string, format: OutputFormat): WordResult {
     isCustom,
     homophones,
     frequency: getWordFrequency(lower),
+    britishSpelling,
   };
 }
 
@@ -495,6 +499,9 @@ export default function WordExplorer() {
                   ? 'dictionary'
                   : fallbackLabel(result.fallbackStrategy)}
             </span>
+            {result.matched && result.britishSpelling !== undefined && (
+              <span className="badge badge-fallback">British variant</span>
+            )}
             {result.frequency !== undefined && (
               <span className="badge badge-freq">freq: {formatFrequency(result.frequency)}</span>
             )}
