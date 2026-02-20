@@ -267,6 +267,8 @@
 .experiment-words {
   font-size: 1rem;
   line-height: 1.6;
+  max-height: none;
+  overflow-y: visible;
 }
 
 .experiment-words .word-token:hover,
