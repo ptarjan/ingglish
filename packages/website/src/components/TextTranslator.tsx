@@ -5,6 +5,7 @@ import {
   reverseTranslate,
   reverseTranslateSyncWithMapping,
 } from 'ingglish';
+import type { TranslatedToken } from 'ingglish';
 import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { MappedWordDisplay } from './MappedWordDisplay';

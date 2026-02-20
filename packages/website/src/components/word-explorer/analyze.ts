@@ -9,7 +9,12 @@ import { stripStress } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
-import { diagnoseUnknown, matchBritish, isInitialism, translateAsAcronym } from '@ingglish/fallback';
+import {
+  diagnoseUnknown,
+  matchBritish,
+  isInitialism,
+  translateAsAcronym,
+} from '@ingglish/fallback';
 import type { WordDiagnosis } from '@ingglish/fallback';
 
 export interface WordResult {
@@ -56,7 +61,9 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
     const key = dictPhonemes.map(stripStress).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
     const homophones =
-      reverseMatches !== undefined ? sortByFrequency(reverseMatches).filter((w) => w !== lower) : [];
+      reverseMatches !== undefined
+        ? sortByFrequency(reverseMatches).filter((w) => w !== lower)
+        : [];
 
     // Check if this dictionary word is a British variant (colour→color, centre→center)
     const britishMatch = matchBritish(lower);
