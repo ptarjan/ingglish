@@ -62,7 +62,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
   for (let i = 0; i < rounds.length; i++) {
     const y = startY + i * rowH;
     const mid = y + barH / 2;
-    const pct = Math.round(rounds[i].score * 100);
+    const pct = Math.round(rounds[i]!.score * 100);
 
     // Round label
     ctx.fillStyle = MUTED;
@@ -93,7 +93,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
     ctx.fillStyle = MUTED;
     ctx.font = '400 11px system-ui, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText(`${rounds[i].timeTaken}s`, barX + barW + 70, mid);
+    ctx.fillText(`${rounds[i]!.timeTaken}s`, barX + barW + 70, mid);
   }
 
   // Footer

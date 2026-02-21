@@ -134,7 +134,7 @@ function ReadingChallenge() {
     const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
     const score = scoreSentence(sentences[round].tokens, input);
     setCurrentFeedback(score);
-    setResults((prev) => [...prev, { sentence: sentences[round], score, timeTaken: elapsed }]);
+    setResults((prev) => [...prev, { sentence: sentences[round]!, score, timeTaken: elapsed }]);
   }, [sentences, round, input]);
 
   const handleNext = useCallback(() => {
