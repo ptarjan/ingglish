@@ -109,6 +109,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[ARR]IV=/ER/',
     '[ARR]=/AE R/',
     ' :[AR] =/AA R/',
+    'ST[AR] =/AA R/',
     '[AR] =/ER/',
     'ST[AR]D=/ER/',
     '[AR]=/AA R/',
@@ -170,6 +171,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BACHELOR]=/B AE CH AH L ER/',
     ' [BENEATH]=/B IH N IY TH/',
     ' [BETRAYED]=/B IH T R EY D/',
     ' [BOW] =/B AW/',
@@ -226,6 +228,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CONSTANT]=/K AA N S T AH N T/',
+    ' [COLLAR]=/K AA L ER/',
+    ' [CENTRE]=/S EH N T ER/',
     ' [CATHOLIC]=/K AE TH L IH K/',
     ' [COMPANIES]=/K AH M P AH N IY Z/',
     ' [CHEF]=/SH EH F/',
@@ -420,6 +425,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [ENVELOPE]=/EH N V AH L OW P/',
     ' [EPISODE]=/EH P AH S OW D/',
     ' [EDITOR]=/EH D AH T ER/',
     ' [ELEPHANT]=/EH L AH F AH N T/',
@@ -612,6 +618,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    ' [FESTIVAL]=/F EH S T AH V AH L/',
     ' [FANTASY]=/F AE N T AH S IY/',
     ' [FORGOTTEN]=/F ER G AA T AH N/',
     ' [FALLEN] =/F AA L AH N/',
@@ -698,6 +705,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HOMELESS]=/HH OW M L AH S/',
+    ' [HAPPILY]=/HH AE P AH L IY/',
+    ' [HANS] =/HH AA N S/',
     ' [HOPEFULLY]=/HH OW P F AH L IY/',
     ' [HOMICIDE]=/HH AA M AH S AY D/',
     ' [HAPPINESS]=/HH AE P IY N AH S/',
@@ -745,6 +755,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [INJURY]=/IH N JH ER IY/',
     ' [IMAGE]=/IH M AH JH/',
     ' [ILLEGAL]=/IH L IY G AH L/',
     ' [INSURANCE]=/IH N SH UH R AH N S/',
@@ -893,6 +904,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[J]=/JH/',
   ],
   K: [
+    ' [KOREAN]=/K AO R IY AH N/',
+    ' [KINDLY]=/K AY N D L IY/',
     ' [KNOWLEDGE]=/N AA L AH JH/',
     ' [KANSAS]=/K AE N Z AH S/',
     ' [KENNEDY]=/K EH N AH D IY/',
@@ -1011,6 +1024,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[M]=/M/',
   ],
   N: [
+    ' [NICELY]=/N AY S L IY/',
     ' [NUCLEAR]=/N UW K L IY ER/',
     ' [NEPHEW]=/N EH F Y UW/',
     ' [NOEL]=/N OW EH L/',
@@ -1239,6 +1253,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [PISTOL]=/P IH S T AH L/',
+    ' [PENCIL]=/P EH N S AH L/',
     ' [PARADE]=/P ER EY D/',
     ' [PERMANENT]=/P ER M AH N AH N T/',
     ' [PSYCHO]=/S AY K OW/',
@@ -1310,6 +1326,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[Q]=/K/',
   ],
   R: [
+    ' [RAW] =/R AA/',
     ' [RUSSIA]=/R AH SH AH/',
     ' [RELIGION]=/R IH L IH JH AH N/',
     ' [RUIN]=/R UW AH N/',
@@ -1366,6 +1383,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [STATUE]=/S T AE CH UW/',
+    ' [SALESMAN]=/S EY L Z M AH N/',
     ' [SYNCHRO]=/S IH NG K R OW/',
     ' [SWALLOW]=/S W AA L OW/',
     ' [SIGHS]=/S AY Z/',
@@ -1625,6 +1644,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[V]=/V/',
   ],
   W: [
+    ' [WIZARD]=/W IH Z ER D/',
+    ' [WORTHY]=/W ER DH IY/',
     ' [WISDOM]=/W IH Z D AH M/',
     ' [WASTING]=/W EY S T IH NG/',
     ' [WHEREVER]=/W EH R EH V ER/',
