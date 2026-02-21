@@ -15,20 +15,17 @@ function SpellingGuide(): React.JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {group.sounds.map((sound) => (
-            <tr key={sound.phoneme}>
-              <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(sound.phoneme)}</td>
-              <td className="ingglish-cell">
-                {sound.ingglishOverride ?? arpabetPhonemeToIngglish(sound.phoneme)}
-                {sound.note && (
-                  <span className="sound-note" title={sound.note}>
-                    *
-                  </span>
-                )}
-              </td>
-              <td className="examples-cell">{renderExamples(sound.examples)}</td>
-            </tr>
-          ))}
+          {group.sounds
+            .filter((sound) => !sound.note)
+            .map((sound) => (
+              <tr key={sound.phoneme}>
+                <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(sound.phoneme)}</td>
+                <td className="ingglish-cell">
+                  {sound.ingglishOverride ?? arpabetPhonemeToIngglish(sound.phoneme)}
+                </td>
+                <td className="examples-cell">{renderExamples(sound.examples)}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
