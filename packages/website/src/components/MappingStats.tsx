@@ -2,18 +2,38 @@ import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
 
+/** Character-level Levenshtein distance */
+function editDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  let prev = new Array<number>(n + 1);
+  let curr = new Array<number>(n + 1);
+  for (let j = 0; j <= n; j++) {
+    prev[j] = j;
+  }
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      curr[j] =
+        a[i - 1] === b[j - 1] ? prev[j - 1]! : 1 + Math.min(prev[j - 1]!, prev[j]!, curr[j - 1]!);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n]!;
+}
+
 interface MappingStatsProps {
   version: number;
 }
 
 interface FormatStats {
   totalWords: number;
-  /** % of words with unique (non-colliding) spellings */
+  /** % of real-world text (by frequency) with unambiguous spellings */
   uniquePct: number;
   /** % of real-world text (by frequency) that stays identical */
   textPreservedPct: number;
-  /** % of unique spellings that don't match a different English word */
-  clarityPct: number;
+  /** Frequency-weighted average similarity to English spelling */
+  readabilityPct: number;
   /** Collision map for collision analysis */
   collisionMap: Map<string, string[]>;
 }
@@ -48,8 +68,10 @@ function getIngglishCache() {
   const allWords = new Set<string>();
   const spellingToWords = new Map<string, string[]>();
   const spellings = new Map<string, string>();
+  const wordFreqs = new Map<string, number>();
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
+  let readabilityFreqSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -62,10 +84,16 @@ function getIngglishCache() {
     spellings.set(wordLower, spelling);
 
     const freq = getWordFrequency(wordLower) ?? 0;
+    wordFreqs.set(wordLower, freq);
     totalFreqSum += freq;
     if (wordLower === spelling.toLowerCase()) {
       identicalFreqSum += freq;
     }
+
+    const maxLen = Math.max(wordLower.length, spelling.length);
+    const similarity =
+      maxLen > 0 ? 1 - editDistance(wordLower, spelling.toLowerCase()) / maxLen : 1;
+    readabilityFreqSum += freq * similarity;
 
     const existing = spellingToWords.get(spelling);
     if (existing) {
@@ -77,19 +105,11 @@ function getIngglishCache() {
 
   const totalWords = allWords.size;
 
-  let collidingWords = 0;
-  let falseFriends = 0;
-  let totalUniqueSpellings = 0;
-  for (const [spelling, words] of spellingToWords) {
-    totalUniqueSpellings++;
+  let collidingFreqSum = 0;
+  for (const words of spellingToWords.values()) {
     if (words.length > 1) {
-      collidingWords += words.length;
-    }
-    const spellingLower = spelling.toLowerCase();
-    if (allWords.has(spellingLower)) {
-      const isOwnWord = words.some((w) => w.toLowerCase() === spellingLower);
-      if (!isOwnWord) {
-        falseFriends++;
+      for (const w of words) {
+        collidingFreqSum += wordFreqs.get(w.toLowerCase()) ?? 0;
       }
     }
   }
@@ -108,12 +128,9 @@ function getIngglishCache() {
   cachedIngglish = {
     stats: {
       totalWords,
-      uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
+      uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
-      clarityPct:
-        totalUniqueSpellings > 0
-          ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
-          : 100,
+      readabilityPct: totalFreqSum > 0 ? (readabilityFreqSum / totalFreqSum) * 100 : 100,
       collisionMap: spellingToWords,
     },
     spellings,
@@ -134,9 +151,11 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   const dict = getDictionary();
   const allWords = new Set<string>();
   const spellingToWords = new Map<string, string[]>();
+  const wordFreqs = new Map<string, number>();
   const changes: { word: string; standard: string; experiment: string; freq: number }[] = [];
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
+  let readabilityFreqSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -148,10 +167,16 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
     const expSpelling = arpabetToFormat(phonemes, 'experiment');
 
     const freq = getWordFrequency(wordLower) ?? 0;
+    wordFreqs.set(wordLower, freq);
     totalFreqSum += freq;
     if (wordLower === expSpelling.toLowerCase()) {
       identicalFreqSum += freq;
     }
+
+    const maxLen = Math.max(wordLower.length, expSpelling.length);
+    const similarity =
+      maxLen > 0 ? 1 - editDistance(wordLower, expSpelling.toLowerCase()) / maxLen : 1;
+    readabilityFreqSum += freq * similarity;
 
     // Group words by experiment spelling
     const existing = spellingToWords.get(expSpelling);
@@ -170,20 +195,12 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
 
   const totalWords = allWords.size;
 
-  // Count collisions and false friends
-  let collidingWords = 0;
-  let falseFriends = 0;
-  let totalUniqueSpellings = 0;
-  for (const [spelling, words] of spellingToWords) {
-    totalUniqueSpellings++;
+  // Count frequency-weighted collisions
+  let collidingFreqSum = 0;
+  for (const words of spellingToWords.values()) {
     if (words.length > 1) {
-      collidingWords += words.length;
-    }
-    const spellingLower = spelling.toLowerCase();
-    if (allWords.has(spellingLower)) {
-      const isOwnWord = words.some((w) => w.toLowerCase() === spellingLower);
-      if (!isOwnWord) {
-        falseFriends++;
+      for (const w of words) {
+        collidingFreqSum += wordFreqs.get(w.toLowerCase()) ?? 0;
       }
     }
   }
@@ -217,12 +234,9 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   return {
     stats: {
       totalWords,
-      uniquePct: totalWords > 0 ? ((totalWords - collidingWords) / totalWords) * 100 : 100,
+      uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
-      clarityPct:
-        totalUniqueSpellings > 0
-          ? ((totalUniqueSpellings - falseFriends) / totalUniqueSpellings) * 100
-          : 100,
+      readabilityPct: totalFreqSum > 0 ? (readabilityFreqSum / totalFreqSum) * 100 : 100,
       collisionMap: spellingToWords,
     },
     topChanges: changes.slice(0, 20).map(({ word, standard, experiment }) => ({
@@ -313,23 +327,23 @@ function MappingStats({ version }: MappingStatsProps) {
         </div>
         <div
           className="stat-card"
-          title="What percentage of dictionary words have a unique (non-colliding) spelling — higher means fewer ambiguous words"
+          title="What percentage of real-world text (by word frequency) has an unambiguous spelling — higher means fewer confusing homophones"
         >
           <div className="stat-value">
             {experiment.uniquePct.toFixed(1)}%
             <DeltaBadge value={experiment.uniquePct - ingglish.uniquePct} />
           </div>
-          <div className="stat-label">Unique spellings</div>
+          <div className="stat-label">Unambiguous text</div>
         </div>
         <div
           className="stat-card"
-          title="What percentage of translated spellings don't accidentally look like a different English word — higher means less confusion"
+          title="How similar translated text looks to standard English spelling — higher means easier for English readers to parse"
         >
           <div className="stat-value">
-            {experiment.clarityPct.toFixed(1)}%
-            <DeltaBadge value={experiment.clarityPct - ingglish.clarityPct} />
+            {experiment.readabilityPct.toFixed(1)}%
+            <DeltaBadge value={experiment.readabilityPct - ingglish.readabilityPct} />
           </div>
-          <div className="stat-label">Clarity</div>
+          <div className="stat-label">Readability</div>
         </div>
       </div>
 
