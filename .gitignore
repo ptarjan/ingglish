@@ -54,9 +54,6 @@ test-results/
 *.baseline
 .vite/
 
-# Scratch/experimental scripts (underscore-prefixed)
-packages/core/scripts/_*
-
 # Generated data copies (originals live in packages/dictionary)
 packages/core/src/data/
 packages/core/src/dictionary/
