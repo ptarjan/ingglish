@@ -382,8 +382,8 @@ describe('unknown-words', () => {
     it('should translate words with new vowel digraphs (oa, ue, ei)', () => {
       expect(translateWithRules('soap')).toBe('sohp');
       expect(translateWithRules('coal')).toBe('kohl');
-      expect(translateWithRules('blue')).toBe('bluu');
-      expect(translateWithRules('clue')).toBe('kluu');
+      expect(translateWithRules('blue')).toBe('bloo');
+      expect(translateWithRules('clue')).toBe('kloo');
       // EI → EY (CMU: vein = V EY1 N → "vayn")
       expect(translateWithRules('vein')).toBe('vayn');
     });
@@ -419,7 +419,7 @@ describe('unknown-words', () => {
     });
 
     it('should translate words with doubled consonants', () => {
-      expect(translateWithRules('buzz')).toBe('buz');
+      expect(translateWithRules('buzz')).toBe('buhz');
       expect(translateWithRules('bell')).toBe('bel');
       expect(translateWithRules('apple')).toBe('apal');
     });
@@ -445,7 +445,7 @@ describe('unknown-words', () => {
 
     it('should voice final s after voiced sounds', () => {
       expect(translateWithRules('dogs')).toBe('dogz');
-      expect(translateWithRules('runs')).toBe('runz');
+      expect(translateWithRules('runs')).toBe('ruhnz');
       // Voiceless: keep S
       expect(translateWithRules('cats')).toBe('kats');
     });
@@ -561,7 +561,7 @@ describe('unknown-words', () => {
       expect(translateWithRules('lamb')).toBe('lam');
       // CMU: climb = K L AY1 M → "klaim"
       expect(translateWithRules('climb')).toBe('klaim');
-      expect(translateWithRules('thumb')).toBe('thum');
+      expect(translateWithRules('thumb')).toBe('thuhm');
       expect(translateWithRules('debt')).toBe('det');
       expect(translateWithRules('hymn')).toBe('him');
     });
@@ -576,8 +576,8 @@ describe('unknown-words', () => {
     });
 
     it('should translate ew words', () => {
-      expect(translateWithRules('new')).toBe('nuu');
-      expect(translateWithRules('grew')).toBe('gruu');
+      expect(translateWithRules('new')).toBe('noo');
+      expect(translateWithRules('grew')).toBe('groo');
     });
 
     it('should translate -ture suffix', () => {
@@ -617,7 +617,7 @@ describe('unknown-words', () => {
 
   describe('translateWithStemming', () => {
     it('should handle -ing suffix with known base', () => {
-      expect(translateWithStemming('running')).toBe('runing');
+      expect(translateWithStemming('running')).toBe('ruhning');
     });
 
     it('should handle -ly suffix with known base', () => {
@@ -645,7 +645,7 @@ describe('unknown-words', () => {
     });
 
     it('should handle i→y stem change (loveliest→lovely+est)', () => {
-      expect(translateWithStemming('loveliest')).toBe('luvleeast');
+      expect(translateWithStemming('loveliest')).toBe('luhvleeast');
     });
 
     it('should handle i→y stem change with -ly (happily→happy+ly)', () => {
@@ -657,21 +657,21 @@ describe('unknown-words', () => {
     });
 
     it('should handle -ify suffix (uglify→ugly+ify)', () => {
-      expect(translateWithStemming('uglify')).toBe('ugleeifai');
+      expect(translateWithStemming('uglify')).toBe('uhgleeifai');
     });
 
     it('should handle -ification suffix (uglification→ugly+ification)', () => {
-      expect(translateWithStemming('uglification')).toBe('ugleeifikayshan');
+      expect(translateWithStemming('uglification')).toBe('uhgleeifikayshan');
     });
 
     it('should handle -ifying suffix (uglifying→ugly+ifying)', () => {
-      expect(translateWithStemming('uglifying')).toBe('ugleeifaiing');
+      expect(translateWithStemming('uglifying')).toBe('uhgleeifaiing');
     });
   });
 
   describe('translateAsBritish', () => {
     it('should convert -our to -or (colour→color)', () => {
-      expect(translateAsBritish('colour')).toBe('kuler');
+      expect(translateAsBritish('colour')).toBe('kuhler');
     });
 
     it('should convert -ise to -ize (realise→realize)', () => {
@@ -742,7 +742,7 @@ describe('unknown-words', () => {
 
     it('should handle github via custom pronunciation', () => {
       // github is now a custom pronunciation (G IH1 T HH AH1 B)
-      expect(translateUnknown('github')).toBe('github');
+      expect(translateUnknown('github')).toBe('githuhb');
     });
   });
 
@@ -773,7 +773,7 @@ describe('unknown-words', () => {
   describe('translateAsAcronym', () => {
     it('should spell out URL as yuuarel', () => {
       const result = translateAsAcronym('url');
-      expect(result).toBe('yuuarel');
+      expect(result).toBe('yooarel');
     });
 
     it('should spell out HTML correctly', () => {
@@ -794,19 +794,19 @@ describe('unknown-words', () => {
 
     it('should handle uppercase input', () => {
       const result = translateAsAcronym('URL');
-      expect(result).toBe('yuuarel');
+      expect(result).toBe('yooarel');
     });
   });
 
   describe('acronym detection in translateUnknown', () => {
     it('should translate url as spelled-out letters', () => {
       const result = translateUnknown('url');
-      expect(result).toBe('yuuarel');
+      expect(result).toBe('yooarel');
     });
 
     it('should translate URL (uppercase) as spelled-out letters', () => {
       const result = translateUnknown('URL');
-      expect(result).toBe('yuuarel');
+      expect(result).toBe('yooarel');
     });
 
     it('should translate html as spelled-out letters', () => {

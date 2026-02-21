@@ -66,8 +66,8 @@ describe('reverse-translator', () => {
     });
 
     it('should handle homophones by returning multiple options', () => {
-      // "tuu" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
-      const results = reverseTranslateWord('tuu');
+      // "too" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
+      const results = reverseTranslateWord('too');
       expect(results.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -163,12 +163,12 @@ describe('reverse-translator', () => {
     // picks a different word than the original. This is an inherent limitation
     // of phonetic spelling - homophones become indistinguishable.
 
-    it('to/too/two all become "tuu" and reverse to most common', () => {
-      expect(translateWord('to')).toBe('tuu');
-      expect(translateWord('too')).toBe('tuu');
-      expect(translateWord('two')).toBe('tuu');
+    it('to/too/two all become "too" and reverse to most common', () => {
+      expect(translateWord('to')).toBe('too');
+      expect(translateWord('too')).toBe('too');
+      expect(translateWord('two')).toBe('too');
       // Reverse picks most common word by frequency
-      expect(reverseTranslateSync('tuu')).toBe('to');
+      expect(reverseTranslateSync('too')).toBe('to');
     });
 
     it('their/there/they\'re all become "dhair"', () => {
@@ -192,11 +192,11 @@ describe('reverse-translator', () => {
       expect(reverseTranslateSync('ai')).toBe('i');
     });
 
-    it('queue/cue both become "kyuu"', () => {
-      expect(translateWord('queue')).toBe('kyuu');
-      expect(translateWord('cue')).toBe('kyuu');
+    it('queue/cue both become "kyoo"', () => {
+      expect(translateWord('queue')).toBe('kyoo');
+      expect(translateWord('cue')).toBe('kyoo');
       // Reverse may pick "q" as it's most common by frequency
-      const result = reverseTranslateSync('kyuu');
+      const result = reverseTranslateSync('kyoo');
       expect(['q', 'cue', 'queue']).toContain(result);
     });
 
@@ -450,7 +450,7 @@ describe('reverse-translator', () => {
     });
 
     it('should translate surrounding text while preserving URLs', () => {
-      const result = reverseTranslateSync('Vizit https://example.com tuday');
+      const result = reverseTranslateSync('Vizit https://example.com taday');
       expect(result).toBe('Visit https://example.com today');
     });
 

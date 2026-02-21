@@ -152,7 +152,7 @@ describe('translator', () => {
     it('should use diacritics as pronunciation signals for homographs', () => {
       // résumé (accented, French noun) ≠ resume (unaccented, English verb)
       expect(translateSync('résumé')).toBe('rezamay');
-      expect(translateSync('resume')).toBe('rizuum');
+      expect(translateSync('resume')).toBe('rizoom');
     });
 
     it('should strip diacritics per-word for non-homograph loanwords', () => {
@@ -193,7 +193,7 @@ describe('translator', () => {
     });
 
     it('should handle mixed content', () => {
-      expect(translateSync('Hello, World! How are you?')).toBe('Haloh, Werld! Hou ar yuu?');
+      expect(translateSync('Hello, World! How are you?')).toBe('Haloh, Werld! Hou ar yoo?');
     });
 
     it('should capitalize first word of each sentence', () => {
@@ -252,9 +252,9 @@ describe('translator', () => {
     });
 
     it('should preserve mixed case on unknown words like GitHub', () => {
-      // GitHub has internal capital - should preserve position-by-position
+      // GitHub has internal capital - AH1 in "hub" produces "huhb"
       const result = translateWord('GitHub');
-      expect(result).toBe('GitHub');
+      expect(result).toBe('GitHuhb');
     });
 
     it('should translate GitHub with correct phonetics (t+h not θ)', () => {
@@ -326,8 +326,8 @@ describe('translator', () => {
 
     it('should not affect normal words with doubled letters', () => {
       expect(translateWord('hello')).toBe('haloh');
-      expect(translateWord('running')).toBe('runing');
-      expect(translateWord('butter')).toBe('buter');
+      expect(translateWord('running')).toBe('ruhning');
+      expect(translateWord('butter')).toBe('buhter');
     });
   });
 

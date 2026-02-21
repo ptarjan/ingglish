@@ -18,12 +18,12 @@ describe('camelCase translation', () => {
 
   it('should translate MacBook preserving both capitals', () => {
     const result = translateWord('MacBook');
-    expect(result).toBe('MakBook');
+    expect(result).toBe('MakBuk');
   });
 
   it('should handle unknown camelCase words', () => {
     // Unknown words should also preserve camelCase boundaries
     const result = translateWord('fooBar');
-    expect(result).toBe('fuuBar');
+    expect(result).toBe('fooBar');
   });
 });
