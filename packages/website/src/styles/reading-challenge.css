@@ -71,6 +71,32 @@
   transition: width 0.3s ease;
 }
 
+.challenge-timer {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.challenge-timer-warning {
+  color: var(--color-error);
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .challenge-tier-badge {
   font-size: 0.75rem;
   font-weight: 600;
@@ -275,6 +301,14 @@
   text-align: right;
   font-weight: 600;
   font-size: 0.8rem;
+}
+
+.challenge-round-time {
+  width: 2.5rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .challenge-result-actions {

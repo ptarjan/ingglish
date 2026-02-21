@@ -11,7 +11,14 @@ type Phase = 'intro' | 'playing' | 'results';
 interface RoundResult {
   sentence: ChallengeSentence;
   score: SentenceScore;
+  timeTaken: number; // seconds taken for this round
 }
+
+const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = {
+  1: 30,
+  2: 25,
+  3: 20,
+};
 
 function ReadingChallenge() {
   const [phase, setPhase] = useState<Phase>('intro');
@@ -22,6 +29,8 @@ function ReadingChallenge() {
   const [results, setResults] = useState<RoundResult[]>([]);
   const [currentFeedback, setCurrentFeedback] = useState<SentenceScore | null>(null);
   const [reverseDictReady, setReverseDictReady] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const roundStartRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
@@ -56,6 +65,41 @@ function ReadingChallenge() {
     }
   }, [phase]);
 
+  // Countdown timer — ticks every second while playing and not showing feedback
+  useEffect(() => {
+    if (phase !== 'playing' || currentFeedback !== null) {
+      return;
+    }
+    if (timeLeft <= 0) {
+      return;
+    }
+    const id = setInterval(() => {
+      setTimeLeft((t) => t - 1);
+    }, 1000);
+    return () => {
+      clearInterval(id);
+    };
+  }, [phase, currentFeedback, timeLeft]);
+
+  // Auto-submit when timer reaches 0
+  useEffect(() => {
+    if (phase !== 'playing' || currentFeedback !== null) {
+      return;
+    }
+    if (timeLeft > 0) {
+      return;
+    }
+    // Time's up — submit whatever is in the input (may be empty)
+    const sentence = sentences[round];
+    if (!sentence) {
+      return;
+    }
+    const score = scoreSentence(sentence.tokens, input || '');
+    const elapsed = TIER_TIME_LIMITS[sentence.tier];
+    setCurrentFeedback(score);
+    setResults((prev) => [...prev, { sentence, score, timeTaken: elapsed }]);
+  }, [timeLeft, phase, currentFeedback, sentences, round, input]);
+
   const startChallenge = useCallback((newSeed: number) => {
     setSeed(newSeed);
     const picked = pickChallenge(newSeed);
@@ -64,6 +108,8 @@ function ReadingChallenge() {
     setResults([]);
     setCurrentFeedback(null);
     setInput('');
+    setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
+    roundStartRef.current = Date.now();
     setPhase('playing');
   }, []);
 
@@ -76,9 +122,10 @@ function ReadingChallenge() {
       return;
     }
 
+    const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
     const score = scoreSentence(sentences[round].tokens, input);
     setCurrentFeedback(score);
-    setResults((prev) => [...prev, { sentence: sentences[round]!, score }]);
+    setResults((prev) => [...prev, { sentence: sentences[round], score, timeTaken: elapsed }]);
   }, [sentences, round, input]);
 
   const handleNext = useCallback(() => {
@@ -89,10 +136,12 @@ function ReadingChallenge() {
       setRound(nextRound);
       setInput('');
       setCurrentFeedback(null);
+      setTimeLeft(TIER_TIME_LIMITS[sentences[nextRound]!.tier]);
+      roundStartRef.current = Date.now();
       // Focus input on next tick
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [round, sentences.length]);
+  }, [round, sentences]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -139,7 +188,7 @@ function ReadingChallenge() {
           </p>
           <ol className="challenge-rules">
             <li>Read the Ingglish sentence shown to you</li>
-            <li>Type what you think it says in English</li>
+            <li>Type what you think it says in English before time runs out</li>
             <li>Get scored word-by-word (homophones accepted!)</li>
           </ol>
           <button
@@ -191,6 +240,7 @@ function ReadingChallenge() {
                     />
                   </div>
                   <span className="challenge-round-pct">{pct}%</span>
+                  <span className="challenge-round-time">{r.timeTaken}s</span>
                 </div>
               );
             })}
@@ -237,6 +287,11 @@ function ReadingChallenge() {
             style={{ width: `${((round + 1) / sentences.length) * 100}%` }}
           />
         </div>
+        {currentFeedback === null && (
+          <span className={`challenge-timer${timeLeft <= 5 ? ' challenge-timer-warning' : ''}`}>
+            {timeLeft}s
+          </span>
+        )}
         <span className="challenge-tier-badge">{tierLabel}</span>
       </div>
 
