@@ -179,6 +179,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BRA] =/B R AA/',
     ' [BEARD]=/B IH R D/',
     ' [BARON]=/B AE R AH N/',
     ' [BROOKLYN]=/B R UH K L AH N/',
@@ -242,6 +243,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CLOTHING]=/K L OW DH IH NG/',
     ' [CITIZEN]=/S IH T AH Z AH N/',
     ' [CONSCIENCE]=/K AA N SH AH N S/',
     ' [CHAMBER]=/CH EY M B ER/',
@@ -406,6 +408,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DEPOSIT]=/D AH P AA Z IH T/',
     ' [DEPUTY]=/D EH P Y AH T IY/',
     ' [DIRECTION]=/D ER EH K SH AH N/',
     ' [DESPITE]=/D IH S P AY T/',
@@ -464,6 +467,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [EXTREME]=/EH K S T R IY M/',
+    ' [EXISTENCE]=/EH G Z IH S T AH N S/',
+    ' [ENTITLED]=/EH N T AY T AH L D/',
     ' [EXPERIMENT]=/IH K S P EH R AH M AH N T/',
     ' [EXPLANATION]=/EH K S P L AH N EY SH AH N/',
     ' [EASILY]=/IY Z AH L IY/',
@@ -808,6 +814,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [IMMEDIATE]=/IH M IY D IY AH T/',
     ' [INTERRUPT]=/IH N T ER AH P T/',
     ' [INJURY]=/IH N JH ER IY/',
     ' [IMAGE]=/IH M AH JH/',
@@ -1024,6 +1031,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    ' [MASSAGE]=/M AH S AA ZH/',
+    ' [MURRAY]=/M ER IY/',
     ' [MAGNIFICENT]=/M AE G N IH F AH S AH N T/',
     ' [MISTRESS]=/M IH S T R AH S/',
     ' [MYSTERIOUS]=/M IH S T IH R IY AH S/',
@@ -1316,6 +1325,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [PROFIT]=/P R AA F AH T/',
+    ' [PROMOTION]=/P R AH M OW SH AH N/',
     ' [PREVENT]=/P R IH V EH N T/',
     ' [PRECISELY]=/P R IH S AY S L IY/',
     ' [POSSESSION]=/P AH Z EH SH AH N/',
@@ -1463,6 +1474,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SHAKESPEARE]=/SH EY K S P IY R/',
+    ' [STUDIED]=/S T AH D IY D/',
+    ' [SCIENTIFIC]=/S AY AH N T IH F IH K/',
     ' [SUPERIOR]=/S UW P IH R IY ER/',
     ' [SPECIFIC]=/S P AH S IH F IH K/',
     ' [SOLID]=/S AA L AH D/',
@@ -1722,6 +1736,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[U]=/Y UW/',
   ],
   V: [
+    ' [VON] =/V AO N/',
     ' [VALUABLE]=/V AE L Y AH B AH L/',
     ' [VALUE]=/V AE L Y UW/',
     ' [VIETNAM]=/V IY EH T N AA M/',
