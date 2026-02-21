@@ -5,7 +5,7 @@ export const oughExamples = [
   { prefix: 'thr', suffix: '', sound: 'oo' },
   { prefix: 'th', suffix: '', sound: 'oh' },
   { prefix: 'th', suffix: 't', sound: 'aw' },
-  { prefix: 't', suffix: '', sound: 'uf' },
+  { prefix: 't', suffix: '', sound: 'uhf' },
   { prefix: 'c', suffix: '', sound: 'of' },
   { prefix: 'b', suffix: '', sound: 'ow' },
 ];
@@ -83,7 +83,7 @@ export const paragraphWords: ParagraphWord[] = [
   { english: 'through', ingglish: 'throo', step: 2 },
   { english: 'the', ingglish: 'dha', step: 6 },
   { english: 'night,', ingglish: 'nait,', step: 5 },
-  { english: 'but', ingglish: 'buht', step: 0 },
+  { english: 'but', ingglish: 'buht', step: 2 },
   { english: 'the', ingglish: 'dha', step: 6 },
   { english: 'receptionist', ingglish: 'risepshanist', step: 4 },
   { english: 'said', ingglish: 'sed', step: 2 },

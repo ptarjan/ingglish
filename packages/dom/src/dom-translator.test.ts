@@ -606,7 +606,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'haloh', world: 'werld', how: 'how', are: 'ar', you: 'yuu' },
+        { hello: 'haloh', world: 'werld', how: 'how', are: 'ar', you: 'yoo' },
         { showTooltips: true }
       );
 
