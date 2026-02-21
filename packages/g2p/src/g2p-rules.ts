@@ -32,6 +32,9 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [ACTUAL]=/AE K CH AH W AH L/',
+    ' [ANXIOUS]=/AE NG K SH AH S/',
+    ' [ARTIST] =/AA R T AH S T/',
     ' [APPROPRIATE]=/AH P R OW P R IY AH T/',
     ' [ABANDONED]=/AH B AE N D AH N D/',
     ' [AUTHORITY]=/AH TH AO R AH T IY/',
@@ -179,6 +182,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BENEFIT]=/B EH N AH F IH T/',
     ' [BRA] =/B R AA/',
     ' [BEARD]=/B IH R D/',
     ' [BARON]=/B AE R AH N/',
@@ -243,6 +247,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CAREFULLY]=/K EH R F AH L IY/',
+    ' [CHRISTOPHER] =/K R IH S T AH F ER/',
     ' [CLOTHING]=/K L OW DH IH NG/',
     ' [CITIZEN]=/S IH T AH Z AH N/',
     ' [CONSCIENCE]=/K AA N SH AH N S/',
@@ -362,6 +368,9 @@ const NRL_RULES: Record<string, string[]> = {
     '#RI[CH] =/K/',
     'TRI[CH] =/K/',
     'BRI[CH] =/K/',
+    'MA[CH]ER =/K/',
+    'LA[CH]ER =/K/',
+    'RA[CH]ER =/K/',
     '[CH]=/CH/',
     ' S[CI]#=/S AY/',
     '[CIAL]=/SH AX L/',
@@ -408,6 +417,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DAVIS] =/D EY V AH S/',
+    ' [DESPERATE]=/D EH S P R IH T/',
     ' [DEPOSIT]=/D AH P AA Z IH T/',
     ' [DEPUTY]=/D EH P Y AH T IY/',
     ' [DIRECTION]=/D ER EH K SH AH N/',
@@ -467,6 +478,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [ELAINE]=/IH L EY N/',
+    ' [EVENTUALLY]=/IH V EH N CH AH W AH L IY/',
+    ' [EXTRAORDINARY]=/EH K S T R AH AO R D AH N EH R IY/',
     ' [EXTREME]=/EH K S T R IY M/',
     ' [EXISTENCE]=/EH G Z IH S T AH N S/',
     ' [ENTITLED]=/EH N T AY T AH L D/',
@@ -673,6 +687,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    ' [FASCINATING]=/F AE S AH N EY T IH NG/',
     ' [FAVOURITE]=/F EY V ER IH T/',
     ' [FELICITY]=/F IH L IH S AH T IY/',
     ' [FESTIVAL]=/F EH S T AH V AH L/',
@@ -766,6 +781,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HABIT]=/HH AE B AH T/',
     ' [HOMELESS]=/HH OW M L AH S/',
     ' [HAPPILY]=/HH AE P AH L IY/',
     ' [HANS] =/HH AA N S/',
@@ -816,6 +832,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [INTELLIGENCE]=/IH N T EH L AH JH AH N S/',
     ' [IMMEDIATE]=/IH M IY D IY AH T/',
     ' [INTERRUPT]=/IH N T ER AH P T/',
     ' [INJURY]=/IH N JH ER IY/',
@@ -1034,6 +1051,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    ' [MARIA] =/M ER IY AH/',
     ' [MASSAGE]=/M AH S AA ZH/',
     ' [MURRAY]=/M ER IY/',
     ' [MAGNIFICENT]=/M AE G N IH F AH S AH N T/',
@@ -1142,6 +1160,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[N]=/N/',
   ],
   O: [
+    '[OWSKI] =/AO F S K IY/',
     ' [ORDINARY]=/AO R D AH N EH R IY/',
     ' [OXYGEN]=/AA K S AH JH AH N/',
     ' [ORIGINAL]=/ER IH JH AH N AH L/',
@@ -1328,6 +1347,10 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [PERSONAL] =/P ER S IH N AH L/',
+    ' [POLITICAL]=/P AH L IH T AH K AH L/',
+    ' [POSSIBILITY]=/P AA S AH B IH L AH T IY/',
+    ' [PRINCIPAL]=/P R IH N S AH P AH L/',
     ' [PROFIT]=/P R AA F AH T/',
     ' [PROMOTION]=/P R AH M OW SH AH N/',
     ' [PREVENT]=/P R IH V EH N T/',
@@ -1410,6 +1433,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[Q]=/K/',
   ],
   R: [
+    ' [RECENTLY]=/R IY S AH N T L IY/',
+    ' [RELIGIOUS]=/R IH L IH JH AH S/',
     ' [RESIST]=/R IH Z IH S T/',
     ' [REPLACE]=/R IY P L EY S/',
     ' [REPRESENT]=/R EH P R IH Z EH N T/',
@@ -1477,6 +1502,10 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SENSITIVE]=/S EH N S AH T IH V/',
+    ' [SIMILAR]=/S IH M AH L ER/',
+    ' [SPIRIT] =/S P IH R AH T/',
+    ' [SUITE] =/S W IY T/',
     ' [SHAKESPEARE]=/SH EY K S P IY R/',
     ' [STUDIED]=/S T AH D IY D/',
     ' [SCIENTIFIC]=/S AY AH N T IH F IH K/',
@@ -1602,9 +1631,13 @@ const NRL_RULES: Record<string, string[]> = {
     'OB[S]ER=/Z/',
     'AB[S]OR=/Z/',
     'AB[S]OL=/Z/',
+    'TRAN[S]#=/Z/',
     '[S]=/S/',
   ],
   T: [
+    ' [TEMPERATURE]=/T EH M P R AH CH ER/',
+    ' [TENNIS]=/T EH N AH S/',
+    ' [TRAVELING]=/T R AE V AH L IH NG/',
     ' [TERRORIST]=/T EH R ER IH S T/',
     ' [TEMPORARY]=/T EH M P ER EH R IY/',
     ' [TESTIMONY]=/T EH S T AH M OW N IY/',
@@ -1741,6 +1774,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[U]=/Y UW/',
   ],
   V: [
+    ' [VILLAGE] =/V IH L AH JH/',
+    ' [VIRGINIA]=/V ER JH IH N Y AH/',
     ' [VON] =/V AO N/',
     ' [VALUABLE]=/V AE L Y AH B AH L/',
     ' [VALUE]=/V AE L Y UW/',
