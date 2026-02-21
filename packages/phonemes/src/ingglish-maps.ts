@@ -111,7 +111,8 @@ export const R_COLORED_VOWELS: { arpabet: string; prefix: string }[] = [
   { arpabet: 'EH', prefix: 'ai' }, // air, care, there → 'air'
   { arpabet: 'AE', prefix: 'ar' }, // arrow, barrow, carrot → 'arr'
   { arpabet: 'IH', prefix: 'ee' }, // beer, beard, fear → 'eer'
-  { arpabet: 'AH', prefix: 'u' }, // fur, current → 'ur' (prevents AH0+R collision with 'ar')
+  { arpabet: 'UH', prefix: 'u' }, // tour, cure, pure → 'ur' (CURE vowel, experimentable)
+  { arpabet: 'AH', prefix: 'uh' }, // curry, burroughs → 'uhr' (AH=uh, prevents AH0+R collision with 'ar')
 ];
 
 /**
