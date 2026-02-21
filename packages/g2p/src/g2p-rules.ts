@@ -1793,6 +1793,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[V]=/V/',
   ],
   W: [
+    ' [WOUND] =/W AW N D/',
     ' [WAITRESS]=/W EY T R AH S/',
     ' [WARREN]=/W AO R AH N/',
     ' [WARRANT]=/W AO R AH N T/',
