@@ -135,15 +135,15 @@ export const vowelGroups: SoundGroup[] = [
         ingglishOverride: 'or',
       },
       {
+        phoneme: 'ER',
+        examples:
+          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
+      },
+      {
         phoneme: 'AH+R',
         examples: 'c**urr**y (kuhree)',
         ipaOverride: 'ʌɹ',
         ingglishOverride: 'uhr',
-      },
-      {
-        phoneme: 'ER',
-        examples:
-          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
       },
     ],
   },
