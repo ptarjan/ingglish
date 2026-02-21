@@ -54,10 +54,6 @@ test-results/
 *.baseline
 .vite/
 
-# Generated data copies (originals live in packages/dictionary)
-packages/core/src/data/
-packages/core/src/dictionary/
-
 # Lint caches
 .eslintcache
 
