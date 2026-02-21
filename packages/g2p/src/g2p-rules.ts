@@ -373,6 +373,7 @@ const NRL_RULES: Record<string, string[]> = {
     'SS[E]NG=/AH/',
     'TN[E]SS=/AH/',
     '[ETTE] =/EH T/',
+    '[E]^E =/IY/',
     '[E]=/EH/',
   ],
   F: [

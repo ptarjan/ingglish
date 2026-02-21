@@ -331,8 +331,7 @@ describe('unknown-words', () => {
       expect(wordToArpabet('bike')).toContain('AY1'); // long I
       expect(wordToArpabet('bone')).toContain('OW1'); // long O
       expect(wordToArpabet('cute')).toContain('UW1'); // long U
-      // TODO: theme needs a magic-e rule for E; NRL produces EH (short)
-      expect(wordToArpabet('theme')).toContain('EH1'); // long E (no NRL magic-e for E)
+      expect(wordToArpabet('theme')).toContain('IY1'); // long E (magic-e)
     });
 
     it('should differentiate short vs long vowels (magic-e)', () => {
@@ -576,8 +575,7 @@ describe('unknown-words', () => {
     });
 
     it('should translate sc before e/i without double s', () => {
-      // TODO: NRL gives EH for 'e' in scene; should be IY → "seen"
-      expect(translateWithRules('scene')).toBe('sen');
+      expect(translateWithRules('scene')).toBe('seen');
     });
 
     it('should translate ew words', () => {
