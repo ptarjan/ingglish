@@ -1,13 +1,15 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile DOM translation with realistic HTML content.
  */
 
 import { performance } from 'perf_hooks';
 import { JSDOM } from 'jsdom';
+import { setupJSDOM } from './harness';
 
 const ITERATIONS = 20;
 
-// Realistic article-style HTML content (simulating a news article or blog post)
+// Extended realistic article (more sections than the harness version)
 function createRealisticDOM(): JSDOM {
   const html = `
 <!DOCTYPE html>
@@ -197,16 +199,7 @@ async function main() {
   console.log('=== Real HTML DOM Profile ===\n');
 
   const dom = createRealisticDOM();
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Document = dom.window.Document;
-  // @ts-expect-error - global
-  global.window = dom.window;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
+  setupJSDOM(dom);
 
   const { collectTextNodes } = await import('../src/utils/text-nodes');
   const { shouldSkipElement, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES } =
@@ -245,24 +238,14 @@ async function main() {
   // Warmup
   for (let i = 0; i < 10; i++) {
     const freshDOM = createRealisticDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    setupJSDOM(freshDOM);
     collectTextNodes(freshDOM.window.document.body);
   }
 
   const collectTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
     const freshDOM = createRealisticDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     collectTextNodes(freshDOM.window.document.body);
@@ -277,8 +260,7 @@ async function main() {
   // Profile shouldSkipElement
   console.log('\n--- Profile: shouldSkipElement ---\n');
 
-  // @ts-expect-error - global
-  global.document = dom.window.document;
+  setupJSDOM(dom);
   const skipTimes: number[] = [];
   for (let i = 0; i < ITERATIONS * 10; i++) {
     const start = performance.now();
@@ -321,14 +303,7 @@ async function main() {
   const applyTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
     const freshDOM = createRealisticDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Document = freshDOM.window.Document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     await applyTranslationsMap(freshDOM.window.document.body, translations, {
@@ -351,14 +326,7 @@ async function main() {
 
   // Pre-create DOM
   const preDOM = createRealisticDOM();
-  // @ts-expect-error - global
-  global.document = preDOM.window.document;
-  // @ts-expect-error - global
-  global.Document = preDOM.window.Document;
-  // @ts-expect-error - global
-  global.Node = preDOM.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = preDOM.window.NodeFilter;
+  setupJSDOM(preDOM);
 
   const preTextNodes = collectTextNodes(preDOM.window.document.body);
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Systematic scan for specific error patterns across the entire CMU dictionary.
  * Unlike pronunciation-consistency.ts which compares related word pairs,

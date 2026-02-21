@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Exhaustively search for ALL safe mapping improvements.
  * Optimized: only recompute words affected by a phoneme change.

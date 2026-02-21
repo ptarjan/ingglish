@@ -1,26 +1,10 @@
+#!/usr/bin/env npx vite-node
 /**
  * Performance profiling script for Ingglish core library.
  * Measures time spent in different parts of the translation pipeline.
  */
 
-import { performance } from 'perf_hooks';
-
-// Profile helper
-function profile<T>(name: string, fn: () => T): T {
-  const start = performance.now();
-  const result = fn();
-  const end = performance.now();
-  console.log(`${name}: ${(end - start).toFixed(2)}ms`);
-  return result;
-}
-
-async function profileAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
-  const start = performance.now();
-  const result = await fn();
-  const end = performance.now();
-  console.log(`${name}: ${(end - start).toFixed(2)}ms`);
-  return result;
-}
+import { profile, profileAsync } from './harness';
 
 async function main() {
   console.log('=== Ingglish Performance Profile ===\n');
@@ -42,8 +26,8 @@ async function main() {
 
   // 2. Word translation
   console.log('--- Word Translation ---');
-  const { translateWord } = await import('../src/translate/forward');
-  const { translateSync: translateText } = await import('../src/translate/forward');
+  const { translateWord } = await import('../../src/translate/forward');
+  const { translateSync: translateText } = await import('../../src/translate/forward');
 
   // Single word
   profile('translateWord("hello") x1', () => translateWord('hello'));
@@ -82,7 +66,7 @@ async function main() {
   console.log('--- Reverse Translation ---');
   const { loadReverseDictionary } = await import('@ingglish/dictionary');
   const { reverseTranslateWord, reverseTranslateSync: reverseTranslateText } =
-    await import('../src/translate/reverse');
+    await import('../../src/translate/reverse');
 
   await profileAsync('loadReverseDictionary', async () => {
     await loadReverseDictionary();

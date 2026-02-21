@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * G2P batch experiment tester.
  *
@@ -45,7 +46,7 @@ function runTest(name: string): { sl: number; s: number } {
   try {
     execSync('npx tsup src/index.ts --format cjs,esm', { cwd: G2P_DIR, stdio: 'pipe' });
     const result = execSync(
-      'npx tsx scripts/g2p-backtest.ts 2>/dev/null | grep -E "(ignoring stress|with stress)"',
+      'npx vite-node scripts/g2p/backtest.ts 2>/dev/null | grep -E "(ignoring stress|with stress)"',
       { cwd: CORE_DIR, encoding: 'utf8', timeout: 60000 }
     );
     const slMatch = result.match(/ignoring stress.*?(\d+)/);

@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * For words where a default fallback rule fires and is wrong,
  * analyze the surrounding letter context to find new rules.

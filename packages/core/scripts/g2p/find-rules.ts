@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Find candidate new rules by analyzing letter context patterns in G2P errors.
  *

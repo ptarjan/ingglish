@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Find CMU dictionary errors by checking compound words.
  *

@@ -1,59 +1,13 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile DOM translation operations using jsdom.
  * This measures the actual performance of DOM walking and translation.
  */
 
 import { performance } from 'perf_hooks';
-import { JSDOM } from 'jsdom';
+import { setupJSDOM, createTestDOM } from './harness';
 
 const ITERATIONS = 50;
-
-// Create a realistic HTML document with various elements
-function createTestDOM(numParagraphs: number): JSDOM {
-  const paragraphs = Array.from(
-    { length: numParagraphs },
-    (_, i) =>
-      `<p>The quick brown fox jumps over the lazy dog. This is paragraph ${i + 1} with some text.</p>`
-  ).join('\n');
-
-  const html = `
-<!DOCTYPE html>
-<html>
-<head><title>Test Page</title></head>
-<body>
-  <header>
-    <nav>
-      <a href="/" title="Go to homepage">Home</a>
-      <a href="/about" title="Learn about us">About</a>
-    </nav>
-  </header>
-  <main>
-    <article>
-      <h1>Main Article Title</h1>
-      ${paragraphs}
-      <div class="nested">
-        <div class="deep">
-          <span>Deeply nested text content here</span>
-        </div>
-      </div>
-    </article>
-    <aside>
-      <h2>Sidebar</h2>
-      <p>Some sidebar content with words to translate.</p>
-    </aside>
-  </main>
-  <footer>
-    <p>Copyright 2024</p>
-  </footer>
-  <!-- Skip elements -->
-  <script>console.log("skip me")</script>
-  <code>const x = 1;</code>
-  <pre>preformatted text</pre>
-</body>
-</html>`;
-
-  return new JSDOM(html);
-}
 
 async function main() {
   console.log('=== DOM Translation Profile ===\n');
@@ -63,14 +17,7 @@ async function main() {
   const mediumDOM = createTestDOM(50);
   const largeDOM = createTestDOM(200);
 
-  // @ts-expect-error - global document for jsdom
-  global.document = smallDOM.window.document;
-  // @ts-expect-error - global window for jsdom
-  global.window = smallDOM.window;
-  // @ts-expect-error - global Node for jsdom
-  global.Node = smallDOM.window.Node;
-  // @ts-expect-error - global NodeFilter for jsdom
-  global.NodeFilter = smallDOM.window.NodeFilter;
+  setupJSDOM(smallDOM);
 
   // Import after setting up globals
   const { collectTextNodes } = await import('../src/utils/text-nodes');
@@ -88,13 +35,9 @@ async function main() {
   // Profile collectTextNodes
   console.log('--- collectTextNodes Profile ---\n');
 
-  function benchCollect(name: string, dom: JSDOM): void {
-    // @ts-expect-error - global document
-    global.document = dom.window.document;
-    // @ts-expect-error - global Node
-    global.Node = dom.window.Node;
-    // @ts-expect-error - global NodeFilter
-    global.NodeFilter = dom.window.NodeFilter;
+  function benchCollect(name: string, numParagraphs: number): void {
+    const dom = createTestDOM(numParagraphs);
+    setupJSDOM(dom);
 
     // Warmup
     for (let i = 0; i < 10; i++) {
@@ -105,15 +48,8 @@ async function main() {
     let nodeCount = 0;
     for (let i = 0; i < ITERATIONS; i++) {
       // Re-create DOM to avoid cached state
-      const freshDOM = createTestDOM(
-        name.includes('small') ? 10 : name.includes('medium') ? 50 : 200
-      );
-      // @ts-expect-error - global
-      global.document = freshDOM.window.document;
-      // @ts-expect-error - global
-      global.Node = freshDOM.window.Node;
-      // @ts-expect-error - global
-      global.NodeFilter = freshDOM.window.NodeFilter;
+      const freshDOM = createTestDOM(numParagraphs);
+      setupJSDOM(freshDOM);
 
       const start = performance.now();
       const nodes = collectTextNodes(freshDOM.window.document.body);
@@ -129,15 +65,14 @@ async function main() {
     );
   }
 
-  benchCollect('collectTextNodes(small 10p)', smallDOM);
-  benchCollect('collectTextNodes(medium 50p)', mediumDOM);
-  benchCollect('collectTextNodes(large 200p)', largeDOM);
+  benchCollect('collectTextNodes(small 10p)', 10);
+  benchCollect('collectTextNodes(medium 50p)', 50);
+  benchCollect('collectTextNodes(large 200p)', 200);
 
   // Profile shouldSkipElement
   console.log('\n--- shouldSkipElement Profile ---\n');
 
-  // @ts-expect-error - global
-  global.document = mediumDOM.window.document;
+  setupJSDOM(mediumDOM);
   const elements = Array.from(mediumDOM.window.document.querySelectorAll('*'));
   console.log(`Testing with ${elements.length} elements`);
 
@@ -165,12 +100,7 @@ async function main() {
   // Profile extractWordsFromNodes
   console.log('\n--- extractWordsFromNodes Profile ---\n');
 
-  // @ts-expect-error - global
-  global.document = mediumDOM.window.document;
-  // @ts-expect-error - global
-  global.Node = mediumDOM.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = mediumDOM.window.NodeFilter;
+  setupJSDOM(mediumDOM);
 
   const textNodes = collectTextNodes(mediumDOM.window.document.body);
   console.log(`Testing with ${textNodes.length} text nodes`);
@@ -209,14 +139,7 @@ async function main() {
   for (let i = 0; i < ITERATIONS; i++) {
     // Re-create DOM for each iteration
     const freshDOM = createTestDOM(50);
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Document = freshDOM.window.Document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     await applyTranslationsMap(freshDOM.window.document.body, translations, {
@@ -235,9 +158,6 @@ async function main() {
   // Summary
   console.log('\n=== Summary ===\n');
   console.log('Key metrics for optimization targeting:');
-  console.log(
-    `- collectTextNodes (medium): ${benchCollect.toString().includes('avg') ? 'see above' : skipAvg.toFixed(3)}ms`
-  );
   console.log(`- shouldSkipElement per call: ${((skipAvg / elements.length) * 1000).toFixed(2)}µs`);
   console.log(`- extractWordsFromNodes: ${extractAvg.toFixed(3)}ms`);
   console.log(`- applyTranslationsMap: ${applyAvg.toFixed(3)}ms`);

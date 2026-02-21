@@ -1,55 +1,13 @@
+#!/usr/bin/env npx vite-node
 /**
  * Comprehensive benchmark suite for Ingglish core library.
  * Runs multiple iterations to get statistically meaningful results.
  */
 
-import { performance } from 'perf_hooks';
-
-const ITERATIONS = 1000;
-const WARMUP_ITERATIONS = 100;
-
-interface BenchmarkResult {
-  name: string;
-  avgMs: number;
-  minMs: number;
-  maxMs: number;
-  opsPerSec: number;
-}
-
-function benchmark(name: string, fn: () => void, iterations = ITERATIONS): BenchmarkResult {
-  // Warmup
-  for (let i = 0; i < WARMUP_ITERATIONS; i++) {
-    fn();
-  }
-
-  // Collect samples
-  const times: number[] = [];
-  for (let i = 0; i < iterations; i++) {
-    const start = performance.now();
-    fn();
-    times.push(performance.now() - start);
-  }
-
-  const avg = times.reduce((a, b) => a + b, 0) / times.length;
-  const min = Math.min(...times);
-  const max = Math.max(...times);
-
-  return {
-    name,
-    avgMs: avg,
-    minMs: min,
-    maxMs: max,
-    opsPerSec: 1000 / avg,
-  };
-}
-
-function formatResult(r: BenchmarkResult): string {
-  return `${r.name.padEnd(45)} ${r.avgMs.toFixed(3).padStart(8)}ms  (min: ${r.minMs.toFixed(3)}ms, max: ${r.maxMs.toFixed(3)}ms)  ${r.opsPerSec.toFixed(0).padStart(8)} ops/sec`;
-}
+import { benchmark, formatResult, type BenchmarkResult } from './harness';
 
 async function main() {
   console.log('=== Ingglish Core Benchmarks ===\n');
-  console.log(`Iterations: ${ITERATIONS}, Warmup: ${WARMUP_ITERATIONS}\n`);
 
   // Load modules
   const {
@@ -59,8 +17,9 @@ async function main() {
     lookupPronunciation,
     sortByFrequency,
   } = await import('@ingglish/dictionary');
-  const { translateSync } = await import('../src/translate/forward');
-  const { reverseTranslateWord, reverseTranslateSync } = await import('../src/translate/reverse');
+  const { translateSync } = await import('../../src/translate/forward');
+  const { reverseTranslateWord, reverseTranslateSync } =
+    await import('../../src/translate/reverse');
   const { ingglishToArpabet } = await import('@ingglish/phonemes');
   const { arpabetToIPA } = await import('@ingglish/ipa');
 

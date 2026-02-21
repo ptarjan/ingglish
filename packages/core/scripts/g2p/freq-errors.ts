@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Find highest-frequency words where G2P is wrong.
  * Shows freq-weighted impact of each error for hill-climbing prioritization.

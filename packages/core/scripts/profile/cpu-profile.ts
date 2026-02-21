@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Generate CPU profile for flame graph analysis.
  */
@@ -9,7 +10,7 @@ session.connect();
 
 async function main() {
   const { loadDictionary } = await import('@ingglish/dictionary');
-  const { translateSync } = await import('../src/translate/forward');
+  const { translateSync } = await import('../../src/translate/forward');
 
   await loadDictionary();
 

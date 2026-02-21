@@ -1,9 +1,11 @@
+#!/usr/bin/env npx vite-node
 /**
  * Deep profile of processTextNode to identify bottlenecks.
  */
 
 import { performance } from 'perf_hooks';
 import { JSDOM } from 'jsdom';
+import { setupJSDOM } from './harness';
 
 const ITERATIONS = 1000;
 
@@ -12,16 +14,7 @@ async function main() {
 
   // Set up DOM
   const dom = new JSDOM('<!DOCTYPE html><html><body><p>Test</p></body></html>');
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Document = dom.window.Document;
-  // @ts-expect-error - global
-  global.window = dom.window;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
+  setupJSDOM(dom);
 
   const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
     await import('@ingglish/normalize');

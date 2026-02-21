@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Scan CMU dictionary for entries that violate common English spelling-to-pronunciation rules.
  * These violations may indicate genuine CMU errors (wrong phonemes) vs legitimate exceptions.

@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Cross-reference the top most common CMU dictionary words to find potential errors.
  *

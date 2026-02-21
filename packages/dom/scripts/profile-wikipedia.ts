@@ -1,24 +1,16 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile DOM translation with real Wikipedia HTML.
  */
 
 import { performance } from 'perf_hooks';
-import { JSDOM } from 'jsdom';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { setupJSDOM, loadWikipediaDOM } from './harness';
 
 const ITERATIONS = 20;
 
-// Load real Wikipedia HTML
 const wikipediaHtml = readFileSync(join(__dirname, 'wikipedia.html'), 'utf-8');
-
-function createWikipediaDOM(): JSDOM {
-  const dom = new JSDOM(wikipediaHtml);
-  // Mock requestAnimationFrame for Node.js
-  // @ts-expect-error - mock
-  dom.window.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
-  return dom;
-}
 
 const SKIP_TAGS = new Set([
   'SCRIPT',
@@ -40,19 +32,8 @@ async function main() {
   console.log('=== Wikipedia DOM Profile ===\n');
   console.log(`HTML size: ${(wikipediaHtml.length / 1024).toFixed(1)} KB\n`);
 
-  const dom = createWikipediaDOM();
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Document = dom.window.Document;
-  // @ts-expect-error - global
-  global.window = dom.window;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
-  // @ts-expect-error - global
-  global.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
+  const dom = loadWikipediaDOM();
+  setupJSDOM(dom);
 
   const { collectTextNodes } = await import('../src/utils/text-nodes');
   const { shouldSkipElement, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES } =
@@ -93,25 +74,15 @@ async function main() {
 
   // Warmup
   for (let i = 0; i < 5; i++) {
-    const freshDOM = createWikipediaDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    const freshDOM = loadWikipediaDOM();
+    setupJSDOM(freshDOM);
     collectTextNodes(freshDOM.window.document.body);
   }
 
   const collectTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
-    const freshDOM = createWikipediaDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    const freshDOM = loadWikipediaDOM();
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     collectTextNodes(freshDOM.window.document.body);
@@ -126,12 +97,7 @@ async function main() {
   // Profile extractWordsFromNodes
   console.log('\n--- Profile: extractWordsFromNodes ---\n');
 
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
+  setupJSDOM(dom);
 
   const extractTimes: number[] = [];
   for (let i = 0; i < ITERATIONS * 5; i++) {
@@ -156,15 +122,8 @@ async function main() {
 
   const applyTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
-    const freshDOM = createWikipediaDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Document = freshDOM.window.Document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    const freshDOM = loadWikipediaDOM();
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     await applyTranslationsMap(freshDOM.window.document.body, translations, {
@@ -293,8 +252,7 @@ async function main() {
   }
 
   // Verify same results
-  // @ts-expect-error - global
-  global.document = dom.window.document;
+  setupJSDOM(dom);
   const currentNodes = collectCurrent(dom.window.document.body);
   const stackNodes = collectStack(dom.window.document.body);
   const simpleNodes = collectSimple(dom.window.document.body);
@@ -312,25 +270,15 @@ async function main() {
   function bench(name: string, fn: () => Text[]): number {
     // Warmup
     for (let i = 0; i < 5; i++) {
-      const freshDOM = createWikipediaDOM();
-      // @ts-expect-error - global
-      global.document = freshDOM.window.document;
-      // @ts-expect-error - global
-      global.Node = freshDOM.window.Node;
-      // @ts-expect-error - global
-      global.NodeFilter = freshDOM.window.NodeFilter;
+      const freshDOM = loadWikipediaDOM();
+      setupJSDOM(freshDOM);
       fn();
     }
 
     const times: number[] = [];
     for (let i = 0; i < ITERATIONS; i++) {
-      const freshDOM = createWikipediaDOM();
-      // @ts-expect-error - global
-      global.document = freshDOM.window.document;
-      // @ts-expect-error - global
-      global.Node = freshDOM.window.Node;
-      // @ts-expect-error - global
-      global.NodeFilter = freshDOM.window.NodeFilter;
+      const freshDOM = loadWikipediaDOM();
+      setupJSDOM(freshDOM);
 
       const start = performance.now();
       fn();

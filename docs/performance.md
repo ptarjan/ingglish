@@ -4,15 +4,16 @@ How to profile, benchmark, and optimize Ingglish.
 
 ## Profiling Scripts
 
-### Core Library (`packages/core/scripts/`)
+### Core Library (`packages/core/scripts/profile/`)
 
 | Script | Purpose |
 |--------|---------|
 | `benchmark.ts` | Full benchmark suite (1000 iterations, statistics) |
-| `profile.ts` | Quick translation profiling |
-| `profile-translate.ts` | translateSync performance analysis |
-| `profile-convert.ts` | Phoneme conversion performance |
+| `overview.ts` | Quick translation profiling |
+| `translate.ts` | translateSync performance analysis |
+| `convert.ts` | Phoneme conversion performance |
 | `cpu-profile.ts` | V8 CPU profiler for flame graphs |
+| `harness.ts` | Shared benchmark/formatting utilities |
 
 ### DOM Library (`packages/dom/scripts/`)
 
@@ -33,10 +34,10 @@ How to profile, benchmark, and optimize Ingglish.
 cd packages/core
 
 # Full benchmark suite
-npx tsx scripts/benchmark.ts
+npx vite-node scripts/profile/benchmark.ts
 
 # Quick profile
-npx tsx scripts/profile.ts
+npx vite-node scripts/profile/overview.ts
 ```
 
 Sample output:
@@ -59,10 +60,10 @@ reverseTranslateWord(single)                   0.005ms  (min: 0.003ms, max: 0.54
 cd packages/dom
 
 # Profile with real Wikipedia content
-npx tsx scripts/profile-wikipedia.ts
+npx vite-node scripts/profile-wikipedia.ts
 
 # Compare TreeWalker implementations
-npx tsx scripts/profile-tree-walker.ts
+npx vite-node scripts/profile-tree-walker.ts
 ```
 
 Sample output from `profile-wikipedia.ts`:

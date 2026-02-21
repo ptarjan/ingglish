@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Quick G2P accuracy measurement with frequency weighting.
  *

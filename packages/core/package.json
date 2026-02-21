@@ -32,9 +32,9 @@
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
     "test:watch": "vitest",
-    "translate": "npx vite-node scripts/translate.ts",
-    "debug:roundtrip": "npx vite-node scripts/debug-roundtrip.ts",
-    "analyze-collisions": "npx vite-node scripts/collision-analysis.ts",
+    "translate": "npx vite-node scripts/cli/translate.ts",
+    "debug:roundtrip": "npx vite-node scripts/cli/debug-roundtrip.ts",
+    "analyze-collisions": "npx vite-node scripts/cli/collision-analysis.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

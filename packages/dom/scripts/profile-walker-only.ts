@@ -1,15 +1,12 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile just TreeWalker on pre-parsed Wikipedia DOM.
  */
 
 import { performance } from 'perf_hooks';
-import { JSDOM } from 'jsdom';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { setupJSDOM, loadWikipediaDOM } from './harness';
 
 const ITERATIONS = 100;
-
-const wikipediaHtml = readFileSync(join(__dirname, 'wikipedia.html'), 'utf-8');
 
 const SKIP_TAGS = new Set([
   'SCRIPT',
@@ -31,13 +28,8 @@ async function main() {
   console.log('=== TreeWalker Profile (Pre-parsed DOM) ===\n');
 
   // Parse DOM once
-  const dom = new JSDOM(wikipediaHtml);
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
+  const dom = loadWikipediaDOM();
+  setupJSDOM(dom);
 
   const body = dom.window.document.body;
   const allElements = Array.from(dom.window.document.querySelectorAll('*'));

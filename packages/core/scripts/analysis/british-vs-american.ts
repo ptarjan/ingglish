@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Scan CMU dictionary for entries that use British English pronunciations
  * where American English would differ.

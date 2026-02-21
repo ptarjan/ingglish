@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Detailed G2P error analysis — identifies the highest-impact fixable patterns.
  *

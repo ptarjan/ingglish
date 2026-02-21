@@ -1,39 +1,18 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile DOM translation with tooltips enabled vs disabled.
  */
 
 import { performance } from 'perf_hooks';
-import { JSDOM } from 'jsdom';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { setupJSDOM, loadWikipediaDOM } from './harness';
 
 const ITERATIONS = 10;
-
-const wikipediaHtml = readFileSync(join(__dirname, 'wikipedia.html'), 'utf-8');
-
-function createDOM(): JSDOM {
-  const dom = new JSDOM(wikipediaHtml);
-  // @ts-expect-error - mock
-  dom.window.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
-  return dom;
-}
 
 async function main() {
   console.log('=== Tooltip Performance Profile ===\n');
 
-  const dom = createDOM();
-  // @ts-expect-error - global
-  global.document = dom.window.document;
-  // @ts-expect-error - global
-  global.Document = dom.window.Document;
-  // @ts-expect-error - global
-  global.window = dom.window;
-  // @ts-expect-error - global
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global
-  global.NodeFilter = dom.window.NodeFilter;
-  // @ts-expect-error - global
-  global.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
+  const dom = loadWikipediaDOM();
+  setupJSDOM(dom);
 
   const { translate } = await import('ingglish');
   const { applyTranslationsMap } = await import('../src/translate/apply-map');
@@ -59,15 +38,8 @@ async function main() {
   console.log('--- Without Tooltips (simple textContent) ---');
   const noTooltipTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
-    const freshDOM = createDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Document = freshDOM.window.Document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    const freshDOM = loadWikipediaDOM();
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     await applyTranslationsMap(freshDOM.window.document.body, translations, {
@@ -82,15 +54,8 @@ async function main() {
   console.log('\n--- With Tooltips (span creation) ---');
   const tooltipTimes: number[] = [];
   for (let i = 0; i < ITERATIONS; i++) {
-    const freshDOM = createDOM();
-    // @ts-expect-error - global
-    global.document = freshDOM.window.document;
-    // @ts-expect-error - global
-    global.Document = freshDOM.window.Document;
-    // @ts-expect-error - global
-    global.Node = freshDOM.window.Node;
-    // @ts-expect-error - global
-    global.NodeFilter = freshDOM.window.NodeFilter;
+    const freshDOM = loadWikipediaDOM();
+    setupJSDOM(freshDOM);
 
     const start = performance.now();
     await applyTranslationsMap(freshDOM.window.document.body, translations, {

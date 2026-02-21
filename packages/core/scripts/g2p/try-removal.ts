@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Systematically test removing each NRL rule and measure accuracy delta.
  *

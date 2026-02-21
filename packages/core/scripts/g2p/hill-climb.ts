@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Automated hill-climbing optimizer for NRL G2P pattern rules.
  *

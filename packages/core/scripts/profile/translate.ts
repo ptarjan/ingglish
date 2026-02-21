@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Deep profile of translateSync to identify bottlenecks.
  */

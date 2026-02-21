@@ -9,7 +9,7 @@ import {
   loadFrequencies,
   getWordFrequency,
 } from '@ingglish/dictionary';
-import { translateWord } from '../src/translate/forward.js';
+import { translateWord } from '../../src/translate/forward.js';
 
 interface Collision {
   ingglish: string;

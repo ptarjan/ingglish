@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Systematically test reordering NRL rules and measure accuracy delta.
  *

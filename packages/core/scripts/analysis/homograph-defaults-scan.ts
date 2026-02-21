@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Scan CMU dictionary homographs to check if default (first) pronunciations
  * are correct for the most common usage of each word.

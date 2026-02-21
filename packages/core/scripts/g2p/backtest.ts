@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Backtest the full fallback chain against the CMU dictionary.
  *
@@ -5,7 +6,7 @@
  * so the production fallback chain fires (compound → stemming → G2P).
  * Compares the result to the actual CMU pronunciation.
  *
- * Usage: npx tsx --conditions=source scripts/g2p-backtest.ts
+ * Usage: npx vite-node scripts/g2p/backtest.ts
  */
 
 import { loadDictionary, getDictionary, loadFrequencies } from '@ingglish/dictionary';

@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Profile arpabetToIngglish breakdown to find the bottleneck.
  */

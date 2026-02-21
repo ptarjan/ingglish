@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Analyze G2P error patterns to identify the best rules to add.
  */

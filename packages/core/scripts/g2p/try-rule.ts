@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Test the impact of adding or modifying a specific NRL rule.
  *

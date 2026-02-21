@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Analyze whether current phoneme mappings maximize identical words.
  * An "identical word" is one where the Ingglish spelling equals the English spelling.

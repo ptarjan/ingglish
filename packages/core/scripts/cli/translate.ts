@@ -9,9 +9,12 @@ import {
   loadReverseDictionary,
   loadFrequencies,
   lookupPronunciation,
-} from '../../dictionary/src/index.js';
-import { translateSync } from '../src/translate/forward.js';
-import { reverseTranslateSync, reverseTranslateSyncWithMapping } from '../src/translate/reverse.js';
+} from '../../../dictionary/src/index.js';
+import { translateSync } from '../../src/translate/forward.js';
+import {
+  reverseTranslateSync,
+  reverseTranslateSyncWithMapping,
+} from '../../src/translate/reverse.js';
 
 async function main() {
   // Load all dictionaries needed for translation and reverse translation

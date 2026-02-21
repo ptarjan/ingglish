@@ -4,7 +4,7 @@
  *
  * Only AH0 (unstressed schwa) changes. AH1 and AH2 (stressed /ʌ/) stay as 'u'.
  *
- * Usage: npx vite-node packages/core/scripts/compare-schwa.ts
+ * Usage: npx vite-node packages/core/scripts/analysis/compare-schwa.ts
  */
 import {
   loadDictionary,

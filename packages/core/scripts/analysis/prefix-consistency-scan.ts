@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Find CMU dictionary errors by comparing prefixed words to their base forms.
  *

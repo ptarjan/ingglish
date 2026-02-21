@@ -1,3 +1,4 @@
+#!/usr/bin/env npx vite-node
 /**
  * Find CMU dictionary pronunciation errors by comparing common words against
  * their inflected forms. Aggressively filters to eliminate false positives.

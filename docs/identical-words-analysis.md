@@ -184,7 +184,7 @@ Key questions before implementing:
 
 ## Methodology
 
-Analysis scripts are in `packages/core/scripts/`:
+Analysis scripts are in `packages/core/scripts/analysis/`:
 
 - `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
 - `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
@@ -199,7 +199,7 @@ The exhaustive search runs in three phases:
 
 Run with:
 ```bash
-npx vite-node scripts/exhaustive-search.ts
+npx vite-node scripts/analysis/exhaustive-search.ts
 ```
 
 ## Why Raw Identical Word Count Misleads

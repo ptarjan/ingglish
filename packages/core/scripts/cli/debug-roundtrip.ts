@@ -12,11 +12,11 @@
 
 import { loadDictionary, loadReverseDictionary, lookupPronunciation } from '@ingglish/dictionary';
 import { ingglishToArpabet } from '@ingglish/phonemes';
-import { translateWord, translateSync as translateText } from '../src/translate/forward.js';
+import { translateWord, translateSync as translateText } from '../../src/translate/forward.js';
 import {
   reverseTranslateWord,
   reverseTranslateSync as reverseTranslateText,
-} from '../src/translate/reverse.js';
+} from '../../src/translate/reverse.js';
 
 const C = {
   red: '\x1b[31m',
