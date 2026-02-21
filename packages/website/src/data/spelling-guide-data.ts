@@ -60,24 +60,9 @@ export const vowelGroups: SoundGroup[] = [
     name: 'Long Vowels',
     sounds: [
       {
-        phoneme: 'EY',
-        examples:
-          'd**ay** (day), c**a**ke (kayk), w**eigh** (way), r**ai**n (rayn), th**ey** (dhay), gr**ea**t (grayt), str**aigh**t (strayt)',
-      },
-      {
         phoneme: 'IY',
         examples:
           's**ee** (see), m**e** (mee), f**ie**ld (feeld), happ**y** (hapee), b**ea**ch (beech), k**ey** (kee), p**eo**ple (peepal), sk**i** (skee)',
-      },
-      {
-        phoneme: 'AY',
-        examples:
-          'bons**ai** (bonsai), l**i**fe (laif), m**y** (mai), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid)',
-      },
-      {
-        phoneme: 'OW',
-        examples:
-          '**oh** (oh), n**o**se (nohz), sh**ow** (shoh), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh), plat**eau** (platoh), d**ough** (doh)',
       },
       {
         phoneme: 'UW',
@@ -89,6 +74,21 @@ export const vowelGroups: SoundGroup[] = [
   {
     name: 'Diphthongs',
     sounds: [
+      {
+        phoneme: 'EY',
+        examples:
+          'd**ay** (day), c**a**ke (kayk), w**eigh** (way), r**ai**n (rayn), th**ey** (dhay), gr**ea**t (grayt), str**aigh**t (strayt)',
+      },
+      {
+        phoneme: 'AY',
+        examples:
+          'bons**ai** (bonsai), l**i**fe (laif), m**y** (mai), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid)',
+      },
+      {
+        phoneme: 'OW',
+        examples:
+          '**oh** (oh), n**o**se (nohz), sh**ow** (shoh), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh), plat**eau** (platoh), d**ough** (doh)',
+      },
       { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), pl**ough** (plou)' },
       { phoneme: 'OY', examples: '**oi**l (oil), b**oy** (boi)' },
     ],
