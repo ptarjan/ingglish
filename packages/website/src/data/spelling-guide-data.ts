@@ -130,7 +130,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         phoneme: 'UH+R',
-        examples: 't**our** (tur), c**ure** (kyur)',
+        examples: 'l**ure** (lur), d**ur**ing (during), j**ur**y (juree)',
         ipaOverride: 'ʊɹ',
         ingglishOverride: 'ur',
       },
