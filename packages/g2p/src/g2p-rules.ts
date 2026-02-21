@@ -32,6 +32,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [AWARD]=/AH W AO R D/',
     ' [AWFULLY]=/AA F L IY/',
     ' [AARON]=/EH R AH N/',
     ' [AWKWARD]=/AA K W ER D/',
@@ -220,6 +221,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CHEF]=/SH EH F/',
+    ' [COHEN]=/K OW AH N/',
     ' [CABIN]=/K AE B AH N/',
     ' [CLAUS] =/K L AO Z/',
     ' [CONNECTION]=/K AH N EH K SH AH N/',
@@ -354,6 +357,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DRAWER]=/D R AO R/',
     ' [DAMAGE]=/D AE M AH JH/',
     ' [DOGS] =/D AA G Z/',
     ' [DIRECT]=/D ER EH K T/',
@@ -407,6 +411,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [ELEPHANT]=/EH L AH F AH N T/',
     ' [EXERCISE]=/EH K S ER S AY Z/',
     ' [EQUAL]=/IY K W AH L/',
     ' [EXIT]=/EH G Z IH T/',
@@ -883,6 +888,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[K]=/K/',
   ],
   L: [
+    ' [LOG] =/L AO G/',
+    ' [LOYALTY]=/L OY AH L T IY/',
     ' [LIVER]=/L IH V ER/',
     ' [LOSER]=/L UW Z ER/',
     ' [LIVES] =/L IH V Z/',
@@ -936,6 +943,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[L]=/L/',
   ],
   M: [
+    ' [MUSCLE]=/M AH S AH L/',
     ' [MAKEUP]=/M EY K AH P/',
     ' [MARINE]=/M ER IY N/',
     ' [MISSILE]=/M IH S AH L/',
@@ -1217,6 +1225,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [POEM]=/P OW AH M/',
+    ' [PARADISE]=/P EH R AH D AY S/',
     ' [PALMER]=/P AA M ER/',
     ' [PENIS]=/P IY N IH S/',
     ' [PRIVACY]=/P R AY V AH S IY/',
@@ -1276,6 +1286,7 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
   R: [
+    ' [RUSSIA]=/R AH SH AH/',
     ' [RELIGION]=/R IH L IH JH AH N/',
     ' [RUIN]=/R UW AH N/',
     ' [RECEIVED]=/R AH S IY V D/',
@@ -1331,6 +1342,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SWALLOW]=/S W AA L OW/',
     ' [SIGHS]=/S AY Z/',
     ' [STEVEN]=/S T IY V AH N/',
     ' [SUPPLIES]=/S AH P L AY Z/',
@@ -1445,6 +1457,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[S]=/S/',
   ],
   T: [
+    ' [TASTES]=/T EY S T S/',
     ' [TEARS]=/T EH R Z/',
     ' [THEORY]=/TH IH R IY/',
     ' [THEE] =/DH IY/',
@@ -1520,6 +1533,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    ' [USEFUL]=/Y UW S F AH L/',
     ' [UNKNOWN]=/AH N N OW N/',
     ' [UNBELIEVAB]=/AH N B AH L IY V AH B/',
     ' [USELESS]=/Y UW S L AH S/',
