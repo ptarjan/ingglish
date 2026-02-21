@@ -32,6 +32,8 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    '[ALLO] =/AA L OW/',
+    '[ACCI] =/AA CH IY/',
     ' [ACTUAL]=/AE K CH AH W AH L/',
     ' [ANXIOUS]=/AE NG K SH AH S/',
     ' [ARTIST] =/AA R T AH S T/',
@@ -478,6 +480,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    '[EWSKI] =/EH F S K IY/',
+    '[ELLI] =/EH L IY/',
     ' [ELAINE]=/IH L EY N/',
     ' [EVENTUALLY]=/IH V EH N CH AH W AH L IY/',
     ' [EXTRAORDINARY]=/EH K S T R AH AO R D AH N EH R IY/',
@@ -832,6 +836,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    '[ICCI] =/IY CH IY/',
     ' [INTELLIGENCE]=/IH N T EH L AH JH AH N S/',
     ' [IMMEDIATE]=/IH M IY D IY AH T/',
     ' [INTERRUPT]=/IH N T ER AH P T/',
@@ -1721,6 +1726,12 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    '[UCCIO] =/UW CH IY OW/',
+    '[UCCI] =/UW CH IY/',
+    '[ULLO] =/UW L OW/',
+    '[UZZI] =/UW T S IY/',
+    '[ULLI] =/UW L IY/',
+    '[USSO] =/UW S OW/',
     ' [UNFORTUNATE]=/AH N F AO R CH AH N AH T/',
     ' [UNCOMFORTABLE]=/AH N K AH M F ER T AH B AH L/',
     ' [USEFUL]=/Y UW S F AH L/',
