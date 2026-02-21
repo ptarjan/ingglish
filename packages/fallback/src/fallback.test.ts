@@ -129,7 +129,7 @@ describe('translateAsAcronym', () => {
     expect(first).toBe(second);
   });
 
-  it('supports IPA format', () => {
+  it('produces different output for ingglish vs ipa format', () => {
     const ingglish = translateAsAcronym('URL', 'ingglish');
     const ipa = translateAsAcronym('URL', 'ipa');
     expect(ingglish).not.toBe(ipa);
@@ -154,7 +154,7 @@ describe('translateUnknown (integration)', () => {
     expect(result.length).toBeGreaterThan(0);
   });
 
-  it('respects format parameter', () => {
+  it('produces different output for ingglish vs ipa format', () => {
     const ingglish = translateUnknown('github', 'ingglish');
     const ipa = translateUnknown('github', 'ipa');
     expect(ingglish).not.toBe(ipa);

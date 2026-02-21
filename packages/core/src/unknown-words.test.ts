@@ -1003,7 +1003,7 @@ describe('unknown-words', () => {
   });
 
   describe('translateAsAcronym', () => {
-    it('should spell out URL as yuuarel', () => {
+    it('should spell out URL as yooarel', () => {
       const result = translateAsAcronym('url');
       expect(result).toBe('yooarel');
     });

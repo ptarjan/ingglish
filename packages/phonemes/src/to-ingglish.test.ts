@@ -145,7 +145,7 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['B', 'IH1', 'T'])).toBe('bit');
     });
 
-    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→arr, IH+R→eer)', () => {
+    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→arr)', () => {
       expect(arpabetToIngglish(['S', 'T', 'AA1', 'R'])).toBe('star');
       expect(arpabetToIngglish(['K', 'AA1', 'R'])).toBe('kar');
       expect(arpabetToIngglish(['S', 'T', 'AO1', 'R'])).toBe('stor');

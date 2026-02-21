@@ -85,7 +85,7 @@ describe('reverse-translator', () => {
       expect(results).toContain('her');
     });
 
-    it('should round-trip words in dictionary', () => {
+    it('should produce reverse translation results for dictionary words', () => {
       // Test words that ARE in the CMU dictionary
       const testWords = ['quick', 'brown', 'fox', 'the', 'alphabet', 'through', 'english'];
 
@@ -339,11 +339,11 @@ describe('reverse-translator', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return empty array when phonemes have no dictionary match', () => {
+    it('should return an array for phonemes that may lack dictionary matches', () => {
       // "bral" parses to valid phonemes — AE alternative AH may find matches
       const result = reverseTranslateWord('bral');
       // May find matches via AH alternative (e.g., "bruhl")
-      expect(typeof result).toBe('object');
+      expect(Array.isArray(result)).toBe(true);
     });
 
     it('should still return results for valid ingglish words', () => {

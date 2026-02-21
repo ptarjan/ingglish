@@ -85,7 +85,7 @@ describe('SpellingGuide examples', () => {
           const examples = sound.examples.split(',').map((ex) => ex.trim());
 
           for (const example of examples) {
-            const matches = /\*\*[^*]+\*\*/g.exec(example);
+            const matches = example.match(/\*\*[^*]+\*\*/g);
             expect(
               matches?.length,
               `"${example}" should have exactly one highlighted portion`

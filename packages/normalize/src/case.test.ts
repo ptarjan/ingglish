@@ -25,7 +25,7 @@ describe('case-utils', () => {
       expect(detectCasePattern('World')).toBe('capitalized');
     });
 
-    it('should handle single characters', () => {
+    it('should handle single characters (I is treated as lowercase)', () => {
       expect(detectCasePattern('a')).toBe('lower');
       expect(detectCasePattern('i')).toBe('lower');
       expect(detectCasePattern('A')).toBe('capitalized');
@@ -199,7 +199,7 @@ describe('case-utils', () => {
    * Performance regression tests
    */
   describe('performance optimizations', () => {
-    it('detectCasePattern should use fast path for lowercase words (charCode check)', () => {
+    it('detectCasePattern should minimize toLowerCase calls for lowercase and capitalized words', () => {
       const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
 
       toLowerCaseSpy.mockClear();

@@ -57,6 +57,9 @@ describe('lookupPronunciation', () => {
     expect(result).not.toBeNull();
     const nBeforeG = result!.findIndex((p, i) => p === 'N' && result![i + 1] === 'G');
     expect(nBeforeG).toBe(-1); // No bare N before G
+
+    const ngIndex = result!.indexOf('NG');
+    expect(ngIndex).toBeGreaterThanOrEqual(0); // Has NG
   });
 });
 
