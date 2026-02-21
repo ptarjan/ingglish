@@ -41,6 +41,16 @@ export const vowelGroups: SoundGroup[] = [
         examples: 'b**oo**k (buk), p**u**t (put), w**o**lf (wulf), c**ou**ld (kud)',
       },
       {
+        phoneme: 'AO',
+        examples:
+          'l**aw** (law), d**o**g (dawg), th**ough**t (thawt), c**augh**t (kawt), w**al**k (wawk), s**au**ce (saws)',
+      },
+      {
+        phoneme: 'AH0',
+        examples:
+          '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman), op**e**n (ohpan)',
+      },
+      {
         phoneme: 'AH',
         examples: 'b**u**t (buht), l**o**ve (luhv), bl**oo**d (bluhd), d**ou**ble (duhbal)',
       },
@@ -77,20 +87,10 @@ export const vowelGroups: SoundGroup[] = [
     ],
   },
   {
-    name: 'Diphthongs & Other',
+    name: 'Diphthongs',
     sounds: [
       { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), pl**ough** (plou)' },
       { phoneme: 'OY', examples: '**oi**l (oil), b**oy** (boi)' },
-      {
-        phoneme: 'AO',
-        examples:
-          'l**aw** (law), d**o**g (dawg), th**ough**t (thawt), c**augh**t (kawt), w**al**k (wawk), s**au**ce (saws)',
-      },
-      {
-        phoneme: 'AH0',
-        examples:
-          '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman), op**e**n (ohpan)',
-      },
     ],
   },
   {
