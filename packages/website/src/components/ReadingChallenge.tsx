@@ -4,7 +4,7 @@ import { pickChallenge } from '../data/challenge-data';
 import type { ChallengeSentence } from '../data/challenge-data';
 import { scoreSentence } from '../utils/challenge-scoring';
 import type { SentenceScore } from '../utils/challenge-scoring';
-import { useShare } from '../hooks/useShare';
+import { renderScoreCard } from '../utils/render-score-card';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -19,6 +19,14 @@ const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = {
   2: 25,
   3: 20,
 };
+
+function downloadCanvas(canvas: HTMLCanvasElement): void {
+  const url = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ingglish-score.png';
+  a.click();
+}
 
 function ReadingChallenge() {
   const [phase, setPhase] = useState<Phase>('intro');
@@ -35,7 +43,8 @@ function ReadingChallenge() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, shareLink] = useShare();
+  const [copiedShare, setCopiedShare] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Load reverse dictionary on mount (needed for homophone scoring)
   useEffect(() => {
@@ -168,10 +177,43 @@ function ReadingChallenge() {
     results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
   const overallPct = Math.round(overallScore * 100);
 
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        results.map((r) => ({ score: r.score.score, timeTaken: r.timeTaken })),
+        overallPct
+      ),
+    [results, overallPct]
+  );
+
+  const showCopied = useCallback(() => {
+    setCopiedShare(true);
+    clearTimeout(copiedTimerRef.current);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedShare(false);
+    }, 1500);
+  }, []);
+
   const handleShareResult = useCallback(() => {
-    const text = `I scored ${overallPct}% on the Ingglish Reading Challenge! Can you beat that?\n\nhttps://ingglish.com/challenge`;
-    shareLink('https://ingglish.com/challenge', 'Ingglish Reading Challenge', text);
-  }, [overallPct, shareLink]);
+    const canvas = getScoreCanvas();
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        return;
+      }
+      navigator.clipboard
+        .write([new ClipboardItem({ 'image/png': blob })])
+        .then(showCopied)
+        .catch(() => {
+          // Clipboard image not supported — download instead
+          downloadCanvas(canvas);
+        });
+    }, 'image/png');
+  }, [getScoreCanvas, showCopied]);
+
+  const handleSaveImage = useCallback(() => {
+    const canvas = getScoreCanvas();
+    downloadCanvas(canvas);
+  }, [getScoreCanvas]);
 
   const getIngglishText = (sentence: ChallengeSentence): string =>
     sentence.tokens.map((t) => t.translated).join('');
@@ -259,6 +301,9 @@ function ReadingChallenge() {
               onClick={handleShareResult}
             >
               {copiedShare ? 'Copied!' : 'Share Result'}
+            </button>
+            <button className="btn-secondary" onClick={handleSaveImage}>
+              Save
             </button>
           </div>
         </div>
