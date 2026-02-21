@@ -347,6 +347,144 @@ describe('unknown-words', () => {
       const placePhonemes = wordToArpabet('place');
       expect(placePhonemes).toEqual(['P', 'L', 'EY1', 'S']);
     });
+
+    it('should handle OUGH variations', () => {
+      expect(wordToArpabet('through')).toEqual(['TH', 'R', 'UW1']); // ough → UW
+      expect(wordToArpabet('tough')).toEqual(['T', 'AH1', 'F']); // ough → AH F
+      expect(wordToArpabet('rough')).toEqual(['R', 'AH1', 'F']); // ough → AH F
+      expect(wordToArpabet('cough')).toEqual(['K', 'AA1', 'F']); // ough → AA F
+      expect(wordToArpabet('bough')).toEqual(['B', 'AW1']); // ough → AW
+      expect(wordToArpabet('dough')).toEqual(['D', 'OW1']); // ough → OW
+      expect(wordToArpabet('thought')).toEqual(['TH', 'AO1', 'T']); // ought → AO T
+      expect(wordToArpabet('sought')).toEqual(['S', 'AO1', 'T']); // ought → AO T
+    });
+
+    it('should handle OW as AW in town/down/gown/cow contexts', () => {
+      expect(wordToArpabet('town')).toContain('AW1'); // OWN after T → AW
+      expect(wordToArpabet('down')).toContain('AW1'); // OWN after D → AW
+      expect(wordToArpabet('gown')).toContain('AW1'); // OWN after G → AW
+      expect(wordToArpabet('cow')).toContain('AW1'); // OW after C → AW
+    });
+
+    it('should handle OW as OW in show/flow/snow', () => {
+      expect(wordToArpabet('show')).toContain('OW1');
+      expect(wordToArpabet('flow')).toContain('OW1');
+      expect(wordToArpabet('snow')).toContain('OW1');
+      expect(wordToArpabet('own')).toContain('OW1');
+    });
+
+    it('should handle OO variations (book vs food vs blood)', () => {
+      // OOK → UH
+      expect(wordToArpabet('book')).toContain('UH1');
+      expect(wordToArpabet('look')).toContain('UH1');
+      // OO default → UW
+      expect(wordToArpabet('food')).toContain('UW1');
+      expect(wordToArpabet('moon')).toContain('UW1');
+      // BLOOD/FLOOD → AH (exceptions)
+      expect(wordToArpabet('blood')).toContain('AH1');
+      expect(wordToArpabet('flood')).toContain('AH1');
+    });
+
+    it('should handle WH digraph (who vs what)', () => {
+      // WHO/WHOLE: WH → HH (no W sound)
+      expect(wordToArpabet('who')).toContain('HH');
+      expect(wordToArpabet('who')).not.toContain('W');
+      expect(wordToArpabet('whole')).toContain('HH');
+      // WHAT/WHERE: WH → W (in most dialects)
+      expect(wordToArpabet('what')).toContain('W');
+      expect(wordToArpabet('where')).toContain('W');
+    });
+
+    it('should handle AU/AW as AO', () => {
+      expect(wordToArpabet('sauce')).toContain('AO1');
+      expect(wordToArpabet('dawn')).toContain('AO1');
+      expect(wordToArpabet('draw')).toContain('AO1');
+    });
+
+    it('should handle WOULD/COULD/SHOULD as UH D', () => {
+      expect(wordToArpabet('would')).toEqual(['W', 'UH1', 'D']);
+      expect(wordToArpabet('could')).toEqual(['K', 'UH1', 'D']);
+      expect(wordToArpabet('should')).toEqual(['SH', 'UH1', 'D']);
+    });
+
+    it('should handle soft C before front vowels (e, i, y)', () => {
+      // C → S before e, i, y
+      expect(wordToArpabet('cell')[0]).toBe('S');
+      expect(wordToArpabet('cent')[0]).toBe('S');
+      expect(wordToArpabet('cycle')[0]).toBe('S');
+      // C → K before a, o, u
+      expect(wordToArpabet('cat')[0]).toBe('K');
+      expect(wordToArpabet('cup')[0]).toBe('K');
+    });
+
+    it('should handle soft G before front vowels', () => {
+      // G → JH before e, i (usually)
+      expect(wordToArpabet('gem')[0]).toBe('JH');
+      expect(wordToArpabet('giant')[0]).toBe('JH');
+      expect(wordToArpabet('gentle')[0]).toBe('JH');
+      // G stays G in exceptions (get, give)
+      expect(wordToArpabet('get')[0]).toBe('G');
+      expect(wordToArpabet('give')[0]).toBe('G');
+    });
+
+    it('should handle EA variations (beat vs bread vs break)', () => {
+      // EA default → IY
+      expect(wordToArpabet('beat')).toContain('IY1');
+      expect(wordToArpabet('meat')).toContain('IY1');
+      // EAD → EH D
+      expect(wordToArpabet('bread')).toContain('EH1');
+      // BREAK/STEAK → EY (exceptions)
+      expect(wordToArpabet('break')).toContain('EY1');
+      expect(wordToArpabet('steak')).toContain('EY1');
+      // EALTH, DEATH, EATHER → EH
+      expect(wordToArpabet('health')).toContain('EH1');
+      expect(wordToArpabet('death')).toContain('EH1');
+      expect(wordToArpabet('weather')).toContain('EH1');
+    });
+
+    it('should handle WAR as AO R and WOR as ER', () => {
+      // WAR → W AO R
+      expect(wordToArpabet('war')).toEqual(['W', 'AO1', 'R']);
+      expect(wordToArpabet('warm')).toContain('AO1');
+      // WOR → W ER
+      expect(wordToArpabet('worm')).toContain('ER1');
+      expect(wordToArpabet('work')).toContain('ER1');
+      expect(wordToArpabet('word')).toContain('ER1');
+    });
+
+    it('should handle ALM with silent L', () => {
+      expect(wordToArpabet('calm')).toEqual(['K', 'AA1', 'M']);
+      expect(wordToArpabet('palm')).toEqual(['P', 'AA1', 'M']);
+    });
+
+    it('should handle -AGE suffix as IH JH', () => {
+      const message = wordToArpabet('message');
+      expect(message[message.length - 1]).toBe('JH');
+      const village = wordToArpabet('village');
+      expect(village[village.length - 1]).toBe('JH');
+    });
+
+    it('should handle -ENCE/-ANCE suffixes', () => {
+      const evidence = wordToArpabet('evidence');
+      expect(evidence.slice(-3)).toEqual(['AH0', 'N', 'S']);
+      const balance = wordToArpabet('balance');
+      expect(balance.slice(-3)).toEqual(['AH0', 'N', 'S']);
+    });
+
+    it('should handle -ISM suffix', () => {
+      const mechanism = wordToArpabet('mechanism');
+      expect(mechanism.slice(-3)).toEqual(['IH0', 'Z', 'AH0', 'M'].slice(-3));
+      // Ends with Z AH0 M
+      expect(mechanism[mechanism.length - 1]).toBe('M');
+      expect(mechanism[mechanism.length - 2]).toBe('AH0');
+      expect(mechanism[mechanism.length - 3]).toBe('Z');
+    });
+
+    it('should handle TIAL/CIAL as SH', () => {
+      expect(wordToArpabet('partial')).toContain('SH');
+      expect(wordToArpabet('special')).toContain('SH');
+      expect(wordToArpabet('initial')).toContain('SH');
+    });
   });
 
   describe('translateWithRules', () => {
@@ -605,6 +743,107 @@ describe('unknown-words', () => {
       // oppugnant should have G sound, not just N
       const result = translateWithRules('oppugnant');
       expect(result).toContain('g');
+    });
+
+    it('should translate OUGH variations correctly', () => {
+      expect(translateWithRules('through')).toBe('throo');
+      expect(translateWithRules('tough')).toBe('tuhf');
+      expect(translateWithRules('rough')).toBe('ruhf');
+      expect(translateWithRules('cough')).toBe('kof');
+      expect(translateWithRules('bough')).toBe('bou');
+      expect(translateWithRules('dough')).toBe('doh');
+      expect(translateWithRules('thought')).toBe('thawt');
+    });
+
+    it('should translate OW split (town vs show)', () => {
+      // OW → AW in town/down/gown/cow contexts
+      expect(translateWithRules('town')).toBe('toun');
+      expect(translateWithRules('down')).toBe('doun');
+      expect(translateWithRules('gown')).toBe('goun');
+      expect(translateWithRules('cow')).toBe('kou');
+      // OW → OW in other contexts
+      expect(translateWithRules('show')).toBe('shoh');
+      expect(translateWithRules('flow')).toBe('floh');
+      expect(translateWithRules('snow')).toBe('snoh');
+    });
+
+    it('should translate OO variations (book vs food vs blood)', () => {
+      expect(translateWithRules('book')).toBe('buk');
+      expect(translateWithRules('look')).toBe('luk');
+      expect(translateWithRules('food')).toBe('food');
+      expect(translateWithRules('moon')).toBe('moon');
+      expect(translateWithRules('blood')).toBe('bluhd');
+      expect(translateWithRules('flood')).toBe('fluhd');
+    });
+
+    it('should translate WH digraph', () => {
+      expect(translateWithRules('who')).toBe('hoo');
+      expect(translateWithRules('whole')).toBe('hohl');
+    });
+
+    it('should translate AU/AW words', () => {
+      expect(translateWithRules('sauce')).toBe('saws');
+      expect(translateWithRules('dawn')).toBe('dawn');
+      expect(translateWithRules('draw')).toBe('draw');
+    });
+
+    it('should translate would/could/should', () => {
+      expect(translateWithRules('would')).toBe('wud');
+      expect(translateWithRules('could')).toBe('kud');
+      expect(translateWithRules('should')).toBe('shud');
+    });
+
+    it('should translate soft C before front vowels', () => {
+      expect(translateWithRules('cell')).toBe('sel');
+      expect(translateWithRules('cent')).toBe('sent');
+    });
+
+    it('should translate soft G before front vowels', () => {
+      expect(translateWithRules('gem')).toBe('jem');
+      expect(translateWithRules('gentle')).toBe('jental');
+    });
+
+    it('should translate EA variations', () => {
+      expect(translateWithRules('beat')).toBe('beet');
+      expect(translateWithRules('bread')).toBe('bred');
+      expect(translateWithRules('break')).toBe('brayk');
+      expect(translateWithRules('health')).toBe('helth');
+      expect(translateWithRules('death')).toBe('deth');
+    });
+
+    it('should translate WAR/WOR patterns', () => {
+      expect(translateWithRules('war')).toBe('wor');
+      expect(translateWithRules('worm')).toBe('werm');
+      expect(translateWithRules('work')).toBe('werk');
+      expect(translateWithRules('word')).toBe('werd');
+    });
+
+    it('should translate ALM with silent L', () => {
+      expect(translateWithRules('calm')).toBe('kom');
+      expect(translateWithRules('palm')).toBe('pom');
+    });
+
+    it('should translate -AGE suffix', () => {
+      expect(translateWithRules('message')).toBe('mesaj');
+    });
+
+    it('should translate -ENCE/-ANCE suffixes', () => {
+      expect(translateWithRules('evidence')).toBe('evadans');
+      expect(translateWithRules('distance')).toBe('distans');
+      expect(translateWithRules('balance')).toBe('balans');
+    });
+
+    it('should translate TIAL/CIAL as SH', () => {
+      expect(translateWithRules('partial')).toBe('parshal');
+      expect(translateWithRules('special')).toBe('speshal');
+    });
+
+    it('should translate soft C and G at word end (-CE, -GE)', () => {
+      expect(translateWithRules('face')).toBe('fays');
+      expect(translateWithRules('race')).toBe('rays');
+      expect(translateWithRules('age')).toBe('ayj');
+      expect(translateWithRules('page')).toBe('payj');
+      expect(translateWithRules('stage')).toBe('stayj');
     });
   });
 
