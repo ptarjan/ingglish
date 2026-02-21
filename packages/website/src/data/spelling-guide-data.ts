@@ -37,12 +37,12 @@ export const vowelGroups: SoundGroup[] = [
       },
       { phoneme: 'AA', examples: 'h**o**t (hot), w**a**tch (woch)' },
       {
-        phoneme: 'AH',
-        examples: 'b**u**t (buht), l**o**ve (luhv), bl**oo**d (bluhd), d**ou**ble (duhbal)',
-      },
-      {
         phoneme: 'UH',
         examples: 'b**oo**k (buk), p**u**t (put), w**o**lf (wulf), c**ou**ld (kud)',
+      },
+      {
+        phoneme: 'AH',
+        examples: 'b**u**t (buht), l**o**ve (luhv), bl**oo**d (bluhd), d**ou**ble (duhbal)',
       },
     ],
   },
