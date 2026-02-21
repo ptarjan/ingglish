@@ -778,6 +778,7 @@ const NRL_RULES: Record<string, string[]> = {
   P: [
     ' [PN]=/N/',
     ' [PS]=/S/',
+    ' [PT]=/T/',
     '[PH]=/F/',
     '[PEOP]=/P IY P/',
     '[POW]=/P AW/',

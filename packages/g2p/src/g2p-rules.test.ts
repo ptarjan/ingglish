@@ -29,7 +29,7 @@ describe('wordToArpabet', () => {
     expect(th).toContain('TH');
   });
 
-  it('handles word-initial silent letters (gnat, psalm, knife)', () => {
+  it('handles word-initial silent letters (gnat, psalm, knife, pterodactyl)', () => {
     const gnat = wordToArpabet('gnat');
     expect(gnat[0]).toBe('N');
 
@@ -38,6 +38,9 @@ describe('wordToArpabet', () => {
 
     const knife = wordToArpabet('knife');
     expect(knife[0]).toBe('N');
+
+    const pterodactyl = wordToArpabet('pterodactyl');
+    expect(pterodactyl[0]).toBe('T');
   });
 
   it('handles doubled consonants (bb, dd, tt)', () => {
