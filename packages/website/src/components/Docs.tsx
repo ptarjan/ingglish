@@ -153,8 +153,10 @@ function extractHeadings(html: string): HeadingInfo[] {
     const text = decodeHtmlEntities(rawText);
     const id = text
       .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
       .replace(/\s+/g, '-')
-      .replace(/[^\w-]/g, '');
+      .replace(/-{2,}/g, '-')
+      .replace(/^-|-$/g, '');
     headings.push({ id, text, level });
   }
   return headings;
@@ -197,8 +199,10 @@ function Docs(): JSX.Element {
       const text = heading.textContent ?? '';
       const id = text
         .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
-        .replace(/[^\w-]/g, '');
+        .replace(/-{2,}/g, '-')
+        .replace(/^-|-$/g, '');
       heading.id = id;
     });
 

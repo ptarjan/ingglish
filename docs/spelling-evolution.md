@@ -169,7 +169,7 @@ This vowel went through the most iteration.
 
 **Impact:** The original uu/oo assignment produces more identical spellings by raw count. But frequency tells the real story: the swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M), "looking" (476 /M) as identical — these high-frequency words far outweigh the low-frequency words lost.
 
-**Verdict:** ⚠️ **Adopted then superseded** - the /ʌ/→'uh' change later freed 'u' for /ʊ/ and 'oo' for /uː/; see [chain change below](#--and-u-chain-uoouu--uhuoo)
+**Verdict:** ⚠️ **Adopted then superseded** - the /ʌ/→'uh' change later freed 'u' for /ʊ/ and 'oo' for /uː/; see [chain change below](#and-u-chain-uoouu-uhuoo)
 
 **Later considered: 'eu' for /uː/ (rejected)**
 - Rationale: Would gain +19 /M (zeus 6 /M, neutral 4 /M, maneuver 3 /M) with minimal losses

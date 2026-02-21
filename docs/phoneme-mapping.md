@@ -152,7 +152,7 @@ The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vo
 
 This split exploits their [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables). Many phonological analyses treat them as allophones of a single phoneme (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*).
 
-Using 'a' for schwa preserves the English spelling of extremely common words: "a", "and", "about", "away", "important", "hospital", "normal", "signal". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
+Using 'a' for schwa preserves the English spelling of extremely common words: "a", "and", "about", "away", "important", "hospital", "normal", "signal". See [Spelling Evolution](spelling-evolution.md#about-sofa-u-a) for the full rationale.
 
 ## Stress Handling
 

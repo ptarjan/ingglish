@@ -31,8 +31,10 @@ function extractLinks(content: string): { text: string; href: string; line: numb
 function createHeadingId(text: string): string {
   return text
     .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
-    .replace(/[^\w-]/g, '');
+    .replace(/-{2,}/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 // Extract all headings from markdown content
