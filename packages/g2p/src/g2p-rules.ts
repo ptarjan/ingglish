@@ -668,6 +668,8 @@ const NRL_RULES: Record<string, string[]> = {
     'SS[E]L=/AH/',
     'CI[E]NT=/AH/',
     'SS[E]NG=/AH/',
+    'TN[E]SS=/AH/',
+    '[ETTE] =/EH T/',
     '[E]=/EH/',
   ],
   F: [
@@ -943,6 +945,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[I]BLY=/AH/',
     'MP[I]ON=/IY/',
     '[I]NIZE=/AH/',
+    'SS[I]BI=/AH/',
     '[I]=/IH/',
   ],
   J: [
@@ -1597,6 +1600,8 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[SON] =/S AX N/',
     '[SS]=/S/',
     'OB[S]ER=/Z/',
+    'AB[S]OR=/Z/',
+    'AB[S]OL=/Z/',
     '[S]=/S/',
   ],
   T: [
