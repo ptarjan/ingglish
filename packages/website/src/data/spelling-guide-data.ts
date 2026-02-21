@@ -46,13 +46,13 @@ export const vowelGroups: SoundGroup[] = [
           'l**aw** (law), d**o**g (dawg), th**ough**t (thawt), c**augh**t (kawt), w**al**k (wawk), s**au**ce (saws)',
       },
       {
+        phoneme: 'AH',
+        examples: 'b**u**t (buht), l**o**ve (luhv), bl**oo**d (bluhd), d**ou**ble (duhbal)',
+      },
+      {
         phoneme: 'AH0',
         examples:
           '**a**bout (about), **u**pon (apon), penc**i**l (pensal), lem**o**n (leman), op**e**n (ohpan)',
-      },
-      {
-        phoneme: 'AH',
-        examples: 'b**u**t (buht), l**o**ve (luhv), bl**oo**d (bluhd), d**ou**ble (duhbal)',
       },
     ],
   },
@@ -135,15 +135,15 @@ export const vowelGroups: SoundGroup[] = [
         ingglishOverride: 'or',
       },
       {
-        phoneme: 'ER',
-        examples:
-          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
-      },
-      {
         phoneme: 'AH+R',
         examples: 'c**urr**y (kuhree)',
         ipaOverride: 'ʌɹ',
         ingglishOverride: 'uhr',
+      },
+      {
+        phoneme: 'ER',
+        examples:
+          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
       },
     ],
   },
