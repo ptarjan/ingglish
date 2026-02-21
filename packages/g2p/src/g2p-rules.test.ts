@@ -29,21 +29,15 @@ describe('wordToArpabet', () => {
     expect(th).toContain('TH');
   });
 
-  it('handles word-initial silent letters (gnat, psalm, knife, pterodactyl, mnemonic)', () => {
-    const gnat = wordToArpabet('gnat');
-    expect(gnat[0]).toBe('N');
-
-    const psalm = wordToArpabet('psalm');
-    expect(psalm[0]).toBe('S');
-
-    const knife = wordToArpabet('knife');
-    expect(knife[0]).toBe('N');
-
-    const pterodactyl = wordToArpabet('pterodactyl');
-    expect(pterodactyl[0]).toBe('T');
-
-    const mnemonic = wordToArpabet('mnemonic');
-    expect(mnemonic[0]).toBe('N');
+  it('handles word-initial silent letters (gn, kn, pn, ps, pt, pf, mn, dj)', () => {
+    expect(wordToArpabet('gnat')[0]).toBe('N');
+    expect(wordToArpabet('knife')[0]).toBe('N');
+    expect(wordToArpabet('pneumonia')[0]).toBe('N');
+    expect(wordToArpabet('psalm')[0]).toBe('S');
+    expect(wordToArpabet('pterodactyl')[0]).toBe('T');
+    expect(wordToArpabet('pfennig')[0]).toBe('F');
+    expect(wordToArpabet('mnemonic')[0]).toBe('N');
+    expect(wordToArpabet('djinn')[0]).toBe('JH');
   });
 
   it('handles doubled consonants (bb, dd, tt)', () => {

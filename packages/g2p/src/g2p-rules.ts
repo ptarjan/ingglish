@@ -777,6 +777,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[OT] =/AH T/',
   ],
   P: [
+    ' [PF]=/F/',
     ' [PN]=/N/',
     ' [PS]=/S/',
     ' [PT]=/T/',
