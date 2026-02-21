@@ -132,6 +132,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>(getTabFromPath);
+  const [resetKey, setResetKey] = useState(0);
   const [initialText] = useState(getInitialText);
   const [initialUrl] = useState(getInitialUrl);
   const { cycleTheme, getThemeIcon } = useTheme();
@@ -142,10 +143,7 @@ function App() {
     const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
     const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
     if (currentPath !== targetPath && activeTab !== 'docs') {
-      // Preserve existing query string (e.g. ?word=hello on /explore)
-      const url = new URL(window.location.href);
-      url.pathname = targetPath;
-      window.history.pushState(null, '', url.pathname + url.search);
+      window.history.pushState(null, '', targetPath);
     }
     trackPageView(targetPath);
     window.scrollTo(0, 0);
@@ -308,7 +306,13 @@ function App() {
               href={href}
               onClick={(e) => {
                 e.preventDefault();
-                setActiveTab(tab);
+                if (tab === activeTab) {
+                  // Re-clicking active tab: clear query params and reset component
+                  window.history.replaceState(null, '', href);
+                  setResetKey((k) => k + 1);
+                } else {
+                  setActiveTab(tab);
+                }
               }}
             >
               {label}
@@ -356,7 +360,7 @@ function App() {
               {activeTab === 'guide' && <SpellingGuide />}
               {activeTab === 'extension' && <Extension />}
               {activeTab === 'explore' && (
-                <ErrorBoundary>
+                <ErrorBoundary key={resetKey}>
                   <WordExplorer />
                 </ErrorBoundary>
               )}
