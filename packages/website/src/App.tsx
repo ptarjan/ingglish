@@ -267,7 +267,12 @@ function App() {
             href="/"
             onClick={(e) => {
               e.preventDefault();
-              setActiveTab('tutorial');
+              if (activeTab === 'tutorial') {
+                window.history.replaceState(null, '', '/');
+                setResetKey((k) => k + 1);
+              } else {
+                setActiveTab('tutorial');
+              }
             }}
           >
             <img src="/logo.svg" alt="Ingglish logo" className="logo" />
@@ -334,53 +339,52 @@ function App() {
           </div>
         )}
         {!isLoading && error === null && (
-          <>
+          <Suspense
+            key={resetKey}
+            fallback={
+              <div className="loading-screen">
+                <div className="loading-spinner"></div>
+              </div>
+            }
+          >
             {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
             {activeTab === 'text' && (
               <ErrorBoundary>
                 <TextTranslator initialText={initialText} onShare={handleShareText} />
               </ErrorBoundary>
             )}
-            <Suspense
-              fallback={
-                <div className="loading-screen">
-                  <div className="loading-spinner"></div>
-                </div>
-              }
-            >
-              {activeTab === 'url' && (
-                <ErrorBoundary>
-                  <UrlTranslator
-                    initialUrl={initialUrl}
-                    onShare={handleShareUrl}
-                    onNavigate={handleUrlNavigate}
-                  />
-                </ErrorBoundary>
-              )}
-              {activeTab === 'guide' && <SpellingGuide />}
-              {activeTab === 'extension' && <Extension />}
-              {activeTab === 'explore' && (
-                <ErrorBoundary key={resetKey}>
-                  <WordExplorer />
-                </ErrorBoundary>
-              )}
-              {activeTab === 'experiment' && (
-                <ErrorBoundary>
-                  <Experiment />
-                </ErrorBoundary>
-              )}
-              {activeTab === 'challenge' && (
-                <ErrorBoundary>
-                  <ReadingChallenge />
-                </ErrorBoundary>
-              )}
-              {activeTab === 'docs' && (
-                <ErrorBoundary>
-                  <Docs />
-                </ErrorBoundary>
-              )}
-            </Suspense>
-          </>
+            {activeTab === 'url' && (
+              <ErrorBoundary>
+                <UrlTranslator
+                  initialUrl={initialUrl}
+                  onShare={handleShareUrl}
+                  onNavigate={handleUrlNavigate}
+                />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'guide' && <SpellingGuide />}
+            {activeTab === 'extension' && <Extension />}
+            {activeTab === 'explore' && (
+              <ErrorBoundary>
+                <WordExplorer />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'experiment' && (
+              <ErrorBoundary>
+                <Experiment />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'challenge' && (
+              <ErrorBoundary>
+                <ReadingChallenge />
+              </ErrorBoundary>
+            )}
+            {activeTab === 'docs' && (
+              <ErrorBoundary>
+                <Docs />
+              </ErrorBoundary>
+            )}
+          </Suspense>
         )}
       </main>
 
