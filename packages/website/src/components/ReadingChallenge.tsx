@@ -284,11 +284,13 @@ function ReadingChallenge() {
               <span key={i} className="challenge-word">
                 <span className="challenge-word-ingglish">{w.ingglish}</span>
                 <span
-                  className={`challenge-word-result ${w.correct ? 'challenge-word-correct' : 'challenge-word-incorrect'}`}
+                  className={`challenge-word-result ${w.correct ? (w.fuzzy === true ? 'challenge-word-fuzzy' : 'challenge-word-correct') : 'challenge-word-incorrect'}`}
                 >
                   {w.actual || '—'}
                 </span>
-                {!w.correct && <span className="challenge-word-expected">{w.expected}</span>}
+                {(w.fuzzy === true || !w.correct) && (
+                  <span className="challenge-word-expected">{w.expected}</span>
+                )}
               </span>
             ))}
           </div>

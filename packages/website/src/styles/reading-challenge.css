@@ -182,6 +182,11 @@
   color: var(--color-success);
 }
 
+.challenge-word-fuzzy {
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--color-warning, #ca8a04);
+}
+
 .challenge-word-incorrect {
   background: rgba(239, 68, 68, 0.15);
   color: var(--color-error);

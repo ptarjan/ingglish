@@ -17,6 +17,8 @@ export interface WordScore {
   actual: string;
   /** Whether the user's answer was accepted */
   correct: boolean;
+  /** True if accepted via fuzzy match (close misspelling) */
+  fuzzy?: boolean;
 }
 
 export interface SentenceScore {
@@ -31,6 +33,30 @@ const EDGE_PUNCTUATION = /^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g;
 
 function stripPunctuation(word: string): string {
   return word.replace(EDGE_PUNCTUATION, '');
+}
+
+/** Levenshtein edit distance between two strings. */
+function editDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  const dp: number[] = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i++) {
+    let prev = i - 1;
+    dp[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const temp = dp[j]!;
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
+      prev = temp;
+    }
+  }
+  return dp[n]!;
+}
+
+/** Allow 1 edit for words <= 5 chars, 2 edits for longer words. */
+function isCloseEnough(actual: string, expected: string): boolean {
+  const dist = editDistance(actual, expected);
+  const maxDist = expected.length <= 5 ? 1 : 2;
+  return dist > 0 && dist <= maxDist;
 }
 
 /**
@@ -56,25 +82,33 @@ export function scoreSentence(tokens: TranslatedToken[], userInput: string): Sen
     }
 
     let isCorrect = false;
+    let isFuzzy = false;
 
     if (actual && expected) {
+      const actualLower = actual.toLowerCase();
+      const expectedLower = expected.toLowerCase();
+
       // 1. Exact match (case-insensitive)
-      if (actual.toLowerCase() === expected.toLowerCase()) {
+      if (actualLower === expectedLower) {
         isCorrect = true;
       } else {
         // 2. Check homophones: reverse-translate the ingglish word
         //    and see if the user's answer is among valid English words
         const homophones = reverseTranslateWord(ingglish);
-        isCorrect = homophones.some(
-          (h) => stripPunctuation(h).toLowerCase() === actual.toLowerCase()
-        );
+        isCorrect = homophones.some((h) => stripPunctuation(h).toLowerCase() === actualLower);
+      }
+
+      // 3. Fuzzy match: accept close misspellings of the expected word
+      if (!isCorrect && isCloseEnough(actualLower, expectedLower)) {
+        isCorrect = true;
+        isFuzzy = true;
       }
     }
 
     if (isCorrect) {
       correct++;
     }
-    words.push({ ingglish, expected, actual, correct: isCorrect });
+    words.push({ ingglish, expected, actual, correct: isCorrect, fuzzy: isFuzzy });
   }
 
   const total = words.length;
