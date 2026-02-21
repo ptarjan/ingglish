@@ -523,10 +523,8 @@ describe('unknown-words', () => {
     it('should use long vowels before consonant+le where NRL matches', () => {
       // table: NRL ABLE rule gives long A
       expect(translateWithRules('table')).toBe('taybal');
-      // TODO: NRL gives AA for 'o' in noble; should be OW → "nohbal"
-      expect(translateWithRules('noble')).toBe('nobal');
-      // TODO: NRL gives IH for 'i' in title; should be AY → "taital"
-      expect(translateWithRules('title')).toBe('tital');
+      expect(translateWithRules('noble')).toBe('nohbal');
+      expect(translateWithRules('title')).toBe('taital');
       // Short vowel (doubled consonant): little, apple, bottle stay short
       expect(translateWithRules('little')).toBe('lital');
       expect(translateWithRules('apple')).toBe('apal');
