@@ -573,6 +573,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[MOV]=/M UW V/',
     '[MBS] =/M Z/',
     '[MB] =/M/',
+    ' [MN]=/N/',
     '[MN]ING=/M/',
     '[MN]ED=/M/',
     '[MN]S=/M/',
