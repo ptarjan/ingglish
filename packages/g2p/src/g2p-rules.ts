@@ -827,7 +827,6 @@ const NRL_RULES: Record<string, string[]> = {
     ' DI[S]AP=/S/',
     ' DI[S]AF=/S/',
     'MY[S]EL=/S/',
-    'I[S]O=/S/',
     '#[S]#=/Z/',
     '[SAID]=/S EH D/',
     '^[SION]=/SH AX N/',
