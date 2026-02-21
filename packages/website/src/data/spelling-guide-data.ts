@@ -57,7 +57,7 @@ export const vowelGroups: SoundGroup[] = [
     ],
   },
   {
-    name: 'Long Vowels',
+    name: 'Long Vowels & Diphthongs',
     sounds: [
       {
         phoneme: 'IY',
@@ -69,11 +69,6 @@ export const vowelGroups: SoundGroup[] = [
         examples:
           't**oo** (too), bl**ue** (bloo), d**o** (doo), y**ou** (yoo), thr**ough** (throo), n**ew** (noo), sh**oe** (shoo), fr**ui**t (froot)',
       },
-    ],
-  },
-  {
-    name: 'Diphthongs',
-    sounds: [
       {
         phoneme: 'EY',
         examples:
