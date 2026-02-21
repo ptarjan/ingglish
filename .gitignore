@@ -50,7 +50,19 @@ test-results/
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.baseline
 .vite/
+
+# Scratch/experimental scripts (underscore-prefixed and one-off analysis)
+packages/core/scripts/_*
+packages/core/scripts/g2p-error-deep.ts
+packages/core/scripts/g2p-test-rules.ts
+packages/core/scripts/vowel-minimal-pairs.ts
+
+# Generated data copies (originals live in packages/dictionary)
+packages/core/src/data/
+packages/core/src/dictionary/
 
 # Lint caches
 .eslintcache
