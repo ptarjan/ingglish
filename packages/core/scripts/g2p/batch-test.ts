@@ -7,7 +7,7 @@
  * combining winners.
  *
  * Usage:
- *   npx tsx scripts/g2p-batch-test.ts <experiment-file>
+ *   npx vite-node scripts/g2p/batch-test.ts <experiment-file>
  *
  * Experiment file format (TypeScript):
  *   export const experiments = [
@@ -30,7 +30,7 @@ import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, copyFileSync } from 'fs';
 import { resolve } from 'path';
 
-const ROOT = resolve(__dirname, '../../..');
+const ROOT = resolve(__dirname, '../../../..');
 const RULES = resolve(ROOT, 'packages/g2p/src/g2p-rules.ts');
 const STRESS = resolve(ROOT, 'packages/g2p/src/stress.ts');
 const G2P_DIR = resolve(ROOT, 'packages/g2p');
@@ -75,7 +75,7 @@ async function main() {
   const expFile = process.argv[2];
   if (!expFile) {
     // If no experiment file, just run as inline with empty experiments
-    console.log('Usage: npx tsx scripts/g2p-batch-test.ts <experiment-file.ts>');
+    console.log('Usage: npx vite-node scripts/g2p/batch-test.ts <experiment-file.ts>');
     console.log('Or import and call runBatchTest(experiments) programmatically.');
     process.exit(1);
   }
