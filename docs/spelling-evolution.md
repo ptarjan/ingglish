@@ -11,9 +11,10 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
 | go, show | /oʊ/ | **oh** | o → oh |
 | father, hot | /ɑ/ | **o** | ah → o |
 | thought, law | /ɔ/ | **aw** | aw → o → aw |
-| book, put | /ʊ/ | **oo** | uu → oo (swapped) |
-| too, blue | /uː/ | **uu** | oo → uu (swapped) |
+| book, put | /ʊ/ | **u** | uu → oo → u |
+| too, blue | /uː/ | **oo** | oo → uu → oo |
 | arrow, carrot | /æɹ/ | **arr** | aar → arr |
+| but, cup | /ʌ/ | **uh** | u → uh |
 | schwa (about, sofa) | /ə/ | **a** | u → a (AH0 only) |
 
 ## Diphthong Evolution
@@ -152,7 +153,7 @@ This vowel went through the most iteration.
 - thought → thawt
 - call → kawl
 
-### /ʊ/ and /uː/ Swap: oo ↔ uu
+### /ʊ/ and /uː/ Swap: oo ↔ uu (superseded)
 
 **Original:**
 - /ʊ/ (book) → 'uu'
@@ -162,28 +163,69 @@ This vowel went through the most iteration.
 - "book" → "buuk" looked strange when English already has "book"
 - "too" → "too" was identical, but the long sound had the shorter spelling
 
-**After Swap (current):**
+**After Swap:**
 - /ʊ/ (book) → 'oo' - matches English "book", "good", "look"
 - /uː/ (too) → 'uu' - longer sound gets longer spelling (Finnish pattern)
 
-**Rationale:**
-- "book" → "book" (identical!)
-- "too" → "tuu" follows the length principle
-- Both spellings now have "Common" ratings
-
 **Impact:** The original uu/oo assignment produces more identical spellings by raw count. But frequency tells the real story: the swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M), "looking" (476 /M) as identical — these high-frequency words far outweigh the low-frequency words lost.
 
-**Verdict:** ✅ **Adopted** - identical short vowel words + logical length pattern
+**Verdict:** ⚠️ **Adopted then superseded** - the /ʌ/→'uh' change later freed 'u' for /ʊ/ and 'oo' for /uː/; see [chain change below](#ʌ-ʊ-and-uː-chain-uoouu--uhuoo)
 
 **Later considered: 'eu' for /uː/ (rejected)**
 - Rationale: Would gain +19 /M (zeus 6 /M, neutral 4 /M, maneuver 3 /M) with minimal losses
 - Problem: `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables), `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers.
-- Lesson: Identical word count isn't enough on its own. A shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly. `uu` works precisely because English has no `uu` convention to conflict with.
+- Lesson: Identical word count isn't enough on its own. A shared spelling that reads as the wrong sound is worse than an unfamiliar spelling that reads correctly.
 - Verdict: ❌ Rejected - perceptual ambiguity, and the +19 /M gain is negligible anyway
+
+### /ʌ/, /ʊ/, and /uː/ Chain: u/oo/uu → uh/u/oo
+
+A three-way chain shift that resolved the 'uu' digraph and aligned all three vowels with more intuitive spellings.
+
+**Before (the oo/uu swap era):**
+- /ʌ/ (but) → 'u'
+- /ʊ/ (book) → 'oo'
+- /uː/ (too) → 'uu'
+
+**Problem:**
+- 'uu' has no precedent in English — "tuu", "thruu", "byuutafal" looked alien
+- Most world languages use 'u' for /ʊ/, not 'oo'
+- 'oo' is the natural English spelling for /uː/ (too, food, moon, cool)
+
+**After (current):**
+- /ʌ/ (but) → 'uh' — the English interjection "uh" is exactly this sound
+- /ʊ/ (book) → 'u' — what most world languages use for this vowel
+- /uː/ (too) → 'oo' — matches English "too", "food", "moon", "cool"
+
+**Rationale:**
+- 'uh' is the intuitive English interjection for /ʌ/ — everyone knows how "uh" sounds
+- Freeing 'u' for /ʊ/ aligns with most world languages (Universal rating)
+- 'oo' for /uː/ matches English conventions (too, food, moon, cool, school)
+- Eliminates 'uu' entirely — no more unfamiliar digraphs
+
+**Impact:**
+- "too" → "too" (identical!), "food" → "food" (identical!), "moon" → "moon" (identical!), "school" → "skool", "blue" → "bloo", "you" → "yoo"
+- "book" → "buk", "good" → "gud", "could" → "kud", "would" → "wud", "should" → "shud", "put" → "put" (identical!), "look" → "luk"
+- "but" → "buht", "cup" → "kuhp", "love" → "luhv", "of" → "uhv"
+- Loses some /ʊ/ identical words (book, good, could, would, should, look) but gains /uː/ identical words (too, food, moon) and eliminates the unfamiliar 'uu'
+
+**Verdict:** ✅ **Adopted** — eliminates 'uu', aligns with world languages, 'oo' matches English conventions
+
+**Examples:**
+- but → buht
+- cup → kuhp
+- love → luhv
+- book → buk
+- good → gud
+- could → kud
+- too → too (identical!)
+- food → food (identical!)
+- school → skool
+- beautiful → byootafal
+- through → throo
 
 ### /ə/ (about, sofa): u → a
 
-The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (ARPAbet AH0), not the stressed /ʌ/ STRUT vowel (AH1/AH2) used in "but", "cup", "run" — those remain 'u'.
+The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (ARPAbet AH0), not the stressed /ʌ/ STRUT vowel (AH1/AH2) used in "but", "cup", "run" — those use 'uh'.
 
 **Attempt 1: 'u'**
 - Rationale: Both /ə/ and /ʌ/ are represented as 'AH' in ARPAbet, so mapping all AH → 'u' was the simplest approach
@@ -192,7 +234,7 @@ The schwa (/ə/) is the most common vowel in English — it appears in nearly ev
   - "about" → "ubout" (lost the identical English spelling)
   - "hello" → "huloh" (the 'u' in the first syllable looked odd)
   - "nation" → "nayshun" (the '-un' ending felt wrong for a word ending in /-ən/)
-  - "beautiful" → "byuutuful" (three u's in one word)
+  - "beautiful" → "byootufool" (confusing)
 - Verdict: ❌ Rejected — schwa words looked too unfamiliar
 
 **Attempt 2: 'a' (current)**
@@ -200,12 +242,12 @@ The schwa (/ə/) is the most common vowel in English — it appears in nearly ev
   - "about" → "about" (identical!), "and" → "and" (identical!), "the" → "dha" (natural)
   - 'a' is phonetically close to schwa — many languages use 'a' for their neutral vowel
   - English already spells schwa as 'a' in the most common words: **a**, **about**, **again**, **along**, **away**, **around** — all identical in Ingglish
-  - Stressed /ʌ/ stays 'u' (but, cup, run unchanged), so no collisions with STRUT words
+  - Stressed /ʌ/ stays separate ('uh'), so no collisions with STRUT words
 - Impact:
   - **67.6× frequency-weighted improvement** — the largest gain from any single change
   - Top gains: "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M), "around" (1,428 /M)
   - Only +93 net collision groups (acceptable; most are low-frequency)
-  - Losses cluster in predictable patterns: un- prefix (until→antil), up- prefix (upset→apset), -ful suffix (handful→handfal), -um suffix (museum→myuuzeam)
+  - Losses cluster in predictable patterns: un- prefix (until→antil), up- prefix (upset→apset), -ful suffix (handful→handfal), -um suffix (museum→myoozeeam)
 - Trade-off: AH0+R must remain 'ur' (not 'ar') to avoid collision with AA+R→'ar'. This is handled by a special R-colored vowel rule that overrides the schwa mapping before R.
 - Verdict: ✅ **Adopted** — massive familiarity gain with minimal downside
 
@@ -215,7 +257,7 @@ The schwa (/ə/) is the most common vowel in English — it appears in nearly ev
 - the → dha
 - again → agen (identical!)
 - hello → haloh
-- beautiful → byuutafal
+- beautiful → byootafal
 - difficult → difakalt
 - nation → nayshan
 
@@ -294,7 +336,7 @@ R-colored vowels were added iteratively to fix collisions and improve readabilit
 ## Lessons
 
 ### 1. Identical Words Are a Big Win (But Not Everything)
-When a word is spelled identically in English and Ingglish (out→out, loud→loud, book→book, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).
+When a word is spelled identically in English and Ingglish (out→out, loud→loud, too→too, law→law), it provides maximum familiarity. We prioritize mappings that create more identical words, but **not at the cost of creating collisions** (different words with the same spelling).
 
 Current status: **10,150 identical words** (8.05% of 126,051 dictionary words). The schwa change (AH0 → 'a') alone produced the largest frequency-weighted gain of any change (67.6×). See [Identical Words Analysis](identical-words-analysis.md) for frequency-weighted analysis of potential improvements.
 
@@ -308,16 +350,17 @@ R-colored vowel rules were essential to prevent words like "air" and "her" from 
 Several changes were specifically made to upgrade ratings:
 - 'arr' (was 'aar'): Novel → Common
 - 'ou' (was 'ow'): Regional → Common
-- 'oo'/'uu' swap: Both now Common
+- 'u' for /ʊ/: Regional → Universal
+- 'oo' for /uː/: Common
 
 ### 5. Reversion Is Okay
 The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
 
 ### 6. Identical Word Count Can Mislead
-A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both look good by raw count but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). Frequency analysis reinforces this: `ow` is net -1,330 /M, `eu` is only +19 /M. The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
+A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both look good by raw count but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
 
 ### 7. Stress-Conditioned Splits Can Unlock Big Wins
-The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'u'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was a 67.6× frequency-weighted improvement — the single largest gain of any change, driven by "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M). When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
+The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'uh'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was a 67.6× frequency-weighted improvement — the single largest gain of any change, driven by "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M). When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
 
 ## Changes Not Made (Considered and Rejected)
 

@@ -96,14 +96,14 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 | Word | Ingglish | GenAm | British RP |
 |------|----------|-------|------------|
-| dew | duu | /duː/ | /djuː/ |
-| due | duu | /duː/ | /djuː/ |
-| new | nuu | /nuː/ | /njuː/ |
-| tune | tuun | /tuːn/ | /tjuːn/ |
-| suit | suut | /suːt/ | /sjuːt/ |
-| student | stuudant | /stuːdənt/ | /stjuːdənt/ |
+| dew | doo | /duː/ | /djuː/ |
+| due | doo | /duː/ | /djuː/ |
+| new | noo | /nuː/ | /njuː/ |
+| tune | toon | /tuːn/ | /tjuːn/ |
+| suit | soot | /suːt/ | /sjuːt/ |
+| student | stoodant | /stuːdənt/ | /stjuːdənt/ |
 
-**Who this affects:** RP, Australian, and most non-American varieties preserve /j/ in these positions. They would expect "dyuu", "nyuu", "tyuun".
+**Who this affects:** RP, Australian, and most non-American varieties preserve /j/ in these positions. They would expect "dyoo", "nyoo", "tyoon".
 
 **Who this matches:** General American, where yod-dropping after coronals is standard.
 
@@ -141,7 +141,7 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 | Word | Ingglish | GenAm pronunciation | What you hear |
 |------|----------|-------------------|---------------|
-| butter | buter | /bʌtɚ/ | [bʌɾɚ] (flapped) |
+| butter | buhter | /bʌtɚ/ | [bʌɾɚ] (flapped) |
 | water | wawter | /wɔtɚ/ | [wɔɾɚ] (flapped) |
 | letter | leter | /lɛtɚ/ | [lɛɾɚ] (flapped) |
 | ladder | lader | /l&aelig;dɚ/ | [l&aelig;ɾɚ] (flapped) |
@@ -167,8 +167,8 @@ Some individual words have well-known transatlantic pronunciation differences:
 
 | Word | Ingglish | GenAm | British RP |
 |------|----------|-------|------------|
-| schedule | skejool | /skɛdʒuːl/ | /ʃɛdjuːl/ |
-| lieutenant | luutenant | /luːtɛnənt/ | /lɛftɛnənt/ |
+| schedule | skejul | /skɛdʒuːl/ | /ʃɛdjuːl/ |
+| lieutenant | lootenant | /luːtɛnənt/ | /lɛftɛnənt/ |
 | herb | erb | /ɝb/ (silent H) | /hɜːb/ |
 | tomato | tamaytoh | /təmeɪtoʊ/ | /təmɑːtəʊ/ |
 | vitamin | vaitaman | /vaɪtəmɪn/ | /vɪtəmɪn/ |

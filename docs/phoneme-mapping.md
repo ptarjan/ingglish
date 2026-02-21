@@ -23,7 +23,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 |---------|----------|-----|---------------|-------|
 | AA | o | ɑ | f**a**ther, h**o**t, r**o**ck | Open back vowel |
 | AE | a | æ | c**a**t, b**a**t | Near-open front vowel |
-| AH | u/a | ʌ/ə | b**u**t, c**u**p / **a**bout, sof**a** | Stressed /ʌ/ → 'u'; unstressed /ə/ (AH0) → 'a'; see [note](#schwa-and-strut) below |
+| AH | uh/a | ʌ/ə | b**u**t, c**u**p / **a**bout, sof**a** | Stressed /ʌ/ → 'uh'; unstressed /ə/ (AH0) → 'a'; see [note](#schwa-and-strut) below |
 | AO | aw | ɔ | th**ou**ght, l**aw** | Open-mid back rounded |
 | AW | ou | aʊ | c**ow**, h**ow** | Diphthong |
 | AY | ai | aɪ | m**y**, t**i**me | Diphthong |
@@ -33,8 +33,8 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 | IY | ee | i | b**ee**, s**ee** | Close front vowel (also written /iː/) |
 | OW | oh | oʊ | g**o**, sh**ow** | Diphthong |
 | OY | oi | ɔɪ | b**oy**, t**oy** | Diphthong |
-| UH | oo | ʊ | b**oo**k, p**u**t | Near-close back vowel |
-| UW | uu | u | t**oo**, bl**ue** | Close back vowel (also written /uː/) |
+| UH | u | ʊ | b**oo**k, p**u**t | Near-close back vowel |
+| UW | oo | u | t**oo**, bl**ue** | Close back vowel (also written /uː/) |
 
 ## Consonant Mappings
 
@@ -138,7 +138,7 @@ If Ingglish ever gets popular enough that this exception is the biggest complain
 |---------|----------|---------|
 | hello | HH AH0 L OW1 | haloh |
 | world | W ER1 L D | werld |
-| beautiful | B Y UW1 T AH0 F AH0 L | byuutafal |
+| beautiful | B Y UW1 T AH0 F AH0 L | byootafal |
 | think | TH IH1 NG K | thingk |
 | the | DH AH0 | dha |
 | English | IH1 NG G L IH0 SH | Ingglish |
@@ -147,7 +147,7 @@ If Ingglish ever gets popular enough that this exception is the biggest complain
 
 The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish splits these by stress level:
 
-- **AH1/AH2** (stressed /ʌ/) → **'u'**: but, cup, run, son
+- **AH1/AH2** (stressed /ʌ/) → **'uh'**: but, cup, run, son
 - **AH0** (unstressed /ə/) → **'a'**: about, sofa, the, and
 
 This split exploits their [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables). Many phonological analyses treat them as allophones of a single phoneme (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*).

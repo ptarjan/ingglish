@@ -22,8 +22,8 @@ In these families, the shared root sounds similar enough across forms that Inggl
 | electric | electric / electricity / electrical | ilektrik / ilektrisatee / ilektrikal | ilektri- |
 | magic | magic / magician / magical | majik / majishan / majikal | maji- |
 | medicine | medicine / medical / medication | medasan / medakal / medakayshan | med- |
-| produce | produce / production / productive | praduus / pradukshan / praduktiv | pradu- |
-| reduce | reduce / reduction | raduus / radukshan | radu- |
+| produce | produce / production / productive | pradoos / praduhkshan / praduhktiv | pradu- |
+| reduce | reduce / reduction | radoos / raduhkshan | radu- |
 | deep | deep / depth | deep / depth | deep/depth |
 | cone | cone / conic / conical | kohn / konik / konikal | kon- |
 | bomb\* | bombard / bombardment | bombard / bombardmant | bombard- |
@@ -65,7 +65,7 @@ English keeps certain consonants in spelling even when they're silent, because t
 | paradigm / paradigmatic | paradigm / paradigmatic | pairadaim / pairadigmatik | silent "g" returns |
 | debt / debit | debt / debit | det / debit | silent "b" returns |
 | resign / resignation | resign / resignation | rizain / rezagnayshan | silent "g" returns |
-| autumn / autumnal | autumn / autumnal | awtam / awtumnal | silent "n" returns |
+| autumn / autumnal | autumn / autumnal | awtam / awtuhmnal | silent "n" returns |
 
 ### Stress-Induced Vowel Reduction
 
@@ -84,7 +84,7 @@ Some word families combine vowel shifts, silent letter reactivation, and stress 
 | Family | English | Ingglish | Effects |
 |--------|---------|----------|---------|
 | receipt / receive / reception | receipt / receive / reception | riseet / raseev / risepshan | vowel shift + stress + consonant change |
-| muscle / muscular | muscle / muscular | musal / muskyaler | vowel change + consonant insertion |
+| muscle / muscular | muscle / muscular | muhsal / muhskyaler | vowel change + consonant insertion |
 | know / knowledge | know / knowledge | noh / nolaj | silent "k" + vowel shift |
 
 ## Improved Relationships

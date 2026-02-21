@@ -11,7 +11,7 @@ The current mapping produces **10,150 identical words** (8.05% of the CMU dictio
 We exhaustively tested 2,730 collision-free spelling alternatives, weighted by word frequency (per million words of text). Only two candidates have positive frequency impact, and both fail on perceptual ambiguity. The rest are net negative:
 
 - /ɔɪ/→oy: **+235 /M** — marginal; "oi" and "oy" are both common English spellings
-- /uː/→eu: **+19 /M** — negligible, and `eu` misleads English readers (`meun` reads as "mew-n")
+- /uː/→eu: **+19 /M** — negligible, and `eu` misleads English readers (`meun` reads as "mew-n") [note: tested when /uː/ was 'uu']
 - /oʊ/→ow: **-1,330 /M** — "oh" alone (3,374 /M) outweighs all gains
 - /ɔ/→au: **-555 /M** — loses saw (413 /M), law (119 /M)
 - /aɪ/→ei: **-1 /M** — shuffles rare German surnames, essentially zero real-text impact
@@ -59,7 +59,7 @@ We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combination
 | Phoneme | Current | Proposed | Net /M | Top Gains (/M) | Top Losses (/M) |
 |---------|---------|----------|--------|-----------------|-----------------|
 | /ɔɪ/ | oi | oy | **+235** | boy (543), enjoy (85), joy (29) | point (243), join (86), oil (42) |
-| /uː/ | uu | eu | **+19** | zeus (6), neutral (4), maneuver (3) | bruun (0), ruud (0) |
+| /uː/ | oo | eu | **+19** | zeus (6), neutral (4), maneuver (3) | bruun (0), ruud (0) |
 | /aɪ/ | ai | ei | **-1** | einstein (5), heist (3), stein (3) | shanghai (5), saigon (4), ai (4) |
 | /ɔ/ | aw | au | **-555** | fault (107), paul (97), launch (20) | saw (413), law (119), lawyer (82) |
 | /oʊ/ | oh | ow | **-1,330** | show (501), own (471), throw (132) | oh (3,374) |
@@ -72,7 +72,7 @@ The two positive-frequency candidates (/ɔɪ/→oy and /uː/→eu) still fail th
 
 Best frequency trade: gains boy (543 /M), enjoy (85 /M), joy (29 /M), royal (24 /M) while losing point (243 /M), join (86 /M), oil (42 /M). But both "oi" and "oy" are common English spellings with similar total frequency — it's nearly a wash. Not compelling enough to change.
 
-#### /uː/: "uu" → "eu" (+19 /M)
+#### /uː/: "oo" → "eu" (+19 /M)
 
 Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M) with negligible losses. At only +19 /M, this change would affect 0.002% of real text — barely measurable. And `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n", `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers for a negligible frequency gain.
 
@@ -108,9 +108,9 @@ We tested all 15 stress-0 vowel phonemes × 70 options (1,036 combinations). Twe
 | Unstressed Phoneme | Current | Proposed | Net /M | Top Gains (/M) | Top Losses (/M) |
 |---------------------|---------|----------|--------|-----------------|-----------------|
 | IY0 (unstressed /iː/) | ee | y | **+2,700** | every (563), party (239), story (226), body (201) | frisbee (2), godspeed (1), chimpanzee (1) |
-| UW0 (unstressed /uː/) | uu | o | **+912** | into (866), onto (38), unto (8) | — |
+| UW0 (unstressed /uː/) | oo | o | **+912** | into (866), onto (38), unto (8) | — |
 | OW0 (unstressed /oʊ/) | oh | o | **+246** | hotel (106), noel (19), motel (19), november (9) | — |
-| UW0 (unstressed /uː/) | uu | u | **+9** | flu (<1), tofu (<1), tutu (<1) | — |
+| UW0 (unstressed /uː/) | oo | u | **+9** | flu (<1), tofu (<1), tutu (<1) | — |
 | AO0 (unstressed /ɔː/) | aw | o | **+0.5** | menthol (<1), oblong (<1) | — |
 
 Frequency weighting dramatically reshuffles the raw count rankings. UW0→'u' gains 97 words but only +9 /M (all rare). UW0→'o' gains just 3 words but +912 /M — because "into" alone is 866 /M. AO0→'o' gains 28 words but only +0.5 /M — essentially zero real-text impact.
@@ -127,7 +127,7 @@ Top losses: frisbee (2 /M), godspeed (1 /M), chimpanzee (1 /M) — all rare.
 
 The gains are extremely common English words; the losses are mostly proper nouns and rare words. This is the strongest stress-conditioned candidate.
 
-#### UW0: "uu" → "o" (+912 /M)
+#### UW0: "oo" → "o" (+912 /M)
 
 A surprising find: just three words — into (866 /M), onto (38 /M), unto (8 /M) — but "into" is so common that it dominates. No losses.
 
@@ -210,7 +210,7 @@ Raw identical word count has two blind spots:
 
 2. **It doesn't measure readability.** A proposed change must not create perceptual ambiguity — the spelling must read correctly to English speakers. The `ow` and `eu` changes both pass the collision check but fail the readability test: English readers' existing intuitions produce wrong pronunciations (`bownz` → "bowns", `meun` → "mew-n").
 
-The current mappings (`oh` for /oʊ/, `uu` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `uu` has no English precedent to conflict with.
+The current mappings (`oh` for /oʊ/, `oo` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `oo` for /uː/ matches existing English conventions (too, food, moon).
 
 Stress-conditioned changes may be an exception to this caution: 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English already spells these sounds, so the "perceptual ambiguity" test is more likely to pass.
 

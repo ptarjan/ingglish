@@ -112,15 +112,17 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 
 | Spelling | Languages |
 |----------|-----------|
-| **u** (Ingglish) | English |
+| **uh** (Ingglish) | English (interjection) |
+| u | English (traditional: "but", "cup") |
 | eo | Korean |
 | ă | Romanian, Vietnamese |
 
 **Notes:**
 - The English /ʌ/ sound is relatively rare across languages — most of the 37 compared languages lack it entirely
-- Most languages use 'u' for /u/ (as in "too"), not /ʌ/
-- We follow English convention ("but", "cup") for familiarity
-- English inconsistently spells this as 'o' in "son", "love", "come"; Ingglish uses 'u' consistently
+- Most languages use 'u' for /u/ (as in "too") or /ʊ/ (as in "book"), not /ʌ/
+- 'uh' is the English interjection for this exact sound — everyone knows how "uh" sounds
+- This frees 'u' for /ʊ/, aligning with most world languages
+- English inconsistently spells this as 'o' in "son", "love", "come"; Ingglish uses 'uh' consistently
 - Korean romanization uses 'eo' for ㅓ /ʌ/; Romanian and Vietnamese 'ă' represent /ə/ (close to /ʌ/)
 - The unstressed schwa (/ə/) also maps to 'a'; see Schwa section below
 
@@ -194,23 +196,24 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 - 'oh' matches the English interjection "oh!" which has this exact sound
 - Dutch/Finnish/Estonian double the vowel for length (oo = /oː/); Czech/Hungarian/Icelandic use accent marks
 
-#### 'UU' Sound (/uː/)
+#### 'OO' Sound (/uː/)
 
 | Spelling | Languages |
 |----------|-----------|
-| **uu** (Ingglish) | Finnish, Estonian |
+| **oo** (Ingglish) | English |
 | u | Pinyin, Hindi, Spanish, French, Arabic, Indonesian, Portuguese, Russian, German, Japanese, Swahili, Turkish, Vietnamese, Korean, Hausa, Italian, Yoruba, Polish, Ukrainian, Romanian, Azerbaijani, Somali, Swedish, Catalan, Albanian, Croatian, Danish, Norwegian, Slovenian, Welsh |
+| uu | Finnish, Estonian |
 | oe | Dutch |
 | ú/ů | Czech, Icelandic |
 | ú | Hungarian |
 | oo, ou, ew | English |
 
 **Notes:**
-- Follows Finnish/Estonian convention: 'uu' for /uː/
+- Matches English convention: "too", "food", "moon", "cool", "school" all use 'oo' for /uː/
 - Most languages use 'u' without distinguishing vowel length
 - Dutch uses 'oe' for /u/ (boek = book, goed = good)
 - Czech uses both 'ú' (word-initial) and 'ů' (elsewhere) for /uː/
-- The longer sound gets the longer spelling (uu vs oo)
+- Finnish/Estonian use 'uu' for /uː/; Ingglish previously followed this but switched to 'oo' to match English
 
 ### Diphthongs
 
@@ -262,17 +265,17 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 - Catalan distinguishes open ò /ɔ/ from close ó /o/; Yoruba uses ọ (dot below) for /ɔ/
 - We reserve plain 'o' for /ɑ/ (father, hot) to avoid collision
 
-#### 'OO' Sound (/ʊ/)
+#### 'U' Sound (/ʊ/)
 
 | Spelling | Languages |
 |----------|-----------|
-| **oo** (Ingglish) | English |
-| u (no /ʊ/ vs /uː/ distinction) | Pinyin, Hindi, Spanish, French, Arabic, Indonesian, Portuguese, Russian, German, Japanese, Swahili, Turkish, Vietnamese, Korean, Hausa, Italian, Yoruba, Polish, Ukrainian, Romanian, Azerbaijani, Somali, Czech, Swedish, Hungarian, Catalan, Albanian, Croatian, Danish, Finnish, Norwegian, Slovenian, Welsh, Estonian, Icelandic |
+| **u** (Ingglish) | Pinyin, Hindi, Spanish, French, Arabic, Indonesian, Portuguese, Russian, German, Japanese, Swahili, Turkish, Vietnamese, Korean, Hausa, Italian, Yoruba, Polish, Ukrainian, Romanian, Azerbaijani, Somali, Czech, Swedish, Hungarian, Catalan, Albanian, Croatian, Danish, Finnish, Norwegian, Slovenian, Welsh, Estonian, Icelandic |
+| oo | English ("book", "good", "look") |
 | oe | Dutch |
 
 **Notes:**
-- 'oo' matches English words like "book", "good", "look"
-- English distinguishes "too" /uː/ from "book" /ʊ/; we preserve this with uu vs. oo
+- 'u' is the standard vowel letter for this sound across virtually all Latin-script languages
+- English distinguishes "too" /uː/ from "book" /ʊ/; we preserve this with oo vs. u
 - Dutch uses 'oe' for this sound: boek (book), goed (good)
 - Most languages worldwide don't distinguish /ʊ/ from /uː/, using 'u' for both
 
@@ -292,7 +295,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 **Notes:**
 - The schwa is the most common vowel sound in English, the unstressed "uh" in many syllables
 - English spells it with any vowel letter depending on etymology
-- Ingglish uses 'a' for unstressed schwa (AH0) and 'u' for stressed /ʌ/ (AH1/AH2, as in "but")
+- Ingglish uses 'a' for unstressed schwa (AH0) and 'uh' for stressed /ʌ/ (AH1/AH2, as in "but")
 - This creates many identical words (about, banana, again, around) while preserving the schwa/STRUT distinction
 - Romanian 'ă' and Albanian 'ë' are dedicated letters for /ə/
 - Indonesian 'e' (called "e pepet") represents /ə/ in many common words
@@ -580,7 +583,7 @@ The liquids (l, r) and glides (w, y) use standard single-letter spellings, unive
 - **sh** for /ʃ/ — used by English plus 9 other languages' romanizations
 - **ch** for /tʃ/ — used by English, Spanish, Portuguese, Pinyin, and others
 - **ng** for /ŋ/ — nearly universal
-- **ee/uu** for long vowels — Finnish/Estonian doubling principle
+- **ee/oo** for long vowels — doubling principle
 - **ai** for /aɪ/ — Pinyin, Italian, Vietnamese, Indonesian, IPA
 - **oi** for /ɔɪ/ — English, Italian, Dutch, Indonesian, and others
 - **ou** for /aʊ/ — English and Dutch
@@ -588,7 +591,7 @@ The liquids (l, r) and glides (w, y) use standard single-letter spellings, unive
 ### Solving Problems English Never Did
 - **dh** for /ð/ — English uses "th" for two different sounds (think vs. the). Albanian already uses 'dh' officially.
 - **zh** for /ʒ/ — English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z. Used by Cyrillic romanization and Albanian.
-- **oo/uu** for /ʊ/ vs /uː/ — "book" and "too" sound different. Now they look different: book vs tuu.
+- **u/oo** for /ʊ/ vs /uː/ — "book" and "too" sound different. Now they look different: buk vs too.
 - **oh** for /oʊ/ — Since 'o' alone is used for /ɑ/, we need a digraph: go → goh.
 
 ### Trade-offs
@@ -615,7 +618,7 @@ Each spelling is rated by how widely it's used across world languages:
 | e | /ɛ/ | **Universal** | All 37 languages |
 | i | /ɪ/ | **Universal** | All 37 languages |
 | o | /ɑ/ | **Universal** | All 37 languages use 'o' for back vowels; English /ɑ/ is more open than most |
-| u | /ʌ/ | **Rare** | English convention ("but", "cup"); only English and Korean romanize this vowel |
+| uh | /ʌ/ | **Rare** | English interjection "uh"; frees 'u' for /ʊ/ (Universal) |
 
 #### Long Vowels
 
@@ -625,7 +628,7 @@ Each spelling is rated by how widely it's used across world languages:
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; English "bee, see" |
 | ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, Indonesian, Hindi, Arabic, Japanese — 7+ languages |
 | oh | /oʊ/ | **Rare** | Unique to Ingglish; needed because 'o' is used for /ɑ/. Most languages have monophthong /o/ |
-| uu | /uː/ | **Common** | Finnish/Estonian 'uu'; longer sound gets longer spelling |
+| oo | /uː/ | **Common** | English "too, food, moon, cool"; matches existing English convention |
 
 #### Diphthongs
 
@@ -634,7 +637,7 @@ Each spelling is rated by how widely it's used across world languages:
 | ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud" |
 | oi | /ɔɪ/ | **Common** | English, Italian, Dutch, Indonesian, Vietnamese, Romanian, Albanian — 7+ languages |
 | aw | /ɔ/ | **Regional** | English "law, saw"; most other languages use plain 'o' for /ɔ/ |
-| oo | /ʊ/ | **Regional** | English "book", "good", "look"; most languages use 'u' for both /ʊ/ and /uː/ |
+| u | /ʊ/ | **Universal** | Most world languages use 'u' for this vowel; previously 'oo' (Regional) |
 
 #### R-Colored Vowels
 
@@ -705,9 +708,9 @@ Note: R-colored vowels are absent from 35 of the 37 compared languages. Only Eng
 - Nearly every Ingglish spelling has precedent in at least one major language
 - sh, ch, ng, j are Common or Universal across the 37 compared languages
 - 'dh' for /ð/ has real precedent: Albanian uses it as an official alphabet letter
-- Doubled vowels (ee, uu) follow Finnish/Estonian patterns
+- Doubled vowels (ee, oo) follow length patterns
 - 'ai' for /aɪ/ is used by 7+ major languages including Pinyin, Italian, Vietnamese
-- 'oo' for /ʊ/ matches English "book", "good", "look"
+- 'u' for /ʊ/ matches virtually all world languages
 - 'arr' for /æɹ/ matches English "carrot", "barrel", "arrow"
 - 'oh' for /oʊ/ is the most unusual choice, but necessary because 'o' is used for /ɑ/
 
@@ -722,8 +725,8 @@ Some phonemic orthographies that use spellings similar to Ingglish:
 Finnish is often cited as having the most transparent orthography in Europe:
 
 - **Near-perfect phoneme-to-grapheme consistency** ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859))
-- Double letters indicate length (aa, ee, uu). Ingglish follows this exactly
-- 'uu' for /uː/ in Finnish matches Ingglish 'uu' for the same sound
+- Double letters indicate length (aa, ee, uu). Ingglish follows a similar principle (ee, oo)
+- Finnish 'uu' for /uː/ inspired Ingglish's earlier 'uu'; now Ingglish uses 'oo' to match English conventions
 - Finnish-speaking children achieve reading fluency significantly faster than English-speaking children (Seymour et al. 2003; [Ziegler et al. 2010](https://doi.org/10.1037/a0019978))
 - Dyslexia prevalence is lower in transparent orthographies ([Paulesu et al. 2001](https://doi.org/10.1126/science.1057179), "Dyslexia: Cultural Diversity and Biological Unity," *Science*)
 

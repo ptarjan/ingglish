@@ -49,10 +49,10 @@ Ingglish uses 39 graphemes built from the 26 standard Latin letters. No diacriti
 | e | /&epsilon;/ | EH | b**e**d |
 | i | /&iota;/ | IH | s**i**t |
 | o | /&alpha;/ | AA | h**o**t |
-| u | /&Lambda;/ | AH | c**u**t |
+| uh | /&Lambda;/ | AH | c**u**t |
 | ee | /i&colon;/ | IY | s**ee** |
-| oo | /&upsilon;/ | UH | b**oo**k |
-| uu | /u&colon;/ | UW | f**oo**d |
+| u | /&upsilon;/ | UH | b**oo**k |
+| oo | /u&colon;/ | UW | f**oo**d |
 | ai | /a&iota;/ | AY | b**i**te |
 | ay | /e&iota;/ | EY | d**ay** |
 | oh | /o&upsilon;/ | OW | g**o** |

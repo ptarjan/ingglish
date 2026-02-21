@@ -25,8 +25,8 @@ Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2
 
 | English | Ingglish | Freq /M |
 |---------|----------|---------|
-| uh | u (you informal) | 736 → 50 |
-| of | uv (ultraviolet) | 11,882 → rare |
+| uh | uh (interjection) | 736 → 736 |
+| of | uhv (not a word) | 11,882 → rare |
 | right, write, rite | rait (soak flax) | 4,114 → rare |
 | how | hou (place suffix) | 3,136 → rare |
 | yeah | ya (you informal) | 3,063 → 154 |
@@ -66,11 +66,11 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 |---------|----------|
 | laurey, lauri, laurie, laury, lawrie, lawry, loree, lorey, lori, lorie, lorrie, lorry, lory, lowrie (14) | loree |
 | carey, carie, carrey, carrie, cary, kairey, kari, karry, kary, kerrey, kerri, kerry (12) | kairee |
-| hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) | shuu |
+| hsu, schoo, schou, schue, schuh, shew, shiu, shoe, shoo, shu, shue (11) | shoo |
 | aer, air, ayre, eir, ere, err, eyre, heir, ire (9) | air |
 | au, aux, eau, eaux, o, oh, ohh, owe (8) | oh |
 | c, cie, sci, sea, see, si, sie, sieh (8) | see |
-| ewe, u, uwe, yew, yoo, you, yu, yue (8) | yuu |
+| ewe, u, uwe, yew, yoo, you, yu, yue (8) | yoo |
 
 ## Running the Analysis
 

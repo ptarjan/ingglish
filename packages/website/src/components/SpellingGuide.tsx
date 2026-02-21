@@ -189,7 +189,7 @@ function SpellingGuide(): React.JSX.Element {
         <p>
           Ingglish can be translated back to English. The system matches phonemic spellings against
           the dictionary to find the original words. For homophones like "too", "to", and "two" (all
-          spelled "tuu" in Ingglish), the most common word is chosen based on frequency data. Case
+          spelled "too" in Ingglish), the most common word is chosen based on frequency data. Case
           patterns are preserved during reverse translation.
         </p>
 

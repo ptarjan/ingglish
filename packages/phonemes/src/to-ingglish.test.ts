@@ -113,13 +113,13 @@ describe('phoneme-map', () => {
 
     it('should convert "beautiful" phonemes correctly', () => {
       const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
-      expect(arpabetToIngglish(phonemes)).toBe('byuutafal');
+      expect(arpabetToIngglish(phonemes)).toBe('byootafal');
     });
 
     it('should handle vowel sounds correctly', () => {
       expect(arpabetToIngglish(['AA1'])).toBe('o');
       expect(arpabetToIngglish(['AE1'])).toBe('a');
-      expect(arpabetToIngglish(['AH1'])).toBe('u');
+      expect(arpabetToIngglish(['AH1'])).toBe('uh');
       expect(arpabetToIngglish(['AO1'])).toBe('aw');
       expect(arpabetToIngglish(['AW1'])).toBe('ou');
       expect(arpabetToIngglish(['AY1'])).toBe('ai');
@@ -130,8 +130,8 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['IY1'])).toBe('ee');
       expect(arpabetToIngglish(['OW1'])).toBe('oh');
       expect(arpabetToIngglish(['OY1'])).toBe('oi');
-      expect(arpabetToIngglish(['UH1'])).toBe('oo');
-      expect(arpabetToIngglish(['UW1'])).toBe('uu');
+      expect(arpabetToIngglish(['UH1'])).toBe('u');
+      expect(arpabetToIngglish(['UW1'])).toBe('oo');
     });
 
     it('should handle R-colored vowel IH+R→eer (NEAR vowel: beer, beard, fear)', () => {

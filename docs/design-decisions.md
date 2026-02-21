@@ -18,7 +18,7 @@ The standard passage used to compare writing systems, shown in English and Inggl
 
 **Ingglish:**
 
-> Dha North Waind and dha Sun wer dispyuuting wich woz dha strawnger, wen a travaler kaym alawng rapt in a worm klohk. Dhay agreed dhat dha wun huu ferst sakseedid in mayking dha travaler tayk awf hiz klohk shood bee kansiderd strawnger dhan dha udher. Dhen dha North Waind bluu az hard az hee kood, but dha mor hee bluu dha mor klohslee did dha travaler rap hiz klohk eround him; and at last dha North Waind gayv up dha atempt. Dhen dha Sun shohn out wormlee, and imeedeeatlee dha travaler took awf hiz klohk. And soh dha North Waind woz ablaijd tuu kanfes dhat dha Sun woz dha strawnger uv dha tuu.
+> Dha North Waind and dha Suhn wer dispyooting wich woz dha strawnger, wen a travaler kaym alawng rapt in a worm klohk. Dhay agreed dhat dha wuhn hoo ferst sakseedid in mayking dha travaler tayk awf hiz klohk shud bee kansiderd strawnger dhan dha uhdher. Dhen dha North Waind bloo az hard az hee kud, buht dha mor hee bloo dha mor klohslee did dha travaler rap hiz klohk eround him; and at last dha North Waind gayv uhp dha atempt. Dhen dha Suhn shohn out wormlee, and imeedeeatlee dha travaler tuk awf hiz klohk. And soh dha North Waind woz ablaijd too kanfes dhat dha Suhn woz dha strawnger uhv dha too.
 
 Notice how many words stay identical or nearly identical: "North", "and", "in", "a", "agreed", "hard", "him", "at", "last", "up", "out", "took". The biggest visual changes are "the" → "dha" (the th/dh split) and phonemically spelled vowels like "klohk" (cloak) and "strawnger" (stronger).
 
@@ -34,7 +34,7 @@ Notice how many words stay identical or nearly identical: "North", "and", "in", 
 
 English spelling is notoriously difficult because:
 
-1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each, no problem. We solve this with doubling (ee, uu, oo) and digraphs (ai, ay, ou). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
+1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each, no problem. We solve this with doubling (ee, oo) and digraphs (ai, ay, ou, uh). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
 
 2. **Rare consonants**: Only ~4% of languages have /θ/ and ~7% have /ð/ ([PHOIBLE 2.0](https://phoible.org/); [Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19) reports ~8% for dental fricatives broadly). There's no "standard" way to write these because most languages never needed one.
 
@@ -80,12 +80,12 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 | Spelling | Sound | Rationale |
 |----------|-------|-----------|
 | ee | /iː/ (bee) | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography)/[Estonian](https://en.wikipedia.org/wiki/Estonian_orthography) pattern for long vowels |
-| uu | /uː/ (too) | Longer sound gets longer spelling |
-| oo | /ʊ/ (book) | Matches English "book", "good", "look" |
+| oo | /uː/ (too) | Matches English "too", "food", "moon", "cool" |
+| uh | /ʌ/ (but) | English interjection "uh" — frees 'u' for /ʊ/ |
 
 **Schwa Representation**
 
-The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change produced a 67.6× frequency-weighted improvement — the largest gain from any spelling decision. The stressed /ʌ/ vowel ("but", "cup") stays "u". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
+The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change produced a 67.6× frequency-weighted improvement — the largest gain from any spelling decision. The stressed /ʌ/ vowel ("but", "cup") uses "uh". See [Spelling Evolution](spelling-evolution.md#-about-sofa-u--a) for the full rationale.
 
 ### Diphthong Decisions
 
@@ -109,7 +109,7 @@ Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), [diphthong](htt
 
 **Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English: it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". Nothing else in English reads as `oh`, so it's unambiguous.
 
-**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". English has no existing `uu` convention to conflict with, so the spelling can't mislead.
+**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". English `oo` already represents this sound (too, food, moon), so it's unambiguous.
 
 ### R-Colored Vowels
 
@@ -135,7 +135,7 @@ Non-American speakers will find some spellings don't match their pronunciation, 
 Every Ingglish spelling has precedent in at least one major language:
 
 1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach worldwide
-2. **Vowel doubling** (ee, uu): Finnish/Estonian pattern
+2. **Vowel doubling** (ee, oo): Length pattern
 3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns
 
 See [Orthography Comparison](orthography-comparison.md) for language-by-language comparisons.

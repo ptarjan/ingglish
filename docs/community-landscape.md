@@ -20,9 +20,9 @@ Most reforms converge on the same consonant spellings but diverge wildly on vowe
 | TRAP /æ/ | a | a | Strong |
 | KIT /ɪ/ | i | i | Universal |
 | DRESS /ɛ/ | e | e | Universal |
-| STRUT /ʌ/ | u | u | Strong |
-| GOOSE /uː/ | uu, oo (tied) | uu | Split |
-| FOOT /ʊ/ | oo, u (tied) | oo | Split |
+| STRUT /ʌ/ | u | uh | Strong |
+| GOOSE /uː/ | uu, oo (tied) | oo | Split |
+| FOOT /ʊ/ | oo, u (tied) | u | Split |
 | Schwa /ə/ | most dodge it | a | None |
 
 GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "got" — some use diacritics (ō, ô), some use digraphs (oa, ow, oh), some repurpose letters. Ingglish's "oh" appears to be unique across the corpus. The schwa is the second hardest; most systems avoid addressing it at all.
@@ -68,7 +68,7 @@ Most of Ingglish's design decisions are well within the mainstream:
 
 - **ai** for PRICE, **ay** for FACE, **ou** for MOUTH, **oi** for CHOICE — all common or the most popular option
 - **sh**, **ch**, **ng**, **zh** — standard consonant digraphs
-- **ee/uu** vowel doubling — Finnish/Estonian pattern, frequently cited and used
+- **ee/oo** vowel doubling — length pattern, frequently cited and used
 - Phonemic (not phonetic) approach — the clear majority position
 - GenAm as target — the most common dialect choice
 
@@ -78,9 +78,9 @@ Three Ingglish choices stand out as unusual or unique:
 
 **"oh" for GOAT** — Unique among the 133+ reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The most common alternatives are ō (macron), ou, ow, and oe — GOAT remains the vowel with zero consensus. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar.
 
-**Schwa mapped to "a"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping to "a" is the most common single-letter choice for schwa cross-linguistically (it's the default unstressed vowel in many languages), and it preserves many familiar spellings ("about", "banana" stay unchanged). Words where schwa was previously spelled with other letters do change: "problem" → "problam", "computer" → "kampyuuter". The principled consistency is unusual regardless of which letter is chosen.
+**Schwa mapped to "a"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping to "a" is the most common single-letter choice for schwa cross-linguistically (it's the default unstressed vowel in many languages), and it preserves many familiar spellings ("about", "banana" stay unchanged). Words where schwa was previously spelled with other letters do change: "problem" → "problam", "computer" → "kampyooter". The principled consistency is unusual regardless of which letter is chosen.
 
-**"oo" for FOOT (not GOOSE)** — Many systems that use "oo" assign it to the longer vowel (/uː/, as in "too"). Ingglish assigns "oo" to the shorter /ʊ/ (book) and "uu" to the longer /uː/ (too). The logic is that "oo" already appears in English "book/good/look". The broader principle of "shorter symbol for shorter vowel" has support in the corpus — several systems assign plain `u` to FOOT and a digraph to GOOSE — but the specific "oo" reversal may still confuse people.
+**"u" for FOOT** — Most world languages use plain 'u' for /ʊ/. Ingglish assigns 'u' to /ʊ/ (book → buk) and 'oo' to /uː/ (too → too). This aligns with the majority of Latin-script languages and matches the most common community choice. Several systems in the corpus independently assign plain `u` to FOOT and a digraph to GOOSE. The trade-off: English "book", "good", "look" are no longer identical (they become "buk", "gud", "luk") but English "too", "food", "moon" become identical.
 
 ### Strongest differentiators
 

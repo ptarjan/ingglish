@@ -223,7 +223,7 @@ Map<string, string[]>
 // ARPAbet → Ingglish spelling
 {
   "HH": "h",
-  "AH": "u",
+  "AH": "uh",
   "L": "l",
   "OW": "oh",
   ...

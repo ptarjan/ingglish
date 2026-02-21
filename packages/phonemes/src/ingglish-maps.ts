@@ -17,14 +17,14 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   // Monophthongs
   AA: 'o', // father, hot, rock (but AA+R → 'ar' in star, car)
   AE: 'a', // cat, bat, had (but AE+R → 'arr' in arrow, barrow)
-  AH: 'u', // but, cup, son (stressed /ʌ/; unstressed /ə/ AH0 → 'a' in conversion)
+  AH: 'uh', // but, cup, son (stressed /ʌ/; unstressed /ə/ AH0 → 'a' in conversion)
   AO: 'aw', // thought, caught, law (but AO+R → 'or' in store, more)
   EH: 'e', // bed, red, said (but EH+R → 'air' in air, care, there)
   ER: 'er', // bird, her, nurse
   IH: 'i', // bit, sit, gym
   IY: 'ee', // bee, see, machine
-  UH: 'oo', // book, put, could
-  UW: 'uu', // too, blue, food
+  UH: 'u', // book, put, could
+  UW: 'oo', // too, blue, food
 
   // Diphthongs
   AW: 'ou', // cow, how, out
