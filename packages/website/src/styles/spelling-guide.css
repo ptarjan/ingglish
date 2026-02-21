@@ -108,11 +108,11 @@
 }
 
 .sound-note {
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 400;
-  opacity: 0.6;
-  display: block;
+  opacity: 0.5;
+  cursor: help;
+  vertical-align: super;
 }
 
 .examples-cell {
