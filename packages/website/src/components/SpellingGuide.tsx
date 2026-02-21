@@ -20,6 +20,7 @@ function SpellingGuide(): React.JSX.Element {
               <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(sound.phoneme)}</td>
               <td className="ingglish-cell">
                 {sound.ingglishOverride ?? arpabetPhonemeToIngglish(sound.phoneme)}
+                {sound.note && <span className="sound-note"> ({sound.note})</span>}
               </td>
               <td className="examples-cell">{renderExamples(sound.examples)}</td>
             </tr>

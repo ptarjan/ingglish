@@ -6,6 +6,8 @@ export interface SoundEntry {
   ipaOverride?: string;
   /** Override Ingglish display (for combinations like AA+R) */
   ingglishOverride?: string;
+  /** Note shown next to Ingglish spelling (e.g., when R-colored is same as base+r) */
+  note?: string;
 }
 
 export interface SoundGroup {
@@ -122,6 +124,7 @@ export const vowelGroups: SoundGroup[] = [
         examples: 'l**ure** (lur), d**ur**ing (during), n**eur**al (nural)',
         ipaOverride: 'ʊɹ',
         ingglishOverride: 'ur',
+        note: 'same as u + r',
       },
       {
         phoneme: 'AO+R',
@@ -134,6 +137,7 @@ export const vowelGroups: SoundGroup[] = [
         examples: 'c**urr**y (kuhree)',
         ipaOverride: 'ʌɹ',
         ingglishOverride: 'uhr',
+        note: 'same as uh + r',
       },
       {
         phoneme: 'ER',
