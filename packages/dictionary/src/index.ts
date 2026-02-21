@@ -6,7 +6,13 @@ export {
   lookupPhonemeKey,
   clearReverseDictionaryCache,
 } from './reverse';
-export { loadFrequencies, getWordFrequency, scoreWord, sortByFrequency } from './frequency';
+export {
+  loadFrequencies,
+  loadFrequencies as loadWordFrequencies,
+  getWordFrequency,
+  scoreWord,
+  sortByFrequency,
+} from './frequency';
 export {
   CUSTOM_PRONUNCIATIONS,
   hasCustomPronunciation,

@@ -55,3 +55,20 @@ npm run translate -- -r "haloh werld"
 ```
 
 This is useful for debugging translation issues and understanding how specific words behave.
+
+## Running Inline Scripts
+
+When using `npx tsx -e` for one-off scripts, **top-level `await` does not work** (tsx outputs CJS). Wrap in an async function:
+
+```bash
+npx tsx --conditions=source -e "
+async function main() {
+  const { loadDictionary, lookupPronunciation } = await import('@ingglish/dictionary');
+  await loadDictionary();
+  console.log(lookupPronunciation('hello'));
+}
+main();
+"
+```
+
+The `--conditions=source` flag resolves workspace packages to their TypeScript source files.
