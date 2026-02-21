@@ -32,6 +32,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
 
 const NRL_RULES: Record<string, string[]> = {
   A: [
+    ' [AVENUE]=/AE V AH N UW/',
     ' [AYE] =/AY/',
     ' [APRIL]=/EY P R AH L/',
     ' [APPLY]=/AH P L AY/',
@@ -160,6 +161,7 @@ const NRL_RULES: Record<string, string[]> = {
     '#:[AN] =/AX N/',
   ],
   B: [
+    ' [BOW] =/B AW/',
     ' [BODIES]=/B AA D IY Z/',
     ' [BASEBALL]=/B EY S B AO L/',
     ' [BORROW]=/B AA R OW/',
@@ -213,6 +215,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[B]=/B/',
   ],
   C: [
+    ' [CONNECTION]=/K AH N EH K SH AH N/',
+    ' [CHASING]=/CH EY S IH NG/',
     ' [CHRIST] =/K R AY S T/',
     ' [CHOCOLATE]=/CH AO K L AH T/',
     ' [CREATE]=/K R IY EY T/',
@@ -341,6 +345,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[C]=/K/',
   ],
   D: [
+    ' [DAMAGE]=/D AE M AH JH/',
+    ' [DOGS] =/D AA G Z/',
     ' [DIRECT]=/D ER EH K T/',
     ' [DESTINY]=/D EH S T AH N IY/',
     ' [DIEGO]=/D IY EY G OW/',
@@ -391,6 +397,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[D]=/D/',
   ],
   E: [
+    ' [EXERCISE]=/EH K S ER S AY Z/',
     ' [EQUAL]=/IY K W AH L/',
     ' [EXIT]=/EH G Z IH T/',
     ' [EVENT]=/IH V EH N T/',
@@ -578,6 +585,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[E]=/EH/',
   ],
   F: [
+    ' [FORGOTTEN]=/F ER G AA T AH N/',
+    ' [FALLEN] =/F AA L AH N/',
     ' [FEVER]=/F IY V ER/',
     ' [FASHION]=/F AE SH AH N/',
     ' [FLORIDA]=/F L AO R AH D AH/',
@@ -661,6 +670,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HAPPINESS]=/HH AE P IY N AH S/',
     ' [HEADACHE]=/HH EH D EY K/',
     ' [HARVARD]=/HH AA R V ER D/',
     ' [HALLOWEEN]=/HH AE L AH W IY N/',
@@ -705,6 +715,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[H]=/ /',
   ],
   I: [
+    ' [IMAGE]=/IH M AH JH/',
     ' [ILLEGAL]=/IH L IY G AH L/',
     ' [INSURANCE]=/IH N SH UH R AH N S/',
     ' [IDEAS]=/AY D IY AH Z/',
@@ -831,6 +842,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[I]=/IH/',
   ],
   J: [
+    ' [JUDGMENT]=/JH AH JH M AH N T/',
     ' [JONATHAN]=/JH AA N AH TH AH N/',
     ' [JOURNEY]=/JH ER N IY/',
     ' [JOSEPH]=/JH OW S AH F/',
@@ -856,6 +868,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[K]=/K/',
   ],
   L: [
+    ' [LOSER]=/L UW Z ER/',
+    ' [LIVES] =/L IH V Z/',
+    ' [LIVED] =/L IH V D/',
     ' [LINCOLN]=/L IH NG K AH N/',
     ' [LION]=/L AY AH N/',
     ' [LAS] =/L AA S/',
@@ -1001,6 +1016,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[N]=/N/',
   ],
   O: [
+    ' [ORIGINAL]=/ER IH JH AH N AH L/',
+    ' [OPERATOR]=/AA P ER EY T ER/',
     ' [OPPOSITE]=/AA P AH Z AH T/',
     ' [ORANGE]=/AO R AH N JH/',
     ' [OCEAN]=/OW SH AH N/',
@@ -1236,6 +1253,9 @@ const NRL_RULES: Record<string, string[]> = {
   ],
   Q: ['[QUAR]=/K W AO R/', '[QUA]L=/K W AA/', '[QUE] =/K/', '[QU]=/K W/', '[Q]=/K/'],
   R: [
+    ' [RUIN]=/R UW AH N/',
+    ' [RECEIVED]=/R AH S IY V D/',
+    ' [REVENGE]=/R IY V EH N JH/',
     ' [RUSSIAN]=/R AH SH AH N/',
     ' [RECOGNIZE]=/R EH K AH G N AY Z/',
     ' [REPEAT]=/R IH P IY T/',
@@ -1287,6 +1307,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [STRONGER]=/S T R AO NG ER/',
+    ' [SONS] =/S AH N Z/',
     ' [SACRED]=/S EY K R AH D/',
     ' [SPECIES]=/S P IY SH IY Z/',
     ' [STEPHEN]=/S T IY V AH N/',
@@ -1396,6 +1418,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[S]=/S/',
   ],
   T: [
+    ' [TEARS]=/T EH R Z/',
     ' [THEORY]=/TH IH R IY/',
     ' [THEE] =/DH IY/',
     ' [TOWEL]=/T AW AH L/',
@@ -1470,6 +1493,8 @@ const NRL_RULES: Record<string, string[]> = {
     '[T]=/T/',
   ],
   U: [
+    ' [UNBELIEVAB]=/AH N B AH L IY V AH B/',
+    ' [USELESS]=/Y UW S L AH S/',
     ' [UNIFORM]=/Y UW N AH F AO R M/',
     ' [UNFORTUNATELY]=/AH N F AO R CH AH N AH T L IY/',
     ' [UNIT] =/Y UW N AH T/',
@@ -1531,6 +1556,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[V]=/V/',
   ],
   W: [
+    ' [WASTING]=/W EY S T IH NG/',
     ' [WHEREVER]=/W EH R EH V ER/',
     ' [WHORE]=/HH AO R/',
     ' [WHOO]=/W UW/',
