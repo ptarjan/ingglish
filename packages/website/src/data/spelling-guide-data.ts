@@ -84,13 +84,13 @@ export const vowelGroups: SoundGroup[] = [
         examples:
           'bons**ai** (bonsai), l**i**fe (laif), m**y** (mai), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid)',
       },
+      { phoneme: 'OY', examples: '**oi**l (oil), b**oy** (boi)' },
       {
         phoneme: 'OW',
         examples:
           '**oh** (oh), n**o**se (nohz), sh**ow** (shoh), s**ew** (soh), b**oa**t (boht), g**o** (goh), t**oe** (toh), plat**eau** (platoh), d**ough** (doh)',
       },
       { phoneme: 'AW', examples: '**ou**t (out), n**ow** (nou), pl**ough** (plou)' },
-      { phoneme: 'OY', examples: '**oi**l (oil), b**oy** (boi)' },
     ],
   },
   {
