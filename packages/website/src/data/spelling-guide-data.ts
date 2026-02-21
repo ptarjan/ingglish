@@ -123,16 +123,16 @@ export const vowelGroups: SoundGroup[] = [
         ingglishOverride: 'ar',
       },
       {
+        phoneme: 'UH+R',
+        examples: 'l**ure** (lur), d**ur**ing (during), m**oor** (mur)',
+        ipaOverride: 'ʊɹ',
+        ingglishOverride: 'ur',
+      },
+      {
         phoneme: 'AO+R',
         examples: 'f**or** (for), w**ar** (wor), d**oor** (dor)',
         ipaOverride: 'ɔɹ',
         ingglishOverride: 'or',
-      },
-      {
-        phoneme: 'UH+R',
-        examples: 'l**ure** (lur), d**ur**ing (during), j**ur**y (juree)',
-        ipaOverride: 'ʊɹ',
-        ingglishOverride: 'ur',
       },
       {
         phoneme: 'ER',
