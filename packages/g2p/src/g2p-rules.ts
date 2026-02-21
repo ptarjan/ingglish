@@ -730,6 +730,7 @@ const NRL_RULES: Record<string, string[]> = {
     'BR[OOD]=/UW D/',
     '[OOD]=/UH D/',
     '[OO]=/UW/',
+    'SH[OE]=/UW/',
     '[OE]=/OW/',
     '#:[OH] =/OW/',
     '[O] =/OW/',
