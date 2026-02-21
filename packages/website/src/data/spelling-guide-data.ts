@@ -133,6 +133,12 @@ export const vowelGroups: SoundGroup[] = [
         examples:
           'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
       },
+      {
+        phoneme: 'AH+R',
+        examples: 'f**ur** (fur), c**ur**rent (kurant)',
+        ipaOverride: 'ʌɹ',
+        ingglishOverride: 'ur',
+      },
     ],
   },
 ];
