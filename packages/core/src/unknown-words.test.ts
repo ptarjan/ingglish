@@ -485,6 +485,34 @@ describe('unknown-words', () => {
       expect(wordToArpabet('special')).toContain('SH');
       expect(wordToArpabet('initial')).toContain('SH');
     });
+
+    it('should handle EIGN with silent G (reign, feign)', () => {
+      expect(wordToArpabet('reign')).toEqual(['R', 'EY1', 'N']);
+      expect(wordToArpabet('feign')).toEqual(['F', 'EY1', 'N']);
+      expect(wordToArpabet('deign')).toEqual(['D', 'EY1', 'N']);
+    });
+
+    it('should handle silent H in honor/honest/heir', () => {
+      expect(wordToArpabet('honor')[0]).toBe('AA1'); // no HH
+      expect(wordToArpabet('honest')[0]).toBe('AA1');
+      expect(wordToArpabet('heir')).toEqual(['EH1', 'R']);
+    });
+
+    it('should handle silent W in sword', () => {
+      expect(wordToArpabet('sword')).toEqual(['S', 'AO1', 'R', 'D']);
+    });
+
+    it('should handle OOD exceptions (mood, brood → UW)', () => {
+      expect(wordToArpabet('mood')).toContain('UW1');
+      expect(wordToArpabet('brood')).toContain('UW1');
+      // good/wood still UH
+      expect(wordToArpabet('good')).toContain('UH1');
+      expect(wordToArpabet('wood')).toContain('UH1');
+    });
+
+    it('should handle word-initial X as Z before vowels', () => {
+      expect(wordToArpabet('xylophone')[0]).toBe('Z');
+    });
   });
 
   describe('translateWithRules', () => {
@@ -844,6 +872,28 @@ describe('unknown-words', () => {
       expect(translateWithRules('age')).toBe('ayj');
       expect(translateWithRules('page')).toBe('payj');
       expect(translateWithRules('stage')).toBe('stayj');
+    });
+
+    it('should translate EIGN with silent G', () => {
+      expect(translateWithRules('reign')).toBe('rayn');
+      expect(translateWithRules('feign')).toBe('fayn');
+    });
+
+    it('should translate words with silent H (honor, honest, heir)', () => {
+      expect(translateWithRules('honor')).toBe('oner');
+      expect(translateWithRules('honest')).toBe('onast');
+      expect(translateWithRules('heir')).toBe('air');
+    });
+
+    it('should translate sword with silent W', () => {
+      expect(translateWithRules('sword')).toBe('sord');
+    });
+
+    it('should translate mood/brood with long OO', () => {
+      expect(translateWithRules('mood')).toBe('mood');
+      expect(translateWithRules('brood')).toBe('brood');
+      // good/wood still short
+      expect(translateWithRules('good')).toBe('gud');
     });
   });
 

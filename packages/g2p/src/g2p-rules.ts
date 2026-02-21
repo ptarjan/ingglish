@@ -280,6 +280,7 @@ const NRL_RULES: Record<string, string[]> = {
     'BR[EA]K=/EY/',
     'W[EA]PO=/EH/',
     '[EA]=/IY/',
+    '[EIGN]=/EY N/',
     '[EIGH]=/EY/',
     'C[EI]=/IY/',
     'W[EI]RD=/IH/',
@@ -416,6 +417,9 @@ const NRL_RULES: Record<string, string[]> = {
     '[G]=/G/',
   ],
   H: [
+    ' [HEIR]=/EH R/',
+    ' [HON]OR=/AA N/',
+    ' [HON]EST=/AA N/',
     ' [HMM]=/HH M/',
     ' [HOUR]=/AW ER/',
     ' [HEY] =/HH EY/',
@@ -722,6 +726,8 @@ const NRL_RULES: Record<string, string[]> = {
     'BL[OOD]=/AH D/',
     'F[OOD]=/UW D/',
     'FL[OOD]=/AH D/',
+    'M[OOD]=/UW D/',
+    'BR[OOD]=/UW D/',
     '[OOD]=/UH D/',
     '[OO]=/UW/',
     '[OE]=/OW/',
@@ -812,6 +818,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[R]=/R/',
   ],
   S: [
+    ' [SWOR]D=/S AO R/',
     ' [SON] =/S AH N/',
     '[SH]=/SH/',
     '#[SION]=/ZH AX N/',
@@ -976,7 +983,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[WR]=/R/',
     '[W]=/W/',
   ],
-  X: ['[X]=/K S/'],
+  X: [' [X]#=/Z/', '[X]=/K S/'],
   Y: [
     ' [YET] =/Y EH T/',
     ' [YES] =/Y EH S/',
