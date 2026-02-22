@@ -45,6 +45,12 @@ function ReadingChallenge() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(
+    () => () => {
+      clearTimeout(copiedTimerRef.current);
+    },
+    []
+  );
 
   // Load reverse dictionary on mount (needed for homophone scoring)
   useEffect(() => {

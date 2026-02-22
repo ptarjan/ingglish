@@ -131,11 +131,9 @@ export default tseslint.config(
       '**/*.config.js',
       '**/*.config.ts',
       '**/vitest.setup.ts',
-      // Auto-generated dictionary/data files and their type declarations
-      '**/src/dictionary/**/*.js',
-      '**/src/dictionary/**/*.d.ts',
-      '**/src/data/**/*.js',
-      '**/src/data/**/*.d.ts',
+      // Auto-generated dictionary files and their type declarations
+      'packages/dictionary/src/data/**/*.js',
+      'packages/dictionary/src/data/**/*.d.ts',
       'packages/dictionary/src/cmudict.js',
       'packages/dictionary/src/cmudict.d.ts',
       'packages/dictionary/src/reverse-cmudict.js',

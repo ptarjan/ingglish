@@ -30,7 +30,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
-    "test": "vitest run --no-color --passWithNoTests"
+    "test": "vitest run --no-color"
   },
   "dependencies": {
     "@ingglish/phonemes": "^1.0.0"
