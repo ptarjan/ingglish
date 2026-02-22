@@ -1,6 +1,12 @@
 /** @type {import('stylelint').Config} */
 export default {
   extends: ['stylelint-config-standard'],
+  plugins: [
+    'stylelint-value-no-unknown-custom-properties',
+    'stylelint-declaration-block-no-ignored-properties',
+    'stylelint-high-performance-animation',
+    'stylelint-plugin-use-baseline',
+  ],
   rules: {
     // Allow CSS custom properties without fallbacks
     'custom-property-empty-line-before': null,
@@ -27,5 +33,49 @@ export default {
     'alpha-value-notation': null,
     // Allow string import syntax
     'import-notation': null,
+
+    // --- Plugin rules ---
+
+    // Cross-file CSS variable validation (resolves vars defined in base.css)
+    'csstools/value-no-unknown-custom-properties': [
+      true,
+      {
+        importFrom: ['packages/website/src/styles/base.css'],
+      },
+    ],
+    // Flag property combinations where one is silently ignored (e.g. width on inline)
+    'plugin/declaration-block-no-ignored-properties': true,
+    // Warn on animations/transitions of layout-triggering properties
+    'plugin/no-low-performance-animation-properties': [
+      true,
+      {
+        ignoreProperties: [
+          'color',
+          'background',
+          'background-color',
+          'border-color',
+          'box-shadow',
+          'outline-color',
+          // Progress bar fills — acceptable layout transition
+          'width',
+        ],
+      },
+    ],
+    // Warn on CSS features not in Baseline (widely available across browsers)
+    'plugin/use-baseline': [
+      true,
+      {
+        available: 'widely',
+        ignoreProperties: {
+          // Progressive enhancement — has -webkit-scrollbar fallback
+          'scrollbar-width': ['/^.+$/'],
+          'scrollbar-color': ['/^.+$/'],
+          // Widely supported in practice; standard <textarea> behavior
+          resize: ['/^.+$/'],
+          // Needed for gradient text; has -webkit- fallback
+          'background-clip': ['text'],
+        },
+      },
+    ],
   },
 };

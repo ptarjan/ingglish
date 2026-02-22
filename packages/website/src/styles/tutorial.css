@@ -500,7 +500,6 @@
   color: var(--color-text);
   outline: none;
   transition: border-color 0.2s;
-  box-sizing: border-box;
 }
 
 .try-it-input:focus {
@@ -522,7 +521,6 @@
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   background: var(--color-surface);
-  box-sizing: border-box;
 }
 
 /* --- Try-it auto-typing demo --- */
