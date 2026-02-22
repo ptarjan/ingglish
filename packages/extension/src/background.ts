@@ -147,7 +147,6 @@ async function injectTranslator(tabId: number, checkPermission = true): Promise<
   if (checkPermission) {
     const hasPermission = await hasTabPermission(tabId);
     if (!hasPermission) {
-      // eslint-disable-next-line no-console
       console.log('No permission to inject into tab', tabId);
       return false;
     }
@@ -167,7 +166,6 @@ async function injectTranslator(tabId: number, checkPermission = true): Promise<
     });
     return true;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Failed to inject translator:', error);
     return false;
   }
@@ -262,7 +260,6 @@ chrome.runtime.onMessage.addListener(
           chrome.tabs.sendMessage(tabId, { type: 'RETRANSLATE', format: message.format }, () => {
             // Ignore errors (tab may have been closed or script not injected)
             if (chrome.runtime.lastError) {
-              // eslint-disable-next-line no-console
               console.log(`Retranslate message failed for tab ${tabId}`);
             }
           });
@@ -343,7 +340,6 @@ function toggleTab(tabId: number): void {
 
     chrome.tabs.sendMessage(tabId, { type: 'RESTORE' }, () => {
       if (chrome.runtime.lastError) {
-        // eslint-disable-next-line no-console
         console.log('Restore message failed, page may need refresh');
       }
     });
@@ -382,9 +378,7 @@ void (async () => {
   // Pre-load dictionary for faster translations
   await translate('');
   dictionaryLoaded = true;
-  // eslint-disable-next-line no-console
   console.log('Ingglish: Dictionary loaded in background');
 })();
 
-// eslint-disable-next-line no-console
 console.log('Ingglish background service worker loaded');

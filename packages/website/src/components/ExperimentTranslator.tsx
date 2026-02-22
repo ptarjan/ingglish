@@ -23,14 +23,16 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
 
   const deferredText = useDeferredValue(text);
 
-  // Use version as a dependency to force re-translation when mapping changes
+  // translateSyncWithMapping is a stable module-level function whose output
+  // changes when the experiment mapping is updated. We capture `version` so
+  // React re-computes this memo on every mapping edit.
   const { tokens, diffMap } = useMemo(() => {
+    void version;
     if (deferredText.trim().length === 0) {
       return { tokens: [] as TranslatedToken[], diffMap: undefined };
     }
     const expTokens = translateSyncWithMapping(deferredText, 'experiment');
     return { tokens: expTokens, diffMap: buildDiffMap(expTokens, deferredText, 'experiment') };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredText, version]);
 
   const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {

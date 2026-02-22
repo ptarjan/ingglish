@@ -202,7 +202,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
         setUrl(newUrl);
         translateUrlRef.current?.(newUrl).catch((err: unknown) => {
-          // eslint-disable-next-line no-console
           console.error('Navigation translation failed:', err);
         });
       }
@@ -238,7 +237,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setUrl(targetUrl);
         // Use false for pushHistory to avoid adding duplicate entries
         translateUrlRef.current?.(targetUrl, false).catch((err: unknown) => {
-          // eslint-disable-next-line no-console
           console.error('Back navigation failed:', err);
         });
       } else {
@@ -265,7 +263,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           setIsLoading(true);
           setUrl(state.translatorUrl);
           translateUrlRef.current?.(state.translatorUrl, false).catch((err: unknown) => {
-            // eslint-disable-next-line no-console
             console.error('BFCache restoration failed:', err);
           });
         }
@@ -285,7 +282,6 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     if (prevFormatRef.current !== outputFormat && hasContent && url.length > 0) {
       // Format changed and we have content - retranslate without pushing history
       translateUrlRef.current?.(url, false).catch((err: unknown) => {
-        // eslint-disable-next-line no-console
         console.error('Format change retranslation failed:', err);
       });
     }

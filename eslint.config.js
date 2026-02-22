@@ -112,13 +112,20 @@ export default tseslint.config(
       'jsx-a11y/role-supports-aria-props': 'error',
       'jsx-a11y/tabindex-no-positive': 'error',
 
-      // General strict rules
-      'no-console': 'error',
+      // General strict rules — allow warn/error for legitimate error reporting
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'no-var': 'error',
       'prefer-const': 'error',
+    },
+  },
+  {
+    // Extension has no logging infrastructure — console is the only debug tool
+    files: ['packages/extension/src/**/*.ts'],
+    rules: {
+      'no-console': 'off',
     },
   },
   {

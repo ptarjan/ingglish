@@ -145,7 +145,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     try {
       return translateSync(deferredEnglish, format);
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.warn('Translation failed:', err);
       return null;
     }
@@ -189,7 +188,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         }
       })
       .catch((err: unknown) => {
-        // eslint-disable-next-line no-console
         console.warn('Reverse translation failed:', err);
         if (!cancelled) {
           setComputedEnglish(null);

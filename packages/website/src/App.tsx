@@ -8,8 +8,7 @@ import { useTheme } from './hooks/useTheme';
 import { trackPageView } from './utils/analytics';
 import { useUpdateCheck } from './hooks/useUpdateCheck';
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function lazyWithReload<T extends { default: ComponentType<any> }>(
+function lazyWithReload<T extends { default: ComponentType<object> }>(
   factory: () => Promise<T>
 ): LazyExoticComponent<T['default']> {
   return lazy(() =>

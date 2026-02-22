@@ -45,7 +45,6 @@ toggleBtnEl.addEventListener('click', () => {
     const lastError = chrome.runtime.lastError;
 
     if (lastError) {
-      // eslint-disable-next-line no-console
       console.error('Toggle error:', lastError.message);
       statusTextEl.textContent =
         lastError.message !== undefined && lastError.message !== ''
@@ -66,14 +65,12 @@ toggleBtnEl.addEventListener('click', () => {
       }, 50);
     } else if (response?.success === false) {
       // Show error with details
-      // eslint-disable-next-line no-console
       console.error('Toggle failed:', response.error);
       statusTextEl.textContent =
         response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
       statusTextEl.style.color = '#ef4444';
       toggleBtnEl.textContent = 'Try Again';
     } else {
-      // eslint-disable-next-line no-console
       console.error('Unexpected response:', response);
       statusTextEl.textContent = 'No response';
       statusTextEl.style.color = '#ef4444';

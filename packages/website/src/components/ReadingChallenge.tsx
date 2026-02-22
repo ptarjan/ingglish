@@ -126,6 +126,7 @@ function ReadingChallenge() {
     setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
     roundStartRef.current = Date.now();
     setPhase('playing');
+    setTimeout(() => inputRef.current?.focus(), 0);
   }, []);
 
   const handleStart = useCallback(() => {
@@ -363,8 +364,6 @@ function ReadingChallenge() {
           }}
           onKeyDown={handleKeyDown}
           disabled={currentFeedback !== null}
-          /* eslint-disable-next-line jsx-a11y/no-autofocus */
-          autoFocus
         />
       </div>
 

@@ -152,11 +152,14 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
   const isDuplicate = useCallback((spelling: string) => duplicates.has(spelling), [duplicates]);
 
-  // Translate example words using current experiment format.
-  // Version dependency ensures re-render when mappings change.
+  // translateSync is a stable module-level function whose output changes when
+  // the experiment mapping is updated. We capture mapping.version so React
+  // re-creates this callback (and dependents re-render) on every mapping edit.
   const translateWord = useCallback(
-    (word: string) => translateSync(word, 'experiment'),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    (word: string) => {
+      void mapping.version;
+      return translateSync(word, 'experiment');
+    },
     [mapping.version]
   );
 

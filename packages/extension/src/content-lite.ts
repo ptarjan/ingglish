@@ -113,7 +113,6 @@ async function translateWordsBatch(
   format: OutputFormat
 ): Promise<Record<string, string>> {
   if (!isContextValid()) {
-    // eslint-disable-next-line no-console
     console.log('Ingglish: Extension context invalidated, please refresh the page');
     showContextInvalidMessage();
     return {};
@@ -219,7 +218,6 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   perf.collectNodes = performance.now() - collectStart;
 
   if (textNodes.length === 0) {
-    // eslint-disable-next-line no-console
     console.log('Ingglish: No text nodes found');
     return;
   }
@@ -247,7 +245,6 @@ async function performTranslation(format: OutputFormat): Promise<void> {
 
   perf.total = performance.now() - perf.start;
 
-  // eslint-disable-next-line no-console
   console.log(
     `Ingglish Performance:\n` +
       `  Nodes: ${textNodes.length}, Words: ${uniqueWords.length}\n` +
@@ -264,12 +261,10 @@ async function performTranslation(format: OutputFormat): Promise<void> {
 // Main translation function
 async function translatePage(): Promise<void> {
   if (state.translated) {
-    // eslint-disable-next-line no-console
     console.log('Ingglish: Already translated');
     return;
   }
 
-  // eslint-disable-next-line no-console
   console.log('Ingglish: Starting translation...');
 
   const format = await getOutputFormat();
@@ -385,7 +380,6 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 
 // Restore original text
 function restorePage(): void {
-  // eslint-disable-next-line no-console
   console.log('Ingglish: Restoring original text...');
 
   if (state.debounceTimer !== null) {
@@ -405,13 +399,11 @@ function restorePage(): void {
   document.getElementById('ingglish-badge')?.remove();
 
   state.translated = false;
-  // eslint-disable-next-line no-console
   console.log('Ingglish: Restoration complete!');
 }
 
 // Retranslate page with a new format (in-place update, much faster than restore + re-translate)
 async function retranslatePage(format: OutputFormat): Promise<void> {
-  // eslint-disable-next-line no-console
   console.log(`Ingglish: Retranslating with format: ${format}...`);
 
   const scriptFont = SCRIPT_FONTS[format];
@@ -515,7 +507,6 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   setupObserver(format, translations);
 
   const total = performance.now() - perf.start;
-  // eslint-disable-next-line no-console
   console.log(
     `Ingglish Format Switch:\n` +
       `  Spans: ${spans.length}, Unique words: ${originalWords.size}\n` +
@@ -591,7 +582,6 @@ if (!state.injected) {
     }
   );
 
-  // eslint-disable-next-line no-console
   console.log('Ingglish: Lightweight content script initialized');
 }
 
