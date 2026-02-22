@@ -10,7 +10,7 @@ import {
   proxyFontUrls,
   processProxiedHtml,
   escapeHtmlAttr,
-} from './url';
+} from '.';
 
 describe('escapeHtmlAttr', () => {
   it('escapes ampersands', () => {

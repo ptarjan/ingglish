@@ -29,7 +29,7 @@ vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
   }, 0);
 });
 
-describe('content-lite', () => {
+describe('content-script', () => {
   let messageHandler: (
     message: { type: string; format?: string },
     sender: unknown,
@@ -72,7 +72,7 @@ describe('content-lite', () => {
     );
 
     // Import module to trigger handler registration
-    await import('./content-lite');
+    await import('./content-script');
   });
 
   afterEach(() => {

@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/content-lite.ts', 'src/background.ts', 'src/popup.ts'],
+  entry: ['src/content-script.ts', 'src/background.ts', 'src/popup.ts'],
   format: ['iife'],
   outDir: 'dist',
   clean: true,

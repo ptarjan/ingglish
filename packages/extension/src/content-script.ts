@@ -1,5 +1,5 @@
-// Lightweight content script for Ingglish extension
-// Uses message passing to background for translations and shared DOM utilities
+// Content script for Ingglish extension
+// Delegates translation to the background service worker via message passing
 
 import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';

@@ -13,9 +13,14 @@ import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
-import { buildDiffMap } from '../translation/diff-map';
-import { isAllCaps } from '../translation/text';
+import { buildDiffMap } from './diff-map';
 import { pickRandomPassage } from '../data/sample-text';
+
+/** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
+function isAllCaps(text: string): boolean {
+  const letters = text.replace(/[^a-zA-Z]/g, '');
+  return letters.length >= 2 && letters === letters.toUpperCase();
+}
 import { trackTextTranslate, trackShare, trackSpeak } from '../analytics';
 
 function SpeakerIcon() {

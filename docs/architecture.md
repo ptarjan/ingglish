@@ -98,9 +98,7 @@ src/
 ├── index.ts            # Public API
 ├── g2p-rules.ts        # Core G2P conversion rules
 ├── stress.ts           # Stress assignment
-├── g2p-guard-set.ts    # Guard conditions for rules
-├── g2p-word-rules-*.ts # Word-specific rule overrides (a-z)
-└── g2p-final-overrides-*.ts  # Final phoneme overrides (a-z)
+└── stress.test.ts      # Stress prediction tests
 ```
 
 ### `@ingglish/ipa` - IPA ↔ ARPAbet conversion
@@ -366,7 +364,7 @@ src/
 ```
 src/
 ├── manifest.json     # Extension configuration
-├── content-lite.ts   # Lightweight content script (~11KB)
+├── content-script.ts   # Content script (DOM walking + message passing)
 ├── background.ts     # Service worker (holds dictionary ~5MB)
 └── popup.ts          # Popup UI
 ```
@@ -389,7 +387,7 @@ The extension uses a message-passing architecture to keep the content script lig
                             │
                             ▼
 ┌──────────────────────────────────────────────────┐
-│              Content Script (content-lite.ts)    │
+│              Content Script (content-script.ts)    │
 │  • Walks DOM, collects text nodes                │
 │  • Sends batches of words to background          │
 │  • Applies translations in chunks (RAF)          │

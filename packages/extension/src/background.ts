@@ -162,7 +162,7 @@ async function injectTranslator(tabId: number, checkPermission = true): Promise<
     // Then inject the translator script
     await chrome.scripting.executeScript({
       target: { tabId },
-      files: ['content-lite.global.js'],
+      files: ['content-script.global.js'],
     });
     return true;
   } catch (error) {

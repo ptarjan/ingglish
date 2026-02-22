@@ -1,7 +1,7 @@
 import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
 import { MappedWordDisplay } from './MappedWordDisplay';
-import { buildDiffMap } from '../translation/diff-map';
+import { buildDiffMap } from './diff-map';
 import { SAMPLE_PASSAGES, pickRandomPassage } from '../data/sample-text';
 
 const STORAGE_KEY = 'ingglish-experiment-text';

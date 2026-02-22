@@ -2,7 +2,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { translateSyncWithMapping } from 'ingglish';
 import { MappedWordDisplay } from '../MappedWordDisplay';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { isAllCaps } from '../../translation/text';
+/** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
+function isAllCaps(text: string): boolean {
+  const letters = text.replace(/[^a-zA-Z]/g, '');
+  return letters.length >= 2 && letters === letters.toUpperCase();
+}
 
 const DEMO_SENTENCE = 'The knight thought through the night';
 const TYPING_INTERVAL_MS = 60;
