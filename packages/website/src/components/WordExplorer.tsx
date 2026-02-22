@@ -123,9 +123,9 @@ export default function WordExplorer() {
             <span className={`badge ${result.matched ? 'badge-dict' : 'badge-fallback'}`}>
               {result.isCustom
                 ? 'custom override'
-                : (result.matched
+                : result.matched
                   ? 'dictionary'
-                  : fallbackLabel(result.diagnosis?.strategy))}
+                  : fallbackLabel(result.diagnosis?.strategy)}
             </span>
             {result.britishSpelling !== undefined && result.diagnosis?.strategy !== 'british' && (
               <span className="badge badge-fallback">British variant</span>

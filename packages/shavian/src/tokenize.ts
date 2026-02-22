@@ -19,7 +19,7 @@ export function isShavianChar(char: string): boolean {
   if (cp === undefined) {
     return false;
   }
-  return cp >= 0x1_04_50 && cp <= 0x1_04_7F;
+  return cp >= 0x1_04_50 && cp <= 0x1_04_7f;
 }
 
 /**

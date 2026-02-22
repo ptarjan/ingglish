@@ -291,9 +291,9 @@ function ReadingChallenge() {
               const fillClass =
                 pct >= 80
                   ? 'challenge-round-fill-good'
-                  : (pct >= 50
+                  : pct >= 50
                     ? 'challenge-round-fill-ok'
-                    : 'challenge-round-fill-bad');
+                    : 'challenge-round-fill-bad';
               return (
                 <div className="challenge-round-row" key={i}>
                   <span className="challenge-round-label">Round {i + 1}</span>

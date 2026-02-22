@@ -242,7 +242,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         VOWEL_PHONEMES.has(phoneme)
       ) {
         // Which stress variants to show
-        const variants = advancedMode ? STRESS_VARIANTS : (showSchwa ? ['0'] : []);
+        const variants = advancedMode ? STRESS_VARIANTS : showSchwa ? ['0'] : [];
         return (
           <>
             <tr key={phoneme}>
@@ -265,7 +265,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               const stressedDefault = getDefault(stressedPhoneme);
               const stressedValue = mapping.phonemeMap[stressedPhoneme] ?? stressedDefault;
               const stressLabel =
-                stress === '0' ? 'unstressed' : (stress === '1' ? 'primary' : 'secondary');
+                stress === '0' ? 'unstressed' : stress === '1' ? 'primary' : 'secondary';
               // AH0 has a real default ('a'), other stress variants default to base
               const hasOwnDefault = stressedDefault !== defaultSpelling;
               return (

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2020", "DOM"],
+    "lib": ["ES2023", "DOM"],
     "paths": {
       "@ingglish/normalize": ["../normalize/src/index.ts"],
       "@ingglish/phonemes": ["../phonemes/src/index.ts"],

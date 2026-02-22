@@ -48,7 +48,7 @@ export { translateAsCompound } from './compounds';
 export { translateWithStemming } from './stemming';
 
 interface FallbackResult {
-  strategy: string;
+  strategy: FallbackStrategy;
   translated: string;
 }
 

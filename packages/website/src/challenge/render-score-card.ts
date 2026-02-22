@@ -102,7 +102,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
 }
 
 function barColor(pct: number): string {
-  return pct >= 80 ? GREEN : (pct >= 50 ? YELLOW : RED);
+  return pct >= 80 ? GREEN : pct >= 50 ? YELLOW : RED;
 }
 
 /** Draw a rounded rectangle path and leave it ready for fill/stroke. */

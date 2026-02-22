@@ -19,7 +19,7 @@ export function isDeseretChar(char: string): boolean {
   if (cp === undefined) {
     return false;
   }
-  return cp >= 0x1_04_00 && cp <= 0x1_04_4F;
+  return cp >= 0x1_04_00 && cp <= 0x1_04_4f;
 }
 
 /**

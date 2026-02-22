@@ -14,9 +14,9 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
-  prettierConfig,
   perfectionist.configs['recommended-natural'],
   unicornPlugin.configs.recommended,
+  prettierConfig,
   {
     languageOptions: {
       parserOptions: {

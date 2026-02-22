@@ -38,7 +38,7 @@ export function isIPAChar(char: string): boolean {
   const code = char.codePointAt(0)!;
 
   // Basic Latin letters (A-Z, a-z)
-  if ((code >= 0x41 && code <= 0x5A) || (code >= 0x61 && code <= 0x7A)) {
+  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
     return true;
   }
 
@@ -48,7 +48,7 @@ export function isIPAChar(char: string): boolean {
   }
 
   // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
-  if (code === 0x02_C8 || code === 0x02_CC) {
+  if (code === 0x02_c8 || code === 0x02_cc) {
     return true;
   }
 
@@ -71,7 +71,7 @@ export function isPhoneticChar(char: string): boolean {
   const code = char.codePointAt(0)!;
 
   // Basic Latin letters (A-Z, a-z)
-  if ((code >= 0x41 && code <= 0x5A) || (code >= 0x61 && code <= 0x7A)) {
+  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
     return true;
   }
 
@@ -84,9 +84,9 @@ export function isPhoneticChar(char: string): boolean {
   // Latin-1 Supplement accented letters (À-ÖØ-öø-ÿ)
   // Used for stress markers in Ingglish (á, é, í, ó, ú)
   if (
-    (code >= 0xC0 && code <= 0xD6) ||
-    (code >= 0xD8 && code <= 0xF6) ||
-    (code >= 0xF8 && code <= 0xFF)
+    (code >= 0xc0 && code <= 0xd6) ||
+    (code >= 0xd8 && code <= 0xf6) ||
+    (code >= 0xf8 && code <= 0xff)
   ) {
     return true;
   }
@@ -97,7 +97,7 @@ export function isPhoneticChar(char: string): boolean {
   }
 
   // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
-  if (code === 0x02_C8 || code === 0x02_CC) {
+  if (code === 0x02_c8 || code === 0x02_cc) {
     return true;
   }
 
