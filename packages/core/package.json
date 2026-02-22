@@ -42,7 +42,8 @@
     "@ingglish/phonemes": "^1.0.0",
     "@ingglish/ipa": "^1.0.0",
     "@ingglish/dictionary": "^1.0.0",
-    "@ingglish/fallback": "^1.0.0"
+    "@ingglish/fallback": "^1.0.0",
+    "@ingglish/g2p": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",

@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
-import { arpabetToFormat } from '@ingglish/phonemes';
+import { wordToArpabet } from '@ingglish/g2p';
+import { arpabetToFormat, stripStress } from '@ingglish/phonemes';
 
 interface FormatStats {
   /** Collision map for collision analysis */
   collisionMap: Map<string, string[]>;
-  /** Frequency-weighted orthotactic probability (how English-looking the respelled words are) */
-  naturalness: number;
+  /** Frequency-weighted G2P round-trip phoneme recovery rate (0.0–1.0) */
+  pronounceability: number;
   /** % of real-world text (by frequency) that stays identical */
   textPreservedPct: number;
   totalWords: number;
@@ -28,68 +29,46 @@ interface WordChange {
 const NON_ALPHA = /[^a-z]/i;
 
 // ============================================================
-// Bigram model for orthotactic probability
+// G2P round-trip pronounceability scoring
 // ============================================================
 
-const SMOOTHING_K = 0.01;
-
-/** Cached bigram model, built once from dictionary English words */
-let bigramModel: null | {
-  bigramCounts: Map<string, number>;
-  unigramCounts: Map<string, number>;
-  vocabSize: number;
-} = null;
-
-function getBigramModel() {
-  if (bigramModel !== null) {
-    return bigramModel;
+/** G2P round-trip score: feed spelling to G2P, compare predicted vs original phonemes */
+function g2pRoundtripScore(spelling: string, originalPhonemes: string[]): number {
+  const predicted = wordToArpabet(spelling).map((p) => stripStress(p));
+  const original = originalPhonemes.map((p) => stripStress(p));
+  const maxLen = Math.max(predicted.length, original.length);
+  if (maxLen === 0) {
+    return 1;
   }
-
-  const dict = getDictionary();
-  const bigramCounts = new Map<string, number>();
-  const unigramCounts = new Map<string, number>();
-  const alphabet = new Set<string>();
-
-  for (const word of Object.keys(dict)) {
-    const w = word.toLowerCase();
-    if (NON_ALPHA.test(w)) {
-      continue;
-    }
-    const freq = getWordFrequency(w) ?? 0;
-    const weight = Math.log(freq + 1);
-    const chars = '^' + w + '$';
-    for (let i = 0; i < chars.length - 1; i++) {
-      const c1 = chars[i]!;
-      const c2 = chars[i + 1]!;
-      alphabet.add(c1);
-      alphabet.add(c2);
-      const key = c1 + c2;
-      bigramCounts.set(key, (bigramCounts.get(key) ?? 0) + weight);
-      unigramCounts.set(c1, (unigramCounts.get(c1) ?? 0) + weight);
-    }
-  }
-
-  bigramModel = { bigramCounts, unigramCounts, vocabSize: alphabet.size };
-  return bigramModel;
+  return 1 - levenshtein(predicted, original) / maxLen;
 }
 
-/** Score a word by average log bigram probability (higher = more English-looking) */
-function scoreWordOrthotactic(word: string): number {
-  const { bigramCounts, unigramCounts, vocabSize } = getBigramModel();
-  const w = word.toLowerCase();
-  const chars = '^' + w + '$';
-  const n = chars.length - 1;
+/** Levenshtein distance between two string arrays. Single-row DP. */
+function levenshtein(a: string[], b: string[]): number {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) {
+    return n;
+  }
   if (n === 0) {
-    return -Infinity;
+    return m;
   }
 
-  let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const count = bigramCounts.get(chars[i]! + chars[i + 1]!) ?? 0;
-    const total = unigramCounts.get(chars[i]!) ?? 0;
-    sum += Math.log((count + SMOOTHING_K) / (total + SMOOTHING_K * vocabSize));
+  let prev = new Uint16Array(n + 1);
+  let curr = new Uint16Array(n + 1);
+  for (let j = 0; j <= n; j++) {
+    prev[j] = j;
   }
-  return sum / n;
+
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      curr[j] = Math.min((prev[j] ?? 0) + 1, (curr[j - 1] ?? 0) + 1, (prev[j - 1] ?? 0) + cost);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n] ?? 0;
 }
 
 /**
@@ -127,7 +106,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   const changes: { experiment: string; freq: number; standard: string; word: string }[] = [];
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
-  let naturalnessWeightedSum = 0;
+  let pronounceabilityWeightedSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -145,12 +124,9 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
       identicalFreqSum += freq;
     }
 
-    // Orthotactic probability (naturalness)
+    // G2P round-trip pronounceability
     if (freq > 0) {
-      const score = scoreWordOrthotactic(expSpelling);
-      if (score !== -Infinity) {
-        naturalnessWeightedSum += score * freq;
-      }
+      pronounceabilityWeightedSum += g2pRoundtripScore(expSpelling, phonemes) * freq;
     }
 
     // Group words by experiment spelling
@@ -209,7 +185,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   return {
     stats: {
       collisionMap: spellingToWords,
-      naturalness: totalFreqSum > 0 ? naturalnessWeightedSum / totalFreqSum : -Infinity,
+      pronounceability: totalFreqSum > 0 ? pronounceabilityWeightedSum / totalFreqSum : 0,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
@@ -258,7 +234,7 @@ function getIngglishCache() {
   const wordFreqs = new Map<string, number>();
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
-  let naturalnessWeightedSum = 0;
+  let pronounceabilityWeightedSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -277,12 +253,9 @@ function getIngglishCache() {
       identicalFreqSum += freq;
     }
 
-    // Orthotactic probability (naturalness)
+    // G2P round-trip pronounceability
     if (freq > 0) {
-      const score = scoreWordOrthotactic(spelling);
-      if (score !== -Infinity) {
-        naturalnessWeightedSum += score * freq;
-      }
+      pronounceabilityWeightedSum += g2pRoundtripScore(spelling, phonemes) * freq;
     }
 
     const existing = spellingToWords.get(spelling);
@@ -320,7 +293,7 @@ function getIngglishCache() {
     spellings,
     stats: {
       collisionMap: spellingToWords,
-      naturalness: totalFreqSum > 0 ? naturalnessWeightedSum / totalFreqSum : -Infinity,
+      pronounceability: totalFreqSum > 0 ? pronounceabilityWeightedSum / totalFreqSum : 0,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
@@ -396,17 +369,13 @@ function MappingStats({ version }: MappingStatsProps) {
         </div>
         <div
           className="stat-card"
-          title="How English-looking the respelled words are, based on character bigram statistics — higher (less negative) means more natural-looking"
+          title="Would an English reader pronounce this correctly? G2P round-trip phoneme recovery rate — higher means more pronounceable"
         >
           <div className="stat-value">
-            {experiment.naturalness.toFixed(2)}
-            <DeltaBadge
-              decimals={2}
-              threshold={0.005}
-              value={experiment.naturalness - ingglish.naturalness}
-            />
+            {(experiment.pronounceability * 100).toFixed(1)}%
+            <DeltaBadge value={(experiment.pronounceability - ingglish.pronounceability) * 100} />
           </div>
-          <div className="stat-label">Naturalness</div>
+          <div className="stat-label">Pronounceability</div>
         </div>
       </div>
 
