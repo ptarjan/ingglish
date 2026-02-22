@@ -38,6 +38,7 @@ void (async () => {
   Object.assign(indicator.style, {
     background: '#4f46e5',
     borderRadius: '8px',
+    bottom: '10px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
     color: 'white',
     fontFamily: 'system-ui, sans-serif',
@@ -46,7 +47,6 @@ void (async () => {
     padding: '8px 16px',
     position: 'fixed',
     right: '10px',
-    top: '10px',
     transition: 'opacity 0.3s',
     zIndex: '2147483647',
   });
