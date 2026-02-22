@@ -32,7 +32,7 @@ export function createLazyLoader<T>(loadFn: () => Promise<T>, errorLabel: string
         .catch((error: unknown) => {
           promise = null;
           const message = error instanceof Error ? error.message : String(error);
-          throw new Error(`Failed to load ${errorLabel}: ${message}`);
+          throw new Error(`Failed to load ${errorLabel}: ${message}`, { cause: error });
         });
       return promise;
     },
