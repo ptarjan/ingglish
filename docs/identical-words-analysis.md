@@ -182,14 +182,76 @@ Key questions before implementing:
 2. **Are the unstressed variants truly distinct to English speakers?** Unstressed 'y' in "happy" does sound different from 'ee' in "bee". Unstressed 'o' in "avocado" does sound different from 'oh' in "go". But is the difference as clear-cut as schwa vs strut?
 3. **Do the new spellings avoid perceptual ambiguity?** Unlike the rejected base changes, 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English *already spells these sounds*. English readers would likely pronounce them correctly naturally.
 
+## Readability Metric Analysis
+
+The identical-word metric is binary: a word either matches or doesn't. This misses partial improvements — "bot" for "boat" is closer to the original than "boht", but both count as non-identical.
+
+The **readability metric** uses edit-distance similarity to capture these partial gains:
+
+```
+similarity(word) = 1 - (levenshtein(english, ingglish) / max(len(english), len(ingglish)))
+readability = Σ(similarity × frequency) / Σ(frequency)
+```
+
+A readability score of 100% means every word is spelled identically to English. The baseline is **66.30%** — on average, two-thirds of each word's letters are preserved in the Ingglish spelling.
+
+### Readability vs Identical Words: Different Rankings
+
+The readability metric produces different rankings from the identical-word metric because it values partial improvements. For example, changing /ʌ/ from "uh" to any digraph starting with 'u' improves similarity for thousands of words without making them identical. The top readability improvements by category:
+
+#### Base phoneme changes (readability metric)
+
+| Phoneme | Current | Best | Δ Readability /M | Top improved | Top worsened |
+|---------|---------|------|------------------|--------------|--------------|
+| /ʌ/ AH | uh | uo | **+8,300** | of(0→33%), come(0→25%), one(0→25%), some(25→50%) | uh(100→50%), huh(100→67%) |
+| /aɪ/ AY | ai | ie | **+2,700** | right(40→60%), die(33→100%), night(40→60%), nice(25→50%) | while(60→40%), white(60→40%) |
+| /ʊ/ UH | u | uo | **+1,400** | good(50→75%), look(50→75%), took(50→75%) | put(100→75%), push(100→80%) |
+| /iː/ IY | ee | ey | **+1,400** | any(25→50%), really(33→50%), sorry(40→60%) | see(100→67%), need(100→75%) |
+| /k/ K | k | ck | **+787** | back(75→100%), can(67→75%), could(40→60%) | like(50→40%), think(83→71%) |
+| /oʊ/ OW | oh | ow | **+561** | know(50→75%), own(67→100%), show(75→100%) | oh(100→50%), though(50→33%) |
+| /ɔ/ AO | aw | ao | **+312** | long(60→80%), wrong(40→60%), gone(25→50%) | saw(100→67%), law(100→67%) |
+| /ɔɪ/ OY | oi | oy | **+136** | boy(67→100%), enjoy(80→100%), joy(67→100%) | point(100→80%), join(100→75%) |
+
+Compare to the identical-word metric where AH didn't appear at all (no AH change makes words identical without creating collisions), and /ɔɪ/→oy ranked highest at only +235 /M. The readability metric reveals that AH→uo has 35× more impact than OY→oy, because partial similarity improvements in ultra-common words like "of", "come", and "one" add up massively.
+
+#### Stress-conditioned changes (readability metric)
+
+| Phoneme | Current | Best | Δ Readability /M | Top improved | Top worsened |
+|---------|---------|------|------------------|--------------|--------------|
+| IY0 | ee | y | **+6,400** | any(25→67%), very(33→60%), only(50→80%), really(33→50%) | money(50→40%), coffee(67→33%) |
+| UW0 | oo | o | **+238** | into(80→100%), onto(80→100%) | unique(14→0%) |
+| OW0 | oh | o | **+198** | also(67→80%), hotel(83→100%) | heroes(57→50%) |
+
+IY0→'y' ranks #1 in both metrics, but the readability metric reveals it's even more valuable than the identical-word metric suggested: +6,400 /M readability vs +2,700 /M identical words. Many words like "very" (33→60%) and "any" (25→67%) get substantially closer to English without becoming fully identical.
+
+### Combined Result
+
+Greedily applying all non-conflicting improvements:
+
+| Metric | Before | After | Gain |
+|--------|--------|-------|------|
+| Readability | 66.30% | 68.05% | +1.75 pp |
+| Collisions | 18,848 | 18,558 | -290 |
+
+The readability metric confirms the identical-word findings while adding new insights:
+
+1. **AH (strut)** is the single most impactful phoneme for readability — it affects ultra-common words like "of", "come", "one", "some" that the identical-word metric can't capture because no spelling makes them identical
+2. **IY0→'y'** is confirmed as the highest-impact stress-conditioned change by both metrics
+3. **Base phoneme changes create trade-offs** — every improvement worsens some words. The readability metric makes these trade-offs visible (e.g., AY→ie improves "right" 40→60% but worsens "while" 60→40%)
+
+### Important Caveat
+
+The readability metric optimizes for **character-level similarity**, not **perceptual readability**. Changing /ʌ/ to "uo" scores well because 'u' matches the first letter in words like "up" and "us" — but "uop" for "up" is not more readable to an English speaker than "uhp". The metric is useful for identifying which phonemes have the most room for improvement, but the final spelling choice must still pass the perceptual readability test.
+
 ## Methodology
 
 Analysis scripts are in `packages/core/scripts/analysis/`:
 
 - `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
 - `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
+- `readability-search.ts` - Edit-distance readability metric analysis (continuous similarity rather than binary match)
 
-Both scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
+All scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
 
 The exhaustive search runs in three phases:
 
@@ -200,6 +262,7 @@ The exhaustive search runs in three phases:
 Run with:
 ```bash
 npx vite-node scripts/analysis/exhaustive-search.ts
+npx vite-node scripts/analysis/readability-search.ts
 ```
 
 ## Why Raw Identical Word Count Misleads
