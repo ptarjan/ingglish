@@ -4,10 +4,10 @@
  * Handles words with apostrophes like "don't", "I'm", etc.
  */
 
-import { arpabetToFormat, getFormatPreservesCase } from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
+import { arpabetToFormat, getFormatPreservesCase } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
 
 /**
  * Translates a contraction (word with apostrophe).

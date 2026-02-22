@@ -10,8 +10,8 @@
  */
 
 import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
-import { translateSync, reverseTranslateSync } from './translate';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { translateSync, reverseTranslateSync } from './translate';
 
 // =============================================================================
 // Primary API (auto-loads dictionary)

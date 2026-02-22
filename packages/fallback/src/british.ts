@@ -6,9 +6,9 @@
  * Used as a fallback when the British spelling isn't found.
  */
 
+import { lookupPronunciation } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { lookupPronunciation } from '@ingglish/dictionary';
 
 /**
  * British-to-American spelling rules, ordered by specificity.

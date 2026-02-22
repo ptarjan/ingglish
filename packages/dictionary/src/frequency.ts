@@ -122,7 +122,7 @@ const NUMERIC_WORD_PENALTY = 1_000_000; // Penalty for words containing numbers
 const UNKNOWN_WORD_PENALTY = 100_000; // Base penalty for unknown words
 
 // Pre-compiled regex for hot path performance
-const NUMERIC_REGEX = /[0-9]/;
+const NUMERIC_REGEX = /\d/;
 
 /**
  * Scores a word for ranking - lower score is better (more common).

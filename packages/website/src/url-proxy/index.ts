@@ -155,7 +155,7 @@ export function stripScripts(html: string): string {
 export function proxyFontUrls(html: string, proxyUrl: string): string {
   // Match url() in CSS with font file extensions
   const fontUrlPattern =
-    /url\s*\(\s*(['"]?)(https?:\/\/[^)'"]+\.(?:woff2?|ttf|eot|otf)(?:\?[^)'"]*)?)\1\s*\)/gi;
+    /url\s*\(\s*(['"]?)(https?:\/\/[^)\s'"]+\.(?:woff2?|ttf|eot|otf)(?:\?[^)\s'"]*)?)\1\s*\)/gi;
 
   return html.replace(fontUrlPattern, (_match: string, quote: string, fontUrl: string) => {
     const proxiedUrl = `${proxyUrl}${encodeURIComponent(fontUrl)}`;

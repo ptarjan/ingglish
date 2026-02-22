@@ -3,9 +3,8 @@
  */
 
 import { translateSync } from 'ingglish';
-import { translateDOMSync } from '../translate/translator';
 import { createTooltipFragment } from '../translate/tooltip-fragment';
-import type { DOMTranslatorOptions } from '../types';
+import { translateDOMSync } from '../translate/translator';
 import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
@@ -13,6 +12,7 @@ import {
   shouldSkipElement,
   shouldSkipTextNode,
 } from '../traversal';
+import type { DOMTranslatorOptions } from '../types';
 
 /**
  * Creates a MutationObserver that translates new content as it's added to the DOM.
@@ -125,19 +125,17 @@ export function observeAndTranslate(
       if (mutation.type === 'characterData' && !showTooltips) {
         const textNode = mutation.target as Text;
         const text = textNode.textContent;
-        if (text?.trim()) {
-          if (!shouldSkipTextNode(textNode, skipTags, skipClasses)) {
-            // Temporarily disconnect observer to avoid infinite loop
-            observer.disconnect();
-            try {
-              textNode.textContent = translateSync(text, outputFormat);
-            } finally {
-              observer.observe(root, {
-                childList: true,
-                subtree: true,
-                characterData: true,
-              });
-            }
+        if (text?.trim() && !shouldSkipTextNode(textNode, skipTags, skipClasses)) {
+          // Temporarily disconnect observer to avoid infinite loop
+          observer.disconnect();
+          try {
+            textNode.textContent = translateSync(text, outputFormat);
+          } finally {
+            observer.observe(root, {
+              childList: true,
+              subtree: true,
+              characterData: true,
+            });
           }
         }
       }

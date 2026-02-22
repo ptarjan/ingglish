@@ -1,30 +1,29 @@
 import type { JSX } from 'react';
 import { useState, useEffect, useRef, useMemo } from 'react';
+// Import markdown files - vite-plugin-md converts to HTML at build time
+import architecture from '../../../../docs/architecture.md';
+import collisionAnalysis from '../../../../docs/collision-analysis.md';
+import communityLandscape from '../../../../docs/community-landscape.md';
+import contributing from '../../../../docs/contributing.md';
+import deploymentDoc from '../../../../docs/deployment.md';
+import designDecisions from '../../../../docs/design-decisions.md';
+import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
+import apiReference from '../../../../docs/generated/README.md';
+import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
+import morphologicalAnalysis from '../../../../docs/morphological-analysis.md';
+import orthographicTransparency from '../../../../docs/orthographic-transparency.md';
+import orthographyComparison from '../../../../docs/orthography-comparison.md';
+import performanceDoc from '../../../../docs/performance.md';
+import phonemeMapping from '../../../../docs/phoneme-mapping.md';
+import spellingEvolution from '../../../../docs/spelling-evolution.md';
+import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
+import troubleshooting from '../../../../docs/troubleshooting.md';
 
 interface HeadingInfo {
   id: string;
   text: string;
   level: number;
 }
-
-// Import markdown files - vite-plugin-md converts to HTML at build time
-import apiReference from '../../../../docs/generated/README.md';
-import architecture from '../../../../docs/architecture.md';
-import contributing from '../../../../docs/contributing.md';
-import deploymentDoc from '../../../../docs/deployment.md';
-import designDecisions from '../../../../docs/design-decisions.md';
-import orthographyComparison from '../../../../docs/orthography-comparison.md';
-import performanceDoc from '../../../../docs/performance.md';
-import phonemeMapping from '../../../../docs/phoneme-mapping.md';
-import spellingEvolution from '../../../../docs/spelling-evolution.md';
-import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
-import communityLandscape from '../../../../docs/community-landscape.md';
-import troubleshooting from '../../../../docs/troubleshooting.md';
-import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
-import collisionAnalysis from '../../../../docs/collision-analysis.md';
-import orthographicTransparency from '../../../../docs/orthographic-transparency.md';
-import morphologicalAnalysis from '../../../../docs/morphological-analysis.md';
-import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
 
 interface DocEntry {
   id: string;
@@ -147,7 +146,7 @@ function extractHeadings(html: string): HeadingInfo[] {
   const regex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
   let match;
   while ((match = regex.exec(html)) !== null) {
-    const level = parseInt(match[1]!, 10);
+    const level = Number.parseInt(match[1]!, 10);
     // Strip HTML tags and decode entities to get plain text
     const rawText = match[2]!.replace(/<[^>]+>/g, '').trim();
     const text = decodeHtmlEntities(rawText);

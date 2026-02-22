@@ -1,5 +1,5 @@
-import { useScrollReveal, useStaggeredReveal } from '../../hooks/useScrollReveal';
 import { oughExamples } from '../../data/tutorial-data';
+import { useScrollReveal, useStaggeredReveal } from '../../hooks/useScrollReveal';
 
 function OughCard({
   prefix,

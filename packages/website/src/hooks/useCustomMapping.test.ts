@@ -2,11 +2,11 @@
  * @vitest-environment jsdom
  */
 
-import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
-import { act } from 'react';
 import { renderHook } from '@testing-library/react';
-import { useCustomMapping, hasExperimentMapping, registerExperiment } from './useCustomMapping';
+import { act } from 'react';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
+import { useCustomMapping, hasExperimentMapping, registerExperiment } from './useCustomMapping';
 
 beforeAll(() => {
   (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;

@@ -1,3 +1,4 @@
+import { translateWord } from 'ingglish';
 import {
   lookupPronunciation,
   lookupPhonemeKey,
@@ -5,10 +6,6 @@ import {
   getWordFrequency,
   hasCustomPronunciation,
 } from '@ingglish/dictionary';
-import { stripStress } from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
-import { arpabetToIPARaw } from '@ingglish/ipa';
-import { translateWord } from 'ingglish';
 import {
   diagnoseUnknown,
   matchBritish,
@@ -16,6 +13,9 @@ import {
   translateAsAcronym,
 } from '@ingglish/fallback';
 import type { WordDiagnosis } from '@ingglish/fallback';
+import { arpabetToIPARaw } from '@ingglish/ipa';
+import { stripStress } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
 
 export interface WordResult {
   word: string;

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import { isInitialism, parseInitialismWithSuffix, translateAsAcronym } from './acronyms';
 import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { translateWithStemming } from './stemming';
-import { isInitialism, parseInitialismWithSuffix, translateAsAcronym } from './acronyms';
 import { translateUnknown } from './index';
 
 describe('translateAsBritish', () => {

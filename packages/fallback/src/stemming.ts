@@ -5,9 +5,9 @@
  * prefixes and suffixes.
  */
 
+import { lookupPronunciation } from '@ingglish/dictionary';
 import { arpabetToFormat, stripStress } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { lookupPronunciation } from '@ingglish/dictionary';
 
 /** Voiceless consonants for -ed allomorph selection */
 const VOICELESS = new Set(['P', 'T', 'K', 'CH', 'F', 'TH', 'S', 'SH', 'HH']);

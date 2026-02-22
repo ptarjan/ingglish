@@ -23,8 +23,8 @@
  */
 
 import { arpabetToFormat } from '@ingglish/phonemes';
-import { applyStressPrediction } from './stress';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { applyStressPrediction } from './stress';
 
 // ---------------------------------------------------------------------------
 // NRL rules — grouped by first letter of the target

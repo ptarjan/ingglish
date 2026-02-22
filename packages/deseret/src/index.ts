@@ -1,9 +1,9 @@
 import { registerFormat } from '@ingglish/phonemes';
-import { arpabetToDeseret } from './to-deseret';
 import {
   reverseTranslateDeseretText,
   reverseTranslateDeseretTextWithMapping,
 } from './from-deseret';
+import { arpabetToDeseret } from './to-deseret';
 
 export function registerDeseret(): void {
   registerFormat('deseret', {

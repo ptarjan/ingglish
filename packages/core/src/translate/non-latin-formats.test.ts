@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
+import { registerDeseret } from '@ingglish/deseret';
 import { loadDictionary } from '@ingglish/dictionary';
 import { registerShavian } from '@ingglish/shavian';
-import { registerDeseret } from '@ingglish/deseret';
 import { translateSync, translateWord } from './forward';
 
 beforeAll(async () => {
@@ -23,13 +23,13 @@ describe('non-Latin script translation of common words', () => {
 
   it('should translate "make it so" to all shavian', () => {
     const result = translateSync('make it so', 'shavian');
-    expect(result).not.toMatch(/[a-zA-Z]/);
+    expect(result).not.toMatch(/[a-z]/i);
   });
 
   it('should translate "GIVE IT UP" to shavian (not keep Latin)', () => {
     const result = translateSync('GIVE IT UP', 'shavian');
     // Should not contain any Latin letters
-    expect(result).not.toMatch(/[a-zA-Z]/);
+    expect(result).not.toMatch(/[a-z]/i);
   });
 
   it('should keep "IT" as-is for ingglish', () => {
@@ -49,11 +49,11 @@ describe('non-Latin script translation of common words', () => {
 
   it('should translate "it\'s" as contraction in shavian', () => {
     const result = translateSync("it's great", 'shavian');
-    expect(result).not.toMatch(/[a-zA-Z]/);
+    expect(result).not.toMatch(/[a-z]/i);
   });
 
   it('should translate "GIVE IT UP" to deseret (not keep Latin)', () => {
     const result = translateSync('GIVE IT UP', 'deseret');
-    expect(result).not.toMatch(/[a-zA-Z]/);
+    expect(result).not.toMatch(/[a-z]/i);
   });
 });

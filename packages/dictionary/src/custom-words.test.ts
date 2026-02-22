@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
+import { ARPABET_VOWELS, ARPABET_CONSONANTS } from '@ingglish/phonemes';
 import {
   hasCustomPronunciation,
   getCustomPronunciation,
   CUSTOM_PRONUNCIATIONS,
 } from './custom-words';
-import { ARPABET_VOWELS, ARPABET_CONSONANTS } from '@ingglish/phonemes';
 
 /** All valid ARPAbet base phonemes (vowels + consonants) */
 const VALID_BASES = new Set<string>([...ARPABET_VOWELS, ...ARPABET_CONSONANTS]);

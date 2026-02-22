@@ -4,9 +4,9 @@
 
 import { translateSyncWithMapping } from 'ingglish';
 import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/normalize';
+import type { OutputFormat } from '@ingglish/phonemes';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD, FORMAT_DIFF_CLASS } from '../constants';
-import type { OutputFormat } from '@ingglish/phonemes';
 
 // Template span for cloneNode (faster than createElement)
 // Created lazily on first use

@@ -4,6 +4,10 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import prettierConfig from 'eslint-config-prettier';
+import importX from 'eslint-plugin-import-x';
+import vitestPlugin from '@vitest/eslint-plugin';
+import unicornPlugin from 'eslint-plugin-unicorn';
+import regexpPlugin from 'eslint-plugin-regexp';
 
 export default tseslint.config(
   js.configs.recommended,
@@ -24,10 +28,18 @@ export default tseslint.config(
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
       'jsx-a11y': jsxA11yPlugin,
+      'import-x': importX,
+      unicorn: unicornPlugin,
+      regexp: regexpPlugin,
     },
     settings: {
       react: {
         version: 'detect',
+      },
+      'import-x/resolver': {
+        typescript: {
+          project: 'packages/*/tsconfig.json',
+        },
       },
     },
     rules: {
@@ -84,6 +96,37 @@ export default tseslint.config(
       ],
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
 
+      // Import ordering and validation
+      'import-x/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling'],
+          pathGroups: [{ pattern: '@ingglish/**', group: 'internal' }],
+          pathGroupsExcludedImportTypes: ['builtin'],
+          'newlines-between': 'never',
+          alphabetize: { order: 'asc' },
+        },
+      ],
+      'import-x/no-duplicates': 'error',
+      'import-x/first': 'error',
+      'import-x/no-cycle': 'warn',
+
+      // Unicorn (cherry-picked)
+      'unicorn/no-useless-spread': 'error',
+      'unicorn/prefer-array-find': 'error',
+      'unicorn/prefer-array-flat-map': 'error',
+      'unicorn/prefer-array-flat': 'error',
+      'unicorn/prefer-includes': 'error',
+      // Note: prefer-string-replace-all and prefer-at omitted — lib is ES2020, both are ES2021+
+      'unicorn/no-lonely-if': 'error',
+      'unicorn/no-array-push-push': 'error',
+      'unicorn/prefer-node-protocol': 'error',
+      'unicorn/no-useless-undefined': 'error',
+      'unicorn/prefer-number-properties': 'error',
+
+      // Regexp rules (recommended preset)
+      ...regexpPlugin.configs['flat/recommended'].rules,
+
       // React rules
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
@@ -121,6 +164,16 @@ export default tseslint.config(
       'prefer-const': 'error',
     },
   },
+  // Vitest rules (test files only)
+  {
+    files: ['**/*.test.{ts,tsx}'],
+    ...vitestPlugin.configs.recommended,
+    rules: {
+      ...vitestPlugin.configs.recommended.rules,
+      'vitest/no-conditional-expect': 'off', // Data-driven tests use conditional expects
+      'vitest/valid-title': 'off', // Dynamic describe/it titles from loops
+    },
+  },
   {
     // Extension has no logging infrastructure — console is the only debug tool
     files: ['packages/extension/src/**/*.ts'],
@@ -145,6 +198,9 @@ export default tseslint.config(
       'packages/dictionary/src/cmudict.d.ts',
       'packages/dictionary/src/reverse-cmudict.js',
       'packages/dictionary/src/reverse-cmudict.d.ts',
+      // Auto-generated data files in core
+      'packages/core/src/data/**',
+      'packages/core/src/dictionary/**',
     ],
   }
 );

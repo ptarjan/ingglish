@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { isAllowedOrigin, corsHeaders, isPrivateHost } from './index';
-import worker from './index';
+import worker, { isAllowedOrigin, corsHeaders, isPrivateHost } from './index';
 
 describe('cors-proxy', () => {
   describe('isAllowedOrigin', () => {

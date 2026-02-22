@@ -13,7 +13,7 @@ export const URL_REGEX = /(?:https?|ftp|file):\/\/[^\s<>"')\]]+/gi;
  * Regex to match email addresses.
  * Simple pattern: word characters, dots, hyphens, plus before @, domain after.
  */
-export const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
+export const EMAIL_REGEX = /[\w.%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi;
 
 /**
  * Regex to match bare domain names (without protocol).
@@ -21,7 +21,7 @@ export const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
  * Includes optional path/query after the domain.
  */
 export const BARE_DOMAIN_REGEX =
-  /\b[a-zA-Z0-9][-a-zA-Z0-9]*(?:\.[a-zA-Z0-9][-a-zA-Z0-9]*)*\.(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
+  /\b[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)*\.(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
 
 /**
  * Extracts URLs and emails from text, replacing them with placeholders.

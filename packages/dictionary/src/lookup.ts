@@ -2,8 +2,8 @@
  * Dictionary lookup utilities.
  */
 
-import { getDictionary } from './loader';
 import { getCustomPronunciation } from './custom-words';
+import { getDictionary } from './loader';
 
 /**
  * Normalizes N → NG before velar consonants K and G.

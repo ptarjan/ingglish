@@ -8,7 +8,7 @@
  * Patterns that suggest text is in Ingglish format.
  */
 const INGGLISH_PATTERNS = [
-  /\buh[bdfghjklmnprstvwz]/i, // "uh" + consonant (Ingglish STRUT vowel)
+  /\buh[bdfghj-nprstvwz]/i, // "uh" + consonant (Ingglish STRUT vowel)
   /\bdh/i, // "dh" at word start
   /\bng[aeiou]/i, // "ng" + vowel at start
   /[aeiou]h\b/i, // vowel + "h" at end

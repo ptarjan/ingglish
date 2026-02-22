@@ -5,8 +5,8 @@
  * slow-path operations and ensuring they're not called unnecessarily.
  */
 import { describe, it, expect, vi } from 'vitest';
-import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/phonemes';
 import { lookupPronunciation, lookupPhonemeKey } from '@ingglish/dictionary';
+import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/phonemes';
 describe('performance optimizations', () => {
   describe('stripStress charCode optimization', () => {
     it('should use charCode 48-50 for stress markers (not regex)', () => {

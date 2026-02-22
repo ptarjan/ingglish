@@ -1,9 +1,9 @@
 import { registerFormat } from '@ingglish/phonemes';
-import { arpabetToShavian } from './to-shavian';
 import {
   reverseTranslateShavianText,
   reverseTranslateShavianTextWithMapping,
 } from './from-shavian';
+import { arpabetToShavian } from './to-shavian';
 
 export function registerShavian(): void {
   registerFormat('shavian', {

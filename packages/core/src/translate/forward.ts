@@ -2,13 +2,13 @@
  * Forward translation: English -> Ingglish/IPA.
  */
 
-import {
-  arpabetToFormat,
-  getFormatIsLatinScript,
-  getFormatPreservesCase,
-} from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
 import { lookupPronunciation, getCustomPronunciation } from '@ingglish/dictionary';
+import {
+  translateUnknown,
+  isInitialism,
+  parseInitialismWithSuffix,
+  translateAsAcronym,
+} from '@ingglish/fallback';
 import {
   detectCasePattern,
   applyCasePattern,
@@ -19,20 +19,20 @@ import {
   restorePreservedPatterns,
 } from '@ingglish/normalize';
 import type { CasePattern } from '@ingglish/normalize';
-import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import {
-  translateUnknown,
-  isInitialism,
-  parseInitialismWithSuffix,
-  translateAsAcronym,
-} from '@ingglish/fallback';
+  arpabetToFormat,
+  getFormatIsLatinScript,
+  getFormatPreservesCase,
+} from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import { translateContraction } from './contractions';
 import { expandPlaceholder } from './preserved';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
-const HAS_LETTER = /[a-zA-Z]/;
+const HAS_LETTER = /[a-z]/i;
 const ALL_UPPER = /^[A-Z]+$/;
-const TRIPLE_CHAR = /(.)\1\1/i;
+const TRIPLE_CHAR = /(.)\1\1/;
 const HAS_VOWEL = /[aeiouy]/i;
 const TITLE_CASE = /^[A-Z][a-z]*$/;
 const SENTENCE_END = /[.?!]/;

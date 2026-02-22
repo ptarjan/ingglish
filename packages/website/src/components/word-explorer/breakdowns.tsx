@@ -1,11 +1,10 @@
-import { arpabetToFormat, isVowel } from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
-import { arpabetPhonemeToIPA } from '@ingglish/ipa';
 import { translateWord } from 'ingglish';
 import { getWordFrequency } from '@ingglish/dictionary';
-import { getFormatLabel } from '@ingglish/phonemes';
 import { LETTER_PHONEMES } from '@ingglish/fallback';
 import type { G2PTrace } from '@ingglish/g2p';
+import { arpabetPhonemeToIPA } from '@ingglish/ipa';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { getFormatLabel, arpabetToFormat, isVowel } from '@ingglish/phonemes';
 import { formatFrequency } from './analyze';
 
 export function PhonemeChain({ phonemes, format }: { phonemes: string[]; format: OutputFormat }) {

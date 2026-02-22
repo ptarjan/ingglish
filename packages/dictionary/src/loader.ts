@@ -4,8 +4,8 @@
  * Dictionary sourced from: https://github.com/cmusphinx/cmudict
  */
 
-import type { CMUDictionary } from './types';
 import { createLazyLoader } from './lazy-loader';
+import type { CMUDictionary } from './types';
 
 const loader = createLazyLoader<CMUDictionary>(
   async () => (await import('./cmudict')).default,

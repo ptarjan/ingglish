@@ -1,11 +1,11 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { translateSyncWithMapping } from 'ingglish';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { observeAndTranslate } from './observe';
 import { translateDOM, translateDOMSync, restoreDOM, applyTranslationsMap } from './translate';
 import { skipElement, unskipElement } from './traversal';
-import { observeAndTranslate } from './observe';
 
 describe('dom-translator', () => {
   // Track stop functions to ensure cleanup even if tests fail

@@ -35,12 +35,12 @@ async function main() {
   const dom = loadWikipediaDOM();
   setupJSDOM(dom);
 
-  const { collectTextNodes } = await import('../src/utils/text-nodes');
+  const { collectTextNodes } = await import('../src/traversal/text-nodes');
   const { shouldSkipElement, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES } =
-    await import('../src/utils/skip-rules');
+    await import('../src/traversal/skip-rules');
   const { translate } = await import('ingglish');
   const { applyTranslationsMap } = await import('../src/translate/apply-map');
-  const { extractWordsFromNodes } = await import('../src/utils/extract');
+  const { extractWordsFromNodes } = await import('../src/traversal/extract');
 
   // Load dictionary
   console.log('Loading dictionary...');

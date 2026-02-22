@@ -1,11 +1,11 @@
+import { translate } from 'ingglish';
 import type { ComponentType, LazyExoticComponent } from 'react';
 import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
-import { translate } from 'ingglish';
+import { trackPageView } from './analytics';
+import ErrorBoundary from './components/ErrorBoundary';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
-import ErrorBoundary from './components/ErrorBoundary';
 import { useTheme } from './hooks/useTheme';
-import { trackPageView } from './analytics';
 import { useUpdateCheck } from './hooks/useUpdateCheck';
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
 function lazyWithReload<T extends { default: ComponentType<object> }>(

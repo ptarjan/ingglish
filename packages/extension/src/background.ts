@@ -1,10 +1,17 @@
 // Background service worker for Ingglish extension
 
-import type { OutputFormat } from '@ingglish/phonemes';
 import { translate, translateSync } from 'ingglish';
-import { registerIPA } from '@ingglish/ipa';
-import { registerShavian } from '@ingglish/shavian';
 import { registerDeseret } from '@ingglish/deseret';
+import { registerIPA } from '@ingglish/ipa';
+import type { OutputFormat } from '@ingglish/phonemes';
+import { registerShavian } from '@ingglish/shavian';
+import type {
+  ExtensionMessage,
+  StateResponse,
+  ToggleResponse,
+  FormatResponse,
+  TranslateWordsResponse,
+} from './types';
 
 // Register format plugins
 registerIPA();
@@ -13,13 +20,6 @@ registerDeseret();
 
 // Track dictionary loading state
 let dictionaryLoaded = false;
-import type {
-  ExtensionMessage,
-  StateResponse,
-  ToggleResponse,
-  FormatResponse,
-  TranslateWordsResponse,
-} from './types';
 
 // Track which tabs have translation enabled (in-memory cache, backed by storage)
 const translatedTabs = new Set<number>();

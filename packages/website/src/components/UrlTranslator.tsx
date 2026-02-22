@@ -1,9 +1,9 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
-import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { getFormatLabel } from '@ingglish/phonemes';
+import { trackUrlTranslate, trackShare } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
 import { useShare } from '../hooks/useShare';
-import { trackUrlTranslate, trackShare } from '../analytics';
+import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 
 /**
  * Fullscreen icon (expand arrows)

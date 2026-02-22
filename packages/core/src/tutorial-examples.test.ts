@@ -2,10 +2,10 @@
  * Tests that verify all translation examples in the Tutorial page are correct.
  * Prevents tutorial drift when phoneme mappings change.
  */
-import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { describe, it, expect } from 'vitest';
 import { translateSync } from './translate/forward';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,7 +20,7 @@ interface Example {
 
 /** Strip leading/trailing punctuation and quotes from a word */
 function stripPunctuation(word: string): string {
-  return word.replace(/^[,."'"?!\u2014\s]+|[,."'"?!\u2014\s]+$/g, '');
+  return word.replace(/^[,."'?!\u2014\s]+|[,."'?!\u2014\s]+$/g, '');
 }
 
 function extractExamples(content: string, filename: string): Example[] {

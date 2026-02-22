@@ -139,7 +139,7 @@ async function main() {
   console.log('\n--- shouldSkipElement Profile ---\n');
 
   const { shouldSkipElement, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES } =
-    await import('../src/utils/skip-rules');
+    await import('../src/traversal/skip-rules');
 
   // Warmup
   for (let i = 0; i < 100; i++) {

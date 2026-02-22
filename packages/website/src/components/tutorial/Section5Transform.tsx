@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  useScrollReveal,
-  useStaggeredReveal,
-  useStaggerComplete,
-  useStickyActive,
-} from '../../hooks/useScrollReveal';
-import {
   silentLetterExamples,
   eeSoundExamples,
   aySoundExamples,
@@ -13,6 +7,12 @@ import {
   thDhExamples,
   type ExampleWord,
 } from '../../data/tutorial-data';
+import {
+  useScrollReveal,
+  useStaggeredReveal,
+  useStaggerComplete,
+  useStickyActive,
+} from '../../hooks/useScrollReveal';
 
 /**
  * Splits a word around a highlight substring.

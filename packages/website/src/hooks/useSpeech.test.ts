@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 
-import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
-import { act } from 'react';
 import { renderHook, type RenderHookResult } from '@testing-library/react';
+import { act } from 'react';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { useSpeech } from './useSpeech';
 
 beforeAll(() => {
@@ -57,7 +57,7 @@ describe('useSpeech', () => {
   });
 
   it('returns supported=false when speechSynthesis is unavailable', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
     const [, , , supported] = result.current;
     expect(supported).toBe(false);
@@ -143,7 +143,7 @@ describe('useSpeech', () => {
   });
 
   it('speak is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -153,13 +153,14 @@ describe('useSpeech', () => {
   });
 
   it('stop is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     // Should not throw
     act(() => {
       result.current[2]();
     });
+    expect(result.current[0]).toBe(false);
   });
 
   it('sets up Chrome workaround interval while speaking', () => {

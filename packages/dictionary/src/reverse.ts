@@ -7,8 +7,8 @@
 
 import { stripStress } from '@ingglish/phonemes';
 import { CUSTOM_PRONUNCIATIONS } from './custom-words';
-import type { ReverseDictionary } from './types';
 import { createLazyLoader } from './lazy-loader';
+import type { ReverseDictionary } from './types';
 
 /**
  * Build a reverse map from custom pronunciations (phoneme key -> words).

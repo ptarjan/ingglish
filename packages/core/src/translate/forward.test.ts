@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
-import { translateWord, translateSync } from './forward';
-import { translate, reverseTranslate } from '../index';
 import * as dictModule from '@ingglish/dictionary';
+import { translate, reverseTranslate } from '../index';
+import { translateWord, translateSync } from './forward';
 
 describe('async API loads only required dictionaries', () => {
   // Dictionaries pre-loaded by vitest.setup.ts
@@ -284,7 +284,7 @@ describe('translator', () => {
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
       // IPA result should contain non-ASCII characters
-      expect(result).not.toMatch(/^[a-zA-Z]+$/);
+      expect(result).not.toMatch(/^[a-z]+$/i);
     });
 
     it('should use translateSyncWithMapping for token mapping', async () => {

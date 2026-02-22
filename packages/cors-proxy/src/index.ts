@@ -43,7 +43,7 @@ export function corsHeaders(origin: string): Record<string, string> {
 const PRIVATE_IPV4_PATTERNS = [
   /^127\./, // Loopback
   /^10\./, // Class A private
-  /^172\.(1[6-9]|2[0-9]|3[01])\./, // Class B private
+  /^172\.(1[6-9]|2\d|3[01])\./, // Class B private
   /^192\.168\./, // Class C private
   /^169\.254\./, // Link-local
   /^0\./, // Current network
@@ -188,7 +188,7 @@ export default {
       if (upstreamCacheControl !== null) {
         const maxAgeMatch = /max-age=(\d+)/.exec(upstreamCacheControl);
         if (maxAgeMatch) {
-          cacheSeconds = Math.max(parseInt(maxAgeMatch[1], 10), MIN_CACHE_SECONDS);
+          cacheSeconds = Math.max(Number.parseInt(maxAgeMatch[1], 10), MIN_CACHE_SECONDS);
         }
       }
       const cacheControl = `public, max-age=${cacheSeconds}`;

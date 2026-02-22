@@ -2,10 +2,10 @@
  * Tests that verify all examples in documentation are correct.
  * This prevents documentation drift when phoneme mappings change.
  */
-import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { describe, it, expect } from 'vitest';
 import { translateSync } from './translate/forward';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -119,12 +119,12 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Track section context for spelling-evolution.md
     // Sections starting with "Before:", "Problem:", "Original:" show rejected approaches
-    if (/^\*\*(Before|Problem|Original):?\*\*/.test(line)) {
+    if (/^\*\*(?:Before|Problem|Original):?\*\*/.test(line)) {
       inRejectedSection = true;
       continue;
     }
     // Sections starting with "After", "Examples:", "Verdict:" show adopted approaches
-    if (/^\*\*(After|Examples|Verdict|Rationale):?\*\*/.test(line)) {
+    if (/^\*\*(?:After|Examples|Verdict|Rationale):?\*\*/.test(line)) {
       inRejectedSection = false;
       continue;
     }
@@ -175,7 +175,7 @@ function extractExamples(content: string, filename: string): Example[] {
     }
 
     // Pattern 2: - "word" → **translated** (intuitive) or similar
-    const intuitiveMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*\*\*([a-zA-Z]+)\*\*/.exec(line);
+    const intuitiveMatch = /^-\s*"([a-z]{3,})"\s*→\s*\*\*([a-z]+)\*\*/i.exec(line);
     if (intuitiveMatch) {
       const english = intuitiveMatch[1]!.toLowerCase();
       const ingglish = intuitiveMatch[2]!.toLowerCase();
@@ -186,7 +186,7 @@ function extractExamples(content: string, filename: string): Example[] {
     }
 
     // Pattern 3: - "word" → "translated" (text-speak association) etc
-    const quotedMatch = /^-\s*"([a-zA-Z]{3,})"\s*→\s*"([a-zA-Z]+)"/.exec(line);
+    const quotedMatch = /^-\s*"([a-z]{3,})"\s*→\s*"([a-z]+)"/i.exec(line);
     if (quotedMatch) {
       const english = quotedMatch[1]!.toLowerCase();
       const ingglish = quotedMatch[2]!.toLowerCase();
@@ -198,7 +198,7 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 4: - word → word (unquoted, from spelling-evolution.md)
     // e.g., - my → mai, - out → out (identical!)
-    const unquotedMatch = /^-\s*([a-zA-Z]{1,})\s*→\s*([a-zA-Z]+)/.exec(line);
+    const unquotedMatch = /^-\s*([a-z]+)\s*→\s*([a-z]+)/i.exec(line);
     if (unquotedMatch) {
       const english = unquotedMatch[1]!.toLowerCase();
       const ingglish = unquotedMatch[2]!.toLowerCase();
@@ -210,9 +210,7 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 5: | word | translated | /IPA/ | (README example table)
     // Only match when there's an IPA column (indicates it's the examples table)
-    const readmeTableMatch = /^\|\s*([a-zA-Z]{3,})\s*\|\s*([a-zA-Z]+)\s*\|\s*\/[^/]+\/\s*\|/.exec(
-      line
-    );
+    const readmeTableMatch = /^\|\s*([a-z]{3,})\s*\|\s*([a-z]+)\s*\|\s*\/[^/]+\/\s*\|/i.exec(line);
     if (readmeTableMatch) {
       const english = readmeTableMatch[1]!.toLowerCase();
       const ingglish = readmeTableMatch[2]!.toLowerCase();
@@ -224,7 +222,7 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 5: word → **translated** (inline in orthography comparison tables)
     // e.g., | **Ingglish** | **a** | cat → **kat** |
-    const inlineMatch = /\|\s*([a-zA-Z]{3,})\s*→\s*\*\*([a-zA-Z]+)\*\*\s*\|/.exec(line);
+    const inlineMatch = /\|\s*([a-z]{3,})\s*→\s*\*\*([a-z]+)\*\*\s*\|/i.exec(line);
     if (inlineMatch) {
       const english = inlineMatch[1]!.toLowerCase();
       const ingglish = inlineMatch[2]!.toLowerCase();
@@ -239,7 +237,7 @@ function extractExamples(content: string, filename: string): Example[] {
     // Also handles comma-separated: | **Ingglish** | **a** | about (about), sohfa (sofa) |
     // The word before parens is Ingglish, the word in parens is English
     if (line.includes('**Ingglish**')) {
-      for (const parenMatch of line.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
+      for (const parenMatch of line.matchAll(/([a-z]{3,})\s*\(([a-z]+)\)/gi)) {
         const ingglish = parenMatch[1]!.toLowerCase();
         const english = parenMatch[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && !SKIP_WORDS.has(ingglish)) {
@@ -250,7 +248,7 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 7: Collision table — | english, english | ingglish (description) | freq |
     // e.g., | right, write, rite | rait (soak flax) | 204,428 → rare |
-    const collisionTableMatch = /^\|\s*([a-zA-Z, ]+?)\s*\|\s*([a-zA-Z]+)\s*\(/.exec(line);
+    const collisionTableMatch = /^\|\s*([a-z]+(?:[, ]+[a-z]+)*)\s*\|\s*([a-z]+)\s*\(/i.exec(line);
     if (collisionTableMatch) {
       const englishWords = collisionTableMatch[1]!.split(',').map((w) => w.trim().toLowerCase());
       const ingglish = collisionTableMatch[2]!.toLowerCase();
@@ -268,7 +266,7 @@ function extractExamples(content: string, filename: string): Example[] {
     // e.g., | aer, air, ayre, eir, ere, err, eyre, heir, ire | air |
     // Matches rows with comma-separated words and a single Ingglish result
     const homophoneTableMatch =
-      /^\|\s*([a-zA-Z]+(?:,\s*[a-zA-Z]+)+)(?:\s*\(\d+\))?\s*\|\s*([a-zA-Z]+)\s*\|$/.exec(line);
+      /^\|\s*([a-z]+(?:,\s*[a-z]+)+)(?:\s*\(\d+\))?\s*\|\s*([a-z]+)\s*\|$/i.exec(line);
     if (homophoneTableMatch) {
       const englishWords = homophoneTableMatch[1]!.split(',').map((w) => w.trim().toLowerCase());
       const ingglish = homophoneTableMatch[2]!.toLowerCase();
@@ -284,7 +282,7 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 9: Notable collision — **word → word**: description
     // e.g., **white → wait**: adjective → verb.
-    const notableCollisionMatch = /^\*\*([a-zA-Z]+)\s*→\s*([a-zA-Z]+)\*\*:/.exec(line);
+    const notableCollisionMatch = /^\*\*([a-z]+)\s*→\s*([a-z]+)\*\*:/i.exec(line);
     if (notableCollisionMatch) {
       const english = notableCollisionMatch[1]!.toLowerCase();
       const ingglish = notableCollisionMatch[2]!.toLowerCase();
@@ -332,7 +330,7 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
       const stripped = line.replace(/\*\*/g, '');
 
       // Match all "english (ingglish)" pairs
-      for (const m of stripped.matchAll(/([a-zA-Z]{3,})\s*\(([a-zA-Z]+)\)/g)) {
+      for (const m of stripped.matchAll(/([a-z]{3,})\s*\(([a-z]+)\)/gi)) {
         const english = m[1]!.toLowerCase();
         const ingglish = m[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && english !== ingglish) {

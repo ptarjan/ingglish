@@ -2,13 +2,13 @@
  * DOM restoration utilities.
  */
 
-import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../traversal';
 import {
   WORD_SPAN_CLASS,
   ATTR_ORIGINAL_WORD,
   ATTR_ORIGINAL_CONTENT,
   ATTR_ORIGINAL_PREFIX,
 } from '../constants';
+import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../traversal';
 
 /**
  * Restores original text content that was translated.

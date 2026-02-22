@@ -1,8 +1,6 @@
 // Content script for Ingglish extension
 // Delegates translation to the background service worker via message passing
 
-import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
-import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import {
   applyTranslationsMap,
   restoreDOM,
@@ -13,6 +11,8 @@ import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
 } from '@ingglish/dom';
+import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
+import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import type {
   RestoreMessage,
   RetranslateMessage,

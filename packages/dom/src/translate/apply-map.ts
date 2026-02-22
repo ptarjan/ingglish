@@ -3,15 +3,15 @@
  */
 
 import { detectCasePattern, applyCasePattern, normalizeApostrophes } from '@ingglish/normalize';
+import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import {
   requireBrowser,
   collectTextNodes,
   injectTooltipStyles,
   injectTooltipBehavior,
 } from '../traversal';
-import { ATTR_ORIGINAL_CONTENT } from '../constants';
-import { createTooltipFragmentFromMap } from './tooltip-fragment';
 import { processChunked } from './chunked';
+import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates (consistent with translator.ts)
 const DEFAULT_CHUNK_SIZE = 100;

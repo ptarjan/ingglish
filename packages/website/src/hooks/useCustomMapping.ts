@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { trackExperimentCustomize } from '../analytics';
 import {
   registerFormat,
   createCustomConverter,
@@ -7,6 +6,7 @@ import {
   R_COLORED_FORWARD,
 } from '@ingglish/phonemes';
 import type { CustomMappingConfig } from '@ingglish/phonemes';
+import { trackExperimentCustomize } from '../analytics';
 
 /** Default phoneme map including AH0 */
 const DEFAULT_PHONEME_MAP: Record<string, string> = {

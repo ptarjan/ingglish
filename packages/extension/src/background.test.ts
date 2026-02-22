@@ -14,8 +14,10 @@ vi.mock('ingglish', () => ({
 }));
 
 // Suppress console.error and console.log during tests
-vi.spyOn(console, 'error').mockImplementation(() => undefined);
-vi.spyOn(console, 'log').mockImplementation(() => undefined);
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
+vi.spyOn(console, 'error').mockImplementation(() => {});
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
+vi.spyOn(console, 'log').mockImplementation(() => {});
 
 // Type definitions for chrome API mock
 type QueryCallback = (tabs: { id?: number }[]) => void;
@@ -47,7 +49,7 @@ const mockChrome = {
     request: vi.fn().mockResolvedValue(true),
   },
   action: {
-    setIcon: vi.fn().mockResolvedValue(undefined),
+    setIcon: vi.fn().mockResolvedValue(),
   },
   scripting: {
     executeScript: vi.fn(),
@@ -56,11 +58,11 @@ const mockChrome = {
   storage: {
     sync: {
       get: vi.fn().mockResolvedValue({ outputFormat: 'ingglish' }),
-      set: vi.fn().mockResolvedValue(undefined),
+      set: vi.fn().mockResolvedValue(),
     },
     local: {
       get: vi.fn().mockResolvedValue({}),
-      set: vi.fn().mockResolvedValue(undefined),
+      set: vi.fn().mockResolvedValue(),
     },
   },
   commands: {
@@ -87,7 +89,7 @@ describe('background script', () => {
     vi.resetModules();
     vi.clearAllMocks();
     mockChrome.runtime.lastError = null;
-    mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
+    mockChrome.scripting.insertCSS.mockResolvedValue();
     mockChrome.scripting.executeScript.mockResolvedValue([]);
 
     // Capture the handlers when the module loads
@@ -549,7 +551,7 @@ describe('background script', () => {
         callback([{ id: tabId }]);
       });
       mockChrome.scripting.executeScript.mockResolvedValue([]);
-      mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
+      mockChrome.scripting.insertCSS.mockResolvedValue();
 
       // Trigger keyboard shortcut
       commandHandler('toggle-translation');
@@ -580,7 +582,7 @@ describe('background script', () => {
         callback([{ id: tabId }]);
       });
       mockChrome.scripting.executeScript.mockResolvedValue([]);
-      mockChrome.scripting.insertCSS.mockResolvedValue(undefined);
+      mockChrome.scripting.insertCSS.mockResolvedValue();
 
       // First enable translation via keyboard shortcut
       commandHandler('toggle-translation');

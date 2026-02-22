@@ -35,7 +35,7 @@ export function renderDynamicExamples(
   const segments = examples.split(', ');
   return segments.map((segment, si) => {
     // Extract the parenthetical translation and the English word before it
-    const match = /^(.+?)\s*\(([^)]+)\)$/.exec(segment);
+    const match = /^([^(\s]+(?:\s+[^(\s]+)*?)\s*\(([^)]+)\)$/.exec(segment);
     if (match === null) {
       // No parenthetical — render with bold markers only
       return (

@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { ingglishToArpabet } from '@ingglish/phonemes';
 import { ipaToArpabetClean } from '@ingglish/ipa';
+import { ingglishToArpabet } from '@ingglish/phonemes';
+import { isLikelyIngglish } from '../detect/language';
+import { SAMPLE_TEXT } from '../test-setup';
 import { translateWord, translateSync } from './forward';
 import {
   reverseTranslateWord,
@@ -9,8 +11,6 @@ import {
   reverseTranslateSyncWithMapping,
   reverseTranslateIPAWord,
 } from './reverse';
-import { isLikelyIngglish } from '../detect/language';
-import { SAMPLE_TEXT } from '../test-setup';
 
 describe('reverse-translator', () => {
   describe('ingglishToArpabet', () => {
@@ -143,7 +143,7 @@ describe('reverse-translator', () => {
 
     it('sample text should round-trip exactly', () => {
       // Extract words
-      const words = SAMPLE_TEXT.match(/[a-zA-Z]+/g) ?? [];
+      const words = SAMPLE_TEXT.match(/[a-z]+/gi) ?? [];
       const failures: string[] = [];
 
       for (const word of words) {

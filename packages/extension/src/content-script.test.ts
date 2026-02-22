@@ -5,8 +5,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Suppress console during tests
-vi.spyOn(console, 'error').mockImplementation(() => undefined);
-vi.spyOn(console, 'log').mockImplementation(() => undefined);
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
+vi.spyOn(console, 'error').mockImplementation(() => {});
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
+vi.spyOn(console, 'log').mockImplementation(() => {});
 
 // Mock chrome API
 const mockChrome = {

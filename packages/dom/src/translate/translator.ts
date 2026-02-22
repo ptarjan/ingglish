@@ -3,8 +3,8 @@
  */
 
 import { translate, translateSync } from 'ingglish';
-import type { DOMTranslatorOptions } from '../types';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import {
   requireBrowser,
   DEFAULT_SKIP_TAGS,
@@ -15,9 +15,9 @@ import {
   injectTooltipStyles,
   injectTooltipBehavior,
 } from '../traversal';
-import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
-import { createTooltipFragment } from './tooltip-fragment';
+import type { DOMTranslatorOptions } from '../types';
 import { processChunked } from './chunked';
+import { createTooltipFragment } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
 const DEFAULT_CHUNK_SIZE = 100;

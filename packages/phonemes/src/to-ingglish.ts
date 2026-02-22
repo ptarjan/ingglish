@@ -7,8 +7,8 @@
  */
 
 import { stripStress } from './arpabet';
-import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 import { registerFormat, getFormatHandler } from './format-registry';
+import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 import type { OutputFormat } from './types';
 
 /**

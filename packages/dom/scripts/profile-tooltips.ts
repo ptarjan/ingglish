@@ -16,8 +16,8 @@ async function main() {
 
   const { translate } = await import('ingglish');
   const { applyTranslationsMap } = await import('../src/translate/apply-map');
-  const { collectTextNodes } = await import('../src/utils/text-nodes');
-  const { extractWordsFromNodes } = await import('../src/utils/extract');
+  const { collectTextNodes } = await import('../src/traversal/text-nodes');
+  const { extractWordsFromNodes } = await import('../src/traversal/extract');
 
   console.log('Loading dictionary...');
   await translate('hello');

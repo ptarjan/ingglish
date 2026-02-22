@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo } from 'react';
 import { translateSync } from 'ingglish';
+import { useState, useCallback, useMemo } from 'react';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
 import {
   vowelGroups,

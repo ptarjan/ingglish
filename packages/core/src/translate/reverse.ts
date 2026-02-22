@@ -6,6 +6,14 @@
  * words based on frequency data.
  */
 
+import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
+import { ipaToArpabetClean } from '@ingglish/ipa';
+import {
+  detectCasePattern,
+  applyCasePattern,
+  normalizeApostrophes,
+  extractPreservedPatterns,
+} from '@ingglish/normalize';
 import {
   ingglishToArpabet,
   expandArpabetAlternatives,
@@ -13,20 +21,12 @@ import {
   getFormatHandler,
 } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { ipaToArpabetClean } from '@ingglish/ipa';
-import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
-import {
-  detectCasePattern,
-  applyCasePattern,
-  normalizeApostrophes,
-  extractPreservedPatterns,
-} from '@ingglish/normalize';
 import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
 
 // Pre-compiled regex patterns
-const HAS_LETTER = /[a-zA-Z]/;
+const HAS_LETTER = /[a-z]/i;
 
 // Alternative phoneme interpretation must be this many times more common
 // than the primary to override it (prevents "kat" → "cut" while allowing "haloh" → "hello")

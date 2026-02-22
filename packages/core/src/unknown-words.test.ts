@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import {
   translateWithStemming,
   translateUnknown,
@@ -7,7 +8,6 @@ import {
   translateAsBritish,
 } from '@ingglish/fallback';
 import { wordToPhonetic, wordToArpabet } from '@ingglish/g2p';
-import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
 
 describe('unknown-words', () => {
@@ -1111,7 +1111,7 @@ describe('unknown-words', () => {
       expect(typeof result).toBe('string');
       // IPA output should contain IPA characters, not Latin alphabet
       // The word "blorg" should produce something like /blɔɹɡ/
-      expect(result).toMatch(/[bɡʃʒθðŋɹɑæʌɔɛɪʊəaɪeɪoʊaʊɔɪuiˈˌ]/);
+      expect(result).toMatch(/[bɡʃʒθðŋɹɑæʌɔɛɪʊəaeoiuˈˌ]/);
     });
 
     it('translateAsAcronym should output IPA when format is ipa', () => {
@@ -1127,7 +1127,7 @@ describe('unknown-words', () => {
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
       // Should not be plain ASCII letters like ingglish output
-      expect(result).not.toMatch(/^[a-zA-Z]+$/);
+      expect(result).not.toMatch(/^[a-z]+$/i);
     });
 
     it('translateUnknown should output IPA for acronyms', () => {
@@ -1135,7 +1135,7 @@ describe('unknown-words', () => {
       expect(result).toBeDefined();
       // API = /eɪ piː aɪ/ (ay-pee-eye)
       // Should contain IPA characters
-      expect(result).toMatch(/[eɪpiːaɪ]/);
+      expect(result).toMatch(/[eɪpiːa]/);
     });
 
     it('translateWithStemming should output IPA when format is ipa', () => {

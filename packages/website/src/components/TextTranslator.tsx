@@ -1,4 +1,3 @@
-import { useState, useCallback, useDeferredValue, useMemo, useEffect, useRef } from 'react';
 import {
   translateSync,
   translateSyncWithMapping,
@@ -6,22 +5,23 @@ import {
   reverseTranslateSyncWithMapping,
 } from 'ingglish';
 import type { TranslatedToken } from 'ingglish';
-import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
+import { useState, useCallback, useDeferredValue, useMemo, useEffect, useRef } from 'react';
 import { getFormatLabel } from '@ingglish/phonemes';
-import { MappedWordDisplay } from './MappedWordDisplay';
+import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
+import { trackTextTranslate, trackShare, trackSpeak } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
+import { pickRandomPassage } from '../data/sample-text';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
+import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
-import { pickRandomPassage } from '../data/sample-text';
 
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
 function isAllCaps(text: string): boolean {
-  const letters = text.replace(/[^a-zA-Z]/g, '');
+  const letters = text.replace(/[^a-z]/gi, '');
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
-import { trackTextTranslate, trackShare, trackSpeak } from '../analytics';
 
 function SpeakerIcon() {
   return (
@@ -170,7 +170,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   // Diff map: word index → standard Ingglish spelling (for non-ingglish formats)
   const diffMap = useMemo(() => {
     if (forwardTokens === null) {
-      return undefined;
+      return;
     }
     return buildDiffMap(forwardTokens, deferredEnglish, format);
   }, [format, forwardTokens, deferredEnglish]);

@@ -29,7 +29,7 @@ export interface SentenceScore {
   score: number;
 }
 
-const EDGE_PUNCTUATION = /^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g;
+const EDGE_PUNCTUATION = /^[^a-z0-9]+|[^a-z0-9]+$/gi;
 
 function stripPunctuation(word: string): string {
   return word.replace(EDGE_PUNCTUATION, '');

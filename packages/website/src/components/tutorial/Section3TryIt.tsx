@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { translateSyncWithMapping } from 'ingglish';
-import { MappedWordDisplay } from '../MappedWordDisplay';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { MappedWordDisplay } from '../MappedWordDisplay';
+
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
 function isAllCaps(text: string): boolean {
-  const letters = text.replace(/[^a-zA-Z]/g, '');
+  const letters = text.replace(/[^a-z]/gi, '');
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
 

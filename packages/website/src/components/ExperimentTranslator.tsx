@@ -1,8 +1,8 @@
-import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
 import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
+import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
+import { SAMPLE_PASSAGES, pickRandomPassage } from '../data/sample-text';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
-import { SAMPLE_PASSAGES, pickRandomPassage } from '../data/sample-text';
 
 const STORAGE_KEY = 'ingglish-experiment-text';
 
@@ -36,8 +36,8 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   }, [deferredText, version]);
 
   const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = parseInt(e.target.value, 10);
-    if (!isNaN(index) && SAMPLE_PASSAGES[index] !== undefined) {
+    const index = Number.parseInt(e.target.value, 10);
+    if (!Number.isNaN(index) && SAMPLE_PASSAGES[index] !== undefined) {
       setText(SAMPLE_PASSAGES[index].text);
     }
   }, []);

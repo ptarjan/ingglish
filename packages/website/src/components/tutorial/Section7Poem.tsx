@@ -1,6 +1,6 @@
 import { startTransition, useEffect, useRef, useState } from 'react';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { poemWords } from '../../data/tutorial-data';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 export function Section7Poem() {
   const { ref, visible } = useScrollReveal<HTMLElement>(0.3);

@@ -10,9 +10,11 @@
  * 6. Rule-based grapheme-to-phoneme
  */
 
+import { getCustomPronunciation } from '@ingglish/dictionary';
+import { wordToPhonetic, wordToArpabetTraced } from '@ingglish/g2p';
+import type { G2PTrace } from '@ingglish/g2p';
 import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { getCustomPronunciation } from '@ingglish/dictionary';
 import {
   isInitialism,
   parseInitialismWithSuffix,
@@ -22,11 +24,8 @@ import {
   INITIALISM_EXPANSIONS,
 } from './acronyms';
 import { translateAsBritish, matchBritish } from './british';
-import { translateAsCompound } from './compounds';
-import { dpDecompose } from './compounds';
+import { translateAsCompound, dpDecompose } from './compounds';
 import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
-import { wordToPhonetic, wordToArpabetTraced } from '@ingglish/g2p';
-import type { G2PTrace } from '@ingglish/g2p';
 
 export type FallbackStrategy =
   | 'custom'
@@ -130,7 +129,7 @@ export function translateUnknown(word: string, format: OutputFormat = 'ingglish'
  * Returns null for obvious non-words (3+ repeated chars, no vowels).
  */
 export function diagnoseUnknown(word: string): WordDiagnosis | null {
-  if (/(.)\1\1/i.test(word) || !/[aeiouy]/i.test(word)) {
+  if (/(.)\1\1/.test(word) || !/[aeiouy]/i.test(word)) {
     return null;
   }
   const { strategy } = translateUnknownCore(word, 'ingglish');
