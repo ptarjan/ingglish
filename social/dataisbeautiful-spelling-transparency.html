@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 60px;
+    width: 1200px;
+  }
+  .container {
+    background: #16213e;
+    border-radius: 16px;
+    padding: 50px 60px;
+    border: 1px solid #2a3a5e;
+  }
+  h1 {
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 6px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 18px;
+    color: #7eb8da;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+  .chart {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .bar-label {
+    width: 120px;
+    text-align: right;
+    font-size: 18px;
+    color: #ccc;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 36px;
+    background: #1a2744;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    transition: width 0.3s;
+  }
+  .bar-pct-outside {
+    font-size: 16px;
+    font-weight: 700;
+    margin-left: 10px;
+    min-width: 45px;
+  }
+  .bar-english .bar-fill {
+    background: linear-gradient(90deg, #e06060, #c04040);
+  }
+  .bar-english .bar-label {
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .bar-english .bar-pct-outside {
+    color: #e06060;
+    font-weight: 700;
+  }
+  .bar-other .bar-fill {
+    background: linear-gradient(90deg, #4a90d9, #3a70b0);
+  }
+  .bar-other .bar-pct-outside {
+    color: #7eb8da;
+  }
+  .bar-transparent .bar-fill {
+    background: linear-gradient(90deg, #50b080, #3a9060);
+  }
+  .bar-transparent .bar-pct-outside {
+    color: #50b080;
+  }
+  .section-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8899aa;
+    margin-bottom: 12px;
+  }
+  .legend {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #8899aa;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .dot-transparent { background: #50b080; }
+  .dot-moderate { background: #4a90d9; }
+  .dot-opaque { background: #e06060; }
+  .annotation {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid #2a3a5e;
+    display: flex;
+    gap: 40px;
+  }
+  .annotation-item {
+    flex: 1;
+  }
+  .annotation-item .value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #f0c040;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .annotation-item .desc {
+    font-size: 14px;
+    color: #8899aa;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .source {
+    font-size: 12px;
+    color: #556677;
+    margin-top: 20px;
+  }
+  .site-link-wrapper {
+    margin-top: 24px;
+    text-align: center;
+  }
+  .site-link {
+    padding: 16px 24px;
+    background: #1a2744;
+    border: 1px solid #3a5a8e;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-link .url {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f0c040;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .site-link .tagline {
+    font-size: 15px;
+    color: #8899aa;
+  }
+  .callout {
+    font-size: 14px;
+    color: #aab;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>How "honestly" does each language spell its words?</h1>
+  <div class="subtitle">% of words where spelling matches pronunciation</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-transparent"></div> Transparent (>80%)</div>
+    <div class="legend-item"><div class="legend-dot dot-moderate"></div> Moderate (40-80%)</div>
+    <div class="legend-item"><div class="legend-dot dot-opaque"></div> Opaque (<40%)</div>
+  </div>
+
+  <div class="chart">
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Finnish</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 96%"></div></div>
+      <div class="bar-pct-outside">96%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Italian</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 92%"></div></div>
+      <div class="bar-pct-outside">92%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Spanish</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 90%"></div></div>
+      <div class="bar-pct-outside">90%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">German</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 84%"></div></div>
+      <div class="bar-pct-outside">84%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Turkish</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 82%"></div></div>
+      <div class="bar-pct-outside">82%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Portuguese</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 72%"></div></div>
+      <div class="bar-pct-outside">72%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Dutch</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 68%"></div></div>
+      <div class="bar-pct-outside">68%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Swedish</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 65%"></div></div>
+      <div class="bar-pct-outside">65%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Danish</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 52%"></div></div>
+      <div class="bar-pct-outside">52%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">French</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 45%"></div></div>
+      <div class="bar-pct-outside">45%</div>
+    </div>
+    <div class="bar-row bar-english">
+      <div class="bar-label">English</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 8%"></div></div>
+      <div class="bar-pct-outside">8%</div>
+    </div>
+  </div>
+
+  <div class="callout">English is the only major language where over 90% of words are spelled differently from how they sound.</div>
+
+  <div class="annotation">
+    <div class="annotation-item">
+      <div class="value">134k</div>
+      <div class="desc">English words analyzed from the<br>CMU Pronouncing Dictionary</div>
+    </div>
+    <div class="annotation-item">
+      <div class="value">92%</div>
+      <div class="desc">of English words change when<br>respelled to match pronunciation</div>
+    </div>
+    <div class="annotation-item">
+      <div class="value">12x</div>
+      <div class="desc">gap between English and the<br>average European language</div>
+    </div>
+  </div>
+  <div class="site-link-wrapper"><div class="site-link">
+    <span class="url">ingglish.com</span>
+    <span class="tagline">See how any English word is actually pronounced</span>
+  </div></div>
+  <div class="source">English data: CMU Pronouncing Dictionary (134,000+ words) &bull; Other languages: orthographic depth research (Seymour et al. 2003, Borgwaldt et al. 2005)</div>
+</div>
+</body>
+</html>
