@@ -58,30 +58,17 @@ No central authority can mandate spelling changes for English. Unlike French ([A
 
 ### 1. The Dialect Problem
 
-Every phonemic system must choose whose pronunciation to encode. English has 14–15 vowel phonemes in General American ([Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ)), with additional distinctions in other dialects.
+Every phonemic system must choose whose pronunciation to encode. The Shavian alphabet faced dialect fragmentation: speakers of different dialects would spell words differently to match their accents.
 
-- "dance" - /æ/ in American, /ɑː/ in British
-- "herbs" - silent H in American, pronounced in British
-- "Mary/marry/merry" - identical in some dialects, distinct in others
-
-Among its many problems, the Shavian alphabet faced dialect fragmentation: speakers of different dialects would need to spell words differently to match their accents.
-
-Ingglish picks a winner: General American English, based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's the accent most people hear in movies and online. Non-American speakers will find some mismatches, but the sounds will be familiar.
+Ingglish uses General American English via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for the full treatment of how this affects non-American speakers.
 
 ### 2. Breaking Etymology
 
-Critics argue that spelling preserves word relationships:
-- "sign" / "signature" - the silent 'g' shows the connection
-- "nation" / "national" - consistent spelling despite vowel changes
+Critics argue that spelling preserves word relationships: "sign"/"signature" share a visible root even though the 'g' is silent in "sign." [Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) argued that English spelling's morphophonemic properties actually *aid* reading.
 
-[Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) went further, arguing that English spelling's morphophonemic properties actually *aid* reading comprehension by making related words visually similar.
+That said, some "etymological" spellings are just wrong ([Crystal 2012](https://books.google.com/books?id=jkYmhKwRALkC), *Spell It Out*): "debt" got its 'b' from Latin "debitum" but came through French without it; "island" got an 's' from a false Latin "insula" connection.
 
-That said, some well-known "etymological" spellings are actually wrong ([Crystal 2012](https://books.google.com/books?id=jkYmhKwRALkC), *Spell It Out*):
-- "debt" - the 'b' was added based on Latin "debitum," but the word came through French without it
-- "island" - the 's' was added incorrectly (Germanic origin, not Latin "insula")
-- "ache" - respelled from "ake" based on a false Greek connection
-
-Ingglish prioritizes pronunciation over etymology. The trade-off: you lose morphological connections ("sign"→"sain" no longer looks like "signature"→"signuchur"). But for learners who can't yet pronounce the words, those connections aren't useful anyway.
+Ingglish prioritizes pronunciation over etymology. You lose some morphological connections ("sign"→"sain"), but learners who can't pronounce the words can't use those connections anyway. See [Morphological Preservation](morphological-analysis.md) for the full analysis of what's preserved and what's lost.
 
 ### 3. The Transition Problem
 

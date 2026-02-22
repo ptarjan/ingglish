@@ -450,16 +450,6 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Performance
+All paths are linear (no quadratic or exponential complexity). Dictionary data is loaded on-demand via dynamic imports.
 
-| Operation | Complexity | Notes |
-|-----------|------------|-------|
-| Dictionary loading | O(n) | ~1MB gzipped, loaded once and cached |
-| Word lookup | O(1) | Hash map lookup |
-| Translation | O(n) | n = word count |
-| Reverse translation | O(1) | Phoneme key lookup after initial map build |
-| DOM traversal | O(n) | TreeWalker, n = nodes |
-
-Bundle splitting keeps initial load fast: `@ingglish/dictionary` data (CMU dictionary and word frequencies) is loaded on-demand via dynamic imports.
-
-See [Performance Guide](performance.md) for profiling scripts and optimization guidelines.
+See [Performance](performance.md) for complexity tables, profiling scripts, and optimization guidelines.

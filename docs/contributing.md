@@ -66,22 +66,7 @@ npx turbo lint
 
 ## Project Structure
 
-```
-packages/
-├── normalize/      # Text cleanup, case handling, tokenization (0 deps)
-├── phonemes/       # Phoneme data + conversion (0 deps)
-├── dictionary/     # CMU dict, lookup, frequency
-├── g2p/            # Rule-based grapheme-to-phoneme (→ phonemes)
-├── fallback/       # Unknown word strategies (→ phonemes + dictionary + g2p)
-├── ipa/            # IPA ↔ ARPAbet conversion (→ phonemes)
-├── shavian/        # Shavian alphabet conversion (→ phonemes + dictionary)
-├── deseret/        # Deseret alphabet conversion (→ phonemes + dictionary)
-├── core/           # Translation API (→ all above)
-├── dom/            # DOM translation utilities (browser only)
-├── website/        # React web app (Vite + TypeScript)
-├── extension/      # Chrome extension (Manifest V3)
-└── cors-proxy/     # Cloudflare Worker (CORS proxy)
-```
+See [Architecture](architecture.md) for the full package dependency graph and module breakdown.
 
 ## Making Changes
 

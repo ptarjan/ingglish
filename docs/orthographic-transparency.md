@@ -39,43 +39,7 @@ Given a phoneme, how many possible spellings does it have?
 
 ## Ingglish Grapheme Inventory
 
-Ingglish uses 39 graphemes built from the 26 standard Latin letters. No diacritics, no new symbols.
-
-### Vowels (15 graphemes)
-
-| Grapheme | IPA | ARPAbet | Example |
-|----------|-----|---------|---------|
-| a | /&aelig;/ | AE | c**a**t |
-| e | /&epsilon;/ | EH | b**e**d |
-| i | /&iota;/ | IH | s**i**t |
-| o | /&alpha;/ | AA | h**o**t |
-| uh | /&Lambda;/ | AH | c**u**t |
-| ee | /i&colon;/ | IY | s**ee** |
-| u | /&upsilon;/ | UH | b**oo**k |
-| oo | /u&colon;/ | UW | f**oo**d |
-| ai | /a&iota;/ | AY | b**i**te |
-| ay | /e&iota;/ | EY | d**ay** |
-| oh | /o&upsilon;/ | OW | g**o** |
-| aw | /&ograve;/ | AO | l**aw** |
-| ou | /a&upsilon;/ | AW | h**ow** |
-| oi | /&ograve;&iota;/ | OY | b**oy** |
-| er | /&hstrok;/ | ER | b**ir**d |
-
-### Consonants (24 graphemes)
-
-| Grapheme | IPA | Example |
-|----------|-----|---------|
-| b, d, f, g, h, j, k, l, m, n, p, r, s, t, v, w, y, z | (as expected) | |
-| th | /&theta;/ | **th**in |
-| dh | /&eth;/ | **th**is |
-| sh | /&Integral;/ | **sh**ip |
-| zh | /&ZeroWidthSpace;/ | vi**si**on |
-| ch | /t&Integral;/ | **ch**ip |
-| ng | /&eng;/ | si**ng** |
-
-### Unused Letters
-
-C, Q, and X are retired: C becomes K or S, Q becomes KW, X becomes KS or Z.
+Ingglish uses 39 graphemes (15 vowels + 24 consonants) built from the 26 standard Latin letters. No diacritics, no new symbols. C, Q, and X are retired. See [Phoneme Mapping](phoneme-mapping.md) for the full table.
 
 ## The Three Feedback Ambiguities
 

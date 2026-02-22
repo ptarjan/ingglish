@@ -357,10 +357,10 @@ Several changes were specifically made to upgrade ratings:
 The /ɔ/ vowel went aw → o → aw. We weren't afraid to revert when a change didn't work out. The goal is the best final system, not sticking with early decisions.
 
 ### 6. Identical Word Count Can Mislead
-A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The `ow` and `eu` proposals both look good by raw count but failed in practice because English readers' existing intuitions produced wrong pronunciations for unfamiliar combinations (`bownz` reads as "bowns", `meun` reads as "mew-n"). The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?"
+A spelling that matches more English words is harmful if English readers pronounce those new combinations wrong. The correct test isn't "does this string match?" but "does an English reader naturally say this correctly?" See [Design Decisions](design-decisions.md#diphthong-decisions) for examples.
 
 ### 7. Stress-Conditioned Splits Can Unlock Big Wins
-The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'uh'. This wasn't possible with a simple mapping table — it required logic in the conversion function. The payoff was a 67.6× frequency-weighted improvement — the single largest gain of any change, driven by "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M). When a single phoneme symbol covers two distinct sounds (like ARPAbet AH covering both /ə/ and /ʌ/), splitting by stress is worth considering.
+The schwa change split AH into two spellings based on stress: AH0 (unstressed) → 'a', AH1/AH2 (stressed) → 'uh'. This required logic in the conversion function, not just a mapping table. When a single phoneme symbol covers two sounds that English speakers perceive as distinct (like /ə/ and /ʌ/), splitting by stress is worth considering. See [Identical Words Analysis](identical-words-analysis.md#stress-conditioned-alternatives) for other candidates.
 
 ## Changes Not Made (Considered and Rejected)
 

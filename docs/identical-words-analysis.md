@@ -74,7 +74,7 @@ Best frequency trade: gains boy (543 /M), enjoy (85 /M), joy (29 /M), royal (24 
 
 #### /uː/: "oo" → "eu" (+19 /M)
 
-Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M) with negligible losses. At only +19 /M, this change would affect 0.002% of real text — barely measurable. And `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n", `seun` (soon) reads as "syoon", `teu` (too) reads as "tyoo". The mapping actively misleads English readers for a negligible frequency gain.
+Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M). At only +19 /M, this would affect 0.002% of real text. Also fails the perceptual ambiguity test — see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 #### /aɪ/: "ai" → "ei" (-1 /M)
 
@@ -86,7 +86,7 @@ Gains fault (107 /M), paul (97 /M), launch (20 /M), trauma (17 /M), vault (12 /M
 
 #### /oʊ/: "oh" → "ow" (-1,330 /M)
 
-Gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M), window (88 /M) — good words. But the single word "oh" at 3,374 /M outweighs them all. Plus `ow` is **ambiguous in English**: it represents both /oʊ/ (snow, throw) and /aʊ/ (cow, town). New combinations like `bownz` (bones) read as "bowns", `howm` (home) reads like it rhymes with "cow". Both frequency (-1,330 /M) and perceptual ambiguity argue against this change.
+Gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M), window (88 /M) — good words. But the single word "oh" at 3,374 /M outweighs them all. Also fails the perceptual ambiguity test: `ow` represents both /oʊ/ (snow) and /aʊ/ (cow) in English — see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 ## Alternative Improvements Not Recommended
 
@@ -213,18 +213,12 @@ npx vite-node scripts/analysis/exhaustive-search.ts
 
 Raw identical word count has two blind spots:
 
-1. **All words count equally.** Gaining 200 rare surnames and losing "say", "day", "way" looks like +197 on paper but is terrible for real text. Frequency weighting fixes this: it measures impact per million words of actual language usage.
+1. **All words count equally.** Gaining 200 rare surnames and losing "say", "day", "way" looks like +197 on paper but is terrible for real text. Frequency weighting measures impact per million words of actual usage.
 
-2. **It doesn't measure readability.** A proposed change must not create perceptual ambiguity — the spelling must read correctly to English speakers. The `ow` and `eu` changes both pass the collision check but fail the readability test: English readers' existing intuitions produce wrong pronunciations (`bownz` → "bowns", `meun` → "mew-n").
-
-The current mappings (`oh` for /oʊ/, `oo` for /uː/) work because they have **no competing English interpretation** to mislead readers. `oh` is unusual but unambiguous. `oo` for /uː/ matches existing English conventions (too, food, moon).
-
-Stress-conditioned changes may be an exception to this caution: 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English already spells these sounds, so the "perceptual ambiguity" test is more likely to pass.
+2. **It doesn't measure readability.** A change must not create perceptual ambiguity — the spelling must read correctly to English speakers. Several changes above pass the collision check but fail this test (see [Design Decisions](design-decisions.md#diphthong-decisions) for the readability analysis).
 
 ## Conclusion
 
-The current base phoneme mappings are well-optimized. Frequency-weighted analysis shows that every proposed collision-free change either has negligible real-text impact (/aɪ/→ei: -1 /M), loses more common words than it gains (/ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M), or introduces perceptual ambiguity for English readers (/uː/→eu, /oʊ/→ow).
+The current base phoneme mappings are well-optimized. Every proposed collision-free change either has negligible real-text impact, loses more common words than it gains, or introduces perceptual ambiguity.
 
-Stress-conditioned splits are the most promising avenue for improvement. The AH0→'a' split produced a 67.6× frequency-weighted improvement — the single largest gain of any change. The exhaustive search found three candidates with significant real-text impact: IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), and OW0→'o' (+246 /M). These follow the same linguistic principle: when CMU dictionary uses one phoneme label for sounds that English speakers perceive as different in stressed vs. unstressed positions, splitting by stress can unlock large gains without creating ambiguity.
-
-10,150 identical words (8.05%) is the current baseline. With the top three stress-conditioned improvements (+3,858 /M combined), the identical word count would increase while maintaining Ingglish's design constraints (unambiguous readability, ASCII-only, no new characters).
+Stress-conditioned splits are the most promising avenue. The top three candidates — IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M) — follow the same principle that made the AH0→'a' schwa split successful: when stressed and unstressed variants of a vowel sound different to English speakers, distinct spellings can unlock gains without ambiguity.

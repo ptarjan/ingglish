@@ -85,7 +85,7 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 
 **Schwa Representation**
 
-The [schwa](https://en.wikipedia.org/wiki/Schwa) (ə) is the most common vowel in unstressed syllables. We map it to **"a"**, which preserves the spelling of the most common English words: "a", "about", "again", "along", "away", "around" are all identical in Ingglish. This single change produced a 67.6× frequency-weighted improvement — the largest gain from any spelling decision. The stressed /ʌ/ vowel ("but", "cup") uses "uh". See [Spelling Evolution](spelling-evolution.md#about-sofa-u-a) for the full rationale.
+We map unstressed schwa (ə) to **"a"** and stressed /ʌ/ to **"uh"**, which preserves the spelling of "a", "about", "again", "along", "away", "around". See [Phoneme Mapping](phoneme-mapping.md#schwa-and-strut) for details and [Spelling Evolution](spelling-evolution.md#about-sofa-u-a) for the full rationale.
 
 ### Diphthong Decisions
 
@@ -113,32 +113,13 @@ Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), [diphthong](htt
 
 ### R-Colored Vowels
 
-When certain vowels are followed by R, they combine into special [r-colored sounds](https://en.wikipedia.org/wiki/R-colored_vowel). Without special handling, we'd get collisions:
+When certain vowels are followed by R, they combine into [r-colored sounds](https://en.wikipedia.org/wiki/R-colored_vowel). Without special handling, "star" (AA+R) would become "stor" (colliding with "store") and "beer" would become "bir" (colliding with "bird"). The R-rule gives each combination a dedicated spelling: ar, or, air, arr, eer, er. See [Phoneme Mapping](phoneme-mapping.md#r-colored-vowels) for the full table and collision analysis.
 
-| Combination | Spelling | Why |
-|-------------|----------|-----|
-| /æ/ + R | arr | Matches English "carrot", "barrel" |
-| /ɛ/ + R | air | Prevents "air" vs "her" collisions |
-| /ɪ/ + R | eer | "beer" → "beer", "beard" → "beerd" (avoids "bird") |
-| /ɑ/ + R | ar | "star" → "star" (identical!) |
-| /ɔ/ + R | or | "store" → "stor" |
-| /ɝ/ | er | "bird", "her", "turn" → "berd", "her", "tern" |
+## Dialect and Precedent
 
-## Dialect Choice
+Ingglish uses [General American English](https://en.wikipedia.org/wiki/General_American_English) via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for how this affects non-American speakers.
 
-Ingglish uses **[General American English](https://en.wikipedia.org/wiki/General_American_English)** based on the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). It's widely used in American media and internationally recognized ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC)), so it's a practical default.
-
-Non-American speakers will find some spellings don't match their pronunciation, but they'll recognize the sounds from American media.
-
-## Precedent in Other Languages
-
-Every Ingglish spelling has precedent in at least one major language:
-
-1. **Consonant digraphs** (sh, ch, zh, th, dh, ng): Standard approach worldwide
-2. **Vowel doubling** (ee, oo): Length pattern
-3. **Diphthong spellings** (ai, ay, ou, oi, oh): Follow existing patterns
-
-See [Orthography Comparison](orthography-comparison.md) for language-by-language comparisons.
+Every spelling has precedent in at least one major language — see [Orthography Comparison](orthography-comparison.md) for language-by-language detail.
 
 ## See Also
 
