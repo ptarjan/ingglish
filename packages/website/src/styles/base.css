@@ -4,10 +4,10 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
   padding: 0;
-  scrollbar-width: thin;
+  margin: 0;
   scrollbar-color: var(--color-border) transparent;
+  scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar {
@@ -43,6 +43,7 @@ html {
   --color-primary-hover: #4338ca;
   --color-success: #16a34a;
   --color-error: #dc2626;
+  --color-warning: #a16207;
   --color-tooltip-bg: #333333;
   --color-tooltip-text: #ffffff;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -62,16 +63,17 @@ html {
   --color-primary-hover: #a5b4fc;
   --color-success: #22c55e;
   --color-error: #ef4444;
+  --color-warning: #facc15;
   --color-tooltip-bg: #e0e0e0;
   --color-tooltip-text: #1a1a1a;
 }
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
   min-height: 100vh;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 a {
@@ -91,54 +93,54 @@ a:hover {
 }
 
 [data-orig]:hover::after {
-  content: attr(data-orig);
   position: absolute;
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-tooltip-bg);
-  color: var(--color-tooltip-text);
+  z-index: 100;
   padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.85em;
   font-family:
     system-ui,
     -apple-system,
     sans-serif;
+  font-size: 0.85em;
   line-height: 1.4;
+  color: var(--color-tooltip-text);
   white-space: nowrap;
-  z-index: 100;
   pointer-events: none;
+  content: attr(data-orig);
+  background: var(--color-tooltip-bg);
+  border-radius: 4px;
   opacity: 0;
+  transform: translateX(-50%);
   animation: tooltip-fade-in 0.15s ease-out forwards;
 }
 
 [data-orig]:hover::before {
-  content: '';
   position: absolute;
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
+  z-index: 100;
+  margin-bottom: -10px;
+  pointer-events: none;
+  content: '';
   border: 5px solid transparent;
   border-top-color: var(--color-tooltip-bg);
-  margin-bottom: -10px;
-  z-index: 100;
-  pointer-events: none;
   opacity: 0;
+  transform: translateX(-50%);
   animation: tooltip-fade-in 0.15s ease-out forwards;
 }
 
 [data-orig].tooltip-below:hover::after {
-  bottom: auto;
   top: calc(100% + 5px);
+  bottom: auto;
 }
 
 [data-orig].tooltip-below:hover::before {
-  bottom: auto;
   top: 100%;
+  bottom: auto;
+  margin-bottom: 0;
   border-top-color: transparent;
   border-bottom-color: var(--color-tooltip-bg);
-  margin-bottom: 0;
 }
 
 @keyframes tooltip-fade-in {

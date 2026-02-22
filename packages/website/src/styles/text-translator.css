@@ -26,19 +26,19 @@
   }
 
   .translator-grid .input-section:first-child {
-    border-radius: 0.5rem 0.5rem 0 0;
     border-bottom: none;
+    border-radius: 0.5rem 0.5rem 0 0;
   }
 
   .translator-grid .ingglish-section {
-    border-radius: 0 0 0.5rem 0.5rem;
     background: var(--color-surface-hover);
+    border-radius: 0 0 0.5rem 0.5rem;
   }
 
   .translator-grid .input-section .text-input {
+    background: transparent;
     border: none;
     border-radius: 0;
-    background: transparent;
   }
 
   .translator-grid .input-section .text-input:focus {
@@ -54,8 +54,8 @@
 
 .section-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .section-header h2 {
@@ -67,15 +67,15 @@
 }
 
 .format-cycle-btn {
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
   padding: 0.125rem 0.5rem;
-  cursor: pointer;
   font: inherit;
   color: inherit;
   text-transform: inherit;
   letter-spacing: inherit;
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
   transition:
     background-color 0.15s,
     border-color 0.15s;
@@ -87,28 +87,28 @@
 }
 
 .format-cycle-icon {
+  margin-left: 0.25em;
   font-size: 0.75em;
   opacity: 0.5;
-  margin-left: 0.25em;
 }
 
 .format-cycle-inline {
-  text-transform: none;
   font-weight: 600;
+  text-transform: none;
   letter-spacing: normal;
 }
 
 .text-input {
   min-height: 300px;
   padding: 1rem;
-  border-radius: 0.5rem;
+  font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.7;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
   color: var(--color-text);
   resize: vertical;
-  font-family: var(--font-sans);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
 }
 
 .text-input:focus {
@@ -119,10 +119,10 @@
 /* Word Correspondence */
 .word-correspondence {
   margin-top: 1rem;
+  overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  overflow: hidden;
 }
 
 .correspondence-header {
@@ -134,9 +134,9 @@
 .correspondence-label {
   font-size: 0.75rem;
   font-weight: 500;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
 }
 
 .correspondence-grid {
@@ -153,23 +153,23 @@
 }
 
 .word-display {
-  padding: 1rem;
-  background: var(--color-surface);
-  white-space: pre-wrap;
-  line-height: 1.8;
   min-height: 100px;
   max-height: 200px;
+  padding: 1rem;
   overflow-y: auto;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  background: var(--color-surface);
 }
 
 .word-display .placeholder {
-  color: var(--color-text-muted);
   font-style: italic;
+  color: var(--color-text-muted);
 }
 
 .word-token {
-  cursor: pointer;
   padding: 0.1em 0.15em;
+  cursor: pointer;
   border-radius: 0.2em;
   transition:
     background-color 0.15s,
@@ -177,21 +177,21 @@
 }
 
 .word-token:hover {
-  background: var(--color-primary);
   color: white;
+  background: var(--color-primary);
 }
 
 .word-token.highlighted {
-  background: var(--color-primary);
   color: white;
+  background: var(--color-primary);
 }
 
 /* TTS spoken word: underline so it's visible alongside hover highlight */
 .word-token.spoken {
-  background: var(--color-primary);
   color: white;
   text-decoration: underline;
   text-underline-offset: 0.15em;
+  background: var(--color-primary);
 }
 
 /* During TTS playback, disable transitions so highlighting feels instant */

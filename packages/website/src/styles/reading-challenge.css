@@ -10,34 +10,34 @@
 /* === Intro screen === */
 
 .challenge-intro {
-  text-align: center;
   padding: 2rem 0;
+  text-align: center;
 }
 
 .challenge-intro h2 {
-  font-size: 1.75rem;
   margin-bottom: 1rem;
+  font-size: 1.75rem;
 }
 
 .challenge-intro p {
-  color: var(--color-text-muted);
-  line-height: 1.7;
   margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
 }
 
 .challenge-rules {
+  padding: 1.25rem;
+  margin-bottom: 2rem;
   text-align: left;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  padding: 1.25rem;
-  margin-bottom: 2rem;
 }
 
 .challenge-rules li {
-  color: var(--color-text-muted);
   margin-bottom: 0.5rem;
   margin-left: 1.25rem;
+  color: var(--color-text-muted);
 }
 
 .challenge-rules li:last-child {
@@ -58,10 +58,10 @@
 .challenge-progress-bar {
   flex: 1;
   height: 4px;
-  background: var(--color-border);
-  border-radius: 2px;
   margin: 0 1rem;
   overflow: hidden;
+  background: var(--color-border);
+  border-radius: 2px;
 }
 
 .challenge-progress-fill {
@@ -72,12 +72,12 @@
 }
 
 .challenge-timer {
+  min-width: 2.5rem;
   font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  min-width: 2.5rem;
-  text-align: center;
   color: var(--color-text-muted);
+  text-align: center;
   transition: color 0.2s;
 }
 
@@ -98,37 +98,37 @@
 }
 
 .challenge-tier-badge {
+  padding: 0.2rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
   background: var(--color-surface-hover);
-  color: var(--color-text-muted);
+  border-radius: 0.25rem;
 }
 
 .challenge-sentence-card {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .challenge-sentence-label {
+  margin-bottom: 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  margin-bottom: 0.75rem;
 }
 
 .challenge-sentence-text {
   font-size: 1.25rem;
-  line-height: 1.6;
   font-weight: 500;
+  line-height: 1.6;
 }
 
 .challenge-input-area {
@@ -138,12 +138,12 @@
 .challenge-input {
   width: 100%;
   padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
   font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-family: var(--font-sans);
   transition: border-color 0.2s;
 }
 
@@ -159,23 +159,23 @@
 
 .challenge-actions {
   display: flex;
-  justify-content: flex-end;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 /* === Feedback === */
 
 .challenge-feedback {
-  margin-top: 1rem;
   padding: 1rem;
+  margin-top: 1rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
 }
 
 .challenge-feedback-score {
-  font-weight: 600;
   margin-bottom: 0.75rem;
+  font-weight: 600;
 }
 
 .challenge-feedback-words {
@@ -188,8 +188,8 @@
 .challenge-word {
   display: inline-flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.125rem;
+  align-items: center;
 }
 
 .challenge-word-ingglish {
@@ -199,54 +199,54 @@
 
 .challenge-word-result {
   padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
   font-size: 0.9rem;
+  border-radius: 0.25rem;
 }
 
 .challenge-word-correct {
-  background: rgba(34, 197, 94, 0.15);
   color: var(--color-success);
+  background: rgba(34, 197, 94, 0.15);
 }
 
 .challenge-word-fuzzy {
-  background: rgba(234, 179, 8, 0.15);
   color: var(--color-warning, #ca8a04);
+  background: rgba(234, 179, 8, 0.15);
 }
 
 .challenge-word-incorrect {
-  background: rgba(239, 68, 68, 0.15);
   color: var(--color-error);
   text-decoration: line-through;
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .challenge-word-expected {
   font-size: 0.75rem;
-  color: var(--color-error);
   font-weight: 500;
+  color: var(--color-error);
 }
 
 /* === Results screen === */
 
 .challenge-results {
-  text-align: center;
   padding: 2rem 0;
+  text-align: center;
 }
 
 .challenge-results h2 {
-  font-size: 1.75rem;
   margin-bottom: 0.5rem;
+  font-size: 1.75rem;
 }
 
 .challenge-overall-score {
+  margin-bottom: 0.5rem;
   font-size: 3rem;
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 0.5rem;
 }
 
 .challenge-score-label {
-  color: var(--color-text-muted);
   margin-bottom: 2rem;
+  color: var(--color-text-muted);
 }
 
 .challenge-round-bars {
@@ -259,23 +259,23 @@
 
 .challenge-round-row {
   display: flex;
-  align-items: center;
   gap: 0.75rem;
+  align-items: center;
   font-size: 0.875rem;
 }
 
 .challenge-round-label {
-  width: 5rem;
   flex-shrink: 0;
+  width: 5rem;
   color: var(--color-text-muted);
 }
 
 .challenge-round-bar {
   flex: 1;
   height: 1.25rem;
+  overflow: hidden;
   background: var(--color-surface-hover);
   border-radius: 0.25rem;
-  overflow: hidden;
 }
 
 .challenge-round-fill {
@@ -298,24 +298,24 @@
 
 .challenge-round-pct {
   width: 3rem;
-  text-align: right;
-  font-weight: 600;
   font-size: 0.8rem;
+  font-weight: 600;
+  text-align: right;
 }
 
 .challenge-round-time {
   width: 2.5rem;
-  text-align: right;
   font-size: 0.75rem;
-  color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  text-align: right;
 }
 
 .challenge-result-actions {
   display: flex;
-  justify-content: center;
-  gap: 0.75rem;
   flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 /* === Mobile === */

@@ -5,22 +5,22 @@
 /* Buttons */
 .btn-primary,
 .btn-secondary {
+  min-width: 5.5rem;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
+  border: none;
+  border-radius: 0.5rem;
   transition:
     background-color 0.2s,
     color 0.2s,
     border-color 0.2s;
-  border: none;
-  min-width: 5.5rem;
 }
 
 .btn-primary {
-  background: var(--color-primary);
   color: white;
+  background: var(--color-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -28,13 +28,13 @@
 }
 
 .btn-primary:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .btn-secondary {
-  background: var(--color-surface);
   color: var(--color-text);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 
@@ -43,23 +43,23 @@
 }
 
 .btn-secondary:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .btn-copied,
 .btn-speaking {
-  background: var(--color-primary) !important;
   color: white !important;
+  background: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
 }
 
 .btn-icon {
-  min-width: auto;
-  padding: 0.75rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: auto;
+  padding: 0.75rem;
 }
 
 .btn-loading {
@@ -68,14 +68,14 @@
 }
 
 .btn-loading::after {
-  content: '';
   position: absolute;
-  left: 50%;
   top: 50%;
+  left: 50%;
   width: 16px;
   height: 16px;
-  margin-left: -8px;
   margin-top: -8px;
+  margin-left: -8px;
+  content: '';
   border: 2px solid transparent;
   border-top-color: currentcolor;
   border-radius: 50%;
@@ -98,74 +98,70 @@
 /* Messages */
 .error-message {
   padding: 1rem;
-  border-radius: 0.5rem;
+  color: var(--color-error);
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid var(--color-error);
-  color: var(--color-error);
+  border-radius: 0.5rem;
 }
 
 .success-message {
   padding: 1rem;
-  border-radius: 0.5rem;
+  color: var(--color-success);
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid var(--color-success);
-  color: var(--color-success);
+  border-radius: 0.5rem;
 }
 
 .warning-message {
   padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-warning);
   background: rgba(234, 179, 8, 0.1);
   border: 1px solid #eab308;
-  color: #a16207;
-  font-size: 0.875rem;
-}
-
-[data-theme='dark'] .warning-message {
-  color: #facc15;
+  border-radius: 0.5rem;
 }
 
 /* Info Box */
 .info-box {
+  padding: 1.5rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  padding: 1.5rem;
 }
 
 .info-box h3 {
+  margin-bottom: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
   color: var(--color-text);
 }
 
 .info-box p {
-  color: var(--color-text-muted);
   margin-bottom: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 .info-box ul {
-  list-style: none;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
   color: var(--color-text-muted);
+  list-style: none;
 }
 
 .info-box li strong {
-  color: var(--color-primary);
   font-family: var(--font-mono);
+  color: var(--color-primary);
 }
 
 .note {
-  margin-top: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--color-surface);
-  border-radius: 0.5rem;
+  margin-top: 1rem;
   font-size: 0.9rem;
   color: var(--color-text-muted);
+  background: var(--color-surface);
   border-left: 3px solid var(--color-primary);
+  border-radius: 0.5rem;
 }
 
 /* =============================================================================
@@ -175,8 +171,8 @@
 @media (max-width: 640px) {
   .btn-primary,
   .btn-secondary {
-    padding: 0.5rem 0.75rem;
     min-width: auto;
+    padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
   }
 

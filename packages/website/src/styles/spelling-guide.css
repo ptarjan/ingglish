@@ -12,13 +12,13 @@
 }
 
 .guide-intro h2 {
-  font-size: 1.5rem;
   margin-bottom: 0.75rem;
+  font-size: 1.5rem;
 }
 
 .guide-intro p {
-  color: var(--color-text-muted);
   line-height: 1.7;
+  color: var(--color-text-muted);
 }
 
 .guide-intro p + p {
@@ -30,8 +30,8 @@
 }
 
 .guide-section h3 {
-  font-size: 1.25rem;
   margin-bottom: 1rem;
+  font-size: 1.25rem;
   color: var(--color-primary);
 }
 
@@ -46,20 +46,20 @@
 }
 
 .sound-group h4 {
+  margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  margin-bottom: 0.5rem;
 }
 
 .mapping-table {
   width: 100%;
+  overflow: hidden;
   border-collapse: collapse;
   background: var(--color-surface);
   border-radius: 0.5rem;
-  overflow: hidden;
 }
 
 .mapping-table th,
@@ -70,13 +70,13 @@
 }
 
 .mapping-table th {
-  background: var(--color-surface-hover);
-  font-weight: 600;
   font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
   white-space: nowrap;
+  background: var(--color-surface-hover);
 }
 
 .mapping-table th:nth-child(1),
@@ -90,56 +90,56 @@
 }
 
 .mapping-table .ipa-cell {
+  width: 3.5rem;
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text);
-  width: 3.5rem;
   text-align: center;
 }
 
 .mapping-table .ingglish-cell {
+  width: 3.5rem;
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-primary);
-  width: 3.5rem;
   text-align: center;
 }
 
 .sound-note {
   font-size: 0.7rem;
   font-weight: 400;
-  opacity: 0.5;
-  cursor: help;
   vertical-align: super;
+  cursor: help;
+  opacity: 0.5;
 }
 
 .examples-cell {
-  color: var(--color-text-muted);
   font-size: 0.875rem;
+  color: var(--color-text-muted);
 }
 
 .examples-cell strong {
-  color: var(--color-text);
   font-weight: inherit;
+  color: var(--color-text);
   text-decoration: underline;
   text-decoration-color: var(--color-primary);
   text-underline-offset: 2px;
 }
 
 .principles-list {
-  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  list-style: none;
 }
 
 .principles-list li {
   padding: 0.75rem 1rem;
   background: var(--color-surface);
-  border-radius: 0.5rem;
   border-left: 3px solid var(--color-primary);
+  border-radius: 0.5rem;
 }
 
 .principles-list li strong {
@@ -168,8 +168,8 @@
 
   .mapping-table .ipa-cell,
   .mapping-table .ingglish-cell {
-    font-size: 1rem;
     width: 2.5rem;
+    font-size: 1rem;
   }
 
   .mapping-table th:nth-child(1),

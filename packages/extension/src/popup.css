@@ -16,18 +16,18 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
 body {
+  width: 280px;
   font-family:
     system-ui,
     -apple-system,
     sans-serif;
-  background: var(--color-bg);
   color: var(--color-text);
-  width: 280px;
+  background: var(--color-bg);
 }
 
 .popup {
@@ -35,8 +35,8 @@ body {
 }
 
 .header {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .logo-link {
@@ -58,16 +58,16 @@ body {
 }
 
 .subtitle {
+  margin-top: 4px;
   font-size: 12px;
   color: var(--color-text-muted);
-  margin-top: 4px;
 }
 
 .format-toggle {
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   margin-bottom: 16px;
 }
 
@@ -78,13 +78,13 @@ body {
 
 .format-btn {
   padding: 4px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-surface);
-  color: var(--color-text);
   font-size: 12px;
   font-weight: 500;
+  color: var(--color-text);
   cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
   transition: background-color 0.2s;
 }
 
@@ -94,17 +94,17 @@ body {
 
 .status {
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   margin-bottom: 16px;
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
   background: var(--color-text-muted);
+  border-radius: 50%;
 }
 
 .status-text {
@@ -116,13 +116,13 @@ body {
 .toggle-btn {
   width: 100%;
   padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-primary);
-  color: white;
   font-size: 14px;
   font-weight: 600;
+  color: white;
   cursor: pointer;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
   transition: background-color 0.2s;
 }
 
@@ -131,8 +131,8 @@ body {
 }
 
 .toggle-btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .toggle-btn.active {
@@ -145,18 +145,18 @@ body {
 }
 
 .info {
-  margin-top: 16px;
   padding: 12px;
+  margin-top: 16px;
   background: var(--color-surface);
-  border-radius: 8px;
   border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
 .info p {
   font-size: 12px;
+  line-height: 1.5;
   color: var(--color-text-muted);
   text-align: center;
-  line-height: 1.5;
 }
 
 .footer {

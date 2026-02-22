@@ -1,11 +1,12 @@
 /** @type {import('stylelint').Config} */
 export default {
-  extends: ['stylelint-config-standard'],
+  extends: ['stylelint-config-standard', 'stylelint-config-recess-order'],
   plugins: [
     'stylelint-value-no-unknown-custom-properties',
     'stylelint-declaration-block-no-ignored-properties',
     'stylelint-high-performance-animation',
     'stylelint-plugin-use-baseline',
+    'stylelint-declaration-strict-value',
   ],
   rules: {
     // Allow CSS custom properties without fallbacks
@@ -75,6 +76,23 @@ export default {
           // Needed for gradient text; has -webkit- fallback
           'background-clip': ['text'],
         },
+      },
+    ],
+    // Enforce CSS variables for colors (prevents hardcoded values drifting from theme)
+    'scale-unlimited/declaration-strict-value': [
+      ['color', 'background-color', 'border-color'],
+      {
+        ignoreValues: [
+          'transparent',
+          'inherit',
+          'currentColor',
+          'none',
+          'initial',
+          'unset',
+          // Allow white/black in specific contexts (popup, buttons)
+          'white',
+          '#ffffff',
+        ],
       },
     ],
   },

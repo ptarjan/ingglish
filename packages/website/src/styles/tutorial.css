@@ -6,15 +6,15 @@
 
 .tutorial {
   max-width: 720px;
-  margin: 0 auto;
   padding-bottom: 4rem;
+  margin: 0 auto;
 }
 
 .tutorial-section {
   display: grid;
   align-content: center;
-  padding: 4rem 0;
   min-width: 0;
+  padding: 4rem 0;
 }
 
 /* Only the hook sections (ough + what-if) get full viewport height */
@@ -30,9 +30,9 @@
   display: flex;
   justify-content: center;
   padding-top: 2rem;
-  animation: bounce 2s infinite;
-  opacity: 0.5;
   font-size: 1.5rem;
+  opacity: 0.5;
+  animation: bounce 2s infinite;
 }
 
 @keyframes bounce {
@@ -47,29 +47,29 @@
 }
 
 .tutorial-heading {
+  margin-bottom: 2rem;
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 2rem;
   text-align: center;
 }
 
 .tutorial-subheading {
+  margin-bottom: 0.5rem;
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
 }
 
 .tutorial-caption {
-  color: var(--color-text-muted);
   margin-bottom: 1.5rem;
+  color: var(--color-text-muted);
 }
 
 .tutorial-punchline {
-  text-align: center;
-  color: var(--color-text-muted);
-  font-style: italic;
   margin-top: 2rem;
   font-size: 1.1rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .tutorial-substep {
@@ -92,8 +92,8 @@
 
 .ough-card {
   display: flex;
-  align-items: center;
   gap: 0.75rem;
+  align-items: center;
   padding: 1rem 1.25rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -108,9 +108,9 @@
 
 .ough-english-word,
 .ough-ingglish-word {
+  flex: 1;
   font-size: 1.3rem;
   font-weight: 600;
-  flex: 1;
 }
 
 .ough-english-word {
@@ -131,8 +131,8 @@
 }
 
 .ough-highlight-old {
-  color: var(--color-error);
   font-weight: 700;
+  color: var(--color-error);
 }
 
 .ough-arrow {
@@ -151,21 +151,21 @@
 }
 
 .ough-highlight-new {
-  color: var(--color-primary);
   font-weight: 700;
+  color: var(--color-primary);
 }
 
 /* --- Section 2: What if --- */
 
 .tutorial-whatif {
-  text-align: center;
   padding: 6rem 0;
+  text-align: center;
 }
 
 .whatif-line {
+  margin-bottom: 1.5rem;
   font-size: 1.5rem;
   line-height: 1.6;
-  margin-bottom: 1.5rem;
   opacity: 0;
   transition: opacity 0.6s ease;
 }
@@ -175,8 +175,8 @@
 }
 
 .whatif-punchline {
-  font-weight: 700;
   font-size: 2rem;
+  font-weight: 700;
   color: var(--color-primary);
 }
 
@@ -195,8 +195,8 @@
 
 .sound-word {
   display: inline-flex;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
   font-size: 1.1rem;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -211,18 +211,18 @@
 }
 
 .sound-highlight-old {
-  color: var(--color-error);
   font-weight: 700;
+  color: var(--color-error);
 }
 
 .sound-highlight-new {
-  color: var(--color-primary);
   font-weight: 700;
+  color: var(--color-primary);
 }
 
 .sound-arrow {
-  color: var(--color-text-muted);
   font-size: 0.9rem;
+  color: var(--color-text-muted);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -234,8 +234,8 @@
 
 /* Morph area: overlays English copy and Ingglish result */
 .sound-morph {
-  display: inline-grid;
   position: relative;
+  display: inline-grid;
 }
 
 .sound-morph-before,
@@ -288,8 +288,8 @@
 }
 
 .sound-description {
-  color: var(--color-text-muted);
   font-size: 0.95rem;
+  color: var(--color-text-muted);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -301,17 +301,17 @@
 /* --- Section 4: Progressive paragraph --- */
 
 .progressive-paragraph {
+  padding: 2rem;
+  margin-bottom: 2rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
 }
 
 .progressive-text {
+  min-height: 10rem;
   font-size: 1.25rem;
   line-height: 2;
-  min-height: 10rem;
 }
 
 .progressive-word {
@@ -327,37 +327,37 @@
 }
 
 .progressive-word.highlighted {
+  padding: 0 2px;
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
   border-radius: 3px;
-  padding: 0 2px;
 }
 
 .progressive-caption {
-  text-align: center;
-  color: var(--color-text-muted);
-  font-style: italic;
-  font-size: 0.95rem;
   min-height: 3rem;
   margin-top: 1rem;
   margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .progressive-controls {
   display: flex;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   margin-top: 1.5rem;
 }
 
 .progressive-btn {
   padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  cursor: pointer;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-size: 0.95rem;
-  cursor: pointer;
   transition: background-color 0.2s;
 }
 
@@ -366,13 +366,13 @@
 }
 
 .progressive-btn:disabled {
-  opacity: 0.3;
   cursor: default;
+  opacity: 0.3;
 }
 
 .progressive-btn-next {
-  background: var(--color-primary);
   color: #ffffff;
+  background: var(--color-primary);
   border-color: var(--color-primary);
 }
 
@@ -381,28 +381,28 @@
 }
 
 .progressive-indicator {
+  min-width: 6rem;
   font-size: 0.9rem;
   color: var(--color-text-muted);
-  min-width: 6rem;
   text-align: center;
 }
 
 /* --- Section 5: Poem paragraph --- */
 
 .poem-attribution {
-  text-align: center;
-  font-size: 0.95rem;
-  color: var(--color-text-muted);
-  font-style: italic;
   margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .poem-paragraph {
+  padding: 2rem;
+  margin-bottom: 1.5rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
 }
 
 .poem-controls {
@@ -411,14 +411,14 @@
 }
 
 .poem-control-btn {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
   padding: 0.25rem 0.5rem;
   font-size: 1.25rem;
   line-height: 1;
-  cursor: pointer;
   color: var(--color-text);
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
   transition: background-color 0.2s;
 }
 
@@ -457,9 +457,9 @@
 }
 
 .poem-word.highlighted {
+  padding: 0 2px;
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
   border-radius: 3px;
-  padding: 0 2px;
 }
 
 /* --- Section 6: Reading test --- */
@@ -469,17 +469,17 @@
 }
 
 .reading-ingglish {
+  margin-bottom: 2rem;
   font-family: var(--font-mono);
   font-size: 1.3rem;
   line-height: 1.8;
   color: var(--color-primary);
-  margin-bottom: 2rem;
 }
 
 .reading-attribution {
   font-size: 0.95rem;
-  color: var(--color-text-muted);
   font-style: italic;
+  color: var(--color-text-muted);
 }
 
 /* --- Section 7: Try it --- */
@@ -494,11 +494,11 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-surface);
   color: var(--color-text);
   outline: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
   transition: border-color 0.2s;
 }
 
@@ -507,20 +507,20 @@
 }
 
 .try-it-output.word-display {
-  font-family: var(--font-mono);
-  font-size: 1.3rem;
-  color: var(--color-primary);
-  font-weight: 600;
-  margin-top: 1rem;
-  overflow-wrap: break-word;
-  overflow: visible;
-  text-align: left;
   min-height: 2.75rem;
   max-height: none;
   padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  overflow: visible;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: left;
+  overflow-wrap: break-word;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  background: var(--color-surface);
 }
 
 /* --- Try-it auto-typing demo --- */
@@ -539,21 +539,21 @@
 
 /* Blinking cursor overlay for demo state */
 .try-it-input-wrapper::after {
-  content: '';
   display: none;
+  content: '';
 }
 
 .try-it-input.demo-cursor + .try-it-cursor-blink,
 .try-it-input-wrapper:has(.demo-cursor)::after {
-  content: '';
-  display: block;
   position: absolute;
-  right: 1rem;
   top: 50%;
-  transform: translateY(-50%);
+  right: 1rem;
+  display: block;
   width: 2px;
   height: 1.4em;
+  content: '';
   background: var(--color-text);
+  transform: translateY(-50%);
   animation: cursor-blink 1s step-end infinite;
 }
 
@@ -584,17 +584,17 @@
 
 .try-it-cta-prompt {
   width: 100%;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
   margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 /* --- Section 8: CTA --- */
 
 .tutorial-cta {
-  text-align: center;
   padding: 6rem 0 2rem;
+  text-align: center;
 }
 
 .cta-buttons {
@@ -608,10 +608,10 @@
 .cta-secondary {
   display: inline-block;
   padding: 1rem 2rem;
-  border-radius: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
   text-decoration: none;
+  border-radius: 0.5rem;
   transition:
     background-color 0.2s,
     transform 0.1s;
@@ -629,8 +629,8 @@
 }
 
 .cta-primary {
-  background: var(--color-primary);
   color: #ffffff;
+  background: var(--color-primary);
 }
 
 .cta-primary:hover {
@@ -638,9 +638,9 @@
 }
 
 .cta-secondary {
+  color: var(--color-text);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-text);
 }
 
 .cta-secondary:hover {
@@ -704,8 +704,8 @@
   }
 
   .progressive-paragraph {
-    padding: 1.25rem;
     position: static;
+    padding: 1.25rem;
   }
 
   .progressive-text {

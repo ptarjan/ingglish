@@ -17,11 +17,11 @@
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 1.1rem;
-  border: 2px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-surface);
   color: var(--color-text);
   outline: none;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 0.5rem;
   transition: border-color 0.15s;
 }
 
@@ -31,9 +31,9 @@
 
 /* Empty state */
 .explorer-empty {
-  text-align: center;
   padding: 2rem;
   color: var(--color-text-muted);
+  text-align: center;
 }
 
 .suggestion-chips {
@@ -46,12 +46,12 @@
 
 .suggestion-chip {
   padding: 0.375rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 1rem;
-  background: var(--color-surface);
+  font-size: 0.9rem;
   color: var(--color-text);
   cursor: pointer;
-  font-size: 0.9rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
   transition:
     background 0.15s,
     border-color 0.15s;
@@ -64,29 +64,29 @@
 
 /* Word card */
 .word-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
 }
 
 .word-card-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1rem;
   margin-bottom: 0.75rem;
-  flex-wrap: wrap;
 }
 
 .word-main {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  min-width: 0;
   flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  min-width: 0;
 }
 
 .word-english {
@@ -96,8 +96,8 @@
 }
 
 .word-arrow {
-  color: var(--color-text-muted);
   font-size: 1.25rem;
+  color: var(--color-text-muted);
 }
 
 .word-translated {
@@ -125,35 +125,31 @@
 .badge {
   display: inline-block;
   padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  border-radius: 0.25rem;
 }
 
 .badge-dict {
-  background: rgba(22, 163, 74, 0.1);
   color: var(--color-success);
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .badge-fallback {
+  color: var(--color-warning);
   background: rgba(234, 179, 8, 0.15);
-  color: #b45309;
-}
-
-[data-theme='dark'] .badge-fallback {
-  color: #fbbf24;
 }
 
 .badge-freq {
-  background: var(--color-surface-hover);
   color: var(--color-text-muted);
+  background: var(--color-surface-hover);
 }
 
 .badge-homo {
-  background: rgba(79, 70, 229, 0.1);
   color: var(--color-primary);
+  background: rgba(79, 70, 229, 0.1);
 }
 
 /* Sections within a card */
@@ -162,36 +158,36 @@
 }
 
 .explorer-section h4 {
+  margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  margin-bottom: 0.5rem;
 }
 
 .section-note {
+  margin-bottom: 0.5rem;
   font-size: 0.85rem;
   color: var(--color-text-muted);
-  margin-bottom: 0.5rem;
 }
 
 /* Phoneme chain table */
 .chain-table {
   width: 100%;
-  border-collapse: collapse;
   font-size: 0.9rem;
+  border-collapse: collapse;
 }
 
 .chain-table th {
-  text-align: left;
   padding: 0.375rem 0.75rem;
-  border-bottom: 2px solid var(--color-border);
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .chain-table td {
@@ -204,8 +200,8 @@
 }
 
 .chain-table .highlight {
-  color: var(--color-primary);
   font-weight: 600;
+  color: var(--color-primary);
 }
 
 .chain-table .type-label {
@@ -230,8 +226,8 @@
 /* Format comparison */
 .format-comparison {
   display: flex;
-  gap: 1.5rem;
   flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .format-item {
@@ -243,9 +239,9 @@
 .format-label {
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
 }
 
 .format-value {
@@ -265,15 +261,15 @@
 
 .homophone-chip {
   display: inline-flex;
-  align-items: center;
   gap: 0.25rem;
+  align-items: center;
   padding: 0.3rem 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-  background: var(--color-surface);
+  font-size: 0.85rem;
   color: var(--color-text);
   cursor: pointer;
-  font-size: 0.85rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
   transition:
     background 0.15s,
     border-color 0.15s;
@@ -289,25 +285,25 @@
 }
 
 .chip-arrow {
-  color: var(--color-text-muted);
   font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 .chip-translated {
-  color: var(--color-primary);
   font-family: var(--font-mono);
+  color: var(--color-primary);
 }
 
 .chip-freq {
-  color: var(--color-text-muted);
-  font-size: 0.7rem;
   margin-left: 0.125rem;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
 }
 
 .more-count {
+  padding: 0.3rem 0.5rem;
   font-size: 0.85rem;
   color: var(--color-text-muted);
-  padding: 0.3rem 0.5rem;
 }
 
 /* Mobile */
