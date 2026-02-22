@@ -20,14 +20,6 @@ import { matchBritish, translateAsBritish } from './british';
 import { dpDecompose, translateAsCompound } from './compounds';
 import { matchStemming, translateWithStemming } from './stemming';
 
-export type FallbackStrategy =
-  | 'british'
-  | 'compound'
-  | 'custom'
-  | 'g2p'
-  | 'initialism'
-  | 'stemming';
-
 export type WordDiagnosis =
   | { americanSpelling: string; phonemes: string[]; strategy: 'british' }
   | { parts: string[]; strategy: 'compound' }
@@ -35,6 +27,11 @@ export type WordDiagnosis =
   | { prefix?: string; stem: string; strategy: 'stemming'; suffix?: string }
   | { strategy: 'g2p'; trace: G2PTrace }
   | { strategy: 'initialism' };
+
+interface FallbackResult {
+  strategy: FallbackStrategy;
+  translated: string;
+}
 
 export {
   isInitialism,
@@ -46,10 +43,7 @@ export { matchBritish, translateAsBritish } from './british';
 export { translateAsCompound } from './compounds';
 export { translateWithStemming } from './stemming';
 
-interface FallbackResult {
-  strategy: FallbackStrategy;
-  translated: string;
-}
+type FallbackStrategy = 'british' | 'compound' | 'custom' | 'g2p' | 'initialism' | 'stemming';
 
 /**
  * Diagnoses an unknown word by determining which fallback strategy handles it

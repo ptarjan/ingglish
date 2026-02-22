@@ -19,5 +19,3 @@ export {
   injectTooltipBehavior,
   injectTooltipStyles,
 } from './traversal';
-
-export type { DOMTranslatorOptions } from './types';
