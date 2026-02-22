@@ -15,7 +15,7 @@ import type { G2PTrace } from '@ingglish/g2p';
 import { wordToArpabetTraced, wordToPhonetic } from '@ingglish/g2p';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToFormat } from '@ingglish/phonemes';
-import { isInitialism, LETTER_PHONEMES, parseInitialismWithSuffix, translateAsAcronym } from './acronyms';
+import { isInitialism, translateAsAcronym } from './acronyms';
 import { matchBritish, translateAsBritish } from './british';
 import { dpDecompose, translateAsCompound } from './compounds';
 import { matchStemming, translateWithStemming } from './stemming';

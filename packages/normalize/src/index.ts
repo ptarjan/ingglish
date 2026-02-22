@@ -9,12 +9,12 @@ export {
 } from './text';
 
 export {
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
   isIPAChar,
   isPhoneticChar,
   tokenizeIPA,
-  tokenizeText,
   tokenizePhonetic,
+  tokenizeText,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
 } from './tokenize';
-export type { TextToken, IndexedToken } from './tokenize';
+export type { IndexedToken, TextToken } from './tokenize';
