@@ -2,12 +2,12 @@ import type { JSX } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import architecture from '../../../../docs/architecture.md';
-import collisionAnalysis from '../../../../docs/collision-analysis.md';
 import communityLandscape from '../../../../docs/community-landscape.md';
 import contributing from '../../../../docs/contributing.md';
 import deploymentDoc from '../../../../docs/deployment.md';
 import designDecisions from '../../../../docs/design-decisions.md';
 import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
+import falseFriends from '../../../../docs/false-friends.md';
 import apiReference from '../../../../docs/generated/README.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
 import metricsDoc from '../../../../docs/metrics.md';
@@ -16,7 +16,7 @@ import orthographicTransparency from '../../../../docs/orthographic-transparency
 import orthographyComparison from '../../../../docs/orthography-comparison.md';
 import performanceDoc from '../../../../docs/performance.md';
 import phonemeMapping from '../../../../docs/phoneme-mapping.md';
-import spellingEvolution from '../../../../docs/spelling-evolution.md';
+import spellingIteration from '../../../../docs/spelling-iteration.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 
@@ -68,10 +68,10 @@ const docs: DocEntry[] = [
     title: 'Community Landscape',
   },
   {
-    content: spellingEvolution,
-    filename: 'spelling-evolution.md',
-    id: 'spelling-evolution',
-    title: 'Spelling Evolution',
+    content: spellingIteration,
+    filename: 'spelling-iteration.md',
+    id: 'spelling-iteration',
+    title: 'Spelling Iteration Log',
   },
   {
     content: identicalWordsAnalysis,
@@ -86,10 +86,10 @@ const docs: DocEntry[] = [
     title: 'Mapping Quality Metrics',
   },
   {
-    content: collisionAnalysis,
-    filename: 'collision-analysis.md',
-    id: 'collision-analysis',
-    title: 'Collision Analysis',
+    content: falseFriends,
+    filename: 'false-friends.md',
+    id: 'false-friends',
+    title: 'False Friends Analysis',
   },
   {
     content: orthographicTransparency,
