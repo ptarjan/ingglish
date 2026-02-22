@@ -41,7 +41,7 @@ export {
   arpabetPhonemeToIngglish,
   arpabetToIngglish,
   arpabetToFormat,
-  convertArpabetLoop,
+  convertArpabet,
 } from './to-ingglish';
 export { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
 

@@ -40,7 +40,7 @@ export {
   type ApplyTranslationsOptions,
 } from './translate';
 
-export { skipElement, unskipElement } from './utils';
+export { skipElement, unskipElement } from './traversal';
 
 // =============================================================================
 // DOM Observer (for dynamic content)
@@ -49,7 +49,7 @@ export { skipElement, unskipElement } from './utils';
 export { observeAndTranslate } from './observe';
 
 // =============================================================================
-// Utilities
+// Traversal
 // =============================================================================
 
 export {
@@ -59,4 +59,4 @@ export {
   extractWordsFromNodes,
   injectTooltipStyles,
   injectTooltipBehavior,
-} from './utils';
+} from './traversal';

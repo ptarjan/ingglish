@@ -14,7 +14,7 @@ import {
   collectTextNodes,
   injectTooltipStyles,
   injectTooltipBehavior,
-} from '../utils';
+} from '../traversal';
 import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import { createTooltipFragment } from './tooltip-fragment';
 import { processChunked } from './chunked';

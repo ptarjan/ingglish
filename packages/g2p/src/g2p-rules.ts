@@ -1278,7 +1278,7 @@ export function wordToArpabet(word: string): string[] {
  * @param format The output format
  * @returns The best-effort translation
  */
-export function translateWithRules(word: string, format: OutputFormat = 'ingglish'): string {
+export function wordToPhonetic(word: string, format: OutputFormat = 'ingglish'): string {
   const arpabet = wordToArpabet(word);
   return arpabetToFormat(arpabet, format);
 }

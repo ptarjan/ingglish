@@ -8,7 +8,7 @@ import {
   collectTextNodes,
   injectTooltipStyles,
   injectTooltipBehavior,
-} from '../utils';
+} from '../traversal';
 import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 import { processChunked } from './chunked';

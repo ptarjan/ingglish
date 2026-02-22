@@ -6,10 +6,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { shouldSkipUrl, isHashOnlyChange, processProxiedHtml } from '../utils/url';
+import { shouldSkipUrl, isHashOnlyChange, processProxiedHtml } from '../url-proxy/url';
 
 // Re-export utilities that components need
-export { normalizeUrl } from '../utils/url';
+export { normalizeUrl } from '../url-proxy/url';
 
 // Use custom proxy if configured, otherwise fall back to allorigins
 const CORS_PROXY: string =

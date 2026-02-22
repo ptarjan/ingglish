@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { trackBookmarkletCopy } from '../utils/analytics';
+import { trackBookmarkletCopy } from '../analytics';
 
 const BOOKMARKLET_CODE = `javascript:void(function(){var s=document.createElement('script');s.src='https://ingglish.com/bookmarklet.js';document.head.appendChild(s)})()`;
 

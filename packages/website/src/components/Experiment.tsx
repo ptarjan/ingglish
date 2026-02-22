@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useCustomMapping } from '../hooks/useCustomMapping';
 import { useShare } from '../hooks/useShare';
-import { trackExperimentReset } from '../utils/analytics';
+import { trackExperimentReset } from '../analytics';
 import MappingEditor from './MappingEditor';
 import ExperimentTranslator from './ExperimentTranslator';
 import MappingStats from './MappingStats';

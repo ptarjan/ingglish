@@ -41,7 +41,7 @@ export function arpabetPhonemeToIngglish(phoneme: string): string {
  * @param stressOverrides Exact phoneme (with stress digit) → spelling overrides
  * @returns Converted string
  */
-export function convertArpabetLoop(
+export function convertArpabet(
   arpabet: string[],
   phonemeMap: Record<string, string>,
   rColoredMap: Map<string, string>,
@@ -88,7 +88,7 @@ const DEFAULT_STRESS_OVERRIDES = new Map<string, string>([['AH0', 'a']]);
  * @returns Ingglish spelling (e.g., "haloh")
  */
 export function arpabetToIngglish(arpabet: string[]): string {
-  return convertArpabetLoop(
+  return convertArpabet(
     arpabet,
     ARPABET_TO_INGGLISH_MAP,
     R_COLORED_FORWARD,

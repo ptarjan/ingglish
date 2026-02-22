@@ -25,7 +25,7 @@ import { translateAsBritish, matchBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { dpDecompose } from './compounds';
 import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
-import { translateWithRules, wordToArpabetTraced } from '@ingglish/g2p';
+import { wordToPhonetic, wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
 
 export type FallbackStrategy =
@@ -98,7 +98,7 @@ export function translateUnknownCore(word: string, format: OutputFormat): Fallba
   }
 
   // Fall back to grapheme-to-phoneme rules
-  return { strategy: 'g2p', translated: translateWithRules(word, format) };
+  return { strategy: 'g2p', translated: wordToPhonetic(word, format) };
 }
 
 /**

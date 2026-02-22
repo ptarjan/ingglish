@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { translateSyncWithMapping } from 'ingglish';
 import { MappedWordDisplay } from '../MappedWordDisplay';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { isAllCaps } from '../../utils/text';
+import { isAllCaps } from '../../translation/text';
 
 const DEMO_SENTENCE = 'The knight thought through the night';
 const TYPING_INTERVAL_MS = 60;

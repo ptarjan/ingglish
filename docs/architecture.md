@@ -300,8 +300,8 @@ src/
 ├── observe/                    # Dynamic content handling
 │   ├── index.ts                # observeAndTranslate entry point
 │   └── observer.ts             # MutationObserver implementation
-└── utils/                      # DOM utilities
-    ├── index.ts                # Utility exports
+└── traversal/                  # DOM traversal
+    ├── index.ts                # Traversal exports
     ├── browser.ts              # Browser detection
     ├── extract.ts              # Word extraction from text nodes
     ├── skip-rules.ts           # Skip logic for tags/classes

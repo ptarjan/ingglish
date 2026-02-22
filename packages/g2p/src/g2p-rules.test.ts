@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { wordToArpabet, translateWithRules } from './g2p-rules';
+import { wordToArpabet, wordToPhonetic } from './g2p-rules';
 
 describe('wordToArpabet', () => {
   it('converts simple words to ARPAbet', () => {
@@ -60,23 +60,23 @@ describe('wordToArpabet', () => {
   });
 });
 
-describe('translateWithRules', () => {
+describe('wordToPhonetic', () => {
   it('returns an Ingglish spelling by default', () => {
-    const result = translateWithRules('cat');
+    const result = wordToPhonetic('cat');
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 
   it('respects the format parameter', () => {
-    const ingglish = translateWithRules('hello', 'ingglish');
-    const ipa = translateWithRules('hello', 'ipa');
+    const ingglish = wordToPhonetic('hello', 'ingglish');
+    const ipa = wordToPhonetic('hello', 'ipa');
     // IPA uses different characters (slashes, diacritics)
     expect(ingglish).not.toBe(ipa);
   });
 
   it('produces stable output for the same word', () => {
-    const first = translateWithRules('example');
-    const second = translateWithRules('example');
+    const first = wordToPhonetic('example');
+    const second = wordToPhonetic('example');
     expect(first).toBe(second);
   });
 });

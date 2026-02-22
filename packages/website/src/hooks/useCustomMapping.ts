@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { trackExperimentCustomize } from '../utils/analytics';
+import { trackExperimentCustomize } from '../analytics';
 import {
   registerFormat,
   createCustomConverter,

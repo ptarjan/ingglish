@@ -14,7 +14,7 @@ import {
   isInitialism,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { translateWithRules } from '@ingglish/g2p';
+import { wordToPhonetic } from '@ingglish/g2p';
 
 registerFormat('arpabet', {
   forward: (phonemes: string[]) => phonemes.join(' '),
@@ -64,7 +64,7 @@ async function main() {
             strategy = 'stemming';
             result = stemmedResult;
           } else {
-            result = translateWithRules(word, 'arpabet' as 'ingglish');
+            result = wordToPhonetic(word, 'arpabet' as 'ingglish');
           }
         }
       }

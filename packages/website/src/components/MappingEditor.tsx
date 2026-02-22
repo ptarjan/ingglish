@@ -8,7 +8,7 @@ import {
   type SoundEntry,
 } from '../data/spelling-guide-data';
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
-import { getCleanIPA, renderDynamicExamples } from '../utils/phoneme-display';
+import { getCleanIPA, renderDynamicExamples } from '../translation/phoneme-display';
 
 /** Get the default spelling for a phoneme */
 function getDefault(phoneme: string): string {

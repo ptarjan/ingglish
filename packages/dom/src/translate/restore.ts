@@ -2,7 +2,7 @@
  * DOM restoration utilities.
  */
 
-import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../utils';
+import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../traversal';
 import {
   WORD_SPAN_CLASS,
   ATTR_ORIGINAL_WORD,

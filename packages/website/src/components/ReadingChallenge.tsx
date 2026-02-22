@@ -2,9 +2,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { loadReverseDictionary } from '@ingglish/dictionary';
 import { pickChallenge } from '../data/challenge-data';
 import type { ChallengeSentence } from '../data/challenge-data';
-import { scoreSentence } from '../utils/challenge-scoring';
-import type { SentenceScore } from '../utils/challenge-scoring';
-import { renderScoreCard } from '../utils/render-score-card';
+import { scoreSentence } from '../challenge/challenge-scoring';
+import type { SentenceScore } from '../challenge/challenge-scoring';
+import { renderScoreCard } from '../challenge/render-score-card';
 
 type Phase = 'intro' | 'playing' | 'results';
 

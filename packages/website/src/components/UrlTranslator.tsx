@@ -3,7 +3,7 @@ import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { useShare } from '../hooks/useShare';
-import { trackUrlTranslate, trackShare } from '../utils/analytics';
+import { trackUrlTranslate, trackShare } from '../analytics';
 
 /**
  * Fullscreen icon (expand arrows)

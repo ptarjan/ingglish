@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { hasExperimentMapping } from '../hooks/useCustomMapping';
-import { trackFormatSwitch } from '../utils/analytics';
+import { trackFormatSwitch } from '../analytics';
 
 interface FormatContextType {
   format: OutputFormat;

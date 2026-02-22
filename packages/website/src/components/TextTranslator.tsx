@@ -13,10 +13,10 @@ import { useFormat } from '../contexts/FormatContext';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
-import { buildDiffMap } from '../utils/diff-map';
-import { isAllCaps } from '../utils/text';
-import { pickRandomPassage } from '../utils/sample-text';
-import { trackTextTranslate, trackShare, trackSpeak } from '../utils/analytics';
+import { buildDiffMap } from '../translation/diff-map';
+import { isAllCaps } from '../translation/text';
+import { pickRandomPassage } from '../data/sample-text';
+import { trackTextTranslate, trackShare, trackSpeak } from '../analytics';
 
 function SpeakerIcon() {
   return (

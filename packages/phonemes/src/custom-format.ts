@@ -6,7 +6,7 @@
  */
 
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
-import { convertArpabetLoop } from './to-ingglish';
+import { convertArpabet } from './to-ingglish';
 
 /**
  * Configuration for a custom phoneme-to-spelling mapping.
@@ -47,5 +47,5 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
   }
 
   return (arpabet: string[]): string =>
-    convertArpabetLoop(arpabet, mergedMap, mergedRColored, stressOverrides);
+    convertArpabet(arpabet, mergedMap, mergedRColored, stressOverrides);
 }

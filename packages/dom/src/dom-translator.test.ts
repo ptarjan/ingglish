@@ -4,7 +4,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { translateSyncWithMapping } from 'ingglish';
 import { translateDOM, translateDOMSync, restoreDOM, applyTranslationsMap } from './translate';
-import { skipElement, unskipElement } from './utils';
+import { skipElement, unskipElement } from './traversal';
 import { observeAndTranslate } from './observe';
 
 describe('dom-translator', () => {

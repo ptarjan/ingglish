@@ -12,7 +12,7 @@ import {
   requireBrowser,
   shouldSkipElement,
   shouldSkipTextNode,
-} from '../utils';
+} from '../traversal';
 
 /**
  * Creates a MutationObserver that translates new content as it's added to the DOM.
