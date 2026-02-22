@@ -389,7 +389,7 @@ The extension uses a message-passing architecture to keep the content script lig
                             │
                             ▼
 ┌──────────────────────────────────────────────────┐
-│              Content Script (content-lite.ts)     │
+│              Content Script (content-lite.ts)    │
 │  • Walks DOM, collects text nodes                │
 │  • Sends batches of words to background          │
 │  • Applies translations in chunks (RAF)          │
@@ -399,7 +399,7 @@ The extension uses a message-passing architecture to keep the content script lig
                        │ chrome.runtime.sendMessage
                        ▼
 ┌──────────────────────────────────────────────────┐
-│              Background (background.ts)           │
+│              Background (background.ts)          │
 │  • Loads CMU dictionary on startup               │
 │  • Caches translations (50K entries, FIFO)       │
 │  • Returns translated words                      │
@@ -443,12 +443,12 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 ## Data Flow Summary
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                        Build Time                                │
-├──────────────────────────────────────────────────────────────────┤
+┌───────────────────────────────────────────────────────────────────┐
+│                         Build Time                                │
+├───────────────────────────────────────────────────────────────────┤
 │  CMU Dictionary (134K words) ──> bundled with @ingglish/dictionary│
 │  SUBTLEX Frequencies (74K) ──> bundled with @ingglish/dictionary  │
-└──────────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
