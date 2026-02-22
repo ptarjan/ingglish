@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
-import { editSimilarity, g2pRoundtripScore, scoreWordOrthotactic } from '../lib/mapping-metrics';
+import { computeWeightedMetrics, type MetricInput } from '../lib/mapping-metrics';
 
 interface FormatStats {
   /** Collision map for collision analysis */
@@ -67,15 +67,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   const spellingToWords = new Map<string, string[]>();
   const wordFreqs = new Map<string, number>();
   const changes: { experiment: string; freq: number; standard: string; word: string }[] = [];
-  let identicalFreqSum = 0;
-  let totalFreqSum = 0;
-  let pronounceabilityWeightedSum = 0;
-  let naturalnessWeightedSum = 0;
-  let editSimilarityWeightedSum = 0;
-  let spellingFamiliarityWeightedSum = 0;
-
-  // Cache phoneme → grapheme lookups for spelling familiarity
-  const graphemeCache = new Map<string, string>();
+  const metricEntries: MetricInput[] = [];
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -85,46 +77,10 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
     const wordLower = word.toLowerCase();
     allWords.add(wordLower);
     const expSpelling = arpabetToFormat(phonemes, 'experiment');
-    const expLower = expSpelling.toLowerCase();
 
     const freq = getWordFrequency(wordLower) ?? 0;
     wordFreqs.set(wordLower, freq);
-    totalFreqSum += freq;
-    if (wordLower === expLower) {
-      identicalFreqSum += freq;
-    }
-
-    if (freq > 0) {
-      // G2P round-trip pronounceability
-      pronounceabilityWeightedSum += g2pRoundtripScore(expSpelling, phonemes) * freq;
-
-      // Orthotactic probability (naturalness)
-      const natScore = scoreWordOrthotactic(expSpelling);
-      if (natScore !== -Infinity) {
-        naturalnessWeightedSum += natScore * freq;
-      }
-
-      // Edit distance similarity
-      editSimilarityWeightedSum += editSimilarity(wordLower, expLower) * freq;
-
-      // Spelling familiarity: what fraction of graphemes appear in the English word
-      let hits = 0;
-      let total = 0;
-      for (const p of phonemes) {
-        let g = graphemeCache.get(p);
-        if (g === undefined) {
-          g = arpabetToFormat([p], 'experiment');
-          graphemeCache.set(p, g);
-        }
-        if (wordLower.includes(g)) {
-          hits++;
-        }
-        total++;
-      }
-      if (total > 0) {
-        spellingFamiliarityWeightedSum += (hits / total) * freq;
-      }
-    }
+    metricEntries.push({ english: wordLower, frequency: freq, phonemes, spelling: expSpelling });
 
     // Group words by experiment spelling
     const existing = spellingToWords.get(expSpelling);
@@ -142,6 +98,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   }
 
   const totalWords = allWords.size;
+  const metrics = computeWeightedMetrics(metricEntries, (p) => arpabetToFormat([p], 'experiment'));
 
   // Count frequency-weighted collisions
   let collidingFreqSum = 0;
@@ -179,14 +136,12 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   // Sort changes by frequency and take top 20
   changes.sort((a, b) => b.freq - a.freq);
 
+  const totalFreqSum = metricEntries.reduce((sum, e) => sum + e.frequency, 0);
+
   return {
     stats: {
+      ...metrics,
       collisionMap: spellingToWords,
-      editSimilarity: totalFreqSum > 0 ? editSimilarityWeightedSum / totalFreqSum : 0,
-      naturalness: totalFreqSum > 0 ? naturalnessWeightedSum / totalFreqSum : -Infinity,
-      pronounceability: totalFreqSum > 0 ? pronounceabilityWeightedSum / totalFreqSum : 0,
-      spellingFamiliarity: totalFreqSum > 0 ? spellingFamiliarityWeightedSum / totalFreqSum : 0,
-      textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
     },
@@ -232,15 +187,7 @@ function getIngglishCache() {
   const spellingToWords = new Map<string, string[]>();
   const spellings = new Map<string, string>();
   const wordFreqs = new Map<string, number>();
-  let identicalFreqSum = 0;
-  let totalFreqSum = 0;
-  let pronounceabilityWeightedSum = 0;
-  let naturalnessWeightedSum = 0;
-  let editSimilarityWeightedSum = 0;
-  let spellingFamiliarityWeightedSum = 0;
-
-  // Cache phoneme → grapheme lookups for spelling familiarity
-  const graphemeCache = new Map<string, string>();
+  const metricEntries: MetricInput[] = [];
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -251,46 +198,10 @@ function getIngglishCache() {
     allWords.add(wordLower);
     const spelling = arpabetToFormat(phonemes, 'ingglish');
     spellings.set(wordLower, spelling);
-    const spLower = spelling.toLowerCase();
 
     const freq = getWordFrequency(wordLower) ?? 0;
     wordFreqs.set(wordLower, freq);
-    totalFreqSum += freq;
-    if (wordLower === spLower) {
-      identicalFreqSum += freq;
-    }
-
-    if (freq > 0) {
-      // G2P round-trip pronounceability
-      pronounceabilityWeightedSum += g2pRoundtripScore(spelling, phonemes) * freq;
-
-      // Orthotactic probability (naturalness)
-      const natScore = scoreWordOrthotactic(spelling);
-      if (natScore !== -Infinity) {
-        naturalnessWeightedSum += natScore * freq;
-      }
-
-      // Edit distance similarity
-      editSimilarityWeightedSum += editSimilarity(wordLower, spLower) * freq;
-
-      // Spelling familiarity
-      let hits = 0;
-      let total = 0;
-      for (const p of phonemes) {
-        let g = graphemeCache.get(p);
-        if (g === undefined) {
-          g = arpabetToFormat([p], 'ingglish');
-          graphemeCache.set(p, g);
-        }
-        if (wordLower.includes(g)) {
-          hits++;
-        }
-        total++;
-      }
-      if (total > 0) {
-        spellingFamiliarityWeightedSum += (hits / total) * freq;
-      }
-    }
+    metricEntries.push({ english: wordLower, frequency: freq, phonemes, spelling });
 
     const existing = spellingToWords.get(spelling);
     if (existing) {
@@ -301,6 +212,8 @@ function getIngglishCache() {
   }
 
   const totalWords = allWords.size;
+  const metrics = computeWeightedMetrics(metricEntries, (p) => arpabetToFormat([p], 'ingglish'));
+  const totalFreqSum = metricEntries.reduce((sum, e) => sum + e.frequency, 0);
 
   let collidingFreqSum = 0;
   for (const words of spellingToWords.values()) {
@@ -326,12 +239,8 @@ function getIngglishCache() {
     collisionGroupOf,
     spellings,
     stats: {
+      ...metrics,
       collisionMap: spellingToWords,
-      editSimilarity: totalFreqSum > 0 ? editSimilarityWeightedSum / totalFreqSum : 0,
-      naturalness: totalFreqSum > 0 ? naturalnessWeightedSum / totalFreqSum : -Infinity,
-      pronounceability: totalFreqSum > 0 ? pronounceabilityWeightedSum / totalFreqSum : 0,
-      spellingFamiliarity: totalFreqSum > 0 ? spellingFamiliarityWeightedSum / totalFreqSum : 0,
-      textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
     },

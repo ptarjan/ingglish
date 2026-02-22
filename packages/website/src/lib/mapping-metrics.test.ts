@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { loadDictionary, loadFrequencies } from '@ingglish/dictionary';
 import {
   charEditDistance,
+  computeWeightedMetrics,
   editSimilarity,
   g2pRoundtripScore,
   phonemeLevenshtein,
@@ -85,6 +86,111 @@ describe('g2pRoundtripScore', () => {
 
   it('returns 1 for empty phonemes', () => {
     expect(g2pRoundtripScore('', [])).toBe(1);
+  });
+});
+
+const trivialGrapheme = (p: string) => p[0]!.toLowerCase();
+
+describe('computeWeightedMetrics', () => {
+  it('frequency-weights so high-frequency preserved word dominates', () => {
+    const result = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1000, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    expect(result.textPreservedPct).toBeGreaterThan(99);
+  });
+
+  it('frequency-weights so high-frequency non-preserved word dominates', () => {
+    const result = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1000, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    expect(result.textPreservedPct).toBeLessThan(1);
+  });
+
+  it('with equal frequencies, treats words equally', () => {
+    const result = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 100, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 100, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    expect(result.textPreservedPct).toBeCloseTo(50);
+  });
+
+  it('frequency-weights pronounceability', () => {
+    // "bat" round-trips perfectly; "zzz" for "cat" does not
+    const highFreqGood = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1000, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    const highFreqBad = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1000, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    expect(highFreqGood.pronounceability).toBeGreaterThan(highFreqBad.pronounceability);
+  });
+
+  it('frequency-weights edit similarity', () => {
+    const highFreqIdentical = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1000, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    const highFreqDifferent = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1000, phonemes: ['K', 'AE1', 'T'], spelling: 'zzz' },
+      ],
+      trivialGrapheme
+    );
+    expect(highFreqIdentical.editSimilarity).toBeGreaterThan(highFreqDifferent.editSimilarity);
+  });
+
+  it('frequency-weights spelling familiarity', () => {
+    // "bat" with phonemes B,AE1,T → graphemes b,a,t → all in "bat" → familiarity 1.0
+    // "cat" with phonemes K,AE1,T → graphemes k,a,t → "k" not in "cat" → familiarity 2/3
+    const highFreqFamiliar = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1000, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1, phonemes: ['K', 'AE1', 'T'], spelling: 'kat' },
+      ],
+      trivialGrapheme
+    );
+    const highFreqLessFamiliar = computeWeightedMetrics(
+      [
+        { english: 'bat', frequency: 1, phonemes: ['B', 'AE1', 'T'], spelling: 'bat' },
+        { english: 'cat', frequency: 1000, phonemes: ['K', 'AE1', 'T'], spelling: 'kat' },
+      ],
+      trivialGrapheme
+    );
+    expect(highFreqFamiliar.spellingFamiliarity).toBeGreaterThan(
+      highFreqLessFamiliar.spellingFamiliarity
+    );
+  });
+
+  it('returns defaults for empty input', () => {
+    const result = computeWeightedMetrics([], () => '');
+    expect(result.textPreservedPct).toBe(0);
+    expect(result.pronounceability).toBe(0);
+    expect(result.editSimilarity).toBe(0);
+    expect(result.spellingFamiliarity).toBe(0);
+    expect(result.naturalness).toBe(-Infinity);
   });
 });
 

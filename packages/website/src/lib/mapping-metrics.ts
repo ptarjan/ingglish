@@ -14,6 +14,25 @@ import { stripStress } from '@ingglish/phonemes';
 const NON_ALPHA = /[^a-z]/i;
 
 // ============================================================
+// Types
+// ============================================================
+
+export interface MetricInput {
+  english: string;
+  frequency: number;
+  phonemes: string[];
+  spelling: string;
+}
+
+export interface WeightedMetrics {
+  editSimilarity: number;
+  naturalness: number;
+  pronounceability: number;
+  spellingFamiliarity: number;
+  textPreservedPct: number;
+}
+
+// ============================================================
 // 1. Edit distance (Levenshtein similarity)
 // ============================================================
 
@@ -45,6 +64,69 @@ export function charEditDistance(a: string, b: string): number {
   return prev[n] ?? 0;
 }
 
+/**
+ * Compute frequency-weighted aggregate metrics over a set of word entries.
+ * @param phonemeToGrapheme Maps a single phoneme (e.g. "B") to its grapheme string (e.g. "b")
+ */
+export function computeWeightedMetrics(
+  entries: MetricInput[],
+  phonemeToGrapheme: (phoneme: string) => string
+): WeightedMetrics {
+  let totalFreq = 0;
+  let identicalFreq = 0;
+  let pronounceabilitySum = 0;
+  let naturalnessSum = 0;
+  let editSimilaritySum = 0;
+  let spellingFamiliaritySum = 0;
+  const graphemeCache = new Map<string, string>();
+
+  for (const { english, frequency, phonemes, spelling } of entries) {
+    const englishLower = english.toLowerCase();
+    const spellingLower = spelling.toLowerCase();
+
+    totalFreq += frequency;
+    if (englishLower === spellingLower) {
+      identicalFreq += frequency;
+    }
+
+    if (frequency > 0) {
+      pronounceabilitySum += g2pRoundtripScore(spelling, phonemes) * frequency;
+
+      const natScore = scoreWordOrthotactic(spelling);
+      if (natScore !== -Infinity) {
+        naturalnessSum += natScore * frequency;
+      }
+
+      editSimilaritySum += editSimilarity(englishLower, spellingLower) * frequency;
+
+      let hits = 0;
+      let total = 0;
+      for (const p of phonemes) {
+        let g = graphemeCache.get(p);
+        if (g === undefined) {
+          g = phonemeToGrapheme(p);
+          graphemeCache.set(p, g);
+        }
+        if (englishLower.includes(g)) {
+          hits++;
+        }
+        total++;
+      }
+      if (total > 0) {
+        spellingFamiliaritySum += (hits / total) * frequency;
+      }
+    }
+  }
+
+  return {
+    editSimilarity: totalFreq > 0 ? editSimilaritySum / totalFreq : 0,
+    naturalness: totalFreq > 0 ? naturalnessSum / totalFreq : -Infinity,
+    pronounceability: totalFreq > 0 ? pronounceabilitySum / totalFreq : 0,
+    spellingFamiliarity: totalFreq > 0 ? spellingFamiliaritySum / totalFreq : 0,
+    textPreservedPct: totalFreq > 0 ? (identicalFreq / totalFreq) * 100 : 0,
+  };
+}
+
 /** Edit similarity: 1 - (editDistance / maxLen). Returns 0–1. */
 export function editSimilarity(a: string, b: string): number {
   const maxLen = Math.max(a.length, b.length);
@@ -52,7 +134,7 @@ export function editSimilarity(a: string, b: string): number {
 }
 
 // ============================================================
-// 2. G2P round-trip pronounceability
+// 3. G2P round-trip pronounceability
 // ============================================================
 
 /** G2P round-trip score: feed spelling to G2P, compare predicted vs original phonemes. Returns 0–1. */
@@ -95,7 +177,7 @@ export function phonemeLevenshtein(a: string[], b: string[]): number {
 }
 
 // ============================================================
-// 3. Orthotactic probability (naturalness)
+// 4. Orthotactic probability (naturalness)
 // ============================================================
 
 const SMOOTHING_K = 0.01;
