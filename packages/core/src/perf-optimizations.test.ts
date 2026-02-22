@@ -153,19 +153,18 @@ describe('performance optimizations', () => {
     });
   });
 
-  describe('isVowel/isConsonant Set optimization', () => {
+  describe('isVowel Set optimization', () => {
     it('should use Set.has for O(1) lookup', async () => {
-      const { isVowel, isConsonant } = await import('@ingglish/phonemes');
+      const { isVowel } = await import('@ingglish/phonemes');
 
       // Spy on Set.prototype.has to verify it's being used
       const hasSpy = vi.spyOn(Set.prototype, 'has');
       hasSpy.mockClear();
 
-      // Call isVowel and isConsonant
       isVowel('AH0');
       isVowel('EY1');
-      isConsonant('B');
-      isConsonant('SH');
+      isVowel('B');
+      isVowel('SH');
 
       // Set.has should be called (O(1) lookup)
       expect(hasSpy).toHaveBeenCalled();

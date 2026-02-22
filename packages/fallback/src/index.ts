@@ -20,25 +20,11 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
   LETTER_PHONEMES,
-  KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
 } from './acronyms';
 import { translateAsBritish, matchBritish } from './british';
 import { translateAsCompound, dpDecompose } from './compounds';
-import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
-
-export type FallbackStrategy =
-  | 'custom'
-  | 'initialism'
-  | 'british'
-  | 'compound'
-  | 'stemming'
-  | 'g2p';
-
-export interface FallbackResult {
-  strategy: FallbackStrategy;
-  translated: string;
-}
+import { translateWithStemming, matchStemming } from './stemming';
 
 export type WordDiagnosis =
   | { strategy: 'custom'; phonemes: string[] }
@@ -50,7 +36,6 @@ export type WordDiagnosis =
 
 export {
   LETTER_PHONEMES,
-  KNOWN_INITIALISMS,
   INITIALISM_EXPANSIONS,
   isInitialism,
   parseInitialismWithSuffix,
@@ -58,15 +43,18 @@ export {
   translateAsBritish,
   matchBritish,
   translateAsCompound,
-  SUFFIX_PHONEMES,
-  PREFIX_PHONEMES,
   translateWithStemming,
 };
+
+interface FallbackResult {
+  strategy: string;
+  translated: string;
+}
 
 /**
  * Core implementation that returns both the strategy used and the translated word.
  */
-export function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
+function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
   // Check custom pronunciations first
   const customPhonemes = getCustomPronunciation(word);
   if (customPhonemes !== undefined) {
@@ -103,14 +91,6 @@ export function translateUnknownCore(word: string, format: OutputFormat): Fallba
 /**
  * Attempts all strategies to translate an unknown word.
  *
- * Strategy order:
- * 1. Check custom pronunciations first
- * 2. Check if it's an acronym (spell out letters)
- * 3. Try British spelling normalization (colour -> color)
- * 4. Try compound word splitting (git+hub)
- * 5. Try stemming (find known base word + known suffix)
- * 6. Try grapheme-to-phoneme rules
- *
  * @param word The unknown word
  * @param format The output format
  * @returns The translated word
@@ -122,9 +102,6 @@ export function translateUnknown(word: string, format: OutputFormat = 'ingglish'
 /**
  * Diagnoses an unknown word by determining which fallback strategy handles it
  * and collecting diagnostic data for display.
- *
- * Delegates strategy determination to translateUnknownCore (single source of truth),
- * then collects diagnostic data via the shared match* functions.
  *
  * Returns null for obvious non-words (3+ repeated chars, no vowels).
  */
@@ -151,12 +128,4 @@ export function diagnoseUnknown(word: string): WordDiagnosis | null {
     case 'g2p':
       return { strategy: 'g2p', trace: wordToArpabetTraced(word) };
   }
-}
-
-/**
- * Diagnoses which fallback strategy would be used for a word.
- * Returns null for obvious non-words (3+ repeated chars, no vowels).
- */
-export function diagnoseFallback(word: string): FallbackStrategy | null {
-  return diagnoseUnknown(word)?.strategy ?? null;
 }

@@ -1,11 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
   INGGLISH_VOWEL_MAP as VOWEL_MAP,
   INGGLISH_CONSONANT_MAP as CONSONANT_MAP,
-  arpabetToIngglish,
-  stripStress,
-} from './index';
+} from './ingglish-maps';
+import { ARPABET_TO_INGGLISH_MAP as ARPABET_MAP, arpabetToIngglish, stripStress } from './index';
 
 describe('phoneme-map', () => {
   describe('ARPABET_MAP', () => {

@@ -16,21 +16,3 @@ export function registerShavian(): void {
     nativeLabel: '𐑖𐑱𐑝𐑾𐑯',
   });
 }
-
-// Export individual functions for direct use
-export { arpabetToShavian } from './to-shavian';
-export {
-  shavianToArpabet,
-  reverseTranslateShavianWord,
-  reverseTranslateShavianText,
-  reverseTranslateShavianTextWithMapping,
-} from './from-shavian';
-export { isShavianChar, tokenizeShavian } from './tokenize';
-export {
-  ARPABET_TO_SHAVIAN_MAP,
-  SHAVIAN_TO_ARPABET_MAP,
-  SHAVIAN_CONSONANT_MAP,
-  SHAVIAN_VOWEL_MAP,
-  SHAVIAN_SCHWA,
-  SHAVIAN_R_COLORED,
-} from './shavian-maps';

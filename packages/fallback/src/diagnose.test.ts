@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { diagnoseUnknown, diagnoseFallback } from './index';
+import { diagnoseUnknown } from './index';
 
 // These tests use words NOT in the CMU dictionary, so they actually reach
 // diagnoseUnknown in the Word Explorer. Words already in the dictionary
@@ -79,13 +79,13 @@ describe('diagnoseUnknown', () => {
   });
 });
 
-describe('diagnoseFallback (backward compat)', () => {
-  it('returns strategy string matching diagnoseUnknown', () => {
-    expect(diagnoseFallback('omg')).toBe('initialism');
-    expect(diagnoseFallback('organise')).toBe('british');
-    expect(diagnoseFallback('treehouse')).toBe('compound');
-    expect(diagnoseFallback('ghosting')).toBe('stemming');
-    expect(diagnoseFallback('splonk')).toBe('g2p');
-    expect(diagnoseFallback('ssssssss')).toBeNull();
+describe('diagnoseUnknown returns strategy', () => {
+  it('returns correct strategy string for each type', () => {
+    expect(diagnoseUnknown('omg')?.strategy).toBe('initialism');
+    expect(diagnoseUnknown('organise')?.strategy).toBe('british');
+    expect(diagnoseUnknown('treehouse')?.strategy).toBe('compound');
+    expect(diagnoseUnknown('ghosting')?.strategy).toBe('stemming');
+    expect(diagnoseUnknown('splonk')?.strategy).toBe('g2p');
+    expect(diagnoseUnknown('ssssssss')).toBeNull();
   });
 });
