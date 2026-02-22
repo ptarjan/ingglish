@@ -1,8 +1,8 @@
 /**
  * IPA to ARPAbet conversion.
  *
- * Used to convert IPA transcriptions (e.g., from phonemize library)
- * to ARPAbet format compatible with our phoneme mappings.
+ * Used to convert IPA transcriptions to ARPAbet format
+ * compatible with our phoneme mappings.
  */
 
 import { IPA_TO_ARPABET_MAP } from './ipa-maps';

@@ -117,21 +117,7 @@ async function main() {
 
   console.log('');
 
-  // 6. Phonemize (if available)
-  console.log('--- Phonemize Fallback ---');
-  const { preloadPhonemize, translateWithPhonemize, translateWithRules } =
-    await import('@ingglish/fallback');
-
-  await profileAsync('preloadPhonemize', async () => {
-    await preloadPhonemize();
-  });
-
-  profile('translateWithRules("kubernetes")', () => translateWithRules('kubernetes'));
-  profile('translateWithPhonemize("kubernetes")', () => translateWithPhonemize('kubernetes'));
-
-  console.log('');
-
-  // 7. Memory usage
+  // 6. Memory usage
   console.log('--- Memory Usage ---');
   const used = process.memoryUsage();
   console.log(`Heap used: ${Math.round(used.heapUsed / 1024 / 1024)}MB`);

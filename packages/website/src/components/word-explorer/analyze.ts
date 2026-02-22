@@ -92,11 +92,9 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
       ? diagnosis.phonemes
       : diagnosis?.strategy === 'british'
         ? diagnosis.phonemes
-        : diagnosis?.strategy === 'phonemize'
-          ? diagnosis.phonemes
-          : diagnosis?.strategy === 'g2p'
-            ? diagnosis.trace.phonemes
-            : null;
+        : diagnosis?.strategy === 'g2p'
+          ? diagnosis.trace.phonemes
+          : null;
 
   return {
     word: lower,
@@ -134,8 +132,6 @@ export function fallbackLabel(strategy: WordDiagnosis['strategy'] | undefined): 
       return 'compound word';
     case 'stemming':
       return 'stemmed';
-    case 'phonemize':
-      return 'neural G2P';
     case 'g2p':
       return 'G2P rules';
     case undefined:

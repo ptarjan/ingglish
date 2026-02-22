@@ -90,7 +90,6 @@ src/
 ├── acronyms.ts         # Acronym/initialism handling
 ├── compounds.ts        # Compound word splitting
 ├── stemming.ts         # Base word + suffix matching
-├── phonemize.ts        # Neural G2P wrapper
 ├── british.ts          # British spelling variants
 └── g2p-rules.ts        # Rule-based grapheme-to-phoneme
 ```

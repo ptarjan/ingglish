@@ -7,8 +7,7 @@
  * 3. British spelling normalization (colour -> color)
  * 4. Compound word splitting (github -> git + hub)
  * 5. Stemming (find known base word + known suffix)
- * 6. Neural G2P via phonemize (if available)
- * 7. Rule-based grapheme-to-phoneme
+ * 6. Rule-based grapheme-to-phoneme
  */
 
 import { arpabetToFormat } from '@ingglish/phonemes';
@@ -26,7 +25,6 @@ import { translateAsBritish, matchBritish } from './british';
 import { translateAsCompound } from './compounds';
 import { dpDecompose } from './compounds';
 import { translateWithStemming, matchStemming, SUFFIX_PHONEMES, PREFIX_PHONEMES } from './stemming';
-import { translateWithPhonemize, phonemizeToArpabet, preloadPhonemize } from './phonemize';
 import { translateWithRules, wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
 
@@ -36,7 +34,6 @@ export type FallbackStrategy =
   | 'british'
   | 'compound'
   | 'stemming'
-  | 'phonemize'
   | 'g2p';
 
 export interface FallbackResult {
@@ -50,7 +47,6 @@ export type WordDiagnosis =
   | { strategy: 'british'; americanSpelling: string; phonemes: string[] }
   | { strategy: 'compound'; parts: string[] }
   | { strategy: 'stemming'; prefix?: string; stem: string; suffix?: string }
-  | { strategy: 'phonemize'; phonemes: string[] }
   | { strategy: 'g2p'; trace: G2PTrace };
 
 export {
@@ -66,8 +62,6 @@ export {
   SUFFIX_PHONEMES,
   PREFIX_PHONEMES,
   translateWithStemming,
-  translateWithPhonemize,
-  preloadPhonemize,
 };
 
 /**
@@ -103,18 +97,6 @@ export function translateUnknownCore(word: string, format: OutputFormat): Fallba
     return { strategy: 'stemming', translated: stemmedResult };
   }
 
-  // Try phonemize if loaded
-  // Skip if the result round-trips back to the original word (e.g. phonemize
-  // maps "splonk" → IPA → arpabet → ingglish "splonk" unchanged).
-  const phonemizeResult = translateWithPhonemize(word, format);
-  if (
-    phonemizeResult !== null &&
-    phonemizeResult.length > 0 &&
-    phonemizeResult.toLowerCase() !== word.toLowerCase()
-  ) {
-    return { strategy: 'phonemize', translated: phonemizeResult };
-  }
-
   // Fall back to grapheme-to-phoneme rules
   return { strategy: 'g2p', translated: translateWithRules(word, format) };
 }
@@ -128,8 +110,7 @@ export function translateUnknownCore(word: string, format: OutputFormat): Fallba
  * 3. Try British spelling normalization (colour -> color)
  * 4. Try compound word splitting (git+hub)
  * 5. Try stemming (find known base word + known suffix)
- * 6. Try phonemize (neural G2P) if available
- * 7. Try grapheme-to-phoneme rules
+ * 6. Try grapheme-to-phoneme rules
  *
  * @param word The unknown word
  * @param format The output format
@@ -168,8 +149,6 @@ export function diagnoseUnknown(word: string): WordDiagnosis | null {
       const m = matchStemming(word)!;
       return { strategy: 'stemming', prefix: m.prefix, stem: m.stem, suffix: m.suffix };
     }
-    case 'phonemize':
-      return { strategy: 'phonemize', phonemes: phonemizeToArpabet(word)! };
     case 'g2p':
       return { strategy: 'g2p', trace: wordToArpabetTraced(word) };
   }
