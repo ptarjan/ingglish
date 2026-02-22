@@ -182,66 +182,31 @@ Key questions before implementing:
 2. **Are the unstressed variants truly distinct to English speakers?** Unstressed 'y' in "happy" does sound different from 'ee' in "bee". Unstressed 'o' in "avocado" does sound different from 'oh' in "go". But is the difference as clear-cut as schwa vs strut?
 3. **Do the new spellings avoid perceptual ambiguity?** Unlike the rejected base changes, 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English *already spells these sounds*. English readers would likely pronounce them correctly naturally.
 
-## Readability Metric Analysis
+## Why Continuous Readability Metrics Don't Work
 
-The identical-word metric is binary: a word either matches or doesn't. This misses partial improvements — "bot" for "boat" is closer to the original than "boht", but both count as non-identical.
+The identical-word metric is binary: a word either matches or it doesn't. We investigated two continuous alternatives to capture partial improvements, and both failed.
 
-The **readability metric** uses edit-distance similarity to capture these partial gains:
+### Edit distance (Levenshtein similarity)
 
-```
-similarity(word) = 1 - (levenshtein(english, ingglish) / max(len(english), len(ingglish)))
-readability = Σ(similarity × frequency) / Σ(frequency)
-```
+The idea: measure how many characters are preserved. `similarity = 1 - (edit_distance / max_length)`.
 
-A readability score of 100% means every word is spelled identically to English. The baseline is **66.30%** — on average, two-thirds of each word's letters are preserved in the Ingglish spelling.
+**Problem:** Optimizes for character overlap, not perceptual readability. The top recommendation was /ʌ/→"uo" (+8,300 /M) because 'u' matches the first letter in "up" and "us". But the resulting spellings are unreadable: "uop" for "up", "buot" for "but", "kuop" for "cup". Other suggestions: /k/→"ck" producing "ckat" for "cat", /iː/→"ey" producing "sey" for "see".
 
-### Readability vs Identical Words: Different Rankings
+### Bigram familiarity (character n-gram frequency)
 
-The readability metric produces different rankings from the identical-word metric because it values partial improvements. For example, changing /ʌ/ from "uh" to any digraph starting with 'u' improves similarity for thousands of words without making them identical. The top readability improvements by category:
+The idea: build a frequency model of English character bigrams, then score how "English-looking" each Ingglish spelling is based on its letter patterns.
 
-#### Base phoneme changes (readability metric)
+**Problem:** Common bigrams don't make readable words. The top recommendation was /ʌ/→"ea" (+159K /M) because "ea" is a common English bigram — but it produces "eav" for "of", "eap" for "up", "weat" for "what". Other suggestions: /z/→"ey" producing "iey" for "is" and "woey" for "was"; /ð/→"wh" producing "wha" for "the" and "wiwh" for "with".
 
-| Phoneme | Current | Best | Δ Readability /M | Top improved | Top worsened |
-|---------|---------|------|------------------|--------------|--------------|
-| /ʌ/ AH | uh | uo | **+8,300** | of(0→33%), come(0→25%), one(0→25%), some(25→50%) | uh(100→50%), huh(100→67%) |
-| /aɪ/ AY | ai | ie | **+2,700** | right(40→60%), die(33→100%), night(40→60%), nice(25→50%) | while(60→40%), white(60→40%) |
-| /ʊ/ UH | u | uo | **+1,400** | good(50→75%), look(50→75%), took(50→75%) | put(100→75%), push(100→80%) |
-| /iː/ IY | ee | ey | **+1,400** | any(25→50%), really(33→50%), sorry(40→60%) | see(100→67%), need(100→75%) |
-| /k/ K | k | ck | **+787** | back(75→100%), can(67→75%), could(40→60%) | like(50→40%), think(83→71%) |
-| /oʊ/ OW | oh | ow | **+561** | know(50→75%), own(67→100%), show(75→100%) | oh(100→50%), though(50→33%) |
-| /ɔ/ AO | aw | ao | **+312** | long(60→80%), wrong(40→60%), gone(25→50%) | saw(100→67%), law(100→67%) |
-| /ɔɪ/ OY | oi | oy | **+136** | boy(67→100%), enjoy(80→100%), joy(67→100%) | point(100→80%), join(100→75%) |
+### Why these fail
 
-Compare to the identical-word metric where AH didn't appear at all (no AH change makes words identical without creating collisions), and /ɔɪ/→oy ranked highest at only +235 /M. The readability metric reveals that AH→uo has 35× more impact than OY→oy, because partial similarity improvements in ultra-common words like "of", "come", and "one" add up massively.
+Both metrics measure properties of the output text (character similarity, letter pattern frequency) without modeling how English readers actually decode spellings. Readability for English speakers depends on:
 
-#### Stress-conditioned changes (readability metric)
+1. **Spelling convention knowledge** — English readers know "igh" represents /aɪ/ and "tion" represents /ʃən/. These are learned, not derivable from character statistics.
+2. **Visual word recognition** — Readers recognize common words as whole shapes, not letter-by-letter. Any change to a common word's spelling disrupts this.
+3. **Phonetic decoding rules** — English readers use context-dependent rules ("c" before "e" = /s/, before "a" = /k/). Automated metrics can't model these.
 
-| Phoneme | Current | Best | Δ Readability /M | Top improved | Top worsened |
-|---------|---------|------|------------------|--------------|--------------|
-| IY0 | ee | ey | **+4,300** | any(25→50%), really(33→50%), sorry(40→60%), very(33→50%) | married(71→57%), coffee(67→50%) |
-| OW0 | oh | ow | **+89** | follow(67→83%), window(83→100%), fellow(67→83%) | thorough(63→50%) |
-| UW0 | oo | eo | **+36** | lieutenant(70→80%), continue(44→56%), rescue(43→57%) | routine(43→29%) |
-
-Note: IY0→'y' (+6,400 /M without the phoneme-uniqueness filter) is excluded because 'y' is already used by the Y consonant. Similarly, UW0→'o' and OW0→'o' are excluded because 'o' is already used by AA. After filtering, IY0→'ey' is the top stress-conditioned candidate. The identical-word metric still favors IY0→'y' (+2,700 /M) — that analysis doesn't enforce phoneme uniqueness since it only counts exact matches, but the reverse translation concern applies there too.
-
-### Combined Result
-
-Greedily applying all non-conflicting improvements (with phoneme-uniqueness filtering):
-
-| Metric | Before | After | Gain |
-|--------|--------|-------|------|
-| Readability | 66.30% | 67.74% | +1.43 pp |
-| Collisions | 18,848 | 18,645 | -203 |
-
-The readability metric confirms the identical-word findings while adding new insights:
-
-1. **AH (strut)** is the single most impactful phoneme for readability — it affects ultra-common words like "of", "come", "one", "some" that the identical-word metric can't capture because no spelling makes them identical
-2. **Phoneme-uniqueness filtering matters** — the top-scoring candidates often steal spellings from other phonemes (UH→"uo" conflicts with AH→"uo", IY0→'y' conflicts with Y→'y'), which would break reverse translation
-3. **Base phoneme changes create trade-offs** — every improvement worsens some words. The readability metric makes these trade-offs visible (e.g., AY→ie improves "right" 40→60% but worsens "while" 60→40%)
-
-### Important Caveat
-
-The readability metric optimizes for **character-level similarity**, not **perceptual readability**. Changing /ʌ/ to "uo" scores well because 'u' matches the first letter in words like "up" and "us" — but "uop" for "up" is not more readable to an English speaker than "uhp". The metric is useful for identifying which phonemes have the most room for improvement, but the final spelling choice must still pass the perceptual readability test.
+The identical-word metric with frequency weighting remains the best automated proxy for readability. A word that's spelled identically to English is guaranteed readable; for non-identical words, human judgment is needed to evaluate the spelling choice.
 
 ## Methodology
 
@@ -249,8 +214,6 @@ Analysis scripts are in `packages/core/scripts/analysis/`:
 
 - `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
 - `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
-- `readability-search.ts` - Edit-distance readability metric analysis (continuous similarity rather than binary match)
-
 All scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
 
 The exhaustive search runs in three phases:
@@ -262,7 +225,6 @@ The exhaustive search runs in three phases:
 Run with:
 ```bash
 npx vite-node scripts/analysis/exhaustive-search.ts
-npx vite-node scripts/analysis/readability-search.ts
 ```
 
 ## Why Raw Identical Word Count Misleads
