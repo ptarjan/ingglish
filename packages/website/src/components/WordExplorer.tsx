@@ -95,17 +95,19 @@ export default function WordExplorer() {
         <div className="explorer-empty">
           <p>Try some interesting words:</p>
           <div className="suggestion-chips">
-            {['colonel', 'treehouse', 'ghosting', 'URL', 'favourable', 'psychology'].map((w) => (
-              <button
-                key={w}
-                className="suggestion-chip"
-                onClick={() => {
-                  setInput(w);
-                }}
-              >
-                {w}
-              </button>
-            ))}
+            {['colonel', 'treehouse', 'ghosting', 'URL', 'favourable', 'emoji', 'doomscroll'].map(
+              (w) => (
+                <button
+                  key={w}
+                  className="suggestion-chip"
+                  onClick={() => {
+                    setInput(w);
+                  }}
+                >
+                  {w}
+                </button>
+              )
+            )}
           </div>
         </div>
       )}
