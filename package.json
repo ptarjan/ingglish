@@ -18,7 +18,7 @@
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
     "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx,js,jsx,json,css}\" \"**/package.json\" \"!node_modules\"",
     "ci": "npm run build && npm run lint && npm run lint:css && npm run format:check && npm run test && npm run test:docs -w @ingglish/website",
-    "lint:css": "stylelint \"packages/*/src/**/*.css\"",
+    "lint:css": "stylelint \"packages/*/src/**/*.css\" && node scripts/lint-css-vars.js",
     "lint:css:fix": "stylelint \"packages/*/src/**/*.css\" --fix",
     "debug:roundtrip": "npm run debug:roundtrip -w ingglish --",
     "prepare": "husky"
