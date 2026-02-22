@@ -205,93 +205,18 @@ function generateNonce(): string {
 }
 
 /**
- * The minified click handler script body (without <script> wrapper).
- * Injected into iframe to capture link clicks via postMessage.
- * Handles both touch (iOS Safari) and click events.
- * Distinguishes taps from scroll/pinch gestures on touch devices.
+ * Minified click handler injected into the iframe.
  *
- * Readable version:
- * ```js
- * (function() {
- *   var touchTarget = null;
- *   var touchStartX = 0;
- *   var touchStartY = 0;
- *   var touchHandled = false; // Flag to skip click after touch handled
+ * Required because iOS Safari doesn't fire parent-attached event listeners
+ * on sandboxed iframe documents — the script must run inside the iframe itself.
+ * The iframe uses sandbox="allow-same-origin allow-scripts", with DOMPurify
+ * stripping all page scripts first and a CSP nonce ensuring only this handler
+ * can execute.
  *
- *   // Find closest anchor element (with IE11 fallback)
- *   function findAnchor(el) {
- *     return el && el.closest
- *       ? el.closest('a[href]')
- *       : (function(n) { while (n && n.tagName !== 'A') n = n.parentElement; return n; })(el);
- *   }
- *
- *   // Handle navigation for valid links
- *   function handleLink(anchor, event) {
- *     if (!anchor) return;
- *     var href = anchor.getAttribute('href');
- *     if (!href || href.indexOf('javascript:') === 0 || href.indexOf('mailto:') === 0) return;
- *
- *     // Prevent default immediately for all handled links
- *     event.preventDefault();
- *     event.stopPropagation();
- *
- *     // Handle pure hash links (#section) - scroll within iframe
- *     if (href.indexOf('#') === 0) {
- *       var id = href.slice(1);
- *       var target = document.getElementById(id) || document.querySelector('[name="' + id + '"]');
- *       if (target) target.scrollIntoView({ behavior: 'smooth' });
- *       return;
- *     }
- *
- *     // Handle external links - send to parent
- *     parent.postMessage({ type: 'ingglish-link-click', href: href }, '*');
- *   }
- *
- *   // Track touch target for iOS Safari - only single-touch taps
- *   document.addEventListener('touchstart', function(e) {
- *     touchHandled = false;
- *     // Ignore multi-touch (pinch gestures)
- *     if (e.touches.length > 1) { touchTarget = null; return; }
- *     touchTarget = findAnchor(e.target);
- *     var touch = e.touches[0];
- *     touchStartX = touch ? touch.clientX : 0;
- *     touchStartY = touch ? touch.clientY : 0;
- *   }, true);
- *
- *   // Clear touch target on multi-touch or significant movement (scroll)
- *   document.addEventListener('touchmove', function(e) {
- *     if (!touchTarget) return;
- *     if (e.touches.length > 1) { touchTarget = null; return; }
- *     var touch = e.touches[0];
- *     if (touch) {
- *       var dx = Math.abs(touch.clientX - touchStartX);
- *       var dy = Math.abs(touch.clientY - touchStartY);
- *       if (dx > 10 || dy > 10) touchTarget = null;
- *     }
- *   }, true);
- *
- *   document.addEventListener('touchend', function(e) {
- *     touchHandled = true; // Mark that we processed this touch
- *     if (touchTarget) { var a = touchTarget; touchTarget = null; handleLink(a, e); }
- *   }, true);
- *
- *   // Only handle click if it wasn't from a touch (mouse users)
- *   document.addEventListener('click', function(e) {
- *     if (touchHandled) { touchHandled = false; return; }
- *     handleLink(findAnchor(e.target), e);
- *   }, true);
- * })();
- * ```
+ * Captures link clicks (touch + mouse) and sends them to the parent via
+ * postMessage. Distinguishes taps from scroll/pinch gestures on touch devices.
  */
 const CLICK_HANDLER_BODY = `(function(){var t=null,sx=0,sy=0,th=false;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){th=false;if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){th=true;if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){if(th){th=false;return}h(f(e.target),e)},true)})();`;
-
-/**
- * Builds the click handler script tag with an optional nonce.
- */
-function buildClickHandlerScript(nonce?: string): string {
-  const nonceAttr = nonce ? ` nonce="${nonce}"` : '';
-  return `<script${nonceAttr}>${CLICK_HANDLER_BODY}</script>`;
-}
 
 /**
  * Builds the CSP meta tag that restricts script execution to the given nonce.
@@ -309,15 +234,14 @@ function injectCspMetaTag(html: string, nonce: string): string {
   if (headMatch !== null) {
     return html.replace(headMatch[0], headMatch[0] + cspTag);
   }
-  // If no <head>, prepend CSP tag
   return cspTag + html;
 }
 
 /**
- * Injects the click handler script before the closing body or html tag.
+ * Injects the nonce'd click handler script before </body>, </html>, or at the end.
  */
-function injectClickHandler(html: string, nonce?: string): string {
-  const script = buildClickHandlerScript(nonce);
+function injectClickHandler(html: string, nonce: string): string {
+  const script = `<script nonce="${nonce}">${CLICK_HANDLER_BODY}</script>`;
 
   const bodyMatch = BODY_CLOSE_REGEX.exec(html);
   if (bodyMatch !== null) {
@@ -351,10 +275,11 @@ export interface ProcessHtmlResult {
  *
  * Pipeline:
  * 1. Detect bot protection pages (throws if detected)
- * 2. Strip scripts and dangerous elements
+ * 2. Strip scripts and dangerous elements (DOMPurify)
  * 3. Inject base tag for relative URL resolution
  * 4. Proxy font URLs through CORS proxy
- * 5. Inject click handler for link navigation
+ * 5. Inject CSP meta tag with nonce (defense-in-depth)
+ * 6. Inject nonce'd click handler for link navigation
  *
  * @throws Error if bot protection is detected
  */

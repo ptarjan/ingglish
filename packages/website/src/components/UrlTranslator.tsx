@@ -206,10 +206,11 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
             {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
           </button>
         )}
-        {/* allow-same-origin + allow-scripts: needed so the parent can access
-            the iframe's DOM for translation and so page scripts can run.
-            This effectively negates the sandbox for same-origin content,
-            but the CORS proxy ensures content is always cross-origin. */}
+        {/* allow-same-origin: parent needs contentDocument access for translation.
+            allow-scripts: required for iOS Safari — parent-attached event listeners
+            don't fire on sandboxed iframe documents on iOS. Our click handler script
+            must run inside the iframe. DOMPurify strips all page scripts first, and
+            a CSP nonce ensures only our click handler can execute. */}
         <iframe
           ref={iframeRef}
           title="Translated page"
