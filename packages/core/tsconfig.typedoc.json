@@ -5,7 +5,7 @@
     "paths": {
       "@ingglish/normalize": ["../normalize/src/index.ts"],
       "@ingglish/phonemes": ["../phonemes/src/index.ts"],
-      "@ingglish/tokenize": ["../tokenize/src/index.ts"],
+
       "@ingglish/dictionary": ["../dictionary/src/index.ts"],
       "@ingglish/fallback": ["../fallback/src/index.ts"],
       "@ingglish/g2p": ["../g2p/src/index.ts"]
@@ -15,7 +15,7 @@
     "src/**/*",
     "../phonemes/src/**/*",
     "../normalize/src/**/*",
-    "../tokenize/src/**/*",
+
     "../dictionary/src/**/*",
     "../fallback/src/**/*",
     "../g2p/src/**/*"

@@ -9,10 +9,13 @@
 import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
 import { ipaToArpabetClean } from '@ingglish/ipa';
 import {
-  detectCasePattern,
   applyCasePattern,
-  normalizeApostrophes,
+  detectCasePattern,
   extractPreservedPatterns,
+  normalizeApostrophes,
+  tokenizeIPA,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
 } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
@@ -21,7 +24,6 @@ import {
   ingglishToArpabet,
   registerFormat,
 } from '@ingglish/phonemes';
-import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
 

@@ -12,7 +12,7 @@ async function main() {
 
   const { loadDictionary, lookupPronunciation } = await import('@ingglish/dictionary');
   const { arpabetToFormat } = await import('@ingglish/phonemes');
-  const { tokenizeText } = await import('@ingglish/tokenize');
+  const { tokenizeText } = await import('@ingglish/normalize');
   const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
     await import('@ingglish/normalize');
 

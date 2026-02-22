@@ -2,7 +2,7 @@
  * Tokenization utilities for splitting text into word and non-word tokens.
  */
 
-import { normalizeApostrophes } from '@ingglish/normalize';
+import { normalizeApostrophes } from './text';
 
 // Shared regex patterns for word tokenization (exported for use in dom package)
 /** Regex to split text into word and non-word tokens (includes accented Latin chars).

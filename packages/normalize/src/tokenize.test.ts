@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isIPAChar, isPhoneticChar, tokenizeIPA, tokenizePhonetic, tokenizeText } from './index';
+import { isIPAChar, isPhoneticChar, tokenizeIPA, tokenizePhonetic, tokenizeText } from './tokenize';
 
 describe('text utilities', () => {
   describe('isPhoneticChar', () => {

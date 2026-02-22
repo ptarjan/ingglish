@@ -6,8 +6,8 @@ import {
   translateSyncWithMapping,
 } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { type IndexedToken, tokenizePhonetic } from '@ingglish/normalize';
 import { getFormatLabel } from '@ingglish/phonemes';
-import { type IndexedToken, tokenizePhonetic } from '@ingglish/tokenize';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
 import { pickRandomPassage } from '../data/sample-text';

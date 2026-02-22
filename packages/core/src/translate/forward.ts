@@ -18,6 +18,8 @@ import {
   restorePreservedPatterns,
   splitCamelCase,
   stripDiacritics,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
 } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
@@ -25,7 +27,6 @@ import {
   getFormatIsLatinScript,
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
-import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import { translateContraction } from './contractions';
 import { expandPlaceholder } from './preserved';
 

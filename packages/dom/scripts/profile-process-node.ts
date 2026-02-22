@@ -18,7 +18,7 @@ async function main() {
 
   const { normalizeApostrophes, detectCasePattern, applyCasePattern } =
     await import('@ingglish/normalize');
-  const { WORD_SPLIT_REGEX, WORD_TEST_REGEX } = await import('@ingglish/tokenize');
+  const { WORD_SPLIT_REGEX, WORD_TEST_REGEX } = await import('@ingglish/normalize');
   const { translate } = await import('ingglish');
 
   // Load dictionary

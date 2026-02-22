@@ -54,7 +54,6 @@ export async function translate(text: string, format: OutputFormat = 'ingglish')
 export { translateSync, translateSyncWithMapping, translateWord } from './translate';
 export type { TranslatedToken } from './translate';
 export {
-  reverseTranslateSync,
   reverseTranslateSyncWithMapping,
   reverseTranslateWord,
 } from './translate';

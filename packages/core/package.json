@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@ingglish/normalize": "^1.0.0",
-    "@ingglish/tokenize": "^1.0.0",
     "@ingglish/phonemes": "^1.0.0",
     "@ingglish/ipa": "^1.0.0",
     "@ingglish/dictionary": "^1.0.0",
