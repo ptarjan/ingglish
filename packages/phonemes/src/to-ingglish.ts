@@ -100,8 +100,8 @@ export function arpabetToIngglish(arpabet: string[]): string {
 registerFormat('ingglish', {
   forward: arpabetToIngglish,
   isLatinScript: true,
-  preservesCase: true,
   label: 'Ingglish',
+  preservesCase: true,
 });
 
 /**

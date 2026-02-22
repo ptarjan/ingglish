@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { isInitialism, INITIALISM_EXPANSIONS } from '@ingglish/fallback';
-import { translateWord, translateSync } from './translate/forward';
+import { translateSync, translateWord } from './translate/forward';
 
 describe('initialisms', () => {
   describe('INITIALISM_EXPANSIONS', () => {

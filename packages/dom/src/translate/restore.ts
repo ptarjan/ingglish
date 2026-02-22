@@ -3,10 +3,10 @@
  */
 
 import {
-  WORD_SPAN_CLASS,
-  ATTR_ORIGINAL_WORD,
   ATTR_ORIGINAL_CONTENT,
   ATTR_ORIGINAL_PREFIX,
+  ATTR_ORIGINAL_WORD,
+  WORD_SPAN_CLASS,
 } from '../constants';
 import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../traversal';
 
@@ -16,12 +16,15 @@ import { requireBrowser, TRANSLATABLE_ATTRIBUTES } from '../traversal';
  *
  * @param root The root element to restore
  */
-export function restoreDOM(root: Element | Document): void {
+export function restoreDOM(root: Document | Element): void {
   requireBrowser();
 
   // First, replace all tooltip spans with their original text
   // This preserves nested DOM structure (unlike textContent replacement)
-  const wordSpans = Array.from(root.querySelectorAll(`.${WORD_SPAN_CLASS}[${ATTR_ORIGINAL_WORD}]`));
+  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
+  const wordSpans = Array.from(
+    root.querySelectorAll<HTMLElement>(`.${WORD_SPAN_CLASS}[${ATTR_ORIGINAL_WORD}]`)
+  );
   for (const span of wordSpans) {
     const originalWord = span.getAttribute(ATTR_ORIGINAL_WORD);
     if (originalWord !== null) {
@@ -31,7 +34,10 @@ export function restoreDOM(root: Element | Document): void {
   }
 
   // Clean up any original content attributes (no longer needed for restoration)
-  const elementsWithOriginal = Array.from(root.querySelectorAll(`[${ATTR_ORIGINAL_CONTENT}]`));
+  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
+  const elementsWithOriginal = Array.from(
+    root.querySelectorAll<HTMLElement>(`[${ATTR_ORIGINAL_CONTENT}]`)
+  );
   for (const element of elementsWithOriginal) {
     element.removeAttribute(ATTR_ORIGINAL_CONTENT);
   }
@@ -40,7 +46,8 @@ export function restoreDOM(root: Element | Document): void {
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map(
     (attr) => `[${ATTR_ORIGINAL_PREFIX}${attr}]`
   ).join(',');
-  const elementsWithTranslatedAttrs = Array.from(root.querySelectorAll(attrSelector));
+  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
+  const elementsWithTranslatedAttrs = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
 
   for (const element of elementsWithTranslatedAttrs) {
     for (const attrName of TRANSLATABLE_ATTRIBUTES) {

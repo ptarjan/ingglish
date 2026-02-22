@@ -1,16 +1,38 @@
 import { oughExamples } from '../../data/tutorial-data';
 import { useScrollReveal, useStaggeredReveal } from '../../hooks/useScrollReveal';
 
+export function Section1Ough() {
+  const { ref, visible } = useScrollReveal<HTMLElement>();
+  const revealedCount = useStaggeredReveal(oughExamples.length, visible, 700);
+
+  return (
+    <section className={`tutorial-section ${visible ? 'revealed' : ''}`} ref={ref}>
+      <h2 className="tutorial-heading">One spelling. Six sounds.</h2>
+      <div className="ough-grid">
+        {oughExamples.map((ex, i) => (
+          <OughCard key={i} {...ex} animate={i < revealedCount} />
+        ))}
+      </div>
+      <p className="tutorial-punchline">
+        Same four letters. Six different sounds. This is English.
+      </p>
+      <div aria-hidden="true" className="scroll-hint">
+        &#8595;
+      </div>
+    </section>
+  );
+}
+
 function OughCard({
-  prefix,
-  suffix,
-  sound,
   animate,
+  prefix,
+  sound,
+  suffix,
 }: {
-  prefix: string;
-  suffix: string;
-  sound: string;
   animate: boolean;
+  prefix: string;
+  sound: string;
+  suffix: string;
 }) {
   return (
     <div className={`ough-card ${animate ? 'revealed' : ''}`}>
@@ -28,27 +50,5 @@ function OughCard({
         </span>
       </div>
     </div>
-  );
-}
-
-export function Section1Ough() {
-  const { ref, visible } = useScrollReveal<HTMLElement>();
-  const revealedCount = useStaggeredReveal(oughExamples.length, visible, 700);
-
-  return (
-    <section ref={ref} className={`tutorial-section ${visible ? 'revealed' : ''}`}>
-      <h2 className="tutorial-heading">One spelling. Six sounds.</h2>
-      <div className="ough-grid">
-        {oughExamples.map((ex, i) => (
-          <OughCard key={i} {...ex} animate={i < revealedCount} />
-        ))}
-      </div>
-      <p className="tutorial-punchline">
-        Same four letters. Six different sounds. This is English.
-      </p>
-      <div className="scroll-hint" aria-hidden="true">
-        &#8595;
-      </div>
-    </section>
   );
 }

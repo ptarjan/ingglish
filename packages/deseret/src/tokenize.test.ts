@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isDeseretChar, tokenizeDeseret } from './tokenize';
 
 describe('isDeseretChar', () => {
@@ -26,23 +26,23 @@ describe('isDeseretChar', () => {
 describe('tokenizeDeseret', () => {
   it('tokenizes pure Deseret text', () => {
     const tokens = tokenizeDeseret('𐐿𐐰𐐻');
-    expect(tokens).toEqual([{ text: '𐐿𐐰𐐻', isWord: true }]);
+    expect(tokens).toEqual([{ isWord: true, text: '𐐿𐐰𐐻' }]);
   });
 
   it('tokenizes mixed text', () => {
     const tokens = tokenizeDeseret('𐐿𐐰𐐻 𐐼𐐫𐑀');
     expect(tokens).toEqual([
-      { text: '𐐿𐐰𐐻', isWord: true },
-      { text: ' ', isWord: false },
-      { text: '𐐼𐐫𐑀', isWord: true },
+      { isWord: true, text: '𐐿𐐰𐐻' },
+      { isWord: false, text: ' ' },
+      { isWord: true, text: '𐐼𐐫𐑀' },
     ]);
   });
 
   it('tokenizes text with punctuation', () => {
     const tokens = tokenizeDeseret('𐐸𐐱𐑊𐐬!');
     expect(tokens).toEqual([
-      { text: '𐐸𐐱𐑊𐐬', isWord: true },
-      { text: '!', isWord: false },
+      { isWord: true, text: '𐐸𐐱𐑊𐐬' },
+      { isWord: false, text: '!' },
     ]);
   });
 
@@ -52,6 +52,6 @@ describe('tokenizeDeseret', () => {
 
   it('handles pure ASCII text', () => {
     const tokens = tokenizeDeseret('hello');
-    expect(tokens).toEqual([{ text: 'hello', isWord: false }]);
+    expect(tokens).toEqual([{ isWord: false, text: 'hello' }]);
   });
 });

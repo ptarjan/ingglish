@@ -14,7 +14,7 @@ registerShavian();
 registerDeseret();
 registerExperiment();
 
-const rootElement = document.getElementById('root');
+const rootElement = document.querySelector('#root');
 if (rootElement === null) {
   throw new Error('Root element not found');
 }

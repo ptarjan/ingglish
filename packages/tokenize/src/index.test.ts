@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { isPhoneticChar, tokenizeText, tokenizePhonetic, tokenizeIPA, isIPAChar } from './index';
+import { describe, expect, it } from 'vitest';
+import { isIPAChar, isPhoneticChar, tokenizeIPA, tokenizePhonetic, tokenizeText } from './index';
 
 describe('text utilities', () => {
   describe('isPhoneticChar', () => {
@@ -62,9 +62,9 @@ describe('text utilities', () => {
     it('should tokenize simple text', () => {
       const tokens = tokenizeText('Hello world');
       expect(tokens).toHaveLength(3);
-      expect(tokens[0]).toEqual({ text: 'Hello', isWord: true });
-      expect(tokens[1]).toEqual({ text: ' ', isWord: false });
-      expect(tokens[2]).toEqual({ text: 'world', isWord: true });
+      expect(tokens[0]).toEqual({ isWord: true, text: 'Hello' });
+      expect(tokens[1]).toEqual({ isWord: false, text: ' ' });
+      expect(tokens[2]).toEqual({ isWord: true, text: 'world' });
     });
 
     it('should handle punctuation', () => {
@@ -84,9 +84,9 @@ describe('text utilities', () => {
     it('should tokenize with word indices', () => {
       const tokens = tokenizePhonetic('haloh werld');
       expect(tokens).toHaveLength(3);
-      expect(tokens[0]).toEqual({ text: 'haloh', isWord: true, wordIndex: 0 });
-      expect(tokens[1]).toEqual({ text: ' ', isWord: false, wordIndex: null });
-      expect(tokens[2]).toEqual({ text: 'werld', isWord: true, wordIndex: 1 });
+      expect(tokens[0]).toEqual({ isWord: true, text: 'haloh', wordIndex: 0 });
+      expect(tokens[1]).toEqual({ isWord: false, text: ' ', wordIndex: null });
+      expect(tokens[2]).toEqual({ isWord: true, text: 'werld', wordIndex: 1 });
     });
 
     it('should handle IPA text with stress markers', () => {
@@ -113,7 +113,7 @@ describe('text utilities', () => {
     it('should keep apostrophes as part of words', () => {
       const tokens = tokenizePhonetic("foo's");
       expect(tokens).toHaveLength(1);
-      expect(tokens[0]).toEqual({ text: "foo's", isWord: true, wordIndex: 0 });
+      expect(tokens[0]).toEqual({ isWord: true, text: "foo's", wordIndex: 0 });
     });
 
     it('should keep contractions as single words', () => {

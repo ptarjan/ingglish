@@ -21,7 +21,7 @@ export function extractWords(text: string): string[] {
       uniqueWords.add(token.toLowerCase());
     }
   }
-  return Array.from(uniqueWords);
+  return [...uniqueWords];
 }
 
 /**
@@ -43,5 +43,5 @@ export function extractWordsFromNodes(textNodes: Text[]): string[] {
       }
     }
   }
-  return Array.from(uniqueWords);
+  return [...uniqueWords];
 }

@@ -5,59 +5,31 @@
  * with homophone acceptance via reverseTranslateWord.
  */
 
-import { reverseTranslateWord } from 'ingglish';
 import type { TranslatedToken } from 'ingglish';
+import { reverseTranslateWord } from 'ingglish';
+
+export interface SentenceScore {
+  correct: number;
+  /** Score as fraction 0–1 */
+  score: number;
+  total: number;
+  words: WordScore[];
+}
 
 export interface WordScore {
-  /** The Ingglish word shown to the user */
-  ingglish: string;
-  /** The expected English word */
-  expected: string;
   /** What the user typed for this position */
   actual: string;
   /** Whether the user's answer was accepted */
   correct: boolean;
+  /** The expected English word */
+  expected: string;
   /** True if accepted via fuzzy match (close misspelling) */
   fuzzy?: boolean;
-}
-
-export interface SentenceScore {
-  words: WordScore[];
-  correct: number;
-  total: number;
-  /** Score as fraction 0–1 */
-  score: number;
+  /** The Ingglish word shown to the user */
+  ingglish: string;
 }
 
 const EDGE_PUNCTUATION = /^[^a-z0-9]+|[^a-z0-9]+$/gi;
-
-function stripPunctuation(word: string): string {
-  return word.replace(EDGE_PUNCTUATION, '');
-}
-
-/** Levenshtein edit distance between two strings. */
-function editDistance(a: string, b: string): number {
-  const m = a.length;
-  const n = b.length;
-  const dp: number[] = Array.from({ length: n + 1 }, (_, i) => i);
-  for (let i = 1; i <= m; i++) {
-    let prev = i - 1;
-    dp[0] = i;
-    for (let j = 1; j <= n; j++) {
-      const temp = dp[j]!;
-      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
-      prev = temp;
-    }
-  }
-  return dp[n]!;
-}
-
-/** Allow 1 edit for words <= 5 chars, 2 edits for longer words. */
-function isCloseEnough(actual: string, expected: string): boolean {
-  const dist = editDistance(actual, expected);
-  const maxDist = expected.length <= 5 ? 1 : 2;
-  return dist > 0 && dist <= maxDist;
-}
 
 /**
  * Score a user's English guess against the expected sentence.
@@ -71,8 +43,8 @@ export function scoreSentence(tokens: TranslatedToken[], userInput: string): Sen
   const words: WordScore[] = [];
   let correct = 0;
 
-  for (let i = 0; i < wordTokens.length; i++) {
-    const token = wordTokens[i]!;
+  for (const [i, wordToken] of wordTokens.entries()) {
+    const token = wordToken;
     const expected = stripPunctuation(token.original);
     const ingglish = stripPunctuation(token.translated);
     const actual = stripPunctuation(userWords[i] ?? '');
@@ -108,14 +80,42 @@ export function scoreSentence(tokens: TranslatedToken[], userInput: string): Sen
     if (isCorrect) {
       correct++;
     }
-    words.push({ ingglish, expected, actual, correct: isCorrect, fuzzy: isFuzzy });
+    words.push({ actual, correct: isCorrect, expected, fuzzy: isFuzzy, ingglish });
   }
 
   const total = words.length;
   return {
-    words,
     correct,
-    total,
     score: total > 0 ? correct / total : 0,
+    total,
+    words,
   };
+}
+
+/** Levenshtein edit distance between two strings. */
+function editDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  const dp: number[] = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i++) {
+    let prev = i - 1;
+    dp[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const temp = dp[j]!;
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
+      prev = temp;
+    }
+  }
+  return dp[n]!;
+}
+
+/** Allow 1 edit for words <= 5 chars, 2 edits for longer words. */
+function isCloseEnough(actual: string, expected: string): boolean {
+  const dist = editDistance(actual, expected);
+  const maxDist = expected.length <= 5 ? 1 : 2;
+  return dist > 0 && dist <= maxDist;
+}
+
+function stripPunctuation(word: string): string {
+  return word.replaceAll(EDGE_PUNCTUATION, '');
 }

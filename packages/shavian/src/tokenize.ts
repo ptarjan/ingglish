@@ -5,6 +5,11 @@
  * into word and non-word tokens.
  */
 
+interface ShavianToken {
+  isWord: boolean;
+  text: string;
+}
+
 /**
  * Checks if a character is a Shavian letter.
  * Shavian Unicode range: U+10450–U+1047F.
@@ -14,12 +19,7 @@ export function isShavianChar(char: string): boolean {
   if (cp === undefined) {
     return false;
   }
-  return cp >= 0x10450 && cp <= 0x1047f;
-}
-
-interface ShavianToken {
-  text: string;
-  isWord: boolean;
+  return cp >= 0x1_04_50 && cp <= 0x1_04_7F;
 }
 
 /**
@@ -35,19 +35,19 @@ export function tokenizeShavian(text: string): ShavianToken[] {
   for (const char of text) {
     const isShavian = isShavianChar(char);
 
-    if (isShavian !== inWord) {
+    if (isShavian === inWord) {
+      current += char;
+    } else {
       if (current.length > 0) {
-        tokens.push({ text: current, isWord: inWord });
+        tokens.push({ isWord: inWord, text: current });
       }
       current = char;
       inWord = isShavian;
-    } else {
-      current += char;
     }
   }
 
   if (current.length > 0) {
-    tokens.push({ text: current, isWord: inWord });
+    tokens.push({ isWord: inWord, text: current });
   }
 
   return tokens;

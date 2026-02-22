@@ -49,47 +49,6 @@ export const TRANSLATABLE_ATTRIBUTES = [
 ];
 
 /**
- * Internal helper: checks element skip with O(1) Set lookups.
- */
-function checkElementSkip(
-  element: Element,
-  skipTagsSet: Set<string>,
-  skipClassesSet: Set<string>
-): boolean {
-  // Check tag name - O(1) with Set
-  if (skipTagsSet.has(element.tagName)) {
-    return true;
-  }
-
-  // Check classes - O(1) per class with Set
-  // Indexed loop avoids Array.from allocation; classList is a DOMTokenList
-  const classList = element.classList;
-  const classCount = classList.length;
-  for (let i = 0; i < classCount; i++) {
-    if (skipClassesSet.has(classList[i]!)) {
-      return true;
-    }
-  }
-
-  // Check for contenteditable
-  if (element.getAttribute('contenteditable') === 'true') {
-    return true;
-  }
-
-  // Check for data attribute to skip
-  if (element.hasAttribute(ATTR_SKIP)) {
-    return true;
-  }
-
-  // Check for already-translated elements (marked with ATTR_ORIGINAL_WORD)
-  if (element.hasAttribute(ATTR_ORIGINAL_WORD)) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
  * Checks if an element should be skipped during translation.
  */
 export function shouldSkipElement(
@@ -134,4 +93,45 @@ export function skipElement(element: Element): void {
  */
 export function unskipElement(element: Element): void {
   element.removeAttribute(ATTR_SKIP);
+}
+
+/**
+ * Internal helper: checks element skip with O(1) Set lookups.
+ */
+function checkElementSkip(
+  element: Element,
+  skipTagsSet: Set<string>,
+  skipClassesSet: Set<string>
+): boolean {
+  // Check tag name - O(1) with Set
+  if (skipTagsSet.has(element.tagName)) {
+    return true;
+  }
+
+  // Check classes - O(1) per class with Set
+  // Indexed loop avoids Array.from allocation; classList is a DOMTokenList
+  const classList = element.classList;
+  const classCount = classList.length;
+  for (let i = 0; i < classCount; i++) {
+    if (skipClassesSet.has(classList[i]!)) {
+      return true;
+    }
+  }
+
+  // Check for contenteditable
+  if (element.getAttribute('contenteditable') === 'true') {
+    return true;
+  }
+
+  // Check for data attribute to skip
+  if (element.hasAttribute(ATTR_SKIP)) {
+    return true;
+  }
+
+  // Check for already-translated elements (marked with ATTR_ORIGINAL_WORD)
+  if (element.hasAttribute(ATTR_ORIGINAL_WORD)) {
+    return true;
+  }
+
+  return false;
 }

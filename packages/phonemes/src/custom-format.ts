@@ -40,7 +40,7 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
   // Include AH0 → 'a' as default (matching arpabetToIngglish behavior)
   const stressOverrides = new Map<string, string>([['AH0', 'a']]);
   for (const [key, value] of Object.entries(config.phonemeMap)) {
-    const lastChar = key.charCodeAt(key.length - 1);
+    const lastChar = key.codePointAt(key.length - 1)!;
     if (lastChar >= 48 && lastChar <= 50) {
       stressOverrides.set(key, value);
     }

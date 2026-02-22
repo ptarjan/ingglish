@@ -1,19 +1,19 @@
+import { describe, it, expect, vi } from 'vitest';
+import { lookupPronunciation, lookupPhonemeKey } from '@ingglish/dictionary';
+import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/phonemes';
 /**
  * Performance optimization regression tests.
  *
  * These tests verify that fast paths are being used by spying on
  * slow-path operations and ensuring they're not called unnecessarily.
  */
-import { describe, it, expect, vi } from 'vitest';
-import { lookupPronunciation, lookupPhonemeKey } from '@ingglish/dictionary';
-import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/phonemes';
 describe('performance optimizations', () => {
   describe('stripStress charCode optimization', () => {
     it('should use charCode 48-50 for stress markers (not regex)', () => {
       // Verify the charCode range is exactly '0'=48, '1'=49, '2'=50
-      expect('0'.charCodeAt(0)).toBe(48);
-      expect('1'.charCodeAt(0)).toBe(49);
-      expect('2'.charCodeAt(0)).toBe(50);
+      expect('0'.codePointAt(0)).toBe(48);
+      expect('1'.codePointAt(0)).toBe(49);
+      expect('2'.codePointAt(0)).toBe(50);
 
       // These should strip the stress marker
       expect(stripStress('AH0')).toBe('AH');

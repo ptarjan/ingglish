@@ -7,8 +7,8 @@
  */
 
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { arpabetToFormat } from '@ingglish/phonemes';
 
 /**
  * British-to-American spelling rules, ordered by specificity.
@@ -87,7 +87,7 @@ export function matchBritish(word: string): BritishMatch | null {
  * @param format The output format
  * @returns The translated word, or null if no American variant was found
  */
-export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): string | null {
+export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): null | string {
   const match = matchBritish(word);
   if (match === null) {
     return null;

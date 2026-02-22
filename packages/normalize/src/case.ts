@@ -9,7 +9,42 @@
  * - 'capitalized': first letter uppercase (Hello)
  * - 'mixed': mixed case like camelCase (GitHub, iPhone)
  */
-export type CasePattern = 'lower' | 'upper' | 'capitalized' | 'mixed';
+export type CasePattern = 'capitalized' | 'lower' | 'mixed' | 'upper';
+
+/**
+ * Applies a case pattern to a word, optionally using original word for mixed case.
+ * Optimized: lowercase case returns word directly if already lowercase.
+ */
+export function applyCasePattern(word: string, pattern: CasePattern, original?: string): string {
+  // Fast path for lowercase (most common case)
+  // Check if word is already lowercase to avoid creating new string
+  if (pattern === 'lower') {
+    // Quick check: if first char is lowercase and word equals lowercase, return as-is
+    const firstChar = word.codePointAt(0)!;
+    if (firstChar >= 97 && firstChar <= 122 && word === word.toLowerCase()) {
+      return word;
+    }
+    return word.toLowerCase();
+  }
+
+  switch (pattern) {
+    case 'capitalized': {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+    case 'mixed': {
+      if (original !== undefined && original.length > 0) {
+        return applyMixedCase(word, original);
+      }
+      return word.toLowerCase();
+    }
+    case 'upper': {
+      return word.toUpperCase();
+    }
+    default: {
+      return word.toLowerCase();
+    }
+  }
+}
 
 /**
  * Detects the case pattern of a word.
@@ -22,7 +57,7 @@ export function detectCasePattern(word: string): CasePattern {
 
   // Fast path: check first character to quickly identify lowercase words
   // Most English text is lowercase, so this avoids expensive string operations
-  const firstChar = word.charCodeAt(0);
+  const firstChar = word.codePointAt(0)!;
   const isFirstUpper = firstChar >= 65 && firstChar <= 90; // A-Z
 
   // All lowercase - most common case
@@ -54,7 +89,7 @@ export function detectCasePattern(word: string): CasePattern {
   if (isFirstUpper) {
     let restIsLower = true;
     for (let i = 1; i < word.length; i++) {
-      const c = word.charCodeAt(i);
+      const c = word.codePointAt(i)!;
       if (c >= 65 && c <= 90) {
         // A-Z
         restIsLower = false;
@@ -71,41 +106,10 @@ export function detectCasePattern(word: string): CasePattern {
 }
 
 /**
- * Applies a case pattern to a word, optionally using original word for mixed case.
- * Optimized: lowercase case returns word directly if already lowercase.
- */
-export function applyCasePattern(word: string, pattern: CasePattern, original?: string): string {
-  // Fast path for lowercase (most common case)
-  // Check if word is already lowercase to avoid creating new string
-  if (pattern === 'lower') {
-    // Quick check: if first char is lowercase and word equals lowercase, return as-is
-    const firstChar = word.charCodeAt(0);
-    if (firstChar >= 97 && firstChar <= 122 && word === word.toLowerCase()) {
-      return word;
-    }
-    return word.toLowerCase();
-  }
-
-  switch (pattern) {
-    case 'upper':
-      return word.toUpperCase();
-    case 'capitalized':
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    case 'mixed':
-      if (original !== undefined && original.length > 0) {
-        return applyMixedCase(word, original);
-      }
-      return word.toLowerCase();
-    default:
-      return word.toLowerCase();
-  }
-}
-
-/**
  * Splits a word at camelCase boundaries.
  * e.g., "iCloud" -> ["i", "Cloud"], "MacBook" -> ["Mac", "Book"]
  */
-export function splitCamelCase(word: string): string[] | null {
+export function splitCamelCase(word: string): null | string[] {
   // Fast path: need at least 2 chars for camelCase
   if (word.length < 2) {
     return null;
@@ -115,7 +119,7 @@ export function splitCamelCase(word: string): string[] | null {
   // Uses charCode for speed - A-Z are 65-90
   let hasInternalUpper = false;
   for (let i = 1; i < word.length; i++) {
-    const c = word.charCodeAt(i);
+    const c = word.codePointAt(i)!;
     if (c >= 65 && c <= 90) {
       hasInternalUpper = true;
       break;
@@ -130,8 +134,8 @@ export function splitCamelCase(word: string): string[] | null {
   let start = 0;
 
   for (let i = 1; i < word.length; i++) {
-    const prevCode = word.charCodeAt(i - 1);
-    const currCode = word.charCodeAt(i);
+    const prevCode = word.codePointAt(i - 1)!;
+    const currCode = word.codePointAt(i)!;
     // Boundary: previous char is lowercase (a-z), current is uppercase (A-Z)
     if (prevCode >= 97 && prevCode <= 122 && currCode >= 65 && currCode <= 90) {
       parts.push(word.slice(start, i));
@@ -155,8 +159,8 @@ function applyMixedCase(translated: string, original: string): string {
   const lowerTranslated = translated.toLowerCase();
   let result = '';
 
-  for (let i = 0; i < lowerTranslated.length; i++) {
-    const char = lowerTranslated[i]!;
+  let i = 0;
+  for (const char of lowerTranslated) {
     // Use original's case pattern if within bounds, otherwise lowercase
     if (i < original.length) {
       const origChar = original[i]!;
@@ -164,6 +168,7 @@ function applyMixedCase(translated: string, original: string): string {
     } else {
       result += char;
     }
+    i++;
   }
 
   return result;

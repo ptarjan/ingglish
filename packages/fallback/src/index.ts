@@ -11,44 +11,91 @@
  */
 
 import { getCustomPronunciation } from '@ingglish/dictionary';
-import { wordToPhonetic, wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace } from '@ingglish/g2p';
-import { arpabetToFormat } from '@ingglish/phonemes';
+import { wordToArpabetTraced, wordToPhonetic } from '@ingglish/g2p';
 import type { OutputFormat } from '@ingglish/phonemes';
-import {
-  isInitialism,
-  parseInitialismWithSuffix,
-  translateAsAcronym,
-  LETTER_PHONEMES,
-  INITIALISM_EXPANSIONS,
-} from './acronyms';
-import { translateAsBritish, matchBritish } from './british';
-import { translateAsCompound, dpDecompose } from './compounds';
-import { translateWithStemming, matchStemming } from './stemming';
+import { arpabetToFormat } from '@ingglish/phonemes';
+import { isInitialism, translateAsAcronym } from './acronyms';
+import { matchBritish, translateAsBritish } from './british';
+import { dpDecompose, translateAsCompound } from './compounds';
+import { matchStemming, translateWithStemming } from './stemming';
+
+export type FallbackStrategy =
+  | 'british'
+  | 'compound'
+  | 'custom'
+  | 'g2p'
+  | 'initialism'
+  | 'stemming';
 
 export type WordDiagnosis =
-  | { strategy: 'custom'; phonemes: string[] }
-  | { strategy: 'initialism' }
-  | { strategy: 'british'; americanSpelling: string; phonemes: string[] }
-  | { strategy: 'compound'; parts: string[] }
-  | { strategy: 'stemming'; prefix?: string; stem: string; suffix?: string }
-  | { strategy: 'g2p'; trace: G2PTrace };
+  | { americanSpelling: string; phonemes: string[]; strategy: 'british' }
+  | { parts: string[]; strategy: 'compound' }
+  | { phonemes: string[]; strategy: 'custom' }
+  | { prefix?: string; stem: string; strategy: 'stemming'; suffix?: string }
+  | { strategy: 'g2p'; trace: G2PTrace }
+  | { strategy: 'initialism' };
 
 export {
-  LETTER_PHONEMES,
   INITIALISM_EXPANSIONS,
   isInitialism,
+  LETTER_PHONEMES,
   parseInitialismWithSuffix,
   translateAsAcronym,
-  translateAsBritish,
-  matchBritish,
-  translateAsCompound,
-  translateWithStemming,
-};
+} from './acronyms';
+export { matchBritish, translateAsBritish } from './british';
+export { translateAsCompound } from './compounds';
+export { translateWithStemming } from './stemming';
 
 interface FallbackResult {
   strategy: string;
   translated: string;
+}
+
+/**
+ * Diagnoses an unknown word by determining which fallback strategy handles it
+ * and collecting diagnostic data for display.
+ *
+ * Returns null for obvious non-words (3+ repeated chars, no vowels).
+ */
+export function diagnoseUnknown(word: string): null | WordDiagnosis {
+  if (/(.)\1\1/.test(word) || !/[aeiouy]/i.test(word)) {
+    return null;
+  }
+  const { strategy } = translateUnknownCore(word, 'ingglish');
+  switch (strategy) {
+    case 'british': {
+      const m = matchBritish(word)!;
+      return { americanSpelling: m.american, phonemes: m.phonemes, strategy: 'british' };
+    }
+    case 'compound': {
+      return { parts: dpDecompose(word.toLowerCase())!, strategy: 'compound' };
+    }
+    case 'custom': {
+      return { phonemes: getCustomPronunciation(word)!, strategy: 'custom' };
+    }
+    case 'g2p': {
+      return { strategy: 'g2p', trace: wordToArpabetTraced(word) };
+    }
+    case 'initialism': {
+      return { strategy: 'initialism' };
+    }
+    case 'stemming': {
+      const m = matchStemming(word)!;
+      return { prefix: m.prefix, stem: m.stem, strategy: 'stemming', suffix: m.suffix };
+    }
+  }
+}
+
+/**
+ * Attempts all strategies to translate an unknown word.
+ *
+ * @param word The unknown word
+ * @param format The output format
+ * @returns The translated word
+ */
+export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
+  return translateUnknownCore(word, format).translated;
 }
 
 /**
@@ -86,46 +133,4 @@ function translateUnknownCore(word: string, format: OutputFormat): FallbackResul
 
   // Fall back to grapheme-to-phoneme rules
   return { strategy: 'g2p', translated: wordToPhonetic(word, format) };
-}
-
-/**
- * Attempts all strategies to translate an unknown word.
- *
- * @param word The unknown word
- * @param format The output format
- * @returns The translated word
- */
-export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
-  return translateUnknownCore(word, format).translated;
-}
-
-/**
- * Diagnoses an unknown word by determining which fallback strategy handles it
- * and collecting diagnostic data for display.
- *
- * Returns null for obvious non-words (3+ repeated chars, no vowels).
- */
-export function diagnoseUnknown(word: string): WordDiagnosis | null {
-  if (/(.)\1\1/.test(word) || !/[aeiouy]/i.test(word)) {
-    return null;
-  }
-  const { strategy } = translateUnknownCore(word, 'ingglish');
-  switch (strategy) {
-    case 'custom':
-      return { strategy: 'custom', phonemes: getCustomPronunciation(word)! };
-    case 'initialism':
-      return { strategy: 'initialism' };
-    case 'british': {
-      const m = matchBritish(word)!;
-      return { strategy: 'british', americanSpelling: m.american, phonemes: m.phonemes };
-    }
-    case 'compound':
-      return { strategy: 'compound', parts: dpDecompose(word.toLowerCase())! };
-    case 'stemming': {
-      const m = matchStemming(word)!;
-      return { strategy: 'stemming', prefix: m.prefix, stem: m.stem, suffix: m.suffix };
-    }
-    case 'g2p':
-      return { strategy: 'g2p', trace: wordToArpabetTraced(word) };
-  }
 }

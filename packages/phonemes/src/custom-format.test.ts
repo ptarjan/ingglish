@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createCustomConverter } from './custom-format';
 
 describe('createCustomConverter', () => {
@@ -30,7 +30,7 @@ describe('createCustomConverter', () => {
 
   it('should handle stress-specific overrides', () => {
     const convert = createCustomConverter({
-      phonemeMap: { EY0: 'eh', EY: 'ay' },
+      phonemeMap: { EY: 'ay', EY0: 'eh' },
       rColoredPrefixes: {},
     });
     // Stressed EY1 uses base EY -> 'ay'

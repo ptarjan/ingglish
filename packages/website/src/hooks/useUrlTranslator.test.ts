@@ -4,22 +4,22 @@
  * Tests for URL translator postMessage handling.
  * Note: shouldSkipUrl tests are in url.test.ts to avoid duplication.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
+// Test the origin validation logic used in useUrlTranslator
+const isValidOrigin = (origin: string): boolean => {
+  // srcdoc iframes have origin "null" (string literal)
+  // Only accept messages from our iframe or same origin
+  return origin === 'null' || origin === globalThis.location.origin;
+};
 
 describe('postMessage origin validation', () => {
-  // Test the origin validation logic used in useUrlTranslator
-  const isValidOrigin = (origin: string): boolean => {
-    // srcdoc iframes have origin "null" (string literal)
-    // Only accept messages from our iframe or same origin
-    return origin === 'null' || origin === window.location.origin;
-  };
-
   it('accepts messages from srcdoc iframes (origin "null")', () => {
     expect(isValidOrigin('null')).toBe(true);
   });
 
   it('accepts messages from same origin', () => {
-    expect(isValidOrigin(window.location.origin)).toBe(true);
+    expect(isValidOrigin(globalThis.location.origin)).toBe(true);
   });
 
   it('rejects messages from different origins', () => {
@@ -32,8 +32,8 @@ describe('link click message handling', () => {
   it('ingglish-link-click message format is correct', () => {
     // Test that the expected message format is handled correctly
     const message = {
-      type: 'ingglish-link-click',
       href: '/path/to/page',
+      type: 'ingglish-link-click',
     };
 
     expect(message.type).toBe('ingglish-link-click');
@@ -67,7 +67,7 @@ describe('history state management', () => {
 
   it('null state indicates no translation', () => {
     // Simulating history.state being null
-    const state = null as { translatorUrl?: string } | null;
+    const state = null as null | { translatorUrl?: string };
 
     expect(state?.translatorUrl).toBeUndefined();
   });

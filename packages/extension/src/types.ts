@@ -2,29 +2,17 @@
 
 import type { OutputFormat } from '@ingglish/phonemes';
 
-export interface GetStateMessage {
-  type: 'GET_STATE';
-}
+export type ExtensionMessage =
+  | GetFormatMessage
+  | GetStateMessage
+  | RestoreMessage
+  | RetranslateMessage
+  | SetFormatMessage
+  | ToggleMessage
+  | TranslateMessage
+  | TranslateWordsMessage;
 
-export interface ToggleMessage {
-  type: 'TOGGLE';
-}
-
-export interface TranslateMessage {
-  type: 'TRANSLATE';
-}
-
-export interface RestoreMessage {
-  type: 'RESTORE';
-}
-
-export interface RetranslateMessage {
-  type: 'RETRANSLATE';
-  format: OutputFormat;
-}
-
-export interface SetFormatMessage {
-  type: 'SET_FORMAT';
+export interface FormatResponse {
   format: OutputFormat;
 }
 
@@ -32,41 +20,53 @@ export interface GetFormatMessage {
   type: 'GET_FORMAT';
 }
 
-// Batch translate words (for lightweight content script)
-export interface TranslateWordsMessage {
-  type: 'TRANSLATE_WORDS';
-  words: string[];
-  format: OutputFormat;
+export interface GetStateMessage {
+  type: 'GET_STATE';
 }
 
-export type ExtensionMessage =
-  | GetStateMessage
-  | ToggleMessage
-  | TranslateMessage
-  | RestoreMessage
-  | RetranslateMessage
-  | SetFormatMessage
-  | GetFormatMessage
-  | TranslateWordsMessage;
+export interface RestoreMessage {
+  type: 'RESTORE';
+}
+
+export interface RetranslateMessage {
+  format: OutputFormat;
+  type: 'RETRANSLATE';
+}
+
+export interface SetFormatMessage {
+  format: OutputFormat;
+  type: 'SET_FORMAT';
+}
 
 export interface StateResponse {
   enabled: boolean;
   format?: OutputFormat;
 }
 
+export interface ToggleMessage {
+  type: 'TOGGLE';
+}
+
 export interface ToggleResponse {
-  success: boolean;
   enabled?: boolean;
   error?: string;
+  success: boolean;
+}
+
+export interface TranslateMessage {
+  type: 'TRANSLATE';
 }
 
 export interface TranslateResponse {
-  success: boolean;
   error?: string;
+  success: boolean;
 }
 
-export interface FormatResponse {
+// Batch translate words (for lightweight content script)
+export interface TranslateWordsMessage {
   format: OutputFormat;
+  type: 'TRANSLATE_WORDS';
+  words: string[];
 }
 
 // Response for batch translation

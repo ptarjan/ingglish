@@ -5,10 +5,10 @@
  */
 
 import {
-  WORD_SPAN_CLASS,
-  TOOLTIP_STYLES_ID,
   ATTR_ORIGINAL_WORD,
   FORMAT_DIFF_CLASS,
+  TOOLTIP_STYLES_ID,
+  WORD_SPAN_CLASS,
 } from '../constants';
 
 const TOOLTIP_BEHAVIOR_ID = 'ingglish-tooltip-behavior';
@@ -62,19 +62,6 @@ export const TOOLTIP_STYLES = `
 `;
 
 /**
- * Injects tooltip styles into the document if not already present.
- */
-export function injectTooltipStyles(targetDoc: Document = document): void {
-  if (targetDoc.getElementById(TOOLTIP_STYLES_ID)) {
-    return;
-  }
-  const style = targetDoc.createElement('style');
-  style.id = TOOLTIP_STYLES_ID;
-  style.textContent = TOOLTIP_STYLES;
-  targetDoc.head?.appendChild(style);
-}
-
-/**
  * Injects tooltip behavior: creates tooltip divs on hover,
  * positioned with position:fixed to escape overflow:hidden ancestors.
  */
@@ -122,7 +109,7 @@ export function injectTooltipBehavior(targetDoc: Document = document): void {
       const tooltip = targetDoc.createElement('div');
       tooltip.className = 'ingglish-tooltip';
       tooltip.textContent = orig;
-      targetDoc.body.appendChild(tooltip);
+      targetDoc.body.append(tooltip);
       activeTooltip = tooltip;
       activeWord = word;
 
@@ -152,4 +139,17 @@ export function injectTooltipBehavior(targetDoc: Document = document): void {
 
   // Remove tooltip on scroll (position would be stale)
   targetDoc.addEventListener('scroll', removeTooltip, true);
+}
+
+/**
+ * Injects tooltip styles into the document if not already present.
+ */
+export function injectTooltipStyles(targetDoc: Document = document): void {
+  if (targetDoc.querySelector(`#${TOOLTIP_STYLES_ID}`)) {
+    return;
+  }
+  const style = targetDoc.createElement('style');
+  style.id = TOOLTIP_STYLES_ID;
+  style.textContent = TOOLTIP_STYLES;
+  targetDoc.head?.append(style);
 }

@@ -1,7 +1,7 @@
 declare module 'subtlex-word-frequencies' {
   interface WordFrequency {
-    word: string;
     count: number;
+    word: string;
   }
   const frequencies: WordFrequency[];
   export default frequencies;

@@ -23,66 +23,19 @@ import { createTooltipFragment } from './tooltip-fragment';
 const DEFAULT_CHUNK_SIZE = 100;
 
 /**
- * Translates a single text node (internal helper).
+ * Translates all text content within a DOM element (async, auto-loads dictionary).
+ * This is the recommended entry point for DOM translation.
  */
-function translateTextNode(
-  textNode: Text,
-  showTooltips: boolean,
-  outputFormat: OutputFormat
-): void {
-  const originalText = textNode.textContent;
-  if (!originalText) {
-    return;
-  }
-
-  const parent = textNode.parentElement;
-
-  if (showTooltips) {
-    // Replace text node with tooltip spans
-    const fragment = createTooltipFragment(originalText, outputFormat);
-    // Store original text on parent for restoration
-    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
-      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
-    }
-    textNode.replaceWith(fragment);
-  } else {
-    // Simple text replacement (original behavior)
-    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
-      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
-    }
-    textNode.textContent = translateSync(originalText, outputFormat);
-  }
-}
-
-/**
- * Translates translatable attributes on elements.
- */
-function translateElementAttributes(
-  root: Element | Document,
-  skipTags: string[],
-  skipClasses: string[],
-  format: OutputFormat = 'ingglish'
-): void {
-  // Only query elements that have translatable attributes (much smaller set than '*')
-  const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
-  const elements = Array.from(root.querySelectorAll(attrSelector));
-
-  for (const element of elements) {
-    if (shouldSkipElement(element, skipTags, skipClasses)) {
-      continue;
-    }
-
-    for (const attrName of TRANSLATABLE_ATTRIBUTES) {
-      const attrValue = element.getAttribute(attrName);
-      if (attrValue !== null && attrValue.length > 0) {
-        // Store original attribute value for restoration
-        const originalAttrName = `${ATTR_ORIGINAL_PREFIX}${attrName}`;
-        if (!element.hasAttribute(originalAttrName)) {
-          element.setAttribute(originalAttrName, attrValue);
-        }
-        element.setAttribute(attrName, translateSync(attrValue, format));
-      }
-    }
+export async function translateDOM(
+  root: Document | Element,
+  options: DOMTranslatorOptions = {}
+): Promise<void> {
+  // Ensure dictionary is loaded by calling translate
+  await translate('');
+  const result = translateDOMSync(root, options as DOMTranslatorOptions & { chunked: true });
+  // If chunked mode returns a Promise, await it
+  if (result instanceof Promise) {
+    await result;
   }
 }
 
@@ -95,28 +48,28 @@ function translateElementAttributes(
  * @returns Promise when chunked=true, void otherwise
  */
 export function translateDOMSync(
-  root: Element | Document,
+  root: Document | Element,
   options: DOMTranslatorOptions & { chunked: true }
 ): Promise<void>;
 export function translateDOMSync(
-  root: Element | Document,
+  root: Document | Element,
   options?: DOMTranslatorOptions & { chunked?: false }
 ): void;
 export function translateDOMSync(
-  root: Element | Document,
+  root: Document | Element,
   options: DOMTranslatorOptions = {}
-): void | Promise<void> {
+): Promise<void> | void {
   requireBrowser();
 
   const {
-    skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = DEFAULT_SKIP_CLASSES,
-    translateAttributes = true,
-    showTooltips = false,
-    onProgress,
-    outputFormat = 'ingglish',
     chunked = false,
     chunkSize = DEFAULT_CHUNK_SIZE,
+    onProgress,
+    outputFormat = 'ingglish',
+    showTooltips = false,
+    skipClasses = DEFAULT_SKIP_CLASSES,
+    skipTags = DEFAULT_SKIP_TAGS,
+    translateAttributes = true,
   } = options;
 
   // Get the document (works for both main document and iframes)
@@ -158,20 +111,67 @@ export function translateDOMSync(
     }
   }
 }
+/**
+ * Translates translatable attributes on elements.
+ */
+function translateElementAttributes(
+  root: Document | Element,
+  skipTags: string[],
+  skipClasses: string[],
+  format: OutputFormat = 'ingglish'
+): void {
+  // Only query elements that have translatable attributes (much smaller set than '*')
+  const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
+  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
+  const elements = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
+
+  for (const element of elements) {
+    if (shouldSkipElement(element, skipTags, skipClasses)) {
+      continue;
+    }
+
+    for (const attrName of TRANSLATABLE_ATTRIBUTES) {
+      const attrValue = element.getAttribute(attrName);
+      if (attrValue !== null && attrValue.length > 0) {
+        // Store original attribute value for restoration
+        const originalAttrName = `${ATTR_ORIGINAL_PREFIX}${attrName}`;
+        if (!element.hasAttribute(originalAttrName)) {
+          element.setAttribute(originalAttrName, attrValue);
+        }
+        element.setAttribute(attrName, translateSync(attrValue, format));
+      }
+    }
+  }
+}
 
 /**
- * Translates all text content within a DOM element (async, auto-loads dictionary).
- * This is the recommended entry point for DOM translation.
+ * Translates a single text node (internal helper).
  */
-export async function translateDOM(
-  root: Element | Document,
-  options: DOMTranslatorOptions = {}
-): Promise<void> {
-  // Ensure dictionary is loaded by calling translate
-  await translate('');
-  const result = translateDOMSync(root, options as DOMTranslatorOptions & { chunked: true });
-  // If chunked mode returns a Promise, await it
-  if (result instanceof Promise) {
-    await result;
+function translateTextNode(
+  textNode: Text,
+  showTooltips: boolean,
+  outputFormat: OutputFormat
+): void {
+  const originalText = textNode.textContent;
+  if (!originalText) {
+    return;
+  }
+
+  const parent = textNode.parentElement;
+
+  if (showTooltips) {
+    // Replace text node with tooltip spans
+    const fragment = createTooltipFragment(originalText, outputFormat);
+    // Store original text on parent for restoration
+    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
+    }
+    textNode.replaceWith(fragment);
+  } else {
+    // Simple text replacement (original behavior)
+    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
+    }
+    textNode.textContent = translateSync(originalText, outputFormat);
   }
 }

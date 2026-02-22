@@ -13,10 +13,6 @@ const YELLOW = '#eab308';
 const RED = '#ef4444';
 const ACCENT = '#6366f1';
 
-function barColor(pct: number): string {
-  return pct >= 80 ? GREEN : pct >= 50 ? YELLOW : RED;
-}
-
 /**
  * Render a score card to an offscreen canvas.
  * Returns an HTMLCanvasElement ready for toBlob()/toDataURL().
@@ -59,10 +55,10 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
 
   ctx.textBaseline = 'middle';
 
-  for (let i = 0; i < rounds.length; i++) {
+  for (const [i, round] of rounds.entries()) {
     const y = startY + i * rowH;
     const mid = y + barH / 2;
-    const pct = Math.round(rounds[i]!.score * 100);
+    const pct = Math.round(round.score * 100);
 
     // Round label
     ctx.fillStyle = MUTED;
@@ -93,7 +89,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
     ctx.fillStyle = MUTED;
     ctx.font = '400 11px system-ui, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText(`${rounds[i]!.timeTaken}s`, barX + barW + 70, mid);
+    ctx.fillText(`${round.timeTaken}s`, barX + barW + 70, mid);
   }
 
   // Footer
@@ -103,6 +99,10 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
   ctx.fillText('ingglish.com/challenge', W / 2, H - 20);
 
   return canvas;
+}
+
+function barColor(pct: number): string {
+  return pct >= 80 ? GREEN : (pct >= 50 ? YELLOW : RED);
 }
 
 /** Draw a rounded rectangle path and leave it ready for fill/stroke. */

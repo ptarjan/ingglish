@@ -273,21 +273,21 @@ describe('unknown-words', () => {
 
     it('should handle -ed suffix after voiceless consonants as T', () => {
       const walked = wordToArpabet('walked');
-      expect(walked[walked.length - 1]).toBe('T');
+      expect(walked.at(-1)).toBe('T');
       expect(walked).not.toContain('EH1'); // no full vowel for 'e'
     });
 
     it('should handle -ed suffix after voiced consonants as D', () => {
       const turned = wordToArpabet('turned');
-      expect(turned[turned.length - 1]).toBe('D');
+      expect(turned.at(-1)).toBe('D');
       expect(turned).not.toContain('EH1');
     });
 
     it('should handle -ed suffix after t/d as IH D', () => {
       const wanted = wordToArpabet('wanted');
       // NRL: #:[TED] =/T IH D/ — IH in unstressed syllable marked as IH0
-      expect(wanted[wanted.length - 2]).toBe('IH0');
-      expect(wanted[wanted.length - 1]).toBe('D');
+      expect(wanted.at(-2)).toBe('IH0');
+      expect(wanted.at(-1)).toBe('D');
     });
 
     it('should not strip -ed from short words (bed, shed)', () => {
@@ -297,20 +297,20 @@ describe('unknown-words', () => {
 
     it('should voice final S to Z after voiced sounds', () => {
       const dogs = wordToArpabet('dogs');
-      expect(dogs[dogs.length - 1]).toBe('Z');
+      expect(dogs.at(-1)).toBe('Z');
 
       const runs = wordToArpabet('runs');
-      expect(runs[runs.length - 1]).toBe('Z');
+      expect(runs.at(-1)).toBe('Z');
     });
 
     it('should keep final S after voiceless sounds', () => {
       const cats = wordToArpabet('cats');
-      expect(cats[cats.length - 1]).toBe('S');
+      expect(cats.at(-1)).toBe('S');
     });
 
     it('should handle every letter a-z', () => {
       for (let i = 0; i < 26; i++) {
-        const letter = String.fromCharCode(97 + i);
+        const letter = String.fromCodePoint(97 + i);
         const phonemes = wordToArpabet(letter);
         // NRL: H[H]=/ / means standalone 'h' produces empty (silent)
         if (letter === 'h') {
@@ -455,9 +455,9 @@ describe('unknown-words', () => {
 
     it('should handle -AGE suffix as IH JH', () => {
       const message = wordToArpabet('message');
-      expect(message[message.length - 1]).toBe('JH');
+      expect(message.at(-1)).toBe('JH');
       const village = wordToArpabet('village');
-      expect(village[village.length - 1]).toBe('JH');
+      expect(village.at(-1)).toBe('JH');
     });
 
     it('should handle -ENCE/-ANCE suffixes', () => {
@@ -471,9 +471,9 @@ describe('unknown-words', () => {
       const mechanism = wordToArpabet('mechanism');
       expect(mechanism.slice(-3)).toEqual(['IH0', 'Z', 'AH0', 'M'].slice(-3));
       // Ends with Z AH0 M
-      expect(mechanism[mechanism.length - 1]).toBe('M');
-      expect(mechanism[mechanism.length - 2]).toBe('AH0');
-      expect(mechanism[mechanism.length - 3]).toBe('Z');
+      expect(mechanism.at(-1)).toBe('M');
+      expect(mechanism.at(-2)).toBe('AH0');
+      expect(mechanism.at(-3)).toBe('Z');
     });
 
     it('should handle TIAL/CIAL as SH', () => {
@@ -612,8 +612,8 @@ describe('unknown-words', () => {
     it('should translate -ous suffix as schwa', () => {
       // -ous → AH S (not AA AH S)
       const famous = wordToArpabet('famous');
-      expect(famous[famous.length - 2]).toBe('AH0');
-      expect(famous[famous.length - 1]).toBe('S'); // not voiced to Z
+      expect(famous.at(-2)).toBe('AH0');
+      expect(famous.at(-1)).toBe('S'); // not voiced to Z
     });
 
     it('should translate -ness suffix', () => {
@@ -644,9 +644,9 @@ describe('unknown-words', () => {
     it('should use IY for word-final y in multi-syllable words', () => {
       const happy = wordToArpabet('happy');
       // NRL: #^:[Y] =/IY/ — y in unstressed final syllable → IY0
-      expect(happy[happy.length - 1]).toBe('IY0');
+      expect(happy.at(-1)).toBe('IY0');
       const baby = wordToArpabet('baby');
-      expect(baby[baby.length - 1]).toBe('IY0');
+      expect(baby.at(-1)).toBe('IY0');
     });
 
     it('should keep IH for y in single-syllable words', () => {

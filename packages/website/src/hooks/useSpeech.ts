@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
 
@@ -9,10 +9,10 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
  * Chrome has a known bug where speech stalls after ~15s of continuous playback.
  * This hook works around it by pausing/resuming every 10s.
  */
-export function useSpeech(): [boolean, (text: string) => void, () => void, boolean, number | null] {
+export function useSpeech(): [boolean, (text: string) => void, () => void, boolean, null | number] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
-  const [wordCount, setWordCount] = useState<number | null>(null);
+  const [wordCount, setWordCount] = useState<null | number>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
   const clearWorkaround = useCallback(() => {
@@ -53,11 +53,11 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
         setSpeaking(false);
         setWordCount(null);
       };
-      utterance.onerror = () => {
+      utterance.addEventListener('error', () => {
         clearWorkaround();
         setSpeaking(false);
         setWordCount(null);
-      };
+      });
 
       speechSynthesis.speak(utterance);
       setSpeaking(true);

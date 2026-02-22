@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock ingglish to avoid slow dictionary loading
 vi.mock('ingglish', () => ({
@@ -23,22 +23,11 @@ type SendMessageCallback = ((response: object) => void) | undefined;
 
 // Mock chrome API
 const mockChrome = {
-  runtime: {
-    onMessage: {
-      addListener: vi.fn(),
-    },
-    lastError: null as chrome.runtime.LastError | null,
+  action: {
+    setIcon: vi.fn().mockResolvedValue(),
   },
-  tabs: {
-    query: vi.fn<(query: object, callback: QueryCallback) => undefined>(),
-    get: vi.fn().mockResolvedValue({ url: 'https://example.com' }),
-    reload: vi.fn(),
-    sendMessage:
-      vi.fn<(tabId: number, message: object, callback: SendMessageCallback) => undefined>(),
-    onRemoved: {
-      addListener: vi.fn(),
-    },
-    onUpdated: {
+  commands: {
+    onCommand: {
       addListener: vi.fn(),
     },
   },
@@ -46,27 +35,38 @@ const mockChrome = {
     contains: vi.fn().mockResolvedValue(true),
     request: vi.fn().mockResolvedValue(true),
   },
-  action: {
-    setIcon: vi.fn().mockResolvedValue(),
+  runtime: {
+    lastError: null as chrome.runtime.LastError | null,
+    onMessage: {
+      addListener: vi.fn(),
+    },
   },
   scripting: {
     executeScript: vi.fn(),
     insertCSS: vi.fn(),
   },
   storage: {
-    sync: {
-      get: vi.fn().mockResolvedValue({ outputFormat: 'ingglish' }),
-      set: vi.fn().mockResolvedValue(),
-    },
     local: {
       get: vi.fn().mockResolvedValue({}),
       set: vi.fn().mockResolvedValue(),
     },
+    sync: {
+      get: vi.fn().mockResolvedValue({ outputFormat: 'ingglish' }),
+      set: vi.fn().mockResolvedValue(),
+    },
   },
-  commands: {
-    onCommand: {
+  tabs: {
+    get: vi.fn().mockResolvedValue({ url: 'https://example.com' }),
+    onRemoved: {
       addListener: vi.fn(),
     },
+    onUpdated: {
+      addListener: vi.fn(),
+    },
+    query: vi.fn<(query: object, callback: QueryCallback) => undefined>(),
+    reload: vi.fn(),
+    sendMessage:
+      vi.fn<(tabId: number, message: object, callback: SendMessageCallback) => undefined>(),
   },
 };
 
@@ -163,12 +163,12 @@ describe('background script', () => {
       // Wait for async operations
       await vi.waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith({
-          target: { tabId: 456 },
           files: ['content-script.global.js'],
+          target: { tabId: 456 },
         });
       });
 
-      expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
+      expect(sendResponse).toHaveBeenCalledWith({ enabled: true, success: true });
     });
 
     it('reverts state when script injection fails', async () => {
@@ -183,7 +183,7 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
       // Response is sent immediately with success (optimistic)
-      expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: true });
+      expect(sendResponse).toHaveBeenCalledWith({ enabled: true, success: true });
 
       // Wait for async injection to fail
       await vi.waitFor(() => {
@@ -211,8 +211,8 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
       expect(sendResponse).toHaveBeenCalledWith({
-        success: false,
         error: 'No active tab',
+        success: false,
       });
     });
   });
@@ -250,7 +250,7 @@ describe('background script', () => {
         { type: 'RESTORE' },
         expect.any(Function)
       );
-      expect(sendResponse).toHaveBeenCalledWith({ success: true, enabled: false });
+      expect(sendResponse).toHaveBeenCalledWith({ enabled: false, success: true });
     });
   });
 
@@ -381,7 +381,7 @@ describe('background script', () => {
       const sendResponse = vi.fn();
 
       messageHandler(
-        { type: 'TRANSLATE_WORDS', words: ['hello', 'world'], format: 'ingglish' } as {
+        { format: 'ingglish', type: 'TRANSLATE_WORDS', words: ['hello', 'world'] } as {
           type: string;
         },
         {},
@@ -403,7 +403,7 @@ describe('background script', () => {
       // Translate words to Ingglish
       const ingglishResponse = vi.fn();
       messageHandler(
-        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ingglish' } as {
+        { format: 'ingglish', type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'] } as {
           type: string;
         },
         {},
@@ -421,7 +421,7 @@ describe('background script', () => {
       // Translate same words to IPA
       const ipaResponse = vi.fn();
       messageHandler(
-        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ipa' } as {
+        { format: 'ipa', type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'] } as {
           type: string;
         },
         {},
@@ -442,7 +442,7 @@ describe('background script', () => {
       // Translate back to Ingglish
       const ingglishResponse2 = vi.fn();
       messageHandler(
-        { type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'], format: 'ingglish' } as {
+        { format: 'ingglish', type: 'TRANSLATE_WORDS', words: ['hello', 'world', 'the'] } as {
           type: string;
         },
         {},
@@ -468,7 +468,7 @@ describe('background script', () => {
     it('saves the new format and responds with it', async () => {
       const sendResponse = vi.fn();
 
-      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+      messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
       await vi.waitFor(() => {
         expect(mockChrome.storage.sync.set).toHaveBeenCalledWith({ outputFormat: 'ipa' });
@@ -506,18 +506,18 @@ describe('background script', () => {
 
       // Change format to IPA
       const sendResponse = vi.fn();
-      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+      messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
       await vi.waitFor(() => {
         // Should send RETRANSLATE to both tabs
         expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
           501,
-          { type: 'RETRANSLATE', format: 'ipa' },
+          { format: 'ipa', type: 'RETRANSLATE' },
           expect.any(Function)
         );
         expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
           502,
-          { type: 'RETRANSLATE', format: 'ipa' },
+          { format: 'ipa', type: 'RETRANSLATE' },
           expect.any(Function)
         );
       });
@@ -527,7 +527,7 @@ describe('background script', () => {
       mockChrome.tabs.sendMessage.mockClear();
 
       const sendResponse = vi.fn();
-      messageHandler({ type: 'SET_FORMAT', format: 'ipa' } as { type: string }, {}, sendResponse);
+      messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
       await vi.waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ format: 'ipa' });
@@ -536,7 +536,7 @@ describe('background script', () => {
       // No tabs should receive RETRANSLATE
       expect(mockChrome.tabs.sendMessage).not.toHaveBeenCalledWith(
         expect.anything(),
-        { type: 'RETRANSLATE', format: 'ipa' },
+        { format: 'ipa', type: 'RETRANSLATE' },
         expect.any(Function)
       );
     });
@@ -568,7 +568,7 @@ describe('background script', () => {
         expect(mockChrome.action.setIcon).toHaveBeenCalled();
         const iconCall = mockChrome.action.setIcon.mock.calls.find(
           (call) => (call[0] as { tabId: number }).tabId === tabId
-        ) as [{ tabId: number; path: Record<number, string> }] | undefined;
+        ) as [{ path: Record<number, string>; tabId: number }] | undefined;
         expect(iconCall).toBeDefined();
         expect(iconCall?.[0].path).toMatchObject({ 16: 'icons/icon16.png' });
       });
@@ -617,7 +617,7 @@ describe('background script', () => {
         expect(mockChrome.action.setIcon).toHaveBeenCalled();
         const iconCall = mockChrome.action.setIcon.mock.calls.find(
           (call) => (call[0] as { tabId: number }).tabId === tabId
-        ) as [{ tabId: number; path: Record<number, string> }] | undefined;
+        ) as [{ path: Record<number, string>; tabId: number }] | undefined;
         expect(iconCall).toBeDefined();
         expect(iconCall?.[0].path).toMatchObject({ 16: 'icons/icon16-off.png' });
       });

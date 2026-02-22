@@ -32,7 +32,7 @@ export function Section7Poem() {
     const delayMs = 1000;
     const initialDelayMs = currentStep === 0 ? 1500 : delayMs;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setStep(totalSteps + 1);
       return;
     }
@@ -60,7 +60,7 @@ export function Section7Poem() {
   }, [visible, paused, advanceToken]);
 
   return (
-    <section ref={ref} className="tutorial-section">
+    <section className="tutorial-section" ref={ref}>
       <h2 className="tutorial-heading">Hints on Pronunciation for Foreigners</h2>
       <p className="poem-attribution">&mdash; attributed to T.S. Watt, 1954</p>
       <div className="poem-paragraph">
@@ -103,7 +103,7 @@ export function Section7Poem() {
         </div>
         <div className="poem-text-sizer">
           {/* Hidden sizer: renders fully-translated text to reserve max height */}
-          <p className="poem-text poem-text-hidden" aria-hidden="true">
+          <p aria-hidden="true" className="poem-text poem-text-hidden">
             {poemWords.map((w, i) => {
               if (w.e === '\n') {
                 return <br key={i} />;

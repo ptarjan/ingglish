@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isInitialism, parseInitialismWithSuffix, translateAsAcronym } from './acronyms';
 import { translateAsBritish } from './british';
 import { translateAsCompound } from './compounds';

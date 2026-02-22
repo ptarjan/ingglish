@@ -2,55 +2,55 @@
 // Extracted from Tutorial.tsx for maintainability.
 
 export const oughExamples = [
-  { prefix: 'thr', suffix: '', sound: 'oo' },
-  { prefix: 'th', suffix: '', sound: 'oh' },
-  { prefix: 'th', suffix: 't', sound: 'aw' },
-  { prefix: 't', suffix: '', sound: 'uhf' },
-  { prefix: 'c', suffix: '', sound: 'of' },
-  { prefix: 'b', suffix: '', sound: 'ow' },
+  { prefix: 'thr', sound: 'oo', suffix: '' },
+  { prefix: 'th', sound: 'oh', suffix: '' },
+  { prefix: 'th', sound: 'aw', suffix: 't' },
+  { prefix: 't', sound: 'uhf', suffix: '' },
+  { prefix: 'c', sound: 'of', suffix: '' },
+  { prefix: 'b', sound: 'ow', suffix: '' },
 ];
 
 export interface ExampleWord {
   english: string;
-  ingglish: string;
   highlightEn?: string;
   highlightIng?: string;
+  ingglish: string;
 }
 
 export const silentLetterExamples: ExampleWord[] = [
-  { english: 'knee', ingglish: 'nee', highlightEn: 'k' },
-  { english: 'wrap', ingglish: 'rap', highlightEn: 'w' },
-  { english: 'lamb', ingglish: 'lam', highlightEn: 'b' },
+  { english: 'knee', highlightEn: 'k', ingglish: 'nee' },
+  { english: 'wrap', highlightEn: 'w', ingglish: 'rap' },
+  { english: 'lamb', highlightEn: 'b', ingglish: 'lam' },
 ];
 
 export const eeSoundExamples: ExampleWord[] = [
-  { english: 'sea', ingglish: 'see', highlightEn: 'ea', highlightIng: 'ee' },
-  { english: 'key', ingglish: 'kee', highlightEn: 'ey', highlightIng: 'ee' },
-  { english: 'me', ingglish: 'mee', highlightEn: 'e', highlightIng: 'ee' },
-  { english: 'field', ingglish: 'feeld', highlightEn: 'ie', highlightIng: 'ee' },
+  { english: 'sea', highlightEn: 'ea', highlightIng: 'ee', ingglish: 'see' },
+  { english: 'key', highlightEn: 'ey', highlightIng: 'ee', ingglish: 'kee' },
+  { english: 'me', highlightEn: 'e', highlightIng: 'ee', ingglish: 'mee' },
+  { english: 'field', highlightEn: 'ie', highlightIng: 'ee', ingglish: 'feeld' },
 ];
 
 export const aySoundExamples: ExampleWord[] = [
   { english: 'day', ingglish: 'day' },
-  { english: 'weigh', ingglish: 'way', highlightEn: 'eigh', highlightIng: 'ay' },
-  { english: 'steak', ingglish: 'stayk', highlightEn: 'ea', highlightIng: 'ay' },
-  { english: 'great', ingglish: 'grayt', highlightEn: 'ea', highlightIng: 'ay' },
+  { english: 'weigh', highlightEn: 'eigh', highlightIng: 'ay', ingglish: 'way' },
+  { english: 'steak', highlightEn: 'ea', highlightIng: 'ay', ingglish: 'stayk' },
+  { english: 'great', highlightEn: 'ea', highlightIng: 'ay', ingglish: 'grayt' },
 ];
 
 export const simplifyExamples: ExampleWord[] = [
-  { english: 'phone', ingglish: 'fohn', highlightEn: 'ph', highlightIng: 'f' },
-  { english: 'cat', ingglish: 'kat', highlightEn: 'c', highlightIng: 'k' },
-  { english: 'city', ingglish: 'sitee', highlightEn: 'c', highlightIng: 's' },
-  { english: 'night', ingglish: 'nait', highlightEn: 'igh', highlightIng: 'ai' },
-  { english: 'nation', ingglish: 'nayshan', highlightEn: 'tion', highlightIng: 'shan' },
+  { english: 'phone', highlightEn: 'ph', highlightIng: 'f', ingglish: 'fohn' },
+  { english: 'cat', highlightEn: 'c', highlightIng: 'k', ingglish: 'kat' },
+  { english: 'city', highlightEn: 'c', highlightIng: 's', ingglish: 'sitee' },
+  { english: 'night', highlightEn: 'igh', highlightIng: 'ai', ingglish: 'nait' },
+  { english: 'nation', highlightEn: 'tion', highlightIng: 'shan', ingglish: 'nayshan' },
 ];
 
 export const thDhExamples: ExampleWord[] = [
-  { english: 'think', ingglish: 'thingk', highlightEn: 'th', highlightIng: 'th' },
-  { english: 'thought', ingglish: 'thawt', highlightEn: 'th', highlightIng: 'th' },
-  { english: 'the', ingglish: 'dha', highlightEn: 'th', highlightIng: 'dh' },
-  { english: 'this', ingglish: 'dhis', highlightEn: 'th', highlightIng: 'dh' },
-  { english: 'mother', ingglish: 'muhdher', highlightEn: 'th', highlightIng: 'dh' },
+  { english: 'think', highlightEn: 'th', highlightIng: 'th', ingglish: 'thingk' },
+  { english: 'thought', highlightEn: 'th', highlightIng: 'th', ingglish: 'thawt' },
+  { english: 'the', highlightEn: 'th', highlightIng: 'dh', ingglish: 'dha' },
+  { english: 'this', highlightEn: 'th', highlightIng: 'dh', ingglish: 'dhis' },
+  { english: 'mother', highlightEn: 'th', highlightIng: 'dh', ingglish: 'muhdher' },
 ];
 
 // Progressive paragraph data
@@ -344,7 +344,7 @@ export const poemWords: PoemWord[] = [
 
 // Reading test: word-by-word for tooltips. [ingglish, english] pairs.
 // Only include english when it differs (for tooltip).
-export const readingTestWords: [string, string | null][] = [
+export const readingTestWords: [string, null | string][] = [
   ['Too', 'To'],
   ['bee,', 'be,'],
   ['or', null],

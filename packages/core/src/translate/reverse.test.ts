@@ -4,12 +4,12 @@ import { ipaToArpabetClean } from '@ingglish/ipa';
 import { ingglishToArpabet } from '@ingglish/phonemes';
 import { isLikelyIngglish } from '../detect/language';
 import { SAMPLE_TEXT } from '../test-setup';
-import { translateWord, translateSync } from './forward';
+import { translateSync, translateWord } from './forward';
 import {
-  reverseTranslateWord,
+  reverseTranslateIPAWord,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
-  reverseTranslateIPAWord,
+  reverseTranslateWord,
 } from './reverse';
 
 describe('reverse-translator', () => {
@@ -107,16 +107,16 @@ describe('reverse-translator', () => {
       // Contractions are translated without apostrophe for consistent phonetic representation
       // The reverse translation returns the base word form
       const contractions = [
-        { input: "wouldn't", expectedBack: "wouldn't" },
-        { input: "couldn't", expectedBack: "couldn't" },
-        { input: "shouldn't", expectedBack: "shouldn't" },
-        { input: "don't", expectedBack: "don't" },
-        { input: "can't", expectedBack: "can't" },
-        { input: "won't", expectedBack: "won't" },
+        { expectedBack: "wouldn't", input: "wouldn't" },
+        { expectedBack: "couldn't", input: "couldn't" },
+        { expectedBack: "shouldn't", input: "shouldn't" },
+        { expectedBack: "don't", input: "don't" },
+        { expectedBack: "can't", input: "can't" },
+        { expectedBack: "won't", input: "won't" },
       ];
       const failures: string[] = [];
 
-      for (const { input, expectedBack } of contractions) {
+      for (const { expectedBack, input } of contractions) {
         const ingglish = translateSync(input);
         const back = reverseTranslateSync(ingglish);
         if (back.toLowerCase() !== expectedBack.toLowerCase()) {
@@ -130,11 +130,11 @@ describe('reverse-translator', () => {
     it('should round-trip ambiguous words', () => {
       // Regression tests for phoneme ambiguity
       const ambiguousWords = [
-        { word: 'exhumed', note: '"sh" can be SH (ship) or S+HH (exhume)' },
-        { word: 'where', note: '"er" can be ER (were) or EH+R (where)' },
+        { note: '"sh" can be SH (ship) or S+HH (exhume)', word: 'exhumed' },
+        { note: '"er" can be ER (were) or EH+R (where)', word: 'where' },
       ];
 
-      for (const { word, note } of ambiguousWords) {
+      for (const { note, word } of ambiguousWords) {
         const ingglish = translateWord(word);
         const results = reverseTranslateWord(ingglish);
         expect(results, `${word}: ${note}`).toContain(word);

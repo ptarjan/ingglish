@@ -7,9 +7,9 @@ import type { OutputFormat } from '@ingglish/phonemes';
 import { registerShavian } from '@ingglish/shavian';
 import type {
   ExtensionMessage,
+  FormatResponse,
   StateResponse,
   ToggleResponse,
-  FormatResponse,
   TranslateWordsResponse,
 } from './types';
 
@@ -24,13 +24,10 @@ let dictionaryLoaded = false;
 // Track which tabs have translation enabled (in-memory cache, backed by storage)
 const translatedTabs = new Set<number>();
 
-// Persist translatedTabs to storage (survives service worker suspension on mobile)
-async function saveTranslatedTabs(): Promise<void> {
-  try {
-    await chrome.storage.local.set({ translatedTabs: [...translatedTabs] });
-  } catch {
-    // Ignore storage errors
-  }
+// Add a tab to the translated set and persist
+function addTranslatedTab(tabId: number): void {
+  translatedTabs.add(tabId);
+  void saveTranslatedTabs();
 }
 
 // Load translatedTabs from storage on startup
@@ -49,33 +46,36 @@ async function loadTranslatedTabs(): Promise<void> {
   }
 }
 
-// Add a tab to the translated set and persist
-function addTranslatedTab(tabId: number): void {
-  translatedTabs.add(tabId);
-  void saveTranslatedTabs();
-}
-
 // Remove a tab from the translated set and persist
 function removeTranslatedTab(tabId: number): void {
   translatedTabs.delete(tabId);
   void saveTranslatedTabs();
 }
 
+// Persist translatedTabs to storage (survives service worker suspension on mobile)
+async function saveTranslatedTabs(): Promise<void> {
+  try {
+    await chrome.storage.local.set({ translatedTabs: [...translatedTabs] });
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 // Translation cache - persists across message calls for fast lookups
 // Key: "format:word" (e.g., "ingglish:hello"), Value: translated word
 const translationCache = new Map<string, string>();
-const MAX_CACHE_SIZE = 50000; // ~2MB assuming avg 40 bytes per entry
+const MAX_CACHE_SIZE = 50_000; // ~2MB assuming avg 40 bytes per entry
 
 // Cache statistics for testing/debugging
 export const cacheStats = {
-  hits: 0,
-  misses: 0,
-  size: () => translationCache.size,
   clear: () => {
     translationCache.clear();
     cacheStats.hits = 0;
     cacheStats.misses = 0;
   },
+  hits: 0,
+  misses: 0,
+  size: () => translationCache.size,
 };
 
 // Default format
@@ -89,28 +89,6 @@ async function getFormat(): Promise<OutputFormat> {
   } catch {
     return DEFAULT_FORMAT;
   }
-}
-
-// Set the format in storage
-async function setFormat(format: OutputFormat): Promise<void> {
-  await chrome.storage.sync.set({ outputFormat: format });
-}
-
-// Update icon based on translation state
-function updateIcon(tabId: number, enabled: boolean): void {
-  const suffix = enabled ? '' : '-off';
-  chrome.action
-    .setIcon({
-      tabId,
-      path: {
-        16: `icons/icon16${suffix}.png`,
-        48: `icons/icon48${suffix}.png`,
-        128: `icons/icon128${suffix}.png`,
-      },
-    })
-    .catch(() => {
-      // Tab may have been closed - ignore
-    });
 }
 
 // Check if we have permission to access a tab
@@ -131,6 +109,28 @@ async function hasTabPermission(tabId: number): Promise<boolean> {
   }
 }
 
+// Set the format in storage
+async function setFormat(format: OutputFormat): Promise<void> {
+  await chrome.storage.sync.set({ outputFormat: format });
+}
+
+// Update icon based on translation state
+function updateIcon(tabId: number, enabled: boolean): void {
+  const suffix = enabled ? '' : '-off';
+  chrome.action
+    .setIcon({
+      path: {
+        16: `icons/icon16${suffix}.png`,
+        48: `icons/icon48${suffix}.png`,
+        128: `icons/icon128${suffix}.png`,
+      },
+      tabId,
+    })
+    .catch(() => {
+      // Tab may have been closed - ignore
+    });
+}
+
 // CSS to hide page content while translating (prevents flash of untranslated text)
 const HIDE_CSS = `
   body {
@@ -140,36 +140,6 @@ const HIDE_CSS = `
     visibility: visible !important;
   }
 `;
-
-// Inject the lightweight translation script into a tab
-async function injectTranslator(tabId: number, checkPermission = true): Promise<boolean> {
-  // Check permission first (skip for popup-initiated actions which use activeTab)
-  if (checkPermission) {
-    const hasPermission = await hasTabPermission(tabId);
-    if (!hasPermission) {
-      console.log('No permission to inject into tab', tabId);
-      return false;
-    }
-  }
-
-  try {
-    // First inject CSS to hide content (prevents flash of untranslated text)
-    await chrome.scripting.insertCSS({
-      target: { tabId },
-      css: HIDE_CSS,
-    });
-
-    // Then inject the translator script
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      files: ['content-script.global.js'],
-    });
-    return true;
-  } catch (error) {
-    console.error('Failed to inject translator:', error);
-    return false;
-  }
-}
 
 // Get cached translation or compute and cache it
 function getCachedTranslation(word: string, format: OutputFormat): string {
@@ -196,6 +166,36 @@ function getCachedTranslation(word: string, format: OutputFormat): string {
   return translated;
 }
 
+// Inject the lightweight translation script into a tab
+async function injectTranslator(tabId: number, checkPermission = true): Promise<boolean> {
+  // Check permission first (skip for popup-initiated actions which use activeTab)
+  if (checkPermission) {
+    const hasPermission = await hasTabPermission(tabId);
+    if (!hasPermission) {
+      console.log('No permission to inject into tab', tabId);
+      return false;
+    }
+  }
+
+  try {
+    // First inject CSS to hide content (prevents flash of untranslated text)
+    await chrome.scripting.insertCSS({
+      css: HIDE_CSS,
+      target: { tabId },
+    });
+
+    // Then inject the translator script
+    await chrome.scripting.executeScript({
+      files: ['content-script.global.js'],
+      target: { tabId },
+    });
+    return true;
+  } catch (error) {
+    console.error('Failed to inject translator:', error);
+    return false;
+  }
+}
+
 // Translate a batch of words (used by lightweight content script)
 function translateWords(words: string[], format: OutputFormat): Record<string, string> {
   if (!dictionaryLoaded) {
@@ -219,7 +219,7 @@ chrome.runtime.onMessage.addListener(
     message: ExtensionMessage,
     sender,
     sendResponse: (
-      response: StateResponse | ToggleResponse | FormatResponse | TranslateWordsResponse
+      response: FormatResponse | StateResponse | ToggleResponse | TranslateWordsResponse
     ) => void
   ) => {
     if (message.type === 'GET_STATE') {
@@ -233,10 +233,10 @@ chrome.runtime.onMessage.addListener(
         }
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const tabId = tabs[0]?.id;
-          if (tabId !== undefined) {
-            sendResponse({ enabled: translatedTabs.has(tabId), format });
-          } else {
+          if (tabId === undefined) {
             sendResponse({ enabled: false, format });
+          } else {
+            sendResponse({ enabled: translatedTabs.has(tabId), format });
           }
         });
       })();
@@ -257,7 +257,7 @@ chrome.runtime.onMessage.addListener(
 
         // Retranslate all currently translated tabs with the new format
         for (const tabId of translatedTabs) {
-          chrome.tabs.sendMessage(tabId, { type: 'RETRANSLATE', format: message.format }, () => {
+          chrome.tabs.sendMessage(tabId, { format: message.format, type: 'RETRANSLATE' }, () => {
             // Ignore errors (tab may have been closed or script not injected)
             if (chrome.runtime.lastError) {
               console.log(`Retranslate message failed for tab ${tabId}`);
@@ -286,13 +286,13 @@ chrome.runtime.onMessage.addListener(
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const tabId = tabs[0]?.id;
         if (tabId === undefined) {
-          sendResponse({ success: false, error: 'No active tab' });
+          sendResponse({ error: 'No active tab', success: false });
           return;
         }
 
         const wasEnabled = translatedTabs.has(tabId);
         toggleTab(tabId);
-        sendResponse({ success: true, enabled: !wasEnabled });
+        sendResponse({ enabled: !wasEnabled, success: true });
       });
       return true; // Keep channel open for async response
     }

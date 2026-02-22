@@ -1,38 +1,43 @@
 // Phoneme data and utilities
 export {
-  ARPABET_VOWELS,
   ARPABET_CONSONANTS,
+  ARPABET_VOWELS,
+  getStress,
+  isConsonant,
+  isVowel,
   STRESS_MARKER_REGEX,
   stripStress,
-  isVowel,
-  getStress,
 } from './arpabet';
 
-// Phonotactics
-export { findOnsetStart } from './phonotactics';
+// Custom format builder
+export { createCustomConverter } from './custom-format';
+
+export type { CustomMappingConfig } from './custom-format';
 
 // Format registry
 export {
-  registerFormat,
   getFormatHandler,
   getFormatIsLatinScript,
-  getFormatPreservesCase,
+  getFormatJoinSeparator,
   getFormatLabel,
   getFormatNativeLabel,
-  getFormatJoinSeparator,
+  getFormatPreservesCase,
+  registerFormat,
 } from './format-registry';
+
 export type { ReverseToken } from './format-registry';
+
+// Conversion functions
+export { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 // Conversion maps
 export { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 
-// Conversion functions
-export { arpabetPhonemeToIngglish, arpabetToIngglish, arpabetToFormat } from './to-ingglish';
-export { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
+// Phonotactics
+export { findOnsetStart } from './phonotactics';
 
-// Custom format builder
-export { createCustomConverter } from './custom-format';
-export type { CustomMappingConfig } from './custom-format';
+// Conversion functions
+export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
 
 // Types
 export type { OutputFormat } from './types';

@@ -4,19 +4,14 @@ import { getFormatLabel } from '@ingglish/phonemes';
 import { useFormat } from '../contexts/FormatContext';
 import { analyzeWord, fallbackLabel, formatFrequency } from './word-explorer/analyze';
 import {
-  PhonemeChain,
-  G2PRuleTrace,
-  CompoundBreakdown,
-  StemmingBreakdown,
-  InitialismBreakdown,
   BritishBreakdown,
+  CompoundBreakdown,
+  G2PRuleTrace,
   HomophoneList,
+  InitialismBreakdown,
+  PhonemeChain,
+  StemmingBreakdown,
 } from './word-explorer/breakdowns';
-
-function getInitialWord(): string {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('word') ?? '';
-}
 
 export default function WordExplorer() {
   const { format, toggleFormat } = useFormat();
@@ -34,13 +29,13 @@ export default function WordExplorer() {
   // Sync input to URL for shareable links
   useEffect(() => {
     const trimmed = input.trim();
-    const url = new URL(window.location.href);
+    const url = new URL(globalThis.location.href);
     if (trimmed) {
       url.searchParams.set('word', trimmed);
     } else {
       url.searchParams.delete('word');
     }
-    window.history.replaceState(null, '', url);
+    globalThis.history.replaceState(null, '', url);
   }, [input]);
 
   const results = useMemo(() => {
@@ -72,8 +67,9 @@ export default function WordExplorer() {
 
       <div className="explorer-input-row">
         <input
-          type="text"
-          value={input}
+          aria-label="Word to explore"
+          className="explorer-input"
+          disabled={!reverseDictReady}
           onChange={(e) => {
             setInput(e.target.value);
           }}
@@ -82,12 +78,11 @@ export default function WordExplorer() {
               ? 'Type a word (e.g., knight, treehouse, URL)'
               : 'Loading dictionary...'
           }
-          className="explorer-input"
-          aria-label="Word to explore"
           spellCheck={false}
-          disabled={!reverseDictReady}
+          type="text"
+          value={input}
         />
-        <button type="button" className="btn-secondary" onClick={toggleFormat}>
+        <button className="btn-secondary" onClick={toggleFormat} type="button">
           {formatLabel} &#x21C5;
         </button>
       </div>
@@ -99,8 +94,8 @@ export default function WordExplorer() {
             {['colonel', 'treehouse', 'ghosting', 'URL', 'favourable', 'emoji', 'doomscroll'].map(
               (w) => (
                 <button
-                  key={w}
                   className="suggestion-chip"
+                  key={w}
                   onClick={() => {
                     setInput(w);
                   }}
@@ -114,7 +109,7 @@ export default function WordExplorer() {
       )}
 
       {results.map((result) => (
-        <div key={result.word} className="word-card">
+        <div className="word-card" key={result.word}>
           <div className="word-card-header">
             <div className="word-main">
               <span className="word-english">{result.word}</span>
@@ -128,9 +123,9 @@ export default function WordExplorer() {
             <span className={`badge ${result.matched ? 'badge-dict' : 'badge-fallback'}`}>
               {result.isCustom
                 ? 'custom override'
-                : result.matched
+                : (result.matched
                   ? 'dictionary'
-                  : fallbackLabel(result.diagnosis?.strategy)}
+                  : fallbackLabel(result.diagnosis?.strategy))}
             </span>
             {result.britishSpelling !== undefined && result.diagnosis?.strategy !== 'british' && (
               <span className="badge badge-fallback">British variant</span>
@@ -140,7 +135,7 @@ export default function WordExplorer() {
             )}
             {result.homophones.length > 0 && (
               <span className="badge badge-homo">
-                {result.homophones.length} homophone{result.homophones.length !== 1 ? 's' : ''}
+                {result.homophones.length} homophone{result.homophones.length === 1 ? '' : 's'}
               </span>
             )}
           </div>
@@ -148,33 +143,32 @@ export default function WordExplorer() {
           {result.diagnosis?.strategy === 'g2p' && (
             <div className="explorer-section">
               <h4>G2P Rules Applied</h4>
-              <G2PRuleTrace trace={result.diagnosis.trace} format={format} />
+              <G2PRuleTrace format={format} trace={result.diagnosis.trace} />
             </div>
           )}
 
           {result.diagnosis?.strategy === 'compound' && (
             <CompoundBreakdown
-              parts={result.diagnosis.parts}
               format={format}
               onWordClick={handleWordClick}
+              parts={result.diagnosis.parts}
             />
           )}
 
           {result.diagnosis?.strategy === 'stemming' && (
             <StemmingBreakdown
-              result={result.diagnosis}
               format={format}
               onWordClick={handleWordClick}
+              result={result.diagnosis}
             />
           )}
 
           {result.diagnosis?.strategy === 'initialism' && (
-            <InitialismBreakdown word={result.word} format={format} />
+            <InitialismBreakdown format={format} word={result.word} />
           )}
 
           {(result.diagnosis?.strategy === 'british' || result.britishSpelling !== undefined) && (
             <BritishBreakdown
-              original={result.word}
               american={
                 result.diagnosis?.strategy === 'british'
                   ? result.diagnosis.americanSpelling
@@ -182,13 +176,14 @@ export default function WordExplorer() {
               }
               format={format}
               onWordClick={handleWordClick}
+              original={result.word}
             />
           )}
 
           {result.phonemes !== null && (
             <div className="explorer-section">
               <h4>Phoneme-by-Phoneme Mapping</h4>
-              <PhonemeChain phonemes={result.phonemes} format={format} />
+              <PhonemeChain format={format} phonemes={result.phonemes} />
             </div>
           )}
 
@@ -213,12 +208,17 @@ export default function WordExplorer() {
           )}
 
           <HomophoneList
-            homophones={result.homophones}
             format={format}
+            homophones={result.homophones}
             onWordClick={handleWordClick}
           />
         </div>
       ))}
     </div>
   );
+}
+
+function getInitialWord(): string {
+  const params = new URLSearchParams(globalThis.location.search);
+  return params.get('word') ?? '';
 }

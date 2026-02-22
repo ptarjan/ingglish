@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { translateSyncWithMapping } from 'ingglish';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { observeAndTranslate } from './observe';
-import { translateDOM, translateDOMSync, restoreDOM, applyTranslationsMap } from './translate';
+import { applyTranslationsMap, restoreDOM, translateDOM, translateDOMSync } from './translate';
 import { skipElement, unskipElement } from './traversal';
 
 describe('dom-translator', () => {
@@ -30,7 +30,7 @@ describe('dom-translator', () => {
 
   // Wrapper to track observers for cleanup
   function createObserver(
-    root: Element | Document,
+    root: Document | Element,
     options?: Parameters<typeof observeAndTranslate>[1]
   ) {
     const stop = observeAndTranslate(root, options);
@@ -134,7 +134,7 @@ describe('dom-translator', () => {
       expect(p).not.toBeNull();
       if (p !== null) {
         skipElement(p);
-        expect(p.hasAttribute('data-ingglish-skip')).toBe(true);
+        expect(Object.hasOwn(p.dataset, 'ingglishSkip')).toBe(true);
       }
     });
 
@@ -144,7 +144,7 @@ describe('dom-translator', () => {
       expect(p).not.toBeNull();
       if (p !== null) {
         unskipElement(p);
-        expect(p.hasAttribute('data-ingglish-skip')).toBe(false);
+        expect(Object.hasOwn(p.dataset, 'ingglishSkip')).toBe(false);
       }
     });
 
@@ -188,7 +188,7 @@ describe('dom-translator', () => {
       // Add a new element with text
       const p = document.createElement('p');
       p.textContent = 'World';
-      document.body.appendChild(p);
+      document.body.append(p);
 
       // Wait for MutationObserver to process
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -204,7 +204,7 @@ describe('dom-translator', () => {
       // Add a new element with nested text
       const div = document.createElement('div');
       div.innerHTML = '<span>World</span>';
-      document.body.appendChild(div);
+      document.body.append(div);
 
       // Wait for MutationObserver to process
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -219,7 +219,7 @@ describe('dom-translator', () => {
       // Add a code element that should be skipped
       const code = document.createElement('code');
       code.textContent = 'Hello';
-      document.body.appendChild(code);
+      document.body.append(code);
 
       // Wait for MutationObserver to process
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -234,7 +234,7 @@ describe('dom-translator', () => {
       // Add a new element after stopping
       const p = document.createElement('p');
       p.textContent = 'Hello';
-      document.body.appendChild(p);
+      document.body.append(p);
 
       // Wait a bit
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -247,7 +247,7 @@ describe('dom-translator', () => {
       // First add an element
       const p = document.createElement('p');
       p.textContent = 'Test';
-      document.body.appendChild(p);
+      document.body.append(p);
 
       // Now start observing
       createObserver(document.body);
@@ -276,9 +276,9 @@ describe('dom-translator', () => {
 
       // Second token: space (unchanged)
       expect(tokens[1]).toMatchObject({
+        isWord: false,
         original: ' ',
         translated: ' ',
-        isWord: false,
       });
 
       // Third token: word "world"
@@ -308,15 +308,15 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       translateDOMSync(document.body, { showTooltips: true });
 
-      const spans = document.querySelectorAll('.ingglish-word');
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
 
       // First word: stores original, displays translated
-      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('Hello');
+      expect(spans[0].dataset.ingglishOrig).toBe('Hello');
       expect(spans[0].textContent).not.toBe('Hello'); // Translated
 
       // Second word: stores original, displays translated
-      expect(spans[1].getAttribute('data-ingglish-orig')).toBe('world');
+      expect(spans[1].dataset.ingglishOrig).toBe('world');
       expect(spans[1].textContent).not.toBe('world'); // Translated
     });
 
@@ -325,9 +325,9 @@ describe('dom-translator', () => {
       translateDOMSync(document.body, { showTooltips: true });
 
       // Only "hello" should be wrapped (numbers stay as text)
-      const spans = document.querySelectorAll('.ingglish-word');
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(1);
-      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('hello');
+      expect(spans[0].dataset.ingglishOrig).toBe('hello');
     });
 
     it('should inject tooltip CSS styles and preserve punctuation', () => {
@@ -335,7 +335,7 @@ describe('dom-translator', () => {
       translateDOMSync(document.body, { showTooltips: true });
 
       // CSS styles injected
-      const styleElement = document.getElementById('ingglish-tooltip-styles');
+      const styleElement = document.querySelector('#ingglish-tooltip-styles');
       expect(styleElement).not.toBeNull();
       expect(styleElement?.textContent).toContain('.ingglish-word');
 
@@ -352,13 +352,13 @@ describe('dom-translator', () => {
 
       const p = document.createElement('p');
       p.textContent = 'Hello';
-      document.body.appendChild(p);
+      document.body.append(p);
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const span = p.querySelector('.ingglish-word');
+      const span = p.querySelector<HTMLElement>('.ingglish-word');
       expect(span).not.toBeNull();
-      expect(span?.getAttribute('data-ingglish-orig')).toBe('Hello');
+      expect(span?.dataset.ingglishOrig).toBe('Hello');
       expect(span?.textContent).not.toBe('Hello'); // Translated
     });
 
@@ -371,7 +371,7 @@ describe('dom-translator', () => {
     it.skip('should inject styles into iframe document, not parent document', () => {
       // Create an iframe
       const iframe = document.createElement('iframe');
-      document.body.appendChild(iframe);
+      document.body.append(iframe);
 
       const iframeDoc = iframe.contentDocument;
       expect(iframeDoc).not.toBeNull();
@@ -384,7 +384,7 @@ describe('dom-translator', () => {
       translateDOMSync(iframeDoc.body, { showTooltips: true });
 
       // Styles should be injected into iframe's document
-      const iframeStyle = iframeDoc.getElementById('ingglish-tooltip-styles');
+      const iframeStyle = iframeDoc.querySelector('#ingglish-tooltip-styles');
       expect(iframeStyle).not.toBeNull();
       expect(iframeStyle?.textContent).toContain('.ingglish-word');
 
@@ -400,7 +400,7 @@ describe('dom-translator', () => {
 
       // Create an iframe and translate it
       const iframe = document.createElement('iframe');
-      document.body.appendChild(iframe);
+      document.body.append(iframe);
       const iframeDoc = iframe.contentDocument;
       expect(iframeDoc).not.toBeNull();
       if (iframeDoc === null) {
@@ -410,8 +410,8 @@ describe('dom-translator', () => {
       translateDOMSync(iframeDoc.body, { showTooltips: true });
 
       // Both documents should have styles
-      expect(document.getElementById('ingglish-tooltip-styles')).not.toBeNull();
-      expect(iframeDoc.getElementById('ingglish-tooltip-styles')).not.toBeNull();
+      expect(document.querySelector('#ingglish-tooltip-styles')).not.toBeNull();
+      expect(iframeDoc.querySelector('#ingglish-tooltip-styles')).not.toBeNull();
     });
   });
 
@@ -450,7 +450,7 @@ describe('dom-translator', () => {
 
       expect(progressCalls.length).toBeGreaterThan(0);
       // Last call should show all processed
-      const lastCall = progressCalls[progressCalls.length - 1];
+      const lastCall = progressCalls.at(-1);
       expect(lastCall.processed).toBe(lastCall.total);
     });
 
@@ -458,9 +458,9 @@ describe('dom-translator', () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await translateDOM(document.body, { chunked: true, showTooltips: true });
 
-      const spans = document.querySelectorAll('.ingglish-word');
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
-      expect(spans[0].getAttribute('data-ingglish-orig')).toBe('Hello');
+      expect(spans[0].dataset.ingglishOrig).toBe('Hello');
     });
 
     it('should handle empty document in chunked mode', async () => {
@@ -511,7 +511,9 @@ describe('dom-translator', () => {
 
       restoreDOM(document.body);
 
-      expect(document.body.textContent?.replace(/\s+/g, ' ').trim()).toBe('Hello important world');
+      expect(document.body.textContent?.replaceAll(/\s+/g, ' ').trim()).toBe(
+        'Hello important world'
+      );
       expect(document.querySelector('.ingglish-word')).toBeNull();
       expect(document.querySelector('strong')).not.toBeNull();
     });
@@ -582,7 +584,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'haloh', world: 'werld', test: 'tust' },
+        { hello: 'haloh', test: 'tust', world: 'werld' },
         { showTooltips: true }
       );
 
@@ -606,7 +608,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { hello: 'haloh', world: 'werld', how: 'how', are: 'ar', you: 'yoo' },
+        { are: 'ar', hello: 'haloh', how: 'how', world: 'werld', you: 'yoo' },
         { showTooltips: true }
       );
 
@@ -627,6 +629,7 @@ describe('dom-translator', () => {
 
       // Verify the optimization by checking text node contents
       // Adjacent punctuation+space should be combined
+      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       const textNodes = Array.from(p.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE);
 
       // Check that some text nodes contain multiple characters (batched)
@@ -676,7 +679,7 @@ describe('dom-translator', () => {
 
       await applyTranslationsMap(
         document.body,
-        { test: 'tust', case: 'kais', here: 'hir' },
+        { case: 'kais', here: 'hir', test: 'tust' },
         { showTooltips: true }
       );
 

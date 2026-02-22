@@ -9,13 +9,15 @@
  * ```
  */
 
-export { translateDOM, restoreDOM, applyTranslationsMap } from './translate';
+export { applyTranslationsMap, restoreDOM, translateDOM } from './translate';
 
 export {
-  DEFAULT_SKIP_TAGS,
-  DEFAULT_SKIP_CLASSES,
   collectTextNodes,
+  DEFAULT_SKIP_CLASSES,
+  DEFAULT_SKIP_TAGS,
   extractWordsFromNodes,
-  injectTooltipStyles,
   injectTooltipBehavior,
+  injectTooltipStyles,
 } from './traversal';
+
+export type { DOMTranslatorOptions } from './types';

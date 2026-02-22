@@ -1,37 +1,32 @@
-type ForwardConverter = (arpabet: string[]) => string;
-type ReverseTextConverter = (text: string) => string;
-
-/** Token returned by reverse-with-mapping translation */
-export interface ReverseToken {
-  original: string;
-  translated: string;
-  isWord: boolean;
-  matched?: boolean;
-}
-
-type ReverseTextWithMappingConverter = (text: string) => ReverseToken[];
-
 export interface FormatHandler {
   forward?: ForwardConverter;
-  reverseText?: ReverseTextConverter;
-  reverseTextWithMapping?: ReverseTextWithMappingConverter;
   isLatinScript?: boolean;
-  /** Whether case is preserved (caps, sentence start). Defaults to isLatinScript. */
-  preservesCase?: boolean;
+  /** Compound word join separator. Default '' */
+  joinSeparator?: string;
   /** Display name ('Ingglish', 'IPA', etc.) */
   label?: string;
   /** Display name in the format's own script (e.g. '𐑖𐑱𐑝𐑾𐑯' for Shavian) */
   nativeLabel?: string;
-  /** Compound word join separator. Default '' */
-  joinSeparator?: string;
+  /** Whether case is preserved (caps, sentence start). Defaults to isLatinScript. */
+  preservesCase?: boolean;
+  reverseText?: ReverseTextConverter;
+  reverseTextWithMapping?: ReverseTextWithMappingConverter;
 }
+/** Token returned by reverse-with-mapping translation */
+export interface ReverseToken {
+  isWord: boolean;
+  matched?: boolean;
+  original: string;
+  translated: string;
+}
+
+type ForwardConverter = (arpabet: string[]) => string;
+
+type ReverseTextConverter = (text: string) => string;
+
+type ReverseTextWithMappingConverter = (text: string) => ReverseToken[];
 
 const registry = new Map<string, FormatHandler>();
-
-export function registerFormat(name: string, handler: FormatHandler): void {
-  const existing = registry.get(name);
-  registry.set(name, { ...existing, ...handler });
-}
 
 export function getFormatHandler(name: string): FormatHandler | undefined {
   return registry.get(name);
@@ -46,12 +41,11 @@ export function getFormatIsLatinScript(name: string): boolean {
 }
 
 /**
- * Returns whether a format preserves case (capitalization, sentence start).
- * Falls back to isLatinScript, then true for unknown formats.
+ * Returns the join separator for compound word parts.
+ * Defaults to '' (no separator).
  */
-export function getFormatPreservesCase(name: string): boolean {
-  const handler = registry.get(name);
-  return handler?.preservesCase ?? handler?.isLatinScript ?? true;
+export function getFormatJoinSeparator(name: string): string {
+  return registry.get(name)?.joinSeparator ?? '';
 }
 
 /**
@@ -72,9 +66,15 @@ export function getFormatNativeLabel(name: string): string {
 }
 
 /**
- * Returns the join separator for compound word parts.
- * Defaults to '' (no separator).
+ * Returns whether a format preserves case (capitalization, sentence start).
+ * Falls back to isLatinScript, then true for unknown formats.
  */
-export function getFormatJoinSeparator(name: string): string {
-  return registry.get(name)?.joinSeparator ?? '';
+export function getFormatPreservesCase(name: string): boolean {
+  const handler = registry.get(name);
+  return handler?.preservesCase ?? handler?.isLatinScript ?? true;
+}
+
+export function registerFormat(name: string, handler: FormatHandler): void {
+  const existing = registry.get(name);
+  registry.set(name, { ...existing, ...handler });
 }

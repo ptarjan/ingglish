@@ -15,104 +15,85 @@
 export const VALID_ONSETS = new Set([
   // Single consonants (all are valid onsets except NG)
   'B',
-  'CH',
-  'D',
-  'DH',
-  'F',
-  'G',
-  'HH',
-  'JH',
-  'K',
-  'L',
-  'M',
-  'N',
-  'P',
-  'R',
-  'S',
-  'SH',
-  'T',
-  'TH',
-  'V',
-  'W',
-  'Y',
-  'Z',
-  'ZH',
-
   // Two-consonant clusters: consonant + liquid (L, R)
   'B L',
   'B R',
-  'D R',
-  'F L',
-  'F R',
-  'G L',
-  'G R',
-  'K L',
-  'K R',
-  'P L',
-  'P R',
-  'SH R',
-  'T R',
-  'TH R',
-
   // Two-consonant clusters: consonant + glide (W, Y)
   'B Y',
+  'CH',
+  'D',
+  'DH',
+  'D R',
   'D W',
   'D Y',
+  'F',
+  'F L',
+  'F R',
   'F Y',
+  'G',
+  'G L',
+  'G R',
   'G W',
   'G Y',
-  'HH Y',
+  'HH',
   'HH W',
+  'HH Y',
+  'JH',
+
+  'K',
+  'K L',
+  'K R',
   'K W',
   'K Y',
+  'L',
   'L Y',
+  'M',
   'M Y',
+  'N',
   'N Y',
-  'P Y',
-  'S W',
-  'S Y',
-  'T W',
-  'T Y',
-  'TH W',
-  'V Y',
+  'P',
+  'P L',
+  'P R',
 
+  'P Y',
+  'R',
+  'S',
+  'SH',
+  'SH R',
   // Two-consonant clusters: s + consonant
   'S K',
-  'S L',
-  'S M',
-  'S N',
-  'S P',
-  'S T',
-
   // Three-consonant clusters: s + stop + liquid/glide
   'S K R',
   'S K W',
   'S K Y',
+  'S L',
+  'S M',
+  'S N',
+  'S P',
   'S P L',
   'S P R',
   'S P Y',
+  'S T',
   'S T R',
   'S T Y',
-]);
+  'S W',
 
-/**
- * Checks if a sequence of consonant phonemes forms a valid English onset.
- *
- * @param consonants Array of ARPAbet consonant phonemes (without stress markers)
- * @returns true if the sequence can legally start an English syllable
- *
- * @example
- * isValidOnset(['S', 'T', 'R']) // true - "street"
- * isValidOnset(['S', 'R'])     // false - not valid in English
- * isValidOnset([])             // true - null onset is valid
- */
-export function isValidOnset(consonants: string[]): boolean {
-  if (consonants.length === 0) {
-    return true;
-  }
-  const key = consonants.join(' ');
-  return VALID_ONSETS.has(key);
-}
+  'S Y',
+  'T',
+  'TH',
+  'TH R',
+  'TH W',
+  'T R',
+
+  'T W',
+  'T Y',
+  'V',
+  'V Y',
+  'W',
+  'Y',
+  'Z',
+  'ZH',
+]);
 
 /**
  * Finds the starting index of the maximal valid onset from a consonant cluster.
@@ -149,4 +130,23 @@ export function findOnsetStart(consonants: string[]): number {
 
   // If nothing is valid (shouldn't happen), take just the last consonant
   return consonants.length - 1;
+}
+
+/**
+ * Checks if a sequence of consonant phonemes forms a valid English onset.
+ *
+ * @param consonants Array of ARPAbet consonant phonemes (without stress markers)
+ * @returns true if the sequence can legally start an English syllable
+ *
+ * @example
+ * isValidOnset(['S', 'T', 'R']) // true - "street"
+ * isValidOnset(['S', 'R'])     // false - not valid in English
+ * isValidOnset([])             // true - null onset is valid
+ */
+export function isValidOnset(consonants: string[]): boolean {
+  if (consonants.length === 0) {
+    return true;
+  }
+  const key = consonants.join(' ');
+  return VALID_ONSETS.has(key);
 }

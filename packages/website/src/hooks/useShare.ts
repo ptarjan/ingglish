@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Hook for sharing URLs via the Web Share API (mobile) with clipboard fallback (desktop).
@@ -30,7 +30,7 @@ export function useShare(): [boolean, (url: string, title?: string, text?: strin
       const clipboardText = text ? (text.includes(url) ? text : `${text}\n\n${url}`) : url;
 
       if (typeof navigator.share === 'function') {
-        navigator.share({ title, text, url }).catch(() => {
+        navigator.share({ text, title, url }).catch(() => {
           // User cancelled or share failed — fall back to clipboard
           void navigator.clipboard.writeText(clipboardText).then(showCopied);
         });

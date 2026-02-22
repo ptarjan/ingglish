@@ -10,30 +10,30 @@
  * ARPAbet consonants to Shavian letters.
  */
 export const SHAVIAN_CONSONANT_MAP: Record<string, string> = {
-  P: '𐑐',
   B: '𐑚',
-  T: '𐑑',
-  D: '𐑛',
-  K: '𐑒',
-  G: '𐑜',
-  F: '𐑓',
-  V: '𐑝',
-  TH: '𐑔',
-  DH: '𐑞',
-  S: '𐑕',
-  Z: '𐑟',
-  SH: '𐑖',
-  ZH: '𐑠',
   CH: '𐑗',
+  D: '𐑛',
+  DH: '𐑞',
+  F: '𐑓',
+  G: '𐑜',
+  HH: '𐑣',
   JH: '𐑡',
+  K: '𐑒',
+  L: '𐑤',
   M: '𐑥',
   N: '𐑯',
   NG: '𐑙',
-  L: '𐑤',
+  P: '𐑐',
   R: '𐑮',
+  S: '𐑕',
+  SH: '𐑖',
+  T: '𐑑',
+  TH: '𐑔',
+  V: '𐑝',
   W: '𐑢',
   Y: '𐑘',
-  HH: '𐑣',
+  Z: '𐑟',
+  ZH: '𐑠',
 };
 
 /**
@@ -50,19 +50,19 @@ export const SHAVIAN_VOWEL_MAP: Record<string, string> = {
   AE: '𐑨', // trap, cat
   AH: '𐑳', // strut, cup (stressed default)
   AO: '𐑷', // thought, law
-  EH: '𐑧', // dress, bed
-  ER: '𐑻', // nurse, bird (ligature)
-  IH: '𐑦', // kit, sit
-  IY: '𐑰', // fleece, see
-  UH: '𐑫', // foot, put
-  UW: '𐑵', // goose, too
-
   // Diphthongs
   AW: '𐑬', // mouth, cow
   AY: '𐑲', // price, my
+  EH: '𐑧', // dress, bed
+  ER: '𐑻', // nurse, bird (ligature)
   EY: '𐑱', // face, say
+  IH: '𐑦', // kit, sit
+
+  IY: '𐑰', // fleece, see
   OW: '𐑴', // goat, go
   OY: '𐑶', // choice, boy
+  UH: '𐑫', // foot, put
+  UW: '𐑵', // goose, too
 };
 
 /**
@@ -84,9 +84,9 @@ export const SHAVIAN_SCHWA = '𐑩';
  */
 export const SHAVIAN_R_COLORED: Record<string, string> = {
   AA: '𐑸', // start (AA+R)
+  AH0: '𐑼', // letter (unstressed AH+R)
   AO: '𐑹', // north/force (AO+R)
   EH: '𐑺', // square (EH+R)
-  AH0: '𐑼', // letter (unstressed AH+R)
   IH: '𐑽', // near (IH+R)
 };
 
@@ -97,56 +97,56 @@ export const SHAVIAN_R_COLORED: Record<string, string> = {
 export const SHAVIAN_TO_ARPABET_MAP: Record<string, string[]> = {
   // Consonants
   '𐑐': ['P'],
-  '𐑚': ['B'],
   '𐑑': ['T'],
-  '𐑛': ['D'],
   '𐑒': ['K'],
-  '𐑜': ['G'],
   '𐑓': ['F'],
-  '𐑝': ['V'],
   '𐑔': ['TH'],
-  '𐑞': ['DH'],
   '𐑕': ['S'],
-  '𐑟': ['Z'],
   '𐑖': ['SH'],
-  '𐑠': ['ZH'],
   '𐑗': ['CH'],
-  '𐑡': ['JH'],
-  '𐑥': ['M'],
-  '𐑯': ['N'],
-  '𐑙': ['NG'],
-  '𐑤': ['L'],
-  '𐑮': ['R'],
-  '𐑢': ['W'],
   '𐑘': ['Y'],
+  '𐑙': ['NG'],
+  '𐑚': ['B'],
+  '𐑛': ['D'],
+  '𐑜': ['G'],
+  '𐑝': ['V'],
+  '𐑞': ['DH'],
+  '𐑟': ['Z'],
+  '𐑠': ['ZH'],
+  '𐑡': ['JH'],
+  '𐑢': ['W'],
   '𐑣': ['HH'],
-
-  // Vowels
-  '𐑭': ['AA'],
-  '𐑨': ['AE'],
-  '𐑳': ['AH'],
-  '𐑷': ['AO'],
-  '𐑧': ['EH'],
-  '𐑻': ['ER'],
+  '𐑤': ['L'],
+  '𐑥': ['M'],
   '𐑦': ['IH'],
-  '𐑰': ['IY'],
-  '𐑫': ['UH'],
-  '𐑵': ['UW'],
+  '𐑧': ['EH'],
 
-  // Diphthongs
-  '𐑬': ['AW'],
-  '𐑲': ['AY'],
-  '𐑱': ['EY'],
-  '𐑴': ['OW'],
-  '𐑶': ['OY'],
-
+  '𐑨': ['AE'],
   // Schwa
   '𐑩': ['AH'],
+  '𐑫': ['UH'],
+  // Diphthongs
+  '𐑬': ['AW'],
+  // Vowels
+  '𐑭': ['AA'],
+  '𐑮': ['R'],
+  '𐑯': ['N'],
+  '𐑰': ['IY'],
+  '𐑱': ['EY'],
+  '𐑲': ['AY'],
+
+  '𐑳': ['AH'],
+  '𐑴': ['OW'],
+  '𐑵': ['UW'],
+  '𐑶': ['OY'],
+  '𐑷': ['AO'],
 
   // R-colored ligatures (expand to vowel + R)
   '𐑸': ['AA', 'R'],
+
   '𐑹': ['AO', 'R'],
   '𐑺': ['EH', 'R'],
+  '𐑻': ['ER'],
   '𐑼': ['AH', 'R'],
   '𐑽': ['IH', 'R'],
 };

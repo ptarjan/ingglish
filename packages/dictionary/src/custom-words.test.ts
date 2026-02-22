@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS } from '@ingglish/phonemes';
 import {
-  hasCustomPronunciation,
-  getCustomPronunciation,
   CUSTOM_PRONUNCIATIONS,
+  getCustomPronunciation,
+  hasCustomPronunciation,
 } from './custom-words';
 
 /** All valid ARPAbet base phonemes (vowels + consonants) */
@@ -16,7 +16,7 @@ function isValidArpabet(phoneme: string): boolean {
     return true;
   }
   // Vowels with stress marker: strip trailing 0/1/2
-  const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+  const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
   if (lastChar >= 48 && lastChar <= 50) {
     return VALID_BASES.has(phoneme.slice(0, -1));
   }

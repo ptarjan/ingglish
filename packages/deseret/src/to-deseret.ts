@@ -7,7 +7,7 @@
  */
 
 import { stripStress } from '@ingglish/phonemes';
-import { ARPABET_TO_DESERET_MAP, DESERET_SCHWA, DESERET_EW } from './deseret-maps';
+import { ARPABET_TO_DESERET_MAP, DESERET_EW, DESERET_SCHWA } from './deseret-maps';
 
 /**
  * Converts an array of ARPAbet phonemes to Deseret script.
@@ -32,7 +32,7 @@ export function arpabetToDeseret(arpabet: string[]): string {
 
     // ER: no single Deseret letter, expand to vowel + 𐑉
     if (base === 'ER') {
-      const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+      const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
       // '0' = 48 → unstressed schwa + R
       result += lastChar === 48 ? DESERET_SCHWA : ARPABET_TO_DESERET_MAP.AH!;
       result += ARPABET_TO_DESERET_MAP.R!;
@@ -41,7 +41,7 @@ export function arpabetToDeseret(arpabet: string[]): string {
 
     // AH stress: AH0 → schwa, AH1/AH2 → strut
     if (base === 'AH') {
-      const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+      const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
       if (lastChar === 48) {
         result += DESERET_SCHWA;
         continue;

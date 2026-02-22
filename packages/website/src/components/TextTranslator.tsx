@@ -1,14 +1,14 @@
+import type { TranslatedToken } from 'ingglish';
 import {
-  translateSync,
-  translateSyncWithMapping,
   reverseTranslate,
   reverseTranslateSyncWithMapping,
+  translateSync,
+  translateSyncWithMapping,
 } from 'ingglish';
-import type { TranslatedToken } from 'ingglish';
-import { useState, useCallback, useDeferredValue, useMemo, useEffect, useRef } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { getFormatLabel } from '@ingglish/phonemes';
-import { tokenizePhonetic, type IndexedToken } from '@ingglish/tokenize';
-import { trackTextTranslate, trackShare, trackSpeak } from '../analytics';
+import { type IndexedToken, tokenizePhonetic } from '@ingglish/tokenize';
+import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
 import { pickRandomPassage } from '../data/sample-text';
 import { useClipboard } from '../hooks/useClipboard';
@@ -17,23 +17,40 @@ import { useSpeech } from '../hooks/useSpeech';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
 
+type EditingPane = 'english' | 'ingglish';
+
+interface TextTranslatorProps {
+  initialText?: string;
+  onShare?: (text: string) => string;
+}
+
+interface WordDisplayProps {
+  className?: string;
+  hoveredWordIndex: null | number;
+  onHoverWord?: (index: null | number) => void;
+  onScroll?: () => void;
+  scrollRef?: React.Ref<HTMLDivElement>;
+  spokenWordIndex?: null | number;
+  text: string;
+}
+
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
 function isAllCaps(text: string): boolean {
-  const letters = text.replace(/[^a-z]/gi, '');
+  const letters = text.replaceAll(/[^a-z]/gi, '');
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
 
 function SpeakerIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
       fill="none"
+      height="16"
       stroke="currentColor"
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
     >
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -45,85 +62,18 @@ function SpeakerIcon() {
 function StopIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
       fill="none"
+      height="16"
       stroke="currentColor"
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
     >
-      <rect x="6" y="6" width="12" height="12" rx="1" />
+      <rect height="12" rx="1" width="12" x="6" y="6" />
     </svg>
   );
-}
-
-type EditingPane = 'english' | 'ingglish';
-
-interface WordDisplayProps {
-  text: string;
-  hoveredWordIndex: number | null;
-  spokenWordIndex?: number | null;
-  onHoverWord?: (index: number | null) => void;
-  className?: string;
-  scrollRef?: React.Ref<HTMLDivElement>;
-  onScroll?: () => void;
-}
-
-function WordDisplay({
-  text,
-  hoveredWordIndex,
-  spokenWordIndex = null,
-  onHoverWord,
-  className,
-  scrollRef,
-  onScroll,
-}: WordDisplayProps) {
-  const tokens: IndexedToken[] = useMemo(() => tokenizePhonetic(text), [text]);
-
-  return (
-    <div ref={scrollRef} onScroll={onScroll} className={`word-display ${className ?? ''}`}>
-      {tokens.map((token, i) => {
-        if (token.isWord) {
-          const isHighlighted = token.wordIndex === hoveredWordIndex;
-          const isSpoken = token.wordIndex === spokenWordIndex;
-          return (
-            <span
-              key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
-              onMouseEnter={
-                onHoverWord
-                  ? () => {
-                      onHoverWord(token.wordIndex);
-                    }
-                  : undefined
-              }
-              onMouseLeave={
-                onHoverWord
-                  ? () => {
-                      onHoverWord(null);
-                    }
-                  : undefined
-              }
-            >
-              {token.text}
-            </span>
-          );
-        }
-        // Preserve whitespace and newlines
-        return <span key={i}>{token.text}</span>;
-      })}
-      {tokens.length === 0 && (
-        <span className="placeholder">Hover to see word correspondence...</span>
-      )}
-    </div>
-  );
-}
-
-interface TextTranslatorProps {
-  initialText?: string;
-  onShare?: (text: string) => string;
 }
 
 function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
@@ -131,7 +81,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
-  const [hoveredWordIndex, setHoveredWordIndex] = useState<number | null>(null);
+  const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
@@ -149,8 +99,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
     try {
       return translateSync(deferredEnglish, format);
-    } catch (err) {
-      console.warn('Translation failed:', err);
+    } catch (error) {
+      console.warn('Translation failed:', error);
       return null;
     }
   }, [deferredEnglish, lastEdited, format]);
@@ -176,8 +126,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, [format, forwardTokens, deferredEnglish]);
 
   // Async reverse translation with useEffect
-  const [computedEnglish, setComputedEnglish] = useState<string | null>(null);
-  const [reverseTokens, setReverseTokens] = useState<TranslatedToken[] | null>(null);
+  const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
+  const [reverseTokens, setReverseTokens] = useState<null | TranslatedToken[]>(null);
   useEffect(() => {
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
@@ -192,8 +142,8 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
         }
       })
-      .catch((err: unknown) => {
-        console.warn('Reverse translation failed:', err);
+      .catch((error: unknown) => {
+        console.warn('Reverse translation failed:', error);
         if (!cancelled) {
           setComputedEnglish(null);
           setReverseTokens(null);
@@ -245,7 +195,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     } else if (displayEnglish) {
       trackSpeak();
       // Collapse newlines to spaces so TTS doesn't pause at each line
-      speakEnglish(displayEnglish.replace(/\n+/g, ' '));
+      speakEnglish(displayEnglish.replaceAll(/\n+/g, ' '));
     }
   }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish]);
 
@@ -341,55 +291,55 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             <div className="button-group">
               {speechSupported && (
                 <button
-                  onClick={handleSpeak}
+                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen to English text'}
                   className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
                   disabled={!displayEnglish}
+                  onClick={handleSpeak}
                   title={speakingEnglish ? 'Stop' : 'Listen'}
-                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen to English text'}
                 >
                   {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
                 </button>
               )}
-              <button onClick={handleRandom} className="btn-secondary">
+              <button className="btn-secondary" onClick={handleRandom}>
                 Random
               </button>
               <button
-                onClick={handleCopyEnglish}
                 className={`btn-secondary ${copiedEnglish ? 'btn-copied' : ''}`}
                 disabled={!displayEnglish}
+                onClick={handleCopyEnglish}
               >
                 {copiedEnglish ? 'Copied!' : 'Copy'}
               </button>
               {onShare && (
                 <button
-                  onClick={handleShare}
                   className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
                   disabled={!hasContent}
+                  onClick={handleShare}
                 >
                   {copiedShare ? 'Copied!' : 'Share'}
                 </button>
               )}
-              <button onClick={handleClear} className="btn-secondary" disabled={!hasContent}>
+              <button className="btn-secondary" disabled={!hasContent} onClick={handleClear}>
                 Clear
               </button>
             </div>
           </div>
           <textarea
-            ref={englishRef}
-            value={lastEdited === 'english' ? englishText : displayEnglish}
+            className="text-input"
             onChange={handleEnglishChange}
-            onScroll={() => {
-              handleScroll('english');
-            }}
             onFocus={() => {
               if (lastEdited === 'ingglish' && computedEnglish !== null) {
                 setEnglishText(computedEnglish);
                 setLastEdited('english');
               }
             }}
+            onScroll={() => {
+              handleScroll('english');
+            }}
             placeholder="Type English text here..."
-            className="text-input"
+            ref={englishRef}
             spellCheck={false}
+            value={lastEdited === 'english' ? englishText : displayEnglish}
           />
         </div>
 
@@ -402,46 +352,46 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                 title="Cycle output format"
               >
                 {getFormatLabel(format)}
-                <span className="format-cycle-icon" aria-hidden="true">
+                <span aria-hidden="true" className="format-cycle-icon">
                   &#x21C5;
                 </span>
               </button>
             </h2>
             <div className="button-group">
               <button
-                onClick={handleCopyIngglish}
                 className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
                 disabled={!displayIngglish}
+                onClick={handleCopyIngglish}
               >
                 {copiedIngglish ? 'Copied!' : 'Copy'}
               </button>
             </div>
           </div>
           <textarea
-            ref={ingglishRef}
-            value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
+            className="text-input"
             onChange={handleIngglishChange}
-            onScroll={() => {
-              handleScroll('ingglish');
-            }}
             onFocus={() => {
               if (lastEdited === 'english' && computedIngglish !== null) {
                 setIngglishText(computedIngglish);
                 setLastEdited('ingglish');
               }
             }}
+            onScroll={() => {
+              handleScroll('ingglish');
+            }}
             placeholder={
               (
                 {
+                  deseret: '𐐻𐐴𐐹 𐐼𐐯𐑅𐐨𐑉𐐯𐐻 𐐸𐐮𐑉...',
                   ingglish: 'Taip Ingglish tekst heer...',
                   ipa: '/taɪp aɪ piː eɪ hɪɹ.../',
                   shavian: '𐑑𐑲𐑐 𐑖𐑱𐑝𐑾𐑯 𐑣𐑽...',
-                  deseret: '𐐻𐐴𐐹 𐐼𐐯𐑅𐐨𐑉𐐯𐐻 𐐸𐐮𐑉...',
                 } as Record<string, string>
               )[format] ?? ''
             }
-            className="text-input"
+            ref={ingglishRef}
             spellCheck={false}
+            value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
           />
         </div>
       </div>
@@ -462,58 +412,108 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           <div className="correspondence-grid">
             {lastEdited === 'ingglish' && reverseTokens ? (
               <MappedWordDisplay
-                tokens={reverseTokens}
-                hoveredWordIndex={hoveredWordIndex}
-                spokenWordIndex={spokenWordIndex}
-                onHoverWord={setHoveredWordIndex}
                 className="english-words"
-                scrollRef={corrEnglishRef}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
                 onScroll={() => {
                   handleCorrScroll('english');
                 }}
+                scrollRef={corrEnglishRef}
+                spokenWordIndex={spokenWordIndex}
+                tokens={reverseTokens}
               />
             ) : (
               <WordDisplay
-                text={displayEnglish}
-                hoveredWordIndex={hoveredWordIndex}
-                spokenWordIndex={spokenWordIndex}
-                onHoverWord={setHoveredWordIndex}
                 className="english-words"
-                scrollRef={corrEnglishRef}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
                 onScroll={() => {
                   handleCorrScroll('english');
                 }}
+                scrollRef={corrEnglishRef}
+                spokenWordIndex={spokenWordIndex}
+                text={displayEnglish}
               />
             )}
             {lastEdited === 'english' && forwardTokens ? (
               <MappedWordDisplay
-                tokens={forwardTokens}
-                hoveredWordIndex={hoveredWordIndex}
-                spokenWordIndex={spokenWordIndex}
-                onHoverWord={setHoveredWordIndex}
-                showTooltip={diffMap !== undefined}
                 className="ingglish-words"
-                scrollRef={corrIngglishRef}
+                diffMap={diffMap}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
                 onScroll={() => {
                   handleCorrScroll('ingglish');
                 }}
-                diffMap={diffMap}
+                scrollRef={corrIngglishRef}
+                showTooltip={diffMap !== undefined}
+                spokenWordIndex={spokenWordIndex}
+                tokens={forwardTokens}
               />
             ) : (
               <WordDisplay
-                text={displayIngglish}
-                hoveredWordIndex={hoveredWordIndex}
-                spokenWordIndex={spokenWordIndex}
-                onHoverWord={setHoveredWordIndex}
                 className="ingglish-words"
-                scrollRef={corrIngglishRef}
+                hoveredWordIndex={hoveredWordIndex}
+                onHoverWord={setHoveredWordIndex}
                 onScroll={() => {
                   handleCorrScroll('ingglish');
                 }}
+                scrollRef={corrIngglishRef}
+                spokenWordIndex={spokenWordIndex}
+                text={displayIngglish}
               />
             )}
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function WordDisplay({
+  className,
+  hoveredWordIndex,
+  onHoverWord,
+  onScroll,
+  scrollRef,
+  spokenWordIndex = null,
+  text,
+}: WordDisplayProps) {
+  const tokens: IndexedToken[] = useMemo(() => tokenizePhonetic(text), [text]);
+
+  return (
+    <div className={`word-display ${className ?? ''}`} onScroll={onScroll} ref={scrollRef}>
+      {tokens.map((token, i) => {
+        if (token.isWord) {
+          const isHighlighted = token.wordIndex === hoveredWordIndex;
+          const isSpoken = token.wordIndex === spokenWordIndex;
+          return (
+            <span
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
+              key={i}
+              onMouseEnter={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(token.wordIndex);
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                onHoverWord
+                  ? () => {
+                      onHoverWord(null);
+                    }
+                  : undefined
+              }
+            >
+              {token.text}
+            </span>
+          );
+        }
+        // Preserve whitespace and newlines
+        return <span key={i}>{token.text}</span>;
+      })}
+      {tokens.length === 0 && (
+        <span className="placeholder">Hover to see word correspondence...</span>
       )}
     </div>
   );

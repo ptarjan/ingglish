@@ -22,8 +22,8 @@
  *   ' '= word boundary (space)
  */
 
-import { arpabetToFormat } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { arpabetToFormat } from '@ingglish/phonemes';
 import { applyStressPrediction } from './stress';
 
 // ---------------------------------------------------------------------------
@@ -1043,13 +1043,13 @@ const CONSONANTS = 'BCDFGHJKLMNPQRSTVWXZ';
 
 const CLASSES: Record<string, string> = {
   '#': `[${VOWELS}]+`,
-  '.': '[BDVGJLMNRWZ]',
   '%': '(?:ER|E|ES|ED|ING|ELY)',
   '&': '(?:S|C|G|Z|X|J|CH|SH)',
+  '+': '[EIY]',
+  '.': '[BDVGJLMNRWZ]',
+  ':': `[${CONSONANTS}]*`,
   '@': '(?:T|S|R|D|L|Z|N|J|TH|CH|SH)',
   '^': `[${CONSONANTS}]`,
-  '+': '[EIY]',
-  ':': `[${CONSONANTS}]*`,
 };
 
 const SPECIAL_CHARS = new Set(Object.keys(CLASSES));
@@ -1077,61 +1077,28 @@ const NRL_VOWELS = new Set([
   'UW',
 ]);
 
-function nrlToArpabet(phoneme: string): string {
-  if (phoneme === 'AX') {
-    return 'AH0';
-  }
-  if (phoneme === 'NX') {
-    return 'NG';
-  }
-  if (phoneme === 'WH') {
-    return 'W';
-  }
-  if (NRL_VOWELS.has(phoneme)) {
-    return phoneme + '1';
-  }
-  return phoneme;
+export interface G2PTrace {
+  phonemes: string[]; // Final ARPAbet (after stress prediction)
+  steps: G2PTraceStep[]; // Rules that fired, in order
 }
 
 // ---------------------------------------------------------------------------
 // Compiled rule structure
 // ---------------------------------------------------------------------------
 
-interface CompiledRule {
-  leftRe: RegExp | null; // null when left context is empty (always matches)
-  rightRe: RegExp;
-  target: string; // Target letters (e.g., "ASE") for fast pre-check
-  targetLen: number;
-  phonemes: string[]; // ARPAbet phonemes (empty array for silence)
-  ruleStr: string; // Original NRL rule string
-}
-
 export interface G2PTraceStep {
   letters: string; // Target letters consumed (e.g., "ASE")
-  rule: string; // Original NRL rule string (e.g., "[ASE] =/EY S/")
   phonemes: string[]; // ARPAbet output after stress (e.g., ["EY1", "S"])
+  rule: string; // Original NRL rule string (e.g., "[ASE] =/EY S/")
 }
 
-export interface G2PTrace {
-  phonemes: string[]; // Final ARPAbet (after stress prediction)
-  steps: G2PTraceStep[]; // Rules that fired, in order
-}
-
-function escapeRegex(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/** Expand NRL context symbols into regex fragments. */
-function expandContext(ctx: string): string {
-  let result = '';
-  for (const ch of ctx) {
-    if (SPECIAL_CHARS.has(ch)) {
-      result += CLASSES[ch]!;
-    } else {
-      result += escapeRegex(ch);
-    }
-  }
-  return result;
+interface CompiledRule {
+  leftRe: null | RegExp; // null when left context is empty (always matches)
+  phonemes: string[]; // ARPAbet phonemes (empty array for silence)
+  rightRe: RegExp;
+  ruleStr: string; // Original NRL rule string
+  target: string; // Target letters (e.g., "ASE") for fast pre-check
+  targetLen: number;
 }
 
 /** Parse a single NRL rule string into a compiled rule. */
@@ -1161,9 +1128,38 @@ function compileRule(ruleStr: string): CompiledRule | null {
     .trim()
     .split(/\s+/)
     .filter((p) => p.length > 0)
-    .map(nrlToArpabet);
+    .map((p) => nrlToArpabet(p));
 
-  return { leftRe, rightRe, target, targetLen: target.length, phonemes, ruleStr };
+  return { leftRe, phonemes, rightRe, ruleStr, target, targetLen: target.length };
+}
+
+function escapeRegex(s: string): string {
+  return s.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+}
+
+/** Expand NRL context symbols into regex fragments. */
+function expandContext(ctx: string): string {
+  let result = '';
+  for (const ch of ctx) {
+    result += SPECIAL_CHARS.has(ch) ? CLASSES[ch]! : escapeRegex(ch);
+  }
+  return result;
+}
+
+function nrlToArpabet(phoneme: string): string {
+  if (phoneme === 'AX') {
+    return 'AH0';
+  }
+  if (phoneme === 'NX') {
+    return 'NG';
+  }
+  if (phoneme === 'WH') {
+    return 'W';
+  }
+  if (NRL_VOWELS.has(phoneme)) {
+    return phoneme + '1';
+  }
+  return phoneme;
 }
 
 // ---------------------------------------------------------------------------
@@ -1188,6 +1184,16 @@ for (const [letter, rules] of Object.entries(NRL_RULES)) {
 // ---------------------------------------------------------------------------
 
 /**
+ * Converts a word to ARPAbet using NRL context-sensitive rules.
+ *
+ * @param word The word to convert
+ * @returns Array of ARPAbet phonemes
+ */
+export function wordToArpabet(word: string): string[] {
+  return wordToArpabetTraced(word).phonemes;
+}
+
+/**
  * Converts a word to ARPAbet using NRL context-sensitive rules,
  * returning both the phonemes and a trace of which rules fired.
  */
@@ -1195,7 +1201,7 @@ export function wordToArpabetTraced(word: string): G2PTrace {
   // Pad with spaces for word-boundary matching
   const text = ' ' + word.toUpperCase() + ' ';
   const rawPhonemes: string[] = [];
-  const rawSteps: { letters: string; ruleStr: string; count: number }[] = [];
+  const rawSteps: { count: number; letters: string; ruleStr: string }[] = [];
   let pos = 1; // skip leading space
 
   while (pos < text.length - 1) {
@@ -1204,10 +1210,12 @@ export function wordToArpabetTraced(word: string): G2PTrace {
 
     // Look up rules for this letter
     const rules = COMPILED_RULES[ch] as CompiledRule[] | undefined;
-    if (rules !== undefined) {
+    if (rules === undefined) {
+      pos++; // skip non-letter characters
+    } else {
       let matched = false;
       // Lazily compute left context substring (only if a rule needs it)
-      let parsed: string | null = null;
+      let parsed: null | string = null;
       for (const rule of rules) {
         // Fast pre-check: skip if target literal doesn't match at this position.
         // For multi-letter targets (e.g., "ALLO", "ASE"), this eliminates ~80% of
@@ -1221,14 +1229,14 @@ export function wordToArpabetTraced(word: string): G2PTrace {
         // Skip left regex when null (no left context — always matches)
         if (
           (rule.leftRe === null ||
-            ((parsed ??= text.substring(0, pos)), rule.leftRe.test(parsed))) &&
+            ((parsed ??= text.slice(0, Math.max(0, pos))), rule.leftRe.test(parsed))) &&
           rule.rightRe.test(text)
         ) {
           rawPhonemes.push(...rule.phonemes);
           rawSteps.push({
+            count: rule.phonemes.length,
             letters: rule.target,
             ruleStr: rule.ruleStr,
-            count: rule.phonemes.length,
           });
           pos += rule.targetLen;
           matched = true;
@@ -1238,8 +1246,6 @@ export function wordToArpabetTraced(word: string): G2PTrace {
       if (!matched) {
         pos++; // skip unrecognized character
       }
-    } else {
-      pos++; // skip non-letter characters
     }
   }
 
@@ -1251,23 +1257,13 @@ export function wordToArpabetTraced(word: string): G2PTrace {
   for (const raw of rawSteps) {
     steps.push({
       letters: raw.letters,
-      rule: raw.ruleStr,
       phonemes: phonemes.slice(offset, offset + raw.count),
+      rule: raw.ruleStr,
     });
     offset += raw.count;
   }
 
   return { phonemes, steps };
-}
-
-/**
- * Converts a word to ARPAbet using NRL context-sensitive rules.
- *
- * @param word The word to convert
- * @returns Array of ARPAbet phonemes
- */
-export function wordToArpabet(word: string): string[] {
-  return wordToArpabetTraced(word).phonemes;
 }
 
 /**

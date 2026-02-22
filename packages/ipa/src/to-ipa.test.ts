@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { arpabetPhonemeToIPA, arpabetToIPA, arpabetToIPARaw } from './to-ipa';
 
 // Word joiner character (U+2060) prevents line breaks around stress markers

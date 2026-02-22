@@ -14,24 +14,24 @@ import type { ReverseDictionary } from './types';
  * Build a reverse map from custom pronunciations (phoneme key -> words).
  * Computed once and cached. Custom words are prepended so they take priority.
  */
-let customReverseMap: Record<string, string[]> | null = null;
+let customReverseMap: null | Record<string, string[]> = null;
 function getCustomReverseMap(): Record<string, string[]> {
   if (customReverseMap) {
     return customReverseMap;
   }
   customReverseMap = {};
   for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
-    const key = phonemes.map(stripStress).join(' ');
+    const key = phonemes.map((p) => stripStress(p)).join(' ');
     customReverseMap[key] ??= [];
     customReverseMap[key].push(word);
   }
   return customReverseMap;
 }
 
-const loader = createLazyLoader<ReverseDictionary>(
-  async () => (await import('./reverse-cmudict')).default,
-  'Reverse dictionary'
-);
+const loader = createLazyLoader<ReverseDictionary>(async () => {
+  const mod = await import('./reverse-cmudict');
+  return mod.default;
+}, 'Reverse dictionary');
 
 /**
  * Loads the pre-built reverse dictionary.
@@ -44,6 +44,14 @@ export const loadReverseDictionary = loader.load.bind(loader);
  * Throws if dictionary hasn't been loaded yet.
  */
 export const getReverseDictionary = loader.get.bind(loader);
+
+/**
+ * Clears the reverse dictionary cache.
+ * Useful for testing.
+ */
+export function clearReverseDictionaryCache(): void {
+  loader.reset();
+}
 
 /**
  * Looks up words for a phoneme key.
@@ -66,12 +74,4 @@ export function lookupPhonemeKey(key: string): string[] | undefined {
   // Merge: custom words first, then dict words (excluding duplicates)
   const seen = new Set(customMatches);
   return [...customMatches, ...dictMatches.filter((w) => !seen.has(w))];
-}
-
-/**
- * Clears the reverse dictionary cache.
- * Useful for testing.
- */
-export function clearReverseDictionaryCache(): void {
-  loader.reset();
 }

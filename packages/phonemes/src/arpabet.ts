@@ -73,21 +73,36 @@ const CONSONANTS_SET = new Set<string>(ARPABET_CONSONANTS);
 export const STRESS_MARKER_REGEX = /[012]$/;
 
 /**
- * Strips stress markers (0, 1, 2) from a phoneme.
- * Uses charCode check instead of regex (benchmarked 2x faster).
+ * Extracts the stress level from a phoneme.
+ * Returns null for consonants or vowels without explicit stress.
+ * Uses charCode check instead of regex (consistent with stripStress).
  *
  * @example
- * stripStress('AH0') // 'AH'
- * stripStress('EY1') // 'EY'
- * stripStress('B')   // 'B'
+ * getStress('AH0') // 0
+ * getStress('EY1') // 1
+ * getStress('AO2') // 2
+ * getStress('B')   // null
  */
-export function stripStress(phoneme: string): string {
-  const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+export function getStress(phoneme: string): 0 | 1 | 2 | null {
+  const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
   // '0'=48, '1'=49, '2'=50
   if (lastChar >= 48 && lastChar <= 50) {
-    return phoneme.slice(0, -1);
+    return (lastChar - 48) as 0 | 1 | 2;
   }
-  return phoneme;
+  return null;
+}
+
+/**
+ * Checks if an ARPAbet phoneme is a consonant.
+ *
+ * @example
+ * isConsonant('B')   // true
+ * isConsonant('SH')  // true
+ * isConsonant('AH0') // false
+ */
+export function isConsonant(phoneme: string): boolean {
+  const base = stripStress(phoneme);
+  return CONSONANTS_SET.has(base);
 }
 
 /**
@@ -105,34 +120,19 @@ export function isVowel(phoneme: string): boolean {
 }
 
 /**
- * Checks if an ARPAbet phoneme is a consonant.
+ * Strips stress markers (0, 1, 2) from a phoneme.
+ * Uses charCode check instead of regex (benchmarked 2x faster).
  *
  * @example
- * isConsonant('B')   // true
- * isConsonant('SH')  // true
- * isConsonant('AH0') // false
+ * stripStress('AH0') // 'AH'
+ * stripStress('EY1') // 'EY'
+ * stripStress('B')   // 'B'
  */
-export function isConsonant(phoneme: string): boolean {
-  const base = stripStress(phoneme);
-  return CONSONANTS_SET.has(base);
-}
-
-/**
- * Extracts the stress level from a phoneme.
- * Returns null for consonants or vowels without explicit stress.
- * Uses charCode check instead of regex (consistent with stripStress).
- *
- * @example
- * getStress('AH0') // 0
- * getStress('EY1') // 1
- * getStress('AO2') // 2
- * getStress('B')   // null
- */
-export function getStress(phoneme: string): 0 | 1 | 2 | null {
-  const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+export function stripStress(phoneme: string): string {
+  const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
   // '0'=48, '1'=49, '2'=50
   if (lastChar >= 48 && lastChar <= 50) {
-    return (lastChar - 48) as 0 | 1 | 2;
+    return phoneme.slice(0, -1);
   }
-  return null;
+  return phoneme;
 }

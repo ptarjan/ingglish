@@ -1,6 +1,6 @@
 import { translate } from 'ingglish';
 import type { ComponentType, LazyExoticComponent } from 'react';
-import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { trackPageView } from './analytics';
 import ErrorBoundary from './components/ErrorBoundary';
 import TextTranslator from './components/TextTranslator';
@@ -14,7 +14,7 @@ function lazyWithReload<T extends { default: ComponentType<object> }>(
   return lazy(() =>
     factory().catch(() => {
       // Chunk failed to load (likely stale after deploy) — reload to get fresh HTML
-      window.location.reload();
+      globalThis.location.reload();
       // Never resolves — page is reloading
       return new Promise<T>(() => void 0);
     })
@@ -30,106 +30,75 @@ const WordExplorer = lazyWithReload(() => import('./components/WordExplorer'));
 const ReadingChallenge = lazyWithReload(() => import('./components/ReadingChallenge'));
 
 type Tab =
-  | 'tutorial'
-  | 'text'
-  | 'url'
-  | 'guide'
-  | 'extension'
+  | 'challenge'
   | 'docs'
   | 'experiment'
   | 'explore'
-  | 'challenge';
-const ROUTE_META: Record<Tab, { title: string; description: string; path: string }> = {
-  tutorial: {
-    title: 'Ingglish — What if English Spelling Made Sense?',
-    description:
-      'Ingglish is phonemic English — every spelling always makes the same sound. No silent letters, no memorization.',
-    path: '/',
-  },
-  text: {
-    title: 'Text Translator | Ingglish',
-    description:
-      'Translate any English text into phonetic Ingglish spelling instantly. Paste or type text and see it respelled.',
-    path: '/text',
-  },
-  url: {
-    title: 'URL Translator | Ingglish',
-    description:
-      'Enter any URL and read the page in phonetic Ingglish spelling. Browse the web with consistent, phonetic English.',
-    path: '/url',
-  },
-  guide: {
-    title: 'Spelling Guide | Ingglish',
-    description:
-      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonemic alphabet.',
-    path: '/guide',
-  },
-  extension: {
-    title: 'Browser Extension | Ingglish',
-    description:
-      'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
-    path: '/extension',
-  },
-  docs: {
-    title: 'Documentation | Ingglish',
-    description:
-      'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
-    path: '/docs',
-  },
-  experiment: {
-    title: 'Experiment | Ingglish',
-    description:
-      'Create custom phoneme-to-spelling mappings and test them with translated text. See statistics and share your mapping.',
-    path: '/experiment',
-  },
-  explore: {
-    title: 'Word Explorer | Ingglish',
-    description:
-      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
-    path: '/explore',
-  },
+  | 'extension'
+  | 'guide'
+  | 'text'
+  | 'tutorial'
+  | 'url';
+const ROUTE_META: Record<Tab, { description: string; path: string; title: string }> = {
   challenge: {
-    title: 'Reading Challenge | Ingglish',
     description:
       'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
     path: '/challenge',
+    title: 'Reading Challenge | Ingglish',
+  },
+  docs: {
+    description:
+      'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
+    path: '/docs',
+    title: 'Documentation | Ingglish',
+  },
+  experiment: {
+    description:
+      'Create custom phoneme-to-spelling mappings and test them with translated text. See statistics and share your mapping.',
+    path: '/experiment',
+    title: 'Experiment | Ingglish',
+  },
+  explore: {
+    description:
+      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
+    path: '/explore',
+    title: 'Word Explorer | Ingglish',
+  },
+  extension: {
+    description:
+      'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
+    path: '/extension',
+    title: 'Browser Extension | Ingglish',
+  },
+  guide: {
+    description:
+      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonemic alphabet.',
+    path: '/guide',
+    title: 'Spelling Guide | Ingglish',
+  },
+  text: {
+    description:
+      'Translate any English text into phonetic Ingglish spelling instantly. Paste or type text and see it respelled.',
+    path: '/text',
+    title: 'Text Translator | Ingglish',
+  },
+  tutorial: {
+    description:
+      'Ingglish is phonemic English — every spelling always makes the same sound. No silent letters, no memorization.',
+    path: '/',
+    title: 'Ingglish — What if English Spelling Made Sense?',
+  },
+  url: {
+    description:
+      'Enter any URL and read the page in phonetic Ingglish spelling. Browse the web with consistent, phonetic English.',
+    path: '/url',
+    title: 'URL Translator | Ingglish',
   },
 };
 
-function getTabFromPath(): Tab {
-  const path = window.location.pathname.replace(/\/$/, '') || '/';
-  const segment = path.split('/')[1] ?? '';
-  if (segment === 'docs') {
-    return 'docs';
-  }
-  if (
-    segment === 'tutorial' ||
-    segment === 'text' ||
-    segment === 'url' ||
-    segment === 'guide' ||
-    segment === 'extension' ||
-    segment === 'experiment' ||
-    segment === 'explore' ||
-    segment === 'challenge'
-  ) {
-    return segment;
-  }
-  return 'tutorial';
-}
-
-function getInitialText(): string {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('text') ?? '';
-}
-
-function getInitialUrl(): string {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('url') ?? '';
-}
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
   const [activeTab, setActiveTab] = useState<Tab>(getTabFromPath);
   const [resetKey, setResetKey] = useState(0);
   const [initialText] = useState(getInitialText);
@@ -140,9 +109,9 @@ function App() {
   // Sync URL path with active tab (docs manages its own sub-path)
   useEffect(() => {
     const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
-    const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+    const currentPath = globalThis.location.pathname.replace(/\/$/, '') || '/';
     if (currentPath !== targetPath && activeTab !== 'docs') {
-      window.history.pushState(null, '', targetPath);
+      globalThis.history.pushState(null, '', targetPath);
     }
     trackPageView(targetPath);
     window.scrollTo(0, 0);
@@ -153,15 +122,15 @@ function App() {
     const handlePopState = () => {
       setActiveTab(getTabFromPath());
     };
-    window.addEventListener('popstate', handlePopState);
+    globalThis.addEventListener('popstate', handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      globalThis.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
   // Build shareable URL
   const buildShareUrl = useCallback((targetUrl: string): string => {
-    const url = new URL(window.location.href);
+    const url = new URL(globalThis.location.href);
     url.pathname = '/url';
     url.search = '';
     url.hash = '';
@@ -171,13 +140,13 @@ function App() {
 
   // Share functions — build URL, update history, return URL for the component to share
   const handleShareText = useCallback((text: string): string => {
-    const url = new URL(window.location.href);
+    const url = new URL(globalThis.location.href);
     url.pathname = '/text';
     url.search = '';
     url.hash = '';
     url.searchParams.set('text', text);
     const shareUrl = url.toString();
-    window.history.replaceState(null, '', shareUrl);
+    globalThis.history.replaceState(null, '', shareUrl);
     return shareUrl;
   }, []);
 
@@ -185,7 +154,7 @@ function App() {
     (targetUrl: string): string => {
       const shareUrl = buildShareUrl(targetUrl);
       // Preserve translator state so back button still works after sharing
-      window.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
+      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
       return shareUrl;
     },
     [buildShareUrl]
@@ -197,7 +166,7 @@ function App() {
     (targetUrl: string) => {
       const shareUrl = buildShareUrl(targetUrl);
       // Explicitly set the correct state - don't rely on history.state which may be stale
-      window.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
+      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
     },
     [buildShareUrl]
   );
@@ -212,8 +181,8 @@ function App() {
       .then(() => {
         setIsLoading(false);
       })
-      .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : 'Unknown error';
+      .catch((error_: unknown) => {
+        const message = error_ instanceof Error ? error_.message : 'Unknown error';
         setError(`Failed to load dictionary: ${message}`);
         setIsLoading(false);
       });
@@ -244,7 +213,7 @@ function App() {
           A new version is available.{' '}
           <button
             onClick={() => {
-              window.location.reload();
+              globalThis.location.reload();
             }}
           >
             Reload
@@ -252,10 +221,10 @@ function App() {
         </div>
       )}
       <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
-      <link rel="canonical" href={`https://ingglish.com${meta.path}`} />
+      <meta content={meta.description} name="description" />
+      <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
       <div className="toggle-buttons">
-        <button className="theme-toggle" onClick={cycleTheme} aria-label="Toggle theme">
+        <button aria-label="Toggle theme" className="theme-toggle" onClick={cycleTheme}>
           {getThemeIcon()}
         </button>
       </div>
@@ -267,22 +236,22 @@ function App() {
             onClick={(e) => {
               e.preventDefault();
               if (activeTab === 'tutorial') {
-                window.history.replaceState(null, '', '/');
+                globalThis.history.replaceState(null, '', '/');
                 setResetKey((k) => k + 1);
               } else {
                 setActiveTab('tutorial');
               }
             }}
           >
-            <img src="/logo.svg" alt="Ingglish logo" className="logo" />
+            <img alt="Ingglish logo" className="logo" src="/logo.svg" />
             <h1>Ingglish</h1>
           </a>
           <button
             className="subtitle-link"
-            style={isLoading ? { visibility: 'hidden' } : undefined}
             onClick={() => {
               setActiveTab('guide');
             }}
+            style={isLoading ? { visibility: 'hidden' } : undefined}
           >
             What if English spelling made sense?
           </button>
@@ -305,14 +274,14 @@ function App() {
             ] as const
           ).map(([href, tab, label]) => (
             <a
-              key={tab}
               className={`tab ${activeTab === tab ? 'active' : ''}`}
               href={href}
+              key={tab}
               onClick={(e) => {
                 e.preventDefault();
                 if (tab === activeTab) {
                   // Re-clicking active tab: clear query params and reset component
-                  window.history.replaceState(null, '', href);
+                  globalThis.history.replaceState(null, '', href);
                   setResetKey((k) => k + 1);
                 } else {
                   setActiveTab(tab);
@@ -339,12 +308,12 @@ function App() {
         )}
         {!isLoading && error === null && (
           <Suspense
-            key={resetKey}
             fallback={
               <div className="loading-screen">
                 <div className="loading-spinner"></div>
               </div>
             }
+            key={resetKey}
           >
             {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
             {activeTab === 'text' && (
@@ -356,8 +325,8 @@ function App() {
               <ErrorBoundary>
                 <UrlTranslator
                   initialUrl={initialUrl}
-                  onShare={handleShareUrl}
                   onNavigate={handleUrlNavigate}
+                  onShare={handleShareUrl}
                 />
               </ErrorBoundary>
             )}
@@ -390,17 +359,48 @@ function App() {
       <footer className="footer">
         <p>
           Ingglish uses the{' '}
-          <a href="https://github.com/cmusphinx/cmudict" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/cmusphinx/cmudict" rel="noopener noreferrer" target="_blank">
             CMU Pronouncing Dictionary
           </a>{' '}
           (134,000+ words) to convert English words to their phonemic spellings.{' '}
-          <a href="https://github.com/ptarjan/ingglish" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/ptarjan/ingglish" rel="noopener noreferrer" target="_blank">
             View on GitHub
           </a>
         </p>
       </footer>
     </div>
   );
+}
+
+function getInitialText(): string {
+  const params = new URLSearchParams(globalThis.location.search);
+  return params.get('text') ?? '';
+}
+
+function getInitialUrl(): string {
+  const params = new URLSearchParams(globalThis.location.search);
+  return params.get('url') ?? '';
+}
+
+function getTabFromPath(): Tab {
+  const path = globalThis.location.pathname.replace(/\/$/, '') || '/';
+  const segment = path.split('/')[1] ?? '';
+  if (segment === 'docs') {
+    return 'docs';
+  }
+  if (
+    segment === 'tutorial' ||
+    segment === 'text' ||
+    segment === 'url' ||
+    segment === 'guide' ||
+    segment === 'extension' ||
+    segment === 'experiment' ||
+    segment === 'explore' ||
+    segment === 'challenge'
+  ) {
+    return segment;
+  }
+  return 'tutorial';
 }
 
 export default App;

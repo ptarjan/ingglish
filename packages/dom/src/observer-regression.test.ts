@@ -47,7 +47,7 @@ describe('observer regression: double-translation', () => {
 
     const p = document.createElement('p');
     p.textContent = 'Hello';
-    document.body.appendChild(p);
+    document.body.append(p);
 
     // Wait long enough for any potential double-translation
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -64,11 +64,11 @@ describe('observer regression: double-translation', () => {
 
     const p1 = document.createElement('p');
     p1.textContent = 'Hello';
-    document.body.appendChild(p1);
+    document.body.append(p1);
 
     const p2 = document.createElement('p');
     p2.textContent = 'World';
-    document.body.appendChild(p2);
+    document.body.append(p2);
 
     // Wait long enough for any potential double-translation
     await new Promise((resolve) => setTimeout(resolve, 50));

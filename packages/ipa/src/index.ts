@@ -5,12 +5,12 @@ export function registerIPA(): void {
   registerFormat('ipa', {
     forward: arpabetToIPARaw,
     isLatinScript: true,
-    preservesCase: false,
-    label: 'IPA',
     joinSeparator: ' ',
+    label: 'IPA',
+    preservesCase: false,
   });
 }
 
-// Export individual functions for direct use
-export { arpabetToIPARaw, arpabetPhonemeToIPA } from './to-ipa';
 export { ipaToArpabetClean } from './from-ipa';
+// Export individual functions for direct use
+export { arpabetPhonemeToIPA, arpabetToIPARaw } from './to-ipa';

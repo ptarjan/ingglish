@@ -1,11 +1,11 @@
 import { translateSyncWithMapping } from 'ingglish';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { MappedWordDisplay } from '../MappedWordDisplay';
 
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
 function isAllCaps(text: string): boolean {
-  const letters = text.replace(/[^a-z]/gi, '');
+  const letters = text.replaceAll(/[^a-z]/gi, '');
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
 
@@ -67,23 +67,23 @@ export function Section3TryIt({ onNavigate }: { onNavigate?: (tab: string) => vo
   );
 
   return (
-    <section ref={ref} className="tutorial-section tutorial-try-it">
+    <section className="tutorial-section tutorial-try-it" ref={ref}>
       <h2 className="tutorial-heading">Try it yourself</h2>
       <div className="try-it-container">
         <div className="try-it-input-wrapper">
           <input
             className={`try-it-input${showCursor ? ' demo-cursor' : ''}`}
-            type="text"
-            placeholder="Type any English sentence…"
-            value={input}
-            readOnly={isAutoTyping}
-            onFocus={handleFocus}
             onChange={(e) => {
               setInput(e.target.value);
             }}
+            onFocus={handleFocus}
+            placeholder="Type any English sentence…"
+            readOnly={isAutoTyping}
+            type="text"
+            value={input}
           />
         </div>
-        {input && <MappedWordDisplay tokens={tokens} className="try-it-output" placeholder="" />}
+        {input && <MappedWordDisplay className="try-it-output" placeholder="" tokens={tokens} />}
         {isAllCaps(input) && (
           <div className="warning-message">
             Ingglish is case-sensitive — type in normal case for accurate translations.
@@ -93,10 +93,10 @@ export function Section3TryIt({ onNavigate }: { onNavigate?: (tab: string) => vo
       {onNavigate && (
         <div className="try-it-cta">
           <p className="try-it-cta-prompt">Want to translate more?</p>
-          <a href="/text" className="cta-primary" onClick={handleNavigate('text')}>
+          <a className="cta-primary" href="/text" onClick={handleNavigate('text')}>
             Translate Text
           </a>
-          <a href="/url" className="cta-secondary" onClick={handleNavigate('url')}>
+          <a className="cta-secondary" href="/url" onClick={handleNavigate('url')}>
             Translate a Website
           </a>
         </div>

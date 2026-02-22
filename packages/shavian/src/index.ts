@@ -8,11 +8,11 @@ import { arpabetToShavian } from './to-shavian';
 export function registerShavian(): void {
   registerFormat('shavian', {
     forward: arpabetToShavian,
-    reverseText: reverseTranslateShavianText,
-    reverseTextWithMapping: reverseTranslateShavianTextWithMapping,
     isLatinScript: false,
-    preservesCase: false,
     label: 'Shavian',
     nativeLabel: '𐑖𐑱𐑝𐑾𐑯',
+    preservesCase: false,
+    reverseText: reverseTranslateShavianText,
+    reverseTextWithMapping: reverseTranslateShavianTextWithMapping,
   });
 }

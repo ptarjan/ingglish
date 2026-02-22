@@ -1,4 +1,4 @@
-import { readingTestWords, readingTestAttribution } from '../../data/tutorial-data';
+import { readingTestAttribution, readingTestWords } from '../../data/tutorial-data';
 
 export function Section4ReadingTest() {
   return (

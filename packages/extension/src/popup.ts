@@ -1,12 +1,12 @@
 // Popup script for Ingglish extension
 
 import type { OutputFormat } from '@ingglish/phonemes';
-import type { StateResponse, ToggleResponse, FormatResponse } from './types';
+import type { FormatResponse, StateResponse, ToggleResponse } from './types';
 
-const toggleBtn = document.getElementById('toggle-btn') as HTMLButtonElement | null;
-const statusText = document.getElementById('status-text') as HTMLSpanElement | null;
-const statusDot = document.getElementById('status-dot') as HTMLSpanElement | null;
-const formatBtn = document.getElementById('format-btn') as HTMLButtonElement | null;
+const toggleBtn = document.querySelector<HTMLButtonElement>('#toggle-btn');
+const statusText = document.querySelector<HTMLSpanElement>('#status-text');
+const statusDot = document.querySelector<HTMLSpanElement>('#status-dot');
+const formatBtn = document.querySelector<HTMLButtonElement>('#format-btn');
 
 // Validate required elements exist
 if (!toggleBtn || !statusText || !statusDot || !formatBtn) {
@@ -85,7 +85,7 @@ const FORMAT_ORDER: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
 formatBtnEl.addEventListener('click', () => {
   const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(currentFormat) + 1) % FORMAT_ORDER.length];
   chrome.runtime.sendMessage(
-    { type: 'SET_FORMAT', format: newFormat },
+    { format: newFormat, type: 'SET_FORMAT' },
     (response: FormatResponse | undefined) => {
       if (response?.format !== undefined) {
         currentFormat = response.format;
@@ -112,10 +112,10 @@ function updateUI(): void {
 }
 
 const FORMAT_LABELS: Record<string, string> = {
+  deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
   ingglish: 'Ingglish',
   ipa: 'IPA',
   shavian: '𐑖𐑱𐑝𐑾𐑯',
-  deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
 };
 function updateFormatUI(): void {
   formatBtnEl.textContent = FORMAT_LABELS[currentFormat] ?? currentFormat;

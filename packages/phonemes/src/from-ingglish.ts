@@ -7,8 +7,8 @@
 
 import {
   INGGLISH_TO_ARPABET_MAP,
-  R_COLORED_REVERSE_3CHAR,
   R_COLORED_REVERSE_2CHAR,
+  R_COLORED_REVERSE_3CHAR,
 } from './ingglish-maps';
 
 // ============================================================================
@@ -27,9 +27,9 @@ import {
  * Reverse parser gets AE from the map; AH alternative covers schwa words.
  */
 const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
+  AE: [['AH']], // "a" could be AE (cat) or AH (schwa: about, the)
   ER: [['EH', 'R']],
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
-  AE: [['AH']], // "a" could be AE (cat) or AH (schwa: about, the)
 };
 
 /**
@@ -94,7 +94,7 @@ const ONE_CHAR_SPELLINGS = new Set(
  * @param ingglish - Ingglish string (e.g., "haloh" for "hello")
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH", "L", "OW"]), or null if empty
  */
-export function ingglishToArpabet(ingglish: string): string[] | null {
+export function ingglishToArpabet(ingglish: string): null | string[] {
   const result: string[] = [];
   const str = ingglish.toLowerCase();
   const len = str.length;
@@ -103,7 +103,7 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
   while (pos < len) {
     // Check for 3-char R-colored vowels first (air)
     if (pos + 3 <= len) {
-      const threeChar = str.substring(pos, pos + 3);
+      const threeChar = str.slice(pos, pos + 3);
       if (threeChar in R_COLORED_REVERSE_3CHAR) {
         result.push(...R_COLORED_REVERSE_3CHAR[threeChar]!);
         pos += 3;
@@ -113,7 +113,7 @@ export function ingglishToArpabet(ingglish: string): string[] | null {
 
     // Check for 2-char R-colored vowels (ar, or) and digraphs (sh, th)
     if (pos + 2 <= len) {
-      const twoChar = str.substring(pos, pos + 2);
+      const twoChar = str.slice(pos, pos + 2);
       if (twoChar in R_COLORED_REVERSE_2CHAR) {
         result.push(...R_COLORED_REVERSE_2CHAR[twoChar]!);
         pos += 2;

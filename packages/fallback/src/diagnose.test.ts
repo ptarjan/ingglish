@@ -30,7 +30,7 @@ describe('diagnoseUnknown', () => {
   it('returns americanSpelling "organize" for "organise"', () => {
     const result = diagnoseUnknown('organise');
     expect(result).toEqual(
-      expect.objectContaining({ strategy: 'british', americanSpelling: 'organize' })
+      expect.objectContaining({ americanSpelling: 'organize', strategy: 'british' })
     );
   });
 

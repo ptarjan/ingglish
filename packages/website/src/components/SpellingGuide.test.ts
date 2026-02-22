@@ -1,29 +1,29 @@
-import { describe, it, expect } from 'vitest';
-import { vowelGroups, consonantGroups } from '../data/spelling-guide-data';
+import { describe, expect, it } from 'vitest';
+import { consonantGroups, vowelGroups } from '../data/spelling-guide-data';
 
 /**
  * Parse an example string like "c**a**t" and verify the highlighted letters
  * actually exist in the word at the claimed position.
  */
 function parseExample(example: string): {
-  word: string;
   highlighted: string;
   isValid: boolean;
+  word: string;
 } {
   // Extract the highlighted portion (between **)
   const match = /\*\*([^*]+)\*\*/.exec(example);
   if (!match) {
-    return { word: example, highlighted: '', isValid: false };
+    return { highlighted: '', isValid: false, word: example };
   }
 
   const highlighted = match[1]!;
   // Remove the ** markers to get the plain word
-  const word = example.replace(/\*\*/g, '');
+  const word = example.replaceAll('**', '');
 
   // Verify the highlighted portion exists in the word
   const isValid = word.includes(highlighted);
 
-  return { word, highlighted, isValid };
+  return { highlighted, isValid, word };
 }
 
 /**
@@ -31,7 +31,7 @@ function parseExample(example: string): {
  */
 function parseExamples(
   examples: string
-): { word: string; highlighted: string; isValid: boolean }[] {
+): { highlighted: string; isValid: boolean; word: string }[] {
   return examples.split(',').map((ex) => parseExample(ex.trim()));
 }
 
@@ -43,7 +43,7 @@ describe('SpellingGuide examples', () => {
           it(`${sound.phoneme}: examples contain highlighted letters`, () => {
             const parsed = parseExamples(sound.examples);
 
-            for (const { word, highlighted, isValid } of parsed) {
+            for (const { highlighted, isValid, word } of parsed) {
               expect(isValid, `"${word}" should contain "${highlighted}"`).toBe(true);
               expect(
                 highlighted.length,
@@ -63,7 +63,7 @@ describe('SpellingGuide examples', () => {
           it(`${sound.phoneme}: examples contain highlighted letters`, () => {
             const parsed = parseExamples(sound.examples);
 
-            for (const { word, highlighted, isValid } of parsed) {
+            for (const { highlighted, isValid, word } of parsed) {
               expect(isValid, `"${word}" should contain "${highlighted}"`).toBe(true);
               expect(
                 highlighted.length,

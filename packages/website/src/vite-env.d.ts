@@ -9,10 +9,10 @@ declare module '*.md' {
   export default content;
 }
 
-interface ImportMetaEnv {
-  readonly VITE_CORS_PROXY_URL?: string;
-}
-
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+interface ImportMetaEnv {
+  readonly VITE_CORS_PROXY_URL?: string;
 }

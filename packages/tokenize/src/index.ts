@@ -15,23 +15,40 @@ export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F']+$/;
 const IPA_SYMBOLS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ');
 
 /**
+ * Extended token with word index for correspondence tracking.
+ */
+export interface IndexedToken {
+  isWord: boolean;
+  text: string;
+  wordIndex: null | number;
+}
+
+/**
+ * Token with text content and word/non-word classification.
+ */
+export interface TextToken {
+  isWord: boolean;
+  text: string;
+}
+
+/**
  * Checks if a character is an IPA phonetic symbol (not punctuation).
  */
 export function isIPAChar(char: string): boolean {
-  const code = char.charCodeAt(0);
+  const code = char.codePointAt(0)!;
 
   // Basic Latin letters (A-Z, a-z)
-  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
+  if ((code >= 0x41 && code <= 0x5A) || (code >= 0x61 && code <= 0x7A)) {
     return true;
   }
 
   // Word joiner (U+2060) - invisible character that prevents line breaks
-  if (code === 0x2060) {
+  if (code === 0x20_60) {
     return true;
   }
 
   // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
-  if (code === 0x02c8 || code === 0x02cc) {
+  if (code === 0x02_C8 || code === 0x02_CC) {
     return true;
   }
 
@@ -51,10 +68,10 @@ export function isIPAChar(char: string): boolean {
  * Use this for tokenizing mixed Ingglish/IPA text in bidirectional translation.
  */
 export function isPhoneticChar(char: string): boolean {
-  const code = char.charCodeAt(0);
+  const code = char.codePointAt(0)!;
 
   // Basic Latin letters (A-Z, a-z)
-  if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
+  if ((code >= 0x41 && code <= 0x5A) || (code >= 0x61 && code <= 0x7A)) {
     return true;
   }
 
@@ -67,20 +84,20 @@ export function isPhoneticChar(char: string): boolean {
   // Latin-1 Supplement accented letters (À-ÖØ-öø-ÿ)
   // Used for stress markers in Ingglish (á, é, í, ó, ú)
   if (
-    (code >= 0xc0 && code <= 0xd6) ||
-    (code >= 0xd8 && code <= 0xf6) ||
-    (code >= 0xf8 && code <= 0xff)
+    (code >= 0xC0 && code <= 0xD6) ||
+    (code >= 0xD8 && code <= 0xF6) ||
+    (code >= 0xF8 && code <= 0xFF)
   ) {
     return true;
   }
 
   // Word joiner (U+2060) - invisible character that prevents line breaks
-  if (code === 0x2060) {
+  if (code === 0x20_60) {
     return true;
   }
 
   // IPA stress markers (ˈ U+02C8, ˌ U+02CC)
-  if (code === 0x02c8 || code === 0x02cc) {
+  if (code === 0x02_C8 || code === 0x02_CC) {
     return true;
   }
 
@@ -90,14 +107,6 @@ export function isPhoneticChar(char: string): boolean {
   }
 
   return false;
-}
-
-/**
- * Token with text content and word/non-word classification.
- */
-export interface TextToken {
-  text: string;
-  isWord: boolean;
 }
 
 /**
@@ -114,7 +123,7 @@ export function tokenizeIPA(text: string): TextToken[] {
       while (wordEnd < text.length && isIPAChar(text[wordEnd]!)) {
         wordEnd++;
       }
-      tokens.push({ text: text.slice(i, wordEnd), isWord: true });
+      tokens.push({ isWord: true, text: text.slice(i, wordEnd) });
       i = wordEnd;
     } else {
       // Collect non-IPA characters (punctuation, whitespace)
@@ -122,39 +131,12 @@ export function tokenizeIPA(text: string): TextToken[] {
       while (nonWordEnd < text.length && !isIPAChar(text[nonWordEnd]!)) {
         nonWordEnd++;
       }
-      tokens.push({ text: text.slice(i, nonWordEnd), isWord: false });
+      tokens.push({ isWord: false, text: text.slice(i, nonWordEnd) });
       i = nonWordEnd;
     }
   }
 
   return tokens;
-}
-
-/**
- * Tokenizes Ingglish/English text into words and non-words.
- * Words are sequences of letters and apostrophes.
- */
-export function tokenizeText(text: string): TextToken[] {
-  const normalized = normalizeApostrophes(text);
-  const parts = normalized.split(WORD_SPLIT_REGEX);
-
-  // Single pass: filter and map together
-  const tokens: TextToken[] = [];
-  for (const part of parts) {
-    if (part.length > 0) {
-      tokens.push({ text: part, isWord: WORD_TEST_REGEX.test(part) });
-    }
-  }
-  return tokens;
-}
-
-/**
- * Extended token with word index for correspondence tracking.
- */
-export interface IndexedToken {
-  text: string;
-  isWord: boolean;
-  wordIndex: number | null;
 }
 
 /**
@@ -177,8 +159,8 @@ export function tokenizePhonetic(text: string): IndexedToken[] {
         wordEnd++;
       }
       tokens.push({
-        text: text.slice(i, wordEnd),
         isWord: true,
+        text: text.slice(i, wordEnd),
         wordIndex: wordIndex++,
       });
       i = wordEnd;
@@ -189,13 +171,31 @@ export function tokenizePhonetic(text: string): IndexedToken[] {
         nonWordEnd++;
       }
       tokens.push({
-        text: text.slice(i, nonWordEnd),
         isWord: false,
+        text: text.slice(i, nonWordEnd),
         wordIndex: null,
       });
       i = nonWordEnd;
     }
   }
 
+  return tokens;
+}
+
+/**
+ * Tokenizes Ingglish/English text into words and non-words.
+ * Words are sequences of letters and apostrophes.
+ */
+export function tokenizeText(text: string): TextToken[] {
+  const normalized = normalizeApostrophes(text);
+  const parts = normalized.split(WORD_SPLIT_REGEX);
+
+  // Single pass: filter and map together
+  const tokens: TextToken[] = [];
+  for (const part of parts) {
+    if (part.length > 0) {
+      tokens.push({ isWord: WORD_TEST_REGEX.test(part), text: part });
+    }
+  }
   return tokens;
 }

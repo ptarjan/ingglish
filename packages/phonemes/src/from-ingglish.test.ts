@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { ingglishToArpabet, expandArpabetAlternatives } from './from-ingglish';
+import { describe, expect, it } from 'vitest';
+import { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 describe('ingglishToArpabet', () => {
   it('converts known Ingglish spellings to ARPAbet', () => {

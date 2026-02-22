@@ -19,19 +19,19 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
   AE: 'a', // cat, bat, had (but AE+R → 'arr' in arrow, barrow)
   AH: 'uh', // but, cup, son (stressed /ʌ/; unstressed /ə/ AH0 → 'a' in conversion)
   AO: 'aw', // thought, caught, law (but AO+R → 'or' in store, more)
-  EH: 'e', // bed, red, said (but EH+R → 'air' in air, care, there)
-  ER: 'er', // bird, her, nurse
-  IH: 'i', // bit, sit, gym
-  IY: 'ee', // bee, see, machine
-  UH: 'u', // book, put, could
-  UW: 'oo', // too, blue, food
-
   // Diphthongs
   AW: 'ou', // cow, how, out
   AY: 'ai', // my, eye, time
+  EH: 'e', // bed, red, said (but EH+R → 'air' in air, care, there)
+  ER: 'er', // bird, her, nurse
   EY: 'ay', // say, day, make
+  IH: 'i', // bit, sit, gym
+
+  IY: 'ee', // bee, see, machine
   OW: 'oh', // go, show, coat
   OY: 'oi', // boy, toy, coin
+  UH: 'u', // book, put, could
+  UW: 'oo', // too, blue, food
 };
 
 /**
@@ -40,41 +40,41 @@ export const INGGLISH_VOWEL_MAP: Record<string, string> = {
 export const INGGLISH_CONSONANT_MAP: Record<string, string> = {
   // Stops (plosives)
   B: 'b', // bat, cab
+  // Affricates
+  CH: 'ch', // chat, batch
   D: 'd', // dog, bed
-  G: 'g', // go, big
-  K: 'k', // cat, back
-  P: 'p', // pat, cup
-  T: 't', // top, cat
-
   // Fricatives
   DH: 'dh', // the, this (voiced) - distinguishes from TH
   F: 'f', // fat, laugh
-  S: 's', // sat, miss
-  SH: 'sh', // she, push
-  TH: 'th', // think, bath (voiceless)
-  V: 'v', // van, love
-  Z: 'z', // zoo, is
-  ZH: 'zh', // measure, beige
+  G: 'g', // go, big
 
-  // Affricates
-  CH: 'ch', // chat, batch
+  // Aspirate
+  HH: 'h', // hat, ahead
   JH: 'j', // just, edge
-
+  K: 'k', // cat, back
+  // Liquids
+  L: 'l', // let, well
   // Nasals
   M: 'm', // man, come
   N: 'n', // no, pen
   NG: 'ng', // sing, thing
+  P: 'p', // pat, cup
 
-  // Liquids
-  L: 'l', // let, well
   R: 'r', // run, car
+  S: 's', // sat, miss
 
+  SH: 'sh', // she, push
+  T: 't', // top, cat
+  TH: 'th', // think, bath (voiceless)
+
+  V: 'v', // van, love
   // Semivowels (glides)
   W: 'w', // wet, away
-  Y: 'y', // yes, you
 
-  // Aspirate
-  HH: 'h', // hat, ahead
+  Y: 'y', // yes, you
+  Z: 'z', // zoo, is
+
+  ZH: 'zh', // measure, beige
 };
 
 /**

@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { isLikelyIPA, detectFormat } from './language';
+import { describe, expect, it } from 'vitest';
+import { detectFormat, isLikelyIPA } from './language';
 
 describe('language detection', () => {
   describe('isLikelyIPA', () => {

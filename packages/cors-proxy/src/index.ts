@@ -11,7 +11,16 @@ export interface Env {
   ALLOWED_ORIGINS: string;
 }
 
-export function isAllowedOrigin(origin: string | null, allowedOrigins: string): boolean {
+export function corsHeaders(origin: string): Record<string, string> {
+  return {
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+export function isAllowedOrigin(origin: null | string, allowedOrigins: string): boolean {
   if (origin === null || origin === '') {
     return false;
   }
@@ -28,15 +37,6 @@ export function isAllowedOrigin(origin: string | null, allowedOrigins: string): 
     }
   }
   return false;
-}
-
-export function corsHeaders(origin: string): Record<string, string> {
-  return {
-    'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Max-Age': '86400',
-  };
 }
 
 // Pre-compiled regex patterns for private IPv4 ranges (hoisted for performance)
@@ -84,8 +84,8 @@ export default {
     if (request.method === 'OPTIONS') {
       if (origin !== null && isAllowedOrigin(origin, env.ALLOWED_ORIGINS)) {
         return new Response(null, {
-          status: 204,
           headers: corsHeaders(origin),
+          status: 204,
         });
       }
       return new Response('Forbidden', { status: 403 });
@@ -107,8 +107,8 @@ export default {
 
     if (targetUrl === null || targetUrl === '') {
       return new Response('Missing url parameter', {
-        status: 400,
         headers: corsHeaders(origin),
+        status: 400,
       });
     }
 
@@ -118,24 +118,24 @@ export default {
       parsedUrl = new URL(targetUrl);
     } catch {
       return new Response('Invalid URL', {
-        status: 400,
         headers: corsHeaders(origin),
+        status: 400,
       });
     }
 
     // Only allow http/https (direct comparison avoids array allocation)
     if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
       return new Response('Invalid protocol', {
-        status: 400,
         headers: corsHeaders(origin),
+        status: 400,
       });
     }
 
     // Block requests to private/internal networks (SSRF protection)
     if (isPrivateHost(parsedUrl.hostname)) {
       return new Response('Forbidden: Private networks not allowed', {
-        status: 403,
         headers: corsHeaders(origin),
+        status: 403,
       });
     }
 
@@ -143,13 +143,13 @@ export default {
       // Fetch the target URL with browser-like headers
       const response = await fetch(parsedUrl.toString(), {
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
           Accept:
             'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         },
         redirect: 'follow',
       });
@@ -173,8 +173,8 @@ export default {
         return new Response(
           `Only HTML content is supported (received: ${contentType})\n\nBody preview:\n${preview}`,
           {
-            status: 415,
             headers: corsHeaders(origin),
+            status: 415,
           }
         );
       }
@@ -194,17 +194,17 @@ export default {
       const cacheControl = `public, max-age=${cacheSeconds}`;
 
       return new Response(html, {
-        status: response.status,
         headers: Object.assign({}, corsHeaders(origin), {
-          'Content-Type': contentType,
           'Cache-Control': cacheControl,
+          'Content-Type': contentType,
           'X-Proxied-URL': parsedUrl.toString(),
         }),
+        status: response.status,
       });
     } catch {
       return new Response('Proxy error: failed to fetch upstream resource', {
-        status: 502,
         headers: corsHeaders(origin),
+        status: 502,
       });
     }
   },

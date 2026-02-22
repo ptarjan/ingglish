@@ -10,19 +10,6 @@ import {
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
 import { getCleanIPA, renderDynamicExamples } from './phoneme-display';
 
-/** Get the default spelling for a phoneme */
-function getDefault(phoneme: string): string {
-  if (phoneme === 'AH0') {
-    return 'a';
-  }
-  // For stress variants (EY0, EY1, etc.), fall back to the base phoneme's spelling
-  return (
-    ARPABET_TO_INGGLISH_MAP[phoneme] ??
-    ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
-    phoneme.toLowerCase()
-  );
-}
-
 /** Check for duplicate spellings (two phonemes mapped to same spelling) */
 function findDuplicates(phonemeMap: Record<string, string>): Map<string, string[]> {
   const spellingToPhonemes = new Map<string, string[]>();
@@ -47,6 +34,19 @@ function findDuplicates(phonemeMap: Record<string, string>): Map<string, string[
   return dupes;
 }
 
+/** Get the default spelling for a phoneme */
+function getDefault(phoneme: string): string {
+  if (phoneme === 'AH0') {
+    return 'a';
+  }
+  // For stress variants (EY0, EY1, etc.), fall back to the base phoneme's spelling
+  return (
+    ARPABET_TO_INGGLISH_MAP[phoneme] ??
+    ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
+    phoneme.toLowerCase()
+  );
+}
+
 /** Check if a phoneme is a vowel (exists in the vowel map) */
 const VOWEL_PHONEMES = new Set([
   'AA',
@@ -67,13 +67,23 @@ const VOWEL_PHONEMES = new Set([
 ]);
 
 interface EditableCellProps {
-  value: string;
   defaultValue: string;
-  onChange: (value: string) => void;
   isDuplicate?: boolean;
+  onChange: (value: string) => void;
+  value: string;
 }
 
-function EditableCell({ value, defaultValue, onChange, isDuplicate = false }: EditableCellProps) {
+interface MappingEditorProps {
+  mapping: UseCustomMappingReturn;
+}
+
+interface RColoredCellProps {
+  isChanged: boolean;
+  onChangePrefix: (value: string) => void;
+  prefix: string;
+}
+
+function EditableCell({ defaultValue, isDuplicate = false, onChange, value }: EditableCellProps) {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
   const isChanged = value !== defaultValue;
@@ -82,8 +92,10 @@ function EditableCell({ value, defaultValue, onChange, isDuplicate = false }: Ed
       className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''} ${isDuplicate ? 'cell-duplicate' : ''}`}
     >
       <input
-        type="text"
-        value={editing ? editValue : value}
+        className="cell-input"
+        onBlur={() => {
+          setEditing(false);
+        }}
         onChange={(e) => {
           setEditValue(e.target.value);
           onChange(e.target.value);
@@ -92,23 +104,15 @@ function EditableCell({ value, defaultValue, onChange, isDuplicate = false }: Ed
           setEditing(true);
           setEditValue(value);
         }}
-        onBlur={() => {
-          setEditing(false);
-        }}
-        className="cell-input"
         spellCheck={false}
+        type="text"
+        value={editing ? editValue : value}
       />
     </td>
   );
 }
 
-interface RColoredCellProps {
-  prefix: string;
-  isChanged: boolean;
-  onChangePrefix: (value: string) => void;
-}
-
-function RColoredCell({ prefix, isChanged, onChangePrefix }: RColoredCellProps) {
+function RColoredCell({ isChanged, onChangePrefix, prefix }: RColoredCellProps) {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
 
@@ -116,8 +120,10 @@ function RColoredCell({ prefix, isChanged, onChangePrefix }: RColoredCellProps) 
     <td className={`ingglish-cell editable-cell ${isChanged ? 'cell-changed' : ''}`}>
       <div className="r-colored-input">
         <input
-          type="text"
-          value={editing ? editValue : prefix}
+          className="cell-input"
+          onBlur={() => {
+            setEditing(false);
+          }}
           onChange={(e) => {
             setEditValue(e.target.value);
             onChangePrefix(e.target.value);
@@ -126,20 +132,14 @@ function RColoredCell({ prefix, isChanged, onChangePrefix }: RColoredCellProps) 
             setEditing(true);
             setEditValue(prefix);
           }}
-          onBlur={() => {
-            setEditing(false);
-          }}
-          className="cell-input"
           spellCheck={false}
+          type="text"
+          value={editing ? editValue : prefix}
         />
         <span className="r-suffix">r</span>
       </div>
     </td>
   );
-}
-
-interface MappingEditorProps {
-  mapping: UseCustomMappingReturn;
 }
 
 /** Stress variants for advanced mode */
@@ -179,11 +179,11 @@ function MappingEditor({ mapping }: MappingEditorProps) {
           <tr key={phoneme}>
             <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(phoneme)}</td>
             <RColoredCell
-              prefix={currentPrefix}
               isChanged={isChanged}
               onChangePrefix={(v) => {
                 mapping.setRColoredPrefix(base, v);
               }}
+              prefix={currentPrefix}
             />
             <td className="default-cell">{defaultSpelling}</td>
             <td className="examples-cell">
@@ -214,11 +214,11 @@ function MappingEditor({ mapping }: MappingEditorProps) {
           <tr key={phoneme}>
             <td className="ipa-cell">{getCleanIPA(phoneme)}</td>
             <RColoredCell
-              prefix={currentPrefix}
               isChanged={isChanged}
               onChangePrefix={(v) => {
                 mapping.setPhonemeSpelling(phoneme, v + 'r');
               }}
+              prefix={currentPrefix}
             />
             <td className="default-cell">{defaultSpelling}</td>
             <td className="examples-cell">
@@ -242,18 +242,18 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         VOWEL_PHONEMES.has(phoneme)
       ) {
         // Which stress variants to show
-        const variants = advancedMode ? STRESS_VARIANTS : showSchwa ? ['0'] : [];
+        const variants = advancedMode ? STRESS_VARIANTS : (showSchwa ? ['0'] : []);
         return (
           <>
             <tr key={phoneme}>
               <td className="ipa-cell">{getCleanIPA(phoneme)}</td>
               <EditableCell
-                value={currentSpelling}
                 defaultValue={defaultSpelling}
+                isDuplicate={isDuplicate(currentSpelling)}
                 onChange={(v) => {
                   mapping.setPhonemeSpelling(phoneme, v);
                 }}
-                isDuplicate={isDuplicate(currentSpelling)}
+                value={currentSpelling}
               />
               <td className="default-cell">{defaultSpelling}</td>
               <td className="examples-cell">
@@ -265,37 +265,37 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               const stressedDefault = getDefault(stressedPhoneme);
               const stressedValue = mapping.phonemeMap[stressedPhoneme] ?? stressedDefault;
               const stressLabel =
-                stress === '0' ? 'unstressed' : stress === '1' ? 'primary' : 'secondary';
+                stress === '0' ? 'unstressed' : (stress === '1' ? 'primary' : 'secondary');
               // AH0 has a real default ('a'), other stress variants default to base
               const hasOwnDefault = stressedDefault !== defaultSpelling;
               return (
-                <tr key={stressedPhoneme} className="stress-variant-row">
+                <tr className="stress-variant-row" key={stressedPhoneme}>
                   <td className="ipa-cell stress-label">
                     {phoneme}
                     {stress}
                   </td>
                   {hasOwnDefault ? (
                     <EditableCell
-                      value={stressedValue}
                       defaultValue={stressedDefault}
+                      isDuplicate={isDuplicate(stressedValue)}
                       onChange={(v) => {
                         mapping.setPhonemeSpelling(stressedPhoneme, v);
                       }}
-                      isDuplicate={isDuplicate(stressedValue)}
+                      value={stressedValue}
                     />
                   ) : (
                     <td
                       className={`ingglish-cell editable-cell ${stressedValue !== defaultSpelling && stressedValue.length > 0 ? 'cell-changed' : ''}`}
                     >
                       <input
-                        type="text"
-                        value={mapping.phonemeMap[stressedPhoneme] ?? ''}
+                        className="cell-input"
                         onChange={(e) => {
                           mapping.setPhonemeSpelling(stressedPhoneme, e.target.value);
                         }}
-                        className="cell-input"
                         placeholder={currentSpelling}
                         spellCheck={false}
+                        type="text"
+                        value={mapping.phonemeMap[stressedPhoneme] ?? ''}
                       />
                     </td>
                   )}
@@ -318,12 +318,12 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         <tr key={phoneme}>
           <td className="ipa-cell">{sound.ipaOverride ?? getCleanIPA(phoneme)}</td>
           <EditableCell
-            value={currentSpelling}
             defaultValue={defaultSpelling}
+            isDuplicate={isDuplicate(currentSpelling)}
             onChange={(v) => {
               mapping.setPhonemeSpelling(phoneme, v);
             }}
-            isDuplicate={isDuplicate(currentSpelling)}
+            value={currentSpelling}
           />
           <td className="default-cell">{defaultSpelling}</td>
           <td className="examples-cell">{renderDynamicExamples(sound.examples, translateWord)}</td>
@@ -335,7 +335,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
   const renderGroup = useCallback(
     (group: SoundGroup) => (
-      <div key={group.name} className="sound-group">
+      <div className="sound-group" key={group.name}>
         <h4>{group.name}</h4>
         <table className="mapping-table experiment-table">
           <thead>
@@ -346,7 +346,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               <th>Examples</th>
             </tr>
           </thead>
-          <tbody>{group.sounds.map(renderPhonemeRow)}</tbody>
+          <tbody>{group.sounds.map((sound) => renderPhonemeRow(sound))}</tbody>
         </table>
       </div>
     ),
@@ -366,11 +366,11 @@ function MappingEditor({ mapping }: MappingEditorProps) {
       <div className="editor-controls">
         <label className="advanced-toggle">
           <input
-            type="checkbox"
             checked={advancedMode}
             onChange={(e) => {
               setAdvancedMode(e.target.checked);
             }}
+            type="checkbox"
           />
           Advanced mode (stress variants)
         </label>
@@ -389,12 +389,12 @@ function MappingEditor({ mapping }: MappingEditorProps) {
 
       <div className="editor-section">
         <h3>Vowels</h3>
-        <div className="sound-groups">{vowelGroups.map(renderGroup)}</div>
+        <div className="sound-groups">{vowelGroups.map((group) => renderGroup(group))}</div>
       </div>
 
       <div className="editor-section">
         <h3>Consonants</h3>
-        <div className="sound-groups">{consonantGroups.map(renderGroup)}</div>
+        <div className="sound-groups">{consonantGroups.map((group) => renderGroup(group))}</div>
       </div>
     </div>
   );

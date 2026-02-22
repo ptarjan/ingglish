@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
-import { translate, reverseTranslate } from '../index';
-import { translateWord, translateSync } from './forward';
+import { reverseTranslate, translate } from '../index';
+import { translateSync, translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
   // Dictionaries pre-loaded by vitest.setup.ts

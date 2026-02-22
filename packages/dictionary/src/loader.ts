@@ -7,10 +7,10 @@
 import { createLazyLoader } from './lazy-loader';
 import type { CMUDictionary } from './types';
 
-const loader = createLazyLoader<CMUDictionary>(
-  async () => (await import('./cmudict')).default,
-  'CMU dictionary'
-);
+const loader = createLazyLoader<CMUDictionary>(async () => {
+  const mod = await import('./cmudict');
+  return mod.default;
+}, 'CMU dictionary');
 
 /**
  * Loads the CMU Pronouncing Dictionary.

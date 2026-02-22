@@ -6,7 +6,7 @@
  * Checks if we're in a browser environment.
  */
 export function isBrowser(): boolean {
-  return typeof document !== 'undefined' && typeof window !== 'undefined';
+  return typeof document !== 'undefined' && globalThis.window !== undefined;
 }
 
 /**

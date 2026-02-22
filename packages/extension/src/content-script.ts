@@ -3,20 +3,20 @@
 
 import {
   applyTranslationsMap,
-  restoreDOM,
   collectTextNodes,
-  extractWordsFromNodes,
-  injectTooltipStyles,
-  injectTooltipBehavior,
-  DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
+  DEFAULT_SKIP_TAGS,
+  extractWordsFromNodes,
+  injectTooltipBehavior,
+  injectTooltipStyles,
+  restoreDOM,
 } from '@ingglish/dom';
-import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern } from '@ingglish/normalize';
 import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import type {
+  FormatResponse,
   RestoreMessage,
   RetranslateMessage,
-  FormatResponse,
   TranslateWordsResponse,
 } from './types';
 
@@ -25,19 +25,19 @@ const EXTENSION_SKIP_TAGS = [...DEFAULT_SKIP_TAGS, 'IFRAME', 'OBJECT', 'EMBED', 
 
 // State management
 interface IngglishState {
+  debounceTimer: null | ReturnType<typeof setTimeout>;
   injected: boolean;
-  translated: boolean;
   observer: MutationObserver | null;
-  debounceTimer: ReturnType<typeof setTimeout> | null;
+  translated: boolean;
 }
 
 function getState(): IngglishState {
-  const win = window as { __ingglishStateLite?: IngglishState };
+  const win = globalThis as { __ingglishStateLite?: IngglishState };
   win.__ingglishStateLite ??= {
-    injected: false,
-    translated: false,
-    observer: null,
     debounceTimer: null,
+    injected: false,
+    observer: null,
+    translated: false,
   };
   return win.__ingglishStateLite;
 }
@@ -46,6 +46,18 @@ const state = getState();
 
 // Word batch size for translation requests
 const WORD_BATCH_SIZE = 1000;
+
+// Inject Google Fonts stylesheet for alternative scripts
+function injectScriptFont(doc: Document, id: string, family: string): void {
+  if (doc.querySelector(`#${id}`)) {
+    return;
+  }
+  const link = doc.createElement('link');
+  link.id = id;
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}&display=swap`;
+  doc.head?.append(link);
+}
 
 // Check if extension context is still valid (not invalidated by extension reload)
 function isContextValid(): boolean {
@@ -59,7 +71,7 @@ function isContextValid(): boolean {
 // Show a message when the extension context is invalidated
 function showContextInvalidMessage(): void {
   // Only show once
-  if (document.getElementById('ingglish-refresh-notice')) {
+  if (document.querySelector('#ingglish-refresh-notice')) {
     return;
   }
 
@@ -87,55 +99,46 @@ function showContextInvalidMessage(): void {
     location.reload();
   });
 
-  document.body?.appendChild(notice);
-}
-
-// Inject Google Fonts stylesheet for alternative scripts
-function injectScriptFont(doc: Document, id: string, family: string): void {
-  if (doc.getElementById(id)) {
-    return;
-  }
-  const link = doc.createElement('link');
-  link.id = id;
-  link.rel = 'stylesheet';
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}&display=swap`;
-  doc.head?.appendChild(link);
+  document.body?.append(notice);
 }
 
 const SCRIPT_FONTS: Record<string, [string, string]> = {
-  shavian: ['ingglish-shavian-font', 'Noto Sans Shavian'],
   deseret: ['ingglish-deseret-font', 'Noto Sans Deseret'],
+  shavian: ['ingglish-shavian-font', 'Noto Sans Shavian'],
 };
 
-// Request batch translation from background script
-async function translateWordsBatch(
-  words: string[],
-  format: OutputFormat
-): Promise<Record<string, string>> {
-  if (!isContextValid()) {
-    console.log('Ingglish: Extension context invalidated, please refresh the page');
-    showContextInvalidMessage();
-    return {};
+function addTranslationBadge(format: OutputFormat): void {
+  if (document.querySelector('#ingglish-badge')) {
+    return;
   }
 
-  return new Promise((resolve) => {
-    try {
-      chrome.runtime.sendMessage(
-        { type: 'TRANSLATE_WORDS', words, format },
-        (response: TranslateWordsResponse | undefined) => {
-          if (chrome.runtime.lastError) {
-            // Context was invalidated during the call
-            resolve({});
-            return;
-          }
-          resolve(response?.translations ?? {});
-        }
-      );
-    } catch {
-      // Extension context invalidated
-      resolve({});
-    }
+  const badge = document.createElement('div');
+  badge.id = 'ingglish-badge';
+  badge.textContent = getFormatNativeLabel(format);
+  badge.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999999;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  `;
+
+  badge.addEventListener('mouseenter', () => (badge.style.opacity = '0.8'));
+  badge.addEventListener('mouseleave', () => (badge.style.opacity = '1'));
+  badge.addEventListener('click', () => {
+    badge.remove();
   });
+
+  document.body?.append(badge);
 }
 
 // Get output format from background
@@ -159,48 +162,16 @@ async function getOutputFormat(): Promise<OutputFormat> {
   });
 }
 
-// Translate words in batches to avoid overwhelming the message channel
-async function translateWordsInBatches(
-  words: string[],
-  format: OutputFormat
-): Promise<Record<string, string>> {
-  const allTranslations: Record<string, string> = {};
-
-  for (let i = 0; i < words.length; i += WORD_BATCH_SIZE) {
-    const batch = words.slice(i, i + WORD_BATCH_SIZE);
-    const batchTranslations = await translateWordsBatch(batch, format);
-    Object.assign(allTranslations, batchTranslations);
-  }
-
-  return allTranslations;
-}
-
-// Wait for document.body to be available
-async function waitForBody(): Promise<void> {
-  if (document.body !== null) {
-    return;
-  }
-  return new Promise((resolve) => {
-    const observer = new MutationObserver(() => {
-      if (document.body !== null) {
-        observer.disconnect();
-        resolve();
-      }
-    });
-    observer.observe(document.documentElement, { childList: true });
-  });
-}
-
 // Core translation logic shared by translatePage and retranslatePage
 async function performTranslation(format: OutputFormat): Promise<void> {
   await waitForBody();
 
   const perf = {
-    start: performance.now(),
+    applyDOM: 0,
     collectNodes: 0,
     extractWords: 0,
     fetchTranslations: 0,
-    applyDOM: 0,
+    start: performance.now(),
     total: 0,
   };
 
@@ -258,17 +229,144 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   setupObserver(format, translations);
 }
 
-// Main translation function
-async function translatePage(): Promise<void> {
-  if (state.translated) {
-    console.log('Ingglish: Already translated');
+// Restore original text
+function restorePage(): void {
+  console.log('Ingglish: Restoring original text...');
+
+  if (state.debounceTimer !== null) {
+    clearTimeout(state.debounceTimer);
+    state.debounceTimer = null;
+  }
+
+  if (state.observer) {
+    state.observer.disconnect();
+    state.observer = null;
+  }
+
+  // Use shared restore utility
+  restoreDOM(document.body);
+
+  // Remove badge (keep ingglish-ready class so page stays visible with injected CSS)
+  document.querySelector('#ingglish-badge')?.remove();
+
+  state.translated = false;
+  console.log('Ingglish: Restoration complete!');
+}
+
+// Retranslate page with a new format (in-place update, much faster than restore + re-translate)
+async function retranslatePage(format: OutputFormat): Promise<void> {
+  console.log(`Ingglish: Retranslating with format: ${format}...`);
+
+  const scriptFont = SCRIPT_FONTS[format];
+  if (scriptFont !== undefined) {
+    injectScriptFont(document, scriptFont[0], scriptFont[1]);
+  }
+
+  const perf = { apply: 0, collect: 0, fetch: 0, query: 0, start: performance.now() };
+
+  // Find all translated word spans (yield first to let UI update)
+  await new Promise((r) => requestAnimationFrame(r));
+
+  const queryStart = performance.now();
+  const wordSpans = document.querySelectorAll('.ingglish-word[data-ingglish-orig]');
+  perf.query = performance.now() - queryStart;
+
+  if (wordSpans.length === 0) {
+    // No spans found, fall back to full re-translation
+    if (state.debounceTimer !== null) {
+      clearTimeout(state.debounceTimer);
+      state.debounceTimer = null;
+    }
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    restoreDOM(document.body);
+    document.querySelector('#ingglish-badge')?.remove();
+    state.translated = false;
+    await performTranslation(format);
     return;
   }
 
-  console.log('Ingglish: Starting translation...');
+  // Convert to array with proper typing
+  const spans = [...wordSpans] as HTMLElement[];
 
-  const format = await getOutputFormat();
-  await performTranslation(format);
+  // Yield before heavy work
+  await new Promise((r) => requestAnimationFrame(r));
+
+  // Collect unique original words
+  const collectStart = performance.now();
+  const originalWords = new Set<string>();
+  for (const span of spans) {
+    const orig = span.dataset.ingglishOrig;
+    if (orig !== null && orig !== '') {
+      originalWords.add(orig.toLowerCase());
+    }
+  }
+  perf.collect = performance.now() - collectStart;
+
+  // Fetch new translations
+  const fetchStart = performance.now();
+  const translations = await translateWordsInBatches([...originalWords], format);
+  perf.fetch = performance.now() - fetchStart;
+
+  // Update spans in-place (chunked with RAF to avoid blocking)
+  const CHUNK_SIZE = 50; // Small chunks to stay responsive
+
+  await new Promise<void>((resolve) => {
+    let index = 0;
+
+    function processChunk(): void {
+      const endIndex = Math.min(index + CHUNK_SIZE, spans.length);
+
+      while (index < endIndex) {
+        const span = spans[index];
+        const orig = span.dataset.ingglishOrig;
+        if (orig !== null && orig !== '') {
+          const translated = translations[orig.toLowerCase()];
+          if (translated !== undefined) {
+            const pattern = detectCasePattern(orig);
+            span.textContent = applyCasePattern(translated, pattern, orig);
+          }
+        }
+        index++;
+      }
+
+      if (index < spans.length) {
+        requestAnimationFrame(processChunk);
+      } else {
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(processChunk);
+  });
+
+  perf.apply = performance.now() - fetchStart - perf.fetch;
+
+  // Update badge
+  const badge = document.querySelector('#ingglish-badge');
+  if (badge) {
+    badge.textContent = getFormatNativeLabel(format);
+  }
+
+  // Update observer with new translations
+  if (state.observer) {
+    state.observer.disconnect();
+    state.observer = null;
+  }
+  setupObserver(format, translations);
+
+  const total = performance.now() - perf.start;
+  console.log(
+    `Ingglish Format Switch:\n` +
+      `  Spans: ${spans.length}, Unique words: ${originalWords.size}\n` +
+      `  Query DOM:    ${perf.query.toFixed(1)}ms\n` +
+      `  Collect words: ${perf.collect.toFixed(1)}ms\n` +
+      `  Fetch:        ${perf.fetch.toFixed(1)}ms\n` +
+      `  Apply:        ${perf.apply.toFixed(1)}ms\n` +
+      `  Total:        ${total.toFixed(1)}ms`
+  );
 }
 
 // Observe DOM for dynamic content
@@ -344,6 +442,7 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 
     // Collect new nodes (Array.from needed for TypeScript type safety)
     for (const mutation of mutations) {
+      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       const nodes: Node[] = Array.from(mutation.addedNodes);
       for (const node of nodes) {
         if (node.nodeType === Node.TEXT_NODE) {
@@ -378,178 +477,71 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
   });
 }
 
-// Restore original text
-function restorePage(): void {
-  console.log('Ingglish: Restoring original text...');
-
-  if (state.debounceTimer !== null) {
-    clearTimeout(state.debounceTimer);
-    state.debounceTimer = null;
+// Translate when DOM is ready
+function startTranslation(): void {
+  if (!state.translated) {
+    void translatePage();
   }
-
-  if (state.observer) {
-    state.observer.disconnect();
-    state.observer = null;
-  }
-
-  // Use shared restore utility
-  restoreDOM(document.body);
-
-  // Remove badge (keep ingglish-ready class so page stays visible with injected CSS)
-  document.getElementById('ingglish-badge')?.remove();
-
-  state.translated = false;
-  console.log('Ingglish: Restoration complete!');
 }
 
-// Retranslate page with a new format (in-place update, much faster than restore + re-translate)
-async function retranslatePage(format: OutputFormat): Promise<void> {
-  console.log(`Ingglish: Retranslating with format: ${format}...`);
-
-  const scriptFont = SCRIPT_FONTS[format];
-  if (scriptFont !== undefined) {
-    injectScriptFont(document, scriptFont[0], scriptFont[1]);
-  }
-
-  const perf = { start: performance.now(), query: 0, collect: 0, fetch: 0, apply: 0 };
-
-  // Find all translated word spans (yield first to let UI update)
-  await new Promise((r) => requestAnimationFrame(r));
-
-  const queryStart = performance.now();
-  const wordSpans = document.querySelectorAll('.ingglish-word[data-ingglish-orig]');
-  perf.query = performance.now() - queryStart;
-
-  if (wordSpans.length === 0) {
-    // No spans found, fall back to full re-translation
-    if (state.debounceTimer !== null) {
-      clearTimeout(state.debounceTimer);
-      state.debounceTimer = null;
-    }
-    if (state.observer) {
-      state.observer.disconnect();
-      state.observer = null;
-    }
-    restoreDOM(document.body);
-    document.getElementById('ingglish-badge')?.remove();
-    state.translated = false;
-    await performTranslation(format);
+// Main translation function
+async function translatePage(): Promise<void> {
+  if (state.translated) {
+    console.log('Ingglish: Already translated');
     return;
   }
 
-  // Convert to array with proper typing
-  const spans = Array.from(wordSpans) as HTMLElement[];
+  console.log('Ingglish: Starting translation...');
 
-  // Yield before heavy work
-  await new Promise((r) => requestAnimationFrame(r));
+  const format = await getOutputFormat();
+  await performTranslation(format);
+}
 
-  // Collect unique original words
-  const collectStart = performance.now();
-  const originalWords = new Set<string>();
-  for (const span of spans) {
-    const orig = span.getAttribute('data-ingglish-orig');
-    if (orig !== null && orig !== '') {
-      originalWords.add(orig.toLowerCase());
-    }
+// Request batch translation from background script
+async function translateWordsBatch(
+  words: string[],
+  format: OutputFormat
+): Promise<Record<string, string>> {
+  if (!isContextValid()) {
+    console.log('Ingglish: Extension context invalidated, please refresh the page');
+    showContextInvalidMessage();
+    return {};
   }
-  perf.collect = performance.now() - collectStart;
 
-  // Fetch new translations
-  const fetchStart = performance.now();
-  const translations = await translateWordsInBatches([...originalWords], format);
-  perf.fetch = performance.now() - fetchStart;
-
-  // Update spans in-place (chunked with RAF to avoid blocking)
-  const CHUNK_SIZE = 50; // Small chunks to stay responsive
-
-  await new Promise<void>((resolve) => {
-    let index = 0;
-
-    function processChunk(): void {
-      const endIndex = Math.min(index + CHUNK_SIZE, spans.length);
-
-      while (index < endIndex) {
-        const span = spans[index];
-        const orig = span.getAttribute('data-ingglish-orig');
-        if (orig !== null && orig !== '') {
-          const translated = translations[orig.toLowerCase()];
-          if (translated !== undefined) {
-            const pattern = detectCasePattern(orig);
-            span.textContent = applyCasePattern(translated, pattern, orig);
+  return new Promise((resolve) => {
+    try {
+      chrome.runtime.sendMessage(
+        { format, type: 'TRANSLATE_WORDS', words },
+        (response: TranslateWordsResponse | undefined) => {
+          if (chrome.runtime.lastError) {
+            // Context was invalidated during the call
+            resolve({});
+            return;
           }
+          resolve(response?.translations ?? {});
         }
-        index++;
-      }
-
-      if (index < spans.length) {
-        requestAnimationFrame(processChunk);
-      } else {
-        resolve();
-      }
+      );
+    } catch {
+      // Extension context invalidated
+      resolve({});
     }
-
-    requestAnimationFrame(processChunk);
   });
-
-  perf.apply = performance.now() - fetchStart - perf.fetch;
-
-  // Update badge
-  const badge = document.getElementById('ingglish-badge');
-  if (badge) {
-    badge.textContent = getFormatNativeLabel(format);
-  }
-
-  // Update observer with new translations
-  if (state.observer) {
-    state.observer.disconnect();
-    state.observer = null;
-  }
-  setupObserver(format, translations);
-
-  const total = performance.now() - perf.start;
-  console.log(
-    `Ingglish Format Switch:\n` +
-      `  Spans: ${spans.length}, Unique words: ${originalWords.size}\n` +
-      `  Query DOM:    ${perf.query.toFixed(1)}ms\n` +
-      `  Collect words: ${perf.collect.toFixed(1)}ms\n` +
-      `  Fetch:        ${perf.fetch.toFixed(1)}ms\n` +
-      `  Apply:        ${perf.apply.toFixed(1)}ms\n` +
-      `  Total:        ${total.toFixed(1)}ms`
-  );
 }
 
-function addTranslationBadge(format: OutputFormat): void {
-  if (document.getElementById('ingglish-badge')) {
-    return;
+// Translate words in batches to avoid overwhelming the message channel
+async function translateWordsInBatches(
+  words: string[],
+  format: OutputFormat
+): Promise<Record<string, string>> {
+  const allTranslations: Record<string, string> = {};
+
+  for (let i = 0; i < words.length; i += WORD_BATCH_SIZE) {
+    const batch = words.slice(i, i + WORD_BATCH_SIZE);
+    const batchTranslations = await translateWordsBatch(batch, format);
+    Object.assign(allTranslations, batchTranslations);
   }
 
-  const badge = document.createElement('div');
-  badge.id = 'ingglish-badge';
-  badge.textContent = getFormatNativeLabel(format);
-  badge.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 999999;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    cursor: pointer;
-    transition: opacity 0.2s;
-  `;
-
-  badge.addEventListener('mouseenter', () => (badge.style.opacity = '0.8'));
-  badge.addEventListener('mouseleave', () => (badge.style.opacity = '1'));
-  badge.addEventListener('click', () => {
-    badge.remove();
-  });
-
-  document.body?.appendChild(badge);
+  return allTranslations;
 }
 
 // Set up message listener (only once)
@@ -585,11 +577,20 @@ if (!state.injected) {
   console.log('Ingglish: Lightweight content script initialized');
 }
 
-// Translate when DOM is ready
-function startTranslation(): void {
-  if (!state.translated) {
-    void translatePage();
+// Wait for document.body to be available
+async function waitForBody(): Promise<void> {
+  if (document.body !== null) {
+    return;
   }
+  return new Promise((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (document.body !== null) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(document.documentElement, { childList: true });
+  });
 }
 
 // If DOM is already ready, translate immediately; otherwise wait for DOMContentLoaded

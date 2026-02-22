@@ -1,9 +1,9 @@
-export { loadDictionary, getDictionary, isDictionaryLoaded } from './loader';
-export { lookupPronunciation } from './lookup';
-export { loadReverseDictionary, lookupPhonemeKey } from './reverse';
-export { loadFrequencies, getWordFrequency, sortByFrequency } from './frequency';
 export {
   CUSTOM_PRONUNCIATIONS,
-  hasCustomPronunciation,
   getCustomPronunciation,
+  hasCustomPronunciation,
 } from './custom-words';
+export { getWordFrequency, loadFrequencies, sortByFrequency } from './frequency';
+export { getDictionary, isDictionaryLoaded, loadDictionary } from './loader';
+export { lookupPronunciation } from './lookup';
+export { loadReverseDictionary, lookupPhonemeKey } from './reverse';

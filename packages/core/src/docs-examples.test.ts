@@ -2,21 +2,21 @@
  * Tests that verify all examples in documentation are correct.
  * This prevents documentation drift when phoneme mappings change.
  */
-import { readFileSync, readdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { translateSync } from './translate/forward';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const DOCS_DIR = join(__dirname, '../../../docs');
-const README_PATH = join(__dirname, '../../../README.md');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DOCS_DIR = path.join(__dirname, '../../../docs');
+const README_PATH = path.join(__dirname, '../../../README.md');
 
 interface Example {
   english: string;
   ingglish: string;
-  source: string;
   line: number;
+  source: string;
 }
 
 // Words that are not real English words (phoneme symbols, abbreviations, etc.)
@@ -25,78 +25,78 @@ const SKIP_WORDS = new Set([
   'aa',
   'ae',
   'ah',
+  'albanian',
   'ao',
-  'aw',
-  'ay',
-  'eh',
-  'er',
-  'ey',
-  'ih',
-  'iy',
-  'ow',
-  'oy',
-  'uh',
-  'uw',
-  'b',
-  'd',
-  'g',
-  'k',
-  'p',
-  't',
-  'dh',
-  'f',
-  's',
-  'sh',
-  'th',
-  'v',
-  'z',
-  'zh',
-  'ch',
-  'jh',
-  'm',
-  'n',
-  'ng',
-  'l',
-  'r',
-  'w',
-  'y',
-  'hh',
   // Table headers and non-examples
   'arpabet',
-  'ingglish',
-  'ipa',
-  'example',
-  'language',
-  'spelling',
-  'notes',
-  'sound',
-  'english',
-  'frequency',
-  'metric',
-  'count',
-  // Language names (from comparison tables)
-  'spanish',
-  'italian',
-  'german',
-  'french',
-  'portuguese',
-  'dutch',
-  'polish',
-  'turkish',
-  'indonesian',
-  'swahili',
-  'pinyin',
-  'vietnamese',
-  'finnish',
-  'hungarian',
-  'albanian',
+  'aw',
+  'ay',
+  'b',
+  'ch',
   'commonality',
-  'romaji',
+  'count',
+  'd',
+  'dh',
+  'dutch',
+  'eh',
+  'english',
+  'er',
+  'example',
+  'ey',
+  'f',
+  'finnish',
+  'french',
+  'frequency',
+  'g',
+  'german',
   // Partial examples from README
   'git',
+  'hh',
   'hub',
-  'run',
+  'hungarian',
+  'ih',
+  'indonesian',
   'ing',
+  'ingglish',
+  'ipa',
+  'italian',
+  'iy',
+  'jh',
+  'k',
+  'l',
+  'language',
+  'm',
+  'metric',
+  'n',
+  'ng',
+  'notes',
+  'ow',
+  'oy',
+  'p',
+  'pinyin',
+  'polish',
+  'portuguese',
+  'r',
+  'romaji',
+  'run',
+  's',
+  'sh',
+  'sound',
+  // Language names (from comparison tables)
+  'spanish',
+  'spelling',
+  'swahili',
+  't',
+  'th',
+  'turkish',
+  'uh',
+  'uw',
+  'v',
+  'vietnamese',
+  'w',
+  'y',
+  'z',
+  'zh',
 ]);
 
 /**
@@ -113,8 +113,8 @@ function extractExamples(content: string, filename: string): Example[] {
   // Track whether we're in a "rejected approach" section
   let inRejectedSection = false;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]!;
+  for (const [i, line_] of lines.entries()) {
+    const line = line_;
     const lineNum = i + 1;
 
     // Track section context for spelling-evolution.md
@@ -169,7 +169,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = distinctMatch[1]!.toLowerCase();
       const ingglish = distinctMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english) && english.length >= 3) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -180,7 +180,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = intuitiveMatch[1]!.toLowerCase();
       const ingglish = intuitiveMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -191,7 +191,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = quotedMatch[1]!.toLowerCase();
       const ingglish = quotedMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -202,8 +202,8 @@ function extractExamples(content: string, filename: string): Example[] {
     if (unquotedMatch) {
       const english = unquotedMatch[1]!.toLowerCase();
       const ingglish = unquotedMatch[2]!.toLowerCase();
-      if (!SKIP_WORDS.has(english) && english.length >= 1) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+      if (!SKIP_WORDS.has(english) && english.length > 0) {
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -215,7 +215,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = readmeTableMatch[1]!.toLowerCase();
       const ingglish = readmeTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english) && english !== 'english') {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -227,7 +227,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = inlineMatch[1]!.toLowerCase();
       const ingglish = inlineMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -241,7 +241,7 @@ function extractExamples(content: string, filename: string): Example[] {
         const ingglish = parenMatch[1]!.toLowerCase();
         const english = parenMatch[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && !SKIP_WORDS.has(ingglish)) {
-          examples.push({ english, ingglish, source: filename, line: lineNum });
+          examples.push({ english, ingglish, line: lineNum, source: filename });
         }
       }
     }
@@ -254,8 +254,8 @@ function extractExamples(content: string, filename: string): Example[] {
       const ingglish = collisionTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(ingglish)) {
         for (const english of englishWords) {
-          if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
-            examples.push({ english, ingglish, source: filename, line: lineNum });
+          if (english.length > 0 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
+            examples.push({ english, ingglish, line: lineNum, source: filename });
           }
         }
       }
@@ -272,8 +272,8 @@ function extractExamples(content: string, filename: string): Example[] {
       const ingglish = homophoneTableMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(ingglish)) {
         for (const english of englishWords) {
-          if (english.length >= 1 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
-            examples.push({ english, ingglish, source: filename, line: lineNum });
+          if (english.length > 0 && /^[a-z]+$/.test(english) && !SKIP_WORDS.has(english)) {
+            examples.push({ english, ingglish, line: lineNum, source: filename });
           }
         }
       }
@@ -287,7 +287,7 @@ function extractExamples(content: string, filename: string): Example[] {
       const english = notableCollisionMatch[1]!.toLowerCase();
       const ingglish = notableCollisionMatch[2]!.toLowerCase();
       if (!SKIP_WORDS.has(english)) {
-        examples.push({ english, ingglish, source: filename, line: lineNum });
+        examples.push({ english, ingglish, line: lineNum, source: filename });
       }
       continue;
     }
@@ -297,44 +297,31 @@ function extractExamples(content: string, filename: string): Example[] {
 }
 
 /**
- * Read a file and extract examples
- */
-function getExamplesFromFile(filepath: string): Example[] {
-  try {
-    const content = readFileSync(filepath, 'utf-8');
-    const filename = filepath.split('/').pop() ?? filepath;
-    return extractExamples(content, filename);
-  } catch {
-    return [];
-  }
-}
-
-/**
  * Extract examples from spelling-guide-data.ts.
  * Format: 'b**a**d (bad), s**al**mon (saman)' where parenthetical is Ingglish.
  */
 function extractSpellingGuideExamples(filepath: string): Example[] {
   try {
-    const content = readFileSync(filepath, 'utf-8');
+    const content = readFileSync(filepath, 'utf8');
     const filename = filepath.split('/').pop() ?? filepath;
     const examples: Example[] = [];
     const lines = content.split('\n');
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]!;
+    for (const [i, line_] of lines.entries()) {
+      const line = line_;
       if (!line.includes('examples:')) {
         continue;
       }
 
       // Strip bold markers: **a**bout → about
-      const stripped = line.replace(/\*\*/g, '');
+      const stripped = line.replaceAll('**', '');
 
       // Match all "english (ingglish)" pairs
       for (const m of stripped.matchAll(/([a-z]{3,})\s*\(([a-z]+)\)/gi)) {
         const english = m[1]!.toLowerCase();
         const ingglish = m[2]!.toLowerCase();
         if (!SKIP_WORDS.has(english) && english !== ingglish) {
-          examples.push({ english, ingglish, source: filename, line: i + 1 });
+          examples.push({ english, ingglish, line: i + 1, source: filename });
         }
       }
     }
@@ -344,7 +331,20 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
   }
 }
 
-const SPELLING_GUIDE_PATH = join(
+/**
+ * Read a file and extract examples
+ */
+function getExamplesFromFile(filepath: string): Example[] {
+  try {
+    const content = readFileSync(filepath, 'utf8');
+    const filename = filepath.split('/').pop() ?? filepath;
+    return extractExamples(content, filename);
+  } catch {
+    return [];
+  }
+}
+
+const SPELLING_GUIDE_PATH = path.join(
   __dirname,
   '../../../packages/website/src/data/spelling-guide-data.ts'
 );
@@ -362,8 +362,8 @@ function extractTableExamples(content: string, filename: string): Example[] {
   let ingglishCol = -1;
   let inTable = false;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]!;
+  for (const [i, line_] of lines.entries()) {
+    const line = line_;
     const lineNum = i + 1;
 
     // Detect table header rows with both English and Ingglish columns
@@ -416,11 +416,11 @@ function extractTableExamples(content: string, filename: string): Example[] {
 
     // Multi-word phrases: pair up positionally ("my time" → "mai taim")
     if (englishWords.length === ingglishWords.length && englishWords.length > 1) {
-      for (let j = 0; j < englishWords.length; j++) {
-        const eng = englishWords[j]!;
+      for (const [j, englishWord] of englishWords.entries()) {
+        const eng = englishWord;
         const ing = ingglishWords[j]!;
         if (/^[a-z]+$/.test(eng) && /^[a-z]+$/.test(ing) && !SKIP_WORDS.has(eng)) {
-          examples.push({ english: eng, ingglish: ing, source: filename, line: lineNum });
+          examples.push({ english: eng, ingglish: ing, line: lineNum, source: filename });
         }
       }
     } else {
@@ -431,7 +431,7 @@ function extractTableExamples(content: string, filename: string): Example[] {
       }
       for (const eng of englishWords) {
         if (/^[a-z]+$/.test(eng) && !SKIP_WORDS.has(eng)) {
-          examples.push({ english: eng, ingglish, source: filename, line: lineNum });
+          examples.push({ english: eng, ingglish, line: lineNum, source: filename });
         }
       }
     }
@@ -443,14 +443,11 @@ function extractTableExamples(content: string, filename: string): Example[] {
 // Auto-discover all markdown files in docs/
 const allDocFiles = readdirSync(DOCS_DIR)
   .filter((f) => f.endsWith('.md'))
-  .sort();
+  .toSorted();
 
 describe('documentation examples', () => {
-  // Collect all examples from docs
-  const allExamples: Example[] = [];
-
-  // README
-  allExamples.push(...getExamplesFromFile(README_PATH));
+  // Collect all examples from docs (initialize with README examples)
+  const allExamples: Example[] = [...getExamplesFromFile(README_PATH)];
 
   // Doc files — inline pattern extraction (curated list for pattern-based parsing)
   const patternDocFiles = [
@@ -462,13 +459,13 @@ describe('documentation examples', () => {
   ];
 
   for (const file of patternDocFiles) {
-    allExamples.push(...getExamplesFromFile(join(DOCS_DIR, file)));
+    allExamples.push(...getExamplesFromFile(path.join(DOCS_DIR, file)));
   }
 
   // All docs — generic table extraction (auto-discovers any English|Ingglish table)
   for (const file of allDocFiles) {
     try {
-      const content = readFileSync(join(DOCS_DIR, file), 'utf-8');
+      const content = readFileSync(path.join(DOCS_DIR, file), 'utf8');
       allExamples.push(...extractTableExamples(content, file));
     } catch {
       // skip unreadable files
@@ -476,7 +473,7 @@ describe('documentation examples', () => {
   }
   // Also check README tables
   try {
-    const readmeContent = readFileSync(README_PATH, 'utf-8');
+    const readmeContent = readFileSync(README_PATH, 'utf8');
     allExamples.push(...extractTableExamples(readmeContent, 'README.md'));
   } catch {
     // skip
@@ -494,7 +491,7 @@ describe('documentation examples', () => {
     }
   }
 
-  const uniqueExamples = Array.from(seenExamples.values());
+  const uniqueExamples = [...seenExamples.values()];
 
   it('should find examples in documentation', () => {
     expect(uniqueExamples.length).toBeGreaterThan(0);

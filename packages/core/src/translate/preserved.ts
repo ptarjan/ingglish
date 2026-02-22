@@ -13,13 +13,13 @@ import type { TranslatedToken } from './forward';
 export function expandPlaceholder(
   token: string,
   preserved: Map<string, string>
-): TranslatedToken[] | null {
+): null | TranslatedToken[] {
   // Find all placeholders present in this token
-  const matches: { placeholder: string; original: string; index: number }[] = [];
+  const matches: { index: number; original: string; placeholder: string }[] = [];
   for (const [placeholder, original] of preserved) {
     const idx = token.indexOf(placeholder);
     if (idx !== -1) {
-      matches.push({ placeholder, original, index: idx });
+      matches.push({ index: idx, original, placeholder });
     }
   }
 
@@ -33,21 +33,21 @@ export function expandPlaceholder(
   const result: TranslatedToken[] = [];
   let pos = 0;
 
-  for (const { placeholder, original, index } of matches) {
+  for (const { index, original, placeholder } of matches) {
     // Text before this placeholder
     if (index > pos) {
       const before = token.slice(pos, index);
-      result.push({ original: before, translated: before, isWord: false, matched: true });
+      result.push({ isWord: false, matched: true, original: before, translated: before });
     }
     // The preserved pattern itself
-    result.push({ original, translated: original, isWord: false, matched: true });
+    result.push({ isWord: false, matched: true, original, translated: original });
     pos = index + placeholder.length;
   }
 
   // Text after the last placeholder
   if (pos < token.length) {
     const after = token.slice(pos);
-    result.push({ original: after, translated: after, isWord: false, matched: true });
+    result.push({ isWord: false, matched: true, original: after, translated: after });
   }
 
   return result;

@@ -6,7 +6,7 @@ import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
-import { useCustomMapping, hasExperimentMapping, registerExperiment } from './useCustomMapping';
+import { hasExperimentMapping, registerExperiment, useCustomMapping } from './useCustomMapping';
 
 beforeAll(() => {
   (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
@@ -24,7 +24,7 @@ describe('useCustomMapping', () => {
   beforeEach(() => {
     localStorage.clear();
     // Reset URL hash
-    window.history.replaceState(null, '', window.location.pathname);
+    globalThis.history.replaceState(null, '', globalThis.location.pathname);
   });
 
   afterEach(() => {
@@ -40,7 +40,7 @@ describe('useCustomMapping', () => {
     });
 
     it('initializes from URL hash when present', () => {
-      window.history.replaceState(null, '', '#m=AA:test');
+      globalThis.history.replaceState(null, '', '#m=AA:test');
       const { result } = renderHook(() => useCustomMapping());
       expect(result.current.hasCustomizations).toBe(true);
       expect(result.current.phonemeMap.AA).toBe('test');
@@ -58,7 +58,7 @@ describe('useCustomMapping', () => {
     it('URL hash takes priority over localStorage', () => {
       const config = { phonemeMap: { AA: 'stored' }, rColoredPrefixes: {} };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-      window.history.replaceState(null, '', '#m=AA:fromhash');
+      globalThis.history.replaceState(null, '', '#m=AA:fromhash');
 
       const { result } = renderHook(() => useCustomMapping());
       expect(result.current.phonemeMap.AA).toBe('fromhash');
@@ -142,14 +142,14 @@ describe('useCustomMapping', () => {
     });
 
     it('clears URL hash via history.replaceState', () => {
-      window.history.replaceState(null, '', '#m=AA:test');
+      globalThis.history.replaceState(null, '', '#m=AA:test');
       const { result } = renderHook(() => useCustomMapping());
 
       act(() => {
         result.current.reset();
       });
 
-      expect(window.location.hash).toBe('');
+      expect(globalThis.location.hash).toBe('');
     });
 
     it('removes localStorage entry', () => {
@@ -170,7 +170,7 @@ describe('useCustomMapping', () => {
   describe('shareUrl', () => {
     it('returns base URL without hash when no customizations', () => {
       const { result } = renderHook(() => useCustomMapping());
-      expect(result.current.shareUrl).toBe(window.location.origin + '/experiment');
+      expect(result.current.shareUrl).toBe(globalThis.location.origin + '/experiment');
       expect(result.current.shareUrl).not.toContain('#');
     });
 

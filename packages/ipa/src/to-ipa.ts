@@ -5,7 +5,7 @@
  * with proper stress marker placement at syllable boundaries.
  */
 
-import { stripStress, isVowel, getStress, findOnsetStart } from '@ingglish/phonemes';
+import { findOnsetStart, getStress, isVowel, stripStress } from '@ingglish/phonemes';
 import { ARPABET_TO_IPA_MAP } from './ipa-maps';
 
 /**
@@ -20,9 +20,9 @@ const WORD_JOINER = '\u2060';
  * Secondary stress: ˌ (U+02CC)
  */
 const STRESS_MARKERS: Record<number, string> = {
+  0: '',
   1: WORD_JOINER + 'ˈ' + WORD_JOINER,
   2: WORD_JOINER + 'ˌ' + WORD_JOINER,
-  0: '',
 };
 
 /**
@@ -119,7 +119,7 @@ export function arpabetToIPA(arpabet: string[]): string {
 
   // Build final string with stress markers inserted at correct positions
   // Single-pass construction avoids O(n²) splice operations
-  const sortedStress = stressPositions.sort((a, b) => a.index - b.index);
+  const sortedStress = stressPositions.toSorted((a, b) => a.index - b.index);
   const result: string[] = [];
   let stressIdx = 0;
 

@@ -16,7 +16,7 @@ import { IPA_TO_ARPABET_MAP } from './ipa-maps';
  */
 export function ipaToArpabet(ipa: string): string[] {
   // Remove stress markers (we don't preserve stress in our system)
-  const clean = ipa.replace(/[ˈˌ]/g, '');
+  const clean = ipa.replaceAll(/[ˈˌ]/g, '');
 
   const result: string[] = [];
   let i = 0;
@@ -48,7 +48,7 @@ export function ipaToArpabet(ipa: string): string[] {
 /**
  * Converts IPA text to ARPAbet (stripping stress markers).
  */
-export function ipaToArpabetClean(ipa: string): string[] | null {
+export function ipaToArpabetClean(ipa: string): null | string[] {
   const arpabet = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));
   return arpabet.length > 0 ? arpabet : null;
 }

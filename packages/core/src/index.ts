@@ -11,24 +11,11 @@
 
 import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { translateSync, reverseTranslateSync } from './translate';
+import { reverseTranslateSync, translateSync } from './translate';
 
 // =============================================================================
 // Primary API (auto-loads dictionary)
 // =============================================================================
-
-/**
- * Translates English text to the specified format.
- * Auto-loads the dictionary on first call.
- *
- * @param text - The English text to translate
- * @param format - The output format ('ingglish' or 'ipa')
- * @returns The translated text
- */
-export async function translate(text: string, format: OutputFormat = 'ingglish'): Promise<string> {
-  await Promise.all([loadDictionary(), loadFrequencies()]);
-  return translateSync(text, format);
-}
 
 /**
  * Translates Ingglish/IPA text back to English.
@@ -47,14 +34,27 @@ export async function reverseTranslate(
   return reverseTranslateSync(text, format);
 }
 
+/**
+ * Translates English text to the specified format.
+ * Auto-loads the dictionary on first call.
+ *
+ * @param text - The English text to translate
+ * @param format - The output format ('ingglish' or 'ipa')
+ * @returns The translated text
+ */
+export async function translate(text: string, format: OutputFormat = 'ingglish'): Promise<string> {
+  await Promise.all([loadDictionary(), loadFrequencies()]);
+  return translateSync(text, format);
+}
+
 // =============================================================================
 // Sync API (dictionary must be loaded first via translate)
 // =============================================================================
 
-export { translateWord, translateSync, translateSyncWithMapping } from './translate';
+export { translateSync, translateSyncWithMapping, translateWord } from './translate';
 export type { TranslatedToken } from './translate';
 export {
-  reverseTranslateWord,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
+  reverseTranslateWord,
 } from './translate';

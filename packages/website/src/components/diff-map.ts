@@ -1,4 +1,4 @@
-import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
+import { type TranslatedToken, translateSyncWithMapping } from 'ingglish';
 
 export function buildDiffMap(
   tokens: TranslatedToken[],
@@ -12,9 +12,8 @@ export function buildDiffMap(
     const stdTokens = translateSyncWithMapping(text, 'ingglish');
     const diffs = new Map<number, string>();
     let wordIdx = 0;
-    for (let i = 0; i < tokens.length; i++) {
-      const tok = tokens[i];
-      if (tok?.isWord === true) {
+    for (const [i, tok] of tokens.entries()) {
+      if (tok?.isWord) {
         const stdTok = stdTokens[i];
         if (
           stdTok?.isWord === true &&

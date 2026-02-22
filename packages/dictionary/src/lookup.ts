@@ -6,30 +6,11 @@ import { getCustomPronunciation } from './custom-words';
 import { getDictionary } from './loader';
 
 /**
- * Normalizes N → NG before velar consonants K and G.
- * In English, /n/ always assimilates to [ŋ] before /k/ or /g/.
- * CMU convention uses NG (e.g., "think" = TH IH1 NG K),
- * but hundreds of entries incorrectly use N.
+ * Checks if a word exists in the dictionary.
  */
-function normalizeVelarNasal(phonemes: string[]): string[] {
-  let needsFix = false;
-  for (let i = 0; i < phonemes.length - 1; i++) {
-    if (phonemes[i] === 'N' && (phonemes[i + 1] === 'K' || phonemes[i + 1] === 'G')) {
-      needsFix = true;
-      break;
-    }
-  }
-  if (!needsFix) {
-    return phonemes;
-  }
-
-  const result = phonemes.slice();
-  for (let i = 0; i < result.length - 1; i++) {
-    if (result[i] === 'N' && (result[i + 1] === 'K' || result[i + 1] === 'G')) {
-      result[i] = 'NG';
-    }
-  }
-  return result;
+export function hasWord(word: string): boolean {
+  const dict = getDictionary();
+  return Object.prototype.hasOwnProperty.call(dict, word.toLowerCase());
 }
 
 /**
@@ -38,7 +19,7 @@ function normalizeVelarNasal(phonemes: string[]): string[] {
  * @param word The word to look up (case insensitive)
  * @returns Array of phonemes, or null if not found
  */
-export function lookupPronunciation(word: string): string[] | null {
+export function lookupPronunciation(word: string): null | string[] {
   const key = word.toLowerCase();
 
   // Check custom pronunciations first (overrides dictionary)
@@ -59,9 +40,28 @@ export function lookupPronunciation(word: string): string[] | null {
 }
 
 /**
- * Checks if a word exists in the dictionary.
+ * Normalizes N → NG before velar consonants K and G.
+ * In English, /n/ always assimilates to [ŋ] before /k/ or /g/.
+ * CMU convention uses NG (e.g., "think" = TH IH1 NG K),
+ * but hundreds of entries incorrectly use N.
  */
-export function hasWord(word: string): boolean {
-  const dict = getDictionary();
-  return Object.prototype.hasOwnProperty.call(dict, word.toLowerCase());
+function normalizeVelarNasal(phonemes: string[]): string[] {
+  let needsFix = false;
+  for (let i = 0; i < phonemes.length - 1; i++) {
+    if (phonemes[i] === 'N' && (phonemes[i + 1] === 'K' || phonemes[i + 1] === 'G')) {
+      needsFix = true;
+      break;
+    }
+  }
+  if (!needsFix) {
+    return phonemes;
+  }
+
+  const result = [...phonemes];
+  for (let i = 0; i < result.length - 1; i++) {
+    if (result[i] === 'N' && (result[i + 1] === 'K' || result[i + 1] === 'G')) {
+      result[i] = 'NG';
+    }
+  }
+  return result;
 }

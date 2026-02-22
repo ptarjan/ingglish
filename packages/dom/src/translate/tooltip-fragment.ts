@@ -6,57 +6,16 @@ import { translateSyncWithMapping } from 'ingglish';
 import { normalizeApostrophes, detectCasePattern, applyCasePattern } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
-import { WORD_SPAN_CLASS, ATTR_ORIGINAL_WORD, FORMAT_DIFF_CLASS } from '../constants';
+import { ATTR_ORIGINAL_WORD, FORMAT_DIFF_CLASS, WORD_SPAN_CLASS } from '../constants';
 
 // Template span for cloneNode (faster than createElement)
 // Created lazily on first use
 let templateSpan: HTMLSpanElement | null = null;
 
-function getTemplateSpan(): HTMLSpanElement {
-  if (templateSpan === null) {
-    templateSpan = document.createElement('span');
-    templateSpan.className = WORD_SPAN_CLASS;
-  }
-  return templateSpan;
-}
-
 interface FragmentItem {
+  isDiff?: boolean;
   text: string;
   tooltip?: string;
-  isDiff?: boolean;
-}
-
-/**
- * Builds a DocumentFragment from a sequence of items.
- * Items with a tooltip get wrapped in a span; others are batched into text nodes.
- */
-function buildTooltipFragment(items: FragmentItem[]): DocumentFragment {
-  const fragment = document.createDocumentFragment();
-  let pendingText = '';
-
-  for (const item of items) {
-    if (item.tooltip !== undefined) {
-      if (pendingText) {
-        fragment.appendChild(document.createTextNode(pendingText));
-        pendingText = '';
-      }
-      const span = getTemplateSpan().cloneNode(false) as HTMLSpanElement;
-      span.setAttribute(ATTR_ORIGINAL_WORD, item.tooltip);
-      if (item.isDiff === true) {
-        span.classList.add(FORMAT_DIFF_CLASS);
-      }
-      span.textContent = item.text;
-      fragment.appendChild(span);
-    } else {
-      pendingText += item.text;
-    }
-  }
-
-  if (pendingText) {
-    fragment.appendChild(document.createTextNode(pendingText));
-  }
-
-  return fragment;
 }
 
 /**
@@ -71,7 +30,7 @@ export function createTooltipFragment(
   const tokens = translateSyncWithMapping(text, format);
 
   // For non-default formats, get standard Ingglish tokens to detect format diffs
-  const stdTokens = format !== 'ingglish' ? translateSyncWithMapping(text, 'ingglish') : null;
+  const stdTokens = format === 'ingglish' ? null : translateSyncWithMapping(text, 'ingglish');
 
   return buildTooltipFragment(
     tokens.map((token, i) => {
@@ -80,7 +39,7 @@ export function createTooltipFragment(
         const isDiff =
           stdSpelling !== undefined && stdSpelling.toLowerCase() !== token.translated.toLowerCase();
         const tooltip = isDiff ? `${token.original} (Ingglish: ${stdSpelling})` : token.original;
-        return { text: token.translated, tooltip, isDiff };
+        return { isDiff, text: token.translated, tooltip };
       }
       return { text: token.translated };
     })
@@ -111,4 +70,45 @@ export function createTooltipFragmentFromMap(
       return { text: token };
     })
   );
+}
+
+/**
+ * Builds a DocumentFragment from a sequence of items.
+ * Items with a tooltip get wrapped in a span; others are batched into text nodes.
+ */
+function buildTooltipFragment(items: FragmentItem[]): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  let pendingText = '';
+
+  for (const item of items) {
+    if (item.tooltip === undefined) {
+      pendingText += item.text;
+    } else {
+      if (pendingText) {
+        fragment.append(document.createTextNode(pendingText));
+        pendingText = '';
+      }
+      const span = getTemplateSpan().cloneNode(false) as HTMLSpanElement;
+      span.setAttribute(ATTR_ORIGINAL_WORD, item.tooltip);
+      if (item.isDiff === true) {
+        span.classList.add(FORMAT_DIFF_CLASS);
+      }
+      span.textContent = item.text;
+      fragment.append(span);
+    }
+  }
+
+  if (pendingText) {
+    fragment.append(document.createTextNode(pendingText));
+  }
+
+  return fragment;
+}
+
+function getTemplateSpan(): HTMLSpanElement {
+  if (templateSpan === null) {
+    templateSpan = document.createElement('span');
+    templateSpan.className = WORD_SPAN_CLASS;
+  }
+  return templateSpan;
 }

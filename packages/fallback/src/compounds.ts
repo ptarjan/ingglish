@@ -10,19 +10,12 @@ import {
   getWordFrequency,
   getCustomPronunciation,
 } from '@ingglish/dictionary';
+import type { OutputFormat } from '@ingglish/phonemes';
 import {
   arpabetToFormat,
-  getFormatPreservesCase,
   getFormatJoinSeparator,
+  getFormatPreservesCase,
 } from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
-
-/**
- * Checks if a character is uppercase.
- */
-function isUpperCase(char: string): boolean {
-  return char === char.toUpperCase() && char !== char.toLowerCase();
-}
 
 /**
  * Capitalizes the first letter of a string.
@@ -32,6 +25,13 @@ function capitalize(str: string): string {
     return str;
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Checks if a character is uppercase.
+ */
+function isUpperCase(char: string): boolean {
+  return char === char.toUpperCase() && char !== char.toLowerCase();
 }
 
 /** Minimum part length to avoid false splits like "a"+"theist" */
@@ -50,22 +50,15 @@ const MIN_PART_FREQUENCY = 500;
 const MAX_PART_LENGTH = 15;
 
 /**
- * Look up a word's pronunciation in custom dictionary or CMU.
- */
-function lookupWord(word: string): string[] | null {
-  return getCustomPronunciation(word) ?? lookupPronunciation(word) ?? null;
-}
-
-/**
  * Uses dynamic programming to find the best decomposition of a word into
  * known dictionary parts. Prefers fewer parts with higher word frequency.
  *
  * Returns an array of parts, or null if no complete decomposition exists.
  */
-export function dpDecompose(word: string): string[] | null {
+export function dpDecompose(word: string): null | string[] {
   const n = word.length;
   // dp[i] = best decomposition for word[0..i-1], or undefined if none
-  const dp: ({ parts: string[]; score: number } | undefined)[] = Array.from<undefined>({
+  const dp: (undefined | { parts: string[]; score: number })[] = Array.from<undefined>({
     length: n + 1,
   });
   dp[0] = { parts: [], score: 0 };
@@ -80,7 +73,7 @@ export function dpDecompose(word: string): string[] | null {
       if (prev === undefined) {
         continue;
       }
-      const chunk = word.substring(j, i);
+      const chunk = word.slice(j, i);
       const phonemes = lookupWord(chunk);
       if (!phonemes) {
         continue;
@@ -126,7 +119,7 @@ export function dpDecompose(word: string): string[] | null {
 export function translateAsCompound(
   word: string,
   format: OutputFormat = 'ingglish'
-): string | null {
+): null | string {
   const lowerWord = word.toLowerCase();
 
   // Only try compound splitting for words 6+ characters
@@ -161,4 +154,11 @@ export function translateAsCompound(
   }
 
   return translations.join(getFormatJoinSeparator(format));
+}
+
+/**
+ * Look up a word's pronunciation in custom dictionary or CMU.
+ */
+function lookupWord(word: string): null | string[] {
+  return getCustomPronunciation(word) ?? lookupPronunciation(word) ?? null;
 }

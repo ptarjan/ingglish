@@ -6,7 +6,7 @@ export function Section6Progressive() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+  const [lockedHeight, setLockedHeight] = useState<null | number>(null);
 
   // Lock the text height on mount (step 0 = English text, generally tallest)
   // so the controls below don't shift when words transform to shorter spellings.
@@ -23,7 +23,7 @@ export function Section6Progressive() {
         <p
           className="progressive-text"
           ref={textRef}
-          style={lockedHeight !== null ? { minHeight: lockedHeight } : undefined}
+          style={lockedHeight === null ? undefined : { minHeight: lockedHeight }}
         >
           {paragraphWords.map((w, i) => {
             const transformed = w.step > 0 && currentStep >= w.step;
@@ -55,12 +55,12 @@ export function Section6Progressive() {
         <div className="progressive-controls">
           <button
             className="progressive-btn"
+            disabled={currentStep === 0}
             onClick={() => {
               startTransition(() => {
                 setCurrentStep((s) => Math.max(0, s - 1));
               });
             }}
-            disabled={currentStep === 0}
           >
             &larr; Back
           </button>
@@ -69,12 +69,12 @@ export function Section6Progressive() {
           </span>
           <button
             className="progressive-btn progressive-btn-next"
+            disabled={currentStep === totalSteps}
             onClick={() => {
               startTransition(() => {
                 setCurrentStep((s) => Math.min(totalSteps, s + 1));
               });
             }}
-            disabled={currentStep === totalSteps}
           >
             Next &rarr;
           </button>

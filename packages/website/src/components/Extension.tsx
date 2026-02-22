@@ -88,7 +88,7 @@ function Extension(): React.JSX.Element {
           <li>
             <strong>Download the extension</strong>
             <p>
-              <a href="ingglish-extension.zip" download>
+              <a download href="ingglish-extension.zip">
                 Download ingglish-extension.zip
               </a>
             </p>

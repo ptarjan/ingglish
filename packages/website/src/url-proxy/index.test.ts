@@ -1,15 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  normalizeUrl,
-  shouldSkipUrl,
-  injectBaseTag,
-  getBaseUrl,
-  isHashOnlyChange,
   detectBotProtection,
-  stripScripts,
-  proxyFontUrls,
-  processProxiedHtml,
   escapeHtmlAttr,
+  getBaseUrl,
+  injectBaseTag,
+  isHashOnlyChange,
+  normalizeUrl,
+  processProxiedHtml,
+  proxyFontUrls,
+  shouldSkipUrl,
+  stripScripts,
 } from '.';
 
 describe('escapeHtmlAttr', () => {

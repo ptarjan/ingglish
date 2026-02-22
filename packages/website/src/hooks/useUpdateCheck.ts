@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 declare const __BUILD_ID__: string;
 
@@ -19,7 +19,8 @@ export function useUpdateCheck(): boolean {
         if (!res.ok) {
           return;
         }
-        const remoteBuildId = (await res.text()).trim();
+        const resText = await res.text();
+        const remoteBuildId = resText.trim();
         if (remoteBuildId.length > 0 && remoteBuildId !== __BUILD_ID__) {
           setUpdateAvailable(true);
         }
@@ -30,7 +31,7 @@ export function useUpdateCheck(): boolean {
 
     const id = setInterval(() => void check(), POLL_INTERVAL);
     // First check after a short delay (don't block initial load)
-    const timeout = setTimeout(() => void check(), 5_000);
+    const timeout = setTimeout(() => void check(), 5000);
 
     return () => {
       clearInterval(id);

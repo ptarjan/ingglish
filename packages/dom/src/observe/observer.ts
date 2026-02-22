@@ -6,8 +6,8 @@ import { translateSync } from 'ingglish';
 import { createTooltipFragment } from '../translate/tooltip-fragment';
 import { translateDOMSync } from '../translate/translator';
 import {
-  DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
+  DEFAULT_SKIP_TAGS,
   requireBrowser,
   shouldSkipElement,
   shouldSkipTextNode,
@@ -23,17 +23,17 @@ import type { DOMTranslatorOptions } from '../types';
  * @returns A function to stop observing
  */
 export function observeAndTranslate(
-  root: Element | Document,
+  root: Document | Element,
   options: DOMTranslatorOptions = {}
 ): () => void {
   requireBrowser();
 
   const {
-    skipTags = DEFAULT_SKIP_TAGS,
-    skipClasses = DEFAULT_SKIP_CLASSES,
-    translateAttributes = true,
-    showTooltips = false,
     outputFormat = 'ingglish',
+    showTooltips = false,
+    skipClasses = DEFAULT_SKIP_CLASSES,
+    skipTags = DEFAULT_SKIP_TAGS,
+    translateAttributes = true,
   } = options;
 
   // Batching: collect nodes and process in next microtask
@@ -79,20 +79,20 @@ export function observeAndTranslate(
           continue;
         }
         translateDOMSync(element, {
-          skipTags,
-          skipClasses,
-          translateAttributes,
-          showTooltips,
           outputFormat,
+          showTooltips,
+          skipClasses,
+          skipTags,
+          translateAttributes,
         });
       }
       pendingElements = [];
     } finally {
       // Reconnect observer
       observer.observe(root, {
+        characterData: true,
         childList: true,
         subtree: true,
-        characterData: true,
       });
     }
   }
@@ -107,6 +107,7 @@ export function observeAndTranslate(
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       // Handle added nodes - collect for batch processing
+      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const textNode = node as Text;
@@ -132,9 +133,9 @@ export function observeAndTranslate(
             textNode.textContent = translateSync(text, outputFormat);
           } finally {
             observer.observe(root, {
+              characterData: true,
               childList: true,
               subtree: true,
-              characterData: true,
             });
           }
         }
@@ -143,9 +144,9 @@ export function observeAndTranslate(
   });
 
   observer.observe(root, {
+    characterData: true,
     childList: true,
     subtree: true,
-    characterData: true,
   });
 
   // Return a function to stop observing

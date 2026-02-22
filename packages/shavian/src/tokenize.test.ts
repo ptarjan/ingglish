@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { isShavianChar, tokenizeShavian } from './tokenize';
 
 describe('isShavianChar', () => {
@@ -20,25 +20,25 @@ describe('isShavianChar', () => {
 describe('tokenizeShavian', () => {
   it('should tokenize pure Shavian text', () => {
     const tokens = tokenizeShavian('𐑣𐑩𐑤𐑴');
-    expect(tokens).toEqual([{ text: '𐑣𐑩𐑤𐑴', isWord: true }]);
+    expect(tokens).toEqual([{ isWord: true, text: '𐑣𐑩𐑤𐑴' }]);
   });
 
   it('should tokenize mixed text', () => {
     const tokens = tokenizeShavian('𐑣𐑩𐑤𐑴 𐑢𐑻𐑤𐑛');
     expect(tokens).toEqual([
-      { text: '𐑣𐑩𐑤𐑴', isWord: true },
-      { text: ' ', isWord: false },
-      { text: '𐑢𐑻𐑤𐑛', isWord: true },
+      { isWord: true, text: '𐑣𐑩𐑤𐑴' },
+      { isWord: false, text: ' ' },
+      { isWord: true, text: '𐑢𐑻𐑤𐑛' },
     ]);
   });
 
   it('should handle punctuation', () => {
     const tokens = tokenizeShavian('𐑣𐑩𐑤𐑴, 𐑢𐑻𐑤𐑛!');
     expect(tokens).toEqual([
-      { text: '𐑣𐑩𐑤𐑴', isWord: true },
-      { text: ', ', isWord: false },
-      { text: '𐑢𐑻𐑤𐑛', isWord: true },
-      { text: '!', isWord: false },
+      { isWord: true, text: '𐑣𐑩𐑤𐑴' },
+      { isWord: false, text: ', ' },
+      { isWord: true, text: '𐑢𐑻𐑤𐑛' },
+      { isWord: false, text: '!' },
     ]);
   });
 
@@ -48,6 +48,6 @@ describe('tokenizeShavian', () => {
 
   it('should handle text with no Shavian', () => {
     const tokens = tokenizeShavian('hello world');
-    expect(tokens).toEqual([{ text: 'hello world', isWord: false }]);
+    expect(tokens).toEqual([{ isWord: false, text: 'hello world' }]);
   });
 });

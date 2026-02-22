@@ -6,29 +6,29 @@ import {
   getWordFrequency,
   hasCustomPronunciation,
 } from '@ingglish/dictionary';
+import type { WordDiagnosis } from '@ingglish/fallback';
 import {
   diagnoseUnknown,
-  matchBritish,
   isInitialism,
+  matchBritish,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import type { WordDiagnosis } from '@ingglish/fallback';
 import { arpabetToIPARaw } from '@ingglish/ipa';
-import { stripStress } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { stripStress } from '@ingglish/phonemes';
 
 export interface WordResult {
-  word: string;
-  phonemes: string[] | null;
-  ipa: string;
-  ingglish: string;
-  formatted: string;
-  matched: boolean;
-  isCustom: boolean;
-  homophones: string[];
-  frequency: number | undefined;
-  diagnosis?: WordDiagnosis;
   britishSpelling?: string; // dictionary-word British badge only
+  diagnosis?: WordDiagnosis;
+  formatted: string;
+  frequency: number | undefined;
+  homophones: string[];
+  ingglish: string;
+  ipa: string;
+  isCustom: boolean;
+  matched: boolean;
+  phonemes: null | string[];
+  word: string;
 }
 
 export function analyzeWord(word: string, format: OutputFormat): WordResult {
@@ -43,71 +43,90 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
   // Check before the dictionary branch since some (e.g. "url") are also in CMU.
   if (isInitialism(lower)) {
     return {
-      word: lower,
-      phonemes: null,
-      ipa: translateAsAcronym(lower, 'ipa').replace(/^\/|\/$/g, ''),
-      ingglish,
-      formatted,
-      matched: true,
-      isCustom,
-      homophones: [],
-      frequency: getWordFrequency(lower),
       diagnosis: { strategy: 'initialism' },
+      formatted,
+      frequency: getWordFrequency(lower),
+      homophones: [],
+      ingglish,
+      ipa: translateAsAcronym(lower, 'ipa').replaceAll(/^\/|\/$/g, ''),
+      isCustom,
+      matched: true,
+      phonemes: null,
+      word: lower,
     };
   }
 
   if (dictPhonemes !== null) {
     const ipa = arpabetToIPARaw(dictPhonemes);
-    const key = dictPhonemes.map(stripStress).join(' ');
+    const key = dictPhonemes.map((p) => stripStress(p)).join(' ');
     const reverseMatches = lookupPhonemeKey(key);
     const homophones =
-      reverseMatches !== undefined
-        ? sortByFrequency(reverseMatches).filter((w) => w !== lower)
-        : [];
+      reverseMatches === undefined
+        ? []
+        : sortByFrequency(reverseMatches).filter((w) => w !== lower);
 
     // Check if this dictionary word is a British variant (colour→color, centre→center)
     const britishMatch = matchBritish(lower);
 
     return {
-      word: lower,
-      phonemes: dictPhonemes,
-      ipa,
-      ingglish,
-      formatted,
-      matched: true,
-      isCustom,
-      homophones,
-      frequency: getWordFrequency(lower),
       britishSpelling: britishMatch?.american,
+      formatted,
+      frequency: getWordFrequency(lower),
+      homophones,
+      ingglish,
+      ipa,
+      isCustom,
+      matched: true,
+      phonemes: dictPhonemes,
+      word: lower,
     };
   }
 
   // Word not in dictionary — diagnose which fallback strategy handles it
-  const ipa = translateWord(lower, 'ipa').replace(/^\/|\/$/g, '');
+  const ipa = translateWord(lower, 'ipa').replaceAll(/^\/|\/$/g, '');
   const diagnosis = diagnoseUnknown(lower) ?? undefined;
 
   // Extract phonemes from diagnosis for the PhonemeChain display
-  const phonemes =
-    diagnosis?.strategy === 'custom'
-      ? diagnosis.phonemes
-      : diagnosis?.strategy === 'british'
-        ? diagnosis.phonemes
-        : diagnosis?.strategy === 'g2p'
-          ? diagnosis.trace.phonemes
-          : null;
+  const phonemes = extractDiagnosisPhonemes(diagnosis);
 
   return {
-    word: lower,
-    phonemes,
-    ipa,
-    ingglish,
-    formatted,
-    matched: false,
-    isCustom,
-    homophones: [],
-    frequency: getWordFrequency(lower),
     diagnosis,
+    formatted,
+    frequency: getWordFrequency(lower),
+    homophones: [],
+    ingglish,
+    ipa,
+    isCustom,
+    matched: false,
+    phonemes,
+    word: lower,
   };
+}
+
+export function fallbackLabel(strategy: undefined | WordDiagnosis['strategy']): string {
+  switch (strategy) {
+    case 'british': {
+      return 'British spelling';
+    }
+    case 'compound': {
+      return 'compound word';
+    }
+    case 'custom': {
+      return 'custom override';
+    }
+    case 'g2p': {
+      return 'G2P rules';
+    }
+    case 'initialism': {
+      return 'initialism';
+    }
+    case 'stemming': {
+      return 'stemmed';
+    }
+    case undefined: {
+      return 'passthrough';
+    }
+  }
 }
 
 export function formatFrequency(freq: number | undefined): string {
@@ -120,21 +139,12 @@ export function formatFrequency(freq: number | undefined): string {
   return String(freq);
 }
 
-export function fallbackLabel(strategy: WordDiagnosis['strategy'] | undefined): string {
-  switch (strategy) {
-    case 'custom':
-      return 'custom override';
-    case 'initialism':
-      return 'initialism';
-    case 'british':
-      return 'British spelling';
-    case 'compound':
-      return 'compound word';
-    case 'stemming':
-      return 'stemmed';
-    case 'g2p':
-      return 'G2P rules';
-    case undefined:
-      return 'passthrough';
+function extractDiagnosisPhonemes(diagnosis: undefined | WordDiagnosis): null | string[] {
+  if (diagnosis?.strategy === 'custom' || diagnosis?.strategy === 'british') {
+    return diagnosis.phonemes;
   }
+  if (diagnosis?.strategy === 'g2p') {
+    return diagnosis.trace.phonemes;
+  }
+  return null;
 }

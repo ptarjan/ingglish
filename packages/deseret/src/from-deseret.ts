@@ -8,7 +8,7 @@
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
 import type { ReverseToken } from '@ingglish/phonemes';
 import { DESERET_TO_ARPABET_MAP } from './deseret-maps';
-import { tokenizeDeseret, isDeseretChar } from './tokenize';
+import { isDeseretChar, tokenizeDeseret } from './tokenize';
 
 /**
  * Converts a Deseret string to ARPAbet phonemes.
@@ -17,7 +17,7 @@ import { tokenizeDeseret, isDeseretChar } from './tokenize';
  * @param text Deseret text
  * @returns Array of ARPAbet phonemes, or null if no valid phonemes found
  */
-export function deseretToArpabet(text: string): string[] | null {
+export function deseretToArpabet(text: string): null | string[] {
   const result: string[] = [];
 
   for (const char of text) {
@@ -27,7 +27,7 @@ export function deseretToArpabet(text: string): string[] | null {
 
     // Normalize uppercase to lowercase (offset is 0x28)
     const cp = char.codePointAt(0)!;
-    const normalized = cp < 0x10428 ? String.fromCodePoint(cp + 0x28) : char;
+    const normalized = cp < 0x1_04_28 ? String.fromCodePoint(cp + 0x28) : char;
 
     const phonemes = DESERET_TO_ARPABET_MAP[normalized];
     if (phonemes !== undefined) {
@@ -36,25 +36,6 @@ export function deseretToArpabet(text: string): string[] | null {
   }
 
   return result.length > 0 ? result : null;
-}
-
-/**
- * Translates a single Deseret word back to English.
- * Returns possible English words sorted by frequency.
- */
-export function reverseTranslateDeseretWord(word: string): string[] {
-  const arpabet = deseretToArpabet(word);
-  if (!arpabet) {
-    return [word];
-  }
-
-  const key = arpabet.join(' ');
-  const matches = lookupPhonemeKey(key);
-  if (!matches || matches.length === 0) {
-    return [word];
-  }
-
-  return matches.length > 1 ? sortByFrequency(matches) : matches;
 }
 
 /**
@@ -85,12 +66,31 @@ export function reverseTranslateDeseretTextWithMapping(text: string): ReverseTok
       const matches = reverseTranslateDeseretWord(token.text);
       const translated = matches[0] ?? token.text;
       return {
-        original: token.text,
-        translated,
         isWord: true,
         matched: translated !== token.text,
+        original: token.text,
+        translated,
       };
     }
-    return { original: token.text, translated: token.text, isWord: false, matched: true };
+    return { isWord: false, matched: true, original: token.text, translated: token.text };
   });
+}
+
+/**
+ * Translates a single Deseret word back to English.
+ * Returns possible English words sorted by frequency.
+ */
+export function reverseTranslateDeseretWord(word: string): string[] {
+  const arpabet = deseretToArpabet(word);
+  if (!arpabet) {
+    return [word];
+  }
+
+  const key = arpabet.join(' ');
+  const matches = lookupPhonemeKey(key);
+  if (!matches || matches.length === 0) {
+    return [word];
+  }
+
+  return matches.length > 1 ? sortByFrequency(matches) : matches;
 }

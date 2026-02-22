@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { isConsonant, getStress } from './arpabet';
+import { describe, expect, it } from 'vitest';
+import { getStress, isConsonant } from './arpabet';
 
 describe('arpabet utilities', () => {
   describe('isConsonant', () => {

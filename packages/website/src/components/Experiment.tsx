@@ -35,15 +35,15 @@ function Experiment() {
 
       <div className="experiment-share-bar">
         <button
-          onClick={handleReset}
           className="btn-secondary"
           disabled={!mapping.hasCustomizations}
+          onClick={handleReset}
         >
           Reset to Defaults
         </button>
         <button
-          onClick={handleShare}
           className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
+          onClick={handleShare}
         >
           {copiedShare ? 'Copied!' : 'Share Link'}
         </button>

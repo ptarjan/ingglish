@@ -11,11 +11,11 @@ export function Section2WhatIf() {
   ];
 
   return (
-    <section ref={ref} className="tutorial-section tutorial-whatif revealed">
+    <section className="tutorial-section tutorial-whatif revealed" ref={ref}>
       {lines.map((line, i) => (
         <p
-          key={i}
           className={`whatif-line ${i === 0 || i < revealedCount ? 'revealed' : ''} ${i === 2 ? 'whatif-punchline' : ''}`}
+          key={i}
         >
           {line}
         </p>

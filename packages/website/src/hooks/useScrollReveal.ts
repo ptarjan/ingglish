@@ -7,12 +7,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export function useScrollReveal<T extends HTMLElement>(
   threshold = 0.15
 ): { ref: React.RefCallback<T>; visible: boolean } {
-  const elRef = useRef<T | null>(null);
+  const elRef = useRef<null | T>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const [visible, setVisible] = useState(false);
 
   const ref = useCallback(
-    (node: T | null) => {
+    (node: null | T) => {
       // Clean up previous observer
       if (observerRef.current !== null) {
         observerRef.current.disconnect();
@@ -26,7 +26,7 @@ export function useScrollReveal<T extends HTMLElement>(
       }
 
       // Respect prefers-reduced-motion
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setVisible(true);
         return;
       }
@@ -50,6 +50,26 @@ export function useScrollReveal<T extends HTMLElement>(
 }
 
 /**
+ * Calls onComplete once revealedCount reaches total,
+ * after a delay for the last item's animation to finish.
+ */
+export function useStaggerComplete(revealedCount: number, total: number, onComplete: () => void) {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    if (revealedCount >= total) {
+      const timer = setTimeout(() => {
+        onCompleteRef.current();
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [revealedCount, total]);
+}
+
+/**
  * Reveals items one at a time on a timer, starting when `visible` becomes true.
  * Respects prefers-reduced-motion by revealing all items immediately.
  */
@@ -62,7 +82,7 @@ export function useStaggeredReveal(count: number, visible: boolean, delayMs = 20
       return;
     }
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setRevealedCount(count);
       doneRef.current = true;
       return;
@@ -83,26 +103,6 @@ export function useStaggeredReveal(count: number, visible: boolean, delayMs = 20
   }, [visible, count, delayMs]);
 
   return revealedCount;
-}
-
-/**
- * Calls onComplete once revealedCount reaches total,
- * after a delay for the last item's animation to finish.
- */
-export function useStaggerComplete(revealedCount: number, total: number, onComplete: () => void) {
-  const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
-
-  useEffect(() => {
-    if (revealedCount >= total) {
-      const timer = setTimeout(() => {
-        onCompleteRef.current();
-      }, 1000);
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [revealedCount, total]);
 }
 
 /**

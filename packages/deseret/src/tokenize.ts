@@ -5,6 +5,11 @@
  * into word and non-word tokens.
  */
 
+interface DeseretToken {
+  isWord: boolean;
+  text: string;
+}
+
 /**
  * Checks if a character is a Deseret letter.
  * Deseret Unicode range: U+10400–U+1044F.
@@ -14,12 +19,7 @@ export function isDeseretChar(char: string): boolean {
   if (cp === undefined) {
     return false;
   }
-  return cp >= 0x10400 && cp <= 0x1044f;
-}
-
-interface DeseretToken {
-  text: string;
-  isWord: boolean;
+  return cp >= 0x1_04_00 && cp <= 0x1_04_4F;
 }
 
 /**
@@ -34,19 +34,19 @@ export function tokenizeDeseret(text: string): DeseretToken[] {
   for (const char of text) {
     const isDeseret = isDeseretChar(char);
 
-    if (isDeseret !== inWord) {
+    if (isDeseret === inWord) {
+      current += char;
+    } else {
       if (current.length > 0) {
-        tokens.push({ text: current, isWord: inWord });
+        tokens.push({ isWord: inWord, text: current });
       }
       current = char;
       inWord = isDeseret;
-    } else {
-      current += char;
     }
   }
 
   if (current.length > 0) {
-    tokens.push({ text: current, isWord: inWord });
+    tokens.push({ isWord: inWord, text: current });
   }
 
   return tokens;

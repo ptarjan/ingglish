@@ -1,16 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-type ThemeMode = 'light' | 'dark' | 'auto';
+type ThemeMode = 'auto' | 'dark' | 'light';
 
-const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'auto'];
-
-function isValidThemeMode(value: string | null): value is ThemeMode {
-  return value !== null && VALID_THEME_MODES.includes(value as ThemeMode);
-}
-
-function getSystemTheme(): 'light' | 'dark' {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
+const VALID_THEME_MODES = new Set<ThemeMode>(['auto', 'dark', 'light']);
 
 export function useTheme() {
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
@@ -25,7 +17,7 @@ export function useTheme() {
   useEffect(() => {
     const applyTheme = () => {
       const effectiveTheme = themeMode === 'auto' ? getSystemTheme() : themeMode;
-      document.documentElement.setAttribute('data-theme', effectiveTheme);
+      document.documentElement.dataset.theme = effectiveTheme;
     };
 
     applyTheme();
@@ -35,7 +27,7 @@ export function useTheme() {
       // localStorage unavailable (private browsing)
     }
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
     if (themeMode === 'auto') {
       mediaQuery.addEventListener('change', applyTheme);
       return () => {
@@ -66,5 +58,13 @@ export function useTheme() {
     return '🌙';
   };
 
-  return { themeMode, cycleTheme, getThemeIcon };
+  return { cycleTheme, getThemeIcon, themeMode };
+}
+
+function getSystemTheme(): 'dark' | 'light' {
+  return globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function isValidThemeMode(value: null | string): value is ThemeMode {
+  return value !== null && VALID_THEME_MODES.has(value as ThemeMode);
 }

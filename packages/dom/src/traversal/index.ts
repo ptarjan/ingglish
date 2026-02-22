@@ -5,22 +5,22 @@
 // Browser checks
 export { isBrowser, requireBrowser } from './browser';
 
+// Word extraction
+export { extractWords, extractWordsFromNodes } from './extract';
+
 // Skip rules
 export {
-  DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
-  TRANSLATABLE_ATTRIBUTES,
+  DEFAULT_SKIP_TAGS,
   shouldSkipElement,
   shouldSkipTextNode,
   skipElement,
+  TRANSLATABLE_ATTRIBUTES,
   unskipElement,
 } from './skip-rules';
 
 // Text node collection
 export { collectTextNodes } from './text-nodes';
 
-// Word extraction
-export { extractWords, extractWordsFromNodes } from './extract';
-
 // Tooltip styles
-export { TOOLTIP_STYLES, injectTooltipStyles, injectTooltipBehavior } from './tooltip';
+export { injectTooltipBehavior, injectTooltipStyles, TOOLTIP_STYLES } from './tooltip';

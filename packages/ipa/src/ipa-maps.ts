@@ -15,19 +15,19 @@ export const IPA_VOWEL_MAP: Record<string, string> = {
   AE: 'æ', // cat, bat, had
   AH: 'ʌ', // but, cup, son (stressed)
   AO: 'ɔ', // thought, caught, law
-  EH: 'ɛ', // bed, red, said
-  ER: 'ɝ', // bird, her, nurse
-  IH: 'ɪ', // bit, sit, gym
-  IY: 'i', // bee, see, machine
-  UH: 'ʊ', // book, put, could
-  UW: 'u', // too, blue, food
-
   // Diphthongs
   AW: 'aʊ', // cow, how, out
   AY: 'aɪ', // my, eye, time
+  EH: 'ɛ', // bed, red, said
+  ER: 'ɝ', // bird, her, nurse
   EY: 'eɪ', // say, day, make
+  IH: 'ɪ', // bit, sit, gym
+
+  IY: 'i', // bee, see, machine
   OW: 'oʊ', // go, show, coat
   OY: 'ɔɪ', // boy, toy, coin
+  UH: 'ʊ', // book, put, could
+  UW: 'u', // too, blue, food
 };
 
 /**
@@ -36,39 +36,39 @@ export const IPA_VOWEL_MAP: Record<string, string> = {
 export const IPA_CONSONANT_MAP: Record<string, string> = {
   // Stops (plosives)
   B: 'b',
+  // Affricates
+  CH: 'tʃ', // chat, batch
   D: 'd',
-  G: 'ɡ', // Note: IPA uses ɡ (U+0261), not g
-  K: 'k',
-  P: 'p',
-  T: 't',
-
   // Fricatives
   DH: 'ð', // the, this (voiced dental)
   F: 'f',
+  G: 'ɡ', // Note: IPA uses ɡ (U+0261), not g
+
   HH: 'h',
-  S: 's',
-  SH: 'ʃ', // ship
-  TH: 'θ', // think (voiceless dental)
-  V: 'v',
-  Z: 'z',
-  ZH: 'ʒ', // measure, beige
-
-  // Affricates
-  CH: 'tʃ', // chat, batch
   JH: 'dʒ', // just, edge
-
+  K: 'k',
+  // Liquids
+  L: 'l',
   // Nasals
   M: 'm',
   N: 'n',
   NG: 'ŋ', // sing, thing
-
-  // Liquids
-  L: 'l',
+  P: 'p',
   R: 'ɹ', // alveolar approximant
+
+  S: 's',
+  SH: 'ʃ', // ship
+
+  T: 't',
+  TH: 'θ', // think (voiceless dental)
+  V: 'v',
 
   // Glides (semivowels)
   W: 'w',
   Y: 'j',
+
+  Z: 'z',
+  ZH: 'ʒ', // measure, beige
 };
 
 /**
@@ -85,15 +85,15 @@ export const ARPABET_TO_IPA_MAP: Record<string, string> = {
  * common transcription differences.
  */
 export const IPA_VARIANT_MAP: Record<string, string> = {
+  a: 'AE', // fallback for plain a
+  e: 'EY', // some IPA uses plain e for face vowel
   ə: 'AH0', // schwa (unstressed) — forward map uses ʌ→AH for the stressed variant
   ɚ: 'ER', // r-colored schwa variant — forward map uses ɝ→ER
   g: 'G', // ASCII g — forward map uses ɡ (U+0261)
   ɫ: 'L', // dark l
+  o: 'OW', // some IPA uses plain o for goat vowel
   r: 'R', // common variant — forward map uses ɹ (alveolar approximant)
   y: 'Y', // common variant — forward map uses j (palatal approximant)
-  e: 'EY', // some IPA uses plain e for face vowel
-  o: 'OW', // some IPA uses plain o for goat vowel
-  a: 'AE', // fallback for plain a
 };
 
 /**

@@ -1,34 +1,34 @@
 import type { TranslatedToken } from 'ingglish';
 
 interface MappedWordDisplayProps {
-  tokens: TranslatedToken[];
-  hoveredWordIndex?: number | null;
-  spokenWordIndex?: number | null;
-  onHoverWord?: (index: number | null) => void;
   className?: string;
-  placeholder?: string;
-  scrollRef?: React.Ref<HTMLDivElement>;
-  onScroll?: () => void;
-  showTooltip?: boolean;
   /** Map of word index → standard Ingglish spelling for words that differ from experiment */
   diffMap?: Map<number, string>;
+  hoveredWordIndex?: null | number;
+  onHoverWord?: (index: null | number) => void;
+  onScroll?: () => void;
+  placeholder?: string;
+  scrollRef?: React.Ref<HTMLDivElement>;
+  showTooltip?: boolean;
+  spokenWordIndex?: null | number;
+  tokens: TranslatedToken[];
 }
 
 export function MappedWordDisplay({
-  tokens,
-  hoveredWordIndex = null,
-  spokenWordIndex = null,
-  onHoverWord,
   className,
+  diffMap,
+  hoveredWordIndex = null,
+  onHoverWord,
+  onScroll,
   placeholder = 'Hover to see word correspondence...',
   scrollRef,
-  onScroll,
   showTooltip = true,
-  diffMap,
+  spokenWordIndex = null,
+  tokens,
 }: MappedWordDisplayProps) {
   let wordIndex = 0;
   return (
-    <div ref={scrollRef} onScroll={onScroll} className={`word-display ${className ?? ''}`}>
+    <div className={`word-display ${className ?? ''}`} onScroll={onScroll} ref={scrollRef}>
       {tokens.map((token, i) => {
         if (token.isWord) {
           const currentWordIndex = wordIndex++;
@@ -46,9 +46,9 @@ export function MappedWordDisplay({
 
           return (
             <span
-              key={i}
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${!matched ? 'unmatched' : ''} ${isDiff ? 'format-diff' : ''}`}
+              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${matched ? '' : 'unmatched'} ${isDiff ? 'format-diff' : ''}`}
               data-orig={tooltip}
+              key={i}
               onMouseEnter={
                 onHoverWord
                   ? () => {

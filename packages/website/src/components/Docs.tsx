@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import architecture from '../../../../docs/architecture.md';
 import collisionAnalysis from '../../../../docs/collision-analysis.md';
@@ -19,110 +19,110 @@ import spellingEvolution from '../../../../docs/spelling-evolution.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 
-interface HeadingInfo {
-  id: string;
-  text: string;
-  level: number;
-}
-
 interface DocEntry {
-  id: string;
-  title: string;
   content: string;
   filename?: string; // undefined for auto-generated docs
   firstInSection?: boolean; // adds visual separator before this item
+  id: string;
+  title: string;
+}
+
+interface HeadingInfo {
+  id: string;
+  level: number;
+  text: string;
 }
 
 const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
   {
-    id: 'design-decisions',
-    title: 'Design Decisions',
     content: designDecisions,
     filename: 'design-decisions.md',
+    id: 'design-decisions',
+    title: 'Design Decisions',
   },
   {
-    id: 'phoneme-mapping',
-    title: 'Phoneme Mapping',
     content: phonemeMapping,
     filename: 'phoneme-mapping.md',
+    id: 'phoneme-mapping',
+    title: 'Phoneme Mapping',
   },
   {
-    id: 'orthography-comparison',
-    title: 'Orthography Comparison',
     content: orthographyComparison,
     filename: 'orthography-comparison.md',
+    id: 'orthography-comparison',
+    title: 'Orthography Comparison',
   },
   {
-    id: 'spelling-reform-comparison',
-    title: 'Spelling Reform History',
     content: spellingReformComparison,
     filename: 'spelling-reform-comparison.md',
+    id: 'spelling-reform-comparison',
+    title: 'Spelling Reform History',
   },
   {
-    id: 'community-landscape',
-    title: 'Community Landscape',
     content: communityLandscape,
     filename: 'community-landscape.md',
+    id: 'community-landscape',
+    title: 'Community Landscape',
   },
   {
-    id: 'spelling-evolution',
-    title: 'Spelling Evolution',
     content: spellingEvolution,
     filename: 'spelling-evolution.md',
+    id: 'spelling-evolution',
+    title: 'Spelling Evolution',
   },
   {
-    id: 'identical-words-analysis',
-    title: 'Identical Words Analysis',
     content: identicalWordsAnalysis,
     filename: 'identical-words-analysis.md',
+    id: 'identical-words-analysis',
+    title: 'Identical Words Analysis',
   },
   {
-    id: 'collision-analysis',
-    title: 'Collision Analysis',
     content: collisionAnalysis,
     filename: 'collision-analysis.md',
+    id: 'collision-analysis',
+    title: 'Collision Analysis',
   },
   {
-    id: 'orthographic-transparency',
-    title: 'Orthographic Transparency',
     content: orthographicTransparency,
     filename: 'orthographic-transparency.md',
+    id: 'orthographic-transparency',
+    title: 'Orthographic Transparency',
   },
   {
-    id: 'morphological-analysis',
-    title: 'Morphological Analysis',
     content: morphologicalAnalysis,
     filename: 'morphological-analysis.md',
+    id: 'morphological-analysis',
+    title: 'Morphological Analysis',
   },
   {
-    id: 'dialect-assumptions',
-    title: 'Dialect Assumptions',
     content: dialectAssumptions,
     filename: 'dialect-assumptions.md',
+    id: 'dialect-assumptions',
+    title: 'Dialect Assumptions',
   },
   {
-    id: 'architecture',
-    title: 'Architecture',
     content: architecture,
     filename: 'architecture.md',
     firstInSection: true,
+    id: 'architecture',
+    title: 'Architecture',
   },
-  { id: 'api-reference', title: 'API Reference', content: apiReference }, // auto-generated
+  { content: apiReference, id: 'api-reference', title: 'API Reference' }, // auto-generated
   {
-    id: 'performance',
-    title: 'Performance',
     content: performanceDoc,
     filename: 'performance.md',
+    id: 'performance',
+    title: 'Performance',
   },
-  { id: 'deployment', title: 'Deployment', content: deploymentDoc, filename: 'deployment.md' },
-  { id: 'contributing', title: 'Contributing', content: contributing, filename: 'contributing.md' },
+  { content: deploymentDoc, filename: 'deployment.md', id: 'deployment', title: 'Deployment' },
+  { content: contributing, filename: 'contributing.md', id: 'contributing', title: 'Contributing' },
   {
-    id: 'troubleshooting',
-    title: 'Troubleshooting',
     content: troubleshooting,
     filename: 'troubleshooting.md',
+    id: 'troubleshooting',
+    title: 'Troubleshooting',
   },
 ];
 
@@ -138,37 +138,6 @@ function decodeHtmlEntities(text: string): string {
   const textarea = document.createElement('textarea');
   textarea.innerHTML = text;
   return textarea.value;
-}
-
-function extractHeadings(html: string): HeadingInfo[] {
-  const headings: HeadingInfo[] = [];
-  // Match h2 and h3 tags and extract their full content (including nested HTML like links)
-  const regex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
-  let match;
-  while ((match = regex.exec(html)) !== null) {
-    const level = Number.parseInt(match[1]!, 10);
-    // Strip HTML tags and decode entities to get plain text
-    const rawText = match[2]!.replace(/<[^>]+>/g, '').trim();
-    const text = decodeHtmlEntities(rawText);
-    const id = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-{2,}/g, '-')
-      .replace(/^-|-$/g, '');
-    headings.push({ id, text, level });
-  }
-  return headings;
-}
-
-function parseDocsPath(): { docId: string | null; sectionId: string | null } {
-  // Path: /docs/architecture → docId = 'architecture'
-  // Hash: #section → sectionId = 'section' (standard anchor scroll)
-  const segments = window.location.pathname.replace(/\/$/, '').split('/');
-  // segments: ['', 'docs', 'architecture']
-  const docId = segments[2] ?? null;
-  const sectionId = window.location.hash ? window.location.hash.slice(1) : null;
-  return { docId, sectionId };
 }
 
 function Docs(): JSX.Element {
@@ -198,10 +167,10 @@ function Docs(): JSX.Element {
       const text = heading.textContent ?? '';
       const id = text
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-{2,}/g, '-')
-        .replace(/^-|-$/g, '');
+        .replaceAll(/[^\w\s-]/g, '')
+        .replaceAll(/\s+/g, '-')
+        .replaceAll(/-{2,}/g, '-')
+        .replaceAll(/^-|-$/g, '');
       heading.id = id;
     });
 
@@ -227,7 +196,7 @@ function Docs(): JSX.Element {
             setActiveDoc(docId);
             if (section !== undefined && section !== '') {
               setTimeout(() => {
-                document.getElementById(section)?.scrollIntoView();
+                document.querySelector(`#${CSS.escape(section)}`)?.scrollIntoView();
               }, 100);
             } else {
               window.scrollTo(0, 0);
@@ -251,8 +220,8 @@ function Docs(): JSX.Element {
   // Update URL path when switching docs
   useEffect(() => {
     const targetPath = `/docs/${activeDoc}`;
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState(null, '', targetPath);
+    if (globalThis.location.pathname !== targetPath) {
+      globalThis.history.pushState(null, '', targetPath);
     }
   }, [activeDoc]);
 
@@ -261,7 +230,7 @@ function Docs(): JSX.Element {
     const { sectionId } = parseDocsPath();
     if (sectionId !== null) {
       setTimeout(() => {
-        document.getElementById(sectionId)?.scrollIntoView();
+        document.querySelector(`#${CSS.escape(sectionId)}`)?.scrollIntoView();
       }, 100);
     }
   }, []);
@@ -274,14 +243,14 @@ function Docs(): JSX.Element {
         setActiveDoc(docId);
         if (sectionId !== null) {
           setTimeout(() => {
-            document.getElementById(sectionId)?.scrollIntoView();
+            document.querySelector(`#${CSS.escape(sectionId)}`)?.scrollIntoView();
           }, 100);
         }
       }
     };
-    window.addEventListener('popstate', handlePopState);
+    globalThis.addEventListener('popstate', handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      globalThis.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -289,18 +258,18 @@ function Docs(): JSX.Element {
     <>
       <title>{currentDoc.title} | Ingglish Docs</title>
       <meta
-        name="description"
         content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
+        name="description"
       />
-      <link rel="canonical" href={`https://ingglish.com/docs/${currentDoc.id}`} />
+      <link href={`https://ingglish.com/docs/${currentDoc.id}`} rel="canonical" />
       <div className="docs-container">
         <nav className="docs-sidebar">
           <ul>
             {docs.map((doc) => (
-              <li key={doc.id} className={doc.firstInSection === true ? 'docs-section-start' : ''}>
+              <li className={doc.firstInSection === true ? 'docs-section-start' : ''} key={doc.id}>
                 <a
-                  href={`/docs/${doc.id}`}
                   className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
+                  href={`/docs/${doc.id}`}
                   onClick={(e) => {
                     e.preventDefault();
                     setActiveDoc(doc.id);
@@ -314,12 +283,12 @@ function Docs(): JSX.Element {
                     {currentHeadings.map((heading) => (
                       <li key={heading.id}>
                         <a
-                          href={`/docs/${doc.id}#${heading.id}`}
                           className={`docs-subsection-link docs-subsection-h${heading.level}`}
+                          href={`/docs/${doc.id}#${heading.id}`}
                           onClick={(e) => {
                             e.preventDefault();
-                            document.getElementById(heading.id)?.scrollIntoView();
-                            window.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
+                            document.querySelector(`#${CSS.escape(heading.id)}`)?.scrollIntoView();
+                            globalThis.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
                           }}
                         >
                           {heading.text}
@@ -336,20 +305,51 @@ function Docs(): JSX.Element {
           {currentDoc.filename !== undefined && (
             <div className="docs-header">
               <a
-                href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="docs-edit-link"
+                href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 Edit on GitHub
               </a>
             </div>
           )}
-          <div ref={contentRef} dangerouslySetInnerHTML={{ __html: currentDoc.content }} />
+          <div dangerouslySetInnerHTML={{ __html: currentDoc.content }} ref={contentRef} />
         </article>
       </div>
     </>
   );
+}
+
+function extractHeadings(html: string): HeadingInfo[] {
+  const headings: HeadingInfo[] = [];
+  // Match h2 and h3 tags and extract their full content (including nested HTML like links)
+  const regex = /<h([23])[^>]*>([\s\S]*?)<\/h[23]>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    const level = Number.parseInt(match[1]!, 10);
+    // Strip HTML tags and decode entities to get plain text
+    const rawText = match[2]!.replaceAll(/<[^>]+>/g, '').trim();
+    const text = decodeHtmlEntities(rawText);
+    const id = text
+      .toLowerCase()
+      .replaceAll(/[^\w\s-]/g, '')
+      .replaceAll(/\s+/g, '-')
+      .replaceAll(/-{2,}/g, '-')
+      .replaceAll(/^-|-$/g, '');
+    headings.push({ id, level, text });
+  }
+  return headings;
+}
+
+function parseDocsPath(): { docId: null | string; sectionId: null | string } {
+  // Path: /docs/architecture → docId = 'architecture'
+  // Hash: #section → sectionId = 'section' (standard anchor scroll)
+  const segments = globalThis.location.pathname.replace(/\/$/, '').split('/');
+  // segments: ['', 'docs', 'architecture']
+  const docId = segments[2] ?? null;
+  const sectionId = globalThis.location.hash ? globalThis.location.hash.slice(1) : null;
+  return { docId, sectionId };
 }
 
 export default Docs;

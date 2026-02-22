@@ -2,4 +2,4 @@
  * Language and format detection utilities.
  */
 
-export { isLikelyIngglish, isLikelyIPA, detectFormat } from './language';
+export { detectFormat, isLikelyIngglish, isLikelyIPA } from './language';

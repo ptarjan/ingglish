@@ -6,8 +6,8 @@
 import { createLazyLoader } from './lazy-loader';
 
 interface FrequencyData {
-  raw: Record<string, number>;
   map: Map<string, number>;
+  raw: Record<string, number>;
 }
 
 const loader = createLazyLoader<FrequencyData>(async () => {
@@ -17,17 +17,8 @@ const loader = createLazyLoader<FrequencyData>(async () => {
   for (const [word, count] of Object.entries(raw)) {
     map.set(word.toLowerCase(), count);
   }
-  return { raw, map };
+  return { map, raw };
 }, 'word frequencies');
-
-/**
- * Loads word frequency data.
- * The data is cached after first load.
- */
-export async function loadFrequencies(): Promise<Record<string, number>> {
-  const data = await loader.load();
-  return data.raw;
-}
 
 /**
  * Returns the frequency count for a word (higher = more common).
@@ -40,79 +31,88 @@ export function getWordFrequency(word: string): number | undefined {
   return loader.get().map.get(word.toLowerCase());
 }
 
+/**
+ * Loads word frequency data.
+ * The data is cached after first load.
+ */
+export async function loadFrequencies(): Promise<Record<string, number>> {
+  const data = await loader.load();
+  return data.raw;
+}
+
 // Common English contractions that should be preferred over homophones
 const COMMON_CONTRACTIONS = new Set([
+  "ain't",
+  "aren't",
   // n't contractions
   "can't",
-  "won't",
-  "don't",
+  "could've",
+  "couldn't",
   "didn't",
   "doesn't",
-  "isn't",
-  "aren't",
-  "wasn't",
-  "weren't",
+  "don't",
+  "hadn't",
   "hasn't",
   "haven't",
-  "hadn't",
-  "couldn't",
-  "wouldn't",
-  "shouldn't",
-  "mustn't",
-  "needn't",
-  "mightn't",
-  "shan't",
-  "ain't",
-  // 'll contractions
-  "i'll",
-  "you'll",
-  "he'll",
-  "she'll",
-  "it'll",
-  "we'll",
-  "they'll",
-  "that'll",
-  "who'll",
-  "what'll",
-  "there'll",
-  // 're contractions
-  "you're",
-  "we're",
-  "they're",
-  // 've contractions
-  "i've",
-  "you've",
-  "we've",
-  "they've",
-  "could've",
-  "would've",
-  "should've",
-  "might've",
-  "must've",
-  // 'd contractions
-  "i'd",
-  "you'd",
   "he'd",
-  "she'd",
-  "it'd",
-  "we'd",
-  "they'd",
-  "that'd",
-  "who'd",
+  "he'll",
   // 's contractions (is/has)
   "he's",
-  "she's",
-  "it's",
-  "that's",
-  "what's",
-  "who's",
-  "where's",
-  "there's",
   "here's",
   "how's",
-  "let's",
+  // 'd contractions
+  "i'd",
+  // 'll contractions
+  "i'll",
   // 'm contractions
   "i'm",
+  // 've contractions
+  "i've",
+  "isn't",
+  "it'd",
+  "it'll",
+  "it's",
+  "let's",
+  "might've",
+  "mightn't",
+  "must've",
+  "mustn't",
+  "needn't",
+  "shan't",
+  "she'd",
+  "she'll",
+  "she's",
+  "should've",
+  "shouldn't",
+  "that'd",
+  "that'll",
+  "that's",
+  "there'll",
+  "there's",
+  "they'd",
+  "they'll",
+  "they're",
+  "they've",
+  "wasn't",
+  "we'd",
+  "we'll",
+  "we're",
+  "we've",
+  "weren't",
+  "what'll",
+  "what's",
+  "where's",
+  "who'd",
+  "who'll",
+  "who's",
+  "won't",
+  "would've",
+  "wouldn't",
+  "you'd",
+  "you'll",
+  // 're contractions
+  "you're",
+  "you've",
 ]);
 
 // Scoring constants for word ranking (lower = more likely)
@@ -158,5 +158,5 @@ export function scoreWord(word: string): number {
  * Sorts words by frequency (most common first).
  */
 export function sortByFrequency(words: string[]): string[] {
-  return [...words].sort((a, b) => scoreWord(a) - scoreWord(b));
+  return words.toSorted((a, b) => scoreWord(a) - scoreWord(b));
 }

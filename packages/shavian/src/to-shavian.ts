@@ -6,7 +6,7 @@
  */
 
 import { stripStress } from '@ingglish/phonemes';
-import { ARPABET_TO_SHAVIAN_MAP, SHAVIAN_SCHWA, SHAVIAN_R_COLORED } from './shavian-maps';
+import { ARPABET_TO_SHAVIAN_MAP, SHAVIAN_R_COLORED, SHAVIAN_SCHWA } from './shavian-maps';
 
 /**
  * Converts an array of ARPAbet phonemes to Shavian script.
@@ -39,7 +39,7 @@ export function arpabetToShavian(arpabet: string[]): string {
 
     // Handle AH stress: AH0 → schwa, AH1/AH2 → strut
     if (base === 'AH') {
-      const lastChar = phoneme.charCodeAt(phoneme.length - 1);
+      const lastChar = phoneme.codePointAt(phoneme.length - 1)!;
       // '0' = 48
       if (lastChar === 48) {
         result += SHAVIAN_SCHWA;

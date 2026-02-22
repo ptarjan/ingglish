@@ -34,6 +34,22 @@ const IPA_CHARS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ');
 const IPA_CHAR_THRESHOLD = 0.1;
 
 /**
+ * Detects the format of input text.
+ *
+ * @param text - The text to analyze
+ * @returns 'ipa', 'ingglish', or 'english'
+ */
+export function detectFormat(text: string): 'english' | 'ingglish' | 'ipa' {
+  if (isLikelyIPA(text)) {
+    return 'ipa';
+  }
+  if (isLikelyIngglish(text)) {
+    return 'ingglish';
+  }
+  return 'english';
+}
+
+/**
  * Heuristically detects if text is Ingglish vs English.
  *
  * @param text - The text to analyze
@@ -77,20 +93,4 @@ export function isLikelyIPA(text: string): boolean {
   }
 
   return ipaCount > text.length * IPA_CHAR_THRESHOLD;
-}
-
-/**
- * Detects the format of input text.
- *
- * @param text - The text to analyze
- * @returns 'ipa', 'ingglish', or 'english'
- */
-export function detectFormat(text: string): 'ipa' | 'ingglish' | 'english' {
-  if (isLikelyIPA(text)) {
-    return 'ipa';
-  }
-  if (isLikelyIngglish(text)) {
-    return 'ingglish';
-  }
-  return 'english';
 }

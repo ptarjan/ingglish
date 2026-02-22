@@ -6,8 +6,8 @@
 
 import { lookupPronunciation } from '@ingglish/dictionary';
 import { detectCasePattern, applyCasePattern } from '@ingglish/normalize';
-import { arpabetToFormat, getFormatPreservesCase } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import { arpabetToFormat, getFormatPreservesCase } from '@ingglish/phonemes';
 
 /**
  * Translates a contraction (word with apostrophe).

@@ -3,7 +3,7 @@
  */
 
 import { requireBrowser } from './browser';
-import { DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES, shouldSkipElement } from './skip-rules';
+import { DEFAULT_SKIP_CLASSES, DEFAULT_SKIP_TAGS, shouldSkipElement } from './skip-rules';
 
 /**
  * Collects all translatable text nodes from a DOM tree.
@@ -13,7 +13,7 @@ import { DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES, shouldSkipElement } from './sk
  * instead of checking each text node's parent chain individually.
  */
 export function collectTextNodes(
-  root: Element | Document,
+  root: Document | Element,
   skipTags: string[] = DEFAULT_SKIP_TAGS,
   skipClasses: string[] = DEFAULT_SKIP_CLASSES
 ): Text[] {

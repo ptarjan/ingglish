@@ -4,7 +4,7 @@
 
 import { renderHook, type RenderHookResult } from '@testing-library/react';
 import { act } from 'react';
-import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSpeech } from './useSpeech';
 
 beforeAll(() => {
@@ -16,21 +16,31 @@ type SpeechHook = RenderHookResult<Speech, unknown>;
 
 // Mock SpeechSynthesisUtterance
 class MockUtterance {
-  text = '';
+  onboundary: ((event: { charIndex: number; name: string }) => void) | null = null;
   onend: (() => void) | null = null;
-  onerror: (() => void) | null = null;
-  onboundary: ((event: { name: string; charIndex: number }) => void) | null = null;
+  text = '';
+  private errorListeners: (() => void)[] = [];
   constructor(text: string) {
     this.text = text;
+  }
+  addEventListener(event: string, handler: () => void): void {
+    if (event === 'error') {
+      this.errorListeners.push(handler);
+    }
+  }
+  triggerError(): void {
+    for (const handler of this.errorListeners) {
+      handler();
+    }
   }
 }
 
 function createMockSynthesis() {
   return {
-    speak: vi.fn(),
     cancel: vi.fn(),
     pause: vi.fn(),
     resume: vi.fn(),
+    speak: vi.fn(),
     speaking: false,
   };
 }
@@ -52,14 +62,14 @@ describe('useSpeech', () => {
 
   it('returns supported=true when speechSynthesis is available', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
-    const [, , , supported] = result.current;
+    const supported = result.current[3];
     expect(supported).toBe(true);
   });
 
   it('returns supported=false when speechSynthesis is unavailable', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
-    const [, , , supported] = result.current;
+    const supported = result.current[3];
     expect(supported).toBe(false);
   });
 
@@ -110,7 +120,7 @@ describe('useSpeech', () => {
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
-      utterance.onerror?.();
+      utterance.triggerError();
     });
     expect(result.current[0]).toBe(false);
   });
@@ -143,7 +153,7 @@ describe('useSpeech', () => {
   });
 
   it('speak is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -153,7 +163,7 @@ describe('useSpeech', () => {
   });
 
   it('stop is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis', undefined);
+    vi.stubGlobal('speechSynthesis');
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     // Should not throw
@@ -201,7 +211,7 @@ describe('useSpeech', () => {
   });
 
   it('returns stable function references across renders', () => {
-    const { result, rerender } = renderHook(() => useSpeech()) as SpeechHook;
+    const { rerender, result } = renderHook(() => useSpeech()) as SpeechHook;
     const [, speak1, stop1] = result.current;
     rerender();
     const [, speak2, stop2] = result.current;
@@ -223,12 +233,12 @@ describe('useSpeech', () => {
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
-      utterance.onboundary?.({ name: 'word', charIndex: 0 });
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toBe(0);
 
     act(() => {
-      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+      utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
     expect(result.current[4]).toBe(1);
   });
@@ -242,7 +252,7 @@ describe('useSpeech', () => {
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
-      utterance.onboundary?.({ name: 'word', charIndex: 6 });
+      utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
     expect(result.current[4]).toBe(0);
 
@@ -261,7 +271,7 @@ describe('useSpeech', () => {
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
-      utterance.onboundary?.({ name: 'word', charIndex: 0 });
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toBe(0);
 

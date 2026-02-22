@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { loadReverseDictionary } from '@ingglish/dictionary';
-import { scoreSentence } from '../challenge/challenge-scoring';
 import type { SentenceScore } from '../challenge/challenge-scoring';
+import { scoreSentence } from '../challenge/challenge-scoring';
 import { renderScoreCard } from '../challenge/render-score-card';
 import type { ChallengeSentence } from '../data/challenge-data';
 import { pickChallenge } from '../data/challenge-data';
@@ -9,8 +9,8 @@ import { pickChallenge } from '../data/challenge-data';
 type Phase = 'intro' | 'playing' | 'results';
 
 interface RoundResult {
-  sentence: ChallengeSentence;
   score: SentenceScore;
+  sentence: ChallengeSentence;
   timeTaken: number; // seconds taken for this round
 }
 
@@ -28,6 +28,29 @@ function downloadCanvas(canvas: HTMLCanvasElement): void {
   a.click();
 }
 
+function getScoreLabel(pct: number): string {
+  if (pct >= 90) {
+    return 'Amazing! You read Ingglish like a pro!';
+  }
+  if (pct >= 70) {
+    return 'Great job! You picked it up quickly!';
+  }
+  if (pct >= 50) {
+    return 'Not bad! Ingglish takes a little practice.';
+  }
+  return "Keep practicing — you'll get the hang of it!";
+}
+
+function getTierLabel(tier: 1 | 2 | 3): string {
+  if (tier === 1) {
+    return 'Easy';
+  }
+  if (tier === 2) {
+    return 'Medium';
+  }
+  return 'Hard';
+}
+
 function ReadingChallenge() {
   const [phase, setPhase] = useState<Phase>('intro');
   const [seed, setSeed] = useState(() => Date.now());
@@ -35,7 +58,7 @@ function ReadingChallenge() {
   const [round, setRound] = useState(0);
   const [input, setInput] = useState('');
   const [results, setResults] = useState<RoundResult[]>([]);
-  const [currentFeedback, setCurrentFeedback] = useState<SentenceScore | null>(null);
+  const [currentFeedback, setCurrentFeedback] = useState<null | SentenceScore>(null);
   const [reverseDictReady, setReverseDictReady] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const roundStartRef = useRef(0);
@@ -112,7 +135,7 @@ function ReadingChallenge() {
     const score = scoreSentence(sentence.tokens, input || '');
     const elapsed = TIER_TIME_LIMITS[sentence.tier];
     setCurrentFeedback(score);
-    setResults((prev) => [...prev, { sentence, score, timeTaken: elapsed }]);
+    setResults((prev) => [...prev, { score, sentence, timeTaken: elapsed }]);
   }, [timeLeft, phase, currentFeedback, sentences, round, input]);
 
   const startChallenge = useCallback((newSeed: number) => {
@@ -141,7 +164,7 @@ function ReadingChallenge() {
     const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
     const score = scoreSentence(sentences[round].tokens, input);
     setCurrentFeedback(score);
-    setResults((prev) => [...prev, { sentence: sentences[round]!, score, timeTaken: elapsed }]);
+    setResults((prev) => [...prev, { score, sentence: sentences[round]!, timeTaken: elapsed }]);
   }, [sentences, round, input]);
 
   const handleNext = useCallback(() => {
@@ -241,10 +264,10 @@ function ReadingChallenge() {
             <li>Get scored word-by-word (homophones accepted!)</li>
           </ol>
           <button
-            ref={startRef}
             className="btn-primary"
-            onClick={handleStart}
             disabled={!reverseDictReady}
+            onClick={handleStart}
+            ref={startRef}
           >
             {reverseDictReady ? 'Start Challenge' : 'Loading...'}
           </button>
@@ -260,15 +283,7 @@ function ReadingChallenge() {
         <div className="challenge-results">
           <h2>Challenge Complete!</h2>
           <div className="challenge-overall-score">{overallPct}%</div>
-          <p className="challenge-score-label">
-            {overallPct >= 90
-              ? 'Amazing! You read Ingglish like a pro!'
-              : overallPct >= 70
-                ? 'Great job! You picked it up quickly!'
-                : overallPct >= 50
-                  ? 'Not bad! Ingglish takes a little practice.'
-                  : "Keep practicing — you'll get the hang of it!"}
-          </p>
+          <p className="challenge-score-label">{getScoreLabel(overallPct)}</p>
 
           <div className="challenge-round-bars">
             {results.map((r, i) => {
@@ -276,11 +291,11 @@ function ReadingChallenge() {
               const fillClass =
                 pct >= 80
                   ? 'challenge-round-fill-good'
-                  : pct >= 50
+                  : (pct >= 50
                     ? 'challenge-round-fill-ok'
-                    : 'challenge-round-fill-bad';
+                    : 'challenge-round-fill-bad');
               return (
-                <div key={i} className="challenge-round-row">
+                <div className="challenge-round-row" key={i}>
                   <span className="challenge-round-label">Round {i + 1}</span>
                   <div className="challenge-round-bar">
                     <div
@@ -303,9 +318,9 @@ function ReadingChallenge() {
               New Challenge
             </button>
             <button
-              ref={shareRef}
               className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
               onClick={handleShareResult}
+              ref={shareRef}
             >
               {copiedShare ? 'Copied!' : 'Share Result'}
             </button>
@@ -324,8 +339,7 @@ function ReadingChallenge() {
     return null;
   }
 
-  const tierLabel =
-    currentSentence.tier === 1 ? 'Easy' : currentSentence.tier === 2 ? 'Medium' : 'Hard';
+  const tierLabel = getTierLabel(currentSentence.tier);
 
   return (
     <div className="challenge-page">
@@ -354,26 +368,26 @@ function ReadingChallenge() {
 
       <div className="challenge-input-area">
         <input
-          ref={inputRef}
           className="challenge-input"
-          type="text"
-          placeholder="Type the English here..."
-          value={input}
+          disabled={currentFeedback !== null}
           onChange={(e) => {
             setInput(e.target.value);
           }}
           onKeyDown={handleKeyDown}
-          disabled={currentFeedback !== null}
+          placeholder="Type the English here..."
+          ref={inputRef}
+          type="text"
+          value={input}
         />
       </div>
 
       <div className="challenge-actions">
         {currentFeedback === null ? (
-          <button className="btn-primary" onClick={handleSubmit} disabled={!input.trim()}>
+          <button className="btn-primary" disabled={!input.trim()} onClick={handleSubmit}>
             Check
           </button>
         ) : (
-          <button ref={nextRef} className="btn-primary" onClick={handleNext}>
+          <button className="btn-primary" onClick={handleNext} ref={nextRef}>
             {round + 1 >= sentences.length ? 'See Results' : 'Next'}
           </button>
         )}
@@ -386,7 +400,7 @@ function ReadingChallenge() {
           </div>
           <div className="challenge-feedback-words">
             {currentFeedback.words.map((w, i) => (
-              <span key={i} className="challenge-word">
+              <span className="challenge-word" key={i}>
                 <span className="challenge-word-ingglish">{w.ingglish}</span>
                 <span
                   className={`challenge-word-result ${w.correct ? (w.fuzzy === true ? 'challenge-word-fuzzy' : 'challenge-word-correct') : 'challenge-word-incorrect'}`}

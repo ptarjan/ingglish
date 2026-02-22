@@ -8,12 +8,15 @@ import importX from 'eslint-plugin-import-x';
 import vitestPlugin from '@vitest/eslint-plugin';
 import unicornPlugin from 'eslint-plugin-unicorn';
 import regexpPlugin from 'eslint-plugin-regexp';
+import perfectionist from 'eslint-plugin-perfectionist';
 
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   prettierConfig,
+  perfectionist.configs['recommended-natural'],
+  unicornPlugin.configs.recommended,
   {
     languageOptions: {
       parserOptions: {
@@ -29,7 +32,6 @@ export default tseslint.config(
       'react-hooks': reactHooksPlugin,
       'jsx-a11y': jsxA11yPlugin,
       'import-x': importX,
-      unicorn: unicornPlugin,
       regexp: regexpPlugin,
     },
     settings: {
@@ -112,18 +114,20 @@ export default tseslint.config(
       'import-x/first': 'error',
       'import-x/no-cycle': 'warn',
 
-      // Unicorn (cherry-picked)
-      'unicorn/no-useless-spread': 'error',
-      'unicorn/prefer-array-find': 'error',
-      'unicorn/prefer-array-flat-map': 'error',
-      'unicorn/prefer-array-flat': 'error',
-      'unicorn/prefer-includes': 'error',
-      // Note: prefer-string-replace-all and prefer-at omitted — lib is ES2020, both are ES2021+
-      'unicorn/no-lonely-if': 'error',
-      'unicorn/no-array-push-push': 'error',
-      'unicorn/prefer-node-protocol': 'error',
-      'unicorn/no-useless-undefined': ['error', { checkArguments: false }],
-      'unicorn/prefer-number-properties': 'error',
+      // Disable perfectionist rules that conflict with import-x and typescript-eslint
+      'perfectionist/sort-imports': 'off',
+      'perfectionist/sort-named-imports': 'off',
+      '@typescript-eslint/adjacent-overload-signatures': 'off',
+
+      // Disable unicorn rules that are too opinionated for this project
+      'unicorn/filename-case': 'off',
+      'unicorn/no-array-for-each': 'off',
+      'unicorn/no-array-reduce': 'off',
+      'unicorn/no-null': 'off',
+      'unicorn/no-process-exit': 'off',
+      'unicorn/prefer-module': 'off',
+      'unicorn/prefer-top-level-await': 'off',
+      'unicorn/prevent-abbreviations': 'off',
 
       // Regexp rules (recommended preset)
       ...regexpPlugin.configs['flat/recommended'].rules,

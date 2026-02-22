@@ -5,82 +5,10 @@
 import DOMPurify from 'dompurify';
 
 /**
- * Escapes HTML attribute values to prevent XSS.
- */
-export function escapeHtmlAttr(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-/**
- * Injects a base tag into HTML so relative URLs resolve correctly.
- * Uses the full URL path (up to last slash) so relative links work properly.
- */
-export function injectBaseTag(html: string, baseUrl: string): string {
-  const safeBaseUrl = escapeHtmlAttr(baseUrl);
-  const baseTag = `<base href="${safeBaseUrl}">`;
-
-  if (html.includes('<head>')) {
-    return html.replace('<head>', `<head>${baseTag}`);
-  }
-  if (html.includes('<html>')) {
-    return html.replace('<html>', `<html><head>${baseTag}</head>`);
-  }
-  return baseTag + html;
-}
-
-/**
- * Gets the base URL for a page (URL up to and including the last slash).
- * Uses standard URL resolution: strip everything after the last slash.
- * For https://example.com/path/page → https://example.com/path/
- * For https://example.com/path/ → https://example.com/path/
- */
-export function getBaseUrl(url: string): string {
-  const parsed = new URL(url);
-  const lastSlash = parsed.pathname.lastIndexOf('/');
-  const basePath = parsed.pathname.substring(0, lastSlash + 1);
-  return parsed.origin + basePath;
-}
-
-/**
- * Checks if a URL should be ignored for navigation.
- */
-export function shouldSkipUrl(href: string): boolean {
-  return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
-}
-
-/**
- * Checks if two URLs are the same except for the hash fragment.
- * Returns true if navigating from oldUrl to newUrl is just a hash change.
- */
-export function isHashOnlyChange(oldUrl: string, newUrl: string): boolean {
-  try {
-    const oldParsed = new URL(oldUrl);
-    const newParsed = new URL(newUrl);
-    // Normalize pathnames by removing trailing slash for comparison
-    const oldPath = oldParsed.pathname.replace(/\/$/, '');
-    const newPath = newParsed.pathname.replace(/\/$/, '');
-    // Same origin, pathname (ignoring trailing slash), and search - only hash differs
-    return (
-      oldParsed.origin === newParsed.origin &&
-      oldPath === newPath &&
-      oldParsed.search === newParsed.search &&
-      newParsed.hash !== ''
-    );
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Detects if HTML content is a bot protection/challenge page.
  * Returns a user-friendly error message if detected, null otherwise.
  */
-export function detectBotProtection(html: string): string | null {
+export function detectBotProtection(html: string): null | string {
   const lowerHtml = html.toLowerCase();
 
   // Cloudflare challenge page ("Just a moment...")
@@ -109,65 +37,75 @@ export function detectBotProtection(html: string): string | null {
 }
 
 /**
- * Strips script tags and other active content from HTML.
- * Uses DOMPurify in browser for comprehensive mXSS protection,
- * falls back to regex in Node.js/test environments.
+ * Escapes HTML attribute values to prevent XSS.
  */
-export function stripScripts(html: string): string {
-  if (typeof DOMParser !== 'undefined') {
-    return DOMPurify.sanitize(html, {
-      WHOLE_DOCUMENT: true,
-      ADD_TAGS: ['link', 'style', 'meta', 'base'],
-      ADD_ATTR: [
-        'href',
-        'rel',
-        'type',
-        'media',
-        'content',
-        'http-equiv',
-        'charset',
-        'name',
-        'property',
-      ],
-      FORBID_TAGS: ['script', 'noscript', 'iframe', 'object', 'embed', 'frame', 'frameset', 'form'],
-      FORBID_ATTR: ['onerror', 'onload', 'onclick'],
-    });
-  }
-
-  // Fallback to regex for Node.js/test environments
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<script[^>]*>/gi, '')
-    .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
-    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
-    .replace(/<iframe[^>]*>/gi, '')
-    .replace(/<object[\s\S]*?<\/object>/gi, '')
-    .replace(/<object[^>]*>/gi, '')
-    .replace(/<embed[^>]*>/gi, '')
-    .replace(/<frame[^>]*>/gi, '')
-    .replace(/<frameset[\s\S]*?<\/frameset>/gi, '');
+export function escapeHtmlAttr(text: string): string {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
 }
 
 /**
- * Rewrites font URLs in CSS to go through a CORS proxy.
- * This fixes font loading errors for cross-origin stylesheets.
+ * Gets the base URL for a page (URL up to and including the last slash).
+ * Uses standard URL resolution: strip everything after the last slash.
+ * For https://example.com/path/page → https://example.com/path/
+ * For https://example.com/path/ → https://example.com/path/
  */
-export function proxyFontUrls(html: string, proxyUrl: string): string {
-  // Match url() in CSS with font file extensions
-  const fontUrlPattern =
-    /url\s*\(\s*(['"]?)(https?:\/\/[^)\s'"]+\.(?:woff2?|ttf|eot|otf)(?:\?[^)\s'"]*)?)\1\s*\)/gi;
+export function getBaseUrl(url: string): string {
+  const parsed = new URL(url);
+  const lastSlash = parsed.pathname.lastIndexOf('/');
+  const basePath = parsed.pathname.slice(0, Math.max(0, lastSlash + 1));
+  return parsed.origin + basePath;
+}
 
-  return html.replace(fontUrlPattern, (_match: string, quote: string, fontUrl: string) => {
-    const proxiedUrl = `${proxyUrl}${encodeURIComponent(fontUrl)}`;
-    return `url(${quote}${proxiedUrl}${quote})`;
-  });
+/**
+ * Injects a base tag into HTML so relative URLs resolve correctly.
+ * Uses the full URL path (up to last slash) so relative links work properly.
+ */
+export function injectBaseTag(html: string, baseUrl: string): string {
+  const safeBaseUrl = escapeHtmlAttr(baseUrl);
+  const baseTag = `<base href="${safeBaseUrl}">`;
+
+  if (html.includes('<head>')) {
+    return html.replace('<head>', `<head>${baseTag}`);
+  }
+  if (html.includes('<html>')) {
+    return html.replace('<html>', `<html><head>${baseTag}</head>`);
+  }
+  return baseTag + html;
+}
+
+/**
+ * Checks if two URLs are the same except for the hash fragment.
+ * Returns true if navigating from oldUrl to newUrl is just a hash change.
+ */
+export function isHashOnlyChange(oldUrl: string, newUrl: string): boolean {
+  try {
+    const oldParsed = new URL(oldUrl);
+    const newParsed = new URL(newUrl);
+    // Normalize pathnames by removing trailing slash for comparison
+    const oldPath = oldParsed.pathname.replace(/\/$/, '');
+    const newPath = newParsed.pathname.replace(/\/$/, '');
+    // Same origin, pathname (ignoring trailing slash), and search - only hash differs
+    return (
+      oldParsed.origin === newParsed.origin &&
+      oldPath === newPath &&
+      oldParsed.search === newParsed.search &&
+      newParsed.hash !== ''
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**
  * Normalizes a URL input (adds https:// if missing).
  * Returns null if invalid.
  */
-export function normalizeUrl(input: string): string | null {
+export function normalizeUrl(input: string): null | string {
   if (!input.trim()) {
     return null;
   }
@@ -183,6 +121,68 @@ export function normalizeUrl(input: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Rewrites font URLs in CSS to go through a CORS proxy.
+ * This fixes font loading errors for cross-origin stylesheets.
+ */
+export function proxyFontUrls(html: string, proxyUrl: string): string {
+  // Match url() in CSS with font file extensions
+  const fontUrlPattern =
+    /url\s*\(\s*(['"]?)(https?:\/\/[^)\s'"]+\.(?:woff2?|ttf|eot|otf)(?:\?[^)\s'"]*)?)\1\s*\)/gi;
+
+  return html.replaceAll(fontUrlPattern, (_match: string, quote: string, fontUrl: string) => {
+    const proxiedUrl = `${proxyUrl}${encodeURIComponent(fontUrl)}`;
+    return `url(${quote}${proxiedUrl}${quote})`;
+  });
+}
+
+/**
+ * Checks if a URL should be ignored for navigation.
+ */
+export function shouldSkipUrl(href: string): boolean {
+  return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
+}
+
+/**
+ * Strips script tags and other active content from HTML.
+ * Uses DOMPurify in browser for comprehensive mXSS protection,
+ * falls back to regex in Node.js/test environments.
+ */
+export function stripScripts(html: string): string {
+  if (typeof DOMParser !== 'undefined') {
+    return DOMPurify.sanitize(html, {
+      ADD_ATTR: [
+        'href',
+        'rel',
+        'type',
+        'media',
+        'content',
+        'http-equiv',
+        'charset',
+        'name',
+        'property',
+      ],
+      ADD_TAGS: ['link', 'style', 'meta', 'base'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick'],
+      FORBID_TAGS: ['script', 'noscript', 'iframe', 'object', 'embed', 'frame', 'frameset', 'form'],
+      WHOLE_DOCUMENT: true,
+    });
+  }
+
+  // Fallback to regex for Node.js/test environments
+  return html
+    .replaceAll(/<script[\s\S]*?<\/script>/gi, '')
+    .replaceAll(/<script[^>]*>/gi, '')
+    .replaceAll(/<noscript[\s\S]*?<\/noscript>/gi, '')
+    .replaceAll(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replaceAll(/<iframe[^>]*>/gi, '')
+    .replaceAll(/<object[\s\S]*?<\/object>/gi, '')
+    .replaceAll(/<object[^>]*>/gi, '')
+    .replaceAll(/<embed[^>]*>/gi, '')
+    .replaceAll(/<frame[^>]*>/gi, '')
+    .replaceAll(/<frameset[\s\S]*?<\/frameset>/gi, '');
 }
 
 // Regex patterns for HTML tag matching (precompiled for performance)
@@ -201,7 +201,7 @@ function generateNonce(): string {
     return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   }
   // Fallback for test environments
-  return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+  return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 }
 
 /**
@@ -216,45 +216,7 @@ function generateNonce(): string {
  * Captures link clicks (touch + mouse) and sends them to the parent via
  * postMessage. Distinguishes taps from scroll/pinch gestures on touch devices.
  */
-const CLICK_HANDLER_BODY = `(function(){var t=null,sx=0,sy=0,th=false;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){th=false;if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){th=true;if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){if(th){th=false;return}h(f(e.target),e)},true)})();`;
-
-/**
- * Builds the CSP meta tag that restricts script execution to the given nonce.
- */
-function buildCspMetaTag(nonce: string): string {
-  return `<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-${nonce}'; style-src 'unsafe-inline' *; img-src *; font-src *; default-src 'self' *;">`;
-}
-
-/**
- * Injects the CSP meta tag into the <head> of the HTML.
- */
-function injectCspMetaTag(html: string, nonce: string): string {
-  const cspTag = buildCspMetaTag(nonce);
-  const headMatch = HEAD_OPEN_REGEX.exec(html);
-  if (headMatch !== null) {
-    return html.replace(headMatch[0], headMatch[0] + cspTag);
-  }
-  return cspTag + html;
-}
-
-/**
- * Injects the nonce'd click handler script before </body>, </html>, or at the end.
- */
-function injectClickHandler(html: string, nonce: string): string {
-  const script = `<script nonce="${nonce}">${CLICK_HANDLER_BODY}</script>`;
-
-  const bodyMatch = BODY_CLOSE_REGEX.exec(html);
-  if (bodyMatch !== null) {
-    return html.replace(bodyMatch[0], script + bodyMatch[0]);
-  }
-
-  const htmlMatch = HTML_CLOSE_REGEX.exec(html);
-  if (htmlMatch !== null) {
-    return html.replace(htmlMatch[0], script + htmlMatch[0]);
-  }
-
-  return html + script;
-}
+const CLICK_HANDLER_BODY = `(function(){var t=null,sx=0,sy=0,th=false;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.querySelector('#'+CSS.escape(i))||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){th=false;if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){th=true;if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){if(th){th=false;return}h(f(e.target),e)},true)})();`;
 
 export interface ProcessHtmlOptions {
   /** The original page URL (for base tag) */
@@ -264,10 +226,10 @@ export interface ProcessHtmlOptions {
 }
 
 export interface ProcessHtmlResult {
-  /** The processed HTML ready for iframe srcdoc */
-  html: string;
   /** The base URL for resolving relative links */
   baseUrl: string;
+  /** The processed HTML ready for iframe srcdoc */
+  html: string;
 }
 
 /**
@@ -307,5 +269,43 @@ export function processProxiedHtml(
   // Step 6: Inject nonce'd click handler
   const html = injectClickHandler(htmlWithCsp, nonce);
 
-  return { html, baseUrl };
+  return { baseUrl, html };
+}
+
+/**
+ * Builds the CSP meta tag that restricts script execution to the given nonce.
+ */
+function buildCspMetaTag(nonce: string): string {
+  return `<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-${nonce}'; style-src 'unsafe-inline' *; img-src *; font-src *; default-src 'self' *;">`;
+}
+
+/**
+ * Injects the nonce'd click handler script before </body>, </html>, or at the end.
+ */
+function injectClickHandler(html: string, nonce: string): string {
+  const script = `<script nonce="${nonce}">${CLICK_HANDLER_BODY}</script>`;
+
+  const bodyMatch = BODY_CLOSE_REGEX.exec(html);
+  if (bodyMatch !== null) {
+    return html.replace(bodyMatch[0], script + bodyMatch[0]);
+  }
+
+  const htmlMatch = HTML_CLOSE_REGEX.exec(html);
+  if (htmlMatch !== null) {
+    return html.replace(htmlMatch[0], script + htmlMatch[0]);
+  }
+
+  return html + script;
+}
+
+/**
+ * Injects the CSP meta tag into the <head> of the HTML.
+ */
+function injectCspMetaTag(html: string, nonce: string): string {
+  const cspTag = buildCspMetaTag(nonce);
+  const headMatch = HEAD_OPEN_REGEX.exec(html);
+  if (headMatch !== null) {
+    return html.replace(headMatch[0], headMatch[0] + cspTag);
+  }
+  return cspTag + html;
 }

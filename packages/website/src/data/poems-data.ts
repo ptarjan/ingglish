@@ -1,23 +1,21 @@
 import { THE_CHAOS_LINES } from './the-chaos-lines';
 
 export interface Poem {
-  title: string;
   author: string;
-  year: string;
   lines: string[];
+  title: string;
+  year: string;
 }
 
 const theChaos: Poem = {
-  title: 'The Chaos',
-  author: 'Gerard Nolst Trenit\u00e9',
-  year: '1922',
+  author: 'Gerard Nolst Trenit\u00E9',
   lines: THE_CHAOS_LINES,
+  title: 'The Chaos',
+  year: '1922',
 };
 
 const ourStrangeLingo: Poem = {
-  title: 'Our Strange Lingo',
   author: 'Lord Cromer',
-  year: '1902',
   lines: [
     'When the English tongue we speak,',
     'Why is break not rhymed with freak?',
@@ -42,12 +40,12 @@ const ourStrangeLingo: Poem = {
     'To sum up all, it seems to me',
     "Sound and letters don't agree.",
   ],
+  title: 'Our Strange Lingo',
+  year: '1902',
 };
 
 const iTakeIt: Poem = {
-  title: 'I Take It You Already Know',
   author: 'T.S. Watt',
-  year: '1954',
   lines: [
     'I take it you already know',
     'Of tough and bough and cough and dough?',
@@ -78,12 +76,12 @@ const iTakeIt: Poem = {
     'And yet to write it, the more I sigh,',
     "I'll not learn how 'til the day I die.",
   ],
+  title: 'I Take It You Already Know',
+  year: '1954',
 };
 
 const whyEnglishIsHard: Poem = {
-  title: 'Why English Is So Hard',
   author: 'Anonymous',
-  year: 'Traditional',
   lines: [
     "We'll begin with a box, and the plural is boxes,",
     'But the plural of ox becomes oxen, not oxes.',
@@ -107,6 +105,8 @@ const whyEnglishIsHard: Poem = {
     'Then the masculine pronouns are he, his and him,',
     'But imagine the feminine: she, shis and shim!',
   ],
+  title: 'Why English Is So Hard',
+  year: 'Traditional',
 };
 
 export const poems: Poem[] = [theChaos, ourStrangeLingo, iTakeIt, whyEnglishIsHard];

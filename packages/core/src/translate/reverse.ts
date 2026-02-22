@@ -14,13 +14,13 @@ import {
   normalizeApostrophes,
   extractPreservedPatterns,
 } from '@ingglish/normalize';
-import {
-  ingglishToArpabet,
-  expandArpabetAlternatives,
-  registerFormat,
-  getFormatHandler,
-} from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
+import {
+  expandArpabetAlternatives,
+  getFormatHandler,
+  ingglishToArpabet,
+  registerFormat,
+} from '@ingglish/phonemes';
 import { tokenizeIPA, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/tokenize';
 import type { TranslatedToken } from './forward';
 import { expandPlaceholder } from './preserved';
@@ -35,6 +35,56 @@ const ALT_FREQUENCY_THRESHOLD = 5;
 // ============================================================================
 // Core Translation Functions
 // ============================================================================
+
+/**
+ * Translates an IPA word back to English.
+ * Returns possible English words sorted by frequency.
+ */
+export function reverseTranslateIPAWord(ipaWord: string): string[] {
+  if (!ipaWord || ipaWord.trim().length === 0) {
+    return ipaWord ? [ipaWord] : [];
+  }
+
+  const arpabet = ipaToArpabetClean(ipaWord);
+
+  if (!arpabet) {
+    return [ipaWord];
+  }
+
+  const matches = lookupByArpabet(arpabet);
+
+  if (matches.length === 0) {
+    return [ipaWord];
+  }
+
+  return matches;
+}
+
+/**
+ * Translates an Ingglish word back to English.
+ * Returns possible English words sorted by frequency, or [] if lookup failed.
+ * Non-letter tokens (numbers, punctuation) are returned as-is in a single-element array.
+ */
+export function reverseTranslateWord(ingglishWord: string): string[] {
+  if (!ingglishWord || !HAS_LETTER.test(ingglishWord)) {
+    return ingglishWord ? [ingglishWord] : [];
+  }
+
+  const casePattern = detectCasePattern(ingglishWord);
+  const arpabet = ingglishToArpabet(ingglishWord);
+
+  if (!arpabet) {
+    return [];
+  }
+
+  const matches = lookupByArpabet(arpabet);
+
+  if (matches.length === 0) {
+    return [];
+  }
+
+  return matches.map((word) => applyCasePattern(word, casePattern));
+}
 
 /**
  * Looks up English words matching an ARPAbet sequence.
@@ -95,56 +145,6 @@ function lookupByArpabet(arpabet: string[]): string[] {
   return primaryMatches;
 }
 
-/**
- * Translates an Ingglish word back to English.
- * Returns possible English words sorted by frequency, or [] if lookup failed.
- * Non-letter tokens (numbers, punctuation) are returned as-is in a single-element array.
- */
-export function reverseTranslateWord(ingglishWord: string): string[] {
-  if (!ingglishWord || !HAS_LETTER.test(ingglishWord)) {
-    return ingglishWord ? [ingglishWord] : [];
-  }
-
-  const casePattern = detectCasePattern(ingglishWord);
-  const arpabet = ingglishToArpabet(ingglishWord);
-
-  if (!arpabet) {
-    return [];
-  }
-
-  const matches = lookupByArpabet(arpabet);
-
-  if (matches.length === 0) {
-    return [];
-  }
-
-  return matches.map((word) => applyCasePattern(word, casePattern));
-}
-
-/**
- * Translates an IPA word back to English.
- * Returns possible English words sorted by frequency.
- */
-export function reverseTranslateIPAWord(ipaWord: string): string[] {
-  if (!ipaWord || ipaWord.trim().length === 0) {
-    return ipaWord ? [ipaWord] : [];
-  }
-
-  const arpabet = ipaToArpabetClean(ipaWord);
-
-  if (!arpabet) {
-    return [ipaWord];
-  }
-
-  const matches = lookupByArpabet(arpabet);
-
-  if (matches.length === 0) {
-    return [ipaWord];
-  }
-
-  return matches;
-}
-
 // ============================================================================
 // Unified Reverse Translation
 // ============================================================================
@@ -160,35 +160,6 @@ registerFormat('ipa', {
 });
 
 /**
- * Translates Ingglish text back to English.
- * URLs and emails are preserved unchanged.
- */
-function reverseTranslateIngglishText(text: string): string {
-  return reverseTranslateIngglishTextWithMapping(text)
-    .map((t) => t.translated)
-    .join('');
-}
-
-/**
- * Translates IPA text back to English, preserving punctuation.
- */
-function reverseTranslateIPATextInternal(text: string): string {
-  // Strip leading/trailing IPA notation brackets (/, [, ]) but preserve internal punctuation
-  const cleanText = text.replace(/^[/[\]]+|[/[\]]+$/g, '');
-  const tokens = tokenizeIPA(cleanText);
-
-  return tokens
-    .map((token) => {
-      if (token.isWord) {
-        const matches = reverseTranslateIPAWord(token.text);
-        return matches[0] ?? token.text;
-      }
-      return token.text;
-    })
-    .join('');
-}
-
-/**
  * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
  */
 export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
@@ -197,32 +168,6 @@ export function reverseTranslateSync(text: string, format: OutputFormat = 'inggl
     return handler.reverseText(text);
   }
   return reverseTranslateIngglishText(text);
-}
-
-// ============================================================================
-// Reverse Translation with Mapping
-// ============================================================================
-
-/**
- * Translates IPA text back to English with token-by-token mapping.
- */
-function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
-  const cleanText = text.replace(/^[/[\]]+|[/[\]]+$/g, '');
-  const tokens = tokenizeIPA(cleanText);
-
-  return tokens.map((token) => {
-    if (token.isWord) {
-      const matches = reverseTranslateIPAWord(token.text);
-      const translated = matches[0] ?? token.text;
-      return {
-        original: token.text,
-        translated,
-        isWord: true,
-        matched: translated !== token.text,
-      };
-    }
-    return { original: token.text, translated: token.text, isWord: false, matched: true };
-  });
 }
 
 /**
@@ -242,11 +187,25 @@ export function reverseTranslateSyncWithMapping(
 }
 
 /**
+ * Translates Ingglish text back to English.
+ * URLs and emails are preserved unchanged.
+ */
+function reverseTranslateIngglishText(text: string): string {
+  return reverseTranslateIngglishTextWithMapping(text)
+    .map((t) => t.translated)
+    .join('');
+}
+
+// ============================================================================
+// Reverse Translation with Mapping
+// ============================================================================
+
+/**
  * Ingglish reverse translation with token-by-token mapping.
  */
 function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[] {
   const normalizedText = normalizeApostrophes(text);
-  const { text: textWithPlaceholders, preserved } = extractPreservedPatterns(normalizedText);
+  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalizedText);
 
   const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
   const result: TranslatedToken[] = [];
@@ -283,23 +242,64 @@ function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[
           }
         }
         result.push({
-          original: token,
-          translated: translatedParts.join("'"),
           isWord: true,
           matched: allMatched,
+          original: token,
+          translated: translatedParts.join("'"),
         });
       } else {
         const matches = reverseTranslateWord(token);
         if (matches.length > 0) {
-          result.push({ original: token, translated: matches[0]!, isWord: true, matched: true });
+          result.push({ isWord: true, matched: true, original: token, translated: matches[0]! });
         } else {
-          result.push({ original: token, translated: token, isWord: true, matched: false });
+          result.push({ isWord: true, matched: false, original: token, translated: token });
         }
       }
     } else {
-      result.push({ original: token, translated: token, isWord: false, matched: true });
+      result.push({ isWord: false, matched: true, original: token, translated: token });
     }
   }
 
   return result;
+}
+
+/**
+ * Translates IPA text back to English, preserving punctuation.
+ */
+function reverseTranslateIPATextInternal(text: string): string {
+  // Strip leading/trailing IPA notation brackets (/, [, ]) but preserve internal punctuation
+  const cleanText = text.replaceAll(/^[/[\]]+|[/[\]]+$/g, '');
+  const tokens = tokenizeIPA(cleanText);
+
+  return tokens
+    .map((token) => {
+      if (token.isWord) {
+        const matches = reverseTranslateIPAWord(token.text);
+        return matches[0] ?? token.text;
+      }
+      return token.text;
+    })
+    .join('');
+}
+
+/**
+ * Translates IPA text back to English with token-by-token mapping.
+ */
+function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
+  const cleanText = text.replaceAll(/^[/[\]]+|[/[\]]+$/g, '');
+  const tokens = tokenizeIPA(cleanText);
+
+  return tokens.map((token) => {
+    if (token.isWord) {
+      const matches = reverseTranslateIPAWord(token.text);
+      const translated = matches[0] ?? token.text;
+      return {
+        isWord: true,
+        matched: translated !== token.text,
+        original: token.text,
+        translated,
+      };
+    }
+    return { isWord: false, matched: true, original: token.text, translated: token.text };
+  });
 }

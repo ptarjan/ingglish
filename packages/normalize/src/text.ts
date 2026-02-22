@@ -29,35 +29,43 @@ export const BARE_DOMAIN_REGEX =
  * Placeholders use non-alphanumeric characters to avoid being split by word regex.
  */
 export function extractPreservedPatterns(text: string): {
-  text: string;
   preserved: Map<string, string>;
+  text: string;
 } {
   const preserved = new Map<string, string>();
   let counter = 0;
 
   // Replace URLs first (they may contain email-like patterns)
   // Use \x00 (null) and \x01 (SOH) to create non-word placeholders
-  let result = text.replace(URL_REGEX, (match) => {
-    const placeholder = `\x00\x01${counter++}\x01\x00`;
+  let result = text.replaceAll(URL_REGEX, (match) => {
+    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
     preserved.set(placeholder, match);
     return placeholder;
   });
 
   // Replace emails
-  result = result.replace(EMAIL_REGEX, (match) => {
-    const placeholder = `\x00\x01${counter++}\x01\x00`;
+  result = result.replaceAll(EMAIL_REGEX, (match) => {
+    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
     preserved.set(placeholder, match);
     return placeholder;
   });
 
   // Replace bare domains (after URLs and emails to avoid double-matching)
-  result = result.replace(BARE_DOMAIN_REGEX, (match) => {
-    const placeholder = `\x00\x01${counter++}\x01\x00`;
+  result = result.replaceAll(BARE_DOMAIN_REGEX, (match) => {
+    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
     preserved.set(placeholder, match);
     return placeholder;
   });
 
-  return { text: result, preserved };
+  return { preserved, text: result };
+}
+
+/**
+ * Normalizes various apostrophe characters to the standard straight apostrophe.
+ * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
+ */
+export function normalizeApostrophes(text: string): string {
+  return text.replaceAll(/[\u2018\u2019\u02BC]/g, "'");
 }
 
 /**
@@ -75,18 +83,10 @@ export function restorePreservedPatterns(text: string, preserved: Map<string, st
 }
 
 /**
- * Normalizes various apostrophe characters to the standard straight apostrophe.
- * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
- */
-export function normalizeApostrophes(text: string): string {
-  return text.replace(/[\u2018\u2019\u02BC]/g, "'");
-}
-
-/**
  * Strips diacritics/accents from text, preserving base letters.
  * Converts résumé→resume, naïve→naive, cliché→cliche, café→cafe.
  * Uses Unicode NFD decomposition to separate base letters from combining marks.
  */
 export function stripDiacritics(text: string): string {
-  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return text.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
 }

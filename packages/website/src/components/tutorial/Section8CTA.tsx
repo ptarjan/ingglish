@@ -14,16 +14,16 @@ export function Section8CTA({ onNavigate }: { onNavigate: (tab: string) => void 
   );
 
   return (
-    <section ref={ref} className={`tutorial-section tutorial-cta ${visible ? 'revealed' : ''}`}>
+    <section className={`tutorial-section tutorial-cta ${visible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="tutorial-heading">Try Ingglish</h2>
       <div className="cta-buttons">
-        <a href="/text" className="cta-primary" onClick={handleNavigate('text')}>
+        <a className="cta-primary" href="/text" onClick={handleNavigate('text')}>
           Translate Text
         </a>
-        <a href="/url" className="cta-secondary" onClick={handleNavigate('url')}>
+        <a className="cta-secondary" href="/url" onClick={handleNavigate('url')}>
           Translate a Website
         </a>
-        <a href="/guide" className="cta-secondary" onClick={handleNavigate('guide')}>
+        <a className="cta-secondary" href="/guide" onClick={handleNavigate('guide')}>
           Spelling Guide
         </a>
       </div>

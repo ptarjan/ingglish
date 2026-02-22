@@ -4,15 +4,15 @@
 
 // Forward translation
 export {
-  translateWord,
+  type TranslatedToken,
   translateSync,
   translateSyncWithMapping,
-  type TranslatedToken,
+  translateWord,
 } from './forward';
 
 // Reverse translation
 export {
-  reverseTranslateWord,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
+  reverseTranslateWord,
 } from './reverse';

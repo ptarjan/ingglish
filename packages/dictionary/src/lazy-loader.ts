@@ -6,17 +6,28 @@
  */
 
 export interface LazyLoader<T> {
-  load(): Promise<T>;
   get(): T;
   isLoaded(): boolean;
+  load(): Promise<T>;
   reset(): void;
 }
 
 export function createLazyLoader<T>(loadFn: () => Promise<T>, errorLabel: string): LazyLoader<T> {
-  let data: T | null = null;
-  let promise: Promise<T> | null = null;
+  let data: null | T = null;
+  let promise: null | Promise<T> = null;
 
   return {
+    get(): T {
+      if (data === null) {
+        throw new Error(`${errorLabel} not loaded. Call load() first.`);
+      }
+      return data;
+    },
+
+    isLoaded(): boolean {
+      return data !== null;
+    },
+
     load(): Promise<T> {
       if (data !== null) {
         return Promise.resolve(data);
@@ -35,17 +46,6 @@ export function createLazyLoader<T>(loadFn: () => Promise<T>, errorLabel: string
           throw new Error(`Failed to load ${errorLabel}: ${message}`);
         });
       return promise;
-    },
-
-    get(): T {
-      if (data === null) {
-        throw new Error(`${errorLabel} not loaded. Call load() first.`);
-      }
-      return data;
-    },
-
-    isLoaded(): boolean {
-      return data !== null;
     },
 
     reset(): void {

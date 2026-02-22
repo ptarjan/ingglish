@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { detectCasePattern, applyCasePattern, splitCamelCase } from './case';
+import { describe, expect, it, vi } from 'vitest';
+import { applyCasePattern, detectCasePattern, splitCamelCase } from './case';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {
@@ -80,12 +80,12 @@ describe('case-utils', () => {
   describe('round-trip', () => {
     it('should preserve case pattern through detect -> apply', () => {
       const testCases = [
-        { word: 'hello', translated: 'world', expected: 'world' },
-        { word: 'HELLO', translated: 'world', expected: 'WORLD' },
-        { word: 'Hello', translated: 'world', expected: 'World' },
+        { expected: 'world', translated: 'world', word: 'hello' },
+        { expected: 'WORLD', translated: 'world', word: 'HELLO' },
+        { expected: 'World', translated: 'world', word: 'Hello' },
       ];
 
-      for (const { word, translated, expected } of testCases) {
+      for (const { expected, translated, word } of testCases) {
         const pattern = detectCasePattern(word);
         const result = applyCasePattern(translated, pattern, word);
         expect(result).toBe(expected);
@@ -147,7 +147,7 @@ describe('case-utils', () => {
 
     it('should use charCode-based fast path (verifies optimization assumption)', () => {
       for (let charCode = 65; charCode <= 90; charCode++) {
-        const char = String.fromCharCode(charCode);
+        const char = String.fromCodePoint(charCode);
         const word = 'a' + char;
         expect(splitCamelCase(word)).toEqual(['a', char]);
       }

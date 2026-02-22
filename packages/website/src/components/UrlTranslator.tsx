@@ -1,29 +1,9 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { getFormatLabel } from '@ingglish/phonemes';
-import { trackUrlTranslate, trackShare } from '../analytics';
+import { trackShare, trackUrlTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
 import { useShare } from '../hooks/useShare';
-import { useUrlTranslator, normalizeUrl } from '../hooks/useUrlTranslator';
-
-/**
- * Fullscreen icon (expand arrows)
- */
-function FullscreenIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-    </svg>
-  );
-}
+import { normalizeUrl, useUrlTranslator } from '../hooks/useUrlTranslator';
 
 /**
  * Exit fullscreen icon (shrink arrows)
@@ -31,16 +11,36 @@ function FullscreenIcon() {
 function ExitFullscreenIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
       fill="none"
+      height="16"
       stroke="currentColor"
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
     >
       <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+    </svg>
+  );
+}
+
+/**
+ * Fullscreen icon (expand arrows)
+ */
+function FullscreenIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
     </svg>
   );
 }
@@ -62,13 +62,13 @@ const EXAMPLE_URLS = [
 
 interface UrlTranslatorProps {
   initialUrl?: string;
-  onShare?: (url: string) => string;
   onNavigate?: (url: string) => void;
+  onShare?: (url: string) => string;
 }
 
-function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorProps) {
+function UrlTranslator({ initialUrl = '', onNavigate, onShare }: UrlTranslatorProps) {
   const { format, toggleFormat } = useFormat();
-  const { url, setUrl, isLoading, hasContent, error, iframeRef, translateUrl, clear } =
+  const { clear, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
     useUrlTranslator({ onNavigate, outputFormat: format });
   const formRef = useRef<HTMLFormElement>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
@@ -149,35 +149,35 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
 
   return (
     <div className="url-translator">
-      <form ref={formRef} onSubmit={handleSubmit} className="url-form">
+      <form className="url-form" onSubmit={handleSubmit} ref={formRef}>
         <input
-          type="text"
-          value={url}
+          className="url-input"
           onChange={(e) => {
             setUrl(e.target.value);
           }}
           placeholder="Enter a URL (e.g., example.com)"
-          className="url-input"
+          type="text"
+          value={url}
         />
         <button
-          type="submit"
           className={`btn-primary ${isLoading ? 'btn-loading' : ''}`}
           disabled={isLoading}
+          type="submit"
         >
           {isLoading ? 'Loading...' : 'Translate'}
         </button>
-        <button type="button" className="btn-secondary" onClick={toggleFormat}>
+        <button className="btn-secondary" onClick={toggleFormat} type="button">
           {formatLabel} &#x21C5;
         </button>
-        <button type="button" onClick={clear} className="btn-secondary">
+        <button className="btn-secondary" onClick={clear} type="button">
           Clear
         </button>
         {onShare && (
           <button
-            type="button"
-            onClick={handleShare}
             className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
             disabled={url.trim().length === 0}
+            onClick={handleShare}
+            type="button"
           >
             {copiedShare ? 'Copied!' : 'Share'}
           </button>
@@ -187,8 +187,8 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
       {error !== null && <div className="error-message">{error}</div>}
 
       <div
-        ref={iframeContainerRef}
         className={`iframe-container ${hasContent || isLoading ? '' : 'iframe-container--empty'} ${isFullscreen ? 'iframe-container--fullscreen' : ''}`}
+        ref={iframeContainerRef}
       >
         {isLoading && (
           <div className="iframe-loading-indicator">
@@ -197,11 +197,11 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         )}
         {hasContent && (
           <button
-            type="button"
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             className="fullscreen-btn"
             onClick={toggleFullscreen}
             title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            type="button"
           >
             {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
           </button>
@@ -212,10 +212,10 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
             must run inside the iframe. DOMPurify strips all page scripts first, and
             a CSP nonce ensures only our click handler can execute. */}
         <iframe
-          ref={iframeRef}
-          title="Translated page"
-          sandbox="allow-same-origin allow-scripts"
           className={`page-iframe ${hasContent && !isLoading ? 'page-iframe--ready' : ''}`}
+          ref={iframeRef}
+          sandbox="allow-same-origin allow-scripts"
+          title="Translated page"
         />
       </div>
 
@@ -223,13 +223,13 @@ function UrlTranslator({ initialUrl = '', onShare, onNavigate }: UrlTranslatorPr
         <span className="example-label">Try an example:</span>
         {EXAMPLE_URLS.map((example) => (
           <button
-            key={example.url}
-            type="button"
             className="example-link"
+            disabled={isLoading}
+            key={example.url}
             onClick={() => {
               handleExampleClick(example.url);
             }}
-            disabled={isLoading}
+            type="button"
           >
             {example.name}
           </button>

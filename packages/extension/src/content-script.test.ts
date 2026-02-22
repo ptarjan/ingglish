@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Suppress console during tests
 vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -12,11 +12,11 @@ vi.spyOn(console, 'log').mockImplementation(() => {});
 const mockChrome = {
   runtime: {
     id: 'test-extension-id',
+    lastError: null as chrome.runtime.LastError | null,
     onMessage: {
       addListener: vi.fn(),
     },
     sendMessage: vi.fn(),
-    lastError: null as chrome.runtime.LastError | null,
   },
 };
 
@@ -31,7 +31,7 @@ vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
 
 describe('content-script', () => {
   let messageHandler: (
-    message: { type: string; format?: string },
+    message: { format?: string; type: string },
     sender: unknown,
     sendResponse: (response: { success: boolean }) => void
   ) => boolean | undefined;
@@ -48,7 +48,7 @@ describe('content-script', () => {
     // Mock sendMessage for translation requests
     mockChrome.runtime.sendMessage.mockImplementation(
       (
-        message: { type: string; words?: string[]; format?: string },
+        message: { format?: string; type: string; words?: string[] },
         callback?: (response: unknown) => void
       ) => {
         if (message.type === 'GET_FORMAT') {
@@ -93,7 +93,7 @@ describe('content-script', () => {
       // Create badge
       const badge = document.createElement('div');
       badge.id = 'ingglish-badge';
-      document.body.appendChild(badge);
+      document.body.append(badge);
 
       // Send RESTORE message
       const sendResponse = vi.fn();
@@ -108,7 +108,7 @@ describe('content-script', () => {
       expect(document.body.classList.contains('ingglish-ready')).toBe(true);
 
       // Badge should be removed
-      expect(document.getElementById('ingglish-badge')).toBeNull();
+      expect(document.querySelector('#ingglish-badge')).toBeNull();
     });
   });
 
@@ -128,14 +128,14 @@ describe('content-script', () => {
       const span2 = originalSpans[1];
 
       // Mark as translated
-      const win = window as { __ingglishStateLite?: { translated: boolean } };
+      const win = globalThis as { __ingglishStateLite?: { translated: boolean } };
       if (win.__ingglishStateLite) {
         win.__ingglishStateLite.translated = true;
       }
 
       // Send RETRANSLATE message
       const sendResponse = vi.fn();
-      messageHandler({ type: 'RETRANSLATE', format: 'ipa' }, {}, sendResponse);
+      messageHandler({ format: 'ipa', type: 'RETRANSLATE' }, {}, sendResponse);
 
       // Wait for async processing
       await vi.waitFor(
@@ -166,7 +166,7 @@ describe('content-script', () => {
       }
       document.body.innerHTML = `<p>${spans.join(' ')}</p>`;
 
-      const win = window as { __ingglishStateLite?: { translated: boolean } };
+      const win = globalThis as { __ingglishStateLite?: { translated: boolean } };
       if (win.__ingglishStateLite) {
         win.__ingglishStateLite.translated = true;
       }
@@ -174,7 +174,7 @@ describe('content-script', () => {
       const startTime = performance.now();
       const sendResponse = vi.fn();
 
-      messageHandler({ type: 'RETRANSLATE', format: 'ipa' }, {}, sendResponse);
+      messageHandler({ format: 'ipa', type: 'RETRANSLATE' }, {}, sendResponse);
 
       // Should return quickly (not block)
       const initialResponseTime = performance.now() - startTime;
@@ -208,7 +208,7 @@ describe('content-script', () => {
       // Add a mutation with a unique word
       const p = document.createElement('p');
       p.textContent = 'Xylophone'; // Unique word not in initial translation
-      document.body.appendChild(p);
+      document.body.append(p);
 
       // Check immediately (before 100ms debounce)
       await new Promise((r) => setTimeout(r, 20));
@@ -243,7 +243,7 @@ describe('content-script', () => {
       // Add first mutation with unique words
       const p1 = document.createElement('p');
       p1.textContent = 'Alpha bravo';
-      document.body.appendChild(p1);
+      document.body.append(p1);
 
       // Wait 30ms (still within debounce window)
       await new Promise((r) => setTimeout(r, 30));
@@ -251,7 +251,7 @@ describe('content-script', () => {
       // Add second mutation
       const p2 = document.createElement('p');
       p2.textContent = 'Charlie delta';
-      document.body.appendChild(p2);
+      document.body.append(p2);
 
       // Wait 30ms more (still within debounce window from second mutation)
       await new Promise((r) => setTimeout(r, 30));
@@ -259,7 +259,7 @@ describe('content-script', () => {
       // Add third mutation
       const p3 = document.createElement('p');
       p3.textContent = 'Echo foxtrot';
-      document.body.appendChild(p3);
+      document.body.append(p3);
 
       // Wait for debounce to complete (100ms from last mutation + buffer)
       await new Promise((r) => setTimeout(r, 150));

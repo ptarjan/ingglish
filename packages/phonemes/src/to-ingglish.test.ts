@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  INGGLISH_VOWEL_MAP as VOWEL_MAP,
   INGGLISH_CONSONANT_MAP as CONSONANT_MAP,
+  INGGLISH_VOWEL_MAP as VOWEL_MAP,
 } from './ingglish-maps';
 import { ARPABET_TO_INGGLISH_MAP as ARPABET_MAP, arpabetToIngglish, stripStress } from './index';
 

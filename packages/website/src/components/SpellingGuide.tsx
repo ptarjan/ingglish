@@ -1,10 +1,10 @@
 import { arpabetPhonemeToIngglish } from '@ingglish/phonemes';
-import { vowelGroups, consonantGroups, type SoundGroup } from '../data/spelling-guide-data';
+import { consonantGroups, type SoundGroup, vowelGroups } from '../data/spelling-guide-data';
 import { getCleanIPA, renderExamples } from './phoneme-display';
 
 function SpellingGuide(): React.JSX.Element {
   const renderGroup = (group: SoundGroup): React.JSX.Element => (
-    <div key={group.name} className="sound-group">
+    <div className="sound-group" key={group.name}>
       <h4>{group.name}</h4>
       <table className="mapping-table">
         <thead>
@@ -38,40 +38,40 @@ function SpellingGuide(): React.JSX.Element {
           Many{' '}
           <a
             href="https://en.wikipedia.org/wiki/English-language_spelling_reform"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             spelling reforms
           </a>{' '}
           have been proposed over the centuries, from{' '}
           <a
             href="https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             Benjamin Franklin's phonetic alphabet
           </a>{' '}
           (1768) to the{' '}
           <a
             href="https://en.wikipedia.org/wiki/Shavian_alphabet"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             Shavian alphabet
           </a>{' '}
           (48 new characters) to{' '}
           <a
             href="https://en.wikipedia.org/wiki/Cut_Spelling"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             Cut Spelling
           </a>{' '}
           (removing silent letters).{' '}
           <a
             href="https://en.wikipedia.org/wiki/Noah_Webster#Spelling_reform"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             Noah Webster
           </a>{' '}
@@ -108,12 +108,12 @@ function SpellingGuide(): React.JSX.Element {
 
       <div className="guide-section">
         <h3>Vowels</h3>
-        <div className="sound-groups">{vowelGroups.map(renderGroup)}</div>
+        <div className="sound-groups">{vowelGroups.map((group) => renderGroup(group))}</div>
       </div>
 
       <div className="guide-section">
         <h3>Consonants</h3>
-        <div className="sound-groups">{consonantGroups.map(renderGroup)}</div>
+        <div className="sound-groups">{consonantGroups.map((group) => renderGroup(group))}</div>
       </div>
 
       <div className="guide-section">

@@ -1,9 +1,9 @@
-export { detectCasePattern, applyCasePattern, splitCamelCase } from './case';
+export { applyCasePattern, detectCasePattern, splitCamelCase } from './case';
 export type { CasePattern } from './case';
 
 export {
-  normalizeApostrophes,
-  stripDiacritics,
   extractPreservedPatterns,
+  normalizeApostrophes,
   restorePreservedPatterns,
+  stripDiacritics,
 } from './text';

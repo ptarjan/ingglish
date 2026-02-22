@@ -1,6 +1,6 @@
-import { translateSyncWithMapping, type TranslatedToken } from 'ingglish';
-import { useState, useMemo, useDeferredValue, useCallback, useEffect } from 'react';
-import { SAMPLE_PASSAGES, pickRandomPassage } from '../data/sample-text';
+import { type TranslatedToken, translateSyncWithMapping } from 'ingglish';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { pickRandomPassage, SAMPLE_PASSAGES } from '../data/sample-text';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
 
@@ -26,13 +26,13 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   // translateSyncWithMapping is a stable module-level function whose output
   // changes when the experiment mapping is updated. We capture `version` so
   // React re-computes this memo on every mapping edit.
-  const { tokens, diffMap } = useMemo(() => {
+  const { diffMap, tokens } = useMemo(() => {
     void version;
     if (deferredText.trim().length === 0) {
-      return { tokens: [] as TranslatedToken[], diffMap: undefined };
+      return { diffMap: undefined, tokens: [] as TranslatedToken[] };
     }
     const expTokens = translateSyncWithMapping(deferredText, 'experiment');
-    return { tokens: expTokens, diffMap: buildDiffMap(expTokens, deferredText, 'experiment') };
+    return { diffMap: buildDiffMap(expTokens, deferredText, 'experiment'), tokens: expTokens };
   }, [deferredText, version]);
 
   const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -54,12 +54,12 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
       <div className="experiment-translator-header">
         <h3>Test</h3>
         <select
-          onChange={handleSample}
-          value={selectedIndex >= 0 ? String(selectedIndex) : ''}
-          className="sample-select"
           aria-label="Load sample passage"
+          className="sample-select"
+          onChange={handleSample}
+          value={selectedIndex === -1 ? '' : String(selectedIndex)}
         >
-          <option value="" disabled>
+          <option disabled value="">
             Load sample...
           </option>
           {SAMPLE_PASSAGES.map((p, i) => (
@@ -68,30 +68,30 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
             </option>
           ))}
         </select>
-        <button onClick={handleRandom} className="btn-secondary">
+        <button className="btn-secondary" onClick={handleRandom}>
           Random
         </button>
       </div>
 
       <textarea
-        value={text}
+        className="text-input experiment-input"
         onChange={(e) => {
           setText(e.target.value);
         }}
         placeholder="Type or paste English text here..."
-        className="text-input experiment-input"
-        spellCheck={false}
         rows={4}
+        spellCheck={false}
+        value={text}
       />
 
       {hasContent && (
         <div className="experiment-output">
           <div className="experiment-output-label">Translated:</div>
           <MappedWordDisplay
-            tokens={tokens}
+            className="experiment-words"
             diffMap={diffMap}
             showTooltip
-            className="experiment-words"
+            tokens={tokens}
           />
         </div>
       )}
