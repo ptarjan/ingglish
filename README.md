@@ -35,7 +35,11 @@ This is a monorepo containing:
 | **@ingglish/phonemes** | Phoneme data + ARPAbet/IPA/Ingglish conversion |
 | **@ingglish/tokenize** | Tokenization, word patterns |
 | **@ingglish/dictionary** | CMU dictionary, lookup, word frequency |
+| **@ingglish/g2p** | Rule-based grapheme-to-phoneme conversion |
 | **@ingglish/fallback** | Unknown word strategies (G2P, stemming, compounds) |
+| **@ingglish/ipa** | IPA ↔ ARPAbet conversion |
+| **@ingglish/shavian** | Shavian alphabet ↔ ARPAbet conversion |
+| **@ingglish/deseret** | Deseret alphabet ↔ ARPAbet conversion |
 | **@ingglish/dom** | DOM translation utilities (Browser only) |
 | **@ingglish/website** | React website for text and URL translation |
 | **@ingglish/extension** | Chrome extension for translating any webpage |

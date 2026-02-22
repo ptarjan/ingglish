@@ -68,7 +68,7 @@ npm run format
 npm run format:check
 
 # Run all checks (lint, format, test)
-npm run check
+npm run lint && npm run lint:css && npm run format:check && npm test
 ```
 
 ## Project Structure
@@ -79,7 +79,11 @@ packages/
 ├── phonemes/       # Phoneme data + conversion (0 deps)
 ├── tokenize/       # Tokenization, word patterns (→ normalize)
 ├── dictionary/     # CMU dict, lookup, frequency
-├── fallback/       # Unknown word strategies (→ phonemes + dictionary)
+├── g2p/            # Rule-based grapheme-to-phoneme (→ phonemes)
+├── fallback/       # Unknown word strategies (→ phonemes + dictionary + g2p)
+├── ipa/            # IPA ↔ ARPAbet conversion (→ phonemes)
+├── shavian/        # Shavian alphabet conversion (→ phonemes + dictionary)
+├── deseret/        # Deseret alphabet conversion (→ phonemes + dictionary)
 ├── core/           # Translation API (→ all above)
 ├── dom/            # DOM translation utilities (Browser only)
 ├── website/        # React web app (Vite + TypeScript)
@@ -133,7 +137,8 @@ Edit files in `packages/fallback/src/`:
 - `stemming.ts` - Add suffix rules
 - `compounds.ts` - Add compound word patterns
 - `acronyms.ts` - Add initialism handling
-- `g2p-rules.ts` - Improve rule-based grapheme-to-phoneme conversion
+
+For rule-based grapheme-to-phoneme conversion, edit `packages/g2p/src/g2p-rules.ts`.
 
 For custom pronunciations (tech terms, brand names), edit `packages/dictionary/src/custom-words.ts`.
 
@@ -201,7 +206,7 @@ refactor: simplify unknown word handling
 
 1. Create a feature branch: `git checkout -b feat/your-feature`
 2. Make your changes with tests
-3. Run `npm run check` to lint, format check, and test
+3. Run lint, format check, and tests
 4. Commit with a descriptive message
 5. Push and create a PR against `main`
 
