@@ -42,6 +42,22 @@ These are the most useful metrics for evaluating a mapping.
 
 **Implementation:** [`mapping-metrics.ts: g2pRoundtripScore`](../packages/website/src/lib/mapping-metrics.ts)
 
+## Orthographic Transparency
+
+These are system-level properties of the mapping, not per-experiment scores. They measure how predictable the spelling-sound relationship is, following the framework from [Ziegler, Stone & Jacobs (1997)](https://doi.org/10.3758/BF03214423). See [Orthographic Transparency](orthographic-transparency.md) for the full analysis including comparisons with other languages and spelling reforms.
+
+### Feedforward Consistency (Spelling → Sound)
+
+**What it measures:** Given a grapheme, how many possible pronunciations does it have? A ratio of 1.0 means every grapheme always makes the same sound.
+
+**Ingglish score: 1.00** — perfect. Each of the 39 graphemes maps to exactly one phoneme. No exceptions, no context rules, no silent letters. For comparison, English scores ~0.70 ("ough" alone has 6+ pronunciations).
+
+### Feedback Consistency (Sound → Spelling)
+
+**What it measures:** Given a phoneme, how many possible spellings does it have? A ratio of 1.0 means every phoneme has exactly one spelling.
+
+**Ingglish score: 0.92** — near-perfect, with exactly three minor ambiguities: "a" can represent /æ/ or schwa (stress-conditioned), "er" can be the r-colored vowel or EH+R, and "sh" can be the fricative or S+HH. For comparison, English scores ~0.50 (/iː/ alone has 11+ spellings).
+
 ## Additional Metrics
 
 These metrics were investigated during development. Each captures something real but has a fundamental limitation that prevents it from being used for optimization. They are shown on the experiment page for comparison. See [why surface-level metrics can't optimize mappings](#why-surface-level-metrics-cant-optimize-mappings) for the full analysis.
