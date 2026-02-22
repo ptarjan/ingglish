@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 /**
  * Hook for copying text to clipboard with a temporary "copied" state.
@@ -8,6 +8,12 @@ import { useState, useCallback, useRef } from 'react';
 export function useClipboard(): [boolean, (text: string) => void] {
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const copy = useCallback((text: string) => {
     navigator.clipboard.writeText(text).then(

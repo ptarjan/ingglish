@@ -63,13 +63,13 @@ export function isPrivateHost(hostname: string): boolean {
 
   // Block private IPv4 ranges
   for (const pattern of PRIVATE_IPV4_PATTERNS) {
-    if (pattern.test(hostname)) {
+    if (pattern.test(lowerHost)) {
       return true;
     }
   }
 
   // Block IPv6 loopback and private
-  if (hostname === '::1' || hostname.startsWith('fc') || hostname.startsWith('fd')) {
+  if (lowerHost === '::1' || lowerHost.startsWith('fc') || lowerHost.startsWith('fd')) {
     return true;
   }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 /**
  * Hook for sharing URLs via the Web Share API (mobile) with clipboard fallback (desktop).
@@ -8,6 +8,12 @@ import { useState, useCallback, useRef } from 'react';
 export function useShare(): [boolean, (url: string, title?: string, text?: string) => void] {
   const [shared, setShared] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const showCopied = useCallback(() => {
     setShared(true);

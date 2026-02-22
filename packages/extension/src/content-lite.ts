@@ -28,6 +28,7 @@ interface IngglishState {
   injected: boolean;
   translated: boolean;
   observer: MutationObserver | null;
+  debounceTimer: ReturnType<typeof setTimeout> | null;
 }
 
 function getState(): IngglishState {
@@ -36,6 +37,7 @@ function getState(): IngglishState {
     injected: false,
     translated: false,
     observer: null,
+    debounceTimer: null,
   };
   return win.__ingglishStateLite;
 }
@@ -97,7 +99,7 @@ function injectScriptFont(doc: Document, id: string, family: string): void {
   link.id = id;
   link.rel = 'stylesheet';
   link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}&display=swap`;
-  doc.head.appendChild(link);
+  doc.head?.appendChild(link);
 }
 
 const SCRIPT_FONTS: Record<string, [string, string]> = {
@@ -284,7 +286,6 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 
   // Debounce and batch mutations to avoid overwhelming the browser
   let pendingNodes: Text[] = [];
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let isProcessing = false;
 
   async function processPendingNodes(): Promise<void> {
@@ -367,11 +368,11 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
     }
 
     // Debounce processing (wait for mutations to settle)
-    if (debounceTimer !== null) {
-      clearTimeout(debounceTimer);
+    if (state.debounceTimer !== null) {
+      clearTimeout(state.debounceTimer);
     }
-    debounceTimer = setTimeout(() => {
-      debounceTimer = null;
+    state.debounceTimer = setTimeout(() => {
+      state.debounceTimer = null;
       void processPendingNodes();
     }, 100); // 100ms debounce
   });
@@ -386,6 +387,11 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 function restorePage(): void {
   // eslint-disable-next-line no-console
   console.log('Ingglish: Restoring original text...');
+
+  if (state.debounceTimer !== null) {
+    clearTimeout(state.debounceTimer);
+    state.debounceTimer = null;
+  }
 
   if (state.observer) {
     state.observer.disconnect();
@@ -424,6 +430,10 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
 
   if (wordSpans.length === 0) {
     // No spans found, fall back to full re-translation
+    if (state.debounceTimer !== null) {
+      clearTimeout(state.debounceTimer);
+      state.debounceTimer = null;
+    }
     if (state.observer) {
       state.observer.disconnect();
       state.observer = null;

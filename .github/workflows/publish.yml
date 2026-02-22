@@ -22,7 +22,7 @@ jobs:
         run: npm test --workspaces --if-present
 
       - name: Build
-        run: npm run build:libs && npm run build -w @ingglish/dom
+        run: npx turbo build
 
       - name: Publish packages
         run: |
