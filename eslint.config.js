@@ -127,6 +127,7 @@ export default tseslint.config(
       'unicorn/no-process-exit': 'off',
       'unicorn/prefer-module': 'off',
       'unicorn/prefer-top-level-await': 'off',
+      'unicorn/no-useless-undefined': ['error', { checkArguments: false }],
       'unicorn/prevent-abbreviations': 'off',
 
       // Regexp rules (recommended preset)

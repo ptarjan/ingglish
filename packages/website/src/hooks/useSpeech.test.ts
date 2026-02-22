@@ -67,7 +67,7 @@ describe('useSpeech', () => {
   });
 
   it('returns supported=false when speechSynthesis is unavailable', () => {
-    vi.stubGlobal('speechSynthesis');
+    vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
     const supported = result.current[3];
     expect(supported).toBe(false);
@@ -153,7 +153,7 @@ describe('useSpeech', () => {
   });
 
   it('speak is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis');
+    vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -163,7 +163,7 @@ describe('useSpeech', () => {
   });
 
   it('stop is a no-op when unsupported', () => {
-    vi.stubGlobal('speechSynthesis');
+    vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     // Should not throw

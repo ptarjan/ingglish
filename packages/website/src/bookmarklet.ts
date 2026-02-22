@@ -11,9 +11,7 @@
 import { restoreDOM, translateDOM } from '@ingglish/dom';
 
 declare global {
-  interface Window {
-    __ingglishState?: 'loading' | 'restored' | 'translated';
-  }
+  var __ingglishState: 'loading' | 'restored' | 'translated' | undefined;
 }
 
 void (async () => {
