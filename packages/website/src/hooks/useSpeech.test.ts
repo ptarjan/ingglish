@@ -57,7 +57,6 @@ describe('useSpeech', () => {
   });
 
   it('returns supported=false when speechSynthesis is unavailable', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
     const [, , , supported] = result.current;
@@ -144,7 +143,6 @@ describe('useSpeech', () => {
   });
 
   it('speak is a no-op when unsupported', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
@@ -155,7 +153,6 @@ describe('useSpeech', () => {
   });
 
   it('stop is a no-op when unsupported', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     vi.stubGlobal('speechSynthesis', undefined);
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 

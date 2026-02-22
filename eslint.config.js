@@ -89,6 +89,7 @@ export default tseslint.config(
           allowBoolean: true,
         },
       ],
+      '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
       '@typescript-eslint/no-deprecated': 'error',
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -121,7 +122,7 @@ export default tseslint.config(
       'unicorn/no-lonely-if': 'error',
       'unicorn/no-array-push-push': 'error',
       'unicorn/prefer-node-protocol': 'error',
-      'unicorn/no-useless-undefined': 'error',
+      'unicorn/no-useless-undefined': ['error', { checkArguments: false }],
       'unicorn/prefer-number-properties': 'error',
 
       // Regexp rules (recommended preset)

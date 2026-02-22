@@ -14,9 +14,7 @@ vi.mock('ingglish', () => ({
 }));
 
 // Suppress console.error and console.log during tests
-// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
 vi.spyOn(console, 'error').mockImplementation(() => {});
-// eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op mock
 vi.spyOn(console, 'log').mockImplementation(() => {});
 
 // Type definitions for chrome API mock
