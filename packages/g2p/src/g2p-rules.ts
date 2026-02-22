@@ -1098,8 +1098,9 @@ function nrlToArpabet(phoneme: string): string {
 // ---------------------------------------------------------------------------
 
 interface CompiledRule {
-  leftRe: RegExp;
+  leftRe: RegExp | null; // null when left context is empty (always matches)
   rightRe: RegExp;
+  target: string; // Target letters (e.g., "ASE") for fast pre-check
   targetLen: number;
   phonemes: string[]; // ARPAbet phonemes (empty array for silence)
   ruleStr: string; // Original NRL rule string
@@ -1146,13 +1147,14 @@ function compileRule(ruleStr: string): CompiledRule | null {
   const rightCtx = m[3]!;
   const phonemeStr = m[4]!;
 
-  // Build left regex (anchored at end of parsed text)
+  // Build left regex (anchored at end of parsed text), null if no left context
   const leftPattern = expandContext(leftCtx);
-  const leftRe = new RegExp(leftPattern + '$');
+  const leftRe = leftPattern.length > 0 ? new RegExp(leftPattern + '$') : null;
 
-  // Build right regex (anchored at start: target literal + expanded context)
+  // Build right regex with sticky flag (avoids substring allocation)
+  // Sticky (y) anchors at lastIndex, so we set lastIndex = pos before testing
   const rightPattern = expandContext(rightCtx);
-  const rightRe = new RegExp('^' + escapeRegex(target) + rightPattern);
+  const rightRe = new RegExp(escapeRegex(target) + rightPattern, 'y');
 
   // Parse phonemes: strip delimiters, split, map to ARPAbet
   const phonemes = phonemeStr
@@ -1161,7 +1163,7 @@ function compileRule(ruleStr: string): CompiledRule | null {
     .filter((p) => p.length > 0)
     .map(nrlToArpabet);
 
-  return { leftRe, rightRe, targetLen: target.length, phonemes, ruleStr };
+  return { leftRe, rightRe, target, targetLen: target.length, phonemes, ruleStr };
 }
 
 // ---------------------------------------------------------------------------
@@ -1198,19 +1200,33 @@ export function wordToArpabetTraced(word: string): G2PTrace {
 
   while (pos < text.length - 1) {
     // trailing space is a boundary, not a character to process
-    const parsed = text.substring(0, pos);
-    const rest = text.substring(pos);
     const ch = text[pos]!;
 
     // Look up rules for this letter
     const rules = COMPILED_RULES[ch] as CompiledRule[] | undefined;
     if (rules !== undefined) {
       let matched = false;
+      // Lazily compute left context substring (only if a rule needs it)
+      let parsed: string | null = null;
       for (const rule of rules) {
-        if (rule.leftRe.test(parsed) && rule.rightRe.test(rest)) {
+        // Fast pre-check: skip if target literal doesn't match at this position.
+        // For multi-letter targets (e.g., "ALLO", "ASE"), this eliminates ~80% of
+        // rules before any regex runs. Single-letter targets always pass since we
+        // already indexed by first letter.
+        if (rule.targetLen > 1 && !text.startsWith(rule.target, pos)) {
+          continue;
+        }
+        // Use sticky regex for right context (avoids rest substring allocation)
+        rule.rightRe.lastIndex = pos;
+        // Skip left regex when null (no left context — always matches)
+        if (
+          (rule.leftRe === null ||
+            ((parsed ??= text.substring(0, pos)), rule.leftRe.test(parsed))) &&
+          rule.rightRe.test(text)
+        ) {
           rawPhonemes.push(...rule.phonemes);
           rawSteps.push({
-            letters: text.substring(pos, pos + rule.targetLen),
+            letters: rule.target,
             ruleStr: rule.ruleStr,
             count: rule.phonemes.length,
           });
