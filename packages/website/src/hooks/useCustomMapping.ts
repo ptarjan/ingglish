@@ -199,9 +199,15 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
   if (hash.length === 0) {
     return null;
   }
-  const clean = hash.startsWith('#') ? hash.slice(1) : hash;
-  if (clean.length === 0) {
+  const raw = hash.startsWith('#') ? hash.slice(1) : hash;
+  if (raw.length === 0) {
     return null;
+  }
+  let clean: string;
+  try {
+    clean = decodeURIComponent(raw);
+  } catch {
+    clean = raw;
   }
 
   const config: CustomMappingConfig = { phonemeMap: {}, rColoredPrefixes: {} };
@@ -242,13 +248,13 @@ function encodeToHash(config: CustomMappingConfig): string {
   const parts: string[] = [];
   if (Object.keys(config.phonemeMap).length > 0) {
     const m = Object.entries(config.phonemeMap)
-      .map(([k, v]) => `${k}:${v}`)
+      .map(([k, v]) => `${k}:${encodeURIComponent(v)}`)
       .join(',');
     parts.push(`m=${m}`);
   }
   if (Object.keys(config.rColoredPrefixes).length > 0) {
     const r = Object.entries(config.rColoredPrefixes)
-      .map(([k, v]) => `${k}:${v}`)
+      .map(([k, v]) => `${k}:${encodeURIComponent(v)}`)
       .join(',');
     parts.push(`r=${r}`);
   }
