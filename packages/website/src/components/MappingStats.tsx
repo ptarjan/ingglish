@@ -392,7 +392,9 @@ function MappingStats({ version }: MappingStatsProps) {
             {experiment.textPreservedPct.toFixed(1)}%
             <DeltaBadge value={experiment.textPreservedPct - ingglish.textPreservedPct} />
           </div>
-          <div className="stat-label">Text preserved</div>
+          <div className="stat-label">
+            <a href="https://ingglish.com/docs/metrics#text-preserved">Text preserved</a>
+          </div>
         </div>
         <div
           className="stat-card"
@@ -402,7 +404,9 @@ function MappingStats({ version }: MappingStatsProps) {
             {experiment.uniquePct.toFixed(1)}%
             <DeltaBadge value={experiment.uniquePct - ingglish.uniquePct} />
           </div>
-          <div className="stat-label">Unambiguous text</div>
+          <div className="stat-label">
+            <a href="https://ingglish.com/docs/metrics#unambiguous-text">Unambiguous text</a>
+          </div>
         </div>
         <div
           className="stat-card"
@@ -412,7 +416,9 @@ function MappingStats({ version }: MappingStatsProps) {
             {(experiment.pronounceability * 100).toFixed(1)}%
             <DeltaBadge value={(experiment.pronounceability - ingglish.pronounceability) * 100} />
           </div>
-          <div className="stat-label">Pronounceability</div>
+          <div className="stat-label">
+            <a href="https://ingglish.com/docs/metrics#pronounceability">Pronounceability</a>
+          </div>
         </div>
       </div>
 
