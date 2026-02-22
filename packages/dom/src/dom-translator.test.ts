@@ -368,51 +368,11 @@ describe('dom-translator', () => {
 
     // Note: iframe tests are skipped in jsdom due to limited contentDocument support
     // The fix for iframe style injection is tested manually in real browsers
-    it.skip('should inject styles into iframe document, not parent document', () => {
-      // Create an iframe
-      const iframe = document.createElement('iframe');
-      document.body.append(iframe);
+    // iframe contentDocument is not supported in jsdom - tested manually in real browsers
+    it.todo('should inject styles into iframe document, not parent document');
 
-      const iframeDoc = iframe.contentDocument;
-      expect(iframeDoc).not.toBeNull();
-      if (iframeDoc === null) {
-        return;
-      }
-      iframeDoc.body.innerHTML = '<p>Hello world</p>';
-
-      // Translate the iframe's body
-      translateDOMSync(iframeDoc.body, { showTooltips: true });
-
-      // Styles should be injected into iframe's document
-      const iframeStyle = iframeDoc.querySelector('#ingglish-tooltip-styles');
-      expect(iframeStyle).not.toBeNull();
-      expect(iframeStyle?.textContent).toContain('.ingglish-word');
-
-      // Verify spans were created in iframe
-      const spans = iframeDoc.querySelectorAll('.ingglish-word');
-      expect(spans).toHaveLength(2);
-    });
-
-    it.skip('should inject styles into multiple documents independently', () => {
-      // First translate main document
-      document.body.innerHTML = '<p>Hello</p>';
-      translateDOMSync(document.body, { showTooltips: true });
-
-      // Create an iframe and translate it
-      const iframe = document.createElement('iframe');
-      document.body.append(iframe);
-      const iframeDoc = iframe.contentDocument;
-      expect(iframeDoc).not.toBeNull();
-      if (iframeDoc === null) {
-        return;
-      }
-      iframeDoc.body.innerHTML = '<p>World</p>';
-      translateDOMSync(iframeDoc.body, { showTooltips: true });
-
-      // Both documents should have styles
-      expect(document.querySelector('#ingglish-tooltip-styles')).not.toBeNull();
-      expect(iframeDoc.querySelector('#ingglish-tooltip-styles')).not.toBeNull();
-    });
+    // iframe contentDocument is not supported in jsdom - tested manually in real browsers
+    it.todo('should inject styles into multiple documents independently');
   });
 
   describe('chunked option', () => {
