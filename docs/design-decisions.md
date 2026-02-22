@@ -120,11 +120,3 @@ When certain vowels are followed by R, they combine into [r-colored sounds](http
 Ingglish uses [General American English](https://en.wikipedia.org/wiki/General_American_English) via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for how this affects non-American speakers.
 
 Every spelling has precedent in at least one major language — see [Orthography Comparison](orthography-comparison.md) for language-by-language detail.
-
-## See Also
-
-- [Spelling Iteration Log](spelling-iteration.md) - Complete history of spelling changes
-- [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
-- [Phoneme Mapping](phoneme-mapping.md) - Technical mapping tables
-- [Spelling Reform History](spelling-reform-comparison.md) - Why previous reforms failed
-- [Identical Words Analysis](identical-words-analysis.md) - Analysis of words that stay unchanged

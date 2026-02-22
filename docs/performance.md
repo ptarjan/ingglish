@@ -153,8 +153,3 @@ Dictionaries are pre-processed at build time (in `@ingglish/dictionary`):
 - Reverse dictionary pre-sorted by word frequency (no runtime sorting)
 
 This keeps initial page load fast while deferring heavy data until needed.
-
-## See Also
-
-- [Architecture](architecture.md) - System design and data flow
-- [Contributing](contributing.md) - Development workflow

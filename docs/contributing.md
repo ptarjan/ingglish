@@ -214,9 +214,3 @@ Before submitting:
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
-
-## See Also
-
-- [Architecture](architecture.md) - How the codebase is organized
-- [Performance](performance.md) - Profiling and benchmarking
-- [Troubleshooting](troubleshooting.md) - Common issues and solutions

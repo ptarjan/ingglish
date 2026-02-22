@@ -216,13 +216,6 @@ English spelling works, but at unnecessary cost. Every generation of learners pa
 
 Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can find a foothold in domains where consistency matters while traditional spelling persists elsewhere. Metric took decades. Hangul took centuries.
 
-## See Also
-
-- [Contemporary Community Landscape](community-landscape.md) - Survey of ~92 spelling reform proposals from r/conorthography and how Ingglish compares
-- [Orthography Comparison](orthography-comparison.md) - How Ingglish's specific spellings compare to other languages
-- [Phoneme Mapping](phoneme-mapping.md) - The complete sound-to-spelling reference
-- [Architecture](architecture.md) - How the translation system works
-
 ## Video Resources
 
 - [There's a better English alphabet](https://www.youtube.com/watch?v=D66LrlotvCA) - RobWords (19 min) - Deep dive into the Shavian alphabet and whether a phonemic alphabet could work for English

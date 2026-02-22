@@ -189,10 +189,3 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 3. **Accent neutrality**: CMU dictionary represents General American English. This includes maintaining the [cot-caught distinction](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (/ɑ/ vs /ɔ/) even though many American speakers merge these vowels. We preserve the distinction because the CMU dictionary does and because it serves speakers who maintain it.
 4. **Allophonic detail not captured**: As a phonemic (not phonetic) system, Ingglish does not represent allophonic variation such as aspiration of stops (/pʰ/ in "pin" vs /p/ in "spin"), flapping of /t/ ([ɾ] in "butter"), or vowel nasalization. These are predictable from context and don't change word meanings.
 5. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
-
-## See Also
-
-- [Design Decisions](design-decisions.md) - Why Ingglish works the way it does
-- [Spelling Iteration Log](spelling-iteration.md) - History of spelling changes
-- [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
-- [Architecture](architecture.md) - How translation works end-to-end

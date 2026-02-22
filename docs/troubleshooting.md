@@ -110,9 +110,3 @@ it('should round-trip "exhumed"', () => {
   expect(results).toContain(word);
 });
 ```
-
-## See Also
-
-- [Architecture](architecture.md) - How the translation pipeline works
-- [Phoneme Mapping](phoneme-mapping.md) - ARPAbet to Ingglish/IPA tables
-- [Performance](performance.md) - Profiling and optimization

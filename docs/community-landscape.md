@@ -226,9 +226,3 @@ The most phonologically sophisticated system in the corpus. Splits FACE into PAN
 ### u/martinribot (power commenter)
 
 Not a system author but the single most technically influential voice in the corpus. Appears in 10+ threads, always writing in their own reform, consistently providing the most substantive critiques. Pushes back on inconsistent diacritic logic, identifies where systems' own patterns break down, and argues that diacritics should encode "some systematic relationship." Their implicit standards (internal consistency, principled diacritics, dialect awareness) function as community norms.
-
-## See Also
-
-- [Spelling Reform Comparison](spelling-reform-comparison.md) — Historical reforms and why they failed
-- [Orthography Comparison](orthography-comparison.md) — Cross-linguistic precedents for each Ingglish spelling
-- [Design Decisions](design-decisions.md) — Rationale for each choice
