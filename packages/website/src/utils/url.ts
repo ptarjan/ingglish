@@ -2,6 +2,8 @@
  * URL utility functions for the URL translator.
  */
 
+import DOMPurify from 'dompurify';
+
 /**
  * Escapes HTML attribute values to prevent XSS.
  */
@@ -108,44 +110,28 @@ export function detectBotProtection(html: string): string | null {
 
 /**
  * Strips script tags and other active content from HTML.
- * Uses DOMParser in browser for reliability, falls back to regex in Node.
+ * Uses DOMPurify in browser for comprehensive mXSS protection,
+ * falls back to regex in Node.js/test environments.
  */
 export function stripScripts(html: string): string {
-  // Use DOMParser in browser environments for more reliable parsing
   if (typeof DOMParser !== 'undefined') {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    // Remove all potentially executable elements
-    doc
-      .querySelectorAll('script, noscript, iframe, object, embed, frame, frameset')
-      .forEach((el) => {
-        el.remove();
-      });
-
-    // Also remove scripts inside template elements
-    doc.querySelectorAll('template').forEach((template) => {
-      const content = template.content;
-      content.querySelectorAll('script').forEach((s) => {
-        s.remove();
-      });
+    return DOMPurify.sanitize(html, {
+      WHOLE_DOCUMENT: true,
+      ADD_TAGS: ['link', 'style', 'meta', 'base'],
+      ADD_ATTR: [
+        'href',
+        'rel',
+        'type',
+        'media',
+        'content',
+        'http-equiv',
+        'charset',
+        'name',
+        'property',
+      ],
+      FORBID_TAGS: ['script', 'noscript', 'iframe', 'object', 'embed', 'frame', 'frameset', 'form'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick'],
     });
-
-    // Remove inline event handlers (onclick, onload, onerror, etc.)
-    doc.querySelectorAll('*').forEach((el) => {
-      Array.from(el.attributes).forEach((attr) => {
-        if (attr.name.startsWith('on')) {
-          el.removeAttribute(attr.name);
-        }
-      });
-    });
-
-    // Preserve doctype if present
-    const doctype = doc.doctype
-      ? `<!DOCTYPE ${doc.doctype.name}${doc.doctype.publicId ? ` PUBLIC "${doc.doctype.publicId}"` : ''}${doc.doctype.systemId ? ` "${doc.doctype.systemId}"` : ''}>`
-      : '';
-
-    return doctype + doc.documentElement.outerHTML;
   }
 
   // Fallback to regex for Node.js/test environments
@@ -202,9 +188,25 @@ export function normalizeUrl(input: string): string | null {
 // Regex patterns for HTML tag matching (precompiled for performance)
 const BODY_CLOSE_REGEX = /<\/body>/i;
 const HTML_CLOSE_REGEX = /<\/html>/i;
+const HEAD_OPEN_REGEX = /<head[^>]*>/i;
 
 /**
- * Script injected into iframe to capture link clicks via postMessage.
+ * Generates a cryptographically random nonce for CSP.
+ * Uses crypto.getRandomValues in browser, falls back to Math.random in Node.
+ */
+function generateNonce(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  // Fallback for test environments
+  return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+}
+
+/**
+ * The minified click handler script body (without <script> wrapper).
+ * Injected into iframe to capture link clicks via postMessage.
  * Handles both touch (iOS Safari) and click events.
  * Distinguishes taps from scroll/pinch gestures on touch devices.
  *
@@ -281,23 +283,53 @@ const HTML_CLOSE_REGEX = /<\/html>/i;
  * })();
  * ```
  */
-const CLICK_HANDLER_SCRIPT = `<script>(function(){var t=null,sx=0,sy=0,th=false;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){th=false;if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){th=true;if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){if(th){th=false;return}h(f(e.target),e)},true)})();</script>`;
+const CLICK_HANDLER_BODY = `(function(){var t=null,sx=0,sy=0,th=false;function f(e){return e&&e.closest?e.closest('a[href]'):function(n){while(n&&n.tagName!=='A')n=n.parentElement;return n}(e)}function h(a,e){if(!a)return;var r=a.getAttribute('href');if(!r||r.indexOf('javascript:')===0||r.indexOf('mailto:')===0)return;e.preventDefault();e.stopPropagation();if(r.indexOf('#')===0){var i=r.slice(1);var g=document.getElementById(i)||document.querySelector('[name="'+i+'"]');if(g)g.scrollIntoView({behavior:'smooth'});return}parent.postMessage({type:'ingglish-link-click',href:r},'*')}document.addEventListener('touchstart',function(e){th=false;if(e.touches.length>1){t=null;return}t=f(e.target);var c=e.touches[0];sx=c?c.clientX:0;sy=c?c.clientY:0},true);document.addEventListener('touchmove',function(e){if(!t)return;if(e.touches.length>1){t=null;return}var c=e.touches[0];if(c&&(Math.abs(c.clientX-sx)>10||Math.abs(c.clientY-sy)>10))t=null},true);document.addEventListener('touchend',function(e){th=true;if(t){var a=t;t=null;h(a,e)}},true);document.addEventListener('click',function(e){if(th){th=false;return}h(f(e.target),e)},true)})();`;
+
+/**
+ * Builds the click handler script tag with an optional nonce.
+ */
+function buildClickHandlerScript(nonce?: string): string {
+  const nonceAttr = nonce ? ` nonce="${nonce}"` : '';
+  return `<script${nonceAttr}>${CLICK_HANDLER_BODY}</script>`;
+}
+
+/**
+ * Builds the CSP meta tag that restricts script execution to the given nonce.
+ */
+function buildCspMetaTag(nonce: string): string {
+  return `<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-${nonce}'; style-src 'unsafe-inline' *; img-src *; font-src *; default-src 'self' *;">`;
+}
+
+/**
+ * Injects the CSP meta tag into the <head> of the HTML.
+ */
+function injectCspMetaTag(html: string, nonce: string): string {
+  const cspTag = buildCspMetaTag(nonce);
+  const headMatch = HEAD_OPEN_REGEX.exec(html);
+  if (headMatch !== null) {
+    return html.replace(headMatch[0], headMatch[0] + cspTag);
+  }
+  // If no <head>, prepend CSP tag
+  return cspTag + html;
+}
 
 /**
  * Injects the click handler script before the closing body or html tag.
  */
-function injectClickHandler(html: string): string {
+function injectClickHandler(html: string, nonce?: string): string {
+  const script = buildClickHandlerScript(nonce);
+
   const bodyMatch = BODY_CLOSE_REGEX.exec(html);
   if (bodyMatch !== null) {
-    return html.replace(bodyMatch[0], CLICK_HANDLER_SCRIPT + bodyMatch[0]);
+    return html.replace(bodyMatch[0], script + bodyMatch[0]);
   }
 
   const htmlMatch = HTML_CLOSE_REGEX.exec(html);
   if (htmlMatch !== null) {
-    return html.replace(htmlMatch[0], CLICK_HANDLER_SCRIPT + htmlMatch[0]);
+    return html.replace(htmlMatch[0], script + htmlMatch[0]);
   }
 
-  return html + CLICK_HANDLER_SCRIPT;
+  return html + script;
 }
 
 export interface ProcessHtmlOptions {
@@ -343,8 +375,12 @@ export function processProxiedHtml(
   // Step 4: Proxy font URLs
   const htmlWithFonts = proxyFontUrls(htmlWithBase, options.proxyUrl);
 
-  // Step 5: Inject click handler
-  const html = injectClickHandler(htmlWithFonts);
+  // Step 5: Inject CSP meta tag with nonce (defense-in-depth)
+  const nonce = generateNonce();
+  const htmlWithCsp = injectCspMetaTag(htmlWithFonts, nonce);
+
+  // Step 6: Inject nonce'd click handler
+  const html = injectClickHandler(htmlWithCsp, nonce);
 
   return { html, baseUrl };
 }

@@ -342,6 +342,32 @@ describe('stripScripts', () => {
   });
 });
 
+describe('stripScripts — SVG/math vectors', () => {
+  it('strips script inside SVG', () => {
+    const html = '<p>hello</p><svg><script>alert(1)</script></svg>';
+    const result = stripScripts(html);
+    expect(result).not.toContain('<script');
+    expect(result).not.toContain('alert(1)');
+    expect(result).toContain('hello');
+  });
+
+  it('strips script inside math element', () => {
+    const html = '<p>hello</p><math><script>alert(1)</script></math>';
+    const result = stripScripts(html);
+    expect(result).not.toContain('<script');
+    expect(result).not.toContain('alert(1)');
+    expect(result).toContain('hello');
+  });
+
+  it('strips mXSS-style nested template payload', () => {
+    // Typical mXSS vector: script hidden inside nesting
+    const html = '<p>safe</p><noscript><p title="</noscript><script>alert(1)</script>">';
+    const result = stripScripts(html);
+    expect(result).not.toContain('alert(1)');
+    expect(result).toContain('safe');
+  });
+});
+
 describe('proxyFontUrls', () => {
   const proxy = 'https://proxy.example.com/?url=';
 
@@ -453,6 +479,38 @@ describe('processProxiedHtml', () => {
     const result = processProxiedHtml(html, options);
 
     expect(result.html).toContain('ingglish-link-click');
+  });
+
+  it('injects CSP meta tag with nonce', () => {
+    const html = '<html><head></head><body><p>Test</p></body></html>';
+    const result = processProxiedHtml(html, options);
+
+    expect(result.html).toContain('http-equiv="Content-Security-Policy"');
+    expect(result.html).toMatch(/script-src 'nonce-[a-f0-9]+'/);
+  });
+
+  it('click handler script has matching nonce attribute', () => {
+    const html = '<html><head></head><body><p>Test</p></body></html>';
+    const result = processProxiedHtml(html, options);
+
+    // Extract nonce from CSP meta tag
+    const cspMatch = /nonce-([a-f0-9]+)/.exec(result.html);
+    expect(cspMatch).not.toBeNull();
+    const nonce = cspMatch![1];
+
+    // Click handler script should have the same nonce
+    expect(result.html).toContain(`<script nonce="${nonce}">`);
+    expect(result.html).toContain('ingglish-link-click');
+  });
+
+  it('generates unique nonces per invocation', () => {
+    const html = '<html><head></head><body></body></html>';
+    const result1 = processProxiedHtml(html, options);
+    const result2 = processProxiedHtml(html, options);
+
+    const nonce1 = /nonce-([a-f0-9]+)/.exec(result1.html)![1];
+    const nonce2 = /nonce-([a-f0-9]+)/.exec(result2.html)![1];
+    expect(nonce1).not.toBe(nonce2);
   });
 
   it('returns correct base URL for different page paths', () => {
