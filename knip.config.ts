@@ -7,22 +7,16 @@ const config: KnipConfig = {
       entry: ['scripts/*.{js,ts}'],
     },
     'packages/core': {
-      entry: ['src/index.ts', 'scripts/**/*.{js,ts}'],
+      entry: ['scripts/**/*.{js,ts}'],
     },
     'packages/dictionary': {
-      entry: ['src/index.ts', 'scripts/**/*.{js,ts}'],
+      entry: ['scripts/**/*.{js,ts}'],
     },
     'packages/dom': {
-      entry: ['src/index.ts', 'scripts/**/*.{js,ts}'],
-    },
-    'packages/*': {
-      entry: ['src/index.ts'],
+      entry: ['scripts/**/*.{js,ts}'],
     },
     'packages/website': {
-      entry: ['src/main.tsx', 'e2e/**/*.ts'],
-    },
-    'packages/extension': {
-      entry: ['src/background.ts', 'src/content-script.ts', 'src/popup.ts'],
+      entry: ['e2e/**/*.ts'],
     },
   },
   ignore: [

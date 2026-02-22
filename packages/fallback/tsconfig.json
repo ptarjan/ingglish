@@ -5,5 +5,11 @@
     "rootDir": "./src"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../phonemes" },
+    { "path": "../ipa" },
+    { "path": "../dictionary" },
+    { "path": "../g2p" }
+  ]
 }
