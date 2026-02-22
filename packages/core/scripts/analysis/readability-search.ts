@@ -162,6 +162,28 @@ for (const word of allWords) {
   }
 }
 
+// --- Phoneme uniqueness check (reverse translation safety) ---
+
+/**
+ * Check if a spelling would conflict with an existing phoneme mapping,
+ * making reverse translation ambiguous. Two phonemes from different
+ * families must not share a spelling.
+ */
+function hasSpellingConflict(
+  spelling: string,
+  forBasePhoneme: string, // base phoneme family (stress stripped)
+  map: Record<string, string>,
+  stressOverrides: Record<string, string>
+): boolean {
+  for (const [phoneme, value] of Object.entries(map)) {
+    if (phoneme !== forBasePhoneme && value === spelling) return true;
+  }
+  for (const [rawPhoneme, value] of Object.entries(stressOverrides)) {
+    if (stripStress(rawPhoneme) !== forBasePhoneme && value === spelling) return true;
+  }
+  return false;
+}
+
 // --- Readability score computation ---
 
 /** Compute frequency-weighted readability for a set of words */
@@ -357,6 +379,7 @@ const baseImprovements: Improvement[] = [];
 let tested = 0;
 let skippedNotBetter = 0;
 let skippedCollisions = 0;
+let skippedPhonemeConflict = 0;
 
 for (let pi = 0; pi < phonemes.length; pi++) {
   const phoneme = phonemes[pi];
@@ -372,6 +395,12 @@ for (let pi = 0; pi < phonemes.length; pi++) {
     if (option === current) continue;
     tested++;
 
+    // Phoneme uniqueness: reject if spelling already used by another phoneme
+    if (hasSpellingConflict(option, phoneme, ARPABET_TO_INGGLISH_MAP, baselineStressOverrides)) {
+      skippedPhonemeConflict++;
+      continue;
+    }
+
     const testMap = { ...ARPABET_TO_INGGLISH_MAP, [phoneme]: option };
     const delta = getReadabilityDelta(affected, testMap, baselineStressOverrides);
 
@@ -380,7 +409,7 @@ for (let pi = 0; pi < phonemes.length; pi++) {
       continue;
     }
 
-    // Collision check
+    // Word-level collision check
     const collisions = getCollisionCount(testMap, baselineStressOverrides);
     if (collisions > baselineCollisions) {
       skippedCollisions++;
@@ -402,6 +431,7 @@ for (let pi = 0; pi < phonemes.length; pi++) {
 console.log(); // newline after progress
 
 console.log(`\nTested ${tested} combinations:`);
+console.log(`  - ${skippedPhonemeConflict} skipped (spelling already used by another phoneme)`);
 console.log(`  - ${skippedNotBetter} skipped (not better)`);
 console.log(`  - ${skippedCollisions} skipped (would add collisions)`);
 console.log(`  - ${baseImprovements.length} valid improvements found`);
@@ -480,6 +510,7 @@ const stressImprovements: Improvement[] = [];
 let stressTested = 0;
 let stressSkippedNotBetter = 0;
 let stressSkippedCollisions = 0;
+let stressSkippedPhonemeConflict = 0;
 
 const sortedStress0 = [...stress0Phonemes].sort();
 for (let si = 0; si < sortedStress0.length; si++) {
@@ -497,6 +528,15 @@ for (let si = 0; si < sortedStress0.length; si++) {
     if (option === currentSpelling) continue;
     stressTested++;
 
+    // Phoneme uniqueness: reject if spelling already used by another phoneme family
+    const basePhoneme = stripStress(rawPhoneme);
+    if (
+      hasSpellingConflict(option, basePhoneme, ARPABET_TO_INGGLISH_MAP, baselineStressOverrides)
+    ) {
+      stressSkippedPhonemeConflict++;
+      continue;
+    }
+
     const testOverrides = { ...baselineStressOverrides, [rawPhoneme]: option };
     const delta = getReadabilityDelta(affected, ARPABET_TO_INGGLISH_MAP, testOverrides);
 
@@ -505,6 +545,7 @@ for (let si = 0; si < sortedStress0.length; si++) {
       continue;
     }
 
+    // Word-level collision check
     const collisions = getCollisionCount(ARPABET_TO_INGGLISH_MAP, testOverrides);
     if (collisions > baselineCollisions) {
       stressSkippedCollisions++;
@@ -526,6 +567,9 @@ for (let si = 0; si < sortedStress0.length; si++) {
 console.log(); // newline after progress
 
 console.log(`\nTested ${stressTested} stress-conditioned combinations:`);
+console.log(
+  `  - ${stressSkippedPhonemeConflict} skipped (spelling already used by another phoneme)`
+);
 console.log(`  - ${stressSkippedNotBetter} skipped (not better)`);
 console.log(`  - ${stressSkippedCollisions} skipped (would add collisions)`);
 console.log(`  - ${stressImprovements.length} valid improvements found`);
@@ -597,6 +641,14 @@ for (const imp of allImprovements) {
   if (imp.type === 'base') {
     if (basePhonemesSeen.has(imp.key)) continue;
 
+    // Phoneme uniqueness check against accumulated map
+    if (hasSpellingConflict(imp.to, imp.key, bestMap, bestStressOverrides)) {
+      console.log(
+        `✗ Skipped ${imp.key}: ${imp.from} → ${imp.to} (spelling conflict — breaks reverse translation)`
+      );
+      continue;
+    }
+
     const testMap = { ...bestMap, [imp.key]: imp.to };
     const collisions = getCollisionCount(testMap, bestStressOverrides);
 
@@ -612,6 +664,15 @@ for (const imp of allImprovements) {
     }
   } else {
     if (stressPhonemesSeen.has(imp.key)) continue;
+
+    const stressBase = stripStress(imp.key);
+    // Phoneme uniqueness check against accumulated map
+    if (hasSpellingConflict(imp.to, stressBase, bestMap, bestStressOverrides)) {
+      console.log(
+        `✗ Skipped ${imp.key}: ${imp.from} → ${imp.to} (spelling conflict — breaks reverse translation) [stress]`
+      );
+      continue;
+    }
 
     const testOverrides = { ...bestStressOverrides, [imp.key]: imp.to };
     const collisions = getCollisionCount(bestMap, testOverrides);

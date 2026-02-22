@@ -218,25 +218,25 @@ Compare to the identical-word metric where AH didn't appear at all (no AH change
 
 | Phoneme | Current | Best | Δ Readability /M | Top improved | Top worsened |
 |---------|---------|------|------------------|--------------|--------------|
-| IY0 | ee | y | **+6,400** | any(25→67%), very(33→60%), only(50→80%), really(33→50%) | money(50→40%), coffee(67→33%) |
-| UW0 | oo | o | **+238** | into(80→100%), onto(80→100%) | unique(14→0%) |
-| OW0 | oh | o | **+198** | also(67→80%), hotel(83→100%) | heroes(57→50%) |
+| IY0 | ee | ey | **+4,300** | any(25→50%), really(33→50%), sorry(40→60%), very(33→50%) | married(71→57%), coffee(67→50%) |
+| OW0 | oh | ow | **+89** | follow(67→83%), window(83→100%), fellow(67→83%) | thorough(63→50%) |
+| UW0 | oo | eo | **+36** | lieutenant(70→80%), continue(44→56%), rescue(43→57%) | routine(43→29%) |
 
-IY0→'y' ranks #1 in both metrics, but the readability metric reveals it's even more valuable than the identical-word metric suggested: +6,400 /M readability vs +2,700 /M identical words. Many words like "very" (33→60%) and "any" (25→67%) get substantially closer to English without becoming fully identical.
+Note: IY0→'y' (+6,400 /M without the phoneme-uniqueness filter) is excluded because 'y' is already used by the Y consonant. Similarly, UW0→'o' and OW0→'o' are excluded because 'o' is already used by AA. After filtering, IY0→'ey' is the top stress-conditioned candidate. The identical-word metric still favors IY0→'y' (+2,700 /M) — that analysis doesn't enforce phoneme uniqueness since it only counts exact matches, but the reverse translation concern applies there too.
 
 ### Combined Result
 
-Greedily applying all non-conflicting improvements:
+Greedily applying all non-conflicting improvements (with phoneme-uniqueness filtering):
 
 | Metric | Before | After | Gain |
 |--------|--------|-------|------|
-| Readability | 66.30% | 68.05% | +1.75 pp |
-| Collisions | 18,848 | 18,558 | -290 |
+| Readability | 66.30% | 67.74% | +1.43 pp |
+| Collisions | 18,848 | 18,645 | -203 |
 
 The readability metric confirms the identical-word findings while adding new insights:
 
 1. **AH (strut)** is the single most impactful phoneme for readability — it affects ultra-common words like "of", "come", "one", "some" that the identical-word metric can't capture because no spelling makes them identical
-2. **IY0→'y'** is confirmed as the highest-impact stress-conditioned change by both metrics
+2. **Phoneme-uniqueness filtering matters** — the top-scoring candidates often steal spellings from other phonemes (UH→"uo" conflicts with AH→"uo", IY0→'y' conflicts with Y→'y'), which would break reverse translation
 3. **Base phoneme changes create trade-offs** — every improvement worsens some words. The readability metric makes these trade-offs visible (e.g., AY→ie improves "right" 40→60% but worsens "while" 60→40%)
 
 ### Important Caveat
