@@ -259,6 +259,20 @@ const FALSE_PREFIX_SPLITS = new Set([
 const results: PrefixMismatch[] = [];
 const seenPairs = new Set<string>();
 
+// Common suffixes to strip when trying to find the base word
+const SUFFIX_STRIPS: { suffix: string; phonemes: string[] }[] = [
+  { suffix: 's', phonemes: ['Z'] },
+  { suffix: 's', phonemes: ['S'] },
+  { suffix: 'es', phonemes: ['IH0', 'Z'] },
+  { suffix: 'es', phonemes: ['AH0', 'Z'] },
+  { suffix: 'ed', phonemes: ['D'] },
+  { suffix: 'ed', phonemes: ['T'] },
+  { suffix: 'ed', phonemes: ['IH0', 'D'] },
+  { suffix: 'ing', phonemes: ['IH0', 'NG'] },
+  { suffix: 'er', phonemes: ['ER0'] },
+  { suffix: 'ly', phonemes: ['L', 'IY0'] },
+];
+
 for (const word of allWords) {
   // Skip words already fixed in custom pronunciations
   if (getCustomPronunciation(word) !== undefined) continue;
@@ -277,11 +291,24 @@ for (const word of allWords) {
     // Check if spelling starts with this prefix
     if (!word.startsWith(prefixText)) continue;
 
-    const base = word.slice(prefixText.length);
+    let base = word.slice(prefixText.length);
 
     // Base must be >= 4 characters and exist in dictionary
+    // If base isn't in dict, try stripping a suffix (e.g., "unreliables" → "unreliable" → base="reliable")
     if (base.length < 4) continue;
-    if (!wordSet.has(base)) continue;
+    if (!wordSet.has(base)) {
+      let found = false;
+      for (const { suffix } of SUFFIX_STRIPS) {
+        if (!base.endsWith(suffix) || base.length <= suffix.length + 3) continue;
+        const stripped = base.slice(0, -suffix.length);
+        if (wordSet.has(stripped) && stripped.length >= 4) {
+          base = stripped;
+          found = true;
+          break;
+        }
+      }
+      if (!found) continue;
+    }
 
     // Skip base words already in custom pronunciations
     if (getCustomPronunciation(base) !== undefined) continue;

@@ -68,6 +68,17 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // /ˈɡrænˌmɑ/ — CMU has spurious /d/
   actuator: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0'], // /ˈæktʃuˌeɪtɝ/ — CMU has /tj/
   actuators: ['AE1', 'K', 'CH', 'UW0', 'EY2', 'T', 'ER0', 'Z'], // /ˈæktʃuˌeɪtɝz/ — CMU has /tj/
+  matured: ['M', 'AH0', 'CH', 'UH1', 'R', 'D'], // /məˈtʃʊrd/ — CMU has /tj/ (British), should match mature's /tʃ/
+  immature: ['IH2', 'M', 'AH0', 'CH', 'UH1', 'R'], // /ˌɪməˈtʃʊr/ — CMU has /tj/ (British), should match mature's /tʃ/
+  privatize: ['P', 'R', 'AY1', 'V', 'AH0', 'T', 'AY2', 'Z'], // /ˈpraɪvəˌtaɪz/ — CMU has /ɪ/ for /aɪ/, should match private
+
+  // Inconsistent vowel in derived form
+  coughed: ['K', 'AA1', 'F', 'T'], // /kɑft/ — CMU has /ɔ/ (AO), should match cough's /ɑ/ (AA)
+  coughs: ['K', 'AA1', 'F', 'S'], // /kɑfs/ — CMU has /ɔ/ (AO), should match cough's /ɑ/ (AA)
+
+  // Silent letter pronounced
+  psalm: ['S', 'AA1', 'M'], // /sɑm/ — CMU has /l/, but L is silent in psalm
+  psalms: ['S', 'AA1', 'M', 'Z'], // /sɑmz/ — CMU has /l/, but L is silent in psalm
 
   // Missing phoneme
   forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // /ˈfɔrdʒɪŋz/ — CMU missing /r/

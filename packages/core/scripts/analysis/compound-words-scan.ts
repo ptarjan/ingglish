@@ -71,22 +71,19 @@ const KNOWN_EXCEPTIONS = new Set([
   'withstand',
 ]);
 
-// Suffixes and prefixes that create false compound splits
-// e.g. "getting" = "get"+"ting" is not a compound -- "ting" is a suffix fragment
+// Suffix/prefix fragments that create false compound splits.
+// Only include morphological artifacts — NOT real standalone words that
+// could be legitimate compound parts (bed, ring, king, wing, etc.).
 const FALSE_PARTS = new Set([
-  // Common suffixes that happen to be dictionary words
+  // -ing suffix fragments (NOT real words like ring, king, wing, sing)
   'ting',
-  'ling',
-  'sing',
-  'ring',
-  'king',
   'ping',
-  'wing',
   'ding',
   'ming',
   'ning',
   'bing',
   'zing',
+  // -er/-or suffix fragments (these are almost always morphological)
   'ter',
   'per',
   'ver',
@@ -97,17 +94,13 @@ const FALSE_PARTS = new Set([
   'ber',
   'ser',
   'cer',
+  // -ed suffix fragments (NOT real words like bed, red, fed, shed, wed)
   'ted',
-  'red',
-  'led',
-  'med',
   'ned',
-  'bed',
-  'wed',
-  'fed',
-  'shed',
-  'led',
   'ped',
+  // -ling suffix (morphological diminutive, NOT a standalone compound part)
+  'ling',
+  // Morphological suffixes
   'ion',
   'ions',
   'ing',
@@ -119,7 +112,6 @@ const FALSE_PARTS = new Set([
   'ible',
   'less',
   'ally',
-  'ling',
   'ful',
   // Common prefixes that happen to be dictionary words
   'pre',
@@ -137,6 +129,9 @@ const FALSE_PARTS = new Set([
   'ist',
 ]);
 
+// CLI flags
+const showVowels = process.argv.includes('--vowels');
+
 interface CompoundMismatch {
   compound: string;
   part1: string;
@@ -144,22 +139,29 @@ interface CompoundMismatch {
   compoundPhonemes: string[];
   part1Phonemes: string[];
   part2Phonemes: string[];
-  mismatchType: 'consonant-diff' | 'length-diff';
+  mismatchType: 'consonant-diff' | 'vowel-diff' | 'length-diff';
   details: string;
   matchPct: number;
   compoundFreq: number;
   part1Freq: number;
   part2Freq: number;
   maxFreq: number;
+  suffixStripped?: string; // if part2 was suffix-stripped, the original part2 spelling
 }
 
 /**
  * Check if a split looks like a doubled-consonant morpheme boundary
  * rather than a real compound. E.g. "getting" splits into "get"+"ting"
  * where the first part ends with 't' and the second starts with 't'.
+ *
+ * Only applies when at least one part is short (< 4 chars), since real
+ * compounds like "bookkeeper" (book+keeper) and "roommate" (room+mate)
+ * have doubled consonants at genuine compound boundaries.
  */
 function isDoubledConsonantSplit(part1: string, part2: string): boolean {
   if (part1.length === 0 || part2.length === 0) return false;
+  // Only filter short-part splits (morphological artifacts)
+  if (part1.length >= 4 && part2.length >= 4) return false;
   const lastChar = part1[part1.length - 1];
   const firstChar = part2[0];
   return lastChar === firstChar && /[bcdfgklmnprstvz]/.test(lastChar);
@@ -280,25 +282,63 @@ for (const compound of allWords) {
     // Filter: skip doubled-consonant splits (morphological, not compound)
     if (isDoubledConsonantSplit(part1, part2)) continue;
 
-    // Both parts must exist in dictionary
-    if (!wordSet.has(part1) || !wordSet.has(part2)) continue;
+    // Part1 must exist in dictionary
+    if (!wordSet.has(part1)) continue;
 
     const part1Phonemes = cmudict[part1];
-    const part2Phonemes = cmudict[part2];
-    if (
-      !Array.isArray(part1Phonemes) ||
-      part1Phonemes.length === 0 ||
-      !Array.isArray(part2Phonemes) ||
-      part2Phonemes.length === 0
-    ) {
-      continue;
-    }
+    if (!Array.isArray(part1Phonemes) || part1Phonemes.length === 0) continue;
 
     const part1Freq = getWordFrequency(part1) ?? 0;
-    const part2Freq = getWordFrequency(part2) ?? 0;
+    if (part1Freq < 10) continue;
+
+    // Part2: try direct lookup first, then suffix-stripped forms
+    let part2Phonemes: string[] | undefined;
+    let part2Freq = 0;
+    let part2Effective = part2; // the actual word we looked up
+    let suffixStripped: string | undefined;
+
+    if (wordSet.has(part2)) {
+      const p = cmudict[part2];
+      if (Array.isArray(p) && p.length > 0) {
+        part2Phonemes = p;
+        part2Freq = getWordFrequency(part2) ?? 0;
+      }
+    }
+
+    // If part2 isn't in dict (or has no phonemes), try suffix-stripped forms
+    if (!part2Phonemes) {
+      const suffixStrips: { suffix: string; phonemes: string[] }[] = [
+        { suffix: 's', phonemes: ['Z'] },
+        { suffix: 's', phonemes: ['S'] },
+        { suffix: 'es', phonemes: ['IH0', 'Z'] },
+        { suffix: 'es', phonemes: ['AH0', 'Z'] },
+        { suffix: 'ed', phonemes: ['D'] },
+        { suffix: 'ed', phonemes: ['T'] },
+        { suffix: 'ed', phonemes: ['IH0', 'D'] },
+        { suffix: 'ing', phonemes: ['IH0', 'NG'] },
+        { suffix: 'er', phonemes: ['ER0'] },
+        { suffix: 'ly', phonemes: ['L', 'IY0'] },
+      ];
+
+      for (const { suffix, phonemes: suffPh } of suffixStrips) {
+        if (!part2.endsWith(suffix) || part2.length <= suffix.length + 2) continue;
+        const stem = part2.slice(0, -suffix.length);
+        if (!wordSet.has(stem)) continue;
+        const stemPh = cmudict[stem];
+        if (!Array.isArray(stemPh) || stemPh.length === 0) continue;
+        // Build part2 phonemes from stem + suffix
+        part2Phonemes = [...stemPh, ...suffPh];
+        part2Effective = stem;
+        part2Freq = getWordFrequency(stem) ?? 0;
+        suffixStripped = part2;
+        break;
+      }
+    }
+
+    if (!part2Phonemes) continue;
 
     // Both component words must have frequency >= 10
-    if (part1Freq < 10 || part2Freq < 10) continue;
+    if (part2Freq < 10) continue;
 
     const part1Bare = stripStressAll(part1Phonemes);
     const part2Bare = stripStressAll(part2Phonemes);
@@ -310,31 +350,45 @@ for (const compound of allWords) {
     if (analysis.matchPct < minMatch) continue;
 
     // Must have a real difference
-    const hasDiff = analysis.consonantDiffs.length > 0 || Math.abs(analysis.lengthDiff) > 0;
+    const hasConsonantDiff = analysis.consonantDiffs.length > 0;
+    const hasVowelDiff = analysis.vowelDiffs.length > 0;
+    const hasLengthDiff = Math.abs(analysis.lengthDiff) > 0;
+    const hasDiff = hasConsonantDiff || hasLengthDiff || (showVowels && hasVowelDiff);
     if (!hasDiff) continue;
 
-    // For same-length: need at least one consonant difference
-    if (analysis.lengthDiff === 0 && analysis.consonantDiffs.length === 0) continue;
+    // For same-length: need at least one consonant or vowel (if --vowels) difference
+    if (analysis.lengthDiff === 0 && !hasConsonantDiff && !(showVowels && hasVowelDiff)) continue;
 
     const maxFreq = Math.max(compoundFreq, part1Freq, part2Freq);
+
+    let mismatchType: CompoundMismatch['mismatchType'];
+    let details: string;
+    if (hasLengthDiff) {
+      mismatchType = 'length-diff';
+      details = `${analysis.lengthDiff > 0 ? analysis.lengthDiff + ' extra' : Math.abs(analysis.lengthDiff) + ' missing'} phoneme(s): compound has ${compoundBare.length}, expected ${part1Bare.length + part2Bare.length} (${part1Bare.length}+${part2Bare.length})`;
+    } else if (hasConsonantDiff) {
+      mismatchType = 'consonant-diff';
+      details = analysis.consonantDiffs.join('; ');
+    } else {
+      mismatchType = 'vowel-diff';
+      details = analysis.vowelDiffs.join('; ');
+    }
 
     const mismatch: CompoundMismatch = {
       compound,
       part1,
-      part2,
+      part2: part2Effective,
       compoundPhonemes,
       part1Phonemes,
       part2Phonemes,
-      mismatchType: analysis.lengthDiff !== 0 ? 'length-diff' : 'consonant-diff',
-      details:
-        analysis.lengthDiff !== 0
-          ? `${analysis.lengthDiff > 0 ? analysis.lengthDiff + ' extra' : Math.abs(analysis.lengthDiff) + ' missing'} phoneme(s): compound has ${compoundBare.length}, expected ${part1Bare.length + part2Bare.length} (${part1Bare.length}+${part2Bare.length})`
-          : analysis.consonantDiffs.join('; '),
+      mismatchType,
+      details,
       matchPct: analysis.matchPct,
       compoundFreq,
       part1Freq,
       part2Freq,
       maxFreq,
+      suffixStripped,
     };
 
     // Keep best split per compound (highest match %)
@@ -365,6 +419,9 @@ console.log(
   `  Consonant differences: ${results.filter((r) => r.mismatchType === 'consonant-diff').length}`
 );
 console.log(
+  `  Vowel differences:     ${results.filter((r) => r.mismatchType === 'vowel-diff').length}`
+);
+console.log(
   `  Length differences:     ${results.filter((r) => r.mismatchType === 'length-diff').length}`
 );
 console.log();
@@ -372,12 +429,17 @@ console.log('Filters applied:');
 console.log('  - Compound word length >= 6, both parts >= 3 chars');
 console.log('  - Both component words have frequency >= 10');
 console.log('  - Compound itself has frequency >= 1');
-console.log('  - Skip doubled-consonant splits (e.g. get+ting, bet+ter)');
+console.log('  - Skip doubled-consonant splits only when one part < 4 chars');
 console.log('  - Skip known suffix/prefix fragments (ting, ter, pre, dis, etc.)');
+console.log('  - Suffix-stripping: try s/es/ed/ing/er/ly on part2 if not in dict');
 console.log('  - >= 90% phoneme match for same-length, >= 85% for length diffs');
 console.log('  - ER/R alternation treated as match (not an error)');
 console.log('  - N/NG alternation treated as match (already handled)');
-console.log('  - Only consonant diffs reported (vowel-only changes skipped)');
+console.log(
+  showVowels
+    ? '  - Consonant AND vowel diffs reported (--vowels flag)'
+    : '  - Only consonant diffs reported (use --vowels for vowel diffs too)'
+);
 console.log('  - Best split kept per compound');
 console.log('  - Skip known exceptions and CUSTOM_PRONUNCIATIONS');
 console.log();
@@ -387,10 +449,11 @@ console.log(`Top ${top.length} results (sorted by compound frequency):\n`);
 
 for (let i = 0; i < top.length; i++) {
   const r = top[i];
+  const splitLabel = r.suffixStripped
+    ? `"${r.part1}" + "${r.part2}" (from "${r.suffixStripped}")`
+    : `"${r.part1}" + "${r.part2}"`;
 
-  console.log(
-    `${String(i + 1).padStart(3)}. ${r.compound.padEnd(22)} = "${r.part1}" + "${r.part2}"`
-  );
+  console.log(`${String(i + 1).padStart(3)}. ${r.compound.padEnd(22)} = ${splitLabel}`);
   console.log(
     `     freq: compound=${r.compoundFreq}, ${r.part1}=${r.part1Freq}, ${r.part2}=${r.part2Freq}  |  match: ${(r.matchPct * 100).toFixed(0)}%`
   );
@@ -407,7 +470,7 @@ console.log('='.repeat(90));
 
 const patternCounts = new Map<string, number>();
 for (const r of results) {
-  if (r.mismatchType === 'consonant-diff') {
+  if (r.mismatchType === 'consonant-diff' || r.mismatchType === 'vowel-diff') {
     const pairs = r.details.split('; ');
     for (const pair of pairs) {
       const match = pair.match(/compound=(\S+) expected=(\S+)/);

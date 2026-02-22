@@ -130,8 +130,11 @@ for (const word of allWords) {
     ['ness', ['N', 'AH0', 'S']],
     ['ness', ['N', 'IH0', 'S']],
     ['ment', ['M', 'AH0', 'N', 'T']],
+    ['ment', ['M', 'EH0', 'N', 'T']],
     ['ments', ['M', 'AH0', 'N', 'T', 'S']],
+    ['ments', ['M', 'EH0', 'N', 'T', 'S']],
     ['ful', ['F', 'AH0', 'L']],
+    ['ful', ['F', 'UH0', 'L']],
     ['less', ['L', 'AH0', 'S']],
     ['less', ['L', 'IH0', 'S']],
     ['able', ['AH0', 'B', 'AH0', 'L']],
@@ -144,6 +147,11 @@ for (const word of allWords) {
     ['ally', ['AH0', 'L', 'IY0']],
     ['ously', ['AH0', 'S', 'L', 'IY0']],
     ['ively', ['IH0', 'V', 'L', 'IY0']],
+    ['ed', ['AH0', 'D']],
+    ['ness', ['N', 'EH0', 'S']],
+    ['ful', ['F', 'AH0', 'L']],
+    ['fully', ['F', 'AH0', 'L', 'IY0']],
+    ['fully', ['F', 'UH0', 'L', 'IY0']],
   ];
 
   for (const suffixGroup of [simpleSuffixes]) {
