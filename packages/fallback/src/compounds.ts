@@ -65,7 +65,9 @@ function lookupWord(word: string): string[] | null {
 export function dpDecompose(word: string): string[] | null {
   const n = word.length;
   // dp[i] = best decomposition for word[0..i-1], or undefined if none
-  const dp: ({ parts: string[]; score: number } | undefined)[] = new Array<undefined>(n + 1).fill();
+  const dp: ({ parts: string[]; score: number } | undefined)[] = new Array<undefined>(n + 1).fill(
+    
+  );
   dp[0] = { parts: [], score: 0 };
 
   for (let i = MIN_PART_LENGTH; i <= n; i++) {
