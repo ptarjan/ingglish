@@ -16,7 +16,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { stripStress } from '@ingglish/phonemes';
-import { applyStressPrediction } from '../../../g2p/src/stress';
+import { applyStressPrediction } from '@ingglish/g2p';
 
 // ---------------------------------------------------------------------------
 // Rule parsing

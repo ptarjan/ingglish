@@ -9,7 +9,7 @@ import {
   loadReverseDictionary,
   loadFrequencies,
   lookupPronunciation,
-} from '../../../dictionary/src/index.js';
+} from '@ingglish/dictionary';
 import { translateSync } from '../../src/translate/forward.js';
 import {
   reverseTranslateSync,

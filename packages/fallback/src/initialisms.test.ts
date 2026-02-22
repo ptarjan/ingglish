@@ -1,5 +1,5 @@
+import { translateSync, translateWord } from 'ingglish';
 import { describe, it, expect, vi } from 'vitest';
-import { translateSync, translateWord } from '../../core/src/translate/forward';
 import { INITIALISM_EXPANSIONS, isInitialism } from './acronyms';
 
 describe('initialisms', () => {
