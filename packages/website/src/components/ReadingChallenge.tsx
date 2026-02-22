@@ -1,10 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { loadReverseDictionary } from '@ingglish/dictionary';
-import { pickChallenge } from '../data/challenge-data';
-import type { ChallengeSentence } from '../data/challenge-data';
 import { scoreSentence } from '../challenge/challenge-scoring';
 import type { SentenceScore } from '../challenge/challenge-scoring';
 import { renderScoreCard } from '../challenge/render-score-card';
+import type { ChallengeSentence } from '../data/challenge-data';
+import { pickChallenge } from '../data/challenge-data';
 
 type Phase = 'intro' | 'playing' | 'results';
 

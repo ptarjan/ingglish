@@ -1,0 +1,19 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/cors-proxy" },
+    { "path": "packages/deseret" },
+    { "path": "packages/dictionary" },
+    { "path": "packages/dom" },
+    { "path": "packages/extension" },
+    { "path": "packages/fallback" },
+    { "path": "packages/g2p" },
+    { "path": "packages/ipa" },
+    { "path": "packages/normalize" },
+    { "path": "packages/phonemes" },
+    { "path": "packages/shavian" },
+    { "path": "packages/tokenize" },
+    { "path": "packages/website" }
+  ]
+}

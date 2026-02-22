@@ -38,8 +38,7 @@ export default tseslint.config(
       },
       'import-x/resolver': {
         typescript: {
-          project: 'packages/*/tsconfig.json',
-          noWarnOnMultipleProjects: true,
+          project: './tsconfig.json',
         },
       },
     },
