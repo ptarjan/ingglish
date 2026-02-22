@@ -184,7 +184,7 @@ The system uses English phonotactics (valid onset clusters like /bl/, /str/, /sk
 
 1. **Homophones**: Words that sound the same will have the same Ingglish spelling
    - "their", "there", "they're" → all become the same
-   - See [False Friends Analysis](collision-analysis.md) for a full breakdown of how this affects real words
+   - See [False Friends Analysis](false-friends.md) for a full breakdown of how this affects real words
 2. **Digraph boundary ambiguity**: When two letters that form a digraph appear adjacent across a morpheme boundary, the spelling can be misread. For example, "hothouse" → "hothous" where 'th' represents /t/+/h/ (not /θ/), "mishap" → "mishap" where 'sh' is /s/+/h/ (not /ʃ/), and "engage" → "engayj" where 'ng' is /n/+/g/ (not /ŋ/). This is an inherent limitation of digraph-based orthographies; the same ambiguity exists in standard English (compare "hothouse" vs "nothing"). Cases where this matters are rare.
 3. **Accent neutrality**: CMU dictionary represents General American English. This includes maintaining the [cot-caught distinction](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (/ɑ/ vs /ɔ/) even though many American speakers merge these vowels. We preserve the distinction because the CMU dictionary does and because it serves speakers who maintain it.
 4. **Allophonic detail not captured**: As a phonemic (not phonetic) system, Ingglish does not represent allophonic variation such as aspiration of stops (/pʰ/ in "pin" vs /p/ in "spin"), flapping of /t/ ([ɾ] in "butter"), or vowel nasalization. These are predictable from context and don't change word meanings.

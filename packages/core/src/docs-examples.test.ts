@@ -117,7 +117,7 @@ function extractExamples(content: string, filename: string): Example[] {
     const line = line_;
     const lineNum = i + 1;
 
-    // Track section context for spelling-evolution.md
+    // Track section context for spelling-iteration.md
     // Sections starting with "Before:", "Problem:", "Original:" show rejected approaches
     if (/^\*\*(?:Before|Problem|Original):?\*\*/.test(line)) {
       inRejectedSection = true;
@@ -196,7 +196,7 @@ function extractExamples(content: string, filename: string): Example[] {
       continue;
     }
 
-    // Pattern 4: - word → word (unquoted, from spelling-evolution.md)
+    // Pattern 4: - word → word (unquoted, from spelling-iteration.md)
     // e.g., - my → mai, - out → out (identical!)
     const unquotedMatch = /^-\s*([a-z]+)\s*→\s*([a-z]+)/i.exec(line);
     if (unquotedMatch) {
@@ -454,8 +454,8 @@ describe('documentation examples', () => {
     'phoneme-mapping.md',
     'orthography-comparison.md',
     'spelling-reform-comparison.md',
-    'spelling-evolution.md',
-    'collision-analysis.md',
+    'spelling-iteration.md',
+    'false-friends.md',
   ];
 
   for (const file of patternDocFiles) {

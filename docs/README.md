@@ -22,7 +22,7 @@ Ingglish is a phonemic English spelling system where every spelling always makes
 - [Orthographic Transparency](orthographic-transparency.md) - Feedforward/feedback consistency analysis
 - [Morphological Preservation](morphological-analysis.md) - Impact on word family relationships
 - [Identical Words Analysis](identical-words-analysis.md) - Words spelled the same in both systems
-- [False Friends Analysis](collision-analysis.md) - Ingglish spellings that match different English words
+- [False Friends Analysis](false-friends.md) - Ingglish spellings that match different English words
 - [Spelling Iteration Log](spelling-iteration.md) - What we tried, changed, and reverted
 
 ## Comparisons
