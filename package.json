@@ -11,6 +11,7 @@
   "scripts": {
     "docs": "typedoc && node scripts/postprocess-docs.js",
     "test": "turbo test",
+    "bench": "turbo bench",
     "build": "turbo build && npm run docs",
     "build:fast": "turbo build:fast",
     "lint": "turbo lint",

@@ -15,6 +15,10 @@
     },
     "test": {
       "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
+    },
+    "bench": {
+      "cache": false,
+      "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
     }
   }
 }

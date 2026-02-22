@@ -7,6 +7,10 @@ export default defineConfig({
   ssr: {
     resolve: { conditions: ['source'] },
   },
+  benchmark: {
+    include: ['src/**/*.bench.ts'],
+    setupFiles: ['./vitest.setup.ts'],
+  },
   test: {
     include: ['src/**/*.test.ts'],
     setupFiles: ['./vitest.setup.ts'],
