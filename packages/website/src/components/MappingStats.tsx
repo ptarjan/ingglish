@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
-import { wordToArpabet } from '@ingglish/g2p';
-import { arpabetToFormat, stripStress } from '@ingglish/phonemes';
+import { arpabetToFormat } from '@ingglish/phonemes';
+import { editSimilarity, g2pRoundtripScore, scoreWordOrthotactic } from '../lib/mapping-metrics';
 
 interface FormatStats {
   /** Collision map for collision analysis */
@@ -33,146 +33,6 @@ interface WordChange {
 
 /** Pre-compiled regex for filtering dictionary entries with punctuation */
 const NON_ALPHA = /[^a-z]/i;
-
-// ============================================================
-// Character-level edit distance (for edit similarity metric)
-// ============================================================
-
-/** Character-level Levenshtein distance. Single-row DP. */
-function charEditDistance(a: string, b: string): number {
-  const m = a.length;
-  const n = b.length;
-  if (m === 0) {
-    return n;
-  }
-  if (n === 0) {
-    return m;
-  }
-
-  let prev = new Uint16Array(n + 1);
-  let curr = new Uint16Array(n + 1);
-  for (let j = 0; j <= n; j++) {
-    prev[j] = j;
-  }
-
-  for (let i = 1; i <= m; i++) {
-    curr[0] = i;
-    for (let j = 1; j <= n; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      curr[j] = Math.min((prev[j] ?? 0) + 1, (curr[j - 1] ?? 0) + 1, (prev[j - 1] ?? 0) + cost);
-    }
-    [prev, curr] = [curr, prev];
-  }
-  return prev[n] ?? 0;
-}
-
-// ============================================================
-// G2P round-trip pronounceability scoring
-// ============================================================
-
-/** G2P round-trip score: feed spelling to G2P, compare predicted vs original phonemes */
-function g2pRoundtripScore(spelling: string, originalPhonemes: string[]): number {
-  const predicted = wordToArpabet(spelling).map((p) => stripStress(p));
-  const original = originalPhonemes.map((p) => stripStress(p));
-  const maxLen = Math.max(predicted.length, original.length);
-  if (maxLen === 0) {
-    return 1;
-  }
-  return 1 - levenshtein(predicted, original) / maxLen;
-}
-
-/** Levenshtein distance between two string arrays. Single-row DP. */
-function levenshtein(a: string[], b: string[]): number {
-  const m = a.length;
-  const n = b.length;
-  if (m === 0) {
-    return n;
-  }
-  if (n === 0) {
-    return m;
-  }
-
-  let prev = new Uint16Array(n + 1);
-  let curr = new Uint16Array(n + 1);
-  for (let j = 0; j <= n; j++) {
-    prev[j] = j;
-  }
-
-  for (let i = 1; i <= m; i++) {
-    curr[0] = i;
-    for (let j = 1; j <= n; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      curr[j] = Math.min((prev[j] ?? 0) + 1, (curr[j - 1] ?? 0) + 1, (prev[j - 1] ?? 0) + cost);
-    }
-    [prev, curr] = [curr, prev];
-  }
-  return prev[n] ?? 0;
-}
-
-// ============================================================
-// Bigram model for orthotactic probability (naturalness)
-// ============================================================
-
-const SMOOTHING_K = 0.01;
-
-/** Cached bigram model, built once from dictionary English words */
-let bigramModel: null | {
-  bigramCounts: Map<string, number>;
-  unigramCounts: Map<string, number>;
-  vocabSize: number;
-} = null;
-
-function getBigramModel() {
-  if (bigramModel !== null) {
-    return bigramModel;
-  }
-
-  const dict = getDictionary();
-  const bigramCounts = new Map<string, number>();
-  const unigramCounts = new Map<string, number>();
-  const alphabet = new Set<string>();
-
-  for (const word of Object.keys(dict)) {
-    const w = word.toLowerCase();
-    if (NON_ALPHA.test(w)) {
-      continue;
-    }
-    const freq = getWordFrequency(w) ?? 0;
-    const weight = Math.log(freq + 1);
-    const chars = '^' + w + '$';
-    for (let i = 0; i < chars.length - 1; i++) {
-      const c1 = chars[i]!;
-      const c2 = chars[i + 1]!;
-      alphabet.add(c1);
-      alphabet.add(c2);
-      const key = c1 + c2;
-      bigramCounts.set(key, (bigramCounts.get(key) ?? 0) + weight);
-      unigramCounts.set(c1, (unigramCounts.get(c1) ?? 0) + weight);
-    }
-  }
-
-  bigramModel = { bigramCounts, unigramCounts, vocabSize: alphabet.size };
-  return bigramModel;
-}
-
-/** Score a word by average log bigram probability (higher = more English-looking) */
-function scoreWordOrthotactic(word: string): number {
-  const { bigramCounts, unigramCounts, vocabSize } = getBigramModel();
-  const w = word.toLowerCase();
-  const chars = '^' + w + '$';
-  const n = chars.length - 1;
-  if (n === 0) {
-    return -Infinity;
-  }
-
-  let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const count = bigramCounts.get(chars[i]! + chars[i + 1]!) ?? 0;
-    const total = unigramCounts.get(chars[i]!) ?? 0;
-    sum += Math.log((count + SMOOTHING_K) / (total + SMOOTHING_K * vocabSize));
-  }
-  return sum / n;
-}
 
 /**
  * Pre-computed standard Ingglish data. Computed once on first use since the
@@ -225,11 +85,12 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
     const wordLower = word.toLowerCase();
     allWords.add(wordLower);
     const expSpelling = arpabetToFormat(phonemes, 'experiment');
+    const expLower = expSpelling.toLowerCase();
 
     const freq = getWordFrequency(wordLower) ?? 0;
     wordFreqs.set(wordLower, freq);
     totalFreqSum += freq;
-    if (wordLower === expSpelling.toLowerCase()) {
+    if (wordLower === expLower) {
       identicalFreqSum += freq;
     }
 
@@ -244,10 +105,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
       }
 
       // Edit distance similarity
-      const expLower = expSpelling.toLowerCase();
-      const maxLen = Math.max(wordLower.length, expLower.length);
-      editSimilarityWeightedSum +=
-        maxLen > 0 ? (1 - charEditDistance(wordLower, expLower) / maxLen) * freq : freq;
+      editSimilarityWeightedSum += editSimilarity(wordLower, expLower) * freq;
 
       // Spelling familiarity: what fraction of graphemes appear in the English word
       let hits = 0;
@@ -393,11 +251,12 @@ function getIngglishCache() {
     allWords.add(wordLower);
     const spelling = arpabetToFormat(phonemes, 'ingglish');
     spellings.set(wordLower, spelling);
+    const spLower = spelling.toLowerCase();
 
     const freq = getWordFrequency(wordLower) ?? 0;
     wordFreqs.set(wordLower, freq);
     totalFreqSum += freq;
-    if (wordLower === spelling.toLowerCase()) {
+    if (wordLower === spLower) {
       identicalFreqSum += freq;
     }
 
@@ -412,10 +271,7 @@ function getIngglishCache() {
       }
 
       // Edit distance similarity
-      const spLower = spelling.toLowerCase();
-      const maxLen = Math.max(wordLower.length, spLower.length);
-      editSimilarityWeightedSum +=
-        maxLen > 0 ? (1 - charEditDistance(wordLower, spLower) / maxLen) * freq : freq;
+      editSimilarityWeightedSum += editSimilarity(wordLower, spLower) * freq;
 
       // Spelling familiarity
       let hits = 0;
