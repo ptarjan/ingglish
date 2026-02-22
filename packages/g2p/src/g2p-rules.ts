@@ -5,7 +5,7 @@
  * "Automatic translation of English text to phonetics by means of
  * letter-to-sound rules." NRL Report 7948.
  *
- * 329 context-sensitive rules that examine left and right letter context
+ * ~960 context-sensitive rules that examine left and right letter context
  * to determine pronunciation. Each rule has the form:
  *
  *   leftContext[TARGET]rightContext=/PHONEMES/
