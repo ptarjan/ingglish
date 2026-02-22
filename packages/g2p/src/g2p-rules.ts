@@ -1093,6 +1093,8 @@ export interface G2PTraceStep {
 }
 
 interface CompiledRule {
+  fullMatch: null | string; // target + literal right context (null → use rightRe)
+  leftLiteral: null | string; // literal left context (null → use leftRe)
   leftRe: null | RegExp; // null when left context is empty (always matches)
   phonemes: string[]; // ARPAbet phonemes (empty array for silence)
   rightRe: RegExp;
@@ -1130,7 +1132,20 @@ function compileRule(ruleStr: string): CompiledRule | null {
     .filter((p) => p.length > 0)
     .map((p) => nrlToArpabet(p));
 
-  return { leftRe, phonemes, rightRe, ruleStr, target, targetLen: target.length };
+  // Detect literal contexts for fast string matching in the hot loop
+  const fullMatch = isLiteralContext(rightCtx) ? target + rightCtx : null;
+  const leftLiteral = leftCtx.length > 0 && isLiteralContext(leftCtx) ? leftCtx : null;
+
+  return {
+    fullMatch,
+    leftLiteral,
+    leftRe,
+    phonemes,
+    rightRe,
+    ruleStr,
+    target,
+    targetLen: target.length,
+  };
 }
 
 function escapeRegex(s: string): string {
@@ -1144,6 +1159,16 @@ function expandContext(ctx: string): string {
     result += SPECIAL_CHARS.has(ch) ? CLASSES[ch]! : escapeRegex(ch);
   }
   return result;
+}
+
+/** Returns true when an NRL context string contains only literal characters. */
+function isLiteralContext(ctx: string): boolean {
+  for (const ch of ctx) {
+    if (SPECIAL_CHARS.has(ch)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function nrlToArpabet(phoneme: string): string {
@@ -1217,31 +1242,46 @@ export function wordToArpabetTraced(word: string): G2PTrace {
       // Lazily compute left context substring (only if a rule needs it)
       let parsed: null | string = null;
       for (const rule of rules) {
-        // Fast pre-check: skip if target literal doesn't match at this position.
-        // For multi-letter targets (e.g., "ALLO", "ASE"), this eliminates ~80% of
-        // rules before any regex runs. Single-letter targets always pass since we
-        // already indexed by first letter.
-        if (rule.targetLen > 1 && !text.startsWith(rule.target, pos)) {
-          continue;
+        if (rule.fullMatch === null) {
+          // Regex path (~11% of rules): target pre-check + sticky regex
+          if (rule.targetLen > 1 && !text.startsWith(rule.target, pos)) {
+            continue;
+          }
+          rule.rightRe.lastIndex = pos;
+          if (rule.leftRe !== null) {
+            parsed ??= text.slice(0, pos);
+            if (!rule.leftRe.test(parsed)) {
+              continue;
+            }
+          }
+          if (!rule.rightRe.test(text)) {
+            continue;
+          }
+        } else {
+          // Fast path (~89% of rules): pure string comparison, no regex
+          if (!text.startsWith(rule.fullMatch, pos)) {
+            continue;
+          }
+          if (rule.leftRe !== null) {
+            if (rule.leftLiteral === null) {
+              parsed ??= text.slice(0, pos);
+              if (!rule.leftRe.test(parsed)) {
+                continue;
+              }
+            } else if (!text.endsWith(rule.leftLiteral, pos)) {
+              continue;
+            }
+          }
         }
-        // Use sticky regex for right context (avoids rest substring allocation)
-        rule.rightRe.lastIndex = pos;
-        // Skip left regex when null (no left context — always matches)
-        if (
-          (rule.leftRe === null ||
-            ((parsed ??= text.slice(0, Math.max(0, pos))), rule.leftRe.test(parsed))) &&
-          rule.rightRe.test(text)
-        ) {
-          rawPhonemes.push(...rule.phonemes);
-          rawSteps.push({
-            count: rule.phonemes.length,
-            letters: rule.target,
-            ruleStr: rule.ruleStr,
-          });
-          pos += rule.targetLen;
-          matched = true;
-          break;
-        }
+        rawPhonemes.push(...rule.phonemes);
+        rawSteps.push({
+          count: rule.phonemes.length,
+          letters: rule.target,
+          ruleStr: rule.ruleStr,
+        });
+        pos += rule.targetLen;
+        matched = true;
+        break;
       }
       if (!matched) {
         pos++; // skip unrecognized character
