@@ -1,10 +1,65 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { trackBookmarkletCopy } from '../analytics';
 
 const BOOKMARKLET_CODE = `javascript:void(function(){var s=document.createElement('script');s.src='https://ingglish.com/bookmarklet.js';document.head.appendChild(s)})()`;
 
+type Browser = 'chrome' | 'edge' | 'firefox' | 'other' | 'safari';
+
+function detectBrowser(): Browser {
+  const ua = navigator.userAgent;
+  if (ua.includes('Edg/')) {
+    return 'edge';
+  }
+  if (ua.includes('Chrome/')) {
+    return 'chrome';
+  }
+  if (ua.includes('Firefox/')) {
+    return 'firefox';
+  }
+  if (ua.includes('Safari/')) {
+    return 'safari';
+  }
+  return 'other';
+}
+
+const isMac = navigator.userAgent.includes('Mac');
+const modKey = isMac ? '⌘' : 'Ctrl';
+
+const bookmarksBarInstructions: Record<Browser, { description: string; title: string }> = {
+  chrome: {
+    description: `Press ${modKey}+Shift+B to toggle the bookmarks bar`,
+    title: 'Show your bookmarks bar',
+  },
+  edge: {
+    description: `Press ${modKey}+Shift+B to toggle the favorites bar`,
+    title: 'Show your favorites bar',
+  },
+  firefox: {
+    description: `Press ${modKey}+Shift+B to toggle the bookmarks toolbar`,
+    title: 'Show your bookmarks toolbar',
+  },
+  other: {
+    description: 'Open your browser settings and enable the bookmarks or favorites bar',
+    title: 'Show your bookmarks bar',
+  },
+  safari: {
+    description: 'Go to View > Show Favorites Bar in the menu bar',
+    title: 'Show your Favorites Bar',
+  },
+};
+
 function Extension(): React.JSX.Element {
   const [copied, setCopied] = useState(false);
+  const browser = detectBrowser();
+  const bookmarkletRef = useRef<HTMLAnchorElement>(null);
+  const { description: barDescription, title: barTitle } = bookmarksBarInstructions[browser];
+
+  // Set href via DOM ref to bypass React's javascript: URL blocking
+  useEffect(() => {
+    if (bookmarkletRef.current) {
+      bookmarkletRef.current.href = BOOKMARKLET_CODE;
+    }
+  }, []);
 
   function handleCopy(): void {
     void navigator.clipboard.writeText(BOOKMARKLET_CODE).then(() => {
@@ -28,16 +83,38 @@ function Extension(): React.JSX.Element {
 
       <div className="guide-section">
         <h3>Bookmarklet (Any Browser)</h3>
-        <p>
-          Works in Chrome, Firefox, Safari, Edge, and any other browser. Drag the button below to
-          your bookmarks bar:
-        </p>
+        <p>Works in Chrome, Firefox, Safari, Edge, and any other browser.</p>
         <div className="bookmarklet-container">
-          <a className="bookmarklet-button" href={BOOKMARKLET_CODE}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- bookmarklet drag target */}
+          <a
+            className="bookmarklet-button"
+            onClick={(event) => {
+              event.preventDefault();
+            }}
+            ref={bookmarkletRef}
+            role="presentation"
+          >
             Ingglish
           </a>
-          <span className="bookmarklet-hint">Drag this to your bookmarks bar</span>
         </div>
+        <h4>How to install</h4>
+        <ol className="install-steps">
+          <li>
+            <strong>{barTitle}</strong>
+            <p>{barDescription}</p>
+          </li>
+          <li>
+            <strong>Drag the &ldquo;Ingglish&rdquo; button</strong>
+            <p>Drag it from above into your bookmarks bar</p>
+          </li>
+          <li>
+            <strong>Translate any page</strong>
+            <p>
+              Navigate to any webpage and click &ldquo;Ingglish&rdquo; in your bookmarks bar. A
+              small badge appears in the corner — click it to toggle back.
+            </p>
+          </li>
+        </ol>
         <p className="note">
           Or{' '}
           <button className="link-button" onClick={handleCopy}>
@@ -45,15 +122,6 @@ function Extension(): React.JSX.Element {
           </button>{' '}
           and create a bookmark manually.
         </p>
-        <h4>How it works</h4>
-        <ol className="install-steps">
-          <li>Navigate to any webpage you want to translate</li>
-          <li>Click the "Ingglish" bookmark in your bookmarks bar</li>
-          <li>
-            The page text will be converted to Ingglish spelling. A small badge appears in the
-            corner — click it to toggle back.
-          </li>
-        </ol>
       </div>
 
       <div className="guide-section">
@@ -95,7 +163,9 @@ function Extension(): React.JSX.Element {
           </li>
           <li>
             <strong>Unzip the file</strong>
-            <p>Extract the zip to a folder you'll keep (e.g., "ingglish-extension")</p>
+            <p>
+              Extract the zip to a folder you&apos;ll keep (e.g., &ldquo;ingglish-extension&rdquo;)
+            </p>
           </li>
           <li>
             <strong>Open Chrome Extensions</strong>
@@ -109,7 +179,7 @@ function Extension(): React.JSX.Element {
           </li>
           <li>
             <strong>Load the extension</strong>
-            <p>Click "Load unpacked" and select the folder you extracted</p>
+            <p>Click &ldquo;Load unpacked&rdquo; and select the folder you extracted</p>
           </li>
         </ol>
       </div>
