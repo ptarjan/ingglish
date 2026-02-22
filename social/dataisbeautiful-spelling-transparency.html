@@ -33,7 +33,7 @@
   .chart {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
     margin-bottom: 40px;
   }
   .bar-row {
@@ -51,7 +51,7 @@
   }
   .bar-track {
     flex: 1;
-    height: 36px;
+    height: 30px;
     background: #1a2744;
     border-radius: 6px;
     position: relative;
@@ -207,6 +207,11 @@
       <div class="bar-pct-outside">96%</div>
     </div>
     <div class="bar-row bar-transparent">
+      <div class="bar-label">Indonesian</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 95%"></div></div>
+      <div class="bar-pct-outside">~95%</div>
+    </div>
+    <div class="bar-row bar-transparent">
       <div class="bar-label">Italian</div>
       <div class="bar-track"><div class="bar-fill" style="width: 92%"></div></div>
       <div class="bar-pct-outside">92%</div>
@@ -215,6 +220,16 @@
       <div class="bar-label">Spanish</div>
       <div class="bar-track"><div class="bar-fill" style="width: 90%"></div></div>
       <div class="bar-pct-outside">90%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Korean</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 85%"></div></div>
+      <div class="bar-pct-outside">~85%</div>
+    </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Hungarian</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 85%"></div></div>
+      <div class="bar-pct-outside">~85%</div>
     </div>
     <div class="bar-row bar-transparent">
       <div class="bar-label">German</div>
@@ -226,6 +241,16 @@
       <div class="bar-track"><div class="bar-fill" style="width: 82%"></div></div>
       <div class="bar-pct-outside">82%</div>
     </div>
+    <div class="bar-row bar-transparent">
+      <div class="bar-label">Ukrainian</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 80%"></div></div>
+      <div class="bar-pct-outside">~80%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Hindi</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 75%"></div></div>
+      <div class="bar-pct-outside">~75%</div>
+    </div>
     <div class="bar-row bar-other">
       <div class="bar-label">Portuguese</div>
       <div class="bar-track"><div class="bar-fill" style="width: 72%"></div></div>
@@ -235,6 +260,11 @@
       <div class="bar-label">Dutch</div>
       <div class="bar-track"><div class="bar-fill" style="width: 68%"></div></div>
       <div class="bar-pct-outside">68%</div>
+    </div>
+    <div class="bar-row bar-other">
+      <div class="bar-label">Russian</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 65%"></div></div>
+      <div class="bar-pct-outside">~65%</div>
     </div>
     <div class="bar-row bar-other">
       <div class="bar-label">Swedish</div>
@@ -270,12 +300,12 @@
       <div class="desc">of English words change when<br>respelled to match pronunciation</div>
     </div>
     <div class="annotation-item">
-      <div class="value">12x</div>
-      <div class="desc">gap between English and the<br>average European language</div>
+      <div class="value">10x</div>
+      <div class="desc">gap between English and the<br>average of other languages</div>
     </div>
   </div>
   <div class="footer">
-    <div class="source">English data: CMU Pronouncing Dictionary (134,000+ words) &bull; Other languages: orthographic depth research (Seymour et al. 2003, Borgwaldt et al. 2005)</div>
+    <div class="source">English data: CMU Pronouncing Dictionary (134,000+ words) &bull; European languages: Seymour et al. 2003 &bull; Others: orthographic depth literature estimates (~)</div>
     <div class="site-link">
       <span class="url">ingglish.com</span>
       <span class="tagline">See how any English word is actually pronounced</span>
