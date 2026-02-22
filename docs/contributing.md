@@ -1,7 +1,5 @@
 # Contributing Guide
 
-Thanks for your interest in contributing to Ingglish!
-
 ## Getting Started
 
 1. **Fork and clone the repository**
@@ -17,12 +15,12 @@ Thanks for your interest in contributing to Ingglish!
 
 3. **Build all packages**
    ```bash
-   npm run build
+   npx turbo build:fast
    ```
 
 4. **Run tests**
    ```bash
-   npm test
+   npx turbo test
    ```
 
 ## Development Workflow
@@ -37,47 +35,41 @@ Open http://localhost:3000
 
 ### Running Tests
 
+All commands use turbo for parallelism and caching (~2s when cached):
+
 ```bash
-# All tests
-npm test
+# All tests across all packages
+npx turbo test
 
-# Core library only
-npm test -w ingglish
+# Single package
+npx vitest run packages/core
 
-# Website e2e tests
-npm test -w @ingglish/website
-
-# Watch mode (core)
-npm run test:watch -w ingglish
+# Watch mode
+npx vitest packages/core
 ```
 
-### Linting & Formatting
+### Linting
 
 ```bash
-# Check all linting (TypeScript + CSS)
-npm run lint
-npm run lint:css
+# Lint all packages
+npx turbo lint
 
-# Fix linting issues
-npm run lint:fix
+# Fix auto-fixable issues
+npx turbo lint -- --fix
+```
 
-# Format code
-npm run format
+Before pushing cross-package changes, run lint to catch type errors in dependent packages (lint-staged only checks staged files):
 
-# Check formatting
-npm run format:check
-
-# Run all checks (lint, format, test)
-npm run lint && npm run lint:css && npm run format:check && npm test
+```bash
+npx turbo lint
 ```
 
 ## Project Structure
 
 ```
 packages/
-├── normalize/      # Text cleanup, case handling (0 deps)
+├── normalize/      # Text cleanup, case handling, tokenization (0 deps)
 ├── phonemes/       # Phoneme data + conversion (0 deps)
-├── tokenize/       # Tokenization, word patterns (→ normalize)
 ├── dictionary/     # CMU dict, lookup, frequency
 ├── g2p/            # Rule-based grapheme-to-phoneme (→ phonemes)
 ├── fallback/       # Unknown word strategies (→ phonemes + dictionary + g2p)
@@ -85,7 +77,7 @@ packages/
 ├── shavian/        # Shavian alphabet conversion (→ phonemes + dictionary)
 ├── deseret/        # Deseret alphabet conversion (→ phonemes + dictionary)
 ├── core/           # Translation API (→ all above)
-├── dom/            # DOM translation utilities (Browser only)
+├── dom/            # DOM translation utilities (browser only)
 ├── website/        # React web app (Vite + TypeScript)
 ├── extension/      # Chrome extension (Manifest V3)
 └── cors-proxy/     # Cloudflare Worker (CORS proxy)
@@ -97,22 +89,21 @@ packages/
 
 1. Make changes in `packages/core/src/`
 2. Add tests in the corresponding `.test.ts` file
-3. Run `npm run build -w ingglish` to rebuild
-4. Run `npm test -w ingglish` to verify
+3. Run `npx vitest run packages/core` to verify
 
 ### Website Changes
 
 1. Make changes in `packages/website/src/`
 2. Run `npm run dev -w @ingglish/website` for live reload
-3. Run `npm test -w @ingglish/website` for e2e tests
+3. Run `npx vitest run packages/website` for e2e tests
 
 ### Extension Changes
 
 1. Make changes in `packages/extension/src/`
-2. Run `npm run build -w @ingglish/extension` to rebuild
+2. Run `npx turbo build:fast --filter=@ingglish/extension` to rebuild
 3. Reload the extension in Chrome (`chrome://extensions` > refresh icon)
 
-See [Deployment: Chrome Extension](deployment.md#chrome-extension-deployment) for build and loading instructions.
+See [Deployment](deployment.md#chrome-extension-deployment) for build and loading instructions.
 
 ### Adding New ARPAbet Mappings
 
@@ -128,7 +119,7 @@ export const CONSONANT_MAP: Record<string, string> = {
 };
 ```
 
-For IPA conversion, edit `packages/phonemes/src/ipa-maps.ts`.
+For IPA conversion, edit `packages/ipa/src/to-ipa.ts` and `packages/ipa/src/from-ipa.ts`.
 
 ### Improving Unknown Word Handling
 
@@ -185,7 +176,7 @@ test('translates text', async ({ page }) => {
 ## Code Style
 
 - TypeScript strict mode
-- ESLint + Prettier for formatting
+- ESLint for linting and formatting
 - No `any` types (use `unknown` if needed)
 - Prefer `const` over `let`
 - Use descriptive variable names
@@ -206,15 +197,14 @@ refactor: simplify unknown word handling
 
 1. Create a feature branch: `git checkout -b feat/your-feature`
 2. Make your changes with tests
-3. Run lint, format check, and tests
+3. Run `npx turbo test lint` to verify
 4. Commit with a descriptive message
 5. Push and create a PR against `main`
 
 ### PR Checklist
 
-- [ ] Tests pass (`npm test`)
-- [ ] Linting passes (`npm run lint`)
-- [ ] Formatting is correct (`npm run format:check`)
+- [ ] Tests pass (`npx turbo test`)
+- [ ] Linting passes (`npx turbo lint`)
 - [ ] Documentation updated if needed
 - [ ] Commit messages follow conventions
 

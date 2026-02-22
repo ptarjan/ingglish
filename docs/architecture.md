@@ -7,9 +7,8 @@ High-level architecture of the Ingglish project.
 ```
 ingglish/
 ├── packages/
-│   ├── normalize/      # Text cleanup, case handling
+│   ├── normalize/      # Text cleanup, case handling, tokenization
 │   ├── phonemes/       # Phoneme data + conversion
-│   ├── tokenize/       # Tokenization, word patterns
 │   ├── dictionary/     # CMU dict, lookup, frequency
 │   ├── g2p/            # Rule-based grapheme-to-phoneme
 │   ├── ipa/            # IPA ↔ ARPAbet conversion
@@ -28,7 +27,7 @@ ingglish/
 ## Package Dependencies
 
 ```
-@ingglish/normalize (0 deps) ◄── @ingglish/tokenize
+@ingglish/normalize (0 deps)
 @ingglish/phonemes  (0 deps) ◄┐
 @ingglish/dictionary (0 deps) ◄┤
 @ingglish/g2p ──► phonemes    ◄┼── @ingglish/fallback
@@ -39,7 +38,7 @@ ingglish/
                                │
 ingglish ◄── all above packages
        ▲
-@ingglish/dom ──► @ingglish/normalize + @ingglish/tokenize (peer: core)
+@ingglish/dom ──► @ingglish/normalize (peer: core)
        ▲
 @ingglish/website ──► @ingglish/dom + ingglish
 @ingglish/extension ──► ingglish
@@ -47,16 +46,17 @@ ingglish ◄── all above packages
 
 ## Library Packages
 
-### `@ingglish/normalize` -Text cleanup, case handling
+### `@ingglish/normalize` - Text cleanup, case handling, tokenization
 
 ```
 src/
 ├── index.ts            # Barrel exports
 ├── case.ts             # Case pattern detection/application, splitCamelCase
-└── text.ts             # normalizeApostrophes, stripDiacritics, URL/email preservation
+├── text.ts             # normalizeApostrophes, stripDiacritics, URL/email preservation
+└── tokenize.ts         # WORD_SPLIT_REGEX, WORD_TEST_REGEX, tokenizeText, tokenizeIPA, etc.
 ```
 
-### `@ingglish/phonemes` -Phoneme data + conversion
+### `@ingglish/phonemes` - Phoneme data + conversion
 
 ```
 src/
@@ -71,14 +71,7 @@ src/
 └── format-registry.ts  # Format registry for extensible output
 ```
 
-### `@ingglish/tokenize` -Tokenization, word patterns
-
-```
-src/
-└── index.ts            # WORD_SPLIT_REGEX, WORD_TEST_REGEX, tokenizeText, tokenizeIPA, etc.
-```
-
-### `@ingglish/dictionary` -CMU dict, lookup, frequency
+### `@ingglish/dictionary` - CMU dict, lookup, frequency
 
 ```
 src/
@@ -107,8 +100,7 @@ src/
 src/
 ├── index.ts            # Barrel exports
 ├── to-ipa.ts           # ARPAbet → IPA with stress
-├── from-ipa.ts         # IPA → ARPAbet
-└── ipa-maps.ts         # IPA mapping tables
+└── from-ipa.ts         # IPA → ARPAbet
 ```
 
 ### `@ingglish/shavian` - Shavian alphabet conversion
@@ -133,7 +125,7 @@ src/
 └── tokenize.ts         # Deseret tokenization
 ```
 
-### `@ingglish/fallback` -Unknown word strategies
+### `@ingglish/fallback` - Unknown word strategies
 
 ```
 src/
@@ -144,7 +136,7 @@ src/
 └── british.ts          # British spelling variants
 ```
 
-### `ingglish` -Translation API
+### `ingglish` - Translation API
 
 The core package is a thin orchestration layer. It imports from the packages above and exports the public translation API.
 

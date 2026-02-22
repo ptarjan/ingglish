@@ -77,5 +77,3 @@ Ingglish merges homophones (words that sound identical). This isn't a collision 
 ```bash
 npm run analyze-collisions -w ingglish
 ```
-
-The analysis script is at `packages/core/scripts/cli/collision-analysis.ts`.

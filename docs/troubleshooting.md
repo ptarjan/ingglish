@@ -11,13 +11,9 @@ Common issues and how to fix them.
 **Solutions:**
 - Ensure Node.js 20+ is installed (`node --version`)
 - Run `npm ci` to get exact dependency versions
-- Build packages in dependency order:
+- Build all packages (turbo handles dependency order automatically):
   ```bash
-  npm run build -w @ingglish/normalize -w @ingglish/phonemes
-  npm run build -w @ingglish/tokenize -w @ingglish/dictionary
-  npm run build -w @ingglish/fallback
-  npm run build -w ingglish
-  npm run build -w @ingglish/dom -w @ingglish/website
+  npx turbo build:fast
   ```
 
 ### TypeScript Errors in Dependent Packages
@@ -28,7 +24,7 @@ Common issues and how to fix them.
 
 **Solution:** Run a full lint before pushing:
 ```bash
-npm run lint
+npx turbo lint
 ```
 
 ## Website Issues
