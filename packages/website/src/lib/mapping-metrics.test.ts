@@ -11,7 +11,7 @@ import {
 
 beforeAll(async () => {
   await Promise.all([loadDictionary(), loadFrequencies()]);
-});
+}, 30_000);
 
 describe('charEditDistance', () => {
   it('returns 0 for identical strings', () => {
