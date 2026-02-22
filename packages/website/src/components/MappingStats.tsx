@@ -1,12 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
-import { arpabetToFormat } from '@ingglish/phonemes';
+import {
+  arpabetToFormat,
+  ARPABET_TO_INGGLISH_MAP,
+  R_COLORED_FORWARD,
+  stripStress,
+} from '@ingglish/phonemes';
 
 interface FormatStats {
   /** Collision map for collision analysis */
   collisionMap: Map<string, string[]>;
-  /** Frequency-weighted average similarity to English spelling */
-  readabilityPct: number;
+  /** Frequency-weighted spelling familiarity (how often each grapheme appears in English words with that phoneme) */
+  familiarityPct: number;
   /** % of real-world text (by frequency) that stays identical */
   textPreservedPct: number;
   totalWords: number;
@@ -15,6 +20,8 @@ interface FormatStats {
 }
 
 interface MappingStatsProps {
+  experimentPhonemeMap: Record<string, string>;
+  experimentRColoredPrefixes: Record<string, string>;
   version: number;
 }
 
@@ -24,28 +31,12 @@ interface WordChange {
   word: string;
 }
 
-/** Character-level Levenshtein distance */
-function editDistance(a: string, b: string): number {
-  const m = a.length;
-  const n = b.length;
-  let prev = Array.from<number>({ length: n + 1 });
-  let curr = Array.from<number>({ length: n + 1 });
-  for (let j = 0; j <= n; j++) {
-    prev[j] = j;
-  }
-  for (let i = 1; i <= m; i++) {
-    curr[0] = i;
-    for (let j = 1; j <= n; j++) {
-      curr[j] =
-        a[i - 1] === b[j - 1] ? prev[j - 1]! : 1 + Math.min(prev[j - 1]!, prev[j]!, curr[j - 1]!);
-    }
-    [prev, curr] = [curr, prev];
-  }
-  return prev[n]!;
-}
-
 /** Pre-compiled regex for filtering dictionary entries with punctuation */
 const NON_ALPHA = /[^a-z]/i;
+
+/** Standard Ingglish phoneme maps (separated into base + stress) */
+const STD_MAPS = splitPhonemeMap({ ...ARPABET_TO_INGGLISH_MAP, AH0: 'a' });
+const STD_R_COLORED = new Map(R_COLORED_FORWARD);
 
 /**
  * Pre-computed standard Ingglish data. Computed once on first use since the
@@ -70,7 +61,11 @@ interface Stats {
  * Single-pass computation: experiment stats + top changes + new collisions.
  * Uses cached standard Ingglish data to avoid redundant dictionary iteration.
  */
-function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCache>): {
+function computeExperimentStats(
+  ingglishCache: ReturnType<typeof getIngglishCache>,
+  expPhonemeMap: Record<string, string>,
+  expRColoredPrefixes: Record<string, string>
+): {
   stats: FormatStats;
   topChanges: WordChange[];
   topCollisions: { spelling: string; words: string[] }[];
@@ -82,7 +77,11 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   const changes: { experiment: string; freq: number; standard: string; word: string }[] = [];
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
-  let readabilityFreqSum = 0;
+  let familiarityFreqSum = 0;
+
+  // Build experiment maps
+  const expMaps = splitPhonemeMap(expPhonemeMap);
+  const expRColored = new Map(Object.entries(expRColoredPrefixes));
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -100,10 +99,17 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
       identicalFreqSum += freq;
     }
 
-    const maxLen = Math.max(wordLower.length, expSpelling.length);
-    const similarity =
-      maxLen > 0 ? 1 - editDistance(wordLower, expSpelling.toLowerCase()) / maxLen : 1;
-    readabilityFreqSum += freq * similarity;
+    // Spelling familiarity
+    const units = getGraphemeUnits(phonemes, expMaps.base, expRColored, expMaps.stress);
+    if (units.length > 0) {
+      let hits = 0;
+      for (const g of units) {
+        if (wordLower.includes(g)) {
+          hits++;
+        }
+      }
+      familiarityFreqSum += freq * (hits / units.length);
+    }
 
     // Group words by experiment spelling
     const existing = spellingToWords.get(expSpelling);
@@ -161,7 +167,7 @@ function computeExperimentStats(ingglishCache: ReturnType<typeof getIngglishCach
   return {
     stats: {
       collisionMap: spellingToWords,
-      readabilityPct: totalFreqSum > 0 ? (readabilityFreqSum / totalFreqSum) * 100 : 100,
+      familiarityPct: totalFreqSum > 0 ? (familiarityFreqSum / totalFreqSum) * 100 : 100,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
@@ -190,6 +196,53 @@ function DeltaBadge({ value }: { value: number }) {
   );
 }
 
+/**
+ * Get grapheme units for a phoneme sequence under given mappings.
+ * R-colored vowels merge vowel+R into a single unit (e.g., "ar").
+ * Used for computing spelling familiarity per word.
+ */
+function getGraphemeUnits(
+  rawPhonemes: string[],
+  phonemeMap: Record<string, string>,
+  rColoredMap: Map<string, string>,
+  stressOverrides: Map<string, string>
+): string[] {
+  const units: string[] = [];
+  const len = rawPhonemes.length;
+  let skipNext = false;
+
+  for (let i = 0; i < len; i++) {
+    if (skipNext) {
+      skipNext = false;
+      continue;
+    }
+    const p = rawPhonemes[i]!;
+    const base = stripStress(p);
+
+    // R-colored vowel: combine vowel+R into single grapheme unit
+    if (i + 1 < len && rawPhonemes[i + 1] === 'R') {
+      const rPrefix = rColoredMap.get(base);
+      if (rPrefix !== undefined) {
+        units.push(rPrefix + (phonemeMap.R ?? 'r'));
+        skipNext = true;
+        continue;
+      }
+    }
+
+    // Stress override (e.g., AH0 → 'a')
+    const so = stressOverrides.get(p);
+    if (so !== undefined) {
+      units.push(so);
+      continue;
+    }
+
+    // Base mapping
+    units.push(phonemeMap[base] ?? base.toLowerCase());
+  }
+
+  return units;
+}
+
 function getIngglishCache() {
   if (cachedIngglish !== null) {
     return cachedIngglish;
@@ -202,7 +255,7 @@ function getIngglishCache() {
   const wordFreqs = new Map<string, number>();
   let identicalFreqSum = 0;
   let totalFreqSum = 0;
-  let readabilityFreqSum = 0;
+  let familiarityFreqSum = 0;
 
   for (const [word, phonemes] of Object.entries(dict)) {
     if (NON_ALPHA.test(word)) {
@@ -221,10 +274,17 @@ function getIngglishCache() {
       identicalFreqSum += freq;
     }
 
-    const maxLen = Math.max(wordLower.length, spelling.length);
-    const similarity =
-      maxLen > 0 ? 1 - editDistance(wordLower, spelling.toLowerCase()) / maxLen : 1;
-    readabilityFreqSum += freq * similarity;
+    // Spelling familiarity: for each grapheme unit, check if it appears in the English word
+    const units = getGraphemeUnits(phonemes, STD_MAPS.base, STD_R_COLORED, STD_MAPS.stress);
+    if (units.length > 0) {
+      let hits = 0;
+      for (const g of units) {
+        if (wordLower.includes(g)) {
+          hits++;
+        }
+      }
+      familiarityFreqSum += freq * (hits / units.length);
+    }
 
     const existing = spellingToWords.get(spelling);
     if (existing) {
@@ -261,7 +321,7 @@ function getIngglishCache() {
     spellings,
     stats: {
       collisionMap: spellingToWords,
-      readabilityPct: totalFreqSum > 0 ? (readabilityFreqSum / totalFreqSum) * 100 : 100,
+      familiarityPct: totalFreqSum > 0 ? (familiarityFreqSum / totalFreqSum) * 100 : 100,
       textPreservedPct: totalFreqSum > 0 ? (identicalFreqSum / totalFreqSum) * 100 : 0,
       totalWords,
       uniquePct: totalFreqSum > 0 ? ((totalFreqSum - collidingFreqSum) / totalFreqSum) * 100 : 100,
@@ -270,10 +330,20 @@ function getIngglishCache() {
   return cachedIngglish;
 }
 
-function MappingStats({ version }: MappingStatsProps) {
+function MappingStats({
+  experimentPhonemeMap,
+  experimentRColoredPrefixes,
+  version,
+}: MappingStatsProps) {
   const [stats, setStats] = useState<null | Stats>(null);
   const [computing, setComputing] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Refs to avoid stale closures in the debounced timeout
+  const expMapRef = useRef(experimentPhonemeMap);
+  const expRColoredRef = useRef(experimentRColoredPrefixes);
+  expMapRef.current = experimentPhonemeMap;
+  expRColoredRef.current = experimentRColoredPrefixes;
 
   // Debounce stats computation
   useEffect(() => {
@@ -283,7 +353,11 @@ function MappingStats({ version }: MappingStatsProps) {
       // Standard Ingglish is cached after first computation
       const ingglishCache = getIngglishCache();
       // Single pass for experiment stats + changes + new collisions
-      const { stats: expStats, topChanges, topCollisions } = computeExperimentStats(ingglishCache);
+      const {
+        stats: expStats,
+        topChanges,
+        topCollisions,
+      } = computeExperimentStats(ingglishCache, expMapRef.current, expRColoredRef.current);
 
       setStats({
         experiment: expStats,
@@ -337,13 +411,13 @@ function MappingStats({ version }: MappingStatsProps) {
         </div>
         <div
           className="stat-card"
-          title="How similar translated text looks to standard English spelling — higher means easier for English readers to parse"
+          title="How often each spelling choice already appears in English words with that sound — higher means English readers will find the spellings more intuitive"
         >
           <div className="stat-value">
-            {experiment.readabilityPct.toFixed(1)}%
-            <DeltaBadge value={experiment.readabilityPct - ingglish.readabilityPct} />
+            {experiment.familiarityPct.toFixed(1)}%
+            <DeltaBadge value={experiment.familiarityPct - ingglish.familiarityPct} />
           </div>
-          <div className="stat-label">Readability</div>
+          <div className="stat-label">Spelling familiarity</div>
         </div>
       </div>
 
@@ -394,6 +468,27 @@ function MappingStats({ version }: MappingStatsProps) {
       )}
     </div>
   );
+}
+
+/**
+ * Split a full phoneme map (which may include stress keys like AH0)
+ * into base phoneme map and stress overrides.
+ */
+function splitPhonemeMap(fullMap: Record<string, string>): {
+  base: Record<string, string>;
+  stress: Map<string, string>;
+} {
+  const base: Record<string, string> = {};
+  const stress = new Map<string, string>();
+  for (const [key, value] of Object.entries(fullMap)) {
+    const lastChar = key.codePointAt(key.length - 1)!;
+    if (lastChar >= 48 && lastChar <= 50) {
+      stress.set(key, value);
+    } else {
+      base[key] = value;
+    }
+  }
+  return { base, stress };
 }
 
 export default MappingStats;

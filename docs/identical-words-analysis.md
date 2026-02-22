@@ -182,31 +182,57 @@ Key questions before implementing:
 2. **Are the unstressed variants truly distinct to English speakers?** Unstressed 'y' in "happy" does sound different from 'ee' in "bee". Unstressed 'o' in "avocado" does sound different from 'oh' in "go". But is the difference as clear-cut as schwa vs strut?
 3. **Do the new spellings avoid perceptual ambiguity?** Unlike the rejected base changes, 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English *already spells these sounds*. English readers would likely pronounce them correctly naturally.
 
-## Why Continuous Readability Metrics Don't Work
+## Spelling Familiarity Metric
 
-The identical-word metric is binary: a word either matches or it doesn't. We investigated two continuous alternatives to capture partial improvements, and both failed.
+The experiment page shows a "Spelling familiarity" percentage alongside text preservation and unambiguous text. This metric measures: for each phoneme→grapheme mapping, what fraction of English words containing that phoneme also contain the grapheme as a substring? Frequency-weighted across all phoneme occurrences.
 
-### Edit distance (Levenshtein similarity)
+Baseline Ingglish scores **64.2% spelling familiarity**. The per-phoneme breakdown reveals which mappings are most and least familiar to English readers:
 
-The idea: measure how many characters are preserved. `similarity = 1 - (edit_distance / max_length)`.
+| Phoneme | Grapheme | Familiarity | Notes |
+|---------|----------|-------------|-------|
+| AE→"a" | a | 100% | Every /æ/ word has "a": cat, bat, had |
+| TH→"th" | th | 100% | Every /θ/ word has "th": think, bath |
+| T→"t" | t | 98% | Nearly every /t/ word has "t" |
+| S→"s" | s | 91% | Most /s/ words have "s" |
+| IH→"i" | i | 88% | Most /ɪ/ words have "i": bit, sit |
+| SH→"sh" | sh | 64% | Many /ʃ/ words use "sh" but others use "ti", "ci" |
+| K→"k" | k | 47% | Many /k/ words use "c" instead: cat, come |
+| IY→"ee" | ee | 10% | Most /iː/ words use "e", "ea", "ie" not "ee" |
+| Z→"z" | z | 3% | Most /z/ words use "s": is, was, his |
+| AH→"uh" | uh | 0.5% | English almost never spells /ʌ/ as "uh" |
+| DH→"dh" | dh | 0% | "dh" never appears in English words |
 
-**Problem:** Optimizes for character overlap, not perceptual readability. The top recommendation was /ʌ/→"uo" (+8,300 /M) because 'u' matches the first letter in "up" and "us". But the resulting spellings are unreadable: "uop" for "up", "buot" for "but", "kuop" for "cup". Other suggestions: /k/→"ck" producing "ckat" for "cat", /iː/→"ey" producing "sey" for "see".
+This metric is useful for **diagnostics** (identifying which mappings are least familiar) and as a **display metric** on the experiment page (showing how a change affects familiarity). However, it cannot be used for automated optimization — see below.
 
-### Bigram familiarity (character n-gram frequency)
+## Why Continuous Metrics Can't Optimize Mappings
 
-The idea: build a frequency model of English character bigrams, then score how "English-looking" each Ingglish spelling is based on its letter patterns.
+The identical-word metric is binary: a word either matches or it doesn't. We investigated three continuous alternatives to capture partial improvements. All work for display but fail when used to optimize (search for better mappings).
 
-**Problem:** Common bigrams don't make readable words. The top recommendation was /ʌ/→"ea" (+159K /M) because "ea" is a common English bigram — but it produces "eav" for "of", "eap" for "up", "weat" for "what". Other suggestions: /z/→"ey" producing "iey" for "is" and "woey" for "was"; /ð/→"wh" producing "wha" for "the" and "wiwh" for "with".
+### 1. Edit distance (Levenshtein similarity)
 
-### Why these fail
+`similarity = 1 - (edit_distance / max_length)`.
 
-Both metrics measure properties of the output text (character similarity, letter pattern frequency) without modeling how English readers actually decode spellings. Readability for English speakers depends on:
+**Problem:** Optimizes for character overlap, not perceptual readability. Top suggestion: /ʌ/→"uo" producing "buot" for "but", "uop" for "up". Also suggested /k/→"ck" producing "ckat" for "cat".
 
-1. **Spelling convention knowledge** — English readers know "igh" represents /aɪ/ and "tion" represents /ʃən/. These are learned, not derivable from character statistics.
-2. **Visual word recognition** — Readers recognize common words as whole shapes, not letter-by-letter. Any change to a common word's spelling disrupts this.
-3. **Phonetic decoding rules** — English readers use context-dependent rules ("c" before "e" = /s/, before "a" = /k/). Automated metrics can't model these.
+### 2. Bigram familiarity (character n-gram frequency)
 
-The identical-word metric with frequency weighting remains the best automated proxy for readability. A word that's spelled identically to English is guaranteed readable; for non-identical words, human judgment is needed to evaluate the spelling choice.
+Score each Ingglish word by how common its letter pairs are in English text.
+
+**Problem:** Common bigrams don't make readable words. Top suggestion: /ʌ/→"ea" producing "eav" for "of"; /z/→"ey" producing "woey" for "was"; /ð/→"wh" producing "wha" for "the".
+
+### 3. Spelling familiarity (grapheme-in-word substring check)
+
+For each phoneme, check if its Ingglish grapheme appears as a substring of the English word.
+
+**Problem:** Substring matching can't distinguish *why* a grapheme appears. Top suggestion: /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where" — but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my"; /ð/→"ey" producing "eya" for "the".
+
+### The fundamental limitation
+
+All three metrics share the same root cause: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence) without modeling **grapheme-phoneme alignment** — which specific letters correspond to which specific sounds in a word. Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons.
+
+Building a proper grapheme-phoneme alignment model would require training a sequence alignment system on the CMU dictionary, which is a significant NLP project beyond the scope of this analysis.
+
+The identical-word metric with frequency weighting remains the best automated proxy for readability. The spelling familiarity metric supplements it as a diagnostic tool — identifying which mappings are least familiar — but human judgment is needed to evaluate whether any specific change would actually improve readability.
 
 ## Methodology
 
@@ -214,6 +240,8 @@ Analysis scripts are in `packages/core/scripts/analysis/`:
 
 - `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
 - `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
+- `familiarity-search.ts` - Per-phoneme spelling familiarity analysis (same metric used on the experiment page)
+
 All scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
 
 The exhaustive search runs in three phases:

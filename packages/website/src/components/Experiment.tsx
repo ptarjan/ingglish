@@ -55,7 +55,11 @@ function Experiment() {
         </div>
         <div className="experiment-right">
           <ExperimentTranslator version={mapping.version} />
-          <MappingStats version={mapping.version} />
+          <MappingStats
+            experimentPhonemeMap={mapping.phonemeMap}
+            experimentRColoredPrefixes={mapping.rColoredPrefixes}
+            version={mapping.version}
+          />
         </div>
       </div>
     </div>
