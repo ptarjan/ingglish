@@ -421,7 +421,9 @@ function MappingStats({ version }: MappingStatsProps) {
         <div className="stats-extra">
           <div className="stats-extra-row">
             <div className="stats-extra-header">
-              <span className="stats-extra-name">Edit similarity</span>
+              <span className="stats-extra-name">
+                <a href="https://ingglish.com/docs/metrics#edit-similarity">Edit similarity</a>
+              </span>
               <span className="stats-extra-value">
                 {(experiment.editSimilarity * 100).toFixed(1)}%
                 <DeltaBadge value={(experiment.editSimilarity - ingglish.editSimilarity) * 100} />
@@ -434,7 +436,11 @@ function MappingStats({ version }: MappingStatsProps) {
           </div>
           <div className="stats-extra-row">
             <div className="stats-extra-header">
-              <span className="stats-extra-name">Spelling familiarity</span>
+              <span className="stats-extra-name">
+                <a href="https://ingglish.com/docs/metrics#spelling-familiarity">
+                  Spelling familiarity
+                </a>
+              </span>
               <span className="stats-extra-value">
                 {(experiment.spellingFamiliarity * 100).toFixed(1)}%
                 <DeltaBadge
@@ -449,7 +455,9 @@ function MappingStats({ version }: MappingStatsProps) {
           </div>
           <div className="stats-extra-row">
             <div className="stats-extra-header">
-              <span className="stats-extra-name">Naturalness</span>
+              <span className="stats-extra-name">
+                <a href="https://ingglish.com/docs/metrics#naturalness">Naturalness</a>
+              </span>
               <span className="stats-extra-value">
                 {experiment.naturalness.toFixed(2)}
                 <DeltaBadge
@@ -466,7 +474,7 @@ function MappingStats({ version }: MappingStatsProps) {
           </div>
           <div className="stats-extra-link">
             <a
-              href="https://ingglish.com/docs/identical-words-analysis#why-surface-level-metrics-cant-optimize-mappings"
+              href="https://ingglish.com/docs/metrics#why-surface-level-metrics-cant-optimize-mappings"
               rel="noopener noreferrer"
               target="_blank"
             >

@@ -10,6 +10,7 @@ import designDecisions from '../../../../docs/design-decisions.md';
 import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
 import apiReference from '../../../../docs/generated/README.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
+import metricsDoc from '../../../../docs/metrics.md';
 import morphologicalAnalysis from '../../../../docs/morphological-analysis.md';
 import orthographicTransparency from '../../../../docs/orthographic-transparency.md';
 import orthographyComparison from '../../../../docs/orthography-comparison.md';
@@ -77,6 +78,12 @@ const docs: DocEntry[] = [
     filename: 'identical-words-analysis.md',
     id: 'identical-words-analysis',
     title: 'Identical Words Analysis',
+  },
+  {
+    content: metricsDoc,
+    filename: 'metrics.md',
+    id: 'metrics',
+    title: 'Mapping Quality Metrics',
   },
   {
     content: collisionAnalysis,

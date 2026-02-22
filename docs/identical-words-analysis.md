@@ -182,78 +182,9 @@ Key questions before implementing:
 2. **Are the unstressed variants truly distinct to English speakers?** Unstressed 'y' in "happy" does sound different from 'ee' in "bee". Unstressed 'o' in "avocado" does sound different from 'oh' in "go". But is the difference as clear-cut as schwa vs strut?
 3. **Do the new spellings avoid perceptual ambiguity?** Unlike the rejected base changes, 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English *already spells these sounds*. English readers would likely pronounce them correctly naturally.
 
-## Pronounceability Metric (G2P Round-Trip)
+## Mapping Quality Metrics
 
-The experiment page shows a "Pronounceability" score alongside text preservation and unambiguous text. This metric feeds each Ingglish spelling back through the G2P (grapheme-to-phoneme) model and compares predicted phonemes against the original CMU phonemes. It directly measures "would an English reader pronounce this correctly?" as a frequency-weighted phoneme recovery rate (0–100%).
-
-This replaced the earlier "Naturalness" metric (orthotactic probability, ~-3.08 baseline) which measured how "English-looking" respelled words are using character bigram statistics. The G2P round-trip metric is superior because it models grapheme-phoneme alignment rather than surface-level letter patterns — it correctly rejects changes like /j/→"c" (coo for "you": G2P predicts /ku/) and /z/→"ck" (ick for "is": G2P predicts /ɪk/) that orthotactic probability incorrectly scored as improvements.
-
-The per-phoneme familiarity breakdown (from `familiarity-search.ts`) remains useful for diagnostics — revealing which mappings are most and least familiar to English readers:
-
-| Phoneme | Grapheme | Familiarity | Notes |
-|---------|----------|-------------|-------|
-| AE→"a" | a | 100% | Every /æ/ word has "a": cat, bat, had |
-| TH→"th" | th | 100% | Every /θ/ word has "th": think, bath |
-| T→"t" | t | 98% | Nearly every /t/ word has "t" |
-| S→"s" | s | 91% | Most /s/ words have "s" |
-| IH→"i" | i | 88% | Most /ɪ/ words have "i": bit, sit |
-| SH→"sh" | sh | 64% | Many /ʃ/ words use "sh" but others use "ti", "ci" |
-| K→"k" | k | 47% | Many /k/ words use "c" instead: cat, come |
-| IY→"ee" | ee | 10% | Most /iː/ words use "e", "ea", "ie" not "ee" |
-| Z→"z" | z | 3% | Most /z/ words use "s": is, was, his |
-| AH→"uh" | uh | 0.5% | English almost never spells /ʌ/ as "uh" |
-| DH→"dh" | dh | 0% | "dh" never appears in English words |
-
-The per-phoneme familiarity is useful for **diagnostics** (identifying which mappings are least familiar).
-
-## Why Surface-Level Metrics Can't Optimize Mappings
-
-The identical-word metric is binary: a word either matches or it doesn't. We investigated four continuous alternatives to capture partial improvements. The first four measure surface-level properties and fail when used to optimize. The fifth — G2P round-trip — models grapheme-phoneme alignment and succeeds.
-
-### 1. Edit distance (Levenshtein similarity)
-
-`similarity = 1 - (edit_distance / max_length)`.
-
-**Problem:** Optimizes for character overlap, not perceptual readability. Top suggestion: /ʌ/→"uo" producing "buot" for "but", "uop" for "up". Also suggested /k/→"ck" producing "ckat" for "cat".
-
-### 2. Bigram familiarity (character n-gram frequency)
-
-Score each Ingglish word by how common its letter pairs are in English text.
-
-**Problem:** Common bigrams don't make readable words. Top suggestion: /ʌ/→"ea" producing "eav" for "of"; /z/→"ey" producing "woey" for "was"; /ð/→"wh" producing "wha" for "the".
-
-### 3. Spelling familiarity (grapheme-in-word substring check)
-
-For each phoneme, check if its Ingglish grapheme appears as a substring of the English word.
-
-**Problem:** Substring matching can't distinguish *why* a grapheme appears. Top suggestion: /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where" — but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my"; /ð/→"ey" producing "eya" for "the".
-
-### 4. Orthotactic probability (character bigram model)
-
-Score each respelled word by how "English-looking" its letter sequences are, using a character bigram model trained on English words (token-weighted by log frequency, add-k smoothed). This is a well-validated psycholinguistic measure of word-form naturalness. Aggregate metric: frequency-weighted average log bigram probability across all respelled words.
-
-**Problem:** Rewards common letter sequences regardless of phoneme-grapheme alignment. Top suggestions: /j/→"c" producing "coo" for "you", "cor" for "your"; /v/→"ie" producing "uhie" for "of", "haie" for "have"; /z/→"ck" producing "ick" for "is", "wock" for "was"; /ð/→"ph" producing "pha" for "the", "phat" for "that".
-
-The bigram model correctly identifies that sequences like "co", "ck", "ph" are common in English, so words containing them score higher. But it can't distinguish *which sound* those sequences should represent. Replacing /j/ (the "y" sound) with "c" makes "you" → "coo", which contains the very common English bigrams "co" and "oo" — a high orthotactic score that produces an unreadable word.
-
-This was the most theoretically promising surface-level metric. The psycholinguistic literature validates orthotactic probability for measuring reading difficulty of novel words. But it assumes the novel words are *spelled phonetically* — i.e., that the reader will try to sound them out. In our case, the words are spelled using arbitrary phoneme→grapheme mappings, so the metric rewards letter sequences that are common in English for reasons unrelated to the phonemes being represented.
-
-### The fundamental limitation of surface-level metrics
-
-All four metrics above share the same root cause: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence, bigram statistics) without modeling **grapheme-phoneme alignment** — which specific letters correspond to which specific sounds in a word. Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons.
-
-### 5. G2P round-trip (grapheme-to-phoneme model)
-
-Spell a word using the proposed mapping, feed the spelling through the NRL letter-to-sound rules (329 context-sensitive rules that predict how an English reader would pronounce arbitrary text), compare predicted phonemes against the original CMU phonemes. Score = `1 - levenshtein(predicted, original) / max(len(predicted), len(original))`. Aggregate: frequency-weighted average across all words.
-
-**This metric works.** It directly models grapheme-phoneme alignment — whether the proposed spelling would actually be *read correctly* by an English reader. Examples:
-- /j/→"c" producing "coo" for "you": G2P predicts /ku/ not /ju/ → bad score ✓
-- /z/→"ck" producing "ick" for "is": G2P predicts /ɪk/ not /ɪz/ → bad score ✓
-- /s/→"s" in "sit": G2P predicts /sɪt/ → perfect score ✓
-
-These were all incorrectly scored as "improvements" by orthotactic probability but correctly penalized by G2P round-trip. The G2P model already exists in the codebase (`@ingglish/g2p`) and is used for the experiment page's "Pronounceability" metric.
-
-The G2P round-trip metric is now used on the experiment page (replacing the orthotactic probability "Naturalness" metric) and in the `g2p-roundtrip-search.ts` hill-climbing script.
+The experiment page shows several metrics for evaluating phoneme-to-grapheme mappings, including text preservation, unambiguous text, pronounceability (G2P round-trip), edit similarity, spelling familiarity, and naturalness (orthotactic probability). See [metrics.md](metrics.md) for detailed descriptions of each metric, their formulas, limitations, and why surface-level metrics can't optimize mappings.
 
 ## Methodology
 
