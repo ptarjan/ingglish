@@ -9,7 +9,17 @@ import type { CMUDictionary } from './types';
 
 const loader = createLazyLoader<CMUDictionary>(async () => {
   const mod = await import('./cmudict');
-  return mod.default;
+  const dict = mod.default;
+  // Pre-normalize velar nasals (N → NG before K/G) once at load time,
+  // instead of scanning every phoneme array on each lookup.
+  for (const phonemes of Object.values(dict)) {
+    for (let i = 0; i < phonemes.length - 1; i++) {
+      if (phonemes[i] === 'N' && (phonemes[i + 1] === 'K' || phonemes[i + 1] === 'G')) {
+        phonemes[i] = 'NG';
+      }
+    }
+  }
+  return dict;
 }, 'CMU dictionary');
 
 /**

@@ -135,9 +135,9 @@ describe('performance optimizations', () => {
       const result = arpabetToIngglish(phonemes);
       expect(result).toBe('star');
 
-      // stripStress should be called once per phoneme (4 times)
-      // NOT twice per phoneme (which would be 8 times if we called it for next phoneme too)
-      expect(stripStressSpy.mock.calls.length).toBe(4);
+      // stripStress should only be called for R-colored vowel candidates (AA1 before R),
+      // not for every phoneme. Pre-combined lookup table handles the rest.
+      expect(stripStressSpy.mock.calls.length).toBe(1);
 
       stripStressSpy.mockRestore();
     });

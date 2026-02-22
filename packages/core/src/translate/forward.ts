@@ -220,6 +220,24 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     return { matched: true, translated: word };
   }
 
+  // Fast path for pure lowercase ASCII dictionary words (most common in natural text).
+  // Pure a-z excludes: camelCase (uppercase), contractions (apostrophe), diacritics.
+  // Skips initialism, camelCase, contraction, and case-detection checks entirely.
+  let isLowerASCII = true;
+  for (let i = 0; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c < 97 || c > 122) {
+      isLowerASCII = false;
+      break;
+    }
+  }
+  if (isLowerASCII && !isInitialism(word) && parseInitialismWithSuffix(word) === null) {
+    const phonemes = lookupPronunciation(word);
+    if (phonemes) {
+      return { matched: true, translated: arpabetToFormat(phonemes, format) };
+    }
+  }
+
   const isLatinScript = getFormatIsLatinScript(format);
 
   // Initialisms with suffixes (IDs, TVs, API's) — must come before contractions

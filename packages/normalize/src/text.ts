@@ -34,28 +34,38 @@ export function extractPreservedPatterns(text: string): {
 } {
   const preserved = new Map<string, string>();
   let counter = 0;
+  let result = text;
+
+  // Short-circuit each regex when its trigger pattern isn't present.
+  // Most text has no URLs, emails, or bare domains.
 
   // Replace URLs first (they may contain email-like patterns)
   // Use \x00 (null) and \x01 (SOH) to create non-word placeholders
-  let result = text.replaceAll(URL_REGEX, (match) => {
-    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
-    preserved.set(placeholder, match);
-    return placeholder;
-  });
+  if (text.includes('://')) {
+    result = result.replaceAll(URL_REGEX, (match) => {
+      const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
+      preserved.set(placeholder, match);
+      return placeholder;
+    });
+  }
 
   // Replace emails
-  result = result.replaceAll(EMAIL_REGEX, (match) => {
-    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
-    preserved.set(placeholder, match);
-    return placeholder;
-  });
+  if (result.includes('@')) {
+    result = result.replaceAll(EMAIL_REGEX, (match) => {
+      const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
+      preserved.set(placeholder, match);
+      return placeholder;
+    });
+  }
 
   // Replace bare domains (after URLs and emails to avoid double-matching)
-  result = result.replaceAll(BARE_DOMAIN_REGEX, (match) => {
-    const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
-    preserved.set(placeholder, match);
-    return placeholder;
-  });
+  if (result.includes('.')) {
+    result = result.replaceAll(BARE_DOMAIN_REGEX, (match) => {
+      const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
+      preserved.set(placeholder, match);
+      return placeholder;
+    });
+  }
 
   return { preserved, text: result };
 }

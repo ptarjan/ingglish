@@ -75,8 +75,16 @@ export function convertArpabet(
   return result;
 }
 
-/** Default stress overrides: unstressed schwa AH0 → 'a' */
-const DEFAULT_STRESS_OVERRIDES = new Map<string, string>([['AH0', 'a']]);
+// Pre-combined lookup: phoneme (with or without stress digit) → ingglish spelling.
+// Eliminates per-phoneme stripStress() + stressOverrides.get() calls.
+const INGGLISH_FULL_MAP: Record<string, string> = {};
+for (const [base, spelling] of Object.entries(ARPABET_TO_INGGLISH_MAP)) {
+  INGGLISH_FULL_MAP[base] = spelling;
+  INGGLISH_FULL_MAP[base + '0'] = spelling;
+  INGGLISH_FULL_MAP[base + '1'] = spelling;
+  INGGLISH_FULL_MAP[base + '2'] = spelling;
+}
+INGGLISH_FULL_MAP.AH0 = 'a'; // Override: unstressed schwa
 
 /**
  * Converts an array of ARPAbet phonemes to Ingglish spelling.
@@ -88,12 +96,22 @@ const DEFAULT_STRESS_OVERRIDES = new Map<string, string>([['AH0', 'a']]);
  * @returns Ingglish spelling (e.g., "haloh")
  */
 export function arpabetToIngglish(arpabet: string[]): string {
-  return convertArpabet(
-    arpabet,
-    ARPABET_TO_INGGLISH_MAP,
-    R_COLORED_FORWARD,
-    DEFAULT_STRESS_OVERRIDES
-  );
+  let result = '';
+  const len = arpabet.length;
+  for (let i = 0; i < len; i++) {
+    const phoneme = arpabet[i]!;
+    // R-colored vowel check: only if next phoneme is R
+    if (i + 1 < len && arpabet[i + 1] === 'R') {
+      const base = stripStress(phoneme);
+      const rPrefix = R_COLORED_FORWARD.get(base);
+      if (rPrefix !== undefined) {
+        result += rPrefix;
+        continue;
+      }
+    }
+    result += INGGLISH_FULL_MAP[phoneme] ?? phoneme.toLowerCase();
+  }
+  return result;
 }
 
 // Register default format at module load
@@ -112,6 +130,10 @@ registerFormat('ingglish', {
  * @returns Formatted string
  */
 export function arpabetToFormat(arpabet: string[], format: OutputFormat = 'ingglish'): string {
+  // Fast path: skip registry lookup for the default format (99% of calls)
+  if (format === 'ingglish') {
+    return arpabetToIngglish(arpabet);
+  }
   const handler = getFormatHandler(format);
   if (handler?.forward) {
     return handler.forward(arpabet);
