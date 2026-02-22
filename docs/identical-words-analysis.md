@@ -182,11 +182,11 @@ Key questions before implementing:
 2. **Are the unstressed variants truly distinct to English speakers?** Unstressed 'y' in "happy" does sound different from 'ee' in "bee". Unstressed 'o' in "avocado" does sound different from 'oh' in "go". But is the difference as clear-cut as schwa vs strut?
 3. **Do the new spellings avoid perceptual ambiguity?** Unlike the rejected base changes, 'y' for unstressed /iː/ and 'o' for unstressed /oʊ/ are how English *already spells these sounds*. English readers would likely pronounce them correctly naturally.
 
-## Spelling Familiarity Metric
+## Naturalness Metric (Orthotactic Probability)
 
-The experiment page shows a "Spelling familiarity" percentage alongside text preservation and unambiguous text. This metric measures: for each phoneme→grapheme mapping, what fraction of English words containing that phoneme also contain the grapheme as a substring? Frequency-weighted across all phoneme occurrences.
+The experiment page shows a "Naturalness" score alongside text preservation and unambiguous text. This metric is the frequency-weighted average log bigram probability of respelled words — how "English-looking" the resulting words are based on character bigram statistics trained on English. Higher (less negative) is better.
 
-Baseline Ingglish scores **64.2% spelling familiarity**. The per-phoneme breakdown reveals which mappings are most and least familiar to English readers:
+Baseline Ingglish scores approximately **-3.08**. This replaced the earlier "Spelling familiarity" (64.2%) metric which measured how often each grapheme appears as a substring of English words with that phoneme. The per-phoneme familiarity breakdown (from `familiarity-search.ts`) reveals which mappings are most and least familiar to English readers:
 
 | Phoneme | Grapheme | Familiarity | Notes |
 |---------|----------|-------------|-------|
@@ -202,11 +202,11 @@ Baseline Ingglish scores **64.2% spelling familiarity**. The per-phoneme breakdo
 | AH→"uh" | uh | 0.5% | English almost never spells /ʌ/ as "uh" |
 | DH→"dh" | dh | 0% | "dh" never appears in English words |
 
-This metric is useful for **diagnostics** (identifying which mappings are least familiar) and as a **display metric** on the experiment page (showing how a change affects familiarity). However, it cannot be used for automated optimization — see below.
+The per-phoneme familiarity is useful for **diagnostics** (identifying which mappings are least familiar). However, neither familiarity nor orthotactic probability can be used for automated optimization — see below.
 
 ## Why Continuous Metrics Can't Optimize Mappings
 
-The identical-word metric is binary: a word either matches or it doesn't. We investigated three continuous alternatives to capture partial improvements. All work for display but fail when used to optimize (search for better mappings).
+The identical-word metric is binary: a word either matches or it doesn't. We investigated four continuous alternatives to capture partial improvements. All work for display but fail when used to optimize (search for better mappings).
 
 ### 1. Edit distance (Levenshtein similarity)
 
@@ -226,13 +226,23 @@ For each phoneme, check if its Ingglish grapheme appears as a substring of the E
 
 **Problem:** Substring matching can't distinguish *why* a grapheme appears. Top suggestion: /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where" — but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my"; /ð/→"ey" producing "eya" for "the".
 
+### 4. Orthotactic probability (character bigram model)
+
+Score each respelled word by how "English-looking" its letter sequences are, using a character bigram model trained on English words (token-weighted by log frequency, add-k smoothed). This is a well-validated psycholinguistic measure of word-form naturalness. Aggregate metric: frequency-weighted average log bigram probability across all respelled words.
+
+**Problem:** Rewards common letter sequences regardless of phoneme-grapheme alignment. Top suggestions: /j/→"c" producing "coo" for "you", "cor" for "your"; /v/→"ie" producing "uhie" for "of", "haie" for "have"; /z/→"ck" producing "ick" for "is", "wock" for "was"; /ð/→"ph" producing "pha" for "the", "phat" for "that".
+
+The bigram model correctly identifies that sequences like "co", "ck", "ph" are common in English, so words containing them score higher. But it can't distinguish *which sound* those sequences should represent. Replacing /j/ (the "y" sound) with "c" makes "you" → "coo", which contains the very common English bigrams "co" and "oo" — a high orthotactic score that produces an unreadable word.
+
+This was the most theoretically promising metric. The psycholinguistic literature validates orthotactic probability for measuring reading difficulty of novel words. But it assumes the novel words are *spelled phonetically* — i.e., that the reader will try to sound them out. In our case, the words are spelled using arbitrary phoneme→grapheme mappings, so the metric rewards letter sequences that are common in English for reasons unrelated to the phonemes being represented.
+
 ### The fundamental limitation
 
-All three metrics share the same root cause: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence) without modeling **grapheme-phoneme alignment** — which specific letters correspond to which specific sounds in a word. Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons.
+All four metrics share the same root cause: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence, bigram statistics) without modeling **grapheme-phoneme alignment** — which specific letters correspond to which specific sounds in a word. Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons.
 
 Building a proper grapheme-phoneme alignment model would require training a sequence alignment system on the CMU dictionary, which is a significant NLP project beyond the scope of this analysis.
 
-The identical-word metric with frequency weighting remains the best automated proxy for readability. The spelling familiarity metric supplements it as a diagnostic tool — identifying which mappings are least familiar — but human judgment is needed to evaluate whether any specific change would actually improve readability.
+The identical-word metric with frequency weighting remains the best automated proxy for readability. The orthotactic probability metric supplements it as a display metric on the experiment page — showing how a change affects overall word-form naturalness — but human judgment is needed to evaluate whether any specific change would actually improve readability.
 
 ## Methodology
 
@@ -240,7 +250,8 @@ Analysis scripts are in `packages/core/scripts/analysis/`:
 
 - `analyze-identical-words.ts` - Tests alternative mappings with frequency weighting
 - `exhaustive-search.ts` - Exhaustively tests all possible spelling options, including stress-conditioned overrides, sorted by frequency impact
-- `familiarity-search.ts` - Per-phoneme spelling familiarity analysis (same metric used on the experiment page)
+- `familiarity-search.ts` - Per-phoneme spelling familiarity analysis
+- `orthotactic-search.ts` - Orthotactic probability hill climb using character bigram model (naturalness metric used on the experiment page)
 
 All scripts use the actual translation logic (R-colored vowels, stress-conditioned schwa) to match the real `arpabetToIngglish()` output. Results are sorted and evaluated by frequency-weighted impact (per million words of text, SUBTLEX-US corpus), not raw word count.
 
