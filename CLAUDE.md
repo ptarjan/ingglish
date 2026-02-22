@@ -2,7 +2,7 @@
 
 ## CI/CD
 
-Push directly to main — don't create PRs or feature branches.
+Push directly to main — don't create PRs or feature branches. Always commit and push whenever you reach a good stopping point — don't wait to be asked.
 
 When e2e tests fail in CI, download the `playwright-report` artifact from the failed run to see screenshots and traces of what went wrong.
 
