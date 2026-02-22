@@ -44,18 +44,13 @@ export function benchmark(
  * Set JSDOM globals so @ingglish/dom modules work in Node.
  */
 export function setupJSDOM(dom: JSDOM): void {
-  // @ts-expect-error - global document for jsdom
-  global.document = dom.window.document;
-  // @ts-expect-error - global window for jsdom
-  global.window = dom.window;
-  // @ts-expect-error - global Document for jsdom
-  global.Document = dom.window.Document;
-  // @ts-expect-error - global Node for jsdom
-  global.Node = dom.window.Node;
-  // @ts-expect-error - global NodeFilter for jsdom
-  global.NodeFilter = dom.window.NodeFilter;
-  // @ts-expect-error - global requestAnimationFrame for jsdom
-  global.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
+  const g = globalThis as unknown as Record<string, unknown>;
+  g.document = dom.window.document;
+  g.window = dom.window;
+  g.Document = dom.window.Document;
+  g.Node = dom.window.Node;
+  g.NodeFilter = dom.window.NodeFilter;
+  g.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
 }
 
 /**
@@ -194,7 +189,7 @@ export function createRealisticDOM(): JSDOM {
 export function loadWikipediaDOM(): JSDOM {
   const html = readFileSync(join(__dirname, 'wikipedia.html'), 'utf-8');
   const dom = new JSDOM(html);
-  // @ts-expect-error - mock
-  dom.window.requestAnimationFrame = (cb: () => void) => setTimeout(cb, 0);
+  (dom.window as Record<string, unknown>).requestAnimationFrame = (cb: () => void) =>
+    setTimeout(cb, 0);
   return dom;
 }
