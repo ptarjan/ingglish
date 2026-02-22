@@ -248,13 +248,13 @@ function encodeToHash(config: CustomMappingConfig): string {
   const parts: string[] = [];
   if (Object.keys(config.phonemeMap).length > 0) {
     const m = Object.entries(config.phonemeMap)
-      .map(([k, v]) => `${k}:${encodeURIComponent(v)}`)
+      .map(([k, v]) => `${k}:${v}`)
       .join(',');
     parts.push(`m=${m}`);
   }
   if (Object.keys(config.rColoredPrefixes).length > 0) {
     const r = Object.entries(config.rColoredPrefixes)
-      .map(([k, v]) => `${k}:${encodeURIComponent(v)}`)
+      .map(([k, v]) => `${k}:${v}`)
       .join(',');
     parts.push(`r=${r}`);
   }
