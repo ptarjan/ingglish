@@ -11,6 +11,10 @@ ingglish/
 │   ├── phonemes/       # Phoneme data + conversion
 │   ├── tokenize/       # Tokenization, word patterns
 │   ├── dictionary/     # CMU dict, lookup, frequency
+│   ├── g2p/            # Rule-based grapheme-to-phoneme
+│   ├── ipa/            # IPA ↔ ARPAbet conversion
+│   ├── shavian/        # Shavian alphabet conversion
+│   ├── deseret/        # Deseret alphabet conversion
 │   ├── fallback/       # Unknown word strategies
 │   ├── core/           # Translation API (translate + detect)
 │   ├── dom/            # DOM translation utilities
@@ -26,7 +30,12 @@ ingglish/
 ```
 @ingglish/normalize (0 deps) ◄── @ingglish/tokenize
 @ingglish/phonemes  (0 deps) ◄┐
-@ingglish/dictionary (0 deps) ◄┼── @ingglish/fallback
+@ingglish/dictionary (0 deps) ◄┤
+@ingglish/g2p ──► phonemes    ◄┼── @ingglish/fallback
+                               │
+@ingglish/ipa ──► phonemes     │
+@ingglish/shavian ──► phonemes + dictionary
+@ingglish/deseret ──► phonemes + dictionary
                                │
 ingglish ◄── all above packages
        ▲
@@ -56,10 +65,10 @@ src/
 ├── phonotactics.ts     # English sound rules for stress
 ├── types.ts            # OutputFormat type
 ├── to-ingglish.ts      # ARPAbet → Ingglish
-├── to-ipa.ts           # ARPAbet → IPA with stress
 ├── from-ingglish.ts    # Ingglish → ARPAbet
-├── from-ipa.ts         # IPA → ARPAbet
-└── ingglish-maps.ts    # Phoneme mapping tables
+├── ingglish-maps.ts    # Phoneme mapping tables
+├── custom-format.ts    # Custom format registration
+└── format-registry.ts  # Format registry for extensible output
 ```
 
 ### `@ingglish/tokenize` -Tokenization, word patterns
@@ -82,6 +91,50 @@ src/
 └── data/               # Generated dictionary and frequency data
 ```
 
+### `@ingglish/g2p` - Rule-based grapheme-to-phoneme
+
+```
+src/
+├── index.ts            # Public API
+├── g2p-rules.ts        # Core G2P conversion rules
+├── stress.ts           # Stress assignment
+├── g2p-guard-set.ts    # Guard conditions for rules
+├── g2p-word-rules-*.ts # Word-specific rule overrides (a-z)
+└── g2p-final-overrides-*.ts  # Final phoneme overrides (a-z)
+```
+
+### `@ingglish/ipa` - IPA ↔ ARPAbet conversion
+
+```
+src/
+├── index.ts            # Barrel exports
+├── to-ipa.ts           # ARPAbet → IPA with stress
+├── from-ipa.ts         # IPA → ARPAbet
+└── ipa-maps.ts         # IPA mapping tables
+```
+
+### `@ingglish/shavian` - Shavian alphabet conversion
+
+```
+src/
+├── index.ts            # Barrel exports
+├── to-shavian.ts       # ARPAbet → Shavian
+├── from-shavian.ts     # Shavian → ARPAbet
+├── shavian-maps.ts     # Shavian mapping tables
+└── tokenize.ts         # Shavian tokenization
+```
+
+### `@ingglish/deseret` - Deseret alphabet conversion
+
+```
+src/
+├── index.ts            # Barrel exports
+├── to-deseret.ts       # ARPAbet → Deseret
+├── from-deseret.ts     # Deseret → ARPAbet
+├── deseret-maps.ts     # Deseret mapping tables
+└── tokenize.ts         # Deseret tokenization
+```
+
 ### `@ingglish/fallback` -Unknown word strategies
 
 ```
@@ -90,8 +143,7 @@ src/
 ├── acronyms.ts         # Acronym/initialism handling
 ├── compounds.ts        # Compound word splitting
 ├── stemming.ts         # Base word + suffix matching
-├── british.ts          # British spelling variants
-└── g2p-rules.ts        # Rule-based grapheme-to-phoneme
+└── british.ts          # British spelling variants
 ```
 
 ### `ingglish` -Translation API

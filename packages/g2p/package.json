@@ -4,7 +4,7 @@
   "description": "NRL/Elovitz grapheme-to-phoneme rules for English",
   "type": "module",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -37,5 +37,23 @@
   },
   "devDependencies": {
     "@ingglish/ipa": "^1.0.0"
+  },
+  "keywords": [
+    "g2p",
+    "grapheme-to-phoneme",
+    "english",
+    "pronunciation",
+    "phonemes"
+  ],
+  "author": "Paul Tarjan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptarjan/ingglish.git",
+    "directory": "packages/g2p"
+  },
+  "homepage": "https://github.com/ptarjan/ingglish#readme",
+  "bugs": {
+    "url": "https://github.com/ptarjan/ingglish/issues"
   }
 }

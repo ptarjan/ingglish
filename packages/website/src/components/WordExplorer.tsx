@@ -83,6 +83,7 @@ export default function WordExplorer() {
               : 'Loading dictionary...'
           }
           className="explorer-input"
+          aria-label="Word to explore"
           spellCheck={false}
           disabled={!reverseDictReady}
         />

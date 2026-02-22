@@ -61,7 +61,7 @@
 }
 
 .error-boundary .error-message {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   margin: 0 0 1rem;
   max-width: 400px;
 }

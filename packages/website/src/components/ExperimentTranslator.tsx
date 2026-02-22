@@ -55,6 +55,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
           onChange={handleSample}
           value={selectedIndex >= 0 ? String(selectedIndex) : ''}
           className="sample-select"
+          aria-label="Load sample passage"
         >
           <option value="" disabled>
             Load sample...
