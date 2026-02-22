@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["eslint.config.js", "tsconfig.base.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -10,10 +11,10 @@
       "outputs": ["dist/**"]
     },
     "lint": {
-      "inputs": ["src/**", "eslint.config.*", "tsconfig*.json"]
+      "inputs": ["src/**", "tsconfig*.json"]
     },
     "test": {
-      "inputs": ["src/**", "tsconfig*.json"]
+      "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
     }
   }
 }
