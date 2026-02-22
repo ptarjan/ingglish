@@ -1,4 +1,4 @@
-# Spelling Evolution History
+# Spelling Iteration Log
 
 Every phoneme spelling change made during Ingglish development: what we tried, what worked, what didn't, and why.
 

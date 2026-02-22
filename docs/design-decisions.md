@@ -85,7 +85,7 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 
 **Schwa Representation**
 
-We map unstressed schwa (ə) to **"a"** and stressed /ʌ/ to **"uh"**, which preserves the spelling of "a", "about", "again", "along", "away", "around". See [Phoneme Mapping](phoneme-mapping.md#schwa-and-strut) for details and [Spelling Evolution](spelling-evolution.md#about-sofa-u-a) for the full rationale.
+We map unstressed schwa (ə) to **"a"** and stressed /ʌ/ to **"uh"**, which preserves the spelling of "a", "about", "again", "along", "away", "around". See [Phoneme Mapping](phoneme-mapping.md#schwa-and-strut) for details and [Spelling Iteration Log](spelling-iteration.md#about-sofa-u-a) for the full rationale.
 
 ### Diphthong Decisions
 
@@ -123,7 +123,7 @@ Every spelling has precedent in at least one major language — see [Orthography
 
 ## See Also
 
-- [Spelling Evolution](spelling-evolution.md) - Complete history of spelling changes
+- [Spelling Iteration Log](spelling-iteration.md) - Complete history of spelling changes
 - [Orthography Comparison](orthography-comparison.md) - How spellings compare to other languages
 - [Phoneme Mapping](phoneme-mapping.md) - Technical mapping tables
 - [Spelling Reform History](spelling-reform-comparison.md) - Why previous reforms failed

@@ -23,10 +23,10 @@ Ingglish is a phonemic English spelling system where every spelling always makes
 - [Morphological Preservation](morphological-analysis.md) - Impact on word family relationships
 - [Identical Words Analysis](identical-words-analysis.md) - Words spelled the same in both systems
 - [False Friends Analysis](collision-analysis.md) - Ingglish spellings that match different English words
+- [Spelling Iteration Log](spelling-iteration.md) - What we tried, changed, and reverted
 
 ## Comparisons
 
-- [Spelling Evolution](spelling-evolution.md) - History of spelling changes and why
 - [Orthography Comparison](orthography-comparison.md) - How spellings compare to ~35 languages
 - [Spelling Reform Comparison](spelling-reform-comparison.md) - How Ingglish compares to historical reforms
 - [Community Landscape](community-landscape.md) - Survey of r/conorthography proposals
