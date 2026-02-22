@@ -153,18 +153,21 @@
     color: #556677;
     margin-top: 20px;
   }
-  .site-link-wrapper {
+  .footer {
     margin-top: 24px;
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .site-link {
-    padding: 16px 24px;
+    padding: 12px 20px;
     background: #1a2744;
     border: 1px solid #3a5a8e;
     border-radius: 10px;
     display: inline-flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
   }
   .site-link .url {
     font-size: 22px;
@@ -270,11 +273,13 @@
       <div class="desc">gap between English and the<br>average European language</div>
     </div>
   </div>
-  <div class="site-link-wrapper"><div class="site-link">
-    <span class="url">ingglish.com</span>
-    <span class="tagline">See how any English word is actually pronounced</span>
-  </div></div>
-  <div class="source">English data: CMU Pronouncing Dictionary (134,000+ words) &bull; Other languages: orthographic depth research (Seymour et al. 2003, Borgwaldt et al. 2005)</div>
+  <div class="footer">
+    <div class="source">English data: CMU Pronouncing Dictionary (134,000+ words) &bull; Other languages: orthographic depth research (Seymour et al. 2003, Borgwaldt et al. 2005)</div>
+    <div class="site-link">
+      <span class="url">ingglish.com</span>
+      <span class="tagline">See how any English word is actually pronounced</span>
+    </div>
+  </div>
 </div>
 </body>
 </html>
