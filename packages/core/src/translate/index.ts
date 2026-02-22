@@ -13,7 +13,6 @@ export {
 // Reverse translation
 export {
   reverseTranslateWord,
-  reverseTranslateIPAWord,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from './reverse';
