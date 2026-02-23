@@ -38,7 +38,7 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
   // This makes language presets consistent without needing explicit r= hashes.
   for (const [vowel] of R_COLORED_FORWARD) {
     if (vowel in config.phonemeMap && !(vowel in config.rColoredPrefixes)) {
-      mergedRColored.set(vowel, config.phonemeMap[vowel]);
+      mergedRColored.set(vowel, config.phonemeMap[vowel]!);
     }
   }
   for (const [key, value] of Object.entries(config.rColoredPrefixes)) {
