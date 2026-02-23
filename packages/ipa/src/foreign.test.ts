@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { registerPronunciation } from '@ingglish/phonemes';
 import type { IpaDict } from './foreign';
 import { translateForeign, NOT_FOUND_MARKER } from './foreign';
+
+registerPronunciation();
 
 describe('translateForeign', () => {
   const dict: IpaDict = {
@@ -87,6 +90,28 @@ describe('translateForeign', () => {
     const result = translateForeign('HELLO', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     expect(result).toBe(result.toUpperCase());
+  });
+
+  it('applies default last-syllable stress when IPA has no stress markers', () => {
+    // French "bonjour" /bɔ̃ʒuʁ/ — no stress markers in IPA
+    // Guide should capitalize the last syllable (French stress rule)
+    const frDict: IpaDict = { bonjour: '/bɔ̃ʒuʁ/' };
+    const guide = translateForeign('bonjour', frDict, 'pronunciation');
+    // Last syllable should be uppercase (stressed)
+    const parts = guide.split('-');
+    const lastPart = parts.at(-1)!;
+    expect(lastPart).toBe(lastPart.toUpperCase());
+  });
+
+  it('does not override existing IPA stress markers', () => {
+    // German "hallo" with explicit stress — should keep original stress
+    const deDict: IpaDict = { hallo: '/haˈloː/' };
+    const guide = translateForeign('hallo', deDict, 'pronunciation');
+    // Second syllable stressed, first is not
+    const parts = guide.split('-');
+    expect(parts.length).toBe(2);
+    expect(parts[0]).toBe(parts[0]!.toLowerCase());
+    expect(parts[1]).toBe(parts[1]!.toUpperCase());
   });
 
   it('applies IPA override for French "est" (silent st)', () => {

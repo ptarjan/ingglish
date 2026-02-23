@@ -1,5 +1,11 @@
 import { applyCasePattern, detectCasePattern } from '@ingglish/normalize';
-import { arpabetToFormat, arpabetToIngglish } from '@ingglish/phonemes';
+import {
+  arpabetToFormat,
+  arpabetToIngglish,
+  getFormatPreservesCase,
+  getStress,
+  isVowel,
+} from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
@@ -57,6 +63,28 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
   return dict[word] ?? dict[word.toLowerCase()];
 }
 
+/**
+ * If no vowel in the ARPAbet array carries a stress digit, apply stress 1
+ * to the last vowel. This gives useful Guide-mode output for languages
+ * whose IPA dictionaries omit stress (e.g. French, where stress is always
+ * on the final syllable).
+ */
+function applyDefaultStress(arpabet: string[]): string[] {
+  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
+  if (hasStress) {
+    return arpabet;
+  }
+  // Find the last vowel and give it primary stress
+  const result = [...arpabet];
+  for (let i = result.length - 1; i >= 0; i--) {
+    if (isVowel(result[i]!)) {
+      result[i] = result[i]! + '1';
+      break;
+    }
+  }
+  return result;
+}
+
 function getIpaOverride(lang: string, word: string): string | undefined {
   return IPA_WORD_OVERRIDES[lang]?.[word];
 }
@@ -70,7 +98,7 @@ function getIpaOverride(lang: string, word: string): string | undefined {
 function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
   const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
   const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
-  const arpabet = ipaToArpabet(clean, overrides);
+  const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
   return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
@@ -121,10 +149,12 @@ export function translateForeign(
       }
 
       const casePattern = detectCasePattern(core);
+      const preservesCase = getFormatPreservesCase(format);
       const ipa = lookupIpa(dict, core, lang);
       if (ipa) {
         const translated = ipaToFormat(ipa, format, lang);
-        return leading.join('') + applyCasePattern(translated, casePattern) + trailing.join('');
+        const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
+        return leading.join('') + cased + trailing.join('');
       }
 
       // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
@@ -142,7 +172,8 @@ export function translateForeign(
             partIpa = lookupIpa(dict, part + "'", lang);
           }
           if (partIpa) {
-            return applyCasePattern(ipaToFormat(partIpa, format, lang), partCase);
+            const partTranslated = ipaToFormat(partIpa, format, lang);
+            return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
           }
           return NOT_FOUND_MARKER + part;
         });
