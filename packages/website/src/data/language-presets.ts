@@ -16,15 +16,15 @@ export interface LanguagePreset {
 export const LANGUAGE_PRESETS: LanguagePreset[] = [
   // ── Languages ──────────────────────────────────────────────────────
   {
-    description: 'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants',
+    description: 'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, w\u2192v',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,AY:aj,CH:\u010D,DH:d,EY:ej,IY:\u00ED,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:\u00FA,Y:j,ZH:\u017E',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,AY:aj,CH:\u010D,DH:d,EY:ej,IY:\u00ED,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:\u00FA,W:v,Y:j,ZH:\u017E',
     label: 'Czech',
   },
   {
-    description: 'Doubled vowels for length, no th/dh sounds',
+    description: 'Doubled vowels for length, b\u2192p, f\u2192v, no th/dh',
     group: 'language',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,CH:t\u0161,DH:d,EY:ei,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,B:p,CH:t\u0161,DH:d,ER:\u00F6r,EY:ei,F:v,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
     label: 'Finnish',
   },
   {
@@ -71,9 +71,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
-    description: '5 pure vowels, j for /x/, c for /k/',
+    description: '5 pure vowels, j for /x/, sh merges with ch',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,TH:z,UW:u,Z:s,ZH:y',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,SH:ch,TH:z,UW:u,Z:s,ZH:y',
     label: 'Spanish',
   },
   {
