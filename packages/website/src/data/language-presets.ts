@@ -63,13 +63,13 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Esperanto',
   },
   {
-    description: 'Only 8 consonants (p, k, h, m, n, l, w, \u02BB)',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,B:p,CH:k,D:k,DH:,ER:el,EY:ei,F:p,G:k,IY:i,JH:k,NG:n,OW:o,R:l,S:h,SH:h,T:k,TH:h,UW:u,V:w,Y:i,Z:h,ZH:h',
+    description: 'Only 8 consonants \u2014 all sibilants and stops become k',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,B:p,CH:k,D:k,DH:k,ER:el,EY:ei,F:p,G:k,IY:i,JH:k,NG:n,OW:o,R:l,S:k,SH:k,T:k,TH:k,UW:u,V:w,Y:i,Z:k,ZH:k',
     label: 'Hawaiian',
   },
   {
-    description: 'No /f/, /v/, /z/ \u2014 approximated with native sounds',
-    hash: '#m=AA:a,AH:eo,AO:o,AW:au,DH:d,EY:ei,F:p,IY:i,OW:o,SH:sy,TH:t,UW:u,V:b,Z:j,ZH:j',
+    description: 'No /f/, /v/, /\u03B8/, /z/ \u2014 approximated with native sounds',
+    hash: '#m=AA:a,AH:eo,AO:o,AW:au,DH:d,EY:ei,F:p,IY:i,OW:o,SH:sy,TH:s,UW:u,V:b,Z:j,ZH:j',
     label: 'Korean',
   },
 ];
