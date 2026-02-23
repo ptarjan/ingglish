@@ -60,6 +60,11 @@
   background: var(--color-primary);
 }
 
+.presets-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
 .presets-divider {
   width: 1px;
   height: 1.25rem;

@@ -53,7 +53,7 @@ function Experiment() {
             </a>
           );
         })}
-        <span className="presets-divider" />
+        <span className="presets-break" />
         <span className="presets-label">Alphabets:</span>
         {LANGUAGE_PRESETS.filter((p) => p.group === 'alphabet').map((preset) => {
           const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
