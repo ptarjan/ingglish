@@ -12,19 +12,15 @@ When e2e tests fail in CI, download the `playwright-report` artifact from the fa
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
 
-All commands use turbo for parallelism and caching (~2s when cached):
+There is no need to manually run tests, lint, or build before pushing — the pre-push hook runs them automatically and will block the push if anything fails.
+
+All commands are available if you need them for debugging:
 
 ```bash
-npx turbo test                    # run all tests across all packages
+npx turbo test                # run all tests across all packages
 npx vitest run packages/core  # run tests for a single package
 npx turbo lint                # lint all packages
 npx turbo build:fast          # build all packages (type-check + bundle)
-```
-
-**Before pushing cross-package changes**, run lint to catch type errors in dependent packages (lint-staged only checks staged files):
-
-```bash
-npx turbo lint
 ```
 
 ## Code Comments
