@@ -50,8 +50,24 @@ export default function WordExplorer() {
     return trimmed.split(/\s+/).map((w) => analyzeWord(w, format));
   }, [input, format, reverseDictReady]);
 
+  // Clicking a word link pushes a history entry so back/forward works
   const handleWordClick = useCallback((word: string) => {
     setInput(word);
+    const url = new URL(globalThis.location.href);
+    url.searchParams.set('word', word);
+    globalThis.history.pushState(null, '', url);
+  }, []);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(globalThis.location.search);
+      setInput(params.get('word') ?? '');
+    };
+    globalThis.addEventListener('popstate', handlePopState);
+    return () => {
+      globalThis.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   return (
@@ -97,7 +113,7 @@ export default function WordExplorer() {
                   className="suggestion-chip"
                   key={w}
                   onClick={() => {
-                    setInput(w);
+                    handleWordClick(w);
                   }}
                 >
                   {w}
