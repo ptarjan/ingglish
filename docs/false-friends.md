@@ -1,6 +1,6 @@
 # Ingglish False Friends Analysis
 
-When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. These are [false friends](https://en.wikipedia.org/wiki/False_friend) — they look like familiar English words but have different pronunciations in Ingglish. They are **not** collisions: each Ingglish spelling maps to exactly one pronunciation, so there is no ambiguity in the system.
+When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. These are [false friends](https://en.wikipedia.org/wiki/False_friend): they look like familiar English words but have different pronunciations in Ingglish. They are **not** collisions: each Ingglish spelling maps to exactly one pronunciation, so there is no ambiguity in the system.
 
 ## Summary
 

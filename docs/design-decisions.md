@@ -81,7 +81,7 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 |----------|-------|-----------|
 | ee | /iː/ (bee) | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography)/[Estonian](https://en.wikipedia.org/wiki/Estonian_orthography) pattern for long vowels |
 | oo | /uː/ (too) | Matches English "too", "food", "moon", "cool" |
-| uh | /ʌ/ (but) | English interjection "uh" — frees 'u' for /ʊ/ |
+| uh | /ʌ/ (but) | English interjection "uh", frees 'u' for /ʊ/ |
 
 **Schwa Representation**
 
@@ -119,4 +119,4 @@ When certain vowels are followed by R, they combine into [r-colored sounds](http
 
 Ingglish uses [General American English](https://en.wikipedia.org/wiki/General_American_English) via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for how this affects non-American speakers.
 
-Every spelling has precedent in at least one major language — see [Orthography Comparison](orthography-comparison.md) for language-by-language detail.
+Every spelling has precedent in at least one major language. See [Orthography Comparison](orthography-comparison.md) for language-by-language detail.

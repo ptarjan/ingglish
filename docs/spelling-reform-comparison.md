@@ -26,7 +26,7 @@ Ingglish uses standard Latin letters (no 'q', no 'x', 'c' only in 'ch'). If you 
 
 Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The Warburton & Southgate (1969) evaluation (*i.t.a.: An Independent Evaluation*, London: John Murray) found mixed results: initial reading gains but inconsistent transfer to traditional orthography.
 
-Teaching a system that must later be replaced risks negative transfer — the first system interferes with learning the second.
+Teaching a system that must later be replaced risks negative transfer: the first system interferes with learning the second.
 
 Ingglish isn't an initial literacy tool. Users already know traditional spelling; Ingglish supplements it.
 
@@ -76,11 +76,11 @@ An estimated 1.5 billion people speak English as a first or second language ([Cr
 
 Ingglish is a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
 
-You don't need institutional buy-in. Bidirectional translation tools let you convert between English and Ingglish at any time — no one else needs to adopt it first.
+You don't need institutional buy-in. Bidirectional translation tools let you convert between English and Ingglish at any time; no one else needs to adopt it first.
 
 ### 4. No Central Authority
 
-There's no English Academy that can decree changes. Every attempt at mandatory reform has failed. Ingglish doesn't need one — use it if you want, ignore it if you don't.
+There's no English Academy that can decree changes. Every attempt at mandatory reform has failed. Ingglish doesn't need one: use it if you want, ignore it if you don't.
 
 ### 5. The Network Effect Trap
 
