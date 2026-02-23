@@ -3,6 +3,7 @@
  *
  * Each preset shows how a phonetically-spelled language would write English sounds.
  * The `hash` is a pre-computed URL hash string (diffs from Ingglish defaults only).
+ * Sorted alphabetically by label.
  */
 
 export interface LanguagePreset {
@@ -13,49 +14,14 @@ export interface LanguagePreset {
 
 export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
-    description: 'International Phonetic Alphabet symbols',
-    hash: '#m=AA:\u0251,AE:\u00E6,AH0:\u0259,AH:\u028C,AO:\u0254,AW:a\u028A,AY:a\u026A,CH:t\u0283,DH:\u00F0,EH:\u025B,ER:\u025D,EY:e\u026A,G:\u0261,IH:\u026A,IY:i,JH:d\u0292,NG:\u014B,OW:o\u028A,OY:\u0254\u026A,R:\u0279,SH:\u0283,TH:\u03B8,UH:\u028A,UW:u,Y:j,ZH:\u0292',
-    label: 'IPA',
-  },
-  {
-    description: 'Shaw alphabet \u2014 one letter per sound',
-    hash: '#m=AA:𐑭,AE:𐑨,AH0:𐑩,AH:𐑳,AO:𐑷,AW:𐑬,AY:𐑲,B:𐑚,CH:𐑗,D:𐑛,DH:𐑞,EH:𐑧,ER:𐑻,EY:𐑱,F:𐑓,G:𐑜,HH:𐑣,IH:𐑦,IY:𐑰,JH:𐑡,K:𐑒,L:𐑤,M:𐑥,N:𐑯,NG:𐑙,OW:𐑴,OY:𐑶,P:𐑐,R:𐑮,S:𐑕,SH:𐑖,T:𐑑,TH:𐑔,UH:𐑫,UW:𐑵,V:𐑝,W:𐑢,Y:𐑘,Z:𐑟,ZH:𐑠',
-    label: 'Shavian',
-  },
-  {
-    description: '1850s phonetic alphabet from Utah',
-    hash: '#m=AA:𐐪,AE:𐐰,AH0:𐐱,AH:𐐲,AO:𐐫,AW:𐐵,AY:𐐴,B:𐐺,CH:𐐽,D:𐐼,DH:𐑄,EH:𐐯,ER:𐐲𐑉,EY:𐐩,F:𐑁,G:𐑀,HH:𐐸,IH:𐐮,IY:𐐨,JH:𐐾,K:𐐿,L:𐑊,M:𐑋,N:𐑌,NG:𐑍,OW:𐐬,OY:𐑎,P:𐐹,R:𐑉,S:𐑅,SH:𐑇,T:𐐻,TH:𐑃,UH:𐐳,UW:𐐭,V:𐑂,W:𐐶,Y:𐐷,Z:𐑆,ZH:𐑈',
-    label: 'Deseret',
-  },
-  {
-    description: 'Doubled vowels for length, no th/dh sounds',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,CH:t\u0161,DH:d,ER:\u00F6r,EY:ei,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
-    label: 'Finnish',
-  },
-  {
-    description: '5 pure vowels, j for /x/, c for /k/',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,TH:z,UW:u,Z:s,ZH:y',
-    label: 'Spanish',
-  },
-  {
-    description: 'ci/gi/sci digraphs for palatals',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:ci,DH:d,EY:ei,IY:i,JH:gi,K:c,OW:o,SH:sci,TH:t,UW:u,W:v,Y:i,Z:s,ZH:gi',
-    label: 'Italian',
-  },
-  {
-    description: 'sch/tsch clusters, ei\u2194ie swap, umlauts',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OY:eu,SH:sch,TH:t,UW:uh,V:w,Y:j,Z:s,ZH:sch',
-    label: 'German',
-  },
-  {
-    description: '\u00E7 and \u015F for affricates/fricatives',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
-    label: 'Turkish',
-  },
-  {
     description: 'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants',
     hash: '#m=AA:a,AH:a,AO:o,AW:au,AY:aj,CH:\u010D,DH:d,EY:ej,IY:\u00ED,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:\u00FA,Y:j,ZH:\u017E',
     label: 'Czech',
+  },
+  {
+    description: '1850s phonetic alphabet from Utah',
+    hash: '#m=AA:\uD801\uDC2A,AE:\uD801\uDC30,AH0:\uD801\uDC31,AH:\uD801\uDC32,AO:\uD801\uDC2B,AW:\uD801\uDC35,AY:\uD801\uDC34,B:\uD801\uDC3A,CH:\uD801\uDC3D,D:\uD801\uDC3C,DH:\uD801\uDC44,EH:\uD801\uDC2F,ER:\uD801\uDC32\uD801\uDC49,EY:\uD801\uDC29,F:\uD801\uDC41,G:\uD801\uDC40,HH:\uD801\uDC38,IH:\uD801\uDC2E,IY:\uD801\uDC28,JH:\uD801\uDC3E,K:\uD801\uDC3F,L:\uD801\uDC4A,M:\uD801\uDC4B,N:\uD801\uDC4C,NG:\uD801\uDC4D,OW:\uD801\uDC2C,OY:\uD801\uDC4E,P:\uD801\uDC39,R:\uD801\uDC49,S:\uD801\uDC45,SH:\uD801\uDC47,T:\uD801\uDC3B,TH:\uD801\uDC43,UH:\uD801\uDC33,UW:\uD801\uDC2D,V:\uD801\uDC42,W:\uD801\uDC36,Y:\uD801\uDC37,Z:\uD801\uDC46,ZH:\uD801\uDC48',
+    label: 'Deseret',
   },
   {
     description: 'Circumflexed consonants, \u016D for /w/',
@@ -63,9 +29,40 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Esperanto',
   },
   {
+    description: 'Doubled vowels for length, no th/dh sounds',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,CH:t\u0161,DH:d,EY:ei,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
+    label: 'Finnish',
+  },
+  {
+    description: 'sch/tsch clusters, ei\u2194ie swap, umlauts',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OY:eu,SH:sch,TH:t,UW:uh,V:w,Y:j,Z:s,ZH:sch',
+    label: 'German',
+  },
+  {
+    description:
+      'Native \u03B8/\u03B4 for th/dh, \u03BC\u03C0/\u03BD\u03C4/\u03B3\u03BA digraphs for voiced stops',
+    hash: '#m=AA:\u03B1,AE:\u03B1,AH:\u03B1,AO:\u03BF,AW:\u03B1\u03BF\u03C5,AY:\u03B1\u03CA,B:\u03BC\u03C0,CH:\u03C4\u03C3,D:\u03BD\u03C4,DH:\u03B4,EH:\u03B5,ER:\u03B5\u03C1,EY:\u03B5\u03CA,F:\u03C6,G:\u03B3\u03BA,HH:\u03C7,IH:\u03B9,IY:\u03B9,JH:\u03C4\u03B6,K:\u03BA,L:\u03BB,M:\u03BC,N:\u03BD,NG:\u03BD\u03B3,OW:\u03BF\u03BF\u03C5,OY:\u03BF\u03CA,P:\u03C0,R:\u03C1,S:\u03C3,SH:\u03C3,T:\u03C4,TH:\u03B8,UH:\u03BF\u03C5,UW:\u03BF\u03C5,V:\u03B2,W:\u03BF\u03C5,Y:\u03B3\u03B9,Z:\u03B6,ZH:\u03B6',
+    label: 'Greek',
+  },
+  {
     description: 'Only 8 consonants \u2014 all sibilants and stops become k',
     hash: '#m=AA:a,AH:a,AO:o,AW:au,B:p,CH:k,D:k,DH:k,ER:el,EY:ei,F:p,G:k,IY:i,JH:k,NG:n,OW:o,R:l,S:k,SH:k,T:k,TH:k,UW:u,V:w,Y:i,Z:k,ZH:k',
     label: 'Hawaiian',
+  },
+  {
+    description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs',
+    hash: '#m=AA:\u00E1,AH:a,AO:o,AW:\u00E1u,AY:\u00E1j,CH:cs,DH:d,EY:\u00E9j,IY:\u00ED,JH:dzs,OW:\u00F3,OY:oj,S:sz,SH:s,TH:t,UW:\u00FA,W:v,Y:j,ZH:zs',
+    label: 'Hungarian',
+  },
+  {
+    description: 'International Phonetic Alphabet symbols',
+    hash: '#m=AA:\u0251,AE:\u00E6,AH0:\u0259,AH:\u028C,AO:\u0254,AW:a\u028A,AY:a\u026A,CH:t\u0283,DH:\u00F0,EH:\u025B,ER:\u025D,EY:e\u026A,G:\u0261,IH:\u026A,IY:i,JH:d\u0292,NG:\u014B,OW:o\u028A,OY:\u0254\u026A,R:\u0279,SH:\u0283,TH:\u03B8,UH:\u028A,UW:u,Y:j,ZH:\u0292',
+    label: 'IPA',
+  },
+  {
+    description: 'ci/gi/sci digraphs for palatals',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:ci,DH:d,EY:ei,IY:i,JH:gi,K:c,OW:o,SH:sci,TH:t,UW:u,W:v,Y:i,Z:s,ZH:gi',
+    label: 'Italian',
   },
   {
     description: 'No /f/, /v/, /\u03B8/, /z/ \u2014 approximated with native sounds',
@@ -78,9 +75,18 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
-    description:
-      'Native \u03B8/\u03B4 for th/dh, \u03BC\u03C0/\u03BD\u03C4/\u03B3\u03BA digraphs for voiced stops',
-    hash: '#m=AA:\u03B1,AE:\u03B1,AH:\u03B1,AO:\u03BF,AW:\u03B1\u03BF\u03C5,AY:\u03B1\u03CA,B:\u03BC\u03C0,CH:\u03C4\u03C3,D:\u03BD\u03C4,DH:\u03B4,EH:\u03B5,ER:\u03B5\u03C1,EY:\u03B5\u03CA,F:\u03C6,G:\u03B3\u03BA,HH:\u03C7,IH:\u03B9,IY:\u03B9,JH:\u03C4\u03B6,K:\u03BA,L:\u03BB,M:\u03BC,N:\u03BD,NG:\u03BD\u03B3,OW:\u03BF\u03BF\u03C5,OY:\u03BF\u03CA,P:\u03C0,R:\u03C1,S:\u03C3,SH:\u03C3,T:\u03C4,TH:\u03B8,UH:\u03BF\u03C5,UW:\u03BF\u03C5,V:\u03B2,W:\u03BF\u03C5,Y:\u03B3\u03B9,Z:\u03B6,ZH:\u03B6',
-    label: 'Greek',
+    description: 'Shaw alphabet \u2014 one letter per sound',
+    hash: '#m=AA:\uD801\uDC6D,AE:\uD801\uDC68,AH0:\uD801\uDC69,AH:\uD801\uDC73,AO:\uD801\uDC77,AW:\uD801\uDC6C,AY:\uD801\uDC72,B:\uD801\uDC5A,CH:\uD801\uDC57,D:\uD801\uDC5B,DH:\uD801\uDC5E,EH:\uD801\uDC67,ER:\uD801\uDC7B,EY:\uD801\uDC71,F:\uD801\uDC53,G:\uD801\uDC5C,HH:\uD801\uDC63,IH:\uD801\uDC66,IY:\uD801\uDC70,JH:\uD801\uDC61,K:\uD801\uDC52,L:\uD801\uDC64,M:\uD801\uDC65,N:\uD801\uDC6F,NG:\uD801\uDC59,OW:\uD801\uDC74,OY:\uD801\uDC76,P:\uD801\uDC50,R:\uD801\uDC6E,S:\uD801\uDC55,SH:\uD801\uDC56,T:\uD801\uDC51,TH:\uD801\uDC54,UH:\uD801\uDC6B,UW:\uD801\uDC75,V:\uD801\uDC5D,W:\uD801\uDC62,Y:\uD801\uDC58,Z:\uD801\uDC5F,ZH:\uD801\uDC60',
+    label: 'Shavian',
+  },
+  {
+    description: '5 pure vowels, j for /x/, c for /k/',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,TH:z,UW:u,Z:s,ZH:y',
+    label: 'Spanish',
+  },
+  {
+    description: '\u00E7 and \u015F for affricates/fricatives',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
+    label: 'Turkish',
   },
 ];
