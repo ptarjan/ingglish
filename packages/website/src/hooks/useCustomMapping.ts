@@ -278,6 +278,16 @@ function encodeToHash(config: CustomMappingConfig): string {
   return parts.length > 0 ? parts.join('&') : '';
 }
 
+/** Check if any mapping value uses a cased non-Latin script (Cyrillic, Greek) */
+function hasCasedNonLatinChars(config: CustomMappingConfig): boolean {
+  for (const value of Object.values(config.phonemeMap)) {
+    if (/[\u0370-\u03FF\u0400-\u04FF]/.test(value)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /** Check if a custom mapping has any diffs from defaults */
 function hasDiffs(config: CustomMappingConfig): boolean {
   return (
@@ -285,7 +295,7 @@ function hasDiffs(config: CustomMappingConfig): boolean {
   );
 }
 
-/** Check if any mapping value contains non-Latin characters (Cyrillic, Greek, etc.) */
+/** Check if any mapping value contains non-Latin characters (IPA, Shavian, Cyrillic, etc.) */
 function isNonLatinMapping(config: CustomMappingConfig): boolean {
   for (const value of Object.values(config.phonemeMap)) {
     if (/[^\u0020-\u024F]/.test(value)) {
@@ -320,7 +330,7 @@ function registerExperimentFormat(config: CustomMappingConfig): void {
     forward: converter,
     isLatinScript: isLatin,
     label: 'Experiment',
-    preservesCase: isLatin,
+    preservesCase: isLatin || hasCasedNonLatinChars(config),
   });
 }
 
