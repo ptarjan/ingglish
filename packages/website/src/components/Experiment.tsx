@@ -72,7 +72,7 @@ function Experiment() {
             </a>
           );
         })}
-        <span className="presets-divider" />
+        <span className="presets-break" />
         <button
           className="preset-link preset-action"
           disabled={!mapping.hasCustomizations}
