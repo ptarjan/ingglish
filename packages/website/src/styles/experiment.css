@@ -16,6 +16,50 @@
   color: var(--color-text-muted);
 }
 
+/* Preset links */
+.experiment-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.presets-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.preset-link {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.preset-link:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary);
+}
+
+.preset-active {
+  color: white;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.preset-active:hover {
+  background: var(--color-primary);
+}
+
 /* Share bar */
 .experiment-share-bar {
   display: flex;

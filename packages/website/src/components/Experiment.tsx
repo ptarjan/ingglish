@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { trackExperimentReset } from '../analytics';
+import { LANGUAGE_PRESETS } from '../data/language-presets';
 import { useCustomMapping } from '../hooks/useCustomMapping';
 import { useShare } from '../hooks/useShare';
 import ExperimentTranslator from './ExperimentTranslator';
@@ -31,6 +32,27 @@ function Experiment() {
           column to change how a sound is written, then see your changes applied to sample text on
           the right.
         </p>
+      </div>
+
+      <div className="experiment-presets">
+        <span className="presets-label">Try a language:</span>
+        {LANGUAGE_PRESETS.map((preset) => {
+          const isActive = globalThis.location.hash === preset.hash;
+          return (
+            <a
+              className={`preset-link${isActive ? ' preset-active' : ''}`}
+              href={`/experiment${preset.hash}`}
+              key={preset.label}
+              onClick={(e) => {
+                e.preventDefault();
+                globalThis.location.hash = preset.hash;
+              }}
+              title={preset.description}
+            >
+              {preset.flag} {preset.label}
+            </a>
+          );
+        })}
       </div>
 
       <div className="experiment-share-bar">

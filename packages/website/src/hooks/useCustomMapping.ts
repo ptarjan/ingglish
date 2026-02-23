@@ -86,6 +86,21 @@ export function useCustomMapping(): UseCustomMappingReturn {
     };
   }, [version]);
 
+  // Listen for hashchange events (e.g. preset link clicks)
+  useEffect(() => {
+    const onHashChange = () => {
+      const hashConfig = decodeFromHash(globalThis.location.hash);
+      if (hashConfig) {
+        setConfig(hashConfig);
+        setVersion((v) => v + 1);
+      }
+    };
+    globalThis.addEventListener('hashchange', onHashChange);
+    return () => {
+      globalThis.removeEventListener('hashchange', onHashChange);
+    };
+  }, []);
+
   // Keep a ref to avoid stale closures
   const configRef = useRef(config);
   configRef.current = config;
