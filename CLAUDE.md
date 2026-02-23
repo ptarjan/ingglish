@@ -72,3 +72,11 @@ main();
 ```
 
 The `--conditions=source` flag resolves workspace packages to their TypeScript source files.
+
+## Browsing Reddit
+
+You can use curl to browse Reddit's JSON API for research (e.g. spelling reform discussions, user feedback):
+
+```bash
+curl -s 'https://www.reddit.com/r/spelling/search.json?q=phonetic+spelling&limit=5' | jq '.data.children[].data.title'
+```
