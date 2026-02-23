@@ -11,7 +11,7 @@ const samplesSource = fs.readFileSync(
 
 // Extract language blocks: "xx: [...]"
 const langBlockRegex = /(\w{2}):\s*\[([\s\S]*?)\],/g;
-const sampleRegex = /label:\s*'([^']+)',\s*text:\s*(?:'([^']*)'|"([^"]*)")/g;
+const sampleRegex = /label:\s*(?:'([^']+)'|"([^"]+)"),\s*text:\s*(?:'([^']*)'|"([^"]*)")/g;
 
 interface Sample {
   label: string;
@@ -27,7 +27,9 @@ while ((langMatch = langBlockRegex.exec(samplesSource)) !== null) {
   let sampleMatch;
   const re = new RegExp(sampleRegex.source, 'g');
   while ((sampleMatch = re.exec(block)) !== null) {
-    samples.push({ label: sampleMatch[1]!, text: sampleMatch[2] ?? sampleMatch[3]! });
+    const label = sampleMatch[1] ?? sampleMatch[2]!;
+    const text = sampleMatch[3] ?? sampleMatch[4]!;
+    samples.push({ label, text });
   }
   allSamples[lang] = samples;
 }
