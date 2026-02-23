@@ -56,6 +56,16 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ɫ')).toEqual(['L']);
   });
 
+  it('maps plain /a/ to AE for recognizable foreign word output', () => {
+    // Plain /a/ (common in Arabic, Spanish, etc.) should map to AE ("a" in cat),
+    // not AA ("o" in father), so foreign words stay recognizable:
+    // e.g. "salam" not "solom", "ramadan" not "romodon"
+    expect(ipaToArpabet('a')).toEqual(['AE']);
+    // Full Arabic-style words
+    expect(ipaToArpabet('salam')).toEqual(['S', 'AE', 'L', 'AE', 'M']);
+    expect(ipaToArpabet('marhaba')).toEqual(['M', 'AE', 'R', 'HH', 'AE', 'B', 'AE']);
+  });
+
   it('converts nasal vowels to vowel + N', () => {
     // French "enfants" /ɑ̃fɑ̃/
     expect(ipaToArpabet('ɑ̃fɑ̃')).toEqual(['AA', 'N', 'F', 'AA', 'N']);
