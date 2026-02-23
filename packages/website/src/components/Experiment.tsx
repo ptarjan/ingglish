@@ -35,7 +35,12 @@ function Experiment() {
       </div>
 
       <div className="experiment-presets">
-        <span className="presets-label">Languages:</span>
+        <span
+          className="presets-label"
+          title="Languages with near 1:1 letter-to-sound mappings, applied to English phonemes"
+        >
+          Languages:
+        </span>
         {LANGUAGE_PRESETS.filter((p) => p.group === 'language').map((preset) => {
           const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
           return (
