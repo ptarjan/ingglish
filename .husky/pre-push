@@ -17,12 +17,25 @@ if [ -n "$css_files" ]; then
 fi
 
 # Type-check the website package (~4s) — catches 90% of CI failures
-# (cross-file TS errors that eslint misses)
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
   npx tsc --noEmit -p packages/website/tsconfig.json
 fi
 
-# Docs link test (~1s) — catches broken heading anchors in docs
+# Run tests for changed packages (1-11s each depending on package)
+changed_pkgs=$(echo "$changed_files" | grep -oE '^packages/[^/]+' | sort -u | sed 's|^packages/||' || true)
+if [ -n "$changed_pkgs" ]; then
+  test_dirs=""
+  for pkg in $changed_pkgs; do
+    if [ -f "packages/$pkg/package.json" ] && grep -q '"test"' "packages/$pkg/package.json"; then
+      test_dirs="$test_dirs packages/$pkg"
+    fi
+  done
+  if [ -n "$test_dirs" ]; then
+    npx vitest run --no-color $test_dirs
+  fi
+fi
+
+# Docs link test (~1s) — catches broken heading anchors
 if echo "$changed_files" | grep -qE '^docs/.*\.md$|^packages/website/src/components/Docs'; then
   npm run test:docs --prefix packages/website
 fi
