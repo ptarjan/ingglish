@@ -333,6 +333,19 @@ button.preset-action:disabled {
   background: transparent;
 }
 
+/* Keep tooltips within the scrollable experiment-right container */
+.experiment-words [data-orig]:hover::after {
+  left: 0;
+  max-width: 15rem;
+  white-space: normal;
+  transform: none;
+}
+
+.experiment-words [data-orig]:hover::before {
+  left: 0.5em;
+  transform: none;
+}
+
 .format-diff {
   text-decoration: underline dotted var(--color-primary);
   text-decoration-thickness: 1.5px;
