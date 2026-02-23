@@ -24,6 +24,9 @@ jobs:
         with:
           dict-cache: true
 
+      - name: Generate docs
+        run: npm run docs
+
       - name: Unit tests
         run: npm test
 
