@@ -139,6 +139,15 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('nɑxt', { x: 'K' })).toEqual(['N', 'AA', 'K', 'T']);
   });
 
+  it('maps Dutch /ɣ/ to HH with override', () => {
+    // Default: ɣ → G (generic approximation for voiced velar fricative)
+    expect(ipaToArpabet('ɣ')).toEqual(['G']);
+    // Dutch override: ɣ → HH (breathy, H-like)
+    expect(ipaToArpabet('ɣ', { ɣ: 'HH' })).toEqual(['HH']);
+    // Dutch "goed" /ɣut/ → HH UW T (≈ "hoot", not "goot")
+    expect(ipaToArpabet('ɣut', { ɣ: 'HH' })).toEqual(['HH', 'UW', 'T']);
+  });
+
   it('deduplicates consecutive identical phonemes', () => {
     // Finnish long vowels: /uu/ → single UW, not UW UW
     expect(ipaToArpabet('tuuli')).toEqual(['T', 'UW', 'L', 'IY']);
