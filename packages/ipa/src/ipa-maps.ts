@@ -155,8 +155,8 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɳ: 'N', // /ɳ/ retroflex nasal ≈ N
   // tɕ and dʑ are handled as two-char sequences below
 
-  ø: 'ER', // /ø/ close-mid front rounded — "peu" (French) ≈ "per" (without the r)
-  œ: 'ER', // /œ/ open-mid front rounded — "peur" (French) ≈ "purr"
+  ø: 'AH1', // /ø/ close-mid front rounded — "peu" (French) ≈ "uh"
+  œ: 'AH1', // /œ/ open-mid front rounded — "peur" (French) ≈ "uh"
   ɸ: 'F', // /ɸ/ voiceless bilabial fricative — Japanese "fu" ≈ F
   q: 'K', // /q/ voiceless uvular stop — Arabic "Quran" ≈ K
   ʀ: 'R', // /ʀ/ uvular trill — some German dialects ≈ English R
