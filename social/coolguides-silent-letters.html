@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f172a;
+    color: #eee;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .card {
+    width: 900px;
+    padding: 52px 60px;
+    background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 24px;
+  }
+  .title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-size: 18px;
+    color: #94a3b8;
+    margin-bottom: 40px;
+  }
+
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .word-cell {
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .word-english {
+    font-size: 22px;
+    color: #cbd5e1;
+    margin-bottom: 4px;
+  }
+  .silent { color: #f87171; text-decoration: line-through; text-decoration-thickness: 2px; font-weight: 700; }
+  .word-phonemic {
+    font-size: 20px;
+    color: #4ade80;
+    font-weight: 700;
+  }
+  .word-note {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+    line-height: 1.3;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 28px;
+  }
+  .stat-item { flex: 1; }
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #f0c040;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-left {
+    font-size: 13px;
+    color: #475569;
+  }
+  .footer-right {
+    font-size: 14px;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="title">A guide to English's silent letters</div>
+  <div class="subtitle">Letters you write but never say</div>
+
+  <div class="word-grid">
+    <div class="word-cell">
+      <div class="word-english"><span class="silent">k</span>nife</div>
+      <div class="word-phonemic">naif</div>
+      <div class="word-note">Silent K before N — the K used to be pronounced in Old English</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english"><span class="silent">p</span>sychology</div>
+      <div class="word-phonemic">saikolajee</div>
+      <div class="word-note">Silent P — borrowed from Greek, where PS was a single consonant cluster</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english"><span class="silent">g</span>nome</div>
+      <div class="word-phonemic">nohm</div>
+      <div class="word-note">Silent G before N — from Greek via Latin</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">de<span class="silent">b</span>t</div>
+      <div class="word-phonemic">det</div>
+      <div class="word-note">Silent B — never pronounced, added by scholars to match Latin "debitum"</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">i<span class="silent">s</span>land</div>
+      <div class="word-phonemic">ailand</div>
+      <div class="word-note">Silent S — inserted by mistake, scholars thought it came from Latin "insula"</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english"><span class="silent">w</span>rong</div>
+      <div class="word-phonemic">rawng</div>
+      <div class="word-note">Silent W before R — the W was pronounced until the 1600s</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">dou<span class="silent">b</span>t</div>
+      <div class="word-phonemic">dout</div>
+      <div class="word-note">Silent B — same story as "debt," shoehorned in from Latin "dubitare"</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">lam<span class="silent">b</span></div>
+      <div class="word-phonemic">lam</div>
+      <div class="word-note">Silent B after M — the B was pronounced in Old English "lamb"</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">col<span class="silent">u</span>mn</div>
+      <div class="word-phonemic">kolam</div>
+      <div class="word-note">Silent N — from Latin "columna," the N dropped when borrowed into English</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english"><span class="silent">p</span>salm</div>
+      <div class="word-phonemic">som</div>
+      <div class="word-note">Silent P and silent L — Greek "psalmos" lost both sounds in English</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">recei<span class="silent">p</span>t</div>
+      <div class="word-phonemic">riseet</div>
+      <div class="word-note">Silent P — added to match Latin "recepta," never pronounced</div>
+    </div>
+    <div class="word-cell">
+      <div class="word-english">We<span class="silent">d</span>nesday</div>
+      <div class="word-phonemic">Wenzday</div>
+      <div class="word-note">Silent D — named after Woden, the D disappeared over 500 years</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-value">60%</div>
+      <div class="stat-label">of English words contain<br>at least one silent letter</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">5</div>
+      <div class="stat-label">different reasons letters go<br>silent: sound change, loans,<br>scholars, analogy, aesthetics</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">~1400</div>
+      <div class="stat-label">when English spelling froze,<br>locking in letters that were<br>already falling silent</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">Phonemic spellings based on the CMU Pronouncing Dictionary</div>
+    <div class="footer-right">ingglish.com</div>
+  </div>
+</div>
+</body>
+</html>

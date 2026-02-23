@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .card {
+    width: 960px;
+    padding: 52px 60px;
+    background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 24px;
+  }
+  .title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-size: 17px;
+    color: #94a3b8;
+    margin-bottom: 36px;
+    line-height: 1.4;
+  }
+
+  /* Letter heatmap */
+  .section-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+  .heatmap {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .hm-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    position: relative;
+  }
+  .hm-letter {
+    font-size: 18px;
+    color: #f1f5f9;
+  }
+  .hm-count {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 1px;
+  }
+  .hm-cell.heat-5 { background: #991b1b; }
+  .hm-cell.heat-4 { background: #b45309; }
+  .hm-cell.heat-3 { background: #a16207; }
+  .hm-cell.heat-2 { background: #4d7c0f; }
+  .hm-cell.heat-1 { background: #1e3a5f; }
+  .hm-cell.heat-0 { background: rgba(255,255,255,0.05); }
+
+  .heatmap-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: #64748b;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch {
+    width: 12px; height: 12px; border-radius: 3px;
+  }
+
+  /* Example rules */
+  .examples {
+    margin-bottom: 32px;
+  }
+  .example-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .example {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .example-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .example-word {
+    font-size: 18px;
+    color: #f1f5f9;
+    font-weight: 600;
+  }
+  .example-result {
+    font-size: 16px;
+    color: #4ade80;
+    font-weight: 600;
+  }
+  .example-rule {
+    font-size: 13px;
+    color: #94a3b8;
+    font-family: 'SF Mono', 'Cascadia Code', monospace;
+  }
+  .example-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 28px;
+  }
+  .stat-item { flex: 1; }
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #f0c040;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-left { font-size: 13px; color: #475569; }
+  .footer-right { font-size: 14px; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="title">It takes 975 rules to predict how English is pronounced</div>
+  <div class="subtitle">I built a grapheme-to-phoneme engine that reads English words it's never seen and predicts their pronunciation. Here's what the rules look like.</div>
+
+  <div class="section-label">Rules per letter — vowels are where the chaos lives</div>
+  <div class="heatmap">
+    <!-- Row 1: A-M -->
+    <div class="hm-cell heat-4"><span class="hm-letter">A</span><span class="hm-count">85</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">B</span><span class="hm-count">16</span></div>
+    <div class="hm-cell heat-3"><span class="hm-letter">C</span><span class="hm-count">59</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">D</span><span class="hm-count">16</span></div>
+    <div class="hm-cell heat-5"><span class="hm-letter">E</span><span class="hm-count">167</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">F</span><span class="hm-count">8</span></div>
+    <div class="hm-cell heat-2"><span class="hm-letter">G</span><span class="hm-count">28</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">H</span><span class="hm-count">17</span></div>
+    <div class="hm-cell heat-5"><span class="hm-letter">I</span><span class="hm-count">119</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">J</span><span class="hm-count">1</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">K</span><span class="hm-count">3</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">L</span><span class="hm-count">19</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">M</span><span class="hm-count">18</span></div>
+    <!-- Row 2: N-Z -->
+    <div class="hm-cell heat-2"><span class="hm-letter">N</span><span class="hm-count">26</span></div>
+    <div class="hm-cell heat-5"><span class="hm-letter">O</span><span class="hm-count">171</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">P</span><span class="hm-count">10</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">Q</span><span class="hm-count">5</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">R</span><span class="hm-count">17</span></div>
+    <div class="hm-cell heat-3"><span class="hm-letter">S</span><span class="hm-count">68</span></div>
+    <div class="hm-cell heat-2"><span class="hm-letter">T</span><span class="hm-count">33</span></div>
+    <div class="hm-cell heat-2"><span class="hm-letter">U</span><span class="hm-count">40</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">V</span><span class="hm-count">4</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">W</span><span class="hm-count">20</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">X</span><span class="hm-count">2</span></div>
+    <div class="hm-cell heat-1"><span class="hm-letter">Y</span><span class="hm-count">18</span></div>
+    <div class="hm-cell heat-0"><span class="hm-letter">Z</span><span class="hm-count">5</span></div>
+  </div>
+  <div class="heatmap-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background: #991b1b"></div> 100+ rules</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #b45309"></div> 50-99</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #a16207"></div> 25-49</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #4d7c0f"></div> 10-24</div>
+    <div class="legend-item"><div class="legend-swatch" style="background: #1e3a5f"></div> 1-9</div>
+  </div>
+
+  <div class="examples">
+    <div class="section-label">Example rules — same letter, different pronunciation based on context</div>
+    <div class="example-grid">
+      <div class="example">
+        <div class="example-header">
+          <span class="example-word">ocean</span>
+          <span class="example-result">/oʊʃən/</span>
+        </div>
+        <div class="example-rule">[EA]N =/ʃ AH N/</div>
+        <div class="example-desc">EA before N makes "sh-un" here, not "ee"</div>
+      </div>
+      <div class="example">
+        <div class="example-header">
+          <span class="example-word">create</span>
+          <span class="example-result">/kriːeɪt/</span>
+        </div>
+        <div class="example-rule">[E]A =/IY/</div>
+        <div class="example-desc">E before A makes "ee", not "eh"</div>
+      </div>
+      <div class="example">
+        <div class="example-header">
+          <span class="example-word">cough</span>
+          <span class="example-result">/kɔf/</span>
+        </div>
+        <div class="example-rule">[OUGH]=/AO F/</div>
+        <div class="example-desc">Whole-word pattern: OUGH can be 6+ sounds</div>
+      </div>
+      <div class="example">
+        <div class="example-header">
+          <span class="example-word">sugar</span>
+          <span class="example-result">/ʃʊɡəɹ/</span>
+        </div>
+        <div class="example-rule">#[SU]G=/ZH AH/</div>
+        <div class="example-desc">S after a vowel + before U+G makes "sh"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-value">975</div>
+      <div class="stat-label">context-sensitive rules</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">61%</div>
+      <div class="stat-label">of all rules are just for<br>the 6 vowel letters</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">171</div>
+      <div class="stat-label">rules for the letter O alone —<br>more than all 20 consonants<br>combined (150)</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">Based on Elovitz et al. (1976) NRL rules, extended with modern English patterns</div>
+    <div class="footer-right">ingglish.com</div>
+  </div>
+</div>
+</body>
+</html>
