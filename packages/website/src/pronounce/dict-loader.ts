@@ -1,24 +1,9 @@
-import { getIpaOverride } from './ipa-overrides';
+import type { IpaDict } from '@ingglish/ipa';
+import { LANGUAGES } from '@ingglish/ipa';
 
-export type IpaDict = Record<string, string>;
-
-export interface Language {
-  code: string;
-  label: string;
-}
-
-export const LANGUAGES: Language[] = [
-  { code: 'ar', label: 'Arabic' },
-  { code: 'de', label: 'German' },
-  { code: 'es', label: 'Spanish' },
-  { code: 'fi', label: 'Finnish' },
-  { code: 'fr', label: 'French' },
-  { code: 'ja', label: 'Japanese' },
-  { code: 'ko', label: 'Korean' },
-  { code: 'nl', label: 'Dutch' },
-  { code: 'pt', label: 'Portuguese' },
-  { code: 'zh', label: 'Mandarin' },
-];
+export type { IpaDict } from '@ingglish/ipa';
+export { LANGUAGES, lookupIpa } from '@ingglish/ipa';
+export type { Language } from '@ingglish/ipa';
 
 const cache = new Map<string, IpaDict>();
 
@@ -40,14 +25,4 @@ export async function loadDict(code: string): Promise<IpaDict> {
   const dict = (await response.json()) as IpaDict;
   cache.set(code, dict);
   return dict;
-}
-
-export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | undefined {
-  if (lang) {
-    const override = getIpaOverride(lang, word) ?? getIpaOverride(lang, word.toLowerCase());
-    if (override) {
-      return override;
-    }
-  }
-  return dict[word] ?? dict[word.toLowerCase()];
 }

@@ -242,6 +242,9 @@ export const IPA_TO_ARPABET_MAP: Record<string, string> = {
 export const IPA_LANGUAGE_OVERRIDES: Record<string, Record<string, string>> = {
   // German: /x/ and /χ/ are the "ach-Laut" — English speakers say "bahk" for Bach
   de: { x: 'K', χ: 'K' },
+  // French: /ø/ is close-mid front rounded — English "book" /ʊ/ is closest
+  // (deux /dø/ → "du", peu /pø/ → "pu")
+  fr: { ø: 'UH' },
   // Dutch: /ɣ/ is a breathy G (closer to H than hard G) — "goed" ≈ "hood" not "good"
   nl: { ɣ: 'HH' },
 };

@@ -33,6 +33,7 @@
     "test": "vitest run --no-color"
   },
   "dependencies": {
+    "@ingglish/normalize": "^1.0.0",
     "@ingglish/phonemes": "^1.0.0"
   },
   "author": "Paul Tarjan",

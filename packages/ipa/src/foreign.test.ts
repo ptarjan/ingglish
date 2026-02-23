@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { IpaDict } from './dict-loader';
-import { translateForeign, NOT_FOUND_MARKER } from './ipa-to-ingglish';
+import type { IpaDict } from './foreign';
+import { translateForeign, NOT_FOUND_MARKER } from './foreign';
 
 describe('translateForeign', () => {
   const dict: IpaDict = {

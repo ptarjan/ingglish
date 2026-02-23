@@ -2,7 +2,8 @@
 /**
  * CLI tool to translate words/text to Ingglish and back.
  * Usage: npm run translate "text to translate"
- *        npm run translate -- -r "ingglish text"  (reverse)
+ *        npm run translate -- -r "ingglish text"        (reverse)
+ *        npm run translate -- -l fr "bonjour monde"     (foreign language)
  */
 import {
   loadDictionary,
@@ -15,20 +16,86 @@ import {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from '../../src/translate/reverse.js';
+import { LANGUAGES, NOT_FOUND_MARKER, translateForeign } from '@ingglish/ipa';
+import type { IpaDict } from '@ingglish/ipa';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+function loadIpaDict(langCode: string): IpaDict {
+  const dictPath = resolve(
+    import.meta.dirname,
+    '../../../website/public/ipa-dicts',
+    `${langCode}.json`
+  );
+  return JSON.parse(readFileSync(dictPath, 'utf-8')) as IpaDict;
+}
 
 async function main() {
-  // Load all dictionaries needed for translation and reverse translation
-  await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
-
   const args = process.argv.slice(2);
-  const reverse = args[0] === '-r';
-  const text = reverse ? args.slice(1).join(' ') : args.join(' ');
+
+  // Parse flags
+  let reverse = false;
+  let langCode: string | undefined;
+  let textArgs: string[] = [];
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '-r') {
+      reverse = true;
+    } else if (args[i] === '-l') {
+      i++;
+      langCode = args[i];
+    } else {
+      textArgs.push(args[i]!);
+    }
+  }
+
+  const text = textArgs.join(' ');
 
   if (!text) {
     console.log('Usage: npm run translate "text to translate"');
     console.log('       npm run translate -- -r "ingglish text"');
+    console.log('       npm run translate -- -l <lang> "foreign text"');
+    console.log();
+    console.log('Languages:');
+    for (const lang of LANGUAGES) {
+      console.log(`  ${lang.code}  ${lang.label}`);
+    }
     process.exit(1);
   }
+
+  if (langCode) {
+    // Foreign language mode
+    const lang = LANGUAGES.find((l) => l.code === langCode);
+    if (!lang) {
+      console.error(
+        `Unknown language: ${langCode}. Available: ${LANGUAGES.map((l) => l.code).join(', ')}`
+      );
+      process.exit(1);
+    }
+
+    const dict = loadIpaDict(langCode);
+    console.log(`${lang.label}:`, text);
+    console.log('---');
+
+    // Show per-word output
+    const words = text.match(/\S+/g) || [];
+    for (const word of words) {
+      const result = translateForeign(word, dict, 'ingglish', langCode);
+      if (result.includes(NOT_FOUND_MARKER)) {
+        const clean = result.replaceAll(NOT_FOUND_MARKER, '');
+        console.log(`? "${word}" -> not found (kept as "${clean}")`);
+      } else {
+        console.log(`✓ "${word}" -> "${result}"`);
+      }
+    }
+
+    console.log('---');
+    console.log('Full translation:', translateForeign(text, dict, 'ingglish', langCode));
+    return;
+  }
+
+  // English mode — load dictionaries
+  await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
 
   if (reverse) {
     const tokens = reverseTranslateSyncWithMapping(text);

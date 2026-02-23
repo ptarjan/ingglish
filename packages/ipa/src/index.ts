@@ -11,6 +11,8 @@ export function registerIPA(): void {
   });
 }
 
+export { ipaToIngglish, LANGUAGES, lookupIpa, NOT_FOUND_MARKER, translateForeign } from './foreign';
+export type { IpaDict, Language } from './foreign';
 export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';
 export { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 // Export individual functions for direct use
