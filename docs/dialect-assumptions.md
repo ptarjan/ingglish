@@ -30,7 +30,7 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 **Who this affects:** Speakers of non-rhotic dialects (RP, Australian, New Zealand, some Southern US, some New England) would see R's in positions where they don't pronounce them. This is the single most impactful dialect assumption, affecting virtually every word containing a vowel followed by R.
 
-**Who this matches:** General American, Canadian, Scottish, Irish, and most other rhotic varieties.
+**Who this matches:** General American, Canadian, and most other rhotic varieties. Scottish and Irish are also rhotic, but have different vowel qualities before R (e.g. Scottish "bird" is /bʊɹd/, not /bɛɹd/), so the R is right but the vowel spelling may not match.
 
 ### The TRAP-BATH Split
 
@@ -45,7 +45,7 @@ Future work could support dialect variants by providing alternative phoneme mapp
 | class | klas | /&aelig;/ | /ɑː/ |
 | ask | ask | /&aelig;/ | /ɑː/ |
 
-**Who this affects:** RP, Australian, and South African speakers use /ɑː/ in these words. They would expect "bahth", "grahs", "dahns".
+**Who this affects:** RP and South African speakers use /ɑː/ in these words. They would expect "bahth", "grahs", "dahns". Australian English uses /ɑː/ for some BATH words (bath, grass) but keeps /æ/ for others (dance, castle), so the impact is partial.
 
 **Who this matches:** General American, Canadian, Northern English, Scottish, Irish.
 
