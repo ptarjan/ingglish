@@ -95,6 +95,11 @@
   gap: 0.5rem;
 }
 
+/* Prevent format toggle from shrinking when label changes (e.g. "Ingglish" → "IPA") */
+.format-toggle {
+  min-width: 6rem;
+}
+
 /* Messages */
 .error-message {
   padding: 1rem;

@@ -98,7 +98,7 @@ export default function WordExplorer() {
           type="text"
           value={input}
         />
-        <button className="btn-secondary" onClick={toggleFormat} type="button">
+        <button className="btn-secondary format-toggle" onClick={toggleFormat} type="button">
           {formatLabel} &#x21C5;
         </button>
       </div>

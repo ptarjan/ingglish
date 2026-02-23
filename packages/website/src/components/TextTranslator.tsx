@@ -484,7 +484,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
           <div className="section-header">
             <h2>
               <button
-                className="format-cycle-btn"
+                className="format-cycle-btn format-toggle"
                 onClick={toggleFormat}
                 title="Cycle output format"
               >
