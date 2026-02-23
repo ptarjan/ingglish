@@ -47,4 +47,19 @@ describe('translateForeign', () => {
     expect(result).toContain('  ');
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
+
+  it('splits French contractions on apostrophes', () => {
+    const frDict: IpaDict = { avec: '/avɛk/', essentiel: '/esɑ̃sjɛl/', l: '/ɛl/', qu: '/ky/' };
+    const result1 = translateForeign("l'essentiel", frDict);
+    expect(result1).not.toContain(NOT_FOUND_MARKER);
+
+    const result2 = translateForeign("qu'avec", frDict);
+    expect(result2).not.toContain(NOT_FOUND_MARKER);
+  });
+
+  it('splits hyphenated words', () => {
+    const frDict: IpaDict = { allez: '/ale/', vous: '/vu/' };
+    const result = translateForeign('allez-vous', frDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+  });
 });

@@ -71,6 +71,26 @@ export function translateForeign(
       if (ipa) {
         return leading.join('') + ipaToFormat(ipa, format) + trailing.join('');
       }
+
+      // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
+      const parts = core.split(/(?<=['-])|(?=['-])/);
+      if (parts.length > 1) {
+        const translated = parts.map((part) => {
+          if (part === "'" || part === '-') {return part;}
+          const partIpa = lookupIpa(dict, part);
+          if (partIpa) {return ipaToIngglish(partIpa);}
+          return NOT_FOUND_MARKER + part;
+        });
+        // If any part was found, return the combined result
+        if (
+          translated.some(
+            (t, i) => parts[i] !== "'" && parts[i] !== '-' && !t.startsWith(NOT_FOUND_MARKER)
+          )
+        ) {
+          return leading.join('') + translated.join('') + trailing.join('');
+        }
+      }
+
       // Not found — return original with marker
       return NOT_FOUND_MARKER + segment;
     })

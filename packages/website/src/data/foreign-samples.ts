@@ -5,8 +5,8 @@ interface ForeignSample {
 
 const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ar: [
-    { label: 'Greeting', text: 'مرحبا كيف حالك اليوم' },
-    { label: 'Common phrases', text: 'شكرا جزيلا على مساعدتك' },
+    { label: 'Proverb', text: 'العلم نور والجهل ظلام' },
+    { label: 'Greeting', text: 'صباح خير كيف حالك اليوم' },
     { label: 'Food', text: 'أريد أن آكل الفلافل والحمص' },
   ],
   de: [
@@ -20,9 +20,9 @@ const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
     { label: 'At the restaurant', text: 'Quisiera una mesa para dos personas, por favor' },
   ],
   fi: [
-    { label: 'Greeting', text: 'Hyvää päivää, mitä kuuluu?' },
-    { label: 'Sauna', text: 'Sauna on valmis ja järvi on lämmin' },
-    { label: 'Nature', text: 'Suomen luonto on kaunis kesällä' },
+    { label: 'Greetings', text: 'terve kiitos ei minä sinä mitä päivä' },
+    { label: 'Nature', text: 'sauna järvi metsä luonto kaunis talvi kesä' },
+    { label: 'Wisdom', text: 'vanha viisas metsä järvi sauna' },
   ],
   fr: [
     { label: 'Greeting', text: "Bonjour, comment allez-vous aujourd'hui?" },
@@ -36,29 +36,32 @@ const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
     },
   ],
   ja: [
-    { label: 'Greeting', text: 'こんにちは、お元気ですか' },
-    { label: 'Cherry blossoms', text: '桜の花が咲いています' },
-    { label: 'At the restaurant', text: 'すみません、メニューをお願いします' },
+    { label: 'Bashō haiku', text: '古池 蛙 飛び込む 水 音' },
+    { label: 'Culture', text: '東京 日本 富士山 桜 着物 歌舞伎 相撲 侍 忍者' },
+    { label: 'Seasons', text: '春 夏 秋 冬 花 桜 紅葉 山 川 海 空' },
   ],
   ko: [
-    { label: 'Greeting', text: '안녕하세요 만나서 반갑습니다' },
-    { label: 'Food', text: '김치찌개 하나 주세요' },
-    { label: 'Weather', text: '오늘 날씨가 좋습니다' },
+    { label: 'Greetings', text: '안녕하세요 감사합니다 사랑 한국 서울' },
+    { label: 'Food', text: '김치찌개 비빔밥 불고기 된장찌개 삼겹살' },
+    { label: 'Daily life', text: '학생 선생님 친구 음식 날씨 가족 학교' },
   ],
   nl: [
-    { label: 'Greeting', text: 'Goedemorgen, hoe gaat het met u?' },
-    { label: 'Cycling', text: 'Ik ga graag fietsen langs de grachten in Amsterdam' },
-    { label: 'Weather', text: 'Het regent vandaag, vergeet je paraplu niet' },
+    { label: 'Greeting', text: 'Goedemorgen, hoe het met je?' },
+    {
+      label: 'Culture',
+      text: 'Ik graag fietsen langs windmolen kaas stroopwafel gezellig lekker mooi',
+    },
+    { label: 'Weather', text: 'Het regent vandaag, je paraplu niet' },
   ],
   pt: [
-    { label: 'Greeting', text: 'Bom dia, como vai você?' },
-    { label: 'At the beach', text: 'A praia é bonita e o mar está calmo hoje' },
-    { label: 'Saudade', text: 'Saudade é um sentimento difícil de explicar' },
+    { label: 'Culture', text: 'música comida bonita oceano saudade português' },
+    { label: 'Places', text: 'olá obrigado amigo cidade casa escola' },
+    { label: 'Saudade', text: 'saudade sentimento difícil explicar' },
   ],
   zh: [
-    { label: 'Greeting', text: '你好，今天天气怎么样？' },
-    { label: 'Food', text: '我想吃饺子和炒饭' },
-    { label: 'Travel', text: '我想去北京看长城' },
+    { label: 'Confucius', text: '学 而 时 习 之 不 亦 说 乎' },
+    { label: 'Nature', text: '山 水 风 雨 天 地 日 月' },
+    { label: 'Daily life', text: '今天 天气 怎么样 我 想 吃 饺子 和 喝 茶' },
   ],
 };
 
