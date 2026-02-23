@@ -22,6 +22,12 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Czech',
   },
   {
+    description: 'Circumflexed consonants, \u016D for /w/',
+    group: 'language',
+    hash: '#m=AA:a,AH:a,AO:o,AW:a\u016D,AY:aj,CH:\u0109,DH:d,EY:ej,IY:i,JH:\u011D,OW:o\u016D,OY:oj,SH:\u015D,TH:t,UW:u,W:\u016D,Y:j,ZH:\u0135',
+    label: 'Esperanto',
+  },
+  {
     description: 'Doubled vowels for length, b\u2192p, f\u2192v, no th/dh',
     group: 'language',
     hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,B:p,CH:t\u0161,DH:d,ER:\u00F6r,EY:ei,F:v,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
@@ -71,12 +77,6 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
-    description: 'Circumflexed consonants, \u016D for /w/',
-    group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:a\u016D,AY:aj,CH:\u0109,DH:d,EY:ej,IY:i,JH:\u011D,OW:o\u016D,OY:oj,SH:\u015D,TH:t,UW:u,W:\u016D,Y:j,ZH:\u0135',
-    label: 'Esperanto',
-  },
-  {
     description: '5 pure vowels, j for /x/, sh merges with ch',
     group: 'language',
     hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,SH:ch,TH:z,UW:u,Z:s,ZH:y',
@@ -87,6 +87,12 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     group: 'language',
     hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
     label: 'Turkish',
+  },
+  {
+    description: 'f/ff swap (f=/v/, ff=/f/), dd for /\u00F0/, w as vowel',
+    group: 'language',
+    hash: '#m=AA:a,AH:a,AO:o,AW:aw,DH:dd,EY:ei,F:ff,IY:i,K:c,OW:o,UW:w,V:f,Z:s,ZH:s',
+    label: 'Welsh',
   },
   // ── Alphabets ──────────────────────────────────────────────────────
   {
