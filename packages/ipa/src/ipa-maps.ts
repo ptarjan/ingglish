@@ -85,7 +85,7 @@ export const ARPABET_TO_IPA_MAP: Record<string, string> = {
  * common transcription differences.
  */
 export const IPA_VARIANT_MAP: Record<string, string> = {
-  a: 'AA', // plain /a/ — closer to "father" than "cat" in most languages
+  a: 'AE', // plain /a/ — maps to "a" (cat) for recognizable foreign word output
   e: 'EH', // plain /e/ — mid front vowel, like "bed"
   ə: 'AH0', // schwa (unstressed) — forward map uses ʌ→AH for the stressed variant
   ɚ: 'ER', // r-colored schwa variant — forward map uses ɝ→ER
