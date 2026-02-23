@@ -39,20 +39,6 @@ interface HeadingInfo {
 const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
-  // English Spelling — standalone reference guides, shown first
-  {
-    content: englishSpellingRules,
-    filename: 'english-spelling-rules.md',
-    id: 'how-to-read-english',
-    section: 'English Spelling',
-    title: 'Reading: Letters to Sounds',
-  },
-  {
-    content: englishSpellingChoices,
-    filename: 'english-spelling-choices.md',
-    id: 'how-to-spell-english',
-    title: 'Writing: Sounds to Letters',
-  },
   // Ingglish Design — how the project works
   {
     content: designDecisions,
@@ -126,6 +112,20 @@ const docs: DocEntry[] = [
     filename: 'dialect-assumptions.md',
     id: 'dialect-assumptions',
     title: 'Dialect Assumptions',
+  },
+  // English Spelling — standalone reference guides
+  {
+    content: englishSpellingRules,
+    filename: 'english-spelling-rules.md',
+    id: 'how-to-read-english',
+    section: 'English Spelling',
+    title: 'Reading: Letters to Sounds',
+  },
+  {
+    content: englishSpellingChoices,
+    filename: 'english-spelling-choices.md',
+    id: 'how-to-spell-english',
+    title: 'Writing: Sounds to Letters',
   },
   // Development — technical reference
   {
