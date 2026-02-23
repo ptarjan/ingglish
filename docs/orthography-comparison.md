@@ -470,7 +470,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 
 **Notes:**
 - Only ~4% of languages have /θ/ ([PHOIBLE 2.0](https://phoible.org/), [Moran & McCloy 2019](https://doi.org/10.5281/zenodo.2677911)). It is one of the world's rarest consonants.
-- Icelandic preserves the Old English letter þ (thorn) for /θ/
+- Icelandic uses þ (thorn) for /θ/; in Old English, þ and ð were used interchangeably for both /θ/ and /ð/
 - Castilian Spanish uses 'c' (before e/i) and 'z' for /θ/, though Latin American Spanish lacks this sound
 - Ancient Greek /tʰ/ shifted to /θ/ in Modern Greek, giving us the IPA symbol
 - None of the other ~30 compared languages have this sound
@@ -488,7 +488,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 **Notes:**
 - We use 'dh' to distinguish voiced /ð/ from voiceless /θ/
 - Albanian uses 'dh' as an official alphabet letter for /ð/
-- Icelandic preserves the Old English letter ð (eth)
+- Icelandic uses ð (eth) for /ð/; the voiced/voiceless split is a modern Icelandic convention, not an Old English one
 - [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/; we considered this but 'dh' is more intuitive
 - Spanish has an allophonic [ð] between vowels (nada), but it is not a distinct phoneme
 - Only ~7% of languages have /ð/ — even rarer than /θ/ as a deliberate phonemic choice
