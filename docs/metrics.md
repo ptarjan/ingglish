@@ -123,17 +123,17 @@ The per-phoneme familiarity breakdown (from the `familiarity-search.ts` analysis
 
 | Phoneme | Grapheme | Familiarity | Notes |
 |---------|----------|-------------|-------|
-| AE→"a" | a | 100% | Every /æ/ word has "a": cat, bat, had |
-| TH→"th" | th | 100% | Every /θ/ word has "th": think, bath |
-| T→"t" | t | 98% | Nearly every /t/ word has "t" |
-| S→"s" | s | 91% | Most /s/ words have "s" |
-| IH→"i" | i | 88% | Most /ɪ/ words have "i": bit, sit |
-| SH→"sh" | sh | 64% | Many /ʃ/ words use "sh" but others use "ti", "ci" |
-| K→"k" | k | 47% | Many /k/ words use "c" instead: cat, come |
-| IY→"ee" | ee | 10% | Most /iː/ words use "e", "ea", "ie" not "ee" |
-| Z→"z" | z | 3% | Most /z/ words use "s": is, was, his |
-| AH→"uh" | uh | 0.5% | English almost never spells /ʌ/ as "uh" |
-| DH→"dh" | dh | 0% | "dh" never appears in English words |
+| /æ/ → "a" | a | 100% | Every /æ/ word has "a": cat, bat, had |
+| /θ/ → "th" | th | 100% | Every /θ/ word has "th": think, bath |
+| /t/ → "t" | t | 98% | Nearly every /t/ word has "t" |
+| /s/ → "s" | s | 91% | Most /s/ words have "s" |
+| /ɪ/ → "i" | i | 88% | Most /ɪ/ words have "i": bit, sit |
+| /ʃ/ → "sh" | sh | 64% | Many /ʃ/ words use "sh" but others use "ti", "ci" |
+| /k/ → "k" | k | 47% | Many /k/ words use "c" instead: cat, come |
+| /iː/ → "ee" | ee | 10% | Most /iː/ words use "e", "ea", "ie" not "ee" |
+| /z/ → "z" | z | 3% | Most /z/ words use "s": is, was, his |
+| /ʌ/ → "uh" | uh | 0.5% | English almost never spells /ʌ/ as "uh" |
+| /ð/ → "dh" | dh | 0% | "dh" never appears in English words |
 
 ## Methodology
 

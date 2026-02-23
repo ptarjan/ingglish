@@ -55,11 +55,11 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 | Word | Ingglish | Vowel | GenAm |
 |------|----------|-------|-------|
-| cot | kot | AA (/ɑ/) | /kɑt/ |
-| caught | kawt | AO (/ɔ/) | /kɔt/ |
-| lot | lot | AA | /lɑt/ |
-| thought | thawt | AO | /&theta;ɔt/ |
-| cloth | klawth | AO | /klɔ&theta;/ |
+| cot | kot | /ɑ/ | /kɑt/ |
+| caught | kawt | /ɔ/ | /kɔt/ |
+| lot | lot | /ɑ/ | /lɑt/ |
+| thought | thawt | /ɔ/ | /&theta;ɔt/ |
+| cloth | klawth | /ɔ/ | /klɔ&theta;/ |
 
 **Who this affects:** Speakers with the [cot-caught merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (Western US, Canada, much of the Midland) use the same vowel for both sets. They would find the "o" vs "aw" distinction arbitrary.
 
@@ -67,12 +67,12 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 ### The Father-Bother Merger
 
-**Ingglish merges LOT and PALM (both use the AA phoneme, spelled "o").**
+**Ingglish merges LOT and PALM (both /ɑ/, spelled "o").**
 
 | Word | Ingglish | GenAm | British RP |
 |------|----------|-------|------------|
-| father | fodher | /fɑðɚ/ (AA) | /fɑːðə/ (PALM /ɑː/) |
-| bother | bodher | /bɑðɚ/ (AA) | /bɒðə/ (LOT /ɒ/) |
+| father | fodher | /fɑðɚ/ | /fɑːðə/ (PALM /ɑː/) |
+| bother | bodher | /bɑðɚ/ | /bɒðə/ (LOT /ɒ/) |
 
 **Who this affects:** RP and Australian speakers distinguish these: "father" has /ɑː/ (PALM) while "bother" has /ɒ/ (LOT). The rounded /ɒ/ vowel has no ARPAbet equivalent.
 
@@ -184,8 +184,8 @@ Some individual words have well-known transatlantic pronunciation differences:
 |---------|----------------|---------|
 | Rhoticity | Rhotic (all R's pronounced) | RP, Australian, NZ speakers |
 | TRAP-BATH | No split (all /&aelig;/) | RP, Australian, SA speakers |
-| Cot-caught | Distinct (AA vs AO) | Western US, Canadian speakers |
-| Father-bother | Merged (both AA) | RP, Australian speakers |
+| Cot-caught | Distinct (/ɑ/ vs /ɔ/) | Western US, Canadian speakers |
+| Father-bother | Merged (both /ɑ/) | RP, Australian speakers |
 | Mary-marry-merry | Fully merged | RP, NYC, Philadelphia speakers |
 | Wine-whine | Merged (both W) | Scottish, Irish speakers |
 | Yod after coronals | Dropped | RP, Australian speakers |

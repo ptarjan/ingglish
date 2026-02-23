@@ -225,7 +225,7 @@ A three-way chain shift that resolved the 'uu' digraph and aligned all three vow
 
 ### /ə/ (about, sofa): u → a
 
-The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (ARPAbet AH0), not the stressed /ʌ/ STRUT vowel (AH1/AH2) used in "but", "cup", "run" — those use 'uh'.
+The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (/ə/), not the stressed /ʌ/ STRUT vowel used in "but", "cup", "run" — those use 'uh'.
 
 **Attempt 1: 'u'**
 - Rationale: Both /ə/ and /ʌ/ are represented as 'AH' in ARPAbet, so mapping all AH → 'u' was the simplest approach

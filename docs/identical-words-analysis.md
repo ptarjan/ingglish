@@ -16,7 +16,7 @@ We exhaustively tested 2,730 collision-free spelling alternatives, weighted by w
 - /ɔ/→au: **-555 /M** — loses saw (413 /M), law (119 /M)
 - /aɪ/→ei: **-1 /M** — shuffles rare German surnames, essentially zero real-text impact
 
-All five candidates were rejected — see [Recommendations](#recommendations). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (AH0→'a').
+All five candidates were rejected — see [Recommendations](#recommendations). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (unstressed /ə/ → 'a').
 
 ## Background
 
