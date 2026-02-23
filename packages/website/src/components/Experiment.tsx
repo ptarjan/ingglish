@@ -83,6 +83,29 @@ function Experiment() {
             </a>
           );
         })}
+        <span
+          className="presets-label"
+          title="Community spelling reform proposals from r/conorthography"
+        >
+          Reforms:
+        </span>
+        {LANGUAGE_PRESETS.filter((p) => p.group === 'reform').map((preset) => {
+          const isActive = activeHash === preset.hash;
+          return (
+            <a
+              className={`preset-link${isActive ? ' preset-active' : ''}`}
+              href={`/experiment${preset.hash}`}
+              key={preset.label}
+              onClick={(e) => {
+                e.preventDefault();
+                globalThis.location.hash = preset.hash;
+              }}
+              title={preset.description}
+            >
+              {preset.label}
+            </a>
+          );
+        })}
         <span className="presets-break" />
         <button
           className="preset-link preset-action"
