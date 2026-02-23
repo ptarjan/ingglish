@@ -55,7 +55,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs',
     group: 'language',
-    hash: '#m=AA:\u00E1,AH:a,AO:o,AW:\u00E1u,AY:\u00E1j,CH:cs,DH:d,EY:\u00E9j,IY:\u00ED,JH:dzs,OW:\u00F3,OY:oj,S:sz,SH:s,TH:t,UW:\u00FA,W:v,Y:j,ZH:zs',
+    hash: '#m=AA:\u00E1,AE:e,AH:a,AO:o,AW:\u00E1u,AY:\u00E1j,CH:cs,DH:d,EY:\u00E9j,IY:\u00ED,JH:dzs,OW:\u00F3,OY:oj,S:sz,SH:s,TH:t,UW:\u00FA,W:v,Y:j,ZH:zs',
     label: 'Hungarian',
   },
   {
@@ -67,7 +67,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 'No /f/, /v/, /\u03B8/, /z/ \u2014 approximated with native sounds',
     group: 'language',
-    hash: '#m=AA:a,AH:eo,AO:o,AW:au,DH:d,EY:ei,F:p,IY:i,OW:o,SH:sy,TH:s,UW:u,V:b,Z:j,ZH:j',
+    hash: '#m=AA:a,AE:ae,AH:eo,AO:o,AW:au,DH:d,EY:ei,F:p,IY:i,OW:o,SH:sy,TH:s,UW:u,V:b,Z:j,ZH:j',
     label: 'Korean',
   },
   {
@@ -77,15 +77,15 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
-    description: '5 pure vowels, j for /x/, sh merges with ch',
+    description: '5 pure vowels, j for /x/, sh\u2192ch, b/v merge',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,SH:ch,TH:z,UW:u,Z:s,ZH:y',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,SH:ch,TH:z,UW:u,V:b,Z:s,ZH:y',
     label: 'Spanish',
   },
   {
     description: '\u00E7 and \u015F for affricates/fricatives',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
+    hash: '#m=AA:a,AE:e,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
     label: 'Turkish',
   },
   {
