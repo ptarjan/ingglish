@@ -16,7 +16,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 'Doubled vowels for length, no th/dh sounds',
     flag: '\u{1F1EB}\u{1F1EE}',
-    hash: '#m=AA:a,AH:a,AO:oo,AW:au,CH:tš,DH:d,EY:ei,IY:ii,JH:dž,OW:ou,SH:š,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:ž',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,CH:t\u0161,DH:d,EY:ei,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
     label: 'Finnish',
   },
   {
