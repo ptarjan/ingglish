@@ -85,8 +85,8 @@ export const ARPABET_TO_IPA_MAP: Record<string, string> = {
  * common transcription differences.
  */
 export const IPA_VARIANT_MAP: Record<string, string> = {
-  a: 'AE', // fallback for plain a
-  e: 'EY', // some IPA uses plain e for face vowel
+  a: 'AA', // plain /a/ — closer to "father" than "cat" in most languages
+  e: 'EH', // plain /e/ — mid front vowel, like "bed"
   ə: 'AH0', // schwa (unstressed) — forward map uses ʌ→AH for the stressed variant
   ɚ: 'ER', // r-colored schwa variant — forward map uses ɝ→ER
   g: 'G', // ASCII g — forward map uses ɡ (U+0261)
@@ -97,11 +97,112 @@ export const IPA_VARIANT_MAP: Record<string, string> = {
 };
 
 /**
+ * Approximate mappings for non-English IPA sounds.
+ *
+ * When converting IPA from other languages, many sounds have no exact English
+ * equivalent. These map each to the closest English phoneme. The approximations
+ * follow what English speakers naturally substitute (and what phrasebooks use).
+ *
+ * Organized by category: vowels, consonants (by manner of articulation).
+ */
+export const IPA_APPROXIMATION_MAP: Record<string, string> = {
+  // --- Open vowels ---
+  ä: 'AA', // /ä/ open central — IPA diacritic variant ≈ "father"
+  ɐ: 'AH', // /ɐ/ near-open central — Portuguese unstressed "a" ≈ "but"
+  ɑ̃: 'AA', // nasal /ɑ/ — French "an/en" ≈ "father" (nasalization lost)
+  ɒ: 'AO', // /ɒ/ open back rounded — British "lot" ≈ "thought"
+
+  // --- Implosives and other stops ---
+  ɓ: 'B', // /ɓ/ voiced bilabial implosive ≈ B
+  ç: 'SH', // /ç/ voiceless palatal fricative — "ich" (German) ≈ "sh"
+  // --- Alveolo-palatal (Mandarin, Japanese, Polish) ---
+  ɕ: 'SH', // /ɕ/ voiceless alveolo-palatal fricative — Mandarin "xi" ≈ "sh"
+  // --- Retroflex (Hindi, Mandarin) ---
+  ɖ: 'D', // /ɖ/ voiced retroflex stop — Hindi ≈ D
+  ɗ: 'D', // /ɗ/ voiced alveolar implosive ≈ D
+  ɘ: 'AH0', // /ɘ/ close-mid central ≈ schwa
+  ɜ: 'ER', // /ɜ/ open-mid central — non-rhotic "bird" ≈ "er"
+
+  ɞ: 'ER', // /ɞ/ open-mid central rounded ≈ "er"
+  ɤ: 'AH', // /ɤ/ close-mid back unrounded — Korean "ㅓ" ≈ "but"
+  ɢ: 'G', // /ɢ/ voiced uvular stop ≈ G
+
+  ɣ: 'G', // /ɣ/ voiced velar fricative — Spanish "lago" ≈ G
+  // --- Pharyngeal (Arabic) ---
+  ħ: 'HH', // /ħ/ voiceless pharyngeal fricative — Arabic "ha" ≈ H
+  // --- Central/back vowels not in English ---
+  ɨ: 'IH', // /ɨ/ close central — Russian "ы" ≈ "bit"
+  ɬ: 'L', // /ɬ/ voiceless lateral fricative — Welsh "ll" ≈ L
+  ɭ: 'L', // /ɭ/ retroflex lateral ≈ L
+  // --- Laterals ---
+  ʎ: 'L', // /ʎ/ palatal lateral — Italian "figlio", Spanish "ll" ≈ L
+
+  ɱ: 'M', // /ɱ/ labiodental nasal ≈ M
+  ɴ: 'NG', // /ɴ/ uvular nasal — Japanese moraic N before uvulars ≈ "ng"
+  // --- Nasals ---
+  ɲ: 'N', // /ɲ/ palatal nasal — Spanish "ñ", Italian "gn" ≈ N (+ Y added below)
+
+  ɳ: 'N', // /ɳ/ retroflex nasal ≈ N
+  ø: 'ER', // /ø/ close-mid front rounded — "peu" (French) ≈ "per" (without the r)
+  // tɕ and dʑ are handled as two-char sequences below
+
+  œ: 'ER', // /œ/ open-mid front rounded — "peur" (French) ≈ "purr"
+  ɸ: 'F', // /ɸ/ voiceless bilabial fricative — Japanese "fu" ≈ F
+  q: 'K', // /q/ voiceless uvular stop — Arabic "Quran" ≈ K
+  ʀ: 'R', // /ʀ/ uvular trill — some German dialects ≈ English R
+  ɽ: 'D', // /ɽ/ retroflex flap — Hindi ≈ D
+  // --- Taps and trills (Spanish, Italian, etc.) ---
+  ɾ: 'R', // /ɾ/ alveolar tap — Spanish "pero" ≈ R (also like "butter" flap)
+  // --- Uvular consonants (French, German, Arabic) ---
+  ʁ: 'R', // /ʁ/ voiced uvular fricative — French/German R ≈ English R
+
+  ʂ: 'SH', // /ʂ/ voiceless retroflex fricative — Mandarin "shi" ≈ "sh"
+
+  ʈ: 'T', // /ʈ/ voiceless retroflex stop — Hindi ≈ T
+  // --- Labial-velar ---
+  ɥ: 'W', // /ɥ/ labial-palatal approximant — French "lui" ≈ W
+
+  ɯ: 'UW', // /ɯ/ close back unrounded — Japanese "u", Turkish "ı" ≈ "too"
+  ʋ: 'V', // /ʋ/ labiodental approximant — Hindi, Dutch ≈ V
+
+  // --- Velar/palatal fricatives (German, Mandarin, etc.) ---
+  x: 'K', // /x/ voiceless velar fricative — "Bach", "loch" ≈ K
+  // --- Front rounded vowels (French, German, Turkish, etc.) ---
+  y: 'UW', // /y/ close front rounded — "tu" (French) ≈ "too"
+
+  ʏ: 'UH', // /ʏ/ near-close front rounded — "Glück" (German) ≈ "book"
+  ʐ: 'ZH', // /ʐ/ voiced retroflex fricative — Mandarin "ri" ≈ "zh"
+
+  ʑ: 'ZH', // /ʑ/ voiced alveolo-palatal fricative ≈ "zh"
+  // --- Glottal ---
+  ʔ: '', // /ʔ/ glottal stop — often silent in approximation
+
+  ʕ: 'AH', // /ʕ/ voiced pharyngeal fricative — Arabic "ain" ≈ "uh" (rough)
+  // --- Bilabial fricatives (Spanish) ---
+  β: 'V', // /β/ voiced bilabial fricative — Spanish "b" between vowels ≈ V
+
+  χ: 'K', // /χ/ voiceless uvular fricative — deeper "Bach" ≈ K
+
+  // Note: length mark ː and combining diacritics (nasalization ◌̃, etc.)
+  // are stripped in from-ipa.ts before lookup, so they don't need entries here.
+
+  // --- Dental fricatives already in English ---
+  // θ and ð are in the main map
+
+  // --- Affricates handled as sequences ---
+  // ts, dz, tɕ, dʑ, pf — the converter handles these character by character
+};
+
+/**
  * IPA to ARPAbet reverse mapping.
- * Built from the forward map, plus additional IPA variants for
- * handling real-world transcriptions.
+ * Built from the forward map, plus additional IPA variants and
+ * approximations for non-English sounds.
+ *
+ * Priority order: exact matches (from forward map) > variants > approximations.
+ * Approximations are lowest priority so they never override exact English mappings.
  */
 export const IPA_TO_ARPABET_MAP: Record<string, string> = {
+  ...IPA_APPROXIMATION_MAP,
   ...Object.fromEntries(Object.entries(ARPABET_TO_IPA_MAP).map(([arpabet, ipa]) => [ipa, arpabet])),
   ...IPA_VARIANT_MAP,
 };

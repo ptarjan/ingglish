@@ -15,8 +15,13 @@ import { IPA_TO_ARPABET_MAP } from './ipa-maps';
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW"])
  */
 export function ipaToArpabet(ipa: string): string[] {
-  // Remove stress markers (we don't preserve stress in our system)
-  const clean = ipa.replaceAll(/[ˈˌ]/g, '');
+  // Remove stress markers and combining diacritics not handled by the map.
+  // Combining tilde (nasalization), combining ring, ties, etc. are stripped
+  // so the base character can still be matched to its closest approximation.
+  const STRIP_RE =
+    // Stress markers, length marks, and combining diacritics (nasalization, etc.)
+    /[\u02C8\u02CC\u02D0\u02D1\u0303\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
+  const clean = ipa.replaceAll(STRIP_RE, '');
 
   const result: string[] = [];
   let i = 0;
