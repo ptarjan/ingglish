@@ -88,4 +88,15 @@ describe('translateForeign', () => {
     expect(result).not.toContain(NOT_FOUND_MARKER);
     expect(result).toBe(result.toUpperCase());
   });
+
+  it('applies IPA override for French "est" (silent st)', () => {
+    const frDict: IpaDict = { est: '/ɛst/' };
+    // Without lang, uses dict's /ɛst/ which includes S and T sounds
+    const withoutLang = translateForeign('est', frDict, 'ingglish');
+    expect(withoutLang).toContain('s');
+    // With lang='fr', override provides /ɛ/ — no consonants
+    const withLang = translateForeign('est', frDict, 'ingglish', 'fr');
+    expect(withLang).not.toContain('s');
+    expect(withLang).not.toContain('t');
+  });
 });

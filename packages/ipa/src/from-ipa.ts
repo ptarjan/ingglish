@@ -5,15 +5,18 @@
  * compatible with our phoneme mappings.
  */
 
-import { IPA_TO_ARPABET_MAP } from './ipa-maps';
+import { IPA_TO_ARPABET_MAP, IPA_VOWEL_MAP } from './ipa-maps';
+
+const ARPABET_VOWELS = new Set(Object.keys(IPA_VOWEL_MAP));
 
 /**
  * Converts an IPA transcription to ARPAbet phonemes.
- * Strips stress markers as they are not preserved in our system.
+ * Preserves IPA stress markers as ARPAbet stress digits on vowels:
+ * ˈ (primary) → 1, ˌ (secondary) → 2. Unstressed vowels stay bare.
  *
  * @param ipa IPA string (e.g., "həˈloʊ" for "hello")
  * @param overrides Optional per-language IPA→ARPAbet overrides (highest priority)
- * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW"])
+ * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW1"])
  */
 export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): string[] {
   // Normalize to NFD so precomposed characters (e.g. ã U+00E3) are
@@ -25,9 +28,10 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   // Portuguese) should be dropped, not converted to "wn".
   const denasalized = normalized.replaceAll(/([aeiouɑɛɔəɐɒæøœʌɝɚɘɜɞɤʏʊɪɨɯy])\u0303/g, '$1n');
 
-  // Remove IPA modifier letters: stress (ˈˌ), length (ːˑ), aspiration (ʰ),
-  // tone bars (˥˦˧˨˩), superscript modifiers (ᵝ), and remaining tilde.
-  const MODIFIER_RE = /[\u02B0\u02C8\u02CC\u02D0\u02D1\u02E5-\u02E9\u0303\u1D5D]/g; // eslint-disable-line no-misleading-character-class
+  // Remove IPA modifier letters: length (ːˑ), aspiration (ʰ), tone bars
+  // (˥˦˧˨˩), superscript modifiers (ᵝ), and remaining tilde.
+  // Stress markers (ˈˌ) are preserved — handled in the parse loop below.
+  const MODIFIER_RE = /[\u02B0\u02D0\u02D1\u02E5-\u02E9\u0303\u1D5D]/g; // eslint-disable-line no-misleading-character-class
   const stripped = denasalized.replaceAll(MODIFIER_RE, '');
 
   // Strip all remaining combining marks (Korean ̠ ̹ ̚, accents on loanwords é,
@@ -42,9 +46,35 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   const map = overrides ? { ...IPA_TO_ARPABET_MAP, ...overrides } : IPA_TO_ARPABET_MAP;
 
   const result: string[] = [];
+  let pendingStress: null | number = null;
   let i = 0;
 
+  // Push a phoneme, applying pending stress to vowels.
+  const push = (phoneme: string) => {
+    const base = phoneme.replace(/[012]$/, '');
+    if (ARPABET_VOWELS.has(base) && pendingStress !== null) {
+      result.push(base + String(pendingStress));
+      pendingStress = null;
+    } else {
+      result.push(phoneme);
+    }
+  };
+
   while (i < clean.length) {
+    const ch = clean[i]!;
+
+    // IPA stress markers → pending stress for next vowel
+    if (ch === '\u02C8') {
+      pendingStress = 1;
+      i++;
+      continue;
+    }
+    if (ch === '\u02CC') {
+      pendingStress = 2;
+      i++;
+      continue;
+    }
+
     // Try two-character sequences first (diphthongs, affricates)
     if (i + 1 < clean.length) {
       const twoChar = clean.slice(i, i + 2);
@@ -52,9 +82,11 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
       if (twoCharArpabet !== undefined) {
         // Support multi-phoneme values (space-separated, e.g. "N Y" for ɲ)
         if (twoCharArpabet.includes(' ')) {
-          result.push(...twoCharArpabet.split(' '));
+          for (const p of twoCharArpabet.split(' ')) {
+            push(p);
+          }
         } else {
-          result.push(twoCharArpabet);
+          push(twoCharArpabet);
         }
         i += 2;
         continue;
@@ -62,13 +94,14 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
     }
 
     // Try single character
-    const oneChar = clean[i]!;
-    const oneCharArpabet = map[oneChar];
+    const oneCharArpabet = map[ch];
     if (oneCharArpabet !== undefined) {
       if (oneCharArpabet.includes(' ')) {
-        result.push(...oneCharArpabet.split(' '));
+        for (const p of oneCharArpabet.split(' ')) {
+          push(p);
+        }
       } else {
-        result.push(oneCharArpabet);
+        push(oneCharArpabet);
       }
     }
     // Skip unknown characters (punctuation, etc.)
@@ -90,7 +123,7 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
 }
 
 /**
- * Converts IPA text to ARPAbet (stripping stress markers).
+ * Converts IPA text to ARPAbet with stress digits stripped.
  */
 export function ipaToArpabetClean(ipa: string): null | string[] {
   const arpabet = ipaToArpabet(ipa).map((p) => p.replace(/[012]$/, ''));

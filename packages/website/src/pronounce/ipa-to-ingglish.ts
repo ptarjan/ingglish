@@ -76,7 +76,7 @@ export function translateForeign(
       }
 
       const casePattern = detectCasePattern(core);
-      const ipa = lookupIpa(dict, core);
+      const ipa = lookupIpa(dict, core, lang);
       if (ipa) {
         const translated = ipaToFormat(ipa, format, lang);
         return leading.join('') + applyCasePattern(translated, casePattern) + trailing.join('');
@@ -92,9 +92,9 @@ export function translateForeign(
           const partCase = detectCasePattern(part);
           // Try bare lookup first, then with adjacent apostrophe attached
           // (French ipa-dict stores clitics as "s'" → /s/, "l'" → /l/, etc.)
-          let partIpa = lookupIpa(dict, part);
+          let partIpa = lookupIpa(dict, part, lang);
           if (!partIpa && parts[i + 1] === "'") {
-            partIpa = lookupIpa(dict, part + "'");
+            partIpa = lookupIpa(dict, part + "'", lang);
           }
           if (partIpa) {
             return applyCasePattern(ipaToFormat(partIpa, format, lang), partCase);

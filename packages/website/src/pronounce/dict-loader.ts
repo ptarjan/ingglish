@@ -1,3 +1,5 @@
+import { getIpaOverride } from './ipa-overrides';
+
 export type IpaDict = Record<string, string>;
 
 export interface Language {
@@ -40,6 +42,12 @@ export async function loadDict(code: string): Promise<IpaDict> {
   return dict;
 }
 
-export function lookupIpa(dict: IpaDict, word: string): string | undefined {
+export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | undefined {
+  if (lang) {
+    const override = getIpaOverride(lang, word) ?? getIpaOverride(lang, word.toLowerCase());
+    if (override) {
+      return override;
+    }
+  }
   return dict[word] ?? dict[word.toLowerCase()];
 }

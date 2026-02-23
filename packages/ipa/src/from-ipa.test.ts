@@ -36,14 +36,21 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ʒ')).toEqual(['ZH']);
   });
 
-  it('strips stress markers', () => {
-    expect(ipaToArpabet('ˈhɛˌloʊ')).toEqual(['HH', 'EH', 'L', 'OW']);
+  it('preserves IPA stress as ARPAbet stress digits', () => {
+    // ˈ (primary) → 1, ˌ (secondary) → 2
+    expect(ipaToArpabet('ˈhɛˌloʊ')).toEqual(['HH', 'EH1', 'L', 'OW2']);
+    // Stress applies to the next vowel, skipping consonants
+    expect(ipaToArpabet('ˈstrɛs')).toEqual(['S', 'T', 'R', 'EH1', 'S']);
+    // No stress markers → bare vowels (French, Arabic, etc.)
+    expect(ipaToArpabet('ɛ')).toEqual(['EH']);
+    // Stress overrides existing digit on schwa (ˈə → AH1 not AH0)
+    expect(ipaToArpabet('ˈə')).toEqual(['AH1']);
   });
 
   it('converts complete words', () => {
-    expect(ipaToArpabet('həˈɫoʊ')).toEqual(['HH', 'AH0', 'L', 'OW']);
-    expect(ipaToArpabet('ˈwɝɫd')).toEqual(['W', 'ER', 'L', 'D']);
-    expect(ipaToArpabet('ˈθɔt')).toEqual(['TH', 'AO', 'T']);
+    expect(ipaToArpabet('həˈɫoʊ')).toEqual(['HH', 'AH0', 'L', 'OW1']);
+    expect(ipaToArpabet('ˈwɝɫd')).toEqual(['W', 'ER1', 'L', 'D']);
+    expect(ipaToArpabet('ˈθɔt')).toEqual(['TH', 'AO1', 'T']);
   });
 
   it('handles both g variants', () => {
@@ -246,7 +253,7 @@ describe('ipaToArpabet', () => {
 
 describe('ipaToArpabetString', () => {
   it('returns space-separated phonemes', () => {
-    expect(ipaToArpabetString('həˈɫoʊ')).toBe('HH AH0 L OW');
-    expect(ipaToArpabetString('ˈwɝɫd')).toBe('W ER L D');
+    expect(ipaToArpabetString('həˈɫoʊ')).toBe('HH AH0 L OW1');
+    expect(ipaToArpabetString('ˈwɝɫd')).toBe('W ER1 L D');
   });
 });
