@@ -146,7 +146,9 @@ function RColoredCell({ isChanged, onChangePrefix, prefix }: RColoredCellProps) 
 const STRESS_VARIANTS = ['0', '1', '2'];
 
 function MappingEditor({ mapping }: MappingEditorProps) {
-  const [advancedMode, setAdvancedMode] = useState(false);
+  const [advancedMode, setAdvancedMode] = useState(
+    () => localStorage.getItem('advancedMode') === 'true'
+  );
 
   const duplicates = useMemo(() => findDuplicates(mapping.phonemeMap), [mapping.phonemeMap]);
 
@@ -388,6 +390,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
             checked={advancedMode}
             onChange={(e) => {
               setAdvancedMode(e.target.checked);
+              localStorage.setItem('advancedMode', String(e.target.checked));
             }}
             type="checkbox"
           />
