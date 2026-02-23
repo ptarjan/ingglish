@@ -122,16 +122,38 @@ registerFormat('ingglish', {
   preservesCase: true,
 });
 
+// Shared constants for the no-R-coloring path (foreign text)
+const EMPTY_R_COLORED = new Map<string, string>();
+const INGGLISH_STRESS_OVERRIDES = new Map<string, string>([['AH0', 'a']]);
+
+export interface FormatOptions {
+  /** Disable English R-coloring rules (vowel+R fusion). Use for foreign text. */
+  disableRColoring?: boolean;
+}
+
 /**
  * Converts ARPAbet to the specified output format.
  *
  * @param arpabet Array of ARPAbet symbols
  * @param format Output format (e.g. 'ingglish', 'ipa', 'shavian')
+ * @param options Conversion options (e.g. disable R-coloring for foreign text)
  * @returns Formatted string
  */
-export function arpabetToFormat(arpabet: string[], format: OutputFormat = 'ingglish'): string {
+export function arpabetToFormat(
+  arpabet: string[],
+  format: OutputFormat = 'ingglish',
+  options?: FormatOptions
+): string {
   // Fast path: skip registry lookup for the default format (99% of calls)
   if (format === 'ingglish') {
+    if (options?.disableRColoring === true) {
+      return convertArpabet(
+        arpabet,
+        ARPABET_TO_INGGLISH_MAP,
+        EMPTY_R_COLORED,
+        INGGLISH_STRESS_OVERRIDES
+      );
+    }
     return arpabetToIngglish(arpabet);
   }
   const handler = getFormatHandler(format);

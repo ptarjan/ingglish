@@ -19,12 +19,14 @@ export function ipaToIngglish(ipa: string): string {
 /**
  * Converts an IPA transcription to the specified output format.
  * Accepts optional language code for language-specific IPA overrides.
+ * Disables English R-coloring rules since foreign languages treat R as
+ * a regular consonant (e.g. Korean 사랑 → "sarang" not "sarrang").
  */
 function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
   const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
   const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
   const arpabet = ipaToArpabet(clean, overrides);
-  return arpabetToFormat(arpabet, format);
+  return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
 /** Marker for words not found in the dictionary */

@@ -3,7 +3,12 @@ import {
   INGGLISH_CONSONANT_MAP as CONSONANT_MAP,
   INGGLISH_VOWEL_MAP as VOWEL_MAP,
 } from './ingglish-maps';
-import { ARPABET_TO_INGGLISH_MAP as ARPABET_MAP, arpabetToIngglish, stripStress } from './index';
+import {
+  ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
+  arpabetToFormat,
+  arpabetToIngglish,
+  stripStress,
+} from './index';
 
 describe('phoneme-map', () => {
   describe('ARPABET_MAP', () => {
@@ -196,5 +201,37 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['Z'])).toBe('z');
       expect(arpabetToIngglish(['ZH'])).toBe('zh');
     });
+  });
+});
+
+describe('arpabetToFormat with disableRColoring', () => {
+  it('disables R-coloring for foreign text', () => {
+    // With R-coloring (English default): AE+R → "arr"
+    expect(arpabetToFormat(['S', 'AE', 'R', 'AE', 'NG'])).toBe('sarrang');
+    // Without R-coloring (foreign text): AE+R → "a"+"r" = "ar"
+    expect(
+      arpabetToFormat(['S', 'AE', 'R', 'AE', 'NG'], 'ingglish', { disableRColoring: true })
+    ).toBe('sarang');
+  });
+
+  it('treats all vowel+R as separate phonemes when disabled', () => {
+    // AA+R: "ar" stays "ar" (same result, different path)
+    expect(arpabetToFormat(['AA1', 'R'], 'ingglish', { disableRColoring: true })).toBe('or');
+    // AO+R: "or" → "aw"+"r" = "awr"
+    expect(arpabetToFormat(['AO1', 'R'], 'ingglish', { disableRColoring: true })).toBe('awr');
+    // EH+R: "air" → "e"+"r" = "er"
+    expect(arpabetToFormat(['EH1', 'R'], 'ingglish', { disableRColoring: true })).toBe('er');
+    // AE+R: "arr" → "a"+"r" = "ar"
+    expect(arpabetToFormat(['AE1', 'R'], 'ingglish', { disableRColoring: true })).toBe('ar');
+    // IH+R: "eer" → "i"+"r" = "ir"
+    expect(arpabetToFormat(['IH1', 'R'], 'ingglish', { disableRColoring: true })).toBe('ir');
+  });
+
+  it('preserves unstressed schwa handling', () => {
+    // AH0 → 'a' even without R-coloring
+    expect(arpabetToFormat(['AH0'], 'ingglish', { disableRColoring: true })).toBe('a');
+    expect(arpabetToFormat(['HH', 'AH0', 'L', 'OW'], 'ingglish', { disableRColoring: true })).toBe(
+      'haloh'
+    );
   });
 });

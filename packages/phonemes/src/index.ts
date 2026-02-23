@@ -38,6 +38,7 @@ export { findOnsetStart } from './phonotactics';
 
 // Conversion functions
 export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
+export type { FormatOptions } from './to-ingglish';
 
 // Types
 export type { OutputFormat } from './types';
