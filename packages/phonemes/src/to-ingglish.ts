@@ -132,9 +132,12 @@ export interface FormatOptions {
 }
 
 /**
- * Converts ARPAbet to the specified output format.
+ * Universal pipeline exit point: converts the ARPAbet IR to any output format.
  *
- * @param arpabet Array of ARPAbet symbols
+ * Every translation path (dictionary, fallback, G2P) produces an ARPAbet
+ * `string[]` and calls this function to get the final user-facing string.
+ *
+ * @param arpabet Array of ARPAbet symbols (the IR)
  * @param format Output format (e.g. 'ingglish', 'ipa', 'shavian')
  * @param options Conversion options (e.g. disable R-coloring for foreign text)
  * @returns Formatted string

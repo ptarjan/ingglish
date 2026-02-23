@@ -1,6 +1,10 @@
 /**
  * Fallback strategies for translating unknown words.
  *
+ * Called when a word isn't in the dictionary. Each strategy ultimately
+ * produces ARPAbet `string[]` (the pipeline IR), which is then passed
+ * through `arpabetToFormat()` for final output.
+ *
  * Strategy order:
  * 1. Custom pronunciations (tech terms, brand names)
  * 2. Initialisms (spell out letters: URL -> you-are-ell)

@@ -1,8 +1,14 @@
 /**
  * Forward translation: English -> Ingglish/IPA.
+ *
+ * Pipeline: English word → routing (dictionary, initialism, contraction,
+ * camelCase, fallback) → ARPAbet `string[]` (the IR) → `arpabetToFormat()` → output.
+ *
+ * Every code path converges on an ARPAbet phoneme array before converting to
+ * the requested output format. See `translateWordInternal()` for routing.
  */
 
-import { lookupPronunciation, getCustomPronunciation } from '@ingglish/dictionary';
+import { lookupPronunciation } from '@ingglish/dictionary';
 import {
   translateUnknown,
   isInitialism,
@@ -214,68 +220,68 @@ function translateWithFallback(
 /**
  * Internal translation that returns both the translated word and whether it
  * was found in a known source (dictionary, contraction, initialism, custom).
+ *
+ * Routing order (first match wins):
+ *  1. Empty / non-letter tokens → pass through
+ *  2. Fast path — pure lowercase ASCII dictionary word (most common)
+ *  3. Initialism+suffix — IDs, TVs, API's (before contractions)
+ *  4. Contraction — don't, I'm
+ *  5. Bare initialism — UI, API, HTML
+ *  6. All-caps passthrough — NASA, ASAP (Latin scripts only)
+ *  7. CamelCase — iPhone, MacBook, ChatGPT
+ *  8. Dictionary lookup — case-insensitive, with diacritics fallback
+ *  9. Fallback — compounds, stemming, G2P
  */
 function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
+  // 1. Empty / non-letter tokens
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
 
-  // Fast path for pure lowercase ASCII dictionary words (most common in natural text).
-  // Pure a-z excludes: camelCase (uppercase), contractions (apostrophe), diacritics.
-  // Skips initialism, camelCase, contraction, and case-detection checks entirely.
-  let isLowerASCII = true;
-  for (let i = 0; i < word.length; i++) {
-    const c = word.codePointAt(i)!;
-    if (c < 97 || c > 122) {
-      isLowerASCII = false;
-      break;
-    }
-  }
-  if (isLowerASCII && !isInitialism(word) && parseInitialismWithSuffix(word) === null) {
-    const phonemes = lookupPronunciation(word);
-    if (phonemes) {
-      return { matched: true, translated: arpabetToFormat(phonemes, format) };
-    }
+  // 2. Fast path for pure lowercase ASCII dictionary words
+  const fast = tryFastPath(word, format);
+  if (fast) {
+    return fast;
   }
 
   const isLatinScript = getFormatIsLatinScript(format);
 
-  // Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
+  // 3. Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
   const initialismSuffix = tryInitialismWithSuffix(word, format, isLatinScript);
   if (initialismSuffix) {
     return initialismSuffix;
   }
 
-  // Contractions (don't, I'm, etc.)
+  // 4. Contractions (don't, I'm, etc.)
   if (word.includes("'")) {
     return { matched: true, translated: translateContraction(word, format, translateWord) };
   }
 
-  // Bare initialisms (UI, API, HTML)
+  // 5. Bare initialisms (UI, API, HTML)
   const initialism = tryInitialism(word, format, isLatinScript);
   if (initialism) {
     return initialism;
   }
 
-  // All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
+  // 6. All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
   if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
     return { matched: true, translated: word };
   }
 
-  // CamelCase words (iPhone, MacBook, ChatGPT)
+  // 7. CamelCase words (iPhone, MacBook, ChatGPT)
   const camel = tryCamelCase(word, format);
   if (camel) {
     return camel;
   }
 
-  // Dictionary / custom pronunciation lookup (with diacritics fallback)
+  // 8. Dictionary / custom pronunciation lookup (with diacritics fallback)
   const casePattern = detectCasePattern(word);
   const dictResult = tryDictionaryLookup(word, format, casePattern);
   if (dictResult) {
     return dictResult;
   }
 
-  // Fallback strategies (compounds, stemming, G2P)
+  // 9. Fallback strategies (compounds, stemming, G2P)
   return translateWithFallback(word, format, casePattern);
 }
 
@@ -323,7 +329,7 @@ function tryDictionaryLookup(
   casePattern: CasePattern
 ): null | TranslateResult {
   const wordLower = word.toLowerCase();
-  const phonemes = getCustomPronunciation(wordLower) ?? lookupPronunciation(wordLower);
+  const phonemes = lookupPronunciation(wordLower);
 
   if (phonemes) {
     let result = arpabetToFormat(phonemes, format);
@@ -337,8 +343,7 @@ function tryDictionaryLookup(
   const stripped = stripDiacritics(word);
   if (stripped !== word) {
     const strippedLower = stripped.toLowerCase();
-    const strippedPhonemes =
-      getCustomPronunciation(strippedLower) ?? lookupPronunciation(strippedLower);
+    const strippedPhonemes = lookupPronunciation(strippedLower);
     if (strippedPhonemes) {
       let result = arpabetToFormat(strippedPhonemes, format);
       if (getFormatPreservesCase(format)) {
@@ -348,6 +353,29 @@ function tryDictionaryLookup(
     }
   }
 
+  return null;
+}
+
+/**
+ * Fast path for pure lowercase ASCII dictionary words (most common in natural text).
+ * Pure a-z excludes: camelCase (uppercase), contractions (apostrophe), diacritics.
+ * Skips initialism, camelCase, contraction, and case-detection checks entirely.
+ * Returns null if the word doesn't qualify or isn't in the dictionary.
+ */
+function tryFastPath(word: string, format: OutputFormat): null | TranslateResult {
+  for (let i = 0; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c < 97 || c > 122) {
+      return null;
+    }
+  }
+  if (isInitialism(word) || parseInitialismWithSuffix(word) !== null) {
+    return null;
+  }
+  const phonemes = lookupPronunciation(word);
+  if (phonemes) {
+    return { matched: true, translated: arpabetToFormat(phonemes, format) };
+  }
   return null;
 }
 

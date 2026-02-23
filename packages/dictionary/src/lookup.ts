@@ -6,18 +6,22 @@ import { getCustomPronunciation } from './custom-words';
 import { getDictionary } from './loader';
 
 /**
- * Checks if a word exists in the dictionary.
+ * Checks if a word exists in the dictionary or custom pronunciations.
  */
 export function hasWord(word: string): boolean {
+  const key = word.toLowerCase();
+  if (getCustomPronunciation(key) !== undefined) {
+    return true;
+  }
   const dict = getDictionary();
-  return Object.prototype.hasOwnProperty.call(dict, word.toLowerCase());
+  return Object.prototype.hasOwnProperty.call(dict, key);
 }
 
 /**
- * Looks up a word in the CMU dictionary.
+ * Looks up a word in the CMU dictionary, returning the ARPAbet IR.
  * Custom pronunciations override dictionary entries.
  * @param word The word to look up (case insensitive)
- * @returns Array of phonemes, or null if not found
+ * @returns ARPAbet phoneme array (the pipeline IR), or null if not found
  */
 export function lookupPronunciation(word: string): null | string[] {
   const key = word.toLowerCase();

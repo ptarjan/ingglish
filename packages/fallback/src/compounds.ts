@@ -5,11 +5,7 @@
  * Preserves camelCase: "iCloud" -> "ie" + "Klowd" = "ieKlowd"
  */
 
-import {
-  lookupPronunciation,
-  getWordFrequency,
-  getCustomPronunciation,
-} from '@ingglish/dictionary';
+import { lookupPronunciation, getWordFrequency } from '@ingglish/dictionary';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
   arpabetToFormat,
@@ -157,8 +153,8 @@ export function translateAsCompound(
 }
 
 /**
- * Look up a word's pronunciation in custom dictionary or CMU.
+ * Look up a word's pronunciation (custom overrides are handled inside lookupPronunciation).
  */
 function lookupWord(word: string): null | string[] {
-  return getCustomPronunciation(word) ?? lookupPronunciation(word) ?? null;
+  return lookupPronunciation(word);
 }
