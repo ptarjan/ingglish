@@ -13,6 +13,21 @@ export interface LanguagePreset {
 
 export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
+    description: 'International Phonetic Alphabet symbols',
+    hash: '#m=AA:\u0251,AE:\u00E6,AH0:\u0259,AH:\u028C,AO:\u0254,AW:a\u028A,AY:a\u026A,CH:t\u0283,DH:\u00F0,EH:\u025B,ER:\u025D,EY:e\u026A,G:\u0261,IH:\u026A,IY:i,JH:d\u0292,NG:\u014B,OW:o\u028A,OY:\u0254\u026A,R:\u0279,SH:\u0283,TH:\u03B8,UH:\u028A,UW:u,Y:j,ZH:\u0292',
+    label: 'IPA',
+  },
+  {
+    description: 'Shaw alphabet \u2014 one letter per sound',
+    hash: '#m=AA:𐑭,AE:𐑨,AH0:𐑩,AH:𐑳,AO:𐑷,AW:𐑬,AY:𐑲,B:𐑚,CH:𐑗,D:𐑛,DH:𐑞,EH:𐑧,ER:𐑻,EY:𐑱,F:𐑓,G:𐑜,HH:𐑣,IH:𐑦,IY:𐑰,JH:𐑡,K:𐑒,L:𐑤,M:𐑥,N:𐑯,NG:𐑙,OW:𐑴,OY:𐑶,P:𐑐,R:𐑮,S:𐑕,SH:𐑖,T:𐑑,TH:𐑔,UH:𐑫,UW:𐑵,V:𐑝,W:𐑢,Y:𐑘,Z:𐑟,ZH:𐑠',
+    label: 'Shavian',
+  },
+  {
+    description: '1850s phonetic alphabet from Utah',
+    hash: '#m=AA:𐐪,AE:𐐰,AH0:𐐱,AH:𐐲,AO:𐐫,AW:𐐵,AY:𐐴,B:𐐺,CH:𐐽,D:𐐼,DH:𐑄,EH:𐐯,ER:𐐲𐑉,EY:𐐩,F:𐑁,G:𐑀,HH:𐐸,IH:𐐮,IY:𐐨,JH:𐐾,K:𐐿,L:𐑊,M:𐑋,N:𐑌,NG:𐑍,OW:𐐬,OY:𐑎,P:𐐹,R:𐑉,S:𐑅,SH:𐑇,T:𐐻,TH:𐑃,UH:𐐳,UW:𐐭,V:𐑂,W:𐐶,Y:𐐷,Z:𐑆,ZH:𐑈',
+    label: 'Deseret',
+  },
+  {
     description: 'Doubled vowels for length, no th/dh sounds',
     hash: '#m=AA:a,AE:\u00E4,AH:a,AO:oo,AW:au,CH:t\u0161,DH:d,EY:ei,IY:ii,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:uu,W:v,Y:j,Z:s,ZH:\u017E',
     label: 'Finnish',
