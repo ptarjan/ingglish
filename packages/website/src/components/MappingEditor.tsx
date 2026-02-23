@@ -353,7 +353,8 @@ function MappingEditor({ mapping }: MappingEditorProps) {
   const duplicateWarnings = useMemo(() => {
     const warnings: string[] = [];
     for (const [spelling, phonemes] of duplicates) {
-      warnings.push(`"${spelling}" is used for: ${phonemes.join(', ')}`);
+      const ipaList = phonemes.map((p) => getCleanIPA(p)).join(', ');
+      warnings.push(`"${spelling}" is used for: ${ipaList}`);
     }
     return warnings;
   }, [duplicates]);
