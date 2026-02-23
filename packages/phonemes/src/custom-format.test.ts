@@ -56,6 +56,26 @@ describe('createCustomConverter', () => {
     expect(convert(['S', 'T', 'AO1', 'R'])).toBe('stor');
   });
 
+  it('should auto-derive r-colored prefixes from phoneme map overrides', () => {
+    // Czech-like: AH→'a', no explicit rColoredPrefixes
+    const convert = createCustomConverter({
+      phonemeMap: { AH: 'a' },
+      rColoredPrefixes: {},
+    });
+    // "curry" = K ER1 IY0 — not affected (ER is its own phoneme)
+    // But AH+R should now use 'a' prefix instead of default 'uh'
+    expect(convert(['AH1', 'R'])).toBe('ar');
+  });
+
+  it('should not auto-derive when explicit rColoredPrefixes are set', () => {
+    const convert = createCustomConverter({
+      phonemeMap: { AA: 'ah' },
+      rColoredPrefixes: { AA: 'x' },
+    });
+    // Explicit rColoredPrefixes should win over auto-derived
+    expect(convert(['S', 'T', 'AA1', 'R'])).toBe('stxr');
+  });
+
   it('should handle consonants normally', () => {
     const convert = createCustomConverter({ phonemeMap: {}, rColoredPrefixes: {} });
     // "bed" = B EH1 D

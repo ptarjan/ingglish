@@ -32,6 +32,15 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
   // Merge defaults with overrides
   const mergedMap: Record<string, string> = { ...ARPABET_TO_INGGLISH_MAP, ...config.phonemeMap };
   const mergedRColored = new Map(R_COLORED_FORWARD);
+  // Auto-derive r-colored prefixes from phoneme map overrides: if a vowel's
+  // spelling changed but no explicit r-colored prefix was set, use the new
+  // vowel spelling as the prefix (vowel+R = newSpelling + R spelling).
+  // This makes language presets consistent without needing explicit r= hashes.
+  for (const [vowel] of R_COLORED_FORWARD) {
+    if (vowel in config.phonemeMap && !(vowel in config.rColoredPrefixes)) {
+      mergedRColored.set(vowel, config.phonemeMap[vowel]);
+    }
+  }
   for (const [key, value] of Object.entries(config.rColoredPrefixes)) {
     mergedRColored.set(key, value);
   }
