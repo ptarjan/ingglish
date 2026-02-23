@@ -22,9 +22,7 @@ import { applyStressPrediction } from '@ingglish/g2p';
 // Rule parsing
 // ---------------------------------------------------------------------------
 
-const RULES_FILE = import.meta.dirname
-  ? path.resolve(import.meta.dirname, '../../../g2p/src/g2p-rules.ts')
-  : path.resolve(process.cwd(), 'packages/g2p/src/g2p-rules.ts');
+const RULES_FILE = path.resolve(import.meta.dirname, '../../../g2p/src/g2p-rules.ts');
 
 /**
  * Parse NRL_RULES from the g2p-rules.ts source file.

@@ -248,7 +248,6 @@ export default defineConfig({
             id.includes('packages/dom') ||
             id.includes('packages/normalize') ||
             id.includes('packages/phonemes') ||
-            id.includes('packages/tokenize') ||
             id.includes('packages/fallback')
           ) {
             return 'ingglish';
