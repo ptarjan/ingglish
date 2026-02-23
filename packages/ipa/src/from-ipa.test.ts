@@ -128,6 +128,35 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('\u00E3')).toEqual(['AE', 'N']); // ã → a + tilde → AE N
     expect(ipaToArpabet('\u00F5')).toEqual(['OW', 'N']); // õ → o + tilde → OW N
   });
+
+  it('maps /x/ to HH by default, K with German override', () => {
+    // Default: x → HH (better for Portuguese, Dutch, Chinese)
+    expect(ipaToArpabet('x')).toEqual(['HH']);
+    // Chinese 好 /xɑʊ/ → HH AW ("hou" not "kou")
+    expect(ipaToArpabet('xɑʊ')).toEqual(['HH', 'AW']);
+    // German override: x → K (Bach, Nacht)
+    expect(ipaToArpabet('x', { x: 'K' })).toEqual(['K']);
+    expect(ipaToArpabet('nɑxt', { x: 'K' })).toEqual(['N', 'AA', 'K', 'T']);
+  });
+
+  it('deduplicates consecutive identical phonemes', () => {
+    // Finnish long vowels: /uu/ → single UW, not UW UW
+    expect(ipaToArpabet('tuuli')).toEqual(['T', 'UW', 'L', 'IY']);
+    // Finnish geminate consonants: /ss/ → single S
+    expect(ipaToArpabet('kissɑ')).toEqual(['K', 'IY', 'S', 'AA']);
+    // Non-consecutive identical phonemes are preserved
+    expect(ipaToArpabet('papa')).toEqual(['P', 'AE', 'P', 'AE']);
+  });
+
+  it('treats /oi/, /ou/, /ei/ as diphthongs', () => {
+    expect(ipaToArpabet('oi')).toEqual(['OY']);
+    expect(ipaToArpabet('ou')).toEqual(['OW']);
+    expect(ipaToArpabet('ei')).toEqual(['EY']);
+    // Finnish "koira" /koirɑ/ → K OY R AA
+    expect(ipaToArpabet('koirɑ')).toEqual(['K', 'OY', 'R', 'AA']);
+    // Finnish "koulu" /koulu/ → K OW L UW
+    expect(ipaToArpabet('koulu')).toEqual(['K', 'OW', 'L', 'UW']);
+  });
 });
 
 describe('ipaToArpabetString', () => {

@@ -196,7 +196,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       if (!foreignDict) {
         return null;
       }
-      return translateForeign(deferredEnglish, foreignDict, format);
+      return translateForeign(deferredEnglish, foreignDict, format, selectedLanguage);
     }
     try {
       return translateSync(deferredEnglish, format);
@@ -204,7 +204,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       console.warn('Translation failed:', error);
       return null;
     }
-  }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict]);
+  }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict, selectedLanguage]);
 
   // Forward token mapping for word correspondence (with matched status)
   const forwardTokens = useMemo(() => {

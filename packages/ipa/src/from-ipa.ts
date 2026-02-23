@@ -12,9 +12,10 @@ import { IPA_TO_ARPABET_MAP } from './ipa-maps';
  * Strips stress markers as they are not preserved in our system.
  *
  * @param ipa IPA string (e.g., "həˈloʊ" for "hello")
+ * @param overrides Optional per-language IPA→ARPAbet overrides (highest priority)
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW"])
  */
-export function ipaToArpabet(ipa: string): string[] {
+export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): string[] {
   // Normalize to NFD so precomposed characters (e.g. ã U+00E3) are
   // decomposed into base + combining mark (a + U+0303) for uniform handling.
   const normalized = ipa.normalize('NFD');
@@ -28,6 +29,8 @@ export function ipaToArpabet(ipa: string): string[] {
   const STRIP_RE = /[\u02C8\u02CC\u02D0\u02D1\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
   const clean = denasalized.replaceAll(STRIP_RE, '');
 
+  const map = overrides ? { ...IPA_TO_ARPABET_MAP, ...overrides } : IPA_TO_ARPABET_MAP;
+
   const result: string[] = [];
   let i = 0;
 
@@ -35,8 +38,8 @@ export function ipaToArpabet(ipa: string): string[] {
     // Try two-character sequences first (diphthongs, affricates)
     if (i + 1 < clean.length) {
       const twoChar = clean.slice(i, i + 2);
-      if (IPA_TO_ARPABET_MAP[twoChar] !== undefined) {
-        result.push(IPA_TO_ARPABET_MAP[twoChar]);
+      if (map[twoChar] !== undefined) {
+        result.push(map[twoChar]);
         i += 2;
         continue;
       }
@@ -44,7 +47,7 @@ export function ipaToArpabet(ipa: string): string[] {
 
     // Try single character
     const oneChar = clean[i]!;
-    const oneCharArpabet = IPA_TO_ARPABET_MAP[oneChar];
+    const oneCharArpabet = map[oneChar];
     if (oneCharArpabet !== undefined) {
       result.push(oneCharArpabet);
     }
@@ -52,7 +55,18 @@ export function ipaToArpabet(ipa: string): string[] {
     i++;
   }
 
-  return result;
+  // Deduplicate consecutive identical phonemes. Foreign languages often
+  // represent long vowels/geminate consonants as doubled characters
+  // (Finnish /uu/, /ii/; Italian /ll/, /ss/) — for English approximation,
+  // a single phoneme is sufficient.
+  const deduped: string[] = [];
+  for (const phoneme of result) {
+    if (phoneme !== deduped.at(-1)) {
+      deduped.push(phoneme);
+    }
+  }
+
+  return deduped;
 }
 
 /**

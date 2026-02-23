@@ -12,5 +12,6 @@ export function registerIPA(): void {
 }
 
 export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';
+export { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 // Export individual functions for direct use
 export { arpabetPhonemeToIPA, arpabetToIPARaw } from './to-ipa';

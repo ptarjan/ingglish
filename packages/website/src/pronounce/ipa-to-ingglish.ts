@@ -1,4 +1,4 @@
-import { ipaToArpabet } from '@ingglish/ipa';
+import { IPA_LANGUAGE_OVERRIDES, ipaToArpabet } from '@ingglish/ipa';
 import { applyCasePattern, detectCasePattern } from '@ingglish/normalize';
 import { arpabetToFormat, arpabetToIngglish } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
@@ -18,10 +18,12 @@ export function ipaToIngglish(ipa: string): string {
 
 /**
  * Converts an IPA transcription to the specified output format.
+ * Accepts optional language code for language-specific IPA overrides.
  */
-function ipaToFormat(ipa: string, format: OutputFormat): string {
+function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
   const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
-  const arpabet = ipaToArpabet(clean);
+  const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
+  const arpabet = ipaToArpabet(clean, overrides);
   return arpabetToFormat(arpabet, format);
 }
 
@@ -31,11 +33,14 @@ export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
 /**
  * Translates foreign text to the specified output format.
  * Words not found in the dictionary are returned with a marker prefix.
+ *
+ * @param lang Optional language code for language-specific IPA overrides
  */
 export function translateForeign(
   text: string,
   dict: IpaDict,
-  format: OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish',
+  lang?: string
 ): string {
   return text
     .split(/(\s+)/)
@@ -71,7 +76,7 @@ export function translateForeign(
       const casePattern = detectCasePattern(core);
       const ipa = lookupIpa(dict, core);
       if (ipa) {
-        const translated = ipaToFormat(ipa, format);
+        const translated = ipaToFormat(ipa, format, lang);
         return leading.join('') + applyCasePattern(translated, casePattern) + trailing.join('');
       }
 
@@ -85,7 +90,7 @@ export function translateForeign(
           const partCase = detectCasePattern(part);
           const partIpa = lookupIpa(dict, part);
           if (partIpa) {
-            return applyCasePattern(ipaToFormat(partIpa, format), partCase);
+            return applyCasePattern(ipaToFormat(partIpa, format, lang), partCase);
           }
           return NOT_FOUND_MARKER + part;
         });
