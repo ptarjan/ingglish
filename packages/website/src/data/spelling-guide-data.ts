@@ -63,12 +63,12 @@ export const vowelGroups: SoundGroup[] = [
     sounds: [
       {
         examples:
-          's**ee** (see), m**e** (mee), f**ie**ld (feeld), happ**y** (hapee), b**ea**ch (beech), k**ey** (kee), p**eo**ple (peepal), sk**i** (skee)',
+          's**ee** (see), m**e** (mee), f**ie**ld (feeld), happ**y** (hapee), b**ea**ch (beech), k**ey** (kee), p**eo**ple (peepal), sk**i** (skee), c**ei**ling (seeling)',
         phoneme: 'IY',
       },
       {
         examples:
-          't**oo** (too), bl**ue** (bloo), d**o** (doo), y**ou** (yoo), thr**ough** (throo), n**ew** (noo), sh**oe** (shoo), fr**ui**t (froot)',
+          't**oo** (too), bl**ue** (bloo), d**o** (doo), y**ou** (yoo), thr**ough** (throo), n**ew** (noo), sh**oe** (shoo), fr**ui**t (froot), r**u**le (rool), n**eu**tral (nootral)',
         phoneme: 'UW',
       },
       {
@@ -78,7 +78,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         examples:
-          'bons**ai** (bonsai), l**i**fe (laif), m**y** (mai), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid)',
+          'bons**ai** (bonsai), l**i**fe (laif), m**y** (mai), b**uy** (bai), h**igh** (hai), t**ie** (tai), g**ui**de (gaid), r**ye** (rai)',
         phoneme: 'AY',
       },
       { examples: '**oi**l (oil), b**oy** (boi)', phoneme: 'OY' },
@@ -101,7 +101,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         examples:
-          '**air** (air), c**are** (kair), th**ere** (dhair), b**ear** (bair), th**eir** (dhair)',
+          '**air** (air), c**are** (kair), th**ere** (dhair), b**ear** (bair), th**eir** (dhair), ch**err**y (chairee)',
         ingglishOverride: 'air',
         ipaOverride: 'ɛɹ',
         phoneme: 'EH+R',
@@ -127,7 +127,8 @@ export const vowelGroups: SoundGroup[] = [
         phoneme: 'UH+R',
       },
       {
-        examples: 'f**or** (for), w**ar** (wor), d**oor** (dor)',
+        examples:
+          'f**or** (for), w**ar** (wor), d**oor** (dor), m**ore** (mor), p**our** (por), b**oar**d (bord)',
         ingglishOverride: 'or',
         ipaOverride: 'ɔɹ',
         phoneme: 'AO+R',
@@ -141,7 +142,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         examples:
-          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern)',
+          'h**er** (her), b**ir**d (berd), w**or**m (werm), t**ur**n (tern), l**ear**n (lern), doll**ar** (doler)',
         phoneme: 'ER',
       },
     ],
@@ -154,14 +155,21 @@ export const consonantGroups: SoundGroup[] = [
     name: 'Stops',
     sounds: [
       { examples: '**p**at (pat), ha**pp**y (hapee)', phoneme: 'P' },
-      { examples: '**b**at (bat)', phoneme: 'B' },
-      { examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt)', phoneme: 'T' },
+      { examples: '**b**at (bat), ra**bb**it (rabat)', phoneme: 'B' },
+      {
+        examples: '**t**op (top), be**tt**er (beter), walk**ed** (wawkt), dou**bt** (dout)',
+        phoneme: 'T',
+      },
       { examples: 'be**d** (bed), la**dd**er (lader), play**ed** (playd)', phoneme: 'D' },
       {
-        examples: '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skool)',
+        examples:
+          '**k**ing (king), ba**ck** (bak), **c**at (kat), s**ch**ool (skool), a**cc**ord (akord), uni**que** (yooneek)',
         phoneme: 'K',
       },
-      { examples: 'bi**g** (big), **gh**ost (gohst)', phoneme: 'G' },
+      {
+        examples: 'bi**g** (big), **gh**ost (gohst), bi**gg**er (biger), **gu**ess (ges)',
+        phoneme: 'G',
+      },
     ],
   },
   {
@@ -191,8 +199,15 @@ export const consonantGroups: SoundGroup[] = [
   {
     name: 'Affricates',
     sounds: [
-      { examples: '**ch**at (chat), ba**tch** (bach), na**t**ure (naycher)', phoneme: 'CH' },
-      { examples: '**j**ust (juhst), a**g**ent (ayjant), e**dge** (ej)', phoneme: 'JH' },
+      {
+        examples:
+          '**ch**at (chat), ba**tch** (bach), na**t**ure (naycher), ques**ti**on (kweschan)',
+        phoneme: 'CH',
+      },
+      {
+        examples: '**j**ust (juhst), a**g**ent (ayjant), e**dge** (ej), a**dj**ust (ajuhst)',
+        phoneme: 'JH',
+      },
     ],
   },
   {
@@ -202,7 +217,10 @@ export const consonantGroups: SoundGroup[] = [
         examples: '**m**an (man), ha**mm**er (hamer), co**mb** (kohm), hy**mn** (him)',
         phoneme: 'M',
       },
-      { examples: 'pe**n** (pen), **kn**ife (naif), **gn**at (nat)', phoneme: 'N' },
+      {
+        examples: 'pe**n** (pen), di**nn**er (diner), **kn**ife (naif), **gn**at (nat)',
+        phoneme: 'N',
+      },
       { examples: 'si**ng** (sing), thi**n**k (thingk), to**ngue** (tuhng)', phoneme: 'NG' },
     ],
   },
@@ -214,8 +232,11 @@ export const consonantGroups: SoundGroup[] = [
         examples: '**r**un (ruhn), ca**rr**y (karree), **wr**ite (rait), **rh**yme (raim)',
         phoneme: 'R',
       },
-      { examples: '**w**et (wet), **wh**at (wuht), **o**ne (wuhn)', phoneme: 'W' },
-      { examples: '**y**es (yes), c**u**te (kyoot)', phoneme: 'Y' },
+      {
+        examples: '**w**et (wet), **wh**at (wuht), **o**ne (wuhn), peng**u**in (penggwan)',
+        phoneme: 'W',
+      },
+      { examples: '**y**es (yes), c**u**te (kyoot), mill**i**on (milyan)', phoneme: 'Y' },
     ],
   },
 ];
