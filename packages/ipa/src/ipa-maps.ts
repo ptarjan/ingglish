@@ -151,12 +151,12 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
 
   ɭ: 'L', // /ɭ/ retroflex lateral ≈ L
   // --- Laterals ---
-  ʎ: 'L', // /ʎ/ palatal lateral — Italian "figlio", Spanish "ll" ≈ L
+  ʎ: 'L Y', // /ʎ/ palatal lateral — Italian "figlio", Spanish "ll" ≈ LY
   ɱ: 'M', // /ɱ/ labiodental nasal ≈ M
 
   ɴ: 'N', // /ɴ/ uvular nasal — Japanese moraic ん ≈ "n" (not "ng")
   // --- Nasals ---
-  ɲ: 'N', // /ɲ/ palatal nasal — Spanish "ñ", Italian "gn" ≈ N (+ Y added below)
+  ɲ: 'N Y', // /ɲ/ palatal nasal — Spanish "ñ", Italian "gn" ≈ NY
   // tɕ and dʑ are handled as two-char sequences below
 
   ɳ: 'N', // /ɳ/ retroflex nasal ≈ N

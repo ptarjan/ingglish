@@ -21,13 +21,18 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   const normalized = ipa.normalize('NFD');
 
   // Nasal vowels (vowel + combining tilde U+0303) → vowel + "n".
-  // This approximates nasalization as vowel+N for English speakers,
-  // e.g. French "ɑ̃fɑ̃" → "ɑnfɑn" → AA N F AA N → "onfon".
-  const denasalized = normalized.replaceAll(/(.)\u0303/g, '$1n');
+  // Only match IPA vowel characters — consonant nasalization (e.g. w̃ in
+  // Portuguese) should be dropped, not converted to "wn".
+  const denasalized = normalized.replaceAll(/([aeiouɑɛɔəɐɒæøœʌɝɚɘɜɞɤʏʊɪɨɯy])\u0303/g, '$1n');
 
-  // Remove stress markers and remaining combining diacritics.
-  const STRIP_RE = /[\u02C8\u02CC\u02D0\u02D1\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
-  const clean = denasalized.replaceAll(STRIP_RE, '');
+  // Remove stress markers, length marks, and remaining combining diacritics
+  // (including tilde U+0303 left over from consonant nasalization).
+  const STRIP_RE = /[\u02C8\u02CC\u02D0\u02D1\u0303\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
+  const stripped = denasalized.replaceAll(STRIP_RE, '');
+
+  // Re-compose to NFC so diacriticked characters (e.g. c+cedilla → ç) match
+  // their precomposed map keys.
+  const clean = stripped.normalize('NFC');
 
   const map = overrides ? { ...IPA_TO_ARPABET_MAP, ...overrides } : IPA_TO_ARPABET_MAP;
 
@@ -38,8 +43,14 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
     // Try two-character sequences first (diphthongs, affricates)
     if (i + 1 < clean.length) {
       const twoChar = clean.slice(i, i + 2);
-      if (map[twoChar] !== undefined) {
-        result.push(map[twoChar]);
+      const twoCharArpabet = map[twoChar];
+      if (twoCharArpabet !== undefined) {
+        // Support multi-phoneme values (space-separated, e.g. "N Y" for ɲ)
+        if (twoCharArpabet.includes(' ')) {
+          result.push(...twoCharArpabet.split(' '));
+        } else {
+          result.push(twoCharArpabet);
+        }
         i += 2;
         continue;
       }
@@ -49,7 +60,11 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
     const oneChar = clean[i]!;
     const oneCharArpabet = map[oneChar];
     if (oneCharArpabet !== undefined) {
-      result.push(oneCharArpabet);
+      if (oneCharArpabet.includes(' ')) {
+        result.push(...oneCharArpabet.split(' '));
+      } else {
+        result.push(oneCharArpabet);
+      }
     }
     // Skip unknown characters (punctuation, etc.)
     i++;

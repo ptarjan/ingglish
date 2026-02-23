@@ -157,6 +157,33 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('papa')).toEqual(['P', 'AE', 'P', 'AE']);
   });
 
+  it('handles ç (palatal fricative) after NFC recomposition', () => {
+    // ç decomposes to c+cedilla in NFD — NFC recomposition is needed
+    // to match the precomposed map key
+    expect(ipaToArpabet('ç')).toEqual(['SH']);
+    // German "Mädchen" /mɛːtçən/
+    expect(ipaToArpabet('mɛːtçən')).toEqual(['M', 'EH', 'T', 'SH', 'AH0', 'N']);
+  });
+
+  it('does not denasalize consonants (w̃ → W, not WN)', () => {
+    // Portuguese nasalized glide w̃ should just become W
+    expect(ipaToArpabet('w\u0303')).toEqual(['W']);
+    // Portuguese "coração" — nasalized w̃ at end should not produce "wn"
+    expect(ipaToArpabet('koɾɐsɐ̃w\u0303')).toEqual(['K', 'OW', 'R', 'AH', 'S', 'AH', 'N', 'W']);
+  });
+
+  it('expands palatal nasal ɲ to N Y', () => {
+    expect(ipaToArpabet('ɲ')).toEqual(['N', 'Y']);
+    // Spanish "España" /espaɲa/ → "espanya"
+    expect(ipaToArpabet('espaɲa')).toEqual(['EH', 'S', 'P', 'AE', 'N', 'Y', 'AE']);
+  });
+
+  it('expands palatal lateral ʎ to L Y', () => {
+    expect(ipaToArpabet('ʎ')).toEqual(['L', 'Y']);
+    // Spanish "calle" /kaʎe/ → "kalye"
+    expect(ipaToArpabet('kaʎe')).toEqual(['K', 'AE', 'L', 'Y', 'EH']);
+  });
+
   it('treats /oi/, /ou/, /ei/ as diphthongs', () => {
     expect(ipaToArpabet('oi')).toEqual(['OY']);
     expect(ipaToArpabet('ou')).toEqual(['OW']);
