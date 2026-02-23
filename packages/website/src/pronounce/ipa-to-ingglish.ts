@@ -38,13 +38,13 @@ export function translateForeign(text: string, dict: IpaDict): string {
       const trailing: string[] = [];
       let core = segment;
 
-      // Peel off leading non-word characters
-      while (core.length > 0 && /^\W/.test(core)) {
+      // Peel off leading non-letter characters (Unicode-aware so Arabic/CJK aren't stripped)
+      while (core.length > 0 && /^\P{L}/u.test(core)) {
         leading.push(core[0]!);
         core = core.slice(1);
       }
-      // Peel off trailing non-word characters
-      while (core.length > 0 && /\W$/.test(core)) {
+      // Peel off trailing non-letter characters
+      while (core.length > 0 && /\P{L}$/u.test(core)) {
         trailing.unshift(core.at(-1)!);
         core = core.slice(0, -1);
       }
