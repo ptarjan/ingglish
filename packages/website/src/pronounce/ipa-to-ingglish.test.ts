@@ -62,4 +62,20 @@ describe('translateForeign', () => {
     const result = translateForeign('allez-vous', frDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
+
+  it('preserves capitalization', () => {
+    const deDict: IpaDict = { guten: '/ɡuːtən/', tag: '/taːk/' };
+    const result = translateForeign('Guten Tag', deDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    // Both words should start with uppercase
+    const words = result.split(' ');
+    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
+    expect(words[1]![0]).toBe(words[1]![0]!.toUpperCase());
+  });
+
+  it('preserves all-caps', () => {
+    const result = translateForeign('HELLO', dict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    expect(result).toBe(result.toUpperCase());
+  });
 });

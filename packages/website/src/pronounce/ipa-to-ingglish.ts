@@ -1,4 +1,5 @@
 import { ipaToArpabet } from '@ingglish/ipa';
+import { applyCasePattern, detectCasePattern } from '@ingglish/normalize';
 import { arpabetToFormat, arpabetToIngglish } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import type { IpaDict } from './dict-loader';
@@ -67,18 +68,25 @@ export function translateForeign(
         return segment;
       }
 
+      const casePattern = detectCasePattern(core);
       const ipa = lookupIpa(dict, core);
       if (ipa) {
-        return leading.join('') + ipaToFormat(ipa, format) + trailing.join('');
+        const translated = ipaToFormat(ipa, format);
+        return leading.join('') + applyCasePattern(translated, casePattern) + trailing.join('');
       }
 
       // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
       const parts = core.split(/(?<=['-])|(?=['-])/);
       if (parts.length > 1) {
         const translated = parts.map((part) => {
-          if (part === "'" || part === '-') {return part;}
+          if (part === "'" || part === '-') {
+            return part;
+          }
+          const partCase = detectCasePattern(part);
           const partIpa = lookupIpa(dict, part);
-          if (partIpa) {return ipaToIngglish(partIpa);}
+          if (partIpa) {
+            return applyCasePattern(ipaToFormat(partIpa, format), partCase);
+          }
           return NOT_FOUND_MARKER + part;
         });
         // If any part was found, return the combined result
