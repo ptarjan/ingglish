@@ -72,4 +72,15 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     hash: '#m=AA:a,AH:eo,AO:o,AW:au,DH:d,EY:ei,F:p,IY:i,OW:o,SH:sy,TH:s,UW:u,V:b,Z:j,ZH:j',
     label: 'Korean',
   },
+  {
+    description: '1:1 phonetic Cyrillic \u2014 \u0448, \u0436, \u0447, \u045F for sibilants',
+    hash: '#m=AA:\u0430,AE:\u0430,AH:\u0430,AO:\u043E,AW:\u0430\u0443,AY:\u0430\u0458,B:\u0431,CH:\u0447,D:\u0434,DH:\u0434,EH:\u0435,ER:\u0435\u0440,EY:\u0435\u0458,F:\u0444,G:\u0433,HH:\u0445,IH:\u0438,IY:\u0438,JH:\u045F,K:\u043A,L:\u043B,M:\u043C,N:\u043D,NG:\u043D\u0433,OW:\u043E\u0443,OY:\u043E\u0458,P:\u043F,R:\u0440,S:\u0441,SH:\u0448,T:\u0442,TH:\u0442,UH:\u0443,UW:\u0443,V:\u0432,W:\u0432,Y:\u0458,Z:\u0437,ZH:\u0436',
+    label: 'Serbian',
+  },
+  {
+    description:
+      'Native \u03B8/\u03B4 for th/dh, \u03BC\u03C0/\u03BD\u03C4/\u03B3\u03BA digraphs for voiced stops',
+    hash: '#m=AA:\u03B1,AE:\u03B1,AH:\u03B1,AO:\u03BF,AW:\u03B1\u03BF\u03C5,AY:\u03B1\u03CA,B:\u03BC\u03C0,CH:\u03C4\u03C3,D:\u03BD\u03C4,DH:\u03B4,EH:\u03B5,ER:\u03B5\u03C1,EY:\u03B5\u03CA,F:\u03C6,G:\u03B3\u03BA,HH:\u03C7,IH:\u03B9,IY:\u03B9,JH:\u03C4\u03B6,K:\u03BA,L:\u03BB,M:\u03BC,N:\u03BD,NG:\u03BD\u03B3,OW:\u03BF\u03BF\u03C5,OY:\u03BF\u03CA,P:\u03C0,R:\u03C1,S:\u03C3,SH:\u03C3,T:\u03C4,TH:\u03B8,UH:\u03BF\u03C5,UW:\u03BF\u03C5,V:\u03B2,W:\u03BF\u03C5,Y:\u03B3\u03B9,Z:\u03B6,ZH:\u03B6',
+    label: 'Greek',
+  },
 ];

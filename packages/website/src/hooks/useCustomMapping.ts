@@ -285,6 +285,16 @@ function hasDiffs(config: CustomMappingConfig): boolean {
   );
 }
 
+/** Check if any mapping value contains non-Latin characters (Cyrillic, Greek, etc.) */
+function isNonLatinMapping(config: CustomMappingConfig): boolean {
+  for (const value of Object.values(config.phonemeMap)) {
+    if (/[^\u0020-\u024F]/.test(value)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /** Load config from localStorage */
 function loadFromStorage(): CustomMappingConfig | null {
   try {
@@ -305,9 +315,10 @@ function loadFromStorage(): CustomMappingConfig | null {
 /** Register the experiment format with the given config */
 function registerExperimentFormat(config: CustomMappingConfig): void {
   const converter = createCustomConverter(config);
+  const isLatin = !isNonLatinMapping(config);
   registerFormat('experiment', {
     forward: converter,
-    isLatinScript: true,
+    isLatinScript: isLatin,
     label: 'Experiment',
     preservesCase: true,
   });
