@@ -10,6 +10,7 @@ import { type IndexedToken, tokenizePhonetic } from '@ingglish/normalize';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
+import { pickForeignSample } from '../data/foreign-samples';
 import { pickRandomPassage } from '../data/sample-text';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
@@ -284,11 +285,15 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, []);
 
   const handleRandom = useCallback(() => {
-    const text = pickRandomPassage(englishText);
-    setEnglishText(text);
-    setLastEdited('english');
-    trackTextTranslate(text.length, format);
-  }, [format, englishText]);
+    const text = isForeignMode
+      ? pickForeignSample(selectedLanguage, englishText)
+      : pickRandomPassage(englishText);
+    if (text) {
+      setEnglishText(text);
+      setLastEdited('english');
+      trackTextTranslate(text.length, format);
+    }
+  }, [format, englishText, isForeignMode, selectedLanguage]);
 
   const handleCopyEnglish = useCallback(() => {
     if (displayEnglish) {
@@ -430,11 +435,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                   {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
                 </button>
               )}
-              {!isForeignMode && (
-                <button className="btn-secondary" onClick={handleRandom}>
-                  Random
-                </button>
-              )}
+              <button className="btn-secondary" onClick={handleRandom}>
+                Random
+              </button>
               <button
                 className={`btn-secondary ${copiedEnglish ? 'btn-copied' : ''}`}
                 disabled={!displayEnglish}
