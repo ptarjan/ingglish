@@ -123,6 +123,7 @@ function copyRoutesToDist(): Plugin {
     'orthographic-transparency',
     'morphological-analysis',
     'dialect-assumptions',
+    'english-spelling-rules',
     'architecture',
     'api-reference',
     'performance',

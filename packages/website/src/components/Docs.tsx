@@ -7,6 +7,7 @@ import contributing from '../../../../docs/contributing.md';
 import deploymentDoc from '../../../../docs/deployment.md';
 import designDecisions from '../../../../docs/design-decisions.md';
 import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
+import englishSpellingRules from '../../../../docs/english-spelling-rules.md';
 import falseFriends from '../../../../docs/false-friends.md';
 import apiReference from '../../../../docs/generated/README.md';
 import identicalWordsAnalysis from '../../../../docs/identical-words-analysis.md';
@@ -108,6 +109,12 @@ const docs: DocEntry[] = [
     filename: 'dialect-assumptions.md',
     id: 'dialect-assumptions',
     title: 'Dialect Assumptions',
+  },
+  {
+    content: englishSpellingRules,
+    filename: 'english-spelling-rules.md',
+    id: 'english-spelling-rules',
+    title: 'English Spelling Rules',
   },
   {
     content: architecture,
