@@ -18,7 +18,7 @@ These are the most useful metrics for evaluating a mapping.
 
 ### Unambiguous Text
 
-**What it measures:** What percentage of real-world text (by word frequency) has an unambiguous spelling — i.e., no other word maps to the same Ingglish spelling.
+**What it measures:** What percentage of real-world text (by word frequency) has an unambiguous spelling, i.e., no other word maps to the same Ingglish spelling.
 
 **Why it matters:** Collisions (homophones) make text harder to understand. If "write" and "right" both become "rait", context is the only disambiguator.
 
@@ -26,11 +26,11 @@ These are the most useful metrics for evaluating a mapping.
 
 ### Pronounceability
 
-**What it measures:** Would an English reader pronounce this correctly? Feeds each Ingglish spelling back through the [G2P (grapheme-to-phoneme) model](../packages/g2p) — 329 context-sensitive NRL letter-to-sound rules — and compares the predicted phonemes against the original CMU dictionary phonemes. The score is the frequency-weighted phoneme recovery rate.
+**What it measures:** Would an English reader pronounce this correctly? Feeds each Ingglish spelling back through the [G2P (grapheme-to-phoneme) model](../packages/g2p) (329 context-sensitive NRL letter-to-sound rules) and compares the predicted phonemes against the original CMU dictionary phonemes. The score is the frequency-weighted phoneme recovery rate.
 
 **Formula:** Per word: `1 - levenshtein(predicted_phonemes, original_phonemes) / max(len(predicted), len(original))`. Stress is stripped before comparison (stress prediction is a separate concern). Aggregate: frequency-weighted average across all dictionary words.
 
-**Why it works:** This directly models grapheme-phoneme alignment — whether the proposed spelling would actually be *read correctly* by an English reader. Unlike the surface-level metrics below, it correctly rejects mappings that produce common-looking but unreadable words:
+**Why it works:** This directly models grapheme-phoneme alignment: whether the proposed spelling would actually be *read correctly* by an English reader. Unlike the surface-level metrics below, it correctly rejects mappings that produce common-looking but unreadable words:
 
 | Mapping | Ingglish | G2P predicts | Original | Score |
 |---------|----------|-------------|----------|-------|
@@ -50,13 +50,13 @@ These are system-level properties of the mapping, not per-experiment scores. The
 
 **What it measures:** Given a grapheme, how many possible pronunciations does it have? A ratio of 1.0 means every grapheme always makes the same sound.
 
-**Ingglish score: 1.00** — perfect. Each of the 39 graphemes maps to exactly one phoneme. No exceptions, no context rules, no silent letters. For comparison, English scores ~0.70 ("ough" alone has 6+ pronunciations).
+**Ingglish score: 1.00**: perfect. Each of the 39 graphemes maps to exactly one phoneme. No exceptions, no context rules, no silent letters. For comparison, English scores ~0.70 ("ough" alone has 6+ pronunciations).
 
 ### Feedback Consistency (Sound → Spelling)
 
 **What it measures:** Given a phoneme, how many possible spellings does it have? A ratio of 1.0 means every phoneme has exactly one spelling.
 
-**Ingglish score: 0.92** — near-perfect, with exactly three minor ambiguities: "a" can represent /æ/ or schwa (stress-conditioned), "er" can be the r-colored vowel or EH+R, and "sh" can be the fricative or S+HH. For comparison, English scores ~0.50 (/iː/ alone has 11+ spellings).
+**Ingglish score: 0.92**: near-perfect, with exactly three minor ambiguities: "a" can represent /æ/ or schwa (stress-conditioned), "er" can be the r-colored vowel or EH+R, and "sh" can be the fricative or S+HH. For comparison, English scores ~0.50 (/iː/ alone has 11+ spellings).
 
 ## Additional Metrics
 
@@ -68,7 +68,7 @@ These metrics were investigated during development. Each captures something real
 
 **Formula:** Per word: `1 - charEditDistance(english, ingglish) / max(len(english), len(ingglish))`. Aggregate: frequency-weighted average.
 
-**Limitation:** Optimizes for character overlap, not perceptual readability. When used for hill-climbing optimization, the top suggestion was /ʌ/→"uo" producing "buot" for "but" and "uop" for "up" — high character overlap with English but completely unreadable. Also suggested /k/→"ck" producing "ckat" for "cat."
+**Limitation:** Optimizes for character overlap, not perceptual readability. When used for hill-climbing optimization, the top suggestion was /ʌ/→"uo" producing "buot" for "but" and "uop" for "up", which has high character overlap with English but is completely unreadable. Also suggested /k/→"ck" producing "ckat" for "cat."
 
 **Range:** 0–100%. Higher means spellings are closer to English.
 
@@ -80,7 +80,7 @@ These metrics were investigated during development. Each captures something real
 
 **Formula:** Per word: `(number of graphemes found in english word) / (total graphemes)`. Aggregate: frequency-weighted average.
 
-**Limitation:** Substring matching can't distinguish *why* a grapheme appears. The top suggestion was /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where" — but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my."
+**Limitation:** Substring matching can't distinguish *why* a grapheme appears. The top suggestion was /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where", but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my."
 
 **Range:** 0–100%. Higher means graphemes appear more often in English words with that sound.
 
@@ -88,11 +88,11 @@ These metrics were investigated during development. Each captures something real
 
 ### Naturalness
 
-**What it measures:** Orthotactic probability — how "English-looking" the respelled words are, based on character bigram statistics. Uses a bigram model trained on English words (token-weighted by log frequency, add-k smoothed with k=0.01).
+**What it measures:** Orthotactic probability: how "English-looking" the respelled words are, based on character bigram statistics. Uses a bigram model trained on English words (token-weighted by log frequency, add-k smoothed with k=0.01).
 
 **Formula:** Per word: average log bigram probability with word boundary markers (^word$). The bigram model is trained on all CMU dictionary words weighted by `log(frequency + 1)`. Aggregate: frequency-weighted average across all words.
 
-**Limitation:** Rewards common letter sequences regardless of phoneme-grapheme alignment. The top suggestions were /j/→"c" producing "coo" for "you" (high score because "co" and "oo" are common bigrams), /z/→"ck" producing "ick" for "is", and /ð/→"ph" producing "pha" for "the." The bigram model correctly identifies these as common English sequences — it just can't distinguish which *sound* those sequences should represent.
+**Limitation:** Rewards common letter sequences regardless of phoneme-grapheme alignment. The top suggestions were /j/→"c" producing "coo" for "you" (high score because "co" and "oo" are common bigrams), /z/→"ck" producing "ick" for "is", and /ð/→"ph" producing "pha" for "the." The bigram model correctly identifies these as common English sequences; it just can't distinguish which *sound* those sequences should represent.
 
 This was the most theoretically promising surface-level metric. The psycholinguistic literature validates orthotactic probability for measuring reading difficulty of novel words. But it assumes novel words are spelled phonetically. In our case, words are spelled using arbitrary phoneme→grapheme mappings, so the metric rewards letter sequences that are common in English for reasons unrelated to the phonemes being represented.
 
@@ -102,7 +102,7 @@ This was the most theoretically promising surface-level metric. The psycholingui
 
 ## Why Surface-Level Metrics Can't Optimize Mappings
 
-All four additional metrics above share the same root cause of failure: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence, bigram statistics) without modeling **grapheme-phoneme alignment** — which specific letters correspond to which specific sounds in a word.
+All four additional metrics above share the same root cause of failure: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence, bigram statistics) without modeling **grapheme-phoneme alignment**: which specific letters correspond to which specific sounds in a word.
 
 Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons. For example, "wh" appears in many words containing /ʌ/ (what, where), but only because those words also contain /w/, not because "wh" represents /ʌ/.
 
@@ -115,7 +115,7 @@ The G2P round-trip metric (Pronounceability) succeeds because it directly models
 | Edit similarity | Character overlap with English | "buot" for "but" scores well |
 | Spelling familiarity | Grapheme-in-word co-occurrence | "wh" for /ʌ/ because of "what" |
 | Naturalness | English-looking letter sequences | "coo" for "you" scores well |
-| **Pronounceability** | **G2P phoneme recovery** | **Works — models alignment** |
+| **Pronounceability** | **G2P phoneme recovery** | **Works: models alignment** |
 
 ## Per-Phoneme Familiarity Breakdown
 
@@ -141,7 +141,7 @@ All metrics are computed over the [CMU Pronouncing Dictionary](https://en.wikipe
 
 Analysis scripts that use these metrics for hill-climbing optimization are in `packages/core/scripts/analysis/`:
 
-- `g2p-roundtrip-search.ts` — G2P round-trip pronounceability hill climb (primary metric)
-- `orthotactic-search.ts` — Orthotactic probability hill climb (replaced by G2P round-trip)
-- `familiarity-search.ts` — Per-phoneme spelling familiarity analysis
-- `exhaustive-search.ts` — Exhaustively tests all possible spelling options with frequency weighting
+- `g2p-roundtrip-search.ts`: G2P round-trip pronounceability hill climb (primary metric)
+- `orthotactic-search.ts`: Orthotactic probability hill climb (replaced by G2P round-trip)
+- `familiarity-search.ts`: Per-phoneme spelling familiarity analysis
+- `exhaustive-search.ts`: Exhaustively tests all possible spelling options with frequency weighting
