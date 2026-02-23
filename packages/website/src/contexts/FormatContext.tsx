@@ -21,6 +21,7 @@ export function FormatProvider({ children }: FormatProviderProps) {
       const saved = localStorage.getItem('outputFormat');
       if (
         saved === 'ingglish' ||
+        saved === 'pronunciation' ||
         saved === 'ipa' ||
         saved === 'shavian' ||
         saved === 'deseret' ||
@@ -46,7 +47,7 @@ export function FormatProvider({ children }: FormatProviderProps) {
 
   const toggleFormat = useCallback(() => {
     setFormatState((prev) => {
-      const base: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
+      const base: OutputFormat[] = ['ingglish', 'pronunciation', 'ipa', 'shavian', 'deseret'];
       const FORMAT_ORDER: OutputFormat[] = hasExperimentMapping() ? [...base, 'experiment'] : base;
       const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(prev) + 1) % FORMAT_ORDER.length]!;
       trackFormatSwitch(newFormat);

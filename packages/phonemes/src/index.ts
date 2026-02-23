@@ -1,3 +1,6 @@
+// Guide pronunciation format (self-registers on import)
+import './to-pronunciation';
+
 // Phoneme data and utilities
 export {
   ARPABET_CONSONANTS,
