@@ -30,10 +30,14 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   const MODIFIER_RE = /[\u02B0\u02C8\u02CC\u02D0\u02D1\u02E5-\u02E9\u0303]/g; // eslint-disable-line no-misleading-character-class
   const stripped = denasalized.replaceAll(MODIFIER_RE, '');
 
-  // Re-compose to NFC so diacriticked characters (e.g. c+cedilla → ç) match
-  // their precomposed map keys, then strip all remaining combining marks
-  // (Korean diacritics like ̠ ̹ ̚, breathy voice ̤, etc.).
-  const clean = stripped.normalize('NFC').replaceAll(/\p{Mn}/gu, '');
+  // Strip all remaining combining marks (Korean ̠ ̹ ̚, accents on loanwords é,
+  // breathy voice ̤, etc.) EXCEPT cedilla U+0327 (needed for ç → SH).
+  // Must happen before NFC, otherwise e+acute recomposes to é (a single
+  // codepoint, no longer a combining mark) and gets silently dropped.
+  const stripped2 = stripped.replaceAll(/(?!\u0327)\p{Mn}/gu, '');
+
+  // Re-compose to NFC so c+cedilla → ç matches its precomposed map key.
+  const clean = stripped2.normalize('NFC');
 
   const map = overrides ? { ...IPA_TO_ARPABET_MAP, ...overrides } : IPA_TO_ARPABET_MAP;
 

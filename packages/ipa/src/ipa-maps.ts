@@ -167,13 +167,15 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   œy: 'OY', // /œy/ — Dutch "huis" diphthong ≈ "boy"
   oi: 'OY', // /oi/ — Finnish "koira", Portuguese "coisa" ≈ "boy" diphthong
   ou: 'OW', // /ou/ — Finnish "koulu" ≈ "go" diphthong
+  oɯ: 'OW', // /oɯ/ — Japanese long /oː/ (dict convention: 東京 /toɯkjoɯ/) ≈ "oh"
   ɸ: 'F', // /ɸ/ voiceless bilabial fricative — Japanese "fu" ≈ F
   q: 'K', // /q/ voiceless uvular stop — Arabic "Quran" ≈ K
 
   ʀ: 'R', // /ʀ/ uvular trill — some German dialects ≈ English R
 
+  // --- Taps, trills, and approximants (Spanish, Italian, Mandarin, etc.) ---
+  ɻ: 'R', // /ɻ/ voiced retroflex approximant — Mandarin "er" (二) ≈ R
   ɽ: 'D', // /ɽ/ retroflex flap — Hindi ≈ D
-  // --- Taps and trills (Spanish, Italian, etc.) ---
   ɾ: 'R', // /ɾ/ alveolar tap — Spanish "pero" ≈ R (also like "butter" flap)
 
   // --- Uvular consonants (French, German, Arabic) ---

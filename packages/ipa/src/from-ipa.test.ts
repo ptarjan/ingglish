@@ -74,6 +74,15 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('sɯɕi')).toEqual(['S', 'UH', 'SH', 'IY']);
   });
 
+  it('treats Japanese /oɯ/ as single long vowel (dict convention for oː)', () => {
+    // oɯ is a single OW, not OW+UH — fixes ~48k Japanese dict entries
+    expect(ipaToArpabet('oɯ')).toEqual(['OW']);
+    // 東京 /toɯkjoɯ/ → T OW K Y OW (not T OW UH K Y OW UH)
+    expect(ipaToArpabet('toɯkjoɯ')).toEqual(['T', 'OW', 'K', 'Y', 'OW']);
+    // 先生 /seɴdʑoɯ/ → S EH N JH OW
+    expect(ipaToArpabet('seɴdʑoɯ')).toEqual(['S', 'EH', 'N', 'JH', 'OW']);
+  });
+
   it('maps Japanese moraic ɴ to N (not NG)', () => {
     expect(ipaToArpabet('ɴ')).toEqual(['N']);
     // genki, not "gengkee"
@@ -219,6 +228,19 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ʌ\u0339')).toEqual(['AH']);
     // Korean unreleased k̚ (k + U+031A combining left angle above)
     expect(ipaToArpabet('k\u031A')).toEqual(['K']);
+  });
+
+  it('maps Mandarin retroflex approximant ɻ to R', () => {
+    expect(ipaToArpabet('ɻ')).toEqual(['R']);
+    // Mandarin 二 /aɻ/ → AE R (not just AE with ɻ dropped)
+    expect(ipaToArpabet('aɻ')).toEqual(['AE', 'R']);
+  });
+
+  it('strips accent marks on loanwords without dropping base letters', () => {
+    // é (e + acute) should strip the accent, keep the e → EH
+    expect(ipaToArpabet('é')).toEqual(['EH']);
+    // Finnish loanword "bébé" — accented e's should still produce EH
+    expect(ipaToArpabet('bébé')).toEqual(['B', 'EH', 'B', 'EH']);
   });
 });
 
