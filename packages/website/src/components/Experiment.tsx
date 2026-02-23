@@ -11,6 +11,12 @@ function Experiment() {
   const mapping = useCustomMapping();
   const [copiedShare, shareLink] = useShare();
 
+  // Derive active preset from the mapping state (not URL hash) so it works
+  // whether loaded from hash or localStorage
+  const activeHash = mapping.shareUrl.includes('#')
+    ? mapping.shareUrl.slice(mapping.shareUrl.indexOf('#'))
+    : '';
+
   const handleReset = useCallback(() => {
     mapping.reset();
     trackExperimentReset();
@@ -42,7 +48,7 @@ function Experiment() {
           Languages:
         </span>
         {LANGUAGE_PRESETS.filter((p) => p.group === 'language').map((preset) => {
-          const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
+          const isActive = activeHash === preset.hash;
           return (
             <a
               className={`preset-link${isActive ? ' preset-active' : ''}`}
@@ -61,7 +67,7 @@ function Experiment() {
         <span className="presets-break" />
         <span className="presets-label">Alphabets:</span>
         {LANGUAGE_PRESETS.filter((p) => p.group === 'alphabet').map((preset) => {
-          const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
+          const isActive = activeHash === preset.hash;
           return (
             <a
               className={`preset-link${isActive ? ' preset-active' : ''}`}
