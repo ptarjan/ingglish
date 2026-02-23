@@ -75,8 +75,17 @@ The `--conditions=source` flag resolves workspace packages to their TypeScript s
 
 ## Browsing Reddit
 
-You can use curl to browse Reddit's JSON API for research (e.g. spelling reform discussions, user feedback):
+WebFetch cannot access reddit.com. Use curl with the JSON API instead (requires `User-Agent` header):
 
 ```bash
-curl -s 'https://www.reddit.com/r/spelling/search.json?q=phonetic+spelling&limit=5' | jq '.data.children[].data.title'
+# User's submissions
+curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/user/ptarjan/submitted.json?limit=10"
+
+# Comments on a post
+curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/r/etymology/comments/{post_id}.json"
+
+# Search a subreddit
+curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/r/conorthography/search.json?q=ingglish&limit=5"
 ```
+
+Parse with python3 (write to a temp file to avoid shell escaping issues with inline scripts).
