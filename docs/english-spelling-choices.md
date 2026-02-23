@@ -449,9 +449,9 @@ English has several letter combinations where one letter is silent. These aren't
 |---------|-------------------|-----------------|
 | [**ee** vs **ea** for /iː/](#long-e-as-in-see) | Both very common | No great rule — **ee** is safer when unsure |
 | [**er** vs **ir** vs **ur**](#er-sound-as-in-her) | All sound identical | **er** is most common; **ir** in short common words; **ur** after b, ch, n, p, t |
-| [**-tion** vs **-sion**](#when-to-use--tion-vs--sion) | Both say "shun" | **-tion** is the default; **-sion** when root ends in -de/-d |
-| [**-ance** vs **-ence**](#-ance-vs--ence) | Both sound identical | Match the adjective: -ant→-ance, -ent→-ence |
-| [**-able** vs **-ible**](#-able-vs--ible) | Both sound identical | Full English word + -able; Latin stem + -ible |
+| [**-tion** vs **-sion**](#when-to-use-tion-vs-sion) | Both say "shun" | **-tion** is the default; **-sion** when root ends in -de/-d |
+| [**-ance** vs **-ence**](#ance-vs-ence) | Both sound identical | Match the adjective: -ant→-ance, -ent→-ence |
+| [**-able** vs **-ible**](#able-vs-ible) | Both sound identical | Full English word + -able; Latin stem + -ible |
 | [**o** vs **u** for /ʌ/](#short-u-as-in-cup) | *come, love, some* use o | Memorize the common **o**=/ʌ/ words — they cluster near m, n, v |
 | [**c** vs **k** for /k/](#the-k-sound) | When to use which? | **c** before a/o/u; **k** before e/i/y; **ck** after short vowels |
 | [Single vs double consonant](#when-to-double-a-consonant) | *hopping* vs *hoping* | Double after short vowels when adding suffixes |

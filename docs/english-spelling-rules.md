@@ -522,26 +522,26 @@ Any vowel letter can reduce to /ə/ (schwa) in an unstressed syllable. Schwa is 
 
 | Rank | Rule | Words affected | % of dictionary |
 |------|------|---------------:|----------------:|
-| 1 | [ER/IR/UR = /ɜːr/](#er) | 27,108 | 21.5% |
+| 1 | [ER/IR/UR = /ɜːr/](#er-r) | 27,108 | 21.5% |
 | 2 | [Doubled consonants = single sound](#doubled-consonants) | ~20,000 | ~16% |
-| 3 | [AR = /ɑːr/](#ar) | 10,342 | 8.2% |
+| 3 | [AR = /ɑːr/](#ar-r) | 10,342 | 8.2% |
 | 4 | [NG = /ŋ/](#ng) | 8,268 | 6.6% |
 | 5 | [Silent E makes vowel long](#the-silent-e-rule) | 7,411 | 5.9% |
-| 6 | [OR = /ɔːr/](#or) | 7,587 | 6.0% |
-| 7 | [CH = /tʃ/](#ch) | 6,578 | 5.2% |
+| 6 | [OR = /ɔːr/](#or-r) | 7,587 | 6.0% |
+| 7 | [CH = /tʃ/](#ch-t) | 6,578 | 5.2% |
 | 8 | [Soft G (before E/I/Y = /dʒ/)](#soft-c-and-soft-g) | 6,195 | 4.9% |
 | 9 | [Soft C (before E/I/Y = /s/)](#soft-c-and-soft-g) | 5,401 | 4.3% |
 | 10 | [-ED suffix (3 predictable sounds)](#suffix-pronunciation-rules) | 5,178 | 4.1% |
 | 11 | [-ING suffix = /ɪŋ/](#suffix-pronunciation-rules) | 5,068 | 4.0% |
-| 12 | [IE = /iː/](#ie) | 4,579 | 3.6% |
-| 13 | [EA = /iː/](#ea) | 3,953 | 3.1% |
-| 14 | [CK = /k/ after short vowels](#ck) | 3,679 | 2.9% |
+| 12 | [IE = /iː/](#ie-i) | 4,579 | 3.6% |
+| 13 | [EA = /iː/](#ea-i) | 3,953 | 3.1% |
+| 14 | [CK = /k/ after short vowels](#ck-k) | 3,679 | 2.9% |
 | 15 | [SH = /ʃ/](#sh) | 3,531 | 2.8% |
-| 16 | [OU = /aʊ/](#ou) | 3,511 | 2.8% |
-| 17 | [TH = /θ/ or /ð/](#th) | 3,457 | 2.7% |
-| 18 | [AU/AW = /ɔː/](#au--aw) | 3,060 | 2.4% |
-| 19 | [EE = /iː/](#ee) | 2,523 | 2.0% |
-| 20 | [AI/AY = /eɪ/](#ai) | 2,324+ | 1.8%+ |
+| 16 | [OU = /aʊ/](#ou-a) | 3,511 | 2.8% |
+| 17 | [TH = /θ/ or /ð/](#th-or) | 3,457 | 2.7% |
+| 18 | [AU/AW = /ɔː/](#au-aw) | 3,060 | 2.4% |
+| 19 | [EE = /iː/](#ee-i) | 2,523 | 2.0% |
+| 20 | [AI/AY = /eɪ/](#ai-e) | 2,324+ | 1.8%+ |
 
 These 20 rules account for the pronunciation of the overwhelming majority of English words. The remaining patterns (OO, OW, OI/OY, PH, QU, EI/EY, etc.) are smaller but equally reliable within their domains.
 
