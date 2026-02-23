@@ -196,7 +196,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       if (!foreignDict) {
         return null;
       }
-      return translateForeign(deferredEnglish, foreignDict);
+      return translateForeign(deferredEnglish, foreignDict, format);
     }
     try {
       return translateSync(deferredEnglish, format);
@@ -483,20 +483,16 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>
-              {isForeignMode ? (
-                'Ingglish'
-              ) : (
-                <button
-                  className="format-cycle-btn"
-                  onClick={toggleFormat}
-                  title="Cycle output format"
-                >
-                  {getFormatLabel(format)}
-                  <span aria-hidden="true" className="format-cycle-icon">
-                    &#x21C5;
-                  </span>
-                </button>
-              )}
+              <button
+                className="format-cycle-btn"
+                onClick={toggleFormat}
+                title="Cycle output format"
+              >
+                {getFormatLabel(format)}
+                <span aria-hidden="true" className="format-cycle-icon">
+                  &#x21C5;
+                </span>
+              </button>
             </h2>
             <div className="button-group">
               <button

@@ -1,5 +1,6 @@
 import { ipaToArpabet } from '@ingglish/ipa';
-import { arpabetToIngglish } from '@ingglish/phonemes';
+import { arpabetToFormat, arpabetToIngglish } from '@ingglish/phonemes';
+import type { OutputFormat } from '@ingglish/phonemes';
 import type { IpaDict } from './dict-loader';
 import { lookupIpa } from './dict-loader';
 
@@ -14,14 +15,27 @@ export function ipaToIngglish(ipa: string): string {
   return arpabetToIngglish(arpabet);
 }
 
+/**
+ * Converts an IPA transcription to the specified output format.
+ */
+function ipaToFormat(ipa: string, format: OutputFormat): string {
+  const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
+  const arpabet = ipaToArpabet(clean);
+  return arpabetToFormat(arpabet, format);
+}
+
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
 
 /**
- * Translates foreign text to Ingglish pronunciation.
+ * Translates foreign text to the specified output format.
  * Words not found in the dictionary are returned with a marker prefix.
  */
-export function translateForeign(text: string, dict: IpaDict): string {
+export function translateForeign(
+  text: string,
+  dict: IpaDict,
+  format: OutputFormat = 'ingglish'
+): string {
   return text
     .split(/(\s+)/)
     .map((segment) => {
@@ -55,7 +69,7 @@ export function translateForeign(text: string, dict: IpaDict): string {
 
       const ipa = lookupIpa(dict, core);
       if (ipa) {
-        return leading.join('') + ipaToIngglish(ipa) + trailing.join('');
+        return leading.join('') + ipaToFormat(ipa, format) + trailing.join('');
       }
       // Not found — return original with marker
       return NOT_FOUND_MARKER + segment;
