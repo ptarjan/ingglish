@@ -172,6 +172,15 @@ async function main() {
               : `${vowelBare}+R`;
         record(phonemeKey, letters, word, freq);
         phonemeIdx += 2;
+      } else if (stepPhonemes.length >= 2 && isVowel(stepPhonemes[0]!)) {
+        // Multi-phoneme starting with a vowel (e.g., OUS → AH0+S, AIN → AH0+N).
+        // Record the full letter pattern under the vowel phoneme since
+        // the vowel is the interesting part for spelling patterns.
+        const phoneme = stepPhonemes[0]!;
+        const bare = stripStress(phoneme);
+        const phonemeKey = bare === 'AH' && getStress(phoneme) === 0 ? 'AH0' : bare;
+        record(phonemeKey, letters, word, freq);
+        phonemeIdx += stepPhonemes.length;
       } else {
         // Multi-phoneme: skip (ambiguous alignment)
         phonemeIdx += stepPhonemes.length;

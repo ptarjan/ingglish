@@ -52,7 +52,7 @@ export const vowelGroups: SoundGroup[] = [
       },
       {
         examples:
-          '**a**bout (about), fam**i**ly (famalee), op**e**n (ohpan), **u**ntil (antil), sec**o**nd (sekand)',
+          '**a**bout (about), fam**i**ly (famalee), op**e**n (ohpan), **u**ntil (antil), sec**o**nd (sekand), cert**ai**n (sertan), nerv**ou**s (nervas)',
         phoneme: 'AH0',
       },
     ],
