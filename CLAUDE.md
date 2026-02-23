@@ -12,7 +12,7 @@ When e2e tests fail in CI, download the `playwright-report` artifact from the fa
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
 
-There is no need to manually run tests, lint, or build before pushing — the pre-push hook runs them automatically and will block the push if anything fails.
+There is no need to manually run tests or lint before pushing — the pre-push hook runs lint, type-check, and tests for changed packages automatically and will block the push if anything fails.
 
 All commands are available if you need them for debugging:
 
