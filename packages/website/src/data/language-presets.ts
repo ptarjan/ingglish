@@ -18,7 +18,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, w\u2192v',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,AY:aj,CH:\u010D,DH:d,EY:ej,IY:\u00ED,JH:d\u017E,OW:ou,SH:\u0161,TH:t,UW:\u00FA,W:v,Y:j,ZH:\u017E',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,AY:aj,CH:\u010D,DH:d,EY:ej,IY:\u00ED,JH:d\u017E,OW:ou,OY:oj,SH:\u0161,TH:t,UW:\u00FA,W:v,Y:j,ZH:\u017E',
     label: 'Czech',
   },
   {
@@ -91,7 +91,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 'f/ff swap (f=/v/, ff=/f/), dd for /\u00F0/, si for /\u0283/, w as vowel',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:aw,CH:ts,DH:dd,EY:ei,F:ff,IY:i,K:c,OW:o,SH:si,UW:w,V:f,Z:s,ZH:s',
+    hash: '#m=AA:a,AH:a,AO:o,AW:aw,CH:ts,DH:dd,EY:ei,F:ff,IY:i,K:c,OW:o,SH:si,UW:w,V:f,Y:i,Z:s,ZH:s',
     label: 'Welsh',
   },
   // ── Alphabets ──────────────────────────────────────────────────────
