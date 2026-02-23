@@ -124,6 +124,7 @@ function copyRoutesToDist(): Plugin {
     'morphological-analysis',
     'dialect-assumptions',
     'english-spelling-rules',
+    'english-spelling-choices',
     'architecture',
     'api-reference',
     'performance',

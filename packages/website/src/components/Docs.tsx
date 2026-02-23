@@ -7,6 +7,7 @@ import contributing from '../../../../docs/contributing.md';
 import deploymentDoc from '../../../../docs/deployment.md';
 import designDecisions from '../../../../docs/design-decisions.md';
 import dialectAssumptions from '../../../../docs/dialect-assumptions.md';
+import englishSpellingChoices from '../../../../docs/english-spelling-choices.md';
 import englishSpellingRules from '../../../../docs/english-spelling-rules.md';
 import falseFriends from '../../../../docs/false-friends.md';
 import apiReference from '../../../../docs/generated/README.md';
@@ -114,7 +115,13 @@ const docs: DocEntry[] = [
     content: englishSpellingRules,
     filename: 'english-spelling-rules.md',
     id: 'english-spelling-rules',
-    title: 'English Spelling Rules',
+    title: 'Reading: Letters to Sounds',
+  },
+  {
+    content: englishSpellingChoices,
+    filename: 'english-spelling-choices.md',
+    id: 'english-spelling-choices',
+    title: 'Writing: Sounds to Letters',
   },
   {
     content: architecture,
