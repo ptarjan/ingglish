@@ -71,6 +71,12 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
+    description: 'Circumflexed consonants, \u016D for /w/',
+    group: 'language',
+    hash: '#m=AA:a,AH:a,AO:o,AW:a\u016D,AY:aj,CH:\u0109,DH:d,EY:ej,IY:i,JH:\u011D,OW:o\u016D,OY:oj,SH:\u015D,TH:t,UW:u,W:\u016D,Y:j,ZH:\u0135',
+    label: 'Esperanto',
+  },
+  {
     description: '5 pure vowels, j for /x/, sh merges with ch',
     group: 'language',
     hash: '#m=AA:a,AH:a,AO:o,AW:au,DH:d,EY:ei,HH:j,IY:i,JH:y,K:c,OW:o,SH:ch,TH:z,UW:u,Z:s,ZH:y',
@@ -88,12 +94,6 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     group: 'alphabet',
     hash: '#m=AA:\uD801\uDC2A,AE:\uD801\uDC30,AH0:\uD801\uDC31,AH:\uD801\uDC32,AO:\uD801\uDC2B,AW:\uD801\uDC35,AY:\uD801\uDC34,B:\uD801\uDC3A,CH:\uD801\uDC3D,D:\uD801\uDC3C,DH:\uD801\uDC44,EH:\uD801\uDC2F,ER:\uD801\uDC32\uD801\uDC49,EY:\uD801\uDC29,F:\uD801\uDC41,G:\uD801\uDC40,HH:\uD801\uDC38,IH:\uD801\uDC2E,IY:\uD801\uDC28,JH:\uD801\uDC3E,K:\uD801\uDC3F,L:\uD801\uDC4A,M:\uD801\uDC4B,N:\uD801\uDC4C,NG:\uD801\uDC4D,OW:\uD801\uDC2C,OY:\uD801\uDC4E,P:\uD801\uDC39,R:\uD801\uDC49,S:\uD801\uDC45,SH:\uD801\uDC47,T:\uD801\uDC3B,TH:\uD801\uDC43,UH:\uD801\uDC33,UW:\uD801\uDC2D,V:\uD801\uDC42,W:\uD801\uDC36,Y:\uD801\uDC37,Z:\uD801\uDC46,ZH:\uD801\uDC48',
     label: 'Deseret',
-  },
-  {
-    description: 'Circumflexed consonants, \u016D for /w/',
-    group: 'alphabet',
-    hash: '#m=AA:a,AH:a,AO:o,AW:a\u016D,AY:aj,CH:\u0109,DH:d,EY:ej,IY:i,JH:\u011D,OW:o\u016D,OY:oj,SH:\u015D,TH:t,UW:u,W:\u016D,Y:j,ZH:\u0135',
-    label: 'Esperanto',
   },
   {
     description: 'International Phonetic Alphabet symbols',
