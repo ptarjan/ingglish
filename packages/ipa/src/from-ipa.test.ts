@@ -55,6 +55,16 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('l')).toEqual(['L']);
     expect(ipaToArpabet('ɫ')).toEqual(['L']);
   });
+
+  it('converts nasal vowels to vowel + N', () => {
+    // French "enfants" /ɑ̃fɑ̃/
+    expect(ipaToArpabet('ɑ̃fɑ̃')).toEqual(['AA', 'N', 'F', 'AA', 'N']);
+    // French nasal vowel variants
+    expect(ipaToArpabet('ɛ̃')).toEqual(['EH', 'N']);
+    expect(ipaToArpabet('ɔ̃')).toEqual(['AO', 'N']);
+    // French "bonjour" /bɔ̃ʒuʁ/
+    expect(ipaToArpabet('bɔ̃ʒuʁ')).toEqual(['B', 'AO', 'N', 'ZH', 'UW', 'R']);
+  });
 });
 
 describe('ipaToArpabetString', () => {
