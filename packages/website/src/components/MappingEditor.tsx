@@ -270,10 +270,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               const hasOwnDefault = stressedDefault !== defaultSpelling;
               return (
                 <tr className="stress-variant-row" key={stressedPhoneme}>
-                  <td className="ipa-cell stress-label">
-                    {phoneme}
-                    {stress}
-                  </td>
+                  <td className="ipa-cell stress-label">{getCleanIPA(stressedPhoneme)}</td>
                   {hasOwnDefault ? (
                     <EditableCell
                       defaultValue={stressedDefault}
