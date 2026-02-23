@@ -66,9 +66,13 @@
   background: var(--color-border);
 }
 
-.btn-sm {
-  padding: 0.25rem 0.625rem;
-  font-size: 0.8rem;
+button.preset-action {
+  font-weight: 500;
+}
+
+button.preset-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
 }
 
 /* Two-column grid */

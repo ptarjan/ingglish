@@ -55,14 +55,14 @@ function Experiment() {
         })}
         <span className="presets-divider" />
         <button
-          className="btn-secondary btn-sm"
+          className="preset-link preset-action"
           disabled={!mapping.hasCustomizations}
           onClick={handleReset}
         >
           Reset
         </button>
         <button
-          className={`btn-secondary btn-sm ${copiedShare ? 'btn-copied' : ''}`}
+          className={`preset-link preset-action${copiedShare ? ' preset-active' : ''}`}
           onClick={handleShare}
         >
           {copiedShare ? 'Copied!' : 'Share'}
