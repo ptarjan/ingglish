@@ -30,7 +30,7 @@ import {
 } from '@ingglish/phonemes';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
-import { extractTokens, mapTokens, sentenceCapitalize } from './pipeline';
+import { extractTokens, mapTokens, renderText } from './pipeline';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
 const HAS_LETTER = /[a-z]/i;
@@ -63,9 +63,7 @@ export interface TranslatedToken {
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
   const { preserved, rawTokens } = extractTokens(text);
-  const tokens = mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
-  const capitalized = sentenceCapitalize(tokens, format);
-  return capitalized.map((t) => t.translated).join('');
+  return renderText(rawTokens, preserved, (w) => translateWordInternal(w, format), format);
 }
 
 /**
@@ -160,6 +158,12 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
   const fast = tryFastPath(word, format);
   if (fast) {
     return fast;
+  }
+
+  // 2b. Fast path for title-case words (The, Hello, World)
+  const titleFast = tryTitleCaseFastPath(word, format);
+  if (titleFast) {
+    return titleFast;
   }
 
   const isLatinScript = getFormatIsLatinScript(format);
@@ -339,4 +343,43 @@ function tryInitialismWithSuffix(
     return { matched: true, translated: baseTranslated + parsed.suffix };
   }
   return null;
+}
+
+/**
+ * Fast path for title-case words (first char A-Z, rest a-z): "The", "Hello", "World".
+ * These are the first word of every sentence — very common in natural text.
+ * Skips initialism, camelCase, contraction, and case-detection checks.
+ * Returns null if the word doesn't qualify or isn't in the dictionary.
+ */
+function tryTitleCaseFastPath(word: string, format: OutputFormat): null | TranslateResult {
+  // Single letters (I, A) have special case handling
+  if (word.length < 2) {
+    return null;
+  }
+  const first = word.codePointAt(0)!;
+  if (first < 65 || first > 90) {
+    return null; // first char must be A-Z
+  }
+  for (let i = 1; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c < 97 || c > 122) {
+      return null; // rest must be a-z
+    }
+  }
+
+  const lower = word.toLowerCase();
+  if (isInitialism(lower) || parseInitialismWithSuffix(lower) !== null) {
+    return null;
+  }
+
+  const phonemes = lookupPronunciation(lower);
+  if (!phonemes) {
+    return null;
+  }
+
+  let translated = arpabetToFormat(phonemes, format);
+  if (getFormatPreservesCase(format) && translated.length > 0) {
+    translated = translated.charAt(0).toUpperCase() + translated.slice(1);
+  }
+  return { matched: true, translated };
 }

@@ -4,7 +4,7 @@
  * Both directions follow the same structure:
  *   extractTokens → mapTokens → (optional sentenceCapitalize) → output
  *
- * Function names are chosen so alphabetical sort matches pipeline order (e < m < s).
+ * Function names are chosen so alphabetical sort matches pipeline order (e < m < r < s).
  */
 
 import {
@@ -55,16 +55,19 @@ export function mapTokens(
   translateWord: WordTranslator
 ): TranslatedToken[] {
   const result: TranslatedToken[] = [];
+  const hasPreserved = preserved.size > 0;
   for (const token of rawTokens) {
     if (token.length === 0) {
       continue;
     }
 
     // Check if this token contains a placeholder for a preserved pattern
-    const expanded = expandPlaceholder(token, preserved);
-    if (expanded) {
-      result.push(...expanded);
-      continue;
+    if (hasPreserved) {
+      const expanded = expandPlaceholder(token, preserved);
+      if (expanded) {
+        result.push(...expanded);
+        continue;
+      }
     }
 
     if (WORD_TEST_REGEX.test(token)) {
@@ -74,6 +77,97 @@ export function mapTokens(
       result.push({ isWord: false, matched: true, original: token, translated: token });
     }
   }
+  return result;
+}
+
+/**
+ * String-only version of expandPlaceholder: replaces placeholder keys with their
+ * original text in-place. Returns null if no placeholders found in the token.
+ */
+const expandPlaceholderText = (token: string, preserved: Map<string, string>): null | string => {
+  let found = false;
+  let result = token;
+  for (const [placeholder, original] of preserved) {
+    const idx = result.indexOf(placeholder);
+    if (idx !== -1) {
+      result = result.slice(0, idx) + original + result.slice(idx + placeholder.length);
+      found = true;
+    }
+  }
+  return found ? result : null;
+};
+
+/**
+ * Fused single-pass string builder: combines mapTokens + sentenceCapitalize + join
+ * into one function that directly builds the output string. Eliminates intermediate
+ * TranslatedToken[] arrays and extra iteration passes.
+ */
+export function renderText(
+  rawTokens: string[],
+  preserved: Map<string, string>,
+  translateWord: WordTranslator,
+  format: OutputFormat
+): string {
+  const preservesCase = getFormatPreservesCase(format);
+  const hasPreserved = preserved.size > 0;
+
+  let result = '';
+  let wordCount = 0;
+  let sentenceStart = true;
+  let firstWordStart = -1;
+
+  for (const token of rawTokens) {
+    if (token.length === 0) {
+      continue;
+    }
+
+    // Check for preserved patterns (URLs, emails)
+    if (hasPreserved) {
+      const expanded = expandPlaceholderText(token, preserved);
+      if (expanded !== null) {
+        result += expanded;
+        continue;
+      }
+    }
+
+    if (WORD_TEST_REGEX.test(token)) {
+      const { translated } = translateWord(token);
+      wordCount++;
+
+      if (preservesCase && sentenceStart && translated.length > 0) {
+        if (wordCount === 1) {
+          // First sentence-start word — defer capitalization until we
+          // know there are multiple words (single words stay lowercase)
+          firstWordStart = result.length;
+          result += translated;
+        } else {
+          // Subsequent sentence-start word — capitalize immediately
+          result += translated.charAt(0).toUpperCase() + translated.slice(1);
+        }
+      } else {
+        result += translated;
+      }
+      sentenceStart = false;
+    } else {
+      // Non-word token — check for sentence-end punctuation.
+      // Only on pure punctuation/whitespace tokens (no letters), since
+      // preserved patterns contain letters and periods that shouldn't trigger this.
+      if (preservesCase && SENTENCE_END.test(token) && !HAS_LETTER.test(token)) {
+        sentenceStart = true;
+      }
+      result += token;
+    }
+  }
+
+  // Capitalize first word only if there were multiple words
+  if (preservesCase && wordCount > 1 && firstWordStart !== -1) {
+    const firstChar = result.charAt(firstWordStart);
+    const upper = firstChar.toUpperCase();
+    if (upper !== firstChar) {
+      result = result.slice(0, firstWordStart) + upper + result.slice(firstWordStart + 1);
+    }
+  }
+
   return result;
 }
 
