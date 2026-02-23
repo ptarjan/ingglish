@@ -1,26 +1,18 @@
 # r/conorthography
 
-**Title:** I added language presets to the Ingglish experiment tool — you can now see English respelled with Finnish, Spanish, Italian, or Turkish orthographic conventions
+**Title:** Ingglish update: language presets in the experiment tool
 
 **Body:**
 
-Some of you gave great feedback on my last post, so I wanted to share an update.
+Hey again. Got some really helpful feedback on my last post (especially the schwa change — thanks u/Confident_Thing1410) so here's what's new.
 
-The [experiment page](https://ingglish.com/experiment) now has presets for several orthographic traditions. Pick one and it remaps all English phonemes to follow that language's spelling conventions, then flags where the system breaks down (ambiguous spellings, merged phonemes, etc.).
+The [experiment page](https://ingglish.com/experiment) now has presets for Finnish, Spanish, Italian, and Turkish orthography. Pick one and it remaps all English phonemes to that language's conventions. The interesting part is seeing where things break — Finnish can't represent the voiced/unvoiced th distinction, Spanish merges B and V, etc. The collision counter updates live so you can see exactly how many words become ambiguous.
 
-For example, the Finnish preset:
-- Maps /j/ to J (not Y)
-- Uses double vowels for long sounds (II, UU, OO)
-- Maps schwa to O
-- Merges voiced/unvoiced fricatives (since Finnish doesn't distinguish them)
+You can also just build your own from scratch. A Finnish speaker in my last thread wrote out how English looks in Finnish orthography, so I tried to match it in the tool. Got close but not perfect — vowel lengths don't map cleanly.
 
-It immediately shows you which English phoneme distinctions that language's orthography can't represent.
+Some things from last time's feedback that I wrote up properly:
+- [Why "dh" for voiced th](https://ingglish.com/docs/design-decisions) — I know, I know
+- [Every spelling change and why](https://ingglish.com/docs/spelling-iteration)
+- [What GenAm mergers are baked in](https://ingglish.com/docs/dialect-assumptions)
 
-You can also build your own mapping from scratch — change any phoneme-to-grapheme assignment and see the entire English dictionary update in real time. The collision counter shows how many word pairs become identical under your mapping.
-
-A few things people asked about last time that I've documented:
-- [Why "dh" for voiced th](https://ingglish.com/docs/design-decisions) — still the most controversial choice, I know
-- [Vowel chain shift tradeoffs](https://ingglish.com/docs/spelling-iteration) — log of every spelling change and why
-- [Dialect assumptions](https://ingglish.com/docs/dialect-assumptions) — what GenAm mergers are baked in
-
-Would love to hear if anyone tries building a mapping from their own language's conventions. The Finnish experiment from last time was fascinating — several phoneme distinctions just don't exist in Finnish and the tool surfaces that immediately.
+If anyone wants to try building a mapping from their language's conventions I'd love to see what you come up with.

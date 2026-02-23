@@ -1,21 +1,15 @@
 # r/linguistics or r/dataisbeautiful
 
-**Title:** I wrote 975 rules to predict English pronunciation from spelling — here's where the complexity lives
+**Title:** It takes 975 rules to predict English pronunciation from spelling. The letter O alone needs 171.
 
 **Post type:** Image (screenshot of linguistics-g2p-rules.html)
 
 **Body text:**
 
-I built a grapheme-to-phoneme engine based on the Elovitz/NRL letter-to-sound rules (1976), extended with modern patterns. It takes any English word it's never seen and predicts the pronunciation using context-sensitive pattern matching.
+I built a grapheme-to-phoneme engine for a side project and the rule distribution surprised me. It's based on the Elovitz/NRL letter-to-sound rules from 1976, extended for modern English. Each rule matches a letter in context — what's to the left, what's to the right — and outputs a phoneme.
 
-The rule format is: `leftContext[TARGET]rightContext → phonemes`. For example, the letter O alone needs 171 rules — more than all 20 consonants combined. 61% of all rules exist just for the 6 vowel letters (A, E, I, O, U, Y).
+The thing that jumped out: 61% of the rules are just for vowels. Consonants are mostly well-behaved — B, D, F, J, K, V, Z barely need anything. But O participates in so many digraphs (OO, OU, OW, OI, OA) that it alone needs more rules than all 20 consonants combined.
 
-Some things I learned building this:
+A lot of the rules also just handle one word or word family. Not a pattern, just "this specific string of letters makes this specific sound and nothing else works like it."
 
-- English consonants are mostly well-behaved. B, D, F, J, K, V, and Z barely need any rules. The chaos is concentrated in vowels and a few consonants that do double duty (C, S, G).
-- The letter O is the worst offender because it participates in so many digraphs (OO, OU, OW, OI, OA) and each one changes meaning depending on what follows.
-- Many rules exist only to handle a single word or word family. English has hundreds of pronunciations that follow no pattern — they're just memorized exceptions.
-
-The full rule set is open source: [github.com/ptarjan/ingglish/blob/main/packages/g2p/src/g2p-rules.ts](https://github.com/ptarjan/ingglish/blob/main/packages/g2p/src/g2p-rules.ts)
-
-You can see the engine in action at [ingglish.com](https://ingglish.com) — it powers the fallback pronunciation for words not in the CMU dictionary.
+Rule set is open source if anyone wants to poke at it: [g2p-rules.ts](https://github.com/ptarjan/ingglish/blob/main/packages/g2p/src/g2p-rules.ts)

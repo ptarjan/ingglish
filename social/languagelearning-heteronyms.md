@@ -1,15 +1,13 @@
 # r/languagelearning
 
-**Title:** English has 100+ words where the same spelling has completely different pronunciations — here's a cheat sheet
+**Title:** English has 100+ words where the same spelling has different pronunciations — here are 8 of them
 
 **Post type:** Image (screenshot of languagelearning-heteronyms.html)
 
 **Body text:**
 
-These are called heteronyms — same spelling, different sound, different meaning. Most languages don't have this problem because their spelling systems are consistent.
+These are called heteronyms. "Lead" rhymes with "reed" or "red" depending on whether it's the verb or the metal. "Wind" can rhyme with "pinned" or "kind." You can't tell which one someone means without context.
 
-English has over 100 of them. "Lead" can rhyme with "reed" or "red." "Wind" can rhyme with "pinned" or "kind." There's no way to know which one is meant without context.
+Most languages don't really have this because their spelling is more consistent. English has over a hundred of them.
 
-I built a free tool that shows the phonemic pronunciation of any English word without needing to learn IPA: [ingglish.com](https://ingglish.com). It uses only standard Latin letters and digraphs you already recognize (like "sh" and "th"). You can paste any text or URL and see every word respelled to match how it sounds.
-
-It also has an [experiment mode](https://ingglish.com/experiment) where you can customize the phoneme mappings to match your native language — a Finnish speaker set it up to look like Finnish orthography, for example.
+I made a tool ([ingglish.com](https://ingglish.com)) that shows pronunciation using regular letters instead of IPA — you can paste text or a URL. Mostly built it because I was curious how bad the spelling-to-sound mapping actually is. Turns out: pretty bad.

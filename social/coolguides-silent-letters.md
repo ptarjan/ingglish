@@ -1,13 +1,13 @@
 # r/coolguides
 
-**Title:** A guide to English's silent letters — and why they're there
+**Title:** A guide to English's silent letters and why they're there
 
 **Post type:** Image (screenshot of coolguides-silent-letters.html)
 
 **Comment to post immediately after:**
 
-Every one of these silent letters has a story. Some used to be pronounced (the K in "knife" was said out loud in Old English). Some were never pronounced at all — scholars in the 1500s added the B to "debt" and the S to "island" to make them look more Latin. The letters were fake from day one.
+My favorite one is "island." Scholars in the 1500s assumed it came from Latin "insula" and added the S. It's actually from Old English "igland" — the S was wrong from the start and nobody ever pronounced it.
 
-I found these while building [ingglish.com](https://ingglish.com), a tool that respells English so every letter actually makes a sound. It uses the CMU Pronouncing Dictionary (134k words) to show how words are actually pronounced.
+"Debt" and "doubt" are the same story. English got them from French ("dette," "doute") with no B. Scholars stuck the B in to make them look more like their Latin ancestors. Never said out loud, ever.
 
-The stat that surprised me most: about 60% of English words contain at least one silent letter. The most common words tend to be the oldest, so they've had the most time to accumulate this kind of drift.
+Found these patterns while building [ingglish.com](https://ingglish.com), which respells words to show how they're actually pronounced.
