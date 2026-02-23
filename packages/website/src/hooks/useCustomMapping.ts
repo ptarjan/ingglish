@@ -91,6 +91,8 @@ export function useCustomMapping(): UseCustomMappingReturn {
     const onHashChange = () => {
       const hashConfig = decodeFromHash(globalThis.location.hash);
       if (hashConfig) {
+        // Register eagerly so translateSync sees the new format during this render
+        registerExperimentFormat(hashConfig);
         setConfig(hashConfig);
         setVersion((v) => v + 1);
       }
