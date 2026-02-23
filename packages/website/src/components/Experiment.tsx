@@ -35,7 +35,7 @@ function Experiment() {
       </div>
 
       <div className="experiment-presets">
-        <span className="presets-label">Try a language:</span>
+        <span className="presets-label">Use a language's orthography:</span>
         {LANGUAGE_PRESETS.map((preset) => {
           const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
           return (
@@ -49,7 +49,7 @@ function Experiment() {
               }}
               title={preset.description}
             >
-              {preset.flag} {preset.label}
+              {preset.label}
             </a>
           );
         })}
