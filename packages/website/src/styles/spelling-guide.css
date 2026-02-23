@@ -54,6 +54,15 @@
   letter-spacing: 0.05em;
 }
 
+details.sound-group > summary {
+  cursor: pointer;
+  list-style: revert;
+}
+
+details.sound-group > summary > h4 {
+  display: inline;
+}
+
 .mapping-table {
   width: 100%;
   overflow: hidden;

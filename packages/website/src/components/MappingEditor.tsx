@@ -330,10 +330,9 @@ function MappingEditor({ mapping }: MappingEditorProps) {
     [mapping, advancedMode, isDuplicate, translateWord]
   );
 
-  const renderGroup = useCallback(
+  const renderGroupContent = useCallback(
     (group: SoundGroup) => (
-      <div className="sound-group" key={group.name}>
-        <h4>{group.name}</h4>
+      <>
         <table className="mapping-table experiment-table">
           <thead>
             <tr>
@@ -345,9 +344,31 @@ function MappingEditor({ mapping }: MappingEditorProps) {
           </thead>
           <tbody>{group.sounds.map((sound) => renderPhonemeRow(sound))}</tbody>
         </table>
-      </div>
+      </>
     ),
     [renderPhonemeRow]
+  );
+
+  const renderGroup = useCallback(
+    (group: SoundGroup) => {
+      if (group.name === 'R-Colored Vowels') {
+        return (
+          <details className="sound-group" key={group.name}>
+            <summary>
+              <h4>{group.name}</h4>
+            </summary>
+            {renderGroupContent(group)}
+          </details>
+        );
+      }
+      return (
+        <div className="sound-group" key={group.name}>
+          <h4>{group.name}</h4>
+          {renderGroupContent(group)}
+        </div>
+      );
+    },
+    [renderGroupContent]
   );
 
   const duplicateWarnings = useMemo(() => {
