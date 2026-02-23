@@ -118,16 +118,17 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ç: 'SH', // /ç/ voiceless palatal fricative — "ich" (German) ≈ "sh"
   // --- Alveolo-palatal (Mandarin, Japanese, Polish) ---
   ɕ: 'SH', // /ɕ/ voiceless alveolo-palatal fricative — Mandarin "xi" ≈ "sh"
+  dʑ: 'JH', // /dʑ/ voiced alveolo-palatal affricate — Japanese "ji" ≈ "j"
   // --- Retroflex (Hindi, Mandarin) ---
   ɖ: 'D', // /ɖ/ voiced retroflex stop — Hindi ≈ D
   ɗ: 'D', // /ɗ/ voiced alveolar implosive ≈ D
   ɘ: 'AH0', // /ɘ/ close-mid central ≈ schwa
-  ɜ: 'ER', // /ɜ/ open-mid central — non-rhotic "bird" ≈ "er"
 
+  ɜ: 'ER', // /ɜ/ open-mid central — non-rhotic "bird" ≈ "er"
   ɞ: 'ER', // /ɞ/ open-mid central rounded ≈ "er"
   ɤ: 'AH', // /ɤ/ close-mid back unrounded — Korean "ㅓ" ≈ "but"
-  ɢ: 'G', // /ɢ/ voiced uvular stop ≈ G
 
+  ɢ: 'G', // /ɢ/ voiced uvular stop ≈ G
   ɣ: 'G', // /ɣ/ voiced velar fricative — Spanish "lago" ≈ G
   // --- Pharyngeal (Arabic) ---
   ħ: 'HH', // /ħ/ voiceless pharyngeal fricative — Arabic "ha" ≈ H
@@ -135,18 +136,18 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɨ: 'IH', // /ɨ/ close central — Russian "ы" ≈ "bit"
   ɬ: 'L', // /ɬ/ voiceless lateral fricative — Welsh "ll" ≈ L
   ɭ: 'L', // /ɭ/ retroflex lateral ≈ L
+
   // --- Laterals ---
   ʎ: 'L', // /ʎ/ palatal lateral — Italian "figlio", Spanish "ll" ≈ L
-
   ɱ: 'M', // /ɱ/ labiodental nasal ≈ M
-  ɴ: 'NG', // /ɴ/ uvular nasal — Japanese moraic N before uvulars ≈ "ng"
+  ɴ: 'N', // /ɴ/ uvular nasal — Japanese moraic ん ≈ "n" (not "ng")
+
   // --- Nasals ---
   ɲ: 'N', // /ɲ/ palatal nasal — Spanish "ñ", Italian "gn" ≈ N (+ Y added below)
-
   ɳ: 'N', // /ɳ/ retroflex nasal ≈ N
-  ø: 'ER', // /ø/ close-mid front rounded — "peu" (French) ≈ "per" (without the r)
   // tɕ and dʑ are handled as two-char sequences below
 
+  ø: 'ER', // /ø/ close-mid front rounded — "peu" (French) ≈ "per" (without the r)
   œ: 'ER', // /œ/ open-mid front rounded — "peur" (French) ≈ "purr"
   ɸ: 'F', // /ɸ/ voiceless bilabial fricative — Japanese "fu" ≈ F
   q: 'K', // /q/ voiceless uvular stop — Arabic "Quran" ≈ K
@@ -154,35 +155,34 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɽ: 'D', // /ɽ/ retroflex flap — Hindi ≈ D
   // --- Taps and trills (Spanish, Italian, etc.) ---
   ɾ: 'R', // /ɾ/ alveolar tap — Spanish "pero" ≈ R (also like "butter" flap)
+
   // --- Uvular consonants (French, German, Arabic) ---
   ʁ: 'R', // /ʁ/ voiced uvular fricative — French/German R ≈ English R
 
   ʂ: 'SH', // /ʂ/ voiceless retroflex fricative — Mandarin "shi" ≈ "sh"
+  // --- Affricates (two-char sequences matched by the converter) ---
+  tɕ: 'CH', // /tɕ/ voiceless alveolo-palatal affricate — Mandarin "ji", Korean "ㅈ" ≈ "ch"
 
   ʈ: 'T', // /ʈ/ voiceless retroflex stop — Hindi ≈ T
+  ʈʂ: 'CH', // /ʈʂ/ voiceless retroflex affricate — Mandarin "zhi" ≈ "ch"
+
   // --- Labial-velar ---
   ɥ: 'W', // /ɥ/ labial-palatal approximant — French "lui" ≈ W
+  ɯ: 'UH', // /ɯ/ close back unrounded — Japanese "u", Turkish "ı" ≈ "book" (shorter than "oo")
 
-  ɯ: 'UW', // /ɯ/ close back unrounded — Japanese "u", Turkish "ı" ≈ "too"
   ʋ: 'V', // /ʋ/ labiodental approximant — Hindi, Dutch ≈ V
-
   // --- Velar/palatal fricatives (German, Mandarin, etc.) ---
   x: 'K', // /x/ voiceless velar fricative — "Bach", "loch" ≈ K
+
   // --- Front rounded vowels (French, German, Turkish, etc.) ---
   y: 'UW', // /y/ close front rounded — "tu" (French) ≈ "too"
-
   ʏ: 'UH', // /ʏ/ near-close front rounded — "Glück" (German) ≈ "book"
-  ʐ: 'ZH', // /ʐ/ voiced retroflex fricative — Mandarin "ri" ≈ "zh"
 
+  ʐ: 'ZH', // /ʐ/ voiced retroflex fricative — Mandarin "ri" ≈ "zh"
   ʑ: 'ZH', // /ʑ/ voiced alveolo-palatal fricative ≈ "zh"
+
   // --- Glottal ---
   ʔ: '', // /ʔ/ glottal stop — often silent in approximation
-
-  ʕ: 'AH', // /ʕ/ voiced pharyngeal fricative — Arabic "ain" ≈ "uh" (rough)
-  // --- Bilabial fricatives (Spanish) ---
-  β: 'V', // /β/ voiced bilabial fricative — Spanish "b" between vowels ≈ V
-
-  χ: 'K', // /χ/ voiceless uvular fricative — deeper "Bach" ≈ K
 
   // Note: length mark ː and combining diacritics are stripped in from-ipa.ts
   // before lookup. Nasal vowels (◌̃) are converted to vowel+n there.
@@ -190,8 +190,10 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   // --- Dental fricatives already in English ---
   // θ and ð are in the main map
 
-  // --- Affricates handled as sequences ---
-  // ts, dz, tɕ, dʑ, pf — the converter handles these character by character
+  ʕ: 'AH', // /ʕ/ voiced pharyngeal fricative — Arabic "ain" ≈ "uh" (rough)
+  // --- Bilabial fricatives (Spanish) ---
+  β: 'V', // /β/ voiced bilabial fricative — Spanish "b" between vowels ≈ V
+  χ: 'K', // /χ/ voiceless uvular fricative — deeper "Bach" ≈ K
 };
 
 /**

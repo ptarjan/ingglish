@@ -66,6 +66,33 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('marhaba')).toEqual(['M', 'AE', 'R', 'HH', 'AE', 'B', 'AE']);
   });
 
+  it('maps Japanese ɯ to UH (short "u", not long "oo")', () => {
+    expect(ipaToArpabet('ɯ')).toEqual(['UH']);
+    // sakura, not "sakoora"
+    expect(ipaToArpabet('sakɯɾa')).toEqual(['S', 'AE', 'K', 'UH', 'R', 'AE']);
+    // sushi
+    expect(ipaToArpabet('sɯɕi')).toEqual(['S', 'UH', 'SH', 'IY']);
+  });
+
+  it('maps Japanese moraic ɴ to N (not NG)', () => {
+    expect(ipaToArpabet('ɴ')).toEqual(['N']);
+    // genki, not "gengkee"
+    expect(ipaToArpabet('geɴki')).toEqual(['G', 'EH', 'N', 'K', 'IY']);
+  });
+
+  it('converts CJK affricates as two-char sequences', () => {
+    // tɕ (Mandarin/Korean palatal) → CH, not T+SH
+    expect(ipaToArpabet('tɕ')).toEqual(['CH']);
+    // dʑ (Japanese voiced palatal) → JH, not D+ZH
+    expect(ipaToArpabet('dʑ')).toEqual(['JH']);
+    // ʈʂ (Mandarin retroflex) → CH, not T+SH
+    expect(ipaToArpabet('ʈʂ')).toEqual(['CH']);
+    // 忍者 ninja: /niɴdʑa/ → N IY N JH AE
+    expect(ipaToArpabet('niɴdʑa')).toEqual(['N', 'IY', 'N', 'JH', 'AE']);
+    // 茶 cha: /ʈʂa/ → CH AE (after stripping aspiration mark)
+    expect(ipaToArpabet('ʈʂa')).toEqual(['CH', 'AE']);
+  });
+
   it('converts nasal vowels to vowel + N', () => {
     // French "enfants" /ɑ̃fɑ̃/
     expect(ipaToArpabet('ɑ̃fɑ̃')).toEqual(['AA', 'N', 'F', 'AA', 'N']);
