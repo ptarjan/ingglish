@@ -295,6 +295,16 @@ function hasDiffs(config: CustomMappingConfig): boolean {
   );
 }
 
+/** Check if any mapping value contains IPA Extension characters (U+0250–U+02AF) */
+function hasIPAExtensionChars(config: CustomMappingConfig): boolean {
+  for (const value of Object.values(config.phonemeMap)) {
+    if (/[\u0250-\u02AF]/.test(value)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /** Check if any mapping value contains non-Latin characters (IPA, Shavian, Cyrillic, etc.) */
 function isNonLatinMapping(config: CustomMappingConfig): boolean {
   for (const value of Object.values(config.phonemeMap)) {
@@ -330,7 +340,7 @@ function registerExperimentFormat(config: CustomMappingConfig): void {
     forward: converter,
     isLatinScript: isLatin,
     label: 'Experiment',
-    preservesCase: isLatin || hasCasedNonLatinChars(config),
+    preservesCase: isLatin || (!hasIPAExtensionChars(config) && hasCasedNonLatinChars(config)),
   });
 }
 
