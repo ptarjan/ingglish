@@ -1,6 +1,3 @@
-// Guide pronunciation format (self-registers on import)
-import './to-pronunciation';
-
 // Phoneme data and utilities
 export {
   ARPABET_CONSONANTS,
@@ -42,6 +39,9 @@ export { findOnsetStart } from './phonotactics';
 // Conversion functions
 export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
 export type { FormatOptions } from './to-ingglish';
+
+// Guide pronunciation format
+export { registerPronunciation } from './to-pronunciation';
 
 // Types
 export type { OutputFormat } from './types';

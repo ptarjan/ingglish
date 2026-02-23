@@ -44,6 +44,15 @@ export function arpabetToPronunciation(arpabet: string[]): string {
     .join('-');
 }
 
+export function registerPronunciation(): void {
+  registerFormat('pronunciation', {
+    forward: arpabetToPronunciation,
+    isLatinScript: true,
+    label: 'Guide',
+    preservesCase: false,
+  });
+}
+
 /**
  * Syllabifies ARPAbet phonemes using the Maximal Onset Principle.
  * Each vowel is a syllable nucleus. Consonants between vowels are
@@ -116,11 +125,3 @@ function syllableToSpelling(phonemes: string[]): string {
   }
   return result;
 }
-
-// Self-register as format at module load
-registerFormat('pronunciation', {
-  forward: arpabetToPronunciation,
-  isLatinScript: true,
-  label: 'Guide',
-  preservesCase: false,
-});
