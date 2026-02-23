@@ -15,13 +15,14 @@ import { IPA_TO_ARPABET_MAP } from './ipa-maps';
  * @returns Array of ARPAbet phonemes (e.g., ["HH", "AH0", "L", "OW"])
  */
 export function ipaToArpabet(ipa: string): string[] {
-  // Remove stress markers and combining diacritics not handled by the map.
-  // Combining tilde (nasalization), combining ring, ties, etc. are stripped
-  // so the base character can still be matched to its closest approximation.
-  const STRIP_RE =
-    // Stress markers, length marks, and combining diacritics (nasalization, etc.)
-    /[\u02C8\u02CC\u02D0\u02D1\u0303\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
-  const clean = ipa.replaceAll(STRIP_RE, '');
+  // Nasal vowels (vowel + combining tilde U+0303) → vowel + "n".
+  // This approximates nasalization as vowel+N for English speakers,
+  // e.g. French "ɑ̃fɑ̃" → "ɑnfɑn" → AA N F AA N → "onfon".
+  const denasalized = ipa.replaceAll(/(.)\u0303/g, '$1n');
+
+  // Remove stress markers and remaining combining diacritics.
+  const STRIP_RE = /[\u02C8\u02CC\u02D0\u02D1\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
+  const clean = denasalized.replaceAll(STRIP_RE, '');
 
   const result: string[] = [];
   let i = 0;

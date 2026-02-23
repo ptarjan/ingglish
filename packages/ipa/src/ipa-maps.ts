@@ -109,7 +109,8 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   // --- Open vowels ---
   ä: 'AA', // /ä/ open central — IPA diacritic variant ≈ "father"
   ɐ: 'AH', // /ɐ/ near-open central — Portuguese unstressed "a" ≈ "but"
-  ɑ̃: 'AA', // nasal /ɑ/ — French "an/en" ≈ "father" (nasalization lost)
+  // Nasal vowels (ɑ̃, ɛ̃, ɔ̃, etc.) are handled in from-ipa.ts by
+  // converting vowel+combining-tilde to vowel+"n" before map lookup.
   ɒ: 'AO', // /ɒ/ open back rounded — British "lot" ≈ "thought"
 
   // --- Implosives and other stops ---
@@ -183,8 +184,8 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
 
   χ: 'K', // /χ/ voiceless uvular fricative — deeper "Bach" ≈ K
 
-  // Note: length mark ː and combining diacritics (nasalization ◌̃, etc.)
-  // are stripped in from-ipa.ts before lookup, so they don't need entries here.
+  // Note: length mark ː and combining diacritics are stripped in from-ipa.ts
+  // before lookup. Nasal vowels (◌̃) are converted to vowel+n there.
 
   // --- Dental fricatives already in English ---
   // θ and ð are in the main map
