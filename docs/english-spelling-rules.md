@@ -16,15 +16,15 @@ The good news: the *rules* are quite reliable. The complexity comes from having 
 
 A digraph is two letters that represent a single sound. English has several consonant digraphs, and they are among the most reliable patterns in the language.
 
-### SH = /ʃ/
+### SH as in "ship"
 
-**sh** always makes the /ʃ/ sound (as in "shoe"). This is one of the most reliable spelling patterns in English with essentially zero exceptions.
+**sh** always makes the /ʃ/ sound. This is one of the most reliable spelling patterns in English with essentially zero exceptions.
 
 **Examples:** *she, ship, fish, push, fashion, mushroom, shout, shower*
 
-### CH = /tʃ/
+### CH as in "church"
 
-**ch** usually makes the /tʃ/ sound (as in "church"). This is the default pronunciation and covers the vast majority of words.
+**ch** usually makes the /tʃ/ sound. This is the default pronunciation and covers the vast majority of words.
 
 **Examples:** *child, much, teacher, church, chance, change, chapter, chicken*
 
@@ -32,7 +32,7 @@ A digraph is two letters that represent a single sound. English has several cons
 
 **French-origin exception:** In words from French, **ch** = /ʃ/: *machine, chef, champagne, charade, brochure, chauffeur, parachute*. These are relatively uncommon.
 
-### TH = /θ/ or /ð/
+### TH as in "think" and "the"
 
 **th** represents two different sounds that are written identically:
 
@@ -45,13 +45,13 @@ A digraph is two letters that represent a single sound. English has several cons
 - Between vowels, it's usually voiced: *brother, mother, father, weather, leather, feather, gather, rather*
 - At the start of content words, it's usually voiceless: *thank, theory, thermal, therapy, theme*
 
-### PH = /f/
+### PH as in "phone"
 
 **ph** says /f/. This spelling comes from Greek and is completely reliable.
 
 **Examples:** *phone, photo, physical, philosophy, pharmacy, phrase, phenomenon, alphabet, geography, biography, photograph, elephant, triumph*
 
-### NG = /ŋ/
+### NG as in "sing"
 
 **ng** represents the nasal velar sound /ŋ/ (the sound at the end of "sing"). This is the second most common digraph pattern.
 
@@ -59,7 +59,7 @@ A digraph is two letters that represent a single sound. English has several cons
 
 **When /g/ is also pronounced:** Before a vowel *within the same root*, the /g/ is pronounced after the /ŋ/: *finger* /fɪŋgər/, *anger* /æŋgər/, *hungry* /hʌŋgri/, *linger* /lɪŋgər/, *single* /sɪŋgəl/. But when *-ing* is added as a suffix, the /g/ stays silent: *singing* = /sɪŋɪŋ/, not /sɪŋgɪŋ/.
 
-### CK = /k/
+### CK as in "back"
 
 **ck** says /k/ and appears after short vowels. This is a complementary distribution with plain **k**: **ck** follows short vowels, **k** follows long vowels or consonants.
 
@@ -67,7 +67,7 @@ A digraph is two letters that represent a single sound. English has several cons
 
 **Compare:** *back* (short a, spelled ck) vs *bake* (long a, spelled k); *sick* (short i, ck) vs *like* (long i, k)
 
-### WH = /w/
+### WH as in "what"
 
 **wh** says /w/ in modern standard English. Historically it was /hw/ (a breathy w), and some dialects still preserve this distinction.
 
@@ -75,31 +75,31 @@ A digraph is two letters that represent a single sound. English has several cons
 
 **Exception:** *who, whom, whose, whole* — here **wh** = /h/ (the w is silent instead of the h).
 
-### WR = /r/
+### WR as in "write"
 
 **wr** at the start of a word says /r/. The **w** is always silent.
 
 **Examples:** *write, wrong, wrap, wrist, wreck, wrestle, wrinkle, wrath*
 
-### KN = /n/
+### KN as in "know"
 
 **kn** at the start of a word says /n/. The **k** is always silent.
 
 **Examples:** *know, knee, knife, knock, knight, knot, knit, kneel, knowledge, knuckle*
 
-### GN = /n/
+### GN as in "gnat"
 
 **gn** at the start of a word says /n/. The **g** is always silent. This is a small pattern.
 
 **Examples:** *gnat, gnaw, gnome, gnarl, gnu*
 
-### TCH = /tʃ/
+### TCH as in "match"
 
 **tch** says /tʃ/ (same sound as **ch**). It appears after short vowels, parallel to how **ck** relates to **k** and **dge** relates to **ge**.
 
 **Examples:** *match, catch, watch, kitchen, stretch, witch, sketch, patch, hatch, ditch, stitch*
 
-### DGE = /dʒ/
+### DGE as in "bridge"
 
 **dge** says /dʒ/ (same sound as **j** or soft **g**). It appears after short vowels.
 
@@ -111,21 +111,21 @@ A digraph is two letters that represent a single sound. English has several cons
 
 Vowel teams are pairs of vowels that work together to represent a single vowel sound. The old teaching rhyme "when two vowels go walking, the first one does the talking" is an oversimplification, but it works for several of the most common patterns.
 
-### EE = /iː/
+### EE as in "see"
 
 **ee** always says /iː/ (the "long e" sound). This is arguably the most reliable vowel spelling in English, with essentially no exceptions.
 
 **Examples:** *see, free, tree, green, sleep, deep, keep, feet, meet, need, speed, street, week, feel, seed*
 
-### EA = /iː/
+### EA as in "eat"
 
 **ea** most commonly says /iː/: *eat, read, speak, clean, team, sea, lead, meat, dream, heat, leave, please, reason, teach, reach, stream*
 
 **Common /ɛ/ pronunciation:** *head, bread, dead, health, weather, heavy, ready, spread, thread, breath, sweat, death, measure, treasure, pleasant*
 
-There is no reliable rule for which pronunciation applies. The /iː/ pronunciation is more common overall, but the /ɛ/ words include many high-frequency items. Words ending in **-ead**, **-eath**, **-eath** are particularly split.
+There is no reliable rule for which pronunciation applies. The /iː/ pronunciation is more common overall, but the /ɛ/ words include many high-frequency items. Words ending in **-ead**, **-eath** are particularly split.
 
-### AI = /eɪ/
+### AI as in "rain"
 
 **ai** says /eɪ/ (the "long a" sound). Very reliable, with very few exceptions.
 
@@ -133,7 +133,7 @@ There is no reliable rule for which pronunciation applies. The /iː/ pronunciati
 
 **Notable exception:** *said* = /sɛd/
 
-### AY = /eɪ/ (at word/syllable end)
+### AY as in "day"
 
 **ay** says /eɪ/ and appears at the end of a word or syllable, where **ai** would not be used.
 
@@ -141,7 +141,7 @@ There is no reliable rule for which pronunciation applies. The /iː/ pronunciati
 
 Together, **ai** (mid-word) and **ay** (word-final) provide reliable coverage of the /eɪ/ sound.
 
-### OA = /oʊ/
+### OA as in "boat"
 
 **oa** says /oʊ/ (the "long o" sound). Very reliable.
 
@@ -149,7 +149,7 @@ Together, **ai** (mid-word) and **ay** (word-final) provide reliable coverage of
 
 **Rare exception:** *broad* = /brɔːd/
 
-### OO = /uː/ or /ʊ/
+### OO as in "moon"
 
 **oo** has two pronunciations:
 
@@ -160,7 +160,7 @@ Together, **ai** (mid-word) and **ay** (word-final) provide reliable coverage of
 
 **Exceptions:** *blood* and *flood* say /ʌ/ — these are the only two common words where **oo** makes this sound.
 
-### OU = /aʊ/
+### OU as in "out"
 
 **ou** most commonly says /aʊ/: *out, house, about, around, found, sound, ground, count, amount, mouth, cloud, announce, mountain, thousand*
 
@@ -172,7 +172,7 @@ Together, **ai** (mid-word) and **ay** (word-final) provide reliable coverage of
 
 The /aʊ/ pronunciation is the most common default. The others tend to cluster in specific letter environments.
 
-### OW = /oʊ/ or /aʊ/
+### OW as in "low" or "now"
 
 **ow** has two common pronunciations:
 
@@ -181,45 +181,45 @@ The /aʊ/ pronunciation is the most common default. The others tend to cluster i
 
 **Pattern:** Before **n**, **ow** is usually /aʊ/ (*town, down, brown, gown, crown, drown, frown*). At the end of a word, /oʊ/ is more common (*show, know, grow, flow*). The /aʊ/ words tend to involve earthier, more concrete meanings (perhaps because they come from Germanic roots).
 
-### OI / OY = /ɔɪ/
+### OI and OY as in "oil" and "boy"
 
 **oi** (mid-word) and **oy** (word-final) always say /ɔɪ/. This is one of the most reliable vowel patterns in English, with no exceptions.
 
 **Examples:** *oil, join, point, voice, choice, noise, coin, avoid, moisture / boy, joy, toy, enjoy, destroy, royal, loyal, employ*
 
-### AU / AW = /ɔː/
+### AU and AW as in "cause" and "law"
 
 **au** (mid-word) and **aw** (word/syllable end) both say /ɔː/. Very reliable.
 
 **Examples:** *cause, August, author, fault, launch, sauce, audience / draw, law, saw, awful, raw, crawl, dawn, lawn, jaw, yawn, straw*
 
-### EI = /eɪ/ or /iː/
+### EI as in "vein" or "receive"
 
 **ei** has two main pronunciations depending on context:
 
 - **After C**, **ei** = /iː/: *receive, ceiling, deceive, conceive, perceive* (the "I before E except after C" rule)
 - **Otherwise**, **ei** often = /eɪ/: *vein, rein, eight, weight, neighbor, freight, beige, reign, surveillance*
 
-### EY = /iː/
+### EY as in "key"
 
 **ey** at the end of words says /iː/: *money, honey, key, they, journey, valley, turkey, monkey, hockey, kidney, attorney, donkey*
 
 **Exception:** *they, hey, grey/gray, prey, survey, obey* where **ey** = /eɪ/. These tend to be monosyllabic.
 
-### EW = /uː/ or /juː/ (fewer than 500 words)
+### EW as in "new"
 
 **ew** says /uː/ or /juː/ depending on the preceding consonant:
 
 - **/uː/** after r, l, ch, j, s: *blew, drew, chew, brew, flew, grew, crew, jewel, stew*
 - **/juː/** after n, d, f, h, m: *new, few, dew, hew, mew, nephew, curfew*
 
-### IE = /iː/
+### IE as in "field"
 
 **ie** usually says /iː/: *field, piece, believe, achieve, grief, chief, relief, shield, yield, brief, thief, priest, fierce, pier*
 
 At the end of one-syllable words, **ie** = /aɪ/: *die, tie, pie, lie, vie*
 
-### EU = /juː/
+### EU as in "feud"
 
 **eu** says /juː/: *Europe, neutral, feud, therapeutic, deuce, pneumonia*
 
@@ -227,7 +227,7 @@ Consistent but uncommon in English.
 
 ## The Silent E Rule
 
-### "Magic E" — Vowel-Consonant-E
+### Magic E
 
 A silent **e** at the end of a word signals that the preceding vowel is "long" (says its letter name). This is one of the most important and widely taught rules in English phonics.
 
@@ -247,31 +247,31 @@ The silent e is dropped before vowel suffixes (*bake → baking*, *hope → hopi
 
 R-colored vowels (sometimes called "r-controlled vowels" or "bossy r") are vowels followed by **r** that take on a modified sound. These are among the most common patterns in English.
 
-### ER = /ɜːr/
+### ER as in "her"
 
-The single most common spelling pattern in the dictionary. **er** produces the /ɜːr/ sound (as in "her").
+The single most common spelling pattern in the dictionary. **er** produces the /ɜːr/ sound.
 
 **Examples:** *her, water, teacher, under, never, after, over, other, number, better, mother, father, together, remember, different*
 
 In unstressed syllables, this is identical to schwa + r (/ər/).
 
-### AR = /ɑːr/
+### AR as in "car"
 
-**ar** says /ɑːr/ (as in "car"): *car, star, garden, market, part, start, hard, large, charge, guard, park, farm, dark, march, smart*
+**ar** says /ɑːr/: *car, star, garden, market, part, start, hard, large, charge, guard, park, farm, dark, march, smart*
 
 In unstressed syllables it reduces to /ər/: *dollar, sugar, regular, familiar, popular, particular, similar, grammar, calendar*
 
-### OR = /ɔːr/
+### OR as in "for"
 
-**or** says /ɔːr/ (as in "for"): *for, born, sport, morning, short, north, form, force, sort, horse, order, report, important, support*
+**or** says /ɔːr/: *for, born, sport, morning, short, north, form, force, sort, horse, order, report, important, support*
 
 In unstressed syllables it reduces to /ər/: *doctor, color, favor, factor, author, mirror, error, labor, motor, editor, major*
 
-### IR = /ɜːr/
+### IR as in "bird"
 
 **ir** makes the same sound as **er**: *bird, first, girl, third, sir, firm, birth, dirt, stir, shirt, circle, thirty, spirit, confirm*
 
-### UR = /ɜːr/
+### UR as in "burn"
 
 **ur** also makes the same sound as **er** and **ir**: *burn, turn, nurse, church, hurt, occur, return, purpose, further, surface, during, Saturday*
 
@@ -279,7 +279,7 @@ The three spellings **er**, **ir**, and **ur** all represent the same sound /ɜ�
 
 ## Soft C and Soft G
 
-### Soft C: C before E, I, Y = /s/
+### Soft C: C before E, I, or Y
 
 When **c** appears before **e**, **i**, or **y**, it says /s/ instead of its default /k/.
 
@@ -289,7 +289,7 @@ When **c** appears before **e**, **i**, or **y**, it says /s/ instead of its def
 
 This rule comes from Latin and French and is extremely reliable. The main exceptions are a handful of words where **c** before **e** still says /k/: *Celtic, skeptic* (alternate spellings).
 
-### Soft G: G before E, I, Y = /dʒ/
+### Soft G: G before E, I, or Y
 
 When **g** appears before **e**, **i**, or **y**, it *often* says /dʒ/ (as in "gem") instead of its default /g/.
 
@@ -341,7 +341,7 @@ This system is remarkably consistent. When you see a single consonant between tw
 
 English suffixes have highly predictable pronunciations. Once you know a suffix, you can pronounce it correctly in any word.
 
-### -ED Past Tense
+### The -ED Past Tense
 
 The **-ed** ending has three pronunciations, entirely predictable from the final sound of the base word:
 
@@ -351,68 +351,70 @@ The **-ed** ending has three pronunciations, entirely predictable from the final
 | Voiced sound (vowel or /b, g, v, z, ʒ, dʒ, m, n, ŋ, l, r/) | /d/ | *called, played, opened, moved, changed, pulled, turned, seemed* |
 | /t/ or /d/ | /ɪd/ | *wanted, needed, started, waited, added, decided, expected, created* |
 
-### -ING
+### The -ING Suffix
 
 Always /ɪŋ/. No exceptions. *running, walking, singing, reading, working, thinking, looking, making, going, coming*
 
-### -TION
+### The -TION Suffix
 
 Always /ʃən/: *nation, action, education, information, situation, attention, collection, direction, question, position, condition, protection, production, connection*
 
-### -SION (two pronunciations)
+### The -SION Suffix
+
+Two pronunciations:
 
 - After a vowel: /ʒən/ — *vision, television, decision, occasion, explosion, conclusion, confusion*
 - After a consonant: /ʃən/ — *tension, mansion, extension, dimension, expansion, pension, suspension*
 
-### -LY
+### The -LY Suffix
 
 Always /liː/: *quickly, really, finally, actually, probably, certainly, usually, simply, easily, clearly, directly, completely, immediately, recently*
 
-### -NESS
+### The -NESS Suffix
 
 Always /nəs/: *happiness, darkness, kindness, business, illness, weakness, awareness, sadness, madness, fitness, goodness, readiness, willingness*
 
-### -MENT
+### The -MENT Suffix
 
 Always /mənt/: *government, moment, movement, environment, development, management, statement, agreement, department, treatment, equipment, achievement*
 
-### -AL
+### The -AL Suffix
 
 Always /əl/: *final, national, personal, natural, central, general, special, social, physical, political, traditional, additional, professional, original*
 
-### -ABLE / -IBLE
+### The -ABLE and -IBLE Suffixes
 
 Always /əbəl/: *available, comfortable, possible, responsible, reasonable, considerable, terrible, acceptable, capable, valuable, suitable, favorable*
 
 The choice between **-able** (more common, used with complete English words) and **-ible** (used with Latin stems) affects spelling but not pronunciation.
 
-### -FUL
+### The -FUL Suffix
 
 Always /fəl/: *beautiful, careful, wonderful, powerful, successful, helpful, useful, grateful, hopeful, painful, peaceful, meaningful, cheerful, thankful*
 
-### -LESS
+### The -LESS Suffix
 
 Always /ləs/: *homeless, careless, endless, useless, breathless, countless, fearless, helpless, harmless, meaningless, countless, nevertheless, regardless*
 
-### -OUS
+### The -OUS Suffix
 
 Always /əs/: *famous, dangerous, various, serious, previous, obvious, enormous, curious, nervous, precious, religious, generous, mysterious, conscious*
 
-### -ENCE / -ANCE (combined ~1,200 words)
+### The -ENCE and -ANCE Suffixes
 
 Both pronounced /əns/: *experience, difference, confidence, audience, evidence, importance, distance, performance, appearance, insurance, balance, substance*
 
-### -EN
+### The -EN Suffix
 
 Says /ən/: *open, often, children, listen, written, broken, golden, garden, kitchen, sudden, frozen, hidden, driven, chosen, forgotten, mistaken*
 
-### -EST (superlative)
+### The -EST Suffix
 
 Says /əst/ or /ɪst/: *best, largest, biggest, highest, greatest, latest, oldest, fastest, strongest, closest, deepest, longest, widest*
 
-## The "Magic" GH
+## The Silent GH
 
-### GH after Vowels = Silent
+### GH after Vowels
 
 When **gh** follows a vowel, it is almost always silent. The vowel pattern before it determines the pronunciation:
 
@@ -440,13 +442,13 @@ The **ough** words are few (220 in the dictionary, and fewer than 30 in common u
 
 ## Other Consonant Rules
 
-### QU = /kw/
+### QU as in "queen"
 
 In English, **q** is always followed by **u**, and **qu** always says /kw/: *queen, question, quick, quiet, quite, quality, quarter, require, equal, frequent, unique, adequate*
 
 At the end of words (from French), **-que** = /k/: *unique, technique, antique, boutique, critique, physique*
 
-### X = /ks/ or /gz/
+### X as in "box"
 
 **x** has two predictable pronunciations:
 
@@ -466,13 +468,13 @@ Beyond the digraphs already covered, English has several other silent letter pat
 | **ps** (word-initial) | p | *psychology, psalm, pseudo, psyche, psychiatry* |
 | **pn** (word-initial) | p | *pneumonia, pneumatic* |
 
-### S between Vowels = /z/ (thousands of words)
+### S between Vowels
 
 When **s** appears between two vowels, it often voices to /z/: *music, reason, present, visit, prison, poison, season, pleasant, cousin, thousand, result, design, resign, resist*
 
 This is not perfectly reliable — *basic, basin, bison* keep /s/ — but /z/ is the common pattern.
 
-### TI, CI, SI before Vowels = /ʃ/ or /ʒ/
+### TI, CI, and SI before Vowels
 
 In Latin-derived suffixes, these letter combinations produce /ʃ/ or /ʒ/:
 
@@ -484,7 +486,7 @@ In Latin-derived suffixes, these letter combinations produce /ʃ/ or /ʒ/:
 
 When a vowel appears alone (not in a team or before silent e), its pronunciation depends on the syllable structure.
 
-### Short Vowels (in closed syllables)
+### Short Vowels in Closed Syllables
 
 A "closed" syllable ends with a consonant. Single vowels in closed syllables are short:
 
@@ -496,7 +498,7 @@ A "closed" syllable ends with a consonant. Single vowels in closed syllables are
 | **o** | /ɒ/ | *hot, dog, not, stop, top, lot, drop, box, rock, clock, job, common* |
 | **u** | /ʌ/ | *but, cut, run, bus, cup, sun, fun, jump, just, luck, much, must, such* |
 
-### Long Vowels (in open syllables)
+### Long Vowels in Open Syllables
 
 An "open" syllable ends with the vowel itself. Single vowels in open syllables tend to be long:
 
@@ -508,7 +510,7 @@ An "open" syllable ends with the vowel itself. Single vowels in open syllables t
 | **o** | /oʊ/ | *go, no, so, open, over, only, total, local, moment, notice, focus, ocean* |
 | **u** | /juː/ | *unit, union, universe, unique, usual, music, human, student, future, humor* |
 
-### Schwa: The Unstressed Vowel (most common sound in English)
+### Schwa: The Unstressed Vowel
 
 Any vowel letter can reduce to /ə/ (schwa) in an unstressed syllable. Schwa is the most frequently occurring sound in English:
 
@@ -518,30 +520,30 @@ Any vowel letter can reduce to /ə/ (schwa) in an unstressed syllable. Schwa is 
 - **o** = /ə/: *second, common, person, today, together, police, complete, propose*
 - **u** = /ə/: *support, suggest, supply, suppose, success, surprise, survive*
 
-## Summary Table: English Spelling Rules Ranked by Impact
+## Summary Table
 
 | Rank | Rule | Words affected | % of dictionary |
 |------|------|---------------:|----------------:|
-| 1 | [ER/IR/UR = /ɜːr/](#er-r) | 27,108 | 21.5% |
-| 2 | [Doubled consonants = single sound](#doubled-consonants) | ~20,000 | ~16% |
-| 3 | [AR = /ɑːr/](#ar-r) | 10,342 | 8.2% |
-| 4 | [NG = /ŋ/](#ng) | 8,268 | 6.6% |
-| 5 | [Silent E makes vowel long](#the-silent-e-rule) | 7,411 | 5.9% |
-| 6 | [OR = /ɔːr/](#or-r) | 7,587 | 6.0% |
-| 7 | [CH = /tʃ/](#ch-t) | 6,578 | 5.2% |
-| 8 | [Soft G (before E/I/Y = /dʒ/)](#soft-c-and-soft-g) | 6,195 | 4.9% |
-| 9 | [Soft C (before E/I/Y = /s/)](#soft-c-and-soft-g) | 5,401 | 4.3% |
-| 10 | [-ED suffix (3 predictable sounds)](#suffix-pronunciation-rules) | 5,178 | 4.1% |
-| 11 | [-ING suffix = /ɪŋ/](#suffix-pronunciation-rules) | 5,068 | 4.0% |
-| 12 | [IE = /iː/](#ie-i) | 4,579 | 3.6% |
-| 13 | [EA = /iː/](#ea-i) | 3,953 | 3.1% |
-| 14 | [CK = /k/ after short vowels](#ck-k) | 3,679 | 2.9% |
-| 15 | [SH = /ʃ/](#sh) | 3,531 | 2.8% |
-| 16 | [OU = /aʊ/](#ou-a) | 3,511 | 2.8% |
-| 17 | [TH = /θ/ or /ð/](#th-or) | 3,457 | 2.7% |
-| 18 | [AU/AW = /ɔː/](#au-aw) | 3,060 | 2.4% |
-| 19 | [EE = /iː/](#ee-i) | 2,523 | 2.0% |
-| 20 | [AI/AY = /eɪ/](#ai-e) | 2,324+ | 1.8%+ |
+| 1 | [ER/IR/UR as in "her"](#er-as-in-her) | 27,108 | 21.5% |
+| 2 | [Doubled consonants](#the-short-vowel-signal) | ~20,000 | ~16% |
+| 3 | [AR as in "car"](#ar-as-in-car) | 10,342 | 8.2% |
+| 4 | [NG as in "sing"](#ng-as-in-sing) | 8,268 | 6.6% |
+| 5 | [Silent E makes vowel long](#magic-e) | 7,411 | 5.9% |
+| 6 | [OR as in "for"](#or-as-in-for) | 7,587 | 6.0% |
+| 7 | [CH as in "church"](#ch-as-in-church) | 6,578 | 5.2% |
+| 8 | [Soft G before E/I/Y](#soft-g-g-before-e-i-or-y) | 6,195 | 4.9% |
+| 9 | [Soft C before E/I/Y](#soft-c-c-before-e-i-or-y) | 5,401 | 4.3% |
+| 10 | [-ED suffix](#the--ed-past-tense) | 5,178 | 4.1% |
+| 11 | [-ING suffix](#the--ing-suffix) | 5,068 | 4.0% |
+| 12 | [IE as in "field"](#ie-as-in-field) | 4,579 | 3.6% |
+| 13 | [EA as in "eat"](#ea-as-in-eat) | 3,953 | 3.1% |
+| 14 | [CK as in "back"](#ck-as-in-back) | 3,679 | 2.9% |
+| 15 | [SH as in "ship"](#sh-as-in-ship) | 3,531 | 2.8% |
+| 16 | [OU as in "out"](#ou-as-in-out) | 3,511 | 2.8% |
+| 17 | [TH as in "think"](#th-as-in-think-and-the) | 3,457 | 2.7% |
+| 18 | [AU/AW as in "cause"](#au-and-aw-as-in-cause-and-law) | 3,060 | 2.4% |
+| 19 | [EE as in "see"](#ee-as-in-see) | 2,523 | 2.0% |
+| 20 | [AI as in "rain"](#ai-as-in-rain) | 2,324+ | 1.8%+ |
 
 These 20 rules account for the pronunciation of the overwhelming majority of English words. The remaining patterns (OO, OW, OI/OY, PH, QU, EI/EY, etc.) are smaller but equally reliable within their domains.
 

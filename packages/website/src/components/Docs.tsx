@@ -114,13 +114,13 @@ const docs: DocEntry[] = [
   {
     content: englishSpellingRules,
     filename: 'english-spelling-rules.md',
-    id: 'english-spelling-rules',
+    id: 'how-to-read-english',
     title: 'Reading: Letters to Sounds',
   },
   {
     content: englishSpellingChoices,
     filename: 'english-spelling-choices.md',
-    id: 'english-spelling-choices',
+    id: 'how-to-spell-english',
     title: 'Writing: Sounds to Letters',
   },
   {
