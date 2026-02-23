@@ -118,9 +118,9 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | ă | Romanian, Vietnamese |
 
 **Notes:**
-- The English /ʌ/ sound is relatively rare across languages — most of the 37 compared languages lack it entirely
+- The English /ʌ/ sound is relatively rare across languages; most of the 37 compared languages lack it entirely
 - Most languages use 'u' for /u/ (as in "too") or /ʊ/ (as in "book"), not /ʌ/
-- 'uh' is the English interjection for this exact sound — everyone knows how "uh" sounds
+- 'uh' is the English interjection for this exact sound, and everyone knows how "uh" sounds
 - This frees 'u' for /ʊ/, aligning with most world languages
 - English inconsistently spells this as 'o' in "son", "love", "come"; Ingglish uses 'uh' consistently
 - Korean romanization uses 'eo' for ㅓ /ʌ/; Romanian and Vietnamese 'ă' represent /ə/ (close to /ʌ/)
@@ -175,7 +175,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 
 **Notes:**
 - Pinyin, Italian, Vietnamese, Indonesian all use 'ai' for this sound
-- German 'ei' is /aɪ/, but German 'ie' is /iː/ — confusing for learners
+- German 'ei' is /aɪ/, but German 'ie' is /iː/, which is confusing for learners
 - Dutch uses both 'ij' and 'ei' for /ɛi/ ≈ /aɪ/
 - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available for /aɪ/ in Ingglish
 - Many languages (Spanish, French, Finnish, Swahili) lack this diphthong entirely
@@ -300,7 +300,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 - Romanian 'ă' and Albanian 'ë' are dedicated letters for /ə/
 - Indonesian 'e' (called "e pepet") represents /ə/ in many common words
 - Portuguese and Catalan reduce unstressed vowels to schwa; Russian/Ukrainian reduce unstressed 'o' and 'a' to /ɐ/ (near-schwa)
-- Many languages (Spanish, Italian, Finnish, Turkish, Polish, etc.) lack schwa entirely — every vowel is pronounced fully regardless of stress
+- Many languages (Spanish, Italian, Finnish, Turkish, Polish, etc.) lack schwa entirely: every vowel is pronounced fully regardless of stress
 
 ### R-Colored Vowels
 
@@ -315,7 +315,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | English | arr, ar | arrow, carrot, barrel |
 
 **Notes:**
-- Using regular Ingglish vowel rules, /æ/ + /r/ would be 'ar' — but 'ar' is already used for /ɑɹ/ (star). The doubled 'rr' avoids the collision.
+- Using regular Ingglish vowel rules, /æ/ + /r/ would be 'ar', but 'ar' is already used for /ɑɹ/ (star). The doubled 'rr' avoids the collision.
 - Matches English spelling pattern in "arrow", "carrot", "barrel"
 
 #### 'AIR' Sound (/ɛɹ/)
@@ -327,7 +327,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | English | air, are, ear, ere | air, care, bear, there |
 
 **Notes:**
-- Using regular rules, /ɛ/ + /r/ would be 'er' — but 'er' is already used for /ɝ/ (her). "care" and "her" would both become "ker"/"her".
+- Using regular rules, /ɛ/ + /r/ would be 'er', but 'er' is already used for /ɝ/ (her). "care" and "her" would both become "ker"/"her".
 - Ingglish uses 'air' consistently, matching the word "air" itself
 - This spelling fixed 204 collisions
 
@@ -340,7 +340,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | English | eer, ear, ere, ier | beer, beard, fear, here, pier |
 
 **Notes:**
-- Using regular rules, /ɪ/ + /r/ would be 'ir' — but "beard" would become "bird", colliding with the animal
+- Using regular rules, /ɪ/ + /r/ would be 'ir', but "beard" would become "bird", colliding with the animal
 - Ingglish uses 'eer' consistently, matching the word "beer" itself
 - The [NEAR vowel](https://en.wikipedia.org/wiki/English_phonology#NEAR) (/ɪɹ/) is distinct from the KIT vowel (IH /ɪ/): "beer" vs "bit"
 
@@ -353,7 +353,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | English | ar | star, car, far |
 
 **Notes:**
-- Using regular rules, /ɑ/ + /r/ would be 'or' (since Ingglish uses 'o' for /ɑ/) — but 'or' is already used for /ɔɹ/ (store). "star" and "store" would both have 'or'.
+- Using regular rules, /ɑ/ + /r/ would be 'or' (since Ingglish uses 'o' for /ɑ/), but 'or' is already used for /ɔɹ/ (store). "star" and "store" would both have 'or'.
 - Instead, Ingglish uses 'ar', matching English spelling exactly. "star" → "star" is identical.
 
 #### 'OR' Sound (/ɔɹ/)
@@ -365,7 +365,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | English | ore, or, our, oar | store, more, four, oar |
 
 **Notes:**
-- Using regular rules, /ɔ/ + /r/ would be 'awr' (since Ingglish uses 'aw' for /ɔ/) — but 'awr' is awkward and unfamiliar
+- Using regular rules, /ɔ/ + /r/ would be 'awr' (since Ingglish uses 'aw' for /ɔ/), but 'awr' is awkward and unfamiliar
 - 'or' is intuitive and available (since /ɑɹ/ uses 'ar' instead)
 - Clearly distinct from 'ar' (star vs stor)
 
@@ -378,7 +378,7 @@ This document compares Ingglish spellings against ~35 languages, listed here by 
 | [Mandarin Chinese](https://en.wikipedia.org/wiki/Erhua) | er | 二 èr (two), 儿 ér (son) |
 
 **Notes:**
-- No naive spelling conflict — 'er' works as-is for this merged vowel+r sound
+- No naive spelling conflict: 'er' works as-is for this merged vowel+r sound
 - English uses five different spellings for the same sound; Ingglish uses 'er' consistently
 - Mandarin is one of few languages with r-colored vowels (called erhua 儿化)
 
@@ -438,7 +438,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 **Notes:**
 - We follow English convention with 'sh', also used by Albanian (official letter) and many romanization systems
 - German's 'sch' is three letters; Polish 'sz' might confuse English readers
-- Hungarian reverses convention: plain 's' = /ʃ/, while 'sz' = /s/ — the opposite of Polish
+- Hungarian reverses convention: plain 's' = /ʃ/, while 'sz' = /s/ (the opposite of Polish)
 - Languages with diacritics (š, ş/ș) achieve single-letter representation
 - Pinyin 'x' represents /ɕ/ (alveolopalatal), a close relative of /ʃ/
 - Vietnamese, Spanish, Danish, Finnish, Icelandic, Welsh, and Yoruba lack /ʃ/ entirely (or use it only in loanwords)
@@ -491,7 +491,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 - Icelandic uses ð (eth) for /ð/; the voiced/voiceless split is a modern Icelandic convention, not an Old English one
 - [Welsh uses 'dd'](https://en.wikipedia.org/wiki/Th_(digraph)) for /ð/; we considered this but 'dh' is more intuitive
 - Spanish has an allophonic [ð] between vowels (nada), but it is not a distinct phoneme
-- Only ~7% of languages have /ð/ — even rarer than /θ/ as a deliberate phonemic choice
+- Only ~7% of languages have /ð/, even rarer than /θ/ as a deliberate phonemic choice
 
 ### Affricates
 
@@ -510,7 +510,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 
 **Notes:**
 - 'ch' for /tʃ/ is used in many major Latin-script languages (Spanish, English, Portuguese)
-- French 'ch' = /ʃ/ and Czech 'ch' = /x/ — the same digraph has different values across languages
+- French 'ch' = /ʃ/ and Czech 'ch' = /x/; the same digraph has different values across languages
 - Hungarian 'cs' follows its pattern of reversals (compare: 's' = /ʃ/, 'sz' = /s/)
 - Pinyin 'ch' represents /tʂʰ/ (aspirated retroflex), close to /tʃ/
 - Vietnamese, Finnish, Swedish, Norwegian, Danish, Icelandic, Dutch, and Swahili lack /tʃ/
@@ -531,7 +531,7 @@ The following fricatives require digraphs and have cross-linguistic variation:
 - 'j' for /dʒ/ matches English convention
 - Widely adopted in Southeast Asia (Indonesian/Malay), East Africa (Swahili, Somali), and Indian romanization
 - Italian uses 'g' before front vowels (giorno); Turkish reverses convention: 'c' = /dʒ/, 'j' = /ʒ/
-- Albanian 'xh' = /dʒ/, while Albanian 'x' = /dz/ — a distinctive system
+- Albanian 'xh' = /dʒ/, while Albanian 'x' = /dz/, a distinctive system
 - French, German, Dutch, Spanish, Portuguese, Finnish, Swedish, Norwegian, Danish, Vietnamese, Icelandic, and Welsh lack /dʒ/
 
 ### Nasals
@@ -580,19 +580,19 @@ The liquids (l, r) and glides (w, y) use standard single-letter spellings, unive
 ## Summary: Where Ingglish Aligns and Diverges
 
 ### Following Convention
-- **sh** for /ʃ/ — used by English plus 9 other languages' romanizations
-- **ch** for /tʃ/ — used by English, Spanish, Portuguese, Pinyin, and others
-- **ng** for /ŋ/ — nearly universal
-- **ee/oo** for long vowels — doubling principle
-- **ai** for /aɪ/ — Pinyin, Italian, Vietnamese, Indonesian, IPA
-- **oi** for /ɔɪ/ — English, Italian, Dutch, Indonesian, and others
-- **ou** for /aʊ/ — English and Dutch
+- **sh** for /ʃ/: used by English plus 9 other languages' romanizations
+- **ch** for /tʃ/: used by English, Spanish, Portuguese, Pinyin, and others
+- **ng** for /ŋ/: nearly universal
+- **ee/oo** for long vowels: doubling principle
+- **ai** for /aɪ/: Pinyin, Italian, Vietnamese, Indonesian, IPA
+- **oi** for /ɔɪ/: English, Italian, Dutch, Indonesian, and others
+- **ou** for /aʊ/: English and Dutch
 
 ### Solving Problems English Never Did
-- **dh** for /ð/ — English uses "th" for two different sounds (think vs. the). Albanian already uses 'dh' officially.
-- **zh** for /ʒ/ — English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z. Used by Cyrillic romanization and Albanian.
-- **u/oo** for /ʊ/ vs /uː/ — "book" and "too" sound different. Now they look different: buk vs too.
-- **oh** for /oʊ/ — Since 'o' alone is used for /ɑ/, we need a digraph: go → goh.
+- **dh** for /ð/: English uses "th" for two different sounds (think vs. the). Albanian already uses 'dh' officially.
+- **zh** for /ʒ/: English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z. Used by Cyrillic romanization and Albanian.
+- **u/oo** for /ʊ/ vs /uː/: "book" and "too" sound different. Now they look different: buk vs too.
+- **oh** for /oʊ/: since 'o' alone is used for /ɑ/, we need a digraph: go → goh.
 
 ### Trade-offs
 - We prioritize **English reader familiarity** over cross-linguistic patterns
@@ -626,7 +626,7 @@ Each spelling is rated by how widely it's used across world languages:
 |----------|-------|--------|-------|
 | ay | /eɪ/ | **Regional** | English "say, day, play"; most languages have monophthong /e/ instead |
 | ee | /iː/ | **Common** | Finnish/Estonian doubling principle; English "bee, see" |
-| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, Indonesian, Hindi, Arabic, Japanese — 7+ languages |
+| ai | /aɪ/ | **Common** | Pinyin, Italian, Vietnamese, Indonesian, Hindi, Arabic, Japanese (7+ languages) |
 | oh | /oʊ/ | **Rare** | Unique to Ingglish; needed because 'o' is used for /ɑ/. Most languages have monophthong /o/ |
 | oo | /uː/ | **Common** | English "too, food, moon, cool"; matches existing English convention |
 
@@ -635,7 +635,7 @@ Each spelling is rated by how widely it's used across world languages:
 | Ingglish | Sound | Rating | Notes |
 |----------|-------|--------|-------|
 | ou | /aʊ/ | **Common** | English "out, loud, sound" + Dutch "oud" |
-| oi | /ɔɪ/ | **Common** | English, Italian, Dutch, Indonesian, Vietnamese, Romanian, Albanian — 7+ languages |
+| oi | /ɔɪ/ | **Common** | English, Italian, Dutch, Indonesian, Vietnamese, Romanian, Albanian (7+ languages) |
 | aw | /ɔ/ | **Regional** | English "law, saw"; most other languages use plain 'o' for /ɔ/ |
 | u | /ʊ/ | **Universal** | Most world languages use 'u' for this vowel; previously 'oo' (Regional) |
 
@@ -755,7 +755,7 @@ One of Europe's most phonetic orthographies, with a distinctive system:
 
 - Highly consistent: every letter/digraph always represents the same sound
 - Accent marks systematically indicate vowel length: a/á, e/é, i/í, o/ó, u/ú, ö/ő, ü/ű
-- **Unique reversed convention:** plain 's' = /ʃ/ and 'sz' = /s/ — the opposite of Polish and most other European languages
+- **Unique reversed convention:** plain 's' = /ʃ/ and 'sz' = /s/, the opposite of Polish and most other European languages
 - Similarly: 'cs' = /tʃ/, 'zs' = /ʒ/, 'dzs' = /dʒ/
 - Only irregularity: 'ly' is pronounced /j/ (same as 'j'), a historical spelling
 - Hungarian children learn to read significantly faster than English children, demonstrating the benefits of transparent orthography
