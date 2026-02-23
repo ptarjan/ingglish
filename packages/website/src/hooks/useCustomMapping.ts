@@ -320,7 +320,7 @@ function registerExperimentFormat(config: CustomMappingConfig): void {
     forward: converter,
     isLatinScript: isLatin,
     label: 'Experiment',
-    preservesCase: true,
+    preservesCase: isLatin,
   });
 }
 
