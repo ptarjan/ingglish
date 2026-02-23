@@ -35,8 +35,27 @@ function Experiment() {
       </div>
 
       <div className="experiment-presets">
-        <span className="presets-label">Presets:</span>
-        {LANGUAGE_PRESETS.map((preset) => {
+        <span className="presets-label">Languages:</span>
+        {LANGUAGE_PRESETS.filter((p) => p.group === 'language').map((preset) => {
+          const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
+          return (
+            <a
+              className={`preset-link${isActive ? ' preset-active' : ''}`}
+              href={`/experiment${preset.hash}`}
+              key={preset.label}
+              onClick={(e) => {
+                e.preventDefault();
+                globalThis.location.hash = preset.hash;
+              }}
+              title={preset.description}
+            >
+              {preset.label}
+            </a>
+          );
+        })}
+        <span className="presets-divider" />
+        <span className="presets-label">Alphabets:</span>
+        {LANGUAGE_PRESETS.filter((p) => p.group === 'alphabet').map((preset) => {
           const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
           return (
             <a
