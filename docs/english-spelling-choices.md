@@ -1,16 +1,16 @@
 # How to Spell English Sounds
 
-You know how to say the word. Now how do you write it? This guide is organized by sound — find the sound you want to spell, and it tells you which letter patterns are available and when to use each one.
+You know how to say the word. Now how do you write it? This guide is organized by sound: find the sound you want to spell, and it tells you which letter patterns are available and when to use each one.
 
-English often has multiple ways to spell the same sound. The choices aren't random — they follow patterns based on where the sound falls in a word and what letters surround it. This guide covers those patterns.
+English often has multiple ways to spell the same sound. The choices aren't random; they follow patterns based on where the sound falls in a word and what letters surround it. This guide covers those patterns.
 
-For the other direction — you see a word, how do you pronounce it? — see [How to Read English](english-spelling-rules.md).
+For the other direction (you see a word, how do you pronounce it?), see [How to Read English](english-spelling-rules.md).
 
 Spelling patterns are informed by [Ingglish's grapheme-to-phoneme (G2P) engine](/docs/architecture), which uses ~960 context-sensitive letter-to-sound rules based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts are based on 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
 ## Short Vowels
 
-Short vowels are the simplest to spell — each one has essentially one spelling.
+Short vowels are the simplest to spell, each having essentially one spelling.
 
 ### Short A (as in *cat*)
 
@@ -55,7 +55,7 @@ This is the easiest vowel to spell. The only real challenge is distinguishing it
 | **o** | In common words | *come, some, done, love, money, month, mother, brother, other, son, won, none, nothing, monkey, front, color, comfort, company, cover, dozen, oven, above* |
 | **ou** | In some words | *touch, young, country, trouble, double, enough, rough, tough, cousin, southern, courage* |
 
-**When to use o:** Many of the most common English words spell this sound with **o**. These are mostly Old English words where the spelling was influenced by Norman scribes (who changed **u** to **o** near letters like **m**, **n**, **v**, **w** to avoid confusion in handwriting). There's no rule — these must be memorized, but they cluster around **-ove**, **-ome**, **-one**, **-other**, **-onth**, **-oney**, **-over**.
+**When to use o:** Many of the most common English words spell this sound with **o**. These are mostly Old English words where the spelling was influenced by Norman scribes (who changed **u** to **o** near letters like **m**, **n**, **v**, **w** to avoid confusion in handwriting). There's no rule; these must be memorized, but they cluster around **-ove**, **-ome**, **-one**, **-other**, **-onth**, **-oney**, **-over**.
 
 ## Long Vowels
 
@@ -94,7 +94,7 @@ Long vowels are where English spelling gets interesting. Each long vowel sound h
 **How to choose:**
 1. End of a short word? **ee** (*see, free, tree, bee*) or **e** (*be, me, he, she, we*)
 2. End of a multisyllable word? **y** (*happy, city, family*) or **ey** (*money, honey, turkey*)
-3. Middle of a word? **ee** and **ea** are both very common — unfortunately, the choice must often be memorized. **ee** is the "safer" guess when unsure.
+3. Middle of a word? **ee** and **ea** are both very common, and unfortunately the choice must often be memorized. **ee** is the "safer" guess when unsure.
 4. After c? Use **ei**: *receive, ceiling*
 5. After other consonants, before **ld**, **f**, **ve**, **ce**? Try **ie**: *field, belief, achieve, piece*
 
@@ -214,7 +214,7 @@ Simple rule: **oi** in the middle, **oy** at the end. No exceptions.
 
 ### ER sound (as in *her*)
 
-Three spellings, one sound — this is one of the trickiest spelling choices in English.
+Three spellings, one sound: this is one of the trickiest spelling choices in English.
 
 | Spelling | Frequency | Examples |
 |----------|----------|----------|
@@ -225,11 +225,11 @@ Three spellings, one sound — this is one of the trickiest spelling choices in 
 | **or** | After w | *work, word, world, worm, worse, worth, worship, worry* |
 
 **Guidelines (imperfect but helpful):**
-- **er** is the default — when in doubt, guess **er**
+- **er** is the default; when in doubt, guess **er**
 - **ur** often follows **b**, **ch**, **n**, **p**, **t**: *burn, church, nurse, purse, turn*
 - **ir** often appears in common short words: *bird, girl, first, third, sir, stir, dirt*
 - After **w**, use **or**: *work, word, world, worm, worse, worth*
-- Before **n** or **rn**: *learn, earn, burn, turn* — could be **ear**, **ur**, or **er** (*fern*)
+- Before **n** or **rn**: *learn, earn, burn, turn*, which could be **ear**, **ur**, or **er** (*fern*)
 
 ### AR sound (as in *car*)
 
@@ -295,7 +295,7 @@ Almost always **ar**. The **ear** spelling for this sound is limited to *heart* 
 | **se** | End of many words | *choose, raise, praise, cause, pause, close* (verb), *noise, phrase,ease* |
 | **ze** | End of a word | *freeze, breeze, sneeze, squeeze, organize, recognize, realize, analyze* |
 
-**The s/z confusion:** At the end of words and between vowels, **s** very often represents /z/. Words ending in **-se** after a long vowel are usually /z/: *choose, raise, close* (verb), *nose, rose*. After a short vowel, **-se** is usually /s/: *house, mouse, goose* (though these are /s/ only in the noun — *house* as a verb is /z/).
+**The s/z confusion:** At the end of words and between vowels, **s** very often represents /z/. Words ending in **-se** after a long vowel are usually /z/: *choose, raise, close* (verb), *nose, rose*. After a short vowel, **-se** is usually /s/: *house, mouse, goose* (though these are /s/ only in the noun; *house* as a verb is /z/).
 
 ### The J Sound (/dʒ/)
 
@@ -384,7 +384,7 @@ Both make a "shun" sound, but:
 
 | Spelling | When to use it | Examples |
 |----------|---------------|----------|
-| **-tion** | Default — most words | *nation, action, education, information, question, attention, collection* |
+| **-tion** | Default (most words) | *nation, action, education, information, question, attention, collection* |
 | **-sion** | After **l**, **n**, **r** | *expansion, tension, dimension, pension, version, conversion, excursion* |
 | **-sion** | When the root ends in **-de**, **-d**, **-se**, **-t** | *decide → decision, explode → explosion, conclude → conclusion, permit → permission* |
 
@@ -428,7 +428,7 @@ This actually works pretty well:
 
 ## Silent Letters: When Not to Write What You Hear
 
-English has several letter combinations where one letter is silent. These aren't random — they follow patterns:
+English has several letter combinations where one letter is silent. These aren't random; they follow patterns:
 
 | You hear | But you write | When | Examples |
 |----------|--------------|------|----------|
@@ -447,14 +447,14 @@ English has several letter combinations where one letter is silent. These aren't
 
 | Problem | Why it's confusing | How to remember |
 |---------|-------------------|-----------------|
-| [**ee** vs **ea** for /iː/](#long-e-as-in-see) | Both very common | No great rule — **ee** is safer when unsure |
+| [**ee** vs **ea** for /iː/](#long-e-as-in-see) | Both very common | No great rule; **ee** is safer when unsure |
 | [**er** vs **ir** vs **ur**](#er-sound-as-in-her) | All sound identical | **er** is most common; **ir** in short common words; **ur** after b, ch, n, p, t |
 | [**-tion** vs **-sion**](#when-to-use-tion-vs-sion) | Both say "shun" | **-tion** is the default; **-sion** when root ends in -de/-d |
 | [**-ance** vs **-ence**](#ance-vs-ence) | Both sound identical | Match the adjective: -ant→-ance, -ent→-ence |
 | [**-able** vs **-ible**](#able-vs-ible) | Both sound identical | Full English word + -able; Latin stem + -ible |
-| [**o** vs **u** for /ʌ/](#short-u-as-in-cup) | *come, love, some* use o | Memorize the common **o**=/ʌ/ words — they cluster near m, n, v |
+| [**o** vs **u** for /ʌ/](#short-u-as-in-cup) | *come, love, some* use o | Memorize the common **o**=/ʌ/ words; they cluster near m, n, v |
 | [**c** vs **k** for /k/](#the-k-sound) | When to use which? | **c** before a/o/u; **k** before e/i/y; **ck** after short vowels |
 | [Single vs double consonant](#when-to-double-a-consonant) | *hopping* vs *hoping* | Double after short vowels when adding suffixes |
 | [**ie** vs **ei**](#ie-vs-ei) | Which order? | I before E except after C (with exceptions) |
 
-For a writing system that eliminates all of these ambiguities — where every sound has exactly one spelling — see [Ingglish](/).
+For a writing system that eliminates all of these ambiguities, where every sound has exactly one spelling, see [Ingglish](/).

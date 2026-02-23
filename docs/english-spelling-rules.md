@@ -1,8 +1,8 @@
 # How to Read English: Spelling-to-Sound Rules
 
-You see a word on the page. How do you know what it sounds like? This guide covers every major letter pattern in English and what sound it makes, ranked by how many words each pattern affects. It's the reading direction of English spelling — letters to sounds.
+You see a word on the page. How do you know what it sounds like? This guide covers every major letter pattern in English and what sound it makes, ranked by how many words each pattern affects. It's the reading direction of English spelling: letters to sounds.
 
-For the other direction — you know the word, how do you spell it? — see [How to Spell English Sounds](english-spelling-choices.md).
+For the other direction (you know the word, how do you spell it?), see [How to Spell English Sounds](english-spelling-choices.md).
 
 This guide is informed by [Ingglish's grapheme-to-phoneme (G2P) engine](/docs/architecture), which uses ~960 context-sensitive letter-to-sound rules based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts are based on analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
@@ -73,7 +73,7 @@ A digraph is two letters that represent a single sound. English has several cons
 
 **Examples:** *what, where, when, which, white, while, why, whether, wheel, whisper, whale*
 
-**Exception:** *who, whom, whose, whole* — here **wh** = /h/ (the w is silent instead of the h).
+**Exception:** *who, whom, whose, whole*, where **wh** = /h/ (the w is silent instead of the h).
 
 ### WR as in "write"
 
@@ -158,7 +158,7 @@ Together, **ai** (mid-word) and **ay** (word-final) provide reliable coverage of
 
 **Pattern:** Before **k**, **oo** is almost always /ʊ/. The /uː/ pronunciation is more common overall.
 
-**Exceptions:** *blood* and *flood* say /ʌ/ — these are the only two common words where **oo** makes this sound.
+**Exceptions:** *blood* and *flood* say /ʌ/. These are the only two common words where **oo** makes this sound.
 
 ### OU as in "out"
 
@@ -227,7 +227,7 @@ Consistent but uncommon in English.
 
 ## The Silent E Rule
 
-### "Magic E" — Vowel-Consonant-E
+### "Magic E": Vowel-Consonant-E
 
 A silent **e** at the end of a word signals that the preceding vowel is "long" (says its letter name). This is one of the most important and widely taught rules in English phonics.
 
@@ -241,7 +241,7 @@ A silent **e** at the end of a word signals that the preceding vowel is "long" (
 
 The silent e is dropped before vowel suffixes (*bake → baking*, *hope → hoping*, *use → using*) but kept before consonant suffixes (*hope → hopeful*, *use → useful*).
 
-**Common exceptions:** *have, give, live* (as a verb), *love, move, prove, come, some, done, gone, none* — these keep a short vowel despite the final e. Many of these are among the most common words in English, which makes the exceptions disproportionately visible.
+**Common exceptions:** *have, give, live* (as a verb), *love, move, prove, come, some, done, gone, none*. These keep a short vowel despite the final e. Many of these are among the most common words in English, which makes the exceptions disproportionately visible.
 
 ## R-Colored Vowels
 
@@ -275,7 +275,7 @@ In unstressed syllables it reduces to /ər/: *doctor, color, favor, factor, auth
 
 **ur** also makes the same sound as **er** and **ir**: *burn, turn, nurse, church, hurt, occur, return, purpose, further, surface, during, Saturday*
 
-The three spellings **er**, **ir**, and **ur** all represent the same sound /ɜːr/ — combined, they appear in over 27,000 words (21.5% of the dictionary). The choice between them is a spelling challenge, not a pronunciation one.
+The three spellings **er**, **ir**, and **ur** all represent the same sound /ɜːr/. Combined, they appear in over 27,000 words (21.5% of the dictionary). The choice between them is a spelling challenge, not a pronunciation one.
 
 ## Soft C and Soft G
 
@@ -361,8 +361,8 @@ Always /ʃən/: *nation, action, education, information, situation, attention, c
 
 ### -SION (two pronunciations)
 
-- After a vowel: /ʒən/ — *vision, television, decision, occasion, explosion, conclusion, confusion*
-- After a consonant: /ʃən/ — *tension, mansion, extension, dimension, expansion, pension, suspension*
+- After a vowel: /ʒən/, as in *vision, television, decision, occasion, explosion, conclusion, confusion*
+- After a consonant: /ʃən/, as in *tension, mansion, extension, dimension, expansion, pension, suspension*
 
 ### -LY
 
@@ -470,7 +470,7 @@ Beyond the digraphs already covered, English has several other silent letter pat
 
 When **s** appears between two vowels, it often voices to /z/: *music, reason, present, visit, prison, poison, season, pleasant, cousin, thousand, result, design, resign, resist*
 
-This is not perfectly reliable — *basic, basin, bison* keep /s/ — but /z/ is the common pattern.
+This is not perfectly reliable (*basic, basin, bison* keep /s/), but /z/ is the common pattern.
 
 ### TI, CI, SI before Vowels = /ʃ/ or /ʒ/
 
@@ -551,12 +551,12 @@ English spelling's reputation for chaos comes from a few factors:
 
 1. **High-frequency exceptions.** The most common words in English (*the, have, said, come, some, done, one, two, once, been, does*) are disproportionately irregular. These words appear in virtually every sentence, making irregularity *feel* pervasive even when it's statistically rare.
 
-2. **Multiple systems coexisting.** English borrows from Germanic, French, Latin, and Greek, each with their own spelling conventions. The word *school* uses Greek rules (ch = /k/), *machine* uses French rules (ch = /ʃ/), and *church* uses native English rules (ch = /tʃ/). The rules are reliable *within each system* — the challenge is knowing which system applies.
+2. **Multiple systems coexisting.** English borrows from Germanic, French, Latin, and Greek, each with their own spelling conventions. The word *school* uses Greek rules (ch = /k/), *machine* uses French rules (ch = /ʃ/), and *church* uses native English rules (ch = /tʃ/). The rules are reliable *within each system*; the challenge is knowing which system applies.
 
 3. **The OUGH problem.** A tiny number of genuinely unpredictable patterns (*ough*, *ow*, some *ea* words) get cited over and over as evidence that the whole system is broken. In reality, these cover a few hundred words out of 126,000.
 
-4. **Frozen historical spellings.** Words like *knight*, *write*, *know*, and *lamb* preserve letters that were once pronounced. The pronunciation changed but the spelling didn't. These silent letters are at least consistent — *kn* is always /n/, *wr* is always /r/, *mb* at word-end always drops the b.
+4. **Frozen historical spellings.** Words like *knight*, *write*, *know*, and *lamb* preserve letters that were once pronounced. The pronunciation changed but the spelling didn't. These silent letters are at least consistent: *kn* is always /n/, *wr* is always /r/, *mb* at word-end always drops the b.
 
-The data tells a different story from the folklore: English spelling is roughly 85% predictable from rules. The remaining 15% includes genuine irregularities, but also patterns that are predictable from word origin — a French word with **ch** almost always says /ʃ/, a Greek word with **ch** almost always says /k/.
+The data tells a different story from the folklore: English spelling is roughly 85% predictable from rules. The remaining 15% includes genuine irregularities, but also patterns that are predictable from word origin: a French word with **ch** almost always says /ʃ/, a Greek word with **ch** almost always says /k/.
 
-For a system that eliminates all of these complications, see [Ingglish](/) — a phonemic respelling where every letter always makes the same sound.
+For a system that eliminates all of these complications, see [Ingglish](/), a phonemic respelling where every letter always makes the same sound.
