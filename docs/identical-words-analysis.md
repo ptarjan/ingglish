@@ -10,13 +10,13 @@ The current mapping produces **10,150 identical words** (8.05% of the CMU dictio
 
 We exhaustively tested 2,730 collision-free spelling alternatives, weighted by word frequency (per million words of text). Only two candidates have positive frequency impact, and both fail on perceptual ambiguity. The rest are net negative:
 
-- /ɔɪ/→oy: **+235 /M** — marginal; "oi" and "oy" are both common English spellings
-- /uː/→eu: **+19 /M** — negligible, and `eu` misleads English readers (`meun` reads as "mew-n") [note: tested when /uː/ was 'uu']
-- /oʊ/→ow: **-1,330 /M** — "oh" alone (3,374 /M) outweighs all gains
-- /ɔ/→au: **-555 /M** — loses saw (413 /M), law (119 /M)
-- /aɪ/→ei: **-1 /M** — shuffles rare German surnames, essentially zero real-text impact
+- /ɔɪ/→oy: **+235 /M**, marginal; "oi" and "oy" are both common English spellings
+- /uː/→eu: **+19 /M**, negligible, and `eu` misleads English readers (`meun` reads as "mew-n") [note: tested when /uː/ was 'uu']
+- /oʊ/→ow: **-1,330 /M**: "oh" alone (3,374 /M) outweighs all gains
+- /ɔ/→au: **-555 /M**, loses saw (413 /M), law (119 /M)
+- /aɪ/→ei: **-1 /M**, shuffles rare German surnames, essentially zero real-text impact
 
-All five candidates were rejected — see [Recommendations](#recommendations). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (unstressed /ə/ → 'a').
+All five candidates were rejected (see [Recommendations](#recommendations)). Stress-conditioned changes are a promising area for further exploration, following the precedent set by the schwa split (unstressed /ə/ → 'a').
 
 ## Background
 
@@ -36,7 +36,7 @@ Not all identical words are equal, though. Many words in the CMU dictionary are 
 | Identical words | 10,150 (8.05%) |
 | Existing collisions (homophones) | 18,847 |
 
-Note: The baseline includes the stress-conditioned AH0→'a' override (unstressed schwa → 'a'), which is already implemented in the converter. This produced a 67.6× frequency-weighted improvement — the largest gain from any single change. See [phoneme mapping](phoneme-mapping.md#schwa-and-strut) for details.
+Note: The baseline includes the stress-conditioned AH0→'a' override (unstressed schwa → 'a'), which is already implemented in the converter. This produced a 67.6× frequency-weighted improvement, the largest gain from any single change. See [phoneme mapping](phoneme-mapping.md#schwa-and-strut) for details.
 
 ## Why Not Maximize Identical Words?
 
@@ -64,17 +64,17 @@ We exhaustively tested all 39 phonemes × 70 spelling options (2,730 combination
 | /ɔ/ | aw | au | **-555** | fault (107), paul (97), launch (20) | saw (413), law (119), lawyer (82) |
 | /oʊ/ | oh | ow | **-1,330** | show (501), own (471), throw (132) | oh (3,374) |
 
-The two positive-frequency candidates (/ɔɪ/→oy and /uː/→eu) still fail the perceptual ambiguity test — see below.
+The two positive-frequency candidates (/ɔɪ/→oy and /uː/→eu) still fail the perceptual ambiguity test; see below.
 
 ### Trade-off Analysis
 
 #### /ɔɪ/: "oi" → "oy" (+235 /M)
 
-Best frequency trade: gains boy (543 /M), enjoy (85 /M), joy (29 /M), royal (24 /M) while losing point (243 /M), join (86 /M), oil (42 /M). But both "oi" and "oy" are common English spellings with similar total frequency — it's nearly a wash. Not compelling enough to change.
+Best frequency trade: gains boy (543 /M), enjoy (85 /M), joy (29 /M), royal (24 /M) while losing point (243 /M), join (86 /M), oil (42 /M). But both "oi" and "oy" are common English spellings with similar total frequency, so it's nearly a wash. Not compelling enough to change.
 
 #### /uː/: "oo" → "eu" (+19 /M)
 
-Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M). At only +19 /M, this would affect 0.002% of real text. Also fails the perceptual ambiguity test — see [Design Decisions](design-decisions.md#diphthong-decisions).
+Negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M). At only +19 /M, this would affect 0.002% of real text. Also fails the perceptual ambiguity test; see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 #### /aɪ/: "ai" → "ei" (-1 /M)
 
@@ -82,11 +82,11 @@ The clearest example of frequency revealing what raw count hides. The top gain i
 
 #### /ɔ/: "aw" → "au" (-555 /M)
 
-Gains fault (107 /M), paul (97 /M), launch (20 /M), trauma (17 /M), vault (12 /M) but loses saw (413 /M), law (119 /M), lawyer (82 /M), aw (42 /M), draw (41 /M). The losses are more common everyday words — a bad trade for real text.
+Gains fault (107 /M), paul (97 /M), launch (20 /M), trauma (17 /M), vault (12 /M) but loses saw (413 /M), law (119 /M), lawyer (82 /M), aw (42 /M), draw (41 /M). The losses are more common everyday words, a bad trade for real text.
 
 #### /oʊ/: "oh" → "ow" (-1,330 /M)
 
-Gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M), window (88 /M) — good words. But the single word "oh" at 3,374 /M outweighs them all. Also fails the perceptual ambiguity test: `ow` represents both /oʊ/ (snow) and /aʊ/ (cow) in English — see [Design Decisions](design-decisions.md#diphthong-decisions).
+Gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M), window (88 /M), all good words. But the single word "oh" at 3,374 /M outweighs them all. Also fails the perceptual ambiguity test: `ow` represents both /oʊ/ (snow) and /aʊ/ (cow) in English; see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 ## Alternative Improvements Not Recommended
 
@@ -113,23 +113,23 @@ We tested all 15 stress-0 vowel phonemes × 70 options (1,036 combinations). Twe
 | UW0 (unstressed /uː/) | oo | u | **+9** | flu (<1), tofu (<1), tutu (<1) | — |
 | AO0 (unstressed /ɔː/) | aw | o | **+0.5** | menthol (<1), oblong (<1) | — |
 
-Frequency weighting dramatically reshuffles the raw count rankings. UW0→'u' gains 97 words but only +9 /M (all rare). UW0→'o' gains just 3 words but +912 /M — because "into" alone is 866 /M. AO0→'o' gains 28 words but only +0.5 /M — essentially zero real-text impact.
+Frequency weighting dramatically reshuffles the raw count rankings. UW0→'u' gains 97 words but only +9 /M (all rare). UW0→'o' gains just 3 words but +912 /M, because "into" alone is 866 /M. AO0→'o' gains 28 words but only +0.5 /M, essentially zero real-text impact.
 
 ### Analysis
 
 #### IY0: "ee" → "y" (+2,700 /M)
 
-The largest stress-conditioned improvement by far. Unstressed /iː/ at the end of words like "happy", "body", "city", "baby" is already spelled 'y' in English. English speakers perceive this as a different sound from stressed /iː/ in "bee" — it's shorter and lighter. Many phonologists treat it as a distinct phoneme ([happy tensing](https://en.wikipedia.org/wiki/Happy-tensing)).
+The largest stress-conditioned improvement by far. Unstressed /iː/ at the end of words like "happy", "body", "city", "baby" is already spelled 'y' in English. English speakers perceive this as a different sound from stressed /iː/ in "bee": it's shorter and lighter. Many phonologists treat it as a distinct phoneme ([happy tensing](https://en.wikipedia.org/wiki/Happy-tensing)).
 
 Top gains: every (563 /M), party (239 /M), story (226 /M), body (201 /M), army (88 /M), henry (79 /M), plenty (64 /M), hardly (53 /M), study (50 /M).
 
-Top losses: frisbee (2 /M), godspeed (1 /M), chimpanzee (1 /M) — all rare.
+Top losses: frisbee (2 /M), godspeed (1 /M), chimpanzee (1 /M), all rare.
 
 The gains are extremely common English words; the losses are mostly proper nouns and rare words. This is the strongest stress-conditioned candidate.
 
 #### UW0: "oo" → "o" (+912 /M)
 
-A surprising find: just three words — into (866 /M), onto (38 /M), unto (8 /M) — but "into" is so common that it dominates. No losses.
+A surprising find: just three words (into (866 /M), onto (38 /M), unto (8 /M)), but "into" is so common that it dominates. No losses.
 
 This is a better candidate than UW0→'u' (+9 /M), which gains 97 words that are all rare (flu, tofu, tutu, bayou, caribou). Frequency reveals that 3 common words vastly outweigh 97 rare ones.
 
@@ -141,7 +141,7 @@ Top gains: hotel (106 /M), noel (19 /M), motel (19 /M), november (9 /M), limo (9
 
 Almost pure gain of common words.
 
-Note: Both OW0 and AO0 would map to 'o' in unstressed position. The script confirmed this doesn't create collisions — unstressed /oʊ/ and /ɔː/ rarely form minimal pairs, and many English dialects merge them in unstressed position anyway.
+Note: Both OW0 and AO0 would map to 'o' in unstressed position. The script confirmed this doesn't create collisions; unstressed /oʊ/ and /ɔː/ rarely form minimal pairs, and many English dialects merge them in unstressed position anyway.
 
 ## Collision Check
 
@@ -163,18 +163,18 @@ We verified the proposed changes don't create problematic collisions:
 
 All five proposed changes were investigated and rejected. Every candidate fails at least one of two tests:
 
-1. **Frequency impact** — Does the change help or hurt in real text?
+1. **Frequency impact**: Does the change help or hurt in real text?
    - /ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M (net negative)
    - /aɪ/→ei: -1 /M (negligible)
-   - /ɔɪ/→oy: +235 /M (marginal — nearly a wash)
+   - /ɔɪ/→oy: +235 /M (marginal, nearly a wash)
 
-2. **Perceptual ambiguity** — Would an English reader pronounce the new spellings correctly?
+2. **Perceptual ambiguity**: Would an English reader pronounce the new spellings correctly?
    - /oʊ/→ow: `bownz` reads as "bowns", `howm` reads like "cow"
    - /uː/→eu: `meun` reads as "mew-n", `teu` reads as "tyoo"
 
 ### Stress-conditioned changes: Promising, needs further investigation.
 
-The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates — IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M) — have strong linguistic justification and massive gains with minimal losses.
+The stress-conditioned findings follow the same pattern that made AH0→'a' successful: unstressed vowels in English often sound different enough from their stressed counterparts to justify distinct spellings. The top candidates (IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M)) have strong linguistic justification and massive gains with minimal losses.
 
 Key questions before implementing:
 
@@ -215,10 +215,10 @@ Raw identical word count has two blind spots:
 
 1. **All words count equally.** Gaining 200 rare surnames and losing "say", "day", "way" looks like +197 on paper but is terrible for real text. Frequency weighting measures impact per million words of actual usage.
 
-2. **It doesn't measure readability.** A change must not create perceptual ambiguity — the spelling must read correctly to English speakers. Several changes above pass the collision check but fail this test (see [Design Decisions](design-decisions.md#diphthong-decisions) for the readability analysis).
+2. **It doesn't measure readability.** A change must not create perceptual ambiguity; the spelling must read correctly to English speakers. Several changes above pass the collision check but fail this test (see [Design Decisions](design-decisions.md#diphthong-decisions) for the readability analysis).
 
 ## Conclusion
 
 The current base phoneme mappings are well-optimized. Every proposed collision-free change either has negligible real-text impact, loses more common words than it gains, or introduces perceptual ambiguity.
 
-Stress-conditioned splits are the most promising avenue. The top three candidates — IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M) — follow the same principle that made the AH0→'a' schwa split successful: when stressed and unstressed variants of a vowel sound different to English speakers, distinct spellings can unlock gains without ambiguity.
+Stress-conditioned splits are the most promising avenue. The top three candidates (IY0→'y' (+2,700 /M), UW0→'o' (+912 /M), OW0→'o' (+246 /M)) follow the same principle that made the AH0→'a' schwa split successful: when stressed and unstressed variants of a vowel sound different to English speakers, distinct spellings can unlock gains without ambiguity.

@@ -38,7 +38,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - Italian and Vietnamese use 'ai'
   - You can "see" the a→i glide
   - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available
-- Impact: More identical words than 'ii' or 'ie'. ('ei' looks better by raw dictionary count, but frequency analysis shows net -1 /M — gains are mostly rare German surnames like Bernstein and Alzheimer, essentially zero real-text impact.)
+- Impact: More identical words than 'ii' or 'ie'. ('ei' looks better by raw dictionary count, but frequency analysis shows net -1 /M; gains are mostly rare German surnames like Bernstein and Alzheimer, essentially zero real-text impact.)
 - Verdict: ✅ **Adopted** - international precedent + phonemic clarity
 
 **Examples:**
@@ -86,7 +86,7 @@ Every phoneme spelling change made during Ingglish development: what we tried, w
   - English "oh!" already uses this for the exclamation
   - Distinguishes "go" (goh) from "cow" (kou) without ambiguity
   - Only option left after reserving 'o' for /ɑ/
-- Trade-off: 'ow' gains show (501 /M), own (471 /M), throw (132 /M) but loses "oh" (3,374 /M) — net -1,330 /M. 'oa' is even worse. Both introduce perceptual ambiguity (see attempt 3 below)
+- Trade-off: 'ow' gains show (501 /M), own (471 /M), throw (132 /M) but loses "oh" (3,374 /M), net -1,330 /M. 'oa' is even worse. Both introduce perceptual ambiguity (see attempt 3 below)
 - Verdict: ✅ **Adopted** - necessary to avoid collision
 
 **Attempt 3: 'ow' (rejected)**
@@ -145,7 +145,7 @@ This vowel went through the most iteration.
   - "law" → "law" (identical!)
   - Preserves distinction for non-merged speakers
   - Common rating - matches English "law", "saw"
-- Impact: Merging to 'o' would add +176 collision groups. 'au' avoids collisions but loses -555 /M — saw (413 /M), law (119 /M), lawyer (82 /M) outweigh the gains fault (107 /M), paul (97 /M), launch (20 /M).
+- Impact: Merging to 'o' would add +176 collision groups. 'au' avoids collisions but loses -555 /M: saw (413 /M), law (119 /M), lawyer (82 /M) outweigh the gains fault (107 /M), paul (97 /M), launch (20 /M).
 - Verdict: ✅ **Adopted** - maintains distinction, familiar results
 
 **Examples:**
@@ -167,7 +167,7 @@ This vowel went through the most iteration.
 - /ʊ/ (book) → 'oo' - matches English "book", "good", "look"
 - /uː/ (too) → 'uu' - longer sound gets longer spelling (Finnish pattern)
 
-**Impact:** The original uu/oo assignment produces more identical spellings by raw count. But frequency tells the real story: the swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M), "looking" (476 /M) as identical — these high-frequency words far outweigh the low-frequency words lost.
+**Impact:** The original uu/oo assignment produces more identical spellings by raw count. But frequency tells the real story: the swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M), "looking" (476 /M) as identical. These high-frequency words far outweigh the low-frequency words lost.
 
 **Verdict:** ⚠️ **Adopted then superseded** - the /ʌ/→'uh' change later freed 'u' for /ʊ/ and 'oo' for /uː/; see [chain change below](#and-u-chain-uoouu-uhuoo)
 
@@ -187,20 +187,20 @@ A three-way chain shift that resolved the 'uu' digraph and aligned all three vow
 - /uː/ (too) → 'uu'
 
 **Problem:**
-- 'uu' has no precedent in English — "tuu", "thruu", "byuutafal" looked alien
+- 'uu' has no precedent in English: "tuu", "thruu", "byuutafal" looked alien
 - Most world languages use 'u' for /ʊ/, not 'oo'
 - 'oo' is the natural English spelling for /uː/ (too, food, moon, cool)
 
 **After (current):**
-- /ʌ/ (but) → 'uh' — the English interjection "uh" is exactly this sound
-- /ʊ/ (book) → 'u' — what most world languages use for this vowel
-- /uː/ (too) → 'oo' — matches English "too", "food", "moon", "cool"
+- /ʌ/ (but) → 'uh', the English interjection "uh" is exactly this sound
+- /ʊ/ (book) → 'u', what most world languages use for this vowel
+- /uː/ (too) → 'oo', matches English "too", "food", "moon", "cool"
 
 **Rationale:**
-- 'uh' is the intuitive English interjection for /ʌ/ — everyone knows how "uh" sounds
+- 'uh' is the intuitive English interjection for /ʌ/; everyone knows how "uh" sounds
 - Freeing 'u' for /ʊ/ aligns with most world languages (Universal rating)
 - 'oo' for /uː/ matches English conventions (too, food, moon, cool, school)
-- Eliminates 'uu' entirely — no more unfamiliar digraphs
+- Eliminates 'uu' entirely, no more unfamiliar digraphs
 
 **Impact:**
 - "too" → "too" (identical!), "food" → "food" (identical!), "moon" → "moon" (identical!), "school" → "skool", "blue" → "bloo", "you" → "yoo"
@@ -208,7 +208,7 @@ A three-way chain shift that resolved the 'uu' digraph and aligned all three vow
 - "but" → "buht", "cup" → "kuhp", "love" → "luhv", "of" → "uhv"
 - Loses some /ʊ/ identical words (book, good, could, would, should, look) but gains /uː/ identical words (too, food, moon) and eliminates the unfamiliar 'uu'
 
-**Verdict:** ✅ **Adopted** — eliminates 'uu', aligns with world languages, 'oo' matches English conventions
+**Verdict:** ✅ **Adopted**: eliminates 'uu', aligns with world languages, 'oo' matches English conventions
 
 **Examples:**
 - but → buht
@@ -225,31 +225,31 @@ A three-way chain shift that resolved the 'uu' digraph and aligned all three vow
 
 ### /ə/ (about, sofa): u → a
 
-The schwa (/ə/) is the most common vowel in English — it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (/ə/), not the stressed /ʌ/ STRUT vowel used in "but", "cup", "run" — those use 'uh'.
+The schwa (/ə/) is the most common vowel in English: it appears in nearly every multi-syllable word (about, the, beautiful, difficult, nation). This change only affects **unstressed schwa** (/ə/), not the stressed /ʌ/ STRUT vowel used in "but", "cup", "run" (those use 'uh').
 
 **Attempt 1: 'u'**
 - Rationale: Both /ə/ and /ʌ/ are represented as 'AH' in ARPAbet, so mapping all AH → 'u' was the simplest approach
 - Problem:
-  - "the" → "dhu" (unrecognizable — "the" is the most common English word)
+  - "the" → "dhu" (unrecognizable; "the" is the most common English word)
   - "about" → "ubout" (lost the identical English spelling)
   - "hello" → "huloh" (the 'u' in the first syllable looked odd)
   - "nation" → "nayshun" (the '-un' ending felt wrong for a word ending in /-ən/)
   - "beautiful" → "byootufool" (confusing)
-- Verdict: ❌ Rejected — schwa words looked too unfamiliar
+- Verdict: ❌ Rejected: schwa words looked too unfamiliar
 
 **Attempt 2: 'a' (current)**
 - Rationale:
   - "about" → "about" (identical!), "and" → "and" (identical!), "the" → "dha" (natural)
-  - 'a' is phonetically close to schwa — many languages use 'a' for their neutral vowel
-  - English already spells schwa as 'a' in the most common words: **a**, **about**, **again**, **along**, **away**, **around** — all identical in Ingglish
+  - 'a' is phonetically close to schwa; many languages use 'a' for their neutral vowel
+  - English already spells schwa as 'a' in the most common words: **a**, **about**, **again**, **along**, **away**, **around**, all identical in Ingglish
   - Stressed /ʌ/ stays separate ('uh'), so no collisions with STRUT words
 - Impact:
-  - **67.6× frequency-weighted improvement** — the largest gain from any single change
+  - **67.6× frequency-weighted improvement**, the largest gain from any single change
   - Top gains: "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M), "around" (1,428 /M)
   - Only +93 net collision groups (acceptable; most are low-frequency)
   - Losses cluster in predictable patterns: un- prefix (until→antil), up- prefix (upset→apset), -ful suffix (handful→handfal), -um suffix (museum→myoozeeam)
 - Trade-off: AH0+R must remain 'ur' (not 'ar') to avoid collision with AA+R→'ar'. This is handled by a special R-colored vowel rule that overrides the schwa mapping before R.
-- Verdict: ✅ **Adopted** — massive familiarity gain with minimal downside
+- Verdict: ✅ **Adopted**: massive familiarity gain with minimal downside
 
 **Examples:**
 - about → about (identical!)
