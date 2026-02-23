@@ -25,8 +25,8 @@ import troubleshooting from '../../../../docs/troubleshooting.md';
 interface DocEntry {
   content: string;
   filename?: string; // undefined for auto-generated docs
-  firstInSection?: boolean; // adds visual separator before this item
   id: string;
+  section?: string; // section header label shown before this item (when it's first in its group)
   title: string;
 }
 
@@ -39,10 +39,26 @@ interface HeadingInfo {
 const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
 
 const docs: DocEntry[] = [
+  // English Spelling — standalone reference guides, shown first
+  {
+    content: englishSpellingRules,
+    filename: 'english-spelling-rules.md',
+    id: 'how-to-read-english',
+    section: 'English Spelling',
+    title: 'Reading: Letters to Sounds',
+  },
+  {
+    content: englishSpellingChoices,
+    filename: 'english-spelling-choices.md',
+    id: 'how-to-spell-english',
+    title: 'Writing: Sounds to Letters',
+  },
+  // Ingglish Design — how the project works
   {
     content: designDecisions,
     filename: 'design-decisions.md',
     id: 'design-decisions',
+    section: 'Ingglish Design',
     title: 'Design Decisions',
   },
   {
@@ -111,23 +127,12 @@ const docs: DocEntry[] = [
     id: 'dialect-assumptions',
     title: 'Dialect Assumptions',
   },
-  {
-    content: englishSpellingRules,
-    filename: 'english-spelling-rules.md',
-    id: 'how-to-read-english',
-    title: 'Reading: Letters to Sounds',
-  },
-  {
-    content: englishSpellingChoices,
-    filename: 'english-spelling-choices.md',
-    id: 'how-to-spell-english',
-    title: 'Writing: Sounds to Letters',
-  },
+  // Development — technical reference
   {
     content: architecture,
     filename: 'architecture.md',
-    firstInSection: true,
     id: 'architecture',
+    section: 'Development',
     title: 'Architecture',
   },
   { content: apiReference, id: 'api-reference', title: 'API Reference' }, // auto-generated
@@ -287,7 +292,10 @@ function Docs(): JSX.Element {
         <nav className="docs-sidebar">
           <ul>
             {docs.map((doc) => (
-              <li className={doc.firstInSection === true ? 'docs-section-start' : ''} key={doc.id}>
+              <li key={doc.id}>
+                {doc.section !== undefined && (
+                  <div className="docs-section-header">{doc.section}</div>
+                )}
                 <a
                   className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
                   href={`/docs/${doc.id}`}

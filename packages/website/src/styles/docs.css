@@ -25,10 +25,19 @@
   margin-bottom: 0.25rem;
 }
 
-.docs-sidebar li.docs-section-start {
-  padding-top: 1rem;
+.docs-section-header {
+  padding: 0.375rem 1rem;
   margin-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  margin-bottom: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.docs-sidebar li:first-child .docs-section-header {
+  margin-top: 0;
 }
 
 .docs-nav-item {
@@ -258,12 +267,8 @@
     margin-bottom: 0;
   }
 
-  .docs-sidebar li.docs-section-start {
-    padding-top: 0;
-    padding-left: 0.375rem;
-    margin-top: 0;
-    border-top: none;
-    border-left: 1px solid var(--color-border);
+  .docs-section-header {
+    display: none;
   }
 
   .docs-nav-item {
