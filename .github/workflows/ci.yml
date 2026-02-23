@@ -84,6 +84,7 @@ jobs:
             packages/dictionary/src/cmudict.js
             packages/dictionary/src/reverse-cmudict.js
             packages/dictionary/src/data/word-frequencies.js
+            packages/website/public/ipa-dicts/
             docs/generated
           retention-days: 1
 

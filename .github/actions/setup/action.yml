@@ -56,3 +56,16 @@ runs:
       if: inputs.dict-cache == 'true' && steps.dict-cache.outputs.cache-hit != 'true'
       run: npm run update-dictionaries -w @ingglish/dictionary
       shell: bash
+
+    - name: Cache IPA dictionaries
+      if: inputs.dict-cache == 'true'
+      uses: actions/cache@v5
+      id: ipa-dict-cache
+      with:
+        path: packages/website/public/ipa-dicts/
+        key: ipa-dicts-v1-${{ hashFiles('packages/website/scripts/build-ipa-dicts.ts') }}
+
+    - name: Generate IPA dictionaries (if not cached)
+      if: inputs.dict-cache == 'true' && steps.ipa-dict-cache.outputs.cache-hit != 'true'
+      run: node packages/website/scripts/ensure-ipa-dicts.cjs
+      shell: bash

@@ -14,10 +14,20 @@ import { pickRandomPassage } from '../data/sample-text';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
+import type { IpaDict } from '../pronounce/dict-loader';
+import { LANGUAGES, loadDict } from '../pronounce/dict-loader';
+import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
 
 type EditingPane = 'english' | 'ingglish';
+
+interface ForeignOutputDisplayProps {
+  dictLoading: boolean;
+  onScroll?: () => void;
+  scrollRef?: React.Ref<HTMLDivElement>;
+  text: string;
+}
 
 interface TextTranslatorProps {
   initialText?: string;
@@ -32,6 +42,50 @@ interface WordDisplayProps {
   scrollRef?: React.Ref<HTMLDivElement>;
   spokenWordIndex?: null | number;
   text: string;
+}
+
+function ForeignOutputDisplay({
+  dictLoading,
+  onScroll,
+  scrollRef,
+  text,
+}: ForeignOutputDisplayProps) {
+  if (dictLoading) {
+    return (
+      <div className="text-input foreign-output" ref={scrollRef}>
+        <span className="foreign-output-loading">Loading dictionary...</span>
+      </div>
+    );
+  }
+
+  if (!text.trim()) {
+    return (
+      <div className="text-input foreign-output" onScroll={onScroll} ref={scrollRef}>
+        <span className="foreign-output-placeholder">Pronunciation will appear here...</span>
+      </div>
+    );
+  }
+
+  // Parse text: NOT_FOUND_MARKER prefixed words are "not found"
+  const segments = text.split(/(\s+)/);
+  return (
+    <div className="text-input foreign-output" onScroll={onScroll} ref={scrollRef}>
+      {segments.map((seg, i) => {
+        if (/^\s+$/.test(seg)) {
+          return <span key={i}>{seg}</span>;
+        }
+        if (seg.startsWith(NOT_FOUND_MARKER)) {
+          const word = seg.slice(NOT_FOUND_MARKER.length);
+          return (
+            <span className="foreign-not-found" key={i} title="Not found in dictionary">
+              {word}
+            </span>
+          );
+        }
+        return <span key={i}>{seg}</span>;
+      })}
+    </div>
+  );
 }
 
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
@@ -88,6 +142,46 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount] =
     useSpeech();
 
+  // Foreign language state
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
+  const [dictLoading, setDictLoading] = useState(false);
+  const isForeignMode = selectedLanguage !== 'en';
+
+  // Load foreign dictionary when language changes
+  useEffect(() => {
+    if (!isForeignMode) {
+      setForeignDict(null);
+      return;
+    }
+    let cancelled = false;
+    setDictLoading(true);
+    loadDict(selectedLanguage)
+      .then((dict) => {
+        if (!cancelled) {
+          setForeignDict(dict);
+          setDictLoading(false);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to load dictionary:', error);
+        if (!cancelled) {
+          setDictLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedLanguage, isForeignMode]);
+
+  // Reset panes when switching languages
+  const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(e.target.value);
+    setEnglishText('');
+    setIngglishText('');
+    setLastEdited('english');
+  }, []);
+
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
   const deferredIngglish = useDeferredValue(ingglishText);
@@ -97,16 +191,25 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     if (lastEdited !== 'english' || !deferredEnglish.trim()) {
       return null;
     }
+    if (isForeignMode) {
+      if (!foreignDict) {
+        return null;
+      }
+      return translateForeign(deferredEnglish, foreignDict);
+    }
     try {
       return translateSync(deferredEnglish, format);
     } catch (error) {
       console.warn('Translation failed:', error);
       return null;
     }
-  }, [deferredEnglish, lastEdited, format]);
+  }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict]);
 
   // Forward token mapping for word correspondence (with matched status)
   const forwardTokens = useMemo(() => {
+    if (isForeignMode) {
+      return null;
+    }
     if (lastEdited !== 'english' || !deferredEnglish.trim()) {
       return null;
     }
@@ -115,7 +218,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     } catch {
       return null;
     }
-  }, [deferredEnglish, lastEdited, format]);
+  }, [deferredEnglish, lastEdited, format, isForeignMode]);
 
   // Diff map: word index → standard Ingglish spelling (for non-ingglish formats)
   const diffMap = useMemo(() => {
@@ -129,6 +232,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
   const [reverseTokens, setReverseTokens] = useState<null | TranslatedToken[]>(null);
   useEffect(() => {
+    if (isForeignMode) {
+      setComputedEnglish(null);
+      setReverseTokens(null);
+      return;
+    }
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
       setReverseTokens(null);
@@ -152,13 +260,18 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     return () => {
       cancelled = true;
     };
-  }, [deferredIngglish, lastEdited, format]);
+  }, [deferredIngglish, lastEdited, format, isForeignMode]);
 
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
   const displayEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
   const displayIngglish =
     lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
+
+  // Strip NOT_FOUND_MARKER from display (the ForeignWordDisplay handles rendering)
+  const displayIngglishClean = isForeignMode
+    ? displayIngglish.replaceAll(NOT_FOUND_MARKER, '')
+    : displayIngglish;
 
   const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEnglishText(e.target.value);
@@ -184,17 +297,16 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, [displayEnglish, copyEnglish]);
 
   const handleCopyIngglish = useCallback(() => {
-    if (displayIngglish) {
-      copyIngglish(displayIngglish);
+    if (displayIngglishClean) {
+      copyIngglish(displayIngglishClean);
     }
-  }, [displayIngglish, copyIngglish]);
+  }, [displayIngglishClean, copyIngglish]);
 
   const handleSpeak = useCallback(() => {
     if (speakingEnglish) {
       stopEnglish();
     } else if (displayEnglish) {
       trackSpeak();
-      // Collapse newlines to spaces so TTS doesn't pause at each line
       speakEnglish(displayEnglish.replaceAll(/\n+/g, ' '));
     }
   }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish]);
@@ -250,7 +362,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   // Sync scroll positions between paired panes
   const englishRef = useRef<HTMLTextAreaElement>(null);
-  const ingglishRef = useRef<HTMLTextAreaElement>(null);
+  const ingglishRef = useRef<HTMLDivElement | HTMLTextAreaElement>(null);
   const scrolling = useRef(false);
 
   const syncScroll = useCallback((from: Element | null, to: Element | null) => {
@@ -282,14 +394,30 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     [syncScroll]
   );
 
+  const languageLabel = isForeignMode
+    ? (LANGUAGES.find((l) => l.code === selectedLanguage)?.label ?? selectedLanguage)
+    : 'English';
+
   return (
     <div className="text-translator">
+      <div className="language-selector">
+        <label htmlFor="language-select">Source language:</label>
+        <select id="language-select" onChange={handleLanguageChange} value={selectedLanguage}>
+          <option value="en">English</option>
+          {LANGUAGES.map((lang) => (
+            <option key={lang.code} value={lang.code}>
+              {lang.label}
+            </option>
+          ))}
+        </select>
+        {dictLoading && <span className="dict-loading-spinner" />}
+      </div>
       <div className="translator-grid">
         <div className="input-section">
           <div className="section-header">
-            <h2>English</h2>
+            <h2>{languageLabel}</h2>
             <div className="button-group">
-              {speechSupported && (
+              {!isForeignMode && speechSupported && (
                 <button
                   aria-label={speakingEnglish ? 'Stop speaking' : 'Listen to English text'}
                   className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
@@ -300,9 +428,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                   {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
                 </button>
               )}
-              <button className="btn-secondary" onClick={handleRandom}>
-                Random
-              </button>
+              {!isForeignMode && (
+                <button className="btn-secondary" onClick={handleRandom}>
+                  Random
+                </button>
+              )}
               <button
                 className={`btn-secondary ${copiedEnglish ? 'btn-copied' : ''}`}
                 disabled={!displayEnglish}
@@ -310,7 +440,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               >
                 {copiedEnglish ? 'Copied!' : 'Copy'}
               </button>
-              {onShare && (
+              {!isForeignMode && onShare && (
                 <button
                   className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
                   disabled={!hasContent}
@@ -328,7 +458,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             className="text-input"
             onChange={handleEnglishChange}
             onFocus={() => {
-              if (lastEdited === 'ingglish' && computedEnglish !== null) {
+              if (!isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null) {
                 setEnglishText(computedEnglish);
                 setLastEdited('english');
               }
@@ -336,7 +466,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
             onScroll={() => {
               handleScroll('english');
             }}
-            placeholder="Type English text here..."
+            placeholder={
+              isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
+            }
             ref={englishRef}
             spellCheck={false}
             value={lastEdited === 'english' ? englishText : displayEnglish}
@@ -346,63 +478,80 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="input-section ingglish-section">
           <div className="section-header">
             <h2>
-              <button
-                className="format-cycle-btn"
-                onClick={toggleFormat}
-                title="Cycle output format"
-              >
-                {getFormatLabel(format)}
-                <span aria-hidden="true" className="format-cycle-icon">
-                  &#x21C5;
-                </span>
-              </button>
+              {isForeignMode ? (
+                'Ingglish'
+              ) : (
+                <button
+                  className="format-cycle-btn"
+                  onClick={toggleFormat}
+                  title="Cycle output format"
+                >
+                  {getFormatLabel(format)}
+                  <span aria-hidden="true" className="format-cycle-icon">
+                    &#x21C5;
+                  </span>
+                </button>
+              )}
             </h2>
             <div className="button-group">
               <button
                 className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
-                disabled={!displayIngglish}
+                disabled={!displayIngglishClean}
                 onClick={handleCopyIngglish}
               >
                 {copiedIngglish ? 'Copied!' : 'Copy'}
               </button>
             </div>
           </div>
-          <textarea
-            className="text-input"
-            onChange={handleIngglishChange}
-            onFocus={() => {
-              if (lastEdited === 'english' && computedIngglish !== null) {
-                setIngglishText(computedIngglish);
-                setLastEdited('ingglish');
+          {isForeignMode ? (
+            <ForeignOutputDisplay
+              dictLoading={dictLoading}
+              onScroll={() => {
+                handleScroll('ingglish');
+              }}
+              scrollRef={ingglishRef}
+              text={displayIngglish}
+            />
+          ) : (
+            <textarea
+              className="text-input"
+              onChange={handleIngglishChange}
+              onFocus={() => {
+                if (lastEdited === 'english' && computedIngglish !== null) {
+                  setIngglishText(computedIngglish);
+                  setLastEdited('ingglish');
+                }
+              }}
+              onScroll={() => {
+                handleScroll('ingglish');
+              }}
+              placeholder={
+                (
+                  {
+                    deseret:
+                      '\u{10437}\u{10434}\u{10439} \u{1043C}\u{1042F}\u{10445}\u{10428}\u{10449}\u{1042F}\u{10437} \u{10438}\u{1042E}\u{10449}...',
+                    ingglish: 'Taip Ingglish tekst heer...',
+                    ipa: '/ta\u026Ap a\u026A pi\u02D0 e\u026A h\u026A\u0279.../',
+                    shavian:
+                      '\u{10451}\u{10472}\u{10450} \u{10456}\u{10471}\u{1045D}\u{1045E}\u{1046F} \u{10463}\u{10477}...',
+                  } as Record<string, string>
+                )[format] ?? ''
               }
-            }}
-            onScroll={() => {
-              handleScroll('ingglish');
-            }}
-            placeholder={
-              (
-                {
-                  deseret: '𐐻𐐴𐐹 𐐼𐐯𐑅𐐨𐑉𐐯𐐻 𐐸𐐮𐑉...',
-                  ingglish: 'Taip Ingglish tekst heer...',
-                  ipa: '/taɪp aɪ piː eɪ hɪɹ.../',
-                  shavian: '𐑑𐑲𐑐 𐑖𐑱𐑝𐑾𐑯 𐑣𐑽...',
-                } as Record<string, string>
-              )[format] ?? ''
-            }
-            ref={ingglishRef}
-            spellCheck={false}
-            value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
-          />
+              ref={ingglishRef as React.Ref<HTMLTextAreaElement>}
+              spellCheck={false}
+              value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
+            />
+          )}
         </div>
       </div>
 
-      {lastEdited === 'english' && isAllCaps(englishText) && (
+      {!isForeignMode && lastEdited === 'english' && isAllCaps(englishText) && (
         <div className="warning-message">
           Ingglish is case-sensitive — type in normal case for accurate translations.
         </div>
       )}
 
-      {hasContent && (
+      {!isForeignMode && hasContent && (
         <div className={`word-correspondence ${isSpeaking ? 'speaking' : ''}`}>
           <div className="correspondence-header">
             <span className="correspondence-label">
