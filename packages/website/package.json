@@ -13,8 +13,7 @@
     "preview": "vite preview",
     "pretest": "node scripts/ensure-ipa-dicts.cjs",
     "test": "vitest run --no-color",
-    "test:unit": "vitest run --no-color",
-    "test:docs": "vitest run src/components/Docs.test.ts --config vitest.docs.config.ts --no-color",
+    "test:docs": "vitest run src/components/Docs.test.ts --no-color",
     "test:e2e": "playwright test",
     "test:ui": "playwright test --ui"
   },

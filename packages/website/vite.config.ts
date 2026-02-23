@@ -202,8 +202,7 @@ export default defineConfig({
     resolve: { conditions: ['source'] },
   },
   test: {
-    // Docs.test.ts needs generated docs, runs separately after build
-    exclude: ['e2e/**', 'node_modules/**', '**/Docs.test.ts'],
+    exclude: ['e2e/**', 'node_modules/**'],
   },
   define: {
     __BUILD_ID__: JSON.stringify(BUILD_ID),

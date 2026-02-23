@@ -2,8 +2,8 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-// Workspace root is packages/website, so go up 2 levels to reach repo root
-const DOCS_DIR = path.resolve(process.cwd(), '../../docs');
+// Resolve relative to this file so it works regardless of cwd
+const DOCS_DIR = path.resolve(import.meta.dirname, '../../../../docs');
 
 // Convert heading text to slug (same logic as Docs.tsx)
 function createHeadingId(text: string): string {
@@ -55,10 +55,7 @@ function getDocFiles(): string[] {
 
 describe('Docs sidebar completeness', () => {
   it('every doc file in docs/ is imported in Docs.tsx', () => {
-    const docsComponent = fs.readFileSync(
-      path.resolve(process.cwd(), 'src/components/Docs.tsx'),
-      'utf8'
-    );
+    const docsComponent = fs.readFileSync(path.resolve(import.meta.dirname, 'Docs.tsx'), 'utf8');
 
     const docFiles = getDocFiles().filter((f) => f !== 'README.md');
     const missing = docFiles.filter((f) => !docsComponent.includes(`'../../../../docs/${f}'`));

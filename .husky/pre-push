@@ -35,7 +35,10 @@ if [ -n "$changed_pkgs" ]; then
   fi
 fi
 
-# Docs link test (~1s) — catches broken heading anchors
-if echo "$changed_files" | grep -qE '^docs/.*\.md$|^packages/website/src/components/Docs'; then
-  npm run test:docs --prefix packages/website
+# Docs link test (~1s) — when only docs/*.md changed (not in a package dir)
+# If packages/website changed, its vitest run above already covers Docs.test.ts
+if echo "$changed_files" | grep -qE '^docs/.*\.md$'; then
+  if ! echo "$changed_pkgs" | grep -q '^website$'; then
+    npm run test:docs --prefix packages/website
+  fi
 fi
