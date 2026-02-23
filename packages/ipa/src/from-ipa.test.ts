@@ -184,7 +184,7 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('kaʎe')).toEqual(['K', 'AE', 'L', 'Y', 'EH']);
   });
 
-  it('treats /oi/, /ou/, /ei/ as diphthongs', () => {
+  it('treats /oi/, /ou/, /ei/, /æi/, /œy/ as diphthongs', () => {
     expect(ipaToArpabet('oi')).toEqual(['OY']);
     expect(ipaToArpabet('ou')).toEqual(['OW']);
     expect(ipaToArpabet('ei')).toEqual(['EY']);
@@ -192,6 +192,33 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('koirɑ')).toEqual(['K', 'OY', 'R', 'AA']);
     // Finnish "koulu" /koulu/ → K OW L UW
     expect(ipaToArpabet('koulu')).toEqual(['K', 'OW', 'L', 'UW']);
+    // Finnish "päivä" /pæivæ/ → P AY V AE (not P AE IY V AE)
+    expect(ipaToArpabet('pæivæ')).toEqual(['P', 'AY', 'V', 'AE']);
+    // Dutch "huis" /hœys/ → HH OY S (not HH AH1 UW S)
+    expect(ipaToArpabet('hœys')).toEqual(['HH', 'OY', 'S']);
+  });
+
+  it('maps voiced glottal fricative ɦ to HH', () => {
+    expect(ipaToArpabet('ɦ')).toEqual(['HH']);
+    // Korean 합 in "감사합니다"
+    expect(ipaToArpabet('ɦamnida')).toEqual(['HH', 'AE', 'M', 'N', 'IY', 'D', 'AE']);
+  });
+
+  it('strips IPA modifier letters (aspiration, tone bars)', () => {
+    // Aspiration marker ʰ (U+02B0) should be stripped
+    expect(ipaToArpabet('tʰa')).toEqual(['T', 'AE']);
+    // Mandarin tone bars should be stripped
+    expect(ipaToArpabet('ta\u02E5\u02E9')).toEqual(['T', 'AE']);
+    expect(ipaToArpabet('ɕjɛ\u02E5\u02E9')).toEqual(['SH', 'Y', 'EH']);
+  });
+
+  it('strips combining diacritics from Korean transcriptions', () => {
+    // Korean a̠ (a + U+0320 combining minus below)
+    expect(ipaToArpabet('a\u0320')).toEqual(['AE']);
+    // Korean ʌ̹ (ʌ + U+0339 combining right half ring)
+    expect(ipaToArpabet('ʌ\u0339')).toEqual(['AH']);
+    // Korean unreleased k̚ (k + U+031A combining left angle above)
+    expect(ipaToArpabet('k\u031A')).toEqual(['K']);
   });
 });
 

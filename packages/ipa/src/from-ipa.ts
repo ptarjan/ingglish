@@ -25,14 +25,15 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   // Portuguese) should be dropped, not converted to "wn".
   const denasalized = normalized.replaceAll(/([aeiouɑɛɔəɐɒæøœʌɝɚɘɜɞɤʏʊɪɨɯy])\u0303/g, '$1n');
 
-  // Remove stress markers, length marks, and remaining combining diacritics
-  // (including tilde U+0303 left over from consonant nasalization).
-  const STRIP_RE = /[\u02C8\u02CC\u02D0\u02D1\u0303\u0325\u0330\u0324\u031E\u0361\u035C]/g; // eslint-disable-line no-misleading-character-class
-  const stripped = denasalized.replaceAll(STRIP_RE, '');
+  // Remove IPA modifier letters: stress (ˈˌ), length (ːˑ), aspiration (ʰ),
+  // tone bars (˥˦˧˨˩), and remaining tilde from consonant nasalization.
+  const MODIFIER_RE = /[\u02B0\u02C8\u02CC\u02D0\u02D1\u02E5-\u02E9\u0303]/g; // eslint-disable-line no-misleading-character-class
+  const stripped = denasalized.replaceAll(MODIFIER_RE, '');
 
   // Re-compose to NFC so diacriticked characters (e.g. c+cedilla → ç) match
-  // their precomposed map keys.
-  const clean = stripped.normalize('NFC');
+  // their precomposed map keys, then strip all remaining combining marks
+  // (Korean diacritics like ̠ ̹ ̚, breathy voice ̤, etc.).
+  const clean = stripped.normalize('NFC').replaceAll(/\p{Mn}/gu, '');
 
   const map = overrides ? { ...IPA_TO_ARPABET_MAP, ...overrides } : IPA_TO_ARPABET_MAP;
 

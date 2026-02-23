@@ -110,11 +110,12 @@ export const IPA_VARIANT_MAP: Record<string, string> = {
 export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   // --- Open vowels ---
   ä: 'AA', // /ä/ open central — IPA diacritic variant ≈ "father"
-  ɐ: 'AH', // /ɐ/ near-open central — Portuguese unstressed "a" ≈ "but"
-
   // --- Open vowel diphthongs (Finnish, etc.) ---
   // English uses /aɪ/ and /aʊ/ (with plain 'a'), but Finnish/other languages
   // use /ɑi/ and /ɑu/ (with open back 'ɑ'). Treat as diphthongs, not two vowels.
+  æi: 'AY', // /æi/ — Finnish "päivä" ≈ "my" diphthong (uses near-open front æ)
+
+  ɐ: 'AH', // /ɐ/ near-open central — Portuguese unstressed "a" ≈ "but"
   ɑi: 'AY', // /ɑi/ — Finnish "taivas" ≈ "my" diphthong
   ɑu: 'AW', // /ɑu/ — Finnish "sauna" ≈ "cow" diphthong
   ɑʊ: 'AW', // /ɑʊ/ — Chinese 好 /xɑʊ/ ≈ "cow" diphthong (uses IPA ʊ not plain u)
@@ -145,6 +146,7 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɣ: 'G', // /ɣ/ voiced velar fricative — Spanish "lago" ≈ G
   // --- Pharyngeal (Arabic) ---
   ħ: 'HH', // /ħ/ voiceless pharyngeal fricative — Arabic "ha" ≈ H
+  ɦ: 'HH', // /ɦ/ voiced glottal fricative — Korean 합 ≈ H
   // --- Central/back vowels not in English ---
   ɨ: 'IH', // /ɨ/ close central — Russian "ы" ≈ "bit"
   ɬ: 'L', // /ɬ/ voiceless lateral fricative — Welsh "ll" ≈ L
@@ -162,6 +164,7 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɳ: 'N', // /ɳ/ retroflex nasal ≈ N
   ø: 'AH1', // /ø/ close-mid front rounded — "peu" (French) ≈ "uh"
   œ: 'AH1', // /œ/ open-mid front rounded — "peur" (French) ≈ "uh"
+  œy: 'OY', // /œy/ — Dutch "huis" diphthong ≈ "boy"
   oi: 'OY', // /oi/ — Finnish "koira", Portuguese "coisa" ≈ "boy" diphthong
   ou: 'OW', // /ou/ — Finnish "koulu" ≈ "go" diphthong
   ɸ: 'F', // /ɸ/ voiceless bilabial fricative — Japanese "fu" ≈ F
