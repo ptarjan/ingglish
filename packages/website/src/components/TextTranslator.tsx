@@ -144,7 +144,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     useSpeech();
 
   // Foreign language state
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    () => localStorage.getItem('selectedLanguage') ?? 'en'
+  );
   const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
   const isForeignMode = selectedLanguage !== 'en';
@@ -177,7 +179,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   // Reset panes when switching languages
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLanguage(e.target.value);
+    const lang = e.target.value;
+    setSelectedLanguage(lang);
+    localStorage.setItem('selectedLanguage', lang);
     setEnglishText('');
     setIngglishText('');
     setLastEdited('english');
