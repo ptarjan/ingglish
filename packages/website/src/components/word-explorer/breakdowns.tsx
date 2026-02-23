@@ -79,7 +79,7 @@ export function G2PRuleTrace({ format, trace }: { format: OutputFormat; trace: G
           <tr>
             <th>Letters</th>
             <th>Rule</th>
-            <th>Phonemes</th>
+            <th>IPA</th>
             <th>{getFormatLabel(format)}</th>
           </tr>
         </thead>
@@ -88,7 +88,11 @@ export function G2PRuleTrace({ format, trace }: { format: OutputFormat; trace: G
             <tr key={i}>
               <td className="mono">{step.letters}</td>
               <td className="mono rule-code">{step.rule}</td>
-              <td className="mono">{step.phonemes.join(' ')}</td>
+              <td className="mono">
+                {step.phonemes
+                  .map((p) => arpabetPhonemeToIPA(p).replaceAll('\u2060', ''))
+                  .join(' ')}
+              </td>
               <td className="mono highlight">
                 {step.phonemes.length > 0 ? arpabetToFormat(step.phonemes, format) : '\u2014'}
               </td>
@@ -153,7 +157,7 @@ export function InitialismBreakdown({ format, word }: { format: OutputFormat; wo
           <thead>
             <tr>
               <th>Letter</th>
-              <th>Phonemes</th>
+              <th>IPA</th>
               <th>{getFormatLabel(format)}</th>
             </tr>
           </thead>
@@ -163,7 +167,13 @@ export function InitialismBreakdown({ format, word }: { format: OutputFormat; wo
               return (
                 <tr key={i}>
                   <td className="mono">{letter.toUpperCase()}</td>
-                  <td className="mono">{phonemes ? phonemes.join(' ') : '\u2014'}</td>
+                  <td className="mono">
+                    {phonemes
+                      ? phonemes
+                          .map((p) => arpabetPhonemeToIPA(p).replaceAll('\u2060', ''))
+                          .join(' ')
+                      : '\u2014'}
+                  </td>
                   <td className="mono highlight">
                     {phonemes ? arpabetToFormat(phonemes, format) : '\u2014'}
                   </td>
