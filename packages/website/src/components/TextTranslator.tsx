@@ -511,7 +511,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               onScroll={() => {
                 handleScroll('ingglish');
               }}
-              scrollRef={ingglishRef}
+              scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
               text={displayIngglish}
             />
           ) : (
