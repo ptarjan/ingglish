@@ -220,7 +220,7 @@ export const consonantGroups: SoundGroup[] = [
         examples: 'di**nn**er (diner), **kn**ife (naif), pe**n** (pen), **gn**at (nat)',
         phoneme: 'N',
       },
-      { examples: 'thi**n**k (thingk), thi**ng** (thing), to**ngue** (tuhng)', phoneme: 'NG' },
+      { examples: 'thi**n**k (thingk), thi**ng** (thing)', phoneme: 'NG' },
     ],
   },
   {

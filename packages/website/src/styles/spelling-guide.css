@@ -129,6 +129,10 @@ details.sound-group > summary > h4 {
   color: var(--color-text-muted);
 }
 
+.example-pair {
+  white-space: nowrap;
+}
+
 .examples-cell strong {
   font-weight: inherit;
   color: var(--color-text);

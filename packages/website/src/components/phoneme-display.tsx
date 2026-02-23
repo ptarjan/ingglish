@@ -41,7 +41,9 @@ export function renderDynamicExamples(
     return (
       <span key={si}>
         {si > 0 ? ', ' : ''}
-        {renderBoldParts(englishPart)} ({translated})
+        <span className="example-pair">
+          {renderBoldParts(englishPart)}&nbsp;({translated})
+        </span>
       </span>
     );
   });
@@ -49,14 +51,32 @@ export function renderDynamicExamples(
 
 /**
  * Renders example text with **bold** markers converted to <strong> elements.
+ * Each "word (translation)" pair is wrapped in a nowrap span to prevent
+ * line breaks between the word and its parenthetical.
  */
 export function renderExamples(examples: string): React.ReactNode {
-  const parts = examples.split(/(\*\*[^*]+\*\*)/);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
+  const segments = examples.split(', ');
+  return segments.map((segment, si) => {
+    // Find the last " (" to split word from parenthetical
+    const parenStart = segment.lastIndexOf(' (');
+    if (parenStart === -1 || !segment.endsWith(')')) {
+      return (
+        <span key={si}>
+          {si > 0 ? ', ' : ''}
+          {renderBoldParts(segment)}
+        </span>
+      );
     }
-    return part;
+    const wordPart = segment.slice(0, parenStart);
+    const parenPart = segment.slice(parenStart + 1); // includes "(translation)"
+    return (
+      <span key={si}>
+        {si > 0 ? ', ' : ''}
+        <span className="example-pair">
+          {renderBoldParts(wordPart)}&nbsp;{parenPart}
+        </span>
+      </span>
+    );
   });
 }
 
