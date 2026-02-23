@@ -25,7 +25,7 @@ Most reforms converge on the same consonant spellings but diverge wildly on vowe
 | FOOT /ʊ/ | oo, u (tied) | u | Split |
 | Schwa /ə/ | most dodge it | a | None |
 
-GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "got" — some use diacritics (ō, ô), some use digraphs (oa, ow, oh), some repurpose letters. Ingglish's "oh" appears to be unique across the corpus. The schwa is the second hardest; most systems avoid addressing it at all.
+GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "got": some use diacritics (ō, ô), some use digraphs (oa, ow, oh), some repurpose letters. Ingglish's "oh" appears to be unique across the corpus. The schwa is the second hardest; most systems avoid addressing it at all.
 
 ### Consonants
 
@@ -38,7 +38,7 @@ GOAT is the hardest vowel. Every system needs a way to distinguish "go" from "go
 | /ʒ/ | zh | zh | Moderate |
 | /θ/ vs /ð/ | th for both (conservative) or th/dh (phonemic) | th/dh | Split |
 
-The th/dh question is the most debated consonant choice. Conservative reforms keep "th" for both sounds, arguing English speakers can tell which is which from context — niels_singh's well-iterated Ðietsċ Eanglisċ system deliberately uses one symbol, arguing "the distinction between /θ/ and /ð/ is too rarely important in English to justify using two letters." Phonemic reforms split them. Both sides have vocal advocates.
+The th/dh question is the most debated consonant choice. Conservative reforms keep "th" for both sounds, arguing English speakers can tell which is which from context. niels_singh's well-iterated Ðietsċ Eanglisċ system deliberately uses one symbol, arguing "the distinction between /θ/ and /ð/ is too rarely important in English to justify using two letters." Phonemic reforms split them. Both sides have vocal advocates.
 
 A few systems represent /dʒ/ as a digraph (dj, dž, or even jz) to expose the affricate structure, but most keep English `j`.
 
@@ -56,7 +56,7 @@ Ingglish is in the pure ASCII camp, which is unusual but pragmatically well-defe
 
 ### Target Dialect
 
-General American is the most common target, followed by Australian English (3-4 well-developed systems from u/Plupsnup and u/yeahthatguyashton). A few target RP or specific American dialects. Targeting any specific dialect draws criticism from speakers of other dialects — this is unavoidable.
+General American is the most common target, followed by Australian English (3-4 well-developed systems from u/Plupsnup and u/yeahthatguyashton). A few target RP or specific American dialects. Targeting any specific dialect draws criticism from speakers of other dialects, and this is unavoidable.
 
 One novel approach: u/markjsno1 posted a [consonant-only reform](https://www.reddit.com/r/conorthography/comments/1jdzlkw/another_rework_of_the_english_alphabet_consonants/), deliberately ignoring vowels because "accents are mainly vowel shifts." This sidesteps the dialect problem entirely by reforming only the half of English spelling that everyone agrees on.
 
@@ -66,27 +66,27 @@ One novel approach: u/markjsno1 posted a [consonant-only reform](https://www.red
 
 Most of Ingglish's design decisions are well within the mainstream:
 
-- **ai** for PRICE, **ay** for FACE, **ou** for MOUTH, **oi** for CHOICE — all common or the most popular option
-- **sh**, **ch**, **ng**, **zh** — standard consonant digraphs
-- **ee/oo** vowel doubling — length pattern, frequently cited and used
-- Phonemic (not phonetic) approach — the clear majority position
-- GenAm as target — the most common dialect choice
+- **ai** for PRICE, **ay** for FACE, **ou** for MOUTH, **oi** for CHOICE: all common or the most popular option
+- **sh**, **ch**, **ng**, **zh**: standard consonant digraphs
+- **ee/oo** vowel doubling: length pattern, frequently cited and used
+- Phonemic (not phonetic) approach: the clear majority position
+- GenAm as target: the most common dialect choice
 
 ### Unusual choices
 
 Three Ingglish choices stand out as unusual or unique:
 
-**"oh" for GOAT** — Unique among the 133+ reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The most common alternatives are ō (macron), ou, ow, and oe — GOAT remains the vowel with zero consensus. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar.
+**"oh" for GOAT.** Unique among the 133+ reforms surveyed. Ingglish's own docs rate it "Rare" in the orthography comparison. The most common alternatives are ō (macron), ou, ow, and oe; GOAT remains the vowel with zero consensus. The reasoning is sound (avoids collision with "ow" for MOUTH), but "goh" and "shoh" will look unfamiliar.
 
-**Schwa mapped to "a"** — Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping to "a" is the most common single-letter choice for schwa cross-linguistically (it's the default unstressed vowel in many languages), and it preserves many familiar spellings ("about", "banana" stay unchanged). Words where schwa was previously spelled with other letters do change: "problem" → "problam", "computer" → "kampyooter". The principled consistency is unusual regardless of which letter is chosen.
+**Schwa mapped to "a".** Most systems either dodge the schwa question entirely or vary spelling by etymology. Ingglish's consistent mapping to "a" is the most common single-letter choice for schwa cross-linguistically (it's the default unstressed vowel in many languages), and it preserves many familiar spellings ("about", "banana" stay unchanged). Words where schwa was previously spelled with other letters do change: "problem" → "problam", "computer" → "kampyooter". The principled consistency is unusual regardless of which letter is chosen.
 
-**"u" for FOOT** — Most world languages use plain 'u' for /ʊ/. Ingglish assigns 'u' to /ʊ/ (book → buk) and 'oo' to /uː/ (too → too). This aligns with the majority of Latin-script languages and matches the most common community choice. Several systems in the corpus independently assign plain `u` to FOOT and a digraph to GOOSE. The trade-off: English "book", "good", "look" are no longer identical (they become "buk", "gud", "luk") but English "too", "food", "moon" become identical.
+**"u" for FOOT.** Most world languages use plain 'u' for /ʊ/. Ingglish assigns 'u' to /ʊ/ (book → buk) and 'oo' to /uː/ (too → too). This aligns with the majority of Latin-script languages and matches the most common community choice. Several systems in the corpus independently assign plain `u` to FOOT and a digraph to GOOSE. The trade-off: English "book", "good", "look" are no longer identical (they become "buk", "gud", "luk") but English "too", "food", "moon" become identical.
 
 ### Strongest differentiators
 
 Two things set Ingglish apart from every other system in the corpus:
 
-1. **Working software.** No other reform has bidirectional translation tools, a browser extension, or a website that converts text in real time. Every other system is a static proposal — a table of sound-to-spelling mappings, maybe with sample text.
+1. **Working software.** No other reform has bidirectional translation tools, a browser extension, or a website that converts text in real time. Every other system is a static proposal, a table of sound-to-spelling mappings, maybe with sample text.
 
 2. **Thorough documentation with cross-linguistic comparisons.** The community explicitly praises well-organized tables and systematic presentation. Low-effort posts with just a phoneme chart and no sample text get dismissed.
 
@@ -102,7 +102,7 @@ By far the most common objection. Representative comments:
 
 > "English who's English? Different people speak English differently... you can't make a phonetic alphabet for a language spoken by billions who each speak it differently." (u/Common-Swimmer-5105)
 
-> "Accent/dialect-specific spelling reforms eradicate the strongest selling point of English — Americans, Britons, Australians, Irish, New Zealanders, Hong Kongers can easily understand each others' writing." (u/Delusionn)
+> "Accent/dialect-specific spelling reforms eradicate the strongest selling point of English: Americans, Britons, Australians, Irish, New Zealanders, Hong Kongers can easily understand each others' writing." (u/Delusionn)
 
 One GenAm-based reform got a 16-upvote meme: "English spelling reform > Look inside > GenAm phonemes" (u/trmetroidmaniac). This criticism is unavoidable for any phonemic system. Ingglish addresses it in [Spelling Reform Comparison: The Dialect Problem](spelling-reform-comparison.md#1-the-dialect-problem).
 
@@ -126,7 +126,7 @@ Systems that reassign letter values or use unfamiliar characters get dismissed:
 
 Universal for phonemic systems. The ["(Not so) Basic English Spelling Reform"](https://www.reddit.com/r/conorthography/comments/1qsb2tk/not_so_basic_english_spelling_reform/) (77 upvotes, highest-scoring post) drew reactions like "Oh my pord what the hepp." The more phonemically consistent a system is, the stranger it looks to English readers.
 
-Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this — they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "problam" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
+Reforms that look "almost English" trigger stronger negative reactions than systems that look fully foreign. As one commenter noted about a Dutch-style reform: it's in "the linguistic equivalent of the uncanny valley, as is Scots" (u/Rutiniya). Shavian or Cyrillic adaptations don't trigger this; they're clearly a different script. But phonemic Latin-script reforms like Ingglish sit squarely in the uncanny valley: "problam" and "goh" look wrong precisely *because* the surrounding text looks almost normal.
 
 Specific design choices that drew the harshest reactions:
 - Using Q as a vowel: "Q should NOT be a vowel" (19 upvotes)
@@ -139,7 +139,7 @@ Phonetic (surface-level) systems get criticized for making unnecessary distincti
 
 > "An orthography doesn't need to be a fine-grained phonetic transcription (and for a pluricentric language like English, it really shouldn't be)." (u/Norwester77)
 
-Ingglish's phonemic approach avoids this — it represents meaningful sound distinctions, not surface phonetic detail.
+Ingglish's phonemic approach avoids this: it represents meaningful sound distinctions, not surface phonetic detail.
 
 ### 6. Internal inconsistency
 
@@ -159,7 +159,7 @@ A vocal camp argues reforms should align English vowels with continental Europea
 
 > "Using ⟨é⟩ for a long i is criminal. It bothers me enough that it is called an 'e' in English. But shouldn't a reform make it better?" (u/thriceness, 7 upvotes)
 
-Ingglish falls in the "English logic" camp — respecting how English speakers already think about vowel letters rather than adopting continental values.
+Ingglish falls in the "English logic" camp, respecting how English speakers already think about vowel letters rather than adopting continental values.
 
 ### 8. Accessibility and dyslexia
 
@@ -175,10 +175,10 @@ Ingglish's pure ASCII approach avoids confusable letter shapes entirely.
 
 Across all posts, the community responds well to:
 - **Sample text.** Multiple commenters request it; systems without it get less constructive feedback. The North Wind & Sun passage is the subreddit standard.
-- **Visual presentation.** The highest-scoring posts all have images — phoneme charts as graphics, posters, custom keyboard layouts. Text-only posts with raw phoneme tables rarely break 20 upvotes.
+- **Visual presentation.** The highest-scoring posts all have images: phoneme charts as graphics, posters, custom keyboard layouts. Text-only posts with raw phoneme tables rarely break 20 upvotes.
 - **Organized tables.** One well-documented conservative reform got 8 upvotes for its presentation alone: "I'm tired of lazy posts here in the sub, so, thanks for that."
 - **Internal consistency.** One designer's guarantee that "one letter or set of letters only corresponds to only one consonant or vowel, no exception" was noted approvingly.
-- **Iteration.** Systems that show visible evolution across multiple posts get credit — Plupsnup (3 posts), niels_singh (3 posts), and CreepingTuna all earn respect for refinement.
+- **Iteration.** Systems that show visible evolution across multiple posts get credit: Plupsnup (3 posts), niels_singh (3 posts), and CreepingTuna all earn respect for refinement.
 - **Alignment with European languages.** Several commenters suggest looking at Dutch, Finnish, or Albanian conventions.
 
 ## Notable Systems
@@ -197,7 +197,7 @@ Three iterations targeting Standard Australian English. Uses IPA-derived charact
 
 ### [Inglisce](https://www.reddit.com/r/conorthography/comments/1ohpaw7/inglisce_spelling_reforme/) (6 upvotes, 8 comments)
 
-Heavy use of diacritics (grave, acute, circumflex), drops W and K, brings back thorn. Based on Great Lakes Dialect. Prioritizes etymology and European convention over phonemic clarity — opposite philosophy from Ingglish. Gets praised for its "ye olde Englisce" aesthetic but criticized for inconsistency: learners "would just have to learn when 's' is voiced vs unvoiced."
+Heavy use of diacritics (grave, acute, circumflex), drops W and K, brings back thorn. Based on Great Lakes Dialect. Prioritizes etymology and European convention over phonemic clarity, the opposite philosophy from Ingglish. Gets praised for its "ye olde Englisce" aesthetic but criticized for inconsistency: learners "would just have to learn when 's' is voiced vs unvoiced."
 
 ### [The asasnow "Conservative" reform](https://www.reddit.com/r/conorthography/comments/1l9an1t/my_very_amateur_attempt_at_a_more_conservative/) (30 upvotes, 12 comments)
 
@@ -209,7 +209,7 @@ Adds a single diacritic (dot below: ǹ for /ŋ/) but otherwise stays close to En
 
 ### [Harry Lindgren's reform](https://www.reddit.com/r/conorthography/comments/1ayt4oj/harry_lindgrens_spellimg_reform/) (21 upvotes, 21 comments)
 
-A published academic reform by an Australian linguist, using diacritics for vowel quality. Drew harsh criticism for internal inconsistency — the acute accent marks both short vowels and diphthongs, which is contradictory. Multiple commenters described it as "not functional at all" (5 upvotes). Demonstrates that academic credentials don't guarantee good design.
+A published academic reform by an Australian linguist, using diacritics for vowel quality. Drew harsh criticism for internal inconsistency: the acute accent marks both short vowels and diphthongs, which is contradictory. Multiple commenters described it as "not functional at all" (5 upvotes). Demonstrates that academic credentials don't guarantee good design.
 
 ### [InEcclesiaSatan's Dutch-style reform](https://www.reddit.com/r/conorthography/comments/1ktfjia/as_revenge_for_anglophones_calling_dutch_goofy_i/) (41 upvotes, 14 comments)
 
@@ -217,11 +217,11 @@ A published academic reform by an Australian linguist, using diacritics for vowe
 
 ### niels_singh's Ðietsċ Eanglisċ ([v17](https://www.reddit.com/r/conorthography/comments/17h40ag/ðietsçeanglisç_spelling_reform_v17_faikipédia/), [v28](https://www.reddit.com/r/conorthography/comments/1py8y89/ðeetsċ_eanglisċ_spelling_reform_v28_demo_excerpt/), [v29](https://www.reddit.com/r/conorthography/comments/1qabu6e/ðietsċ_eanglisċ_spelling_reform_v29_sample_ðe/)) (18, 17, 12 upvotes)
 
-The most iterated system in the corpus — reached version 29 across multiple years. Naturalistic, etymology-preserving reform with heavy Dutch/Frisian influence. Uses ð but not þ, and diacritics selectively. Deliberately does NOT split th/dh. The author's philosophy: "I want to keep words recognisable to speakers that are not familiar with the reform while still regularising how phonology is represented." Represents the "recognizability-first" end of the spectrum; Ingglish represents the "consistency-first" end.
+The most iterated system in the corpus, having reached version 29 across multiple years. Naturalistic, etymology-preserving reform with heavy Dutch/Frisian influence. Uses ð but not þ, and diacritics selectively. Deliberately does NOT split th/dh. The author's philosophy: "I want to keep words recognisable to speakers that are not familiar with the reform while still regularising how phonology is represented." Represents the "recognizability-first" end of the spectrum; Ingglish represents the "consistency-first" end.
 
 ### Anooj4021's maximalist system ([v1](https://www.reddit.com/r/conorthography/comments/1mrsi30/my_revised_orthography_for_english/), [v2](https://www.reddit.com/r/conorthography/comments/1oz2dy3/my_revised_english_orthography_version_20/)) (5 upvotes, 15 comments across versions)
 
-The most phonologically sophisticated system in the corpus. Splits FACE into PANE (historically /eː/) vs PAIN (historically /ej/), and GOAT into TOE vs TOW, to "cancel historical vowel mergers" and distinguish homophones in writing. Uses th/dh, sh/zh, and ø for schwa. The 13-comment debate with martinribot is the most technically dense exchange in the dataset. Sits at the opposite extreme from Ingglish — maximum historical distinctions vs. maximum consistency.
+The most phonologically sophisticated system in the corpus. Splits FACE into PANE (historically /eː/) vs PAIN (historically /ej/), and GOAT into TOE vs TOW, to "cancel historical vowel mergers" and distinguish homophones in writing. Uses th/dh, sh/zh, and ø for schwa. The 13-comment debate with martinribot is the most technically dense exchange in the dataset. Sits at the opposite extreme from Ingglish, favoring maximum historical distinctions vs. maximum consistency.
 
 ### u/martinribot (power commenter)
 
