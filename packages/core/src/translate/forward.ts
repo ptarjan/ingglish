@@ -19,13 +19,8 @@ import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
   detectCasePattern,
-  extractPreservedPatterns,
-  normalizeApostrophes,
-  restorePreservedPatterns,
   splitCamelCase,
   stripDiacritics,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
 } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
@@ -34,7 +29,8 @@ import {
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
 import { translateContraction } from './contractions';
-import { expandPlaceholder } from './preserved';
+import type { TranslateResult } from './pipeline';
+import { capitalizeSentences, mapTokens, prepareText } from './pipeline';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
 const HAS_LETTER = /[a-z]/i;
@@ -42,7 +38,6 @@ const ALL_UPPER = /^[A-Z]+$/;
 const TRIPLE_CHAR = /(.)\1\1/;
 const HAS_VOWEL = /[aeiouy]/i;
 const TITLE_CASE = /^[A-Z][a-z]*$/;
-const SENTENCE_END = /[.?!]/;
 
 /**
  * A single token from a translated text, preserving the mapping between
@@ -63,58 +58,14 @@ export interface TranslatedToken {
 // Word Translation Helpers
 // ============================================================================
 
-interface TranslateResult {
-  matched: boolean;
-  translated: string;
-}
-
 /**
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
-  // Normalize curly apostrophes (diacritics are stripped per-word in translateWord)
-  const normalizedText = normalizeApostrophes(text);
-
-  // Extract URLs and emails to preserve them unchanged
-  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalizedText);
-
-  // Split on word boundaries, preserving punctuation, numbers, whitespace
-  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
-
-  // Track sentence boundaries to capitalize the first word of each sentence.
-  // Start as true so the very first word gets capitalized (beginning of text = sentence start).
-  // Only applies to multi-word text to avoid changing single-word translation behavior.
-  let wordCount = 0;
-  for (const t of tokens) {
-    if (WORD_TEST_REGEX.test(t) && ++wordCount > 1) {
-      break;
-    }
-  }
-  const hasMultipleWords = wordCount > 1;
-  let sentenceStart = hasMultipleWords;
-
-  const translated = tokens
-    .map((token) => {
-      // Only translate if it's a word (contains letters)
-      if (WORD_TEST_REGEX.test(token)) {
-        let result = translateWord(token, format);
-        // Capitalize first word of each sentence
-        if (sentenceStart && getFormatPreservesCase(format) && result.length > 0) {
-          result = result.charAt(0).toUpperCase() + result.slice(1);
-        }
-        sentenceStart = false;
-        return result;
-      }
-      // Detect sentence-ending punctuation
-      if (hasMultipleWords && SENTENCE_END.test(token)) {
-        sentenceStart = true;
-      }
-      return token;
-    })
-    .join('');
-
-  // Restore URLs and emails
-  return restorePreservedPatterns(translated, preserved);
+  const { preserved, rawTokens } = prepareText(text);
+  const tokens = mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
+  const capitalized = capitalizeSentences(tokens, format);
+  return capitalized.map((t) => t.translated).join('');
 }
 
 /**
@@ -126,41 +77,8 @@ export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
-  const normalizedText = normalizeApostrophes(text);
-
-  // Extract URLs and emails to preserve them unchanged
-  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalizedText);
-  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
-
-  // Single pass: filter and map together
-  const result: TranslatedToken[] = [];
-  for (const token of tokens) {
-    if (token.length > 0) {
-      // Check if this token contains a placeholder for a preserved pattern
-      const expanded = expandPlaceholder(token, preserved);
-      if (expanded) {
-        result.push(...expanded);
-      } else {
-        if (WORD_TEST_REGEX.test(token)) {
-          const { matched, translated } = translateWordInternal(token, format);
-          result.push({
-            isWord: true,
-            matched,
-            original: token,
-            translated,
-          });
-        } else {
-          result.push({
-            isWord: false,
-            matched: true,
-            original: token,
-            translated: token,
-          });
-        }
-      }
-    }
-  }
-  return result;
+  const { preserved, rawTokens } = prepareText(text);
+  return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
 }
 
 /**

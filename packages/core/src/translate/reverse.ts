@@ -8,15 +8,7 @@
 
 import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
 import { ipaToArpabetClean } from '@ingglish/ipa';
-import {
-  applyCasePattern,
-  detectCasePattern,
-  extractPreservedPatterns,
-  normalizeApostrophes,
-  tokenizeIPA,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
-} from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern, tokenizeIPA } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
   expandArpabetAlternatives,
@@ -25,7 +17,8 @@ import {
   registerFormat,
 } from '@ingglish/phonemes';
 import type { TranslatedToken } from './forward';
-import { expandPlaceholder } from './preserved';
+import type { TranslateResult } from './pipeline';
+import { mapTokens, prepareText } from './pipeline';
 
 // Pre-compiled regex patterns
 const HAS_LETTER = /[a-z]/i;
@@ -206,63 +199,8 @@ function reverseTranslateIngglishText(text: string): string {
  * Ingglish reverse translation with token-by-token mapping.
  */
 function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[] {
-  const normalizedText = normalizeApostrophes(text);
-  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalizedText);
-
-  const tokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
-  const result: TranslatedToken[] = [];
-
-  for (const token of tokens) {
-    if (token.length === 0) {
-      continue;
-    }
-
-    // Check for preserved patterns (URLs, emails)
-    const expanded = expandPlaceholder(token, preserved);
-    if (expanded) {
-      result.push(...expanded);
-      continue;
-    }
-
-    if (WORD_TEST_REGEX.test(token)) {
-      if (token.includes("'")) {
-        // Handle contractions as a single token
-        const parts = token.split("'");
-        const translatedParts: string[] = [];
-        let allMatched = true;
-        for (const p of parts) {
-          if (!p) {
-            translatedParts.push('');
-            continue;
-          }
-          const matches = reverseTranslateWord(p);
-          if (matches.length > 0) {
-            translatedParts.push(matches[0]!);
-          } else {
-            translatedParts.push(p);
-            allMatched = false;
-          }
-        }
-        result.push({
-          isWord: true,
-          matched: allMatched,
-          original: token,
-          translated: translatedParts.join("'"),
-        });
-      } else {
-        const matches = reverseTranslateWord(token);
-        if (matches.length > 0) {
-          result.push({ isWord: true, matched: true, original: token, translated: matches[0]! });
-        } else {
-          result.push({ isWord: true, matched: false, original: token, translated: token });
-        }
-      }
-    } else {
-      result.push({ isWord: false, matched: true, original: token, translated: token });
-    }
-  }
-
-  return result;
+  const { preserved, rawTokens } = prepareText(text);
+  return mapTokens(rawTokens, preserved, reverseTranslateWordAsResult);
 }
 
 /**
@@ -304,4 +242,38 @@ function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
     }
     return { isWord: false, matched: true, original: token.text, translated: token.text };
   });
+}
+
+/**
+ * Translate a single Ingglish word (with contraction support) returning a
+ * TranslateResult for use with the pipeline's mapTokens stage.
+ */
+function reverseTranslateWordAsResult(word: string): TranslateResult {
+  if (!HAS_LETTER.test(word)) {
+    return { matched: true, translated: word };
+  }
+
+  if (word.includes("'")) {
+    // Handle contractions by splitting on apostrophe
+    const parts = word.split("'");
+    let allMatched = true;
+    const translatedParts = parts.map((p) => {
+      if (!p) {
+        return '';
+      }
+      const matches = reverseTranslateWord(p);
+      if (matches.length > 0) {
+        return matches[0]!;
+      }
+      allMatched = false;
+      return p;
+    });
+    return { matched: allMatched, translated: translatedParts.join("'") };
+  }
+
+  const matches = reverseTranslateWord(word);
+  if (matches.length > 0) {
+    return { matched: true, translated: matches[0]! };
+  }
+  return { matched: false, translated: word };
 }
