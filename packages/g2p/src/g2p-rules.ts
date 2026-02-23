@@ -6,7 +6,12 @@
  * letter-to-sound rules." NRL Report 7948.
  *
  * ~960 context-sensitive rules that examine left and right letter context
- * to determine pronunciation. Each rule has the form:
+ * to determine pronunciation. ~150 are general spelling rules (silent E,
+ * digraphs, vowel teams, C/G softening, suffixes). The other ~800 are
+ * narrow context patches and whole-word memorizations for the cases where
+ * those rules break down.
+ *
+ * Each rule has the form:
  *
  *   leftContext[TARGET]rightContext=/PHONEMES/
  *
