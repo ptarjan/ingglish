@@ -57,6 +57,16 @@ describe('translateForeign', () => {
     expect(result2).not.toContain(NOT_FOUND_MARKER);
   });
 
+  it('looks up clitic+apostrophe entries from real French dictionaries', () => {
+    // Real French ipa-dict has "s'" -> /s/, "l'" -> /l/, not bare "s" or "l"
+    const frDict: IpaDict = { homme: '/ɔm/', il: '/il/', "l'": '/l/', "s'": '/s/' };
+    const result1 = translateForeign("s'il", frDict);
+    expect(result1).not.toContain(NOT_FOUND_MARKER);
+
+    const result2 = translateForeign("l'homme", frDict);
+    expect(result2).not.toContain(NOT_FOUND_MARKER);
+  });
+
   it('splits hyphenated words', () => {
     const frDict: IpaDict = { allez: '/ale/', vous: '/vu/' };
     const result = translateForeign('allez-vous', frDict);
