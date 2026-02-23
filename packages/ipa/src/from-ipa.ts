@@ -26,8 +26,8 @@ export function ipaToArpabet(ipa: string, overrides?: Record<string, string>): s
   const denasalized = normalized.replaceAll(/([aeiouɑɛɔəɐɒæøœʌɝɚɘɜɞɤʏʊɪɨɯy])\u0303/g, '$1n');
 
   // Remove IPA modifier letters: stress (ˈˌ), length (ːˑ), aspiration (ʰ),
-  // tone bars (˥˦˧˨˩), and remaining tilde from consonant nasalization.
-  const MODIFIER_RE = /[\u02B0\u02C8\u02CC\u02D0\u02D1\u02E5-\u02E9\u0303]/g; // eslint-disable-line no-misleading-character-class
+  // tone bars (˥˦˧˨˩), superscript modifiers (ᵝ), and remaining tilde.
+  const MODIFIER_RE = /[\u02B0\u02C8\u02CC\u02D0\u02D1\u02E5-\u02E9\u0303\u1D5D]/g; // eslint-disable-line no-misleading-character-class
   const stripped = denasalized.replaceAll(MODIFIER_RE, '');
 
   // Strip all remaining combining marks (Korean ̠ ̹ ̚, accents on loanwords é,

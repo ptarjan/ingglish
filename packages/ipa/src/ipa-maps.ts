@@ -190,6 +190,7 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   // --- Labial-velar ---
   ɥ: 'W', // /ɥ/ labial-palatal approximant — French "lui" ≈ W
   ɯ: 'UH', // /ɯ/ close back unrounded — Japanese "u", Turkish "ı" ≈ "book" (shorter than "oo")
+  ɰ: 'W', // /ɰ/ voiced velar approximant — Japanese 川 /kaɰᵝa/ ≈ W
   ʋ: 'V', // /ʋ/ labiodental approximant — Hindi, Dutch ≈ V
 
   // --- Velar/palatal fricatives (German, Mandarin, etc.) ---
