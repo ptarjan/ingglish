@@ -85,7 +85,7 @@ function Experiment() {
         })}
         <span
           className="presets-label"
-          title="Community spelling reform proposals from r/conorthography"
+          title="Published and community English spelling reform proposals"
         >
           Reforms:
         </span>

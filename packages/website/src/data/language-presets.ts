@@ -95,7 +95,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     hash: '#m=AA:a,AE:a,AH:a,AH0:a,AO:o,AW:aw,AY:ai,B:b,CH:ts,D:d,DH:dd,EH:e,ER:er,EY:ei,F:ff,G:g,HH:h,IH:i,IY:i,JH:j,K:c,L:l,M:m,N:n,NG:ng,OW:o,OY:oi,P:p,R:r,S:s,SH:si,T:t,TH:th,UH:u,UW:w,V:f,W:w,Y:i,Z:s,ZH:s',
     label: 'Welsh',
   },
-  // ── Spelling Reforms (r/conorthography) ────────────────────────────
+  // ── Spelling Reforms ───────────────────────────────────────────────
   {
     description:
       'Dutch/Frisian conventions \u2014 sj, tj, dj digraphs, j for /j/ (r/conorthography)',
@@ -109,6 +109,18 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     group: 'reform',
     hash: '#m=AA:\u00E0,AE:a,AH:u,AH0:e,AO:\u00E0,AW:au,AY:ai,B:b,CH:tc,D:d,DH:\u00F0,EH:\u00E8,ER:er,EY:ei,F:f,G:g,HH:h,IH:i,IY:\u00EC,JH:dj,K:k,L:l,M:m,N:n,NG:\u01F9,OW:\u00F2,OY:oi,P:p,R:r,S:s,SH:c,T:t,TH:\u00FE,UH:o,UW:\u00F9,V:v,W:w,Y:y,Z:z,ZH:j',
     label: 'Inglic',
+  },
+  {
+    description: '1910 Simplified Spelling Society \u2014 th/dh split, oo/uu for short/long',
+    group: 'reform',
+    hash: '#m=AA:aa,AE:a,AH:u,AH0:u,AO:au,AW:ou,AY:ie,B:b,CH:ch,D:d,DH:dh,EH:e,ER:ur,EY:ae,F:f,G:g,HH:h,IH:i,IY:ee,JH:j,K:k,L:l,M:m,N:n,NG:ng,OW:oe,OY:oi,P:p,R:r,S:s,SH:sh,T:t,TH:th,UH:oo,UW:uu,V:v,W:w,Y:y,Z:z,ZH:zh',
+    label: 'Nue Speling',
+  },
+  {
+    description: 'American Literacy Council reform \u2014 ae/ee/ie/oe digraphs, uu for FOOT',
+    group: 'reform',
+    hash: '#m=AA:aa,AE:a,AH:u,AH0:u,AO:au,AW:ou,AY:ie,B:b,CH:ch,D:d,DH:th,EH:e,ER:er,EY:ae,F:f,G:g,HH:h,IH:i,IY:ee,JH:j,K:k,L:l,M:m,N:n,NG:ng,OW:oe,OY:oi,P:p,R:r,S:s,SH:sh,T:t,TH:th,UH:uu,UW:oo,V:v,W:w,Y:y,Z:z,ZH:zh',
+    label: 'SoundSpel',
   },
   // ── Alphabets ──────────────────────────────────────────────────────
   {
