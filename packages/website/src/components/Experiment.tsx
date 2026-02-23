@@ -35,7 +35,7 @@ function Experiment() {
       </div>
 
       <div className="experiment-presets">
-        <span className="presets-label">Use a language's orthography:</span>
+        <span className="presets-label">Presets:</span>
         {LANGUAGE_PRESETS.map((preset) => {
           const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
           return (
@@ -53,21 +53,19 @@ function Experiment() {
             </a>
           );
         })}
-      </div>
-
-      <div className="experiment-share-bar">
+        <span className="presets-divider" />
         <button
-          className="btn-secondary"
+          className="btn-secondary btn-sm"
           disabled={!mapping.hasCustomizations}
           onClick={handleReset}
         >
-          Reset to Defaults
+          Reset
         </button>
         <button
-          className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
+          className={`btn-secondary btn-sm ${copiedShare ? 'btn-copied' : ''}`}
           onClick={handleShare}
         >
-          {copiedShare ? 'Copied!' : 'Share Link'}
+          {copiedShare ? 'Copied!' : 'Share'}
         </button>
       </div>
 

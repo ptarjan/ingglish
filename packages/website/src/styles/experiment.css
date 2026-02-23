@@ -22,7 +22,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .presets-label {
@@ -60,12 +60,15 @@
   background: var(--color-primary);
 }
 
-/* Share bar */
-.experiment-share-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+.presets-divider {
+  width: 1px;
+  height: 1.25rem;
+  background: var(--color-border);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8rem;
 }
 
 /* Two-column grid */
