@@ -71,8 +71,8 @@ Future work could support dialect variants by providing alternative phoneme mapp
 
 | Word | Ingglish | GenAm | British RP |
 |------|----------|-------|------------|
-| father | fodher | /fɑðɚ/ (AA → o) | /fɑːðə/ (PALM /ɑː/) |
-| bother | bodher | /bɑðɚ/ (AA → o) | /bɒðə/ (LOT /ɒ/) |
+| father | fodher | /fɑðɚ/ (AA) | /fɑːðə/ (PALM /ɑː/) |
+| bother | bodher | /bɑðɚ/ (AA) | /bɒðə/ (LOT /ɒ/) |
 
 **Who this affects:** RP and Australian speakers distinguish these: "father" has /ɑː/ (PALM) while "bother" has /ɒ/ (LOT). The rounded /ɒ/ vowel has no ARPAbet equivalent.
 
