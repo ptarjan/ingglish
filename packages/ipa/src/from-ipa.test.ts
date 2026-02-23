@@ -93,6 +93,26 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ʈʂa')).toEqual(['CH', 'AE']);
   });
 
+  it('maps IPA /y/ to UW vowel, not Y consonant', () => {
+    // IPA /y/ is close front rounded vowel (French "tu", German "über"),
+    // not the palatal approximant /j/ (which maps to Y via the forward map)
+    expect(ipaToArpabet('y')).toEqual(['UW']);
+    // French "tu" /ty/ → T UW (→ "too"), not T Y (→ "ty")
+    expect(ipaToArpabet('ty')).toEqual(['T', 'UW']);
+    // French "musique" /myzik/ → M UW Z IY K
+    expect(ipaToArpabet('myzik')).toEqual(['M', 'UW', 'Z', 'IY', 'K']);
+  });
+
+  it('treats Finnish /ɑu/ and /ɑi/ as diphthongs', () => {
+    // Finnish diphthongs use /ɑ/ (open back), not /a/ (open front)
+    expect(ipaToArpabet('ɑu')).toEqual(['AW']);
+    expect(ipaToArpabet('ɑi')).toEqual(['AY']);
+    // "sauna" /sɑunɑ/ → S AW N AA (not S AA UW N AA = "sooono")
+    expect(ipaToArpabet('sɑunɑ')).toEqual(['S', 'AW', 'N', 'AA']);
+    // "taivas" /tɑivɑs/ → T AY V AA S (not T AA IY V AA S = "toeevos")
+    expect(ipaToArpabet('tɑivɑs')).toEqual(['T', 'AY', 'V', 'AA', 'S']);
+  });
+
   it('converts nasal vowels to vowel + N', () => {
     // French "enfants" /ɑ̃fɑ̃/
     expect(ipaToArpabet('ɑ̃fɑ̃')).toEqual(['AA', 'N', 'F', 'AA', 'N']);
@@ -101,6 +121,12 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ɔ̃')).toEqual(['AO', 'N']);
     // French "bonjour" /bɔ̃ʒuʁ/
     expect(ipaToArpabet('bɔ̃ʒuʁ')).toEqual(['B', 'AO', 'N', 'ZH', 'UW', 'R']);
+  });
+
+  it('handles precomposed nasal vowels via NFD normalization', () => {
+    // Precomposed ã (U+00E3) should work the same as decomposed a + U+0303
+    expect(ipaToArpabet('\u00E3')).toEqual(['AE', 'N']); // ã → a + tilde → AE N
+    expect(ipaToArpabet('\u00F5')).toEqual(['OW', 'N']); // õ → o + tilde → OW N
   });
 });
 

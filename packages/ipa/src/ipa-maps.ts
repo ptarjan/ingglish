@@ -93,7 +93,9 @@ export const IPA_VARIANT_MAP: Record<string, string> = {
   ɫ: 'L', // dark l
   o: 'OW', // some IPA uses plain o for goat vowel
   r: 'R', // common variant — forward map uses ɹ (alveolar approximant)
-  y: 'Y', // common variant — forward map uses j (palatal approximant)
+  // Note: IPA /y/ is the close front rounded vowel (French "tu", German "über").
+  // It's handled in IPA_APPROXIMATION_MAP as y→UW. The consonant /j/ (palatal
+  // approximant) is already mapped via the forward map reversal (j→Y).
 };
 
 /**
@@ -109,6 +111,12 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   // --- Open vowels ---
   ä: 'AA', // /ä/ open central — IPA diacritic variant ≈ "father"
   ɐ: 'AH', // /ɐ/ near-open central — Portuguese unstressed "a" ≈ "but"
+
+  // --- Open vowel diphthongs (Finnish, etc.) ---
+  // English uses /aɪ/ and /aʊ/ (with plain 'a'), but Finnish/other languages
+  // use /ɑi/ and /ɑu/ (with open back 'ɑ'). Treat as diphthongs, not two vowels.
+  ɑi: 'AY', // /ɑi/ — Finnish "taivas" ≈ "my" diphthong
+  ɑu: 'AW', // /ɑu/ — Finnish "sauna" ≈ "cow" diphthong
   // Nasal vowels (ɑ̃, ɛ̃, ɔ̃, etc.) are handled in from-ipa.ts by
   // converting vowel+combining-tilde to vowel+"n" before map lookup.
   ɒ: 'AO', // /ɒ/ open back rounded — British "lot" ≈ "thought"
