@@ -24,17 +24,17 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   },
   {
     description: 'ci/gi/sci digraphs for palatals',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:ci,DH:d,EY:ei,IY:i,JH:gi,K:c,OW:o,SH:sci,TH:t,UW:u,Z:s,ZH:gi',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:ci,DH:d,EY:ei,IY:i,JH:gi,K:c,OW:o,SH:sci,TH:t,UW:u,W:v,Y:i,Z:s,ZH:gi',
     label: 'Italian',
   },
   {
     description: 'sch/tsch clusters, ei\u2194ie swap, umlauts',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OY:eu,SH:sch,TH:t,UW:uh,Y:j,Z:s,ZH:sch',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OY:eu,SH:sch,TH:t,UW:uh,V:w,Y:j,Z:s,ZH:sch',
     label: 'German',
   },
   {
     description: '\u00E7 and \u015F for affricates/fricatives',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,ZH:j',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,CH:\u00E7,DH:d,EY:ey,IY:i,JH:c,OW:o,SH:\u015F,TH:t,UW:u,W:v,ZH:j',
     label: 'Turkish',
   },
   {
@@ -49,7 +49,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   },
   {
     description: 'Only 8 consonants (p, k, h, m, n, l, w, \u02BB)',
-    hash: '#m=AA:a,AH:a,AO:o,AW:au,B:p,CH:k,D:k,DH:,F:p,G:k,IY:i,JH:k,NG:n,OW:o,R:l,S:h,SH:h,T:k,TH:h,UW:u,V:w,Y:i,Z:h,ZH:h',
+    hash: '#m=AA:a,AH:a,AO:o,AW:au,B:p,CH:k,D:k,DH:,ER:el,EY:ei,F:p,G:k,IY:i,JH:k,NG:n,OW:o,R:l,S:h,SH:h,T:k,TH:h,UW:u,V:w,Y:i,Z:h,ZH:h',
     label: 'Hawaiian',
   },
   {
