@@ -336,8 +336,6 @@ button.preset-action:disabled {
 /* Keep tooltips within the scrollable experiment-right container */
 .experiment-words [data-orig]:hover::after {
   left: 0;
-  max-width: 15rem;
-  white-space: normal;
   transform: none;
 }
 
