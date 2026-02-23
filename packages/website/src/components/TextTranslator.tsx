@@ -400,22 +400,24 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   return (
     <div className="text-translator">
-      <div className="language-selector">
-        <label htmlFor="language-select">Source language:</label>
-        <select id="language-select" onChange={handleLanguageChange} value={selectedLanguage}>
-          <option value="en">English</option>
-          {LANGUAGES.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.label}
-            </option>
-          ))}
-        </select>
-        {dictLoading && <span className="dict-loading-spinner" />}
-      </div>
       <div className="translator-grid">
         <div className="input-section">
           <div className="section-header">
-            <h2>{languageLabel}</h2>
+            <h2>
+              <select
+                className="language-select"
+                onChange={handleLanguageChange}
+                value={selectedLanguage}
+              >
+                <option value="en">English</option>
+                {LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.label}
+                  </option>
+                ))}
+              </select>
+              {dictLoading && <span className="dict-loading-spinner" />}
+            </h2>
             <div className="button-group">
               {!isForeignMode && speechSupported && (
                 <button
