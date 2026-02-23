@@ -2,7 +2,9 @@
  * Shared pipeline stages for forward and reverse translation.
  *
  * Both directions follow the same structure:
- *   prepareText → mapTokens → (optional capitalizeSentences) → output
+ *   extractTokens → mapTokens → (optional sentenceCapitalize) → output
+ *
+ * Function names are chosen so alphabetical sort matches pipeline order (e < m < s).
  */
 
 import {
@@ -30,11 +32,57 @@ const SENTENCE_END = /[.?!]/;
 const HAS_LETTER = /[a-z]/i;
 
 /**
+ * Stage 1: Normalize text and extract preserved patterns (URLs, emails).
+ * Returns the raw token strings and the preserved pattern map.
+ */
+export function extractTokens(text: string): {
+  preserved: Map<string, string>;
+  rawTokens: string[];
+} {
+  const normalized = normalizeApostrophes(text);
+  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalized);
+  const rawTokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
+  return { preserved, rawTokens };
+}
+
+/**
+ * Stage 2: Map raw token strings into TranslatedToken[], routing words
+ * through the provided translator and expanding preserved pattern placeholders.
+ */
+export function mapTokens(
+  rawTokens: string[],
+  preserved: Map<string, string>,
+  translateWord: WordTranslator
+): TranslatedToken[] {
+  const result: TranslatedToken[] = [];
+  for (const token of rawTokens) {
+    if (token.length === 0) {
+      continue;
+    }
+
+    // Check if this token contains a placeholder for a preserved pattern
+    const expanded = expandPlaceholder(token, preserved);
+    if (expanded) {
+      result.push(...expanded);
+      continue;
+    }
+
+    if (WORD_TEST_REGEX.test(token)) {
+      const { matched, translated } = translateWord(token);
+      result.push({ isWord: true, matched, original: token, translated });
+    } else {
+      result.push({ isWord: false, matched: true, original: token, translated: token });
+    }
+  }
+  return result;
+}
+
+/**
  * Stage 3 (forward only): Capitalize the first word of each sentence.
  * Only applies when the format preserves case and the text has multiple words.
  * Returns tokens unmodified if no capitalization is needed.
  */
-export function capitalizeSentences(
+export function sentenceCapitalize(
   tokens: TranslatedToken[],
   format: OutputFormat
 ): TranslatedToken[] {
@@ -79,50 +127,4 @@ export function capitalizeSentences(
     }
   }
   return result;
-}
-
-/**
- * Stage 2: Map raw token strings into TranslatedToken[], routing words
- * through the provided translator and expanding preserved pattern placeholders.
- */
-export function mapTokens(
-  rawTokens: string[],
-  preserved: Map<string, string>,
-  translateWord: WordTranslator
-): TranslatedToken[] {
-  const result: TranslatedToken[] = [];
-  for (const token of rawTokens) {
-    if (token.length === 0) {
-      continue;
-    }
-
-    // Check if this token contains a placeholder for a preserved pattern
-    const expanded = expandPlaceholder(token, preserved);
-    if (expanded) {
-      result.push(...expanded);
-      continue;
-    }
-
-    if (WORD_TEST_REGEX.test(token)) {
-      const { matched, translated } = translateWord(token);
-      result.push({ isWord: true, matched, original: token, translated });
-    } else {
-      result.push({ isWord: false, matched: true, original: token, translated: token });
-    }
-  }
-  return result;
-}
-
-/**
- * Stage 1: Normalize text and extract preserved patterns (URLs, emails).
- * Returns the raw token strings and the preserved pattern map.
- */
-export function prepareText(text: string): {
-  preserved: Map<string, string>;
-  rawTokens: string[];
-} {
-  const normalized = normalizeApostrophes(text);
-  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalized);
-  const rawTokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
-  return { preserved, rawTokens };
 }

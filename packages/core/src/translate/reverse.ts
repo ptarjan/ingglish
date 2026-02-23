@@ -18,7 +18,7 @@ import {
 } from '@ingglish/phonemes';
 import type { TranslatedToken } from './forward';
 import type { TranslateResult } from './pipeline';
-import { mapTokens, prepareText } from './pipeline';
+import { extractTokens, mapTokens } from './pipeline';
 
 // Pre-compiled regex patterns
 const HAS_LETTER = /[a-z]/i;
@@ -199,7 +199,7 @@ function reverseTranslateIngglishText(text: string): string {
  * Ingglish reverse translation with token-by-token mapping.
  */
 function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[] {
-  const { preserved, rawTokens } = prepareText(text);
+  const { preserved, rawTokens } = extractTokens(text);
   return mapTokens(rawTokens, preserved, reverseTranslateWordAsResult);
 }
 

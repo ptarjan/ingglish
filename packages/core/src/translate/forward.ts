@@ -30,7 +30,7 @@ import {
 } from '@ingglish/phonemes';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
-import { capitalizeSentences, mapTokens, prepareText } from './pipeline';
+import { extractTokens, mapTokens, sentenceCapitalize } from './pipeline';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
 const HAS_LETTER = /[a-z]/i;
@@ -62,9 +62,9 @@ export interface TranslatedToken {
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
-  const { preserved, rawTokens } = prepareText(text);
+  const { preserved, rawTokens } = extractTokens(text);
   const tokens = mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
-  const capitalized = capitalizeSentences(tokens, format);
+  const capitalized = sentenceCapitalize(tokens, format);
   return capitalized.map((t) => t.translated).join('');
 }
 
@@ -77,7 +77,7 @@ export function translateSyncWithMapping(
   text: string,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
-  const { preserved, rawTokens } = prepareText(text);
+  const { preserved, rawTokens } = extractTokens(text);
   return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
 }
 
