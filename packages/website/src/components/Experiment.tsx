@@ -37,7 +37,7 @@ function Experiment() {
       <div className="experiment-presets">
         <span className="presets-label">Try a language:</span>
         {LANGUAGE_PRESETS.map((preset) => {
-          const isActive = globalThis.location.hash === preset.hash;
+          const isActive = decodeURIComponent(globalThis.location.hash) === preset.hash;
           return (
             <a
               className={`preset-link${isActive ? ' preset-active' : ''}`}
