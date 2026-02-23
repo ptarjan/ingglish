@@ -16,8 +16,13 @@ if [ -n "$css_files" ]; then
   echo "$css_files" | xargs npx stylelint
 fi
 
-# Type-check the website package (~4s) to catch cross-file TS errors
-# that eslint misses (e.g. ref type mismatches between components)
+# Type-check the website package (~4s) — catches 90% of CI failures
+# (cross-file TS errors that eslint misses)
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
   npx tsc --noEmit -p packages/website/tsconfig.json
+fi
+
+# Docs link test (~1s) — catches broken heading anchors in docs
+if echo "$changed_files" | grep -qE '^docs/.*\.md$|^packages/website/src/components/Docs'; then
+  npm run test:docs --prefix packages/website
 fi
