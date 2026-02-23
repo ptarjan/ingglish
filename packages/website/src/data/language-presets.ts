@@ -36,7 +36,7 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   {
     description: 'sch/tsch clusters, ei\u2194ie swap, umlauts',
     group: 'language',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OY:eu,SH:sch,TH:t,UW:uh,V:w,Y:j,Z:s,ZH:sch',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AO:o,AW:au,AY:ei,CH:tsch,DH:d,EY:eh,IY:ie,JH:dsch,OW:o,OY:eu,SH:sch,TH:t,UW:u,V:w,Y:j,Z:s,ZH:sch',
     label: 'German',
   },
   {
@@ -89,9 +89,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Turkish',
   },
   {
-    description: 'f/ff swap (f=/v/, ff=/f/), dd for /\u00F0/, w as vowel',
+    description: 'f/ff swap (f=/v/, ff=/f/), dd for /\u00F0/, si for /\u0283/, w as vowel',
     group: 'language',
-    hash: '#m=AA:a,AH:a,AO:o,AW:aw,DH:dd,EY:ei,F:ff,IY:i,K:c,OW:o,UW:w,V:f,Z:s,ZH:s',
+    hash: '#m=AA:a,AH:a,AO:o,AW:aw,CH:ts,DH:dd,EY:ei,F:ff,IY:i,K:c,OW:o,SH:si,UW:w,V:f,Z:s,ZH:s',
     label: 'Welsh',
   },
   // ── Alphabets ──────────────────────────────────────────────────────
