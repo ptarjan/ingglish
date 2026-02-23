@@ -6,7 +6,7 @@ English often has multiple ways to spell the same sound. The choices aren't rand
 
 For the other direction — you see a word, how do you pronounce it? — see [How to Read English](english-spelling-rules.md).
 
-Statistics are based on analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
+Spelling patterns are informed by the [NRL/Elovitz letter-to-sound rules](https://apps.dtic.mil/sti/citations/ADA021929) (1976), a set of ~960 context-sensitive rules originally developed at the Naval Research Laboratory for text-to-speech synthesis. Word counts are based on 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
 ## Short Vowels
 

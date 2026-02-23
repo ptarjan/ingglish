@@ -4,7 +4,7 @@ You see a word on the page. How do you know what it sounds like? This guide cove
 
 For the other direction — you know the word, how do you spell it? — see [How to Spell English Sounds](english-spelling-choices.md).
 
-Statistics are based on analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
+Rules are derived from the [NRL/Elovitz letter-to-sound rules](https://apps.dtic.mil/sti/citations/ADA021929) (1976), a set of ~960 context-sensitive rules originally developed at the Naval Research Laboratory for text-to-speech synthesis. Word counts are based on analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
 ## How English Spelling Works
 
