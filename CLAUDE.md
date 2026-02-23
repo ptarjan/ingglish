@@ -75,17 +75,10 @@ The `--conditions=source` flag resolves workspace packages to their TypeScript s
 
 ## Browsing Reddit
 
-WebFetch cannot access reddit.com. Use curl with the JSON API instead (requires `User-Agent` header):
+WebFetch cannot access reddit.com. Use curl with the JSON API instead. Append `.json` to any Reddit URL. Requires a `User-Agent` header:
 
 ```bash
-# User's submissions
 curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/user/ptarjan/submitted.json?limit=10"
-
-# Comments on a post
-curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/r/etymology/comments/{post_id}.json"
-
-# Search a subreddit
-curl -s -H "User-Agent: ingglish-bot/1.0" "https://www.reddit.com/r/conorthography/search.json?q=ingglish&limit=5"
 ```
 
 Parse with python3 (write to a temp file to avoid shell escaping issues with inline scripts).
