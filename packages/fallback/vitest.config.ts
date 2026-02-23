@@ -22,5 +22,6 @@ export default defineConfig({
     isolate: false,
     testTimeout: 10000,
     hookTimeout: 30000,
+    sequence: { groupOrder: 3 },
   },
 });
