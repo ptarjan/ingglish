@@ -40,7 +40,7 @@ export function MappedWordDisplay({
           const isDiff = stdSpelling !== undefined;
 
           let tooltip: string | undefined;
-          if (showTooltip && changed) {
+          if (showTooltip && (changed || isDiff)) {
             tooltip = isDiff ? `${token.original} (Ingglish: ${stdSpelling})` : token.original;
           }
 
