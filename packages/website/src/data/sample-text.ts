@@ -90,32 +90,38 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: poems.find((p) => p.title === 'Why English Is So Hard')!.lines.join('\n'),
   },
 
-  // === Everyday/mundane ===
+  // === More literature ===
   {
-    label: 'Chocolate chip cookies recipe',
-    text: `Preheat the oven to three hundred and seventy five degrees. Cream together one cup of butter with three quarters cup of sugar until light and fluffy. Beat in two eggs and one teaspoon of vanilla extract. In a separate bowl, whisk together two and a quarter cups of flour, one teaspoon of baking soda, and one teaspoon of salt. Gradually mix the dry ingredients into the wet mixture. Fold in two cups of chocolate chips. Drop rounded tablespoons onto ungreased baking sheets and bake for nine to eleven minutes until golden brown.`,
+    label: 'The Great Gatsby',
+    text: `In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since. "Whenever you feel like criticizing anyone," he told me, "just remember that all the people in this world haven't had the advantages that you've had."`,
   },
   {
-    label: 'Weather forecast',
-    text: `Today will be mostly cloudy with a high near sixty eight degrees. There is a thirty percent chance of scattered showers throughout the afternoon. Winds will be from the southwest at ten to fifteen miles per hour. Tonight, expect partly cloudy skies with a low around fifty two degrees. Tomorrow looks much brighter, with sunshine returning and temperatures climbing into the mid seventies.`,
+    label: 'The Hobbit',
+    text: `In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.`,
   },
   {
-    label: 'Meeting email',
-    text: `Hi everyone, just a quick reminder that our quarterly review meeting is scheduled for Thursday at two o'clock in the main conference room. Please bring your project updates and any questions you might have for the team. We'll be covering the budget for next quarter, the new client onboarding process, and the timeline for the website redesign. If you can't make it, please let me know and I'll send you the notes afterward. Thanks!`,
+    label: 'Jane Eyre',
+    text: `There was no possibility of taking a walk that day. We had been wandering, indeed, in the leafless shrubbery an hour in the morning; but since dinner the cold winter wind had brought with it clouds so sombre, and a rain so penetrating, that further outdoor exercise was now out of the question.`,
   },
   {
-    label: 'Driving directions',
-    text: `Head north on Main Street for about half a mile, then turn right onto Oak Avenue. Continue straight through two traffic lights. At the third light, take a left onto Highway Twenty Seven. Stay in the right lane and take the second exit at the roundabout. You'll see a large grocery store on your left — the office building is just past it on the right. There's a parking garage around the back with visitor spaces on the ground floor.`,
-  },
-
-  // === Science/educational ===
-  {
-    label: 'Photosynthesis',
-    text: `Photosynthesis is the process by which green plants and certain other organisms transform light energy into chemical energy. During photosynthesis, plants capture light using chlorophyll, a green pigment found in their leaves. They use this energy to convert carbon dioxide from the air and water from the soil into glucose, a simple sugar that serves as food for the plant. Oxygen is released as a byproduct, which is essential for most life on Earth.`,
+    label: 'The Raven (Poe)',
+    text: `Once upon a midnight dreary, while I pondered, weak and weary, over many a quaint and curious volume of forgotten lore — while I nodded, nearly napping, suddenly there came a tapping, as of someone gently rapping, rapping at my chamber door. "'Tis some visitor," I muttered, "tapping at my chamber door — only this and nothing more."`,
   },
   {
-    label: 'The water cycle',
-    text: `The water cycle describes the continuous movement of water on, above, and below the surface of the Earth. Water evaporates from oceans, lakes, and rivers when heated by the sun. This water vapor rises into the atmosphere where it cools and condenses into tiny droplets, forming clouds. When enough moisture gathers, precipitation falls as rain, snow, sleet, or hail. The water then flows into streams and rivers, eventually returning to the ocean, and the cycle begins again.`,
+    label: 'Frankenstein',
+    text: `You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings. I arrived here yesterday, and my first task is to assure my dear sister of my welfare and increasing confidence in the success of my undertaking.`,
+  },
+  {
+    label: 'Churchill — We shall fight on the beaches',
+    text: `We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets, we shall fight in the hills; we shall never surrender. Even though large tracts of Europe and many old and famous States have fallen or may fall into the grip of the Gestapo and all the odious apparatus of Nazi rule, we shall not flag or fail.`,
+  },
+  {
+    label: 'The Road Not Taken (Frost)',
+    text: `Two roads diverged in a yellow wood, and sorry I could not travel both and be one traveler, long I stood and looked down one as far as I could to where it bent in the undergrowth. Then took the other, as just as fair, and having perhaps the better claim, because it was grassy and wanted wear.`,
+  },
+  {
+    label: 'Catch-22',
+    text: `It was love at first sight. The first time Yossarian saw the chaplain he fell madly in love with him. Yossarian was in the hospital with a pain in his liver that fell just short of being jaundice. The doctors were puzzled by the fact that it wasn't quite jaundice.`,
   },
 ];
 
