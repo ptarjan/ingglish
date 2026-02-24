@@ -19,6 +19,9 @@ const loader = createLazyLoader<CMUDictionary>(async () => {
       }
     }
   }
+  // Remove prototype so `key in dict` is safe (no "constructor", "toString", etc.)
+  // This lets lookups use `in` instead of Object.prototype.hasOwnProperty.call.
+  Object.setPrototypeOf(dict, null);
   return dict;
 }, 'CMU dictionary');
 

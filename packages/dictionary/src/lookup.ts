@@ -34,11 +34,10 @@ export function lookupPronunciationLower(key: string): null | string[] {
     return custom;
   }
 
+  // Dictionary has null prototype (set at load time), so `in` is safe
+  // and avoids the overhead of Object.prototype.hasOwnProperty.call.
   const dict = getDictionary();
-  // Dictionary values are already pre-split arrays (done at build time).
-  // Velar nasal normalization (N → NG before K/G) is applied at load time.
-  // Use hasOwn to avoid prototype properties like "constructor", "toString"
-  if (!Object.prototype.hasOwnProperty.call(dict, key)) {
+  if (!(key in dict)) {
     return null;
   }
 

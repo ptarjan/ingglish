@@ -70,12 +70,16 @@ export function extractPreservedPatterns(text: string): {
   return { preserved, text: result };
 }
 
+// Pre-compiled regex patterns (avoid per-call RegExp object creation)
+const FANCY_APOSTROPHE = /[\u2018\u2019\u02BC]/g;
+const COMBINING_MARKS = /[\u0300-\u036F]/g;
+
 /**
  * Normalizes various apostrophe characters to the standard straight apostrophe.
  * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
  */
 export function normalizeApostrophes(text: string): string {
-  return text.replaceAll(/[\u2018\u2019\u02BC]/g, "'");
+  return text.replaceAll(FANCY_APOSTROPHE, "'");
 }
 
 /**
@@ -98,5 +102,5 @@ export function restorePreservedPatterns(text: string, preserved: Map<string, st
  * Uses Unicode NFD decomposition to separate base letters from combining marks.
  */
 export function stripDiacritics(text: string): string {
-  return text.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
+  return text.normalize('NFD').replaceAll(COMBINING_MARKS, '');
 }

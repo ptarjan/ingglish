@@ -11,7 +11,6 @@ import {
   extractPreservedPatterns,
   normalizeApostrophes,
   WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
 } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { getFormatPreservesCase } from '@ingglish/phonemes';
@@ -59,7 +58,11 @@ export function mapTokens(
 ): TranslatedToken[] {
   const result: TranslatedToken[] = [];
   const hasPreserved = preserved.size > 0;
-  for (const token of rawTokens) {
+
+  // WORD_SPLIT_REGEX is a capturing group, so split() places word matches
+  // at odd indices and separators (punctuation/whitespace) at even indices.
+  // This lets us use index parity instead of a per-token regex test.
+  for (const [i, token] of rawTokens.entries()) {
     if (token.length === 0) {
       continue;
     }
@@ -73,7 +76,7 @@ export function mapTokens(
       }
     }
 
-    if (WORD_TEST_REGEX.test(token)) {
+    if (i % 2 === 1) {
       const { matched, translated } = translateWord(token);
       result.push({ isWord: true, matched, original: token, translated });
     } else {
@@ -119,7 +122,10 @@ export function renderText(
   let sentenceStart = true;
   let firstWordStart = -1;
 
-  for (const token of rawTokens) {
+  // WORD_SPLIT_REGEX is a capturing group, so split() places word matches
+  // at odd indices and separators (punctuation/whitespace) at even indices.
+  // This lets us use index parity instead of a per-token regex test.
+  for (const [i, token] of rawTokens.entries()) {
     if (token.length === 0) {
       continue;
     }
@@ -133,7 +139,7 @@ export function renderText(
       }
     }
 
-    if (WORD_TEST_REGEX.test(token)) {
+    if (i % 2 === 1) {
       const translated = translateWord(token);
       wordCount++;
 
@@ -154,7 +160,7 @@ export function renderText(
     } else {
       // Non-word token — check for sentence-end punctuation.
       // Only on pure punctuation/whitespace tokens (no letters), since
-      // preserved patterns contain letters and periods that shouldn't trigger this.
+      // digit-adjacent words like "3rd" stay in separator tokens.
       if (preservesCase && SENTENCE_END.test(token) && !HAS_LETTER.test(token)) {
         sentenceStart = true;
       }

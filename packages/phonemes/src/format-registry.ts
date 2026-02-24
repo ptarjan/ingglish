@@ -28,6 +28,11 @@ type ReverseTextWithMappingConverter = (text: string) => ReverseToken[];
 
 const registry = new Map<string, FormatHandler>();
 
+// Precomputed caches for hot-path getters (populated by registerFormat).
+// Avoids optional chaining and nullish coalescing on every per-word call.
+const isLatinScriptCache = new Map<string, boolean>();
+const preservesCaseCache = new Map<string, boolean>();
+
 export function getFormatHandler(name: string): FormatHandler | undefined {
   return registry.get(name);
 }
@@ -37,7 +42,7 @@ export function getFormatHandler(name: string): FormatHandler | undefined {
  * Defaults to true for unknown formats (safe for case handling).
  */
 export function getFormatIsLatinScript(name: string): boolean {
-  return registry.get(name)?.isLatinScript ?? true;
+  return isLatinScriptCache.get(name) ?? true;
 }
 
 /**
@@ -70,11 +75,15 @@ export function getFormatNativeLabel(name: string): string {
  * Falls back to isLatinScript, then true for unknown formats.
  */
 export function getFormatPreservesCase(name: string): boolean {
-  const handler = registry.get(name);
-  return handler?.preservesCase ?? handler?.isLatinScript ?? true;
+  return preservesCaseCache.get(name) ?? true;
 }
 
 export function registerFormat(name: string, handler: FormatHandler): void {
   const existing = registry.get(name);
-  registry.set(name, { ...existing, ...handler });
+  const merged = { ...existing, ...handler };
+  registry.set(name, merged);
+
+  // Precompute derived booleans so hot-path getters are a single Map.get()
+  isLatinScriptCache.set(name, merged.isLatinScript ?? true);
+  preservesCaseCache.set(name, merged.preservesCase ?? merged.isLatinScript ?? true);
 }
