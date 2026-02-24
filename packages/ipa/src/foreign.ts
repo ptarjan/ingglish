@@ -60,7 +60,10 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
       return override;
     }
   }
-  return dict[word] ?? dict[word.toLowerCase()];
+  // Try exact, lowercase, then title case (German nouns are capitalized in dict)
+  const lower = word.toLowerCase();
+  const title = lower.charAt(0).toUpperCase() + lower.slice(1);
+  return dict[word] ?? dict[lower] ?? dict[title];
 }
 
 /**
