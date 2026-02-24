@@ -204,6 +204,24 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: 'Guerra vitória batalha herói revolução nasceu morreu viveu cantou lutou sonhou começou azul negro dourado vermelho antigo profundo belo pequeno oceano horizonte',
     },
   ],
+  ro: [
+    {
+      label: 'Romanian folklore',
+      text: 'A fost un om care a mers prin lume si a aflat acolo lucruri minunate pe care nimeni nu le vedea',
+    },
+    {
+      label: 'History and honor',
+      text: 'Regele a condus poporul prin vremuri grele cu onoare si devotament pentru poporul sau',
+    },
+    {
+      label: 'Poetry — Longing and starlight',
+      text: 'Trecut au ani de dor ce aveau viitor si noaptea lor a fost un vis frumos sub lumina cerului',
+    },
+    {
+      label: 'Nature — Romanian landscape',
+      text: 'Dealuri verzi si pădure verde unde soarele apare frumos si norii se duc pe cerul albastru',
+    },
+  ],
   zh: [
     {
       label: 'Li Bai — Quiet Night Thought & Drinking Alone',

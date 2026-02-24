@@ -30,6 +30,7 @@ const LANGUAGES = [
   { code: 'ko', file: 'ko.txt' },
   { code: 'nl', file: 'nl.txt' },
   { code: 'pt', file: 'pt_BR.txt' },
+  { code: 'ro', file: 'ro.txt' },
   { code: 'zh', file: 'zh_hans.txt' },
 ] as const;
 
