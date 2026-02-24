@@ -119,6 +119,28 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: "La France a perdu une bataille! Mais la France n'a pas perdu la guerre! Des gouvernants de rencontre ont pu capituler, cédant à la panique, oubliant l'honneur, livrant le pays à la servitude. Cependant, rien n'est perdu! Rien n'est perdu, parce que cette guerre est une guerre mondiale. Dans l'univers libre, des forces immenses n'ont pas encore donné. Un jour ces forces écraseront l'ennemi. Il faut que la France, ce jour-là, soit présente à la victoire. Alors, elle retrouvera sa liberté et sa grandeur.",
     },
   ],
+  is: [
+    {
+      // https://sagadb.org/brennu-njals_saga.is (ch. 75)
+      label: 'Njáls saga — Gunnar at Hlíðarendi',
+      text: 'Fögur er hlíðin, svo að mér hefir hún aldrei sýnst, bleikir akrar en slegin tún, og mun eg ríða heim aftur og fara hvergi.',
+    },
+    {
+      // https://www.voluspa.org/havamal76-80.htm (modern Icelandic spelling)
+      label: 'Hávamál — Stanzas 76–77',
+      text: 'Deyr fé, deyja frændur, deyr sjálfur hinn sami. En orðstír deyr aldrei, sér góðan getur. Deyr fé, deyja frændur, deyr sjálfur hinn sami. Ég veit eitt að aldrei deyr, dómur um dauðan hvern.',
+    },
+    {
+      // https://en.wikiquote.org/wiki/Halld%C3%B3r_Laxness
+      label: 'Halldór Laxness — On becoming a writer',
+      text: 'Ég hef aldrei tekið mark á neinum öðrum en sjálfum mér og hefur mér aldrei dottið í hug að verða annað en skáld og rithöfundur frá fyrsta degi.',
+    },
+    {
+      // https://sagadb.org/brennu-njals_saga.is (ch. 1)
+      label: 'Njáls saga — Opening',
+      text: 'Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Völlum í Rangárvallasýslu. Hann var ríkur höfðingi en mikill lögmaður.',
+    },
+  ],
   ja: [
     {
       label: 'Kawabata — Snow Country',
@@ -220,6 +242,94 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
     {
       label: 'Nature — Romanian landscape',
       text: 'Dealuri verzi si pădure verde unde soarele apare frumos si norii se duc pe cerul albastru',
+    },
+  ],
+  sv: [
+    {
+      // https://archive.org/details/nilsholgerssons00lybegoog
+      label: 'Lagerlöf — Nils Holgerssons underbara resa',
+      text: 'Det var en gång en pojke. Han var så där en fjorton år gammal, lång och ranglig. Han hade mest av allt lust att sova och äta.',
+    },
+    {
+      // https://www.gutenberg.org/files/57052/57052-h/57052-h.htm
+      label: 'Strindberg — Röda rummet',
+      text: 'Det var en afton i början av maj. Över tak och torn i den lilla stad sken en röd sol. Folk gick hem genom gata och gränd.',
+    },
+    {
+      // https://www.astridlindgren.com/
+      label: 'Lindgren — Pippi Långstrump',
+      text: 'I en liten stad låg en gammal trädgård. Där stod ett hus och i det var en flicka som hette Pippi. Hon var nio år och så stark att hon kunde lyfta en häst med en hand.',
+    },
+    {
+      // https://runeberg.org/berling/i01.html
+      label: 'Lagerlöf — Gösta Berlings saga',
+      text: 'Till slut stod han framför folk i kyrka. Han var ung och hög och vacker. Han hade djup blick och fast haka. Allt hos honom var fint och full av eld.',
+    },
+  ],
+  sw: [
+    {
+      // https://en.wikipedia.org/wiki/Ee_Mungu_Nguvu_Yetu
+      label: 'Wimbo wa Taifa — Kenya National Anthem',
+      text: 'Ee Mungu nguvu yetu baraka kwetu. Haki iwe ngao na mlinzi na undugu amani na uhuru raha na ustawi.',
+    },
+    {
+      // https://swahiliproverbs.afrst.illinois.edu/
+      label: 'Methali za Kiswahili — Swahili Proverbs',
+      text: 'Haraka haraka haina baraka. Akili ni mali. Umoja ni nguvu na utengano ni udhaifu. Dawa ya moto ni moto. Penye nia pana njia. Haba na haba hujaza kibaba. Pole pole ndio mwendo.',
+    },
+    {
+      // Inspired by Nyerere's Azimio la Arusha (1967)
+      label: 'Azimio la Arusha — Ujamaa na Kujitegemea',
+      text: 'Watu wote ni sawa. Kila mtu ana haki ya kuishi kwa amani na uhuru. Elimu ni muhimu kwa maendeleo ya nchi yetu. Kazi ni kitu bora zaidi kuliko fedha. Umoja ni nguvu na utengano ni udhaifu.',
+    },
+    {
+      // https://swahiliproverbs.afrst.illinois.edu/
+      label: 'Methali za Kiswahili — More Proverbs',
+      text: 'Asante ya punda ni mateke. Mwenye kiu husafiri. Usipoziba ufa utajenga ukuta. Haba na haba hujaza kibaba. Yaliyopita si ndwele.',
+    },
+  ],
+  vi: [
+    {
+      // https://vietnamesetypography.com/samples/truyen-kieu/
+      label: 'Nguyễn Du — Truyện Kiều',
+      text: 'Trăm năm trong cõi người ta, chữ tài chữ mệnh khéo là ghét nhau. Trải qua một cuộc bể dâu, những điều trông thấy mà đau đớn lòng. Lạ gì bỉ sắc tư phong, trời xanh quen thói má hồng đánh ghen. Cảo thơm lần giở trước đèn, phong tình cổ lục còn truyền sử xanh.',
+    },
+    {
+      // https://www.thivien.net/Hồ-Xuân-Hương/Bánh-trôi-nước/poem-uWq3KGCd3SUUse06kE6PYA
+      label: 'Hồ Xuân Hương — Bánh trôi nước',
+      text: 'Thân em vừa trắng lại vừa tròn, bảy nổi ba chìm với nước non. Rắn nát mặc dầu tay kẻ nặn, mà em vẫn giữ tấm lòng son.',
+    },
+    {
+      // https://www.thivien.net/Bà-huyện-Thanh-Quan/Qua-Đèo-Ngang/poem-9f1Hth0gmM_PXzGNXg5Fog
+      label: 'Bà Huyện Thanh Quan — Qua đèo Ngang',
+      text: 'Bước tới Đèo Ngang bóng xế tà, cỏ cây chen đá lá chen hoa. Nhớ nước đau lòng con quốc quốc, thương nhà mỏi miệng cái gia gia. Dừng chân đứng lại trời non nước, một mảnh tình riêng ta với ta.',
+    },
+    {
+      // https://www.thivien.net/Hồ-Xuân-Hương/Thơ-tự-tình/poem-ZG1snfgbwBOBCSAnwp2z4w
+      label: 'Hồ Xuân Hương — Tự tình II',
+      text: 'Đêm khuya văng vẳng trống canh dồn. Chén rượu hương đưa say lại tỉnh, vầng trăng bóng xế khuyết chưa tròn. Đâm toạc chân mây đá mấy hòn. Ngán nỗi xuân đi xuân lại lại, mảnh tình san sẻ tí con con.',
+    },
+  ],
+  yue: [
+    {
+      // https://eastasiastudent.net/china/classical/li-bai-jiang-jin-jiu/
+      label: '李白 — 將進酒',
+      text: '君 不 見 黃 河 之 水 天 上 來 奔 流 到 海 不 復 回 君 不 見 高 堂 明 鏡 悲 白 髮 朝 如 青 絲 暮 成 雪 人 生 得 意 須 盡 歡 莫 使 金 樽 空 對 月 天 生 我 材 必 有 用 千 金 散 盡 還 復 來',
+    },
+    {
+      // https://eastasiastudent.net/china/classical/su-shi-water-song/
+      label: '蘇軾 — 水調歌頭',
+      text: '明 月 幾 時 有 把 酒 問 青 天 不 知 天 上 宮 闕 今 夕 是 何 年 我 欲 乘 風 歸 去 惟 恐 瓊 樓 玉 宇 高 處 不 勝 寒 起 舞 弄 清 影 何 似 在 人 間',
+    },
+    {
+      // https://chinesepoemsinenglish.blogspot.com/2013/11/wang-wei-farewell.html
+      label: '王維 — 送別',
+      text: '山 中 相 送 罷 日 暮 掩 柴 扉 春 草 明 年 綠 王 孫 歸 不 歸',
+    },
+    {
+      // https://ctext.org/analects (traditional characters for Cantonese)
+      label: '論語 — 學而篇',
+      text: '學 而 時 習 之 不 亦 說 乎 有 朋 自 遠 方 來 不 亦 樂 乎 人 不 知 而 不 慍 不 亦 君 子 乎 三 人 行 必 有 我 師 焉 擇 其 善 者 而 從 之 其 不 善 者 而 改 之',
     },
   ],
   zh: [

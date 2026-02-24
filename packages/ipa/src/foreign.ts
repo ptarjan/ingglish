@@ -23,11 +23,16 @@ export const LANGUAGES: Language[] = [
   { code: 'es', label: 'Spanish' },
   { code: 'fi', label: 'Finnish' },
   { code: 'fr', label: 'French' },
+  { code: 'is', label: 'Icelandic' },
   { code: 'ja', label: 'Japanese' },
   { code: 'ko', label: 'Korean' },
   { code: 'nl', label: 'Dutch' },
   { code: 'pt', label: 'Portuguese' },
   { code: 'ro', label: 'Romanian' },
+  { code: 'sv', label: 'Swedish' },
+  { code: 'sw', label: 'Swahili' },
+  { code: 'vi', label: 'Vietnamese' },
+  { code: 'yue', label: 'Cantonese' },
   { code: 'zh', label: 'Mandarin' },
 ];
 
