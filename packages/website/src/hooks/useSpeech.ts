@@ -78,12 +78,14 @@ export function useSpeech(): [
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
         utterance.lang = lang;
-        // Explicitly pick a voice matching the language — setting lang alone
-        // isn't always enough (some browsers fall back to the default voice).
+        // Pick a voice for the language. Prefer non-Google voices because
+        // Google TTS voices don't fire onboundary events (needed for
+        // word highlighting). Native/Microsoft/Apple voices do fire them.
         const voices = speechSynthesis.getVoices();
-        const voice =
-          voices.find((v) => v.lang.startsWith(lang + '-')) ??
-          voices.find((v) => v.lang.toLowerCase() === lang.toLowerCase());
+        const matching = voices.filter(
+          (v) => v.lang.startsWith(lang + '-') || v.lang.toLowerCase() === lang.toLowerCase()
+        );
+        const voice = matching.find((v) => !v.name.startsWith('Google')) ?? matching[0];
         if (voice) {
           utterance.voice = voice;
         }
