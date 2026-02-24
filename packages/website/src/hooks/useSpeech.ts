@@ -88,10 +88,27 @@ export function useSpeech(): [
           utterance.voice = voice;
         }
       }
-      let wordsSeen = 0;
+      // Precompute character offset → word index mapping so we can use
+      // charIndex from boundary events (more reliable across languages
+      // than counting sequential 'word' events).
+      const wordStarts: number[] = [];
+      const re = /\S+/g;
+      let match;
+      while ((match = re.exec(text)) !== null) {
+        wordStarts.push(match.index);
+      }
+
       utterance.onboundary = (event) => {
-        if (event.name === 'word') {
-          setWordCount(wordsSeen++);
+        if (event.name === 'word' || event.name === 'sentence') {
+          // Find which word the charIndex falls in
+          let idx = 0;
+          for (let i = wordStarts.length - 1; i >= 0; i--) {
+            if (event.charIndex >= wordStarts[i]!) {
+              idx = i;
+              break;
+            }
+          }
+          setWordCount(idx);
         }
       };
       utterance.onend = () => {

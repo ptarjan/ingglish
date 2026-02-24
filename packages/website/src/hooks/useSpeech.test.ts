@@ -227,7 +227,7 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('counts word boundaries sequentially', () => {
+  it('maps charIndex to word index', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -257,7 +257,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toBe(1);
 
     act(() => {
       result.current[2](); // stop
