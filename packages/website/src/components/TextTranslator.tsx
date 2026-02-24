@@ -89,6 +89,33 @@ function ForeignOutputDisplay({
   );
 }
 
+/** Word-highlighted display for foreign text during TTS playback. */
+function ForeignSpeechDisplay({
+  spokenWordIndex,
+  text,
+}: {
+  spokenWordIndex: null | number;
+  text: string;
+}) {
+  const segments = text.split(/(\s+)/);
+  let wordIndex = 0;
+  return (
+    <div className="text-input foreign-speech-display">
+      {segments.map((seg, i) => {
+        if (/^\s+$/.test(seg)) {
+          return <span key={i}>{seg}</span>;
+        }
+        const idx = wordIndex++;
+        return (
+          <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
+            {seg}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Returns true if the text is ALL CAPS (2+ letters). Ingglish is case-sensitive. */
 function isAllCaps(text: string): boolean {
   const letters = text.replaceAll(/[^a-z]/gi, '');
@@ -466,25 +493,29 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               </button>
             </div>
           </div>
-          <textarea
-            className="text-input"
-            onChange={handleEnglishChange}
-            onFocus={() => {
-              if (!isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null) {
-                setEnglishText(computedEnglish);
-                setLastEdited('english');
+          {isForeignMode && speakingEnglish ? (
+            <ForeignSpeechDisplay spokenWordIndex={spokenWordCount} text={displayEnglish} />
+          ) : (
+            <textarea
+              className="text-input"
+              onChange={handleEnglishChange}
+              onFocus={() => {
+                if (!isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null) {
+                  setEnglishText(computedEnglish);
+                  setLastEdited('english');
+                }
+              }}
+              onScroll={() => {
+                handleScroll('english');
+              }}
+              placeholder={
+                isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
               }
-            }}
-            onScroll={() => {
-              handleScroll('english');
-            }}
-            placeholder={
-              isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
-            }
-            ref={englishRef}
-            spellCheck={false}
-            value={lastEdited === 'english' ? englishText : displayEnglish}
-          />
+              ref={englishRef}
+              spellCheck={false}
+              value={lastEdited === 'english' ? englishText : displayEnglish}
+            />
+          )}
         </div>
 
         <div className="input-section ingglish-section">

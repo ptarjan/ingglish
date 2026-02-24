@@ -256,6 +256,17 @@
   text-underline-offset: 0.2em;
 }
 
+/* Foreign speech display (TTS word highlighting over textarea) */
+.foreign-speech-display {
+  overflow-y: auto;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.foreign-speech-display .word-token {
+  transition: none;
+}
+
 /* Foreign output display */
 .foreign-output {
   overflow-y: auto;
