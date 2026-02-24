@@ -80,13 +80,19 @@ export function useSpeech(): [
     [supported, clearWorkaround]
   );
 
-  // Cancel speech on unmount
+  // Cancel speech on unmount and page unload (refresh/navigate)
   useEffect(() => {
+    if (!supported) {
+      return;
+    }
+    const handleUnload = () => {
+      speechSynthesis.cancel();
+    };
+    window.addEventListener('beforeunload', handleUnload);
     return () => {
-      if (supported) {
-        speechSynthesis.cancel();
-        clearWorkaround();
-      }
+      window.removeEventListener('beforeunload', handleUnload);
+      speechSynthesis.cancel();
+      clearWorkaround();
     };
   }, [supported, clearWorkaround]);
 

@@ -1,12 +1,5 @@
-import type { TranslatedToken } from 'ingglish';
-import {
-  reverseTranslate,
-  reverseTranslateSyncWithMapping,
-  translateSync,
-  translateSyncWithMapping,
-} from 'ingglish';
+import { reverseTranslate, translateSync } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { type IndexedToken, tokenizePhonetic } from '@ingglish/normalize';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
@@ -18,8 +11,6 @@ import { useSpeech } from '../hooks/useSpeech';
 import type { IpaDict } from '../pronounce/dict-loader';
 import { LANGUAGES, loadDict } from '../pronounce/dict-loader';
 import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish';
-import { MappedWordDisplay } from './MappedWordDisplay';
-import { buildDiffMap } from './diff-map';
 
 type EditingPane = 'english' | 'ingglish';
 
@@ -33,79 +24,6 @@ interface ForeignOutputDisplayProps {
 interface TextTranslatorProps {
   initialText?: string;
   onShare?: (text: string) => string;
-}
-
-interface WordDisplayProps {
-  className?: string;
-  hoveredWordIndex: null | number;
-  onHoverWord?: (index: null | number) => void;
-  onScroll?: () => void;
-  scrollRef?: React.Ref<HTMLDivElement>;
-  spokenWordIndex?: null | number;
-  text: string;
-}
-
-/**
- * Foreign text input: a textarea for input with a word-tokenized overlay
- * on top for TTS word highlighting. The overlay has pointer-events: none
- * so clicks/typing pass through to the textarea underneath.
- */
-function ForeignInput({
-  languageLabel,
-  onChange,
-  onScroll,
-  scrollRef,
-  spokenWordIndex,
-  text,
-}: {
-  languageLabel: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onScroll?: () => void;
-  scrollRef: React.Ref<HTMLTextAreaElement>;
-  spokenWordIndex: null | number;
-  text: string;
-}) {
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const handleScroll = useCallback(
-    (e: React.UIEvent<HTMLTextAreaElement>) => {
-      if (overlayRef.current) {
-        overlayRef.current.scrollTop = e.currentTarget.scrollTop;
-      }
-      onScroll?.();
-    },
-    [onScroll]
-  );
-
-  const segments = text.split(/(\s+)/);
-  let wordIndex = 0;
-  return (
-    <div className="foreign-input-wrapper">
-      <textarea
-        className="text-input"
-        onChange={onChange}
-        onScroll={handleScroll}
-        placeholder={`Type ${languageLabel} text here...`}
-        ref={scrollRef}
-        spellCheck={false}
-        value={text}
-      />
-      {text.trim() && (
-        <div className="foreign-input-overlay text-input" ref={overlayRef}>
-          {segments.map((seg, i) => {
-            if (/^\s+$/.test(seg)) {
-              return <span key={i}>{seg}</span>;
-            }
-            const idx = wordIndex++;
-            return (
-              <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
-                {seg}
-              </span>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
 }
 
 function ForeignOutputDisplay({
@@ -158,6 +76,73 @@ function isAllCaps(text: string): boolean {
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
 
+/**
+ * Textarea with a word-tokenized overlay on top for TTS word highlighting.
+ * The overlay has pointer-events: none so clicks/typing pass through to
+ * the textarea underneath. Text is rendered transparently in the textarea
+ * and visibly in the overlay, keeping them in sync.
+ */
+function OverlayTextarea({
+  onChange,
+  onFocus,
+  onScroll,
+  placeholder,
+  scrollRef,
+  spokenWordIndex,
+  text,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onFocus?: () => void;
+  onScroll?: () => void;
+  placeholder?: string;
+  scrollRef: React.Ref<HTMLTextAreaElement>;
+  spokenWordIndex: null | number;
+  text: string;
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLTextAreaElement>) => {
+      if (overlayRef.current) {
+        overlayRef.current.scrollTop = e.currentTarget.scrollTop;
+      }
+      onScroll?.();
+    },
+    [onScroll]
+  );
+
+  const segments = text.split(/(\s+)/);
+  let wordIndex = 0;
+  return (
+    <div className="overlay-textarea">
+      <textarea
+        className="text-input"
+        onChange={onChange}
+        onFocus={onFocus}
+        onScroll={handleScroll}
+        placeholder={placeholder}
+        ref={scrollRef}
+        spellCheck={false}
+        value={text}
+      />
+      {text.trim() && (
+        <div className="overlay-textarea-display text-input" ref={overlayRef}>
+          {segments.map((seg, i) => {
+            if (/^\s+$/.test(seg)) {
+              return <span key={i}>{seg}</span>;
+            }
+            const idx = wordIndex++;
+            return (
+              <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
+                {seg}
+              </span>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SpeakerIcon() {
   return (
     <svg
@@ -199,7 +184,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
-  const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
@@ -273,41 +257,15 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
     }
   }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict, selectedLanguage]);
 
-  // Forward token mapping for word correspondence (with matched status)
-  const forwardTokens = useMemo(() => {
-    if (isForeignMode) {
-      return null;
-    }
-    if (lastEdited !== 'english' || !deferredEnglish.trim()) {
-      return null;
-    }
-    try {
-      return translateSyncWithMapping(deferredEnglish, format);
-    } catch {
-      return null;
-    }
-  }, [deferredEnglish, lastEdited, format, isForeignMode]);
-
-  // Diff map: word index → standard Ingglish spelling (for non-ingglish formats)
-  const diffMap = useMemo(() => {
-    if (forwardTokens === null) {
-      return;
-    }
-    return buildDiffMap(forwardTokens, deferredEnglish, format);
-  }, [format, forwardTokens, deferredEnglish]);
-
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
-  const [reverseTokens, setReverseTokens] = useState<null | TranslatedToken[]>(null);
   useEffect(() => {
     if (isForeignMode) {
       setComputedEnglish(null);
-      setReverseTokens(null);
       return;
     }
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
-      setReverseTokens(null);
       return;
     }
     let cancelled = false;
@@ -315,14 +273,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);
-          setReverseTokens(reverseTranslateSyncWithMapping(deferredIngglish, format));
         }
       })
       .catch((error: unknown) => {
         console.warn('Reverse translation failed:', error);
         if (!cancelled) {
           setComputedEnglish(null);
-          setReverseTokens(null);
         }
       });
     return () => {
@@ -414,27 +370,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
-  // TTS word count maps directly to word index in the correspondence display
-  const spokenWordIndex = spokenWordCount;
-
-  // Both hover and TTS highlights work independently
-  const isSpeaking = speakingEnglish;
-
-  // Auto-scroll the highlighted word into view during TTS
-  const corrEnglishRef = useRef<HTMLDivElement>(null);
-  const corrIngglishRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (spokenWordIndex === null) {
-      return;
-    }
-    const el =
-      corrEnglishRef.current?.querySelector('.word-token.spoken') ??
-      corrIngglishRef.current?.querySelector('.word-token.spoken');
-    if (el) {
-      el.scrollIntoView({ block: 'nearest' });
-    }
-  }, [spokenWordIndex]);
-
   // Sync scroll positions between paired panes
   const englishRef = useRef<HTMLTextAreaElement>(null);
   const ingglishRef = useRef<HTMLDivElement | HTMLTextAreaElement>(null);
@@ -454,16 +389,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       syncScroll(
         source === 'english' ? englishRef.current : ingglishRef.current,
         source === 'english' ? ingglishRef.current : englishRef.current
-      );
-    },
-    [syncScroll]
-  );
-
-  const handleCorrScroll = useCallback(
-    (source: 'english' | 'ingglish') => {
-      syncScroll(
-        source === 'english' ? corrEnglishRef.current : corrIngglishRef.current,
-        source === 'english' ? corrIngglishRef.current : corrEnglishRef.current
       );
     },
     [syncScroll]
@@ -529,36 +454,26 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               </button>
             </div>
           </div>
-          {isForeignMode ? (
-            <ForeignInput
-              languageLabel={languageLabel}
-              onChange={handleEnglishChange}
-              onScroll={() => {
-                handleScroll('english');
-              }}
-              scrollRef={englishRef}
-              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
-              text={lastEdited === 'english' ? englishText : displayEnglish}
-            />
-          ) : (
-            <textarea
-              className="text-input"
-              onChange={handleEnglishChange}
-              onFocus={() => {
-                if (lastEdited === 'ingglish' && computedEnglish !== null) {
-                  setEnglishText(computedEnglish);
-                  setLastEdited('english');
-                }
-              }}
-              onScroll={() => {
-                handleScroll('english');
-              }}
-              placeholder="Type English text here..."
-              ref={englishRef}
-              spellCheck={false}
-              value={lastEdited === 'english' ? englishText : displayEnglish}
-            />
-          )}
+          <OverlayTextarea
+            onChange={handleEnglishChange}
+            onFocus={
+              !isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null
+                ? () => {
+                    setEnglishText(computedEnglish);
+                    setLastEdited('english');
+                  }
+                : undefined
+            }
+            onScroll={() => {
+              handleScroll('english');
+            }}
+            placeholder={
+              isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
+            }
+            scrollRef={englishRef}
+            spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+            text={lastEdited === 'english' ? englishText : displayEnglish}
+          />
         </div>
 
         <div className="input-section ingglish-section">
@@ -595,15 +510,16 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               text={displayIngglish}
             />
           ) : (
-            <textarea
-              className="text-input"
+            <OverlayTextarea
               onChange={handleIngglishChange}
-              onFocus={() => {
-                if (lastEdited === 'english' && computedIngglish !== null) {
-                  setIngglishText(computedIngglish);
-                  setLastEdited('ingglish');
-                }
-              }}
+              onFocus={
+                lastEdited === 'english' && computedIngglish !== null
+                  ? () => {
+                      setIngglishText(computedIngglish);
+                      setLastEdited('ingglish');
+                    }
+                  : undefined
+              }
               onScroll={() => {
                 handleScroll('ingglish');
               }}
@@ -619,9 +535,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
                   } as Record<string, string>
                 )[format] ?? ''
               }
-              ref={ingglishRef as React.Ref<HTMLTextAreaElement>}
-              spellCheck={false}
-              value={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
+              scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
+              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             />
           )}
         </div>
@@ -631,120 +547,6 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
         <div className="warning-message">
           Ingglish is case-sensitive — type in normal case for accurate translations.
         </div>
-      )}
-
-      {!isForeignMode && hasContent && (
-        <div className={`word-correspondence ${isSpeaking ? 'speaking' : ''}`}>
-          <div className="correspondence-header">
-            <span className="correspondence-label">
-              {isSpeaking ? 'Word correspondence' : 'Hover to see word correspondence'}
-            </span>
-          </div>
-          <div className="correspondence-grid">
-            {lastEdited === 'ingglish' && reverseTokens ? (
-              <MappedWordDisplay
-                className="english-words"
-                hoveredWordIndex={hoveredWordIndex}
-                onHoverWord={setHoveredWordIndex}
-                onScroll={() => {
-                  handleCorrScroll('english');
-                }}
-                scrollRef={corrEnglishRef}
-                spokenWordIndex={spokenWordIndex}
-                tokens={reverseTokens}
-              />
-            ) : (
-              <WordDisplay
-                className="english-words"
-                hoveredWordIndex={hoveredWordIndex}
-                onHoverWord={setHoveredWordIndex}
-                onScroll={() => {
-                  handleCorrScroll('english');
-                }}
-                scrollRef={corrEnglishRef}
-                spokenWordIndex={spokenWordIndex}
-                text={displayEnglish}
-              />
-            )}
-            {lastEdited === 'english' && forwardTokens ? (
-              <MappedWordDisplay
-                className="ingglish-words"
-                diffMap={diffMap}
-                hoveredWordIndex={hoveredWordIndex}
-                onHoverWord={setHoveredWordIndex}
-                onScroll={() => {
-                  handleCorrScroll('ingglish');
-                }}
-                scrollRef={corrIngglishRef}
-                showTooltip={diffMap !== undefined}
-                spokenWordIndex={spokenWordIndex}
-                tokens={forwardTokens}
-              />
-            ) : (
-              <WordDisplay
-                className="ingglish-words"
-                hoveredWordIndex={hoveredWordIndex}
-                onHoverWord={setHoveredWordIndex}
-                onScroll={() => {
-                  handleCorrScroll('ingglish');
-                }}
-                scrollRef={corrIngglishRef}
-                spokenWordIndex={spokenWordIndex}
-                text={displayIngglish}
-              />
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function WordDisplay({
-  className,
-  hoveredWordIndex,
-  onHoverWord,
-  onScroll,
-  scrollRef,
-  spokenWordIndex = null,
-  text,
-}: WordDisplayProps) {
-  const tokens: IndexedToken[] = useMemo(() => tokenizePhonetic(text), [text]);
-
-  return (
-    <div className={`word-display ${className ?? ''}`} onScroll={onScroll} ref={scrollRef}>
-      {tokens.map((token, i) => {
-        if (token.isWord) {
-          const isHighlighted = token.wordIndex === hoveredWordIndex;
-          const isSpoken = token.wordIndex === spokenWordIndex;
-          return (
-            <span
-              className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
-              key={i}
-              onMouseEnter={
-                onHoverWord
-                  ? () => {
-                      onHoverWord(token.wordIndex);
-                    }
-                  : undefined
-              }
-              onMouseLeave={
-                onHoverWord
-                  ? () => {
-                      onHoverWord(null);
-                    }
-                  : undefined
-              }
-            >
-              {token.text}
-            </span>
-          );
-        }
-        // Preserve whitespace and newlines
-        return <span key={i}>{token.text}</span>;
-      })}
-      {tokens.length === 0 && (
-        <span className="placeholder">Hover to see word correspondence...</span>
       )}
     </div>
   );
