@@ -45,6 +45,69 @@ interface WordDisplayProps {
   text: string;
 }
 
+/**
+ * Foreign text input: a textarea for input with a word-tokenized overlay
+ * on top for TTS word highlighting. The overlay has pointer-events: none
+ * so clicks/typing pass through to the textarea underneath.
+ */
+function ForeignInput({
+  languageLabel,
+  onChange,
+  onScroll,
+  scrollRef,
+  spokenWordIndex,
+  text,
+}: {
+  languageLabel: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onScroll?: () => void;
+  scrollRef: React.Ref<HTMLTextAreaElement>;
+  spokenWordIndex: null | number;
+  text: string;
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLTextAreaElement>) => {
+      if (overlayRef.current) {
+        overlayRef.current.scrollTop = e.currentTarget.scrollTop;
+      }
+      onScroll?.();
+    },
+    [onScroll]
+  );
+
+  const segments = text.split(/(\s+)/);
+  let wordIndex = 0;
+  return (
+    <div className="foreign-input-wrapper">
+      <textarea
+        className="text-input"
+        onChange={onChange}
+        onScroll={handleScroll}
+        placeholder={`Type ${languageLabel} text here...`}
+        ref={scrollRef}
+        spellCheck={false}
+        value={text}
+      />
+      {text.trim() && (
+        <div className="foreign-input-overlay text-input" ref={overlayRef}>
+          {segments.map((seg, i) => {
+            if (/^\s+$/.test(seg)) {
+              return <span key={i}>{seg}</span>;
+            }
+            const idx = wordIndex++;
+            return (
+              <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
+                {seg}
+              </span>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ForeignOutputDisplay({
   dictLoading,
   onScroll,
@@ -84,33 +147,6 @@ function ForeignOutputDisplay({
           );
         }
         return <span key={i}>{seg}</span>;
-      })}
-    </div>
-  );
-}
-
-/** Word-highlighted display for foreign text during TTS playback. */
-function ForeignSpeechDisplay({
-  spokenWordIndex,
-  text,
-}: {
-  spokenWordIndex: null | number;
-  text: string;
-}) {
-  const segments = text.split(/(\s+)/);
-  let wordIndex = 0;
-  return (
-    <div className="text-input foreign-speech-display">
-      {segments.map((seg, i) => {
-        if (/^\s+$/.test(seg)) {
-          return <span key={i}>{seg}</span>;
-        }
-        const idx = wordIndex++;
-        return (
-          <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
-            {seg}
-          </span>
-        );
       })}
     </div>
   );
@@ -493,14 +529,23 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               </button>
             </div>
           </div>
-          {isForeignMode && speakingEnglish ? (
-            <ForeignSpeechDisplay spokenWordIndex={spokenWordCount} text={displayEnglish} />
+          {isForeignMode ? (
+            <ForeignInput
+              languageLabel={languageLabel}
+              onChange={handleEnglishChange}
+              onScroll={() => {
+                handleScroll('english');
+              }}
+              scrollRef={englishRef}
+              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              text={lastEdited === 'english' ? englishText : displayEnglish}
+            />
           ) : (
             <textarea
               className="text-input"
               onChange={handleEnglishChange}
               onFocus={() => {
-                if (!isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null) {
+                if (lastEdited === 'ingglish' && computedEnglish !== null) {
                   setEnglishText(computedEnglish);
                   setLastEdited('english');
                 }
@@ -508,9 +553,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               onScroll={() => {
                 handleScroll('english');
               }}
-              placeholder={
-                isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
-              }
+              placeholder="Type English text here..."
               ref={englishRef}
               spellCheck={false}
               value={lastEdited === 'english' ? englishText : displayEnglish}

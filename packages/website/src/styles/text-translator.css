@@ -256,14 +256,27 @@
   text-underline-offset: 0.2em;
 }
 
-/* Foreign speech display (TTS word highlighting over textarea) */
-.foreign-speech-display {
+/* Foreign input: textarea with word-overlay for TTS highlighting */
+.foreign-input-wrapper {
+  position: relative;
+}
+
+.foreign-input-wrapper textarea {
+  color: transparent;
+  caret-color: var(--color-text);
+}
+
+.foreign-input-overlay {
+  position: absolute;
+  inset: 0;
   overflow-y: auto;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+  pointer-events: none;
+  border-color: transparent;
 }
 
-.foreign-speech-display .word-token {
+.foreign-input-overlay .word-token {
   transition: none;
 }
 
