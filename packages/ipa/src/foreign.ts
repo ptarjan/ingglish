@@ -60,10 +60,11 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
       return override;
     }
   }
-  // Try exact, lowercase, then title case (German nouns are capitalized in dict)
+  // Try exact, lowercase, title case, then accent-stripped
   const lower = word.toLowerCase();
   const title = lower.charAt(0).toUpperCase() + lower.slice(1);
-  return dict[word] ?? dict[lower] ?? dict[title];
+  const stripped = stripAccents(lower);
+  return dict[word] ?? dict[lower] ?? dict[title] ?? dict[stripped];
 }
 
 /**
@@ -103,6 +104,11 @@ function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
   const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
   const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
   return arpabetToFormat(arpabet, format, { disableRColoring: true });
+}
+
+/** Strip combining diacritics (accents, tildes, etc.) from a string. */
+function stripAccents(s: string): string {
+  return s.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
 }
 
 /** Marker for words not found in the dictionary */

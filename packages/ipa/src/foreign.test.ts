@@ -114,6 +114,12 @@ describe('translateForeign', () => {
     expect(parts[1]).toBe(parts[1]!.toUpperCase());
   });
 
+  it('finds words after stripping accents', () => {
+    const esDict: IpaDict = { barrabas: '/baraβas/' };
+    const result = translateForeign('Barrabás', esDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+  });
+
   it('applies IPA override for French "est" (silent st)', () => {
     const frDict: IpaDict = { est: '/ɛst/' };
     // Without lang, uses dict's /ɛst/ which includes S and T sounds
