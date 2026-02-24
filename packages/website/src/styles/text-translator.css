@@ -41,11 +41,11 @@
 }
 
 .dict-loading-spinner {
-  position: absolute;
   display: inline-block;
   width: 0.75em;
   height: 0.75em;
   margin-left: 0.375em;
+  vertical-align: middle;
   border: 2px solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: 50%;
@@ -110,7 +110,6 @@
 }
 
 .section-header h2 {
-  position: relative;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-muted);
