@@ -37,9 +37,28 @@ export const LANGUAGES: Language[] = [
  * word form. These overrides take priority over the dictionary.
  */
 const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
-  // French
   fr: {
     est: '/ɛ/', // verb "is" — st is silent (dict has /ɛst/)
+  },
+  ja: {
+    あった: '/atːa/', // past of ある (to exist)
+    いた: '/ita/', // past of いる (to be)
+    いる: '/iɾɯ/', // to be (animate)
+    その: '/sono/', // that (determiner)
+    なった: '/natːa/', // past of なる (to become)
+    呼んで: '/joɴde/', // te-form of 呼ぶ (to call)
+    白く: '/ɕiɾokɯ/', // adverbial of 白い (white)
+    知って: '/ɕitːe/', // te-form of 知る (to know)
+    静かさ: '/ɕizɯkasa/', // quietness (noun form of 静か)
+  },
+  nl: {
+    gekund: '/ɣəˈkʏnt/', // past participle of kunnen (to be able)
+  },
+  pt: {
+    posso: '/ˈpo.su/', // I can (present of poder)
+    querer: '/ke.ˈɾex/', // to want
+    ser: '/ˈsex/', // to be
+    serei: '/se.ˈɾej/', // I will be (future of ser)
   },
 };
 
