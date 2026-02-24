@@ -30,24 +30,29 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ],
   de: [
     {
+      // https://www.gutenberg.org/ebooks/22367
       label: 'Kafka — Die Verwandlung',
       text: 'Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheuren Ungeziefer verwandelt. Er lag auf seinem panzerartig harten Rücken und sah, wenn er den Kopf ein wenig hob, seinen gewölbten, braunen, von bogenförmigen Versteifungen geteilten Bauch, auf dessen Höhe sich die Bettdecke, zum gänzlichen Niedergleiten bereit, kaum noch erhalten konnte.',
     },
     {
+      // https://www.gutenberg.org/files/2229/2229-h/2229-h.htm
       label: 'Goethe — Faust',
       text: 'Da steh ich nun, ich armer Tor, und bin so klug als wie zuvor. Heiße Magister, heiße Doktor gar, und ziehe schon an die zehen Jahr herauf, herab und quer und krumm meine Schüler an der Nase herum — und sehe, dass wir nichts wissen können. Das will mir schier das Herz verbrennen.',
     },
     {
+      // https://de.wikisource.org/wiki/Herbsttag
       label: 'Rilke — Herbsttag',
       text: 'Herr: es ist Zeit. Der Sommer war sehr groß. Leg deinen Schatten auf die Sonnenuhren, und auf den Fluren lass die Winde los. Befiehl den letzten Früchten voll zu sein; gib ihnen noch zwei südlichere Tage, dränge sie zur Vollendung hin und jage die letzte Süße in den schweren Wein. Wer jetzt kein Haus hat, baut sich keines mehr. Wer jetzt allein ist, wird es lange bleiben, wird wachen, lesen, lange Briefe schreiben und wird in den Alleen hin und her unruhig wandern, wenn die Blätter treiben.',
     },
     {
+      // https://www.grimmstories.com/de/grimm_maerchen/schneewittchen
       label: 'Grimm — Schneewittchen',
       text: 'Es war einmal mitten im Winter, und die Schneeflocken fielen wie Federn vom Himmel herab. Da saß eine Königin an einem Fenster, das einen Rahmen von schwarzem Ebenholz hatte, und nähte. Und wie sie so nähte und nach dem Schnee aufblickte, stach sie sich mit der Nadel in den Finger, und es fielen drei Tropfen Blut in den Schnee.',
     },
   ],
   es: [
     {
+      // https://cvc.cervantes.es/literatura/clasicos/quijote/edicion/parte1/cap01/default.htm
       label: 'Cervantes — Don Quijote',
       text: 'En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor. Una olla de algo más vaca que carnero, salpicón las más noches, duelos y quebrantos los sábados, lentejas los viernes, algún palomino de añadidura los domingos, consumían las tres partes de su hacienda.',
     },
@@ -56,10 +61,12 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: 'Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo. Macondo era entonces una aldea de veinte casas de barro y cañabrava construidas a la orilla de un río de aguas diáfanas que se precipitaban por un lecho de piedras pulidas, blancas y enormes como huevos prehistóricos.',
     },
     {
+      // http://www.neruda.uchile.cl/obra/obra20poemas5.html
       label: 'Neruda — Poema 20',
       text: 'Puedo escribir los versos más tristes esta noche. Escribir, por ejemplo: la noche está estrellada, y tiritan, azules, los astros, a lo lejos. El viento de la noche gira en el cielo y canta. Puedo escribir los versos más tristes esta noche. Yo la quise, y a veces ella también me quiso.',
     },
     {
+      // https://www.apocatastasis.com/aleph-borges.php
       label: 'Borges — El Aleph',
       text: 'La candente mañana de febrero en que Beatriz Viterbo murió, después de una imperiosa agonía que no se rebajó un solo instante ni al sentimentalismo ni al miedo, noté que las carteleras de fierro de la Plaza Constitución habían renovado no sé qué aviso de cigarrillos rubios; el hecho me dolió, pues comprendí que el incesante y vasto universo ya se apartaba de ella y que ese cambio era el primero de una serie infinita.',
     },
@@ -92,20 +99,24 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait Histoires Vécues. Ça représentait un serpent boa qui avalait un fauve. J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin.",
     },
     {
+      // https://www.poesie-francaise.fr/victor-hugo/poeme-demain-des-l-aube.php
       label: "Hugo — Demain, dès l'aube",
       text: "Demain, dès l'aube, à l'heure où blanchit la campagne, je partirai. Vois-tu, je sais que tu m'attends. J'irai par la forêt, j'irai par la montagne. Je ne puis demeurer loin de toi plus longtemps. Je marcherai les yeux fixés sur mes pensées, sans rien voir au dehors, sans entendre aucun bruit, seul, inconnu, le dos courbé, les mains croisées, triste, et le jour pour moi sera comme la nuit.",
     },
     {
+      // https://fleursdumal.org/poem/148
       label: "Baudelaire — L'invitation au voyage",
-      text: "Mon enfant, ma sœur, songe à la douceur d'aller là-bas vivre ensemble, aimer à loisir, aimer et mourir au pays qui te ressemble. Les soleils mouillés de ces ciels brouillés pour mon esprit ont les charmes si mystérieux de tes traîtres yeux, brillant à travers leurs larmes. Là, tout n'est qu'ordre et beauté, luxe, calme et volupté.",
+      text: "Mon enfant, ma sœur, songe à la douceur d'aller là-bas vivre ensemble! Aimer à loisir, aimer et mourir au pays qui te ressemble! Les soleils mouillés de ces ciels brouillés pour mon esprit ont les charmes si mystérieux de tes traîtres yeux, brillant à travers leurs larmes. Là, tout n'est qu'ordre et beauté, luxe, calme et volupté.",
     },
     {
+      // https://www.la-fontaine-ch-thierry.net/corbrena.htm
       label: 'La Fontaine — Le Corbeau et le Renard',
-      text: "Maître Corbeau, sur un arbre perché, tenait en son bec un fromage. Maître Renard, par l'odeur alléché, lui tint à peu près ce langage: Hé bonjour, Monsieur du Corbeau, que vous êtes joli, que vous me semblez beau. Sans mentir, si votre ramage se rapporte à votre plumage, vous êtes le Phénix des hôtes de ces bois.",
+      text: "Maître Corbeau, sur un arbre perché, tenait en son bec un fromage. Maître Renard, par l'odeur alléché, lui tint à peu près ce langage: Hé! bonjour, Monsieur du Corbeau, que vous êtes joli! que vous me semblez beau! Sans mentir, si votre ramage se rapporte à votre plumage, vous êtes le Phénix des hôtes de ces bois.",
     },
     {
+      // https://fr.wikisource.org/wiki/L%E2%80%99Affiche_de_Londres
       label: 'De Gaulle — À tous les Français',
-      text: "La France a perdu une bataille! Mais la France n'a pas perdu la guerre! Des gouvernants de rencontre ont pu capituler, cédant à la panique, oubliant l'honneur, livrant le pays à la servitude. Cependant, rien n'est perdu! Rien n'est perdu, parce que cette guerre est une guerre mondiale. Dans l'univers libre, des forces immenses n'ont pas encore donné. Un jour, ces forces écraseront l'ennemi. Il faut que la France, ce jour-là, soit présente à la victoire. Alors, elle retrouvera sa liberté et sa grandeur.",
+      text: "La France a perdu une bataille! Mais la France n'a pas perdu la guerre! Des gouvernants de rencontre ont pu capituler, cédant à la panique, oubliant l'honneur, livrant le pays à la servitude. Cependant, rien n'est perdu! Rien n'est perdu, parce que cette guerre est une guerre mondiale. Dans l'univers libre, des forces immenses n'ont pas encore donné. Un jour ces forces écraseront l'ennemi. Il faut que la France, ce jour-là, soit présente à la victoire. Alors, elle retrouvera sa liberté et sa grandeur.",
     },
   ],
   ja: [
@@ -114,6 +125,7 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: '国境 の 長い トンネル を 抜ける と 雪国 で あった 夜 の 底 が 白く なった 信号 所 汽車 座席 娘 窓 寒い 白い 暗い 遠い',
     },
     {
+      // https://www.aozora.gr.jp/
       label: 'Bashō — Haiku collection',
       text: '古池 蛙 飛び込む 水 音 夏 草 兵 夢 跡 岩 染み入る 蝉 声 旅 病 枯野 秋 深い 寂しい 古い 美しい',
     },
@@ -122,6 +134,7 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: '東京 日本 電車 駅 学校 先生 友達 家族 仕事 食べる 飲む 音楽 映画 本 猫 桜 富士山 着物 寿司 抹茶 温泉 神社 侍 忍者 歌舞伎 相撲 祭り 庭園 茶道 書道',
     },
     {
+      // https://www.aozora.gr.jp/cards/000081/files/456_15050.html
       label: 'Miyazawa Kenji — Night on the Galactic Railroad',
       text: '銀河 鉄道 夜 星 空 風 草 花 光 水 森 丘 町 窓 時計 少年 友 旅 夢 希望 永遠 宇宙 銀 河原 鳥 魚 十字 北 南 東 西',
     },
@@ -150,10 +163,12 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ],
   nl: [
     {
+      // https://www.annefrank.org/nl/anne-frank/dagboek/
       label: 'Anne Frank — Het Achterhuis',
-      text: 'Ik hoop dat ik aan jou alles kan toevertrouwen, zoals ik het nog aan niemand heb gekund, en ik hoop dat je een grote steun voor me zult zijn. Ik zal, hoop ik, aan jou alles kunnen toevertrouwen, zoals ik het nog aan niemand heb gekund, en ik hoop dat je een grote steun en troost voor mij zult zijn.',
+      text: 'Ik zal hoop ik aan jou alles kunnen toevertrouwen, zoals ik het nog aan niemand gekund heb, en ik hoop dat je een grote steun voor me zult zijn.',
     },
     {
+      // https://www.dbnl.org/tekst/mult001maxh01_01/
       label: 'Multatuli — Max Havelaar',
       text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
     },
@@ -168,6 +183,7 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ],
   pt: [
     {
+      // http://arquivopessoa.net/textos/163
       label: 'Pessoa — Tabacaria',
       text: 'Não sou nada. Nunca serei nada. Não posso querer ser nada. À parte isso, tenho em mim todos os sonhos do mundo.',
     },
@@ -194,6 +210,7 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: '床 前 明 月 光 疑 是 地 上 霜 举 头 望 明 月 低 头 思 故 乡 花 间 一 壶 酒 独 酌 无 相 亲 举 杯 邀 明 月 对 影 成 三 人',
     },
     {
+      // https://ctext.org/analects
       label: 'Confucius — Analects',
       text: '学 而 时 习 之 不 亦 说 乎 有 朋 自 远方 来 不 亦 乐 乎 人 不 知 而 不 愠 不 亦 君子 乎 三 人 行 必 有 我 师 焉 择 其 善 者 而 从 之 其 不 善 者 而 改 之',
     },
