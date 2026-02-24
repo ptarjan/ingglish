@@ -422,7 +422,11 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   </option>
                 ))}
               </select>
-              {dictLoading && <span className="dict-loading-spinner" />}
+              {isForeignMode && (
+                <span className="spinner-slot">
+                  {dictLoading && <span className="dict-loading-spinner" />}
+                </span>
+              )}
             </h2>
             <div className="button-group">
               {speechSupported && hasVoice(isForeignMode ? selectedLanguage : 'en') && (
