@@ -21,6 +21,9 @@ export function useSpeech(): [
   const [speaking, setSpeaking] = useState(false);
   const [wordCount, setWordCount] = useState<null | number>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const fallbackRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const fallbackIntervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const gotBoundaryRef = useRef(false);
   const [voiceLangs, setVoiceLangs] = useState<Set<string>>(new Set());
 
   // Track available voice languages (Chrome loads them async)
@@ -56,15 +59,27 @@ export function useSpeech(): [
     }
   }, []);
 
+  const clearFallback = useCallback(() => {
+    if (fallbackRef.current !== undefined) {
+      clearTimeout(fallbackRef.current);
+      fallbackRef.current = undefined;
+    }
+    if (fallbackIntervalRef.current !== undefined) {
+      clearInterval(fallbackIntervalRef.current);
+      fallbackIntervalRef.current = undefined;
+    }
+  }, []);
+
   const stop = useCallback(() => {
     if (!supported) {
       return;
     }
     speechSynthesis.cancel();
     clearWorkaround();
+    clearFallback();
     setSpeaking(false);
     setWordCount(null);
-  }, [supported, clearWorkaround]);
+  }, [supported, clearWorkaround, clearFallback]);
 
   const speak = useCallback(
     (text: string, lang?: string) => {
@@ -74,6 +89,8 @@ export function useSpeech(): [
 
       speechSynthesis.cancel();
       clearWorkaround();
+      clearFallback();
+      gotBoundaryRef.current = false;
 
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
@@ -100,6 +117,8 @@ export function useSpeech(): [
 
       utterance.onboundary = (event) => {
         if (event.name === 'word' || event.name === 'sentence') {
+          gotBoundaryRef.current = true;
+          clearFallback(); // Cancel timer fallback — real events are available
           // Find which word the charIndex falls in
           let idx = 0;
           for (let i = wordStarts.length - 1; i >= 0; i--) {
@@ -113,11 +132,13 @@ export function useSpeech(): [
       };
       utterance.onend = () => {
         clearWorkaround();
+        clearFallback();
         setSpeaking(false);
         setWordCount(null);
       };
       utterance.addEventListener('error', () => {
         clearWorkaround();
+        clearFallback();
         setSpeaking(false);
         setWordCount(null);
       });
@@ -125,13 +146,35 @@ export function useSpeech(): [
       speechSynthesis.speak(utterance);
       setSpeaking(true);
 
+      // Fallback: if no boundary events fire within 500ms (common for
+      // non-English voices), estimate word timing at ~160 wpm.
+      const wordCount = wordStarts.length;
+      if (wordCount > 0) {
+        fallbackRef.current = setTimeout(() => {
+          if (gotBoundaryRef.current) {
+            return; // Real events arrived, no fallback needed
+          }
+          let currentWord = 0;
+          setWordCount(currentWord);
+          fallbackIntervalRef.current = setInterval(() => {
+            currentWord++;
+            if (currentWord >= wordCount) {
+              clearInterval(fallbackIntervalRef.current);
+              fallbackIntervalRef.current = undefined;
+            } else {
+              setWordCount(currentWord);
+            }
+          }, 375); // ~160 words per minute
+        }, 500);
+      }
+
       // Chrome workaround: pause/resume every 10s to prevent 15s stall
       workaroundRef.current = setInterval(() => {
         speechSynthesis.pause();
         speechSynthesis.resume();
       }, CHROME_WORKAROUND_INTERVAL_MS);
     },
-    [supported, clearWorkaround]
+    [supported, clearWorkaround, clearFallback]
   );
 
   // Cancel speech on unmount and page unload (refresh/navigate)
@@ -147,8 +190,9 @@ export function useSpeech(): [
       window.removeEventListener('beforeunload', handleUnload);
       speechSynthesis.cancel();
       clearWorkaround();
+      clearFallback();
     };
-  }, [supported, clearWorkaround]);
+  }, [supported, clearWorkaround, clearFallback]);
 
   return [speaking, speak, stop, supported, wordCount, hasVoiceForLang];
 }
