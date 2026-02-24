@@ -116,6 +116,9 @@ export function useSpeech(): [
       }
 
       utterance.onboundary = (event) => {
+        // TODO: remove after debugging TTS highlighting
+        // eslint-disable-next-line no-console
+        console.log('[TTS boundary]', event.name, 'charIndex:', event.charIndex);
         if (event.name === 'word' || event.name === 'sentence') {
           gotBoundaryRef.current = true;
           clearFallback(); // Cancel timer fallback — real events are available
