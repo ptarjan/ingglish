@@ -122,6 +122,105 @@ test.describe('Layout Stability (CLS)', () => {
     expect(result.total).toBeLessThan(0.1);
   });
 
+  // Test CLS on every page route (Chromium-only — WebKit has no layout-shift API)
+  for (const route of [
+    '/text',
+    '/url',
+    '/extension',
+    '/guide',
+    '/docs',
+    '/explore',
+    '/experiment',
+    '/challenge',
+  ]) {
+    test(`CLS is below 0.1 on ${route}`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name.includes('safari'), 'WebKit has no layout-shift API');
+      await blockExternalNetwork(page);
+
+      // Install CLS observer BEFORE navigating
+      await page.addInitScript(() => {
+        (globalThis as unknown as { __cls: CLSData }).__cls = { entries: [], total: 0 };
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const shift = entry as LayoutShiftEntry;
+            if (!shift.hadRecentInput) {
+              const sources = shift.sources.map((s) => {
+                const n = s.node;
+                if (!n) {
+                  return '(null)';
+                }
+                const name =
+                  n.nodeName + (n.className ? '.' + n.className.split(' ').join('.') : '');
+                const px = String(Math.round(s.previousRect.x));
+                const py = String(Math.round(s.previousRect.y));
+                const cx = String(Math.round(s.currentRect.x));
+                const cy = String(Math.round(s.currentRect.y));
+                return `${name} [${px}x${py} → ${cx}x${cy}]`;
+              });
+              (globalThis as unknown as { __cls: CLSData }).__cls.total += shift.value;
+              (globalThis as unknown as { __cls: CLSData }).__cls.entries.push({
+                sources,
+                time: Math.round(entry.startTime),
+                value: shift.value,
+              });
+            }
+          }
+        });
+        observer.observe({ buffered: true, type: 'layout-shift' });
+      });
+
+      await page.goto(route);
+      await waitForAppLoad(page);
+      await page.waitForTimeout(500);
+
+      const result = await page.evaluate(() => {
+        return (globalThis as unknown as { __cls: CLSData }).__cls;
+      });
+      console.log(`CLS on ${route}: ${result.total.toFixed(4)}`);
+      for (const entry of result.entries) {
+        console.log(`  shift ${entry.value.toFixed(4)} @ ${String(entry.time)}ms:`);
+        for (const source of entry.sources) {
+          console.log(`    ${source}`);
+        }
+      }
+
+      expect(result.total).toBeLessThan(0.1);
+    });
+  }
+
+  // Test header position stability across load on every page route
+  for (const route of [
+    '/text',
+    '/url',
+    '/extension',
+    '/guide',
+    '/docs',
+    '/explore',
+    '/experiment',
+    '/challenge',
+  ]) {
+    test(`header position stable across load on ${route}`, async ({ page }) => {
+      await blockExternalNetwork(page);
+      await page.goto(route);
+
+      // Wait for header to be visible
+      await expect(page.locator('.header')).toBeVisible({ timeout: 20_000 });
+
+      const boxBefore = await page.locator('.header').boundingBox();
+      expect(boxBefore).not.toBeNull();
+
+      // Wait for full load
+      await waitForAppLoad(page);
+
+      const boxAfter = await page.locator('.header').boundingBox();
+      expect(boxAfter).not.toBeNull();
+
+      if (boxBefore && boxAfter) {
+        expect(Math.abs(boxAfter.y - boxBefore.y)).toBeLessThanOrEqual(1);
+      }
+    });
+  }
+
   test('progressive controls do not shift when stepping', async ({ page }) => {
     await blockExternalNetwork(page);
     await page.goto('/');

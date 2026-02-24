@@ -262,8 +262,8 @@ function App() {
         </div>
       </header>
 
-      {activeTab !== 'tutorial' && !isLoading && (
-        <nav className="tabs">
+      {activeTab !== 'tutorial' && (
+        <nav className="tabs" style={isLoading ? { visibility: 'hidden' } : undefined}>
           {(
             [
               ['/', 'tutorial', 'Tutorial'],
