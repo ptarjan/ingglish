@@ -102,6 +102,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>(getTabFromPath);
   const [resetKey, setResetKey] = useState(0);
   const [initialText] = useState(getInitialText);
+  const [initialLang] = useState(getInitialLang);
   const [initialUrl] = useState(getInitialUrl);
   const { cycleTheme, getThemeIcon } = useTheme();
   const updateAvailable = useUpdateCheck();
@@ -139,12 +140,15 @@ function App() {
   }, []);
 
   // Share functions — build URL, update history, return URL for the component to share
-  const handleShareText = useCallback((text: string): string => {
+  const handleShareText = useCallback((text: string, lang?: string): string => {
     const url = new URL(globalThis.location.href);
     url.pathname = '/text';
     url.search = '';
     url.hash = '';
     url.searchParams.set('text', text);
+    if (lang) {
+      url.searchParams.set('lang', lang);
+    }
     const shareUrl = url.toString();
     globalThis.history.replaceState(null, '', shareUrl);
     return shareUrl;
@@ -318,7 +322,11 @@ function App() {
             {activeTab === 'tutorial' && <Tutorial onNavigate={handleTabNavigate} />}
             {activeTab === 'text' && (
               <ErrorBoundary>
-                <TextTranslator initialText={initialText} onShare={handleShareText} />
+                <TextTranslator
+                  initialLang={initialLang}
+                  initialText={initialText}
+                  onShare={handleShareText}
+                />
               </ErrorBoundary>
             )}
             {activeTab === 'url' && (
@@ -370,6 +378,11 @@ function App() {
       </footer>
     </div>
   );
+}
+
+function getInitialLang(): string | undefined {
+  const params = new URLSearchParams(globalThis.location.search);
+  return params.get('lang') ?? undefined;
 }
 
 function getInitialText(): string {

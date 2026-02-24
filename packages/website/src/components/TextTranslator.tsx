@@ -22,8 +22,9 @@ interface ForeignOutputDisplayProps {
 }
 
 interface TextTranslatorProps {
+  initialLang?: string;
   initialText?: string;
-  onShare?: (text: string) => string;
+  onShare?: (text: string, lang?: string) => string;
 }
 
 function ForeignOutputDisplay({
@@ -179,7 +180,7 @@ function StopIcon() {
   );
 }
 
-function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
+function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslatorProps) {
   const { format, toggleFormat } = useFormat();
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
@@ -192,7 +193,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   // Foreign language state
   const [selectedLanguage, setSelectedLanguage] = useState(
-    () => localStorage.getItem('selectedLanguage') ?? 'en'
+    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
   );
   const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
@@ -354,11 +355,11 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
 
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
-      const url = onShare(displayEnglish);
+      const url = onShare(displayEnglish, isForeignMode ? selectedLanguage : undefined);
       shareUrl(url, 'Ingglish Text Translation');
       trackShare('text', typeof navigator.share === 'function' ? 'webshare' : 'clipboard');
     }
-  }, [onShare, displayEnglish, shareUrl]);
+  }, [onShare, displayEnglish, shareUrl, isForeignMode, selectedLanguage]);
 
   // Track typed text with debounce
   useEffect(() => {
@@ -445,7 +446,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               >
                 {copiedEnglish ? 'Copied!' : 'Copy'}
               </button>
-              {!isForeignMode && onShare && (
+              {onShare && (
                 <button
                   className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
                   disabled={!hasContent}
