@@ -24,8 +24,15 @@ export function hasWord(word: string): boolean {
  * @returns ARPAbet phoneme array (the pipeline IR), or null if not found
  */
 export function lookupPronunciation(word: string): null | string[] {
-  const key = word.toLowerCase();
+  return lookupPronunciationLower(word.toLowerCase());
+}
 
+/**
+ * Like {@link lookupPronunciation}, but takes a **pre-lowercased** key.
+ * Skips the `.toLowerCase()` call — use when the caller has already
+ * confirmed the key is lowercase (e.g., fast-path code).
+ */
+export function lookupPronunciationLower(key: string): null | string[] {
   // Check custom pronunciations first (overrides dictionary)
   const custom = getCustomPronunciation(key);
   if (custom) {

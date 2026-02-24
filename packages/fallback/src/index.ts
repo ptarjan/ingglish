@@ -39,6 +39,7 @@ interface FallbackResult {
 
 export {
   isInitialism,
+  KNOWN_INITIALISMS,
   LETTER_PHONEMES,
   parseInitialismWithSuffix,
   translateAsAcronym,

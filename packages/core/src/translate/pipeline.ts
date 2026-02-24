@@ -24,6 +24,9 @@ export interface TranslateResult {
   translated: string;
 }
 
+/** Callback that returns just the translated string (used by renderText). */
+export type WordRenderer = (word: string) => string;
+
 /** Callback signature for translating a single word token. */
 export type WordTranslator = (word: string) => TranslateResult;
 
@@ -105,7 +108,7 @@ const expandPlaceholderText = (token: string, preserved: Map<string, string>): n
 export function renderText(
   rawTokens: string[],
   preserved: Map<string, string>,
-  translateWord: WordTranslator,
+  translateWord: WordRenderer,
   format: OutputFormat
 ): string {
   const preservesCase = getFormatPreservesCase(format);
@@ -131,7 +134,7 @@ export function renderText(
     }
 
     if (WORD_TEST_REGEX.test(token)) {
-      const { translated } = translateWord(token);
+      const translated = translateWord(token);
       wordCount++;
 
       if (preservesCase && sentenceStart && translated.length > 0) {

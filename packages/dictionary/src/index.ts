@@ -5,5 +5,5 @@ export {
 } from './custom-words';
 export { getWordFrequency, loadFrequencies, sortByFrequency } from './frequency';
 export { getDictionary, isDictionaryLoaded, loadDictionary } from './loader';
-export { lookupPronunciation } from './lookup';
+export { lookupPronunciation, lookupPronunciationLower } from './lookup';
 export { loadReverseDictionary, lookupPhonemeKey } from './reverse';

@@ -218,14 +218,15 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   withdrawn: ['W', 'IH0', 'DH', 'D', 'R', 'AO1', 'N'], // /wɪðˈdrɔn/ — CMU has /θ/
 };
 
+// Private Map for fast, prototype-safe lookup (avoids hasOwnProperty per call)
+const CUSTOM_MAP = new Map<string, string[]>(Object.entries(CUSTOM_PRONUNCIATIONS));
+
 /**
  * Gets custom pronunciation for a word.
  * @param word The word to look up (should be lowercase for best performance)
  */
 export function getCustomPronunciation(word: string): string[] | undefined {
-  return Object.prototype.hasOwnProperty.call(CUSTOM_PRONUNCIATIONS, word)
-    ? CUSTOM_PRONUNCIATIONS[word]
-    : undefined;
+  return CUSTOM_MAP.get(word);
 }
 
 /**
@@ -233,5 +234,5 @@ export function getCustomPronunciation(word: string): string[] | undefined {
  * @param word The word to look up (should be lowercase for best performance)
  */
 export function hasCustomPronunciation(word: string): boolean {
-  return Object.prototype.hasOwnProperty.call(CUSTOM_PRONUNCIATIONS, word);
+  return CUSTOM_MAP.has(word);
 }

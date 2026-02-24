@@ -8,10 +8,11 @@
  * the requested output format. See `translateWordInternal()` for routing.
  */
 
-import { lookupPronunciation } from '@ingglish/dictionary';
+import { lookupPronunciation, lookupPronunciationLower } from '@ingglish/dictionary';
 import {
   translateUnknown,
   isInitialism,
+  KNOWN_INITIALISMS,
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
@@ -63,7 +64,7 @@ export interface TranslatedToken {
  */
 export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
   const { preserved, rawTokens } = extractTokens(text);
-  return renderText(rawTokens, preserved, (w) => translateWordInternal(w, format), format);
+  return renderText(rawTokens, preserved, (w) => translateWordString(w, format), format);
 }
 
 /**
@@ -140,71 +141,85 @@ function translateWithFallback(
  * Routing order (first match wins):
  *  1. Empty / non-letter tokens → pass through
  *  2. Fast path — pure lowercase ASCII dictionary word (most common)
- *  3. Initialism+suffix — IDs, TVs, API's (before contractions)
- *  4. Contraction — don't, I'm
- *  5. Bare initialism — UI, API, HTML
- *  6. All-caps passthrough — NASA, ASAP (Latin scripts only)
- *  7. CamelCase — iPhone, MacBook, ChatGPT
- *  8. Dictionary lookup — case-insensitive, with diacritics fallback
- *  9. Fallback — compounds, stemming, G2P
+ *  3. Title-case fast path — The, Hello, World
+ *  4. Initialism+suffix — IDs, TVs, API's (before contractions)
+ *  5. Contraction — don't, I'm
+ *  6. Bare initialism — UI, API, HTML
+ *  7. All-caps passthrough — NASA, ASAP (Latin scripts only)
+ *  8. CamelCase — iPhone, MacBook, ChatGPT
+ *  9. Dictionary lookup — case-insensitive, with diacritics fallback
+ * 10. Fallback — compounds, stemming, G2P
  */
 function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
-  // 1. Empty / non-letter tokens
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
 
-  // 2. Fast path for pure lowercase ASCII dictionary words
-  const fast = tryFastPath(word, format);
-  if (fast) {
-    return fast;
+  const fast = tryFastPath(word, format) ?? tryTitleCaseFastPath(word, format);
+  if (fast !== null) {
+    return { matched: true, translated: fast };
   }
 
-  // 2b. Fast path for title-case words (The, Hello, World)
-  const titleFast = tryTitleCaseFastPath(word, format);
-  if (titleFast) {
-    return titleFast;
-  }
+  return translateWordInternalSlow(word, format);
+}
 
+/** Slow path — handles non-fast-path words (steps 4–10). */
+function translateWordInternalSlow(word: string, format: OutputFormat): TranslateResult {
   const isLatinScript = getFormatIsLatinScript(format);
 
-  // 3. Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
+  // 4. Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
   const initialismSuffix = tryInitialismWithSuffix(word, format, isLatinScript);
   if (initialismSuffix) {
     return initialismSuffix;
   }
 
-  // 4. Contractions (don't, I'm, etc.)
+  // 5. Contractions (don't, I'm, etc.)
   if (word.includes("'")) {
     return { matched: true, translated: translateContraction(word, format, translateWord) };
   }
 
-  // 5. Bare initialisms (UI, API, HTML)
+  // 6. Bare initialisms (UI, API, HTML)
   const initialism = tryInitialism(word, format, isLatinScript);
   if (initialism) {
     return initialism;
   }
 
-  // 6. All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
+  // 7. All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
   if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
     return { matched: true, translated: word };
   }
 
-  // 7. CamelCase words (iPhone, MacBook, ChatGPT)
+  // 8. CamelCase words (iPhone, MacBook, ChatGPT)
   const camel = tryCamelCase(word, format);
   if (camel) {
     return camel;
   }
 
-  // 8. Dictionary / custom pronunciation lookup (with diacritics fallback)
+  // 9. Dictionary / custom pronunciation lookup (with diacritics fallback)
   const casePattern = detectCasePattern(word);
   const dictResult = tryDictionaryLookup(word, format, casePattern);
   if (dictResult) {
     return dictResult;
   }
 
-  // 9. Fallback strategies (compounds, stemming, G2P)
+  // 10. Fallback strategies (compounds, stemming, G2P)
   return translateWithFallback(word, format, casePattern);
+}
+
+/**
+ * String-only translation for the renderText path. Calls the same fast-path
+ * functions as translateWordInternal, but returns the string directly without
+ * wrapping in a TranslateResult object (~80% of words hit the fast paths).
+ */
+function translateWordString(word: string, format: OutputFormat): string {
+  if (!word || !HAS_LETTER.test(word)) {
+    return word;
+  }
+  return (
+    tryFastPath(word, format) ??
+    tryTitleCaseFastPath(word, format) ??
+    translateWordInternalSlow(word, format).translated
+  );
 }
 
 /**
@@ -251,7 +266,7 @@ function tryDictionaryLookup(
   casePattern: CasePattern
 ): null | TranslateResult {
   const wordLower = word.toLowerCase();
-  const phonemes = lookupPronunciation(wordLower);
+  const phonemes = lookupPronunciationLower(wordLower);
 
   if (phonemes) {
     let result = arpabetToFormat(phonemes, format);
@@ -265,7 +280,7 @@ function tryDictionaryLookup(
   const stripped = stripDiacritics(word);
   if (stripped !== word) {
     const strippedLower = stripped.toLowerCase();
-    const strippedPhonemes = lookupPronunciation(strippedLower);
+    const strippedPhonemes = lookupPronunciationLower(strippedLower);
     if (strippedPhonemes) {
       let result = arpabetToFormat(strippedPhonemes, format);
       if (getFormatPreservesCase(format)) {
@@ -280,25 +295,32 @@ function tryDictionaryLookup(
 
 /**
  * Fast path for pure lowercase ASCII dictionary words (most common in natural text).
- * Pure a-z excludes: camelCase (uppercase), contractions (apostrophe), diacritics.
- * Skips initialism, camelCase, contraction, and case-detection checks entirely.
- * Returns null if the word doesn't qualify or isn't in the dictionary.
+ * Returns the translated string, or null if the word doesn't qualify.
  */
-function tryFastPath(word: string, format: OutputFormat): null | TranslateResult {
+function tryFastPath(word: string, format: OutputFormat): null | string {
   for (let i = 0; i < word.length; i++) {
     const c = word.codePointAt(i)!;
     if (c < 97 || c > 122) {
       return null;
     }
   }
-  if (isInitialism(word) || parseInitialismWithSuffix(word) !== null) {
+  // Inline initialism checks — word is confirmed lowercase, pure a-z (no apostrophe).
+  // isInitialism: skip toLowerCase(), check Set directly (max initialism length = 5)
+  if (word.length <= 5 && KNOWN_INITIALISMS.has(word)) {
     return null;
   }
-  const phonemes = lookupPronunciation(word);
-  if (phonemes) {
-    return { matched: true, translated: arpabetToFormat(phonemes, format) };
+  // parseInitialismWithSuffix: only 's' suffix matters (no apostrophe in a-z word)
+  if (
+    word.length <= 6 &&
+    word.length > 1 &&
+    word.endsWith('s') &&
+    KNOWN_INITIALISMS.has(word.slice(0, -1))
+  ) {
+    return null;
   }
-  return null;
+  // Use pre-lowercased lookup — word is already all lowercase
+  const phonemes = lookupPronunciationLower(word);
+  return phonemes ? arpabetToFormat(phonemes, format) : null;
 }
 
 /**
@@ -347,32 +369,38 @@ function tryInitialismWithSuffix(
 
 /**
  * Fast path for title-case words (first char A-Z, rest a-z): "The", "Hello", "World".
- * These are the first word of every sentence — very common in natural text.
- * Skips initialism, camelCase, contraction, and case-detection checks.
- * Returns null if the word doesn't qualify or isn't in the dictionary.
+ * Returns the translated string, or null if the word doesn't qualify.
  */
-function tryTitleCaseFastPath(word: string, format: OutputFormat): null | TranslateResult {
-  // Single letters (I, A) have special case handling
+function tryTitleCaseFastPath(word: string, format: OutputFormat): null | string {
   if (word.length < 2) {
     return null;
   }
   const first = word.codePointAt(0)!;
   if (first < 65 || first > 90) {
-    return null; // first char must be A-Z
+    return null;
   }
   for (let i = 1; i < word.length; i++) {
     const c = word.codePointAt(i)!;
     if (c < 97 || c > 122) {
-      return null; // rest must be a-z
+      return null;
     }
   }
 
   const lower = word.toLowerCase();
-  if (isInitialism(lower) || parseInitialismWithSuffix(lower) !== null) {
+  // Inline initialism checks — lower is confirmed lowercase, pure a-z
+  if (lower.length <= 5 && KNOWN_INITIALISMS.has(lower)) {
+    return null;
+  }
+  if (
+    lower.length <= 6 &&
+    lower.length > 1 &&
+    lower.endsWith('s') &&
+    KNOWN_INITIALISMS.has(lower.slice(0, -1))
+  ) {
     return null;
   }
 
-  const phonemes = lookupPronunciation(lower);
+  const phonemes = lookupPronunciationLower(lower);
   if (!phonemes) {
     return null;
   }
@@ -381,5 +409,5 @@ function tryTitleCaseFastPath(word: string, format: OutputFormat): null | Transl
   if (getFormatPreservesCase(format) && translated.length > 0) {
     translated = translated.charAt(0).toUpperCase() + translated.slice(1);
   }
-  return { matched: true, translated };
+  return translated;
 }
