@@ -14,8 +14,20 @@ import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish
 
 type EditingPane = 'english' | 'ingglish';
 
+/** Placeholder text for the output pane, shown in the output format's own script. */
+export const OUTPUT_PLACEHOLDERS: Record<string, string> = {
+  deseret:
+    '\u{10437}\u{10434}\u{10439} \u{1043C}\u{1042F}\u{10445}\u{10428}\u{10449}\u{1042F}\u{10437} \u{10438}\u{1042E}\u{10449}\u2026',
+  ingglish: 'Taip Ingglish tekst heer\u2026',
+  ipa: '/ta\u026Ap a\u026A pi\u02D0 e\u026A h\u026A\u0279\u2026/',
+  pronunciation: 'TAIP gaid TEKST HEER\u2026',
+  shavian:
+    '\u{10451}\u{10472}\u{10450} \u{10456}\u{10471}\u{1045D}\u{1045E}\u{1046F} \u{10463}\u{10477}\u2026',
+};
+
 interface ForeignOutputDisplayProps {
   dictLoading: boolean;
+  format: string;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
   text: string;
@@ -29,6 +41,7 @@ interface TextTranslatorProps {
 
 function ForeignOutputDisplay({
   dictLoading,
+  format,
   onScroll,
   scrollRef,
   text,
@@ -44,7 +57,9 @@ function ForeignOutputDisplay({
   if (!text.trim()) {
     return (
       <div className="text-input foreign-output" onScroll={onScroll} ref={scrollRef}>
-        <span className="foreign-output-placeholder">Pronunciation will appear here...</span>
+        <span className="foreign-output-placeholder">
+          {OUTPUT_PLACEHOLDERS[format] ?? 'Translation will appear here\u2026'}
+        </span>
       </div>
     );
   }
@@ -508,6 +523,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
           {isForeignMode ? (
             <ForeignOutputDisplay
               dictLoading={dictLoading}
+              format={format}
               onScroll={() => {
                 handleScroll('ingglish');
               }}
@@ -528,18 +544,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               onScroll={() => {
                 handleScroll('ingglish');
               }}
-              placeholder={
-                (
-                  {
-                    deseret:
-                      '\u{10437}\u{10434}\u{10439} \u{1043C}\u{1042F}\u{10445}\u{10428}\u{10449}\u{1042F}\u{10437} \u{10438}\u{1042E}\u{10449}...',
-                    ingglish: 'Taip Ingglish tekst heer...',
-                    ipa: '/ta\u026Ap a\u026A pi\u02D0 e\u026A h\u026A\u0279.../',
-                    shavian:
-                      '\u{10451}\u{10472}\u{10450} \u{10456}\u{10471}\u{1045D}\u{1045E}\u{1046F} \u{10463}\u{10477}...',
-                  } as Record<string, string>
-                )[format] ?? ''
-              }
+              placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
               scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
               spokenWordIndex={speakingEnglish ? spokenWordCount : null}
               text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
