@@ -4,7 +4,7 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
 
 /**
  * Hook for text-to-speech using the Web Speech API.
- * Returns [speaking, speak, stop, supported].
+ * Returns [speaking, speak, stop, supported, wordCount, hasVoiceForLang].
  *
  * Chrome has a known bug where speech stalls after ~15s of continuous playback.
  * This hook works around it by pausing/resuming every 10s.
@@ -15,11 +15,39 @@ export function useSpeech(): [
   () => void,
   boolean,
   null | number,
+  (lang: string) => boolean,
 ] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
   const [wordCount, setWordCount] = useState<null | number>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const [voiceLangs, setVoiceLangs] = useState<Set<string>>(new Set());
+
+  // Track available voice languages (Chrome loads them async)
+  useEffect(() => {
+    if (!supported) {
+      return;
+    }
+    const updateVoices = () => {
+      const langs = new Set<string>();
+      for (const voice of speechSynthesis.getVoices()) {
+        // voice.lang is like "en-US", "fr-FR", "zh-CN" — store both full and prefix
+        langs.add(voice.lang.toLowerCase());
+        langs.add(voice.lang.split('-')[0]!.toLowerCase());
+      }
+      setVoiceLangs(langs);
+    };
+    updateVoices();
+    speechSynthesis.addEventListener('voiceschanged', updateVoices);
+    return () => {
+      speechSynthesis.removeEventListener('voiceschanged', updateVoices);
+    };
+  }, [supported]);
+
+  const hasVoiceForLang = useCallback(
+    (lang: string) => voiceLangs.has(lang.toLowerCase()),
+    [voiceLangs]
+  );
 
   const clearWorkaround = useCallback(() => {
     if (workaroundRef.current !== undefined) {
@@ -96,5 +124,5 @@ export function useSpeech(): [
     };
   }, [supported, clearWorkaround]);
 
-  return [speaking, speak, stop, supported, wordCount];
+  return [speaking, speak, stop, supported, wordCount, hasVoiceForLang];
 }

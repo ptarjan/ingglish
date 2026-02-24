@@ -37,8 +37,11 @@ class MockUtterance {
 
 function createMockSynthesis() {
   return {
+    addEventListener: vi.fn(),
     cancel: vi.fn(),
+    getVoices: vi.fn(() => [{ lang: 'en-US' }]),
     pause: vi.fn(),
+    removeEventListener: vi.fn(),
     resume: vi.fn(),
     speak: vi.fn(),
     speaking: false,

@@ -187,7 +187,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
-  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount] =
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount, hasVoice] =
     useSpeech();
 
   // Foreign language state
@@ -424,7 +424,7 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               {dictLoading && <span className="dict-loading-spinner" />}
             </h2>
             <div className="button-group">
-              {speechSupported && (
+              {speechSupported && hasVoice(isForeignMode ? selectedLanguage : 'en') && (
                 <button
                   aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
                   className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
