@@ -9,7 +9,13 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
  * Chrome has a known bug where speech stalls after ~15s of continuous playback.
  * This hook works around it by pausing/resuming every 10s.
  */
-export function useSpeech(): [boolean, (text: string) => void, () => void, boolean, null | number] {
+export function useSpeech(): [
+  boolean,
+  (text: string, lang?: string) => void,
+  () => void,
+  boolean,
+  null | number,
+] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
   const [wordCount, setWordCount] = useState<null | number>(null);
@@ -33,7 +39,7 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
   }, [supported, clearWorkaround]);
 
   const speak = useCallback(
-    (text: string) => {
+    (text: string, lang?: string) => {
       if (!supported) {
         return;
       }
@@ -42,6 +48,9 @@ export function useSpeech(): [boolean, (text: string) => void, () => void, boole
       clearWorkaround();
 
       const utterance = new SpeechSynthesisUtterance(text);
+      if (lang) {
+        utterance.lang = lang;
+      }
       let wordsSeen = 0;
       utterance.onboundary = (event) => {
         if (event.name === 'word') {

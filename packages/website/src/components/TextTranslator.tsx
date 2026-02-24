@@ -316,9 +316,12 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
       stopEnglish();
     } else if (displayEnglish) {
       trackSpeak();
-      speakEnglish(displayEnglish.replaceAll(/\n+/g, ' '));
+      speakEnglish(
+        displayEnglish.replaceAll(/\n+/g, ' '),
+        isForeignMode ? selectedLanguage : undefined
+      );
     }
-  }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish]);
+  }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish, isForeignMode, selectedLanguage]);
 
   const handleClear = useCallback(() => {
     setEnglishText('');
@@ -428,9 +431,9 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
               {dictLoading && <span className="dict-loading-spinner" />}
             </h2>
             <div className="button-group">
-              {!isForeignMode && speechSupported && (
+              {speechSupported && (
                 <button
-                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen to English text'}
+                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
                   className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
                   disabled={!displayEnglish}
                   onClick={handleSpeak}
