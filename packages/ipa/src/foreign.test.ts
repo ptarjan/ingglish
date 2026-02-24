@@ -1,7 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { registerPronunciation } from '@ingglish/phonemes';
 import type { IpaDict } from './foreign';
-import { translateForeign, NOT_FOUND_MARKER } from './foreign';
+import { LANGUAGES, lookupIpa, translateForeign, NOT_FOUND_MARKER } from './foreign';
 
 registerPronunciation();
 
@@ -130,4 +132,68 @@ describe('translateForeign', () => {
     expect(withLang).not.toContain('s');
     expect(withLang).not.toContain('t');
   });
+});
+
+describe('foreign sample coverage', () => {
+  // Load samples dynamically (the file is TS but we can import it)
+  const samplesPath = path.resolve(__dirname, '../../website/src/data/foreign-samples.ts');
+  const dictsDir = path.resolve(__dirname, '../../website/public/ipa-dicts');
+
+  // Skip if sample file or dicts don't exist (CI without website package)
+  const hasSamples = fs.existsSync(samplesPath);
+  const hasDicts = fs.existsSync(dictsDir);
+
+  it.skipIf(!hasSamples || !hasDicts)(
+    'all sample words resolve in their dictionaries',
+    { timeout: 30_000 },
+    async () => {
+      const { FOREIGN_SAMPLES } = await import('../../website/src/data/foreign-samples');
+
+      const missing: string[] = [];
+
+      for (const { code } of LANGUAGES) {
+        const samples: undefined | { text: string }[] = FOREIGN_SAMPLES[code];
+        if (!samples) {
+          continue;
+        }
+
+        const dictPath = path.join(dictsDir, `${code}.json`);
+        if (!fs.existsSync(dictPath)) {
+          continue;
+        }
+        const dict = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as IpaDict;
+
+        for (const sample of samples) {
+          // Extract words: split on whitespace, strip punctuation
+          const words = sample.text
+            .split(/\s+/)
+            .map((w) => w.replace(/^\P{L}+/u, '').replace(/\P{L}+$/u, ''))
+            .filter(Boolean);
+
+          for (const word of words) {
+            // Use lookupIpa which tries exact, lower, title, accent-stripped + overrides
+            if (!lookupIpa(dict, word, code)) {
+              // Also try splitting on apostrophe/hyphen (French contractions)
+              const parts = word.split(/(?<=['-])|(?=['-])/);
+              if (parts.length > 1) {
+                const allFound = parts.every(
+                  (p) =>
+                    p === "'" ||
+                    p === '-' ||
+                    lookupIpa(dict, p, code) !== undefined ||
+                    lookupIpa(dict, `${p}'`, code) !== undefined
+                );
+                if (allFound) {
+                  continue;
+                }
+              }
+              missing.push(`${code}: ${word}`);
+            }
+          }
+        }
+      }
+
+      expect(missing).toStrictEqual([]);
+    }
+  );
 });

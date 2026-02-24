@@ -13,7 +13,7 @@ interface ForeignSample {
  * space-separated base forms since the translator splits on whitespace
  * and the dictionaries only contain base/lemma forms.
  */
-const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
+export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ar: [
     {
       label: 'One Thousand and One Nights (opening)',

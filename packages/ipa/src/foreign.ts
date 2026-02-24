@@ -37,8 +37,24 @@ export const LANGUAGES: Language[] = [
  * word form. These overrides take priority over the dictionary.
  */
 const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
+  ar: {
+    فيه: '/fiːhi/', // in it
+  },
+  de: {
+    samsa: '/ˈzamza/', // Kafka character
+  },
+  es: {
+    aureliano: '/awɾeˈljano/', // character name (García Márquez)
+    beatriz: '/beaˈtɾis/', // character name (Borges)
+    buendía: '/bwenˈdia/', // character name (García Márquez)
+    cañabrava: '/kaɲaˈβɾaβa/', // bamboo cane
+    fierro: '/ˈfjeɾo/', // iron (archaic)
+    macondo: '/maˈkondo/', // fictional town (García Márquez)
+    viterbo: '/biˈteɾβo/', // character name (Borges)
+  },
   fr: {
     est: '/ɛ/', // verb "is" — st is silent (dict has /ɛst/)
+    parce: '/paʁs/', // because (first part of "parce que")
   },
   ja: {
     あった: '/atːa/', // past of ある (to exist)
@@ -52,9 +68,22 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
     静かさ: '/ɕizɯkasa/', // quietness (noun form of 静か)
   },
   nl: {
+    draaide: '/ˈdraːidə/', // turned (past of draaien)
     gekund: '/ɣəˈkʏnt/', // past participle of kunnen (to be able)
+    is: '/ɪs/', // is
+    lauriergracht: '/lɑuˈriːrɣrɑxt/', // Amsterdam canal street
+    romans: '/roˈmɑns/', // novels
+    velden: '/ˈvɛldən/', // fields
+    zal: '/zɑl/', // shall/will
+    zulke: '/ˈzʏlkə/', // such
   },
   pt: {
+    à: '/a/', // to/at (feminine)
+    do: '/du/', // of the (contraction de + o)
+    isso: '/ˈisu/', // that
+    mim: '/mĩ/', // me (prepositional)
+    os: '/us/', // the (masc plural)
+    parte: '/ˈpaɾtʃi/', // part
     posso: '/ˈpo.su/', // I can (present of poder)
     querer: '/ke.ˈɾex/', // to want
     ser: '/ˈsex/', // to be
