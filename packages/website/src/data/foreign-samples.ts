@@ -67,19 +67,19 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   fi: [
     {
       label: 'Suomi — Land of a thousand lakes',
-      text: 'suuri metsä kirkas järvi kaunis luonto talvi lumi kylmä revontulet taivas kuutamo hiljainen yö rauha ja hiljaisuus auringonlasku järvenranta tuuli vesi valo lämmin syvä puhdas rauhallinen maisema tunturimaisema',
+      text: 'Suuri metsä kirkas järvi kaunis luonto talvi lumi kylmä revontulet taivas kuutamo hiljainen yö rauha ja hiljaisuus auringonlasku järvenranta tuuli vesi valo lämmin syvä puhdas rauhallinen maisema tunturimaisema',
     },
     {
       label: 'Seasons and weather',
-      text: 'kevät kukka aurinko kesä lämmin valo syksy tuuli lehti talvi lumi kylmä auringonnousu auringonlasku sateenkaari lumimyrsky ukkonen sade jää kuura pakkanen halla pilvi sumu usva kirkas poutainen',
+      text: 'Kevät kukka aurinko kesä lämmin valo syksy tuuli lehti talvi lumi kylmä auringonnousu auringonlasku sateenkaari lumimyrsky ukkonen sade jää kuura pakkanen halla pilvi sumu usva kirkas poutainen',
     },
     {
       label: 'Kalevala themes — Poetry and wisdom',
-      text: 'vanha viisas mies laulaa runo suuri metsä kuunnella hiljainen tuuli rakkaus ja vapaus elämä toivo usko voima kauneus totuus ja oikeus laulu ja sana sydän ja sielu runous ja musiikki sinfonia harmonia melodia',
+      text: 'Vanha viisas mies laulaa runo suuri metsä kuunnella hiljainen tuuli rakkaus ja vapaus elämä toivo usko voima kauneus totuus ja oikeus laulu ja sana sydän ja sielu runous ja musiikki sinfonia harmonia melodia',
     },
     {
       label: 'Finnish nature and wildlife',
-      text: 'karhu ja susi metsä kettu ja jänis orava ja pöllö kotka taivas hirvi ja ilves ahma ja saukko lintu ja kala lohi ja hauki järvi ja joki meri ja saari niemi ja lahti kallio ja suo sammal ja jäkälä',
+      text: 'Karhu ja susi metsä kettu ja jänis orava ja pöllö kotka taivas hirvi ja ilves ahma ja saukko lintu ja kala lohi ja hauki järvi ja joki meri ja saari niemi ja lahti kallio ja suo sammal ja jäkälä',
     },
   ],
   fr: [
@@ -173,19 +173,19 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
     },
     {
       label: 'Saudade — The untranslatable emotion',
-      text: 'saudade coração amor alma esperança tristeza alegria solidão silêncio suspiro lágrima abraço ternura paixão desejo devoção encanto lembrança harmonia sinfonia madrugada',
+      text: 'Saudade coração amor alma esperança tristeza alegria solidão silêncio suspiro lágrima abraço ternura paixão desejo devoção encanto lembrança harmonia sinfonia madrugada',
     },
     {
       label: 'Camões — Os Lusíadas themes',
-      text: 'armas barões assinalados lusitana ocidental mares navegados passaram além oceano horizonte tempestade estrela marinheiro capitão bandeira explorador descoberta conquista',
+      text: 'Armas barões assinalados lusitana ocidental mares navegados passaram além oceano horizonte tempestade estrela marinheiro capitão bandeira explorador descoberta conquista',
     },
     {
       label: 'Fado — Portuguese soul music',
-      text: 'fado guitarra canção poesia poeta escritor artista verdade beleza coragem mistério saudade coração aldeia praça catedral azulejo madrugada',
+      text: 'Fado guitarra canção poesia poeta escritor artista verdade beleza coragem mistério saudade coração aldeia praça catedral azulejo madrugada',
     },
     {
       label: 'Brazilian and Portuguese history',
-      text: 'guerra vitória batalha herói revolução nasceu morreu viveu cantou lutou sonhou começou azul negro dourado vermelho antigo profundo belo pequeno oceano horizonte',
+      text: 'Guerra vitória batalha herói revolução nasceu morreu viveu cantou lutou sonhou começou azul negro dourado vermelho antigo profundo belo pequeno oceano horizonte',
     },
   ],
   zh: [
