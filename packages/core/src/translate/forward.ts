@@ -56,7 +56,7 @@ export interface TranslatedToken {
 }
 
 // ============================================================================
-// Word Translation Helpers
+// Public API
 // ============================================================================
 
 /**
@@ -90,6 +90,55 @@ export function translateSyncWithMapping(
  */
 export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
   return translateWordInternal(word, format).translated;
+}
+
+// ============================================================================
+// Character classification helpers (used by fast paths)
+// ============================================================================
+
+/** Returns true if every character is a-z (pure lowercase ASCII). */
+function isAllLowerAscii(word: string): boolean {
+  for (let i = 0; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c < 97 || c > 122) {
+      // outside a-z
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Checks if a pre-lowered, pure a-z word matches a known initialism pattern.
+ * Handles both bare initialisms ("api") and initialism+'s' suffix ("apis").
+ * The "'s" suffix from parseInitialismWithSuffix can't match since the key is pure a-z.
+ */
+function isInitialismLower(key: string): boolean {
+  if (KNOWN_INITIALISMS.has(key)) {
+    return true;
+  }
+  // Check initialism + 's' suffix (e.g., "apis" → "api" + "s")
+  return key.length > 1 && key.endsWith('s') && KNOWN_INITIALISMS.has(key.slice(0, -1));
+}
+
+/** Returns true if word is A-Z followed by one or more a-z (e.g., "The", "Hello"). */
+function isTitleCaseAscii(word: string): boolean {
+  if (word.length < 2) {
+    return false;
+  }
+  const first = word.codePointAt(0)!;
+  if (first < 65 || first > 90) {
+    // first char outside A-Z
+    return false;
+  }
+  for (let i = 1; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c < 97 || c > 122) {
+      // rest outside a-z
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -131,12 +180,12 @@ function translateWithFallback(
 }
 
 // ============================================================================
-// Main Translation Pipeline
+// Core pipeline
 // ============================================================================
 
 /**
- * Internal translation that returns both the translated word and whether it
- * was found in a known source (dictionary, contraction, initialism, custom).
+ * Full translation pipeline returning both the translated word and match status.
+ * Used by translateSyncWithMapping (needs match info) and translateWord.
  *
  * Routing order (first match wins):
  *  1. Empty / non-letter tokens → pass through
@@ -151,20 +200,17 @@ function translateWithFallback(
  * 10. Fallback — compounds, stemming, G2P
  */
 function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
+  // 1. Empty / non-letter tokens
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
 
+  // 2–3. Fast paths for common dictionary words (pure lowercase or title-case)
   const fast = tryFastPath(word, format) ?? tryTitleCaseFastPath(word, format);
   if (fast !== null) {
     return { matched: true, translated: fast };
   }
 
-  return translateWordInternalSlow(word, format);
-}
-
-/** Slow path — handles non-fast-path words (steps 4–10). */
-function translateWordInternalSlow(word: string, format: OutputFormat): TranslateResult {
   const isLatinScript = getFormatIsLatinScript(format);
 
   // 4. Initialisms with suffixes (IDs, TVs, API's) — must come before contractions
@@ -207,9 +253,10 @@ function translateWordInternalSlow(word: string, format: OutputFormat): Translat
 }
 
 /**
- * String-only translation for the renderText path. Calls the same fast-path
- * functions as translateWordInternal, but returns the string directly without
- * wrapping in a TranslateResult object (~80% of words hit the fast paths).
+ * String-only translation for renderText. Tries the fast paths first and
+ * returns the translated string directly (avoiding TranslateResult object
+ * allocation for the ~80% of words that are simple dictionary lookups).
+ * Falls through to the full pipeline for everything else.
  */
 function translateWordString(word: string, format: OutputFormat): string {
   if (!word || !HAS_LETTER.test(word)) {
@@ -218,9 +265,13 @@ function translateWordString(word: string, format: OutputFormat): string {
   return (
     tryFastPath(word, format) ??
     tryTitleCaseFastPath(word, format) ??
-    translateWordInternalSlow(word, format).translated
+    translateWordInternal(word, format).translated
   );
 }
+
+// ============================================================================
+// Routing helpers
+// ============================================================================
 
 /**
  * Handle camelCase words by translating each component separately.
@@ -295,30 +346,17 @@ function tryDictionaryLookup(
 
 /**
  * Fast path for pure lowercase ASCII dictionary words (most common in natural text).
+ * Pure a-z words exclude camelCase, contractions, and diacritics, so we can skip
+ * all those checks and go straight to dictionary lookup.
  * Returns the translated string, or null if the word doesn't qualify.
  */
 function tryFastPath(word: string, format: OutputFormat): null | string {
-  for (let i = 0; i < word.length; i++) {
-    const c = word.codePointAt(i)!;
-    if (c < 97 || c > 122) {
-      return null;
-    }
-  }
-  // Inline initialism checks — word is confirmed lowercase, pure a-z (no apostrophe).
-  // isInitialism: skip toLowerCase(), check Set directly (max initialism length = 5)
-  if (word.length <= 5 && KNOWN_INITIALISMS.has(word)) {
+  if (!isAllLowerAscii(word)) {
     return null;
   }
-  // parseInitialismWithSuffix: only 's' suffix matters (no apostrophe in a-z word)
-  if (
-    word.length <= 6 &&
-    word.length > 1 &&
-    word.endsWith('s') &&
-    KNOWN_INITIALISMS.has(word.slice(0, -1))
-  ) {
+  if (isInitialismLower(word)) {
     return null;
   }
-  // Use pre-lowercased lookup — word is already all lowercase
   const phonemes = lookupPronunciationLower(word);
   return phonemes ? arpabetToFormat(phonemes, format) : null;
 }
@@ -369,34 +407,16 @@ function tryInitialismWithSuffix(
 
 /**
  * Fast path for title-case words (first char A-Z, rest a-z): "The", "Hello", "World".
+ * These are the first word of every sentence — very common in natural text.
  * Returns the translated string, or null if the word doesn't qualify.
  */
 function tryTitleCaseFastPath(word: string, format: OutputFormat): null | string {
-  if (word.length < 2) {
+  if (!isTitleCaseAscii(word)) {
     return null;
-  }
-  const first = word.codePointAt(0)!;
-  if (first < 65 || first > 90) {
-    return null;
-  }
-  for (let i = 1; i < word.length; i++) {
-    const c = word.codePointAt(i)!;
-    if (c < 97 || c > 122) {
-      return null;
-    }
   }
 
   const lower = word.toLowerCase();
-  // Inline initialism checks — lower is confirmed lowercase, pure a-z
-  if (lower.length <= 5 && KNOWN_INITIALISMS.has(lower)) {
-    return null;
-  }
-  if (
-    lower.length <= 6 &&
-    lower.length > 1 &&
-    lower.endsWith('s') &&
-    KNOWN_INITIALISMS.has(lower.slice(0, -1))
-  ) {
+  if (isInitialismLower(lower)) {
     return null;
   }
 

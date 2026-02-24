@@ -9,12 +9,7 @@ import { getDictionary } from './loader';
  * Checks if a word exists in the dictionary or custom pronunciations.
  */
 export function hasWord(word: string): boolean {
-  const key = word.toLowerCase();
-  if (getCustomPronunciation(key) !== undefined) {
-    return true;
-  }
-  const dict = getDictionary();
-  return Object.prototype.hasOwnProperty.call(dict, key);
+  return lookupPronunciation(word) !== null;
 }
 
 /**
