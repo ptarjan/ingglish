@@ -1,22 +1,23 @@
-import { test, expect, type Page, type BrowserContext } from '@playwright/test';
+import { type BrowserContext, expect, type Page, test } from '@playwright/test';
+
 import { blockExternalNetwork } from './test-utils';
 
-// Minimal types for the LayoutShift PerformanceObserver API (Chromium-only, not in lib.dom)
-interface LayoutShiftSource {
-  node: Element | null;
-  previousRect: DOMRectReadOnly;
-  currentRect: DOMRectReadOnly;
+interface CLSData {
+  entries: { sources: string[]; time: number; value: number }[];
+  total: number;
 }
 
 interface LayoutShiftEntry extends PerformanceEntry {
   hadRecentInput: boolean;
-  value: number;
   sources: LayoutShiftSource[];
+  value: number;
 }
 
-interface CLSData {
-  total: number;
-  entries: { value: number; time: number; sources: string[] }[];
+// Minimal types for the LayoutShift PerformanceObserver API (Chromium-only, not in lib.dom)
+interface LayoutShiftSource {
+  currentRect: DOMRectReadOnly;
+  node: Element | null;
+  previousRect: DOMRectReadOnly;
 }
 
 declare global {
@@ -30,8 +31,8 @@ declare global {
  * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
  */
 async function waitForAppLoad(page: Page) {
-  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
+  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
 }
 
 // CLS tests need fresh pages to test loading behavior — keep isolated
@@ -43,7 +44,7 @@ test.describe('Layout Stability (CLS)', () => {
     await page.goto('/');
 
     // The .app wrapper and header should be present from the start (static shell in index.html)
-    await expect(page.locator('.app')).toBeVisible({ timeout: 20000 });
+    await expect(page.locator('.app')).toBeVisible({ timeout: 20_000 });
     await expect(page.locator('.header h1')).toBeVisible();
     await expect(page.locator('.logo')).toBeVisible();
 
@@ -55,7 +56,7 @@ test.describe('Layout Stability (CLS)', () => {
     }
 
     // Wait for dictionary to finish loading
-    await expect(spinner).not.toBeVisible({ timeout: 20000 });
+    await expect(spinner).not.toBeVisible({ timeout: 20_000 });
 
     // After loading, .app wrapper and header should still be the same elements
     await expect(page.locator('.app')).toBeVisible();
@@ -70,7 +71,7 @@ test.describe('Layout Stability (CLS)', () => {
     // Install CLS observer BEFORE navigating.
     // Uses PerformanceObserver LayoutShift API (Chromium-only, not in lib.dom).
     await page.addInitScript(() => {
-      (window as unknown as { __cls: CLSData }).__cls = { total: 0, entries: [] };
+      (globalThis as unknown as { __cls: CLSData }).__cls = { entries: [], total: 0 };
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           const shift = entry as LayoutShiftEntry;
@@ -87,16 +88,16 @@ test.describe('Layout Stability (CLS)', () => {
               const cy = String(Math.round(s.currentRect.y));
               return `${name} [${px}x${py} → ${cx}x${cy}]`;
             });
-            (window as unknown as { __cls: CLSData }).__cls.total += shift.value;
-            (window as unknown as { __cls: CLSData }).__cls.entries.push({
-              value: shift.value,
-              time: Math.round(entry.startTime),
+            (globalThis as unknown as { __cls: CLSData }).__cls.total += shift.value;
+            (globalThis as unknown as { __cls: CLSData }).__cls.entries.push({
               sources,
+              time: Math.round(entry.startTime),
+              value: shift.value,
             });
           }
         }
       });
-      observer.observe({ type: 'layout-shift', buffered: true });
+      observer.observe({ buffered: true, type: 'layout-shift' });
     });
 
     await page.goto('/');
@@ -107,13 +108,13 @@ test.describe('Layout Stability (CLS)', () => {
 
     // Collect CLS score
     const result = await page.evaluate(() => {
-      return (window as unknown as { __cls: CLSData }).__cls;
+      return (globalThis as unknown as { __cls: CLSData }).__cls;
     });
     console.log(`CLS: ${result.total.toFixed(4)}`);
     for (const entry of result.entries) {
       console.log(`  shift ${entry.value.toFixed(4)} @ ${String(entry.time)}ms:`);
-      for (const src of entry.sources) {
-        console.log(`    ${src}`);
+      for (const source of entry.sources) {
+        console.log(`    ${source}`);
       }
     }
 
@@ -135,9 +136,9 @@ test.describe('Layout Stability (CLS)', () => {
     expect(boxBefore).not.toBeNull();
 
     // Click Next through all steps
-    const nextBtn = page.locator('.progressive-btn-next');
-    for (let i = 0; i < 6; i++) {
-      await nextBtn.click();
+    const nextButton = page.locator('.progressive-btn-next');
+    for (let index = 0; index < 6; index++) {
+      await nextButton.click();
       await page.waitForTimeout(150);
     }
 
@@ -172,7 +173,7 @@ test.describe('Text Translator', () => {
 
   test.beforeEach(async () => {
     // Clear inputs between tests
-    const englishInput = page.locator('.text-input').first();
+    const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('');
   });
 
@@ -183,16 +184,16 @@ test.describe('Text Translator', () => {
 
   test('translates text when typed', async () => {
     // With bidirectional translation, we have two text-input textareas
-    const englishInput = page.locator('.text-input').first();
-    const ingglishInput = page.locator('.text-input').last();
+    const englishInput = page.locator('textarea.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
 
     await englishInput.fill('hello');
     await expect(ingglishInput).toHaveValue('haloh');
   });
 
   test('preserves capitalization', async () => {
-    const englishInput = page.locator('.text-input').first();
-    const ingglishInput = page.locator('.text-input').last();
+    const englishInput = page.locator('textarea.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
 
     await englishInput.fill('Hello');
     await expect(ingglishInput).toHaveValue('Haloh');
@@ -201,12 +202,12 @@ test.describe('Text Translator', () => {
   test('handles sample text button', async () => {
     // Click the Random button (English side)
     await page.locator('.input-section').first().locator('button:has-text("Random")').click();
-    const englishInput = page.locator('.text-input').first();
+    const englishInput = page.locator('textarea.text-input').first();
     await expect(englishInput).not.toBeEmpty();
   });
 
   test('clears text with clear button', async () => {
-    const englishInput = page.locator('.text-input').first();
+    const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('test');
     await page.locator('.input-section').first().locator('button:has-text("Clear")').click();
     await expect(englishInput).toBeEmpty();
@@ -216,8 +217,8 @@ test.describe('Text Translator', () => {
     // Load sample text
     await page.locator('.input-section').first().locator('button:has-text("Random")').click();
 
-    const englishInput = page.locator('.text-input').first();
-    const ingglishInput = page.locator('.text-input').last();
+    const englishInput = page.locator('textarea.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
 
     // Wait for translation to complete
     await expect(ingglishInput).not.toBeEmpty();
@@ -234,8 +235,8 @@ test.describe('Text Translator', () => {
   });
 
   test('reverse translation works', async () => {
-    const ingglishInput = page.locator('.text-input').last();
-    const englishInput = page.locator('.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
+    const englishInput = page.locator('textarea.text-input').first();
 
     // Focus Ingglish input and type a known word
     await ingglishInput.focus();
@@ -246,8 +247,8 @@ test.describe('Text Translator', () => {
   });
 
   test('handles unknown words not in dictionary', async () => {
-    const englishInput = page.locator('.text-input').first();
-    const ingglishInput = page.locator('.text-input').last();
+    const englishInput = page.locator('textarea.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
 
     // "kubernetes" is not in CMU dictionary, should use rule-based fallback
     await englishInput.fill('kubernetes');
