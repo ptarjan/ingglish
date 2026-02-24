@@ -78,6 +78,15 @@ export function useSpeech(): [
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
         utterance.lang = lang;
+        // Explicitly pick a voice matching the language — setting lang alone
+        // isn't always enough (some browsers fall back to the default voice).
+        const voices = speechSynthesis.getVoices();
+        const voice =
+          voices.find((v) => v.lang.startsWith(lang + '-')) ??
+          voices.find((v) => v.lang.toLowerCase() === lang.toLowerCase());
+        if (voice) {
+          utterance.voice = voice;
+        }
       }
       let wordsSeen = 0;
       utterance.onboundary = (event) => {
