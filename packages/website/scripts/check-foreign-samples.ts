@@ -10,7 +10,7 @@ const samplesSource = fs.readFileSync(
 );
 
 // Extract language blocks: "xx: [...]"
-const langBlockRegex = /(\w{2}):\s*\[([\s\S]*?)\],/g;
+const langBlockRegex = /(\w{2,3}):\s*\[([\s\S]*?)\],/g;
 const sampleRegex = /label:\s*(?:'([^']+)'|"([^"]+)"),\s*text:\s*(?:'([^']*)'|"([^"]*)")/g;
 
 interface Sample {
@@ -34,8 +34,15 @@ while ((langMatch = langBlockRegex.exec(samplesSource)) !== null) {
   allSamples[lang] = samples;
 }
 
+function stripAccents(s: string): string {
+  return s.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
+}
+
 function lookup(dict: Record<string, string>, w: string): string | undefined {
-  return dict[w] ?? dict[w.toLowerCase()];
+  const lower = w.toLowerCase();
+  const title = lower.charAt(0).toUpperCase() + lower.slice(1);
+  const stripped = stripAccents(lower);
+  return dict[w] ?? dict[lower] ?? dict[title] ?? dict[stripped];
 }
 
 let totalMissing = 0;
