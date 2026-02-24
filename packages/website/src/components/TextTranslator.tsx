@@ -225,14 +225,18 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, [selectedLanguage, isForeignMode]);
 
   // Reset panes when switching languages
-  const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const lang = e.target.value;
-    setSelectedLanguage(lang);
-    localStorage.setItem('selectedLanguage', lang);
-    setEnglishText('');
-    setIngglishText('');
-    setLastEdited('english');
-  }, []);
+  const handleLanguageChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const lang = e.target.value;
+      stopEnglish();
+      setSelectedLanguage(lang);
+      localStorage.setItem('selectedLanguage', lang);
+      setEnglishText('');
+      setIngglishText('');
+      setLastEdited('english');
+    },
+    [stopEnglish]
+  );
 
   // Use deferred values to keep typing responsive
   const deferredEnglish = useDeferredValue(englishText);
@@ -343,9 +347,10 @@ function TextTranslator({ initialText = '', onShare }: TextTranslatorProps) {
   }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish, isForeignMode, selectedLanguage]);
 
   const handleClear = useCallback(() => {
+    stopEnglish();
     setEnglishText('');
     setIngglishText('');
-  }, []);
+  }, [stopEnglish]);
 
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
