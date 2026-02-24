@@ -7,6 +7,17 @@ interface CLSData {
   total: number;
 }
 
+interface INPData {
+  interactions: { duration: number; name: string }[];
+  worst: number;
+}
+
+interface LargestContentfulPaintEntry extends PerformanceEntry {
+  element: Element | null;
+  renderTime: number;
+  size: number;
+}
+
 interface LayoutShiftEntry extends PerformanceEntry {
   hadRecentInput: boolean;
   sources: LayoutShiftSource[];
@@ -20,9 +31,16 @@ interface LayoutShiftSource {
   previousRect: DOMRectReadOnly;
 }
 
+interface LCPData {
+  element: string;
+  value: number;
+}
+
 declare global {
   interface Window {
     __cls?: CLSData;
+    __inp?: INPData;
+    __lcp?: LCPData;
   }
 }
 
@@ -35,8 +53,8 @@ async function waitForAppLoad(page: Page) {
   await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
 }
 
-// CLS tests need fresh pages to test loading behavior — keep isolated
-test.describe('Layout Stability (CLS)', () => {
+// Web Vitals tests need fresh pages to test loading behavior — keep isolated
+test.describe('Web Vitals', () => {
   test('app shell is present during dictionary loading', async ({ page }) => {
     await blockExternalNetwork(page);
 
@@ -247,6 +265,114 @@ test.describe('Layout Stability (CLS)', () => {
       // Allow 1px tolerance for sub-pixel rendering differences across browsers
       expect(Math.abs(boxAfter.y - boxBefore.y)).toBeLessThanOrEqual(1);
     }
+  });
+
+  // FCP tests — works on all browsers via Paint Timing API
+  for (const route of [
+    '/',
+    '/text',
+    '/url',
+    '/extension',
+    '/guide',
+    '/docs',
+    '/explore',
+    '/experiment',
+    '/challenge',
+  ]) {
+    test(`FCP is below 1800ms on ${route}`, async ({ page }) => {
+      await blockExternalNetwork(page);
+      await page.goto(route);
+      await waitForAppLoad(page);
+
+      const fcp = await page.evaluate(
+        () => performance.getEntriesByName('first-contentful-paint')[0]?.startTime
+      );
+      console.log(`FCP on ${route}: ${String(Math.round(fcp ?? 0))}ms`);
+      expect(fcp).toBeDefined();
+      expect(fcp).toBeLessThan(1800);
+    });
+  }
+
+  // LCP tests — Chromium only (WebKit doesn't support largest-contentful-paint)
+  for (const route of [
+    '/',
+    '/text',
+    '/url',
+    '/extension',
+    '/guide',
+    '/docs',
+    '/explore',
+    '/experiment',
+    '/challenge',
+  ]) {
+    test(`LCP is below 2500ms on ${route}`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name.includes('safari'), 'WebKit has no LCP API');
+      await blockExternalNetwork(page);
+
+      // Install LCP observer BEFORE navigating
+      await page.addInitScript(() => {
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const lcp = entry as LargestContentfulPaintEntry;
+            (globalThis as unknown as { __lcp: LCPData }).__lcp = {
+              element: lcp.element?.tagName ?? '(none)',
+              value: lcp.startTime,
+            };
+          }
+        });
+        observer.observe({ buffered: true, type: 'largest-contentful-paint' });
+      });
+
+      await page.goto(route);
+      await waitForAppLoad(page);
+
+      const result = await page.evaluate(
+        () => (globalThis as unknown as { __lcp?: LCPData }).__lcp
+      );
+      console.log(
+        `LCP on ${route}: ${String(Math.round(result?.value ?? 0))}ms (element: ${result?.element ?? 'none'})`
+      );
+      expect(result).toBeDefined();
+      expect(result?.value).toBeLessThan(2500);
+    });
+  }
+
+  // INP test — Chromium only, /text page (most interaction-heavy)
+  test('INP is below 200ms on /text', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('safari'), 'WebKit has no Event Timing API');
+    await blockExternalNetwork(page);
+
+    // Install INP observer BEFORE navigating
+    await page.addInitScript(() => {
+      (globalThis as unknown as { __inp: INPData }).__inp = { interactions: [], worst: 0 };
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          const inp = (globalThis as unknown as { __inp: INPData }).__inp;
+          inp.interactions.push({ duration: entry.duration, name: entry.name });
+          if (entry.duration > inp.worst) {
+            inp.worst = entry.duration;
+          }
+        }
+      });
+      observer.observe({ durationThreshold: 16, type: 'event' } as PerformanceObserverInit);
+    });
+
+    await page.goto('/text');
+    await waitForAppLoad(page);
+
+    // Type into the English textarea to trigger interactions
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('hello world');
+
+    // Wait for interaction entries to settle
+    await page.waitForTimeout(300);
+
+    const result = await page.evaluate(() => (globalThis as unknown as { __inp?: INPData }).__inp);
+    console.log(
+      `INP on /text: worst=${String(result?.worst ?? 0)}ms, interactions=${String(result?.interactions.length ?? 0)}`
+    );
+    expect(result).toBeDefined();
+    expect(result?.worst).toBeLessThan(200);
   });
 });
 
