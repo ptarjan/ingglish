@@ -26,16 +26,10 @@ const LANGUAGES = [
   { code: 'es', file: 'es_ES.txt' },
   { code: 'fi', file: 'fi.txt' },
   { code: 'fr', file: 'fr_FR.txt' },
-  { code: 'is', file: 'is.txt' },
   { code: 'ja', file: 'ja.txt' },
   { code: 'ko', file: 'ko.txt' },
   { code: 'nl', file: 'nl.txt' },
   { code: 'pt', file: 'pt_BR.txt' },
-  { code: 'ro', file: 'ro.txt' },
-  { code: 'sv', file: 'sv.txt' },
-  { code: 'sw', file: 'sw.txt' },
-  { code: 'vi', file: 'vi_N.txt' },
-  { code: 'yue', file: 'yue.txt' },
   { code: 'zh', file: 'zh_hans.txt' },
 ] as const;
 
