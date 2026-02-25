@@ -18,9 +18,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
   // ── Languages ──────────────────────────────────────────────────────
   {
     description:
-      'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, \u00E1/\u00E9 long vowels, w\u2192v',
+      'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, \u00E1 long vowel, w\u2192v',
     group: 'language',
-    hash: '#m=AA:\u00E1,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:aj,B:b,CH:\u010D,D:d,DH:d,EH:e,ER:er,EY:\u00E9,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:d\u017E,K:k,L:l,M:m,N:n,NG:ng,OW:ou,OY:oj,P:p,R:r,S:s,SH:\u0161,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:\u017E',
+    hash: '#m=AA:\u00E1,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:aj,B:b,CH:\u010D,D:d,DH:d,EH:e,ER:er,EY:ej,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:d\u017E,K:k,L:l,M:m,N:n,NG:ng,OW:ou,OY:oj,P:p,R:r,S:s,SH:\u0161,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:\u017E',
     label: 'Czech',
   },
   {
@@ -55,9 +55,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Hawaiian',
   },
   {
-    description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs, \u00F6/\u00FC umlauts',
+    description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs, \u00F6 umlaut',
     group: 'language',
-    hash: '#m=AA:\u00E1,AE:e,AH:a,AH0:a,AO:o,AW:\u00E1u,AY:\u00E1j,B:b,CH:cs,D:d,DH:d,EH:e,ER:\u00F6,EY:\u00E9j,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:dzs,K:k,L:l,M:m,N:n,NG:ng,OW:\u00F3,OY:oj,P:p,R:r,S:sz,SH:s,T:t,TH:t,UH:\u00FC,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:zs',
+    hash: '#m=AA:\u00E1,AE:e,AH:a,AH0:a,AO:o,AW:\u00E1u,AY:\u00E1j,B:b,CH:cs,D:d,DH:d,EH:e,ER:\u00F6,EY:\u00E9j,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:dzs,K:k,L:l,M:m,N:n,NG:ng,OW:\u00F3,OY:oj,P:p,R:r,S:sz,SH:s,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:zs',
     label: 'Hungarian',
   },
   {
