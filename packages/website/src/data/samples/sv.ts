@@ -4,22 +4,22 @@ export const sv: ForeignSample[] = [
   {
     // https://archive.org/details/nilsholgerssons00lybegoog
     label: 'Lagerlöf — Nils Holgerssons underbara resa',
-    text: 'Det var en gång en pojke. Han var så där en fjorton år gammal, lång och ranglig. Han hade mest av allt lust att sova och äta.',
+    text: 'Det var en gång en pojke. Han var så där en fjorton år gammal, lång och ranglig och linhårig. Inte stort dugde han till: han hade mest av allt lust att sova och äta, och därnäst tyckte han om att ställa till odygd.',
   },
   {
     // https://www.gutenberg.org/files/57052/57052-h/57052-h.htm
     label: 'Strindberg — Röda rummet',
-    text: 'Det var en afton i början av maj. Över tak och torn i den lilla stad sken en röd sol. Folk gick hem genom gata och gränd.',
+    text: 'Det var en afton i början av maj. Den lilla trädgården på Mosebacke hade ännu icke blivit öppnad för allmänheten, och rabatterna voro ej uppgrävda; snödropparna hade arbetat sig upp genom fjolårets lövsamlingar och höllo just på att sluta sin korta verksamhet för att lämna plats åt de ömtåligare saffransblommorna, vilka tagit skydd under ett ofruktsamt päronträd.',
   },
   {
     // https://www.astridlindgren.com/
     label: 'Lindgren — Pippi Långstrump',
-    text: 'I en liten stad låg en gammal trädgård. Där stod ett hus och i det var en flicka som hette Pippi. Hon var nio år och så stark att hon kunde lyfta en häst med en hand.',
+    text: 'I utkanten av den lilla, lilla staden låg en gammal förfallen trädgård. I trädgården låg ett gammalt hus, och i huset bodde Pippi Långstrump. Hon var nio år, och hon bodde där alldeles ensam. Ingen mamma eller pappa hade hon, och det var egentligen rätt skönt, för på det viset fanns det ingen som kunde säga till henne att hon skulle gå och lägga sig just när hon hade som allra roligast.',
   },
   {
     // https://runeberg.org/berling/i01.html
     label: 'Lagerlöf — Gösta Berlings saga',
-    text: 'Till slut stod han framför folk i kyrka. Han var ung och hög och vacker. Han hade djup blick och fast haka. Allt hos honom var fint och full av eld.',
+    text: 'Äntligen stod prästen i predikstolen. Församlingens huvuden lyftes. Så, där var han ändå! Det skulle inte bli mässfall denna söndagen såsom den förra och många söndagar förut. Prästen var ung, hög, smärt och strålande vacker. Om man hade välvt en hjälm över hans huvud och hängt svärd och brynja på honom, skulle man ha kunnat hugga honom i marmor och uppkalla bilden efter den skönaste av atenare.',
   },
   {
     // https://hejsweden.com/en/swedish-national-anthem-lyrics-swedish-english/
@@ -69,12 +69,12 @@ export const sv: ForeignSample[] = [
   {
     // https://en.wikipedia.org/wiki/The_Girl_with_the_Dragon_Tattoo
     label: 'Stieg Larsson — Män som hatar kvinnor',
-    text: 'Det var en kall fredagskväll i november. Henrik Vanger hade just fyllt åttiotvå år. Han satt i sin arbetsrum i det stora huset på Hedeby-ön och väntade som varje år på ett telefonsamtal som han visste aldrig skulle komma.',
+    text: 'Det hade blivit en årligen återkommande händelse. Mottagaren av blomman fyllde nu åttiotvå år. När blomman anlänt öppnade han paketet och plockade bort presentpappret. Därefter lyfte han telefonluren och slog numret till en före detta kriminalkommissarie som efter pensionen bosatt sig vid Siljan.',
   },
   {
     // https://www.gutenberg.org/ebooks/11940 (Moberg)
     label: 'Vilhelm Moberg — Utvandrarna',
-    text: 'Det var tunga tider i Ljuder socken. Nöden var stor bland de små bönderna och torpen gick inte att bruka. Karl Oskar Nilsson hade fyra små barn och en hustru som hette Kristina, och alla gick hungriga.',
+    text: 'Detta är en berättelse om några människor, som från sina hem i Ljuder i Småland utvandrade till Nordamerika. De var de första som utflyttade från sin ort. De kom från de små stugornas och de stora barnkullarnas land. De var jordens folk och de kom från en släkt, som sedan årtusenden hade brukat jorden de lämnade.',
   },
   {
     // https://svenskadikter.com/Gustaf_Fröding
@@ -87,8 +87,8 @@ export const sv: ForeignSample[] = [
     text: 'Längtan heter min arvedel, gåvan av min faders ätt, bittert löje och sorgsen fest, sorgsen fest och bittert löje, eld som tär sitt eget bränsle, fåfäng väntan, fåfäng färd.',
   },
   {
-    // https://www.skaparportalen.se/post/300-svenska-ordspråk-och-talesätt
-    label: 'Svenska ordspråk',
-    text: 'Den som väntar på något gott väntar aldrig för länge. Bättre sent än aldrig. Övning ger färdighet. Den som gapar efter mycket mister ofta hela stycket. Borta bra men hemma bäst.',
+    // https://runeberg.org/dromspel/
+    label: 'August Strindberg — Ett drömspel',
+    text: 'Allt kan ske, allt är möjligt och sannolikt. Tid och rum existera icke; på en obetydlig verklighetsgrund spinner inbillningen ut och väver nya mönster; en blandning av minnen, upplevelser, fria påhitt, orimligheter och improvisationer. Personerna klyvas, fördubblas, dubbleras, dunsta av, förtätas, flyta ut, samlas.',
   },
 ];
