@@ -27,6 +27,19 @@ export default tseslint.config(
     rules: {
       // Conflicts with no-non-null-assertion: one says "use !" and the other forbids it
       '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+
+      // Disable unicorn rules that are too opinionated for this project
+      // These must be here (not in the src/ block) so they also apply to e2e tests
+      'unicorn/filename-case': 'off',
+      'unicorn/no-array-for-each': 'off',
+      'unicorn/no-array-reduce': 'off',
+      'unicorn/no-null': 'off',
+      'unicorn/no-process-exit': 'off',
+      'unicorn/no-useless-undefined': ['error', { checkArguments: false }],
+      'unicorn/prefer-module': 'off',
+      'unicorn/prefer-spread': 'off', // Spreading NodeList/HTMLCollection gives any[]
+      'unicorn/prefer-top-level-await': 'off',
+      'unicorn/prevent-abbreviations': 'off',
     },
   },
   {
@@ -122,17 +135,6 @@ export default tseslint.config(
       'perfectionist/sort-imports': 'off',
       'perfectionist/sort-named-imports': 'off',
       '@typescript-eslint/adjacent-overload-signatures': 'off',
-
-      // Disable unicorn rules that are too opinionated for this project
-      'unicorn/filename-case': 'off',
-      'unicorn/no-array-for-each': 'off',
-      'unicorn/no-array-reduce': 'off',
-      'unicorn/no-null': 'off',
-      'unicorn/no-process-exit': 'off',
-      'unicorn/prefer-module': 'off',
-      'unicorn/prefer-top-level-await': 'off',
-      'unicorn/no-useless-undefined': ['error', { checkArguments: false }],
-      'unicorn/prevent-abbreviations': 'off',
 
       // Regexp rules (recommended preset)
       ...regexpPlugin.configs['flat/recommended'].rules,

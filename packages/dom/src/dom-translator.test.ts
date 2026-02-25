@@ -589,7 +589,6 @@ describe('dom-translator', () => {
 
       // Verify the optimization by checking text node contents
       // Adjacent punctuation+space should be combined
-      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       const textNodes = Array.from(p.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE);
 
       // Check that some text nodes contain multiple characters (batched)

@@ -21,7 +21,6 @@ export function restoreDOM(root: Document | Element): void {
 
   // First, replace all tooltip spans with their original text
   // This preserves nested DOM structure (unlike textContent replacement)
-  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
   const wordSpans = Array.from(
     root.querySelectorAll<HTMLElement>(`.${WORD_SPAN_CLASS}[${ATTR_ORIGINAL_WORD}]`)
   );
@@ -34,7 +33,6 @@ export function restoreDOM(root: Document | Element): void {
   }
 
   // Clean up any original content attributes (no longer needed for restoration)
-  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
   const elementsWithOriginal = Array.from(
     root.querySelectorAll<HTMLElement>(`[${ATTR_ORIGINAL_CONTENT}]`)
   );
@@ -46,7 +44,6 @@ export function restoreDOM(root: Document | Element): void {
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map(
     (attr) => `[${ATTR_ORIGINAL_PREFIX}${attr}]`
   ).join(',');
-  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
   const elementsWithTranslatedAttrs = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
 
   for (const element of elementsWithTranslatedAttrs) {

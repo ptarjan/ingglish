@@ -107,7 +107,6 @@ export function observeAndTranslate(
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       // Handle added nodes - collect for batch processing
-      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const textNode = node as Text;

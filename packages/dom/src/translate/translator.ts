@@ -122,7 +122,6 @@ function translateElementAttributes(
 ): void {
   // Only query elements that have translatable attributes (much smaller set than '*')
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
-  // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
   const elements = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
 
   for (const element of elements) {

@@ -442,7 +442,6 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
 
     // Collect new nodes (Array.from needed for TypeScript type safety)
     for (const mutation of mutations) {
-      // eslint-disable-next-line unicorn/prefer-spread -- spreading NodeList gives any[]
       const nodes: Node[] = Array.from(mutation.addedNodes);
       for (const node of nodes) {
         if (node.nodeType === Node.TEXT_NODE) {
