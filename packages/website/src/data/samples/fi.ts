@@ -4,101 +4,86 @@ export const fi: ForeignSample[] = [
   {
     // https://www.gutenberg.org/cache/epub/11940/pg11940-images.html
     label: 'Aleksis Kivi — Seitsemän veljestä',
-    text: 'Jukolan talo eteläinen Häme seisoa eräs mäki pohjoinen rinne liki Toukola kylä. Sen läheinen ympäristö olla kivinen tanner mutta alempi alkaa pelto jossa ennen talo olla häviö mennä aaltoilla teräinen vilja.',
+    text: 'Jukolan talo, eteläisessä Hämeessä, seisoo erään mäen pohjaisella rinteellä, liki Toukolan kylää. Sen läheisin ympäristö on kivinen tanner, mutta alempana alkavat pellot, joissa, ennen talojen häviötä, aaltoili teräinen vilja.',
   },
   {
     // https://www.gutenberg.org/ebooks/7000
     label: 'Kalevala — Runo 1',
-    text: 'Mieli minä tekevä aivo ajatella lähteä laulaa saada sanella sukuvirsi suoltaa lajivirsi laulaa. Sana suu sulaa puhe pudota kieli kerätä hammas hajota.',
+    text: "Mieleni minun tekevi, aivoni ajattelevi, lähteäni laulamahan, saa'ani sanelemahan, sukuvirttä suoltamahan, lajivirttä laulamahan. Sanat suussani sulavat, puhe'et putoelevat, kielelleni kerkiävät, hampahilleni hajoovat.",
   },
   {
     // https://en.wikipedia.org/wiki/Maamme
     label: 'Maamme — Suomen kansallislaulu',
-    text: 'Oi maamme Suomi synnyinmaa soi sana kultainen. Ei laakso ei kukkula ei vesi ranta rakkaampi kuin kotimaa tämä pohjoinen maa kallis isä.',
+    text: 'Oi maamme, Suomi, synnyinmaa, soi sana kultainen! Ei laaksoa, ei kukkulaa, ei vettä, rantaa rakkaampaa kuin kotimaa tää pohjoinen, maa kallis isien!',
   },
   {
     // https://linguafennica.wordpress.com/2015/06/17/nocturne-eino-leino/
     label: 'Eino Leino — Nocturne',
-    text: 'Ruislintu laulu korva tähkäpää päällä täysi kuu. Kesäyö olla onni oma kaskisavu laakso verhota. En minä iloita en surra huoata mutta metsä tummuus minä tuoda.',
+    text: 'Ruislinnun laulu korvissani, tähkäpäiden päällä täysi kuu; kesäyön on onni omanani, kaskisavuun laaksot verhouu. En minä iloitse, en sure, huokailen. Metsän tummuus mulle tuoksun tuo.',
   },
   {
-    // https://en.wikipedia.org/wiki/The_Egyptian
+    // https://kirjahamsterinlukuvinkit.blogspot.com/2018/08/sinuhe-egyptilainen-mika-waltari.html
     label: 'Mika Waltari — Sinuhe egyptiläinen',
-    text: 'Minä olla Sinuhe egyptiläinen kirjoittaa tämä sana yksinäinen mies. Minä kirjoittaa jumala ja ihminen kunnia ja häpeä koska minä olla kylläinen elämä ja toivoa kuolema.',
+    text: 'Minä, Sinuhe, Senmutin ja hänen vaimonsa Kipan poika, kirjoitan tämän. En ylistääkseni Kemin maan jumalia, sillä jumaliin olen kyllästynyt.',
   },
   {
-    // https://en.wikipedia.org/wiki/The_Unknown_Soldier_(novel)
+    // https://sitaatit.fi/tuntematon-sotilas-sitaatit/
     label: 'Väinö Linna — Tuntematon sotilas',
-    text: 'Pataljoona olla koota reserviläinen ja kouluttaa kasarmi piha. Mies seisoa rivi ja odottaa käsky. Kesä aurinko paistaa kuuma ja hiki valua otsa.',
+    text: 'Niinkuin hyvin tiedetään, on Jumala kaikkivaltias, kaikkitietävä ja kaukaa viisas. Niinpä hän oli aikoinaan antanut metsäpalon polttaa kymmeniä hehtaareja valtion metsää eräällä hietakankaalla lähellä Joensuun kaupunkia.',
   },
   {
-    // https://en.wikipedia.org/wiki/Moomins
-    label: 'Tove Jansson — Muumipeikko ja pyrstötähti',
-    text: 'Eräs päivä pieni muumipeikko herätä ja huomata kaikki olla toisin. Taivas olla outo harmaa ja maa olla kuuma. Joku kertoa suuri pyrstötähti lähestyä maa.',
-  },
-  {
-    // https://fi.wikipedia.org/wiki/Täällä_Pohjantähden_alla
-    label: 'Väinö Linna — Täällä Pohjantähden alla',
-    text: 'Koskela torppa seisoa kylä laita mäki rinne. Jussi olla nuori mies joka raivata uusi pelto. Hän kaataa puu ja siirtää kivi ja kyntää maa hevonen kanssa. Työ olla raskas mutta maa olla oma.',
-  },
-  {
-    // https://www.booksfromfinland.fi/2009/02/sofi-oksanen-puhdistus/
-    label: 'Sofi Oksanen — Puhdistus',
-    text: 'Ikääntyä Aliide Truu asua yksin talo Viro maaseutu. Maa olla itsenäistyä edellinen vuosi ja maareformi olla alkaa. Vanha nainen arki katkaista piha pyörtyä nuori Zara.',
-  },
-  {
-    // https://en.wikipedia.org/wiki/Johan_Ludvig_Runeberg
-    label: 'J.L. Runeberg — Vänrikki Stoolin tarinat',
-    text: 'Maa olla kylmä ja köyhä mutta se olla meidän maa. Sotilas taistella rohkea ja urhea talvi lumi ja pakkanen keskellä. He puolustaa isänmaa viimeinen veri tippa asti.',
-  },
-  {
-    // Finnish proverbs
-    label: 'Suomalaisia sananlaskuja',
-    text: 'Ei kukaan olla seppä syntyä. Hiljaa hyvä tulla. Työ tekijä opettaa. Ei aika odottaa. Kuka kuussa käydä se tietää. Parempi myöhään kuin ei milloinkaan.',
-  },
-  {
-    // https://en.wikipedia.org/wiki/Aleksis_Kivi
-    label: 'Aleksis Kivi — Nummisuutarit',
-    text: 'Esko olla nuori suutari Nummi pitäjä. Hän olla hyvä ja rehellinen mies mutta hieman yksinkertainen. Hänen äiti toivoa hän mennä naimisiin rikas tyttö kanssa.',
-  },
-  {
-    // https://www.gutenberg.org/cache/epub/11940/pg11940-images.html
-    label: 'Aleksis Kivi — Seitsemän veljestä (Impivaara)',
-    text: 'Seitsemän veli lähteä metsä asua Impivaara talo. He elää vapaa ja villi elämä metsästää ja kalastaa. Mutta maailma tulla heitä vastaan ja he oppia lukea ja kirjoittaa.',
-  },
-  {
-    // https://www.gutenberg.org/ebooks/7000
-    label: 'Kalevala — Sampo',
-    text: 'Vanha viisas Väinämöinen laulaa ja soittaa kantele. Hän lähteä pohjoinen Pohjola hakea Sampo ihmeellinen esine. Matka olla pitkä ja vaarallinen mutta laulu auttaa häntä.',
-  },
-  {
-    // https://fi.wikipedia.org/wiki/Suomen_perustuslaki
-    label: 'Suomen perustuslaki — 1 §',
-    text: 'Suomi olla täysivaltainen tasavalta. Valtiovalta Suomi kuulua kansa jota edustaa valtiopäivä kutsua eduskunta. Kansanvaltaisuus sisältää yksilö oikeus osallistua ja vaikuttaa yhteiskunta kehittäminen.',
-  },
-  {
-    // https://en.wikipedia.org/wiki/Mika_Waltari
-    label: 'Mika Waltari — Turms kuolematon',
-    text: 'Turms olla mies joka muistaa monta elämä. Hän kulkea maailma halki vuosisata toisensa jälkeen. Hän nähdä suuri kaupunki syntyä ja kuolla ja ihminen pysyä aina sama.',
-  },
-  {
-    // https://en.wikipedia.org/wiki/Tove_Jansson
+    // https://tovejansson.com/fi/book/17-muumipeikko-ja-pyrstotahti/
     label: 'Tove Jansson — Taikurin hattu',
-    text: 'Muumipeikko ja hänen ystävä löytää musta hattu mäki päältä. Hattu olla taikuuri hattu ja kaikki mikä laittaa se sisään muuttua joku toinen. Seikkailu alkaa kun muumipeikko itse mennä hattu sisään.',
+    text: 'Eräänä kevätaamuna kello neljältä lensi ensimmäinen käki Muumilaakson läpi. Se istuutui sinisen muumitalon katolle ja kukkui kahdeksan kertaa, tosin hieman käheästi, sillä oli vielä hyvin varhainen kevät. Sitten se lensi edelleen itää kohti.',
   },
   {
-    // Eino Leino poems
+    // https://runosto.net/eino-leino/halla/elegia/
     label: 'Eino Leino — Elegia',
-    text: 'Minä laulaa sinä kannel kulta minä laulaa kesä ilta. Tuuli hiljaa puhua puu ja lintu nukkua pesä oma. Järvi olla tyyni ja rauha laskeutua maa päälle.',
+    text: 'Haihtuvi nuoruus niinkuin vierivä virta. Langat jo harmaat lyö elon kultainen pirta. Turhaan, oi turhaan tartun ma hetkehen kiini; riemua ei suo rattoisa seura, ei viini. Häipyvät taakse tahtoni ylpeät päivät. Henkeni hurmat ammoin jo jälkehen jäivät.',
   },
   {
-    // Finnish Moomins
-    label: 'Tove Jansson — Muumipappa ja meri',
-    text: 'Muumipappa haluaa lähteä merelle ja asua majakka. Perhe seurata häntä saari päälle. Meri olla villi ja tuntematon ja jokainen löytää itsensä uudelleen.',
+    // https://www.kirjallisuustoimittaja.com/lukupalat/puhdistus
+    label: 'Sofi Oksanen — Puhdistus',
+    text: 'Aliide Truu tuijotti kärpästä ja kärpänen tuijotti takaisin. Sen silmät pullottivat ja Aliidea etoi. Raatokärpänen.',
   },
   {
-    // https://fi.wikipedia.org/wiki/Anna_Liisa_(näytelmä)
-    label: 'Minna Canth — Anna Liisa',
-    text: 'Anna Liisa olla nuori nainen Korpi talo. Häät olla edessä mutta menneisyys salaisuus painaa mieli. Totuus uhata tulla esiin ja muuttaa kaikki. Oikeus ja anteeksianto taistella hänen sisällä.',
+    // https://www.gutenberg.org/cache/epub/11152/pg11152-images.html
+    label: 'Aleksis Kivi — Nummisuutarit',
+    text: 'Jaana! Käskihän äitini, lähteissänsä kylään, että matkalle, nimittäin hääretkelleni, itsiäni sonnustan, ja sulhais-vaatteisin puettuna olen, koska hän takaisin palajaa?',
+  },
+  {
+    // https://fi.wikisource.org/wiki/Kalevala_-_Kymmenes_runo
+    label: 'Kalevala — Sammon taonta',
+    text: 'Siitä seppo Ilmarinen, takoja iän-ikuinen, takoa taputtelevi, lyöä lynnähyttelevi. Takoi sammon taitavasti: laitahan on jauhomyllyn, toisehen on suolamyllyn, rahamyllyn kolmantehen.',
+  },
+  {
+    // https://lukijatar.blogspot.com/2018/02/vaino-linna-taalla-pohjantahden-alla-i.html
+    label: 'Väinö Linna — Täällä Pohjantähden alla',
+    text: 'Alussa olivat suo, kuokka — ja Jussi. Suo oli autio, keskeltä melkein puuton neva, jonka veden vaivaamasta kamarasta nousi vain jokin kitukasvuinen käkkyrämänty, vahvakaarnainen ja tasalatvainen pieni vanhus.',
+  },
+  {
+    // https://www.gutenberg.org/cache/epub/46758/pg46758-images.html
+    label: 'F.E. Sillanpää — Hurskas kurjuus',
+    text: 'Toivolan Jussi, Juha, Janne — kirkonkirjojen mukaan Johan Abraham Benjaminpoika — oli vanha vastenmielisen näköinen äijänrahjus.',
+  },
+  {
+    // https://www.kainuuneinoleinoseura.fi/eino-leinon-runoja/hymyileva-apollo/
+    label: 'Eino Leino — Hymyilevä Apollo',
+    text: "Ei paha ole kenkään ihminen, vaan toinen on heikompi toista. Paljon hyvää on rinnassa jokaisen, vaikk' ei aina esille loista. Kas, hymy jo puoli on hyvettä ja itkeä ei voi ilkeä; miss' ihmiset tuntevat tuntehin, siellä lähell' on Jumalakin.",
+  },
+  {
+    // https://fi.wikisource.org/wiki/Saarijärven_Paavo_(Cajander)
+    label: 'J.L. Runeberg — Saarijärven Paavo',
+    text: "Saarijärven salomailla asui tilallansa hallaisella Paavo, perkas, hoiti ahkerasti maataan; mutta Jumalalta kasvun toivoi. Vaimoineen ja lapsineen hän siinä niukkaa leipäänsä söi hiess' otsan, ojat kaivoi, kynti, touon kylvi.",
+  },
+  {
+    // https://runosto.net/eino-leino/halla/elegia/
+    label: 'Eino Leino — Elegia (loppu)',
+    text: 'Toivoton taisto taivaan valtoja vastaan! Kaikuvi kannel; lohduta laulu ei lastaan. Hallatar haastaa, soi sävel sortuvin siivin. Rotkoni rauhaan kuin peto kuoleva hiivin.',
+  },
+  {
+    // https://fi.wikisource.org/wiki/Saarijärven_Paavo_(Cajander)
+    label: 'J.L. Runeberg — Saarijärven Paavo (loppu)',
+    text: "Vaimon käteen tarttuin Paavo lausui: «Vaimo, vaimo, sit' ei kuri kaada, veljeään ken hädässä ei hylkää. Pane leipään puolet petäjäistä, veihän naapurimme touon halla.»",
   },
 ];
