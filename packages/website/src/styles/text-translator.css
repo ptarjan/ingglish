@@ -40,11 +40,6 @@
   border-color: var(--color-primary);
 }
 
-[data-theme='dark'] .language-select option {
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-
 .translator-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -191,12 +186,9 @@
 }
 
 .overlay-textarea textarea {
-  position: relative;
-  z-index: 1;
   flex: 1;
   color: transparent;
   caret-color: var(--color-text);
-  background: transparent;
 }
 
 .overlay-textarea textarea::placeholder {
@@ -214,12 +206,7 @@
 }
 
 .overlay-textarea-display .word-token {
-  padding: 0;
   transition: none;
-}
-
-.overlay-textarea-display.hoverable {
-  z-index: 2;
 }
 
 .overlay-textarea-display.hoverable .word-token {

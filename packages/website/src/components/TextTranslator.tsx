@@ -28,11 +28,9 @@ export const OUTPUT_PLACEHOLDERS: Record<string, string> = {
 interface ForeignOutputDisplayProps {
   dictLoading: boolean;
   format: string;
-  highlightedWordIndex?: null | number;
   onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
-  spokenWordIndex: null | number;
   text: string;
 }
 
@@ -45,11 +43,9 @@ interface TextTranslatorProps {
 function ForeignOutputDisplay({
   dictLoading,
   format,
-  highlightedWordIndex = null,
   onHoverWord,
   onScroll,
   scrollRef,
-  spokenWordIndex,
   text,
 }: ForeignOutputDisplayProps) {
   if (dictLoading) {
@@ -91,19 +87,11 @@ function ForeignOutputDisplay({
           return <span key={i}>{seg}</span>;
         }
         const idx = wordIndex++;
-        const classes = ['word-token'];
-        if (idx === spokenWordIndex) {
-          classes.push('spoken');
-        }
-        if (idx === highlightedWordIndex) {
-          classes.push('highlighted');
-        }
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
-          classes.push('foreign-not-found');
           return (
             <span
-              className={classes.join(' ')}
+              className="word-token foreign-not-found"
               key={i}
               onMouseEnter={
                 onHoverWord
@@ -120,7 +108,7 @@ function ForeignOutputDisplay({
         }
         return (
           <span
-            className={classes.join(' ')}
+            className="word-token"
             key={i}
             onMouseEnter={
               onHoverWord
@@ -276,41 +264,22 @@ function StopIcon() {
 
 function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslatorProps) {
   const { format, toggleFormat } = useFormat();
-
-  // Foreign language state (declared early so initial sample can use it)
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
-  );
-
-  const [englishText, setEnglishText] = useState(() => {
-    if (initialText) {
-      return initialText;
-    }
-    if (selectedLanguage !== 'en') {
-      return pickForeignSample(selectedLanguage, '') ?? '';
-    }
-    return '';
-  });
+  const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
-  // When the user focuses the Ingglish pane, we auto-commit the forward translation.
-  // Track this value so we can skip reverse translation until the user actually edits.
-  const committedIngglish = useRef<null | string>(null);
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
-  const [
-    speakingEnglish,
-    speakEnglish,
-    stopEnglish,
-    speechSupported,
-    spokenWordCount,
-    hasVoice,
-    hasBoundary,
-  ] = useSpeech();
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount, hasVoice] =
+    useSpeech();
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
+
+  // Foreign language state
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
+  );
   const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
   const isForeignMode = selectedLanguage !== 'en';
@@ -341,15 +310,14 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     };
   }, [selectedLanguage, isForeignMode]);
 
-  // Reset panes when switching languages; auto-load a sample for foreign languages
+  // Reset panes when switching languages
   const handleLanguageChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const lang = e.target.value;
       stopEnglish();
       setSelectedLanguage(lang);
       localStorage.setItem('selectedLanguage', lang);
-      const sample = lang === 'en' ? undefined : pickForeignSample(lang, '');
-      setEnglishText(sample ?? '');
+      setEnglishText('');
       setIngglishText('');
       setLastEdited('english');
     },
@@ -380,7 +348,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict, selectedLanguage]);
 
   // Async reverse translation with useEffect
-  // Skip when the Ingglish text is the auto-committed forward translation (no user edits yet)
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
   useEffect(() => {
     if (isForeignMode) {
@@ -389,10 +356,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     }
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
-      return;
-    }
-    // Don't reverse-translate the auto-committed value — the original English is still correct
-    if (deferredIngglish === committedIngglish.current) {
       return;
     }
     let cancelled = false;
@@ -425,13 +388,11 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     : displayIngglish;
 
   const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    committedIngglish.current = null;
     setEnglishText(e.target.value);
     setLastEdited('english');
   }, []);
 
   const handleIngglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    committedIngglish.current = null;
     setIngglishText(e.target.value);
     setLastEdited('ingglish');
   }, []);
@@ -528,10 +489,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     ? (LANGUAGES.find((l) => l.code === selectedLanguage)?.label ?? selectedLanguage)
     : 'English';
 
-  const ttsLang = isForeignMode ? selectedLanguage : 'en';
-  const canHighlight = hasBoundary(ttsLang);
-  const spokenWordIndex = speakingEnglish && canHighlight ? spokenWordCount : null;
-
   return (
     <div className="text-translator">
       <div className="translator-grid">
@@ -598,7 +555,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   }
                 : undefined
             }
-            onHoverWord={setHoveredWordIndex}
             onScroll={() => {
               handleScroll('english');
             }}
@@ -606,7 +562,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
             }
             scrollRef={englishRef}
-            spokenWordIndex={spokenWordIndex}
+            spokenWordIndex={speakingEnglish ? spokenWordCount : null}
             text={lastEdited === 'english' ? englishText : displayEnglish}
           />
         </div>
@@ -639,23 +595,19 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             <ForeignOutputDisplay
               dictLoading={dictLoading}
               format={format}
-              highlightedWordIndex={hoveredWordIndex}
               onHoverWord={setHoveredWordIndex}
               onScroll={() => {
                 handleScroll('ingglish');
               }}
               scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
-              spokenWordIndex={spokenWordIndex}
               text={displayIngglish}
             />
           ) : (
             <OverlayTextarea
-              highlightedWordIndex={hoveredWordIndex}
               onChange={handleIngglishChange}
               onFocus={
                 lastEdited === 'english' && computedIngglish !== null
                   ? () => {
-                      committedIngglish.current = computedIngglish;
                       setIngglishText(computedIngglish);
                       setLastEdited('ingglish');
                     }
@@ -667,7 +619,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               }}
               placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
               scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
-              spokenWordIndex={spokenWordIndex}
+              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
               text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             />
           )}
