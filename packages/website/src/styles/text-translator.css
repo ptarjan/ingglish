@@ -191,6 +191,7 @@
   flex: 1;
   color: transparent;
   caret-color: var(--color-text);
+  background: transparent;
 }
 
 .overlay-textarea textarea::placeholder {
