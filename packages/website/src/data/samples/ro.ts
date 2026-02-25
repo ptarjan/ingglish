@@ -77,8 +77,8 @@ export const ro: ForeignSample[] = [
     text: 'Ai carte, ai parte. Cetățeanul turmentat își dă votul cu inima curată. Industria națională, domnilor, este baza pe care putem clădi viitorul nostru.',
   },
   {
-    // https://en.wikiquote.org/wiki/Romanian_proverbs
-    label: 'Proverbe românești',
-    text: 'Lupul își schimbă părul, dar năravul ba. Cine se scoală de dimineață, departe ajunge. Omul sfințește locul. Ochii care nu se văd se uită.',
+    // https://en.wikipedia.org/wiki/The_Forbidden_Forest
+    label: 'Mircea Eliade — Noaptea de Sânziene',
+    text: 'Era o noapte fierbinte de vară, la sfîrșitul lui iunie, și mirosea a tei pe toate străzile. Un tînăr mergea agale pe trotuarul bulevardului, cu capul în sus, căutînd parcă ceva printre stele.',
   },
 ];

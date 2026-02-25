@@ -82,8 +82,8 @@ export const ja: ForeignSample[] = [
     text: 'いづれ の 御 時 に か 女御 更衣 あまた 候う 給う なか に いと やんごとなし 際 に は あらぬ が すぐれる て 時めく 給う ある けり',
   },
   {
-    // https://www.aozora.gr.jp/
-    label: 'Basho — Haiku collection',
-    text: '古池 蛙 飛び込む 水 音 夏 草 兵 夢 跡 岩 染み入る 蝉 声 旅 病む 枯野 駆ける 夢',
+    // https://en.wikipedia.org/wiki/Norwegian_Wood_(novel)
+    label: '村上春樹 — ノルウェイの森',
+    text: '僕 は 三十七 歳 で その 時 ボーイング 747 の シート に 座る て いる た 巨大 な 飛行機 は 厚い 雨雲 を くぐり抜ける て ハンブルク 空港 に 着陸 しよう と する て いる た',
   },
 ];

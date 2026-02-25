@@ -32,9 +32,9 @@ export const de: ForeignSample[] = [
     text: 'Als Zarathustra dreissig Jahr alt war, verliess er seine Heimat und den See seiner Heimat und ging in das Gebirge. Hier genoss er seines Geistes und seiner Einsamkeit und wurde dessen zehn Jahr nicht müde.',
   },
   {
-    // https://www.gutenberg.org/ebooks/34811
-    label: 'Mann — Buddenbrooks',
-    text: '\u201EWas ist das. \u2014 Was \u2014 ist das \u2026\u201C \u201EJe, den Düwel ook, c\u2019est la question, ma très chère demoiselle!\u201C',
+    // https://www.gutenberg.org/ebooks/59108
+    label: 'Stefan Zweig — Schachnovelle',
+    text: 'An Bord des großen Passagierdampfers, der um Mitternacht von New York nach Buenos Aires abgehen sollte, herrschte die übliche Geschäftigkeit und Bewegung der letzten Stunde.',
   },
   {
     // https://kalliope.org/en/text/heine200202032

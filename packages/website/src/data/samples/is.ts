@@ -77,8 +77,8 @@ export const is: ForeignSample[] = [
     text: 'Jón Hreggviðsson er kotbóndi á Rein við Öxará sem stendur á leið til alþingis. Hann var tekinn höndum fyrir að stela snæri úr konungseigninni og dæmdur til dauða.',
   },
   {
-    // Icelandic proverbs
-    label: 'Íslensk málshættir',
-    text: 'Blindur er bóklaus maður. Betri er einn fugl í hendi en tveir í skógi. Kemur dagur eftir nótt. Sá er vinur sem í neyð reynist. Þetta reddast.',
+    // https://en.wikipedia.org/wiki/The_Atom_Station
+    label: 'Halldór Laxness — Atómstöðin',
+    text: 'Norðan var kominn bréfberi á hvítum hesti, eins og títt var á þeim tímum, og hafði meðferðis bréf frá alþingismanni héraðsins.',
   },
 ];

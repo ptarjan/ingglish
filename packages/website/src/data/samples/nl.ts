@@ -67,9 +67,9 @@ export const nl: ForeignSample[] = [
     text: 'Op de dag dat Inni Wintrop zelfmoord pleegde stonden de aandelen Philips op 149,60. Heeft dat iets met elkaar te maken? Misschien wel. De koers mag dan later gezakt zijn, hijzelf is nooit meer zo hoog gekomen.',
   },
   {
-    // https://tatoeba.org/en/sentences/show/381332
-    label: 'Nederlandse spreekwoorden',
-    text: 'Al is de leugen nog zo snel, de waarheid achterhaalt haar wel. Wie het kleine niet eert, is het grote niet weerd. De morgenstond heeft goud in de mond. Wie een kuil graaft voor een ander, valt er zelf in.',
+    // https://en.wikipedia.org/wiki/Lucebert
+    label: 'Lucebert — Ik tracht op poëtische wijze',
+    text: 'Ik tracht op poëtische wijze, dat wil zeggen eenvouds, de waarheid te zeggen. De alchemie van het woord, het hermetisch experiment, de zuivere poëzie, zij hebben de aarde verlaten.',
   },
   {
     // https://nl.wikipedia.org/wiki/De_donkere_kamer_van_Damokles
@@ -77,8 +77,8 @@ export const nl: ForeignSample[] = [
     text: 'Henri Osewoudt woonde in Voorschoten en was twaalf jaar toen zijn moeder zijn vader vermoordde. Het scheermes waarmee zij het deed was heel scherp, want zijn vader was kapper van beroep.',
   },
   {
-    // https://www.dbnl.org/tekst/nesc002uitv01_01/
-    label: 'Nescio — De Uitvreter',
-    text: 'Behalve den man die de Sarphatistraat de mooiste plek van Europa vond, heb ik nooit een wonderlijker kerel gekend dan den uitvreter. Het was een lange, smalle, bleeke man met een grooten neus.',
+    // https://en.wikipedia.org/wiki/The_Sorrow_of_Belgium
+    label: 'Hugo Claus — Het verdriet van België',
+    text: 'Daar was iets met de ziel, op het eind van de laan. Louis Seynaeve, elf jaar, stond aan de muur van de houten kapel en ademde de nacht in.',
   },
 ];

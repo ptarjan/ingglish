@@ -37,9 +37,9 @@ export const sw: ForeignSample[] = [
     text: 'Asiyefunzwa na mamaye hufunzwa na ulimwengu. Elimu ni bahari haina kuta wala dari. Mstahimilivu hula mbivu. Kidole kimoja hakivunji chawa.',
   },
   {
-    // https://swahiliproverbs.afrst.illinois.edu/cooperation.html
-    label: 'Methali za Kiswahili — Maisha',
-    text: 'Hakuna masika yasiyokuwa na mvua. Mwenye kiu husafiri. Usipoziba ufa utajenga ukuta. Yaliyopita si ndwele, tugange yajayo.',
+    // https://en.wikipedia.org/wiki/Matigari
+    label: "Ngugi wa Thiong'o — Matigari",
+    text: 'Katika nchi hiyo palikuwa na mtu aliyeitwa Matigari ma Njiruungi. Maana yake ni yule aliyebaki vitani. Alikuwa amezunguka nchi nzima akitafuta ukweli na haki.',
   },
   {
     // https://www.marxists.org/subject/africa/nyerere/1967/arusha-declaration.htm
@@ -72,9 +72,9 @@ export const sw: ForeignSample[] = [
     text: 'Lugha yetu ni tunu na ni urithi wetu mkubwa. Kiswahili ni chombo cha umoja kwa watu wa Afrika Mashariki. Tunawajibika kuilinda na kuiendeleza lugha yetu kwa vizazi vijavyo.',
   },
   {
-    // https://swahiliproverbs.afrst.illinois.edu/
-    label: 'Methali za Kiswahili — Subira',
-    text: 'Haraka haraka haina baraka. Pole pole ndio mwendo. Akili ni mali isiyoibika. Dawa ya moto ni moto. Penye nia pana njia.',
+    // https://en.wikipedia.org/wiki/M.S._Mohamed
+    label: 'M.S. Mohamed — Kiu',
+    text: 'Jua lilikuwa kali sana siku hiyo. Mchanga uliokuwa ukienea pande zote ulimetameta kwa jua kama almasi. Hakuna mtu aliyethubutu kutembea nje ya nyumba yake.',
   },
   {
     // https://mahfoudhdiary.wordpress.com/2017/07/22/utenzi-wa-mwana-kupona-bint-msham-part-1/

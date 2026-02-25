@@ -79,7 +79,8 @@ export const zh: ForeignSample[] = [
     text: '天 将 降 大 任 于 是 人 也 必 先 苦 其 心 志 劳 其 筋 骨 饿 其 体 肤 空 乏 其 身 行 拂 乱 其 所 为 所 以 动 心 忍 性 曾 益 其 所 不 能',
   },
   {
-    label: 'Proverb collection',
-    text: '千 里 之 行 始 于 足 下 知 己 知 彼 百 战 百 胜 书 山 有 路 勤 为 径 学 海 无 涯 苦 作 舟 温 故 而 知 新 可 以 为 师 矣',
+    // https://en.wikipedia.org/wiki/Family_(Ba_Jin_novel)
+    label: '巴金 — 家',
+    text: '风 刮 得 很 紧 雪 片 像 扯 破 了 的 棉 絮 一 样 在 空 中 飞 舞 没 有 目 的 地 四 处 飘 落 左 右 两 边 墙 脚 各 有 一 条 白 色 的 路 好 像 给 中 间 满 是 水 泥 的 石 板 路 镶 了 两 道 宽 边',
   },
 ];
