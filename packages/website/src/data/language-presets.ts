@@ -35,9 +35,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Finnish',
   },
   {
-    description: 'sch/tsch clusters, ei\u2194ie swap, umlauts',
+    description: 'sch/tsch clusters, ei\u2194ie swap, \u00E4/\u00F6/\u00FC umlauts',
     group: 'language',
-    hash: '#m=AA:a,AE:\u00E4,AH:a,AH0:a,AO:o,AW:au,AY:ei,B:b,CH:tsch,D:d,DH:d,EH:e,ER:er,EY:eh,F:f,G:g,HH:h,IH:i,IY:ie,JH:dsch,K:k,L:l,M:m,N:n,NG:ng,OW:o,OY:eu,P:p,R:r,S:s,SH:sch,T:t,TH:t,UH:u,UW:u,V:w,W:w,Y:j,Z:s,ZH:sch',
+    hash: '#m=AA:a,AE:\u00E4,AH:a,AH0:a,AO:o,AW:au,AY:ei,B:b,CH:tsch,D:d,DH:d,EH:e,ER:\u00F6,EY:eh,F:f,G:g,HH:h,IH:i,IY:ie,JH:dsch,K:k,L:l,M:m,N:n,NG:ng,OW:o,OY:eu,P:p,R:r,S:s,SH:sch,T:t,TH:t,UH:u,UW:\u00FC,V:w,W:w,Y:j,Z:s,ZH:sch',
     label: 'German',
   },
   {
