@@ -161,7 +161,7 @@ export function arpabetToFormat(
   }
   const handler = getFormatHandler(format);
   if (handler?.forward) {
-    return handler.forward(arpabet);
+    return handler.forward(arpabet, options);
   }
   return arpabetToIngglish(arpabet);
 }

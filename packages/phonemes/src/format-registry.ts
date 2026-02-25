@@ -12,6 +12,13 @@ export interface FormatHandler {
   reverseText?: ReverseTextConverter;
   reverseTextWithMapping?: ReverseTextWithMappingConverter;
 }
+export type ForwardConverter = (arpabet: string[], options?: ForwardConverterOptions) => string;
+
+export interface ForwardConverterOptions {
+  /** Disable English R-coloring rules (vowel+R fusion). Use for foreign text. */
+  disableRColoring?: boolean;
+}
+
 /** Token returned by reverse-with-mapping translation */
 export interface ReverseToken {
   isWord: boolean;
@@ -19,8 +26,6 @@ export interface ReverseToken {
   original: string;
   translated: string;
 }
-
-type ForwardConverter = (arpabet: string[]) => string;
 
 type ReverseTextConverter = (text: string) => string;
 

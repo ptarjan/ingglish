@@ -179,6 +179,16 @@ describe('translateForeign', () => {
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
+  it('finds words with ß via ss normalization', () => {
+    const deDict: IpaDict = { Bewusstsein: '/bəˈvʊstzaɪn/', dass: '/das/' };
+    // ß→ss: "daß" → "dass" (lowercase)
+    expect(translateForeign('daß', deDict)).not.toContain(NOT_FOUND_MARKER);
+    // ß→ss with title case: "Bewußtsein" → "Bewusstsein"
+    expect(lookupIpa(deDict, 'Bewußtsein')).toBe('/bəˈvʊstzaɪn/');
+    // Unrelated conjugation doesn't magically match
+    expect(lookupIpa(deDict, 'mußte')).toBeUndefined();
+  });
+
   it('applies IPA override for French "est" (silent st)', () => {
     const frDict: IpaDict = { est: '/ɛst/' };
     // Without lang, uses dict's /ɛst/ which includes S and T sounds

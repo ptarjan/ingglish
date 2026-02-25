@@ -5,6 +5,7 @@
  * Mirrors arpabetToIngglish() logic but uses merged custom mappings.
  */
 
+import type { ForwardConverterOptions } from './format-registry';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 import { convertArpabet } from './to-ingglish';
 
@@ -28,7 +29,9 @@ export interface CustomMappingConfig {
  * 3. Default ARPABET_TO_INGGLISH_MAP
  * 4. Lowercase phoneme as fallback
  */
-export function createCustomConverter(config: CustomMappingConfig): (arpabet: string[]) => string {
+export function createCustomConverter(
+  config: CustomMappingConfig
+): (arpabet: string[], options?: ForwardConverterOptions) => string {
   // Merge defaults with overrides
   const mergedMap: Record<string, string> = { ...ARPABET_TO_INGGLISH_MAP, ...config.phonemeMap };
   const mergedRColored = new Map(R_COLORED_FORWARD);
@@ -55,6 +58,13 @@ export function createCustomConverter(config: CustomMappingConfig): (arpabet: st
     }
   }
 
-  return (arpabet: string[]): string =>
-    convertArpabet(arpabet, mergedMap, mergedRColored, stressOverrides);
+  const emptyRColored = new Map<string, string>();
+
+  return (arpabet: string[], options?: ForwardConverterOptions): string =>
+    convertArpabet(
+      arpabet,
+      mergedMap,
+      options?.disableRColoring === true ? emptyRColored : mergedRColored,
+      stressOverrides
+    );
 }
