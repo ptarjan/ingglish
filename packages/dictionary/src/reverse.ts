@@ -7,6 +7,7 @@
 
 import { stripStress } from '@ingglish/phonemes';
 import { CUSTOM_PRONUNCIATIONS } from './custom-words';
+import { sortByFrequency } from './frequency';
 import { createLazyLoader } from './lazy-loader';
 import type { ReverseDictionary } from './types';
 
@@ -71,7 +72,10 @@ export function lookupPhonemeKey(key: string): string[] | undefined {
     return customMatches;
   }
 
-  // Merge: custom words first, then dict words (excluding duplicates)
+  // Merge custom and dict words, deduplicate, then sort by frequency.
+  // Custom words correct CMU pronunciations but shouldn't override
+  // frequency ranking (e.g., "hors" shouldn't beat "or" for AO+R).
   const seen = new Set(customMatches);
-  return [...customMatches, ...dictMatches.filter((w) => !seen.has(w))];
+  const merged = [...customMatches, ...dictMatches.filter((w) => !seen.has(w))];
+  return sortByFrequency(merged);
 }
