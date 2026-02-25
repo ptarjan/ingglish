@@ -227,12 +227,14 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('maps charIndex to word index', () => {
+  it('advances wordCount sequentially on boundary events', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('hello world');
     });
+    // wordCount starts at 0 immediately
+    expect(result.current[4]).toBe(0);
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
@@ -254,6 +256,9 @@ describe('useSpeech', () => {
     });
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
