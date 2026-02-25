@@ -7,6 +7,7 @@ export const ko: Record<string, string> = {
   광음: '/kwaŋ.ɯm/',
   금빛: '/kɯm.pit̚/',
   기나기다: '/ki.na.ɡi.da/', // very long
+  길동: '/kil.doŋ/', // Hong Gildong (character name)
   끊임: '/k͈ɯn.im/',
   나타샤: '/na.tʰa.ɕa/', // Natasha
   논가: '/non.ɡa/',
@@ -26,6 +27,7 @@ export const ko: Record<string, string> = {
   오시다: '/o.ɕi.da/', // honorific: to come
   왔다: '/wat̚.t͈a/',
   우러르다: '/u.ɾʌ.ɾɯ.da/',
+  이라: '/i.ɾa/', // copula ending
   이어든: '/i.ʌ.dɯn/', // archaic conditional
   이에: '/i.e/',
   잊히다: '/i.tʰi.da/',

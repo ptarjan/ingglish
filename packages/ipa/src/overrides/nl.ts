@@ -8,6 +8,7 @@ export const nl: Record<string, string> = {
   bange: '/ˈbɑŋə/',
   benaeuwde: '/bəˈnaːudə/', // archaic: oppressed
   bevonden: '/bəˈvɔndən/',
+  bleeke: '/ˈbleːkə/', // archaic: pale
   bloedroze: '/ˈbludˌroːzə/',
   burgery: '/bʏrɣəˈrɛi/', // archaic: burgerij
   dagelix: '/ˈdaːɣəlɪks/', // archaic: dagelijks
@@ -26,6 +27,7 @@ export const nl: Record<string, string> = {
   erkers: '/ˈɛrkərs/',
   flauwe: '/ˈflɑuə/',
   frits: '/frɪts/',
+  gekend: '/ɣəˈkɛnt/', // past participle: known
   gekomen: '/ɣəˈkoːmən/',
   gekund: '/ɣəˈkʏnt/',
   gemeenschappelijks: '/ɣəˈmeːnsxɑpələks/', // archaic genitive
@@ -36,6 +38,7 @@ export const nl: Record<string, string> = {
   godt: '/ɣɔt/', // archaic: God
   graaft: '/ɣraːft/',
   groeiden: '/ˈɣruːidən/',
+  grooten: '/ˈɣroːtən/', // archaic: great
   had: '/hɑt/',
   hadden: '/ˈhɑdən/',
   hare: '/ˈhaːrə/', // archaic: her
@@ -63,6 +66,7 @@ export const nl: Record<string, string> = {
   louterende: '/ˈlɑutərɛndə/',
   mag: '/mɑx/',
   mensen: '/ˈmɛnsən/',
+  mooiste: '/ˈmoːistə/', // superlative: prettiest
   my: '/mɛi/', // archaic: mij
   nassouwe: '/nɑˈsɑuə/', // archaic: Nassau
   oeroeg: '/ˈuruɣ/', // proper name (Haasse)
@@ -79,9 +83,11 @@ export const nl: Record<string, string> = {
   reed: '/reːt/',
   romans: '/roˈmɑns/',
   saluyt: '/saːˈlœyt/', // archaic: greeting
+  sarphatistraat: '/sɑrˈfaːtistraːt/', // street name (Nescio)
   scherpste: '/ˈsxɛrpstə/',
   schilderskade: '/ˈsxɪldərsˌkaːdə/', // street name
   sien: '/siːn/', // archaic: zien
+  smalle: '/ˈsmɑlə/', // inflected: narrow
   stonden: '/ˈstɔndən/',
   stopte: '/ˈstɔptə/',
   tamarindeboomen: '/taːmaːˈrɪndəˌboːmən/', // archaic: tamarind trees
@@ -100,6 +106,7 @@ export const nl: Record<string, string> = {
   werd: '/wɛrt/',
   'west-java': '/ˌwɛstˈjaːva/',
   wintrop: '/ˈvɪntrɔp/', // proper name (Mulisch)
+  wonderlijker: '/ˈʋɔndərlɛikər/', // comparative: more wonderful
   woonde: '/ˈwoːndə/',
   yegelick: '/ˈjeːɣəlɪk/', // archaic: iedereen
   zal: '/zɑl/',

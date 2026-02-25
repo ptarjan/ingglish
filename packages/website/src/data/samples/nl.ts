@@ -77,7 +77,8 @@ export const nl: ForeignSample[] = [
     text: 'Henri Osewoudt woonde in Voorschoten en was twaalf jaar toen zijn moeder zijn vader vermoordde. Het scheermes waarmee zij het deed was heel scherp, want zijn vader was kapper van beroep.',
   },
   {
-    label: 'De reiziger — A journey through the Netherlands',
-    text: 'De reiziger zat alleen in de trein naar het noorden van het land. Buiten het raam bewogen de velden langzaam voorbij, groen en vlak tot aan de horizon, met hier en daar een molen die draaide in de wind.',
+    // https://www.dbnl.org/tekst/nesc002uitv01_01/
+    label: 'Nescio — De Uitvreter',
+    text: 'Behalve den man die de Sarphatistraat de mooiste plek van Europa vond, heb ik nooit een wonderlijker kerel gekend dan den uitvreter. Het was een lange, smalle, bleeke man met een grooten neus.',
   },
 ];

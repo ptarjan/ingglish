@@ -1,6 +1,7 @@
 /** Word-level IPA overrides for Finnish. */
 export const fi: Record<string, string> = {
   aliide: '/ˈɑliːde/', // Estonian name (Oksanen)
+  anna: '/ˈɑnːɑ/', // proper name (Canth)
   en: '/en/',
   esko: '/ˈesko/',
   haluaa: '/ˈhɑluɑː/',
@@ -11,8 +12,11 @@ export const fi: Record<string, string> = {
   jossa: '/ˈjosːɑ/',
   jukolan: '/ˈjukolɑn/', // Jukola farm (Kivi)
   kaskisavu: '/ˈkɑskisɑʋu/',
+  kehittäminen: '/ˈkehitːæminen/', // development
+  koskela: '/ˈkoskelɑ/', // family name (Linna)
   kuussa: '/ˈkuːsːɑ/',
   lajivirsi: '/ˈlɑjiʋirsi/',
+  liisa: '/ˈliːsɑ/', // proper name (Canth)
   maamme: '/ˈmɑːmːe/',
   meidän: '/ˈmeidæn/',
   merelle: '/ˈmerelːe/',
@@ -31,5 +35,6 @@ export const fi: Record<string, string> = {
   tummuus: '/ˈtumːuːs/',
   turms: '/turms/', // character name (Waltari)
   väinämöinen: '/ˈʋæinæmøinen/', // Kalevala hero
+  valtiopäivä: '/ˈʋɑltiopæiʋæ/', // parliament
   zara: '/ˈtsɑrɑ/', // character name (Oksanen)
 };

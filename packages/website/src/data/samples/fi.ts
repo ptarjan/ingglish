@@ -37,9 +37,9 @@ export const fi: ForeignSample[] = [
     text: 'Eräs päivä pieni muumipeikko herätä ja huomata kaikki olla toisin. Taivas olla outo harmaa ja maa olla kuuma. Joku kertoa suuri pyrstötähti lähestyä maa.',
   },
   {
-    // https://www.karinboye.se/verk/dikter/dikter/i-rorelse.shtml (Finnish translation)
-    label: 'Karin Boye — I rörelse (suomeksi)',
-    text: 'Kylläinen päivä se olla ei koskaan suurin. Paras päivä olla päivä jano. Kyllä löytyä päämäärä ja tarkoitus matka mutta se olla tie joka olla vaiva arvoinen.',
+    // https://fi.wikipedia.org/wiki/Täällä_Pohjantähden_alla
+    label: 'Väinö Linna — Täällä Pohjantähden alla',
+    text: 'Koskela torppa seisoa kylä laita mäki rinne. Jussi olla nuori mies joka raivata uusi pelto. Hän kaataa puu ja siirtää kivi ja kyntää maa hevonen kanssa. Työ olla raskas mutta maa olla oma.',
   },
   {
     // https://www.booksfromfinland.fi/2009/02/sofi-oksanen-puhdistus/
@@ -72,9 +72,9 @@ export const fi: ForeignSample[] = [
     text: 'Vanha viisas Väinämöinen laulaa ja soittaa kantele. Hän lähteä pohjoinen Pohjola hakea Sampo ihmeellinen esine. Matka olla pitkä ja vaarallinen mutta laulu auttaa häntä.',
   },
   {
-    // Finnish nature literature
-    label: 'Suomalainen luonto',
-    text: 'Suomalainen metsä olla hiljainen ja rauhallinen paikka. Koivu ja mänty kasvaa järvi ranta ja lintu laulaa aamu varhain. Kesä yö olla valoisa ja talvi päivä olla lyhyt ja pimeä.',
+    // https://fi.wikipedia.org/wiki/Suomen_perustuslaki
+    label: 'Suomen perustuslaki — 1 §',
+    text: 'Suomi olla täysivaltainen tasavalta. Valtiovalta Suomi kuulua kansa jota edustaa valtiopäivä kutsua eduskunta. Kansanvaltaisuus sisältää yksilö oikeus osallistua ja vaikuttaa yhteiskunta kehittäminen.',
   },
   {
     // https://en.wikipedia.org/wiki/Mika_Waltari
@@ -97,8 +97,8 @@ export const fi: ForeignSample[] = [
     text: 'Muumipappa haluaa lähteä merelle ja asua majakka. Perhe seurata häntä saari päälle. Meri olla villi ja tuntematon ja jokainen löytää itsensä uudelleen.',
   },
   {
-    // Finnish saying
-    label: 'Suomalainen viisaus',
-    text: 'Sisu olla suomalainen sana joka tarkoittaa sisäinen voima ja päättäväisyys. Se olla voima jatkaa vaikka kaikki näyttää mahdoton. Suomalainen uskoa sisu auttaa selvitä vaikea aika.',
+    // https://fi.wikipedia.org/wiki/Anna_Liisa_(näytelmä)
+    label: 'Minna Canth — Anna Liisa',
+    text: 'Anna Liisa olla nuori nainen Korpi talo. Häät olla edessä mutta menneisyys salaisuus painaa mieli. Totuus uhata tulla esiin ja muuttaa kaikki. Oikeus ja anteeksianto taistella hänen sisällä.',
   },
 ];
