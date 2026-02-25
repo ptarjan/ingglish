@@ -1,38 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { FOREIGN_SAMPLES } from '../src/data/foreign-samples';
 
 const dictDir = path.resolve(import.meta.dirname, '../public/ipa-dicts');
-
-// Parse samples from the source file to stay in sync
-const samplesSource = fs.readFileSync(
-  path.resolve(import.meta.dirname, '../src/data/foreign-samples.ts'),
-  'utf-8'
-);
-
-// Extract language blocks: "xx: [...]"
-const langBlockRegex = /(\w{2,3}):\s*\[([\s\S]*?)\],/g;
-const sampleRegex = /label:\s*(?:'([^']+)'|"([^"]+)"),\s*text:\s*(?:'([^']*)'|"([^"]*)")/g;
-
-interface Sample {
-  label: string;
-  text: string;
-}
-
-const allSamples: Record<string, Sample[]> = {};
-let langMatch;
-while ((langMatch = langBlockRegex.exec(samplesSource)) !== null) {
-  const lang = langMatch[1]!;
-  const block = langMatch[2]!;
-  const samples: Sample[] = [];
-  let sampleMatch;
-  const re = new RegExp(sampleRegex.source, 'g');
-  while ((sampleMatch = re.exec(block)) !== null) {
-    const label = sampleMatch[1] ?? sampleMatch[2]!;
-    const text = sampleMatch[3] ?? sampleMatch[4]!;
-    samples.push({ label, text });
-  }
-  allSamples[lang] = samples;
-}
 
 function stripAccents(s: string): string {
   return s.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
@@ -48,7 +18,7 @@ function lookup(dict: Record<string, string>, w: string): string | undefined {
 let totalMissing = 0;
 let totalWords = 0;
 
-for (const [lang, samples] of Object.entries(allSamples)) {
+for (const [lang, samples] of Object.entries(FOREIGN_SAMPLES)) {
   const dictPath = path.join(dictDir, lang + '.json');
   if (!fs.existsSync(dictPath)) {
     console.log(`MISSING DICT: ${lang}`);
