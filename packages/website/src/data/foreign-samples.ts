@@ -3,11 +3,17 @@ import { de } from './samples/de';
 import { es } from './samples/es';
 import { fi } from './samples/fi';
 import { fr } from './samples/fr';
+import { is } from './samples/is';
 import { ja } from './samples/ja';
 import { ko } from './samples/ko';
 import { nl } from './samples/nl';
 import { pt } from './samples/pt';
+import { ro } from './samples/ro';
+import { sv } from './samples/sv';
+import { sw } from './samples/sw';
 import type { ForeignSample } from './samples/types';
+import { vi } from './samples/vi';
+import { yue } from './samples/yue';
 import { zh } from './samples/zh';
 
 /**
@@ -28,10 +34,16 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   es,
   fi,
   fr,
+  is,
   ja,
   ko,
   nl,
   pt,
+  ro,
+  sv,
+  sw,
+  vi,
+  yue,
   zh,
 };
 

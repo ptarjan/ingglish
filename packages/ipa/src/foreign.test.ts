@@ -218,10 +218,16 @@ describe('foreign sample coverage', () => {
     es: 1,
     fi: 1,
     fr: 1,
+    is: 0.84,
     ja: 1,
     ko: 1,
     nl: 1,
     pt: 1,
+    ro: 0.79,
+    sv: 0.77,
+    sw: 0.89,
+    vi: 0.99,
+    yue: 1,
     zh: 1,
   };
 
