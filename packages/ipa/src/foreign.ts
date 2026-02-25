@@ -14,6 +14,7 @@ import {
 import type { OutputFormat } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+import { LEMMATIZERS } from './lemmatizers';
 import { ar } from './overrides/ar';
 import { de } from './overrides/de';
 import { es } from './overrides/es';
@@ -128,6 +129,13 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
     const curly = word.replaceAll("'", '\u2019');
     const curlyLower = curly.toLowerCase();
     return dict[curly] ?? dict[curlyLower];
+  }
+  // Last fallback: language-specific lemmatization (strip inflections, find base form)
+  if (lang) {
+    const lemmatizer = LEMMATIZERS[lang];
+    if (lemmatizer) {
+      return lemmatizer(dict, lower);
+    }
   }
   return undefined;
 }
