@@ -11,18 +11,12 @@
 /* Language selector (inline in section header) */
 .language-select {
   padding: 0.125rem 0.375rem;
-  padding-right: 1.5em;
   font: inherit;
   color: inherit;
   text-transform: inherit;
   letter-spacing: inherit;
-  appearance: none;
   cursor: pointer;
   background: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.375em center;
-  background-size: 0.625em;
   border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   transition:
