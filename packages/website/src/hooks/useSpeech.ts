@@ -92,11 +92,11 @@ export function useSpeech(): [
         }
       }
 
-      let boundaryIndex = 0;
+      let boundaryIndex = -1;
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
-          setWordCount(boundaryIndex);
           boundaryIndex++;
+          setWordCount(boundaryIndex);
         }
       };
       utterance.onend = () => {
@@ -112,7 +112,6 @@ export function useSpeech(): [
 
       speechSynthesis.speak(utterance);
       setSpeaking(true);
-      setWordCount(0);
 
       // Chrome workaround: pause/resume every 10s to prevent 15s stall
       workaroundRef.current = setInterval(() => {

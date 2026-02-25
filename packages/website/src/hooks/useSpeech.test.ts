@@ -233,8 +233,8 @@ describe('useSpeech', () => {
     act(() => {
       result.current[1]('hello world');
     });
-    // wordCount starts at 0 immediately
-    expect(result.current[4]).toBe(0);
+    // wordCount is null until first boundary event
+    expect(result.current[4]).toBeNull();
 
     const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
     act(() => {
