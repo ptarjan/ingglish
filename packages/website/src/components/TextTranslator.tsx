@@ -30,6 +30,7 @@ interface ForeignOutputDisplayProps {
   format: string;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
+  spokenWordIndex: null | number;
   text: string;
 }
 
@@ -44,6 +45,7 @@ function ForeignOutputDisplay({
   format,
   onScroll,
   scrollRef,
+  spokenWordIndex,
   text,
 }: ForeignOutputDisplayProps) {
   if (dictLoading) {
@@ -66,21 +68,32 @@ function ForeignOutputDisplay({
 
   // Parse text: NOT_FOUND_MARKER prefixed words are "not found"
   const segments = text.split(/(\s+)/);
+  let wordIndex = 0;
   return (
     <div className="text-input foreign-output" onScroll={onScroll} ref={scrollRef}>
       {segments.map((seg, i) => {
         if (/^\s+$/.test(seg)) {
           return <span key={i}>{seg}</span>;
         }
+        const idx = wordIndex++;
+        const spoken = idx === spokenWordIndex ? ' spoken' : '';
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           return (
-            <span className="foreign-not-found" key={i} title="Not found in dictionary">
+            <span
+              className={`word-token foreign-not-found${spoken}`}
+              key={i}
+              title="Not found in dictionary"
+            >
               {word}
             </span>
           );
         }
-        return <span key={i}>{seg}</span>;
+        return (
+          <span className={`word-token${spoken}`} key={i}>
+            {seg}
+          </span>
+        );
       })}
     </div>
   );
@@ -528,6 +541,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                 handleScroll('ingglish');
               }}
               scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
+              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
               text={displayIngglish}
             />
           ) : (
