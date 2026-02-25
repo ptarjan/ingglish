@@ -92,8 +92,12 @@ function ForeignOutputDisplay({
         }
         const idx = wordIndex++;
         const classes = ['word-token'];
-        if (idx === spokenWordIndex) {classes.push('spoken');}
-        if (idx === highlightedWordIndex) {classes.push('highlighted');}
+        if (idx === spokenWordIndex) {
+          classes.push('spoken');
+        }
+        if (idx === highlightedWordIndex) {
+          classes.push('highlighted');
+        }
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           classes.push('foreign-not-found');

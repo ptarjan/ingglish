@@ -1,4 +1,4 @@
-import { applyCasePattern, detectCasePattern, stripDiacritics  } from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern, stripDiacritics } from '@ingglish/normalize';
 import {
   arpabetToFormat,
   arpabetToIngglish,
