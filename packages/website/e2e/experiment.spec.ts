@@ -20,8 +20,12 @@ test.describe('Experiment presets', () => {
     // Wait for initial translation to appear
     await expect(page.locator('.experiment-output')).toBeVisible({ timeout: 10_000 });
 
-    // Click the IPA preset
-    await page.click('.preset-link:has-text("IPA")');
+    // Click the IPA preset — use locator with explicit scroll since on mobile
+    // the textarea is far below the presets (mapping table between them), and
+    // WebKit can fail the scroll+click in one action
+    const ipaLink = page.locator('.preset-link:has-text("IPA")');
+    await ipaLink.scrollIntoViewIfNeeded();
+    await ipaLink.click();
 
     // Wait for translation to update
     await page.waitForTimeout(500);
