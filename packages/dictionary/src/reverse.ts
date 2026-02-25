@@ -11,27 +11,25 @@ import { sortByFrequency } from './frequency';
 import { createLazyLoader } from './lazy-loader';
 import type { ReverseDictionary } from './types';
 
-/**
- * Build a reverse map from custom pronunciations (phoneme key -> words).
- * Computed once and cached. Custom words are prepended so they take priority.
- */
-let customReverseMap: null | Record<string, string[]> = null;
-function getCustomReverseMap(): Record<string, string[]> {
-  if (customReverseMap) {
-    return customReverseMap;
-  }
-  customReverseMap = {};
-  for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
-    const key = phonemes.map((p) => stripStress(p)).join(' ');
-    customReverseMap[key] ??= [];
-    customReverseMap[key].push(word);
-  }
-  return customReverseMap;
-}
-
 const loader = createLazyLoader<ReverseDictionary>(async () => {
   const mod = await import('./reverse-cmudict');
-  return mod.default;
+  const dict = mod.default;
+
+  // Merge custom pronunciations into the dictionary once at load time.
+  // Custom words correct CMU pronunciations but shouldn't override
+  // frequency ranking (e.g., "hors" shouldn't beat "or" for AO+R).
+  for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+    const key = phonemes.map((p) => stripStress(p)).join(' ');
+    const existing = dict[key];
+    if (existing === undefined) {
+      dict[key] = [word];
+    } else if (!existing.includes(word)) {
+      existing.push(word);
+      dict[key] = sortByFrequency(existing);
+    }
+  }
+
+  return dict;
 }, 'Reverse dictionary');
 
 /**
@@ -56,26 +54,8 @@ export function clearReverseDictionaryCache(): void {
 
 /**
  * Looks up words for a phoneme key.
- * Custom pronunciations are checked first, then the pre-built reverse dictionary.
- * Results are merged with custom words taking priority.
+ * Results are pre-merged and frequency-sorted at load time.
  */
 export function lookupPhonemeKey(key: string): string[] | undefined {
-  const customMap = getCustomReverseMap();
-  const customMatches = customMap[key];
-  const dict = getReverseDictionary();
-  const dictMatches = dict[key];
-
-  if (customMatches === undefined) {
-    return dictMatches;
-  }
-  if (dictMatches === undefined) {
-    return customMatches;
-  }
-
-  // Merge custom and dict words, deduplicate, then sort by frequency.
-  // Custom words correct CMU pronunciations but shouldn't override
-  // frequency ranking (e.g., "hors" shouldn't beat "or" for AO+R).
-  const seen = new Set(customMatches);
-  const merged = [...customMatches, ...dictMatches.filter((w) => !seen.has(w))];
-  return sortByFrequency(merged);
+  return getReverseDictionary()[key];
 }
