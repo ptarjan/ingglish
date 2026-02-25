@@ -218,22 +218,21 @@ describe('foreign sample coverage', () => {
   const hasDicts = fs.existsSync(dictsDir);
 
   // Minimum per-language word coverage (found / total).
-  // TODO: improve IPA dictionary coverage and raise these thresholds.
   const MIN_COVERAGE: Record<string, number> = {
     ar: 1,
     de: 1,
     es: 1,
     fi: 1,
     fr: 1,
-    is: 0.84,
+    is: 1,
     ja: 1,
     ko: 1,
     nl: 1,
     pt: 1,
-    ro: 0.79,
-    sv: 0.77,
-    sw: 0.89,
-    vi: 0.99,
+    ro: 1,
+    sv: 1,
+    sw: 1,
+    vi: 1,
     yue: 1,
     zh: 1,
   };

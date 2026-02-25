@@ -19,10 +19,15 @@ import { de } from './overrides/de';
 import { es } from './overrides/es';
 import { fi } from './overrides/fi';
 import { fr } from './overrides/fr';
+import { is } from './overrides/is';
 import { ja } from './overrides/ja';
 import { ko } from './overrides/ko';
 import { nl } from './overrides/nl';
 import { pt } from './overrides/pt';
+import { ro } from './overrides/ro';
+import { sv } from './overrides/sv';
+import { sw } from './overrides/sw';
+import { vi } from './overrides/vi';
 
 // Pre-compiled regexes (avoid per-call RegExp object creation)
 const IPA_SLASH_RE = /^\/|\/$/g;
@@ -77,10 +82,15 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
   es,
   fi,
   fr,
+  is,
   ja,
   ko,
   nl,
   pt,
+  ro,
+  sv,
+  sw,
+  vi,
 };
 
 /**
