@@ -1,19 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { lookupIpa } from '@ingglish/ipa';
+import type { IpaDict } from '@ingglish/ipa';
 import { FOREIGN_SAMPLES } from '../src/data/foreign-samples';
 
 const dictDir = path.resolve(import.meta.dirname, '../public/ipa-dicts');
-
-function stripAccents(s: string): string {
-  return s.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
-}
-
-function lookup(dict: Record<string, string>, w: string): string | undefined {
-  const lower = w.toLowerCase();
-  const title = lower.charAt(0).toUpperCase() + lower.slice(1);
-  const stripped = stripAccents(lower);
-  return dict[w] ?? dict[lower] ?? dict[title] ?? dict[stripped];
-}
 
 let totalMissing = 0;
 let totalWords = 0;
@@ -24,7 +15,7 @@ for (const [lang, samples] of Object.entries(FOREIGN_SAMPLES)) {
     console.log(`MISSING DICT: ${lang}`);
     continue;
   }
-  const dict: Record<string, string> = JSON.parse(fs.readFileSync(dictPath, 'utf-8'));
+  const dict: IpaDict = JSON.parse(fs.readFileSync(dictPath, 'utf-8'));
 
   for (const sample of samples) {
     const words = sample.text
@@ -34,13 +25,13 @@ for (const [lang, samples] of Object.entries(FOREIGN_SAMPLES)) {
     totalWords += words.length;
 
     const missing = words.filter((w) => {
-      // Direct lookup
-      if (lookup(dict, w)) return false;
+      // Direct lookup (includes IPA_WORD_OVERRIDES via lookupIpa)
+      if (lookupIpa(dict, w, lang)) return false;
       // Try splitting contractions/hyphens (like translateForeign does)
       const parts = w.split(/(?<=['-])|(?=['-])/);
       if (parts.length > 1) {
         const realParts = parts.filter((p) => p !== "'" && p !== '-');
-        if (realParts.some((p) => lookup(dict, p))) return false;
+        if (realParts.some((p) => lookupIpa(dict, p, lang))) return false;
       }
       return true;
     });
