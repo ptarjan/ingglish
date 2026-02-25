@@ -173,20 +173,104 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ],
   fi: [
     {
-      label: 'Suomi — Land of a thousand lakes',
-      text: 'Suuri metsä kirkas järvi kaunis luonto talvi lumi kylmä revontulet taivas kuutamo hiljainen yö rauha ja hiljaisuus auringonlasku järvenranta tuuli vesi valo lämmin syvä puhdas rauhallinen maisema tunturimaisema',
+      // https://www.gutenberg.org/cache/epub/11940/pg11940-images.html
+      label: 'Aleksis Kivi — Seitsemän veljestä',
+      text: 'Jukolan talo eteläinen Häme seisoa eräs mäki pohjoinen rinne liki Toukola kylä. Sen läheinen ympäristö olla kivinen tanner mutta alempi alkaa pelto jossa ennen talo olla häviö mennä aaltoilla teräinen vilja.',
     },
     {
-      label: 'Seasons and weather',
-      text: 'Kevät kukka aurinko kesä lämmin valo syksy tuuli lehti talvi lumi kylmä auringonnousu auringonlasku sateenkaari lumimyrsky ukkonen sade jää kuura pakkanen halla pilvi sumu usva kirkas poutainen',
+      // https://www.gutenberg.org/ebooks/7000
+      label: 'Kalevala — Runo 1',
+      text: 'Mieli minä tekevä aivo ajatella lähteä laulaa saada sanella sukuvirsi suoltaa lajivirsi laulaa. Sana suu sulaa puhe pudota kieli kerätä hammas hajota.',
     },
     {
-      label: 'Kalevala themes — Poetry and wisdom',
-      text: 'Vanha viisas mies laulaa runo suuri metsä kuunnella hiljainen tuuli rakkaus ja vapaus elämä toivo usko voima kauneus totuus ja oikeus laulu ja sana sydän ja sielu runous ja musiikki sinfonia harmonia melodia',
+      // https://en.wikipedia.org/wiki/Maamme
+      label: 'Maamme — Suomen kansallislaulu',
+      text: 'Oi maamme Suomi synnyinmaa soi sana kultainen. Ei laakso ei kukkula ei vesi ranta rakkaampi kuin kotimaa tämä pohjoinen maa kallis isä.',
     },
     {
-      label: 'Finnish nature and wildlife',
-      text: 'Karhu ja susi metsä kettu ja jänis orava ja pöllö kotka taivas hirvi ja ilves ahma ja saukko lintu ja kala lohi ja hauki järvi ja joki meri ja saari niemi ja lahti kallio ja suo sammal ja jäkälä',
+      // https://linguafennica.wordpress.com/2015/06/17/nocturne-eino-leino/
+      label: 'Eino Leino — Nocturne',
+      text: 'Ruislintu laulu korva tähkäpää päällä täysi kuu. Kesäyö olla onni oma kaskisavu laakso verhota. En minä iloita en surra huoata mutta metsä tummuus minä tuoda.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/The_Egyptian
+      label: 'Mika Waltari — Sinuhe egyptiläinen',
+      text: 'Minä olla Sinuhe egyptiläinen kirjoittaa tämä sana yksinäinen mies. Minä kirjoittaa jumala ja ihminen kunnia ja häpeä koska minä olla kylläinen elämä ja toivoa kuolema.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/The_Unknown_Soldier_(novel)
+      label: 'Väinö Linna — Tuntematon sotilas',
+      text: 'Pataljoona olla koota reserviläinen ja kouluttaa kasarmi piha. Mies seisoa rivi ja odottaa käsky. Kesä aurinko paistaa kuuma ja hiki valua otsa.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Moomins
+      label: 'Tove Jansson — Muumipeikko ja pyrstötähti',
+      text: 'Eräs päivä pieni muumipeikko herätä ja huomata kaikki olla toisin. Taivas olla outo harmaa ja maa olla kuuma. Joku kertoa suuri pyrstötähti lähestyä maa.',
+    },
+    {
+      // https://www.karinboye.se/verk/dikter/dikter/i-rorelse.shtml (Finnish translation)
+      label: 'Karin Boye — I rörelse (suomeksi)',
+      text: 'Kylläinen päivä se olla ei koskaan suurin. Paras päivä olla päivä jano. Kyllä löytyä päämäärä ja tarkoitus matka mutta se olla tie joka olla vaiva arvoinen.',
+    },
+    {
+      // https://www.booksfromfinland.fi/2009/02/sofi-oksanen-puhdistus/
+      label: 'Sofi Oksanen — Puhdistus',
+      text: 'Ikääntyä Aliide Truu asua yksin talo Viro maaseutu. Maa olla itsenäistyä edellinen vuosi ja maareformi olla alkaa. Vanha nainen arki katkaista piha pyörtyä nuori Zara.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Johan_Ludvig_Runeberg
+      label: 'J.L. Runeberg — Vänrikki Stoolin tarinat',
+      text: 'Maa olla kylmä ja köyhä mutta se olla meidän maa. Sotilas taistella rohkea ja urhea talvi lumi ja pakkanen keskellä. He puolustaa isänmaa viimeinen veri tippa asti.',
+    },
+    {
+      // Finnish proverbs
+      label: 'Suomalaisia sananlaskuja',
+      text: 'Ei kukaan olla seppä syntyä. Hiljaa hyvä tulla. Työ tekijä opettaa. Ei aika odottaa. Kuka kuussa käydä se tietää. Parempi myöhään kuin ei milloinkaan.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Aleksis_Kivi
+      label: 'Aleksis Kivi — Nummisuutarit',
+      text: 'Esko olla nuori suutari Nummi pitäjä. Hän olla hyvä ja rehellinen mies mutta hieman yksinkertainen. Hänen äiti toivoa hän mennä naimisiin rikas tyttö kanssa.',
+    },
+    {
+      // https://www.gutenberg.org/cache/epub/11940/pg11940-images.html
+      label: 'Aleksis Kivi — Seitsemän veljestä (Impivaara)',
+      text: 'Seitsemän veli lähteä metsä asua Impivaara talo. He elää vapaa ja villi elämä metsästää ja kalastaa. Mutta maailma tulla heitä vastaan ja he oppia lukea ja kirjoittaa.',
+    },
+    {
+      // https://www.gutenberg.org/ebooks/7000
+      label: 'Kalevala — Sampo',
+      text: 'Vanha viisas Väinämöinen laulaa ja soittaa kantele. Hän lähteä pohjoinen Pohjola hakea Sampo ihmeellinen esine. Matka olla pitkä ja vaarallinen mutta laulu auttaa häntä.',
+    },
+    {
+      // Finnish nature literature
+      label: 'Suomalainen luonto',
+      text: 'Suomalainen metsä olla hiljainen ja rauhallinen paikka. Koivu ja mänty kasvaa järvi ranta ja lintu laulaa aamu varhain. Kesä yö olla valoisa ja talvi päivä olla lyhyt ja pimeä.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Mika_Waltari
+      label: 'Mika Waltari — Turms kuolematon',
+      text: 'Turms olla mies joka muistaa monta elämä. Hän kulkea maailma halki vuosisata toisensa jälkeen. Hän nähdä suuri kaupunki syntyä ja kuolla ja ihminen pysyä aina sama.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Tove_Jansson
+      label: 'Tove Jansson — Taikurin hattu',
+      text: 'Muumipeikko ja hänen ystävä löytää musta hattu mäki päältä. Hattu olla taikuuri hattu ja kaikki mikä laittaa se sisään muuttua joku toinen. Seikkailu alkaa kun muumipeikko itse mennä hattu sisään.',
+    },
+    {
+      // Eino Leino poems
+      label: 'Eino Leino — Elegia',
+      text: 'Minä laulaa sinä kannel kulta minä laulaa kesä ilta. Tuuli hiljaa puhua puu ja lintu nukkua pesä oma. Järvi olla tyyni ja rauha laskeutua maa päälle.',
+    },
+    {
+      // Finnish Moomins
+      label: 'Tove Jansson — Muumipappa ja meri',
+      text: 'Muumipappa haluaa lähteä merelle ja asua majakka. Perhe seurata häntä saari päälle. Meri olla villi ja tuntematon ja jokainen löytää itsensä uudelleen.',
+    },
+    {
+      // Finnish saying
+      label: 'Suomalainen viisaus',
+      text: 'Sisu olla suomalainen sana joka tarkoittaa sisäinen voima ja päättäväisyys. Se olla voima jatkaa vaikka kaikki näyttää mahdoton. Suomalainen uskoa sisu auttaa selvitä vaikea aika.',
     },
   ],
   fr: [
@@ -218,6 +302,106 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       label: 'De Gaulle — À tous les Français',
       text: "La France a perdu une bataille! Mais la France n'a pas perdu la guerre! Des gouvernants de rencontre ont pu capituler, cédant à la panique, oubliant l'honneur, livrant le pays à la servitude. Cependant, rien n'est perdu! Rien n'est perdu, parce que cette guerre est une guerre mondiale. Dans l'univers libre, des forces immenses n'ont pas encore donné. Un jour ces forces écraseront l'ennemi. Il faut que la France, ce jour-là, soit présente à la victoire. Alors, elle retrouvera sa liberté et sa grandeur.",
     },
+    {
+      // https://www.gutenberg.org/ebooks/4650
+      label: 'Voltaire — Candide',
+      text: "Il y avait en Westphalie, dans le château de M. le baron de Thunder-ten-tronckh, un jeune garçon à qui la nature avait donné les mœurs les plus douces. Sa physionomie annonçait son âme. Il avait le jugement assez droit, avec l'esprit le plus simple; c'est, je crois, pour cette raison qu'on le nommait Candide.",
+    },
+    {
+      // https://www.gutenberg.org/ebooks/4650
+      label: 'Voltaire — Candide (Pangloss)',
+      text: "Pangloss enseignait la métaphysico-théologo-cosmolonigologie. Il prouvait admirablement qu'il n'y a point d'effet sans cause, et que, dans ce meilleur des mondes possibles, le château de monseigneur le baron était le plus beau des châteaux et madame la meilleure des baronnes possibles.",
+    },
+    {
+      // https://marcel-proust.com/extrait/681
+      label: 'Proust — Du côté de chez Swann',
+      text: "Elle envoya chercher un de ces gâteaux courts et dodus appelés Petites Madeleines qui semblaient avoir été moulés dans la valve rainurée d'une coquille de Saint-Jacques. Et bientôt, machinalement, accablé par la morne journée et la perspective d'un triste lendemain, je portai à mes lèvres une cuillerée du thé où j'avais laissé s'amollir un morceau de madeleine.",
+    },
+    {
+      // https://www.gutenberg.org/ebooks/48359
+      label: 'Flaubert — Madame Bovary',
+      text: "Nous étions à l'étude, quand le proviseur entra, suivi d'un nouveau habillé en bourgeois et d'un garçon de classe qui portait un grand pupitre. Ceux qui dormaient se réveillèrent, et chacun se leva, comme surpris dans son travail.",
+    },
+    {
+      // https://fr.wikisource.org/wiki/Les_Mis%C3%A9rables/Tome_1/Livre_1/01
+      label: 'Hugo — Les Misérables',
+      text: "En 1815, M. Charles-François-Bienvenu Myriel était évêque de Digne. C'était un vieillard d'environ soixante-quinze ans; il occupait le siège de Digne depuis 1806.",
+    },
+    {
+      // https://fr.wikisource.org/wiki/Notre-Dame_de_Paris/Livre_premier
+      label: 'Hugo — Notre-Dame de Paris',
+      text: "Il y a aujourd'hui trois cent quarante-huit ans six mois et dix-neuf jours que les parisiens s'éveillèrent au bruit de toutes les cloches sonnant à grande volée dans la triple enceinte de la Cité, de l'Université et de la Ville.",
+    },
+    {
+      // https://www.poetica.fr/poeme-57/arthur-rimbaud-dormeur-du-val/
+      label: 'Rimbaud — Le Dormeur du val',
+      text: "C'est un trou de verdure où chante une rivière, accrochant follement aux herbes des haillons d'argent; où le soleil, de la montagne fière, luit: c'est un petit val qui mousse de rayons. Un soldat jeune, bouche ouverte, tête nue, et la nuque baignant dans le frais cresson bleu, dort; il est étendu dans l'herbe, sous la nue, pâle dans son lit vert où la lumière pleut.",
+    },
+    {
+      // https://www.poetica.fr/poeme-1824/paul-verlaine-chanson-automne/
+      label: "Verlaine — Chanson d'automne",
+      text: "Les sanglots longs des violons de l'automne blessent mon cœur d'une langueur monotone. Tout suffocant et blême, quand sonne l'heure, je me souviens des jours anciens et je pleure. Et je m'en vais au vent mauvais qui m'emporte deçà, delà, pareil à la feuille morte.",
+    },
+    {
+      // https://www.gutenberg.org/ebooks/798
+      label: 'Stendhal — Le Rouge et le Noir',
+      text: "La petite ville de Verrières peut passer pour l'une des plus jolies de la Franche-Comté. Ses maisons blanches avec leurs toits pointus de tuiles rouges s'étendent sur la pente d'une colline, dont des touffes de vigoureux châtaigniers marquent les moindres sinuosités.",
+    },
+    {
+      // https://fr.wikisource.org/wiki/Le_P%C3%A8re_Goriot_(1910)/I
+      label: 'Balzac — Le Père Goriot',
+      text: 'Madame Vauquer, née de Conflans, est une vieille femme qui, depuis quarante ans, tient à Paris une pension bourgeoise établie rue Neuve-Sainte-Geneviève, entre le quartier latin et le faubourg Saint-Marcel. Cette pension, connue sous le nom de la maison Vauquer, admet également des hommes et des femmes, des jeunes gens et des vieillards.',
+    },
+    {
+      // https://fr.wikisource.org/wiki/Le_Comte_de_Monte-Cristo/Chapitre_1
+      label: 'Dumas — Le Comte de Monte-Cristo',
+      text: "Le 24 février 1815, la vigie de Notre-Dame de la Garde signala le trois-mâts le Pharaon, venant de Smyrne, Trieste et Naples. Comme d'habitude, un pilote côtier partit aussitôt du port, rasa le château d'If, et alla aborder le navire entre le cap de Morgion et l'île de Rion.",
+    },
+    {
+      // https://fr.wikisource.org/wiki/Du_contrat_social/%C3%89dition_1762/Livre_I/Chapitre_1
+      label: 'Rousseau — Du contrat social',
+      text: "L'homme est né libre, et partout il est dans les fers. Tel se croit le maître des autres, qui ne laisse pas d'être plus esclave qu'eux. Comment ce changement s'est-il fait? Je l'ignore. Qu'est-ce qui peut le rendre légitime? Je crois pouvoir résoudre cette question.",
+    },
+    {
+      // https://www.conseil-constitutionnel.fr/le-bloc-de-constitutionnalite/declaration-des-droits-de-l-homme-et-du-citoyen-de-1789
+      label: "Déclaration des droits de l'homme — 1789",
+      text: "Les hommes naissent et demeurent libres et égaux en droits. Les distinctions sociales ne peuvent être fondées que sur l'utilité commune. Le but de toute association politique est la conservation des droits naturels et imprescriptibles de l'homme. Ces droits sont la liberté, la propriété, la sûreté, et la résistance à l'oppression.",
+    },
+    {
+      // https://fr.wikisource.org/wiki/J%E2%80%99accuse%E2%80%A6!
+      label: "Zola — J'accuse…!",
+      text: "Je n'ai qu'une passion, celle de la lumière, au nom de l'humanité qui a tant souffert et qui a droit au bonheur. Ma protestation enflammée n'est que le cri de mon âme. Qu'on ose donc me traduire en cour d'assises et que l'enquête ait lieu au grand jour!",
+    },
+    {
+      // https://www.gutenberg.org/ebooks/5711
+      label: 'Zola — Germinal',
+      text: "Dans la plaine rase, sous la nuit sans étoiles, d'une obscurité et d'une épaisseur d'encre, un homme suivait seul la grande route de Marchiennes à Montsou, dix kilomètres de pavé coupant tout droit, à travers les champs de betteraves.",
+    },
+    {
+      // https://essentiels.bnf.fr/fr/extrait/ce381997-3008-422e-8738-27a9d9c1767c-tirade-nez
+      label: 'Rostand — Cyrano de Bergerac',
+      text: "Ah! non! c'est un peu court, jeune homme! On pouvait dire... oh! Dieu!... bien des choses en somme. Descriptif: C'est un roc!... c'est un pic!... c'est un cap! Que dis-je, c'est un cap?... C'est une péninsule!",
+    },
+    {
+      // http://www.toutmoliere.net/acte-2,405364.html
+      label: 'Molière — Le Bourgeois gentilhomme',
+      text: "Quoi! quand je dis: «Nicole, apportez-moi mes pantoufles, et me donnez mon bonnet de nuit», c'est de la prose? Par ma foi! il y a plus de quarante ans que je dis de la prose sans que j'en susse rien, et je vous suis le plus obligé du monde de m'avoir appris cela.",
+    },
+    {
+      // https://ocw.mit.edu/courses/21g-311-introduction-to-french-culture-spring-2014/
+      label: 'Beauvoir — Le Deuxième Sexe',
+      text: "On ne naît pas femme: on le devient. Aucun destin biologique, psychique, économique ne définit la figure que revêt au sein de la société la femelle humaine; c'est l'ensemble de la civilisation qui élabore ce produit intermédiaire entre le mâle et le castrat qu'on qualifie de féminin.",
+    },
+    {
+      // https://la-philosophie.com/sartre-existence-precede-essence
+      label: "Sartre — L'existentialisme est un humanisme",
+      text: "Qu'est-ce que signifie ici que l'existence précède l'essence? Cela signifie que l'homme existe d'abord, se rencontre, surgit dans le monde, et qu'il se définit après. L'homme, tel que le conçoit l'existentialiste, s'il n'est pas définissable, c'est qu'il n'est d'abord rien. Il ne sera qu'ensuite, et il sera tel qu'il se sera fait.",
+    },
+    {
+      // https://www.bacfrancais.com/commentaire/marguerite-duras-amant-incipit
+      label: "Duras — L'Amant",
+      text: "Un jour, j'étais âgée déjà, dans le hall d'un lieu public, un homme est venu vers moi. Il s'est fait connaître et il m'a dit: «Je vous connais depuis toujours. Tout le monde dit que vous étiez belle lorsque vous étiez jeune, je suis venu pour vous dire que pour moi je vous trouve plus belle maintenant que lorsque vous étiez jeune.»",
+    },
   ],
   is: [
     {
@@ -239,6 +423,66 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       // https://sagadb.org/brennu-njals_saga.is (ch. 1)
       label: 'Njáls saga — Opening',
       text: 'Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Völlum í Rangárvallasýslu. Hann var ríkur höfðingi en mikill lögmaður.',
+    },
+    {
+      // https://sagadb.org/egils_saga.is
+      label: 'Egils saga — Opening',
+      text: 'Úlfur hét maður, sonur Bjálfa og Hallberu, dóttur Úlfs hins óarga. Hún var systir Hallbjarnar hálftrölls í Hrafnistu, föður Ketils hængs.',
+    },
+    {
+      // https://sagadb.org/laxdaela_saga.is
+      label: 'Laxdæla saga — Opening',
+      text: 'Ketill flatnefur hét maður son Bjarnar bunu. Hann var hersir ríkur í Noregi og kynstór. Hann bjó í Raumsdal í Raumsdælafylki.',
+    },
+    {
+      // https://www.voluspa.org/literal/voluspa.htm
+      label: 'Völuspá — Poetic Edda',
+      text: 'Hljóðs bið ek allar helgar kindir, meiri ok minni mögu Heimdallar. Viltu at ek, Valföðr, vel fyr telja forn spjöll fira, þau er fremst of man.',
+    },
+    {
+      // https://sagadb.org/grettis_saga.is
+      label: 'Grettis saga — Opening',
+      text: 'Önundur hét maður. Hann var Ófeigsson burlufóts Ívarssonar beytils. Önundur var bróðir Guðbjargar, móður Guðbrands kúlu, föður Ástu, móður Ólafs konungs hins helga.',
+    },
+    {
+      // https://sagadb.org/eyrbyggja_saga.is
+      label: 'Eyrbyggja saga — Opening',
+      text: 'Ketill flatnefur hét einn ágætur hersir í Noregi. Hann var sonur Bjarnar bunu Grímssonar hersis úr Sogni. Ketill var kvongaður. Hann átti Yngveldi, dóttur Ketils veðurs hersis af Raumaríki.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Independent_People
+      label: 'Halldór Laxness — Sjálfstætt fólk',
+      text: 'En þá er norrænir menn settust hér að, flýðu hinir vestrænu galdursmenn landið, og telja fornrit að Kólumkilli hafi í hefndarskyni lagt á þjóð þá hina nýu að hún skyldi í þessu landi aldrei þrífast.',
+    },
+    {
+      // https://digicoll.library.wisc.edu/Jonas/Island/Island.html
+      label: 'Jónas Hallgrímsson — Ísland',
+      text: 'Ísland, farsælda frón og hagsælda hrímhvíta móðir! Hvar er þín fornaldar frægð, frelsið og manndáðin best? Landið var fagurt og frítt og fannhvítir jöklanna tindar, himinninn heiður og blár, hafið var skínandi bjart.',
+    },
+    {
+      // https://heimskringla.no/wiki/Gylfaginning
+      label: 'Snorri Sturluson — Gylfaginning',
+      text: 'Gylfi konungr réð þar löndum er nú heitir Svíþjóð. Frá honum er þat sagt at hann gaf einni farandi konu at launum skemmtunar sinnar eitt plógsland í ríki sínu þat er fjórir öxn drægi upp dag ok nótt.',
+    },
+    {
+      // https://www.voluspa.org/literal/baldrsdraumar.htm
+      label: 'Baldrs draumar — Poetic Edda',
+      text: 'Senn vöru ásir allir í þingi ok ásynjur allar í máli, ok um þat ráðu rækir tívar, hví væri Baldri ballir draumar. Upp reis Óðinn, alda gautr, ok hann á Sleipni söðul of lagði.',
+    },
+    {
+      // https://nationalanthems.info/is.htm
+      label: 'Lofsöngur — Íslands þjóðsöngur',
+      text: 'Ó, guð vors lands! Ó, lands vors guð! Vér lofum þitt heilaga, heilaga nafn! Úr sólkerfum himnanna hnýta þér krans þínir herskarar, tímanna safn.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Laxness
+      label: 'Halldór Laxness — Íslandsklukkan',
+      text: 'Jón Hreggviðsson er kotbóndi á Rein við Öxará sem stendur á leið til alþingis. Hann var tekinn höndum fyrir að stela snæri úr konungseigninni og dæmdur til dauða.',
+    },
+    {
+      // Icelandic proverbs
+      label: 'Íslensk málshættir',
+      text: 'Blindur er bóklaus maður. Betri er einn fugl í hendi en tveir í skógi. Kemur dagur eftir nótt. Sá er vinur sem í neyð reynist. Þetta reddast.',
     },
   ],
   ja: [
