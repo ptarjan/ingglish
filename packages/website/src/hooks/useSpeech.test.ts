@@ -39,13 +39,31 @@ function createMockSynthesis() {
   return {
     addEventListener: vi.fn(),
     cancel: vi.fn(),
-    getVoices: vi.fn(() => [{ lang: 'en-US' }]),
+    getVoices: vi.fn(() => [{ lang: 'en-US', name: 'Microsoft David' }]),
     pause: vi.fn(),
     removeEventListener: vi.fn(),
     resume: vi.fn(),
-    speak: vi.fn(),
+    speak: vi.fn((utterance: MockUtterance) => {
+      // Auto-complete boundary probe utterances (volume=0)
+      if ((utterance as unknown as { volume: number }).volume === 0) {
+        utterance.onboundary?.({ charIndex: 0, name: 'word' });
+        utterance.onend?.();
+      }
+    }),
     speaking: false,
   };
+}
+
+/** Get the real (non-probe) utterance from mock speak calls. */
+function getRealUtterance(mockSpeak: ReturnType<typeof vi.fn>): MockUtterance {
+  // Skip probe utterances (volume=0) — return the last call
+  const calls = mockSpeak.mock.calls as [MockUtterance][];
+  for (let i = calls.length - 1; i >= 0; i--) {
+    if ((calls[i]![0] as unknown as { volume: number }).volume !== 0) {
+      return calls[i]![0];
+    }
+  }
+  return calls.at(-1)![0];
 }
 
 describe('useSpeech', () => {
@@ -84,7 +102,7 @@ describe('useSpeech', () => {
 
     expect(mockSynthesis.cancel).toHaveBeenCalled();
     expect(mockSynthesis.speak).toHaveBeenCalledWith(expect.any(MockUtterance));
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     expect(utterance.text).toBe('hello world');
   });
 
@@ -107,7 +125,7 @@ describe('useSpeech', () => {
     expect(result.current[0]).toBe(true);
 
     // Simulate the utterance ending
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onend?.();
     });
@@ -121,7 +139,7 @@ describe('useSpeech', () => {
       result.current[1]('test');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.triggerError();
     });
@@ -236,7 +254,7 @@ describe('useSpeech', () => {
     // wordCount is null until first boundary event
     expect(result.current[4]).toBeNull();
 
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
@@ -255,7 +273,7 @@ describe('useSpeech', () => {
       result.current[1]('hello world');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
@@ -277,7 +295,7 @@ describe('useSpeech', () => {
       result.current[1]('hello world');
     });
 
-    const utterance = mockSynthesis.speak.mock.calls[0]![0] as MockUtterance;
+    const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });

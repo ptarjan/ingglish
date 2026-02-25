@@ -4,10 +4,14 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
 
 /**
  * Hook for text-to-speech using the Web Speech API.
- * Returns [speaking, speak, stop, supported, wordCount, hasVoiceForLang].
+ * Returns [speaking, speak, stop, supported, wordCount, hasVoiceForLang, hasBoundaryForLang].
  *
  * Chrome has a known bug where speech stalls after ~15s of continuous playback.
  * This hook works around it by pausing/resuming every 10s.
+ *
+ * On mount, silently probes each language's preferred voice to detect whether
+ * onboundary events fire (needed for word highlighting). Results are cached and
+ * exposed via hasBoundaryForLang().
  */
 export function useSpeech(): [
   boolean,
@@ -16,12 +20,15 @@ export function useSpeech(): [
   boolean,
   null | number,
   (lang: string) => boolean,
+  (lang: string) => boolean,
 ] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
   const [wordCount, setWordCount] = useState<null | number>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const [voiceLangs, setVoiceLangs] = useState<Set<string>>(new Set());
+  const boundaryCacheRef = useRef(new Map<string, boolean>());
+  const [boundaryLangs, setBoundaryLangs] = useState<Set<string>>(new Set());
 
   // Track available voice languages (Chrome loads them async)
   useEffect(() => {
@@ -44,9 +51,92 @@ export function useSpeech(): [
     };
   }, [supported]);
 
+  // Probe boundary support for each unique preferred voice
+  useEffect(() => {
+    if (!supported || voiceLangs.size === 0) {
+      return;
+    }
+
+    // Collect unique preferred voices per language prefix
+    const voiceForLang = new Map<string, SpeechSynthesisVoice>();
+    for (const lang of voiceLangs) {
+      if (lang.includes('-')) {
+        continue; // skip full locale codes, just test prefixes
+      }
+      const voice = findPreferredVoice(lang);
+      if (voice && !voiceForLang.has(voice.name)) {
+        voiceForLang.set(voice.name, voice);
+      }
+    }
+
+    // Also test the default voice (English)
+    const defaultVoice = findPreferredVoice('en');
+    if (defaultVoice && !voiceForLang.has(defaultVoice.name)) {
+      voiceForLang.set(defaultVoice.name, defaultVoice);
+    }
+
+    const supportedVoiceNames = new Set<string>();
+    let remaining = voiceForLang.size;
+    if (remaining === 0) {
+      return;
+    }
+
+    const finish = () => {
+      // Map voice names back to language prefixes
+      const langs = new Set<string>();
+      for (const lang of voiceLangs) {
+        if (lang.includes('-')) {
+          continue;
+        }
+        const voice = findPreferredVoice(lang);
+        if (voice && supportedVoiceNames.has(voice.name)) {
+          langs.add(lang);
+          boundaryCacheRef.current.set(lang, true);
+        } else {
+          boundaryCacheRef.current.set(lang, false);
+        }
+      }
+      setBoundaryLangs(langs);
+    };
+
+    for (const [name, voice] of voiceForLang) {
+      const utterance = new SpeechSynthesisUtterance('a b');
+      utterance.voice = voice;
+      utterance.volume = 0;
+      utterance.rate = 5;
+
+      let gotBoundary = false;
+      utterance.onboundary = () => {
+        gotBoundary = true;
+      };
+      utterance.onend = () => {
+        if (gotBoundary) {
+          supportedVoiceNames.add(name);
+        }
+        remaining--;
+        if (remaining === 0) {
+          finish();
+        }
+      };
+      utterance.addEventListener('error', () => {
+        remaining--;
+        if (remaining === 0) {
+          finish();
+        }
+      });
+
+      speechSynthesis.speak(utterance);
+    }
+  }, [supported, voiceLangs]);
+
   const hasVoiceForLang = useCallback(
     (lang: string) => voiceLangs.has(lang.toLowerCase()),
     [voiceLangs]
+  );
+
+  const hasBoundaryForLang = useCallback(
+    (lang: string) => boundaryLangs.has(lang.toLowerCase()),
+    [boundaryLangs]
   );
 
   const clearWorkaround = useCallback(() => {
@@ -79,14 +169,7 @@ export function useSpeech(): [
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
         utterance.lang = lang;
-        // Pick a voice for the language. Prefer non-Google voices because
-        // Google TTS voices don't fire onboundary events (needed for
-        // word highlighting). Native/Microsoft/Apple voices do fire them.
-        const voices = speechSynthesis.getVoices();
-        const matching = voices.filter(
-          (v) => v.lang.startsWith(lang + '-') || v.lang.toLowerCase() === lang.toLowerCase()
-        );
-        const voice = matching.find((v) => !v.name.startsWith('Google')) ?? matching[0];
+        const voice = findPreferredVoice(lang);
         if (voice) {
           utterance.voice = voice;
         }
@@ -138,5 +221,17 @@ export function useSpeech(): [
     };
   }, [supported, clearWorkaround]);
 
-  return [speaking, speak, stop, supported, wordCount, hasVoiceForLang];
+  return [speaking, speak, stop, supported, wordCount, hasVoiceForLang, hasBoundaryForLang];
+}
+
+/**
+ * Find the preferred voice for a language. Prefers non-Google voices because
+ * Google TTS voices don't fire onboundary events (needed for word highlighting).
+ */
+function findPreferredVoice(lang: string): SpeechSynthesisVoice | undefined {
+  const voices = speechSynthesis.getVoices();
+  const matching = voices.filter(
+    (v) => v.lang.startsWith(lang + '-') || v.lang.toLowerCase() === lang.toLowerCase()
+  );
+  return matching.find((v) => !v.name.startsWith('Google')) ?? matching[0];
 }

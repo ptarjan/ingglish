@@ -283,8 +283,12 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   );
 
   const [englishText, setEnglishText] = useState(() => {
-    if (initialText) {return initialText;}
-    if (selectedLanguage !== 'en') {return pickForeignSample(selectedLanguage, '') ?? '';}
+    if (initialText) {
+      return initialText;
+    }
+    if (selectedLanguage !== 'en') {
+      return pickForeignSample(selectedLanguage, '') ?? '';
+    }
     return '';
   });
   const [ingglishText, setIngglishText] = useState('');
@@ -295,8 +299,15 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
-  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount, hasVoice] =
-    useSpeech();
+  const [
+    speakingEnglish,
+    speakEnglish,
+    stopEnglish,
+    speechSupported,
+    spokenWordCount,
+    hasVoice,
+    hasBoundary,
+  ] = useSpeech();
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
@@ -517,6 +528,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     ? (LANGUAGES.find((l) => l.code === selectedLanguage)?.label ?? selectedLanguage)
     : 'English';
 
+  const ttsLang = isForeignMode ? selectedLanguage : 'en';
+  const canHighlight = hasBoundary(ttsLang);
+  const spokenWordIndex = speakingEnglish && canHighlight ? spokenWordCount : null;
+
   return (
     <div className="text-translator">
       <div className="translator-grid">
@@ -591,7 +606,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
             }
             scrollRef={englishRef}
-            spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+            spokenWordIndex={spokenWordIndex}
             text={lastEdited === 'english' ? englishText : displayEnglish}
           />
         </div>
@@ -630,7 +645,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                 handleScroll('ingglish');
               }}
               scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
-              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              spokenWordIndex={spokenWordIndex}
               text={displayIngglish}
             />
           ) : (
@@ -652,7 +667,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               }}
               placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
               scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
-              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              spokenWordIndex={spokenWordIndex}
               text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             />
           )}
