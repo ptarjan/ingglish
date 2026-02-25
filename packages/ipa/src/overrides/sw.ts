@@ -1,34 +1,47 @@
 /** Word-level IPA overrides for Swahili. */
 export const sw: Record<string, string> = {
-  aliyebaki: '/a.li.jɛ.ˈba.ki/', // who remained
+  akayashinda: '/a.ka.ja.ˈʃi.nda/',
+  aliyebaki: '/a.li.jɛ.ˈba.ki/',
+  anaekabili: '/a.na.ɛ.ka.ˈbi.li/',
+  anaeyakabili: '/a.na.ɛ.ja.ka.ˈbi.li/',
+  angewapa: '/a.ŋɡɛ.ˈwa.pa/',
   Asiyefunzwa: '/a.si.jɛ.ˈfu.nzwa/',
   dhulma: '/ˈðu.lma/',
   haimvunji: '/ha.i.m̩.ˈvu.ndʒi/',
   hakivunji: '/ha.ki.ˈvu.ndʒi/',
-  hauenezi: '/ha.u.ɛ.ˈnɛ.zi/', // does not spread
+  hauenezi: '/ha.u.ɛ.ˈnɛ.zi/',
+  haujawafika: '/ha.u.dʒa.wa.ˈfi.ka/',
   Ibariki: '/i.ba.ˈri.ki/',
   ibariki: '/i.ba.ˈri.ki/',
   inayoonyesha: '/i.na.jɔ.ɔ.ˈɲɛ.ʃa/',
   isiyoibika: '/i.si.jɔ.i.ˈbi.ka/',
-  itatolewa: '/i.ta.tɔ.ˈlɛ.wa/', // will be given
+  itatolewa: '/i.ta.tɔ.ˈlɛ.wa/',
   kale: '/ˈka.lɛ/',
+  kuyashinda: '/ku.ja.ˈʃi.nda/',
   kwanda: '/ˈkwa.nda/',
-  ma: '/ma/', // Bantu class prefix
+  liitwavyo: '/li.i.ˈtwa.vjɔ/',
+  ma: '/ma/',
+  macho: '/ˈma.tʃɔ/',
   mambo: '/ˈma.mbɔ/',
-  Matigari: '/ma.ti.ˈɡa.ri/', // proper name (novel title)
+  Matigari: '/ma.ti.ˈɡa.ri/',
   mfanyabiashara: '/m̩.fa.ɲa.bi.a.ˈʃa.ra/',
   Mstahimilivu: '/m̩.sta.hi.mi.ˈli.vu/',
-  Njiruungi: '/ndʒi.ru.ˈu.ŋɡi/', // proper name (character)
-  pupa: '/ˈpu.pa/', // haste/hurry
+  Mwanza: '/ˈmwa.nza/',
+  Njiruungi: '/ndʒi.ru.ˈu.ŋɡi/',
+  pupa: '/ˈpu.pa/',
+  Rosa: '/ˈrɔ.sa/',
   sadiqi: '/sa.ˈdiː.ki/',
   uambiwalo: '/u.a.mbi.ˈwa.lɔ/',
   ujibane: '/u.dʒi.ˈba.nɛ/',
-  ukienea: '/u.ki.ɛ.ˈnɛ.a/', // while spreading
+  Ukerewe: '/u.kɛ.ˈrɛ.wɛ/',
+  ukienea: '/u.ki.ɛ.ˈnɛ.a/',
   ulithiqi: '/u.li.ˈθi.ki/',
   usiikhini: '/u.si.i.ˈxi.ni/',
+  Usukumani: '/u.su.ku.ˈma.ni/',
+  Victoria: '/vik.ˈtɔ.ri.a/',
   walioelimika: '/wa.li.ɔ.ɛ.li.ˈmi.ka/',
   watendeane: '/wa.tɛ.ndɛ.ˈa.nɛ/',
-  yaliyomwagika: '/ja.li.jɔ.mwa.ˈɡi.ka/', // that were spilled
+  yaliyomwagika: '/ja.li.jɔ.mwa.ˈɡi.ka/',
   yamenshika: '/ja.mɛ.n.ˈʃi.ka/',
   yanayoenda: '/ja.na.jɔ.ˈɛ.nda/',
   yatatulinda: '/ja.ta.tu.ˈli.nda/',

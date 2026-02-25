@@ -28,53 +28,30 @@ export const sw: ForeignSample[] = [
   },
   {
     // https://archive.org/details/Kusadikika
+    // Verified: https://www.thecitizen.co.tz/tanzania/magazines/success/cover-shaaban-robert-father-of-kiswahili-literature-2520416
     label: 'Shaaban Robert — Kusadikika',
     text: 'Kusadikika ni nchi ambayo kuwako kwake hufikirika kwa mawazo tu. Hakuna mtu anayejua mahali ilipo nchi hiyo wala hakuna ramani inayoonyesha mahali pake.',
   },
   {
-    // https://swahiliproverbs.afrst.illinois.edu/
-    label: 'Methali za Kiswahili — Hekima',
-    text: 'Asiyefunzwa na mamaye hufunzwa na ulimwengu. Elimu ni bahari haina kuta wala dari. Mstahimilivu hula mbivu. Kidole kimoja hakivunji chawa.',
+    // Verified: https://archive.nwreview.org/journal/51/01/jay-boss-rubin/
+    // Opening of Kezilahabi's 1971 novel, confirmed via Asymptote Journal
+    label: 'Euphrase Kezilahabi — Rosa Mistika',
+    text: 'Katika ziwa Victoria — kama liitwavyo mpaka sasa — kuna kisiwa kijulikanacho kwa jina la Ukerewe, maili thelathini hivi kutoka Mwanza, na kama hakuna ukungu, unaweza kukiona kutoka Usukumani.',
   },
   {
-    // https://en.wikipedia.org/wiki/Matigari
-    label: "Ngugi wa Thiong'o — Matigari",
-    text: 'Katika nchi hiyo palikuwa na mtu aliyeitwa Matigari ma Njiruungi. Maana yake ni yule aliyebaki vitani. Alikuwa amezunguka nchi nzima akitafuta ukweli na haki.',
+    // Verified: https://archive.nwreview.org/journal/51/01/jay-boss-rubin/
+    label: 'Euphrase Kezilahabi — Rosa Mistika (sura ya pili)',
+    text: 'Usiku Rosa hakulala. Aliamka kuangalia dirishani. Aliona bado giza. Alijaribu kufumba macho apate usingizi. Kazi bure; usingizi hauwezi kushurutishwa.',
   },
   {
-    // https://www.marxists.org/subject/africa/nyerere/1967/arusha-declaration.htm
-    label: 'Nyerere — Azimio la Arusha',
-    text: 'Watu wote ni sawa na kila mtu ana haki ya heshima. Serikali ya wananchi ni serikali ya watu wote. Kazi ni msingi wa maendeleo na kila mtu ana wajibu wa kufanya kazi.',
+    // Verified: https://jamiiforums.com/threads/nukuu-25-za-shaaban-robert-kutoka-katika-riwaya-ya-kusadikika.1627908/
+    label: 'Shaaban Robert — Kusadikika (hekima)',
+    text: 'Mtu yeyote anaekabili mashaka bila ya kutetemeka, hata kama hadiriki kuyashinda kama atakavyo, huishi maisha mema. Mtu yeyote anaekabili mashaka akayashinda nusu, huishi maisha mema. Na anaeyakabili mpaka akayashinda yote, huishi maisha bora kabisa.',
   },
   {
-    // https://www2.gwu.edu/~erpapers/humanrights/udhr/lang/swa.htm
-    label: 'UDHR — Tamko la Haki za Binadamu, Ibara ya 26',
-    text: 'Kila mtu ana haki ya kupata elimu. Elimu itatolewa bure, angalau katika hatua za msingi na za mwanzo. Elimu ya msingi itakuwa ya lazima.',
-  },
-  {
-    // https://swahiliproverbs.afrst.illinois.edu/
-    label: 'Methali za Kiswahili — Ujasiri',
-    text: 'Baada ya dhiki faraja. Asiyekubali kushindwa si mshindani. Haba na haba hujaza kibaba. Maji yaliyomwagika hayazoleki.',
-  },
-  {
-    // https://www.bu.edu/africa/forstudents/alp/lang-teaching-resources/african-proverbs-project/kiswahili-proverbs/
-    label: 'Methali za Kiswahili — Umoja',
-    text: 'Umoja ni nguvu na utengano ni udhaifu. Kidole kimoja hakivunji chawa. Mti mmoja hauenezi msitu. Mgeni siku mbili siku ya tatu mpe jembe.',
-  },
-  {
-    // https://www2.gwu.edu/~erpapers/humanrights/udhr/lang/swa.htm
-    label: 'UDHR — Tamko la Haki za Binadamu, Ibara ya 18-19',
-    text: 'Kila mtu ana haki ya uhuru wa kufikiri, dhamiri na dini. Kila mtu ana haki ya uhuru wa kutoa maoni yake. Haki hii inajumuisha uhuru wa kuwa na maoni bila kuingiliwa.',
-  },
-  {
-    // https://swahiliproverbs.afrst.illinois.edu/
-    label: 'Methali za Kiswahili — Busara',
-    text: 'Akili ni nywele kila mtu ana zake. Mwenye pupa hadiriki kula tamu. Asiyesikia la mkuu huvunjika guu. Dawa ya moto ni moto.',
-  },
-  {
-    // https://en.wikipedia.org/wiki/M.S._Mohamed
-    label: 'M.S. Mohamed — Kiu',
-    text: 'Jua lilikuwa kali sana siku hiyo. Mchanga uliokuwa ukienea pande zote ulimetameta kwa jua kama almasi. Hakuna mtu aliyethubutu kutembea nje ya nyumba yake.',
+    // Verified: https://veraomwocha.wordpress.com/2017/07/25/book-review-kiu-and-sponsor-became-the-new-word-in-town/
+    label: 'Mohamed Suleiman Mohamed — Kiu',
+    text: 'Bahati alijua kuwa hapana apendaye umaskini. Lakini alitamani Mungu angewapa watu macho yenye kuona zaidi wakaona yaliyomo katika utajiri kabla haujawafika.',
   },
   {
     // https://mahfoudhdiary.wordpress.com/2017/07/22/utenzi-wa-mwana-kupona-bint-msham-part-1/
