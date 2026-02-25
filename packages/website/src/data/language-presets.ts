@@ -17,9 +17,10 @@ export interface LanguagePreset {
 export const LANGUAGE_PRESETS: LanguagePreset[] = [
   // ── Languages ──────────────────────────────────────────────────────
   {
-    description: 'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, w\u2192v',
+    description:
+      'H\u00E1\u010Deks: \u010D, \u0161, \u017E for sibilants, \u00E1/\u00E9 long vowels, w\u2192v',
     group: 'language',
-    hash: '#m=AA:a,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:aj,B:b,CH:\u010D,D:d,DH:d,EH:e,ER:er,EY:ej,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:d\u017E,K:k,L:l,M:m,N:n,NG:ng,OW:ou,OY:oj,P:p,R:r,S:s,SH:\u0161,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:\u017E',
+    hash: '#m=AA:\u00E1,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:aj,B:b,CH:\u010D,D:d,DH:d,EH:e,ER:er,EY:\u00E9,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:d\u017E,K:k,L:l,M:m,N:n,NG:ng,OW:ou,OY:oj,P:p,R:r,S:s,SH:\u0161,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:\u017E',
     label: 'Czech',
   },
   {
@@ -54,9 +55,9 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Hawaiian',
   },
   {
-    description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs',
+    description: 's=/\u0283/ and sz=/s/ swap, cs/dzs/zs digraphs, \u00F6/\u00FC umlauts',
     group: 'language',
-    hash: '#m=AA:\u00E1,AE:e,AH:a,AH0:a,AO:o,AW:\u00E1u,AY:\u00E1j,B:b,CH:cs,D:d,DH:d,EH:e,ER:er,EY:\u00E9j,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:dzs,K:k,L:l,M:m,N:n,NG:ng,OW:\u00F3,OY:oj,P:p,R:r,S:sz,SH:s,T:t,TH:t,UH:u,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:zs',
+    hash: '#m=AA:\u00E1,AE:e,AH:a,AH0:a,AO:o,AW:\u00E1u,AY:\u00E1j,B:b,CH:cs,D:d,DH:d,EH:e,ER:\u00F6,EY:\u00E9j,F:f,G:g,HH:h,IH:i,IY:\u00ED,JH:dzs,K:k,L:l,M:m,N:n,NG:ng,OW:\u00F3,OY:oj,P:p,R:r,S:sz,SH:s,T:t,TH:t,UH:\u00FC,UW:\u00FA,V:v,W:v,Y:j,Z:z,ZH:zs',
     label: 'Hungarian',
   },
   {
@@ -78,15 +79,15 @@ export const LANGUAGE_PRESETS: LanguagePreset[] = [
     label: 'Serbian',
   },
   {
-    description: '5 pure vowels, j for /x/, sh\u2192ch, b/v merge',
+    description: '5 pure vowels, j for /x/, sh\u2192ch, b/v merge, \u00F1 for ng',
     group: 'language',
-    hash: '#m=AA:a,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:ai,B:b,CH:ch,D:d,DH:d,EH:e,ER:er,EY:ei,F:f,G:g,HH:j,IH:i,IY:i,JH:y,K:c,L:l,M:m,N:n,NG:ng,OW:o,OY:oi,P:p,R:r,S:s,SH:ch,T:t,TH:z,UH:u,UW:u,V:b,W:w,Y:y,Z:s,ZH:y',
+    hash: '#m=AA:a,AE:a,AH:a,AH0:a,AO:o,AW:au,AY:ai,B:b,CH:ch,D:d,DH:d,EH:e,ER:er,EY:ei,F:f,G:g,HH:j,IH:i,IY:i,JH:y,K:c,L:l,M:m,N:n,NG:\u00F1,OW:o,OY:oi,P:p,R:r,S:s,SH:ch,T:t,TH:z,UH:u,UW:u,V:b,W:w,Y:y,Z:s,ZH:y',
     label: 'Spanish',
   },
   {
-    description: '\u00E7 and \u015F for affricates/fricatives',
+    description: '\u00E7/\u015F for affricates/fricatives, \u00F6/\u00FC umlauts',
     group: 'language',
-    hash: '#m=AA:a,AE:e,AH:a,AH0:a,AO:o,AW:au,AY:ai,B:b,CH:\u00E7,D:d,DH:d,EH:e,ER:er,EY:ey,F:f,G:g,HH:h,IH:i,IY:i,JH:c,K:k,L:l,M:m,N:n,NG:ng,OW:o,OY:oi,P:p,R:r,S:s,SH:\u015F,T:t,TH:t,UH:u,UW:u,V:v,W:v,Y:y,Z:z,ZH:j',
+    hash: '#m=AA:a,AE:e,AH:a,AH0:a,AO:o,AW:au,AY:ai,B:b,CH:\u00E7,D:d,DH:d,EH:e,ER:\u00F6,EY:ey,F:f,G:g,HH:h,IH:i,IY:i,JH:c,K:k,L:l,M:m,N:n,NG:ng,OW:o,OY:oi,P:p,R:r,S:s,SH:\u015F,T:t,TH:t,UH:u,UW:\u00FC,V:v,W:v,Y:y,Z:z,ZH:j',
     label: 'Turkish',
   },
   {
