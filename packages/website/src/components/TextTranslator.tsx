@@ -276,7 +276,17 @@ function StopIcon() {
 
 function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslatorProps) {
   const { format, toggleFormat } = useFormat();
-  const [englishText, setEnglishText] = useState(initialText);
+
+  // Foreign language state (declared early so initial sample can use it)
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
+  );
+
+  const [englishText, setEnglishText] = useState(() => {
+    if (initialText) {return initialText;}
+    if (selectedLanguage !== 'en') {return pickForeignSample(selectedLanguage, '') ?? '';}
+    return '';
+  });
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
   // When the user focuses the Ingglish pane, we auto-commit the forward translation.
@@ -290,11 +300,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
-
-  // Foreign language state
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
-  );
   const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
   const isForeignMode = selectedLanguage !== 'en';
