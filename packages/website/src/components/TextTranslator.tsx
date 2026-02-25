@@ -240,6 +240,9 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const [englishText, setEnglishText] = useState(initialText);
   const [ingglishText, setIngglishText] = useState('');
   const [lastEdited, setLastEdited] = useState<EditingPane>('english');
+  // When the user focuses the Ingglish pane, we auto-commit the forward translation.
+  // Track this value so we can skip reverse translation until the user actually edits.
+  const committedIngglish = useRef<null | string>(null);
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
@@ -321,6 +324,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   }, [deferredEnglish, lastEdited, format, isForeignMode, foreignDict, selectedLanguage]);
 
   // Async reverse translation with useEffect
+  // Skip when the Ingglish text is the auto-committed forward translation (no user edits yet)
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
   useEffect(() => {
     if (isForeignMode) {
@@ -329,6 +333,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     }
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
+      return;
+    }
+    // Don't reverse-translate the auto-committed value — the original English is still correct
+    if (deferredIngglish === committedIngglish.current) {
       return;
     }
     let cancelled = false;
@@ -361,11 +369,13 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     : displayIngglish;
 
   const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    committedIngglish.current = null;
     setEnglishText(e.target.value);
     setLastEdited('english');
   }, []);
 
   const handleIngglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    committedIngglish.current = null;
     setIngglishText(e.target.value);
     setLastEdited('ingglish');
   }, []);
@@ -582,6 +592,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               onFocus={
                 lastEdited === 'english' && computedIngglish !== null
                   ? () => {
+                      committedIngglish.current = computedIngglish;
                       setIngglishText(computedIngglish);
                       setLastEdited('ingglish');
                     }

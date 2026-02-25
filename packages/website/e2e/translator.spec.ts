@@ -550,6 +550,114 @@ test.describe('Text Translator', () => {
     await expect(englishInput).not.toBeEmpty();
   });
 
+  test('English pane does not flicker when focusing Ingglish pane', async () => {
+    // Load sample text
+    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
+
+    const englishInput = page.locator('textarea.text-input').first();
+    const ingglishInput = page.locator('textarea.text-input').last();
+
+    // Wait for translation to complete
+    await expect(ingglishInput).not.toBeEmpty();
+
+    const englishBefore = await englishInput.inputValue();
+    expect(englishBefore.length).toBeGreaterThan(0);
+
+    // Install a frame-level monitor on BOTH panes' textarea values and overlay visibility
+    await page.evaluate(() => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
+      const left = document.querySelector('.input-section:first-child')!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
+      const right = document.querySelector('.input-section:last-child')!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
+      const leftTA = left.querySelector('textarea')!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
+      const rightTA = right.querySelector('textarea')!;
+      const elements = { left, leftTA, right, rightTA };
+      const snapshots: {
+        leftHasOverlay: boolean;
+        leftValue: string;
+        rightHasOverlay: boolean;
+        rightValue: string;
+      }[] = [];
+      let stopped = false;
+      function poll() {
+        const leftOverlay = elements.left.querySelector('.overlay-textarea-display');
+        const rightOverlay = elements.right.querySelector('.overlay-textarea-display');
+        snapshots.push({
+          leftHasOverlay: leftOverlay !== null && leftOverlay.children.length > 0,
+          leftValue: elements.leftTA.value,
+          rightHasOverlay: rightOverlay !== null && rightOverlay.children.length > 0,
+          rightValue: elements.rightTA.value,
+        });
+        if (!stopped) {
+          requestAnimationFrame(poll);
+        }
+      }
+      requestAnimationFrame(poll);
+      (globalThis as unknown as Record<string, unknown>).__flickerMonitor = {
+        snapshots,
+        stop: () => {
+          stopped = true;
+        },
+      };
+    });
+
+    // Focus the Ingglish input (triggers the lastEdited flip)
+    await ingglishInput.focus();
+
+    // Wait a few frames for any flicker to occur
+    await page.waitForTimeout(300);
+
+    // Stop monitor and collect results
+    const result = await page.evaluate(() => {
+      const monitor = (globalThis as unknown as Record<string, unknown>).__flickerMonitor as {
+        snapshots: {
+          leftHasOverlay: boolean;
+          leftValue: string;
+          rightHasOverlay: boolean;
+          rightValue: string;
+        }[];
+        stop: () => void;
+      };
+      monitor.stop();
+      const { snapshots } = monitor;
+      const leftEmpty = snapshots.filter((s) => s.leftValue.trim() === '').length;
+      const leftOverlayDropped = snapshots.filter((s) => !s.leftHasOverlay).length;
+      const rightEmpty = snapshots.filter((s) => s.rightValue.trim() === '').length;
+      const rightOverlayDropped = snapshots.filter((s) => !s.rightHasOverlay).length;
+      const leftUniqueValues = [...new Set(snapshots.map((s) => s.leftValue))];
+      const rightUniqueValues = [...new Set(snapshots.map((s) => s.rightValue))];
+      return {
+        frames: snapshots.length,
+        leftEmpty,
+        leftOverlayDropped,
+        leftUniqueValues,
+        rightEmpty,
+        rightOverlayDropped,
+        rightUniqueValues,
+      };
+    });
+
+    console.log(
+      `Flicker monitor: ${String(result.frames)} frames | ` +
+        `left: ${String(result.leftEmpty)} empty, ${String(result.leftOverlayDropped)} overlay-dropped, ${String(result.leftUniqueValues.length)} unique | ` +
+        `right: ${String(result.rightEmpty)} empty, ${String(result.rightOverlayDropped)} overlay-dropped, ${String(result.rightUniqueValues.length)} unique`
+    );
+
+    // Neither pane's text should ever be empty during the focus transition
+    expect(result.leftEmpty).toBe(0);
+    expect(result.rightEmpty).toBe(0);
+
+    // Neither pane's overlay should disappear (would cause a flash of invisible text)
+    expect(result.leftOverlayDropped).toBe(0);
+    expect(result.rightOverlayDropped).toBe(0);
+
+    // Neither pane's value should change (stable content = no flicker)
+    expect(result.leftUniqueValues).toHaveLength(1);
+    expect(result.rightUniqueValues).toHaveLength(1);
+  });
+
   test('reverse translation works', async () => {
     const ingglishInput = page.locator('textarea.text-input').last();
     const englishInput = page.locator('textarea.text-input').first();
