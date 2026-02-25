@@ -770,9 +770,15 @@ const stripAccents = stripDiacritics;
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
 
+/** Sentence-ending punctuation (Latin and CJK) */
+const SENTENCE_END_RE = /[.!?。！？]$/;
+
 /**
  * Translates foreign text to the specified output format.
  * Words not found in the dictionary are returned with a marker prefix.
+ *
+ * For caseless scripts (Arabic, Japanese, Chinese, Korean), sentence-initial
+ * words are automatically capitalized in the output.
  *
  * @param lang Optional language code for language-specific IPA overrides
  */
@@ -782,6 +788,8 @@ export function translateForeign(
   format: OutputFormat = 'ingglish',
   lang?: string
 ): string {
+  let atSentenceStart = true;
+
   return normalizeApostrophes(text)
     .split(WHITESPACE_SPLIT_RE)
     .map((segment) => {
@@ -813,8 +821,17 @@ export function translateForeign(
         return segment;
       }
 
-      const casePattern = detectCasePattern(core);
+      let casePattern = detectCasePattern(core);
       const preservesCase = getFormatPreservesCase(format);
+
+      // For caseless scripts, capitalize sentence-initial words
+      if (atSentenceStart && preservesCase && casePattern === 'lower' && isCaselessWord(core)) {
+        casePattern = 'capitalized';
+      }
+
+      // Update sentence tracking: sentence ends after . ! ? 。 ！ ？
+      atSentenceStart = SENTENCE_END_RE.test(trailing.join(''));
+
       const ipa = lookupIpa(dict, core, lang);
       if (ipa) {
         const translated = ipaToFormat(ipa, format, lang);
@@ -856,4 +873,13 @@ export function translateForeign(
       return NOT_FOUND_MARKER + segment;
     })
     .join('');
+}
+
+/**
+ * Check if a word's first character belongs to a caseless script
+ * (e.g. Arabic, Japanese, Chinese, Korean) where toUpperCase === toLowerCase.
+ */
+function isCaselessWord(word: string): boolean {
+  const ch = word[0];
+  return ch !== undefined && ch.toUpperCase() === ch.toLowerCase();
 }

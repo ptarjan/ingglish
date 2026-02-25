@@ -94,6 +94,56 @@ describe('translateForeign', () => {
     expect(result).toBe(result.toUpperCase());
   });
 
+  it('capitalizes sentence-initial words from caseless scripts', () => {
+    // Japanese: first word should be capitalized even though source has no case
+    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/' };
+    const result = translateForeign('あった いた', jaDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    const words = result.split(' ');
+    // First word capitalized
+    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
+    // Second word lowercase
+    expect(words[1]![0]).toBe(words[1]![0]!.toLowerCase());
+  });
+
+  it('capitalizes after sentence-ending punctuation in caseless scripts', () => {
+    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/' };
+    const result = translateForeign('あった。 いた', jaDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    // Both words should be capitalized (second is after 。)
+    const words = result.split(/\s+/);
+    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase()); // "Atta。" -> first char 'A'
+    expect(words[1]![0]).toBe(words[1]![0]!.toUpperCase());
+  });
+
+  it('capitalizes Arabic sentence-initial words', () => {
+    const result = translateForeign('مرحبا', dict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    // Should start with uppercase
+    expect(result[0]).toBe(result[0]!.toUpperCase());
+  });
+
+  it('does not capitalize mid-sentence caseless words', () => {
+    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/', その: '/sono/' };
+    const result = translateForeign('あった いた その', jaDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    const words = result.split(' ');
+    // First capitalized, rest lowercase
+    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
+    expect(words[1]![0]).toBe(words[1]![0]!.toLowerCase());
+    expect(words[2]![0]).toBe(words[2]![0]!.toLowerCase());
+  });
+
+  it('does not double-capitalize Latin-script words (already cased)', () => {
+    const deDict: IpaDict = { guten: '/ɡuːtən/', morgen: '/mɔʁɡən/' };
+    // lowercase German — should stay lowercase (source has case info)
+    const result = translateForeign('guten morgen', deDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    const words = result.split(' ');
+    expect(words[0]![0]).toBe(words[0]![0]!.toLowerCase());
+    expect(words[1]![0]).toBe(words[1]![0]!.toLowerCase());
+  });
+
   it('applies default last-syllable stress when IPA has no stress markers', () => {
     // French "bonjour" /bɔ̃ʒuʁ/ — no stress markers in IPA
     // Guide should capitalize the last syllable (French stress rule)
