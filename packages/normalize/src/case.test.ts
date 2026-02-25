@@ -39,6 +39,16 @@ describe('case-utils', () => {
       expect(detectCasePattern('McDonald')).toBe('mixed');
       expect(detectCasePattern('hElLo')).toBe('mixed');
     });
+
+    it('should handle accented uppercase letters (Unicode)', () => {
+      expect(detectCasePattern('Ég')).toBe('capitalized');
+      expect(detectCasePattern('Über')).toBe('capitalized');
+      expect(detectCasePattern('Ölaf')).toBe('capitalized');
+      expect(detectCasePattern('ég')).toBe('lower');
+      expect(detectCasePattern('über')).toBe('lower');
+      expect(detectCasePattern('ÉG')).toBe('capitalized'); // 2-letter initialism
+      expect(detectCasePattern('ÜBER')).toBe('upper');
+    });
   });
 
   describe('applyCasePattern', () => {

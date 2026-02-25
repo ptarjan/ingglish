@@ -57,8 +57,11 @@ export function detectCasePattern(word: string): CasePattern {
 
   // Fast path: check first character to quickly identify lowercase words
   // Most English text is lowercase, so this avoids expensive string operations
-  const firstChar = word.codePointAt(0)!;
-  const isFirstUpper = firstChar >= 65 && firstChar <= 90; // A-Z
+  const firstCode = word.codePointAt(0)!;
+  const firstChar = word[0]!;
+  const isFirstUpper =
+    (firstCode >= 65 && firstCode <= 90) || // A-Z (fast ASCII path)
+    (firstCode > 127 && firstChar !== firstChar.toLowerCase()); // Unicode (É, Ö, etc.)
 
   // All lowercase - most common case
   if (!isFirstUpper && word === word.toLowerCase()) {
@@ -85,13 +88,14 @@ export function detectCasePattern(word: string): CasePattern {
   }
 
   // Capitalized: first uppercase, rest all lowercase
-  // Use charCode loop to avoid creating two temporary strings from slice(1)
   if (isFirstUpper) {
     let restIsLower = true;
     for (let i = 1; i < word.length; i++) {
       const c = word.codePointAt(i)!;
-      if (c >= 65 && c <= 90) {
-        // A-Z
+      if (
+        (c >= 65 && c <= 90) || // A-Z
+        (c > 127 && word[i] !== word[i]!.toLowerCase()) // Unicode
+      ) {
         restIsLower = false;
         break;
       }
