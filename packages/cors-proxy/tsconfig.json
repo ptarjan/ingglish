@@ -1,13 +1,13 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
     "module": "ES2022",
-    "moduleResolution": "bundler",
-    "lib": ["ES2023"],
     "types": ["@cloudflare/workers-types"],
-    "strict": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false
   },
   "include": ["src/**/*.ts"]
 }

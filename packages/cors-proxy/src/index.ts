@@ -188,7 +188,7 @@ export default {
       if (upstreamCacheControl !== null) {
         const maxAgeMatch = /max-age=(\d+)/.exec(upstreamCacheControl);
         if (maxAgeMatch) {
-          cacheSeconds = Math.max(Number.parseInt(maxAgeMatch[1], 10), MIN_CACHE_SECONDS);
+          cacheSeconds = Math.max(Number.parseInt(maxAgeMatch[1]!, 10), MIN_CACHE_SECONDS);
         }
       }
       const cacheControl = `public, max-age=${cacheSeconds}`;
