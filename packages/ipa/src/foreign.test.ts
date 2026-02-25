@@ -116,6 +116,13 @@ describe('translateForeign', () => {
     expect(parts[1]).toBe(parts[1]!.toUpperCase());
   });
 
+  it('normalizes curly apostrophes in input text', () => {
+    const frDict: IpaDict = { homme: '/ɔm/', "l'": '/l/' };
+    // U+2019 right single quotation mark in input
+    const result = translateForeign('l\u2019homme', frDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+  });
+
   it('finds words after stripping accents', () => {
     const esDict: IpaDict = { barrabas: '/baraβas/' };
     const result = translateForeign('Barrabás', esDict);

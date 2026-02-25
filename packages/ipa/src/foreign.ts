@@ -1,4 +1,9 @@
-import { applyCasePattern, detectCasePattern, stripDiacritics } from '@ingglish/normalize';
+import {
+  applyCasePattern,
+  detectCasePattern,
+  normalizeApostrophes,
+  stripDiacritics,
+} from '@ingglish/normalize';
 import {
   arpabetToFormat,
   arpabetToIngglish,
@@ -777,7 +782,7 @@ export function translateForeign(
   format: OutputFormat = 'ingglish',
   lang?: string
 ): string {
-  return text
+  return normalizeApostrophes(text)
     .split(WHITESPACE_SPLIT_RE)
     .map((segment) => {
       // Preserve whitespace segments as-is
