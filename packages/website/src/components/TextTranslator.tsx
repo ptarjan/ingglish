@@ -28,6 +28,7 @@ export const OUTPUT_PLACEHOLDERS: Record<string, string> = {
 interface ForeignOutputDisplayProps {
   dictLoading: boolean;
   format: string;
+  onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
   spokenWordIndex: null | number;
@@ -43,6 +44,7 @@ interface TextTranslatorProps {
 function ForeignOutputDisplay({
   dictLoading,
   format,
+  onHoverWord,
   onScroll,
   scrollRef,
   spokenWordIndex,
@@ -70,7 +72,12 @@ function ForeignOutputDisplay({
   const segments = text.split(/(\s+)/);
   let wordIndex = 0;
   return (
-    <div className="text-input foreign-output" onScroll={onScroll} ref={scrollRef}>
+    <div
+      className="text-input foreign-output"
+      onMouseLeave={onHoverWord ? () => { onHoverWord(null); } : undefined}
+      onScroll={onScroll}
+      ref={scrollRef}
+    >
       {segments.map((seg, i) => {
         if (/^\s+$/.test(seg)) {
           return <span key={i}>{seg}</span>;
@@ -83,6 +90,7 @@ function ForeignOutputDisplay({
             <span
               className={`word-token foreign-not-found${spoken}`}
               key={i}
+              onMouseEnter={onHoverWord ? () => { onHoverWord(idx); } : undefined}
               title="Not found in dictionary"
             >
               {word}
@@ -90,7 +98,11 @@ function ForeignOutputDisplay({
           );
         }
         return (
-          <span className={`word-token${spoken}`} key={i}>
+          <span
+            className={`word-token${spoken}`}
+            key={i}
+            onMouseEnter={onHoverWord ? () => { onHoverWord(idx); } : undefined}
+          >
             {seg}
           </span>
         );
@@ -112,16 +124,20 @@ function isAllCaps(text: string): boolean {
  * and visibly in the overlay, keeping them in sync.
  */
 function OverlayTextarea({
+  highlightedWordIndex = null,
   onChange,
   onFocus,
+  onHoverWord,
   onScroll,
   placeholder,
   scrollRef,
   spokenWordIndex,
   text,
 }: {
+  highlightedWordIndex?: null | number;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
+  onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   placeholder?: string;
   scrollRef: React.Ref<HTMLTextAreaElement>;
@@ -141,6 +157,7 @@ function OverlayTextarea({
 
   const segments = text.split(/(\s+)/);
   let wordIndex = 0;
+  const hoverable = !!onHoverWord;
   return (
     <div className="overlay-textarea">
       <textarea
@@ -154,14 +171,24 @@ function OverlayTextarea({
         value={text}
       />
       {text.trim() && (
-        <div className="overlay-textarea-display text-input" ref={overlayRef}>
+        <div
+          className={`overlay-textarea-display text-input ${hoverable ? 'hoverable' : ''}`}
+          onMouseLeave={hoverable ? () => { onHoverWord(null); } : undefined}
+          ref={overlayRef}
+        >
           {segments.map((seg, i) => {
             if (/^\s+$/.test(seg)) {
               return <span key={i}>{seg}</span>;
             }
             const idx = wordIndex++;
+            const isHighlighted = idx === highlightedWordIndex;
+            const isSpoken = idx === spokenWordIndex;
             return (
-              <span className={`word-token ${idx === spokenWordIndex ? 'spoken' : ''}`} key={i}>
+              <span
+                className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
+                key={i}
+                onMouseEnter={hoverable ? () => { onHoverWord(idx); } : undefined}
+              >
                 {seg}
               </span>
             );
@@ -218,6 +245,9 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const [copiedShare, shareUrl] = useShare();
   const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount, hasVoice] =
     useSpeech();
+
+  // Cross-pane word highlighting: hover on right → highlight on left
+  const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
 
   // Foreign language state
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -488,6 +518,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             </div>
           </div>
           <OverlayTextarea
+            highlightedWordIndex={hoveredWordIndex}
             onChange={handleEnglishChange}
             onFocus={
               !isForeignMode && lastEdited === 'ingglish' && computedEnglish !== null
@@ -537,6 +568,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             <ForeignOutputDisplay
               dictLoading={dictLoading}
               format={format}
+              onHoverWord={setHoveredWordIndex}
               onScroll={() => {
                 handleScroll('ingglish');
               }}
@@ -555,6 +587,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                     }
                   : undefined
               }
+              onHoverWord={setHoveredWordIndex}
               onScroll={() => {
                 handleScroll('ingglish');
               }}
