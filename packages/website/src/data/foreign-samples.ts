@@ -295,12 +295,73 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
     },
     {
-      label: 'De reiziger — A journey through the Netherlands',
-      text: 'De reiziger zat alleen in de trein naar het noorden van het land. Buiten het raam bewogen de velden langzaam voorbij, groen en vlak tot aan de horizon, met hier en daar een molen die draaide in de wind.',
+      // https://lesned.net/wp-content/uploads/2020/01/harry-mulisch-de-aanslag.pdf
+      label: 'Harry Mulisch — De Aanslag',
+      text: 'Aan een kade, die over een lengte van honderd meter langs het water liep en dan met een flauwe bocht weer een gewone straat werd, stonden vier huizen niet ver van elkaar. Elk omgeven door een tuin hadden zij met hun kleine balkons, erkers en torentjes iets gemeenschappelijks.',
     },
     {
-      label: 'Proverb: East west, home best',
-      text: 'Oost west thuis best',
+      // https://www.dbnl.org/tekst/coup002stil01_01/coup002stil01_01_0001.php
+      label: 'Louis Couperus — De Stille Kracht',
+      text: 'De volle maan, tragisch dien avond, was reeds vroeg, nog in den laatsten dagschemer opgerezen als een immense, bloedroze bol, vlamde als een zonsondergang laag achter de tamarindeboomen der Lange Laan en steeg, langzaam zich louterende van hare tragische tint, in een vagen hemel op.',
+    },
+    {
+      // https://adoc.pub/gerard-van-het-reve-de-avonden.html
+      label: 'Gerard Reve — De Avonden',
+      text: 'Het was nog donker, toen in de vroege morgen van de tweeëntwintigste december 1946 in onze stad, op de eerste verdieping van het huis Schilderskade 66, de held van deze geschiedenis, Frits van Egters, ontwaakte.',
+    },
+    {
+      // https://www.let.leidenuniv.nl/Dutch/Ceneton/VondelGysbreght1637.html
+      label: 'Joost van den Vondel — Gysbreght van Aemstel',
+      text: 'Het hemelsche gerecht heeft zich ten lange lesten erbarremt over my, en mijn benaeuwde vesten, en arme burgery; en op mijn volcx gebed, en dagelix geschrey, de bange stad ontzet.',
+    },
+    {
+      // https://www.royal-house.nl/topics/national-anthem/music-lyrics-and-customs
+      label: 'Wilhelmus — Nederlands volkslied',
+      text: 'Wilhelmus van Nassouwe ben ik van Duitsen bloed, den vaderland getrouwe blijf ik tot in den dood. Een Prinse van Oranje ben ik vrij onverveerd, den Koning van Hispanje heb ik altijd geëerd.',
+    },
+    {
+      // https://www.let.rug.nl/usa/documents/before-1600/plakkaat-van-verlatinghe-1581-july-26.php
+      label: 'Plakkaat van Verlatinghe (1581)',
+      text: 'Allen dengenen die dese tegenwoordighe sullen sien ofte hooren lesen, saluyt. Alsoo een yegelick kennelick is, dat een Prince van den lande van Godt gestelt is hooft over zijne ondersaten, om deselve te bewaren ende beschermen van alle onrecht, overlast ende ghewelt.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Oeroeg
+      label: 'Hella Haasse — Oeroeg',
+      text: 'Oeroeg was mijn vriend. Ik herinner mij hem als een kleine bruine jongen met de scherpste zwarte ogen die ik ooit bij een kind gezien heb. Wij groeiden samen op in het bergland van West-Java.',
+    },
+    {
+      // https://www.dbnl.org/titels/titel.php?id=schm001pluk01
+      label: 'Annie M.G. Schmidt — Pluk van de Petteflet',
+      text: 'Pluk had een klein rood kraanwagentje. Hij reed ermee door de hele stad en zocht naar een huis om in te wonen. Af en toe stopte hij en keek omhoog naar de hoge huizen.',
+    },
+    {
+      // https://www.ganzenweide.nl/Home/Lijmen_het_Been_files/Lijmen%20Het%20Been.pdf
+      label: 'Willem Elsschot — Lijmen',
+      text: 'Nu ja, lijmen. De mensen bepraten en dan doen tekenen. Hij was knap in zijn vak, dat moet ik hem nageven, en hij kon een steen een hart onder de riem praten.',
+    },
+    {
+      // https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00431.php
+      label: 'Harry Mulisch — De Ontdekking van de Hemel',
+      text: 'Er waren twee engelen in gesprek. Zij bevonden zich niet in de hemel maar ook niet op aarde; zij waren nergens. Het was volkomen donker, zo donker dat er zelfs geen duisternis was.',
+    },
+    {
+      // https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00513.php
+      label: 'Cees Nooteboom — Rituelen',
+      text: 'Op de dag dat Inni Wintrop zelfmoord pleegde stonden de aandelen Philips op 149,60. Heeft dat iets met elkaar te maken? Misschien wel. De koers mag dan later gezakt zijn, hijzelf is nooit meer zo hoog gekomen.',
+    },
+    {
+      // https://tatoeba.org/en/sentences/show/381332
+      label: 'Nederlandse spreekwoorden',
+      text: 'Al is de leugen nog zo snel, de waarheid achterhaalt haar wel. Wie het kleine niet eert, is het grote niet weerd. De morgenstond heeft goud in de mond. Wie een kuil graaft voor een ander, valt er zelf in.',
+    },
+    {
+      // https://nl.wikipedia.org/wiki/De_donkere_kamer_van_Damokles
+      label: 'W.F. Hermans — De Donkere Kamer van Damocles',
+      text: 'Henri Osewoudt woonde in Voorschoten en was twaalf jaar toen zijn moeder zijn vader vermoordde. Het scheermes waarmee zij het deed was heel scherp, want zijn vader was kapper van beroep.',
+    },
+    {
+      label: 'De reiziger — A journey through the Netherlands',
+      text: 'De reiziger zat alleen in de trein naar het noorden van het land. Buiten het raam bewogen de velden langzaam voorbij, groen en vlak tot aan de horizon, met hier en daar een molen die draaide in de wind.',
     },
   ],
   pt: [
@@ -310,20 +371,89 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       text: 'Não sou nada. Nunca serei nada. Não posso querer ser nada. À parte isso, tenho em mim todos os sonhos do mundo.',
     },
     {
-      label: 'Saudade — The untranslatable emotion',
-      text: 'Saudade coração amor alma esperança tristeza alegria solidão silêncio suspiro lágrima abraço ternura paixão desejo devoção encanto lembrança harmonia sinfonia madrugada',
+      // https://www.escritas.org/pt/t/1552/x-mar-portugues
+      label: 'Pessoa — Mar Português',
+      text: 'Ó mar salgado, quanto do teu sal são lágrimas de Portugal! Por te cruzarmos, quantas mães choraram, quantos filhos em vão rezaram! Quantas noivas ficaram por casar para que fosses nosso, ó mar! Valeu a pena? Tudo vale a pena se a alma não é pequena. Quem quer passar além do Bojador tem que passar além da dor. Deus ao mar o perigo e o abismo deu, mas nele é que espelhou o céu.',
     },
     {
-      label: 'Camões — Os Lusíadas themes',
-      text: 'Armas barões assinalados lusitana ocidental mares navegados passaram além oceano horizonte tempestade estrela marinheiro capitão bandeira explorador descoberta conquista',
+      // http://arquivopessoa.net/textos/1463
+      label: 'Pessoa (Alberto Caeiro) — O Guardador de Rebanhos, II',
+      text: 'O meu olhar é nítido como um girassol. Tenho o costume de andar pelas estradas olhando para a direita e para a esquerda, e de vez em quando olhando para trás… E o que vejo a cada momento é aquilo que nunca antes eu tinha visto, e eu sei dar por isso muito bem… Sinto-me nascido a cada momento para a eterna novidade do Mundo…',
     },
     {
-      label: 'Fado — Portuguese soul music',
-      text: 'Fado guitarra canção poesia poeta escritor artista verdade beleza coragem mistério saudade coração aldeia praça catedral azulejo madrugada',
+      // https://oslusiadas.org/i/
+      label: 'Camões — Os Lusíadas, Canto I',
+      text: 'As armas e os barões assinalados, que da ocidental praia Lusitana, por mares nunca de antes navegados, passaram ainda além da Taprobana, em perigos e guerras esforçados, mais do que prometia a força humana, e entre gente remota edificaram novo Reino, que tanto sublimaram.',
     },
     {
-      label: 'Brazilian and Portuguese history',
-      text: 'Guerra vitória batalha herói revolução nasceu morreu viveu cantou lutou sonhou começou azul negro dourado vermelho antigo profundo belo pequeno oceano horizonte',
+      // https://machadodeassis.net/texto/memorias-postumas-de-bras-cubas/5985
+      label: 'Machado de Assis — Memórias Póstumas de Brás Cubas',
+      text: 'Algum tempo hesitei se devia abrir estas memórias pelo princípio ou pelo fim, isto é, se poria em primeiro lugar o meu nascimento ou a minha morte. Suposto o uso vulgar seja começar pelo nascimento, duas considerações me levaram a adotar diferente método: a primeira é que eu não sou propriamente um autor defunto, mas um defunto autor, para quem a campa foi outro berço.',
+    },
+    {
+      // https://machadodeassis.net/texto/dom-casmurro/11503
+      label: 'Machado de Assis — Dom Casmurro',
+      text: 'Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao pé de mim, falou da Lua e dos ministros, e acabou recitando-me versos. A viagem era curta, e os versos pode ser que não fossem inteiramente maus.',
+    },
+    {
+      // https://professordiegodelpasso.wordpress.com/wp-content/uploads/2016/05/ensaio-sobre-a-cegueira1.pdf
+      label: 'Saramago — Ensaio sobre a Cegueira',
+      text: 'O disco amarelo iluminou-se. Dois dos automóveis da frente aceleraram antes que o sinal vermelho aparecesse. Na passadeira de peões surgiu o desenho do homem verde. A gente que esperava começou a atravessar a rua pisando as faixas brancas pintadas na capa negra do asfalto, não há nada que menos se pareça com uma zebra, porém assim lhe chamam.',
+    },
+    {
+      // https://armazemdetexto.blogspot.com/2025/02/romance-memorial-do-convento-capi.html
+      label: 'Saramago — Memorial do Convento',
+      text: 'D. João, quinto do nome na tabela real, irá esta noite ao quarto de sua mulher, D. Maria Ana Josefa, que chegou há mais de dois anos da Áustria para dar infantes à coroa portuguesa e até hoje ainda não emprenhou.',
+    },
+    {
+      // https://www.curso-objetivo.br/vestibular/assets/download/obras-literarias/eca-de-queiros/os-maias.pdf
+      label: 'Eça de Queirós — Os Maias',
+      text: 'A casa que os Maias vieram habitar em Lisboa, no outono de 1875, era conhecida na vizinhança da rua de S. Francisco de Paula, e em todo o bairro das Janelas Verdes, pela casa do Ramalhete ou simplesmente o Ramalhete.',
+    },
+    {
+      // https://www.citador.pt/poemas/ser-poeta-florbela-de-alma-conceicao-espanca
+      label: 'Florbela Espanca — Ser Poeta',
+      text: 'Ser Poeta é ser mais alto, é ser maior do que os homens! Morder como quem beija! É ser mendigo e dar como quem seja Rei do Reino de Aquém e de Além Dor! É ter de mil desejos o esplendor e não saber sequer que se deseja! É ter cá dentro um astro que flameja, é ter garras e asas de condor!',
+    },
+    {
+      // https://www.culturagenial.com/poema-e-agora-jose-carlos-drummond-de-andrade/
+      label: 'Carlos Drummond de Andrade — José',
+      text: 'E agora, José? A festa acabou, a luz apagou, o povo sumiu, a noite esfriou, e agora, José? e agora, você? você que é sem nome, que zomba dos outros, você que faz versos, que ama, protesta? e agora, José?',
+    },
+    {
+      // https://www.viniciusdemoraes.com.br/br/poesia/texto/106/soneto-de-fidelidade
+      label: 'Vinícius de Moraes — Soneto de Fidelidade',
+      text: 'De tudo, ao meu amor serei atento antes, e com tal zelo, e sempre, e tanto que mesmo em face do maior encanto dele se encante mais meu pensamento. Quero vivê-lo em cada vão momento e em louvor hei de espalhar meu canto e rir meu riso e derramar meu pranto ao seu pesar ou seu contentamento.',
+    },
+    {
+      // https://www.culturagenial.com/analise-poema-vou-me-embora-pra-pasargada-manuel-bandeira/
+      label: 'Manuel Bandeira — Vou-me Embora pra Pasárgada',
+      text: 'Vou-me embora pra Pasárgada, lá sou amigo do rei. Lá tenho a mulher que eu quero na cama que escolherei. Vou-me embora pra Pasárgada, aqui eu não sou feliz. Lá a existência é uma aventura de tal modo inconsequente que Joana a Louca de Espanha, rainha e falsa demente, vem a ser contraparente da nora que nunca tive.',
+    },
+    {
+      // https://www.ileel.ufu.br/lexicoSertanista/arquivos/43b0ce78-34a9-461d-b8c5-55ee0b0e5528_Grande%20Sert%C3%A3o%20Veredas.pdf
+      label: 'Guimarães Rosa — Grande Sertão: Veredas',
+      text: 'Nonada. Tiros que o senhor ouviu foram de briga de homem não, Deus esteja. Alvejei mira em árvore, no quintal, no baixo do córrego. Por meu acerto. Todo dia isso faço, gosto; desde mal em minha mocidade.',
+    },
+    {
+      // https://www.escritas.org/pt/t/1505/retrato
+      label: 'Cecília Meireles — Retrato',
+      text: 'Eu não tinha este rosto de hoje, assim calmo, assim triste, assim magro, nem estes olhos tão vazios, nem o lábio amargo. Eu não tinha estas mãos sem força, tão paradas e frias e mortas; eu não tinha este coração que nem se mostra. Eu não dei por esta mudança, tão simples, tão certa, tão fácil: em que espelho ficou perdida a minha face?',
+    },
+    {
+      // http://claricelispector.blogspot.com/2008/04/hora-da-estrela-1-parte.html
+      label: 'Clarice Lispector — A Hora da Estrela',
+      text: 'Tudo no mundo começou com um sim. Uma molécula disse sim a outra molécula e nasceu a vida. Mas antes da pré-história havia a pré-história da pré-história e havia o nunca e havia o sim. Sempre houve. Não sei o quê, mas sei que o universo jamais começou.',
+    },
+    {
+      // https://jornal.usp.br/cultura/em-terra-sonambula-poesia-se-eleva-de-ruinas-materiais-e-espirituais/
+      label: 'Mia Couto — Terra Sonâmbula',
+      text: 'Naquele lugar, a guerra tinha morto a estrada. Pelos caminhos só as hienas se arrastavam, focinhando entre cinzas e poeiras. A paisagem se mestiçara de tristezas nunca vistas, em cores que se pegavam à boca. Eram cores sujas, tão sujas que tinham perdido toda a leveza, esquecidas da ousadia de levantar asas pelo azul.',
+    },
+    {
+      // https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm
+      label: 'Constituição da República Federativa do Brasil — Preâmbulo',
+      text: 'Nós, representantes do povo brasileiro, reunidos em Assembleia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias.',
     },
   ],
   ro: [
@@ -364,6 +494,76 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
       // https://runeberg.org/berling/i01.html
       label: 'Lagerlöf — Gösta Berlings saga',
       text: 'Till slut stod han framför folk i kyrka. Han var ung och hög och vacker. Han hade djup blick och fast haka. Allt hos honom var fint och full av eld.',
+    },
+    {
+      // https://hejsweden.com/en/swedish-national-anthem-lyrics-swedish-english/
+      label: 'Du gamla, du fria — Sveriges nationalsång',
+      text: 'Du gamla, du fria, du fjällhöga nord, du tysta, du glädjerika sköna! Jag hälsar dig, vänaste land uppå jord, din sol, din himmel, dina ängder gröna. Du tronar på minnen från fornstora dar, då ärat ditt namn flög över jorden.',
+    },
+    {
+      // https://www.textalk.se/klassisk-svensk-litteratur/Hjalmar-Soderberg-Doktor-Glas.html
+      label: 'Hjalmar Söderberg — Doktor Glas',
+      text: 'Jag har aldrig sett en sådan sommar. Rötmånadshetta sedan i mitten av maj. Hela dagen står ett tjockt töcken av damm alldeles stilla över gatorna och torgen.',
+    },
+    {
+      // https://www.lyrikline.org/en/poems/romanska-bagar-7605
+      label: 'Tomas Tranströmer — Romanska bågar',
+      text: 'Inne i den väldiga romanska kyrkan trängdes turisterna i halvmörkret. Valv gapande bakom valv och ingen överblick. Några ljuslågor fladdrade. En ängel utan ansikte omfamnade mig och viskade genom hela kroppen: Skäms inte för att du är människa, var stolt!',
+    },
+    {
+      // https://www.karinboye.se/verk/dikter/dikter/i-rorelse.shtml
+      label: 'Karin Boye — I rörelse',
+      text: 'Den mätta dagen, den är aldrig störst. Den bästa dagen är en dag av törst. Nog finns det mål och mening i vår färd, men det är vägen, som är mödan värd. Bryt upp, bryt upp! Den nya dagen gryr. Oändligt är vårt stora äventyr.',
+    },
+    {
+      // https://www.lyrikline.org/en/poems/schubertiana-7604
+      label: 'Tomas Tranströmer — Schubertiana',
+      text: 'I kvällsmörkret på en plats utanför New York, en utsiktspunkt där man med en enda blick kan omfatta åtta miljoner människors hem. Jättestaden där borta är en lång flimrande driva, en spiralgalax från sidan.',
+    },
+    {
+      // https://sv.wikipedia.org/wiki/Dvärgen
+      label: 'Pär Lagerkvist — Dvärgen',
+      text: 'Jag är tjugosex tum lång, välvuxen och väl proportionerad, min stora hjässa har det ädlaste omfång. Mitt ansikte är ädelt och värdigt, fast de flesta tycker det är fult.',
+    },
+    {
+      // https://litteraturbanken.se/txt/lb999200147/lb999200147.pdf
+      label: 'August Strindberg — Fadren',
+      text: 'Kort och gott: är du far till barnet eller inte? Hur ska en kunna veta det? Vad för slag? Kan du inte veta det? Nej, si det kan en då aldrig veta.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Carl_Michael_Bellman
+      label: 'Carl Michael Bellman — Fjäriln vingad syns på Haga',
+      text: 'Fjäriln vingad syns på Haga, mellan dimmors frost och dun, sig sitt gröna skjul tillaga, och i blomman, sin paulun. Minsta kräk i kärr och syra, nyss av solens värma väckt, till en ny högtidlig yra eldas vid Zephyrens fläkt.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Faceless_Killers
+      label: 'Henning Mankell — Mördare utan ansikte',
+      text: 'Han vaknade av att telefonen ringde. Han tittade på klockan på nattduksbordet innan han svarade. Kvart över fem. Ett samtal vid den här tiden betyder alltid att det har hänt något.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/The_Girl_with_the_Dragon_Tattoo
+      label: 'Stieg Larsson — Män som hatar kvinnor',
+      text: 'Det var en kall fredagskväll i november. Henrik Vanger hade just fyllt åttiotvå år. Han satt i sin arbetsrum i det stora huset på Hedeby-ön och väntade som varje år på ett telefonsamtal som han visste aldrig skulle komma.',
+    },
+    {
+      // https://www.gutenberg.org/ebooks/11940 (Moberg)
+      label: 'Vilhelm Moberg — Utvandrarna',
+      text: 'Det var tunga tider i Ljuder socken. Nöden var stor bland de små bönderna och torpen gick inte att bruka. Karl Oskar Nilsson hade fyra små barn och en hustru som hette Kristina, och alla gick hungriga.',
+    },
+    {
+      // https://svenskadikter.com/Gustaf_Fröding
+      label: 'Gustaf Fröding — En morgondröm',
+      text: 'Jag drömde en morgon en underbar dröm, om sommar och sol, om en blommande ström, om ängar och lundar och fågelsång, och sällsam musik med förunderlig klang.',
+    },
+    {
+      // https://en.wikipedia.org/wiki/Erik_Axel_Karlfeldt
+      label: 'Erik Axel Karlfeldt — Fridolins lustgård',
+      text: 'Längtan heter min arvedel, gåvan av min faders ätt, bittert löje och sorgsen fest, sorgsen fest och bittert löje, eld som tär sitt eget bränsle, fåfäng väntan, fåfäng färd.',
+    },
+    {
+      // https://www.skaparportalen.se/post/300-svenska-ordspråk-och-talesätt
+      label: 'Svenska ordspråk',
+      text: 'Den som väntar på något gott väntar aldrig för länge. Bättre sent än aldrig. Övning ger färdighet. Den som gapar efter mycket mister ofta hela stycket. Borta bra men hemma bäst.',
     },
   ],
   sw: [
