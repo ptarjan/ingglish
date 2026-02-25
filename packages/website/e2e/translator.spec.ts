@@ -565,14 +565,10 @@ test.describe('Text Translator', () => {
 
     // Install a frame-level monitor on BOTH panes' textarea values and overlay visibility
     await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
-      const left = document.querySelector('.input-section:first-child')!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
-      const right = document.querySelector('.input-section:last-child')!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
-      const leftTA = left.querySelector('textarea')!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- elements guaranteed to exist
-      const rightTA = right.querySelector('textarea')!;
+      const left = document.querySelector('.input-section:first-child') as HTMLElement;
+      const right = document.querySelector('.input-section:last-child') as HTMLElement;
+      const leftTA = left.querySelector('textarea') as HTMLTextAreaElement;
+      const rightTA = right.querySelector('textarea') as HTMLTextAreaElement;
       const elements = { left, leftTA, right, rightTA };
       const snapshots: {
         leftHasOverlay: boolean;

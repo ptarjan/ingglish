@@ -24,6 +24,10 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      // Conflicts with no-non-null-assertion: one says "use !" and the other forbids it
+      '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+    },
   },
   {
     files: ['packages/*/src/**/*.{ts,tsx}'],
