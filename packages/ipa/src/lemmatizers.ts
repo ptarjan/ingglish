@@ -3,6 +3,7 @@ import type { IpaDict } from './foreign';
 export type Lemmatizer = (dict: IpaDict, word: string) => string | undefined;
 
 export const LEMMATIZERS: Partial<Record<string, Lemmatizer>> = {
+  fi: lemmatizeFi,
   ro: lemmatizeRo,
   sv: lemmatizeSv,
   sw: lemmatizeSw,
@@ -285,6 +286,207 @@ function lemmatizeSw(dict: IpaDict, word: string): string | undefined {
         const candidate = stem + r;
         if (dict[candidate]) {
           return dict[candidate];
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Finnish
+// ---------------------------------------------------------------------------
+
+/**
+ * Finnish suffix stripping rules. Finnish is highly agglutinative with
+ * 15 grammatical cases, possessive suffixes, and verb conjugations.
+ * Ordered longest-first for greedy matching.
+ */
+const FI_SUFFIXES: [string, string[]][] = [
+  // Possessive + case combinations
+  ['ssani', ['', 'nen']],
+  ['ssäni', ['', 'nen']],
+  ['llani', ['', 'nen']],
+  ['lläni', ['', 'nen']],
+  ['stani', ['', 'nen']],
+  ['stäni', ['', 'nen']],
+  ['ssaan', ['', 'nen']],
+  ['ssään', ['', 'nen']],
+  // Plural case endings (4+ chars)
+  ['issa', ['', 'a']],
+  ['issä', ['', 'ä']],
+  ['illa', ['', 'a']],
+  ['illä', ['', 'ä']],
+  ['ista', ['', 'a']],
+  ['istä', ['', 'ä']],
+  ['ihin', ['', 'i']],
+  ['ojen', ['o']],
+  ['ujen', ['u']],
+  ['yjen', ['y']],
+  ['iden', ['i']],
+  ['jen', ['']],
+  // Inessive -ssa/-ssä
+  ['ssa', ['', 's']],
+  ['ssä', ['', 's']],
+  // Elative -sta/-stä
+  ['sta', ['', 's']],
+  ['stä', ['', 's']],
+  // Adessive -lla/-llä
+  ['lla', ['', 'a']],
+  ['llä', ['', 'ä']],
+  // Ablative -lta/-ltä
+  ['lta', ['', 'a']],
+  ['ltä', ['', 'ä']],
+  // Allative -lle
+  ['lle', ['', 'i']],
+  // Essive -na/-nä
+  ['na', ['', 'nen']],
+  ['nä', ['', 'nen']],
+  // Translative -ksi
+  ['ksi', ['', 'si']],
+  // Possessive -ni, -si, -nsa/-nsä, -mme, -nne
+  ['nsa', ['']],
+  ['nsä', ['']],
+  ['mme', ['']],
+  ['nne', ['']],
+  ['ni', ['', 'n']],
+  ['si', ['', 's']],
+  // Partitive -a/-ä, -ta/-tä, -tta/-ttä
+  ['tta', ['']],
+  ['ttä', ['']],
+  ['ta', ['', 'nen']],
+  ['tä', ['', 'nen']],
+  // Genitive -n, plural -t
+  ['en', ['', 'i']],
+  ['ot', ['o']],
+  ['ut', ['u']],
+  ['yt', ['y']],
+  ['ät', ['ä']],
+  ['at', ['a']],
+  ['et', ['e', 'i']],
+  // Verb past -i
+  ['oi', ['o', 'oa']],
+  ['ui', ['u', 'ua']],
+  // General fallbacks
+  ['a', ['']],
+  ['ä', ['']],
+  ['n', ['']],
+  ['t', ['']],
+];
+
+/**
+ * Finnish verb suffix patterns including archaic Kalevala forms.
+ */
+const FI_VERB_SUFFIXES: [string, string[]][] = [
+  // Archaic Kalevala -(tt)elevi/-(tt)avi patterns
+  ['ttelevi', ['tella', 'della']],
+  ['televi', ['tella', 'della']],
+  ['ttavi', ['ttaa', 'tää']],
+  ['ttevi', ['ttää', 'ttaa']],
+  ['elevi', ['ella', 'ellä']],
+  ['alevi', ['alla', 'allä']],
+  ['evi', ['', 'a', 'ä']],
+  ['avi', ['', 'a', 'aa']],
+  ['ovi', ['', 'o', 'oa']],
+  ['uvi', ['', 'u', 'ua']],
+  // Past participle -nut/-nyt, -neet
+  ['neet', ['', 'a', 'ä']],
+  ['nut', ['', 'a', 'da']],
+  ['nyt', ['', 'ä', 'dä']],
+  // Present participle -va/-vä
+  ['va', ['', 'a']],
+  ['vä', ['', 'ä']],
+  // Past tense 3rd person
+  ['tui', ['tua', 'tyä']],
+  ['lui', ['la', 'lä']],
+  // Conditional
+  ['isi', ['', 'a', 'ä']],
+  // Agent noun -ja/-jä
+  ['ja', ['', 'a']],
+  ['jä', ['', 'ä']],
+];
+
+/** Apply Finnish consonant gradation (strong → weak). */
+function applyFiGradation(stem: string): string {
+  if (stem.endsWith('nt')) {return stem.slice(0, -2) + 'nn';}
+  if (stem.endsWith('lt')) {return stem.slice(0, -2) + 'll';}
+  if (stem.endsWith('rt')) {return stem.slice(0, -2) + 'rr';}
+  if (stem.endsWith('nk')) {return stem.slice(0, -2) + 'ng';}
+  if (stem.endsWith('mp')) {return stem.slice(0, -2) + 'mm';}
+  if (stem.endsWith('lk')) {return stem.slice(0, -2) + 'l';}
+  if (stem.endsWith('rk')) {return stem.slice(0, -2) + 'r';}
+  if (stem.endsWith('hk')) {return stem.slice(0, -2) + 'h';}
+  return stem;
+}
+
+/** Apply Finnish consonant strengthening (weak → strong). */
+function applyFiStrengthening(stem: string): string {
+  if (stem.endsWith('nn')) {return stem.slice(0, -2) + 'nt';}
+  if (stem.endsWith('ll')) {return stem.slice(0, -2) + 'lt';}
+  if (stem.endsWith('rr')) {return stem.slice(0, -2) + 'rt';}
+  if (stem.endsWith('ng')) {return stem.slice(0, -2) + 'nk';}
+  if (stem.endsWith('mm')) {return stem.slice(0, -2) + 'mp';}
+  return stem;
+}
+
+function lemmatizeFi(dict: IpaDict, word: string): string | undefined {
+  // Try verb suffixes first (longest matches)
+  for (const [suffix, replacements] of FI_VERB_SUFFIXES) {
+    if (word.length > suffix.length + 1 && word.endsWith(suffix)) {
+      const stem = word.slice(0, -suffix.length);
+      const candidates = replacements.map((r) => stem + r);
+      const ipa = tryLookup(dict, ...candidates);
+      if (ipa) {
+        return ipa;
+      }
+    }
+  }
+
+  // Try nominal case/possessive suffixes
+  for (const [suffix, replacements] of FI_SUFFIXES) {
+    if (word.length > suffix.length + 1 && word.endsWith(suffix)) {
+      const stem = word.slice(0, -suffix.length);
+      const candidates = replacements.map((r) => stem + r);
+      const ipa = tryLookup(dict, ...candidates);
+      if (ipa) {
+        return ipa;
+      }
+      // Try consonant gradation (strong→weak and weak→strong)
+      if (stem.length >= 2) {
+        const gradated = applyFiGradation(stem);
+        if (gradated !== stem) {
+          const gradIpa = tryLookup(dict, ...replacements.map((r) => gradated + r));
+          if (gradIpa) {
+            return gradIpa;
+          }
+        }
+        const strengthened = applyFiStrengthening(stem);
+        if (strengthened !== stem) {
+          const strIpa = tryLookup(dict, ...replacements.map((r) => strengthened + r));
+          if (strIpa) {
+            return strIpa;
+          }
+        }
+      }
+    }
+  }
+
+  // Two-level: strip possessive then try suffix stripping on remainder
+  for (const poss of ['ni', 'si', 'nsa', 'nsä', 'mme', 'nne'] as const) {
+    if (word.endsWith(poss) && word.length > poss.length + 2) {
+      const inner = word.slice(0, -poss.length);
+      if (dict[inner]) {
+        return dict[inner];
+      }
+      // Try suffix stripping on the inner form (one level only)
+      for (const [suffix, replacements] of FI_SUFFIXES) {
+        if (inner.length > suffix.length + 1 && inner.endsWith(suffix)) {
+          const stem = inner.slice(0, -suffix.length);
+          const ipa = tryLookup(dict, ...replacements.map((r) => stem + r));
+          if (ipa) {
+            return ipa;
+          }
         }
       }
     }
