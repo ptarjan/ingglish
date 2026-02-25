@@ -33,6 +33,7 @@ html {
 }
 
 :root {
+  color-scheme: light;
   --color-bg: #fafafa;
   --color-surface: #ffffff;
   --color-surface-hover: #f0f0f0;
@@ -53,6 +54,7 @@ html {
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
   --color-bg: #0f0f0f;
   --color-surface: #1a1a1a;
   --color-surface-hover: #252525;

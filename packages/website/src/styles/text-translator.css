@@ -40,6 +40,11 @@
   border-color: var(--color-primary);
 }
 
+[data-theme='dark'] .language-select option {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
 .translator-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
