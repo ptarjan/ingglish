@@ -325,14 +325,15 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     };
   }, [selectedLanguage, isForeignMode]);
 
-  // Reset panes when switching languages
+  // Reset panes when switching languages; auto-load a sample for foreign languages
   const handleLanguageChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const lang = e.target.value;
       stopEnglish();
       setSelectedLanguage(lang);
       localStorage.setItem('selectedLanguage', lang);
-      setEnglishText('');
+      const sample = lang === 'en' ? undefined : pickForeignSample(lang, '');
+      setEnglishText(sample ?? '');
       setIngglishText('');
       setLastEdited('english');
     },
