@@ -32,6 +32,9 @@ const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
 };
 
+// Pre-computed to avoid Object.entries() allocation on every call
+const ARPABET_ALTERNATIVES_ENTRIES = Object.entries(ARPABET_ALTERNATIVES);
+
 /**
  * Generates alternative ARPAbet sequences for ambiguous spellings.
  *
@@ -57,7 +60,7 @@ export function expandArpabetAlternatives(arpabet: string[]): string[][] {
   // All-replaced variant for same-length (1:1) alternatives like AE→AH.
   // Needed when a word has multiple ambiguous vowels (e.g., "difficult"
   // has two AH0→'a', so both AE positions must be replaced to match).
-  for (const [phoneme, alts] of Object.entries(ARPABET_ALTERNATIVES)) {
+  for (const [phoneme, alts] of ARPABET_ALTERNATIVES_ENTRIES) {
     for (const alt of alts) {
       if (alt.length === 1) {
         let count = 0;

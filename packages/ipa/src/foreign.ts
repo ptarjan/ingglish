@@ -1,4 +1,4 @@
-import { applyCasePattern, detectCasePattern } from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern, stripDiacritics  } from '@ingglish/normalize';
 import {
   arpabetToFormat,
   arpabetToIngglish,
@@ -9,6 +9,14 @@ import {
 import type { OutputFormat } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+
+// Pre-compiled regexes (avoid per-call RegExp object creation)
+const IPA_SLASH_RE = /^\/|\/$/g;
+const WHITESPACE_SPLIT_RE = /(\s+)/;
+const WHITESPACE_RE = /^\s+$/;
+const LEADING_NON_LETTER_RE = /^\P{L}/u;
+const TRAILING_NON_LETTER_RE = /\P{L}$/u;
+const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
 export type IpaDict = Record<string, string>;
 
@@ -102,7 +110,7 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
  * Strips slashes and syllable dots before conversion.
  */
 export function ipaToIngglish(ipa: string): string {
-  const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
+  const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
   const arpabet = ipaToArpabet(clean);
   return arpabetToIngglish(arpabet);
 }
@@ -154,16 +162,14 @@ function getIpaOverride(lang: string, word: string): string | undefined {
  * a regular consonant (e.g. Korean 사랑 → "sarang" not "sarrang").
  */
 function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
-  const clean = ipa.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
+  const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
   const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
   const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
   return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
 /** Strip combining diacritics (accents, tildes, etc.) from a string. */
-function stripAccents(s: string): string {
-  return s.normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '');
-}
+const stripAccents = stripDiacritics;
 
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
@@ -181,10 +187,10 @@ export function translateForeign(
   lang?: string
 ): string {
   return text
-    .split(/(\s+)/)
+    .split(WHITESPACE_SPLIT_RE)
     .map((segment) => {
       // Preserve whitespace segments as-is
-      if (/^\s+$/.test(segment)) {
+      if (WHITESPACE_RE.test(segment)) {
         return segment;
       }
       if (!segment) {
@@ -197,12 +203,12 @@ export function translateForeign(
       let core = segment;
 
       // Peel off leading non-letter characters (Unicode-aware so Arabic/CJK aren't stripped)
-      while (core.length > 0 && /^\P{L}/u.test(core)) {
+      while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
         leading.push(core[0]!);
         core = core.slice(1);
       }
       // Peel off trailing non-letter characters
-      while (core.length > 0 && /\P{L}$/u.test(core)) {
+      while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
         trailing.unshift(core.at(-1)!);
         core = core.slice(0, -1);
       }
@@ -221,7 +227,7 @@ export function translateForeign(
       }
 
       // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
-      const parts = core.split(/(?<=['-])|(?=['-])/);
+      const parts = core.split(CONTRACTION_SPLIT_RE);
       if (parts.length > 1) {
         const translated = parts.map((part, i) => {
           if (part === "'" || part === '-') {

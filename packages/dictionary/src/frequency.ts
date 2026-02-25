@@ -129,11 +129,12 @@ const NUMERIC_REGEX = /\d/;
  * Used for sorting homophones by likelihood.
  */
 export function scoreWord(word: string): number {
-  const frequency = getWordFrequency(word);
+  const lower = word.toLowerCase();
+  const frequency = loader.isLoaded() ? loader.get().map.get(lower) : undefined;
 
   // Boost common contractions - they're usually more common than their
   // homophones (e.g., "won't" vs archaic "wont")
-  const isCommonContraction = COMMON_CONTRACTIONS.has(word.toLowerCase());
+  const isCommonContraction = COMMON_CONTRACTIONS.has(lower);
 
   if (frequency !== undefined) {
     // Common contractions get a boost since SUBTLEX often underrepresents them
