@@ -113,6 +113,12 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
     const ssTitle = ssLower.charAt(0).toUpperCase() + ssLower.slice(1);
     return dict[ssLower] ?? dict[ssTitle];
   }
+  // Some dicts use curly apostrophes (U+2019) — try matching if word has straight ones
+  if (word.includes("'")) {
+    const curly = word.replaceAll("'", '\u2019');
+    const curlyLower = curly.toLowerCase();
+    return dict[curly] ?? dict[curlyLower];
+  }
   return undefined;
 }
 

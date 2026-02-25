@@ -1,6 +1,5 @@
 import type { IpaDict } from '@ingglish/ipa';
 import { LANGUAGES } from '@ingglish/ipa';
-import { normalizeApostrophes } from '@ingglish/normalize';
 
 export type { IpaDict } from '@ingglish/ipa';
 export { LANGUAGES, lookupIpa } from '@ingglish/ipa';
@@ -23,20 +22,7 @@ export async function loadDict(code: string): Promise<IpaDict> {
   if (!response.ok) {
     throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);
   }
-  const raw = (await response.json()) as IpaDict;
-  const dict = normalizeDictKeys(raw);
+  const dict = (await response.json()) as IpaDict;
   cache.set(code, dict);
   return dict;
-}
-
-/**
- * Normalize dictionary keys so curly apostrophes (common in German IPA dict)
- * match straight apostrophes from user input.
- */
-function normalizeDictKeys(dict: IpaDict): IpaDict {
-  const normalized: IpaDict = {};
-  for (const key of Object.keys(dict)) {
-    normalized[normalizeApostrophes(key)] = dict[key]!;
-  }
-  return normalized;
 }

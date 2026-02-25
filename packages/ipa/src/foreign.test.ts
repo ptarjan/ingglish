@@ -173,6 +173,13 @@ describe('translateForeign', () => {
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
+  it('matches straight apostrophes against curly-apostrophe dict keys', () => {
+    // German dict has curly apostrophe keys (U+2019)
+    const deDict: IpaDict = { homme: '/ɔm/', 'l\u2019': '/l/' };
+    const result = translateForeign("l'homme", deDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+  });
+
   it('finds words after stripping accents', () => {
     const esDict: IpaDict = { barrabas: '/baraβas/' };
     const result = translateForeign('Barrabás', esDict);
