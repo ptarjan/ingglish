@@ -679,6 +679,63 @@ test.describe('Text Translator', () => {
     const value = await ingglishInput.inputValue();
     expect(value.length).toBeGreaterThan(0);
   });
+
+  test('hovering output word highlights corresponding input word', async () => {
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('hello world');
+
+    // Wait for translation overlay to render
+    const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
+    await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
+
+    // Hover over the first word in the output overlay
+    await outputOverlay.locator('.word-token').first().hover();
+
+    // The first word in the INPUT overlay should get the highlighted class
+    const inputOverlay = page.locator('.input-section .overlay-textarea-display');
+    await expect(inputOverlay.locator('.word-token').first()).toHaveClass(/highlighted/);
+
+    // The second word in the input should NOT be highlighted
+    await expect(inputOverlay.locator('.word-token').nth(1)).not.toHaveClass(/highlighted/);
+  });
+
+  test('hovering input word highlights corresponding output word', async () => {
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('hello world');
+
+    // Wait for output overlay to render
+    const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
+    await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
+
+    // Hover over the second word in the input overlay
+    const inputOverlay = page.locator('.input-section .overlay-textarea-display');
+    await inputOverlay.locator('.word-token').nth(1).hover();
+
+    // The second word in the OUTPUT overlay should get the highlighted class
+    await expect(outputOverlay.locator('.word-token').nth(1)).toHaveClass(/highlighted/);
+
+    // The first word in the output should NOT be highlighted
+    await expect(outputOverlay.locator('.word-token').first()).not.toHaveClass(/highlighted/);
+  });
+
+  test('highlight clears when mouse leaves pane', async () => {
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('hello world');
+
+    const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
+    await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
+
+    // Hover a word to activate highlight
+    await outputOverlay.locator('.word-token').first().hover();
+    const inputOverlay = page.locator('.input-section .overlay-textarea-display');
+    await expect(inputOverlay.locator('.word-token').first()).toHaveClass(/highlighted/);
+
+    // Move mouse away from the pane (hover the header)
+    await page.locator('.header').hover();
+
+    // Highlight should be cleared
+    await expect(inputOverlay.locator('.word-token.highlighted')).toHaveCount(0);
+  });
 });
 
 test.describe('Tab Navigation', () => {
