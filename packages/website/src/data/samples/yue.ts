@@ -73,7 +73,7 @@ export const yue: ForeignSample[] = [
   },
   {
     // Mencius (traditional)
-    label: '孟子 — 盡心篇',
+    label: '孟子 — 告子下',
     text: '天 將 降 大 任 於 是 人 也 必 先 苦 其 心 志 勞 其 筋 骨 餓 其 體 膚 空 乏 其 身 行 拂 亂 其 所 為 所 以 動 心 忍 性 曾 益 其 所 不 能',
   },
   {

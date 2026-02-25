@@ -47,29 +47,29 @@ export const sw: ForeignSample[] = [
     text: 'Watu wote ni sawa na kila mtu ana haki ya heshima. Serikali ya wananchi ni serikali ya watu wote. Kazi ni msingi wa maendeleo na kila mtu ana wajibu wa kufanya kazi.',
   },
   {
-    // https://hapozamanizakale.or.tz/
-    label: 'Hadithi za Kiswahili — Hapo zamani za kale',
-    text: 'Hapo zamani za kale alikuwepo mfanyabiashara ambaye aliheshimika kama mfalme wa mji. Alikuwa na watoto saba na aliwapenda sana. Aliwaambia watoto wake kuwa tabia njema ndiyo utajiri wa kweli.',
+    // https://www2.gwu.edu/~erpapers/humanrights/udhr/lang/swa.htm
+    label: 'UDHR — Tamko la Haki za Binadamu, Ibara ya 26',
+    text: 'Kila mtu ana haki ya kupata elimu. Elimu itatolewa bure, angalau katika hatua za msingi na za mwanzo. Elimu ya msingi itakuwa ya lazima.',
   },
   {
-    // https://afrika.univie.ac.at/fileadmin/user_upload/i_afrika/Swahili/nach_kinjeketile.pdf
-    label: 'Ebrahim Hussein — Kinjeketile',
-    text: 'Watu wa nchi hii wamechoka na dhulma. Tumesimama pamoja kupigania uhuru wetu. Maji haya ni dawa ya nguvu na yatatulinda dhidi ya maadui zetu.',
+    // https://swahiliproverbs.afrst.illinois.edu/
+    label: 'Methali za Kiswahili — Ujasiri',
+    text: 'Baada ya dhiki faraja. Asiyekubali kushindwa si mshindani. Haba na haba hujaza kibaba. Maji yaliyomwagika hayazoleki.',
   },
   {
     // https://www.bu.edu/africa/forstudents/alp/lang-teaching-resources/african-proverbs-project/kiswahili-proverbs/
     label: 'Methali za Kiswahili — Umoja',
-    text: 'Umoja ni nguvu na utengano ni udhaifu. Fimbo moja haimvunji nyoka. Weka pesa na ujibane leo kwa faida ya kesho. Mtu ni watu, na mtu mmoja si mtu.',
+    text: 'Umoja ni nguvu na utengano ni udhaifu. Kidole kimoja hakivunji chawa. Mti mmoja hauenezi msitu. Mgeni siku mbili siku ya tatu mpe jembe.',
   },
   {
-    // https://www.juliusnyerere.org/resources/quotes
-    label: 'Nyerere — Elimu na Uhuru',
-    text: 'Elimu si kujaza ndoo bali ni kuwasha moto. Watu walioelimika wana wajibu wa kutumia elimu yao kwa ajili ya wengine. Uhuru na kazi ni mambo mawili yanayoenda pamoja.',
+    // https://www2.gwu.edu/~erpapers/humanrights/udhr/lang/swa.htm
+    label: 'UDHR — Tamko la Haki za Binadamu, Ibara ya 18-19',
+    text: 'Kila mtu ana haki ya uhuru wa kufikiri, dhamiri na dini. Kila mtu ana haki ya uhuru wa kutoa maoni yake. Haki hii inajumuisha uhuru wa kuwa na maoni bila kuingiliwa.',
   },
   {
-    // https://www.thecitizen.co.tz
-    label: 'Shaaban Robert — Kiswahili',
-    text: 'Lugha yetu ni tunu na ni urithi wetu mkubwa. Kiswahili ni chombo cha umoja kwa watu wa Afrika Mashariki. Tunawajibika kuilinda na kuiendeleza lugha yetu kwa vizazi vijavyo.',
+    // https://swahiliproverbs.afrst.illinois.edu/
+    label: 'Methali za Kiswahili — Busara',
+    text: 'Akili ni nywele kila mtu ana zake. Mwenye pupa hadiriki kula tamu. Asiyesikia la mkuu huvunjika guu. Dawa ya moto ni moto.',
   },
   {
     // https://en.wikipedia.org/wiki/M.S._Mohamed

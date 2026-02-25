@@ -2,12 +2,12 @@ import type { ForeignSample } from './types';
 
 export const fr: ForeignSample[] = [
   {
-    // https://www.gutenberg.org/ebooks/13256
+    // https://en.wikipedia.org/wiki/The_Stranger_(Camus_novel)
     label: "Camus — L'Étranger",
     text: "Aujourd'hui, maman est morte. Ou peut-être hier, je ne sais pas. J'ai reçu un télégramme de l'asile: Mère décédée. Enterrement demain. Sentiments distingués. Cela ne veut rien dire. C'était peut-être hier. L'asile de vieillards est à Marengo, à quatre-vingts kilomètres d'Alger. Je prendrai l'autobus à deux heures et j'arriverai dans l'après-midi.",
   },
   {
-    // https://www.gutenberg.org/ebooks/51058
+    // https://en.wikipedia.org/wiki/The_Little_Prince
     label: 'Saint-Exupéry — Le Petit Prince',
     text: "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait Histoires Vécues. Ça représentait un serpent boa qui avalait un fauve. J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin.",
   },
@@ -112,7 +112,7 @@ export const fr: ForeignSample[] = [
     text: "Ah! non! c'est un peu court, jeune homme! On pouvait dire... oh! Dieu!... bien des choses en somme. Descriptif: C'est un roc!... c'est un pic!... c'est un cap! Que dis-je, c'est un cap?... C'est une péninsule!",
   },
   {
-    // http://www.toutmoliere.net/acte-2,405364.html
+    // https://fr.wikisource.org/wiki/Le_Bourgeois_gentilhomme
     label: 'Molière — Le Bourgeois gentilhomme',
     text: "Quoi! quand je dis: «Nicole, apportez-moi mes pantoufles, et me donnez mon bonnet de nuit», c'est de la prose? Par ma foi! il y a plus de quarante ans que je dis de la prose sans que j'en susse rien, et je vous suis le plus obligé du monde de m'avoir appris cela.",
   },

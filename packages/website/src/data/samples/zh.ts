@@ -75,7 +75,7 @@ export const zh: ForeignSample[] = [
   },
   {
     // https://ctext.org/mengzi
-    label: '孟子 — 尽心篇',
+    label: '孟子 — 告子下',
     text: '天 将 降 大 任 于 是 人 也 必 先 苦 其 心 志 劳 其 筋 骨 饿 其 体 肤 空 乏 其 身 行 拂 乱 其 所 为 所 以 动 心 忍 性 曾 益 其 所 不 能',
   },
   {

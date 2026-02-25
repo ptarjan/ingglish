@@ -12,9 +12,9 @@ export const nl: ForeignSample[] = [
     text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
   },
   {
-    // https://lesned.net/wp-content/uploads/2020/01/harry-mulisch-de-aanslag.pdf
+    // https://www.scholieren.com/verslag/boekverslag-nederlands-de-aanslag-door-harry-mulisch-76058
     label: 'Harry Mulisch — De Aanslag',
-    text: 'Aan een kade, die over een lengte van honderd meter langs het water liep en dan met een flauwe bocht weer een gewone straat werd, stonden vier huizen niet ver van elkaar. Elk omgeven door een tuin hadden zij met hun kleine balkons, erkers en torentjes iets gemeenschappelijks.',
+    text: 'Ver, ver weg in de tweede wereldoorlog woonde een zekere Anton Steenwijk met zijn ouders en zijn broer aan de rand van Haarlem. Aan een kade, die over een lengte van honderd meter langs het water liep en dan met een flauwe bocht weer een gewone straat werd, stonden vier huizen niet ver van elkaar.',
   },
   {
     // https://www.dbnl.org/tekst/coup002stil01_01/coup002stil01_01_0001.php
@@ -42,9 +42,9 @@ export const nl: ForeignSample[] = [
     text: 'Allen dengenen die dese tegenwoordighe sullen sien ofte hooren lesen, saluyt. Alsoo een yegelick kennelick is, dat een Prince van den lande van Godt gestelt is hooft over zijne ondersaten, om deselve te bewaren ende beschermen van alle onrecht, overlast ende ghewelt.',
   },
   {
-    // https://en.wikipedia.org/wiki/Oeroeg
+    // https://literatuurmuseum.nl/nl/ontdek-online/literatuurlab/online-exposities/hella-haasse/oeroeg-1948
     label: 'Hella Haasse — Oeroeg',
-    text: 'Oeroeg was mijn vriend. Ik herinner mij hem als een kleine bruine jongen met de scherpste zwarte ogen die ik ooit bij een kind gezien heb. Wij groeiden samen op in het bergland van West-Java.',
+    text: 'Oeroeg was mijn vriend. Als ik terugdenk aan mijn kindertijd en mijn jongensjaren, verschijnt zonder uitzondering het beeld van Oeroeg in mij, als was mijn herinnering gelijk aan een van die toverplaatjes die we vroeger plachten te kopen.',
   },
   {
     // https://www.dbnl.org/titels/titel.php?id=schm001pluk01
@@ -52,9 +52,9 @@ export const nl: ForeignSample[] = [
     text: 'Pluk had een klein rood kraanwagentje. Hij reed ermee door de hele stad en zocht naar een huis om in te wonen. Af en toe stopte hij en keek omhoog naar de hoge huizen.',
   },
   {
-    // https://www.ganzenweide.nl/Home/Lijmen_het_Been_files/Lijmen%20Het%20Been.pdf
+    // https://www.dbnl.org/tekst/_vla001192201_01/_vla001192201_01_0026.php
     label: 'Willem Elsschot — Lijmen',
-    text: 'Nu ja, lijmen. De mensen bepraten en dan doen tekenen. Hij was knap in zijn vak, dat moet ik hem nageven, en hij kon een steen een hart onder de riem praten.',
+    text: 'Nu ja, lijmen. De mensen bepraten en dan doen tekenen. En als zij getekend hebben, krijgen zij het ook werkelijk thuis.',
   },
   {
     // https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00431.php
@@ -73,7 +73,7 @@ export const nl: ForeignSample[] = [
   },
   {
     // https://nl.wikipedia.org/wiki/De_donkere_kamer_van_Damokles
-    label: 'W.F. Hermans — De Donkere Kamer van Damocles',
+    label: 'W.F. Hermans — De Donkere Kamer van Damokles',
     text: 'Henri Osewoudt woonde in Voorschoten en was twaalf jaar toen zijn moeder zijn vader vermoordde. Het scheermes waarmee zij het deed was heel scherp, want zijn vader was kapper van beroep.',
   },
   {

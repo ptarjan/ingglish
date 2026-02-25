@@ -1,5 +1,7 @@
 /** Word-level IPA overrides for Arabic. */
 export const ar: Record<string, string> = {
+  أحدا: '/ʔaˈħadan/', // anyone
+  أحدهما: '/ʔaħaduˈhumaː/', // one of them two
   أحرارا: '/ʔaħˈraːran/',
   أسخيليوس: '/ʔasxiːˈliːjuːs/', // Aeschylus
   أمهات: '/umːaˈhaːt/',
@@ -8,6 +10,8 @@ export const ar: Record<string, string> = {
   أورفليس: '/ʔurˈfaliːs/', // Orphalese (Gibran)
   أيديهم: '/ʔajˈdiːhim/',
   استيقظت: '/istajˈqaðˤtu/',
+  اسمه: '/ˈismuhu/', // his name
+  اعتزاله: '/iʕtiˈzaːlihi/', // his seclusion
   الأليفة: '/alʔaˈliːfah/',
   الحياة: '/alħaˈjaːh/',
   الخليفة: '/alxaˈliːfah/',
@@ -15,6 +19,7 @@ export const ar: Record<string, string> = {
   السماوات: '/asːamaːˈwaːt/',
   الضالين: '/adˤːaːˈliːn/',
   العالمين: '/alʕaːlaˈmiːn/',
+  العشرة: '/alˈʕaʃara/', // the ten
   الغربة: '/alˈɣurbah/',
   الغزاة: '/alɣuˈzaːh/',
   الكرامة: '/alkaˈraːmah/',
@@ -22,8 +27,11 @@ export const ar: Record<string, string> = {
   المصطفى: '/almusˈtˤafaː/',
   امرأة: '/imˈraʔah/',
   اهدنا: '/ihˈdinaː/',
+  بأوقافه: '/biʔawˈqaːfihi/', // with his endowments
   بإذنه: '/biʔiðˈnihi/',
+  بجزائر: '/bidʒaˈzaːʔir/', // with islands
   بداية: '/biˈdaːjah/',
+  بذي: '/biˈðiː/', // of importance
   بشيء: '/biˈʃajʔ/',
   بعضا: '/ˈbaʕdˤan/',
   بعضهم: '/baʕˈdˤuhum/',
@@ -51,12 +59,14 @@ export const ar: Record<string, string> = {
   زعموا: '/zaˈʕamuː/',
   زمانه: '/zaˈmaːnihi/',
   سادتي: '/saːˈdatiː/',
+  ساسان: '/saːˈsaːn/', // Sasanian dynasty
   سبعة: '/ˈsabʕah/',
   ستحمله: '/sataħˈmiluhu/',
   سفينته: '/saˈfiːnatuhu/',
   سكرة: '/ˈsakrah/',
   سنة: '/ˈsanah/',
   سنين: '/siˈniːn/',
+  شهريار: '/ʃahriˈjaːr/', // King Shahryar (1001 Nights)
   شيئا: '/ˈʃajʔan/',
   صغارها: '/sˤiˈɣaːruhaː/',
   طالعا: '/ˈtˤaːliʕan/',
@@ -69,6 +79,7 @@ export const ar: Record<string, string> = {
   عليك: '/ʕaˈlajka/',
   عليهم: '/ʕaˈlajhim/',
   عنده: '/ˈʕindahu/',
+  عنها: '/ʕanˈhaː/', // about it
   غيبة: '/ˈɣajbah/',
   فإن: '/faˈʔin/',
   فاسقني: '/fasˈqiniː/',
@@ -81,6 +92,7 @@ export const ar: Record<string, string> = {
   فيها: '/ˈfiːhaː/',
   قالت: '/ˈqaːlat/',
   قصة: '/ˈqisˤːah/',
+  قلت: '/ˈqultu/', // I said
   كتابات: '/kitaːˈbaːt/',
   كرسيه: '/kurˈsijːuhu/',
   لوهلة: '/liˈwahlah/',
@@ -93,10 +105,13 @@ export const ar: Record<string, string> = {
   نوما: '/ˈnawman/',
   هادما: '/ˈhaːdiman/',
   هوذا: '/haːˈðaː/',
+  وأعوان: '/waʔaʕˈwaːn/', // and followers
   وإنما: '/waʔinːaˈmaː/',
   وإياك: '/waʔijˈjaːka/',
   والسنة: '/wasːˈanah/',
+  والقال: '/walˈqaːl/', // and the talk
   والمحبة: '/walmaˈħabːah/',
+  وبشروطه: '/wabiʃuˈruːtihi/', // and his conditions
   وحكايات: '/waħikaːˈjaːt/',
   وشمأل: '/waʃaˈmaʔl/',
   وضعه: '/ˈwadˤʕihi/',
@@ -112,4 +127,5 @@ export const ar: Record<string, string> = {
   يحيطون: '/juħiːˈtˤuːn/',
   يضعه: '/jadˤaˈʕuhu/',
   يعاملوا: '/juˈʕaːmiluː/',
+  يهتموا: '/jahtamˈmuː/', // they cared
 };

@@ -2,8 +2,11 @@
 export const nl: Record<string, string> = {
   aandelen: '/ˈaːndələn/',
   achterhaalt: '/ˈɑxtərhaːlt/',
+  ademde: '/ˈaːdəmdə/', // past tense: breathed
+  alchemie: '/ɑlxəˈmi/',
   allen: '/ˈɑlən/',
   alsoo: '/ɑlˈsoː/', // archaic: thus
+  Anton: '/ˈɑntɔn/', // proper name
   balkons: '/bɑlˈkɔns/',
   bange: '/ˈbɑŋə/',
   benaeuwde: '/bəˈnaːudə/', // archaic: oppressed
@@ -20,6 +23,7 @@ export const nl: Record<string, string> = {
   dien: '/diːn/', // archaic dative: that
   draaide: '/ˈdraːidə/',
   duitsen: '/ˈdœytsən/', // archaic: German
+  eenvouds: '/ˈeːnvɑuts/', // archaic: simplicity
   eert: '/eːrt/',
   egters: '/ˈɛɣtərs/', // proper name
   engelen: '/ˈɛŋələn/',
@@ -39,6 +43,7 @@ export const nl: Record<string, string> = {
   graaft: '/ɣraːft/',
   groeiden: '/ˈɣruːidən/',
   grooten: '/ˈɣroːtən/', // archaic: great
+  Haarlem: '/ˈhaːrləm/', // city name
   had: '/hɑt/',
   hadden: '/ˈhɑdən/',
   hare: '/ˈhaːrə/', // archaic: her
@@ -63,6 +68,7 @@ export const nl: Record<string, string> = {
   lesen: '/ˈleːzən/', // archaic: lezen
   lesten: '/ˈlɛstən/', // archaic: last
   liep: '/lip/',
+  Louis: '/luˈi/', // French name in Dutch context
   louterende: '/ˈlɑutərɛndə/',
   mag: '/mɑx/',
   mensen: '/ˈmɛnsən/',
@@ -76,8 +82,11 @@ export const nl: Record<string, string> = {
   onze: '/ˈɔnzə/',
   opgerezen: '/ˈɔpɣəˌreːzən/',
   osewoudt: '/ˈoːzəˌwɑut/', // proper name (Hermans)
+  ouders: '/ˈɑudərs/',
   philips: '/ˈfilɪps/',
+  plachten: '/ˈplɑxtən/', // archaic: used to
   pleegde: '/ˈpleːɣdə/',
+  poëtische: '/poˈeːtɪsxə/',
   prince: '/ˈprɪnsə/', // archaic: prins
   prinse: '/ˈprɪnsə/', // archaic variant
   reed: '/reːt/',
@@ -86,17 +95,23 @@ export const nl: Record<string, string> = {
   sarphatistraat: '/sɑrˈfaːtistraːt/', // street name (Nescio)
   scherpste: '/ˈsxɛrpstə/',
   schilderskade: '/ˈsxɪldərsˌkaːdə/', // street name
+  Seynaeve: '/ˈsɛinaːvə/', // Belgian proper name
   sien: '/siːn/', // archaic: zien
   smalle: '/ˈsmɑlə/', // inflected: narrow
+  Steenwijk: '/ˈsteːnʋɛik/', // place name
   stonden: '/ˈstɔndən/',
   stopte: '/ˈstɔptə/',
   tamarindeboomen: '/taːmaːˈrɪndəˌboːmən/', // archaic: tamarind trees
   tegenwoordighe: '/ˈteːɣənˌwoːrdəɣə/', // archaic
+  terugdenk: '/təˈrʏxdɛŋk/', // compound: think back
   torentjes: '/ˈtoːrəntjəs/',
+  toverplaatjes: '/ˈtoːvərˌplaːtjəs/', // magic pictures
+  tracht: '/trɑxt/', // verb: try
   tragische: '/ˈtraːɣɪsxə/',
   valt: '/vɑlt/',
   velden: '/ˈvɛldən/',
   vermoordde: '/vərˈmoːrdə/',
+  verschijnt: '/vərˈsxɛint/', // appears
   vlamde: '/ˈvlɑmdə/',
   volcx: '/vɔlks/', // archaic: volks
   volle: '/ˈvɔlə/',
@@ -110,7 +125,9 @@ export const nl: Record<string, string> = {
   woonde: '/ˈwoːndə/',
   yegelick: '/ˈjeːɣəlɪk/', // archaic: iedereen
   zal: '/zɑl/',
+  zekere: '/ˈzeːkərə/', // a certain
   zijne: '/ˈzɛinə/', // archaic: zijn
   zocht: '/zɔxt/',
+  zuivere: '/ˈzœyvərə/', // pure (inflected)
   zulke: '/ˈzʏlkə/',
 };

@@ -6,8 +6,11 @@ export const is: Record<string, string> = {
   beytils: '/ˈpeiːtʰɪls/',
   Bjálfa: '/ˈpjaulva/',
   Bjarnar: '/ˈpjartnar/',
+  blót: '/plouːtʰ/', // sacrifice/ritual
   bóklaus: '/ˈpoukʰlœys/',
+  bréfberi: '/ˈprjɛːvpɛrɪ/', // letter carrier
   burlufóts: '/ˈpʏrtlʏfouts/',
+  eflaði: '/ˈɛplaðɪ/', // past tense: strengthened/performed
   ek: '/ɛkʰ/',
   fannhvítir: '/ˈfanːkvitʰɪr/',
   farandi: '/ˈfarantɪ/',
@@ -24,9 +27,13 @@ export const is: Record<string, string> = {
   hagsælda: '/ˈhaksailta/',
   hálftrölls: '/ˈhaulftrœtls/',
   Hallbjarnar: '/ˈhatlpjartnar/',
+  Hallfreðs: '/ˈhatlfrɛðs/', // genitive of Hallfreður
+  Hallfreður: '/ˈhatlfrɛðʏr/', // proper name
+  hárfagra: '/ˈhaurˌfaɣra/', // fair-haired (epithet)
   hersir: '/ˈhɛrsɪr/',
   hersis: '/ˈhɛrsɪs/',
   herskarar: '/ˈhɛrskʰarar/',
+  Hrafnkelsdal: '/ˈr̥apnkʰɛlstalr/', // place name
   Hreggviðsson: '/ˈr̥ɛkːvɪðsːɔn/',
   hrímhvíta: '/ˈr̥imkvitʰa/',
   Ívarssonar: '/ˈivarsːɔnar/',

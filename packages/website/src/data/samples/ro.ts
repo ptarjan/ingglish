@@ -59,7 +59,7 @@ export const ro: ForeignSample[] = [
   {
     // https://www.romanianvoice.com/poezii/poezii/scrisoarea3.php
     label: 'Eminescu — Scrisoarea III',
-    text: 'Mircea însuși mână-n luptă vijelia-ngrozitoare, care vine, vine, vine, calcă totul în picioare. Și-i lovesc pe doi pe-odată și câte doi răsar, și tot dau cu ghioagele ca-ntr-un părete de var.',
+    text: 'Mircea însuși mână-n luptă vijelia-ngrozitoare, care vine, vine, vine, calcă totul în picioare; ca potop ce prăpădește, ca o mare furtunoasă, peste-un ceas păgânătatea e ca pleava vânturată.',
   },
   {
     // https://www.ebacalaureat.ro/c/versuri-pastelul-miezul-iernii-de-vasile-alecsandri/82
@@ -74,7 +74,7 @@ export const ro: ForeignSample[] = [
   {
     // https://ro.wikisource.org/wiki/O_scrisoare_pierdută
     label: 'Caragiale — O scrisoare pierdută',
-    text: 'Ai carte, ai parte. Cetățeanul turmentat își dă votul cu inima curată. Industria națională, domnilor, este baza pe care putem clădi viitorul nostru.',
+    text: 'Industria română e admirabilă, e sublimă, putem zice, dar lipsește cu desăvârșire!',
   },
   {
     // https://en.wikipedia.org/wiki/The_Forbidden_Forest

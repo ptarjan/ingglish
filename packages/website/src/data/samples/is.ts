@@ -12,9 +12,9 @@ export const is: ForeignSample[] = [
     text: 'Deyr fé, deyja frændur, deyr sjálfur hinn sami. En orðstír deyr aldrei, sér góðan getur. Deyr fé, deyja frændur, deyr sjálfur hinn sami. Ég veit eitt að aldrei deyr, dómur um dauðan hvern.',
   },
   {
-    // https://en.wikiquote.org/wiki/Halld%C3%B3r_Laxness
-    label: 'Halldór Laxness — On becoming a writer',
-    text: 'Ég hef aldrei tekið mark á neinum öðrum en sjálfum mér og hefur mér aldrei dottið í hug að verða annað en skáld og rithöfundur frá fyrsta degi.',
+    // https://gljufrasteinn.is/is/halldor_laxness/vi_og_verk_halldors_kiljans_laxness/ritverk/slandsklukkan/
+    label: 'Halldór Laxness — Íslandsklukkan',
+    text: 'Hef ég drepið mann eða hef ég ekki drepið mann? Hver hefur drepið mann og hver hefur ekki drepið mann? Hvenær drepur maður mann og hvenær drepur maður ekki mann? Fari í helvíti sem ég drap mann. Og þó.',
   },
   {
     // https://sagadb.org/brennu-njals_saga.is (ch. 1)
@@ -72,9 +72,9 @@ export const is: ForeignSample[] = [
     text: 'Ó, guð vors lands! Ó, lands vors guð! Vér lofum þitt heilaga, heilaga nafn! Úr sólkerfum himnanna hnýta þér krans þínir herskarar, tímanna safn.',
   },
   {
-    // https://en.wikipedia.org/wiki/Laxness
-    label: 'Halldór Laxness — Íslandsklukkan',
-    text: 'Jón Hreggviðsson er kotbóndi á Rein við Öxará sem stendur á leið til alþingis. Hann var tekinn höndum fyrir að stela snæri úr konungseigninni og dæmdur til dauða.',
+    // https://sagadb.org/hrafnkels_saga_freysgoða.is
+    label: 'Hrafnkels saga Freysgoða — Opening',
+    text: 'Það var á dögum Haralds konungs hins hárfagra að maður bjó í Fljótsdal sem Hallfreður hét. Hann nam Hrafnkelsdal allan upp frá Lagarfljóti. Hrafnkell var sonur Hallfreðs. Hrafnkell reisti hof mikið og eflaði blót stór.',
   },
   {
     // https://en.wikipedia.org/wiki/The_Atom_Station
