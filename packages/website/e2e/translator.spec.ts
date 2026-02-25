@@ -267,6 +267,97 @@ test.describe('Web Vitals', () => {
     }
   });
 
+  test('overlay text aligns with textarea text on /text', async ({ page }) => {
+    await blockExternalNetwork(page);
+    await page.goto('/text');
+    await waitForAppLoad(page);
+
+    // Load sample text so there's content to compare
+    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
+    const englishInput = page.locator('textarea.text-input').first();
+    await expect(englishInput).not.toBeEmpty();
+
+    // Wait for overlay to render
+    await page.waitForTimeout(200);
+
+    // Compare character positions: get bounding rect of first word in overlay
+    // vs where that text would render in the textarea
+    const misalignment = await page.evaluate(() => {
+      const container = document.querySelector('.overlay-textarea');
+      if (!container) return { error: 'no container' };
+      const textarea = container.querySelector('textarea');
+      const overlay = container.querySelector('.overlay-textarea-display');
+      if (!textarea || !overlay) return { error: 'no textarea or overlay' };
+
+      // Create a temporary span in the textarea's position to measure where
+      // the textarea text starts. We use a mirror div approach.
+      const style = getComputedStyle(textarea);
+      const mirror = document.createElement('div');
+      mirror.style.position = 'absolute';
+      mirror.style.visibility = 'hidden';
+      mirror.style.whiteSpace = 'pre-wrap';
+      mirror.style.overflowWrap = 'break-word';
+      // Copy all relevant text-layout properties
+      for (const property of [
+        'font-family',
+        'font-size',
+        'font-weight',
+        'line-height',
+        'letter-spacing',
+        'word-spacing',
+        'padding-top',
+        'padding-left',
+        'padding-right',
+        'padding-bottom',
+        'border-top-width',
+        'border-left-width',
+        'border-right-width',
+        'border-bottom-width',
+        'width',
+      ] as const) {
+        mirror.style.setProperty(property, style.getPropertyValue(property));
+      }
+      mirror.style.boxSizing = 'border-box';
+
+      // Insert a marker at the start of the text
+      const marker = document.createElement('span');
+      marker.textContent = textarea.value.charAt(0);
+      mirror.append(marker);
+      container.append(mirror);
+
+      const mirrorRect = marker.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const mirrorX = mirrorRect.left - containerRect.left;
+      const mirrorY = mirrorRect.top - containerRect.top;
+
+      mirror.remove();
+
+      // Get first word token position in overlay
+      const firstToken = overlay.querySelector('.word-token');
+      if (!firstToken) return { error: 'no word token' };
+      const tokenRect = firstToken.getBoundingClientRect();
+      const tokenX = tokenRect.left - containerRect.left;
+      const tokenY = tokenRect.top - containerRect.top;
+
+      return {
+        dx: Math.abs(tokenX - mirrorX),
+        dy: Math.abs(tokenY - mirrorY),
+        mirrorX,
+        mirrorY,
+        tokenX,
+        tokenY,
+      };
+    });
+
+    console.log('Overlay alignment:', JSON.stringify(misalignment));
+    expect(misalignment).not.toHaveProperty('error');
+    if ('dx' in misalignment) {
+      // Allow 2px tolerance for sub-pixel rendering
+      expect(misalignment.dx).toBeLessThanOrEqual(2);
+      expect(misalignment.dy).toBeLessThanOrEqual(2);
+    }
+  });
+
   // FCP tests — works on all browsers via Paint Timing API
   for (const route of [
     '/',

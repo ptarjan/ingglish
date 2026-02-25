@@ -209,6 +209,7 @@
 }
 
 .overlay-textarea-display .word-token {
+  padding: 0;
   transition: none;
 }
 
