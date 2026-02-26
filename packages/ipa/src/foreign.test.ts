@@ -219,7 +219,7 @@ describe('foreign sample coverage', () => {
 
   // Minimum per-language word coverage (found / total).
   const MIN_COVERAGE: Record<string, number> = {
-    ar: 0.99,
+    ar: 1,
     de: 1,
     eo: 1,
     es: 1,
@@ -233,7 +233,7 @@ describe('foreign sample coverage', () => {
     ko: 1,
     ma: 1,
     nb: 1,
-    nl: 0.98,
+    nl: 1,
     or: 1,
     pt: 1,
     ro: 1,

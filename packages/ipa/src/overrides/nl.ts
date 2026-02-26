@@ -15,6 +15,8 @@ export const nl: Record<string, string> = {
   bevonden: '/bəˈvɔndən/',
   bleeke: '/ˈbleːkə/', // archaic: pale
   bloedroze: '/ˈbludˌroːzə/',
+  boomen: '/ˈboːmən/', // archaic: bomen (trees)
+  braamstoelen: '/ˈbraːmˌstuːlən/', // blackberry bushes
   bureautje: '/byˈroːtjə/',
   burgery: '/bʏrɣəˈrɛi/', // archaic: burgerij
   dagelix: '/ˈdaːɣəlɪks/', // archaic: dagelijks
@@ -41,6 +43,7 @@ export const nl: Record<string, string> = {
   gemeenschappelijks: '/ɣəˈmeːnsxɑpələks/', // archaic genitive
   geschrey: '/ɣəˈsxrɛi/', // archaic: outcry
   gestelt: '/ɣəˈstɛlt/', // archaic: placed
+  geverfd: '/ɣəˈvɛrft/', // painted, dyed
   gewone: '/ɣəˈwoːnə/',
   ghewelt: '/ɣəˈwɛlt/', // archaic: violence
   godt: '/ɣɔt/', // archaic: God
@@ -83,6 +86,7 @@ export const nl: Record<string, string> = {
   my: '/mɛi/', // archaic: mij
   nassouwe: '/nɑˈsɑuə/', // archaic: Nassau
   neemt: '/neːmt/',
+  niemandsbos: '/ˈniːmɑntsˌbɔs/', // nobody's forest
   oeroeg: '/ˈuruɣ/', // proper name (Haasse)
   ondersaten: '/ˈɔndərˌzaːtən/', // archaic: subjects
   ontwaakte: '/ɔntˈwaːktə/',
@@ -106,6 +110,7 @@ export const nl: Record<string, string> = {
   Seynaeve: '/ˈsɛinaːvə/', // Belgian proper name
   sien: '/siːn/', // archaic: zien
   smalle: '/ˈsmɑlə/', // inflected: narrow
+  spoorwegzate: '/ˈspoːrˌwɛxzaːtə/', // archaic: railway junction
   Steenwijk: '/ˈsteːnʋɛik/', // place name
   stonden: '/ˈstɔndən/',
   stopte: '/ˈstɔptə/',
@@ -118,6 +123,7 @@ export const nl: Record<string, string> = {
   toverplaatjes: '/ˈtoːvərˌplaːtjəs/', // magic pictures
   tracht: '/trɑxt/', // verb: try
   tragische: '/ˈtraːɣɪsxə/',
+  tusschen: '/ˈtʏsxən/', // archaic: tussen (between)
   valt: '/vɑlt/',
   velden: '/ˈvɛldən/',
   vermoordde: '/vərˈmoːrdə/',
@@ -125,22 +131,26 @@ export const nl: Record<string, string> = {
   vlamde: '/ˈvlɑmdə/',
   vloog: '/vloːx/',
   volcx: '/vɔlks/', // archaic: volks
+
   volle: '/ˈvɔlə/',
   voorschoten: '/ˈvoːrsxoːtən/', // place name
   voorzomermiddag: '/ˈvoːrˌzoːmərˌmɪdɑx/',
   vroege: '/ˈvruɣə/',
   warme: '/ˈvɑrmə/',
   weerd: '/weːrt/', // archaic: waard
-
   weggegaan: '/ˈvɛxɣəˌɣaːn/',
   werd: '/wɛrt/',
+  werkmenschen: '/ˈwɛrkˌmɛnsxən/', // archaic: working people
   'west-java': '/ˌwɛstˈjaːva/',
   wintrop: '/ˈvɪntrɔp/', // proper name (Mulisch)
   wonderlijker: '/ˈʋɔndərlɛikər/', // comparative: more wonderful
   woonde: '/ˈwoːndə/',
+  wordt: '/wɔrt/',
   yegelick: '/ˈjeːɣəlɪk/', // archaic: iedereen
+  zakkende: '/ˈzɑkəndə/', // sinking
   zal: '/zɑl/',
   zekere: '/ˈzeːkərə/', // a certain
+  ziet: '/zit/', // sees
   zijne: '/ˈzɛinə/', // archaic: zijn
   zocht: '/zɔxt/',
   zuivere: '/ˈzœyvərə/', // pure (inflected)

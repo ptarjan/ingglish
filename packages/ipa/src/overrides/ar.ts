@@ -112,8 +112,9 @@ export const ar: Record<string, string> = {
   قلت: '/ˈqultu/', // I said
   كتابات: '/kitaːˈbaːt/',
   كرسيه: '/kurˈsijːuhu/',
-  // Tarafa ibn al-Abd — المعلقة
   لخولة: '/lixawˈlatah/', // for Khawla (name)
+  // Tarafa ibn al-Abd — المعلقة
+  لكِ: '/ˈlaki/', // to you (fem.)
   لنيلك: '/liˈnajlika/', // for your Nile
   لوهلة: '/liˈwahlah/',
   مبنية: '/mabˈnijːah/',
