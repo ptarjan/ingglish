@@ -97,9 +97,9 @@ export const sv: ForeignSample[] = [
     text: 'Jag är ingen kvinna. Jag är ett neutrum. Jag är ett barn, en page och ett djärvt beslut, jag är en skrattande strimma av en scharlakanssol...',
   },
   {
-    // https://runeberg.org/jerusalm/
+    // https://runeberg.org/jerusalm/0009.html
     label: 'Selma Lagerlöf — Jerusalem',
-    text: 'I den socken där de gamla Ingmarssönerna bodde skulle ingen människa ännu i början på åttitalet ha kunnat tänka på att omfatta något nytt slags tro eller bevista någon ny sorts gudstjänst.',
+    text: 'Det var en ung karl, som gick och plöjde sitt trade en sommarmorgon. Han hade varit uppe sedan klockan tre och hade redan hunnit plöja halva åkern. Det var en vacker morgon i slutet av april.',
   },
   {
     // https://www.swedishfinnhistoricalsociety.org/2021/11/19/poems-by-edith-sodergran/

@@ -84,7 +84,7 @@ export const ro: ForeignSample[] = [
   {
     // https://ro.wikisource.org/wiki/Ion_(Rebreanu)/1._Glasul_pământului
     label: 'Liviu Rebreanu — Ion',
-    text: 'Din șoseaua ce vine de la Cârlibaba, întovărășind Someșul când în dreapta, când în stânga, până la Cluj și chiar mai departe, se desprinde un drum alb mai sus de Armadia, trece râul peste podul bătrân de lemn, acoperit cu șindrilă mucegăită, spintecă satul Jidovița și aleargă spre Bistrița.',
+    text: 'Din șoseaua ce vine de la Cârlibaba, întovărășind Someșul ba în dreapta, ba în stânga, până la Cluj și chiar mai departe, se desprinde un drum alb mai sus de Armadia, trece râul peste podul bătrân de lemn, acoperit cu șindrilă mucegăită, spintecă satul Jidovița și aleargă spre Bistrița.',
   },
   {
     // https://www.citatulzilei.org/fragmentul-zilei-11-ianuarie-2021-ultima-noapte-de-dragoste-intaia-noapte-de-razboi-camil-petrescu.html

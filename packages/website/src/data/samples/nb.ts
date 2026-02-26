@@ -46,4 +46,64 @@ export const nb: ForeignSample[] = [
     label: 'Karl Ove Knausgård — Min kamp',
     text: 'For hjertet er livet enkelt: det slår så lenge det kan. Så stopper det. Før eller siden, en eller annen dag, opphører denne stampende bevegelsen av seg selv.',
   },
+  {
+    // https://www.ibsen.uio.no/DRVIT_Du%7CDuht.xhtml
+    label: 'Henrik Ibsen — Et dukkehjem',
+    text: 'Gem juletræet godt, Helene. Børnene må endelig ikke få se det før iaften, når det er pyntet. Hvormeget –? Femti øre. Der er en krone. Nej, behold det hele.',
+  },
+  {
+    // https://www.ibsen.uio.no/DRVIT_PG%7CPGht.xhtml
+    label: 'Henrik Ibsen — Peer Gynt',
+    text: 'Peer, du lyver! Nej, jeg gjør ej! Naa, saa band paa, det er sandt! Hvorfor bande? Tvi; du tør ej! Alt ihob er Tøv og Tant! Det er sandt – hvert evigt Ord! Og du skjæms ej for din Moer?',
+  },
+  {
+    // https://www.ibsen.uio.no/DRVIT_Vi%7CViht.xhtml
+    label: 'Henrik Ibsen — Vildanden',
+    text: 'Nej hør bare, De, Jensen; nu står gamlingen ved bordet og proppenerer en lang skål for fru Sørby. Er det kanske sandt, som folk siger, at der er noget imellem dem?',
+  },
+  {
+    // https://www.ibsen.uio.no/DRVIT_Ge%7CGeht.xhtml
+    label: 'Henrik Ibsen — Gengangere',
+    text: 'Hvad er det du vil? Bliv stående der du står. Det drypper jo af dig. Det er Vorherres regn, det, barnet mit. Det er fandens regn, er det.',
+  },
+  {
+    // https://www.ibsen.uio.no/DRVIT_Br%7CBrht.xhtml
+    label: 'Henrik Ibsen — Brand',
+    text: 'Hej, Fremmedkarl, far ej saa fort! Hvor er du? Her! Du gaar dig bort! Nu tykkner Skodden slig, at knappt en ser saa langt, som Staven rækker. Frem maa jeg, som jeg før har sagt. Det evner ingen Mandemagt.',
+  },
+  {
+    // https://kalliope.org/en/text/ibsen2005112901
+    label: 'Henrik Ibsen — Terje Vigen',
+    text: 'Der bode en underlig gråsprængt en på den yderste, nøgne ø; han gjorde visst intet menneske mén hverken på land eller sjø; dog stundom gnistred hans øjne stygt, helst mod uroligt vejr, og da mente folk, at han var forrykt, og da var der få, som uden frygt kom Terje Vigen nær.',
+  },
+  {
+    // https://barnasrett.no/Dikt/du_ma_ikke_sove.htm
+    label: 'Arnulf Øverland — Du må ikke sove',
+    text: 'Jeg våknet en natt av en underlig drøm, det var som en stemme talte til mig, fjern som en underjordisk strøm, og jeg reiste mig op: Hvad er det du vil mig? Du må ikke sove! Du må ikke sove! Du må ikke tro, at du bare har drømt!',
+  },
+  {
+    // https://nortabs.net/tab/3029/
+    label: 'Nordahl Grieg — Til ungdommen',
+    text: 'Kringsatt av fiender, gå inn i din tid! Under en blodig storm, vi deg til strid! Kanskje du spør i angst, udekket, åpen: hva skal jeg kjempe med, hva er mitt våpen?',
+  },
+  {
+    // https://lovdata.no/dokument/NL/lov/1814-05-17
+    label: 'Grunnloven — Kongeriket Norges Grunnlov',
+    text: 'Kongeriket Norge er et fritt, selvstendig, udelelig og uavhendelig rike. Dets regjeringsform er innskrenket og arvelig monarkisk. Verdigrunnlaget forblir vår kristne og humanistiske arv. Denne Grunnlov skal sikre demokratiet, rettsstaten og menneskerettighetene.',
+  },
+  {
+    // https://www.bokselskap.no/boker/wergelanddikt/tilmingyldenlak
+    label: 'Henrik Wergeland — Til min Gyldenlak',
+    text: 'Gyldenlak, før Du din Glands har tabt, da er jeg Det hvoraf Alt er skabt; ja før Du mister din Krones Guld, da er jeg Muld. Idet jeg raaber: med Vindvet op! mit sidste Blik faar din Gyldentop.',
+  },
+  {
+    // https://www.ohchr.org/en/UDHR/Documents/UDHR_Translations/nrr.pdf
+    label: 'FN — Verdenserklæringen om menneskerettighetene',
+    text: 'Alle mennesker er født frie og med samme menneskeverd og menneskerettigheter. De er utstyrt med fornuft og samvittighet og bør handle mot hverandre i brorskapets ånd.',
+  },
+  {
+    // https://heltgreilitteratur.wordpress.com/2011/09/05/genanse-og-verdighet-av-dag-solstad/
+    label: 'Dag Solstad — Genanse og verdighet',
+    text: 'Egentlig var han en litt fordrukken lektor i 50-årsalderen, med en kone som hadde est litt for mye ut, og som han spiste frokost med hver morgen.',
+  },
 ];

@@ -33,13 +33,12 @@ export const sw: ForeignSample[] = [
     text: 'Kusadikika ni nchi ambayo kuwako kwake hufikirika kwa mawazo tu. Hakuna mtu anayejua mahali ilipo nchi hiyo wala hakuna ramani inayoonyesha mahali pake.',
   },
   {
-    // Verified: https://archive.nwreview.org/journal/51/01/jay-boss-rubin/
-    // Opening of Kezilahabi's 1971 novel, confirmed via Asymptote Journal
+    // https://en.wikipedia.org/wiki/Euphrase_Kezilahabi
     label: 'Euphrase Kezilahabi — Rosa Mistika',
     text: 'Katika ziwa Victoria — kama liitwavyo mpaka sasa — kuna kisiwa kijulikanacho kwa jina la Ukerewe, maili thelathini hivi kutoka Mwanza, na kama hakuna ukungu, unaweza kukiona kutoka Usukumani.',
   },
   {
-    // Verified: https://archive.nwreview.org/journal/51/01/jay-boss-rubin/
+    // https://en.wikipedia.org/wiki/Euphrase_Kezilahabi
     label: 'Euphrase Kezilahabi — Rosa Mistika (sura ya pili)',
     text: 'Usiku Rosa hakulala. Aliamka kuangalia dirishani. Aliona bado giza. Alijaribu kufumba macho apate usingizi. Kazi bure; usingizi hauwezi kushurutishwa.',
   },
@@ -84,7 +83,7 @@ export const sw: ForeignSample[] = [
     text: 'Kwa kuwa kukiri heshima ya asili na haki sawa kwa binadamu wote ndio msingi wa uhuru, haki na amani duniani.',
   },
   {
-    // https://languagemuseum.org/exhibits/the-power-of-poetry-exhibit/poetry-from-nigeria/three-poems-by-abdilatif-abdallah/
+    // https://en.wikipedia.org/wiki/Abdilatif_Abdalla
     label: 'Abdilatif Abdalla — Kuno Kunena',
     text: 'Kuno kunena kwa nini, kukanikomeya kuno? Kwani kunena kunani, kukashikwa kani vino? Kani iso na kiini, na kuninuniya mno.',
   },

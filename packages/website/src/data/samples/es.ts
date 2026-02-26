@@ -22,7 +22,7 @@ export const es: ForeignSample[] = [
     text: 'La candente mañana de febrero en que Beatriz Viterbo murió, después de una imperiosa agonía que no se rebajó un solo instante ni al sentimentalismo ni al miedo, noté que las carteleras de fierro de la Plaza Constitución habían renovado no sé qué aviso de cigarrillos rubios; el hecho me dolió, pues comprendí que el incesante y vasto universo ya se apartaba de ella y que ese cambio era el primero de una serie infinita.',
   },
   {
-    // https://www.isabelallende.com/es/book/house/excerpt
+    // https://en.wikipedia.org/wiki/The_House_of_the_Spirits
     label: 'Allende — La casa de los espíritus',
     text: 'Barrabás llegó a la familia por vía marítima, anotó la niña Clara con su delicada caligrafía. Ya entonces tenía el hábito de escribir las cosas importantes y más tarde, cuando se quedó muda, escribía también las trivialidades, sin sospechar que cincuenta años después, sus cuadernos me servirían para rescatar la memoria del pasado y para sobrevivir a mi propio espanto.',
   },

@@ -97,7 +97,7 @@ export const pt: ForeignSample[] = [
     text: 'A Europa jaz, posta nos cotovelos: de Oriente a Ocidente jaz, fitando, e toldam-lhe românticos cabelos olhos gregos, lembrando. O cotovelo esquerdo é recuado; o direito é em ângulo disposto. Aquele diz Itália onde é pousado; este diz Inglaterra onde, afastado, a mão sustenta, em que se apoia o rosto. Fita, com olhar esfíngico e fatal, o Ocidente, futuro do passado. O rosto com que fita é Portugal.',
   },
   {
-    // https://www.jorgeamado.org.br/loja/capitaes-da-areia/
+    // https://en.wikipedia.org/wiki/Captains_of_the_Sands
     label: 'Jorge Amado — Capitães da Areia',
     text: 'Sob a lua, num velho trapiche abandonado, as crianças dormem. Antigamente aqui era o mar. Nas grandes e negras pedras dos alicerces do trapiche as ondas ora se rebentavam fragorosas, ora vinham se bater mansamente.',
   },

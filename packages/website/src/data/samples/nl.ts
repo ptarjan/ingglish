@@ -102,8 +102,8 @@ export const nl: ForeignSample[] = [
     text: 'De portier is een invalide. Op het eikehouten bureautje waaraan hij zit, staat alleen een telefoon, en door een goedkope zonnebril staart hij roerloos voor zich uit.',
   },
   {
-    // https://www.scholieren.com/verslag/zekerwetengoed/de-kapellekensbaan-louis-paul-boon
+    // https://www.dbnl.org/tekst/boon001kape01_01/boon001kape01_01_0003.php
     label: 'Louis Paul Boon — De Kapellekensbaan',
-    text: 'Als ge vanaf de termurenlaan in erembodegem de tunnel onder de ijzeren weg neemt, komt ge in de kapellekensbaan terecht.',
+    text: 'Ge ziet van uit uw open zolderraam hoe het niemandsbos in het rood wordt geverfd door de zakkende zon, en ge ziet ook daar tusschen de boomen en braamstoelen den spoorwegzate, waar ge de werkmenschen langs ziet gaan, heel klein daaronder.',
   },
 ];
