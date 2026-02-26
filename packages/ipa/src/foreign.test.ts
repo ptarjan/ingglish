@@ -221,13 +221,20 @@ describe('foreign sample coverage', () => {
   const MIN_COVERAGE: Record<string, number> = {
     ar: 0.98,
     de: 0.99,
+    eo: 1,
     es: 1,
+    fa: 1,
     fi: 0.9,
     fr: 1,
     is: 0.95,
     ja: 0.98,
+    jam: 1,
+    km: 0, // Khmer script has no word boundaries — needs word segmentation
     ko: 0.99,
+    ma: 1,
+    nb: 1,
     nl: 0.98,
+    or: 1,
     pt: 1,
     ro: 0.98,
     sv: 1,
@@ -264,7 +271,8 @@ describe('foreign sample coverage', () => {
           // Extract words: split on whitespace, strip punctuation
           const words = sample.text
             .split(/\s+/)
-            .map((w) => w.replace(/^\P{L}+/u, '').replace(/\P{L}+$/u, ''))
+            // Preserve combining marks (\p{M}) for scripts like Odia, Khmer
+            .map((w) => w.replace(/^[^\p{L}\p{M}]+/u, '').replace(/[^\p{L}\p{M}]+$/u, ''))
             .filter(Boolean);
 
           for (const word of words) {

@@ -22,6 +22,7 @@ import { fi } from './overrides/fi';
 import { fr } from './overrides/fr';
 import { is } from './overrides/is';
 import { ja } from './overrides/ja';
+import { jam } from './overrides/jam';
 import { ko } from './overrides/ko';
 import { nl } from './overrides/nl';
 import { pt } from './overrides/pt';
@@ -34,8 +35,9 @@ import { vi } from './overrides/vi';
 const IPA_SLASH_RE = /^\/|\/$/g;
 const WHITESPACE_SPLIT_RE = /(\s+)/;
 const WHITESPACE_RE = /^\s+$/;
-const LEADING_NON_LETTER_RE = /^\P{L}/u;
-const TRAILING_NON_LETTER_RE = /\P{L}$/u;
+// Include \p{M} (combining marks) so Odia/Khmer vowel signs aren't stripped
+const LEADING_NON_LETTER_RE = /^[^\p{L}\p{M}]/u;
+const TRAILING_NON_LETTER_RE = /[^\p{L}\p{M}]$/u;
 const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
 export type IpaDict = Record<string, string>;
@@ -85,6 +87,7 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
   fr,
   is,
   ja,
+  jam,
   ko,
   nl,
   pt,
