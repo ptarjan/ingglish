@@ -86,4 +86,24 @@ export const zh: ForeignSample[] = [
     label: '巴金 — 家',
     text: '风 刮 得 很 紧 雪 片 像 扯 破 了 的 棉 絮 一 样 在 空 中 飞 舞 没 有 目 的 地 四 处 飘 落 左 右 两 边 墙 脚 各 有 一 条 白 色 的 路 好 像 给 中 间 满 是 水 泥 的 石 板 路 镶 了 两 道 宽 边',
   },
+  {
+    // https://www.gushiwen.cn/shiwenv_0581b0ba8bb4.aspx
+    label: '白居易 — 琵琶行',
+    text: '浔 阳 江 头 夜 送 客 枫 叶 荻 花 秋 瑟 瑟 主 人 下 马 客 在 船 举 酒 欲 饮 无 管 弦 醉 不 成 欢 惨 将 别 别 时 茫 茫 江 浸 月',
+  },
+  {
+    // https://m.gushiwen.cn/guwen/bookv_c6af930a3d19.aspx
+    label: '吴承恩 — 西游记',
+    text: '盖 闻 天 地 之 数 有 十 二 万 九 千 六 百 岁 为 一 元 将 一 元 分 为 十 二 会 乃 子 丑 寅 卯 辰 巳 午 未 申 酉 戌 亥 之 十 二 支 也',
+  },
+  {
+    // https://shuihu.5000yan.com/shz1247.html
+    label: '施耐庵 — 水浒传',
+    text: '话 说 大 宋 仁 宗 天 子 在 位 嘉 祐 三 年 三 月 三 日 五 更 三 点 天 子 驾 坐 紫 宸 殿 受 百 官 朝 贺',
+  },
+  {
+    // https://ctext.org/zhuangzi/enjoyment-in-untroubled-ease
+    label: '庄子 — 逍遥游',
+    text: '北 冥 有 鱼 其 名 为 鲲 鲲 之 大 不 知 其 几 千 里 也 化 而 为 鸟 其 名 为 鹏 鹏 之 背 不 知 其 几 千 里 也 怒 而 飞 其 翼 若 垂 天 之 云',
+  },
 ];

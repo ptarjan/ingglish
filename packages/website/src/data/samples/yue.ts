@@ -81,4 +81,29 @@ export const yue: ForeignSample[] = [
     label: '般若波羅蜜多心經',
     text: '觀 自 在 菩 薩 行 深 般 若 波 羅 蜜 多 時 照 見 五 蘊 皆 空 度 一 切 苦 厄 舍 利 子 色 不 異 空 空 不 異 色 色 即 是 空 空 即 是 色 受 想 行 識 亦 復 如 是',
   },
+  {
+    // https://fanti.dugushici.com/ancient_proses/70527
+    label: '陶淵明 — 桃花源記',
+    text: '晉 太 元 中 武 陵 人 捕 魚 爲 業 緣 溪 行 忘 路 之 遠 近 忽 逢 桃 花 林 夾 岸 數 百 步 中 無 雜 樹 芳 草 鮮 美 落 英 繽 紛 漁 人 甚 異 之 復 前 行 欲 窮 其 林',
+  },
+  {
+    // https://www.basiclaw.gov.hk/tc/basiclaw/preamble.html
+    label: '香港基本法 — 序言',
+    text: '香 港 自 古 以 來 就 是 中 國 的 領 土 一 八 四 零 年 鴉 片 戰 爭 以 後 被 英 國 佔 領 一 九 八 四 年 十 二 月 十 九 日 中 英 兩 國 政 府 簽 署 了 關 於 香 港 問 題 的 聯 合 聲 明',
+  },
+  {
+    // https://www.hkmemory.org/jameswong/text/index.php?p=home&catId=172&photoNo=0
+    label: '唐滌生 — 帝女花·香夭',
+    text: '落 花 滿 天 蔽 月 光 借 一 杯 附 薦 鳳 台 上 帝 女 花 帶 淚 上 香 願 喪 生 回 謝 爹 娘',
+  },
+  {
+    // https://en.wikipedia.org/wiki/Man_Jiang_Hong
+    label: '岳飛 — 滿江紅',
+    text: '怒 髮 衝 冠 憑 闌 處 瀟 瀟 雨 歇 抬 望 眼 仰 天 長 嘯 壯 懷 激 烈 三 十 功 名 塵 與 土 八 千 里 路 雲 和 月 莫 等 閒 白 了 少 年 頭 空 悲 切',
+  },
+  {
+    // https://fanti.dugushici.com/ancient_proses/18048
+    label: '柳宗元 — 江雪',
+    text: '千 山 鳥 飛 絕 萬 徑 人 蹤 滅 孤 舟 蓑 笠 翁 獨 釣 寒 江 雪',
+  },
 ];
