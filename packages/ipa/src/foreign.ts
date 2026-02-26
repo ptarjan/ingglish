@@ -17,14 +17,20 @@ import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 import { LEMMATIZERS } from './lemmatizers';
 import { ar } from './overrides/ar';
 import { de } from './overrides/de';
+import { eo } from './overrides/eo';
 import { es } from './overrides/es';
+import { fa } from './overrides/fa';
 import { fi } from './overrides/fi';
 import { fr } from './overrides/fr';
 import { is } from './overrides/is';
 import { ja } from './overrides/ja';
 import { jam } from './overrides/jam';
+import { km } from './overrides/km';
 import { ko } from './overrides/ko';
+import { ma } from './overrides/ma';
+import { nb } from './overrides/nb';
 import { nl } from './overrides/nl';
+import { or_ } from './overrides/or';
 import { pt } from './overrides/pt';
 import { ro } from './overrides/ro';
 import { sv } from './overrides/sv';
@@ -82,14 +88,20 @@ export const LANGUAGES: Language[] = [
 const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
   ar,
   de,
+  eo,
   es,
+  fa,
   fi,
   fr,
   is,
   ja,
   jam,
+  km,
   ko,
+  ma,
+  nb,
   nl,
+  or: or_,
   pt,
   ro,
   sv,
