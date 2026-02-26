@@ -91,4 +91,24 @@ export const sv: ForeignSample[] = [
     label: 'August Strindberg — Ett drömspel',
     text: 'Allt kan ske, allt är möjligt och sannolikt. Tid och rum existera icke; på en obetydlig verklighetsgrund spinner inbillningen ut och väver nya mönster; en blandning av minnen, upplevelser, fria påhitt, orimligheter och improvisationer. Personerna klyvas, fördubblas, dubbleras, dunsta av, förtätas, flyta ut, samlas.',
   },
+  {
+    // https://runeberg.org/sodrgran/01_13.html
+    label: 'Edith Södergran — Vierge moderne',
+    text: 'Jag är ingen kvinna. Jag är ett neutrum. Jag är ett barn, en page och ett djärvt beslut, jag är en skrattande strimma av en scharlakanssol...',
+  },
+  {
+    // https://runeberg.org/jerusalm/
+    label: 'Selma Lagerlöf — Jerusalem',
+    text: 'I den socken där de gamla Ingmarssönerna bodde skulle ingen människa ännu i början på åttitalet ha kunnat tänka på att omfatta något nytt slags tro eller bevista någon ny sorts gudstjänst.',
+  },
+  {
+    // https://www.swedishfinnhistoricalsociety.org/2021/11/19/poems-by-edith-sodergran/
+    label: 'Edith Södergran — Landet som icke är',
+    text: 'Jag längtar till landet som icke är, ty allting som är, är jag trött att begära. Månen berättar mig i silverne runor om landet som icke är.',
+  },
+  {
+    // https://www.textalk.se/klassisk-svensk-litteratur/Hjalmar-Soderberg-Martin-Bircks-ungdom.html
+    label: 'Hjalmar Söderberg — Martin Bircks ungdom',
+    text: 'Martin Birck var ett litet barn, som låg i sin säng och drömde.',
+  },
 ];

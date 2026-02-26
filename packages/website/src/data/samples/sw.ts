@@ -58,4 +58,44 @@ export const sw: ForeignSample[] = [
     label: 'Mwana Kupona — Ushauri kwa Binti',
     text: 'La kwanda kamata dini, faradhi usiikhini. Pili uwe na adabu, na ulimi wa thawabu, uwe mtu mahabubu. La tatu uwe sadiqi, uambiwalo ulithiqi.',
   },
+  {
+    // https://www.wordproject.org/bibles/sw/01/1.htm
+    label: 'Biblia Takatifu — Mwanzo 1:1-3',
+    text: 'Hapo mwanzo Mungu aliziumba mbingu na nchi. Nayo nchi ilikuwa ukiwa, tena utupu, na giza lilikuwa juu ya uso wa vilindi vya maji; Roho ya Mungu ikatulia juu ya uso wa maji. Mungu akasema, Iwe nuru; ikawa nuru.',
+  },
+  {
+    // https://www.iium.edu.my/deed/quran/swahili/1.html
+    label: 'Qurani Tukufu — Surat al-Fatiha',
+    text: 'Kwa jina la Mwenyeezi Mungu Mwingi wa Rehema Mwenye Kurehemu. Sifa njema zote ni za Mwenyeezi Mungu, Mola Mlezi wa viumbe vyote. Mwingi wa Rehema Mwenye Kurehemu. Mwenye kumiliki siku ya malipo.',
+  },
+  {
+    // https://tanzlii.org/en/akn/tz/act/1977/1/swa@2002-07-31
+    label: 'Katiba ya Tanzania — Utangulizi',
+    text: 'Kwa kuwa sisi wananchi wa Jamhuri ya Muungano wa Tanzania tumeamua rasmi na kwa dhati kujenga katika nchi yetu jamii inayozingatia misingi ya uhuru, haki, udugu na amani.',
+  },
+  {
+    // https://uraia.or.ke/wp-content/uploads/2023/12/Katiba-ya-Kenya.pdf
+    label: 'Katiba ya Kenya — Utangulizi',
+    text: 'Sisi, watu wa Kenya, tunatambua ukuu wa Mwenyezi Mungu muumba wa vyote. Tunawaheshimu mashujaa waliojitoa mhanga kuleta uhuru na haki nchini mwetu.',
+  },
+  {
+    // https://www.ohchr.org/en/human-rights/universal-declaration/translations/swahilikiswahili
+    label: 'UDHR — Dibaji',
+    text: 'Kwa kuwa kukiri heshima ya asili na haki sawa kwa binadamu wote ndio msingi wa uhuru, haki na amani duniani.',
+  },
+  {
+    // https://languagemuseum.org/exhibits/the-power-of-poetry-exhibit/poetry-from-nigeria/three-poems-by-abdilatif-abdallah/
+    label: 'Abdilatif Abdalla — Kuno Kunena',
+    text: 'Kuno kunena kwa nini, kukanikomeya kuno? Kwani kunena kunani, kukashikwa kani vino? Kani iso na kiini, na kuninuniya mno.',
+  },
+  {
+    // https://archive.org/details/kinjeketile
+    label: 'Ebrahim Hussein — Kinjeketile',
+    text: 'Mama tazama — nyumba ya Kinjeketile! Moshi! Pengine anapika. Ebu chungulia. Ludi, Chausiku! Ludi, anakuja ntu.',
+  },
+  {
+    // https://swahiliproverbs.afrst.illinois.edu/proverbs.htm
+    label: 'Methali za Kiswahili — Swahili Proverbs',
+    text: 'Haraka haraka haina baraka. Penye nia pana njia. Asiyesikia la mkuu huona makuu. Haba na haba hujaza kibaba.',
+  },
 ];

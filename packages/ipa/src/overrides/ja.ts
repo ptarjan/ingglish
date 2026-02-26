@@ -12,6 +12,8 @@ export const ja: Record<string, string> = {
   イギリス: '/iɡiɾisɯ/', // England
   いた: '/ita/',
   いたう: '/itaɯ/', // archaic: greatly
+  // New sample overrides
+  いつも: '/itsɯmo/',
   いづれ: '/idɯɾe/', // archaic: which
   いる: '/iɾɯ/',
   うみ: '/ɯmi/',
@@ -20,13 +22,16 @@ export const ja: Record<string, string> = {
   かた: '/kata/',
   かたち: '/katatɕi/',
   かつぐ: '/katsɯɡɯ/',
+  かの: '/kano/',
   く: '/kɯ/', // archaic verb stem
   ご: '/ɡo/',
   ここ: '/koko/',
   ございます: '/ɡozaimasɯ/',
   この: '/kono/',
+  さざれ: '/sazaɾe/',
   さびしい: '/sabiɕiː/',
   さら: '/saɾa/', // archaic: furthermore
+  しよう: '/ɕijoː/',
   すぐれる: '/sɯɡɯɾeɾɯ/',
   すこし: '/sɯkoɕi/',
   する: '/sɯɾɯ/',
@@ -44,11 +49,13 @@ export const ja: Record<string, string> = {
   とらえる: '/toɾaeɾɯ/',
   なお: '/nao/',
   なか: '/naka/',
+  なく: '/nakɯ/',
   なった: '/natːa/',
   なびく: '/nabikɯ/',
   のけ: '/noke/',
   ばかり: '/bakaɾi/',
   はた: '/hata/',
+  ハンブルク: '/hambɯɾɯkɯ/',
   ふう: '/ɸɯː/',
   ふち: '/ɸɯtɕi/',
   ほか: '/hoka/',
@@ -56,8 +63,11 @@ export const ja: Record<string, string> = {
   ほんとう: '/hontoː/',
   また: '/mata/',
   まだ: '/mada/',
+  まで: '/made/',
   みなさん: '/minasaɴ/',
   みんな: '/minːa/',
+  むす: '/mɯsɯ/',
+  メロス: '/meɾosɯ/',
   やうやう: '/jaɯjaɯ/', // archaic: gradually
   やみ: '/jami/',
   やむ: '/jamɯ/',
@@ -65,7 +75,10 @@ export const ja: Record<string, string> = {
   よく: '/jokɯ/',
   よほど: '/johodo/',
   る: '/ɾɯ/', // classical auxiliary
+  わかる: '/wakaɾɯ/',
   一茶: '/itːɕa/', // Issa (poet)
+  三十七: '/saɴdʑɯːɕitɕi/',
+
   候う: '/soːɾoː/', // archaic polite auxiliary
   呼んで: '/joɴde/',
   止まった: '/tomatːa/',

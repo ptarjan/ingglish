@@ -1,11 +1,14 @@
 /** Word-level IPA overrides for German. */
 export const de: Record<string, string> = {
   abendsonnenschein: '/ˈaːbəntˌzɔnənʃaɪ̯n/',
+  // Foreign city names in German texts
+  Aires: '/ˈaɪ̯ʁɛs/',
   andrer: '/ˈandʁɐ/',
   balde: '/ˈbaldə/',
   bewußtsein: '/bəˈvʊstˌzaɪ̯n/',
   blütenschimmer: '/ˈblyːtənˌʃɪmɐ/',
   brahmanensohn: '/ˈbʁaːmaːnənˌzoːn/',
+  Buenos: '/ˈbueːnɔs/',
   'c\u2019est': '/sɛ/', // French in Mann's Buddenbrooks
   chère: '/ʃɛːʁ/', // French in Mann's Buddenbrooks
   daß: '/das/',
@@ -31,6 +34,7 @@ export const de: Record<string, string> = {
   muß: '/mʊs/',
   müßt: '/mʏst/',
   mußte: '/ˈmʊstə/',
+  New: '/njuː/',
   ook: '/oːk/', // Low German: also
   'prinz-regentenstraße': '/ˈpʁɪntsʁeˌɡɛntənˌʃtʁaːsə/',
   question: '/kɛsˈtjɔ̃/', // French in Mann's Buddenbrooks
@@ -39,7 +43,9 @@ export const de: Record<string, string> = {
   schriee: '/ˈʃʁiːə/',
   siddhartha: '/zɪˈdaːʁta/',
   sternklar: '/ˈʃtɛʁnklaːɐ̯/',
+
   très: '/tʁɛ/', // French in Mann's Buddenbrooks
   verliess: '/fɛɐ̯ˈliːs/',
+  York: '/jɔʁk/',
   zarathustra: '/tsaʁaˈtʊstʁa/',
 };

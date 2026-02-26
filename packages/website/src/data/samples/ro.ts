@@ -81,4 +81,34 @@ export const ro: ForeignSample[] = [
     label: 'Mircea Eliade — Noaptea de Sânziene',
     text: 'Deschise cât putu de încet ușa și aprinse lumina. Odaia era caldă; mirosea a praf. Obloanele ferestrelor erau lăsate. Alături de pat se afla o masă mare de lemn încărcată cu cărți, aproape toate noi, unele cu foile încă netăiate.',
   },
+  {
+    // https://ro.wikisource.org/wiki/Ion_(Rebreanu)/1._Glasul_pământului
+    label: 'Liviu Rebreanu — Ion',
+    text: 'Din șoseaua ce vine de la Cârlibaba, întovărășind Someșul când în dreapta, când în stânga, până la Cluj și chiar mai departe, se desprinde un drum alb mai sus de Armadia, trece râul peste podul bătrân de lemn, acoperit cu șindrilă mucegăită, spintecă satul Jidovița și aleargă spre Bistrița.',
+  },
+  {
+    // https://www.citatulzilei.org/fragmentul-zilei-11-ianuarie-2021-ultima-noapte-de-dragoste-intaia-noapte-de-razboi-camil-petrescu.html
+    label: 'Camil Petrescu — Ultima noapte de dragoste, întâia noapte de război',
+    text: 'În primăvara anului 1916, ca sublocotenent proaspăt, întâia dată concentrat, luasem parte, cu un regiment de infanterie din capitală, la fortificarea văii Prahovei, între Bușteni și Predeal.',
+  },
+  {
+    // https://poetii-nostri.ro/mihai-eminescu-glossa-poezie-id-390/
+    label: 'Eminescu — Glossă',
+    text: 'Vreme trece, vreme vine, toate-s vechi și nouă toate; ce e rău și ce e bine tu te-ntreabă și socoate.',
+  },
+  {
+    // https://lyricstranslate.com/en/ion-barbu-joc-secund-lyrics.html
+    label: 'Ion Barbu — Joc secund',
+    text: 'Din ceas, dedus adâncul acestei calme creste, intrată prin oglindă în mântuit azur, tăind pe înecarea cirezilor agreste, în grupurile apei, un joc secund, mai pur.',
+  },
+  {
+    // https://ro.wikisource.org/wiki/Noaptea_de_decembrie
+    label: 'Alexandru Macedonski — Noaptea de decemvrie',
+    text: 'Pustie și albă e camera moartă... și focul sub vatră se stinge scrumit... Poetul, alături, trăsnit stă de soartă, cu nici o scânteie în ochiu-adormit...',
+  },
+  {
+    // https://lyricstranslate.com/en/mioriță-little-sheep-popular-ballad.html
+    label: 'Miorița — Baladă populară',
+    text: 'Pe-un picior de plai, pe-o gură de rai, iată vin în cale, se cobor la vale, trei turme de miei, cu trei ciobănei.',
+  },
 ];

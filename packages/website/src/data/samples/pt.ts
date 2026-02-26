@@ -91,4 +91,19 @@ export const pt: ForeignSample[] = [
     label: 'Constituição da República Federativa do Brasil — Preâmbulo',
     text: 'Nós, representantes do povo brasileiro, reunidos em Assembleia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias.',
   },
+  {
+    // https://www.escritas.org/PT/t/1245/primeiro-o-dos-castelos
+    label: 'Pessoa — Mensagem (O dos Castelos)',
+    text: 'A Europa jaz, posta nos cotovelos: de Oriente a Ocidente jaz, fitando, e toldam-lhe românticos cabelos olhos gregos, lembrando. O cotovelo esquerdo é recuado; o direito é em ângulo disposto. Aquele diz Itália onde é pousado; este diz Inglaterra onde, afastado, a mão sustenta, em que se apoia o rosto. Fita, com olhar esfíngico e fatal, o Ocidente, futuro do passado. O rosto com que fita é Portugal.',
+  },
+  {
+    // https://www.jorgeamado.org.br/loja/capitaes-da-areia/
+    label: 'Jorge Amado — Capitães da Areia',
+    text: 'Sob a lua, num velho trapiche abandonado, as crianças dormem. Antigamente aqui era o mar. Nas grandes e negras pedras dos alicerces do trapiche as ondas ora se rebentavam fragorosas, ora vinham se bater mansamente.',
+  },
+  {
+    // https://www.iheartbrazil.com/national-anthem-of-brazil/
+    label: 'Hino Nacional Brasileiro',
+    text: 'Ouviram do Ipiranga as margens plácidas de um povo heróico o brado retumbante, e o sol da Liberdade, em raios fúlgidos, brilhou no céu da Pátria nesse instante.',
+  },
 ];

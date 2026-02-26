@@ -10,9 +10,12 @@ export const nl: Record<string, string> = {
   balkons: '/bɑlˈkɔns/',
   bange: '/ˈbɑŋə/',
   benaeuwde: '/bəˈnaːudə/', // archaic: oppressed
+  // New sample overrides
+  benoemd: '/bəˈnuːmt/',
   bevonden: '/bəˈvɔndən/',
   bleeke: '/ˈbleːkə/', // archaic: pale
   bloedroze: '/ˈbludˌroːzə/',
+  bureautje: '/byˈroːtjə/',
   burgery: '/bʏrɣəˈrɛi/', // archaic: burgerij
   dagelix: '/ˈdaːɣəlɪks/', // archaic: dagelijks
   dagschemer: '/ˈdɑɣˌsxeːmər/',
@@ -28,6 +31,7 @@ export const nl: Record<string, string> = {
   egters: '/ˈɛɣtərs/', // proper name
   engelen: '/ˈɛŋələn/',
   erbarremt: '/ɛrˈbɑrəmt/', // archaic: have mercy
+  erembodegem: '/ˈeːrəmˌboːdɛɣəm/',
   erkers: '/ˈɛrkərs/',
   flauwe: '/ˈflɑuə/',
   frits: '/frɪts/',
@@ -40,6 +44,7 @@ export const nl: Record<string, string> = {
   gewone: '/ɣəˈwoːnə/',
   ghewelt: '/ɣəˈwɛlt/', // archaic: violence
   godt: '/ɣɔt/', // archaic: God
+  goedkope: '/ˈɣutkʰoːpə/',
   graaft: '/ɣraːft/',
   groeiden: '/ˈɣruːidən/',
   grooten: '/ˈɣroːtən/', // archaic: great
@@ -57,8 +62,10 @@ export const nl: Record<string, string> = {
   immense: '/ɪˈmɛnsə/',
   inni: '/ˈɪni/', // proper name (Mulisch)
   is: '/ɪs/',
+  kapellekensbaan: '/kaˈpɛləkənsˌbaːn/',
   keek: '/keːk/',
   kennelick: '/ˈkɛnələk/', // archaic: evident
+  komt: '/kɔmt/',
   kon: '/kɔn/',
   kraanwagentje: '/ˈkraːnˌwaːɣəntjə/',
   laatsten: '/ˈlaːtstən/',
@@ -75,6 +82,7 @@ export const nl: Record<string, string> = {
   mooiste: '/ˈmoːistə/', // superlative: prettiest
   my: '/mɛi/', // archaic: mij
   nassouwe: '/nɑˈsɑuə/', // archaic: Nassau
+  neemt: '/neːmt/',
   oeroeg: '/ˈuruɣ/', // proper name (Haasse)
   ondersaten: '/ˈɔndərˌzaːtən/', // archaic: subjects
   ontwaakte: '/ɔntˈwaːktə/',
@@ -103,6 +111,8 @@ export const nl: Record<string, string> = {
   stopte: '/ˈstɔptə/',
   tamarindeboomen: '/taːmaːˈrɪndəˌboːmən/', // archaic: tamarind trees
   tegenwoordighe: '/ˈteːɣənˌwoːrdəɣə/', // archaic
+  terechtgekomen: '/təˈrɛxtɣəˌkoːmən/',
+  termurenlaan: '/tɛrˈmyːrənˌlaːn/',
   terugdenk: '/təˈrʏxdɛŋk/', // compound: think back
   torentjes: '/ˈtoːrəntjəs/',
   toverplaatjes: '/ˈtoːvərˌplaːtjəs/', // magic pictures
@@ -113,11 +123,16 @@ export const nl: Record<string, string> = {
   vermoordde: '/vərˈmoːrdə/',
   verschijnt: '/vərˈsxɛint/', // appears
   vlamde: '/ˈvlɑmdə/',
+  vloog: '/vloːx/',
   volcx: '/vɔlks/', // archaic: volks
   volle: '/ˈvɔlə/',
   voorschoten: '/ˈvoːrsxoːtən/', // place name
+  voorzomermiddag: '/ˈvoːrˌzoːmərˌmɪdɑx/',
   vroege: '/ˈvruɣə/',
+  warme: '/ˈvɑrmə/',
   weerd: '/weːrt/', // archaic: waard
+
+  weggegaan: '/ˈvɛxɣəˌɣaːn/',
   werd: '/wɛrt/',
   'west-java': '/ˌwɛstˈjaːva/',
   wintrop: '/ˈvɪntrɔp/', // proper name (Mulisch)

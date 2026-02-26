@@ -81,4 +81,29 @@ export const nl: ForeignSample[] = [
     label: 'Hugo Claus — Het verdriet van België',
     text: 'Daar was iets met de ziel, op het eind van de laan. Louis Seynaeve, elf jaar, stond aan de muur van de houten kapel en ademde de nacht in.',
   },
+  {
+    // https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00684.php
+    label: 'Jan Wolkers — Turks fruit',
+    text: 'Ik was aardig in de rotzooi terechtgekomen nadat ze bij me weggegaan was.',
+  },
+  {
+    // https://www.gutenberg.org/files/29719/29719-h/29719-h.htm
+    label: 'Nescio — De uitvreter',
+    text: 'Behalve den man, die de Sarphatistraat de mooiste plek van Europa vond, heb ik nooit een wonderlijker kerel gekend dan den uitvreter.',
+  },
+  {
+    // https://oblivionsoave.wordpress.com/2022/02/02/de-koperen-tuin/
+    label: 'Simon Vestdijk — De koperen tuin',
+    text: 'Het eerste wat ik mij van W… herinner, waar even na mijn vijfde verjaardag mijn vader tot rechter was benoemd, is de warme voorzomermiddag, toen de bal van mijn broer over de ijzeren krullen van het balkonhek vloog, de verlaten huiskamer in.',
+  },
+  {
+    // https://adoc.pub/willem-frederik-hermans-nooit-meer-slapen.html
+    label: 'W.F. Hermans — Nooit meer slapen',
+    text: 'De portier is een invalide. Op het eikehouten bureautje waaraan hij zit, staat alleen een telefoon, en door een goedkope zonnebril staart hij roerloos voor zich uit.',
+  },
+  {
+    // https://www.scholieren.com/verslag/zekerwetengoed/de-kapellekensbaan-louis-paul-boon
+    label: 'Louis Paul Boon — De Kapellekensbaan',
+    text: 'Als ge vanaf de termurenlaan in erembodegem de tunnel onder de ijzeren weg neemt, komt ge in de kapellekensbaan terecht.',
+  },
 ];

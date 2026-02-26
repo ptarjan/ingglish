@@ -3,6 +3,8 @@ export const ko: Record<string, string> = {
   감나무: '/kam.na.mu/',
   개천: '/kɛ.tɕʰʌn/',
   경성: '/kjʌŋ.sʌŋ/', // old name for Seoul
+  // New sample overrides
+  고달프다: '/ko.dal.pʰɯ.da/',
   고이: '/ko.i/',
   광음: '/kwaŋ.ɯm/',
   금빛: '/kɯm.pit̚/',
@@ -15,10 +17,12 @@ export const ko: Record<string, string> = {
   니까: '/ni.k͈a/', // because (suffix)
   도우다: '/to.u.da/', // to help
   동짓달: '/toŋ.dʑit̚.t͈al/',
+  매어달리다: '/mɛ.ʌ.dal.li.da/',
   물들다: '/mul.dɯl.da/',
   백두산: '/pɛk̚.t͈u.san/', // Mt. Baekdu
   범하다: '/pʌm.ha.da/',
   산모퉁이: '/san.mo.tʰuŋ.i/',
+  소줏집: '/so.dʑut̚.t͈ɕip̚/',
   아라리요: '/a.ɾa.ɾi.jo/', // arirang refrain
   아시다: '/a.ɕi.da/', // to know (honorific)
   약산: '/jak̚.s͈an/', // Yaksan (place)
@@ -26,10 +30,12 @@ export const ko: Record<string, string> = {
   어론: '/ʌ.ɾon/', // archaic: elder
   역겹다: '/jʌk̚.kjʌp̚.t͈a/',
   영변: '/jʌŋ.bjʌn/', // Yeongbyeon (place)
+  오동나무: '/o.doŋ.na.mu/',
   오동잎: '/o.doŋ.ip̚/',
   오시다: '/o.ɕi.da/', // honorific: to come
   왔다: '/wat̚.t͈a/',
   우러르다: '/u.ɾʌ.ɾɯ.da/',
+  원통하다: '/wʌn.tʰoŋ.ha.da/',
   이라: '/i.ɾa/', // copula ending
   이어든: '/i.ʌ.dɯn/', // archaic conditional
   이에: '/i.e/',
@@ -47,6 +53,7 @@ export const ko: Record<string, string> = {
   타작마당: '/tʰa.dʑak̚.ma.daŋ/', // threshing ground
   티끌: '/tʰi.k͈ɯl/',
   피어오르다: '/pʰi.ʌ.o.ɾɯ.da/',
+
   한테: '/han.tʰe/',
   해설피: '/hɛ.sʌl.pʰi/', // poetic: at sunset
   헤다: '/he.da/', // archaic: to count

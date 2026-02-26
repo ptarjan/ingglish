@@ -12,9 +12,12 @@ export const ar: Record<string, string> = {
   استيقظت: '/istajˈqaðˤtu/',
   اسمه: '/ˈismuhu/', // his name
   اعتزاله: '/iʕtiˈzaːlihi/', // his seclusion
+  الأقاوال: '/alʔaqaːˈwiːl/', // the sayings/talk
   الأليفة: '/alʔaˈliːfah/',
+  الأولى: '/alˈʔuːlaː/', // the first (fem.)
   الحياة: '/alħaˈjaːh/',
   الخليفة: '/alxaˈliːfah/',
+  الخليقة: '/alxaˈliːqah/', // creation/nature
   الذكريات: '/aðːikraˈjaːt/',
   السماوات: '/asːamaːˈwaːt/',
   الضالين: '/adˤːaːˈliːn/',
@@ -25,10 +28,12 @@ export const ar: Record<string, string> = {
   الكرامة: '/alkaˈraːmah/',
   اللوى: '/alˈliwaː/',
   المصطفى: '/almusˈtˤafaː/',
+  الندوات: '/annadaˈwaːt/', // the seminars/forums
   امرأة: '/imˈraʔah/',
   اهدنا: '/ihˈdinaː/',
   بأوقافه: '/biʔawˈqaːfihi/', // with his endowments
   بإذنه: '/biʔiðˈnihi/',
+  ببرقة: '/biˈbarqah/', // in Barqa (place)
   بجزائر: '/bidʒaˈzaːʔir/', // with islands
   بداية: '/biˈdaːjah/',
   بذي: '/biˈðiː/', // of importance
@@ -37,11 +42,16 @@ export const ar: Record<string, string> = {
   بعضهم: '/baʕˈdˤuhum/',
   بعينه: '/biˈʕajnihi/',
   بعينيها: '/biʕajˈnajhaː/',
+  // Egyptian National Anthem — بلادي بلادي
+  بلادي: '/biˈlaːdiː/', // my country
   بيدبا: '/bajdaˈbaː/', // Bidpai
   تأخذه: '/taʔˈxuðuhu/',
   تسقني: '/tasˈqiniː/',
   تعلمت: '/taʕalːˈamtu/',
   تقفن: '/taqifˈna/',
+  تقلبت: '/taqalːaˈbat/', // it turned/fluctuated
+  تكلمي: '/takalːaˈmiː/', // speak! (fem.)
+  ثهمد: '/ˈθahmad/', // Thahmad (place name)
   جلست: '/dʒaˈlasat/',
   حارتنا: '/ħaːˈratnaː/',
   حفظهما: '/ħifˈðˤahumaː/',
@@ -68,18 +78,25 @@ export const ar: Record<string, string> = {
   سنين: '/siˈniːn/',
   شهريار: '/ʃahriˈjaːr/', // King Shahryar (1001 Nights)
   شيئا: '/ˈʃajʔan/',
+  صباحا: '/sˤaˈbaːħan/', // morning
+  صحبي: '/ˈsˤaħbiː/', // my companions
   صغارها: '/sˤiˈɣaːruhaː/',
   طالعا: '/ˈtˤaːliʕan/',
   طويلة: '/tˤaˈwiːlah/',
+  // Ibn Khaldun — المقدمة
+  ظاهره: '/ðˤaːˈhirihi/', // in its outward appearance
   عاما: '/ˈʕaːman/',
+  عبلة: '/ˈʕablah/', // Abla (name)
   عجيبة: '/ʕaˈdʒiːbah/',
   عدت: '/ˈʕudtu/',
+  عرفت: '/ʕaˈrafta/', // you knew
   عصره: '/ˈʕasˤrihi/',
   علمه: '/ˈʕilmihi/',
   عليك: '/ʕaˈlajka/',
   عليهم: '/ʕaˈlajhim/',
   عنده: '/ˈʕindahu/',
   عنها: '/ʕanˈhaː/', // about it
+  غايتي: '/ɣaːˈjatiː/', // my goal
   غيبة: '/ˈɣajbah/',
   فإن: '/faˈʔin/',
   فاسقني: '/fasˈqiniː/',
@@ -95,10 +112,18 @@ export const ar: Record<string, string> = {
   قلت: '/ˈqultu/', // I said
   كتابات: '/kitaːˈbaːt/',
   كرسيه: '/kurˈsijːuhu/',
+  // Tarafa ibn al-Abd — المعلقة
+  لخولة: '/lixawˈlatah/', // for Khawla (name)
+  لنيلك: '/liˈnajlika/', // for your Nile
   لوهلة: '/liˈwahlah/',
   مبنية: '/mabˈnijːah/',
+  // Antara ibn Shaddad — المعلقة
+  متردم: '/mutaˈradːim/', // worn out/in ruins
   متقطعا: '/mutaqatˤˈtˤiʕan/',
   مدينة: '/maˈdiːnah/',
+  مطيهم: '/matˤajːaˈhum/', // their riding beasts
+  // Abu al-Ala al-Ma'arri — غير مجد في ملتي
+  ملتي: '/milːaˈtiː/', // my religion/creed
   مهيار: '/mahˈjaːr/', // Mahyar (Adonis)
   ميلاده: '/miːˈlaːdihi/',
   نسجتها: '/nasaˈdʒathaː/',
@@ -108,16 +133,22 @@ export const ar: Record<string, string> = {
   وأعوان: '/waʔaʕˈwaːn/', // and followers
   وإنما: '/waʔinːaˈmaː/',
   وإياك: '/waʔijˈjaːka/',
+  واسلمي: '/waslaˈmiː/', // and farewell/be safe (fem.)
+  واعتقادي: '/waʔiʕtiqaːˈdiː/', // and my belief
   والسنة: '/wasːˈanah/',
   والقال: '/walˈqaːl/', // and the talk
   والمحبة: '/walmaˈħabːah/',
   وبشروطه: '/wabiʃuˈruːtihi/', // and his conditions
   وحكايات: '/waħikaːˈjaːt/',
+  وشبيه: '/waʃaˈbiːh/', // and similar to
   وشمأل: '/waʃaˈmaʔl/',
   وضعه: '/ˈwadˤʕihi/',
+  وعلى: '/waˈʕalaː/', // and upon
   وعليهم: '/waʕaˈlajhim/',
   وغاب: '/waˈɣaːb/',
+  وفؤادي: '/wafuˈʔaːdiː/', // and my heart
   وفطنة: '/waˈfitˤnah/',
+  وقوفا: '/wuˈquːfan/', // standing
   وما: '/waˈmaː/',
   ومتساوين: '/wamutasaːˈwiːn/',
   ومنزل: '/waˈmanzil/',
@@ -127,5 +158,6 @@ export const ar: Record<string, string> = {
   يحيطون: '/juħiːˈtˤuːn/',
   يضعه: '/jadˤaˈʕuhu/',
   يعاملوا: '/juˈʕaːmiluː/',
+  يقولون: '/jaquːˈluːn/', // they say
   يهتموا: '/jahtamˈmuː/', // they cared
 };
