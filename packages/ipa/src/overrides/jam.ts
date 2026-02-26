@@ -102,7 +102,6 @@ export const jam: Record<string, string> = {
 
   Dear: '/dɪə/',
   deh: '/de/', // there
-  deh: '/de/',
   "dere's": '/dɛɾz/', // there's
   deze: '/diːz/', // these
   di: '/dɪ/',
