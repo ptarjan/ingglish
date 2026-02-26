@@ -1,5 +1,6 @@
 import { reverseTranslate, translateSync } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { segmentKhmerText } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
@@ -174,7 +175,9 @@ function OverlayTextarea({
   // Forward mousedown from overlay to textarea so caret/selection work
   const handleOverlayMouseDown = useCallback((e: React.MouseEvent) => {
     const textarea = textareaRef.current;
-    if (!textarea) {return;}
+    if (!textarea) {
+      return;
+    }
     // Focus the textarea and let it handle caret positioning
     textarea.focus();
     // Dispatch a native mousedown at the same coordinates
@@ -199,9 +202,11 @@ function OverlayTextarea({
         placeholder={placeholder}
         ref={(el) => {
           textareaRef.current = el;
-          if (typeof scrollRef === 'function') {scrollRef(el);}
-          else if (scrollRef)
-            {(scrollRef).current = el;}
+          if (typeof scrollRef === 'function') {
+            scrollRef(el);
+          } else if (scrollRef) {
+            scrollRef.current = el;
+          }
         }}
         spellCheck={false}
         value={text}
@@ -403,7 +408,9 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
-  const displayEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
+  // Segment Khmer text so input pane word boundaries match translated output
+  const rawEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
+  const displayEnglish = selectedLanguage === 'km' ? segmentKhmerText(rawEnglish) : rawEnglish;
   const displayIngglish =
     lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
 
@@ -589,7 +596,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             }
             scrollRef={englishRef}
             spokenWordIndex={speakingEnglish ? spokenWordCount : null}
-            text={lastEdited === 'english' ? englishText : displayEnglish}
+            text={displayEnglish}
           />
         </div>
 

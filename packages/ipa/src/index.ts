@@ -11,7 +11,14 @@ export function registerIPA(): void {
   });
 }
 
-export { ipaToIngglish, LANGUAGES, lookupIpa, NOT_FOUND_MARKER, translateForeign } from './foreign';
+export {
+  ipaToIngglish,
+  LANGUAGES,
+  lookupIpa,
+  NOT_FOUND_MARKER,
+  segmentKhmerText,
+  translateForeign,
+} from './foreign';
 export type { IpaDict, Language } from './foreign';
 export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';
 export { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
