@@ -1,12 +1,19 @@
 import { ar } from './samples/ar';
 import { de } from './samples/de';
+import { eo } from './samples/eo';
 import { es } from './samples/es';
+import { fa } from './samples/fa';
 import { fi } from './samples/fi';
 import { fr } from './samples/fr';
 import { is } from './samples/is';
 import { ja } from './samples/ja';
+import { jam } from './samples/jam';
+import { km } from './samples/km';
 import { ko } from './samples/ko';
+import { ma } from './samples/ma';
+import { nb } from './samples/nb';
 import { nl } from './samples/nl';
+import { or as orSamples } from './samples/or';
 import { pt } from './samples/pt';
 import { ro } from './samples/ro';
 import { sv } from './samples/sv';
@@ -31,13 +38,20 @@ import { zh } from './samples/zh';
 export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   ar,
   de,
+  eo,
   es,
+  fa,
   fi,
   fr,
   is,
   ja,
+  jam,
+  km,
   ko,
+  ma,
+  nb,
   nl,
+  or: orSamples,
   pt,
   ro,
   sv,
