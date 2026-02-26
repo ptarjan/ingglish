@@ -77,8 +77,8 @@ export const is: ForeignSample[] = [
     text: 'Það var á dögum Haralds konungs hins hárfagra að maður bjó í Fljótsdal sem Hallfreður hét. Hann nam Hrafnkelsdal allan upp frá Lagarfljóti. Hrafnkell var sonur Hallfreðs. Hrafnkell reisti hof mikið og eflaði blót stór.',
   },
   {
-    // https://en.wikipedia.org/wiki/The_Atom_Station
-    label: 'Halldór Laxness — Atómstöðin',
-    text: 'Norðan var kominn bréfberi á hvítum hesti, eins og títt var á þeim tímum, og hafði meðferðis bréf frá alþingismanni héraðsins.',
+    // https://sagadb.org/vatnsdaela_saga.is
+    label: 'Vatnsdæla saga — Opening',
+    text: 'Maður er nefndur Ketill og var kallaður raumur. Hann var ríkur maður. Hann bjó á þeim bæ er í Raumsdal heitir.',
   },
 ];

@@ -77,8 +77,8 @@ export const ro: ForeignSample[] = [
     text: 'Industria română e admirabilă, e sublimă, putem zice, dar lipsește cu desăvârșire!',
   },
   {
-    // https://en.wikipedia.org/wiki/The_Forbidden_Forest
+    // https://scldr.ro/wp-content/uploads/simple-file-list/mircea-eliade-noaptea-de-sanziene.pdf
     label: 'Mircea Eliade — Noaptea de Sânziene',
-    text: 'Era o noapte fierbinte de vară, la sfîrșitul lui iunie, și mirosea a tei pe toate străzile. Un tînăr mergea agale pe trotuarul bulevardului, cu capul în sus, căutînd parcă ceva printre stele.',
+    text: 'Deschise cât putu de încet ușa și aprinse lumina. Odaia era caldă; mirosea a praf. Obloanele ferestrelor erau lăsate. Alături de pat se afla o masă mare de lemn încărcată cu cărți, aproape toate noi, unele cu foile încă netăiate.',
   },
 ];

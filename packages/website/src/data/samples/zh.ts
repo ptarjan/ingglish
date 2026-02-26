@@ -32,15 +32,18 @@ export const zh: ForeignSample[] = [
     text: '北 国 风 光 千 里 冰 封 万 里 雪 飘 望 长 城 内 外 惟 余 莽 莽 大 河 上 下 顿 失 滔 滔 山 舞 银 蛇 原 驰 蜡 象 欲 与 天 公 试 比 高',
   },
   {
-    label: "Lu Xun — A Madman's Diary",
+    // https://zh.wikisource.org/wiki/狂人日記
+    label: '鲁迅 — 狂人日记',
     text: '今天 晚上 很 好 的 月光 我 不 见 他 已 是 三 十 多 年 今天 见 了 精神 分 外 爽快 才 知道 以前 的 三 十 多 年 全 是 发昏',
   },
   {
-    label: 'Du Fu — Spring View',
+    // https://www.gushiwen.cn/shiwenv_89d3a63c6d7f.aspx
+    label: '杜甫 — 春望',
     text: '国 破 山 河 在 城 春 草 木 深 感 时 花 溅 泪 恨 别 鸟 惊 心 烽火 连 三 月 家 书 抵 万 金 白 头 搔 更 短 浑 欲 不 胜 簪',
   },
   {
-    label: 'Li Bai — Quiet Night Thought & Drinking Alone',
+    // https://www.gushiwen.cn/shiwenv_c35a60c1a8e2.aspx
+    label: '李白 — 静夜思·月下独酌',
     text: '床 前 明 月 光 疑 是 地 上 霜 举 头 望 明 月 低 头 思 故 乡 花 间 一 壶 酒 独 酌 无 相 亲 举 杯 邀 明 月 对 影 成 三 人',
   },
   {
