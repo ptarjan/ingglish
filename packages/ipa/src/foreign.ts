@@ -48,9 +48,39 @@ const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
 export type IpaDict = Record<string, string>;
 
+/**
+ * Khmer word segmenter. Khmer script has no inherent word boundaries,
+ * so we use Intl.Segmenter to insert spaces between words.
+ */
+const khmerSegmenter =
+  typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter('km', { granularity: 'word' })
+    : undefined;
+
 export interface Language {
   code: string;
   label: string;
+}
+
+/** Insert spaces between adjacent Khmer words that have no separator. */
+export function segmentKhmerText(text: string): string {
+  if (khmerSegmenter === undefined) {
+    return text;
+  }
+  // Replace zero-width spaces (common Khmer word boundary marker) with real spaces
+  const normalized = text.replaceAll('\u200B', ' ');
+  const segments = [...khmerSegmenter.segment(normalized)];
+  let result = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i]!;
+    result += seg.segment;
+    // Insert space between adjacent word-like segments (no existing separator)
+    const next = segments[i + 1];
+    if (seg.isWordLike === true && next?.isWordLike === true) {
+      result += ' ';
+    }
+  }
+  return result;
 }
 
 export const LANGUAGES: Language[] = [
@@ -152,8 +182,18 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
       return lemmatizer(dict, lower);
     }
   }
+  // Khmer compound fallback: try splitting into dictionary entries (longest-match-first)
+  if (lang === 'km') {
+    const compound = lookupKhmerCompound(dict, word);
+    if (compound !== undefined) {
+      return compound;
+    }
+  }
   return undefined;
 }
+
+/** Khmer dictionary keys sorted longest-first, min 2 graphemes (avoids single-char nonsense). */
+let khmerDictKeys: string[] | undefined;
 
 /**
  * If no vowel in the ARPAbet array carries a stress digit, apply stress 1
@@ -177,6 +217,27 @@ function applyDefaultStress(arpabet: string[]): string[] {
   return result;
 }
 
+function decomposeKhmer(
+  dict: IpaDict,
+  keys: string[],
+  remaining: string,
+  acc: string[]
+): null | string[] {
+  if (remaining.length === 0) {
+    return acc;
+  }
+  for (const key of keys) {
+    const ipa = dict[key];
+    if (remaining.startsWith(key) && ipa !== undefined) {
+      const result = decomposeKhmer(dict, keys, remaining.slice(key.length), [...acc, ipa]);
+      if (result !== null) {
+        return result;
+      }
+    }
+  }
+  return null;
+}
+
 function getIpaOverride(lang: string, word: string): string | undefined {
   return IPA_WORD_OVERRIDES[lang]?.[word];
 }
@@ -192,6 +253,20 @@ function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
   const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
   const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
   return arpabetToFormat(arpabet, format, { disableRColoring: true });
+}
+
+/**
+ * Try to decompose a Khmer compound into known dictionary entries.
+ * Uses longest-match-first greedy segmentation. Returns concatenated IPA or undefined.
+ */
+function lookupKhmerCompound(dict: IpaDict, word: string): string | undefined {
+  // Exclude bare single-consonant entries (1 codepoint) to avoid false compound splits.
+  // Real Khmer words are 2+ codepoints (consonant + vowel sign / final consonant).
+  khmerDictKeys ??= Object.keys(dict)
+    .filter((k) => k.length >= 2)
+    .toSorted((a, b) => b.length - a.length);
+  const parts = decomposeKhmer(dict, khmerDictKeys, word, []);
+  return parts !== null && parts.length >= 2 ? parts.join(' ') : undefined;
 }
 
 /** Strip combining diacritics (accents, tildes, etc.) from a string. */
@@ -220,7 +295,10 @@ export function translateForeign(
 ): string {
   let atSentenceStart = true;
 
-  return normalizeApostrophes(text)
+  // Khmer has no inherent word boundaries — segment before processing
+  const processed = lang === 'km' ? segmentKhmerText(text) : text;
+
+  return normalizeApostrophes(processed)
     .split(WHITESPACE_SPLIT_RE)
     .map((segment) => {
       // Preserve whitespace segments as-is

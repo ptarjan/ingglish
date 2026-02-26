@@ -3,7 +3,13 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { registerPronunciation } from '@ingglish/phonemes';
 import type { IpaDict } from './foreign';
-import { LANGUAGES, lookupIpa, translateForeign, NOT_FOUND_MARKER } from './foreign';
+import {
+  LANGUAGES,
+  lookupIpa,
+  segmentKhmerText,
+  translateForeign,
+  NOT_FOUND_MARKER,
+} from './foreign';
 
 registerPronunciation();
 
@@ -229,7 +235,7 @@ describe('foreign sample coverage', () => {
     is: 1,
     ja: 1,
     jam: 1,
-    km: 0, // Khmer script has no word boundaries — needs word segmentation
+    km: 1,
     ko: 1,
     ma: 1,
     nb: 1,
@@ -268,8 +274,10 @@ describe('foreign sample coverage', () => {
         let found = 0;
 
         for (const sample of samples) {
+          // Khmer has no inherent word boundaries — segment before splitting
+          const text = code === 'km' ? segmentKhmerText(sample.text) : sample.text;
           // Extract words: split on whitespace, strip punctuation
-          const words = sample.text
+          const words = text
             .split(/\s+/)
             // Preserve combining marks (\p{M}) for scripts like Odia, Khmer
             .map((w) => w.replace(/^[^\p{L}\p{M}]+/u, '').replace(/[^\p{L}\p{M}]+$/u, ''))
