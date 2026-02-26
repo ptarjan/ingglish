@@ -86,4 +86,29 @@ export const fi: ForeignSample[] = [
     label: 'J.L. Runeberg — Saarijärven Paavo (loppu)',
     text: "Vaimon käteen tarttuin Paavo lausui: «Vaimo, vaimo, sit' ei kuri kaada, veljeään ken hädässä ei hylkää. Pane leipään puolet petäjäistä, veihän naapurimme touon halla.»",
   },
+  {
+    // https://fi.wikisource.org/wiki/Kalevala_-_Viideskymmenes_runo
+    label: 'Kalevala — Runo 50 (Marjatta)',
+    text: 'Marjatta, korea kuopus, se kauan kotona kasvoi, korkean ison kotona, emon tuttavan tuvilla. Piti viiet vitjat poikki, kuuet renkahat kulutti isonsa avaimilla, helmassa helottavilla.',
+  },
+  {
+    // https://www.gutenberg.org/cache/epub/10481/pg10481-images.html
+    label: 'Juhani Aho — Rautatie',
+    text: 'Pakkanen paukkaa nurkissa, räiskää pitkin aidan selkiä ja seuloo huurua puihin ja pensaihin. Aurinko kultaa kirkon ja tapulin ristejä, paistaa hauskasti härmäiseen koivikkoon ja valaisee joka savupatsaan, joita kiemuroitellen kumpuilee piipuista ja lakeistorvista läheltä ja kaukaa.',
+  },
+  {
+    // https://www.ihmisoikeuskeskus.fi/ihmisoikeudet/yk/iojulistus/
+    label: 'YK — Ihmisoikeuksien julistus, 1. artikla',
+    text: 'Kaikki ihmiset syntyvät vapaina ja yhdenvertaisina arvoltaan ja oikeuksiltaan. Heille on annettu järki ja omatunto, ja heidän on toimittava toisiaan kohtaan veljeyden hengessä.',
+  },
+  {
+    // https://www.gutenberg.org/cache/epub/10863/pg10863-images.html
+    label: 'Juhani Aho — Juha',
+    text: 'Mies — pitkäselkä, rohdinpaita, virsujalka — hakkaa kaskea korkean vaaran rinteellä. Kun koivu kaatuu, alkaa toisen lehvistö jo tutista ja lastut lennellä. Hän kaataa niitä säärensä paksuisia kuin pajukkoa raivaten, selkäänsä oikaisematta.',
+  },
+  {
+    // https://matti.naskali.net/fin/einoleino/lapinkesa.htm
+    label: 'Eino Leino — Lapin kesä',
+    text: 'Lapissa kaikki kukkii nopeasti, maa, ruoho, ohra, vaivaiskoivutkin. On vastaus vain yksi: Lapin suvi. On lyhyt Lapin linnunlaulu, huvi ja kukkain kukoistus ja riemu muu.',
+  },
 ];

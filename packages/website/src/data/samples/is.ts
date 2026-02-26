@@ -81,4 +81,34 @@ export const is: ForeignSample[] = [
     label: 'Vatnsdæla saga — Opening',
     text: 'Maður er nefndur Ketill og var kallaður raumur. Hann var ríkur maður. Hann bjó á þeim bæ er í Raumsdal heitir.',
   },
+  {
+    // https://heimskringla.no/wiki/Ynglinga_saga
+    label: 'Snorri Sturluson — Heimskringla',
+    text: 'Kringla heimsins, sú er mannfólkit byggir, er mjök vágskorin; ganga höf stór or útsjánum inn í jörðina. Er þat kunnigt, at haf gengr frá Nörvasundum ok alt út til Jórsalalands.',
+  },
+  {
+    // https://sagadb.org/viga-glums_saga.is
+    label: 'Víga-Glúms saga — Opening',
+    text: 'Ingjaldur hét maður, sonur Helga hins magra. Hann bjó að Þverá í Eyjafirði. Hann var forn goðorðsmaður og höfðingi mikill og þá aldraður mjög er sagan gerðist.',
+  },
+  {
+    // https://sagadb.org/bandamanna_saga.is
+    label: 'Bandamanna saga — Opening',
+    text: 'Ófeigur hét maður er bjó vestur í Miðfirði á þeim bæ er að Reykjum heitir. Hann var Skíðason en móðir hans hét Gunnlaug.',
+  },
+  {
+    // https://sagadb.org/kormaks_saga.is
+    label: 'Kormáks saga — Opening',
+    text: 'Haraldur konungur hinn hárfagri réð fyrir Noregi þá er saga sjá gerðist. Í þann tíma var sá höfðingi í ríkinu er Kormákur hét, víkverskur að ætt, ríkur og kynstór.',
+  },
+  {
+    // https://heimskringla.no/wiki/Íslendingabók
+    label: 'Ari Þorgilsson — Íslendingabók',
+    text: 'Ísland byggðist fyrst ór Norvegi á dögum Haralds ins hárfagra, Hálfdanarsonar ins svarta. Ingólfr hét maðr nórrænn, er sannliga er sagt, at færi fyrst þaðan til Íslands.',
+  },
+  {
+    // https://sagadb.org/fostbraedra_saga.is
+    label: 'Fóstbræðra saga — Opening',
+    text: 'Á dögum hins helga Ólafs konungs voru margir höfðingjar undir hans konungdæmi, eigi aðeins í Noregi heldur í öllum löndum, þeim er hans konungdómur stóð yfir.',
+  },
 ];
