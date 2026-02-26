@@ -201,9 +201,12 @@ function OverlayTextarea({
             if (/^\s+$/.test(seg)) {
               return <span key={i}>{seg}</span>;
             }
-            const idx = wordIndex++;
-            const isHighlighted = idx === highlightedWordIndex;
-            const isSpoken = idx === spokenWordIndex;
+            // Punctuation-only tokens (em dashes, ellipses, etc.) don't get
+            // boundary events from the Speech API, so skip the word index.
+            const isWord = /\p{L}/u.test(seg);
+            const idx = isWord ? wordIndex++ : -1;
+            const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
+            const isSpoken = idx >= 0 && idx === spokenWordIndex;
             return (
               <span
                 className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
