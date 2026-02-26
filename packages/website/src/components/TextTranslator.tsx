@@ -160,6 +160,7 @@ function OverlayTextarea({
   text: string;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLTextAreaElement>) => {
       if (overlayRef.current) {
@@ -169,6 +170,21 @@ function OverlayTextarea({
     },
     [onScroll]
   );
+
+  // Forward mousedown from overlay to textarea so caret/selection work
+  const handleOverlayMouseDown = useCallback((e: React.MouseEvent) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {return;}
+    // Focus the textarea and let it handle caret positioning
+    textarea.focus();
+    // Dispatch a native mousedown at the same coordinates
+    const event = new MouseEvent('mousedown', {
+      bubbles: true,
+      clientX: e.clientX,
+      clientY: e.clientY,
+    });
+    textarea.dispatchEvent(event);
+  }, []);
 
   const segments = text.split(/(\s+)/);
   let wordIndex = 0;
@@ -181,13 +197,19 @@ function OverlayTextarea({
         onFocus={onFocus}
         onScroll={handleScroll}
         placeholder={placeholder}
-        ref={scrollRef}
+        ref={(el) => {
+          textareaRef.current = el;
+          if (typeof scrollRef === 'function') {scrollRef(el);}
+          else if (scrollRef)
+            {(scrollRef).current = el;}
+        }}
         spellCheck={false}
         value={text}
       />
       {text.trim() && (
         <div
           className={`overlay-textarea-display text-input ${hoverable ? 'hoverable' : ''}`}
+          onMouseDown={hoverable ? handleOverlayMouseDown : undefined}
           onMouseLeave={
             hoverable
               ? () => {
@@ -558,6 +580,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   }
                 : undefined
             }
+            onHoverWord={setHoveredWordIndex}
             onScroll={() => {
               handleScroll('english');
             }}
