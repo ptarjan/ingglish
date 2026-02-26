@@ -75,6 +75,7 @@ export const sv: Record<string, string> = {
   silverne: '/ˈsɪlvɛɳɛ/',
   skäms: '/ɧɛmːs/',
   snödropparna: '/ˈsnøːˌdrɔpːaɳa/',
+  sommarmorgon: '/ˈsɔmarˌmɔrɡɔn/',
   spiralgalax: '/spɪˈrɑːlɡaˌlaks/',
   tär: '/tɛːr/',
   telefonsamtal: '/tɛlɛˈfoːnˌsamˌtɑːl/',
