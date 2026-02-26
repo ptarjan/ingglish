@@ -27,18 +27,15 @@ test.describe('Experiment presets', () => {
     await ipaLink.scrollIntoViewIfNeeded();
     await ipaLink.click();
 
-    // Wait for translation to update
-    await page.waitForTimeout(500);
-
-    // Get the translated text
+    // Wait for IPA translation to appear (replaces fixed timeout with assertion-based wait)
     const output = page.locator('.experiment-words');
+    await expect(output).toContainText('bʌt', { timeout: 10_000 });
+
     const text = await output.textContent();
 
     // IPA output should NOT start with a capital letter
     // "But" -> "bʌt" not "Bʌt"
     expect(text).not.toMatch(/^[A-Z]/);
-    // Check that "bʌt" appears (lowercase b)
-    expect(text).toContain('bʌt');
     // Should NOT contain "Bʌt" (capital B)
     expect(text).not.toContain('Bʌt');
   });

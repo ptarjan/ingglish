@@ -551,17 +551,14 @@ test.describe('Text Translator', () => {
   });
 
   test('English pane does not flicker when focusing Ingglish pane', async () => {
-    // Load sample text
-    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
-
     const englishInput = page.locator('textarea.text-input').first();
     const ingglishInput = page.locator('textarea.text-input').last();
 
+    // Use fixed text (not Random) to avoid non-deterministic sample loading
+    await englishInput.fill('The quick brown fox jumps over the lazy dog.');
+
     // Wait for translation to complete
     await expect(ingglishInput).not.toBeEmpty();
-
-    const englishBefore = await englishInput.inputValue();
-    expect(englishBefore.length).toBeGreaterThan(0);
 
     // Install a frame-level monitor on BOTH panes' textarea values and overlay visibility
     await page.evaluate(() => {
@@ -681,6 +678,10 @@ test.describe('Text Translator', () => {
   });
 
   test('hovering output word highlights corresponding input word', async () => {
+    test.skip(
+      test.info().project.name.includes('mobile'),
+      'hover is not supported on touch devices'
+    );
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('hello world');
 
@@ -700,6 +701,10 @@ test.describe('Text Translator', () => {
   });
 
   test('hovering input word highlights corresponding output word', async () => {
+    test.skip(
+      test.info().project.name.includes('mobile'),
+      'hover is not supported on touch devices'
+    );
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('hello world');
 
@@ -719,6 +724,10 @@ test.describe('Text Translator', () => {
   });
 
   test('highlight clears when mouse leaves pane', async () => {
+    test.skip(
+      test.info().project.name.includes('mobile'),
+      'hover is not supported on touch devices'
+    );
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('hello world');
 
