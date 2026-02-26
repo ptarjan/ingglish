@@ -630,6 +630,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             />
           ) : (
             <OverlayTextarea
+              highlightedWordIndex={hoveredWordIndex}
               onChange={handleIngglishChange}
               onFocus={
                 lastEdited === 'english' && computedIngglish !== null
