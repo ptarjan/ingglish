@@ -206,11 +206,6 @@
   transition: none;
 }
 
-.overlay-textarea-display.hoverable .word-token {
-  pointer-events: auto;
-  cursor: text;
-}
-
 /* Foreign output display */
 .foreign-output {
   overflow-y: auto;

@@ -161,7 +161,6 @@ function OverlayTextarea({
   text: string;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLTextAreaElement>) => {
       if (overlayRef.current) {
@@ -172,58 +171,58 @@ function OverlayTextarea({
     [onScroll]
   );
 
-  // Forward mousedown from overlay to textarea so caret/selection work
-  const handleOverlayMouseDown = useCallback((e: React.MouseEvent) => {
-    const textarea = textareaRef.current;
-    if (!textarea) {
+  // Detect which overlay word token is under the cursor by temporarily
+  // swapping pointer-events so elementFromPoint hits the overlay spans.
+  // The textarea stays on top for native caret/selection behaviour.
+  const lastHoveredRef = useRef<null | number>(null);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLTextAreaElement>) => {
+      if (!onHoverWord || !overlayRef.current) {
+        return;
+      }
+      const textarea = e.currentTarget;
+      const overlay = overlayRef.current;
+      textarea.style.pointerEvents = 'none';
+      overlay.style.pointerEvents = 'auto';
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      textarea.style.pointerEvents = '';
+      overlay.style.pointerEvents = '';
+      const attr = el instanceof HTMLElement ? el.dataset.wordIndex : undefined;
+      const wordIdx = attr === undefined ? null : Number.parseInt(attr, 10);
+      if (wordIdx !== lastHoveredRef.current) {
+        lastHoveredRef.current = wordIdx;
+        onHoverWord(wordIdx);
+      }
+    },
+    [onHoverWord]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (!onHoverWord) {
       return;
     }
-    // Focus the textarea and let it handle caret positioning
-    textarea.focus();
-    // Dispatch a native mousedown at the same coordinates
-    const event = new MouseEvent('mousedown', {
-      bubbles: true,
-      clientX: e.clientX,
-      clientY: e.clientY,
-    });
-    textarea.dispatchEvent(event);
-  }, []);
+    lastHoveredRef.current = null;
+    onHoverWord(null);
+  }, [onHoverWord]);
 
   const segments = text.split(/(\s+)/);
   let wordIndex = 0;
-  const hoverable = !!onHoverWord;
   return (
     <div className="overlay-textarea">
       <textarea
         className="text-input"
         onChange={onChange}
         onFocus={onFocus}
+        onMouseLeave={onHoverWord ? handleMouseLeave : undefined}
+        onMouseMove={onHoverWord ? handleMouseMove : undefined}
         onScroll={handleScroll}
         placeholder={placeholder}
-        ref={(el) => {
-          textareaRef.current = el;
-          if (typeof scrollRef === 'function') {
-            scrollRef(el);
-          } else if (scrollRef) {
-            scrollRef.current = el;
-          }
-        }}
+        ref={scrollRef}
         spellCheck={false}
         value={text}
       />
       {text.trim() && (
-        <div
-          className={`overlay-textarea-display text-input ${hoverable ? 'hoverable' : ''}`}
-          onMouseDown={hoverable ? handleOverlayMouseDown : undefined}
-          onMouseLeave={
-            hoverable
-              ? () => {
-                  onHoverWord(null);
-                }
-              : undefined
-          }
-          ref={overlayRef}
-        >
+        <div className="overlay-textarea-display text-input" ref={overlayRef}>
           {segments.map((seg, i) => {
             if (/^\s+$/.test(seg)) {
               return <span key={i}>{seg}</span>;
@@ -237,14 +236,8 @@ function OverlayTextarea({
             return (
               <span
                 className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
+                data-word-index={idx >= 0 ? idx : undefined}
                 key={i}
-                onMouseEnter={
-                  hoverable
-                    ? () => {
-                        onHoverWord(idx);
-                      }
-                    : undefined
-                }
               >
                 {seg}
               </span>
