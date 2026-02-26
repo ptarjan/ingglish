@@ -1,4 +1,4 @@
-import { type BrowserContext, expect, type Page, test } from '@playwright/test';
+import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
 
 import { blockExternalNetwork } from './test-utils';
 
@@ -42,6 +42,14 @@ declare global {
     __inp?: INPData;
     __lcp?: LCPData;
   }
+}
+
+/** Move the mouse to the center of a locator's bounding box. */
+async function hoverAt(page: Page, locator: Locator): Promise<void> {
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by assertion above
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
 }
 
 /**
@@ -557,8 +565,9 @@ test.describe('Text Translator', () => {
     // Use fixed text (not Random) to avoid non-deterministic sample loading
     await englishInput.fill('The quick brown fox jumps over the lazy dog.');
 
-    // Wait for translation to complete
-    await expect(ingglishInput).not.toBeEmpty();
+    // Wait for the specific translation to appear (not just "not empty",
+    // which could pass with stale text from a previous test)
+    await expect(ingglishInput).toHaveValue(/kwik broun foks/, { timeout: 10_000 });
 
     // Install a frame-level monitor on BOTH panes' textarea values and overlay visibility
     await page.evaluate(() => {
@@ -689,8 +698,9 @@ test.describe('Text Translator', () => {
     const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
     await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
 
-    // Hover over the first word in the output overlay
-    await outputOverlay.locator('.word-token').first().hover();
+    // Move mouse to the first word's position (hover is detected via textarea
+    // onMouseMove + elementFromPoint, so we need to move to the coordinates)
+    await hoverAt(page, outputOverlay.locator('.word-token').first());
 
     // The first word in the INPUT overlay should get the highlighted class
     const inputOverlay = page.locator('.input-section .overlay-textarea-display');
@@ -712,9 +722,9 @@ test.describe('Text Translator', () => {
     const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
     await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
 
-    // Hover over the second word in the input overlay
+    // Move mouse to the second input word's position
     const inputOverlay = page.locator('.input-section .overlay-textarea-display');
-    await inputOverlay.locator('.word-token').nth(1).hover();
+    await hoverAt(page, inputOverlay.locator('.word-token').nth(1));
 
     // The second word in the OUTPUT overlay should get the highlighted class
     await expect(outputOverlay.locator('.word-token').nth(1)).toHaveClass(/highlighted/);
@@ -734,8 +744,8 @@ test.describe('Text Translator', () => {
     const outputOverlay = page.locator('.ingglish-section .overlay-textarea-display');
     await expect(outputOverlay.locator('.word-token').first()).toBeVisible();
 
-    // Hover a word to activate highlight
-    await outputOverlay.locator('.word-token').first().hover();
+    // Move mouse to word position to activate highlight
+    await hoverAt(page, outputOverlay.locator('.word-token').first());
     const inputOverlay = page.locator('.input-section .overlay-textarea-display');
     await expect(inputOverlay.locator('.word-token').first()).toHaveClass(/highlighted/);
 
