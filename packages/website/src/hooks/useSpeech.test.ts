@@ -266,6 +266,29 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBe(1);
   });
 
+  it('skips punctuation-only segments when computing word index', () => {
+    // "well — actually" has an em dash that is a separate non-whitespace segment
+    // but should NOT count as a word (no letters), matching OverlayTextarea behavior
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('well \u2014 actually');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // "well" at charIndex 0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(0);
+
+    // "actually" at charIndex 7 → word 1 (not 2, because "—" was skipped)
+    act(() => {
+      utterance.onboundary?.({ charIndex: 7, name: 'word' });
+    });
+    expect(result.current[4]).toBe(1);
+  });
+
   it('resets wordCount on stop', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 

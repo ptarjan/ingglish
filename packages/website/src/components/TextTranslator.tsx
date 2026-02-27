@@ -32,6 +32,7 @@ interface ForeignOutputDisplayProps {
   onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
+  spokenWordIndex?: null | number;
   text: string;
 }
 
@@ -122,6 +123,7 @@ function ForeignOutputDisplay({
   onHoverWord,
   onScroll,
   scrollRef,
+  spokenWordIndex = null,
   text,
 }: ForeignOutputDisplayProps) {
   if (dictLoading) {
@@ -164,11 +166,12 @@ function ForeignOutputDisplay({
         }
         const idx = wordIndex++;
         const isHighlighted = idx === highlightedWordIndex;
+        const isSpoken = idx === spokenWordIndex;
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           return (
             <span
-              className={`word-token foreign-not-found ${isHighlighted ? 'highlighted' : ''}`}
+              className={`word-token foreign-not-found ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
               key={i}
               onMouseEnter={
                 onHoverWord
@@ -185,7 +188,7 @@ function ForeignOutputDisplay({
         }
         return (
           <span
-            className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
+            className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
             key={i}
             onMouseEnter={
               onHoverWord
@@ -770,6 +773,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                 handleScroll('ingglish');
               }}
               scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
+              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
               text={displayIngglish}
             />
           ) : (
