@@ -8,20 +8,17 @@
   gap: 1.5rem;
 }
 
-/* Language selector (inline in section header) */
+/* Language & sample selectors — match btn-secondary / btn-icon height */
 .language-select,
 .sample-select {
-  padding: 0.25rem 0.5rem;
+  padding: 0.75rem;
   font-size: 0.875rem;
-  font-weight: normal;
-  line-height: 1.25;
+  font-weight: 500;
   color: var(--color-text);
-  text-transform: none;
-  letter-spacing: normal;
   cursor: pointer;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
 }
 
 [data-theme='dark'] .language-select option,
@@ -101,8 +98,8 @@
 }
 
 .format-cycle-btn {
-  padding: 0.125rem 0.5rem;
-  font-size: 1rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
@@ -110,7 +107,7 @@
   cursor: pointer;
   background: none;
   border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   transition:
     background-color 0.15s,
     border-color 0.15s;
@@ -255,7 +252,7 @@
   }
 
   .format-cycle-btn {
-    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .section-header-row {
@@ -270,5 +267,6 @@
   .language-select,
   .sample-select {
     max-width: 100%;
+    padding: 0.5rem 0.75rem;
   }
 }
