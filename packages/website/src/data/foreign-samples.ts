@@ -1,5 +1,6 @@
 import { ar } from './samples/ar';
 import { de } from './samples/de';
+import { en } from './samples/en';
 import { eo } from './samples/eo';
 import { es } from './samples/es';
 import { fa } from './samples/fa';
@@ -25,7 +26,7 @@ import { zh } from './samples/zh';
 
 /**
  * Famous literature, speeches, and poetry for each supported language.
- * Used as example text on the /text page when a foreign language is selected.
+ * Used as example text on the /text page and experiment page.
  *
  * Each sample should be substantial (2-4 sentences or a full stanza).
  *
@@ -35,9 +36,10 @@ import { zh } from './samples/zh';
  *
  * Per-language samples are in ./samples/<lang>.ts for easier editing.
  */
-export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
+export const ALL_SAMPLES: Record<string, ForeignSample[]> = {
   ar,
   de,
+  en,
   eo,
   es,
   fa,
@@ -61,8 +63,11 @@ export const FOREIGN_SAMPLES: Record<string, ForeignSample[]> = {
   zh,
 };
 
-export function pickForeignSample(langCode: string, currentText: string): string | undefined {
-  const samples = FOREIGN_SAMPLES[langCode];
+/** @deprecated Use ALL_SAMPLES instead */
+export const FOREIGN_SAMPLES = ALL_SAMPLES;
+
+export function pickSample(langCode: string, currentText: string): string | undefined {
+  const samples = ALL_SAMPLES[langCode];
   if (!samples || samples.length === 0) {
     return undefined;
   }
@@ -74,3 +79,6 @@ export function pickForeignSample(langCode: string, currentText: string): string
   }
   return pick.text;
 }
+
+/** @deprecated Use pickSample instead */
+export const pickForeignSample = pickSample;

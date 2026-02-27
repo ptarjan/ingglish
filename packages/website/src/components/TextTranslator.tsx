@@ -4,8 +4,7 @@ import { segmentKhmerText } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
-import { pickForeignSample } from '../data/foreign-samples';
-import { pickRandomPassage } from '../data/sample-text';
+import { ALL_SAMPLES, pickSample } from '../data/foreign-samples';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
@@ -40,6 +39,80 @@ interface TextTranslatorProps {
   initialLang?: string;
   initialText?: string;
   onShare?: (text: string, lang?: string) => string;
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <line x1="18" x2="6" y1="6" y2="18" />
+      <line x1="6" x2="18" y1="6" y2="18" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <rect height="13" rx="2" width="13" x="9" y="9" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function DiceIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <rect height="18" rx="2" width="18" x="3" y="3" />
+      <circle cx="8.5" cy="8.5" fill="currentColor" r="1.5" stroke="none" />
+      <circle cx="15.5" cy="8.5" fill="currentColor" r="1.5" stroke="none" />
+      <circle cx="8.5" cy="15.5" fill="currentColor" r="1.5" stroke="none" />
+      <circle cx="15.5" cy="15.5" fill="currentColor" r="1.5" stroke="none" />
+    </svg>
+  );
 }
 
 function ForeignOutputDisplay({
@@ -252,6 +325,27 @@ function OverlayTextarea({
   );
 }
 
+function ShareIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+      <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+    </svg>
+  );
+}
+
 function SpeakerIcon() {
   return (
     <svg
@@ -425,16 +519,30 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     setLastEdited('ingglish');
   }, []);
 
+  // Sample data for current language
+  const samples = useMemo(() => ALL_SAMPLES[selectedLanguage] ?? [], [selectedLanguage]);
+  const selectedSampleIndex = samples.findIndex((s) => s.text === englishText);
+
+  const handleSampleSelect = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const index = Number.parseInt(e.target.value, 10);
+      if (!Number.isNaN(index) && samples[index] !== undefined) {
+        setEnglishText(samples[index].text);
+        setLastEdited('english');
+        trackTextTranslate(samples[index].text.length, format);
+      }
+    },
+    [samples, format]
+  );
+
   const handleRandom = useCallback(() => {
-    const text = isForeignMode
-      ? pickForeignSample(selectedLanguage, englishText)
-      : pickRandomPassage(englishText);
+    const text = pickSample(selectedLanguage, englishText);
     if (text) {
       setEnglishText(text);
       setLastEdited('english');
       trackTextTranslate(text.length, format);
     }
-  }, [format, englishText, isForeignMode, selectedLanguage]);
+  }, [format, englishText, selectedLanguage]);
 
   const handleCopyEnglish = useCallback(() => {
     if (displayEnglish) {
@@ -537,6 +645,21 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               </select>
             </h2>
             <div className="button-group">
+              <select
+                aria-label="Load sample passage"
+                className="sample-select"
+                onChange={handleSampleSelect}
+                value={selectedSampleIndex === -1 ? '' : String(selectedSampleIndex)}
+              >
+                <option disabled value="">
+                  Sample...
+                </option>
+                {samples.map((s, i) => (
+                  <option key={i} value={i}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
               {speechSupported && hasVoice(isForeignMode ? selectedLanguage : 'en') && (
                 <button
                   aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
@@ -548,27 +671,42 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
                 </button>
               )}
-              <button className="btn-secondary" onClick={handleRandom}>
-                Random
+              <button
+                aria-label="Random sample"
+                className="btn-secondary btn-icon"
+                onClick={handleRandom}
+                title="Random"
+              >
+                <DiceIcon />
               </button>
               <button
-                className={`btn-secondary ${copiedEnglish ? 'btn-copied' : ''}`}
+                aria-label={copiedEnglish ? 'Copied' : 'Copy'}
+                className={`btn-secondary btn-icon ${copiedEnglish ? 'btn-copied' : ''}`}
                 disabled={!displayEnglish}
                 onClick={handleCopyEnglish}
+                title={copiedEnglish ? 'Copied!' : 'Copy'}
               >
-                {copiedEnglish ? 'Copied!' : 'Copy'}
+                {copiedEnglish ? <CheckIcon /> : <CopyIcon />}
               </button>
               {onShare && (
                 <button
-                  className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
+                  aria-label={copiedShare ? 'Link copied' : 'Share'}
+                  className={`btn-secondary btn-icon ${copiedShare ? 'btn-copied' : ''}`}
                   disabled={!hasContent}
                   onClick={handleShare}
+                  title={copiedShare ? 'Copied!' : 'Share'}
                 >
-                  {copiedShare ? 'Copied!' : 'Share'}
+                  {copiedShare ? <CheckIcon /> : <ShareIcon />}
                 </button>
               )}
-              <button className="btn-secondary" disabled={!hasContent} onClick={handleClear}>
-                Clear
+              <button
+                aria-label="Clear"
+                className="btn-secondary btn-icon"
+                disabled={!hasContent}
+                onClick={handleClear}
+                title="Clear"
+              >
+                <CloseIcon />
               </button>
             </div>
           </div>
@@ -612,11 +750,13 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             </h2>
             <div className="button-group">
               <button
-                className={`btn-secondary ${copiedIngglish ? 'btn-copied' : ''}`}
+                aria-label={copiedIngglish ? 'Copied' : 'Copy'}
+                className={`btn-secondary btn-icon ${copiedIngglish ? 'btn-copied' : ''}`}
                 disabled={!displayIngglishClean}
                 onClick={handleCopyIngglish}
+                title={copiedIngglish ? 'Copied!' : 'Copy'}
               >
-                {copiedIngglish ? 'Copied!' : 'Copy'}
+                {copiedIngglish ? <CheckIcon /> : <CopyIcon />}
               </button>
             </div>
           </div>

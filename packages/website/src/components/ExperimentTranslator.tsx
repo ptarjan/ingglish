@@ -1,6 +1,6 @@
 import { type TranslatedToken, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
-import { pickRandomPassage, SAMPLE_PASSAGES } from '../data/sample-text';
+import { ALL_SAMPLES, pickSample } from '../data/foreign-samples';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
 
@@ -35,19 +35,27 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
     return { diffMap: buildDiffMap(expTokens, deferredText, 'experiment'), tokens: expTokens };
   }, [deferredText, version]);
 
-  const handleSample = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(e.target.value, 10);
-    if (!Number.isNaN(index) && SAMPLE_PASSAGES[index] !== undefined) {
-      setText(SAMPLE_PASSAGES[index].text);
-    }
-  }, []);
+  const enSamples = ALL_SAMPLES.en!;
+
+  const handleSample = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const index = Number.parseInt(e.target.value, 10);
+      if (!Number.isNaN(index) && enSamples[index] !== undefined) {
+        setText(enSamples[index].text);
+      }
+    },
+    [enSamples]
+  );
 
   const handleRandom = useCallback(() => {
-    setText(pickRandomPassage(text));
+    const sample = pickSample('en', text);
+    if (sample) {
+      setText(sample);
+    }
   }, [text]);
 
   const hasContent = text.trim().length > 0;
-  const selectedIndex = SAMPLE_PASSAGES.findIndex((p) => p.text === text);
+  const selectedIndex = enSamples.findIndex((p) => p.text === text);
 
   return (
     <div className="experiment-translator">
@@ -62,7 +70,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
           <option disabled value="">
             Load sample...
           </option>
-          {SAMPLE_PASSAGES.map((p, i) => (
+          {enSamples.map((p, i) => (
             <option key={i} value={i}>
               {p.label}
             </option>
