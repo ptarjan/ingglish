@@ -340,6 +340,34 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBe(1);
   });
 
+  it('falls back to counter when charIndex is always 0 (Windows TTS)', () => {
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('hello beautiful world');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // First boundary: charIndex=0 — ambiguous, could be correct
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(0);
+
+    // Second boundary: charIndex=0 again — broken, should trigger fallback
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    // Fallback counter: this is boundary event #1 → word 1
+    expect(result.current[4]).toBe(1);
+
+    // Third boundary: still charIndex=0 — stays in fallback mode
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(2);
+  });
+
   it('resets wordCount on utterance end', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 

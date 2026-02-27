@@ -192,18 +192,38 @@ export function useSpeech(): [
         pos += seg.length;
       }
 
+      // Some TTS voices (especially non-English on macOS) report charIndex=0
+      // for every boundary event. Track a simple counter as fallback.
+      let boundaryCounter = -1;
+      let lastCharIndex = -1;
+      let useCharIndex = true;
+
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
-          // Find the word whose start position is at or before charIndex
-          let wordIndex = 0;
-          for (let i = 1; i < wordStarts.length; i++) {
-            if (wordStarts[i]! <= event.charIndex) {
-              wordIndex = i;
-            } else {
-              break;
-            }
+          boundaryCounter++;
+
+          // Detect broken charIndex: if it never advances past 0 after
+          // the first event, fall back to the simple counter.
+          if (boundaryCounter > 0 && event.charIndex === 0 && lastCharIndex === 0) {
+            useCharIndex = false;
           }
-          setWordCount(wordIndex);
+          lastCharIndex = event.charIndex;
+
+          if (useCharIndex) {
+            // Map charIndex to visual word index
+            let wordIndex = 0;
+            for (let i = 1; i < wordStarts.length; i++) {
+              if (wordStarts[i]! <= event.charIndex) {
+                wordIndex = i;
+              } else {
+                break;
+              }
+            }
+            setWordCount(wordIndex);
+          } else {
+            // Fallback: use boundary event counter, clamped to valid range
+            setWordCount(Math.min(boundaryCounter, wordStarts.length - 1));
+          }
         }
       };
       utterance.onend = () => {
