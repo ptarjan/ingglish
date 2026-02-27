@@ -175,11 +175,32 @@ export function useSpeech(): [
         }
       }
 
-      let boundaryIndex = -1;
+      // Precompute word start positions so we can map charIndex → word index.
+      // The speech synthesizer may fire boundary events that don't map 1:1 to
+      // whitespace-delimited words (e.g. punctuation, contractions, numbers),
+      // so we use charIndex rather than a simple counter.
+      const wordStarts: number[] = [];
+      const segments = text.split(/(\s+)/);
+      let pos = 0;
+      for (const seg of segments) {
+        if (seg && !/^\s+$/.test(seg)) {
+          wordStarts.push(pos);
+        }
+        pos += seg.length;
+      }
+
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
-          boundaryIndex++;
-          setWordCount(boundaryIndex);
+          // Find the word whose start position is at or before charIndex
+          let wordIndex = 0;
+          for (let i = 1; i < wordStarts.length; i++) {
+            if (wordStarts[i]! <= event.charIndex) {
+              wordIndex = i;
+            } else {
+              break;
+            }
+          }
+          setWordCount(wordIndex);
         }
       };
       utterance.onend = () => {

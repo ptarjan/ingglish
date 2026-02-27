@@ -288,6 +288,35 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
+  it('maps charIndex to correct word when synthesizer splits contractions', () => {
+    // "don't stop" — synthesizer may fire boundaries for "don", "'t", "stop"
+    // but visually there are only 2 words: "don't" (index 0) and "stop" (index 1)
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]("don't stop");
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // First boundary: "don" at charIndex 0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(0);
+
+    // Second boundary: "'t" at charIndex 3 → still word 0 (same whitespace token)
+    act(() => {
+      utterance.onboundary?.({ charIndex: 3, name: 'word' });
+    });
+    expect(result.current[4]).toBe(0);
+
+    // Third boundary: "stop" at charIndex 6 → word 1
+    act(() => {
+      utterance.onboundary?.({ charIndex: 6, name: 'word' });
+    });
+    expect(result.current[4]).toBe(1);
+  });
+
   it('resets wordCount on utterance end', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
