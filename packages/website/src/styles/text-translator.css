@@ -78,8 +78,7 @@
 
 .section-header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.75rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
 }
@@ -251,6 +250,10 @@
   .text-input {
     min-height: 150px;
     font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .section-header {
+    flex-wrap: wrap;
   }
 
   .section-header h2 {
