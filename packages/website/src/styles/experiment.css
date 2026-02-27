@@ -290,12 +290,25 @@ button.preset-action:disabled {
 
 .sample-select {
   padding: 0.25rem 0.5rem;
+  font: inherit;
   font-size: 0.875rem;
   color: var(--color-text);
+  text-transform: inherit;
+  letter-spacing: inherit;
   cursor: pointer;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.375rem;
+  transition: border-color 0.15s;
+}
+
+.sample-select:hover {
+  border-color: var(--color-text-muted);
+}
+
+.sample-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
 }
 
 [data-theme='dark'] .sample-select option {
