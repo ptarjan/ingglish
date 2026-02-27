@@ -350,11 +350,15 @@ export function translateForeign(
       // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
       const parts = core.split(CONTRACTION_SPLIT_RE);
       if (parts.length > 1) {
+        let isFirstPart = true;
         const translated = parts.map((part, i) => {
           if (part === "'" || part === '-') {
             return part;
           }
-          const partCase = detectCasePattern(part);
+          // First real part inherits the sentence-level case (important for
+          // caseless scripts where sentence-initial capitalization was set above)
+          const partCase = isFirstPart ? casePattern : detectCasePattern(part);
+          isFirstPart = false;
           // Try bare lookup first, then with adjacent apostrophe attached
           // (French ipa-dict stores clitics as "s'" → /s/, "l'" → /l/, etc.)
           let partIpa = lookupIpa(dict, part, lang);

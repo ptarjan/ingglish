@@ -140,6 +140,15 @@ describe('translateForeign', () => {
     expect(words[2]![0]).toBe(words[2]![0]!.toLowerCase());
   });
 
+  it('capitalizes sentence-initial hyphenated caseless words', () => {
+    // Odia-like: first word is a hyphenated compound from a caseless script
+    const orDict: IpaDict = { ଉତ୍କଳ: '/ut̪kɔɭɔ/', କମଳା: '/kɔmɔɭaː/' };
+    const result = translateForeign('ଉତ୍କଳ-କମଳା', orDict, 'ingglish', 'or');
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    // First character should be capitalized
+    expect(result[0]).toBe(result[0]!.toUpperCase());
+  });
+
   it('does not double-capitalize Latin-script words (already cased)', () => {
     const deDict: IpaDict = { guten: '/ɡuːtən/', morgen: '/mɔʁɡən/' };
     // lowercase German — should stay lowercase (source has case info)
@@ -254,12 +263,12 @@ describe('foreign sample coverage', () => {
     'sample words meet minimum dictionary coverage',
     { timeout: 30_000 },
     async () => {
-      const { FOREIGN_SAMPLES } = await import('../../website/src/data/foreign-samples');
+      const { ALL_SAMPLES } = await import('../../website/src/data/foreign-samples');
 
       const failures: string[] = [];
 
       for (const { code } of LANGUAGES) {
-        const samples: undefined | { text: string }[] = FOREIGN_SAMPLES[code];
+        const samples: undefined | { text: string }[] = ALL_SAMPLES[code];
         if (!samples) {
           continue;
         }
