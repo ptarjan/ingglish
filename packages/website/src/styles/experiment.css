@@ -288,21 +288,6 @@ button.preset-action:disabled {
   font-size: 1rem;
 }
 
-.sample-select {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  color: var(--color-text);
-  cursor: pointer;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-}
-
-[data-theme='dark'] .sample-select option {
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-
 .experiment-input {
   width: 100%;
   min-height: 5rem;
