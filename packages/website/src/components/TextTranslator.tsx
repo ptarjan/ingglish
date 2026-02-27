@@ -29,6 +29,7 @@ export const OUTPUT_PLACEHOLDERS: Record<string, string> = {
 interface ForeignOutputDisplayProps {
   dictLoading: boolean;
   format: string;
+  highlightedWordIndex?: null | number;
   onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
@@ -44,6 +45,7 @@ interface TextTranslatorProps {
 function ForeignOutputDisplay({
   dictLoading,
   format,
+  highlightedWordIndex = null,
   onHoverWord,
   onScroll,
   scrollRef,
@@ -88,11 +90,12 @@ function ForeignOutputDisplay({
           return <span key={i}>{seg}</span>;
         }
         const idx = wordIndex++;
+        const isHighlighted = idx === highlightedWordIndex;
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           return (
             <span
-              className="word-token foreign-not-found"
+              className={`word-token foreign-not-found ${isHighlighted ? 'highlighted' : ''}`}
               key={i}
               onMouseEnter={
                 onHoverWord
@@ -109,7 +112,7 @@ function ForeignOutputDisplay({
         }
         return (
           <span
-            className="word-token"
+            className={`word-token ${isHighlighted ? 'highlighted' : ''}`}
             key={i}
             onMouseEnter={
               onHoverWord
@@ -621,6 +624,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             <ForeignOutputDisplay
               dictLoading={dictLoading}
               format={format}
+              highlightedWordIndex={hoveredWordIndex}
               onHoverWord={setHoveredWordIndex}
               onScroll={() => {
                 handleScroll('ingglish');
