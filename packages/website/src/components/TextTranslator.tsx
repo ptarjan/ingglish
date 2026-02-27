@@ -635,21 +635,21 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       <div className="translator-grid">
         <div className="input-section">
           <div className="section-header">
-            <h2>
-              <select
-                className="language-select"
-                onChange={handleLanguageChange}
-                value={selectedLanguage}
-              >
-                <option value="en">English</option>
-                {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.label}
-                  </option>
-                ))}
-              </select>
-            </h2>
-            <div className="button-group">
+            <div className="section-header-row">
+              <h2>
+                <select
+                  className="language-select"
+                  onChange={handleLanguageChange}
+                  value={selectedLanguage}
+                >
+                  <option value="en">English</option>
+                  {LANGUAGES.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.label}
+                    </option>
+                  ))}
+                </select>
+              </h2>
               <select
                 aria-label="Load sample passage"
                 className="sample-select"
@@ -665,6 +665,8 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="button-group">
               {speechSupported && hasVoice(isForeignMode ? selectedLanguage : 'en') && (
                 <button
                   aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}

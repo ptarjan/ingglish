@@ -76,17 +76,34 @@
 
 .section-header {
   display: flex;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   align-items: center;
   justify-content: space-between;
 }
 
+.section-header-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+}
+
 .section-header h2 {
+  flex-shrink: 0;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.section-header .sample-select {
+  min-width: 0;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .format-cycle-btn {
@@ -231,12 +248,16 @@
     font-size: 16px; /* Prevents iOS zoom on focus */
   }
 
-  .section-header {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
   .section-header h2 {
     font-size: 0.875rem;
+  }
+
+  .section-header-row {
+    width: 100%;
+  }
+
+  .section-header .sample-select {
+    flex: 1;
+    max-width: none;
   }
 }
