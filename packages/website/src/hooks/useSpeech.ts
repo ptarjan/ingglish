@@ -197,25 +197,28 @@ export function useSpeech(): [
         pos += seg.length;
       }
 
-      // Some TTS voices (especially non-English on macOS) report charIndex=0
-      // for every boundary event. Track a simple counter as fallback.
+      // Some TTS voices (especially on Windows) report charIndex=0 for every
+      // boundary event. Track a simple counter as fallback. We only switch to
+      // fallback after seeing charIndex=0 enough times that it can't just be
+      // sub-word splits of the first word (common in agglutinative languages).
       let boundaryCounter = -1;
-      let lastCharIndex = -1;
-      let useCharIndex = true;
+      let charIndexEverAdvanced = false;
 
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
           boundaryCounter++;
-
-          // Detect broken charIndex: if it never advances past 0 after
-          // the first event, fall back to the simple counter.
-          if (boundaryCounter > 0 && event.charIndex === 0 && lastCharIndex === 0) {
-            useCharIndex = false;
+          if (event.charIndex > 0) {
+            charIndexEverAdvanced = true;
           }
-          lastCharIndex = event.charIndex;
 
-          if (useCharIndex) {
-            // Map charIndex to visual word index
+          // Use charIndex mapping when it works, fall back to counter otherwise.
+          // Wait until 4+ events before concluding charIndex is broken, since
+          // agglutinative languages may fire multiple boundaries for word 1.
+          const useFallback = !charIndexEverAdvanced && boundaryCounter >= 3;
+
+          if (useFallback) {
+            setWordCount(Math.min(boundaryCounter, wordStarts.length - 1));
+          } else {
             let wordIndex = 0;
             for (let i = 1; i < wordStarts.length; i++) {
               if (wordStarts[i]! <= event.charIndex) {
@@ -225,9 +228,6 @@ export function useSpeech(): [
               }
             }
             setWordCount(wordIndex);
-          } else {
-            // Fallback: use boundary event counter, clamped to valid range
-            setWordCount(Math.min(boundaryCounter, wordStarts.length - 1));
           }
         }
       };

@@ -344,28 +344,55 @@ describe('useSpeech', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
-      result.current[1]('hello beautiful world');
+      result.current[1]('one two three four five');
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // First boundary: charIndex=0 — ambiguous, could be correct
+    // First 3 events: charIndex=0 — still uses charIndex (could be sub-word splits)
+    for (let i = 0; i < 3; i++) {
+      act(() => {
+        utterance.onboundary?.({ charIndex: 0, name: 'word' });
+      });
+      expect(result.current[4]).toBe(0);
+    }
+
+    // 4th event: charIndex=0 still — fallback kicks in, counter=3
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(3);
+
+    // 5th event: stays in fallback mode, counter=4
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(4);
+  });
+
+  it('does not fall back when charIndex advances after initial zeros', () => {
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('compound word test');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // Two boundaries at charIndex=0 (sub-word split of first word)
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toBe(0);
 
-    // Second boundary: charIndex=0 again — broken, should trigger fallback
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    // Fallback counter: this is boundary event #1 → word 1
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toBe(0);
 
-    // Third boundary: still charIndex=0 — stays in fallback mode
+    // Third boundary advances — charIndex works, no fallback
     act(() => {
-      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+      utterance.onboundary?.({ charIndex: 9, name: 'word' });
     });
-    expect(result.current[4]).toBe(2);
+    expect(result.current[4]).toBe(1);
   });
 
   it('counts numbers as words for highlighting', () => {
