@@ -308,7 +308,7 @@ function OverlayTextarea({
             }
             // Punctuation-only tokens (em dashes, ellipses, etc.) don't get
             // boundary events from the Speech API, so skip the word index.
-            const isWord = /\p{L}/u.test(seg);
+            const isWord = /[\p{L}\p{N}]/u.test(seg);
             const idx = isWord ? wordIndex++ : -1;
             const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
             const isSpoken = idx >= 0 && idx === spokenWordIndex;

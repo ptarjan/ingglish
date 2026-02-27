@@ -368,6 +368,40 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBe(2);
   });
 
+  it('counts numbers as words for highlighting', () => {
+    // "I have 42 cats" — "42" should be word index 2, "cats" should be 3
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('I have 42 cats');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // "I" at charIndex 0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toBe(0);
+
+    // "have" at charIndex 2 → word 1
+    act(() => {
+      utterance.onboundary?.({ charIndex: 2, name: 'word' });
+    });
+    expect(result.current[4]).toBe(1);
+
+    // "42" at charIndex 7 → word 2
+    act(() => {
+      utterance.onboundary?.({ charIndex: 7, name: 'word' });
+    });
+    expect(result.current[4]).toBe(2);
+
+    // "cats" at charIndex 10 → word 3
+    act(() => {
+      utterance.onboundary?.({ charIndex: 10, name: 'word' });
+    });
+    expect(result.current[4]).toBe(3);
+  });
+
   it('resets wordCount on utterance end', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 

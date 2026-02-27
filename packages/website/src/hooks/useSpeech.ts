@@ -179,14 +179,14 @@ export function useSpeech(): [
       // The speech synthesizer may fire boundary events that don't map 1:1 to
       // whitespace-delimited words (e.g. punctuation, contractions, numbers),
       // so we use charIndex rather than a simple counter.
-      // Only count segments containing letters (matching OverlayTextarea's
+      // Only count segments containing letters or digits (matching OverlayTextarea's
       // word counting which skips punctuation-only tokens like em dashes).
-      const LETTER_RE = /\p{L}/u;
+      const WORD_RE = /[\p{L}\p{N}]/u;
       const wordStarts: number[] = [];
       const segments = text.split(/(\s+)/);
       let pos = 0;
       for (const seg of segments) {
-        if (seg && !/^\s+$/.test(seg) && LETTER_RE.test(seg)) {
+        if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
           wordStarts.push(pos);
         }
         pos += seg.length;
