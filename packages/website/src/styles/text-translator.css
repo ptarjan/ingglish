@@ -195,6 +195,7 @@
 
 /* Foreign output display */
 .foreign-output {
+  flex: 1;
   overflow-y: auto;
   overflow-wrap: break-word;
   white-space: pre-wrap;
