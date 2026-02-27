@@ -179,7 +179,9 @@
   background: var(--color-primary);
 }
 
-/* Overlay textarea: transparent text + word overlay for TTS highlighting */
+/* Overlay textarea: transparent text + word overlay for TTS highlighting.
+   Stacking: textarea on top (z-index:1) so the native caret is visible,
+   overlay below renders styled word tokens through the transparent textarea. */
 .overlay-textarea {
   position: relative;
   display: flex;
@@ -188,9 +190,12 @@
 }
 
 .overlay-textarea textarea {
+  position: relative;
+  z-index: 1;
   flex: 1;
   color: transparent;
   caret-color: var(--color-text);
+  background: transparent;
 }
 
 .overlay-textarea textarea::placeholder {
@@ -204,10 +209,12 @@
   overflow-wrap: break-word;
   white-space: pre-wrap;
   pointer-events: none;
+  background: var(--color-surface);
   border-color: transparent;
 }
 
 .overlay-textarea-display .word-token {
+  margin: 0 -0.15em;
   transition: none;
 }
 

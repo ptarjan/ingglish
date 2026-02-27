@@ -281,7 +281,11 @@ test.describe('Web Vitals', () => {
     await waitForAppLoad(page);
 
     // Load sample text so there's content to compare
-    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
+    await page
+      .locator('.input-section')
+      .first()
+      .getByRole('button', { name: 'Random sample' })
+      .click();
     const englishInput = page.locator('textarea.text-input').first();
     await expect(englishInput).not.toBeEmpty();
 
@@ -525,7 +529,11 @@ test.describe('Text Translator', () => {
 
   test('handles sample text button', async () => {
     // Click the Random button (English side)
-    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
+    await page
+      .locator('.input-section')
+      .first()
+      .getByRole('button', { name: 'Random sample' })
+      .click();
     const englishInput = page.locator('textarea.text-input').first();
     await expect(englishInput).not.toBeEmpty();
   });
@@ -533,13 +541,17 @@ test.describe('Text Translator', () => {
   test('clears text with clear button', async () => {
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('test');
-    await page.locator('.input-section').first().locator('button:has-text("Clear")').click();
+    await page.locator('.input-section').first().getByRole('button', { name: 'Clear' }).click();
     await expect(englishInput).toBeEmpty();
   });
 
   test('English text does not flash empty when focusing Ingglish after sample', async () => {
     // Load sample text
-    await page.locator('.input-section').first().locator('button:has-text("Random")').click();
+    await page
+      .locator('.input-section')
+      .first()
+      .getByRole('button', { name: 'Random sample' })
+      .click();
 
     const englishInput = page.locator('textarea.text-input').first();
     const ingglishInput = page.locator('textarea.text-input').last();
