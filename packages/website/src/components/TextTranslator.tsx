@@ -440,7 +440,9 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       stopEnglish();
       setSelectedLanguage(lang);
       localStorage.setItem('selectedLanguage', lang);
-      setEnglishText('');
+      // Auto-load a random sample for the new language
+      const sample = pickSample(lang, '');
+      setEnglishText(sample ?? '');
       setIngglishText('');
       setLastEdited('english');
     },
