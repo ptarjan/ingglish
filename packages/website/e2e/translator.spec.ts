@@ -755,6 +755,56 @@ test.describe('Text Translator', () => {
     // Highlight should be cleared
     await expect(inputOverlay.locator('.word-token.highlighted')).toHaveCount(0);
   });
+
+  test('left and right panes have equal height in English mode', async () => {
+    test.skip(test.info().project.name.includes('mobile'), 'panes stack vertically on mobile');
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('hello world');
+    await page.waitForTimeout(200);
+
+    const left = page.locator('.input-section').first();
+    const right = page.locator('.input-section').last();
+    const leftBox = await left.boundingBox();
+    const rightBox = await right.boundingBox();
+    expect(leftBox).not.toBeNull();
+    expect(rightBox).not.toBeNull();
+    if (leftBox && rightBox) {
+      // Allow 1px tolerance for sub-pixel rendering
+      expect(Math.abs(leftBox.height - rightBox.height)).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test('left and right panes have equal height in foreign mode', async () => {
+    test.skip(test.info().project.name.includes('mobile'), 'panes stack vertically on mobile');
+    // Switch to Swedish
+    await page.locator('.language-select').selectOption('sv');
+
+    // Wait for dict to load (foreign output pane appears instead of textarea)
+    const foreignOutput = page.locator('.foreign-output');
+    await expect(foreignOutput).toBeVisible({ timeout: 15_000 });
+
+    // Type Swedish text to trigger translation
+    const englishInput = page.locator('textarea.text-input').first();
+    await englishInput.fill('Hej världen');
+
+    // Wait for translated content to render
+    await expect(foreignOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+
+    const left = page.locator('.input-section').first();
+    const right = page.locator('.input-section').last();
+    const leftBox = await left.boundingBox();
+    const rightBox = await right.boundingBox();
+    expect(leftBox).not.toBeNull();
+    expect(rightBox).not.toBeNull();
+    if (leftBox && rightBox) {
+      // Allow 1px tolerance for sub-pixel rendering
+      expect(Math.abs(leftBox.height - rightBox.height)).toBeLessThanOrEqual(1);
+    }
+
+    // Switch back to English for subsequent tests
+    await page.locator('.language-select').selectOption('en');
+    await page.locator('textarea.text-input').first().fill('');
+  });
 });
 
 test.describe('Tab Navigation', () => {
