@@ -169,9 +169,14 @@ export function useSpeech(): [
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
         utterance.lang = lang;
-        const voice = findPreferredVoice(lang);
-        if (voice) {
-          utterance.voice = voice;
+        // Only set an explicit voice if the boundary probe confirmed it works.
+        // Otherwise let the browser choose — avoids broken/unavailable voices
+        // on platforms where voices are listed but can't actually synthesize.
+        if (boundaryCacheRef.current.get(lang.toLowerCase()) === true) {
+          const voice = findPreferredVoice(lang);
+          if (voice) {
+            utterance.voice = voice;
+          }
         }
       }
 

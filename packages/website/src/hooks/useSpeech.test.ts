@@ -420,4 +420,49 @@ describe('useSpeech', () => {
     });
     expect(result.current[4]).toBeNull();
   });
+
+  it('does not set explicit voice for languages without confirmed boundary support', () => {
+    // Add French voice but boundary probe will fail (no onboundary in mock for fr)
+    mockSynthesis.getVoices.mockReturnValue([
+      { lang: 'en-US', name: 'Microsoft David' },
+      { lang: 'fr-FR', name: 'Microsoft Hortense' },
+    ]);
+    // Probes: en fires boundary+end (mock auto-completes), fr also auto-completes
+    // but since both fire boundary, both get marked as supported in this mock.
+    // Override: make fr probe NOT fire boundary by customizing speak behavior.
+    const originalSpeak = mockSynthesis.speak.getMockImplementation()!;
+    mockSynthesis.speak.mockImplementation((utterance: MockUtterance) => {
+      const u = utterance as unknown as {
+        lang: string;
+        voice: null | { name: string };
+        volume: number;
+      };
+      if (u.volume === 0 && u.voice?.name === 'Microsoft Hortense') {
+        // French probe: fire onend without onboundary (simulating no boundary support)
+        utterance.onend?.();
+        return;
+      }
+      originalSpeak(utterance);
+    });
+
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    // Trigger voiceschanged to re-probe
+    const voicesChangedHandler = mockSynthesis.addEventListener.mock.calls.find(
+      (c: unknown[]) => c[0] === 'voiceschanged'
+    )?.[1] as (() => void) | undefined;
+    if (voicesChangedHandler) {
+      act(() => { voicesChangedHandler(); });
+    }
+
+    // Speak French text
+    act(() => {
+      result.current[1]('bonjour le monde', 'fr');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // lang should be set but voice should NOT be explicitly set
+    expect((utterance as unknown as { lang: string }).lang).toBe('fr');
+    expect((utterance as unknown as { voice: unknown }).voice).toBeUndefined();
+  });
 });
