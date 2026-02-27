@@ -636,20 +636,18 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
         <div className="input-section">
           <div className="section-header">
             <div className="section-header-row">
-              <h2>
-                <select
-                  className="language-select"
-                  onChange={handleLanguageChange}
-                  value={selectedLanguage}
-                >
-                  <option value="en">English</option>
-                  {LANGUAGES.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.label}
-                    </option>
-                  ))}
-                </select>
-              </h2>
+              <select
+                className="language-select"
+                onChange={handleLanguageChange}
+                value={selectedLanguage}
+              >
+                <option value="en">English</option>
+                {LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.label}
+                  </option>
+                ))}
+              </select>
               <select
                 aria-label="Load sample passage"
                 className="sample-select"
@@ -743,18 +741,16 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
         <div className="input-section ingglish-section">
           <div className="section-header">
-            <h2>
-              <button
-                className="format-cycle-btn format-toggle"
-                onClick={toggleFormat}
-                title="Cycle output format"
-              >
-                {getFormatLabel(format)}
-                <span aria-hidden="true" className="format-cycle-icon">
-                  &#x21C5;
-                </span>
-              </button>
-            </h2>
+            <button
+              className="format-cycle-btn format-toggle"
+              onClick={toggleFormat}
+              title="Cycle output format"
+            >
+              {getFormatLabel(format)}
+              <span aria-hidden="true" className="format-cycle-icon">
+                &#x21C5;
+              </span>
+            </button>
             <div className="button-group">
               <button
                 aria-label={copiedIngglish ? 'Copied' : 'Copy'}
