@@ -9,7 +9,7 @@ export function buildDiffMap(
     return undefined;
   }
   try {
-    const stdTokens = translateSyncWithMapping(text, 'ingglish');
+    const stdTokens = translateSyncWithMapping(text, { format: 'ingglish' });
     const diffs = new Map<number, string>();
     let wordIdx = 0;
     for (const [i, tok] of tokens.entries()) {

@@ -91,7 +91,7 @@ export function pickChallenge(seed: number, count = 10): ChallengeSentence[] {
 
   return selected.map((source) => ({
     ...source,
-    tokens: translateSyncWithMapping(source.english, 'ingglish'),
+    tokens: translateSyncWithMapping(source.english, { format: 'ingglish' }),
   }));
 }
 

@@ -3,8 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Mock ingglish to avoid slow dictionary loading
 vi.mock('ingglish', () => ({
   translate: vi.fn().mockResolvedValue('mocked'),
-  translateSync: vi.fn((text: string, format: string) => {
+  translateSync: vi.fn((text: string, options?: { format?: string }) => {
     // Return format-specific translations so tests can verify format switching
+    const format = options?.format ?? 'ingglish';
     const prefix = format === 'ipa' ? 'ipa' : 'ing';
     return text
       .split(/\s+/)

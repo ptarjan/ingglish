@@ -31,7 +31,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
     if (deferredText.trim().length === 0) {
       return { diffMap: undefined, tokens: [] as TranslatedToken[] };
     }
-    const expTokens = translateSyncWithMapping(deferredText, 'experiment');
+    const expTokens = translateSyncWithMapping(deferredText, { format: 'experiment' });
     return { diffMap: buildDiffMap(expTokens, deferredText, 'experiment'), tokens: expTokens };
   }, [deferredText, version]);
 

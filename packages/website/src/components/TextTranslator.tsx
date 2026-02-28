@@ -358,7 +358,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       return translateForeign(deferredEnglish, targetDict, format);
     }
     try {
-      return translateSync(deferredEnglish, format);
+      return translateSync(deferredEnglish, { format });
     } catch (error) {
       console.warn('Translation failed:', error);
       return null;
@@ -377,7 +377,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       return;
     }
     let cancelled = false;
-    reverseTranslate(deferredIngglish, format)
+    reverseTranslate(deferredIngglish, { format })
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);

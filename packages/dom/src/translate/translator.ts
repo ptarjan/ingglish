@@ -144,7 +144,9 @@ function translateElementAttributes(
   format: OutputFormat = 'ingglish',
   customTranslateFn?: (text: string, format: OutputFormat) => string
 ): void {
-  const doTranslate = customTranslateFn ?? translateSync;
+  const doTranslate =
+    customTranslateFn ??
+    ((text: string, fmt: OutputFormat) => translateSync(text, { format: fmt }));
 
   // Only query elements that have translatable attributes (much smaller set than '*')
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
@@ -201,7 +203,9 @@ function translateTextNode(
     if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
       parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
     }
-    const doTranslate = customTranslateFn ?? translateSync;
+    const doTranslate =
+      customTranslateFn ??
+      ((text: string, fmt: OutputFormat) => translateSync(text, { format: fmt }));
     textNode.textContent = doTranslate(originalText, outputFormat);
   }
 }

@@ -160,7 +160,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
   const translateWord = useCallback(
     (word: string) => {
       void mapping.version;
-      return translateSync(word, 'experiment');
+      return translateSync(word, { format: 'experiment' });
     },
     [mapping.version]
   );

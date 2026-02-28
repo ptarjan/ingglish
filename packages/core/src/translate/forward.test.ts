@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
-import { reverseTranslate, translate } from '../index';
-import { translateSync, translateWord } from './forward';
+import type { IpaDict } from '@ingglish/ipa';
+import type { ForeignDictLoader } from '../foreign-dict';
+import { getForeignDict, reverseTranslate, setForeignDictLoader, translate } from '../index';
+import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
   // Dictionaries pre-loaded by vitest.setup.ts
@@ -25,6 +27,40 @@ describe('async API loads only required dictionaries', () => {
 
     expect(loadDictSpy).not.toHaveBeenCalled();
     loadDictSpy.mockRestore();
+  });
+
+  it('translate() with lang loads foreign dict via registered loader', async () => {
+    const mockDict: IpaDict = {
+      entries: { bonjour: '/bɔ̃.ʒuʁ/' },
+      lang: 'test-fr',
+    };
+    const loader = vi.fn().mockResolvedValue(mockDict);
+    setForeignDictLoader(loader);
+
+    const result = await translate('bonjour', { lang: 'test-fr' });
+    expect(loader).toHaveBeenCalledWith('test-fr');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+
+    // Dict should now be cached
+    expect(getForeignDict('test-fr')).toBe(mockDict);
+
+    // Sync should work after async load
+    const syncResult = translateSync('bonjour', { lang: 'test-fr' });
+    expect(syncResult).toBe(result);
+  });
+
+  it('translate() with lang="en" translates English', async () => {
+    const result = await translate('hello', { lang: 'en' });
+    expect(result).toBe('haloh');
+  });
+
+  it('translate() rejects when no loader registered for foreign lang', async () => {
+    // Use a fresh lang code that won't be cached
+    setForeignDictLoader(undefined as unknown as ForeignDictLoader);
+    await expect(translate('test', { lang: 'xx' })).rejects.toThrow(
+      /No foreign dictionary loader registered/
+    );
   });
 });
 
@@ -114,7 +150,7 @@ describe('translator', () => {
     });
 
     it('should preserve punctuation in IPA output', () => {
-      const result = translateSync('Hello, world!', 'ipa');
+      const result = translateSync('Hello, world!', { format: 'ipa' });
       expect(result).toContain(',');
       expect(result).toContain('!');
     });
@@ -259,7 +295,7 @@ describe('translator', () => {
 
     it('should translate GitHub with correct phonetics (t+h not θ)', () => {
       // GitHub = git + hub, the "th" should NOT become theta sound
-      const ipa = translateWord('GitHub', 'ipa');
+      const ipa = translateWord('GitHub', { format: 'ipa' });
       expect(ipa).toContain('t'); // separate t
       expect(ipa).toContain('h'); // separate h
       expect(ipa).not.toContain('θ'); // NOT theta digraph
@@ -280,7 +316,7 @@ describe('translator', () => {
 
     it('should translate unknown words to IPA format', () => {
       // Unknown word in IPA format should return IPA characters
-      const result = translateWord('xyzzy', 'ipa');
+      const result = translateWord('xyzzy', { format: 'ipa' });
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
       // IPA result should contain non-ASCII characters
@@ -290,7 +326,7 @@ describe('translator', () => {
     it('should use translateSyncWithMapping for token mapping', async () => {
       // Test the mapping function used by DOM translator
       const { translateSyncWithMapping } = await import('./forward');
-      const tokens = translateSyncWithMapping('Hello world', 'ingglish');
+      const tokens = translateSyncWithMapping('Hello world', { format: 'ingglish' });
       expect(tokens).toHaveLength(3);
       expect(tokens[0]!.isWord).toBe(true);
       expect(tokens[1]!.isWord).toBe(false);
@@ -371,7 +407,7 @@ describe('translator', () => {
 
     it('should preserve URLs in translateSyncWithMapping', async () => {
       const { translateSyncWithMapping } = await import('./forward');
-      const tokens = translateSyncWithMapping('Visit https://example.com', 'ingglish');
+      const tokens = translateSyncWithMapping('Visit https://example.com', { format: 'ingglish' });
       const urlToken = tokens.find((t) => t.original === 'https://example.com');
       expect(urlToken).toBeDefined();
       expect(urlToken?.translated).toBe('https://example.com');
@@ -393,6 +429,56 @@ describe('translator', () => {
       expect(result).toContain('github.io');
       expect(result).toContain('example.net');
       expect(result).toContain('test.dev');
+    });
+  });
+
+  describe('TranslateOptions API', () => {
+    it('translateSync accepts options object with format', () => {
+      const withOptions = translateSync('hello', { format: 'ipa' });
+      expect(withOptions).toContain('h');
+      expect(typeof withOptions).toBe('string');
+    });
+
+    it('translateSync defaults to ingglish format', () => {
+      expect(translateSync('hello')).toBe('haloh');
+      expect(translateSync('hello', {})).toBe('haloh');
+    });
+
+    it('translateSyncWithMapping accepts options object', () => {
+      const tokens = translateSyncWithMapping('hello world', { format: 'ingglish' });
+      expect(tokens).toHaveLength(3);
+      expect(tokens[0]!.translated).toBe('haloh');
+    });
+
+    it('translateWord accepts options object with format', () => {
+      const withOptions = translateWord('hello', { format: 'ingglish' });
+      expect(withOptions).toBe('haloh');
+    });
+
+    it('translateSync throws for unknown foreign lang without loaded dict', () => {
+      expect(() => translateSync('bonjour', { lang: 'fr' })).toThrow(
+        /Foreign dictionary for "fr" not loaded/
+      );
+    });
+
+    it('translateSyncWithMapping throws for unknown foreign lang without loaded dict', () => {
+      expect(() => translateSyncWithMapping('bonjour', { lang: 'fr' })).toThrow(
+        /Foreign dictionary for "fr" not loaded/
+      );
+    });
+
+    it('translateWord throws for unknown foreign lang without loaded dict', () => {
+      expect(() => translateWord('bonjour', { lang: 'fr' })).toThrow(
+        /Foreign dictionary for "fr" not loaded/
+      );
+    });
+
+    it('translateSync ignores lang="en" (treats as English)', () => {
+      expect(translateSync('hello', { lang: 'en' })).toBe('haloh');
+    });
+
+    it('translateSync ignores empty lang', () => {
+      expect(translateSync('hello', { lang: '' })).toBe('haloh');
     });
   });
 });

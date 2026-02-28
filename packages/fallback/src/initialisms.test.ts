@@ -71,138 +71,138 @@ describe('initialisms', () => {
 
   describe('known initialisms pass through unchanged', () => {
     it('should pass through multi-letter initialisms unchanged', () => {
-      expect(translateWord('UI', 'ingglish')).toBe('UI');
-      expect(translateWord('API', 'ingglish')).toBe('API');
-      expect(translateWord('URL', 'ingglish')).toBe('URL');
-      expect(translateWord('HTML', 'ingglish')).toBe('HTML');
-      expect(translateWord('TV', 'ingglish')).toBe('TV');
-      expect(translateWord('ID', 'ingglish')).toBe('ID');
-      expect(translateWord('US', 'ingglish')).toBe('US');
-      expect(translateWord('USA', 'ingglish')).toBe('USA');
-      expect(translateWord('UK', 'ingglish')).toBe('UK');
-      expect(translateWord('AI', 'ingglish')).toBe('AI');
+      expect(translateWord('UI', { format: 'ingglish' })).toBe('UI');
+      expect(translateWord('API', { format: 'ingglish' })).toBe('API');
+      expect(translateWord('URL', { format: 'ingglish' })).toBe('URL');
+      expect(translateWord('HTML', { format: 'ingglish' })).toBe('HTML');
+      expect(translateWord('TV', { format: 'ingglish' })).toBe('TV');
+      expect(translateWord('ID', { format: 'ingglish' })).toBe('ID');
+      expect(translateWord('US', { format: 'ingglish' })).toBe('US');
+      expect(translateWord('USA', { format: 'ingglish' })).toBe('USA');
+      expect(translateWord('UK', { format: 'ingglish' })).toBe('UK');
+      expect(translateWord('AI', { format: 'ingglish' })).toBe('AI');
     });
 
     it('should pass through lowercase initialisms unchanged', () => {
       // lowercase "us", "it", "am" happen to translate to themselves anyway
-      expect(translateWord('ui', 'ingglish')).toBe('ui');
-      expect(translateWord('api', 'ingglish')).toBe('api');
+      expect(translateWord('ui', { format: 'ingglish' })).toBe('ui');
+      expect(translateWord('api', { format: 'ingglish' })).toBe('api');
     });
   });
 
   describe('unknown all-caps words pass through unchanged', () => {
     it('should pass through unknown all-caps words', () => {
-      expect(translateWord('MQTT', 'ingglish')).toBe('MQTT');
-      expect(translateWord('USSR', 'ingglish')).toBe('USSR');
-      expect(translateWord('XYZZY', 'ingglish')).toBe('XYZZY');
+      expect(translateWord('MQTT', { format: 'ingglish' })).toBe('MQTT');
+      expect(translateWord('USSR', { format: 'ingglish' })).toBe('USSR');
+      expect(translateWord('XYZZY', { format: 'ingglish' })).toBe('XYZZY');
     });
 
     it('should pass through all-caps acronyms-as-words via initialism list', () => {
       // NATO and NASA are in CMU dict but are in our initialism list
-      expect(translateWord('NATO', 'ingglish')).toBe('NATO');
-      expect(translateWord('NASA', 'ingglish')).toBe('NASA');
+      expect(translateWord('NATO', { format: 'ingglish' })).toBe('NATO');
+      expect(translateWord('NASA', { format: 'ingglish' })).toBe('NASA');
     });
   });
 
   describe('lowercase words still translate normally', () => {
     it('should translate lowercase "us" as pronoun', () => {
-      const result = translateWord('us', 'ingglish');
+      const result = translateWord('us', { format: 'ingglish' });
       expect(result).toBe('us');
     });
 
     it('should translate lowercase "it" as pronoun', () => {
-      const result = translateWord('it', 'ingglish');
+      const result = translateWord('it', { format: 'ingglish' });
       expect(result).toBe('it');
     });
 
     it('should translate lowercase "am" as verb', () => {
-      const result = translateWord('am', 'ingglish');
+      const result = translateWord('am', { format: 'ingglish' });
       expect(result).toBe('am');
     });
   });
 
   describe('edge cases: initialisms that are also dictionary words', () => {
     it('should treat IT as initialism, not pronoun', () => {
-      const result = translateWord('IT', 'ingglish');
+      const result = translateWord('IT', { format: 'ingglish' });
       expect(result).toBe('IT');
     });
 
     it('should treat AM as initialism when uppercase', () => {
-      const result = translateWord('AM', 'ingglish');
+      const result = translateWord('AM', { format: 'ingglish' });
       expect(result).toBe('AM');
     });
 
     it('should treat PM as initialism', () => {
-      const result = translateWord('PM', 'ingglish');
+      const result = translateWord('PM', { format: 'ingglish' });
       expect(result).toBe('PM');
     });
   });
 
   describe('plural and possessive initialisms', () => {
     it('should handle IDs as ID + s', () => {
-      const result = translateWord('IDs', 'ingglish');
+      const result = translateWord('IDs', { format: 'ingglish' });
       expect(result).toBe('IDs');
     });
 
     it('should handle TVs as TV + s', () => {
-      const result = translateWord('TVs', 'ingglish');
+      const result = translateWord('TVs', { format: 'ingglish' });
       expect(result).toBe('TVs');
     });
 
     it('should handle URLs as URL + s', () => {
-      const result = translateWord('URLs', 'ingglish');
+      const result = translateWord('URLs', { format: 'ingglish' });
       expect(result).toBe('URLs');
     });
 
     it('should handle APIs as API + s', () => {
-      const result = translateWord('APIs', 'ingglish');
+      const result = translateWord('APIs', { format: 'ingglish' });
       expect(result).toBe('APIs');
     });
 
     it("should handle API's (possessive) correctly", () => {
-      const result = translateWord("API's", 'ingglish');
+      const result = translateWord("API's", { format: 'ingglish' });
       expect(result).toBe("API's");
     });
 
     it('should handle lowercase ids', () => {
-      const result = translateWord('ids', 'ingglish');
+      const result = translateWord('ids', { format: 'ingglish' });
       expect(result).toBe('ids');
     });
 
     it('should handle mixed case like Ids', () => {
-      const result = translateWord('Ids', 'ingglish');
+      const result = translateWord('Ids', { format: 'ingglish' });
       expect(result).toBe('Ids');
     });
   });
 
   describe('IPA format with initialisms', () => {
     it('should pass through initialisms unchanged for IPA too', () => {
-      expect(translateWord('UI', 'ipa')).toBe('UI');
-      expect(translateWord('API', 'ipa')).toBe('API');
+      expect(translateWord('UI', { format: 'ipa' })).toBe('UI');
+      expect(translateWord('API', { format: 'ipa' })).toBe('API');
     });
   });
 
   describe('mixed case initialisms', () => {
     it('should handle title case Ui', () => {
-      const result = translateWord('Ui', 'ingglish');
+      const result = translateWord('Ui', { format: 'ingglish' });
       // isInitialism matches case-insensitively, returns original
       expect(result).toBe('Ui');
     });
 
     it('should handle title case Api', () => {
-      const result = translateWord('Api', 'ingglish');
+      const result = translateWord('Api', { format: 'ingglish' });
       expect(result).toBe('Api');
     });
   });
 
   describe('sentence context', () => {
     it('should handle "eve ID" context correctly', () => {
-      const result = translateSync('eve ID', 'ingglish');
+      const result = translateSync('eve ID', { format: 'ingglish' });
       expect(result).toBe('Eev ID');
     });
 
     it('should handle mixed initialisms and words', () => {
-      const result = translateSync('the US and UK', 'ingglish');
+      const result = translateSync('the US and UK', { format: 'ingglish' });
       expect(result).toBe('Dha US and UK');
     });
   });

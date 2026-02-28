@@ -218,7 +218,7 @@ describe('reverse-translator', () => {
 
     it('should preserve punctuation in IPA reverse translation', () => {
       // IPA text with punctuation should preserve it
-      const result = reverseTranslateSync('həˈloʊ, wɝld!', 'ipa');
+      const result = reverseTranslateSync('həˈloʊ, wɝld!', { format: 'ipa' });
       expect(result).toContain(',');
       expect(result).toContain('!');
     });
@@ -304,30 +304,30 @@ describe('reverse-translator', () => {
   describe('reverseTranslateSync with IPA format', () => {
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
-      const result = reverseTranslateSync('həˈloʊ wɝld', 'ipa');
+      const result = reverseTranslateSync('həˈloʊ wɝld', { format: 'ipa' });
       expect(result.toLowerCase()).toBe('hello world');
     });
 
     it('should handle IPA brackets', () => {
       // Remove surrounding slashes
-      const result = reverseTranslateSync('/kæt/', 'ipa');
+      const result = reverseTranslateSync('/kæt/', { format: 'ipa' });
       expect(result.toLowerCase()).toBe('cat');
     });
 
     it('should handle multiple words', () => {
       // /ðə kæt/ -> "the cat"
-      const result = reverseTranslateSync('ðə kæt', 'ipa');
+      const result = reverseTranslateSync('ðə kæt', { format: 'ipa' });
       expect(result.toLowerCase()).toBe('the cat');
     });
 
     it('should return empty string for empty input', () => {
-      expect(reverseTranslateSync('', 'ipa')).toBe('');
+      expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
     });
 
     it('should round-trip translateSync with IPA format', () => {
       // Translate "hello world" to IPA, then back to English
-      const ipa = translateSync('hello world', 'ipa');
-      const back = reverseTranslateSync(ipa, 'ipa');
+      const ipa = translateSync('hello world', { format: 'ipa' });
+      const back = reverseTranslateSync(ipa, { format: 'ipa' });
       expect(back.toLowerCase()).toBe('hello world');
     });
   });
@@ -403,7 +403,7 @@ describe('reverse-translator', () => {
     });
 
     it('should work for IPA format', () => {
-      const tokens = reverseTranslateSyncWithMapping('həˈloʊ wɝld', 'ipa');
+      const tokens = reverseTranslateSyncWithMapping('həˈloʊ wɝld', { format: 'ipa' });
       const words = tokens.filter((t) => t.isWord);
       expect(words.length).toBe(2);
       expect(words[0]!.matched).toBe(true);
@@ -413,8 +413,8 @@ describe('reverse-translator', () => {
 
     it('should work for Shavian format', () => {
       // Forward translate to get correct Shavian text, then reverse it
-      const shavian = translateSync('hello world', 'shavian');
-      const tokens = reverseTranslateSyncWithMapping(shavian, 'shavian');
+      const shavian = translateSync('hello world', { format: 'shavian' });
+      const tokens = reverseTranslateSyncWithMapping(shavian, { format: 'shavian' });
       const words = tokens.filter((t) => t.isWord);
       expect(words.length).toBe(2);
       expect(words[0]!.matched).toBe(true);
@@ -423,8 +423,8 @@ describe('reverse-translator', () => {
     });
 
     it('should work for Deseret format', () => {
-      const deseret = translateSync('hello world', 'deseret');
-      const tokens = reverseTranslateSyncWithMapping(deseret, 'deseret');
+      const deseret = translateSync('hello world', { format: 'deseret' });
+      const tokens = reverseTranslateSyncWithMapping(deseret, { format: 'deseret' });
       const words = tokens.filter((t) => t.isWord);
       expect(words.length).toBe(2);
       expect(words[0]!.matched).toBe(true);

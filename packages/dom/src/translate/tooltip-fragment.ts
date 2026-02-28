@@ -38,10 +38,11 @@ export function createTooltipFragment(
   text: string,
   format: OutputFormat = 'ingglish'
 ): DocumentFragment {
-  const tokens = translateSyncWithMapping(text, format);
+  const tokens = translateSyncWithMapping(text, { format });
 
   // For non-default formats, get standard Ingglish tokens to detect format diffs
-  const stdTokens = format === 'ingglish' ? null : translateSyncWithMapping(text, 'ingglish');
+  const stdTokens =
+    format === 'ingglish' ? null : translateSyncWithMapping(text, { format: 'ingglish' });
 
   return buildTooltipFragment(
     tokens.map((token, i) => {

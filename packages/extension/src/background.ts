@@ -152,7 +152,7 @@ function getCachedTranslation(word: string, format: OutputFormat): string {
   }
 
   cacheStats.misses++;
-  const translated = translateSync(word, format);
+  const translated = translateSync(word, { format });
 
   // Evict oldest entries if cache is full (simple FIFO eviction)
   if (translationCache.size >= MAX_CACHE_SIZE) {

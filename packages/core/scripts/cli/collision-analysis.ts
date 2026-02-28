@@ -40,7 +40,7 @@ async function analyzeCollisions(): Promise<AnalysisResult> {
 
   for (const word of words) {
     try {
-      const ingglish = translateWord(word, 'ingglish').toLowerCase();
+      const ingglish = translateWord(word, { format: 'ingglish' }).toLowerCase();
       const existing = ingglishToEnglish.get(ingglish);
       if (existing !== undefined) {
         existing.push(word);

@@ -64,7 +64,7 @@ export function observeAndTranslate(
           const fragment = createTooltipFragment(text, outputFormat);
           textNode.replaceWith(fragment);
         } else {
-          textNode.textContent = translateSync(text, outputFormat);
+          textNode.textContent = translateSync(text, { format: outputFormat });
         }
       }
       pendingTextNodes = [];
@@ -129,7 +129,7 @@ export function observeAndTranslate(
           // Temporarily disconnect observer to avoid infinite loop
           observer.disconnect();
           try {
-            textNode.textContent = translateSync(text, outputFormat);
+            textNode.textContent = translateSync(text, { format: outputFormat });
           } finally {
             observer.observe(root, {
               characterData: true,

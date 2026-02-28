@@ -500,7 +500,7 @@ describe('documentation examples', () => {
   describe('verify all examples translate correctly', () => {
     for (const example of uniqueExamples) {
       it(`"${example.english}" → "${example.ingglish}" (${example.source}:${example.line})`, () => {
-        const result = translateSync(example.english, 'ingglish');
+        const result = translateSync(example.english, { format: 'ingglish' });
         expect(result.toLowerCase()).toBe(example.ingglish);
       });
     }

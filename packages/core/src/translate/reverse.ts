@@ -9,13 +9,13 @@
 import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
 import { ipaToArpabetClean } from '@ingglish/ipa';
 import { applyCasePattern, detectCasePattern, tokenizeIPA } from '@ingglish/normalize';
-import type { OutputFormat } from '@ingglish/phonemes';
 import {
   expandArpabetAlternatives,
   getFormatHandler,
   ingglishToArpabet,
   registerFormat,
 } from '@ingglish/phonemes';
+import type { TranslateOptions } from '../foreign-dict';
 import type { TranslatedToken } from './forward';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
@@ -156,7 +156,8 @@ registerFormat('ipa', {
 /**
  * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
  */
-export function reverseTranslateSync(text: string, format: OutputFormat = 'ingglish'): string {
+export function reverseTranslateSync(text: string, options: TranslateOptions = {}): string {
+  const { format = 'ingglish' } = options;
   const handler = getFormatHandler(format);
   if (handler?.reverseText) {
     return handler.reverseText(text);
@@ -171,8 +172,9 @@ export function reverseTranslateSync(text: string, format: OutputFormat = 'inggl
  */
 export function reverseTranslateSyncWithMapping(
   text: string,
-  format: OutputFormat = 'ingglish'
+  options: TranslateOptions = {}
 ): TranslatedToken[] {
+  const { format = 'ingglish' } = options;
   const handler = getFormatHandler(format);
   if (handler?.reverseTextWithMapping) {
     return handler.reverseTextWithMapping(text) as TranslatedToken[];

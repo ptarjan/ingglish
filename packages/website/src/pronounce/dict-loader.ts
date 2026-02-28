@@ -1,3 +1,4 @@
+import { setForeignDictLoader } from 'ingglish';
 import type { IpaDict } from '@ingglish/ipa';
 import { LANGUAGES } from '@ingglish/ipa';
 
@@ -27,3 +28,7 @@ export async function loadDict(code: string): Promise<IpaDict> {
   cache.set(code, dict);
   return dict;
 }
+
+// Register the fetch-based loader so that `translate(text, { lang })` and
+// `translateSync(text, { lang })` work automatically.
+setForeignDictLoader(loadDict);

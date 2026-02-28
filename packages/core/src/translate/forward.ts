@@ -16,6 +16,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
+import { lookupIpa, translateForeign, translateForeignWithMapping } from '@ingglish/ipa';
 import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
@@ -29,6 +30,8 @@ import {
   getFormatIsLatinScript,
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
+import type { TranslateOptions } from '../foreign-dict';
+import { getForeignDict, isForeignLang } from '../foreign-dict';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
@@ -47,8 +50,23 @@ const TITLE_CASE = /^[A-Z][a-z]*$/;
 
 /**
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
+ *
+ * For foreign languages, the dictionary must have been loaded by a prior
+ * `await translate(text, { lang })` or `await loadForeignDict(lang)` call.
  */
-export function translateSync(text: string, format: OutputFormat = 'ingglish'): string {
+export function translateSync(text: string, options: TranslateOptions = {}): string {
+  const { format = 'ingglish', lang } = options;
+
+  if (isForeignLang(lang)) {
+    const dict = getForeignDict(lang);
+    if (!dict) {
+      throw new Error(
+        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
+      );
+    }
+    return translateForeign(text, dict, format);
+  }
+
   const { preserved, rawTokens } = extractTokens(text);
   return renderText(rawTokens, preserved, (w) => translateWordString(w, format), format);
 }
@@ -57,11 +75,26 @@ export function translateSync(text: string, format: OutputFormat = 'ingglish'): 
  * Like {@link translate}, but returns token-by-token mappings instead of a string.
  * Each token includes the original text, translation, and whether it matched
  * the dictionary. Dictionary must already be loaded.
+ *
+ * For foreign languages, the dictionary must have been loaded by a prior
+ * `await translate(text, { lang })` or `await loadForeignDict(lang)` call.
  */
 export function translateSyncWithMapping(
   text: string,
-  format: OutputFormat = 'ingglish'
+  options: TranslateOptions = {}
 ): TranslatedToken[] {
+  const { format = 'ingglish', lang } = options;
+
+  if (isForeignLang(lang)) {
+    const dict = getForeignDict(lang);
+    if (!dict) {
+      throw new Error(
+        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
+      );
+    }
+    return translateForeignWithMapping(text, dict, format);
+  }
+
   const { preserved, rawTokens } = extractTokens(text);
   return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
 }
@@ -70,11 +103,27 @@ export function translateSyncWithMapping(
  * Translates a single word (or contraction) to the specified format.
  * Handles contractions like "don't", "I'm", etc.
  *
- * @param word - The English word to translate
- * @param format - The output format ('ingglish' or 'ipa')
+ * For foreign languages, looks up the word in the cached IPA dictionary
+ * (must have been loaded by a prior async call).
+ *
+ * @param word - The word to translate
+ * @param options - Translation options (format, lang)
  * @returns The translated word, or the original word if not found
  */
-export function translateWord(word: string, format: OutputFormat = 'ingglish'): string {
+export function translateWord(word: string, options: TranslateOptions = {}): string {
+  const { format = 'ingglish', lang } = options;
+
+  if (isForeignLang(lang)) {
+    const dict = getForeignDict(lang);
+    if (!dict) {
+      throw new Error(
+        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
+      );
+    }
+    const ipa = lookupIpa(dict, word);
+    return ipa ?? word;
+  }
+
   return translateWordInternal(word, format).translated;
 }
 
@@ -207,7 +256,10 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
 
   // 5. Contractions (don't, I'm, etc.)
   if (word.includes("'")) {
-    return { matched: true, translated: translateContraction(word, format, translateWord) };
+    return {
+      matched: true,
+      translated: translateContraction(word, format, (w, f) => translateWord(w, { format: f })),
+    };
   }
 
   // 6. Bare initialisms (UI, API, HTML)
@@ -385,7 +437,7 @@ function tryInitialismWithSuffix(
   // For non-Latin scripts, only uppercase bases are initialisms —
   // lowercase "it's" should fall through to contraction handling.
   if (isLatinScript || parsed.base === parsed.base.toUpperCase()) {
-    const baseTranslated = translateWord(parsed.base, format);
+    const baseTranslated = translateWord(parsed.base, { format });
     return { matched: true, translated: baseTranslated + parsed.suffix };
   }
   return null;
