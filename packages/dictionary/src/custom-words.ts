@@ -47,8 +47,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
 
   circumvention: ['S', 'ER2', 'K', 'AH0', 'M', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌsɝkəmˈvɛnʃən/ — CMU has /tʃ/
   close: ['K', 'L', 'OW1', 'Z'], // /kloʊz/ — CMU default is adjective /kloʊs/
-  cognate: ['K', 'AA1', 'G', 'N', 'EY2', 'T'], // /ˈkɑɡˌneɪt/ — G2P gives /oʊ/ for first vowel
-  cognates: ['K', 'AA1', 'G', 'N', 'EY2', 'T', 'S'], // /ˈkɑɡˌneɪts/
   conscientiously: ['K', 'AA2', 'N', 'SH', 'IY0', 'EH1', 'N', 'SH', 'AH0', 'S', 'L', 'IY0'], // /ˌkɑnʃiˈɛnʃəsli/ — CMU has /tʃ/
   contravention: ['K', 'AA2', 'N', 'T', 'R', 'AH0', 'V', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌkɑntrəˈvɛnʃən/ — CMU has /tʃ/
   convulsant: ['K', 'AH0', 'N', 'V', 'AH1', 'L', 'S', 'AH0', 'N', 'T'], // /kənˈvʌlsənt/ — CMU missing /n/
@@ -63,7 +61,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Wrong consonant in derived form
   deliciously: ['D', 'IH0', 'L', 'IH1', 'SH', 'AH0', 'S', 'L', 'IY0'], // /dɪˈlɪʃəsli/ — CMU has /ʃ/ for final /s/
   derivational: ['D', 'EH2', 'R', 'IH0', 'V', 'EY1', 'SH', 'AH0', 'N', 'AH0', 'L'], // /ˌdɛrɪˈveɪʃənəl/ — G2P gives /aɪ/ for first vowel
-  devs: ['D', 'EH1', 'V', 'Z'], // /dɛvz/
   // Website/tech terms missing from CMU
   digraph: ['D', 'AY1', 'G', 'R', 'AE2', 'F'], // /ˈdaɪˌɡræf/ — G2P gives short /ɪ/
 
@@ -114,7 +111,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Days of the week: CMU v1 has /i/ but standard AmE uses /eɪ/
   friday: ['F', 'R', 'AY1', 'D', 'EY2'], // /ˈfraɪˌdeɪ/
   gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'], // /ɡəˈʃtɑlt/
-  git: ['G', 'IH1', 'T'], // /ɡɪt/
   github: ['G', 'IH1', 'T', 'HH', 'AH1', 'B'], // /ˈɡɪtˌhʌb/
 
   grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // /ˈɡrænˌmɑ/ — CMU has spurious /d/
@@ -128,7 +124,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // N→NG + additional vowel fix (N→NG alone handled by normalizeVelarNasal)
   inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // /ˌɪŋkəŋˈklusɪvli/ — CMU has /nk/
   initialisms: ['IH0', 'N', 'IH1', 'SH', 'AH0', 'L', 'IH2', 'Z', 'AH0', 'M', 'Z'], // /ɪˈnɪʃəˌlɪzəmz/
-  // CMU has /tʃ/ instead of /ʃ/ in -tion/-sion suffix after N
   // CMU has /tʃ/ instead of /ʃ/ in -tion/-sion suffix after N
   intention: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ɪnˈtɛnʃən/ — CMU has /tʃ/
   intentions: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ɪnˈtɛnʃənz/ — CMU has /tʃ/
@@ -148,7 +143,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // ---------------------------------------------------------------------------
 
   matured: ['M', 'AH0', 'CH', 'UH1', 'R', 'D'], // /məˈtʃʊrd/ — CMU has /tj/ (British), should match mature's /tʃ/
-  meme: ['M', 'IY1', 'M'], // /mim/
   monday: ['M', 'AH1', 'N', 'D', 'EY2'], // /ˈmʌnˌdeɪ/
   navbar: ['N', 'AE1', 'V', 'B', 'AA2', 'R'], // /ˈnævˌbɑr/ — "navigation bar"; G2P gives /ɚ/ for second vowel
   negligee: ['N', 'EH1', 'G', 'L', 'AH0', 'ZH', 'EY2'], // /ˈnɛɡləˌʒeɪ/
@@ -209,7 +203,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'], // /ˈsætɝˌdeɪ/
   soupcon: ['S', 'UW0', 'P', 'S', 'AA1', 'N'], // /supˈsɑn/
   streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'], // /ˈstrɛtəm/
-  sudo: ['S', 'UW1', 'D', 'OW0'], // /ˈsudoʊ/
   syllabification: ['S', 'IH0', 'L', 'AE1', 'B', 'IH0', 'F', 'IH0', 'K', 'EY2', 'SH', 'AH0', 'N'], // /sɪˌlæbɪfɪˈkeɪʃən/ — G2P drops /b/
   temptation: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N'], // /tɛmpˈteɪʃən/ — CMU missing /p/
 

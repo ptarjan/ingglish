@@ -1,10 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
+import { wordToArpabet } from '@ingglish/g2p';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS } from '@ingglish/phonemes';
 import {
   CUSTOM_PRONUNCIATIONS,
   getCustomPronunciation,
   hasCustomPronunciation,
 } from './custom-words';
+import { loadDictionary, getDictionary } from './loader';
 
 /** All valid ARPAbet base phonemes (vowels + consonants) */
 const VALID_BASES = new Set<string>([...ARPABET_VOWELS, ...ARPABET_CONSONANTS]);
@@ -73,5 +75,36 @@ describe('CUSTOM_PRONUNCIATIONS data validation', () => {
     const keys = Object.keys(CUSTOM_PRONUNCIATIONS);
     const uniqueKeys = new Set(keys);
     expect(keys.length).toBe(uniqueKeys.size);
+  });
+
+  describe('no redundant entries', () => {
+    beforeAll(async () => {
+      await loadDictionary();
+    });
+
+    it('every custom entry either corrects CMU or differs from G2P', () => {
+      const dict = getDictionary();
+      const redundant: string[] = [];
+
+      for (const [word, customPhonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+        const inCMU = word in dict;
+        const cmuPhonemes = inCMU ? dict[word]! : null;
+
+        // If the word is in CMU and CMU differs from custom, this entry is
+        // a CMU correction — keep it regardless of what G2P produces.
+        if (cmuPhonemes && cmuPhonemes.join(' ') !== customPhonemes.join(' ')) {
+          continue;
+        }
+
+        // Word is either not in CMU, or CMU already matches custom.
+        // Check if G2P also produces the same phonemes (exact match).
+        const g2pResult = wordToArpabet(word);
+        if (g2pResult.join(' ') === customPhonemes.join(' ')) {
+          redundant.push(word);
+        }
+      }
+
+      expect(redundant).toEqual([]);
+    });
   });
 });
