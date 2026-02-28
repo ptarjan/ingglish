@@ -78,6 +78,18 @@ describe('translateForeign', () => {
     expect(result2).not.toContain(NOT_FOUND_MARKER);
   });
 
+  it('merges clitic IPA across apostrophes instead of translating separately', () => {
+    // "l'" is /l/ (just the consonant), "ordre" is /ɔʁdʁ/
+    // Merged: /lɔʁdʁ/ should produce something starting with "l", not "el"
+    const frDict: IpaDict = { "l'": '/l/', ordre: '/ɔʁdʁ/' };
+    const result = translateForeign("l'ordre", frDict);
+    expect(result).not.toContain(NOT_FOUND_MARKER);
+    // Should NOT start with "el" (the letter name of L)
+    expect(result.toLowerCase()).not.toMatch(/^el/);
+    // Should start with "l" (consonant flows into the vowel)
+    expect(result.toLowerCase()).toMatch(/^l/);
+  });
+
   it('splits hyphenated words', () => {
     const frDict: IpaDict = { allez: '/ale/', vous: '/vu/' };
     const result = translateForeign('allez-vous', frDict);

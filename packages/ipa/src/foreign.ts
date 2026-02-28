@@ -379,28 +379,57 @@ export function translateForeign(
       // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
       const parts = core.split(CONTRACTION_SPLIT_RE);
       if (parts.length > 1) {
+        // Collect IPA for each non-separator part
+        const partIpas: (string | undefined)[] = parts.map((part, i) => {
+          if (part === "'" || part === '-') {return;}
+          let ipa = lookupIpa(dict, part, lang);
+          if (!ipa && parts[i + 1] === "'") {
+            ipa = lookupIpa(dict, part + "'", lang);
+          }
+          return ipa;
+        });
+
+        const allFound = parts.every(
+          (part, i) => part === "'" || part === '-' || partIpas[i] !== undefined
+        );
+
+        if (allFound) {
+          // Merge IPA across apostrophes, keep hyphens as group separators.
+          // French clitics (l', s', d') flow into the next word phonetically
+          // (e.g. l'ordre → /lɔʁdʁ/ → "lawrdr", not "el'awrdr").
+          const groups: string[][] = [[]];
+          for (const [i, part_] of parts.entries()) {
+            const part = part_;
+            if (part === "'") {continue;}
+            if (part === '-') {
+              groups.push([]);
+              continue;
+            }
+            const ipa = partIpas[i]!;
+            groups.at(-1)!.push(ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', ''));
+          }
+          const translated = groups
+            .map((ipas) => ipaToFormat(ipas.join(''), format, lang))
+            .join('-');
+          const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
+          return leading.join('') + cased + trailing.join('');
+        }
+
+        // Fallback: some parts not found — translate each independently
         let isFirstPart = true;
         const translated = parts.map((part, i) => {
           if (part === "'" || part === '-') {
             return part;
           }
-          // First real part inherits the sentence-level case (important for
-          // caseless scripts where sentence-initial capitalization was set above)
           const partCase = isFirstPart ? casePattern : detectCasePattern(part);
           isFirstPart = false;
-          // Try bare lookup first, then with adjacent apostrophe attached
-          // (French ipa-dict stores clitics as "s'" → /s/, "l'" → /l/, etc.)
-          let partIpa = lookupIpa(dict, part, lang);
-          if (!partIpa && parts[i + 1] === "'") {
-            partIpa = lookupIpa(dict, part + "'", lang);
-          }
+          const partIpa = partIpas[i];
           if (partIpa) {
             const partTranslated = ipaToFormat(partIpa, format, lang);
             return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
           }
           return NOT_FOUND_MARKER + part;
         });
-        // If any part was found, return the combined result
         if (
           translated.some(
             (t, i) => parts[i] !== "'" && parts[i] !== '-' && !t.startsWith(NOT_FOUND_MARKER)
