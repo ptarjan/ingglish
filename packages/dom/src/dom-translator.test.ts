@@ -608,8 +608,12 @@ describe('dom-translator', () => {
         text
           .split(/(\s+)/)
           .map((seg) => {
-            if (/^\s+$/.test(seg)) {return seg;}
-            if (seg.toLowerCase() === 'xyzzy') {return MARKER + seg;}
+            if (/^\s+$/.test(seg)) {
+              return seg;
+            }
+            if (seg.toLowerCase() === 'xyzzy') {
+              return MARKER + seg;
+            }
             return seg.toUpperCase();
           })
           .join('')
@@ -640,7 +644,9 @@ describe('dom-translator', () => {
         text
           .split(/(\s+)/)
           .map((seg) => {
-            if (/^\s+$/.test(seg)) {return seg;}
+            if (/^\s+$/.test(seg)) {
+              return seg;
+            }
             return MARKER + seg; // all words "not found" — text identical to original
           })
           .join('')

@@ -381,7 +381,9 @@ export function translateForeign(
       if (parts.length > 1) {
         // Collect IPA for each non-separator part
         const partIpas: (string | undefined)[] = parts.map((part, i) => {
-          if (part === "'" || part === '-') {return;}
+          if (part === "'" || part === '-') {
+            return;
+          }
           let ipa = lookupIpa(dict, part, lang);
           if (!ipa && parts[i + 1] === "'") {
             ipa = lookupIpa(dict, part + "'", lang);
@@ -400,7 +402,9 @@ export function translateForeign(
           const groups: string[][] = [[]];
           for (const [i, part_] of parts.entries()) {
             const part = part_;
-            if (part === "'") {continue;}
+            if (part === "'") {
+              continue;
+            }
             if (part === '-') {
               groups.push([]);
               continue;
