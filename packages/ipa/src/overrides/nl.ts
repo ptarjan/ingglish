@@ -21,6 +21,7 @@ export const nl: Record<string, string> = {
   burgery: '/bʏrɣəˈrɛi/', // archaic: burgerij
   dagelix: '/ˈdaːɣəlɪks/', // archaic: dagelijks
   dagschemer: '/ˈdɑɣˌsxeːmər/',
+  deed: '/deːt/',
   dengenen: '/dɛnˈɣeːnən/', // archaic: those
   dese: '/ˈdeːzə/', // archaic: deze
   deselve: '/dəˈzɛlvə/', // archaic: dezelfde
@@ -63,15 +64,22 @@ export const nl: Record<string, string> = {
   hooren: '/ˈhoːrən/', // archaic: horen
   immense: '/ɪˈmɛnsə/',
   inni: '/ˈɪni/', // proper name (Mulisch)
+  is: '/ɪs/',
   kapellekensbaan: '/kaˈpɛləkənsˌbaːn/',
+  keek: '/keːk/',
   kennelick: '/ˈkɛnələk/', // archaic: evident
   kraanwagentje: '/ˈkraːnˌwaːɣəntjə/',
   laatsten: '/ˈlaːtstən/',
   lande: '/ˈlɑndə/', // archaic dative: land
+  lange: '/ˈlɑŋə/',
   lauriergracht: '/lɑuˈriːrɣrɑxt/',
   lesen: '/ˈleːzən/', // archaic: lezen
   lesten: '/ˈlɛstən/', // archaic: last
+  liep: '/lip/',
+  Louis: '/luˈi/', // French name in Dutch context
   louterende: '/ˈlɑutərɛndə/',
+  mag: '/mɑx/',
+  mensen: '/ˈmɛnsən/',
   mooiste: '/ˈmoːistə/', // superlative: prettiest
   my: '/mɛi/', // archaic: mij
   nassouwe: '/nɑˈsɑuə/', // archaic: Nassau
@@ -80,6 +88,7 @@ export const nl: Record<string, string> = {
   ondersaten: '/ˈɔndərˌzaːtən/', // archaic: subjects
   ontwaakte: '/ɔntˈwaːktə/',
   onverveerd: '/ˌɔnvərˈveːrt/',
+  onze: '/ˈɔnzə/',
   opgerezen: '/ˈɔpɣəˌreːzən/',
   osewoudt: '/ˈoːzəˌwɑut/', // proper name (Hermans)
   ouders: '/ˈɑudərs/',
@@ -135,7 +144,9 @@ export const nl: Record<string, string> = {
   wordt: '/wɔrt/',
   yegelick: '/ˈjeːɣəlɪk/', // archaic: iedereen
   zakkende: '/ˈzɑkəndə/', // sinking
+  zal: '/zɑl/',
   zekere: '/ˈzeːkərə/', // a certain
+  ziet: '/zit/',
   zijne: '/ˈzɛinə/', // archaic: zijn
   zocht: '/zɔxt/',
   zuivere: '/ˈzœyvərə/', // pure (inflected)

@@ -20,6 +20,7 @@ export const is: Record<string, string> = {
   flýðu: '/ˈfliːðʏ/',
   fornaldar: '/ˈfɔrtnaltar/',
   fornrit: '/ˈfɔrtnrɪtʰ/',
+  frón: '/frouːn/',
   galdursmenn: '/ˈkaltʏrsmɛnː/',
   gautr: '/ˈkœyːtr/',
   // New saga/literary overrides
@@ -85,6 +86,7 @@ export const is: Record<string, string> = {
   söðul: '/ˈsœːðʏl/',
   sólkerfum: '/ˈsoulkʰɛrvʏm/',
   tindar: '/ˈtʰɪntar/',
+  tívar: '/ˈtʰiːvar/',
   útsjánum: '/ˈuːtʰsjauːnʏm/',
   vágskorin: '/ˈvauɣskɔrɪn/',
   Valföðr: '/ˈvalvœðr/',

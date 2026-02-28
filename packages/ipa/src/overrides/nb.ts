@@ -95,6 +95,7 @@ export const nb: Record<string, string> = {
   Norge: 'nɔɾɡə',
   nu: 'nʉː',
   nysnøen: 'nyːsnøːən',
+  ø: 'øː',
   øjne: 'ɔjnə',
   op: 'ɔp',
   Peer: 'peːɾ',

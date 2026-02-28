@@ -16,6 +16,7 @@ export const sv: Record<string, string> = {
   brynja: '/ˈbrynːja/',
   bryt: '/bryːt/',
   därnäst: '/ˈdæːɳɛst/',
+  de: '/dɔm/',
   dimmors: '/ˈdɪmːɔʂ/',
   eget: '/ˈeːɡɛt/',
   fågelsång: '/ˈfoːɡɛlˌsɔŋː/',

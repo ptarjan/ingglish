@@ -14,6 +14,7 @@ export const de: Record<string, string> = {
   daß: '/das/',
   'davos-platz': '/ˈdaːvɔsˌplats/', // Swiss resort area
   demoiselle: '/dəmwaˈzɛl/', // French in Mann's Buddenbrooks
+  dreissig: '/ˈdʁaɪ̯sɪç/',
   düwel: '/ˈdyːvəl/', // Low German: devil
   faßt: '/fast/',
   feuertrunken: '/ˈfɔɪ̯ɐˌtʁʊŋkən/',

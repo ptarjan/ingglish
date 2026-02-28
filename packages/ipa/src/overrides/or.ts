@@ -18,7 +18,9 @@ export const or_: Record<string, string> = {
   ଉତ୍କଳର: 'ut̪kɔl̪ɔɾɔ',
   // Upendra Bhanja — Baidehisha Bilasa
   ଉଦ୍ଭବ: 'ud̪bʱɔbɔ',
+  ଏ: 'e',
   ଏଣେ: 'eɳe',
+  ଓ: 'o',
   ଔରସୁ: 'ɔwɾɔsu',
   // Rangabati (folk song)
   କନକଲତା: 'kɔnɔkɔl̪ɔt̪aː',
@@ -60,6 +62,7 @@ export const or_: Record<string, string> = {
   ତୁହି: 't̪uhi',
   ତୋହର: 't̪oːhɔɾɔ',
   // Fakir Mohan Senapati — Odia Kahiki Daridra
+  ଦରିଦ୍ର: 'd̪ɔɾid̪ɾɔ',
   ଦରିଦ୍ରତା: 'd̪ɔɾid̪ɾɔt̪aː',
   ଦୀର୍ଘିକା: 'd̪iːɾɡʱikaː',
   ଦୀର୍ଘେ: 'd̪iːɾɡʱe',
