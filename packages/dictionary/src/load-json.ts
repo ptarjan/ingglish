@@ -16,6 +16,11 @@ export async function loadJson<T>(basename: string): Promise<null | T> {
     return null;
   }
   try {
+    // Dynamic imports so Node.js builtins aren't bundled into the browser build.
+    // Vite externalizes these to empty stubs, which is fine — the runtime guard
+    // above ensures this code is unreachable in the browser.
+    // (The Vite "externalized for browser compatibility" warning is suppressed
+    // in the website's vite.config.ts onwarn.)
     const { readFileSync } = await import('node:fs');
     const { fileURLToPath } = await import('node:url');
     const thisFile = fileURLToPath(import.meta.url);
