@@ -71,7 +71,11 @@ export { getForeignDict, loadForeignDict, setForeignDictLoader } from './foreign
 // Sync API (dictionary must be loaded first via translate)
 export { translateSync, translateSyncWithMapping, translateWord } from './translate';
 export type { TranslatedToken } from './translate';
-export { reverseTranslateSyncWithMapping, reverseTranslateWord } from './translate';
+export {
+  reverseTranslateSync,
+  reverseTranslateSyncWithMapping,
+  reverseTranslateWord,
+} from './translate';
 
 export type { IpaDict } from '@ingglish/ipa';
 export type { Language } from '@ingglish/ipa';
