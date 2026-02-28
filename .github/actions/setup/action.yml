@@ -29,6 +29,18 @@ runs:
           packages/*/node_modules
         key: nm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
+    - name: Check upstream data versions
+      if: inputs.dict-cache == 'true'
+      id: upstream
+      run: |
+        cmudict=$(curl -sf https://api.github.com/repos/cmusphinx/cmudict/commits/master | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'][:12])")
+        ipadict=$(curl -sf https://api.github.com/repos/open-dict-data/ipa-dict/commits/master | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'][:12])")
+        kaikki=$(curl -sI https://kaikki.org/dictionary/Finnish/kaikki.org-dictionary-Finnish.jsonl.gz | grep -i etag | tr -d '\r' | awk '{print $2}')
+        echo "cmudict=$cmudict" >> "$GITHUB_OUTPUT"
+        echo "ipadict=$ipadict" >> "$GITHUB_OUTPUT"
+        echo "kaikki=$kaikki" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: Cache generated dictionaries
       if: inputs.dict-cache == 'true'
       uses: actions/cache@v5
@@ -38,7 +50,7 @@ runs:
           packages/dictionary/src/cmudict.js
           packages/dictionary/src/reverse-cmudict.js
           packages/dictionary/src/data/word-frequencies.js
-        key: dictionaries-v5-${{ hashFiles('packages/dictionary/scripts/build-dictionary.ts') }}
+        key: dictionaries-v5-${{ hashFiles('packages/dictionary/scripts/build-dictionary.ts') }}-${{ steps.upstream.outputs.cmudict }}
 
     - name: Cache Turbo
       uses: actions/cache@v5
@@ -63,7 +75,7 @@ runs:
       id: kaikki-cache
       with:
         path: packages/website/data/kaikki/
-        key: kaikki-v1-${{ hashFiles('packages/website/scripts/extract-kaikki-ipa.ts') }}
+        key: kaikki-v1-${{ hashFiles('packages/website/scripts/extract-kaikki-ipa.ts') }}-${{ steps.upstream.outputs.kaikki }}
 
     - name: Extract kaikki IPA data (if not cached)
       if: inputs.dict-cache == 'true' && steps.kaikki-cache.outputs.cache-hit != 'true'
@@ -76,7 +88,7 @@ runs:
       id: ipa-dict-cache
       with:
         path: packages/website/public/ipa-dicts/
-        key: ipa-dicts-v2-${{ hashFiles('packages/website/scripts/build-ipa-dicts.ts', 'packages/website/scripts/extract-kaikki-ipa.ts') }}
+        key: ipa-dicts-v2-${{ hashFiles('packages/website/scripts/build-ipa-dicts.ts', 'packages/website/scripts/extract-kaikki-ipa.ts') }}-${{ steps.upstream.outputs.ipadict }}-${{ steps.upstream.outputs.kaikki }}
 
     - name: Generate IPA dictionaries (if not cached)
       if: inputs.dict-cache == 'true' && steps.ipa-dict-cache.outputs.cache-hit != 'true'
