@@ -49,6 +49,15 @@ export function escapeHtmlAttr(text: string): string {
 }
 
 /**
+ * Extracts the href from an existing <base> tag in HTML, if present.
+ * Returns null if no base tag with href is found.
+ */
+export function extractBaseHref(html: string): null | string {
+  const match = /<base\s[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/i.exec(html);
+  return match?.[1] ?? null;
+}
+
+/**
  * Gets the base URL for a page (URL up to and including the last slash).
  * Uses standard URL resolution: strip everything after the last slash.
  * For https://example.com/path/page → https://example.com/path/
@@ -63,9 +72,15 @@ export function getBaseUrl(url: string): string {
 
 /**
  * Injects a base tag into HTML so relative URLs resolve correctly.
+ * If the HTML already contains a <base> tag with an href, it is left as-is.
  * Uses the full URL path (up to last slash) so relative links work properly.
  */
 export function injectBaseTag(html: string, baseUrl: string): string {
+  // Don't override an existing <base> tag — the page author knows best
+  if (extractBaseHref(html) !== null) {
+    return html;
+  }
+
   const safeBaseUrl = escapeHtmlAttr(baseUrl);
   const baseTag = `<base href="${safeBaseUrl}">`;
 
@@ -249,8 +264,10 @@ export function processProxiedHtml(
   }
 
   // Step 2-3: Strip scripts and inject base tag
-  const baseUrl = getBaseUrl(options.pageUrl);
-  const htmlWithBase = injectBaseTag(stripScripts(rawHtml), baseUrl);
+  const sanitized = stripScripts(rawHtml);
+  const existingBase = extractBaseHref(sanitized);
+  const baseUrl = existingBase ?? getBaseUrl(options.pageUrl);
+  const htmlWithBase = injectBaseTag(sanitized, baseUrl);
 
   // Step 4: Proxy font URLs
   const htmlWithFonts = proxyFontUrls(htmlWithBase, options.proxyUrl);

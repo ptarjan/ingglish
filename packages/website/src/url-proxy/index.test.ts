@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   detectBotProtection,
   escapeHtmlAttr,
+  extractBaseHref,
   getBaseUrl,
   injectBaseTag,
   isHashOnlyChange,
@@ -152,6 +153,36 @@ describe('getBaseUrl', () => {
   });
 });
 
+describe('extractBaseHref', () => {
+  it('extracts href from base tag with double quotes', () => {
+    expect(extractBaseHref('<head><base href="https://example.com/"></head>')).toBe(
+      'https://example.com/'
+    );
+  });
+
+  it('extracts href from base tag with single quotes', () => {
+    expect(extractBaseHref("<head><base href='https://example.com/'></head>")).toBe(
+      'https://example.com/'
+    );
+  });
+
+  it('extracts href from self-closing base tag', () => {
+    expect(extractBaseHref('<base href="https://example.com/" />')).toBe('https://example.com/');
+  });
+
+  it('is case-insensitive', () => {
+    expect(extractBaseHref('<BASE HREF="https://example.com/">')).toBe('https://example.com/');
+  });
+
+  it('returns null when no base tag exists', () => {
+    expect(extractBaseHref('<head><title>Test</title></head>')).toBeNull();
+  });
+
+  it('returns null for empty HTML', () => {
+    expect(extractBaseHref('')).toBeNull();
+  });
+});
+
 describe('injectBaseTag', () => {
   const baseUrl = 'https://example.com/path/';
 
@@ -195,6 +226,13 @@ describe('injectBaseTag', () => {
     const html = '<html><head></head></html>';
     const result = injectBaseTag(html, 'http://localhost:3000/');
     expect(result).toContain('href="http://localhost:3000/"');
+  });
+
+  it('does not inject when HTML already has a base tag', () => {
+    const html = '<html><head><base href="https://original.com/"></head><body></body></html>';
+    const result = injectBaseTag(html, baseUrl);
+    expect(result).toBe(html);
+    expect(result).not.toContain('example.com');
   });
 });
 
@@ -525,5 +563,19 @@ describe('processProxiedHtml', () => {
       pageUrl: 'https://example.com/deep/path/file.html',
     });
     expect(result2.baseUrl).toBe('https://example.com/deep/path/');
+  });
+
+  it('uses existing base tag href instead of computing from page URL', () => {
+    const html =
+      '<html><head><base href="https://fleursdumal.org/" /></head><body><img src="images/photo.jpg"></body></html>';
+    const result = processProxiedHtml(html, {
+      ...options,
+      pageUrl: 'https://fleursdumal.org/poem/148',
+    });
+
+    // Should use the page's own base href, not /poem/
+    expect(result.baseUrl).toBe('https://fleursdumal.org/');
+    // Should NOT inject a second base tag
+    expect(result.html.match(/<base /gi)?.length).toBe(1);
   });
 });
