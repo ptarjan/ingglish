@@ -3,7 +3,6 @@ export {
   ARPABET_CONSONANTS,
   ARPABET_VOWELS,
   getStress,
-  isConsonant,
   isVowel,
   STRESS_MARKER_REGEX,
   stripStress,

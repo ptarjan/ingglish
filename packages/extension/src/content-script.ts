@@ -299,7 +299,7 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   const originalWords = new Set<string>();
   for (const span of spans) {
     const orig = span.dataset.ingglishOrig;
-    if (orig !== null && orig !== '') {
+    if (orig) {
       originalWords.add(orig.toLowerCase());
     }
   }
@@ -322,7 +322,7 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
       while (index < endIndex) {
         const span = spans[index];
         const orig = span.dataset.ingglishOrig;
-        if (orig !== null && orig !== '') {
+        if (orig) {
           const translated = translations[orig.toLowerCase()];
           if (translated !== undefined) {
             const pattern = detectCasePattern(orig);
