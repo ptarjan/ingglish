@@ -117,7 +117,7 @@ export interface PoemWord {
 // 24 lines, each its own step. Transforms one line at a time.
 export const poemWords: PoemWord[] = [
   // Line 1: "I take it you already know"
-  { e: 'I', i: 'Ai', s: 1 },
+  { e: 'I', i: 'ai', s: 1 },
   { e: 'take', i: 'tayk', s: 1 },
   { e: 'it', i: 'it', s: 1 },
   { e: 'you', i: 'yoo', s: 1 },
@@ -333,11 +333,11 @@ export const poemWords: PoemWord[] = [
   { e: 'alive,', i: 'alaiv,', s: 23 },
   { e: '\n', i: '\n', s: 0 },
   // Line 24: "I'd mastered it when I was five!"
-  { e: "I'd", i: 'Aid', s: 24 },
+  { e: "I'd", i: 'aid', s: 24 },
   { e: 'mastered', i: 'masterd', s: 24 },
   { e: 'it', i: 'it', s: 24 },
   { e: 'when', i: 'wen', s: 24 },
-  { e: 'I', i: 'Ai', s: 24 },
+  { e: 'I', i: 'ai', s: 24 },
   { e: 'was', i: 'woz', s: 24 },
   { e: 'five!', i: 'faiv!', s: 24 },
 ];
