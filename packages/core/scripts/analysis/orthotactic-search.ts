@@ -14,13 +14,14 @@ import {
   getDictionary,
   loadFrequencies,
   getWordFrequency,
+  getCorpusTotal,
 } from '@ingglish/dictionary';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
 
-const [, freqData] = await Promise.all([loadDictionary(), loadFrequencies()]);
+await Promise.all([loadDictionary(), loadFrequencies()]);
 const cmudict = getDictionary();
 const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0);
-const corpusTotal = Object.values(freqData).reduce((sum, v) => sum + v, 0);
+const corpusTotal = getCorpusTotal();
 const perMillion = (raw: number) => (raw / corpusTotal) * 1_000_000;
 
 // Pre-compute raw phonemes (with stress) and base phonemes (stress stripped)

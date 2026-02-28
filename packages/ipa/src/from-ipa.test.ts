@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ipaToArpabet, ipaToArpabetString } from './from-ipa';
+import { ipaToArpabet } from './from-ipa';
 
 describe('ipaToArpabet', () => {
   it('converts simple consonants', () => {
@@ -248,12 +248,5 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('é')).toEqual(['EH']);
     // Finnish loanword "bébé" — accented e's should still produce EH
     expect(ipaToArpabet('bébé')).toEqual(['B', 'EH', 'B', 'EH']);
-  });
-});
-
-describe('ipaToArpabetString', () => {
-  it('returns space-separated phonemes', () => {
-    expect(ipaToArpabetString('həˈɫoʊ')).toBe('HH AH0 L OW1');
-    expect(ipaToArpabetString('ˈwɝɫd')).toBe('W ER1 L D');
   });
 });

@@ -66,9 +66,6 @@ export const ARPABET_CONSONANTS = [
 /** Pre-built Set for O(1) vowel lookup */
 const VOWELS_SET = new Set<string>(ARPABET_VOWELS);
 
-/** Pre-built Set for O(1) consonant lookup */
-const CONSONANTS_SET = new Set<string>(ARPABET_CONSONANTS);
-
 /** Regex pattern to match ARPAbet stress markers (0, 1, 2) at end of phoneme */
 export const STRESS_MARKER_REGEX = /[012]$/;
 
@@ -90,19 +87,6 @@ export function getStress(phoneme: string): 0 | 1 | 2 | null {
     return (lastChar - 48) as 0 | 1 | 2;
   }
   return null;
-}
-
-/**
- * Checks if an ARPAbet phoneme is a consonant.
- *
- * @example
- * isConsonant('B')   // true
- * isConsonant('SH')  // true
- * isConsonant('AH0') // false
- */
-export function isConsonant(phoneme: string): boolean {
-  const base = stripStress(phoneme);
-  return CONSONANTS_SET.has(base);
 }
 
 /**

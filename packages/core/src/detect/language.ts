@@ -4,6 +4,8 @@
  * Heuristic detection of whether text is English, Ingglish, or IPA.
  */
 
+import { IPA_SYMBOLS_SET } from '@ingglish/normalize';
+
 /**
  * Patterns that suggest text is in Ingglish format.
  */
@@ -26,9 +28,10 @@ const ENGLISH_PATTERNS = [
 ];
 
 /**
- * IPA-specific characters for detection (Set for O(1) lookup).
+ * IPA-specific characters for detection.
+ * Extends the base IPA symbols with stress markers (ˈ, ˌ).
  */
-const IPA_CHARS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡˈˌ');
+const IPA_CHARS_SET = new Set([...IPA_SYMBOLS_SET, 'ˈ', 'ˌ']);
 
 // Fraction of characters that must be IPA-specific to classify text as IPA
 const IPA_CHAR_THRESHOLD = 0.1;

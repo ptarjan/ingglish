@@ -3,4 +3,12 @@ export type { CasePattern } from './case';
 
 export { extractPreservedPatterns, normalizeApostrophes, stripDiacritics } from './text';
 
-export { tokenizeIPA, tokenizeText, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from './tokenize';
+export {
+  IPA_SYMBOLS_SET,
+  tokenizeIPA,
+  tokenizeText,
+  tokenizeUnicodeScript,
+  WORD_SPLIT_REGEX,
+  WORD_TEST_REGEX,
+} from './tokenize';
+export type { TextToken } from './tokenize';

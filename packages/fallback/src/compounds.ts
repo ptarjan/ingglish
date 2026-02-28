@@ -53,11 +53,12 @@ const MAX_PART_LENGTH = 15;
  */
 export function dpDecompose(word: string): null | string[] {
   const n = word.length;
-  // dp[i] = best decomposition for word[0..i-1], or undefined if none
-  const dp: (undefined | { parts: string[]; score: number })[] = Array.from<undefined>({
+  // Store backtrace index + score + part count instead of copying arrays.
+  // dp[i].from = split point j (word[j..i] is the last part), dp[i].count = number of parts.
+  const dp: (undefined | { count: number; from: number; score: number })[] = Array.from<undefined>({
     length: n + 1,
   });
-  dp[0] = { parts: [], score: 0 };
+  dp[0] = { count: 0, from: -1, score: 0 };
 
   for (let i = MIN_PART_LENGTH; i <= n; i++) {
     for (let j = Math.max(0, i - MAX_PART_LENGTH); j <= i - MIN_PART_LENGTH; j++) {
@@ -81,26 +82,36 @@ export function dpDecompose(word: string): null | string[] {
         continue;
       }
       const newScore = prev.score + freq;
-      const newParts = prev.parts.length + 1;
+      const newCount = prev.count + 1;
       const current = dp[i];
 
       // Prefer: fewer parts first, then higher frequency
       if (
         current === undefined ||
-        newParts < current.parts.length ||
-        (newParts === current.parts.length && newScore > current.score)
+        newCount < current.count ||
+        (newCount === current.count && newScore > current.score)
       ) {
-        dp[i] = { parts: [...prev.parts, chunk], score: newScore };
+        dp[i] = { count: newCount, from: j, score: newScore };
       }
     }
   }
 
   const result = dp[n];
   // Must have at least 2 parts (otherwise it's not a compound)
-  if (result === undefined || result.parts.length < 2) {
+  if (result === undefined || result.count < 2) {
     return null;
   }
-  return result.parts;
+
+  // Reconstruct parts by walking the backtrace
+  const parts: string[] = [];
+  let pos = n;
+  while (pos > 0) {
+    const entry = dp[pos]!;
+    parts.push(word.slice(entry.from, pos));
+    pos = entry.from;
+  }
+  parts.reverse();
+  return parts;
 }
 
 /**

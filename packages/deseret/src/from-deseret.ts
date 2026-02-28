@@ -6,7 +6,7 @@
  */
 
 import { lookupPhonemeKey, sortByFrequency } from '@ingglish/dictionary';
-import type { ReverseToken } from '@ingglish/phonemes';
+import { createScriptReverseTranslator } from '@ingglish/phonemes';
 import { DESERET_TO_ARPABET_MAP } from './deseret-maps';
 import { isDeseretChar, tokenizeDeseret } from './tokenize';
 
@@ -38,59 +38,13 @@ export function deseretToArpabet(text: string): null | string[] {
   return result.length > 0 ? result : null;
 }
 
-/**
- * Translates Deseret text back to English, preserving non-Deseret characters.
- */
-export function reverseTranslateDeseretText(text: string): string {
-  const tokens = tokenizeDeseret(text);
+const translator = createScriptReverseTranslator({
+  lookupPhonemeKey,
+  sortByFrequency,
+  toArpabet: deseretToArpabet,
+  tokenize: tokenizeDeseret,
+});
 
-  return tokens
-    .map((token) => {
-      if (token.isWord) {
-        const matches = reverseTranslateDeseretWord(token.text);
-        return matches[0] ?? token.text;
-      }
-      return token.text;
-    })
-    .join('');
-}
-
-/**
- * Translates Deseret text back to English with token-by-token mapping.
- */
-export function reverseTranslateDeseretTextWithMapping(text: string): ReverseToken[] {
-  const tokens = tokenizeDeseret(text);
-
-  return tokens.map((token) => {
-    if (token.isWord) {
-      const matches = reverseTranslateDeseretWord(token.text);
-      const translated = matches[0] ?? token.text;
-      return {
-        isWord: true,
-        matched: translated !== token.text,
-        original: token.text,
-        translated,
-      };
-    }
-    return { isWord: false, matched: true, original: token.text, translated: token.text };
-  });
-}
-
-/**
- * Translates a single Deseret word back to English.
- * Returns possible English words sorted by frequency.
- */
-export function reverseTranslateDeseretWord(word: string): string[] {
-  const arpabet = deseretToArpabet(word);
-  if (!arpabet) {
-    return [word];
-  }
-
-  const key = arpabet.join(' ');
-  const matches = lookupPhonemeKey(key);
-  if (!matches || matches.length === 0) {
-    return [word];
-  }
-
-  return matches.length > 1 ? sortByFrequency(matches) : matches;
-}
+export const reverseTranslateDeseretText = translator.reverseText;
+export const reverseTranslateDeseretTextWithMapping = translator.reverseTextWithMapping;
+export const reverseTranslateDeseretWord = translator.reverseWord;

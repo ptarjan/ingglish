@@ -8,6 +8,7 @@ import {
   getDictionary,
   loadFrequencies,
   getWordFrequency,
+  getCorpusTotal,
 } from '@ingglish/dictionary';
 import { translateWord } from '../../src/translate/forward.js';
 
@@ -104,8 +105,7 @@ async function main() {
   const result = await analyzeCollisions();
 
   // Compute corpus total for per-million rates
-  const freqData = await loadFrequencies();
-  const corpusTotal = Object.values(freqData).reduce((sum, v) => sum + v, 0);
+  const corpusTotal = getCorpusTotal();
   const fmtPM = (raw: number): string => {
     const pm = (raw / corpusTotal) * 1_000_000;
     if (pm >= 1000) return `${(pm / 1000).toFixed(1)}K`;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hasWord, lookupPronunciation } from './lookup';
+import { lookupPronunciation } from './lookup';
 
 describe('lookupPronunciation', () => {
   it('returns phoneme array for known words', () => {
@@ -60,29 +60,5 @@ describe('lookupPronunciation', () => {
 
     const ngIndex = result!.indexOf('NG');
     expect(ngIndex).toBeGreaterThanOrEqual(0); // Has NG
-  });
-});
-
-describe('hasWord', () => {
-  it('returns true for known words', () => {
-    expect(hasWord('hello')).toBe(true);
-    expect(hasWord('the')).toBe(true);
-    expect(hasWord('world')).toBe(true);
-  });
-
-  it('is case-insensitive', () => {
-    expect(hasWord('Hello')).toBe(true);
-    expect(hasWord('THE')).toBe(true);
-  });
-
-  it('returns false for unknown words', () => {
-    expect(hasWord('xyzzyqwop')).toBe(false);
-    expect(hasWord('asdfghjkl123')).toBe(false);
-  });
-
-  it('is prototype-safe', () => {
-    expect(hasWord('constructor')).toBe(false);
-    expect(hasWord('toString')).toBe(false);
-    expect(hasWord('__proto__')).toBe(false);
   });
 });

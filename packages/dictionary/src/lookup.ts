@@ -6,13 +6,6 @@ import { getCustomPronunciation } from './custom-words';
 import { getDictionary } from './loader';
 
 /**
- * Checks if a word exists in the dictionary or custom pronunciations.
- */
-export function hasWord(word: string): boolean {
-  return lookupPronunciation(word) !== null;
-}
-
-/**
  * Looks up a word in the CMU dictionary, returning the ARPAbet IR.
  * Custom pronunciations override dictionary entries.
  * @param word The word to look up (case insensitive)

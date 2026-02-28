@@ -11,8 +11,9 @@ export const WORD_SPLIT_REGEX = /((?<!\d)[a-zA-Z\u00C0-\u024F']+(?!\d))/;
 /** Regex to test if a token is a word (includes accented Latin chars) */
 export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F']+$/;
 
-// Common IPA symbols used in phonetic transcription (Set for O(1) lookup)
-const IPA_SYMBOLS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ');
+// Common IPA symbols used in phonetic transcription (Set for O(1) lookup).
+// Exported for reuse in language detection (core/detect).
+export const IPA_SYMBOLS_SET = new Set('əɝɚʌæɑɔɛɪʊðθʃʒŋɹɡ');
 
 /**
  * Extended token with word index for correspondence tracking.
@@ -197,5 +198,39 @@ export function tokenizeText(text: string): TextToken[] {
       tokens.push({ isWord: WORD_TEST_REGEX.test(part), text: part });
     }
   }
+  return tokens;
+}
+
+/**
+ * Tokenizes text written in a Unicode script (e.g. Shavian, Deseret).
+ * Splits into alternating word (in-script) and non-word (everything else) tokens.
+ *
+ * Uses codepoint iteration so supplementary-plane characters are handled correctly.
+ */
+export function tokenizeUnicodeScript(
+  text: string,
+  isScriptChar: (char: string) => boolean
+): TextToken[] {
+  const tokens: TextToken[] = [];
+  let current = '';
+  let inWord = false;
+
+  for (const char of text) {
+    const isScript = isScriptChar(char);
+    if (isScript === inWord) {
+      current += char;
+    } else {
+      if (current.length > 0) {
+        tokens.push({ isWord: inWord, text: current });
+      }
+      current = char;
+      inWord = isScript;
+    }
+  }
+
+  if (current.length > 0) {
+    tokens.push({ isWord: inWord, text: current });
+  }
+
   return tokens;
 }

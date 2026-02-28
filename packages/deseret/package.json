@@ -34,8 +34,9 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ingglish/phonemes": "^0.1.0",
-    "@ingglish/dictionary": "^0.1.0"
+    "@ingglish/dictionary": "^0.1.0",
+    "@ingglish/normalize": "^0.1.0",
+    "@ingglish/phonemes": "^0.1.0"
   },
   "author": "Paul Tarjan",
   "license": "MIT",

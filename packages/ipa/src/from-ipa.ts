@@ -145,13 +145,3 @@ export function ipaToArpabetClean(ipa: string): null | string[] {
   const arpabet = ipaToArpabet(ipa).map((p) => stripStress(p));
   return arpabet.length > 0 ? arpabet : null;
 }
-
-/**
- * Converts an IPA transcription to a space-separated ARPAbet string.
- *
- * @param ipa IPA string
- * @returns Space-separated ARPAbet string (e.g., "HH AH0 L OW")
- */
-export function ipaToArpabetString(ipa: string): string {
-  return ipaToArpabet(ipa).join(' ');
-}

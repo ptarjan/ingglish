@@ -37,8 +37,12 @@ export { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 // Custom format builder
 export { createCustomConverter } from './custom-format';
 
+// Reverse translation factory for Unicode scripts
+export { createScriptReverseTranslator } from './reverse-factory';
+
 // Types
 export type { CustomMappingConfig } from './custom-format';
 export type { ReverseToken } from './format-registry';
+export type { ScriptReverseTranslator } from './reverse-factory';
 export type { OutputFormat } from './types';
 export type { TranslatedToken } from './translated-token';

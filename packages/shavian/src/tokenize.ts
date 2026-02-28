@@ -5,10 +5,7 @@
  * into word and non-word tokens.
  */
 
-interface ShavianToken {
-  isWord: boolean;
-  text: string;
-}
+import { tokenizeUnicodeScript, type TextToken } from '@ingglish/normalize';
 
 /**
  * Checks if a character is a Shavian letter.
@@ -26,29 +23,6 @@ export function isShavianChar(char: string): boolean {
  * Tokenizes text containing Shavian characters.
  * Splits into alternating word (Shavian) and non-word (everything else) tokens.
  */
-export function tokenizeShavian(text: string): ShavianToken[] {
-  const tokens: ShavianToken[] = [];
-  let current = '';
-  let inWord = false;
-
-  // Iterate by codepoints (Shavian characters are in supplementary planes)
-  for (const char of text) {
-    const isShavian = isShavianChar(char);
-
-    if (isShavian === inWord) {
-      current += char;
-    } else {
-      if (current.length > 0) {
-        tokens.push({ isWord: inWord, text: current });
-      }
-      current = char;
-      inWord = isShavian;
-    }
-  }
-
-  if (current.length > 0) {
-    tokens.push({ isWord: inWord, text: current });
-  }
-
-  return tokens;
+export function tokenizeShavian(text: string): TextToken[] {
+  return tokenizeUnicodeScript(text, isShavianChar);
 }

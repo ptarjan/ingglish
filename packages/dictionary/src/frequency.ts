@@ -7,8 +7,8 @@ import { createLazyLoader } from './lazy-loader';
 import { loadJson } from './load-json';
 
 interface FrequencyData {
+  corpusTotal: number;
   map: Map<string, number>;
-  raw: Record<string, number>;
 }
 
 const loader = createLazyLoader<FrequencyData>(async () => {
@@ -21,11 +21,24 @@ const loader = createLazyLoader<FrequencyData>(async () => {
     raw = json;
   }
   const map = new Map<string, number>();
+  let corpusTotal = 0;
   for (const [word, count] of Object.entries(raw)) {
     map.set(word.toLowerCase(), count);
+    corpusTotal += count;
   }
-  return { map, raw };
+  return { corpusTotal, map };
 }, 'word frequencies');
+
+/**
+ * Returns the total word count across the entire SUBTLEX corpus.
+ * Returns 0 if frequency data hasn't been loaded yet.
+ */
+export function getCorpusTotal(): number {
+  if (!loader.isLoaded()) {
+    return 0;
+  }
+  return loader.get().corpusTotal;
+}
 
 /**
  * Returns the frequency count for a word (higher = more common).
@@ -42,9 +55,8 @@ export function getWordFrequency(word: string): number | undefined {
  * Loads word frequency data.
  * The data is cached after first load.
  */
-export async function loadFrequencies(): Promise<Record<string, number>> {
-  const data = await loader.load();
-  return data.raw;
+export async function loadFrequencies(): Promise<void> {
+  await loader.load();
 }
 
 // Common English contractions that should be preferred over homophones

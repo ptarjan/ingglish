@@ -3,7 +3,7 @@ export {
   getCustomPronunciation,
   hasCustomPronunciation,
 } from './custom-words';
-export { getWordFrequency, loadFrequencies, sortByFrequency } from './frequency';
+export { getCorpusTotal, getWordFrequency, loadFrequencies, sortByFrequency } from './frequency';
 export { getDictionary, isDictionaryLoaded, loadDictionary } from './loader';
 export { lookupPronunciation, lookupPronunciationLower } from './lookup';
 export { loadReverseDictionary, lookupPhonemeKey } from './reverse';

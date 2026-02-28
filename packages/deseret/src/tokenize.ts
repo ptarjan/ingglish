@@ -5,10 +5,7 @@
  * into word and non-word tokens.
  */
 
-interface DeseretToken {
-  isWord: boolean;
-  text: string;
-}
+import { tokenizeUnicodeScript, type TextToken } from '@ingglish/normalize';
 
 /**
  * Checks if a character is a Deseret letter.
@@ -26,28 +23,6 @@ export function isDeseretChar(char: string): boolean {
  * Tokenizes text containing Deseret characters.
  * Splits into alternating word (Deseret) and non-word (everything else) tokens.
  */
-export function tokenizeDeseret(text: string): DeseretToken[] {
-  const tokens: DeseretToken[] = [];
-  let current = '';
-  let inWord = false;
-
-  for (const char of text) {
-    const isDeseret = isDeseretChar(char);
-
-    if (isDeseret === inWord) {
-      current += char;
-    } else {
-      if (current.length > 0) {
-        tokens.push({ isWord: inWord, text: current });
-      }
-      current = char;
-      inWord = isDeseret;
-    }
-  }
-
-  if (current.length > 0) {
-    tokens.push({ isWord: inWord, text: current });
-  }
-
-  return tokens;
+export function tokenizeDeseret(text: string): TextToken[] {
+  return tokenizeUnicodeScript(text, isDeseretChar);
 }
