@@ -228,6 +228,12 @@ export default defineConfig({
     // Dictionary chunk is ~6.6MB, suppress warning for it
     chunkSizeWarningLimit: 7000,
     rollupOptions: {
+      // node:fs and node:url are dynamically imported in @ingglish/dictionary's
+      // load-json.ts with a runtime guard; suppress Vite's externalization warning
+      onwarn(warning, warn) {
+        if (warning.message?.includes('has been externalized for browser compatibility')) return;
+        warn(warning);
+      },
       output: {
         manualChunks(id) {
           // Dictionary files - large, rarely change
