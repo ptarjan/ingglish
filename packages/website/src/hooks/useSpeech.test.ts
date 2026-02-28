@@ -486,7 +486,9 @@ describe('useSpeech', () => {
   });
 
   it('uses charLength to expand range for compound words', () => {
-    // When charLength is available, the range covers the full compound
+    // When charLength is available, the range covers the full compound.
+    // charLength counts non-whitespace chars — for spaced CJK like "荒 唐",
+    // cl=2 means 2 characters spanning positions 4-6 (skipping the space).
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -494,20 +496,20 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // "荒唐" compound with charLength=3 (covers chars 4-6 in spaced text) at charIndex 4
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
+    // "荒唐" compound with charLength=2 at charIndex 4
     act(() => {
-      utterance.onboundary?.({ charIndex: 4, charLength: 3, name: 'word' } as unknown as {
+      utterance.onboundary?.({ charIndex: 4, charLength: 2, name: 'word' } as unknown as {
         charIndex: number;
         name: string;
       });
     });
-    // charLength=3 → covers chars 4-6 → words 2-3 ("荒" and "唐")
+    // cl=2 → walks text: pos 4 (荒), skip space at 5, pos 6 (唐) → words 2-3
     expect(result.current[4]).toEqual([0, 3]);
 
     // "言" at charIndex 8 → cumulative [0, 4]

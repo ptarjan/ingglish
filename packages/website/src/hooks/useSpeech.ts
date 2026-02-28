@@ -284,10 +284,22 @@ export function useSpeech(): [
 
           // Use charLength (when available) to find the end of the current
           // TTS word — this covers multi-character CJK compounds correctly.
+          // charLength counts non-whitespace characters but the text may have
+          // spaces between them (e.g. Chinese "荒 唐" has cl=2 but spans 3
+          // positions in the spaced text). Walk through the text to find the
+          // actual end position.
           let wordEnd = wordIndex;
           const charLen = (event as { charLength?: number }).charLength;
           if (charLen !== undefined && charLen > 1 && !useFallback) {
-            const charEnd = event.charIndex + charLen - 1;
+            let remaining = charLen - 1; // already counted char at charIndex
+            let pos = event.charIndex + 1;
+            while (remaining > 0 && pos < text.length) {
+              if (!/\s/.test(text[pos]!)) {
+                remaining--;
+              }
+              pos++;
+            }
+            const charEnd = pos - 1;
             for (let i = wordIndex + 1; i < wordStarts.length; i++) {
               if (wordStarts[i]! <= charEnd) {
                 wordEnd = i;
