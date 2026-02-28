@@ -187,6 +187,17 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             e.preventDefault();
             e.stopPropagation();
             const newUrl = new URL(href, baseUrlRef.current ?? targetUrl).href;
+
+            // Hash-only change: scroll within the already-translated page
+            if (currentUrlRef.current !== null && isHashOnlyChange(currentUrlRef.current, newUrl)) {
+              const hash = new URL(newUrl).hash;
+              scrollToHash(hash);
+              setUrl(newUrl);
+              currentUrlRef.current = newUrl;
+              onNavigate?.(newUrl);
+              return;
+            }
+
             setUrl(newUrl);
             translateUrlRef.current?.(newUrl).catch(() => {
               // Error handled in hook
@@ -246,7 +257,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat, onNavigate, isForeignMode, foreignDict]
+    [outputFormat, onNavigate, isForeignMode, foreignDict, scrollToHash]
   );
 
   const clear = useCallback(() => {
