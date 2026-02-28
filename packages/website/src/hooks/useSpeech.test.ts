@@ -517,12 +517,11 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([4, 4]);
   });
 
-  it('picks spaceless mapping when it gives better forward progress for CJK', () => {
-    // Japanese: "国境 の 長い" — multi-char words separated by spaces
+  it('detects spaceless CJK mapping via unique charIndex match', () => {
+    // Japanese: "国境 の 長い トンネル を 抜ける"
     // spacedWordStarts: [0, 3, 5, 8, 13, 15]
     // spacelessWordStarts: [0, 2, 3, 5, 9, 10]
-    // TTS strips spaces: charIndex=2 for "の" → spaceless maps to word 1 (closer to
-    // expected next word) while spaced maps to word 0 (no progress) → spaceless wins
+    // charIndex=2 is in spaceless set but NOT spaced set → locks spaceless
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -530,48 +529,48 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // "国境" at charIndex 0 → word 0 (both mappings agree at 0)
+    // charIndex=0: both agree on word 0
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toEqual([0, 0]);
 
-    // "の" at spaceless charIndex 2 → spaceless gives word 1 (better progress) → word 1
+    // charIndex=2: unique to spaceless set → detect spaceless, word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
     expect(result.current[4]).toEqual([1, 1]);
 
-    // "長い" at spaceless charIndex 3 → word 2
+    // charIndex=3: spaceless word 2 (長い)
     act(() => {
       utterance.onboundary?.({ charIndex: 3, name: 'word' });
     });
     expect(result.current[4]).toEqual([2, 2]);
 
-    // "トンネル" at spaceless charIndex 5 → word 3
+    // charIndex=5: spaceless word 3 (トンネル)
     act(() => {
       utterance.onboundary?.({ charIndex: 5, name: 'word' });
     });
     expect(result.current[4]).toEqual([3, 3]);
 
-    // "を" at spaceless charIndex 9 → word 4
+    // charIndex=9: spaceless word 4 (を)
     act(() => {
       utterance.onboundary?.({ charIndex: 9, name: 'word' });
     });
     expect(result.current[4]).toEqual([4, 4]);
 
-    // "抜ける" at spaceless charIndex 10 → word 5
+    // charIndex=10: spaceless word 5 (抜ける)
     act(() => {
       utterance.onboundary?.({ charIndex: 10, name: 'word' });
     });
     expect(result.current[4]).toEqual([5, 5]);
   });
 
-  it('handles sub-word splits within the first CJK word', () => {
-    // TTS fires charIndex=1 for second char of "国境" (sub-word split)
-    // Both mappings resolve to word 0 since charIndex=1 is within the first word
-    // for both spaced [0,3,5] and spaceless [0,2,3]. Next event at charIndex=2
-    // correctly picks spaceless (word 1) over spaced (word 0).
+  it('uses spaced default before detection for CJK with shared positions', () => {
+    // Japanese: "国境 の 長い"
+    // spacedWordStarts: [0, 3, 5], spacelessWordStarts: [0, 2, 3]
+    // charIndex=1 (sub-word split) is in neither set → no detection
+    // charIndex=2 is unique to spaceless → detection triggers
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -579,41 +578,41 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // First boundary: charIndex=0 → word 0
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toEqual([0, 0]);
 
-    // Sub-word split: charIndex=1 (second char of "国境")
-    // Both mappings resolve to word 0 (charIndex=1 is within the first word)
+    // charIndex=1: not in either set (sub-word split) → no detection, spaced default
     act(() => {
       utterance.onboundary?.({ charIndex: 1, name: 'word' });
     });
-    expect(result.current[4]).toEqual([0, 0]); // still word 0
+    expect(result.current[4]).toEqual([0, 0]); // still word 0 in spaced
 
-    // "の" at spaceless charIndex=2 → spaceless maps to word 1 (expected), spaced stays at 0
+    // charIndex=2: unique to spaceless → detect, word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
     expect(result.current[4]).toEqual([1, 1]);
 
-    // "長い" at spaceless charIndex=3 → word 2
+    // charIndex=3: spaceless word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 3, name: 'word' });
     });
     expect(result.current[4]).toEqual([2, 2]);
   });
 
-  it('keeps spaced mapping when CJK TTS preserves spaces', () => {
-    // Chinese single-char words: "满 纸 荒" — charIndex includes spaces
-    // spacedWordStarts: [0, 2, 4]
-    // spacelessWordStarts: [0, 1, 2]
-    // charIndex=2 matches spacedStart[1]=2, so spaced mapping is kept
+  it('uses spaced mapping for CJK when TTS preserves spaces', () => {
+    // Chinese: "满 纸 荒 唐 言"
+    // spacedWordStarts: [0, 2, 4, 6, 8]
+    // spacelessWordStarts: [0, 1, 2, 3, 4]
+    // charIndex=2: in spaced (yes, word 纸) and spaceless (yes, word 荒) → no detection
+    // charIndex=4: in spaced (yes) and spaceless (yes) → no detection
+    // Without detection, spaced default gives correct results
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
-      result.current[1]('满 纸 荒');
+      result.current[1]('满 纸 荒 唐 言');
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
@@ -622,16 +621,23 @@ describe('useSpeech', () => {
     });
     expect(result.current[4]).toEqual([0, 0]);
 
-    // charIndex=2 matches spaced start → stays in spaced mode
+    // charIndex=2: spaced default → word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
     expect(result.current[4]).toEqual([1, 1]);
 
+    // charIndex=4: spaced default → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 4, name: 'word' });
     });
     expect(result.current[4]).toEqual([2, 2]);
+
+    // charIndex=8: spaced default → word 4, gap-fill catches word 3
+    act(() => {
+      utterance.onboundary?.({ charIndex: 8, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([3, 4]);
   });
 
   it('does not set explicit voice for languages without confirmed boundary support', () => {

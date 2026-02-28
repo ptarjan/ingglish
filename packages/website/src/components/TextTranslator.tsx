@@ -145,6 +145,7 @@ function ForeignOutputDisplay({
   }
 
   // Parse text: NOT_FOUND_MARKER prefixed words are "not found"
+  const WORD_RE = /[\p{L}\p{N}]/u;
   const segments = text.split(/(\s+)/);
   let wordIndex = 0;
   return (
@@ -164,9 +165,15 @@ function ForeignOutputDisplay({
         if (/^\s+$/.test(seg)) {
           return <span key={i}>{seg}</span>;
         }
-        const idx = wordIndex++;
-        const isHighlighted = idx === highlightedWordIndex;
-        const isSpoken = spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
+        // Only count segments with letters/digits as words, matching
+        // useSpeech and OverlayTextarea (punctuation-only tokens are skipped)
+        const isWord = WORD_RE.test(
+          seg.startsWith(NOT_FOUND_MARKER) ? seg.slice(NOT_FOUND_MARKER.length) : seg
+        );
+        const idx = isWord ? wordIndex++ : -1;
+        const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
+        const isSpoken =
+          idx >= 0 && spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           return (

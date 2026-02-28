@@ -202,10 +202,13 @@ export function useSpeech(): [
 
       // CJK TTS engines (Japanese, Korean, sometimes Chinese) may strip spaces
       // internally, making charIndex reference a spaceless string. Build a second
-      // mapping without whitespace offsets and auto-detect which one to use.
+      // mapping and detect which coordinate system the TTS uses by checking if
+      // each charIndex uniquely matches one of the two word-start arrays.
       const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/;
       const isCJK = CJK_RE.test(text);
       let spacelessWordStarts: null | number[] = null;
+      let spacedStartSet: null | Set<number> = null;
+      let spacelessStartSet: null | Set<number> = null;
       if (isCJK) {
         spacelessWordStarts = [];
         let spacelessPos = 0;
@@ -218,6 +221,8 @@ export function useSpeech(): [
             spacelessPos += seg.length;
           }
         }
+        spacedStartSet = new Set(spacedWordStarts);
+        spacelessStartSet = new Set(spacelessWordStarts);
       }
 
       // Some TTS voices (especially on Windows) report charIndex=0 for every
@@ -227,6 +232,8 @@ export function useSpeech(): [
       let boundaryCounter = -1;
       let charIndexEverAdvanced = false;
       let prevWordIndex = -1;
+      // For CJK: which charIndex coordinate system the TTS uses (detected per-utterance)
+      let cjkMapping: 'spaced' | 'spaceless' | null = null;
 
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
@@ -240,35 +247,34 @@ export function useSpeech(): [
           // agglutinative languages may fire multiple boundaries for word 1.
           const useFallback = !charIndexEverAdvanced && boundaryCounter >= 3;
 
+          // For CJK text, detect which coordinate system the TTS uses by
+          // checking if charIndex uniquely matches one word-start array.
+          // Only lock in when unambiguous (charIndex in one set but not the other).
+          if (
+            isCJK &&
+            cjkMapping === null &&
+            event.charIndex > 0 &&
+            spacedStartSet !== null &&
+            spacelessStartSet !== null
+          ) {
+            const inSpaced = spacedStartSet.has(event.charIndex);
+            const inSpaceless = spacelessStartSet.has(event.charIndex);
+            if (inSpaceless && !inSpaced) {
+              cjkMapping = 'spaceless';
+            } else if (inSpaced && !inSpaceless) {
+              cjkMapping = 'spaced';
+            }
+            // If in both or neither: can't decide yet
+          }
+
           let wordIndex: number;
           let wordStarts: number[];
           if (useFallback) {
             wordStarts = spacedWordStarts;
             wordIndex = Math.min(boundaryCounter, wordStarts.length - 1);
-          } else if (isCJK && spacelessWordStarts !== null) {
-            // For CJK text, try both spaced and spaceless mappings on every
-            // event and pick whichever gives the best forward progress.
-            // This avoids fragile one-time detection that can lock in the
-            // wrong mapping on sub-word splits or ambiguous charIndex values.
-            const spacedIdx = lookupWordIndex(spacedWordStarts, event.charIndex);
-            const spacelessIdx = lookupWordIndex(spacelessWordStarts, event.charIndex);
-
-            // Pick the mapping whose word index is closest to the expected
-            // next word (prevWordIndex+1). Each boundary event typically
-            // corresponds to the next word, so distance from that target
-            // tells us which mapping is more plausible. Break ties toward
-            // spaced (preserves correct behavior for Chinese single-char words).
-            const expected = prevWordIndex + 1;
-            const spacedDist = Math.abs(spacedIdx - expected);
-            const spacelessDist = Math.abs(spacelessIdx - expected);
-
-            if (spacelessDist < spacedDist) {
-              wordIndex = spacelessIdx;
-              wordStarts = spacelessWordStarts;
-            } else {
-              wordIndex = spacedIdx;
-              wordStarts = spacedWordStarts;
-            }
+          } else if (cjkMapping === 'spaceless' && spacelessWordStarts !== null) {
+            wordStarts = spacelessWordStarts;
+            wordIndex = lookupWordIndex(wordStarts, event.charIndex);
           } else {
             wordStarts = spacedWordStarts;
             wordIndex = lookupWordIndex(wordStarts, event.charIndex);
