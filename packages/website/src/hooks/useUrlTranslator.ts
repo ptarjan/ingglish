@@ -171,6 +171,27 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             translateAttributes: true,
             translateWithMappingFn,
           });
+
+          // Intercept link clicks so navigation re-translates instead of
+          // loading an untranslated page. Same-origin iframes don't get the
+          // injected click handler script, so we attach directly.
+          iframeDoc.addEventListener('click', (e: MouseEvent) => {
+            const anchor = (e.target as Element)?.closest?.('a[href]');
+            if (!anchor) {
+              return;
+            }
+            const href = anchor.getAttribute('href');
+            if (!href || shouldSkipUrl(href)) {
+              return;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            const newUrl = new URL(href, baseUrlRef.current ?? targetUrl).href;
+            setUrl(newUrl);
+            translateUrlRef.current?.(newUrl).catch(() => {
+              // Error handled in hook
+            });
+          });
         } else {
           // Cross-origin: fetch via CORS proxy, strip scripts, load as srcdoc
           const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
