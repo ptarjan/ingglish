@@ -1,3 +1,4 @@
+import css from '@eslint/css';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
@@ -10,14 +11,18 @@ import unicornPlugin from 'eslint-plugin-unicorn';
 import regexpPlugin from 'eslint-plugin-regexp';
 import perfectionist from 'eslint-plugin-perfectionist';
 
+// Scope JS/TS plugin configs to non-CSS files so they don't cascade into CSS
+const jsOnly = { ignores: ['**/*.css'] };
+
 export default tseslint.config(
-  js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  perfectionist.configs['recommended-natural'],
-  unicornPlugin.configs.recommended,
-  prettierConfig,
+  { ...js.configs.recommended, ...jsOnly },
+  ...tseslint.configs.strictTypeChecked.map((c) => ({ ...c, ...jsOnly })),
+  ...tseslint.configs.stylisticTypeChecked.map((c) => ({ ...c, ...jsOnly })),
+  { ...perfectionist.configs['recommended-natural'], ...jsOnly },
+  { ...unicornPlugin.configs.recommended, ...jsOnly },
+  { ...prettierConfig, ...jsOnly },
   {
+    ...jsOnly,
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -214,5 +219,17 @@ export default tseslint.config(
       'packages/core/src/data/**',
       'packages/core/src/dictionary/**',
     ],
+  },
+  // CSS linting
+  {
+    files: ['**/*.css'],
+    language: 'css/css',
+    ...css.configs.recommended,
+    rules: {
+      ...css.configs.recommended.rules,
+      'css/no-invalid-properties': 'off', // Can't validate CSS custom properties (var(--*))
+      'css/use-baseline': 'warn', // Flag newer features but don't block
+      'css/no-important': 'warn', // Existing !important usage is intentional
+    },
   }
 );
