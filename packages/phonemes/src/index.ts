@@ -1,4 +1,6 @@
-// Phoneme data and utilities
+/* eslint-disable perfectionist/sort-exports */
+
+// Phoneme data & utilities
 export {
   ARPABET_CONSONANTS,
   ARPABET_VOWELS,
@@ -8,10 +10,8 @@ export {
   stripStress,
 } from './arpabet';
 
-// Custom format builder
-export { createCustomConverter } from './custom-format';
-
-export type { CustomMappingConfig } from './custom-format';
+// Phonotactics
+export { findOnsetStart } from './phonotactics';
 
 // Format registry
 export {
@@ -24,24 +24,21 @@ export {
   registerFormat,
 } from './format-registry';
 
-export type { ReverseToken } from './format-registry';
+// Forward conversion (ARPAbet → display formats)
+export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
+export { registerPronunciation } from './to-pronunciation';
 
-// Conversion functions
+// Reverse conversion (display formats → ARPAbet)
 export { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 // Conversion maps
 export { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
 
-// Phonotactics
-export { findOnsetStart } from './phonotactics';
+// Custom format builder
+export { createCustomConverter } from './custom-format';
 
-// Conversion functions
-export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
-export type { FormatOptions } from './to-ingglish';
-
-// Guide pronunciation format
-export { registerPronunciation } from './to-pronunciation';
-
-export type { TranslatedToken } from './translated-token';
 // Types
+export type { CustomMappingConfig } from './custom-format';
+export type { ReverseToken } from './format-registry';
 export type { OutputFormat } from './types';
+export type { TranslatedToken } from './translated-token';

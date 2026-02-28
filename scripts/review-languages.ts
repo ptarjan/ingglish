@@ -2,7 +2,8 @@
  * Review foreign language translation quality with famous literature quotes.
  * Usage: npx tsx --conditions=source scripts/review-languages.ts
  */
-import { IPA_LANGUAGE_OVERRIDES, ipaToArpabet } from '@ingglish/ipa';
+import { ipaToArpabet } from '../packages/ipa/src/from-ipa';
+import { IPA_LANGUAGE_OVERRIDES } from '../packages/ipa/src/ipa-maps';
 import { arpabetToFormat } from '@ingglish/phonemes';
 import fs from 'fs';
 

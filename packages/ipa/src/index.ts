@@ -21,7 +21,6 @@ export {
   translateForeignWithMapping,
 } from './foreign';
 export type { IpaDict, Language } from './foreign';
-export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';
-export { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+export { ipaToArpabetClean } from './from-ipa';
 // Export individual functions for direct use
 export { arpabetPhonemeToIPA, arpabetToIPARaw } from './to-ipa';
