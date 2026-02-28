@@ -246,6 +246,10 @@ const SW_DERIV_SUFFIXES: [string, string[]][] = [
   ['ika', ['a', 'ea']],
 ];
 
+// ---------------------------------------------------------------------------
+// Esperanto
+// ---------------------------------------------------------------------------
+
 /**
  * Esperanto is perfectly regular: nouns end -o, adjectives -a, verbs -i
  * (infinitive), adverbs -e. Inflections: -n (accusative), -j (plural),

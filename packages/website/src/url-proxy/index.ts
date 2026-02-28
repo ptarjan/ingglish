@@ -190,18 +190,11 @@ const BODY_CLOSE_REGEX = /<\/body>/i;
 const HTML_CLOSE_REGEX = /<\/html>/i;
 const HEAD_OPEN_REGEX = /<head[^>]*>/i;
 
-/**
- * Generates a cryptographically random nonce for CSP.
- * Uses crypto.getRandomValues in browser, falls back to Math.random in Node.
- */
+/** Generates a cryptographically random nonce for CSP. */
 function generateNonce(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-  }
-  // Fallback for test environments
-  return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 /**
