@@ -190,15 +190,39 @@ export function useSpeech(): [
       // Only count segments containing letters or digits (matching OverlayTextarea's
       // word counting which skips punctuation-only tokens like em dashes).
       const WORD_RE = /[\p{L}\p{N}]/u;
-      const wordStarts: number[] = [];
+      const spacedWordStarts: number[] = [];
       const segments = text.split(/(\s+)/);
       let pos = 0;
       for (const seg of segments) {
         if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
-          wordStarts.push(pos);
+          spacedWordStarts.push(pos);
         }
         pos += seg.length;
       }
+
+      // CJK TTS engines (Japanese, Korean, sometimes Chinese) may strip spaces
+      // internally, making charIndex reference a spaceless string. Build a second
+      // mapping without whitespace offsets and auto-detect which one to use.
+      const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/;
+      const isCJK = CJK_RE.test(text);
+      let spacelessWordStarts: null | number[] = null;
+      if (isCJK) {
+        spacelessWordStarts = [];
+        let spacelessPos = 0;
+        for (const seg of segments) {
+          const isWhitespace = /^\s+$/.test(seg);
+          if (!isWhitespace && WORD_RE.test(seg)) {
+            spacelessWordStarts.push(spacelessPos);
+          }
+          if (!isWhitespace) {
+            spacelessPos += seg.length;
+          }
+        }
+      }
+
+      // Active mapping — starts as spaced, may switch to spaceless for CJK
+      let wordStarts = spacedWordStarts;
+      let detectedMapping = !isCJK;
 
       // Some TTS voices (especially on Windows) report charIndex=0 for every
       // boundary event. Track a simple counter as fallback. We only switch to
@@ -213,6 +237,18 @@ export function useSpeech(): [
           boundaryCounter++;
           if (event.charIndex > 0) {
             charIndexEverAdvanced = true;
+          }
+
+          // Auto-detect spaced vs spaceless mapping for CJK on first advancing charIndex.
+          // If the charIndex matches a spaceless word start but not a spaced one,
+          // the TTS engine stripped spaces internally — switch to spaceless mapping.
+          if (!detectedMapping && event.charIndex > 0 && spacelessWordStarts !== null) {
+            const matchesSpaced = spacedWordStarts.includes(event.charIndex);
+            const matchesSpaceless = spacelessWordStarts.includes(event.charIndex);
+            if (matchesSpaceless && !matchesSpaced) {
+              wordStarts = spacelessWordStarts;
+            }
+            detectedMapping = true;
           }
 
           // Use charIndex mapping when it works, fall back to counter otherwise.
