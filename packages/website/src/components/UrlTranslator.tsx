@@ -119,8 +119,12 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     }
   }, [onShare, url, shareLink, selectedLanguage]);
 
-  // Show samples that have source URLs as example links for the selected language
+  // For foreign languages, show samples that have source URLs as example links.
+  // For English, use the curated EXAMPLE_URLS (familiar site names).
   const exampleUrls = useMemo(() => {
+    if (selectedLanguage === 'en') {
+      return EXAMPLE_URLS;
+    }
     const samples = ALL_SAMPLES[selectedLanguage];
     if (!samples) {
       return EXAMPLE_URLS;
