@@ -35,5 +35,3 @@ jobs:
           for pkg in normalize phonemes dictionary g2p ipa shavian deseret fallback core dom; do
             npm publish --workspace=packages/$pkg --access public --provenance
           done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
