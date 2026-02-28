@@ -33,6 +33,15 @@ jobs:
       - name: Unit tests
         run: npm test
 
+  # Detect dead code, unused exports, and missing dependencies
+  knip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - name: Check for dead code
+        run: npm run knip
+
   # All linting: CSS, formatting, type checking, and ESLint (type-aware)
   # None of these need build artifacts — TypeScript resolves workspace
   # packages to source via customConditions: ['source']
@@ -80,6 +89,25 @@ jobs:
 
       - name: Build
         run: npm run build:fast
+
+      - name: Report bundle sizes
+        run: |
+          echo "## Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Raw | Gzipped |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|----:|--------:|" >> $GITHUB_STEP_SUMMARY
+          for f in packages/website/dist/assets/*.{js,css}; do
+            name=$(basename "$f")
+            # Skip dictionary data files
+            case "$name" in
+              cmudict-*|reverse-cmudict-*|word-frequencies-*) continue ;;
+            esac
+            # Strip 8-char Vite content hash (e.g. ingglish-CQyOYrI1.js → ingglish.js)
+            clean=$(echo "$name" | sed 's/-[A-Za-z0-9_-]\{8\}\./\./')
+            raw=$(wc -c < "$f" | awk '{printf "%.1f kB", $1/1024}')
+            gz=$(gzip -c "$f" | wc -c | awk '{printf "%.1f kB", $1/1024}')
+            echo "| \`$clean\` | $raw | $gz |" >> $GITHUB_STEP_SUMMARY
+          done
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
