@@ -43,7 +43,7 @@ export const fr: Sample[] = [
   },
   {
     label: 'Proust — Du côté de chez Swann',
-    source: 'https://marcel-proust.com/extrait/681',
+    source: 'https://marcelproust.org/anthologie/681.html',
     text: "Elle envoya chercher un de ces gâteaux courts et dodus appelés Petites Madeleines qui semblaient avoir été moulés dans la valve rainurée d'une coquille de Saint-Jacques. Et bientôt, machinalement, accablé par la morne journée et la perspective d'un triste lendemain, je portai à mes lèvres une cuillerée du thé où j'avais laissé s'amollir un morceau de madeleine.",
   },
   {

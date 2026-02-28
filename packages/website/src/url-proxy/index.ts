@@ -58,6 +58,35 @@ export function extractBaseHref(html: string): null | string {
 }
 
 /**
+ * Extracts the canonical URL from HTML meta tags.
+ * Checks <link rel="canonical"> and <meta property="og:url">.
+ * Useful for detecting the true page URL after a CORS proxy follows redirects.
+ */
+export function extractCanonicalUrl(html: string): null | string {
+  // <link rel="canonical" href="...">
+  const canonical =
+    /<link\s[^>]*rel\s*=\s*["']canonical["'][^>]*href\s*=\s*["']([^"']+)["'][^>]*>/i.exec(html) ??
+    /<link\s[^>]*href\s*=\s*["']([^"']+)["'][^>]*rel\s*=\s*["']canonical["'][^>]*>/i.exec(html);
+  if (canonical?.[1]) {
+    return canonical[1];
+  }
+
+  // <meta property="og:url" content="...">
+  const ogUrl =
+    /<meta\s[^>]*property\s*=\s*["']og:url["'][^>]*content\s*=\s*["']([^"']+)["'][^>]*>/i.exec(
+      html
+    ) ??
+    /<meta\s[^>]*content\s*=\s*["']([^"']+)["'][^>]*property\s*=\s*["']og:url["'][^>]*>/i.exec(
+      html
+    );
+  if (ogUrl?.[1]) {
+    return ogUrl[1];
+  }
+
+  return null;
+}
+
+/**
  * Gets the base URL for a page (URL up to and including the last slash).
  * Uses standard URL resolution: strip everything after the last slash.
  * For https://example.com/path/page → https://example.com/path/
@@ -266,7 +295,12 @@ export function processProxiedHtml(
   // Step 2-3: Strip scripts and inject base tag
   const sanitized = stripScripts(rawHtml);
   const existingBase = extractBaseHref(sanitized);
-  const baseUrl = existingBase ?? getBaseUrl(options.pageUrl);
+  // If the page has a canonical URL (from <link rel="canonical"> or og:url),
+  // prefer it over the request URL — the CORS proxy follows redirects silently,
+  // so the original URL may differ from the page's actual location.
+  const canonicalUrl = extractCanonicalUrl(rawHtml);
+  const effectivePageUrl = canonicalUrl ?? options.pageUrl;
+  const baseUrl = existingBase ?? getBaseUrl(effectivePageUrl);
   const htmlWithBase = injectBaseTag(sanitized, baseUrl);
 
   // Step 4: Proxy font URLs

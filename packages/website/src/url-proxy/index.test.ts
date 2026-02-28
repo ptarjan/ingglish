@@ -3,6 +3,7 @@ import {
   detectBotProtection,
   escapeHtmlAttr,
   extractBaseHref,
+  extractCanonicalUrl,
   getBaseUrl,
   injectBaseTag,
   isHashOnlyChange,
@@ -180,6 +181,46 @@ describe('extractBaseHref', () => {
 
   it('returns null for empty HTML', () => {
     expect(extractBaseHref('')).toBeNull();
+  });
+});
+
+describe('extractCanonicalUrl', () => {
+  it('extracts from link rel=canonical', () => {
+    expect(extractCanonicalUrl('<link rel="canonical" href="https://example.com/page">')).toBe(
+      'https://example.com/page'
+    );
+  });
+
+  it('extracts with href before rel', () => {
+    expect(extractCanonicalUrl('<link href="https://example.com/page" rel="canonical">')).toBe(
+      'https://example.com/page'
+    );
+  });
+
+  it('extracts from og:url meta tag', () => {
+    expect(extractCanonicalUrl('<meta property="og:url" content="https://example.com/page">')).toBe(
+      'https://example.com/page'
+    );
+  });
+
+  it('extracts og:url with content before property', () => {
+    expect(extractCanonicalUrl('<meta content="https://example.com/page" property="og:url">')).toBe(
+      'https://example.com/page'
+    );
+  });
+
+  it('prefers canonical over og:url', () => {
+    const html =
+      '<link rel="canonical" href="https://a.com/"><meta property="og:url" content="https://b.com/">';
+    expect(extractCanonicalUrl(html)).toBe('https://a.com/');
+  });
+
+  it('returns null when no canonical info exists', () => {
+    expect(extractCanonicalUrl('<head><title>Test</title></head>')).toBeNull();
+  });
+
+  it('returns null for empty HTML', () => {
+    expect(extractCanonicalUrl('')).toBeNull();
   });
 });
 
@@ -577,5 +618,31 @@ describe('processProxiedHtml', () => {
     expect(result.baseUrl).toBe('https://fleursdumal.org/');
     // Should NOT inject a second base tag
     expect(result.html.match(/<base /gi)?.length).toBe(1);
+  });
+
+  it('uses canonical URL for base when page URL differs (redirect case)', () => {
+    // Simulates a CORS proxy silently following a 301 redirect:
+    // original URL: old-domain.com/old-path/123
+    // actual page: new-domain.com/new-path/123.html (with canonical tag)
+    const html =
+      '<html><head><link rel="canonical" href="https://new-domain.com/new-path/123.html"></head><body><link rel="stylesheet" href="style.css"></body></html>';
+    const result = processProxiedHtml(html, {
+      ...options,
+      pageUrl: 'https://old-domain.com/old-path/123',
+    });
+
+    // Should use canonical URL's directory, not the original URL's
+    expect(result.baseUrl).toBe('https://new-domain.com/new-path/');
+  });
+
+  it('uses og:url for base when canonical is not present', () => {
+    const html =
+      '<html><head><meta property="og:url" content="https://real-site.com/articles/page.html"></head><body></body></html>';
+    const result = processProxiedHtml(html, {
+      ...options,
+      pageUrl: 'https://proxy-saw-this.com/redirect/page',
+    });
+
+    expect(result.baseUrl).toBe('https://real-site.com/articles/');
   });
 });
