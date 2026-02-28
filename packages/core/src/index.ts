@@ -65,16 +65,15 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // Re-exports
 // =============================================================================
 
-export type { ForeignDictLoader, TranslateOptions } from './foreign-dict';
-export { getForeignDict, loadForeignDict, setForeignDictLoader } from './foreign-dict';
+export type { TranslateOptions } from './foreign-dict';
+export { setForeignDictLoader } from './foreign-dict';
 
-// Sync API (dictionary must be loaded first via translate)
+// Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';
-export type { TranslatedToken } from './translate';
 export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';
+export type { TranslatedToken } from './translate';
 
-export type { IpaDict } from '@ingglish/ipa';
-export type { Language } from '@ingglish/ipa';
 export { LANGUAGES } from '@ingglish/ipa';
+export type { Language } from '@ingglish/ipa';
 
 export type { OutputFormat } from '@ingglish/phonemes';

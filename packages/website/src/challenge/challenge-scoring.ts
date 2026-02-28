@@ -2,11 +2,11 @@
  * Word-by-word scoring for the Reading Challenge.
  *
  * Compares user's typed English against the original English sentence,
- * with homophone acceptance via reverseTranslateWord.
+ * with homophone acceptance via reverseTranslateSync.
  */
 
 import type { TranslatedToken } from 'ingglish';
-import { reverseTranslateWord } from 'ingglish/reverse';
+import { reverseTranslateSync } from 'ingglish';
 
 export interface SentenceScore {
   correct: number;
@@ -34,7 +34,7 @@ const TRAILING_PUNCTUATION = /[^a-z0-9]+$/gi;
 
 /**
  * Score a user's English guess against the expected sentence.
- * Matches word-by-word, accepting homophones via reverseTranslateWord.
+ * Matches word-by-word, accepting homophones via reverseTranslateSync.
  */
 export function scoreSentence(tokens: TranslatedToken[], userInput: string): SentenceScore {
   // Extract word tokens (skip whitespace/punctuation-only tokens)
@@ -65,10 +65,9 @@ export function scoreSentence(tokens: TranslatedToken[], userInput: string): Sen
       if (actualLower === expectedLower) {
         isCorrect = true;
       } else {
-        // 2. Check homophones: reverse-translate the ingglish word
-        //    and see if the user's answer is among valid English words
-        const homophones = reverseTranslateWord(ingglish);
-        isCorrect = homophones.some((h) => stripPunctuation(h).toLowerCase() === actualLower);
+        // 2. Check if user typed the best reverse translation of the ingglish word
+        const reversed = reverseTranslateSync(ingglish);
+        isCorrect = stripPunctuation(reversed).toLowerCase() === actualLower;
       }
 
       // 3. Fuzzy match: accept close misspellings of the expected word

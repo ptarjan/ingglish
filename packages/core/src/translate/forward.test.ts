@@ -3,7 +3,8 @@ import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@inggli
 import * as dictModule from '@ingglish/dictionary';
 import type { IpaDict } from '@ingglish/ipa';
 import type { ForeignDictLoader } from '../foreign-dict';
-import { getForeignDict, reverseTranslate, setForeignDictLoader, translate } from '../index';
+import { getForeignDict } from '../foreign-dict';
+import { reverseTranslate, setForeignDictLoader, translate } from '../index';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
