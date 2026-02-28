@@ -18,10 +18,7 @@ import {
 } from '@ingglish/phonemes';
 import type { TranslatedToken } from './forward';
 import type { TranslateResult } from './pipeline';
-import { extractTokens, mapTokens } from './pipeline';
-
-// Pre-compiled regex patterns
-const HAS_LETTER = /[a-z]/i;
+import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
 
 // Alternative phoneme interpretation must be this many times more common
 // than the primary to override it (prevents "kat" → "cut" while allowing "haloh" → "hello")

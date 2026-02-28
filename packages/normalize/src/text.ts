@@ -83,20 +83,6 @@ export function normalizeApostrophes(text: string): string {
 }
 
 /**
- * Restores preserved patterns (URLs, emails) from placeholders.
- */
-export function restorePreservedPatterns(text: string, preserved: Map<string, string>): string {
-  if (preserved.size === 0) {
-    return text;
-  }
-  let result = text;
-  for (const [placeholder, original] of preserved) {
-    result = result.replace(placeholder, original);
-  }
-  return result;
-}
-
-/**
  * Strips diacritics/accents from text, preserving base letters.
  * Converts résumé→resume, naïve→naive, cliché→cliche, café→cafe.
  * Uses Unicode NFD decomposition to separate base letters from combining marks.

@@ -2,9 +2,7 @@
  * Shared pipeline stages for forward and reverse translation.
  *
  * Both directions follow the same structure:
- *   extractTokens → mapTokens → (optional sentenceCapitalize) → output
- *
- * Function names are chosen so alphabetical sort matches pipeline order (e < m < r < s).
+ *   extractTokens → mapTokens → renderText → output
  */
 
 import {
@@ -31,7 +29,7 @@ export type WordTranslator = (word: string) => TranslateResult;
 
 // Pre-compiled regex patterns
 const SENTENCE_END = /[.?!]/;
-const HAS_LETTER = /[a-z]/i;
+export const HAS_LETTER = /[a-z]/i;
 
 /**
  * Stage 1: Normalize text and extract preserved patterns (URLs, emails).
@@ -104,9 +102,9 @@ const expandPlaceholderText = (token: string, preserved: Map<string, string>): n
 };
 
 /**
- * Fused single-pass string builder: combines mapTokens + sentenceCapitalize + join
- * into one function that directly builds the output string. Eliminates intermediate
- * TranslatedToken[] arrays and extra iteration passes.
+ * Fused single-pass string builder: maps tokens, applies sentence capitalization,
+ * and joins into one function. Eliminates intermediate TranslatedToken[] arrays
+ * and extra iteration passes.
  */
 export function renderText(
   rawTokens: string[],
@@ -177,57 +175,5 @@ export function renderText(
     }
   }
 
-  return result;
-}
-
-/**
- * Stage 3 (forward only): Capitalize the first word of each sentence.
- * Only applies when the format preserves case and the text has multiple words.
- * Returns tokens unmodified if no capitalization is needed.
- */
-export function sentenceCapitalize(
-  tokens: TranslatedToken[],
-  format: OutputFormat
-): TranslatedToken[] {
-  if (!getFormatPreservesCase(format)) {
-    return tokens;
-  }
-
-  // Count words — only capitalize if there are multiple words
-  let wordCount = 0;
-  for (const t of tokens) {
-    if (t.isWord && ++wordCount > 1) {
-      break;
-    }
-  }
-  if (wordCount <= 1) {
-    return tokens;
-  }
-
-  let sentenceStart = true;
-  const result: TranslatedToken[] = [];
-  for (const token of tokens) {
-    if (token.isWord) {
-      if (sentenceStart && token.translated.length > 0) {
-        const capitalized = token.translated.charAt(0).toUpperCase() + token.translated.slice(1);
-        if (capitalized === token.translated) {
-          result.push(token);
-        } else {
-          result.push({ ...token, translated: capitalized });
-        }
-      } else {
-        result.push(token);
-      }
-      sentenceStart = false;
-    } else {
-      // Only detect sentence-end on pure punctuation/whitespace tokens.
-      // Preserved patterns (URLs, emails) contain letters and periods
-      // (e.g., ".com") that shouldn't trigger sentence capitalization.
-      if (SENTENCE_END.test(token.translated) && !HAS_LETTER.test(token.translated)) {
-        sentenceStart = true;
-      }
-      result.push(token);
-    }
-  }
   return result;
 }

@@ -319,13 +319,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   // Inject as early as possible - when loading starts (covers both navigation and refresh)
   // Skip permission check - just try to inject and handle failure
   if (changeInfo.status === 'loading' && enabled) {
-    void injectTranslator(tabId, false).then((success) => {
-      if (!success) {
-        // Injection failed (no permission for new URL) - disable translation
+    void injectTranslator(tabId, false)
+      .then((success) => {
+        if (!success) {
+          // Injection failed (no permission for new URL) - disable translation
+          removeTranslatedTab(tabId);
+          updateIcon(tabId, false);
+        }
+      })
+      .catch(() => {
         removeTranslatedTab(tabId);
         updateIcon(tabId, false);
-      }
-    });
+      });
   }
 });
 

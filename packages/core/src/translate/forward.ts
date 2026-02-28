@@ -31,10 +31,9 @@ import {
 } from '@ingglish/phonemes';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
-import { extractTokens, mapTokens, renderText } from './pipeline';
+import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
-const HAS_LETTER = /[a-z]/i;
 const ALL_UPPER = /^[A-Z]+$/;
 const TRIPLE_CHAR = /(.)\1\1/;
 const HAS_VOWEL = /[aeiouy]/i;
