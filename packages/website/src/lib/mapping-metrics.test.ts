@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { loadDictionary, loadFrequencies } from '@ingglish/dictionary';
+import { describe, it, expect, vi } from 'vitest';
 import {
   charEditDistance,
   computeWeightedMetrics,
@@ -9,9 +8,41 @@ import {
   scoreWordOrthotactic,
 } from './mapping-metrics';
 
-beforeAll(async () => {
-  await Promise.all([loadDictionary(), loadFrequencies()]);
-}, 30_000);
+// Mock @ingglish/dictionary with a small word set instead of loading the full
+// 134k-entry CMU dictionary + frequencies (~5-9s). The tests only need relative
+// scores from the bigram model, not exact values from the real dictionary.
+vi.mock('@ingglish/dictionary', () => {
+  const dict: Record<string, string[]> = {
+    and: ['AH0', 'N', 'D'],
+    bat: ['B', 'AE1', 'T'],
+    cat: ['K', 'AE1', 'T'],
+    hello: ['HH', 'AH0', 'L', 'OW1'],
+    in: ['IH1', 'N'],
+    is: ['IH1', 'Z'],
+    of: ['AH1', 'V'],
+    the: ['DH', 'AH0'],
+    to: ['T', 'UW1'],
+    world: ['W', 'ER1', 'L', 'D'],
+  };
+  const freqs: Record<string, number> = {
+    and: 28_852,
+    bat: 50,
+    cat: 100,
+    hello: 200,
+    in: 18_214,
+    is: 10_102,
+    of: 22_050,
+    the: 69_971,
+    to: 26_149,
+    world: 300,
+  };
+  return {
+    getDictionary: () => dict,
+    getWordFrequency: (w: string) => freqs[w] ?? 0,
+    loadDictionary: async () => {},
+    loadFrequencies: async () => {},
+  };
+});
 
 describe('charEditDistance', () => {
   it('returns 0 for identical strings', () => {
