@@ -298,35 +298,8 @@ describe('foreign sample coverage', () => {
   const kaikkiDir = path.resolve(__dirname, '../../website/data/kaikki');
   const hasKaikki = fs.existsSync(kaikkiDir);
 
-  // Minimum per-language word coverage (found / total).
-  const MIN_COVERAGE: Record<string, number> = {
-    ar: 1,
-    de: 1,
-    eo: 1,
-    es: 1,
-    fa: 1,
-    fi: 1,
-    fr: 1,
-    is: 1,
-    ja: 1,
-    jam: 1,
-    km: 1,
-    ko: 1,
-    ma: 1,
-    nb: 1,
-    nl: 1,
-    or: 1,
-    pt: 1,
-    ro: 1,
-    sv: 1,
-    sw: 1,
-    vi: 1,
-    yue: 1,
-    zh: 1,
-  };
-
   it.skipIf(!hasSamples || !hasDicts)(
-    'sample words meet minimum dictionary coverage',
+    'all sample words have dictionary coverage',
     { timeout: 30_000 },
     async () => {
       const { ALL_SAMPLES } = await import('../../website/src/data/language-samples');
@@ -345,9 +318,6 @@ describe('foreign sample coverage', () => {
         }
         const dict = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as IpaDict;
 
-        let total = 0;
-        let found = 0;
-
         for (const sample of samples) {
           // Khmer has no inherent word boundaries — segment before splitting
           const text = code === 'km' ? segmentKhmerText(sample.text) : sample.text;
@@ -358,11 +328,10 @@ describe('foreign sample coverage', () => {
             .map((w) => w.replace(/^[^\p{L}\p{M}]+/u, '').replace(/[^\p{L}\p{M}]+$/u, ''))
             .filter(Boolean);
 
+          const missing: string[] = [];
           for (const word of words) {
-            total++;
             // Use lookupIpa which tries exact, lower, title, accent-stripped + overrides
             if (lookupIpa(dict, word, code)) {
-              found++;
               continue;
             }
             // Also try splitting on apostrophe/hyphen (French contractions)
@@ -376,21 +345,17 @@ describe('foreign sample coverage', () => {
                   lookupIpa(dict, `${p}'`, code) !== undefined
               );
               if (allFound) {
-                found++;
+                continue;
               }
             }
+            missing.push(word);
           }
-        }
 
-        if (total === 0) {
-          continue;
-        }
-        const coverage = found / total;
-        const min = MIN_COVERAGE[code] ?? 0.8;
-        if (coverage < min) {
-          failures.push(
-            `${code}: ${(coverage * 100).toFixed(1)}% coverage (${found}/${total}), minimum ${(min * 100).toFixed(0)}%`
-          );
+          if (missing.length > 0) {
+            failures.push(
+              `${code} [${sample.label}]: ${missing.length} missing — ${missing.join(', ')}`
+            );
+          }
         }
       }
 
