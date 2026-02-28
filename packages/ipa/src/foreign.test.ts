@@ -240,12 +240,30 @@ describe('Khmer compound decomposition', () => {
   it.skipIf(!hasDicts)('translates Khmer phrases that browsers may segment differently', () => {
     const dict = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as IpaDict;
     // These words may appear as standalone segments in some browsers' Intl.Segmenter
-    // even though Node keeps them joined with neighbors.
+    // even though Node keeps them joined with neighbors. Each component of a
+    // compound override must be individually resolvable.
     const browserSegments = [
-      'ញាក់', // part of ញាក់ចិញ្ចើម (to raise eyebrows)
-      'ណាយ', // part of ណាយចិត្ត (heart yearns)
-      'លើក្បាលទា', // "on duck's head" — compound-decomposable
-      'ធ្វើរបង', // "build a fence" — compound-decomposable
+      // Proverbs — browser splits compounds
+      'ញាក់', // part of ញាក់ចិញ្ចើម
+      'ណាយ', // part of ណាយចិត្ត
+      'លើក្បាលទា', // compound-decomposable
+      'ធ្វើរបង', // compound-decomposable
+      // UDHR — browser splits compound overrides
+      'សេចក្ដី', // part of សេចក្ដីថ្លៃថ្នូរ
+      'ថ្នែក', // aspect, class
+      'ថ្នូរ', // part of សេចក្ដីថ្លៃថ្នូរ
+      'សតិ', // part of សតិសម្បជញ្ញៈ
+      'សម្បជញ្ញៈ', // part of សតិសម្បជញ្ញៈ
+      'ភាតរ', // part of ភាតរភាព
+      // Preah Chinawong — browser splits ព្រះ-prefixed compounds
+      'មហេសី', // part of ព្រះមហេសី
+      'រាជ', // part of ព្រះរាជបុត្រ
+      'បុត្រ', // part of ព្រះរាជបុត្រ
+      'រាជា', // part of ព្រះរាជា
+      'រាជបុត្រ', // part of ព្រះរាជបុត្រ
+      // Nokor Reach / Constitution — browser splits មហា compounds
+      'មហា', // part of មហាក្សត្រ, មហាជាតិ
+      'រុង', // part of រុងរឿង
     ];
     const failures: string[] = [];
     for (const word of browserSegments) {
