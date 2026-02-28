@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { CustomMappingConfig } from '@ingglish/phonemes';
 import {
   registerFormat,
@@ -102,10 +102,6 @@ export function useCustomMapping(): UseCustomMappingReturn {
       globalThis.removeEventListener('hashchange', onHashChange);
     };
   }, []);
-
-  // Keep a ref to avoid stale closures
-  const configRef = useRef(config);
-  configRef.current = config;
 
   // Re-register format whenever config changes
   useEffect(() => {

@@ -13,12 +13,6 @@ if (!toggleBtn || !statusText || !statusDot || !formatBtn) {
   throw new Error('Required popup elements not found');
 }
 
-// TypeScript now knows these are non-null after the check above
-const toggleBtnEl = toggleBtn;
-const statusTextEl = statusText;
-const statusDotEl = statusDot;
-const formatBtnEl = formatBtn;
-
 let isEnabled = false;
 let currentFormat: OutputFormat = 'ingglish';
 
@@ -35,9 +29,9 @@ chrome.runtime.sendMessage({ type: 'GET_STATE' }, (response: StateResponse | und
 // Handle toggle button click
 // Note: activeTab permission is granted when user clicks the extension icon,
 // so we don't need to request additional permissions for the initial toggle
-toggleBtnEl.addEventListener('click', () => {
-  toggleBtnEl.disabled = true;
-  toggleBtnEl.textContent = 'Working...';
+toggleBtn.addEventListener('click', () => {
+  toggleBtn.disabled = true;
+  toggleBtn.textContent = 'Working...';
 
   // Send toggle message - don't wait for full translation to complete
   // The translation happens in the content script regardless of popup state
@@ -46,13 +40,13 @@ toggleBtnEl.addEventListener('click', () => {
 
     if (lastError) {
       console.error('Toggle error:', lastError.message);
-      statusTextEl.textContent =
+      statusText.textContent =
         lastError.message !== undefined && lastError.message !== ''
           ? lastError.message
           : 'Connection error';
-      statusTextEl.style.color = '#ef4444';
-      toggleBtnEl.textContent = 'Try Again';
-      toggleBtnEl.disabled = false;
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
+      toggleBtn.disabled = false;
       return;
     }
 
@@ -66,23 +60,23 @@ toggleBtnEl.addEventListener('click', () => {
     } else if (response?.success === false) {
       // Show error with details
       console.error('Toggle failed:', response.error);
-      statusTextEl.textContent =
+      statusText.textContent =
         response.error !== undefined && response.error !== '' ? response.error : 'Unknown error';
-      statusTextEl.style.color = '#ef4444';
-      toggleBtnEl.textContent = 'Try Again';
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
     } else {
       console.error('Unexpected response:', response);
-      statusTextEl.textContent = 'No response';
-      statusTextEl.style.color = '#ef4444';
-      toggleBtnEl.textContent = 'Try Again';
+      statusText.textContent = 'No response';
+      statusText.style.color = '#ef4444';
+      toggleBtn.textContent = 'Try Again';
     }
-    toggleBtnEl.disabled = false;
+    toggleBtn.disabled = false;
   });
 });
 
 // Handle format button click
 const FORMAT_ORDER: OutputFormat[] = ['ingglish', 'ipa', 'shavian', 'deseret'];
-formatBtnEl.addEventListener('click', () => {
+formatBtn.addEventListener('click', () => {
   const newFormat = FORMAT_ORDER[(FORMAT_ORDER.indexOf(currentFormat) + 1) % FORMAT_ORDER.length];
   chrome.runtime.sendMessage(
     { format: newFormat, type: 'SET_FORMAT' },
@@ -97,17 +91,17 @@ formatBtnEl.addEventListener('click', () => {
 
 function updateUI(): void {
   if (isEnabled) {
-    toggleBtnEl.textContent = 'Turn Off';
-    toggleBtnEl.classList.add('active');
-    statusTextEl.textContent = 'Active';
-    statusTextEl.style.color = '#22c55e';
-    statusDotEl.style.background = '#22c55e';
+    toggleBtn.textContent = 'Turn Off';
+    toggleBtn.classList.add('active');
+    statusText.textContent = 'Active';
+    statusText.style.color = '#22c55e';
+    statusDot.style.background = '#22c55e';
   } else {
-    toggleBtnEl.textContent = 'Translate Page';
-    toggleBtnEl.classList.remove('active');
-    statusTextEl.textContent = 'Off';
-    statusTextEl.style.color = '#888';
-    statusDotEl.style.background = '#888';
+    toggleBtn.textContent = 'Translate Page';
+    toggleBtn.classList.remove('active');
+    statusText.textContent = 'Off';
+    statusText.style.color = '#888';
+    statusDot.style.background = '#888';
   }
 }
 
@@ -118,5 +112,5 @@ const FORMAT_LABELS: Record<string, string> = {
   shavian: '𐑖𐑱𐑝𐑾𐑯',
 };
 function updateFormatUI(): void {
-  formatBtnEl.textContent = FORMAT_LABELS[currentFormat] ?? currentFormat;
+  formatBtn.textContent = FORMAT_LABELS[currentFormat] ?? currentFormat;
 }
