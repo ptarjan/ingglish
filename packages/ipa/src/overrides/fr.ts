@@ -18,4 +18,5 @@ export const fr: Record<string, string> = {
   'thunder-ten-tronckh': '/tɔnɛʁtɛntʁɔnk/', // Voltaire
   trieste: '/tʁijɛst/', // city name (Dumas)
   vauquer: '/voke/', // character name (Balzac)
+  y: '/i/', // pronoun "there" — dict has letter name /igʁɛk/
 };
