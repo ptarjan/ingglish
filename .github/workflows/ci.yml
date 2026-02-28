@@ -31,7 +31,14 @@ jobs:
         run: npm run docs
 
       - name: Unit tests
-        run: npm test
+        run: npm test -- --coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+        with:
+          files: packages/*/coverage/coverage-final.json
+          fail_ci_if_error: false
 
   # Detect dead code, unused exports, and missing dependencies
   knip:
