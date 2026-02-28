@@ -89,18 +89,18 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  * This prevents "kat" → "cut" (3.5x) while allowing "haloh" → "hello" (3000x).
  */
 function lookupByArpabet(arpabet: string[]): string[] {
-  const variants = expandArpabetAlternatives(arpabet);
+  const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+  if (!primary) {return [];}
 
-  // Try primary (first variant) first
-  const primaryKey = variants[0]!.join(' ');
+  const primaryKey = primary.join(' ');
   const primaryMatches = lookupPhonemeKey(primaryKey);
 
   if (!primaryMatches || primaryMatches.length === 0) {
     // Primary had no matches — try alternatives
     const allMatches: string[] = [];
     const seen = new Set<string>();
-    for (let i = 1; i < variants.length; i++) {
-      const key = variants[i]!.join(' ');
+    for (const variant of alternatives) {
+      const key = variant.join(' ');
       const matches = lookupPhonemeKey(key);
       if (matches) {
         for (const match of matches) {
@@ -115,13 +115,13 @@ function lookupByArpabet(arpabet: string[]): string[] {
   }
 
   // Primary has matches — check if any alternative has a much better match
-  const primaryBestFreq = getWordFrequency(primaryMatches[0]!) ?? 0;
+  const primaryBestFreq = getWordFrequency(primaryMatches[0] ?? '') ?? 0;
 
-  for (let i = 1; i < variants.length; i++) {
-    const key = variants[i]!.join(' ');
+  for (const variant of alternatives) {
+    const key = variant.join(' ');
     const matches = lookupPhonemeKey(key);
     if (matches && matches.length > 0) {
-      const altBestFreq = getWordFrequency(matches[0]!) ?? 0;
+      const altBestFreq = getWordFrequency(matches[0] ?? '') ?? 0;
       if (altBestFreq > primaryBestFreq * ALT_FREQUENCY_THRESHOLD) {
         // Alternative is overwhelmingly more common — merge and sort
         const allMatches = [...primaryMatches];
@@ -262,8 +262,8 @@ function reverseTranslateWordAsResult(word: string): TranslateResult {
         return '';
       }
       const matches = reverseTranslateWord(p);
-      if (matches.length > 0) {
-        return matches[0]!;
+      if (matches[0]) {
+        return matches[0];
       }
       allMatched = false;
       return p;
@@ -272,8 +272,8 @@ function reverseTranslateWordAsResult(word: string): TranslateResult {
   }
 
   const matches = reverseTranslateWord(word);
-  if (matches.length > 0) {
-    return { matched: true, translated: matches[0]! };
+  if (matches[0]) {
+    return { matched: true, translated: matches[0] };
   }
   return { matched: false, translated: word };
 }

@@ -224,6 +224,7 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
   try {
     clean = decodeURIComponent(raw);
   } catch {
+    // Malformed percent-encoding — use raw string as-is
     clean = raw;
   }
 
@@ -305,6 +306,18 @@ function hasIPAExtensionChars(config: CustomMappingConfig): boolean {
   return false;
 }
 
+/** Type guard for CustomMappingConfig from untrusted JSON */
+function isCustomMappingConfig(value: unknown): value is CustomMappingConfig {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'phonemeMap' in value &&
+    'rColoredPrefixes' in value &&
+    typeof (value as Record<string, unknown>).phonemeMap === 'object' &&
+    typeof (value as Record<string, unknown>).rColoredPrefixes === 'object'
+  );
+}
+
 /** Check if any mapping value contains non-Latin characters (IPA, Shavian, Cyrillic, etc.) */
 function isNonLatinMapping(config: CustomMappingConfig): boolean {
   for (const value of Object.values(config.phonemeMap)) {
@@ -322,8 +335,8 @@ function loadFromStorage(): CustomMappingConfig | null {
     if (raw === null) {
       return null;
     }
-    const parsed = JSON.parse(raw) as CustomMappingConfig;
-    if (parsed.phonemeMap !== undefined && parsed.rColoredPrefixes !== undefined) {
+    const parsed: unknown = JSON.parse(raw);
+    if (isCustomMappingConfig(parsed)) {
       return hasDiffs(parsed) ? parsed : null;
     }
   } catch {
