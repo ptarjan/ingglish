@@ -98,6 +98,18 @@
   white-space: nowrap;
 }
 
+.sample-source-link {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.sample-source-link:hover {
+  text-decoration: underline;
+}
+
 .format-cycle-btn {
   padding: 0.75rem;
   font-size: 0.875rem;

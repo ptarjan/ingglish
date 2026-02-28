@@ -500,6 +500,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     };
   }, [deferredEnglish, lastEdited, format]);
 
+  // Source URL for the currently selected sample (if any)
+  const selectedSampleSource =
+    selectedSampleIndex === -1 ? null : (samples[selectedSampleIndex]?.source ?? null);
+
   const hasContent = displayEnglish.trim().length > 0 || displayIngglish.trim().length > 0;
 
   // Sync scroll positions between paired panes
@@ -563,6 +567,14 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                   </option>
                 ))}
               </select>
+              {selectedSampleSource && (
+                <a
+                  className="sample-source-link"
+                  href={`/url?url=${encodeURIComponent(selectedSampleSource)}${isTargetLangMode ? `&lang=${selectedLanguage}` : ''}`}
+                >
+                  Read full page &#x2197;
+                </a>
+              )}
             </div>
             <div className="button-group">
               {speechSupported && hasVoice(isTargetLangMode ? selectedLanguage : 'en') && (
