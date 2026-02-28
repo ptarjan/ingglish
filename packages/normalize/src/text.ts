@@ -12,8 +12,9 @@ export const URL_REGEX = /(?:https?|ftp|file):\/\/[^\s<>"')\]]+/gi;
 /**
  * Regex to match email addresses.
  * Simple pattern: word characters, dots, hyphens, plus before @, domain after.
+ * Quantifiers are bounded per RFC 5321 limits to prevent ReDoS.
  */
-export const EMAIL_REGEX = /[\w.%+-]+@(?:[a-z0-9-]+\.)+[a-z]{2,}/gi;
+export const EMAIL_REGEX = /[\w.%+-]{1,64}@(?:[a-z0-9-]{1,63}\.){1,10}[a-z]{2,63}/gi;
 
 /**
  * Regex to match bare domain names (without protocol).
