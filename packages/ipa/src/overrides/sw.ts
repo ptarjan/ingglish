@@ -8,6 +8,6 @@ export const sw: Record<string, string> = {
   ulithiqi: '/u.li.ˈθi.ki/',
   // Arabic "kh" = /x/ (voiceless velar fricative), not /kh/
   usiikhini: '/u.si.i.ˈxi.ni/',
-  // Foreign name — 'c' alone is not a Swahili phoneme, and stress is irregular
-  Victoria: '/vik.ˈtɔ.ri.a/',
+  // Foreign name — 'c' alone is not a Swahili phoneme
+  Victoria: '/vik.tɔ.ˈɾi.a/',
 };
