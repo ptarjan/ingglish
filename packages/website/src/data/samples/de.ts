@@ -43,7 +43,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Goethe — Erlkönig',
-    source: 'https://en.wikipedia.org/wiki/Erlk%C3%B6nig',
+    source: 'https://de.wikipedia.org/wiki/Erlkönig_(Ballade)',
     text: 'Wer reitet so spät durch Nacht und Wind? Es ist der Vater mit seinem Kind; er hat den Knaben wohl in dem Arm, er faßt ihn sicher, er hält ihn warm.',
   },
   {
@@ -53,7 +53,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Goethe — Wandrers Nachtlied',
-    source: "https://en.wikipedia.org/wiki/Wanderer's_Nightsong",
+    source: 'https://de.wikipedia.org/wiki/Wandrers_Nachtlied',
     text: 'Über allen Gipfeln ist Ruh, in allen Wipfeln spürest du kaum einen Hauch; die Vöglein schweigen im Walde. Warte nur, balde ruhest du auch.',
   },
   {

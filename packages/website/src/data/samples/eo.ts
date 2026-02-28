@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const eo: Sample[] = [
   {
     label: 'L.L. Zamenhof — La Espero',
-    source: 'https://en.wikipedia.org/wiki/La_Espero',
+    source: 'https://eo.wikipedia.org/wiki/La_Espero',
     text: "En la mondon venis nova sento, tra la mondo iras forta voko; per flugiloj de facila vento nun de loko flugu ĝi al loko. Ne al glavo sangon soifanta ĝi la homan tiras familion: al la mond' eterne militanta ĝi promesas sanktan harmonion.",
   },
   {
@@ -28,8 +28,7 @@ export const eo: Sample[] = [
   },
   {
     label: "L.L. Zamenhof — Ho, mia kor'",
-    source:
-      'https://en.wikisource.org/wiki/Dr._Esperanto%27s_International_Language_(1889)/Ho_mia_kor',
+    source: "https://eo.wikipedia.org/wiki/Ho,_mia_kor'",
     text: "Ho, mia kor', ne batu maltrankvile, el mia brusto nun ne saltu for! Jam teni min ne povas mi facile, ho, mia kor'! Ho, mia kor'! Post longa laborado ĉu mi ne venkos en decida hor'! Sufiĉe! trankviliĝu de l' batado, ho, mia kor'!",
   },
   {

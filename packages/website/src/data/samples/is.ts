@@ -49,7 +49,7 @@ export const is: Sample[] = [
   },
   {
     label: 'Halldór Laxness — Sjálfstætt fólk',
-    source: 'https://en.wikipedia.org/wiki/Independent_People',
+    source: 'https://is.wikipedia.org/wiki/Sjálfstætt_fólk',
     text: 'En þá er norrænir menn settust hér að, flýðu hinir vestrænu galdursmenn landið, og telja fornrit að Kólumkilli hafi í hefndarskyni lagt á þjóð þá hina nýu að hún skyldi í þessu landi aldrei þrífast.',
   },
   {

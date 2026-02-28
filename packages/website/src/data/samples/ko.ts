@@ -58,7 +58,7 @@ export const ko: Sample[] = [
   },
   {
     label: '이상 — 날개',
-    source: 'https://en.wikipedia.org/wiki/Wings_(Yi_Sang)',
+    source: 'https://ko.wikipedia.org/wiki/날개_(소설)',
     text: '박제 가 되다 천재 를 아시다 나 는 유쾌하다 도 하다 이런 때 에 연구 가 좋다 않다 아내 가 있다 때 아내 가 없다 때 그것 은 비슷하다',
   },
   {
@@ -78,7 +78,7 @@ export const ko: Sample[] = [
   },
   {
     label: '김유정 — 동백꽃',
-    source: 'https://en.wikipedia.org/wiki/Kim_Yujung',
+    source: 'https://ko.wikipedia.org/wiki/김유정_(소설가)',
     text: '나 는 점순이 가 좋다 해 뜨다 잠자코 나 의 일 을 도우다 주다 점순이 가 이쁘다 나 는 저 아이 가 좋다 간 까지 빼다 먹다 싶다 하다',
   },
   {

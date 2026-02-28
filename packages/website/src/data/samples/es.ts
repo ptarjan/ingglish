@@ -8,7 +8,7 @@ export const es: Sample[] = [
   },
   {
     label: 'García Márquez — Cien años de soledad',
-    source: 'https://en.wikipedia.org/wiki/One_Hundred_Years_of_Solitude',
+    source: 'https://es.wikipedia.org/wiki/Cien_años_de_soledad',
     text: 'Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo. Macondo era entonces una aldea de veinte casas de barro y cañabrava construidas a la orilla de un río de aguas diáfanas que se precipitaban por un lecho de piedras pulidas, blancas y enormes como huevos prehistóricos.',
   },
   {
@@ -23,7 +23,7 @@ export const es: Sample[] = [
   },
   {
     label: 'Allende — La casa de los espíritus',
-    source: 'https://en.wikipedia.org/wiki/The_House_of_the_Spirits',
+    source: 'https://es.wikipedia.org/wiki/La_casa_de_los_espíritus',
     text: 'Barrabás llegó a la familia por vía marítima, anotó la niña Clara con su delicada caligrafía. Ya entonces tenía el hábito de escribir las cosas importantes y más tarde, cuando se quedó muda, escribía también las trivialidades, sin sospechar que cincuenta años después, sus cuadernos me servirían para rescatar la memoria del pasado y para sobrevivir a mi propio espanto.',
   },
   {
@@ -78,7 +78,7 @@ export const es: Sample[] = [
   },
   {
     label: 'García Márquez — El amor en los tiempos del cólera',
-    source: 'https://en.wikipedia.org/wiki/Love_in_the_Time_of_Cholera',
+    source: 'https://es.wikipedia.org/wiki/El_amor_en_los_tiempos_del_cólera',
     text: 'Era inevitable: el olor de las almendras amargas le recordaba siempre el destino de los amores contrariados. El doctor Juvenal Urbino lo percibió desde que entró en la casa todavía en penumbras, adonde había acudido de urgencia a ocuparse de un caso que para él había dejado de ser urgente desde hacía muchos años.',
   },
   {

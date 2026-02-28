@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const ma: Sample[] = [
   {
     label: 'Negaraku — Lagu Kebangsaan Malaysia',
-    source: 'https://en.wikipedia.org/wiki/Negaraku',
+    source: 'https://ms.wikipedia.org/wiki/Negaraku',
     text: 'Negaraku, tanah tumpahnya darahku, rakyat hidup, bersatu dan maju, rahmat bahagia, Tuhan kurniakan, raja kita, selamat bertakhta.',
   },
   {

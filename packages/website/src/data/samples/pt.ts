@@ -103,7 +103,7 @@ export const pt: Sample[] = [
   },
   {
     label: 'Jorge Amado — Capitães da Areia',
-    source: 'https://en.wikipedia.org/wiki/Captains_of_the_Sands',
+    source: 'https://pt.wikipedia.org/wiki/Capitães_da_Areia',
     text: 'Sob a lua, num velho trapiche abandonado, as crianças dormem. Antigamente aqui era o mar. Nas grandes e negras pedras dos alicerces do trapiche as ondas ora se rebentavam fragorosas, ora vinham se bater mansamente.',
   },
   {

@@ -3,12 +3,12 @@ import type { Sample } from './types';
 export const fr: Sample[] = [
   {
     label: "Camus — L'Étranger",
-    source: 'https://en.wikipedia.org/wiki/The_Stranger_(Camus_novel)',
+    source: "https://fr.wikipedia.org/wiki/L'Étranger",
     text: "Aujourd'hui, maman est morte. Ou peut-être hier, je ne sais pas. J'ai reçu un télégramme de l'asile: Mère décédée. Enterrement demain. Sentiments distingués. Cela ne veut rien dire. C'était peut-être hier. L'asile de vieillards est à Marengo, à quatre-vingts kilomètres d'Alger. Je prendrai l'autobus à deux heures et j'arriverai dans l'après-midi.",
   },
   {
     label: 'Saint-Exupéry — Le Petit Prince',
-    source: 'https://en.wikipedia.org/wiki/The_Little_Prince',
+    source: 'https://fr.wikipedia.org/wiki/Le_Petit_Prince',
     text: "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait Histoires Vécues. Ça représentait un serpent boa qui avalait un fauve. J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin.",
   },
   {

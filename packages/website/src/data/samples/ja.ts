@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const ja: Sample[] = [
   {
     label: 'Kawabata — Snow Country',
-    source: 'https://en.wikipedia.org/wiki/Snow_Country',
+    source: 'https://ja.wikipedia.org/wiki/雪国_(小説)',
     text: '国境 の 長い トンネル を 抜ける と 雪国 で あった 夜 の 底 が 白く なった 信号 所 に 汽車 が 止まった',
   },
   {
@@ -84,7 +84,7 @@ export const ja: Sample[] = [
   },
   {
     label: '村上春樹 — ノルウェイの森',
-    source: 'https://en.wikipedia.org/wiki/Norwegian_Wood_(novel)',
+    source: 'https://ja.wikipedia.org/wiki/ノルウェイの森',
     text: '僕 は 三十七 歳 で その 時 ボーイング 747 の シート に 座る て いる た 巨大 な 飛行機 は 厚い 雨雲 を くぐり抜ける て ハンブルク 空港 に 着陸 しよう と する て いる た',
   },
   {
@@ -99,7 +99,7 @@ export const ja: Sample[] = [
   },
   {
     label: '君が代 — 日本国歌',
-    source: 'https://en.wikipedia.org/wiki/Kimigayo',
+    source: 'https://ja.wikipedia.org/wiki/君が代',
     text: '君 が 代 は 千代 に 八千代 に さざれ 石 の 巌 と なる て 苔 の むす まで',
   },
 ];

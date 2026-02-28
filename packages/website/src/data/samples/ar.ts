@@ -73,12 +73,12 @@ export const ar: Sample[] = [
   },
   {
     label: 'Naguib Mahfouz — بين القصرين',
-    source: 'https://en.wikipedia.org/wiki/Palace_Walk',
+    source: 'https://ar.wikipedia.org/wiki/بين_القصرين_(رواية)',
     text: 'استيقظت أمينة على صوت المنبه قبيل منتصف الليل فلم يكن منه بد إذ أنها من سنين طويلة لا تنام في الليل إلا نوما متقطعا خفيفا لا يكاد يبلغ النوم الحقيقي',
   },
   {
     label: 'Ibn Khaldun — المقدمة',
-    source: 'https://en.wikipedia.org/wiki/Muqaddimah',
+    source: 'https://ar.wikipedia.org/wiki/مقدمة_ابن_خلدون',
     text: 'اعلم أن التاريخ في ظاهره لا يزيد على أخبار عن الأيام والدول والسوابق من القرون الأولى تنمو فيها الأقاوال وتضرب فيها الأمثال وتطرف بها الندوات والمحافل وتؤدي لنا شأن الخليقة كيف تقلبت بها الأحوال',
   },
   {

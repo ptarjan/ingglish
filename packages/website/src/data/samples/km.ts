@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const km: Sample[] = [
   {
     label: 'បទនគររាជ — សរសើរជាតិកម្ពុជា',
-    source: 'https://en.wikipedia.org/wiki/Nokor_Reach',
+    source: 'https://km.wikipedia.org/wiki/បទនគររាជ',
     text: 'សូមពួកទេព្តា រក្សាមហាក្សត្រយើង ឱ្យបានរុងរឿង ដោយជ័យមង្គលសិរីសួស្តី យើងខ្ញុំព្រះអង្គ សូមជ្រកក្រោមម្លប់ព្រះបារមី នៃព្រះនរបតីវង្ស ក្សត្រាដែលសាងប្រាសាទថ្ម គ្រប់គ្រងដែនខ្មែរ បុរាណថ្កើងថ្កាន។',
   },
   {
@@ -39,7 +39,7 @@ export const km: Sample[] = [
   },
   {
     label: 'ព្រះបាទអង្គដួង — ច្បាប់ស្រី',
-    source: 'https://en.wikipedia.org/wiki/Chbab_Srey',
+    source: 'https://km.wikipedia.org/wiki/ច្បាប់ស្រី',
     text: 'នែនាងម្ចាស់ស្រីក្រមុំ ស្ដាប់ម្ដាយប្រដៅផ្គុំ ពាក្យប្រាជ្ញស្ដីល្អ រក្សាទុកក្នុងចិត្ត កុំឲ្យបាត់បង់ភ្លេចខ្វះ ជីវិតស្រីមានតម្លៃ',
   },
   {

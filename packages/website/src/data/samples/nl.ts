@@ -71,7 +71,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'Lucebert — Ik tracht op poëtische wijze',
-    source: 'https://en.wikipedia.org/wiki/Lucebert',
+    source: 'https://nl.wikipedia.org/wiki/Lucebert',
     text: 'Ik tracht op poëtische wijze, dat wil zeggen eenvouds, de waarheid te zeggen. De alchemie van het woord, het hermetisch experiment, de zuivere poëzie, zij hebben de aarde verlaten.',
   },
   {
@@ -81,7 +81,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'Hugo Claus — Het verdriet van België',
-    source: 'https://en.wikipedia.org/wiki/The_Sorrow_of_Belgium',
+    source: 'https://nl.wikipedia.org/wiki/Het_verdriet_van_België',
     text: 'Daar was iets met de ziel, op het eind van de laan. Louis Seynaeve, elf jaar, stond aan de muur van de houten kapel en ademde de nacht in.',
   },
   {

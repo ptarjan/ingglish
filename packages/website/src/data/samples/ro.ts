@@ -69,7 +69,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Mihail Sadoveanu — Baltagul',
-    source: 'https://en.wikipedia.org/wiki/The_Hatchet_(novel)',
+    source: 'https://ro.wikipedia.org/wiki/Baltagul_(roman)',
     text: 'Domnul Dumnezeu, după ce a alcătuit lumea, a pus rânduială și semn fiecărui neam. Pe țigan l-a învățat să cânte cu cetera și neamțului i-a dat șurubul.',
   },
   {

@@ -63,12 +63,12 @@ export const sv: Sample[] = [
   },
   {
     label: 'Henning Mankell — Mördare utan ansikte',
-    source: 'https://en.wikipedia.org/wiki/Faceless_Killers',
+    source: 'https://sv.wikipedia.org/wiki/Mördare_utan_ansikte',
     text: 'Han vaknade av att telefonen ringde. Han tittade på klockan på nattduksbordet innan han svarade. Kvart över fem. Ett samtal vid den här tiden betyder alltid att det har hänt något.',
   },
   {
     label: 'Stieg Larsson — Män som hatar kvinnor',
-    source: 'https://en.wikipedia.org/wiki/The_Girl_with_the_Dragon_Tattoo',
+    source: 'https://sv.wikipedia.org/wiki/Män_som_hatar_kvinnor',
     text: 'Det hade blivit en årligen återkommande händelse. Mottagaren av blomman fyllde nu åttiotvå år. När blomman anlänt öppnade han paketet och plockade bort presentpappret. Därefter lyfte han telefonluren och slog numret till en före detta kriminalkommissarie som efter pensionen bosatt sig vid Siljan.',
   },
   {
@@ -83,7 +83,7 @@ export const sv: Sample[] = [
   },
   {
     label: 'Erik Axel Karlfeldt — Fridolins lustgård',
-    source: 'https://en.wikipedia.org/wiki/Erik_Axel_Karlfeldt',
+    source: 'https://sv.wikipedia.org/wiki/Erik_Axel_Karlfeldt',
     text: 'Längtan heter min arvedel, gåvan av min faders ätt, bittert löje och sorgsen fest, sorgsen fest och bittert löje, eld som tär sitt eget bränsle, fåfäng väntan, fåfäng färd.',
   },
   {

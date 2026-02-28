@@ -13,7 +13,7 @@ export const fi: Sample[] = [
   },
   {
     label: 'Maamme — Suomen kansallislaulu',
-    source: 'https://en.wikipedia.org/wiki/Maamme',
+    source: 'https://fi.wikipedia.org/wiki/Maamme',
     text: 'Oi maamme, Suomi, synnyinmaa, soi sana kultainen! Ei laaksoa, ei kukkulaa, ei vettä, rantaa rakkaampaa kuin kotimaa tää pohjoinen, maa kallis isien!',
   },
   {
