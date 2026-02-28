@@ -1,12 +1,12 @@
 remote="$1"
 url="$2"
 
-timer() {
+step() {
+  local label="$1"; shift
   local start=$SECONDS
   "$@"
   local status=$?
-  local elapsed=$(( SECONDS - start ))
-  printf "  ⏱  %s: %ds\n" "$1 $2" "$elapsed" >&2
+  printf "  ⏱  %s: %ds\n" "$label" "$(( SECONDS - start ))" >&2
   return $status
 }
 
@@ -18,25 +18,25 @@ changed_files=$(git diff --name-only --diff-filter=ACMR "$(git merge-base HEAD "
 # Lint changed files (~2s) — catches lint-staged bypasses (e.g. during rebases)
 format_files=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx|json|css|md)$' || true)
 if [ -n "$format_files" ]; then
-  timer echo "$format_files" | xargs npx prettier --check
+  step "prettier" bash -c 'echo "$1" | xargs npx prettier --check' _ "$format_files"
 fi
 
 ts_files=$(echo "$changed_files" | grep -E '^packages/[^/]+/src/.*\.tsx?$' || true)
 if [ -n "$ts_files" ]; then
-  timer echo "$ts_files" | xargs npx eslint
+  step "eslint" bash -c 'echo "$1" | xargs npx eslint' _ "$ts_files"
 fi
 
 css_files=$(echo "$changed_files" | grep -E '\.css$' || true)
 if [ -n "$css_files" ]; then
-  timer echo "$css_files" | xargs npx stylelint
+  step "stylelint" bash -c 'echo "$1" | xargs npx stylelint' _ "$css_files"
 fi
 
 # Dead code detection (~7s) — catches unused files, unlisted deps
-timer npm run knip
+step "knip" npm run knip
 
 # Type-check the website package (~4s) — catches 90% of CI failures
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
-  timer npx tsc --noEmit -p packages/website/tsconfig.json
+  step "tsc" npx tsc --noEmit -p packages/website/tsconfig.json
 fi
 
 # Run tests for changed packages (1-11s each depending on package)
@@ -49,7 +49,7 @@ if [ -n "$changed_pkgs" ]; then
     fi
   done
   if [ -n "$test_dirs" ]; then
-    timer npx vitest run --no-color $test_dirs
+    step "vitest" npx vitest run --no-color $test_dirs
   fi
 fi
 
@@ -57,7 +57,7 @@ fi
 # If packages/website changed, its vitest run above already covers Docs.test.ts
 if echo "$changed_files" | grep -qE '^docs/.*\.md$'; then
   if ! echo "$changed_pkgs" | grep -q '^website$'; then
-    timer npm run test:docs --prefix packages/website
+    step "docs" npm run test:docs --prefix packages/website
   fi
 fi
 
