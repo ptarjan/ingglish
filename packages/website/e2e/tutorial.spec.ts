@@ -1,13 +1,6 @@
-import { test, expect, type Page, type BrowserContext } from '@playwright/test';
-import { blockExternalNetwork } from './test-utils';
+import { type BrowserContext, expect, type Page, test } from '@playwright/test';
 
-/**
- * Helper: wait for the app to fully load (header visible, spinner gone).
- */
-async function waitForAppLoad(page: Page) {
-  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
-}
+import { blockExternalNetwork, waitForAppLoad } from './test-utils';
 
 test.describe('Tutorial Auto-Typing Demo', () => {
   test.describe.configure({ mode: 'serial' });

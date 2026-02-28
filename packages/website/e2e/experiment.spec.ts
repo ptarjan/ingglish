@@ -1,11 +1,6 @@
 import { type BrowserContext, expect, type Page, test } from '@playwright/test';
 
-import { blockExternalNetwork } from './test-utils';
-
-async function waitForAppLoad(page: Page) {
-  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20_000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
-}
+import { blockExternalNetwork, waitForAppLoad } from './test-utils';
 
 // Share a single page to avoid re-loading the dictionary each time.
 test.describe('Experiment presets', () => {

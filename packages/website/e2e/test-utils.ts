@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 /**
  * Block all external network requests by default.
@@ -7,6 +7,26 @@ import type { Page } from '@playwright/test';
  * Any other unmocked external request will cause the test to fail.
  */
 export async function blockExternalNetwork(page: Page) {
+  await mockExternalResources(page);
+}
+
+/**
+ * Wait for the app to fully load (header visible, spinner gone).
+ * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
+ */
+export async function waitForAppLoad(page: Page) {
+  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
+}
+
+/**
+ * Mock common external resources (fonts, analytics) and block everything else.
+ * Returns the route handler so callers can layer additional mocks on top.
+ */
+async function mockExternalResources(
+  page: Page,
+  handleProxy?: (url: string, route: import('@playwright/test').Route) => Promise<boolean>
+) {
   await page.route('**/*', async (route) => {
     const url = route.request().url();
 
@@ -19,9 +39,9 @@ export async function blockExternalNetwork(page: Page) {
     // Mock Google Fonts - return empty CSS
     if (url.includes('fonts.googleapis.com')) {
       await route.fulfill({
-        status: 200,
-        contentType: 'text/css',
         body: '/* Mocked font CSS */',
+        contentType: 'text/css',
+        status: 200,
       });
       return;
     }
@@ -29,9 +49,9 @@ export async function blockExternalNetwork(page: Page) {
     // Mock Google Fonts static files
     if (url.includes('fonts.gstatic.com')) {
       await route.fulfill({
-        status: 200,
-        contentType: 'font/woff2',
         body: '',
+        contentType: 'font/woff2',
+        status: 200,
       });
       return;
     }
@@ -39,11 +59,19 @@ export async function blockExternalNetwork(page: Page) {
     // Mock Google Analytics / Tag Manager
     if (url.includes('googletagmanager.com') || url.includes('google-analytics.com')) {
       await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
         body: '/* Mocked GA */',
+        contentType: 'application/javascript',
+        status: 200,
       });
       return;
+    }
+
+    // Delegate to proxy handler if provided
+    if (handleProxy) {
+      const handled = await handleProxy(url, route);
+      if (handled) {
+        return;
+      }
     }
 
     // Block all other external requests with a clear error
@@ -114,74 +142,30 @@ export const MOCK_PAGE_B_HTML = `<!DOCTYPE html>
  * Also blocks all other external network requests.
  */
 export async function setupMockProxy(page: Page) {
-  await page.route('**/*', async (route) => {
-    const url = route.request().url();
-
-    // Allow localhost requests (the test server)
-    if (url.includes('localhost') || url.includes('127.0.0.1')) {
-      await route.continue();
-      return;
+  await mockExternalResources(page, async (url, route) => {
+    if (!url.includes('api.allorigins.win') && !url.includes('ingglish-cors-proxy')) {
+      return false;
     }
 
-    // Mock Google Fonts - return empty CSS
-    if (url.includes('fonts.googleapis.com')) {
+    if (url.includes('overflow-test')) {
       await route.fulfill({
+        body: MOCK_PAGE_OVERFLOW_HTML,
+        contentType: 'text/html',
         status: 200,
-        contentType: 'text/css',
-        body: '/* Mocked font CSS */',
       });
-      return;
-    }
-
-    // Mock Google Fonts static files
-    if (url.includes('fonts.gstatic.com')) {
+    } else if (url.includes('page-b') || url.includes('another-page')) {
       await route.fulfill({
+        body: MOCK_PAGE_B_HTML,
+        contentType: 'text/html',
         status: 200,
-        contentType: 'font/woff2',
-        body: '',
       });
-      return;
-    }
-
-    // Mock Google Analytics / Tag Manager
-    if (url.includes('googletagmanager.com') || url.includes('google-analytics.com')) {
+    } else {
       await route.fulfill({
+        body: MOCK_PAGE_A_HTML,
+        contentType: 'text/html',
         status: 200,
-        contentType: 'application/javascript',
-        body: '/* Mocked GA */',
       });
-      return;
     }
-
-    // Mock CORS proxy requests (allorigins.win or custom proxy)
-    if (url.includes('api.allorigins.win') || url.includes('ingglish-cors-proxy')) {
-      if (url.includes('overflow-test')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: MOCK_PAGE_OVERFLOW_HTML,
-        });
-      } else if (url.includes('page-b') || url.includes('another-page')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: MOCK_PAGE_B_HTML,
-        });
-      } else {
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: MOCK_PAGE_A_HTML,
-        });
-      }
-      return;
-    }
-
-    // Block all other external requests with a clear error
-    await route.abort('blockedbyclient');
-    throw new Error(
-      `Unmocked external network request: ${route.request().method()} ${url}\n` +
-        'Add a mock for this URL in test-utils.ts or use setupMockProxy()'
-    );
+    return true;
   });
 }

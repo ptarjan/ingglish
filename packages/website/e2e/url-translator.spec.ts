@@ -1,13 +1,6 @@
-import { test, expect, type Locator, type Page, type BrowserContext } from '@playwright/test';
-import { blockExternalNetwork, setupMockProxy } from './test-utils';
+import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
 
-/**
- * Helper: wait for the app to fully load (header visible, spinner gone).
- */
-async function waitForAppLoad(page: Page) {
-  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20000 });
-}
+import { blockExternalNetwork, setupMockProxy, waitForAppLoad } from './test-utils';
 
 // Helper to click a link using direct event dispatch (works on all platforms)
 async function clickLink(link: Locator) {
@@ -16,7 +9,7 @@ async function clickLink(link: Locator) {
     const touchStart = new TouchEvent('touchstart', {
       bubbles: true,
       cancelable: true,
-      touches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
+      touches: [new Touch({ clientX: 0, clientY: 0, identifier: 0, target: el })],
     });
     el.dispatchEvent(touchStart);
 
@@ -24,7 +17,7 @@ async function clickLink(link: Locator) {
     const touchEnd = new TouchEvent('touchend', {
       bubbles: true,
       cancelable: true,
-      changedTouches: [new Touch({ identifier: 0, target: el, clientX: 0, clientY: 0 })],
+      changedTouches: [new Touch({ clientX: 0, clientY: 0, identifier: 0, target: el })],
     });
     el.dispatchEvent(touchEnd);
   });
@@ -89,7 +82,7 @@ test.describe('URL Translator', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -108,7 +101,7 @@ test.describe('URL Translator', () => {
     await expect(input).not.toHaveValue('');
 
     // Should start loading
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
   });
 
   test('shows loading state while translating', async () => {
@@ -117,7 +110,7 @@ test.describe('URL Translator', () => {
 
     // Start translation and wait for completion
     await page.click('button[type="submit"]');
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     // After completion, loading should be gone
     await expect(page.locator('.btn-loading')).not.toBeVisible();
@@ -158,7 +151,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframeElement = page.locator('.page-iframe');
     const hasScript = await iframeElement.evaluate((el: HTMLIFrameElement) => {
@@ -181,7 +174,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -190,8 +183,8 @@ test.describe('URL Translator Navigation', () => {
     await expect(link).toBeVisible();
     await clickLink(link);
 
-    await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(input).toHaveValue(/page-b/, { timeout: 10_000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
 
     const wordCount = await iframe.locator('.ingglish-word').count();
@@ -213,7 +206,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
@@ -222,8 +215,8 @@ test.describe('URL Translator Navigation', () => {
     await expect(link).toBeVisible();
     await clickLink(link);
 
-    await expect(input).toHaveValue(/page-b/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(input).toHaveValue(/page-b/, { timeout: 10_000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page B/);
 
     await page.evaluate(() => {
@@ -231,8 +224,8 @@ test.describe('URL Translator Navigation', () => {
     });
 
     // Wait for URL to update after back navigation
-    await expect(input).toHaveValue(/page-a/, { timeout: 10000 });
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(input).toHaveValue(/page-a/, { timeout: 10_000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
     await expect(iframe.locator('h1')).toHaveAttribute('data-ingglish-original', /Page A/);
 
     const wordCount = await iframe.locator('.ingglish-word').count();
@@ -248,7 +241,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
     // Verify page is translated
@@ -296,7 +289,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/page-a');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
 
@@ -334,7 +327,7 @@ test.describe('URL Translator Navigation', () => {
     await input.fill('https://example.com/overflow-test');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.page-iframe--ready')).toBeVisible({ timeout: 15_000 });
 
     const iframe = page.frameLocator('.page-iframe');
 
@@ -347,9 +340,7 @@ test.describe('URL Translator Navigation', () => {
 
     // Verify tooltip behavior was injected
     const hasBehavior = await page.locator('.page-iframe').evaluate((el: HTMLIFrameElement) => {
-      return (
-        el.contentDocument?.documentElement.hasAttribute('data-ingglish-tooltip-behavior') ?? false
-      );
+      return 'ingglishTooltipBehavior' in (el.contentDocument?.documentElement.dataset ?? {});
     });
     expect(hasBehavior).toBe(true);
 
@@ -388,9 +379,9 @@ test.describe('URL Translator Error States', () => {
 
       if (url.includes('api.allorigins.win') || url.includes('ingglish-cors-proxy')) {
         if (url.includes('server-error')) {
-          await route.fulfill({ status: 500, body: 'Internal Server Error' });
+          await route.fulfill({ body: 'Internal Server Error', status: 500 });
         } else if (url.includes('not-found')) {
-          await route.fulfill({ status: 404, body: 'Not Found' });
+          await route.fulfill({ body: 'Not Found', status: 404 });
         } else {
           await route.abort('connectionfailed');
         }
@@ -425,7 +416,7 @@ test.describe('URL Translator Error States', () => {
     await input.fill('https://network-fail.example.com');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('.error-message')).toContainText('Failed to load page');
   });
 
@@ -434,7 +425,7 @@ test.describe('URL Translator Error States', () => {
     await input.fill('https://server-error.example.com');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('.error-message')).toContainText('Failed to load page');
   });
 
@@ -443,7 +434,7 @@ test.describe('URL Translator Error States', () => {
     await input.fill('https://not-found.example.com');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('.error-message')).toContainText('Failed to load page');
   });
 
@@ -452,7 +443,7 @@ test.describe('URL Translator Error States', () => {
     await input.fill('https://server-error.example.com');
     await page.click('button[type="submit"]');
 
-    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.error-message')).toBeVisible({ timeout: 10_000 });
 
     await page.click('button:has-text("Clear")');
     await expect(page.locator('.error-message')).not.toBeVisible();

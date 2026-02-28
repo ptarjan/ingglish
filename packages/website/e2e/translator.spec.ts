@@ -1,6 +1,6 @@
 import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test';
 
-import { blockExternalNetwork } from './test-utils';
+import { blockExternalNetwork, waitForAppLoad } from './test-utils';
 
 interface CLSData {
   entries: { sources: string[]; time: number; value: number }[];
@@ -50,15 +50,6 @@ async function hoverAt(page: Page, locator: Locator): Promise<void> {
   expect(box).not.toBeNull();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guarded by assertion above
   await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
-}
-
-/**
- * Helper: wait for the app to fully load (header visible, spinner gone).
- * Dictionary load can take 10-15s on slow CI webkit, so we use generous timeouts.
- */
-async function waitForAppLoad(page: Page) {
-  await expect(page.locator('.header h1')).toBeVisible({ timeout: 20_000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
 }
 
 // Web Vitals tests need fresh pages to test loading behavior — keep isolated
