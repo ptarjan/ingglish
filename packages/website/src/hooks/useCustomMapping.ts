@@ -189,23 +189,23 @@ function buildFullRColoredMap(diffs: Record<string, string>): Record<string, str
   return { ...DEFAULT_R_COLORED, ...diffs };
 }
 
-/** Compute diffs from default for phonemeMap */
+/** Compute diffs from default for phonemeMap. Iterates default keys to avoid tainted property writes. */
 function computePhonemeMapDiffs(fullMap: Record<string, string>): Record<string, string> {
   const diffs: Record<string, string> = {};
-  for (const [key, value] of Object.entries(fullMap)) {
-    if (DEFAULT_PHONEME_MAP[key] !== value) {
-      diffs[key] = value;
+  for (const key of Object.keys(DEFAULT_PHONEME_MAP)) {
+    if (key in fullMap && fullMap[key] !== DEFAULT_PHONEME_MAP[key]) {
+      diffs[key] = fullMap[key]!;
     }
   }
   return diffs;
 }
 
-/** Compute diffs from default for rColoredPrefixes */
+/** Compute diffs from default for rColoredPrefixes. Iterates default keys to avoid tainted property writes. */
 function computeRColoredDiffs(fullMap: Record<string, string>): Record<string, string> {
   const diffs: Record<string, string> = {};
-  for (const [key, value] of Object.entries(fullMap)) {
-    if (DEFAULT_R_COLORED[key] !== value) {
-      diffs[key] = value;
+  for (const key of Object.keys(DEFAULT_R_COLORED)) {
+    if (key in fullMap && fullMap[key] !== DEFAULT_R_COLORED[key]) {
+      diffs[key] = fullMap[key]!;
     }
   }
   return diffs;
