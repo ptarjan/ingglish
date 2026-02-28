@@ -817,6 +817,44 @@ test.describe('Text Translator', () => {
     await page.locator('.language-select').selectOption('en');
     await page.locator('textarea.text-input').first().fill('');
   });
+
+  test('Khmer sample texts have no untranslated words', async () => {
+    // Switch to Khmer
+    await page.locator('.language-select').selectOption('km');
+
+    const foreignOutput = page.locator('.foreign-output');
+    await expect(foreignOutput).toBeVisible({ timeout: 15_000 });
+
+    const englishInput = page.locator('textarea.text-input').first();
+    const sampleSelect = page.locator('.sample-select');
+
+    // Get number of Khmer samples
+    const optionCount = await sampleSelect.locator('option').count();
+    // First option is the placeholder ("Select a passage...")
+    const sampleCount = optionCount - 1;
+
+    for (let i = 0; i < sampleCount; i++) {
+      await sampleSelect.selectOption(String(i));
+      // Wait for input to have text
+      await expect(englishInput).not.toHaveValue('', { timeout: 5000 });
+      // Wait for translation to render
+      await expect(foreignOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+
+      // Check that no words are untranslated
+      const notFound = foreignOutput.locator('.foreign-not-found');
+      const notFoundCount = await notFound.count();
+      if (notFoundCount > 0) {
+        // Collect the untranslated words for a useful error message
+        const words = await notFound.allTextContents();
+        const label = (await sampleSelect.locator('option:checked').textContent()) ?? '?';
+        expect(notFoundCount, `${label}: untranslated words: ${words.join(', ')}`).toBe(0);
+      }
+    }
+
+    // Switch back to English for subsequent tests
+    await page.locator('.language-select').selectOption('en');
+    await englishInput.fill('');
+  });
 });
 
 test.describe('Tab Navigation', () => {

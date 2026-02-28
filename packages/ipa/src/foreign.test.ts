@@ -264,6 +264,17 @@ describe('Khmer compound decomposition', () => {
       // Nokor Reach / Constitution — browser splits មហា compounds
       'មហា', // part of មហាក្សត្រ, មហាជាតិ
       'រុង', // part of រុងរឿង
+      'ជ័យ', // part of ជ័យមង្គល
+      'មង្គល', // part of ជ័យមង្គល
+      'ថ្កើង', // part of ថ្កើងថ្កាន
+      'ថ្កាន', // part of ថ្កើងថ្កាន
+      'សួ', // browser splits សួស្តី
+      'ស្តី', // browser splits សួស្តី
+      'វេទនា', // part of ទុក្ខវេទនា
+      // Compound decomposition — these should decompose via merged dict
+      'ហើយឬក្សត្រ', // ហើយ(dict) + ឬ(dict) + ក្សត្រ(override)
+      'ក្នុងថ្នែក', // ក្នុង(dict) + ថ្នែក(override)
+      'និងសតិ', // និង(dict) + សតិ(override)
     ];
     const failures: string[] = [];
     for (const word of browserSegments) {

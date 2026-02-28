@@ -192,7 +192,12 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
   return undefined;
 }
 
-/** Khmer dictionary keys sorted longest-first, min 2 graphemes (avoids single-char nonsense). */
+/**
+ * Merged Khmer dict (raw dict + overrides) and its keys sorted longest-first.
+ * Compound decomposition must search overrides too, not just the raw dict,
+ * because browser segmenters can produce words whose parts only exist in overrides.
+ */
+let khmerMergedDict: IpaDict | undefined;
 let khmerDictKeys: string[] | undefined;
 
 /**
@@ -258,14 +263,23 @@ function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
 /**
  * Try to decompose a Khmer compound into known dictionary entries.
  * Uses longest-match-first greedy segmentation. Returns concatenated IPA or undefined.
+ * Searches both the raw IPA dictionary and Khmer overrides so that browser-segmented
+ * compounds whose parts only exist in overrides (e.g. ថ្នែក, សតិ) can still decompose.
  */
 function lookupKhmerCompound(dict: IpaDict, word: string): string | undefined {
-  // Exclude bare single-consonant entries (1 codepoint) to avoid false compound splits.
-  // Real Khmer words are 2+ codepoints (consonant + vowel sign / final consonant).
-  khmerDictKeys ??= Object.keys(dict)
-    .filter((k) => k.length >= 2)
-    .toSorted((a, b) => b.length - a.length);
-  const parts = decomposeKhmer(dict, khmerDictKeys, word, []);
+  if (khmerMergedDict === undefined) {
+    khmerMergedDict = { ...dict };
+    const overrides = IPA_WORD_OVERRIDES.km;
+    if (overrides) {
+      for (const [k, v] of Object.entries(overrides)) {
+        khmerMergedDict[k] = v;
+      }
+    }
+  }
+  // Sort keys longest-first for greedy matching. Single-codepoint entries (e.g. ឬ "or")
+  // are included since decomposeKhmer backtracks if they lead to dead ends.
+  khmerDictKeys ??= Object.keys(khmerMergedDict).toSorted((a, b) => b.length - a.length);
+  const parts = decomposeKhmer(khmerMergedDict, khmerDictKeys, word, []);
   if (parts === null || parts.length < 2) {
     return undefined;
   }
