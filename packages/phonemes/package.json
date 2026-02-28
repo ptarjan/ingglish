@@ -27,7 +27,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup",
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
