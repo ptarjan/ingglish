@@ -224,6 +224,13 @@ export function useSpeech(): [
       let wordStarts = spacedWordStarts;
       let detectedMapping = !isCJK;
 
+      // TODO: remove debug logging after TTS charIndex investigation
+      console.warn('[TTS] spaced starts:', spacedWordStarts);
+      if (spacelessWordStarts !== null) {
+        console.warn('[TTS] spaceless starts:', spacelessWordStarts);
+      }
+      console.warn('[TTS] text:', JSON.stringify(text));
+
       // Some TTS voices (especially on Windows) report charIndex=0 for every
       // boundary event. Track a simple counter as fallback. We only switch to
       // fallback after seeing charIndex=0 enough times that it can't just be
@@ -255,6 +262,17 @@ export function useSpeech(): [
               detectedMapping = true;
             }
             // If neither matches (sub-word split), keep trying on next event
+          }
+
+          // TODO: remove debug logging after TTS charIndex investigation
+          {
+            const cl = (event as { charLength?: number }).charLength;
+            console.warn(
+              `[TTS] boundary #${boundaryCounter}: charIndex=${event.charIndex}` +
+                (cl === undefined ? '' : ` charLength=${cl}`) +
+                ` | mapping=${wordStarts === spacelessWordStarts ? 'spaceless' : 'spaced'}` +
+                ` | detected=${detectedMapping}`
+            );
           }
 
           // Use charIndex mapping when it works, fall back to counter otherwise.
@@ -294,6 +312,11 @@ export function useSpeech(): [
           // Also expand backward to catch any skipped tokens from the previous
           // boundary event (fallback for when charLength is unavailable).
           const rangeStart = Math.min(wordIndex, prevWordIndex + 1);
+          // TODO: remove debug logging after TTS charIndex investigation
+          console.warn(
+            `[TTS]   → wordIndex=${wordIndex} wordEnd=${wordEnd} range=[${rangeStart}, ${wordEnd}]` +
+              ` (prev=${prevWordIndex}, total=${wordStarts.length} words)`
+          );
           prevWordIndex = wordEnd;
           setSpokenRange([rangeStart, wordEnd]);
         }
