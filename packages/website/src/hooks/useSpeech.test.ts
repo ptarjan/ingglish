@@ -517,11 +517,12 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([4, 4]);
   });
 
-  it('auto-detects spaceless charIndex for CJK TTS engines that strip spaces', () => {
+  it('picks spaceless mapping when it gives better forward progress for CJK', () => {
     // Japanese: "国境 の 長い" — multi-char words separated by spaces
-    // spacedWordStarts: [0, 3, 5] (positions in "国境 の 長い")
-    // spacelessWordStarts: [0, 2, 3] (positions in "国境の長い")
-    // If TTS strips spaces, charIndex=2 for "の" → doesn't match spaced start 3 → switch
+    // spacedWordStarts: [0, 3, 5, 8, 13, 15]
+    // spacelessWordStarts: [0, 2, 3, 5, 9, 10]
+    // TTS strips spaces: charIndex=2 for "の" → spaceless maps to word 1 (closer to
+    // expected next word) while spaced maps to word 0 (no progress) → spaceless wins
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -535,7 +536,7 @@ describe('useSpeech', () => {
     });
     expect(result.current[4]).toEqual([0, 0]);
 
-    // "の" at spaceless charIndex 2 → triggers switch to spaceless mapping → word 1
+    // "の" at spaceless charIndex 2 → spaceless gives word 1 (better progress) → word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
@@ -566,10 +567,11 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([5, 5]);
   });
 
-  it('defers detection past sub-word splits of the first CJK word', () => {
+  it('handles sub-word splits within the first CJK word', () => {
     // TTS fires charIndex=1 for second char of "国境" (sub-word split)
-    // This doesn't match either mapping's word starts — detection should defer
-    // until charIndex=2 (spaceless "の") which definitively matches spaceless
+    // Both mappings resolve to word 0 since charIndex=1 is within the first word
+    // for both spaced [0,3,5] and spaceless [0,2,3]. Next event at charIndex=2
+    // correctly picks spaceless (word 1) over spaced (word 0).
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -584,18 +586,17 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([0, 0]);
 
     // Sub-word split: charIndex=1 (second char of "国境")
-    // Neither spacedStarts=[0,3,5] nor spacelessStarts=[0,2,3] contain 1
-    // Detection should NOT finalize yet
+    // Both mappings resolve to word 0 (charIndex=1 is within the first word)
     act(() => {
       utterance.onboundary?.({ charIndex: 1, name: 'word' });
     });
     expect(result.current[4]).toEqual([0, 0]); // still word 0
 
-    // Now "の" at spaceless charIndex=2 → matches spaceless, not spaced → switch
+    // "の" at spaceless charIndex=2 → spaceless maps to word 1 (expected), spaced stays at 0
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]); // correctly maps to word 1
+    expect(result.current[4]).toEqual([1, 1]);
 
     // "長い" at spaceless charIndex=3 → word 2
     act(() => {

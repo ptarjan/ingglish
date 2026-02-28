@@ -220,17 +220,6 @@ export function useSpeech(): [
         }
       }
 
-      // Active mapping — starts as spaced, may switch to spaceless for CJK
-      let wordStarts = spacedWordStarts;
-      let detectedMapping = !isCJK;
-
-      // TODO: remove debug logging after TTS charIndex investigation
-      console.warn('[TTS] spaced starts:', spacedWordStarts);
-      if (spacelessWordStarts !== null) {
-        console.warn('[TTS] spaceless starts:', spacelessWordStarts);
-      }
-      console.warn('[TTS] text:', JSON.stringify(text));
-
       // Some TTS voices (especially on Windows) report charIndex=0 for every
       // boundary event. Track a simple counter as fallback. We only switch to
       // fallback after seeing charIndex=0 enough times that it can't just be
@@ -246,52 +235,43 @@ export function useSpeech(): [
             charIndexEverAdvanced = true;
           }
 
-          // Auto-detect spaced vs spaceless charIndex mapping for CJK text.
-          // Some TTS engines strip spaces internally (Japanese, Korean), making
-          // charIndex reference a spaceless string. We detect which mapping to use
-          // by checking whether charIndex matches a known word start position.
-          // Only finalize when we get a definitive match — sub-word splits within
-          // the first word (charIndex > 0 but not at any word start) are skipped.
-          if (!detectedMapping && event.charIndex > 0 && spacelessWordStarts !== null) {
-            const matchesSpaced = spacedWordStarts.includes(event.charIndex);
-            const matchesSpaceless = spacelessWordStarts.includes(event.charIndex);
-            if (matchesSpaceless && !matchesSpaced) {
-              wordStarts = spacelessWordStarts;
-              detectedMapping = true;
-            } else if (matchesSpaced) {
-              detectedMapping = true;
-            }
-            // If neither matches (sub-word split), keep trying on next event
-          }
-
-          // TODO: remove debug logging after TTS charIndex investigation
-          {
-            const cl = (event as { charLength?: number }).charLength;
-            console.warn(
-              `[TTS] boundary #${boundaryCounter}: charIndex=${event.charIndex}` +
-                (cl === undefined ? '' : ` charLength=${cl}`) +
-                ` | mapping=${wordStarts === spacelessWordStarts ? 'spaceless' : 'spaced'}` +
-                ` | detected=${detectedMapping}`
-            );
-          }
-
           // Use charIndex mapping when it works, fall back to counter otherwise.
           // Wait until 4+ events before concluding charIndex is broken, since
           // agglutinative languages may fire multiple boundaries for word 1.
           const useFallback = !charIndexEverAdvanced && boundaryCounter >= 3;
 
           let wordIndex: number;
+          let wordStarts: number[];
           if (useFallback) {
+            wordStarts = spacedWordStarts;
             wordIndex = Math.min(boundaryCounter, wordStarts.length - 1);
-          } else {
-            wordIndex = 0;
-            for (let i = 1; i < wordStarts.length; i++) {
-              if (wordStarts[i]! <= event.charIndex) {
-                wordIndex = i;
-              } else {
-                break;
-              }
+          } else if (isCJK && spacelessWordStarts !== null) {
+            // For CJK text, try both spaced and spaceless mappings on every
+            // event and pick whichever gives the best forward progress.
+            // This avoids fragile one-time detection that can lock in the
+            // wrong mapping on sub-word splits or ambiguous charIndex values.
+            const spacedIdx = lookupWordIndex(spacedWordStarts, event.charIndex);
+            const spacelessIdx = lookupWordIndex(spacelessWordStarts, event.charIndex);
+
+            // Pick the mapping whose word index is closest to the expected
+            // next word (prevWordIndex+1). Each boundary event typically
+            // corresponds to the next word, so distance from that target
+            // tells us which mapping is more plausible. Break ties toward
+            // spaced (preserves correct behavior for Chinese single-char words).
+            const expected = prevWordIndex + 1;
+            const spacedDist = Math.abs(spacedIdx - expected);
+            const spacelessDist = Math.abs(spacelessIdx - expected);
+
+            if (spacelessDist < spacedDist) {
+              wordIndex = spacelessIdx;
+              wordStarts = spacelessWordStarts;
+            } else {
+              wordIndex = spacedIdx;
+              wordStarts = spacedWordStarts;
             }
+          } else {
+            wordStarts = spacedWordStarts;
+            wordIndex = lookupWordIndex(wordStarts, event.charIndex);
           }
 
           // Use charLength (when available) to find the end of the current
@@ -312,11 +292,6 @@ export function useSpeech(): [
           // Also expand backward to catch any skipped tokens from the previous
           // boundary event (fallback for when charLength is unavailable).
           const rangeStart = Math.min(wordIndex, prevWordIndex + 1);
-          // TODO: remove debug logging after TTS charIndex investigation
-          console.warn(
-            `[TTS]   → wordIndex=${wordIndex} wordEnd=${wordEnd} range=[${rangeStart}, ${wordEnd}]` +
-              ` (prev=${prevWordIndex}, total=${wordStarts.length} words)`
-          );
           prevWordIndex = wordEnd;
           setSpokenRange([rangeStart, wordEnd]);
         }
@@ -373,4 +348,17 @@ function findPreferredVoice(lang: string): SpeechSynthesisVoice | undefined {
     (v) => v.lang.startsWith(lang + '-') || v.lang.toLowerCase() === lang.toLowerCase()
   );
   return matching.find((v) => !v.name.startsWith('Google')) ?? matching[0];
+}
+
+/** Find the word index for a charIndex by scanning the sorted word starts array. */
+function lookupWordIndex(wordStarts: number[], charIndex: number): number {
+  let idx = 0;
+  for (let i = 1; i < wordStarts.length; i++) {
+    if (wordStarts[i]! <= charIndex) {
+      idx = i;
+    } else {
+      break;
+    }
+  }
+  return idx;
 }
