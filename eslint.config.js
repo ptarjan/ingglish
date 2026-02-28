@@ -228,8 +228,8 @@ export default tseslint.config(
     rules: {
       ...css.configs.recommended.rules,
       'css/no-invalid-properties': 'off', // Can't validate CSS custom properties (var(--*))
-      'css/use-baseline': 'warn', // Flag newer features but don't block
-      'css/no-important': 'warn', // Existing !important usage is intentional
+      'css/use-baseline': 'off', // We target modern browsers; baseline warnings are noise
+      'css/no-important': 'off', // Existing !important usage is intentional overrides
     },
   }
 );
