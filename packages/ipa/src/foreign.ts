@@ -384,10 +384,13 @@ export function translateForeign(
           if (part === "'" || part === '-') {
             return;
           }
-          let ipa = lookupIpa(dict, part, lang);
-          if (!ipa && parts[i + 1] === "'") {
+          let ipa: string | undefined;
+          // In contraction context, prefer clitic form (d' → /d‿/) over
+          // bare letter name (d → /de/) so the consonant merges naturally
+          if (parts[i + 1] === "'") {
             ipa = lookupIpa(dict, part + "'", lang);
           }
+          ipa ??= lookupIpa(dict, part, lang);
           return ipa;
         });
 
