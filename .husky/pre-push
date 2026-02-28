@@ -16,6 +16,12 @@ if [ -n "$css_files" ]; then
   echo "$css_files" | xargs npx stylelint
 fi
 
+# Check formatting on changed source files
+format_files=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx|json|css)$' || true)
+if [ -n "$format_files" ]; then
+  echo "$format_files" | xargs npx prettier --check
+fi
+
 # Type-check the website package (~4s) — catches 90% of CI failures
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
   npx tsc --noEmit -p packages/website/tsconfig.json
