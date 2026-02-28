@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const or: ForeignSample[] = [
+export const or: Sample[] = [
   {
     // https://odialive.com/vande-utkala-janani-lyrics/
     label: 'ଲକ୍ଷ୍ମୀକାନ୍ତ ମହାପାତ୍ର — ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ',

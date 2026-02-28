@@ -1,7 +1,7 @@
 import { poems } from '../poems-data';
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const en: ForeignSample[] = [
+export const en: Sample[] = [
   {
     label: 'The quick brown fox',
     text: `The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.

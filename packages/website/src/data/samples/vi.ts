@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const vi: ForeignSample[] = [
+export const vi: Sample[] = [
   {
     // https://vietnamesetypography.com/samples/truyen-kieu/
     label: 'Nguyễn Du — Truyện Kiều',

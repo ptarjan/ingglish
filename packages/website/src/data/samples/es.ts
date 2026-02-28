@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const es: ForeignSample[] = [
+export const es: Sample[] = [
   {
     // https://cvc.cervantes.es/literatura/clasicos/quijote/edicion/parte1/cap01/default.htm
     label: 'Cervantes — Don Quijote',

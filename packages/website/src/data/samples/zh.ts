@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const zh: ForeignSample[] = [
+export const zh: Sample[] = [
   {
     // https://baike.baidu.com/item/满纸荒唐言
     label: '曹雪芹 — 红楼梦',

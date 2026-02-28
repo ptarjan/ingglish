@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const fi: ForeignSample[] = [
+export const fi: Sample[] = [
   {
     // https://www.gutenberg.org/cache/epub/11940/pg11940-images.html
     label: 'Aleksis Kivi — Seitsemän veljestä',

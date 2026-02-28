@@ -1,6 +1,6 @@
 import { type TranslatedToken, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
-import { ALL_SAMPLES, pickSample } from '../data/foreign-samples';
+import { ALL_SAMPLES, pickSample } from '../data/language-samples';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
 

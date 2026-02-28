@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const ro: ForeignSample[] = [
+export const ro: Sample[] = [
   {
     // https://ro.wikisource.org/wiki/Luceafărul_(Eminescu)
     label: 'Eminescu — Luceafărul',

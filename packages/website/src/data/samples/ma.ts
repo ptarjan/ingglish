@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const ma: ForeignSample[] = [
+export const ma: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/Negaraku
     label: 'Negaraku — Lagu Kebangsaan Malaysia',

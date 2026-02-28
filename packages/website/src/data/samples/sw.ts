@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const sw: ForeignSample[] = [
+export const sw: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/Ee_Mungu_Nguvu_Yetu
     label: 'Wimbo wa Taifa — Kenya National Anthem',

@@ -2,14 +2,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { lookupIpa } from '@ingglish/ipa';
 import type { IpaDict } from '@ingglish/ipa';
-import { FOREIGN_SAMPLES } from '../src/data/foreign-samples';
+import { ALL_SAMPLES } from '../src/data/language-samples';
 
 const dictDir = path.resolve(import.meta.dirname, '../public/ipa-dicts');
 
 let totalMissing = 0;
 let totalWords = 0;
 
-for (const [lang, samples] of Object.entries(FOREIGN_SAMPLES)) {
+for (const [lang, samples] of Object.entries(ALL_SAMPLES)) {
   const dictPath = path.join(dictDir, lang + '.json');
   if (!fs.existsSync(dictPath)) {
     console.log(`MISSING DICT: ${lang}`);

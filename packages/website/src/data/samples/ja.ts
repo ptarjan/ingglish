@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const ja: ForeignSample[] = [
+export const ja: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/Snow_Country
     label: 'Kawabata — Snow Country',

@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const is: ForeignSample[] = [
+export const is: Sample[] = [
   {
     // https://sagadb.org/brennu-njals_saga.is (ch. 75)
     label: 'Njáls saga — Gunnar at Hlíðarendi',

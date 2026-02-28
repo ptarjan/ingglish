@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const ko: ForeignSample[] = [
+export const ko: Sample[] = [
   {
     // https://ko.wikisource.org/wiki/서시
     label: '윤동주 — 서시',

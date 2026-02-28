@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const pt: ForeignSample[] = [
+export const pt: Sample[] = [
   {
     // http://arquivopessoa.net/textos/163
     label: 'Pessoa — Tabacaria',

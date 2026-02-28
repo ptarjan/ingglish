@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const nl: ForeignSample[] = [
+export const nl: Sample[] = [
   {
     // https://www.annefrank.org/nl/anne-frank/dagboek/
     label: 'Anne Frank — Het Achterhuis',

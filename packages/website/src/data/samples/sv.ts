@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const sv: ForeignSample[] = [
+export const sv: Sample[] = [
   {
     // https://archive.org/details/nilsholgerssons00lybegoog
     label: 'Lagerlöf — Nils Holgerssons underbara resa',

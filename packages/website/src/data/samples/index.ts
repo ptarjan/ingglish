@@ -11,7 +11,7 @@ export { pt } from './pt';
 export { ro } from './ro';
 export { sv } from './sv';
 export { sw } from './sw';
-export type { ForeignSample } from './types';
+export type { Sample } from './types';
 export { vi } from './vi';
 export { yue } from './yue';
 export { zh } from './zh';

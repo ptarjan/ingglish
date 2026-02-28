@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const fa: ForeignSample[] = [
+export const fa: Sample[] = [
   {
     // https://ganjoor.net/ferdousi/shahname/aghaz/sh1
     label: 'فردوسی — شاهنامه',

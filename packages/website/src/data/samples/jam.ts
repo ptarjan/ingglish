@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const jam: ForeignSample[] = [
+export const jam: Sample[] = [
   {
     // https://www.best-poems.net/louise-bennett-coverley/colonization-in-reverse.html
     label: 'Louise Bennett — Colonization in Reverse',

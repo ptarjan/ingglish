@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const eo: ForeignSample[] = [
+export const eo: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/La_Espero
     label: 'L.L. Zamenhof — La Espero',

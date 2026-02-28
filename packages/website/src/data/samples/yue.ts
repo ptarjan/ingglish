@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const yue: ForeignSample[] = [
+export const yue: Sample[] = [
   {
     // https://eastasiastudent.net/china/classical/li-bai-jiang-jin-jiu/
     label: '李白 — 將進酒',

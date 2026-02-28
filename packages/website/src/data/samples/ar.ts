@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const ar: ForeignSample[] = [
+export const ar: Sample[] = [
   {
     // https://ar.wikisource.org/wiki/ألف_ليلة_وليلة/الجزء_الأول
     label: 'ألف ليلة وليلة — حكاية الملك شهريار',

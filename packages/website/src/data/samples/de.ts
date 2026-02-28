@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const de: ForeignSample[] = [
+export const de: Sample[] = [
   {
     // https://www.gutenberg.org/ebooks/22367
     label: 'Kafka — Die Verwandlung',

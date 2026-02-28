@@ -19,7 +19,7 @@ import { pt } from './samples/pt';
 import { ro } from './samples/ro';
 import { sv } from './samples/sv';
 import { sw } from './samples/sw';
-import type { ForeignSample } from './samples/types';
+import type { Sample } from './samples/types';
 import { vi } from './samples/vi';
 import { yue } from './samples/yue';
 import { zh } from './samples/zh';
@@ -36,7 +36,7 @@ import { zh } from './samples/zh';
  *
  * Per-language samples are in ./samples/<lang>.ts for easier editing.
  */
-export const ALL_SAMPLES: Record<string, ForeignSample[]> = {
+export const ALL_SAMPLES: Record<string, Sample[]> = {
   ar,
   de,
   en,
@@ -63,9 +63,6 @@ export const ALL_SAMPLES: Record<string, ForeignSample[]> = {
   zh,
 };
 
-/** @deprecated Use ALL_SAMPLES instead */
-export const FOREIGN_SAMPLES = ALL_SAMPLES;
-
 export function pickSample(langCode: string, currentText: string): string | undefined {
   const samples = ALL_SAMPLES[langCode];
   if (!samples || samples.length === 0) {
@@ -79,6 +76,3 @@ export function pickSample(langCode: string, currentText: string): string | unde
   }
   return pick.text;
 }
-
-/** @deprecated Use pickSample instead */
-export const pickForeignSample = pickSample;

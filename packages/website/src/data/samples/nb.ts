@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const nb: ForeignSample[] = [
+export const nb: Sample[] = [
   {
     // https://snl.no/Ja,_vi_elsker_dette_landet
     label: 'Bjørnstjerne Bjørnson — Ja, vi elsker dette landet',

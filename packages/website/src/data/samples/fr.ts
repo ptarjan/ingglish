@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const fr: ForeignSample[] = [
+export const fr: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/The_Stranger_(Camus_novel)
     label: "Camus — L'Étranger",

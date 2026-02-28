@@ -4,7 +4,7 @@ import { segmentKhmerText } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
-import { ALL_SAMPLES, pickSample } from '../data/foreign-samples';
+import { ALL_SAMPLES, pickSample } from '../data/language-samples';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';

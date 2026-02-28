@@ -289,7 +289,7 @@ describe('Khmer compound decomposition', () => {
 
 describe('foreign sample coverage', () => {
   // Load samples dynamically (the file is TS but we can import it)
-  const samplesPath = path.resolve(__dirname, '../../website/src/data/foreign-samples.ts');
+  const samplesPath = path.resolve(__dirname, '../../website/src/data/language-samples.ts');
   const dictsDir = path.resolve(__dirname, '../../website/public/ipa-dicts');
 
   // Skip if sample file or dicts don't exist (CI without website package)
@@ -329,7 +329,7 @@ describe('foreign sample coverage', () => {
     'sample words meet minimum dictionary coverage',
     { timeout: 30_000 },
     async () => {
-      const { ALL_SAMPLES } = await import('../../website/src/data/foreign-samples');
+      const { ALL_SAMPLES } = await import('../../website/src/data/language-samples');
 
       const failures: string[] = [];
 

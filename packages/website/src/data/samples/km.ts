@@ -1,6 +1,6 @@
-import type { ForeignSample } from './types';
+import type { Sample } from './types';
 
-export const km: ForeignSample[] = [
+export const km: Sample[] = [
   {
     // https://en.wikipedia.org/wiki/Nokor_Reach
     label: 'បទនគររាជ — សរសើរជាតិកម្ពុជា',
