@@ -1,31 +1,42 @@
 remote="$1"
 url="$2"
 
+timer() {
+  local start=$SECONDS
+  "$@"
+  local status=$?
+  local elapsed=$(( SECONDS - start ))
+  printf "  ⏱  %s: %ds\n" "$1 $2" "$elapsed" >&2
+  return $status
+}
+
+total_start=$SECONDS
+
 # Get files changed vs remote tracking branch
 changed_files=$(git diff --name-only --diff-filter=ACMR "$(git merge-base HEAD "@{u}" 2>/dev/null || echo HEAD~1)")
 
 # Lint changed files (~2s) — catches lint-staged bypasses (e.g. during rebases)
 format_files=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx|json|css|md)$' || true)
 if [ -n "$format_files" ]; then
-  echo "$format_files" | xargs npx prettier --check
+  timer echo "$format_files" | xargs npx prettier --check
 fi
 
 ts_files=$(echo "$changed_files" | grep -E '^packages/[^/]+/src/.*\.tsx?$' || true)
 if [ -n "$ts_files" ]; then
-  echo "$ts_files" | xargs npx eslint
+  timer echo "$ts_files" | xargs npx eslint
 fi
 
 css_files=$(echo "$changed_files" | grep -E '\.css$' || true)
 if [ -n "$css_files" ]; then
-  echo "$css_files" | xargs npx stylelint
+  timer echo "$css_files" | xargs npx stylelint
 fi
 
 # Dead code detection (~7s) — catches unused files, unlisted deps
-npm run knip
+timer npm run knip
 
 # Type-check the website package (~4s) — catches 90% of CI failures
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
-  npx tsc --noEmit -p packages/website/tsconfig.json
+  timer npx tsc --noEmit -p packages/website/tsconfig.json
 fi
 
 # Run tests for changed packages (1-11s each depending on package)
@@ -38,7 +49,7 @@ if [ -n "$changed_pkgs" ]; then
     fi
   done
   if [ -n "$test_dirs" ]; then
-    npx vitest run --no-color $test_dirs
+    timer npx vitest run --no-color $test_dirs
   fi
 fi
 
@@ -46,6 +57,8 @@ fi
 # If packages/website changed, its vitest run above already covers Docs.test.ts
 if echo "$changed_files" | grep -qE '^docs/.*\.md$'; then
   if ! echo "$changed_pkgs" | grep -q '^website$'; then
-    npm run test:docs --prefix packages/website
+    timer npm run test:docs --prefix packages/website
   fi
 fi
+
+printf "\n  ⏱  Total pre-push: %ds\n" "$(( SECONDS - total_start ))" >&2
