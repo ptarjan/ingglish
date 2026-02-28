@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
+const WORD_RE = /[\p{L}\p{N}]/u;
 
 /**
  * Hook for text-to-speech using the Web Speech API.
@@ -199,7 +200,6 @@ export function useSpeech(): [
       // so we use charIndex rather than a simple counter.
       // Only count segments containing letters or digits (matching OverlayTextarea's
       // word counting which skips punctuation-only tokens like em dashes).
-      const WORD_RE = /[\p{L}\p{N}]/u;
       const spacedWordStarts: number[] = [];
       const segments = text.split(/(\s+)/);
       let pos = 0;
