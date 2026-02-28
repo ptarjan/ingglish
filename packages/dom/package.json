@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/dom",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "DOM translation utilities for Ingglish",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,12 +34,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ingglish/ipa": "^1.0.0",
-    "@ingglish/normalize": "^1.0.0",
-    "@ingglish/phonemes": "^1.0.0"
+    "@ingglish/ipa": "^0.1.0",
+    "@ingglish/normalize": "^0.1.0",
+    "@ingglish/phonemes": "^0.1.0"
   },
   "peerDependencies": {
-    "ingglish": "^1.0.0"
+    "ingglish": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",

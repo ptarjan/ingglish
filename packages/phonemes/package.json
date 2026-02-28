@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/phonemes",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Phoneme definitions and ARPAbet/IPA/Ingglish conversion maps",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,7 +31,8 @@
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
-    "bench": "vitest bench --no-color"
+    "bench": "vitest bench --no-color",
+    "prepublishOnly": "npm run build"
   },
   "author": "Paul Tarjan",
   "license": "MIT",

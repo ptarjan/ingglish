@@ -14,13 +14,13 @@
     "watch": "npm run build -- --watch"
   },
   "dependencies": {
-    "ingglish": "^1.0.0",
-    "@ingglish/dom": "^1.0.0",
-    "@ingglish/normalize": "^1.0.0",
-    "@ingglish/phonemes": "^1.0.0",
-    "@ingglish/ipa": "^1.0.0",
-    "@ingglish/shavian": "^1.0.0",
-    "@ingglish/deseret": "^1.0.0"
+    "ingglish": "^0.1.0",
+    "@ingglish/dom": "^0.1.0",
+    "@ingglish/normalize": "^0.1.0",
+    "@ingglish/phonemes": "^0.1.0",
+    "@ingglish/ipa": "^0.1.0",
+    "@ingglish/shavian": "^0.1.0",
+    "@ingglish/deseret": "^0.1.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.37",

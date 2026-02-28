@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/g2p",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "NRL/Elovitz grapheme-to-phoneme rules for English",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,13 +31,14 @@
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
-    "bench": "vitest bench --no-color"
+    "bench": "vitest bench --no-color",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ingglish/phonemes": "^1.0.0"
+    "@ingglish/phonemes": "^0.1.0"
   },
   "devDependencies": {
-    "@ingglish/ipa": "^1.0.0"
+    "@ingglish/ipa": "^0.1.0"
   },
   "keywords": [
     "g2p",

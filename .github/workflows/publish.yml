@@ -29,7 +29,7 @@ jobs:
 
       - name: Publish packages
         run: |
-          for pkg in normalize phonemes tokenize dictionary g2p ipa shavian deseret fallback core dom; do
+          for pkg in normalize phonemes dictionary g2p ipa shavian deseret fallback core dom; do
             npm publish --workspace=packages/$pkg --access public --provenance
           done
         env:

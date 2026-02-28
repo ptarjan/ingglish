@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/dictionary",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "CMU dictionary loading, lookup, and word frequency scoring for Ingglish",
   "type": "module",
   "main": "./dist/index.js",
@@ -33,10 +33,11 @@
     "build:fast": "npm run update-dictionaries && tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
-    "update-dictionaries": "node scripts/ensure-dictionaries.cjs"
+    "update-dictionaries": "node scripts/ensure-dictionaries.cjs",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ingglish/phonemes": "^1.0.0",
+    "@ingglish/phonemes": "^0.1.0",
     "subtlex-word-frequencies": "^2.0.0"
   },
   "author": "Paul Tarjan",
