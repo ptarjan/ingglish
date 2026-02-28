@@ -79,8 +79,8 @@ export function createTooltipFragmentFromMap(
 
 /**
  * Creates a tooltip fragment using a custom translation function.
- * Splits text on whitespace boundaries, translates each non-whitespace segment,
- * and wraps changed segments in tooltip spans showing the original text.
+ * Translates the full text in one call (efficient), then splits both
+ * original and result on whitespace to align words for tooltips.
  * Used for foreign language translation where translateSyncWithMapping isn't available.
  */
 export function createTooltipFragmentWithFn(
@@ -88,23 +88,29 @@ export function createTooltipFragmentWithFn(
   translateFn: (text: string, format: OutputFormat) => string,
   format: OutputFormat = 'ingglish'
 ): DocumentFragment {
-  // Split into alternating [text, whitespace, text, whitespace, ...] segments
-  const segments = text.split(/(\s+)/);
+  const WHITESPACE_SPLIT = /(\s+)/;
 
-  return buildTooltipFragment(
-    segments.filter(Boolean).map((segment) => {
-      // Whitespace segments pass through unchanged
-      if (/^\s+$/.test(segment)) {
-        return { text: segment };
-      }
-      const translated = translateFn(segment, format);
-      // If translation changed the text, show original on hover
-      if (translated !== segment) {
-        return { text: translated, tooltip: segment };
-      }
-      return { text: segment };
-    })
-  );
+  // Translate the full text in one call (avoids N per-word calls)
+  const translated = translateFn(text, format);
+
+  // Split both on whitespace to align words positionally.
+  // translateForeign preserves whitespace structure, so segments align 1:1.
+  const origSegments = text.split(WHITESPACE_SPLIT).filter(Boolean);
+  const transSegments = translated.split(WHITESPACE_SPLIT).filter(Boolean);
+
+  const items: FragmentItem[] = [];
+  for (const [i, transSegment] of transSegments.entries()) {
+    const orig = origSegments[i];
+    const trans = transSegment;
+    // Show tooltip when translation differs from original
+    if (orig !== undefined && orig !== trans && !/^\s+$/.test(trans)) {
+      items.push({ text: trans, tooltip: orig });
+    } else {
+      items.push({ text: trans });
+    }
+  }
+
+  return buildTooltipFragment(items);
 }
 
 /**
