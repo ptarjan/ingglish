@@ -16,7 +16,7 @@ const config: KnipConfig = {
       entry: ['scripts/**/*.{js,ts}'],
     },
     'packages/website': {
-      entry: ['e2e/**/*.ts'],
+      entry: ['e2e/**/*.ts', 'scripts/**/*.{js,ts}'],
     },
   },
   ignore: [
@@ -26,12 +26,16 @@ const config: KnipConfig = {
     'packages/core/src/detect/index.ts',
     // Extension test files (vitest runs them but they're not entry points)
     'packages/extension/src/*.test.ts',
+    // Benchmark files (run manually, not entry points)
+    'packages/*/src/*.bench.ts',
   ],
   ignoreDependencies: [
     'eslint-plugin-prettier', // required by eslint-config-prettier
     'jsdom', // vitest test environment
     'esbuild', // vite internal dep
     '@ingglish/*', // workspace packages resolved via npm workspaces
+    'ingglish', // root workspace package used in tests
+    'playwright', // used in standalone diagnostic script (not @playwright/test)
   ],
   ignoreBinaries: ['playwright', 'vite-node'],
   ignoreExportsUsedInFile: true,
