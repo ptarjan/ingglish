@@ -11,14 +11,21 @@ import { translateSync } from 'ingglish';
 
 // Strip markdown syntax to get plain text
 function stripMarkdown(md: string): string {
+  let result = md
+    // Remove code blocks (```...```)
+    .replace(/```[\s\S]*?```/g, '')
+    // Remove inline code (`...`)
+    .replace(/`[^`]+`/g, '');
+
+  // Remove HTML tags in a loop to handle nested/malformed tags
+  let prev;
+  do {
+    prev = result;
+    result = result.replace(/<[^>]+>/g, '');
+  } while (result !== prev);
+
   return (
-    md
-      // Remove code blocks (```...```)
-      .replace(/```[\s\S]*?```/g, '')
-      // Remove inline code (`...`)
-      .replace(/`[^`]+`/g, '')
-      // Remove HTML tags
-      .replace(/<[^>]+>/g, '')
+    result
       // Remove markdown links [text](url) — keep text
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       // Remove image syntax ![alt](url)

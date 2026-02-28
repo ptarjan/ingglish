@@ -59,7 +59,12 @@ async function mockExternalResources(
     }
 
     // Mock Google Analytics / Tag Manager
-    if (hostname.endsWith('googletagmanager.com') || hostname.endsWith('google-analytics.com')) {
+    if (
+      hostname === 'googletagmanager.com' ||
+      hostname.endsWith('.googletagmanager.com') ||
+      hostname === 'google-analytics.com' ||
+      hostname.endsWith('.google-analytics.com')
+    ) {
       await route.fulfill({
         body: '/* Mocked GA */',
         contentType: 'application/javascript',
