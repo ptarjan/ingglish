@@ -223,6 +223,41 @@ describe('translateForeign', () => {
   });
 });
 
+describe('Khmer compound decomposition', () => {
+  const dictsDir = path.resolve(__dirname, '../../website/public/ipa-dicts');
+  const kmDictPath = path.join(dictsDir, 'km.json');
+  const hasDicts = fs.existsSync(kmDictPath);
+
+  it.skipIf(!hasDicts)('strips slashes from compound IPA parts', () => {
+    const dict = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as IpaDict;
+    // "លើក្បាលទា" decomposes to លើ + ក្បាល + ទា (all in dict with /.../ values)
+    const ipa = lookupIpa(dict, 'លើក្បាលទា', 'km');
+    expect(ipa).toBeDefined();
+    // Should not contain any slashes — they should be stripped before joining
+    expect(ipa).not.toContain('/');
+  });
+
+  it.skipIf(!hasDicts)('translates Khmer phrases that browsers may segment differently', () => {
+    const dict = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as IpaDict;
+    // These words may appear as standalone segments in some browsers' Intl.Segmenter
+    // even though Node keeps them joined with neighbors.
+    const browserSegments = [
+      'ញាក់', // part of ញាក់ចិញ្ចើម (to raise eyebrows)
+      'ណាយ', // part of ណាយចិត្ត (heart yearns)
+      'លើក្បាលទា', // "on duck's head" — compound-decomposable
+      'ធ្វើរបង', // "build a fence" — compound-decomposable
+    ];
+    const failures: string[] = [];
+    for (const word of browserSegments) {
+      const result = translateForeign(word, dict, 'ingglish', 'km');
+      if (result.includes(NOT_FOUND_MARKER)) {
+        failures.push(word);
+      }
+    }
+    expect(failures).toStrictEqual([]);
+  });
+});
+
 describe('foreign sample coverage', () => {
   // Load samples dynamically (the file is TS but we can import it)
   const samplesPath = path.resolve(__dirname, '../../website/src/data/foreign-samples.ts');

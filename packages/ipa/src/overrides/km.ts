@@ -19,13 +19,15 @@ export const km: Record<string, string> = {
   ជ័យមង្គល: '/cey mɔŋkɔl/', // victory, auspicious
   // --- Proverbs ---
   ជាក់: '/ceak/', // certain, sure
-
   ជាលំដាប់: '/cie lɔmɗaap/', // successively
+
   // --- Preah Chinawong ---
   ជិន: '/cɨn/', // Jin (proper name element)
   ជិនវង្ស: '/cɨn wɔŋ/', // Chinawong (proper name)
+  ញាក់: '/ɲeak/', // to startle, twitch
   ញាក់ចិញ្ចើម: '/ɲeak cəɲcaəm/', // to raise eyebrows
   ដែន: '/daen/', // territory
+  ណាយ: '/naay/', // to yearn
   ណាយចិត្ត: '/naay cət/', // heart yearns
   តប: '/tɑp/', // to reply
   ថ្កើងថ្កាន: '/tkəəŋ tkaan/', // glorious, magnificent

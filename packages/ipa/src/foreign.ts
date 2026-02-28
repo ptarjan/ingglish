@@ -266,7 +266,11 @@ function lookupKhmerCompound(dict: IpaDict, word: string): string | undefined {
     .filter((k) => k.length >= 2)
     .toSorted((a, b) => b.length - a.length);
   const parts = decomposeKhmer(dict, khmerDictKeys, word, []);
-  return parts !== null && parts.length >= 2 ? parts.join(' ') : undefined;
+  if (parts === null || parts.length < 2) {
+    return undefined;
+  }
+  // Strip slashes from each part before joining so ipaToFormat sees clean IPA
+  return parts.map((p) => p.replaceAll(IPA_SLASH_RE, '')).join(' ');
 }
 
 /** Strip combining diacritics (accents, tildes, etc.) from a string. */
