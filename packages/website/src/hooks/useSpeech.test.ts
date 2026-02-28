@@ -448,9 +448,46 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('expands spokenRange to cover skipped words (Chinese compound words)', () => {
-    // "满 纸 荒 唐 言" — TTS may group "荒唐" as one word, skipping "唐"
-    // wordStarts: [0, 2, 4, 6, 8] for chars at positions 0, 2, 4, 6, 8
+  it('strips spaces for CJK text and maps charIndex correctly', () => {
+    // "满 纸 荒 唐 言" → TTS receives "满纸荒唐言" (spaces stripped)
+    // wordStarts: [0, 1, 2, 3, 4] (one per character in stripped text)
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('满 纸 荒 唐 言');
+    });
+
+    // Verify TTS received the stripped text
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    expect(utterance.text).toBe('满纸荒唐言');
+
+    // "满" at charIndex 0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([0, 0]);
+
+    // "纸" at charIndex 1 → word 1
+    act(() => {
+      utterance.onboundary?.({ charIndex: 1, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([1, 1]);
+
+    // "荒唐" compound at charIndex 2 → word 2
+    act(() => {
+      utterance.onboundary?.({ charIndex: 2, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([2, 2]);
+
+    // "言" at charIndex 4 → word 4, GAP: word 3 ("唐") was skipped
+    act(() => {
+      utterance.onboundary?.({ charIndex: 4, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([3, 4]);
+  });
+
+  it('uses charLength to expand range for CJK compound words', () => {
+    // When charLength is available, the range covers the full compound
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -458,30 +495,27 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // "满" at charIndex 0 → word 0
+    // "荒唐" compound with charLength=2 at charIndex 2
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toEqual([0, 0]);
-
-    // "纸" at charIndex 2 → word 1, no gap
     act(() => {
-      utterance.onboundary?.({ charIndex: 2, name: 'word' });
+      utterance.onboundary?.({ charIndex: 1, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    act(() => {
+      utterance.onboundary?.({ charIndex: 2, charLength: 2, name: 'word' } as unknown as {
+        charIndex: number;
+        name: string;
+      });
+    });
+    // charLength=2 → covers chars 2-3 → words 2-3 ("荒" and "唐")
+    expect(result.current[4]).toEqual([2, 3]);
 
-    // "荒唐" at charIndex 4 → word 2, no gap
+    // "言" at charIndex 4 — no gap since prevWordIndex is now 3
     act(() => {
       utterance.onboundary?.({ charIndex: 4, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
-
-    // "言" at charIndex 8 → word 4, GAP: word 3 ("唐") was skipped
-    // Range should expand to [3, 4] to cover the skipped character
-    act(() => {
-      utterance.onboundary?.({ charIndex: 8, name: 'word' });
-    });
-    expect(result.current[4]).toEqual([3, 4]);
+    expect(result.current[4]).toEqual([4, 4]);
   });
 
   it('does not set explicit voice for languages without confirmed boundary support', () => {

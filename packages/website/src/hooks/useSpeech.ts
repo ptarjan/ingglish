@@ -169,8 +169,14 @@ export function useSpeech(): [
       speechSynthesis.cancel();
       clearWorkaround();
 
-      // Single utterance with boundary events for word tracking
-      const utterance = new SpeechSynthesisUtterance(text);
+      // CJK TTS engines strip spaces internally, so charIndex values reference
+      // a spaceless string. For CJK text, strip spaces and build per-character
+      // word starts so charIndex maps correctly to overlay word indices.
+      const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/;
+      const isCJK = CJK_RE.test(text);
+      const ttsText: string = isCJK ? text.replaceAll(/\s+/g, '') : text;
+
+      const utterance = new SpeechSynthesisUtterance(ttsText);
       if (lang) {
         utterance.lang = lang;
         // Only set an explicit voice if the boundary probe confirmed it works.
@@ -192,13 +198,24 @@ export function useSpeech(): [
       // word counting which skips punctuation-only tokens like em dashes).
       const WORD_RE = /[\p{L}\p{N}]/u;
       const wordStarts: number[] = [];
-      const segments = text.split(/(\s+)/);
-      let pos = 0;
-      for (const seg of segments) {
-        if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
-          wordStarts.push(pos);
+      if (isCJK) {
+        // For CJK: each character in the stripped text is a word token
+        let cjkIdx = 0;
+        for (const ch of ttsText) {
+          if (WORD_RE.test(ch)) {
+            wordStarts.push(cjkIdx);
+          }
+          cjkIdx++;
         }
-        pos += seg.length;
+      } else {
+        const segments = text.split(/(\s+)/);
+        let pos = 0;
+        for (const seg of segments) {
+          if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
+            wordStarts.push(pos);
+          }
+          pos += seg.length;
+        }
       }
 
       // Some TTS voices (especially on Windows) report charIndex=0 for every
@@ -235,12 +252,26 @@ export function useSpeech(): [
             }
           }
 
-          // When TTS groups multiple visual tokens into one word (e.g. Chinese
-          // compound words), the boundary jumps by >1. Expand the range to cover
-          // skipped tokens so every character gets highlighted.
+          // Use charLength (when available) to find the end of the current
+          // TTS word — this covers multi-character CJK compounds correctly.
+          let wordEnd = wordIndex;
+          const charLen = (event as { charLength?: number }).charLength;
+          if (charLen !== undefined && charLen > 1 && !useFallback) {
+            const charEnd = event.charIndex + charLen - 1;
+            for (let i = wordIndex + 1; i < wordStarts.length; i++) {
+              if (wordStarts[i]! <= charEnd) {
+                wordEnd = i;
+              } else {
+                break;
+              }
+            }
+          }
+
+          // Also expand backward to catch any skipped tokens from the previous
+          // boundary event (fallback for when charLength is unavailable).
           const rangeStart = Math.min(wordIndex, prevWordIndex + 1);
-          prevWordIndex = wordIndex;
-          setSpokenRange([rangeStart, wordIndex]);
+          prevWordIndex = wordEnd;
+          setSpokenRange([rangeStart, wordEnd]);
         }
       };
       utterance.onend = () => {
