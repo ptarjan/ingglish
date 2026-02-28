@@ -24,7 +24,7 @@ export interface ScriptReverseTranslator {
  * @param sortByFrequency Sorts word candidates by frequency
  */
 export function createScriptReverseTranslator(opts: {
-  lookupPhonemeKey: (key: string) => null | string[];
+  lookupPhonemeKey: (key: string) => null | string[] | undefined;
   sortByFrequency: (words: string[]) => string[];
   toArpabet: (text: string) => null | string[];
   tokenize: (text: string) => { isWord: boolean; text: string }[];
