@@ -2,68 +2,74 @@ import type { Sample } from './types';
 
 export const or: Sample[] = [
   {
-    // https://odialive.com/vande-utkala-janani-lyrics/
     label: 'ଲକ୍ଷ୍ମୀକାନ୍ତ ମହାପାତ୍ର — ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ',
+    source: 'https://odialive.com/vande-utkala-janani-lyrics/',
     text: 'ବନ୍ଦେ ଉତ୍କଳ ଜନନୀ, ଚାରୁ ହାସମୟୀ ଚାରୁ ଭାଷମୟୀ, ଜନନୀ, ଜନନୀ, ଜନନୀ। ଘନ ଘନ ବନଭୂମି ରାଜିତ ଅଙ୍ଗେ, ନୀଳ ଭୂଧରମାଳା ସାଜେ ତରଙ୍ଗେ, କଳ କଳ ମୁଖରିତ ଚାରୁ ବିହଙ୍ଗେ, ଜନନୀ, ଜନନୀ, ଜନନୀ।',
   },
   {
-    // https://www.omniglot.com/udhr/indoiranian.htm
     label: 'ସାର୍ବଜନୀନ ମାନବ ଅଧିକାର ଘୋଷଣା — ମାତ୍ରା ୧',
+    source: 'https://www.omniglot.com/udhr/indoiranian.htm',
     text: 'ସବୁ ମନୁଷ୍ୟ ଜନ୍ମକାଳରୁ ସ୍ୱାଧୀନ. ସେମାନଙ୍କର ମର୍ଯ୍ୟାଦା ଓ ଅଧିକାର ସମାନ. ସେମାନଙ୍କଠାରେ ପ୍ରଜ୍ଞା ଓ ବିବେକ ନିହିତ ଅଛି. ସେମାନେ ପରସ୍ପର ପ୍ରତି ଭାତୃଭାବ ପୋଷଣ କରି କାର୍ଯ୍ୟ କରିବା ଦରକାର.',
   },
   {
-    // https://x.com/Naveen_Odisha/status/1449612763714646021
     label: 'ରାଧାନାଥ ରାୟ — ଚିଲିକା',
+    source: 'https://x.com/Naveen_Odisha/status/1449612763714646021',
     text: 'ଉତ୍କଳ-କମଳା-ବିଳାସ-ଦୀର୍ଘିକା, ମରାଳମାଳିନୀ ନୀଳାମ୍ବୁ ଚିଲିକା, ଉତ୍କଳର ତୁହି ଚାରୁ ଅଳଙ୍କାର ଉତ୍କଳଭୁବନେ ଶୋଭାର ଭଣ୍ଡାର',
   },
   {
-    // http://pathasala.odiaportal.in/2018/05/Mishu-Mora-Deha-E-Desha-Matire-By-Gopabandhu-Das-Full-Poem.html
     label: 'ଗୋପବନ୍ଧୁ ଦାସ — ବନ୍ଦୀର ଆତ୍ମକଥା',
+    source:
+      'http://pathasala.odiaportal.in/2018/05/Mishu-Mora-Deha-E-Desha-Matire-By-Gopabandhu-Das-Full-Poem.html',
     text: 'ଦେଶବାସୀ ବନ୍ଧୁ ଆତ୍ମୀୟ ସୋଦର, କାରାଦଣ୍ଡେ ମୋର ହେଲ କି କାତର? ଥିଲା ଏହା ଆଗୁଁ ଜଣାଶୁଣା କଥା, ସେଥିପାଇଁ ତେବେ କିମ୍ପା ମନେ ବ୍ୟଥା। ମିଶୁ ମୋର ଦେହ ଏ ଦେଶମାଟିରେ, ଦେଶବାସୀ ଚାଲିଯାଆନ୍ତୁ ପିଠିରେ।',
   },
   {
-    // https://www.bhubaneswarbuzz.com/stories-by-people/bhima-bhoi-wanted-know-great-poet-odisha
     label: 'ଭୀମ ଭୋଇ — ସ୍ତୁତିଚିନ୍ତାମଣି',
+    source:
+      'https://www.bhubaneswarbuzz.com/stories-by-people/bhima-bhoi-wanted-know-great-poet-odisha',
     text: 'ପ୍ରାଣୀମାନଙ୍କ ଆରତ ଦୁଃଖ ଅପ୍ରମିତ ଦେଖି ଦେଖି କେବା ସହୁ, ମୋ ଜୀବନ ପଛେ ନର୍କେ ପଡ଼ିଥାଉ ଜଗତ ଉଦ୍ଧାର ହେଉ।',
   },
   {
-    // https://thesmaranika.blogspot.com/2020/01/tu-para-bolau-utkala-santan-lyrics-odia.html
     label: 'ମଧୁସୂଦନ ଦାସ — ଉତ୍କଳ ସନ୍ତାନ',
+    source:
+      'https://thesmaranika.blogspot.com/2020/01/tu-para-bolau-utkala-santan-lyrics-odia.html',
     text: 'ତୁ ପରା ବୋଲାଉ ଉତ୍କଳ ସନ୍ତାନ ତେବେ କିମ୍ପା ତୁହି ଭୀରୁ ତୋହର ଜନନୀ ରୋଦନ କରିଲେ କହିବାକୁ କିମ୍ପା ଡରୁ? ତୋ ପୂର୍ବପୁରୁଷ ଜୟ କରିଥିଲେ ଗଙ୍ଗା ଠାରୁ ଗୋଦାବରୀ ତାଙ୍କର ଔରସୁ ଜନ୍ମହୋଇ ତୁହି କେଉଁ ଗୁଣେ ତାଙ୍କୁ ସରି?',
   },
   {
-    // https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%AD%E0%AC%BE%E0%AC%97%E0%AC%AC%E0%AC%A4/%E0%AD%A7
     label: 'ଜଗନ୍ନାଥ ଦାସ — ଓଡ଼ିଆ ଭାଗବତ (ଗୋବିନ୍ଦ ସ୍ତୁତି)',
+    source:
+      'https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%AD%E0%AC%BE%E0%AC%97%E0%AC%AC%E0%AC%A4/%E0%AD%A7',
     text: 'ଗୋବିନ୍ଦ ଗୋବିନ୍ଦ ଗୋବିନ୍ଦ। ପଦୁ ଗଳୁଛି ମକରନ୍ଦ॥ ସେ ମକରନ୍ଦ ପାନ କରି। ଏଣେ ତରିଲେ ବ୍ରଜ ନାରୀ॥ ସେ ବ୍ରଜ ନାରୀଙ୍କ ପୟରେ। ମନ ମୋ ରହୁ ନିରନ୍ତରେ॥',
   },
   {
-    // https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%AD%E0%AC%BE%E0%AC%97%E0%AC%AC%E0%AC%A4/%E0%AD%A7
     label: 'ଜଗନ୍ନାଥ ଦାସ — ଓଡ଼ିଆ ଭାଗବତ (ପ୍ରଥମ ସ୍କନ୍ଧ)',
+    source:
+      'https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%AD%E0%AC%BE%E0%AC%97%E0%AC%AC%E0%AC%A4/%E0%AD%A7',
     text: 'ନମଇଁ ନୃସିଂହ ଚରଣ। ଅନାଦି ପରମ କାରଣ॥ ଯା ବିନୁ ଆଦି ମଧ୍ୟ ଅନ୍ତ। ବିଚାରେ ନ ଘଟେ ଜଗତ॥ ସେ କୃଷ୍ଣପାଦ ହୃଦେ ଧରି। ପ୍ରବନ୍ଧେ ଗୀତନାଦ କରି॥ ଅଶେଷ ଜଗତର ହିତେ। ବର୍ଣ୍ଣଇ ଦାସ ଜଗନ୍ନାଥେ॥',
   },
   {
-    // https://storymirror.com/read/oriya/poem/tpsinii-prthm-srg/icsywoi3
     label: 'ଗଙ୍ଗାଧର ମେହେର — ତପସ୍ଵିନୀ',
+    source: 'https://storymirror.com/read/oriya/poem/tpsinii-prthm-srg/icsywoi3',
     text: 'କିଏ ଗୋ ତୁ ଜ୍ୟୋତିର୍ମୟୀ ଶୁଦ୍ଧ-ଶୁଭ-ବେଶା, ଇନ୍ଦ୍ରନୀଳ-ଦ୍ୟୁତି-ଜିତ-ମନୋହର-କେଶା? ତନୁକାନ୍ତି ଭେଦି ତୋର ଶୁଭ୍ର ସୂକ୍ଷ୍ମ ବାସ, ଆହ୍ଲାଦ ଦେଉଛି ତୋର ହୃଦେ ହୋଇ ସୁପ୍ରକାଶ।',
   },
   {
-    // https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%95%E0%AC%BE%E0%AC%B9%E0%AC%BF%E0%AC%81%E0%AC%95%E0%AC%BF_%E0%AC%A6%E0%AC%B0%E0%AC%BF%E0%AC%A6%E0%AD%8D%E0%AC%B0
     label: 'ଫକୀର ମୋହନ ସେନାପତି — ଓଡ଼ିଆ କାହିଁକି ଦରିଦ୍ର',
+    source:
+      'https://or.wikisource.org/wiki/%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86_%E0%AC%95%E0%AC%BE%E0%AC%B9%E0%AC%BF%E0%AC%81%E0%AC%95%E0%AC%BF_%E0%AC%A6%E0%AC%B0%E0%AC%BF%E0%AC%A6%E0%AD%8D%E0%AC%B0',
     text: 'ଦରିଦ୍ରତା ଓଡ଼ିଶା ଦୁର୍ଗତିର ପ୍ରଧାନ କାରଣ। ପ୍ରଧାନ କାରଣ କାହିଁକି, ଏକମାତ୍ର କାରଣ କହିଲେ ଚଳେ। ଓଡ଼ିଆ ଦରିଦ୍ର; ତେଣୁ ଦୁର୍ବଳ। ତା ଦେହରେ ଶକ୍ତି ନାହିଁ, ମନରେ ସ୍ଫୁର୍ତ୍ତି ନାହିଁ, ହୃଦୟରେ ସାହସ ନାହିଁ।',
   },
   {
-    // https://archive.org/details/ChhaManaAthaGunthaByFakirMohanSenapati-OdiaNovel
     label: 'ଫକୀର ମୋହନ ସେନାପତି — ଛ ମାଣ ଆଠ ଗୁଣ୍ଠ',
+    source: 'https://archive.org/details/ChhaManaAthaGunthaByFakirMohanSenapati-OdiaNovel',
     text: 'ରାମଚନ୍ଦ୍ର ମଙ୍ଗରାଜ ଜଣେ ମଫସଲର ଜମିଦାର, ମଧ୍ୟ ମହାଜନ-ନଗଦ ଟଙ୍କା କାରବାର ଠାରୁ ଧାନର ମହାଜନୀ ବେଶି। ଶୁଣାଯାଏ, ଆଡ଼େ ଦୀର୍ଘେ ଚାରି କୋଶ ମଧ୍ୟରେ ଆଉ କାହାରି କାରବାର ଚଳେନାହିଁ। ବଡ଼ ଧାର୍ମିକ।',
   },
   {
-    // https://antarangakalinga.org/ଉପେନ୍ଦ୍ର-ଭଞ୍ଜ/
     label: 'ଉପେନ୍ଦ୍ର ଭଞ୍ଜ — ବୈଦେହୀଶ ବିଳାସ',
+    source: 'https://antarangakalinga.org/ଉପେନ୍ଦ୍ର-ଭଞ୍ଜ/',
     text: 'ବରହିବଂଶେ ଉଦ୍ଭବ ନୃପ-ଧନଞ୍ଜୟ। ବିଶିଷ୍ଟେ ଘୁମୁସରଅଧିପ ଗୁଣାଳୟ ଯେ। ବେନି ଅର୍ଥେ ସେ କବି ଗଣେଶ ବୋଲି ଜାଣ। ବନ୍ଦନ ତଦ୍ଧତ ତାଙ୍କ ନନ୍ଦନ ପ୍ରମାଣ ଯେ।',
   },
   {
-    // https://thesmaranika.blogspot.com/2019/06/rangabati-rangabati-kanaka-lyrics-odia.html
     label: 'ମିତ୍ରଭାନୁ ଗୌନ୍ତିଆ — ରଙ୍ଗବତୀ',
+    source: 'https://thesmaranika.blogspot.com/2019/06/rangabati-rangabati-kanaka-lyrics-odia.html',
     text: 'ହେ ରଙ୍ଗବତୀ ରେ ରଙ୍ଗବତୀ, ହୋ ରଙ୍ଗବତୀ ରେ ରଙ୍ଗବତୀ, ରଙ୍ଗବତୀ ରଙ୍ଗବତୀ କନକଲତା ହସି ପଦେ କହଲୋ କଥା। ସପନ ରଜା ସପନ, ରାନି ତାଗେ ସୁତା ମାଲେ ହେଲାତ ଗୁଁଥା।',
   },
 ];

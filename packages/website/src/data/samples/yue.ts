@@ -2,18 +2,18 @@ import type { Sample } from './types';
 
 export const yue: Sample[] = [
   {
-    // https://eastasiastudent.net/china/classical/li-bai-jiang-jin-jiu/
     label: '李白 — 將進酒',
+    source: 'https://eastasiastudent.net/china/classical/li-bai-jiang-jin-jiu/',
     text: '君 不 見 黃 河 之 水 天 上 來 奔 流 到 海 不 復 回 君 不 見 高 堂 明 鏡 悲 白 髮 朝 如 青 絲 暮 成 雪 人 生 得 意 須 盡 歡 莫 使 金 樽 空 對 月 天 生 我 材 必 有 用 千 金 散 盡 還 復 來',
   },
   {
-    // https://eastasiastudent.net/china/classical/su-shi-water-song/
     label: '蘇軾 — 水調歌頭',
+    source: 'https://eastasiastudent.net/china/classical/su-shi-water-song/',
     text: '明 月 幾 時 有 把 酒 問 青 天 不 知 天 上 宮 闕 今 夕 是 何 年 我 欲 乘 風 歸 去 惟 恐 瓊 樓 玉 宇 高 處 不 勝 寒 起 舞 弄 清 影 何 似 在 人 間',
   },
   {
-    // https://chinesepoemsinenglish.blogspot.com/2013/11/wang-wei-farewell.html
     label: '王維 — 送別',
+    source: 'https://chinesepoemsinenglish.blogspot.com/2013/11/wang-wei-farewell.html',
     text: '山 中 相 送 罷 日 暮 掩 柴 扉 春 草 明 年 綠 王 孫 歸 不 歸',
   },
   {
@@ -22,8 +22,8 @@ export const yue: Sample[] = [
     text: '學 而 時 習 之 不 亦 說 乎 有 朋 自 遠 方 來 不 亦 樂 乎 人 不 知 而 不 慍 不 亦 君 子 乎 三 人 行 必 有 我 師 焉 擇 其 善 者 而 從 之 其 不 善 者 而 改 之',
   },
   {
-    // https://fanti.dugushici.com/ancient_proses/70568
     label: '韓愈 — 師說',
+    source: 'https://fanti.dugushici.com/ancient_proses/70568',
     text: '古 之 學 者 必 有 師 師 者 所 以 傳 道 受 業 解 惑 也 人 非 生 而 知 之 者 孰 能 無 惑 惑 而 不 從 師 其 為 惑 也 終 不 解 矣',
   },
   {
@@ -82,28 +82,28 @@ export const yue: Sample[] = [
     text: '觀 自 在 菩 薩 行 深 般 若 波 羅 蜜 多 時 照 見 五 蘊 皆 空 度 一 切 苦 厄 舍 利 子 色 不 異 空 空 不 異 色 色 即 是 空 空 即 是 色 受 想 行 識 亦 復 如 是',
   },
   {
-    // https://fanti.dugushici.com/ancient_proses/70527
     label: '陶淵明 — 桃花源記',
+    source: 'https://fanti.dugushici.com/ancient_proses/70527',
     text: '晉 太 元 中 武 陵 人 捕 魚 爲 業 緣 溪 行 忘 路 之 遠 近 忽 逢 桃 花 林 夾 岸 數 百 步 中 無 雜 樹 芳 草 鮮 美 落 英 繽 紛 漁 人 甚 異 之 復 前 行 欲 窮 其 林',
   },
   {
-    // https://www.basiclaw.gov.hk/tc/basiclaw/preamble.html
     label: '香港基本法 — 序言',
+    source: 'https://www.basiclaw.gov.hk/tc/basiclaw/preamble.html',
     text: '香 港 自 古 以 來 就 是 中 國 的 領 土 一 八 四 零 年 鴉 片 戰 爭 以 後 被 英 國 佔 領 一 九 八 四 年 十 二 月 十 九 日 中 英 兩 國 政 府 簽 署 了 關 於 香 港 問 題 的 聯 合 聲 明',
   },
   {
-    // https://www.hkmemory.org/jameswong/text/index.php?p=home&catId=172&photoNo=0
     label: '唐滌生 — 帝女花·香夭',
+    source: 'https://www.hkmemory.org/jameswong/text/index.php?p=home&catId=172&photoNo=0',
     text: '落 花 滿 天 蔽 月 光 借 一 杯 附 薦 鳳 台 上 帝 女 花 帶 淚 上 香 願 喪 生 回 謝 爹 娘',
   },
   {
-    // https://en.wikipedia.org/wiki/Man_Jiang_Hong
     label: '岳飛 — 滿江紅',
+    source: 'https://en.wikipedia.org/wiki/Man_Jiang_Hong',
     text: '怒 髮 衝 冠 憑 闌 處 瀟 瀟 雨 歇 抬 望 眼 仰 天 長 嘯 壯 懷 激 烈 三 十 功 名 塵 與 土 八 千 里 路 雲 和 月 莫 等 閒 白 了 少 年 頭 空 悲 切',
   },
   {
-    // https://fanti.dugushici.com/ancient_proses/18048
     label: '柳宗元 — 江雪',
+    source: 'https://fanti.dugushici.com/ancient_proses/18048',
     text: '千 山 鳥 飛 絕 萬 徑 人 蹤 滅 孤 舟 蓑 笠 翁 獨 釣 寒 江 雪',
   },
 ];

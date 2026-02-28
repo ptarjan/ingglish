@@ -2,48 +2,49 @@ import type { Sample } from './types';
 
 export const km: Sample[] = [
   {
-    // https://en.wikipedia.org/wiki/Nokor_Reach
     label: 'បទនគររាជ — សរសើរជាតិកម្ពុជា',
+    source: 'https://en.wikipedia.org/wiki/Nokor_Reach',
     text: 'សូមពួកទេព្តា រក្សាមហាក្សត្រយើង ឱ្យបានរុងរឿង ដោយជ័យមង្គលសិរីសួស្តី យើងខ្ញុំព្រះអង្គ សូមជ្រកក្រោមម្លប់ព្រះបារមី នៃព្រះនរបតីវង្ស ក្សត្រាដែលសាងប្រាសាទថ្ម គ្រប់គ្រងដែនខ្មែរ បុរាណថ្កើងថ្កាន។',
   },
   {
-    // https://www.yosothor.org/publications/khmer-renaissance/chapter-three/Rama_Dupant_Sita.html
     label: 'រាមកេរ្តិ៍ — រាមដុបឥន្ទសីតា',
+    source:
+      'https://www.yosothor.org/publications/khmer-renaissance/chapter-three/Rama_Dupant_Sita.html',
     text: 'កាលនោះក្សត្រីនិម៌ល ភ្ញាភ្ញាក់ទតយល់ក្សត្រា ក្រេវក្រោធពិរោធសោះសា ស្ទុះរត់ចរចេញទៅខ្មី ហើយនាងទូលតបទៅថ្វាត់ បពិត្រមហាក្សត្រនរបតី ស្ដេចធ្វើច្នេះពុំជូក្ដី យល់ល្អហើយឬក្សត្រថ្លៃ',
   },
   {
-    // https://www.ohchr.org/sites/default/files/UDHR/Documents/UDHR_Translations/khm.pdf
     label: 'សេចក្តីប្រកាសជាសកលស្តីពីសិទ្ធិមនុស្ស — មាត្រា ១',
+    source: 'https://www.ohchr.org/sites/default/files/UDHR/Documents/UDHR_Translations/khm.pdf',
     text: 'មនុស្សទាំងអស់កើតមកមានសេរីភាពនិងសមភាពក្នុងថ្នែកសេចក្ដីថ្លៃថ្នូរនិងសិទ្ធិ។ មនុស្សមានវិចារណញ្ញាណ និងសតិសម្បជញ្ញៈជាប់ពីកំណើត ហើយគប្បីប្រព្រឹត្តចំពោះគ្នាទៅវិញទៅមកក្នុងស្មារតីភាតរភាពជាបងប្អូន។',
   },
   {
-    // https://khmerlovepoems.wordpress.com/2012/06/30/post-77/
     label: 'ទុំទាវ — បទចម្រៀង',
+    source: 'https://khmerlovepoems.wordpress.com/2012/06/30/post-77/',
     text: 'ទាវអើយស្រីទាវ បងនាវទុកជាគូគាប់ ហត្ថាបងធ្លាប់ ផ្គត់ផ្គង់ចិត្តស្រី ជញ្ជាំងបងចាក់ រកភ័ក្រ្តតែទាវទេថ្លៃ បើមិនប្រណី គ្មានថ្ងៃហើយទេ។',
   },
   {
-    // https://constitutionnet.org/sites/default/files/Cambodia%20Constitution.pdf
     label: 'រដ្ឋធម្មនុញ្ញ — បុព្វកថា',
+    source: 'https://constitutionnet.org/sites/default/files/Cambodia%20Constitution.pdf',
     text: 'យើងប្រជាជនកម្ពុជា ដែលមានប្រពៃណីប្រាសាទអង្គរដ៏រុងរឿង សែនអស្ចារ្យ ដែលជាតិខ្មែរមហាជាតិបានកំពុងតក់ស្លុតនឹងទុក្ខវេទនា និងការបំផ្លិចបំផ្លាញជាលំដាប់',
   },
   {
-    // https://khmerproverb.blogspot.com/
     label: 'សុភាសិតខ្មែរ — ប្របាដ និង សុភាសិត',
+    source: 'https://khmerproverb.blogspot.com/',
     text: 'ដូចចាក់ទឹកលើក្បាលទា។ ក្របីបាត់ ទើបធ្វើរបង។ សេះដាច់ យកសេះតាម។ ស្តាប់មិនទាន់ជាក់ កុំអាលញាក់ចិញ្ចើម។ ឃ្លាតកាយ ណាយចិត្ត។',
   },
   {
-    // https://ensamnang.blogspot.com/2020/05/khmer-proverb.html
     label: 'សុភាសិតខ្មែរ — ក្រ​អ្វី​ក្រ​ចុះ',
+    source: 'https://ensamnang.blogspot.com/2020/05/khmer-proverb.html',
     text: 'ក្រ​អ្វី​ក្រ​ចុះ កុំ​ឲ្យ​តែ​ក្រ​គំនិត។ កាត់​ទឹក​មិន​ដាច់ កាត់​សាច់​វា​ឈឺ។ កុំ​ខ្វើក​តាម​ខ្យល់ កុំ​ខ្វល់​តាម​រលក។ គេ​ខុស​កុំ​អាល​អរ គេ​សាទរ​កុំ​អាល​អួត។',
   },
   {
-    // https://en.wikipedia.org/wiki/Chbab_Srey
     label: 'ព្រះបាទអង្គដួង — ច្បាប់ស្រី',
+    source: 'https://en.wikipedia.org/wiki/Chbab_Srey',
     text: 'នែនាងម្ចាស់ស្រីក្រមុំ ស្ដាប់ម្ដាយប្រដៅផ្គុំ ពាក្យប្រាជ្ញស្ដីល្អ រក្សាទុកក្នុងចិត្ត កុំឲ្យបាត់បង់ភ្លេចខ្វះ ជីវិតស្រីមានតម្លៃ',
   },
   {
-    // https://en.wikipedia.org/wiki/Preah_Chinavong
     label: 'រឿងព្រះជិនវង្ស — អបោព្រះជាតក',
+    source: 'https://en.wikipedia.org/wiki/Preah_Chinavong',
     text: 'ព្រះបាទសុវណ្ណវង្សនិងព្រះមហេសីជិនបុប្ផា មានព្រះរាជបុត្រមួយព្រះអង្គឈ្មោះព្រះជិនវង្ស។ ស្នំទាំងបីរបស់ព្រះរាជា បានគិតព្យាបាទចំពោះព្រះជិនវង្ស',
   },
 ];

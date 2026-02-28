@@ -1,7 +1,8 @@
-import { useCallback, useRef, useEffect, useState } from 'react';
+import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackUrlTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
+import { ALL_SAMPLES } from '../data/language-samples';
 import { useShare } from '../hooks/useShare';
 import { normalizeUrl, useUrlTranslator } from '../hooks/useUrlTranslator';
 import { LANGUAGES } from '../pronounce/dict-loader';
@@ -157,6 +158,18 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     }
   }, [onShare, url, shareLink, selectedLanguage]);
 
+  // For foreign languages, show samples that have source URLs as example links
+  const exampleUrls = useMemo(() => {
+    if (selectedLanguage === 'en') {
+      return EXAMPLE_URLS;
+    }
+    const samples = ALL_SAMPLES[selectedLanguage];
+    if (!samples) {
+      return EXAMPLE_URLS;
+    }
+    return samples.filter((s) => s.source).map((s) => ({ name: s.label, url: s.source! }));
+  }, [selectedLanguage]);
+
   const formatLabel = getFormatLabel(format);
 
   return (
@@ -250,7 +263,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
 
       <div className="example-urls">
         <span className="example-label">Try an example:</span>
-        {EXAMPLE_URLS.map((example) => (
+        {exampleUrls.map((example) => (
           <button
             className="example-link"
             disabled={isLoading}

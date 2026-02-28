@@ -2,48 +2,48 @@ import type { Sample } from './types';
 
 export const fa: Sample[] = [
   {
-    // https://ganjoor.net/ferdousi/shahname/aghaz/sh1
     label: 'فردوسی — شاهنامه',
+    source: 'https://ganjoor.net/ferdousi/shahname/aghaz/sh1',
     text: 'به نام خداوند جان و خرد کز این برتر اندیشه بر نگذرد خداوند نام و خداوند جای خداوند روزی‌ده رهنمای',
   },
   {
-    // https://ganjoor.net/moulavi/masnavi/daftar1/sh1
     label: 'مولانا — مثنوی معنوی',
+    source: 'https://ganjoor.net/moulavi/masnavi/daftar1/sh1',
     text: 'بشنو این نی چون شکایت می‌کند از جدایی‌ها حکایت می‌کند کز نیستان تا مرا ببریده‌اند در نفیرم مرد و زن نالیده‌اند سینه خواهم شرحه شرحه از فراق تا بگویم شرح درد اشتیاق',
   },
   {
-    // https://ganjoor.net/hafez/ghazal/sh1
     label: 'حافظ — دیوان غزلیات',
+    source: 'https://ganjoor.net/hafez/ghazal/sh1',
     text: 'الا یا ایها الساقی ادر کاسا و ناولها که عشق آسان نمود اول ولی افتاد مشکل‌ها شب تاریک و بیم موج و گردابی چنین هایل کجا دانند حال ما سبکباران ساحل‌ها',
   },
   {
-    // https://ganjoor.net/saadi/golestan/dibache
     label: 'سعدی — گلستان',
+    source: 'https://ganjoor.net/saadi/golestan/dibache',
     text: 'منت خدای را عز و جل که طاعتش موجب قربت است و به شکر اندرش مزید نعمت هر نفسی که فرو می‌رود ممد حیات است و چون بر می‌آید مفرح ذات',
   },
   {
-    // https://ganjoor.net/saadi/boostan/niyayesh/sh1
     label: 'سعدی — بوستان',
+    source: 'https://ganjoor.net/saadi/boostan/niyayesh/sh1',
     text: 'بنام خداوند جان آفرین حکیم سخن در زبان آفرین خداوند بخشنده دستگیر کریم خطابخش پوزش‌پذیر',
   },
   {
-    // https://ganjoor.net/khayyam/robaee/sh2
     label: 'عمر خیام — رباعیات',
+    source: 'https://ganjoor.net/khayyam/robaee/sh2',
     text: 'چون عهده نمی‌شود کسی فردا را حالی خوش دار این دل پر سودا را می نوش به ماهتاب ای ماه که ماه بسیار بتابد و نیابد ما را',
   },
   {
-    // https://fa.wikisource.org/wiki/بوف_کور
     label: 'صادق هدایت — بوف کور',
+    source: 'https://fa.wikisource.org/wiki/بوف_کور',
     text: 'در زندگی زخم‌هایی هست که مثل خوره روح را آهسته در انزوا می‌خورد و می‌تراشد.',
   },
   {
-    // https://lyricstranslate.com/en/tavalodi-digar-another-birth.html
     label: 'فروغ فرخزاد — تولدی دیگر',
+    source: 'https://lyricstranslate.com/en/tavalodi-digar-another-birth.html',
     text: 'همه هستی من آیه تاریکیست که ترا در خود تکرار کنان به سحرگاه شکفتن‌ها و رستن‌های ابدی خواهد برد من در این آیه ترا آه کشیدم آه',
   },
   {
-    // https://shereno.com/5/20/254.html
     label: 'نیما یوشیج — ققنوس',
+    source: 'https://shereno.com/5/20/254.html',
     text: 'ققنوس مرغ خوشخوان آوازه جهان آواره مانده از وزش بادهای سرد بر شاخ خیزران بنشسته است فرد',
   },
   {
@@ -52,63 +52,63 @@ export const fa: Sample[] = [
     text: 'همه افراد بشر آزاد و با حیثیت و حقوق یکسان زاییده می‌شوند و دارای موهبت خرد و وجدان هستند و باید با یکدیگر با روحیه برادری رفتار کنند.',
   },
   {
-    // https://ganjoor.net/attar/manteghotteyr/touhid/sh1
     label: 'عطار — منطق‌الطیر',
+    source: 'https://ganjoor.net/attar/manteghotteyr/touhid/sh1',
     text: 'آفرین جان‌آفرین پاک را آن که جان بخشید و ایمان خاک را عرش را بر آب بنیاد او نهاد خاکیان را عمر بر باد او نهاد آسمان را در زبردستی بداشت خاک را در غایت پستی بداشت',
   },
   {
-    // https://ganjoor.net/nezami/5ganj/leyli-majnoon/sh1
     label: 'نظامی — لیلی و مجنون',
+    source: 'https://ganjoor.net/nezami/5ganj/leyli-majnoon/sh1',
     text: 'ای نام تو بهترین سرآغاز بی‌نام تو نامه کی کنم باز ای یاد تو مونس روانم جز نام تو نیست بر زبانم ای کارگشای هر چه هستند نام تو کلید هر چه بستند',
   },
   {
-    // https://ganjoor.net/nezami/5ganj/khosro-shirin/sh1
     label: 'نظامی — خسرو و شیرین',
+    source: 'https://ganjoor.net/nezami/5ganj/khosro-shirin/sh1',
     text: 'خداوندا درِ توفیق بگشای نظامی را رهِ تحقیق بنمای دلی ده کاو یقینت را بشاید زبانی کآفرینت را سراید مده ناخوب را بر خاطر‌م راه بدار از ناپسند‌م دست کوتاه',
   },
   {
-    // https://ganjoor.net/roodaki/baghimande/sh121
     label: 'رودکی — بوی جوی مولیان',
+    source: 'https://ganjoor.net/roodaki/baghimande/sh121',
     text: 'بویِ جویِ مولیان آیَد هَمی یادِ یارِ مهربان آیَد هَمی ریگِ آموی و دُرشتی‌های او زیر پایم پَرنیان آیَد هَمی آبِ جیحون از نشاطِ روی دوست خِنگِ ما را تا میان آیَد هَمی ای بخارا! شاد‌‌‌ باش و دیر زی میر زیْ تو شادمان آیَد هَمی',
   },
   {
-    // https://ganjoor.net/sanaee/hadighe/hdgh01/sh1
     label: 'سنایی — حدیقة الحقیقه',
+    source: 'https://ganjoor.net/sanaee/hadighe/hdgh01/sh1',
     text: 'ای درون پرور برون آرای وی خردبخش بی‌خرد بخشای خالق و رازق زمین و زمان حافظ و ناصر مکین و مکان همه از صنع تو مکان و مکین همه در امر تو زمان و زمین',
   },
   {
-    // https://sohrabsepehri.org/poems/sedaye-paye-ab/
     label: 'سهراب سپهری — صدای پای آب',
+    source: 'https://sohrabsepehri.org/poems/sedaye-paye-ab/',
     text: 'اهل کاشانم. روزگارم بد نیست. تکه نانی دارم، خرده هوشی، سر سوزن ذوقی. مادری دارم، بهتر از برگ درخت. دوستانی، بهتر از آب روان.',
   },
   {
-    // https://shamlou.org/?p=186
     label: 'احمد شاملو — شبانه',
+    source: 'https://shamlou.org/?p=186',
     text: 'مرا تو بی‌سببی نیستی. به‌راستی صلتِ کدام قصیده‌ای ای غزل؟ ستاره‌بارانِ جوابِ کدام سلامی به آفتاب از دریچه‌ی تاریک؟ کلام از نگاهِ تو شکل می‌بندد. خوشا نظربازیا که تو آغاز می‌کنی!',
   },
   {
-    // https://shereno.com/5/20/237.html
     label: 'مهدی اخوان‌ثالث — زمستان',
+    source: 'https://shereno.com/5/20/237.html',
     text: 'سلامت را نمی‌خواهند پاسخ گفت، سرها در گریبان است، کسی سر بر نیارد کرد پاسخ گفتن و دیدار یاران را، نگه جز پیش پا را دید، نتواند، که ره تاریک و لغزان است.',
   },
   {
-    // https://fa.wikipedia.org/wiki/دوباره_می‌سازمت_وطن
     label: 'سیمین بهبهانی — دوباره می‌سازمت وطن',
+    source: 'https://fa.wikipedia.org/wiki/دوباره_می\u200Cسازمت_وطن',
     text: 'دوباره می‌سازمت وطن! اگر چه با خشت جان خویش، ستون به سقف تو می‌زنم، اگر چه با استخوان خویش. دوباره می‌بویم از تو گُل، به میل نسل جوان تو، دوباره می‌شویم از تو خون، به سیل اشک روان خویش.',
   },
   {
-    // https://ganjoor.net/babataher/2beytiha/sh1
     label: 'باباطاهر — دوبیتی',
+    source: 'https://ganjoor.net/babataher/2beytiha/sh1',
     text: 'ببندم شال و می‌پوشم قدک را بنازم گردش چرخ و فلک را بگردم آب دریاها سراسر بشویم هر دو دست بی‌نمک را',
   },
   {
-    // https://ganjoor.net/beyhaghi/tarikh/jeld5/sh1
     label: 'بیهقی — تاریخ بیهقی',
+    source: 'https://ganjoor.net/beyhaghi/tarikh/jeld5/sh1',
     text: 'گویندهٔ این داستان ابوالفضل بیهقی دبیر از دیدار خویش چنین گوید که چون سلطان ماضی محمود بن سبکتگین غازی غزنوی رضی اللّه عنه در غزنی فرمان یافت و ودیعت جان شیرین را بجان آفرین تسلیم نمود.',
   },
   {
-    // https://www.ekhtebar.ir/قانون-اساسي-جمهوري-اسلامي-ايران/
     label: 'قانون اساسی جمهوری اسلامی ایران — مقدمه',
+    source: 'https://www.ekhtebar.ir/قانون-اساسي-جمهوري-اسلامي-ايران/',
     text: 'قانون اساسی جمهوری اسلامی ایران مبین نهادهای فرهنگی، اجتماعی، سیاسی و اقتصادی جامعه ایران بر اساس اصول و ضوابط اسلامی است که انعکاس خواست قلبی امت اسلامی می‌باشد.',
   },
 ];

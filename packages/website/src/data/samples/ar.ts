@@ -2,113 +2,113 @@ import type { Sample } from './types';
 
 export const ar: Sample[] = [
   {
-    // https://ar.wikisource.org/wiki/ألف_ليلة_وليلة/الجزء_الأول
     label: 'ألف ليلة وليلة — حكاية الملك شهريار',
+    source: 'https://ar.wikisource.org/wiki/ألف_ليلة_وليلة/الجزء_الأول',
     text: 'حكي أنه كان فيما مضى من قديم الزمان وسالف العصر والأوان ملك من ملوك ساسان بجزائر الهند والصين صاحب جند وأعوان وخدم وحشم له ولدان أحدهما كبير والآخر صغير وكان اسمه الملك شهريار',
   },
   {
-    // https://quran.com/al-fatihah
     label: 'Al-Fatiha — Quran, Surah 1',
+    source: 'https://quran.com/al-fatihah',
     text: 'بسم الله الرحمن الرحيم الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين إياك نعبد وإياك نستعين اهدنا الصراط المستقيم صراط الذين أنعمت عليهم غير المغضوب عليهم ولا الضالين',
   },
   {
-    // https://quran.com/en/ayatul-kursi
     label: 'Ayat al-Kursi — Quran 2:255',
+    source: 'https://quran.com/en/ayatul-kursi',
     text: 'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السماوات والأرض ولا يؤوده حفظهما وهو العلي العظيم',
   },
   {
-    // https://qifanabki.com/2008/10/01/the-meaning-of-qifa-nabki/
     label: "Imru' al-Qais — Al-Mu'allaqat",
+    source: 'https://qifanabki.com/2008/10/01/the-meaning-of-qifa-nabki/',
     text: 'قفا نبك من ذكرى حبيب ومنزل بسقط اللوى بين الدخول فحومل فتوضح فالمقراة لم يعف رسمها لما نسجتها من جنوب وشمأل',
   },
   {
-    // https://www.aldiwan.net/poem10524.html
     label: 'Al-Mutanabbi — على قدر أهل العزم',
+    source: 'https://www.aldiwan.net/poem10524.html',
     text: 'على قدر أهل العزم تأتي العزائم وتأتي على قدر الكرام المكارم وتعظم في عين الصغير صغارها وتصغر في عين العظيم العظائم',
   },
   {
-    // https://www.aldiwan.net/poem9094.html
     label: 'Mahmoud Darwish — على هذه الأرض',
+    source: 'https://www.aldiwan.net/poem9094.html',
     text: 'على هذه الأرض ما يستحق الحياة تردد إبريل رائحة الخبز في الفجر آراء امرأة في الرجال كتابات أسخيليوس أول الحب عشب على حجر أمهات تقفن على خيط ناي وخوف الغزاة من الذكريات',
   },
   {
-    // https://www.aldiwan.net/poem6243.html
     label: 'Nizar Qabbani — قارئة الفنجان',
+    source: 'https://www.aldiwan.net/poem6243.html',
     text: 'جلست والخوف بعينيها تتأمل فنجاني المقلوب قالت يا ولدي لا تحزن فالحب عليك هو المكتوب',
   },
   {
-    // https://albatahin.forumarabia.com/t15-topic
     label: 'Tayeb Salih — موسم الهجرة إلى الشمال',
+    source: 'https://albatahin.forumarabia.com/t15-topic',
     text: 'عدت إلى أهلي يا سادتي بعد غيبة طويلة سبعة أعوام على وجه التحديد كنت خلالها أتعلم في أوروبا تعلمت الكثير وغاب عني الكثير لكن تلك قصة أخرى',
   },
   {
-    // https://www.bookleaks.com/files/ghassankanafani/12.pdf
     label: 'Ghassan Kanafani — رجال في الشمس',
+    source: 'https://www.bookleaks.com/files/ghassankanafani/12.pdf',
     text: 'ليس يدري لماذا امتلأ فجأة بشعور آسن من الغربة وحسب لوهلة أنه على وشك أن يبكي كلا لم تمطر أمس نحن في آب الآن أنسيت',
   },
   {
-    // https://www.hindawi.org/books/62042949/
     label: 'Taha Hussein — الأيام',
+    source: 'https://www.hindawi.org/books/62042949/',
     text: 'لا يذكر لذلك اليوم اسما ولا يستطيع أن يضعه حيث وضعه الله من الشهر والسنة بل لا يستطيع أن يذكر من ذلك الوقت شيئا بعينه وإنما يذكر أن ذلك كان في وقت باكر من حياته',
   },
   {
-    // https://mawdoo3.com/أبو_نواس_والخمر
     label: 'Abu Nuwas — خمريات',
+    source: 'https://mawdoo3.com/أبو_نواس_والخمر',
     text: 'ألا فاسقني خمرا وقل لي هي الخمر ولا تسقني سرا إذا أمكن الجهر فما العيش إلا سكرة بعد سكرة فإن طال هذا عنده قصر الدهر',
   },
   {
-    // https://www.kahlilgibran.com/29-the-prophet-translated-2.html
     label: 'Gibran — النبي (The Prophet)',
+    source: 'https://www.kahlilgibran.com/29-the-prophet-translated-2.html',
     text: 'لبث المصطفى المختار الحبيب من كان فجرا طالعا على زمانه اثني عشر عاما في مدينة أورفليس ينتظر سفينته التي ستحمله وتعود به إلى ربوع ميلاده',
   },
   {
-    // https://www.un.org/ar/about-us/universal-declaration-of-human-rights
     label: 'UDHR Article 1 — الإعلان العالمي لحقوق الإنسان',
+    source: 'https://www.un.org/ar/about-us/universal-declaration-of-human-rights',
     text: 'يولد جميع الناس أحرارا ومتساوين في الكرامة والحقوق وهم قد وهبوا العقل والوجدان وعليهم أن يعاملوا بعضهم بعضا بروح الإخاء',
   },
   {
-    // https://www.ahewar.org/debat/show.art.asp?aid=172145
     label: 'Adonis — أغاني مهيار الدمشقي',
+    source: 'https://www.ahewar.org/debat/show.art.asp?aid=172145',
     text: 'وجه مهيار نار تحرق أرض النجوم الأليفة هوذا يتخطى تخوم الخليفة رافعا بيرق الأفول هادما كل دار',
   },
   {
-    // https://en.wikipedia.org/wiki/Palace_Walk
     label: 'Naguib Mahfouz — بين القصرين',
+    source: 'https://en.wikipedia.org/wiki/Palace_Walk',
     text: 'استيقظت أمينة على صوت المنبه قبيل منتصف الليل فلم يكن منه بد إذ أنها من سنين طويلة لا تنام في الليل إلا نوما متقطعا خفيفا لا يكاد يبلغ النوم الحقيقي',
   },
   {
-    // https://en.wikipedia.org/wiki/Muqaddimah
     label: 'Ibn Khaldun — المقدمة',
+    source: 'https://en.wikipedia.org/wiki/Muqaddimah',
     text: 'اعلم أن التاريخ في ظاهره لا يزيد على أخبار عن الأيام والدول والسوابق من القرون الأولى تنمو فيها الأقاوال وتضرب فيها الأمثال وتطرف بها الندوات والمحافل وتؤدي لنا شأن الخليقة كيف تقلبت بها الأحوال',
   },
   {
-    // https://www.hindawi.org/books/94868139/0/
     label: 'Naguib Mahfouz — أولاد حارتنا',
+    source: 'https://www.hindawi.org/books/94868139/0/',
     text: 'قلت إن أحدا لم يره منذ اعتزاله ولم يكن هذا بذي بال عند أكثر الناس فلم يهتموا منذ بادئ الأمر إلا بأوقافه وبشروطه العشرة التي كثر القيل والقال عنها ومن هنا ولد النزاع في حارتنا',
   },
   {
-    // https://www.aldiwan.net/
     label: 'Ibn al-Muqaffa — كليلة ودمنة',
+    source: 'https://www.aldiwan.net/',
     text: 'زعموا أنه كان في أرض الدكن ملك يقال له دبشليم وكان ذا رأي وحزم وعقل ونبل وفطنة وعدل وكان في عصره فيلسوف يقال له بيدبا',
   },
   {
-    // https://www.aldiwan.net/poem23625.html
     label: 'أبو العلاء المعري — غير مجد في ملتي واعتقادي',
+    source: 'https://www.aldiwan.net/poem23625.html',
     text: 'غير مجد في ملتي واعتقادي نوح باك ولا ترنم شاد وشبيه صوت النعي إذا قيس بصوت البشير في كل ناد',
   },
   {
-    // https://www.aldiwan.net/poem20973.html
     label: 'طرفة بن العبد — المعلقة',
+    source: 'https://www.aldiwan.net/poem20973.html',
     text: 'لخولة أطلال ببرقة ثهمد تلوح كباقي الوشم في ظاهر اليد وقوفا بها صحبي علي مطيهم يقولون لا تهلك أسى وتجلد',
   },
   {
-    // https://www.aldiwan.net/poem85.html
     label: 'عنترة بن شداد — المعلقة',
+    source: 'https://www.aldiwan.net/poem85.html',
     text: 'هل غادر الشعراء من متردم أم هل عرفت الدار بعد توهم يا دار عبلة بالجواء تكلمي وعمي صباحا دار عبلة واسلمي',
   },
   {
-    // https://nationalanthems.info/eg.htm
     label: 'بلادي بلادي بلادي — النشيد الوطني المصري',
+    source: 'https://nationalanthems.info/eg.htm',
     text: 'بلادي بلادي بلادي لكِ حبي وفؤادي مصر يا أم البلاد انت غايتي والمراد وعلى كل العباد كم لنيلك من اياد',
   },
 ];

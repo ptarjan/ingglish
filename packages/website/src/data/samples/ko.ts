@@ -2,98 +2,98 @@ import type { Sample } from './types';
 
 export const ko: Sample[] = [
   {
-    // https://ko.wikisource.org/wiki/서시
     label: '윤동주 — 서시',
+    source: 'https://ko.wikisource.org/wiki/서시',
     text: '죽다 날 까지 하늘 을 우러르다 한 점 부끄럼 이 없다 기 를 잎새 에 이다 바람 에 도 나 는 괴롭다 별 을 노래 하다 마음 으로 모든 죽다 가다 것 을 사랑 하다 그리고 나 한테 주다 길 을 걷다',
   },
   {
-    // https://yoondongju.yonsei.ac.kr/
     label: '윤동주 — 별 헤는 밤',
+    source: 'https://yoondongju.yonsei.ac.kr/',
     text: '계절 이 지나가다 하늘 에 는 가을 로 가득 차다 나 는 아무 걱정 도 없이 가을 속 의 별 들 을 다 헤다 듯 하다 가슴 속 에 하나 둘 새기다 별 을 이제 다 못 헤다 것 은 쉬이 아침 이 오다 까닭 이다',
   },
   {
-    // https://ko.wikisource.org/wiki/진달래꽃_(시집)/진달래꽃
     label: '김소월 — 진달래꽃',
+    source: 'https://ko.wikisource.org/wiki/진달래꽃_(시집)/진달래꽃',
     text: '나 보다 가 역겹다 가다 때 에 는 말 없이 고이 보내다 드리다 영변 에 약산 진달래 꽃 아름 따다 가다 길 에 뿌리다 가다 걸음 걸음 놓다 그 꽃 을 사뿐히 밟다 가다',
   },
   {
-    // https://ko.wikisource.org/wiki/님의_침묵/님의_침묵
     label: '한용운 — 님의 침묵',
+    source: 'https://ko.wikisource.org/wiki/님의_침묵/님의_침묵',
     text: '님 은 가다 사랑 하다 나 의 님 은 가다 푸르다 산 빛 을 깨치다 단풍 나무 숲 을 향하다 나다 작다 길 을 걷다 차마 떨치다 가다 황금 의 꽃 같이 굳다 빛나다 옛 맹세 는 차다 티끌 이 되다',
   },
   {
-    // https://www.aladin.co.kr/shop/book/wletslookViewer.aspx?ItemId=1000152
     label: '한강 — 채식주의자',
+    source: 'https://www.aladin.co.kr/shop/book/wletslookViewer.aspx?ItemId=1000152',
     text: '아내 가 채식 을 시작 하다 전 까지 나 는 그녀 가 특별 하다 사람 이 라고 생각 하다 적 이 없다 솔직히 말하다 면 나 는 그녀 에게 처음 부터 큰 매력 을 느끼다 것 도 아니다',
   },
   {
-    // https://ko.wikisource.org/wiki/3·1독립선언서
     label: '기미독립선언서 — 1919년',
+    source: 'https://ko.wikisource.org/wiki/3·1독립선언서',
     text: '우리 는 이에 우리 조선 의 독립 국 이다 과 조선 사람 의 자주 민 이다 을 선언 하다 이 로써 세계 만방 에 알리다 인류 평등 의 큰 뜻 을 밝히다 이 로써 자손 만대 에 알리다 민족 자존 의 바르다 권리 를 영원히 가지다 하다',
   },
   {
-    // https://www.mois.go.kr/chd/sub/a05/story/screen.do
     label: '애국가 — 대한민국 국가',
+    source: 'https://www.mois.go.kr/chd/sub/a05/story/screen.do',
     text: '동해 물 과 백두산 이 마르다 닳다 도록 하느님 이 보우 하다 우리 나라 만세 무궁화 삼천리 화려 강산 대한 사람 대한 으로 길이 보전 하다',
   },
   {
-    // https://namu.wiki/w/향수(시)
     label: '정지용 — 향수',
+    source: 'https://namu.wiki/w/향수(시)',
     text: '넓다 벌 동쪽 끝 으로 옛 이야기 지줄대다 실 개천 이 휘돌다 나가다 얼룩 백 황소 가 해설피 금빛 게으르다 울음 을 울다 곳 그곳 이 차마 꿈 에 잊히다 리 야',
   },
   {
-    // https://ko.wikisource.org/wiki/광야_(이육사)
     label: '이육사 — 광야',
+    source: 'https://ko.wikisource.org/wiki/광야_(이육사)',
     text: '까마득하다 날 에 하늘 이 처음 열리다 어디 닭 울다 소리 들리다 모든 산맥 들 이 바다 를 연모 하다 휘달리다 때 도 차마 이곳 을 범하다 못하다 끊임 없다 광음 을 부지런하다 계절 이 피다 지다',
   },
   {
-    // https://namu.wiki/w/나와_나타샤와_흰_당나귀
     label: '백석 — 나와 나타샤와 흰 당나귀',
+    source: 'https://namu.wiki/w/나와_나타샤와_흰_당나귀',
     text: '가난하다 나 가 아름답다 나타샤 를 사랑 하다 오늘 밤 은 푹푹 눈 이 내리다 나타샤 사랑 은 하다 눈 은 푹푹 날리다 나 는 혼자 쓸쓸히 앉다 소주 를 마시다',
   },
   {
-    // https://namu.wiki/w/님의_침묵
     label: '한용운 — 알 수 없어요',
+    source: 'https://namu.wiki/w/님의_침묵',
     text: '바람 도 없다 공중 에 수직 의 파문 을 내다 며 고요히 떨어지다 오동잎 은 누구 의 발자취 이다 가 지리다 파도 소리 가 철석 거리다 때 아니다 바다 가 꿈꾸다 듯 푸르다 하늘 에 바다 의 기억 이 스미다',
   },
   {
-    // https://en.wikipedia.org/wiki/Wings_(Yi_Sang)
     label: '이상 — 날개',
+    source: 'https://en.wikipedia.org/wiki/Wings_(Yi_Sang)',
     text: '박제 가 되다 천재 를 아시다 나 는 유쾌하다 도 하다 이런 때 에 연구 가 좋다 않다 아내 가 있다 때 아내 가 없다 때 그것 은 비슷하다',
   },
   {
-    // https://namu.wiki/w/토지(소설)
     label: '박경리 — 토지',
+    source: 'https://namu.wiki/w/토지(소설)',
     text: '한가위 달 이 떠오르다 들판 위 를 환하다 비추다 타작마당 에서 꽹과리 소리 울리다 징 소리 와 함께 흥 이 넘치다 그러나 최 참판 댁 사랑 은 적막하다 기운 에 싸이다',
   },
   {
-    // https://www.nocutnews.co.kr/news/5213089
     label: '윤동주 — 자화상',
+    source: 'https://www.nocutnews.co.kr/news/5213089',
     text: '산모퉁이 를 돌다 가다 논가 외딴 우물 을 홀로 찾다 가다 가만히 들여다보다 우물 속 에 는 달 이 밝다 구름 이 흐르다 하늘 이 펼치다 파랗다 바람 이 있다 가을 이 있다',
   },
   {
-    // https://ko.wikipedia.org/wiki/무정_(소설)
     label: '이광수 — 무정',
+    source: 'https://ko.wikipedia.org/wiki/무정_(소설)',
     text: '경성 학교 영어 교사 이 형식 은 나이 스물 여섯 에 키 가 오 척 여섯 치 가 넘다 시원하다 이마 에 빛나다 눈 을 가지다 쾌활하다 청년 이다 사범 학교 를 나오다 뒤 에 미국 에 유학 하다',
   },
   {
-    // https://en.wikipedia.org/wiki/Kim_Yujung
     label: '김유정 — 동백꽃',
+    source: 'https://en.wikipedia.org/wiki/Kim_Yujung',
     text: '나 는 점순이 가 좋다 해 뜨다 잠자코 나 의 일 을 도우다 주다 점순이 가 이쁘다 나 는 저 아이 가 좋다 간 까지 빼다 먹다 싶다 하다',
   },
   {
-    // https://namu.wiki/w/%EB%86%8D%EB%AC%B4
     label: '신경림 — 농무',
+    source: 'https://namu.wiki/w/%EB%86%8D%EB%AC%B4',
     text: '징 이 울리다 막 이 내리다 오동나무 에 전등 이 매어달리다 가설 무대 구경꾼 이 돌아가다 나다 텅 비다 운동장 우리 는 분 이 얼룩지다 얼굴 로 학교 앞 소줏집 에 몰리다 술 을 마시다 답답하다 고달프다 살다 것 이 원통하다',
   },
   {
-    // https://ko.wikisource.org/wiki/동짓달_기나긴_밤을
     label: '황진이 — 시조',
+    source: 'https://ko.wikisource.org/wiki/동짓달_기나긴_밤을',
     text: '동짓달 기나기다 밤 을 한 허리 를 베다 내다 춘풍 이불 아래 서리서리 넣다 어론 님 오시다 밤 이어든 굽이굽이 펴다 리다',
   },
   {
-    // https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000761
     label: '윤동주 — 십자가',
+    source: 'https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000761',
     text: '쫓기다 어 온 하늘 에 도 슬퍼하다 것 이 있다 면 괴롭다 사나이 의 정수리 위 에 하늘 이 열리다 어두 컴컴하다 가운데 하늘 이 열리다 살 과 뼈 에 스미다 바람 이 차다',
   },
   {
