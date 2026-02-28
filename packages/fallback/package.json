@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/fallback",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unknown word translation strategies for Ingglish (G2P, stemming, compounds, etc.)",
   "type": "module",
   "main": "./dist/index.js",

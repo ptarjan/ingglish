@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/normalize",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Text normalization, case handling, and URL/email preservation for Ingglish",
   "type": "module",
   "main": "./dist/index.js",

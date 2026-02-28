@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/dictionary",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CMU dictionary loading, lookup, and word frequency scoring for Ingglish",
   "type": "module",
   "main": "./dist/index.js",

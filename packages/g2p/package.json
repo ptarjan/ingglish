@@ -1,6 +1,6 @@
 {
   "name": "@ingglish/g2p",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NRL/Elovitz grapheme-to-phoneme rules for English",
   "type": "module",
   "main": "./dist/index.js",
