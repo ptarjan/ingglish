@@ -7,13 +7,25 @@
 
 import { stripStress } from '@ingglish/phonemes';
 import { CUSTOM_PRONUNCIATIONS } from './custom-words';
-import { sortByFrequency } from './frequency';
+import { loadFrequencies, sortByFrequency } from './frequency';
 import { createLazyLoader } from './lazy-loader';
+import { loadJson } from './load-json';
 import type { ReverseDictionary } from './types';
 
 const loader = createLazyLoader<ReverseDictionary>(async () => {
-  const mod = await import('./reverse-cmudict');
-  const dict = mod.default;
+  const json = await loadJson<ReverseDictionary>('reverse-cmudict');
+  let dict: ReverseDictionary;
+  if (json === null) {
+    const mod = await import('./reverse-cmudict');
+    dict = mod.default;
+  } else {
+    dict = json;
+  }
+
+  // Ensure frequency data is loaded before sorting custom pronunciations.
+  // Without this, concurrent loading (Promise.all) could cause sortByFrequency
+  // to use fallback scoring instead of actual word frequencies.
+  await loadFrequencies();
 
   // Merge custom pronunciations into the dictionary once at load time.
   // Custom words correct CMU pronunciations but shouldn't override

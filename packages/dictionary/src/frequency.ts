@@ -4,6 +4,7 @@
  */
 
 import { createLazyLoader } from './lazy-loader';
+import { loadJson } from './load-json';
 
 interface FrequencyData {
   map: Map<string, number>;
@@ -11,8 +12,14 @@ interface FrequencyData {
 }
 
 const loader = createLazyLoader<FrequencyData>(async () => {
-  const module = await import('./data/word-frequencies');
-  const raw = module.default;
+  const json = await loadJson<Record<string, number>>('data/word-frequencies');
+  let raw: Record<string, number>;
+  if (json === null) {
+    const mod = await import('./data/word-frequencies');
+    raw = mod.default;
+  } else {
+    raw = json;
+  }
   const map = new Map<string, number>();
   for (const [word, count] of Object.entries(raw)) {
     map.set(word.toLowerCase(), count);

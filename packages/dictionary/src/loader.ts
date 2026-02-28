@@ -5,20 +5,20 @@
  */
 
 import { createLazyLoader } from './lazy-loader';
+import { loadJson } from './load-json';
 import type { CMUDictionary } from './types';
 
 const loader = createLazyLoader<CMUDictionary>(async () => {
+  // Velar nasal normalization (N → NG before K/G) is done at build time
+  // by scripts/build-dictionary.ts — no runtime normalization needed.
+  const json = await loadJson<CMUDictionary>('cmudict');
+  if (json !== null) {
+    const dict = json;
+    Object.setPrototypeOf(dict, null);
+    return dict;
+  }
   const mod = await import('./cmudict');
   const dict = mod.default;
-  // Pre-normalize velar nasals (N → NG before K/G) once at load time,
-  // instead of scanning every phoneme array on each lookup.
-  for (const phonemes of Object.values(dict)) {
-    for (let i = 0; i < phonemes.length - 1; i++) {
-      if (phonemes[i] === 'N' && (phonemes[i + 1] === 'K' || phonemes[i + 1] === 'G')) {
-        phonemes[i] = 'NG';
-      }
-    }
-  }
   // Remove prototype so `key in dict` is safe (no "constructor", "toString", etc.)
   // This lets lookups use `in` instead of Object.prototype.hasOwnProperty.call.
   Object.setPrototypeOf(dict, null);
