@@ -8,13 +8,19 @@ const { existsSync } = require('fs');
 const { execSync } = require('child_process');
 const { join } = require('path');
 
-const cmudict = join(__dirname, '..', 'src', 'cmudict.js');
-const cmudictJson = join(__dirname, '..', 'src', 'cmudict.json');
-const reverseCmudict = join(__dirname, '..', 'src', 'reverse-cmudict.js');
+const src = join(__dirname, '..', 'src');
+const requiredFiles = [
+  join(src, 'cmudict.js'),
+  join(src, 'cmudict.json'),
+  join(src, 'reverse-cmudict.js'),
+  join(src, 'reverse-cmudict.json'),
+  join(src, 'data', 'word-frequencies.js'),
+  join(src, 'data', 'word-frequencies.json'),
+];
 
 const force = process.argv.includes('--force');
 
-if (!force && existsSync(cmudict) && existsSync(cmudictJson) && existsSync(reverseCmudict)) {
+if (!force && requiredFiles.every(existsSync)) {
   console.log('Dictionaries exist, skipping (use --force to rebuild)');
   process.exit(0);
 }
