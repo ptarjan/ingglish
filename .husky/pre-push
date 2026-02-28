@@ -4,10 +4,20 @@ url="$2"
 # Get files changed vs remote tracking branch
 changed_files=$(git diff --name-only --diff-filter=ACMR "$(git merge-base HEAD "@{u}" 2>/dev/null || echo HEAD~1)")
 
-# Check formatting on changed files (~1s) — catches lint-staged bypasses
+# Lint changed files (~2s) — catches lint-staged bypasses (e.g. during rebases)
 format_files=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx|json|css|md)$' || true)
 if [ -n "$format_files" ]; then
   echo "$format_files" | xargs npx prettier --check
+fi
+
+ts_files=$(echo "$changed_files" | grep -E '^packages/[^/]+/src/.*\.tsx?$' || true)
+if [ -n "$ts_files" ]; then
+  echo "$ts_files" | xargs npx eslint
+fi
+
+css_files=$(echo "$changed_files" | grep -E '\.css$' || true)
+if [ -n "$css_files" ]; then
+  echo "$css_files" | xargs npx stylelint
 fi
 
 # Type-check the website package (~4s) — catches 90% of CI failures
