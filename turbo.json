@@ -6,6 +6,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "@ingglish/cors-proxy#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "build:fast": {
       "dependsOn": ["^build:fast"],
       "inputs": ["src/**"],
