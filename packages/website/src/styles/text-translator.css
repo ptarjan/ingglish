@@ -216,21 +216,21 @@
   transition: none;
 }
 
-/* Foreign output display */
-.foreign-output {
+/* Target-language output display */
+.target-output {
   flex: 1;
   overflow-y: auto;
   overflow-wrap: break-word;
   white-space: pre-wrap;
 }
 
-.foreign-output-placeholder,
-.foreign-output-loading {
+.target-output-placeholder,
+.target-output-loading {
   font-style: italic;
   color: var(--color-text-muted);
 }
 
-.foreign-not-found {
+.target-not-found {
   text-decoration: underline wavy var(--color-error);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.2em;

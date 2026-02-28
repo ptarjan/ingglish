@@ -786,21 +786,21 @@ test.describe('Text Translator', () => {
     }
   });
 
-  test('left and right panes have equal height in foreign mode', async () => {
+  test('left and right panes have equal height in target language mode', async () => {
     test.skip(test.info().project.name.includes('mobile'), 'panes stack vertically on mobile');
     // Switch to Swedish
     await page.locator('.language-select').selectOption('sv');
 
-    // Wait for dict to load (foreign output pane appears instead of textarea)
-    const foreignOutput = page.locator('.foreign-output');
-    await expect(foreignOutput).toBeVisible({ timeout: 15_000 });
+    // Wait for dict to load (target output pane appears instead of textarea)
+    const targetOutput = page.locator('.target-output');
+    await expect(targetOutput).toBeVisible({ timeout: 15_000 });
 
     // Type Swedish text to trigger translation
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('Hej världen');
 
     // Wait for translated content to render
-    await expect(foreignOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+    await expect(targetOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
 
     const left = page.locator('.input-section').first();
     const right = page.locator('.input-section').last();
@@ -822,8 +822,8 @@ test.describe('Text Translator', () => {
     // Switch to Khmer
     await page.locator('.language-select').selectOption('km');
 
-    const foreignOutput = page.locator('.foreign-output');
-    await expect(foreignOutput).toBeVisible({ timeout: 15_000 });
+    const targetOutput = page.locator('.target-output');
+    await expect(targetOutput).toBeVisible({ timeout: 15_000 });
 
     const englishInput = page.locator('textarea.text-input').first();
     const sampleSelect = page.locator('.sample-select');
@@ -838,10 +838,10 @@ test.describe('Text Translator', () => {
       // Wait for input to have text
       await expect(englishInput).not.toHaveValue('', { timeout: 5000 });
       // Wait for translation to render
-      await expect(foreignOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+      await expect(targetOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
 
       // Check that no words are untranslated
-      const notFound = foreignOutput.locator('.foreign-not-found');
+      const notFound = targetOutput.locator('.target-not-found');
       const notFoundCount = await notFound.count();
       if (notFoundCount > 0) {
         // Collect the untranslated words for a useful error message
