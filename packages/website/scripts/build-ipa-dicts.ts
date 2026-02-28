@@ -17,6 +17,7 @@ import { promisify } from 'util';
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(__dirname, '..', 'public', 'ipa-dicts');
+const KAIKKI_DIR = path.join(__dirname, '..', 'data', 'kaikki');
 
 const BASE_URL = 'https://raw.githubusercontent.com/open-dict-data/ipa-dict/master/data';
 
@@ -80,6 +81,20 @@ function toJson(dict: Record<string, string>): string {
   return JSON.stringify(dict);
 }
 
+/**
+ * Read a kaikki TSV file and return word→IPA entries.
+ * Returns empty record if the file doesn't exist.
+ */
+async function readKaikkiTsv(code: string): Promise<Record<string, string>> {
+  const tsvPath = path.join(KAIKKI_DIR, `${code}.tsv`);
+  try {
+    const text = await fs.readFile(tsvPath, 'utf8');
+    return parseTsv(text);
+  } catch {
+    return {};
+  }
+}
+
 async function buildAll(): Promise<void> {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 
@@ -90,11 +105,26 @@ async function buildAll(): Promise<void> {
     console.log(`Downloading ${lang.code} from ${url}...`);
     const text = await download(url);
     const dict = parseTsv(text);
-    const entryCount = Object.keys(dict).length;
+    const ipaCount = Object.keys(dict).length;
+
+    // Merge kaikki data on top (higher quality, overwrites ipa-dict)
+    const kaikki = await readKaikkiTsv(lang.code);
+    const kaikkiCount = Object.keys(kaikki).length;
+    if (kaikkiCount > 0) {
+      Object.assign(dict, kaikki);
+    }
+
+    const mergedCount = Object.keys(dict).length;
     const json = toJson(dict);
 
     await fs.writeFile(outPath, json, 'utf8');
-    console.log(`  ${lang.code}: ${entryCount} entries, ${(json.length / 1024).toFixed(0)} KB`);
+    if (kaikkiCount > 0) {
+      console.log(
+        `  ${lang.code}: ${ipaCount} (ipa-dict) + ${kaikkiCount} (kaikki) = ${mergedCount} merged, ${(json.length / 1024).toFixed(0)} KB`
+      );
+    } else {
+      console.log(`  ${lang.code}: ${ipaCount} entries, ${(json.length / 1024).toFixed(0)} KB`);
+    }
   }
 
   console.log('Done!');

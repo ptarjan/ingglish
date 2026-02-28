@@ -9,7 +9,6 @@ export const ma: Record<string, string> = {
   Jebat: 'dʒəbat',
   Johor: 'dʒohoɾ',
   kebebasan: 'kəbebasan',
-  Kelantan: 'kəlantan',
   Lekir: 'ləkiɾ',
   Lekiu: 'ləkiw',
   Malaysia: 'malejsia',

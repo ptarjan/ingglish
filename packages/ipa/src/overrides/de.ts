@@ -14,7 +14,6 @@ export const de: Record<string, string> = {
   daß: '/das/',
   'davos-platz': '/ˈdaːvɔsˌplats/', // Swiss resort area
   demoiselle: '/dəmwaˈzɛl/', // French in Mann's Buddenbrooks
-  dreissig: '/ˈdʁaɪ̯sɪç/',
   düwel: '/ˈdyːvəl/', // Low German: devil
   faßt: '/fast/',
   feuertrunken: '/ˈfɔɪ̯ɐˌtʁʊŋkən/',
@@ -31,7 +30,6 @@ export const de: Record<string, string> = {
   küßnacht: '/ˈkʏsnaxt/',
   macheath: '/məˈkiːθ/', // English name
   metternich: '/ˈmɛtɐnɪç/',
-  muß: '/mʊs/',
   müßt: '/mʏst/',
   mußte: '/ˈmʊstə/',
   New: '/njuː/',

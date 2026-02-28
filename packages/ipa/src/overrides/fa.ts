@@ -195,7 +195,6 @@ export const fa: Record<string, string> = {
   محمود: '/mæhmuːd/',
   مده: '/mædeh/',
   مزید: '/mæziːd/', // increase
-  'مشکل\u200Cها': '/moʃkelhɒː/', // difficulties
   مفرح: '/mofæɾɾeh/', // gladdening
   ممد: '/momedd/', // sustainer
   موجب: '/moʊd͡ʒeb/', // cause of

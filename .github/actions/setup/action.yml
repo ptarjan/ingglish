@@ -57,15 +57,28 @@ runs:
       run: npm run update-dictionaries -w @ingglish/dictionary
       shell: bash
 
+    - name: Cache kaikki IPA data
+      if: inputs.dict-cache == 'true'
+      uses: actions/cache@v5
+      id: kaikki-cache
+      with:
+        path: packages/website/data/kaikki/
+        key: kaikki-v1-${{ hashFiles('packages/website/scripts/extract-kaikki-ipa.ts') }}
+
+    - name: Extract kaikki IPA data (if not cached)
+      if: inputs.dict-cache == 'true' && steps.kaikki-cache.outputs.cache-hit != 'true'
+      run: node packages/website/scripts/ensure-kaikki.cjs
+      shell: bash
+
     - name: Cache IPA dictionaries
       if: inputs.dict-cache == 'true'
       uses: actions/cache@v5
       id: ipa-dict-cache
       with:
         path: packages/website/public/ipa-dicts/
-        key: ipa-dicts-v1-${{ hashFiles('packages/website/scripts/build-ipa-dicts.ts') }}
+        key: ipa-dicts-v2-${{ hashFiles('packages/website/scripts/build-ipa-dicts.ts', 'packages/website/scripts/extract-kaikki-ipa.ts') }}
 
     - name: Generate IPA dictionaries (if not cached)
       if: inputs.dict-cache == 'true' && steps.ipa-dict-cache.outputs.cache-hit != 'true'
-      run: node packages/website/scripts/ensure-ipa-dicts.cjs
+      run: node packages/website/scripts/ensure-ipa-dicts.cjs --force
       shell: bash
