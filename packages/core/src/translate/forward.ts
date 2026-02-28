@@ -23,7 +23,7 @@ import {
   splitCamelCase,
   stripDiacritics,
 } from '@ingglish/normalize';
-import type { OutputFormat } from '@ingglish/phonemes';
+import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import {
   arpabetToFormat,
   getFormatIsLatinScript,
@@ -33,26 +33,13 @@ import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
+export type { TranslatedToken } from '@ingglish/phonemes';
+
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
 const ALL_UPPER = /^[A-Z]+$/;
 const TRIPLE_CHAR = /(.)\1\1/;
 const HAS_VOWEL = /[aeiouy]/i;
 const TITLE_CASE = /^[A-Z][a-z]*$/;
-
-/**
- * A single token from a translated text, preserving the mapping between
- * original and translated forms. Used by both forward and reverse translation.
- */
-export interface TranslatedToken {
-  /** Whether this token is a word (true) or punctuation/whitespace (false). */
-  isWord: boolean;
-  /** Whether the word was found in the dictionary (false = heuristic fallback). */
-  matched: boolean;
-  /** The original text of this token (English for forward, Ingglish for reverse). */
-  original: string;
-  /** The translated text (Ingglish for forward, English for reverse). */
-  translated: string;
-}
 
 // ============================================================================
 // Public API

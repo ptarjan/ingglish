@@ -18,6 +18,7 @@ export {
   NOT_FOUND_MARKER,
   segmentKhmerText,
   translateForeign,
+  translateForeignWithMapping,
 } from './foreign';
 export type { IpaDict, Language } from './foreign';
 export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';

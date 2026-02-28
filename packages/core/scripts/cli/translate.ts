@@ -27,7 +27,8 @@ function loadIpaDict(langCode: string): IpaDict {
     '../../../website/public/ipa-dicts',
     `${langCode}.json`
   );
-  return JSON.parse(readFileSync(dictPath, 'utf-8')) as IpaDict;
+  const entries = JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string>;
+  return { entries, lang: langCode };
 }
 
 async function main() {
@@ -80,7 +81,7 @@ async function main() {
     // Show per-word output
     const words = text.match(/\S+/g) || [];
     for (const word of words) {
-      const result = translateForeign(word, dict, 'ingglish', langCode);
+      const result = translateForeign(word, dict, 'ingglish');
       if (result.includes(NOT_FOUND_MARKER)) {
         const clean = result.replaceAll(NOT_FOUND_MARKER, '');
         console.log(`? "${word}" -> not found (kept as "${clean}")`);
@@ -90,7 +91,7 @@ async function main() {
     }
 
     console.log('---');
-    console.log('Full translation:', translateForeign(text, dict, 'ingglish', langCode));
+    console.log('Full translation:', translateForeign(text, dict, 'ingglish'));
     return;
   }
 

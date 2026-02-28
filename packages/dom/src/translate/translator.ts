@@ -3,7 +3,7 @@
  */
 
 import { translate, translateSync } from 'ingglish';
-import type { OutputFormat } from '@ingglish/phonemes';
+import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_PREFIX } from '../constants';
 import {
   requireBrowser,
@@ -17,7 +17,7 @@ import {
 } from '../traversal';
 import type { DOMTranslatorOptions } from '../types';
 import { processChunked } from './chunked';
-import { createTooltipFragment, createTooltipFragmentWithFn } from './tooltip-fragment';
+import { createTooltipFragment, createTooltipFragmentFromTokens } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
 const DEFAULT_CHUNK_SIZE = 100;
@@ -30,8 +30,8 @@ export async function translateDOM(
   root: Document | Element,
   options: DOMTranslatorOptions = {}
 ): Promise<void> {
-  // Skip English dictionary preload when a custom translateFn is provided
-  if (!options.translateFn) {
+  // Skip English dictionary preload when a custom mapping fn is provided
+  if (!options.translateWithMappingFn) {
     await translate('');
   }
   const result = translateDOMSync(root, options as DOMTranslatorOptions & { chunked: true });
@@ -72,7 +72,7 @@ export function translateDOMSync(
     skipClasses = DEFAULT_SKIP_CLASSES,
     skipTags = DEFAULT_SKIP_TAGS,
     translateAttributes = true,
-    translateFn,
+    translateWithMappingFn,
   } = options;
 
   // Get the document (works for both main document and iframes)
@@ -89,8 +89,16 @@ export function translateDOMSync(
   const totalNodes = textNodes.length;
 
   // Translate attributes if enabled (do this first, it's fast)
+  // Derive a flat string translate function from mapping fn for attributes
+  const customTranslateFn = translateWithMappingFn
+    ? (text: string, format: OutputFormat) =>
+        translateWithMappingFn(text, format)
+          .map((t) => t.translated)
+          .join('')
+    : undefined;
+
   if (translateAttributes) {
-    translateElementAttributes(root, skipTags, skipClasses, outputFormat, translateFn);
+    translateElementAttributes(root, skipTags, skipClasses, outputFormat, customTranslateFn);
   }
 
   // Chunked mode: use requestAnimationFrame for smooth rendering
@@ -98,7 +106,13 @@ export function translateDOMSync(
     return processChunked(
       textNodes,
       (node) => {
-        translateTextNode(node, showTooltips, outputFormat, translateFn);
+        translateTextNode(
+          node,
+          showTooltips,
+          outputFormat,
+          customTranslateFn,
+          translateWithMappingFn
+        );
       },
       chunkSize,
       onProgress
@@ -107,7 +121,13 @@ export function translateDOMSync(
 
   // Sync mode: translate all nodes immediately
   for (let i = 0; i < totalNodes; i++) {
-    translateTextNode(textNodes[i]!, showTooltips, outputFormat, translateFn);
+    translateTextNode(
+      textNodes[i]!,
+      showTooltips,
+      outputFormat,
+      customTranslateFn,
+      translateWithMappingFn
+    );
 
     if (onProgress) {
       onProgress(i + 1, totalNodes);
@@ -156,7 +176,8 @@ function translateTextNode(
   textNode: Text,
   showTooltips: boolean,
   outputFormat: OutputFormat,
-  customTranslateFn?: (text: string, format: OutputFormat) => string
+  customTranslateFn?: (text: string, format: OutputFormat) => string,
+  customMappingFn?: (text: string, format: OutputFormat) => TranslatedToken[]
 ): void {
   const originalText = textNode.textContent;
   if (!originalText) {
@@ -167,8 +188,8 @@ function translateTextNode(
 
   if (showTooltips) {
     // Replace text node with tooltip spans
-    const fragment = customTranslateFn
-      ? createTooltipFragmentWithFn(originalText, customTranslateFn, outputFormat)
+    const fragment = customMappingFn
+      ? createTooltipFragmentFromTokens(customMappingFn(originalText, outputFormat))
       : createTooltipFragment(originalText, outputFormat);
     // Store original text on parent for restoration
     if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {

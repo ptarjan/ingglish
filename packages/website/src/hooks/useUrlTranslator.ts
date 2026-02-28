@@ -8,7 +8,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
  */
 import type { IpaDict } from '../pronounce/dict-loader';
 import { loadDict } from '../pronounce/dict-loader';
-import { translateForeign } from '../pronounce/ipa-to-ingglish';
+import { translateForeignWithMapping } from '../pronounce/ipa-to-ingglish';
 import { isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
 
 // Re-export utilities that components need
@@ -169,11 +169,11 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         // Show content immediately - translation happens in background
         setHasContent(true);
 
-        // Build translateFn for foreign mode
-        const translateFn =
+        // Build mapping fn for foreign mode
+        const translateWithMappingFn =
           isForeignMode && foreignDict
             ? (text: string, format: OutputFormat) =>
-                translateForeign(text, foreignDict, format, selectedLanguage)
+                translateForeignWithMapping(text, foreignDict, format)
             : undefined;
 
         // Translate the DOM with tooltips and larger chunks for faster rendering
@@ -183,7 +183,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           outputFormat,
           showTooltips: true,
           translateAttributes: true,
-          translateFn,
+          translateWithMappingFn,
         });
       } catch (error_) {
         setError(
@@ -193,7 +193,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat, onNavigate, isForeignMode, foreignDict, selectedLanguage]
+    [outputFormat, onNavigate, isForeignMode, foreignDict]
   );
 
   const clear = useCallback(() => {

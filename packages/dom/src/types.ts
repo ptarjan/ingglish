@@ -1,7 +1,7 @@
 /**
  * Shared types for @ingglish/dom
  */
-import type { OutputFormat } from '@ingglish/phonemes';
+import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 
 /**
  * Configuration options for DOM translation.
@@ -57,10 +57,10 @@ export interface DOMTranslatorOptions {
   translateAttributes?: boolean;
 
   /**
-   * Custom translation function. When provided, used instead of the built-in
-   * English→Ingglish translateSync(). Enables foreign language translation.
-   * Tooltips are auto-disabled when this is set (foreign translations don't
-   * have 1:1 word mappings needed for tooltip spans).
+   * Custom token-mapping translation function. When provided, used instead of
+   * the built-in English→Ingglish translateSyncWithMapping(). Returns structured
+   * tokens with original/translated text and match status. Enables foreign
+   * language translation with full tooltip support.
    */
-  translateFn?: (text: string, format: OutputFormat) => string;
+  translateWithMappingFn?: (text: string, format: OutputFormat) => TranslatedToken[];
 }

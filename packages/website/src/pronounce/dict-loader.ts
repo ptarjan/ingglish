@@ -22,7 +22,8 @@ export async function loadDict(code: string): Promise<IpaDict> {
   if (!response.ok) {
     throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);
   }
-  const dict = (await response.json()) as IpaDict;
+  const entries = (await response.json()) as Record<string, string>;
+  const dict: IpaDict = { entries, lang: code };
   cache.set(code, dict);
   return dict;
 }

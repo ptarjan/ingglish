@@ -118,30 +118,33 @@ describe('G2P converters', () => {
 
 describe('G2P integration', () => {
   it('lookupIpa falls back to G2P when word is not in dict', () => {
-    const emptyDict: IpaDict = {};
-    expect(lookupIpa(emptyDict, 'talo', 'fi')).toBe('ˈtɑlo');
-    expect(lookupIpa(emptyDict, 'saluton', 'eo')).toBe('saˈluton');
-    expect(lookupIpa(emptyDict, 'habari', 'sw')).toBe('haˈbaɾi');
-    expect(lookupIpa(emptyDict, 'makan', 'ma')).toBe('ˈmakan');
+    expect(lookupIpa({ entries: {}, lang: 'fi' }, 'talo')).toBe('ˈtɑlo');
+    expect(lookupIpa({ entries: {}, lang: 'eo' }, 'saluton')).toBe('saˈluton');
+    expect(lookupIpa({ entries: {}, lang: 'sw' }, 'habari')).toBe('haˈbaɾi');
+    expect(lookupIpa({ entries: {}, lang: 'ma' }, 'makan')).toBe('ˈmakan');
   });
 
   it('dict entries take priority over G2P', () => {
-    const dict: IpaDict = { talo: '/tɑːlo/' };
-    expect(lookupIpa(dict, 'talo', 'fi')).toBe('/tɑːlo/');
+    const dict: IpaDict = { entries: { talo: '/tɑːlo/' }, lang: 'fi' };
+    expect(lookupIpa(dict, 'talo')).toBe('/tɑːlo/');
   });
 
   it('translateForeign produces output via G2P fallback', () => {
-    const emptyDict: IpaDict = {};
-    expect(translateForeign('talo', emptyDict, 'ingglish', 'fi')).not.toContain(NOT_FOUND_MARKER);
-    expect(translateForeign('saluton', emptyDict, 'ingglish', 'eo')).not.toContain(
+    expect(translateForeign('talo', { entries: {}, lang: 'fi' }, 'ingglish')).not.toContain(
       NOT_FOUND_MARKER
     );
-    expect(translateForeign('habari', emptyDict, 'ingglish', 'sw')).not.toContain(NOT_FOUND_MARKER);
-    expect(translateForeign('makan', emptyDict, 'ingglish', 'ma')).not.toContain(NOT_FOUND_MARKER);
+    expect(translateForeign('saluton', { entries: {}, lang: 'eo' }, 'ingglish')).not.toContain(
+      NOT_FOUND_MARKER
+    );
+    expect(translateForeign('habari', { entries: {}, lang: 'sw' }, 'ingglish')).not.toContain(
+      NOT_FOUND_MARKER
+    );
+    expect(translateForeign('makan', { entries: {}, lang: 'ma' }, 'ingglish')).not.toContain(
+      NOT_FOUND_MARKER
+    );
   });
 
   it('does not apply G2P to unsupported languages', () => {
-    const emptyDict: IpaDict = {};
-    expect(lookupIpa(emptyDict, 'hola', 'es')).toBeUndefined();
+    expect(lookupIpa({ entries: {}, lang: 'es' }, 'hola')).toBeUndefined();
   });
 });

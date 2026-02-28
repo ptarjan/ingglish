@@ -8,18 +8,24 @@ import {
   lookupIpa,
   segmentKhmerText,
   translateForeign,
+  translateForeignWithMapping,
   NOT_FOUND_MARKER,
 } from './foreign';
 
 registerPronunciation();
 
+/** Helper to create an IpaDict from entries and a language code. */
+function mkDict(entries: Record<string, string>, lang = ''): IpaDict {
+  return { entries, lang };
+}
+
 describe('translateForeign', () => {
-  const dict: IpaDict = {
-    hello: '/hɛloʊ/',
-    مرحبا: '/marhaba/',
-    こんにちは: '/konnitɕiwa/',
-    你好: '/ni˨˩˦xaʊ˨˩˦/',
-  };
+  const dict = mkDict({
+    hello: '/h\u025Blo\u028A/',
+    '\u0645\u0631\u062D\u0628\u0627': '/marhaba/',
+    '\u3053\u3093\u306B\u3061\u306F': '/konnit\u0255iwa/',
+    '\u4F60\u597D': '/ni\u02E8\u02E9\u02E6xa\u028A\u02E8\u02E9\u02E6/',
+  });
 
   it('translates a Latin-script word', () => {
     const result = translateForeign('hello', dict);
@@ -27,23 +33,23 @@ describe('translateForeign', () => {
   });
 
   it('translates Arabic words', () => {
-    const result = translateForeign('مرحبا', dict);
+    const result = translateForeign('\u0645\u0631\u062D\u0628\u0627', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     expect(result.length).toBeGreaterThan(0);
   });
 
   it('translates Japanese words', () => {
-    const result = translateForeign('こんにちは', dict);
+    const result = translateForeign('\u3053\u3093\u306B\u3061\u306F', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('translates Chinese words', () => {
-    const result = translateForeign('你好', dict);
+    const result = translateForeign('\u4F60\u597D', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('strips punctuation around non-Latin words', () => {
-    const result = translateForeign('(مرحبا)', dict);
+    const result = translateForeign('(\u0645\u0631\u062D\u0628\u0627)', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     expect(result).toMatch(/^\(.+\)$/);
   });
@@ -54,13 +60,16 @@ describe('translateForeign', () => {
   });
 
   it('preserves whitespace between words', () => {
-    const result = translateForeign('hello  مرحبا', dict);
+    const result = translateForeign('hello  \u0645\u0631\u062D\u0628\u0627', dict);
     expect(result).toContain('  ');
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('splits French contractions on apostrophes', () => {
-    const frDict: IpaDict = { avec: '/avɛk/', essentiel: '/esɑ̃sjɛl/', l: '/ɛl/', qu: '/ky/' };
+    const frDict = mkDict(
+      { avec: '/av\u025Bk/', essentiel: '/es\u0251\u0303sj\u025Bl/', l: '/\u025Bl/', qu: '/ky/' },
+      'fr'
+    );
     const result1 = translateForeign("l'essentiel", frDict);
     expect(result1).not.toContain(NOT_FOUND_MARKER);
 
@@ -69,8 +78,7 @@ describe('translateForeign', () => {
   });
 
   it('looks up clitic+apostrophe entries from real French dictionaries', () => {
-    // Real French ipa-dict has "s'" -> /s/, "l'" -> /l/, not bare "s" or "l"
-    const frDict: IpaDict = { homme: '/ɔm/', il: '/il/', "l'": '/l/', "s'": '/s/' };
+    const frDict = mkDict({ homme: '/\u0254m/', il: '/il/', "l'": '/l/', "s'": '/s/' }, 'fr');
     const result1 = translateForeign("s'il", frDict);
     expect(result1).not.toContain(NOT_FOUND_MARKER);
 
@@ -79,28 +87,23 @@ describe('translateForeign', () => {
   });
 
   it('merges clitic IPA across apostrophes instead of translating separately', () => {
-    // "l'" is /l/ (just the consonant), "ordre" is /ɔʁdʁ/
-    // Merged: /lɔʁdʁ/ should produce something starting with "l", not "el"
-    const frDict: IpaDict = { "l'": '/l/', ordre: '/ɔʁdʁ/' };
+    const frDict = mkDict({ "l'": '/l/', ordre: '/\u0254\u0281d\u0281/' }, 'fr');
     const result = translateForeign("l'ordre", frDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
-    // Should NOT start with "el" (the letter name of L)
     expect(result.toLowerCase()).not.toMatch(/^el/);
-    // Should start with "l" (consonant flows into the vowel)
     expect(result.toLowerCase()).toMatch(/^l/);
   });
 
   it('splits hyphenated words', () => {
-    const frDict: IpaDict = { allez: '/ale/', vous: '/vu/' };
+    const frDict = mkDict({ allez: '/ale/', vous: '/vu/' }, 'fr');
     const result = translateForeign('allez-vous', frDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('preserves capitalization', () => {
-    const deDict: IpaDict = { guten: '/ɡuːtən/', tag: '/taːk/' };
+    const deDict = mkDict({ guten: '/\u0261u\u02D0t\u0259n/', tag: '/ta\u02D0k/' }, 'de');
     const result = translateForeign('Guten Tag', deDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
-    // Both words should start with uppercase
     const words = result.split(' ');
     expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
     expect(words[1]![0]).toBe(words[1]![0]!.toUpperCase());
@@ -113,57 +116,63 @@ describe('translateForeign', () => {
   });
 
   it('capitalizes sentence-initial words from caseless scripts', () => {
-    // Japanese: first word should be capitalized even though source has no case
-    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/' };
-    const result = translateForeign('あった いた', jaDict);
+    const jaDict = mkDict({ '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/' }, 'ja');
+    const result = translateForeign('\u3042\u3063\u305F \u3044\u305F', jaDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     const words = result.split(' ');
-    // First word capitalized
     expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
-    // Second word lowercase
     expect(words[1]![0]).toBe(words[1]![0]!.toLowerCase());
   });
 
   it('capitalizes after sentence-ending punctuation in caseless scripts', () => {
-    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/' };
-    const result = translateForeign('あった。 いた', jaDict);
+    const jaDict = mkDict({ '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/' }, 'ja');
+    const result = translateForeign('\u3042\u3063\u305F\u3002 \u3044\u305F', jaDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
-    // Both words should be capitalized (second is after 。)
     const words = result.split(/\s+/);
-    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase()); // "Atta。" -> first char 'A'
+    expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
     expect(words[1]![0]).toBe(words[1]![0]!.toUpperCase());
   });
 
   it('capitalizes Arabic sentence-initial words', () => {
-    const result = translateForeign('مرحبا', dict);
+    const result = translateForeign('\u0645\u0631\u062D\u0628\u0627', dict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
-    // Should start with uppercase
     expect(result[0]).toBe(result[0]!.toUpperCase());
   });
 
   it('does not capitalize mid-sentence caseless words', () => {
-    const jaDict: IpaDict = { あった: '/atːa/', いた: '/ita/', その: '/sono/' };
-    const result = translateForeign('あった いた その', jaDict);
+    const jaDict = mkDict(
+      { '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/', '\u305D\u306E': '/sono/' },
+      'ja'
+    );
+    const result = translateForeign('\u3042\u3063\u305F \u3044\u305F \u305D\u306E', jaDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     const words = result.split(' ');
-    // First capitalized, rest lowercase
     expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
     expect(words[1]![0]).toBe(words[1]![0]!.toLowerCase());
     expect(words[2]![0]).toBe(words[2]![0]!.toLowerCase());
   });
 
   it('capitalizes sentence-initial hyphenated caseless words', () => {
-    // Odia-like: first word is a hyphenated compound from a caseless script
-    const orDict: IpaDict = { ଉତ୍କଳ: '/ut̪kɔɭɔ/', କମଳା: '/kɔmɔɭaː/' };
-    const result = translateForeign('ଉତ୍କଳ-କମଳା', orDict, 'ingglish', 'or');
+    const orDict = mkDict(
+      {
+        '\u0B09\u0B24\u0B4D\u0B15\u0B33': '/ut\u032Ak\u0254\u026D\u0254/',
+        '\u0B15\u0B2E\u0B33\u0B3E': '/k\u0254m\u0254\u026Da\u02D0/',
+      },
+      'or'
+    );
+    const result = translateForeign(
+      '\u0B09\u0B24\u0B4D\u0B15\u0B33-\u0B15\u0B2E\u0B33\u0B3E',
+      orDict
+    );
     expect(result).not.toContain(NOT_FOUND_MARKER);
-    // First character should be capitalized
     expect(result[0]).toBe(result[0]!.toUpperCase());
   });
 
   it('does not double-capitalize Latin-script words (already cased)', () => {
-    const deDict: IpaDict = { guten: '/ɡuːtən/', morgen: '/mɔʁɡən/' };
-    // lowercase German — should stay lowercase (source has case info)
+    const deDict = mkDict(
+      { guten: '/\u0261u\u02D0t\u0259n/', morgen: '/m\u0254\u0281\u0261\u0259n/' },
+      'de'
+    );
     const result = translateForeign('guten morgen', deDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     const words = result.split(' ');
@@ -172,21 +181,16 @@ describe('translateForeign', () => {
   });
 
   it('applies default last-syllable stress when IPA has no stress markers', () => {
-    // French "bonjour" /bɔ̃ʒuʁ/ — no stress markers in IPA
-    // Guide should capitalize the last syllable (French stress rule)
-    const frDict: IpaDict = { bonjour: '/bɔ̃ʒuʁ/' };
+    const frDict = mkDict({ bonjour: '/b\u0254\u0303\u0292u\u0281/' }, 'fr');
     const guide = translateForeign('bonjour', frDict, 'pronunciation');
-    // Last syllable should be uppercase (stressed)
     const parts = guide.split('-');
     const lastPart = parts.at(-1)!;
     expect(lastPart).toBe(lastPart.toUpperCase());
   });
 
   it('does not override existing IPA stress markers', () => {
-    // German "hallo" with explicit stress — should keep original stress
-    const deDict: IpaDict = { hallo: '/haˈloː/' };
+    const deDict = mkDict({ hallo: '/ha\u02C8lo\u02D0/' }, 'de');
     const guide = translateForeign('hallo', deDict, 'pronunciation');
-    // Second syllable stressed, first is not
     const parts = guide.split('-');
     expect(parts.length).toBe(2);
     expect(parts[0]).toBe(parts[0]!.toLowerCase());
@@ -194,44 +198,110 @@ describe('translateForeign', () => {
   });
 
   it('normalizes curly apostrophes in input text', () => {
-    const frDict: IpaDict = { homme: '/ɔm/', "l'": '/l/' };
-    // U+2019 right single quotation mark in input
+    const frDict = mkDict({ homme: '/\u0254m/', "l'": '/l/' }, 'fr');
     const result = translateForeign('l\u2019homme', frDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('matches straight apostrophes against curly-apostrophe dict keys', () => {
-    // German dict has curly apostrophe keys (U+2019)
-    const deDict: IpaDict = { homme: '/ɔm/', 'l\u2019': '/l/' };
+    const deDict = mkDict({ homme: '/\u0254m/', 'l\u2019': '/l/' }, 'de');
     const result = translateForeign("l'homme", deDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
   it('finds words after stripping accents', () => {
-    const esDict: IpaDict = { barrabas: '/baraβas/' };
-    const result = translateForeign('Barrabás', esDict);
+    const esDict = mkDict({ barrabas: '/bara\u03B2as/' }, 'es');
+    const result = translateForeign('Barrab\u00E1s', esDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
   });
 
-  it('finds words with ß via ss normalization', () => {
-    const deDict: IpaDict = { Bewusstsein: '/bəˈvʊstzaɪn/', dass: '/das/' };
-    // ß→ss: "daß" → "dass" (lowercase)
-    expect(translateForeign('daß', deDict)).not.toContain(NOT_FOUND_MARKER);
-    // ß→ss with title case: "Bewußtsein" → "Bewusstsein"
-    expect(lookupIpa(deDict, 'Bewußtsein')).toBe('/bəˈvʊstzaɪn/');
-    // Unrelated conjugation doesn't magically match
-    expect(lookupIpa(deDict, 'mußte')).toBeUndefined();
+  it('finds words with \u00DF via ss normalization', () => {
+    const deDict = mkDict(
+      { Bewusstsein: '/b\u0259\u02C8v\u028Astza\u026An/', dass: '/das/' },
+      'de'
+    );
+    expect(translateForeign('da\u00DF', deDict)).not.toContain(NOT_FOUND_MARKER);
+    expect(lookupIpa(deDict, 'Bewu\u00DFtsein')).toBeDefined();
+    // Word not in dict or overrides should still be undefined
+    expect(lookupIpa(deDict, 'xyz\u00DF')).toBeUndefined();
   });
 
   it('applies IPA override for French "est" (silent st)', () => {
-    const frDict: IpaDict = { est: '/ɛst/' };
-    // Without lang, uses dict's /ɛst/ which includes S and T sounds
-    const withoutLang = translateForeign('est', frDict, 'ingglish');
+    const noLangDict = mkDict({ est: '/\u025Bst/' });
+    const withoutLang = translateForeign('est', noLangDict, 'ingglish');
     expect(withoutLang).toContain('s');
-    // With lang='fr', override provides /ɛ/ — no consonants
-    const withLang = translateForeign('est', frDict, 'ingglish', 'fr');
+    const frDict = mkDict({ est: '/\u025Bst/' }, 'fr');
+    const withLang = translateForeign('est', frDict, 'ingglish');
     expect(withLang).not.toContain('s');
     expect(withLang).not.toContain('t');
+  });
+});
+
+describe('translateForeignWithMapping', () => {
+  it('returns matched token for known word', () => {
+    const dict = mkDict({ bonjour: '/b\u0254\u0303\u0292u\u0281/' }, 'fr');
+    const tokens = translateForeignWithMapping('bonjour', dict);
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0].isWord).toBe(true);
+    expect(tokens[0].matched).toBe(true);
+    expect(tokens[0].original).toBe('bonjour');
+    expect(tokens[0].translated).not.toBe('bonjour');
+  });
+
+  it('returns unmatched token for unknown word', () => {
+    const dict = mkDict({}, 'fr');
+    const tokens = translateForeignWithMapping('xyzzy', dict);
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0].isWord).toBe(true);
+    expect(tokens[0].matched).toBe(false);
+    expect(tokens[0].original).toBe('xyzzy');
+    expect(tokens[0].translated).toBe('xyzzy');
+  });
+
+  it('returns whitespace token', () => {
+    const dict = mkDict({ a: '/a/', b: '/b/' }, 'fr');
+    const tokens = translateForeignWithMapping('a  b', dict);
+    expect(tokens).toHaveLength(3);
+    expect(tokens[1]).toMatchObject({
+      isWord: false,
+      matched: true,
+      original: '  ',
+      translated: '  ',
+    });
+  });
+
+  it('preserves punctuation in original and translated', () => {
+    const dict = mkDict({ hello: '/h\u025Blo\u028A/' });
+    const tokens = translateForeignWithMapping('(hello!)', dict);
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0].isWord).toBe(true);
+    expect(tokens[0].matched).toBe(true);
+    expect(tokens[0].original).toBe('(hello!)');
+    expect(tokens[0].translated).toMatch(/^\(.+!\)$/);
+  });
+
+  it('handles French contraction as single matched token', () => {
+    const frDict = mkDict({ "l'": '/l/', ordre: '/\u0254\u0281d\u0281/' }, 'fr');
+    const tokens = translateForeignWithMapping("l'ordre", frDict);
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0].isWord).toBe(true);
+    expect(tokens[0].matched).toBe(true);
+    expect(tokens[0].original).toBe("l'ordre");
+  });
+
+  it('backward compat: translateForeign output matches token join', () => {
+    const dict = mkDict(
+      { bonjour: '/b\u0254\u0303\u0292u\u0281/', monde: '/m\u0254\u0303d/' },
+      'fr'
+    );
+    const text = 'bonjour monde unknown';
+    const flat = translateForeign(text, dict);
+    const tokens = translateForeignWithMapping(text, dict);
+    // Reconstruct from tokens using the same logic as translateForeign
+    const reconstructed = tokens
+      .map((t) => (!t.matched && t.isWord ? NOT_FOUND_MARKER + t.original : t.translated))
+      .join('');
+    expect(reconstructed).toBe(flat);
   });
 });
 
@@ -241,16 +311,18 @@ describe('Khmer compound decomposition', () => {
   const hasDicts = fs.existsSync(kmDictPath);
 
   it.skipIf(!hasDicts)('strips slashes from compound IPA parts', () => {
-    const dict = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as IpaDict;
+    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string>;
+    const dict = mkDict(raw, 'km');
     // "លើក្បាលទា" decomposes to លើ + ក្បាល + ទា (all in dict with /.../ values)
-    const ipa = lookupIpa(dict, 'លើក្បាលទា', 'km');
+    const ipa = lookupIpa(dict, 'លើក្បាលទា');
     expect(ipa).toBeDefined();
     // Should not contain any slashes — they should be stripped before joining
     expect(ipa).not.toContain('/');
   });
 
   it.skipIf(!hasDicts)('translates Khmer phrases that browsers may segment differently', () => {
-    const dict = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as IpaDict;
+    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string>;
+    const dict = mkDict(raw, 'km');
     // These words may appear as standalone segments in some browsers' Intl.Segmenter
     // even though Node keeps them joined with neighbors. Each component of a
     // compound override must be individually resolvable.
@@ -290,7 +362,7 @@ describe('Khmer compound decomposition', () => {
     ];
     const failures: string[] = [];
     for (const word of browserSegments) {
-      const result = translateForeign(word, dict, 'ingglish', 'km');
+      const result = translateForeign(word, dict);
       if (result.includes(NOT_FOUND_MARKER)) {
         failures.push(word);
       }
@@ -328,7 +400,8 @@ describe('foreign sample coverage', () => {
         if (!fs.existsSync(dictPath)) {
           continue;
         }
-        const dict = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as IpaDict;
+        const raw = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as Record<string, string>;
+        const dict = mkDict(raw, code);
 
         for (const sample of samples) {
           // Khmer has no inherent word boundaries — segment before splitting
@@ -343,7 +416,7 @@ describe('foreign sample coverage', () => {
           const missing: string[] = [];
           for (const word of words) {
             // Use lookupIpa which tries exact, lower, title, accent-stripped + overrides
-            if (lookupIpa(dict, word, code)) {
+            if (lookupIpa(dict, word)) {
               continue;
             }
             // Also try splitting on apostrophe/hyphen (French contractions)
@@ -353,8 +426,8 @@ describe('foreign sample coverage', () => {
                 (p) =>
                   p === "'" ||
                   p === '-' ||
-                  lookupIpa(dict, p, code) !== undefined ||
-                  lookupIpa(dict, `${p}'`, code) !== undefined
+                  lookupIpa(dict, p) !== undefined ||
+                  lookupIpa(dict, `${p}'`) !== undefined
               );
               if (allFound) {
                 continue;

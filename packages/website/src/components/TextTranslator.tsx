@@ -355,7 +355,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       if (!targetDict) {
         return null;
       }
-      return translateForeign(deferredEnglish, targetDict, format, selectedLanguage);
+      return translateForeign(deferredEnglish, targetDict, format);
     }
     try {
       return translateSync(deferredEnglish, format);
@@ -363,7 +363,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       console.warn('Translation failed:', error);
       return null;
     }
-  }, [deferredEnglish, lastEdited, format, isTargetLangMode, targetDict, selectedLanguage]);
+  }, [deferredEnglish, lastEdited, format, isTargetLangMode, targetDict]);
 
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);

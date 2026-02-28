@@ -11,7 +11,7 @@ import {
   getStress,
   isVowel,
 } from '@ingglish/phonemes';
-import type { OutputFormat } from '@ingglish/phonemes';
+import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { G2P_CONVERTERS } from './g2p';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
@@ -46,7 +46,10 @@ const LEADING_NON_LETTER_RE = /^[^\p{L}\p{M}]/u;
 const TRAILING_NON_LETTER_RE = /[^\p{L}\p{M}]$/u;
 const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
-export type IpaDict = Record<string, string>;
+export interface IpaDict {
+  entries: Record<string, string>;
+  lang: string;
+}
 
 /**
  * Khmer word segmenter. Khmer script has no inherent word boundaries,
@@ -147,59 +150,53 @@ export function ipaToIngglish(ipa: string): string {
   return arpabetToIngglish(arpabet);
 }
 
-export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | undefined {
-  if (lang) {
-    const override = getIpaOverride(lang, word) ?? getIpaOverride(lang, word.toLowerCase());
-    if (override) {
-      return override;
-    }
+export function lookupIpa(dict: IpaDict, word: string): string | undefined {
+  const { entries, lang } = dict;
+  const override = getIpaOverride(lang, word) ?? getIpaOverride(lang, word.toLowerCase());
+  if (override) {
+    return override;
   }
   // Try exact, lowercase, title case, accent-stripped, then ß→ss normalization
   const lower = word.toLowerCase();
   const title = lower.charAt(0).toUpperCase() + lower.slice(1);
-  const stripped = stripDiacritics(lower);
-  const result = dict[word] ?? dict[lower] ?? dict[title] ?? dict[stripped];
-  if (result) {
-    return result;
+  const stripped = stripAccents(lower);
+  if (entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped]) {
+    return entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
   }
   // German ß→ss normalization (e.g. "Bewußtsein" → dict["Bewusstsein"])
   if (lower.includes('ß')) {
     const ssLower = lower.replaceAll('ß', 'ss');
     const ssTitle = ssLower.charAt(0).toUpperCase() + ssLower.slice(1);
-    return dict[ssLower] ?? dict[ssTitle];
+    return entries[ssLower] ?? entries[ssTitle];
   }
   // Some dicts use curly apostrophes (U+2019) — try matching if word has straight ones
   if (word.includes("'")) {
     const curly = word.replaceAll("'", '\u2019');
     const curlyLower = curly.toLowerCase();
-    const curlyResult = dict[curly] ?? dict[curlyLower];
+    const curlyResult = entries[curly] ?? entries[curlyLower];
     if (curlyResult) {
       return curlyResult;
     }
   }
   // Language-specific lemmatization (strip inflections, find base form)
-  if (lang) {
-    const lemmatizer = LEMMATIZERS[lang];
-    if (lemmatizer) {
-      const lemmaResult = lemmatizer(dict, lower);
-      if (lemmaResult) {
-        return lemmaResult;
-      }
+  const lemmatizer = LEMMATIZERS[lang];
+  if (lemmatizer) {
+    const lemmaResult = lemmatizer(entries, lower);
+    if (lemmaResult) {
+      return lemmaResult;
     }
   }
   // Khmer compound fallback: try splitting into dictionary entries (longest-match-first)
   if (lang === 'km') {
-    const compound = lookupKhmerCompound(dict, word);
+    const compound = lookupKhmerCompound(entries, word);
     if (compound !== undefined) {
       return compound;
     }
   }
   // G2P fallback for phonetically regular languages (Finnish, Esperanto, Swahili, Malay)
-  if (lang) {
-    const g2p = G2P_CONVERTERS[lang];
-    if (g2p) {
-      return g2p(lower);
-    }
+  const g2p = G2P_CONVERTERS[lang];
+  if (g2p) {
+    return g2p(lower);
   }
   return undefined;
 }
@@ -209,7 +206,7 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
  * Compound decomposition must search overrides too, not just the raw dict,
  * because browser segmenters can produce words whose parts only exist in overrides.
  */
-let khmerMergedDict: IpaDict | undefined;
+let khmerMergedDict: Record<string, string> | undefined;
 let khmerDictKeys: string[] | undefined;
 
 /**
@@ -235,7 +232,7 @@ function applyDefaultStress(arpabet: string[]): string[] {
 }
 
 function decomposeKhmer(
-  dict: IpaDict,
+  dict: Record<string, string>,
   keys: string[],
   remaining: string,
   acc: string[]
@@ -278,9 +275,9 @@ function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
  * Searches both the raw IPA dictionary and Khmer overrides so that browser-segmented
  * compounds whose parts only exist in overrides (e.g. ថ្នែក, សតិ) can still decompose.
  */
-function lookupKhmerCompound(dict: IpaDict, word: string): string | undefined {
+function lookupKhmerCompound(entries: Record<string, string>, word: string): string | undefined {
   if (khmerMergedDict === undefined) {
-    khmerMergedDict = { ...dict };
+    khmerMergedDict = { ...entries };
     const overrides = IPA_WORD_OVERRIDES.km;
     if (overrides) {
       for (const [k, v] of Object.entries(overrides)) {
@@ -311,143 +308,180 @@ const SENTENCE_END_RE = /[.!?。！？]$/;
  *
  * For caseless scripts (Arabic, Japanese, Chinese, Korean), sentence-initial
  * words are automatically capitalized in the output.
- *
- * @param lang Optional language code for language-specific IPA overrides
  */
 export function translateForeign(
   text: string,
   dict: IpaDict,
-  format: OutputFormat = 'ingglish',
-  lang?: string
+  format: OutputFormat = 'ingglish'
 ): string {
+  const tokens = translateForeignWithMapping(text, dict, format);
+  return tokens
+    .map((t) => (!t.matched && t.isWord ? NOT_FOUND_MARKER + t.original : t.translated))
+    .join('');
+}
+
+/**
+ * Like {@link translateForeign}, but returns token-by-token mappings instead of a string.
+ * Each token includes the original text, translation, and whether it matched the dictionary.
+ */
+export function translateForeignWithMapping(
+  text: string,
+  dict: IpaDict,
+  format: OutputFormat = 'ingglish'
+): TranslatedToken[] {
+  const { lang } = dict;
   let atSentenceStart = true;
 
   // Khmer has no inherent word boundaries — segment before processing
   const processed = lang === 'km' ? segmentKhmerText(text) : text;
 
-  return normalizeApostrophes(processed)
-    .split(WHITESPACE_SPLIT_RE)
-    .map((segment) => {
-      // Preserve whitespace segments as-is
-      if (WHITESPACE_RE.test(segment)) {
-        return segment;
-      }
-      if (!segment) {
-        return segment;
-      }
+  const tokens: TranslatedToken[] = [];
 
-      // Strip leading/trailing punctuation for lookup
-      const leading: string[] = [];
-      const trailing: string[] = [];
-      let core = segment;
+  for (const segment of normalizeApostrophes(processed).split(WHITESPACE_SPLIT_RE)) {
+    // Preserve whitespace segments as-is
+    if (WHITESPACE_RE.test(segment)) {
+      tokens.push({ isWord: false, matched: true, original: segment, translated: segment });
+      continue;
+    }
+    if (!segment) {
+      continue;
+    }
 
-      // Peel off leading non-letter characters (Unicode-aware so Arabic/CJK aren't stripped)
-      while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
-        leading.push(core[0]!);
-        core = core.slice(1);
-      }
-      // Peel off trailing non-letter characters
-      while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
-        trailing.unshift(core.at(-1)!);
-        core = core.slice(0, -1);
-      }
+    // Strip leading/trailing punctuation for lookup
+    const leading: string[] = [];
+    const trailing: string[] = [];
+    let core = segment;
 
-      if (!core) {
-        return segment;
-      }
+    // Peel off leading non-letter characters (Unicode-aware so Arabic/CJK aren't stripped)
+    while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
+      leading.push(core[0]!);
+      core = core.slice(1);
+    }
+    // Peel off trailing non-letter characters
+    while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
+      trailing.unshift(core.at(-1)!);
+      core = core.slice(0, -1);
+    }
 
-      let casePattern = detectCasePattern(core);
-      const preservesCase = getFormatPreservesCase(format);
+    if (!core) {
+      tokens.push({ isWord: false, matched: true, original: segment, translated: segment });
+      continue;
+    }
 
-      // For caseless scripts, capitalize sentence-initial words
-      if (atSentenceStart && preservesCase && casePattern === 'lower' && isCaselessWord(core)) {
-        casePattern = 'capitalized';
-      }
+    let casePattern = detectCasePattern(core);
+    const preservesCase = getFormatPreservesCase(format);
 
-      // Update sentence tracking: sentence ends after . ! ? 。 ！ ？
-      atSentenceStart = SENTENCE_END_RE.test(trailing.join(''));
+    // For caseless scripts, capitalize sentence-initial words
+    if (atSentenceStart && preservesCase && casePattern === 'lower' && isCaselessWord(core)) {
+      casePattern = 'capitalized';
+    }
 
-      const ipa = lookupIpa(dict, core, lang);
-      if (ipa) {
-        const translated = ipaToFormat(ipa, format, lang);
+    // Update sentence tracking: sentence ends after . ! ? 。 ！ ？
+    atSentenceStart = SENTENCE_END_RE.test(trailing.join(''));
+
+    const leadStr = leading.join('');
+    const trailStr = trailing.join('');
+
+    const ipa = lookupIpa(dict, core);
+    if (ipa) {
+      const translated = ipaToFormat(ipa, format, lang);
+      const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
+      tokens.push({
+        isWord: true,
+        matched: true,
+        original: segment,
+        translated: leadStr + cased + trailStr,
+      });
+      continue;
+    }
+
+    // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
+    const parts = core.split(CONTRACTION_SPLIT_RE);
+    if (parts.length > 1) {
+      // Collect IPA for each non-separator part
+      const partIpas: (string | undefined)[] = parts.map((part, i) => {
+        if (part === "'" || part === '-') {
+          return;
+        }
+        let ipa: string | undefined;
+        // In contraction context, prefer clitic form (d' → /d‿/) over
+        // bare letter name (d → /de/) so the consonant merges naturally
+        if (parts[i + 1] === "'") {
+          ipa = lookupIpa(dict, part + "'");
+        }
+        ipa ??= lookupIpa(dict, part);
+        return ipa;
+      });
+
+      const allFound = parts.every(
+        (part, i) => part === "'" || part === '-' || partIpas[i] !== undefined
+      );
+
+      if (allFound) {
+        // Merge IPA across apostrophes, keep hyphens as group separators.
+        // French clitics (l', s', d') flow into the next word phonetically
+        // (e.g. l'ordre → /lɔʁdʁ/ → "lawrdr", not "el'awrdr").
+        const groups: string[][] = [[]];
+        for (const [i, part_] of parts.entries()) {
+          const part = part_;
+          if (part === "'") {
+            continue;
+          }
+          if (part === '-') {
+            groups.push([]);
+            continue;
+          }
+          const ipa = partIpas[i]!;
+          groups.at(-1)!.push(ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', ''));
+        }
+        const translated = groups.map((ipas) => ipaToFormat(ipas.join(''), format, lang)).join('-');
         const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-        return leading.join('') + cased + trailing.join('');
+        tokens.push({
+          isWord: true,
+          matched: true,
+          original: segment,
+          translated: leadStr + cased + trailStr,
+        });
+        continue;
       }
 
-      // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
-      const parts = core.split(CONTRACTION_SPLIT_RE);
-      if (parts.length > 1) {
-        // Collect IPA for each non-separator part
-        const partIpas: (string | undefined)[] = parts.map((part, i) => {
-          if (part === "'" || part === '-') {
-            return;
-          }
-          let ipa: string | undefined;
-          // In contraction context, prefer clitic form (d' → /d‿/) over
-          // bare letter name (d → /de/) so the consonant merges naturally
-          if (parts[i + 1] === "'") {
-            ipa = lookupIpa(dict, part + "'", lang);
-          }
-          ipa ??= lookupIpa(dict, part, lang);
-          return ipa;
-        });
-
-        const allFound = parts.every(
-          (part, i) => part === "'" || part === '-' || partIpas[i] !== undefined
-        );
-
-        if (allFound) {
-          // Merge IPA across apostrophes, keep hyphens as group separators.
-          // French clitics (l', s', d') flow into the next word phonetically
-          // (e.g. l'ordre → /lɔʁdʁ/ → "lawrdr", not "el'awrdr").
-          const groups: string[][] = [[]];
-          for (const [i, part_] of parts.entries()) {
-            const part = part_;
-            if (part === "'") {
-              continue;
-            }
-            if (part === '-') {
-              groups.push([]);
-              continue;
-            }
-            const ipa = partIpas[i]!;
-            groups.at(-1)!.push(ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', ''));
-          }
-          const translated = groups
-            .map((ipas) => ipaToFormat(ipas.join(''), format, lang))
-            .join('-');
-          const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-          return leading.join('') + cased + trailing.join('');
+      // Fallback: some parts not found — translate each independently
+      let isFirstPart = true;
+      const translated = parts.map((part, i) => {
+        if (part === "'" || part === '-') {
+          return part;
         }
-
-        // Fallback: some parts not found — translate each independently
-        let isFirstPart = true;
-        const translated = parts.map((part, i) => {
-          if (part === "'" || part === '-') {
-            return part;
-          }
-          const partCase = isFirstPart ? casePattern : detectCasePattern(part);
-          isFirstPart = false;
-          const partIpa = partIpas[i];
-          if (partIpa) {
-            const partTranslated = ipaToFormat(partIpa, format, lang);
-            return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
-          }
-          return NOT_FOUND_MARKER + part;
-        });
-        if (
-          translated.some(
-            (t, i) => parts[i] !== "'" && parts[i] !== '-' && !t.startsWith(NOT_FOUND_MARKER)
-          )
-        ) {
-          return leading.join('') + translated.join('') + trailing.join('');
+        const partCase = isFirstPart ? casePattern : detectCasePattern(part);
+        isFirstPart = false;
+        const partIpa = partIpas[i];
+        if (partIpa) {
+          const partTranslated = ipaToFormat(partIpa, format, lang);
+          return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
         }
+        return NOT_FOUND_MARKER + part;
+      });
+      if (
+        translated.some(
+          (t, i) => parts[i] !== "'" && parts[i] !== '-' && !t.startsWith(NOT_FOUND_MARKER)
+        )
+      ) {
+        // Partial match — strip NOT_FOUND_MARKERs in the token translated text
+        const translatedText = translated.map((t) => t.replaceAll(NOT_FOUND_MARKER, '')).join('');
+        tokens.push({
+          isWord: true,
+          matched: false,
+          original: segment,
+          translated: leadStr + translatedText + trailStr,
+        });
+        continue;
       }
+    }
 
-      // Not found — return original with marker
-      return NOT_FOUND_MARKER + segment;
-    })
-    .join('');
+    // Not found — return original
+    tokens.push({ isWord: true, matched: false, original: segment, translated: segment });
+  }
+
+  return tokens;
 }
 
 /**

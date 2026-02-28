@@ -7,6 +7,17 @@ import { observeAndTranslate } from './observe';
 import { applyTranslationsMap, restoreDOM, translateDOM, translateDOMSync } from './translate';
 import { skipElement, unskipElement } from './traversal';
 
+/** Helper to create a simple mapping fn that uppercases words */
+function uppercaseMappingFn(text: string) {
+  return text
+    .split(/(\s+)/)
+    .filter(Boolean)
+    .map((seg) => {
+      const isWord = !/^\s+$/.test(seg);
+      return { isWord, matched: true, original: seg, translated: isWord ? seg.toUpperCase() : seg };
+    });
+}
+
 describe('dom-translator', () => {
   // Track stop functions to ensure cleanup even if tests fail
   let activeObservers: (() => void)[] = [];
@@ -524,28 +535,31 @@ describe('dom-translator', () => {
     });
   });
 
-  describe('translateFn option', () => {
-    it('should use custom translateFn for text nodes', () => {
+  describe('translateWithMappingFn option', () => {
+    it('should use custom mapping fn for text nodes', () => {
       document.body.innerHTML = '<p>Bonjour monde</p>';
-      const customFn = vi.fn((text: string) => text.toUpperCase());
-      translateDOMSync(document.body, { translateFn: customFn });
+      const customFn = vi.fn(uppercaseMappingFn);
+      translateDOMSync(document.body, { translateWithMappingFn: customFn });
       expect(document.body.textContent).toBe('BONJOUR MONDE');
       expect(customFn).toHaveBeenCalledWith('Bonjour monde', 'ingglish');
     });
 
-    it('should use custom translateFn for attributes', () => {
+    it('should use custom mapping fn for attributes (via token join)', () => {
       document.body.innerHTML = '<img alt="Bonjour" title="Cliquez ici">';
-      const customFn = vi.fn((text: string) => text.toUpperCase());
-      translateDOMSync(document.body, { translateAttributes: true, translateFn: customFn });
+      const customFn = vi.fn(uppercaseMappingFn);
+      translateDOMSync(document.body, {
+        translateAttributes: true,
+        translateWithMappingFn: customFn,
+      });
       const img = document.querySelector('img');
       expect(img?.getAttribute('alt')).toBe('BONJOUR');
       expect(img?.getAttribute('title')).toBe('CLIQUEZ ICI');
     });
 
-    it('should show tooltips with original text when translateFn + showTooltips', () => {
+    it('should show tooltips with original text when mapping fn + showTooltips', () => {
       document.body.innerHTML = '<p>Bonjour monde</p>';
-      const customFn = vi.fn((text: string) => text.toUpperCase());
-      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+      const customFn = vi.fn(uppercaseMappingFn);
+      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
       // Each word should be wrapped in a tooltip span showing the original
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
@@ -557,25 +571,25 @@ describe('dom-translator', () => {
 
     it('should work in chunked mode', async () => {
       document.body.innerHTML = '<p>Bonjour</p><p>monde</p>';
-      const customFn = vi.fn((text: string) => text.toUpperCase());
-      await translateDOM(document.body, { chunked: true, translateFn: customFn });
+      const customFn = vi.fn(uppercaseMappingFn);
+      await translateDOM(document.body, { chunked: true, translateWithMappingFn: customFn });
       expect(document.body.textContent).toBe('BONJOURMONDE');
     });
 
-    it('should skip English dictionary preload when translateFn is set', async () => {
+    it('should skip English dictionary preload when mapping fn is set', async () => {
       document.body.innerHTML = '<p>Test</p>';
-      const customFn = vi.fn((text: string) => `[${text}]`);
-      // If this tries to load the English dictionary AND fails, it would throw.
-      // With translateFn, it should skip the preload entirely.
-      await translateDOM(document.body, { translateFn: customFn });
+      const customFn = vi.fn((text: string) => [
+        { isWord: true, matched: true, original: text, translated: `[${text}]` },
+      ]);
+      await translateDOM(document.body, { translateWithMappingFn: customFn });
       expect(document.body.textContent).toBe('[Test]');
       expect(customFn).toHaveBeenCalled();
     });
 
-    it('should respect outputFormat with custom translateFn', () => {
+    it('should respect outputFormat with custom mapping fn', () => {
       document.body.innerHTML = '<p>Test</p>';
-      const customFn = vi.fn((text: string) => text.toUpperCase());
-      translateDOMSync(document.body, { outputFormat: 'ipa', translateFn: customFn });
+      const customFn = vi.fn(uppercaseMappingFn);
+      translateDOMSync(document.body, { outputFormat: 'ipa', translateWithMappingFn: customFn });
       expect(customFn).toHaveBeenCalledWith('Test', 'ipa');
     });
   });
@@ -600,28 +614,26 @@ describe('dom-translator', () => {
       expect(unknownSpan?.classList.contains('ingglish-not-found')).toBe(true);
     });
 
-    it('should add ingglish-not-found class for NOT_FOUND_MARKER words (foreign translateFn)', () => {
+    it('should add ingglish-not-found class for unmatched tokens (foreign mapping fn)', () => {
       document.body.innerHTML = '<p>Bonjour xyzzy monde</p>';
-      // Simulate foreign translateFn that returns NOT_FOUND_MARKER for unknown words
-      const MARKER = '\uFFFD';
+      // Simulate foreign mapping fn with matched/unmatched tokens
       const customFn = vi.fn((text: string) =>
         text
           .split(/(\s+)/)
+          .filter(Boolean)
           .map((seg) => {
             if (/^\s+$/.test(seg)) {
-              return seg;
+              return { isWord: false, matched: true, original: seg, translated: seg };
             }
             if (seg.toLowerCase() === 'xyzzy') {
-              return MARKER + seg;
+              return { isWord: true, matched: false, original: seg, translated: seg };
             }
-            return seg.toUpperCase();
+            return { isWord: true, matched: true, original: seg, translated: seg.toUpperCase() };
           })
-          .join('')
       );
-      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
 
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
-      // "Bonjour" and "monde" are translated (uppercased), "xyzzy" has marker
       expect(spans.length).toBeGreaterThanOrEqual(2);
 
       // Found word should NOT have not-found class
@@ -629,31 +641,29 @@ describe('dom-translator', () => {
       expect(bonjourSpan).not.toBeNull();
       expect(bonjourSpan?.classList.contains('ingglish-not-found')).toBe(false);
 
-      // Not-found word should have not-found class and stripped marker from display
+      // Not-found word should have not-found class
       const xyzzySpan = Array.from(spans).find((s) => s.dataset.ingglishOrig === 'xyzzy');
       expect(xyzzySpan).not.toBeNull();
       expect(xyzzySpan?.classList.contains('ingglish-not-found')).toBe(true);
-      expect(xyzzySpan?.textContent).not.toContain(MARKER);
     });
 
     it('should create tooltip span for not-found words even when text is unchanged', () => {
       document.body.innerHTML = '<p>alpha beta</p>';
-      // translateFn returns the same word but with NOT_FOUND_MARKER prefix
-      const MARKER = '\uFFFD';
+      // Mapping fn returns unmatched tokens (translated === original)
       const customFn = vi.fn((text: string) =>
         text
           .split(/(\s+)/)
+          .filter(Boolean)
           .map((seg) => {
             if (/^\s+$/.test(seg)) {
-              return seg;
+              return { isWord: false, matched: true, original: seg, translated: seg };
             }
-            return MARKER + seg; // all words "not found" — text identical to original
+            return { isWord: true, matched: false, original: seg, translated: seg };
           })
-          .join('')
       );
-      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
 
-      // Even though text didn't change, spans should be created because of marker
+      // Even though text didn't change, spans should be created because matched=false
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
       expect(spans[0].classList.contains('ingglish-not-found')).toBe(true);

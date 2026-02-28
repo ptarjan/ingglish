@@ -43,5 +43,6 @@ export type { FormatOptions } from './to-ingglish';
 // Guide pronunciation format
 export { registerPronunciation } from './to-pronunciation';
 
+export type { TranslatedToken } from './translated-token';
 // Types
 export type { OutputFormat } from './types';

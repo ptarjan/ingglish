@@ -3,7 +3,6 @@
  */
 
 import { translateSyncWithMapping } from 'ingglish';
-import { NOT_FOUND_MARKER } from '@ingglish/ipa';
 import {
   applyCasePattern,
   detectCasePattern,
@@ -11,7 +10,7 @@ import {
   WORD_SPLIT_REGEX,
   WORD_TEST_REGEX,
 } from '@ingglish/normalize';
-import type { OutputFormat } from '@ingglish/phonemes';
+import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import {
   ATTR_ORIGINAL_WORD,
   FORMAT_DIFF_CLASS,
@@ -86,45 +85,23 @@ export function createTooltipFragmentFromMap(
 }
 
 /**
- * Creates a tooltip fragment using a custom translation function.
- * Translates the full text in one call (efficient), then splits both
- * original and result on whitespace to align words for tooltips.
- * Used for foreign language translation where translateSyncWithMapping isn't available.
+ * Creates a tooltip fragment from pre-computed TranslatedToken[] array.
+ * Shared builder used by both English (via createTooltipFragment) and foreign
+ * (via translateWithMappingFn) pipelines.
  */
-export function createTooltipFragmentWithFn(
-  text: string,
-  translateFn: (text: string, format: OutputFormat) => string,
-  format: OutputFormat = 'ingglish'
-): DocumentFragment {
-  const WHITESPACE_SPLIT = /(\s+)/;
-
-  // Translate the full text in one call (avoids N per-word calls)
-  const translated = translateFn(text, format);
-
-  // Split both on whitespace to align words positionally.
-  // translateForeign preserves whitespace structure, so segments align 1:1.
-  const origSegments = text.split(WHITESPACE_SPLIT).filter(Boolean);
-  const transSegments = translated.split(WHITESPACE_SPLIT).filter(Boolean);
-
-  const items: FragmentItem[] = [];
-  for (const [i, transSegment] of transSegments.entries()) {
-    const orig = origSegments[i];
-    let trans = transSegment;
-    // Detect NOT_FOUND_MARKER prefix from translateForeign
-    let notFound = false;
-    if (trans.includes(NOT_FOUND_MARKER)) {
-      notFound = true;
-      trans = trans.replaceAll(NOT_FOUND_MARKER, '');
-    }
-    // Show tooltip for segments containing letters (skip pure punctuation/whitespace)
-    if (orig !== undefined && /\p{L}/u.test(trans)) {
-      items.push({ notFound, text: trans, tooltip: orig });
-    } else {
-      items.push({ text: trans });
-    }
-  }
-
-  return buildTooltipFragment(items);
+export function createTooltipFragmentFromTokens(tokens: TranslatedToken[]): DocumentFragment {
+  return buildTooltipFragment(
+    tokens.map((token) => {
+      if (token.isWord && token.original !== token.translated) {
+        return { notFound: !token.matched, text: token.translated, tooltip: token.original };
+      }
+      if (token.isWord && !token.matched) {
+        // Not-found word where translated === original — still show tooltip
+        return { notFound: true, text: token.translated, tooltip: token.original };
+      }
+      return { text: token.translated };
+    })
+  );
 }
 
 /**
