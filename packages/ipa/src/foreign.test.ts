@@ -295,6 +295,8 @@ describe('foreign sample coverage', () => {
   // Skip if sample file or dicts don't exist (CI without website package)
   const hasSamples = fs.existsSync(samplesPath);
   const hasDicts = fs.existsSync(dictsDir);
+  const kaikkiDir = path.resolve(__dirname, '../../website/data/kaikki');
+  const hasKaikki = fs.existsSync(kaikkiDir);
 
   // Minimum per-language word coverage (found / total).
   const MIN_COVERAGE: Record<string, number> = {
@@ -392,6 +394,13 @@ describe('foreign sample coverage', () => {
         }
       }
 
+      if (failures.length > 0 && !hasKaikki) {
+        failures.push(
+          'HINT: Kaikki (Wiktionary) IPA data not found. Rebuild dicts:',
+          '  npx tsx packages/website/scripts/extract-kaikki-ipa.ts',
+          '  npx tsx packages/website/scripts/build-ipa-dicts.ts'
+        );
+      }
       expect(failures).toStrictEqual([]);
     }
   );

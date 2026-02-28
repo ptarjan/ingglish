@@ -10,7 +10,6 @@ export const es: Record<string, string> = {
   macondo: '/maˈkondo/',
   pont: '/pɔ̃/', // French in Cortázar
   porfirio: '/poɾˈfiɾjo/',
-  pretil: '/pɾeˈtil/',
   quai: '/ke/', // French in Cortázar
   quedóse: '/keˈðose/',
   rue: '/ʁy/', // French in Cortázar
