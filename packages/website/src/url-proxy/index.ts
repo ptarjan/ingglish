@@ -186,7 +186,13 @@ export function proxyFontUrls(html: string, proxyUrl: string): string {
  * Checks if a URL should be ignored for navigation.
  */
 export function shouldSkipUrl(href: string): boolean {
-  return href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:');
+  return (
+    href.startsWith('#') ||
+    href.startsWith('javascript:') ||
+    href.startsWith('mailto:') ||
+    href.startsWith('data:') ||
+    href.startsWith('vbscript:')
+  );
 }
 
 /**

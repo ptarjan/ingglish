@@ -215,7 +215,7 @@ async function main() {
   console.log('  ----  -----   -------  -----     -------   -------');
   for (let i = 0; i < Math.min(50, sorted.length); i++) {
     const rec = sorted[i];
-    const contextDisplay = rec.context.replace('^', '^').split('').join('');
+    const contextDisplay = rec.context;
     console.log(
       `  ${String(i + 1).padStart(3)}.  ${String(rec.count).padStart(5)}   ${contextDisplay.padEnd(7)}  ${rec.wrongPhoneme.padEnd(9)} ${rec.correctPhoneme.padEnd(9)} ${rec.samples.join(', ')}`
     );
