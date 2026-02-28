@@ -8,6 +8,7 @@
     },
     "build:fast": {
       "dependsOn": ["^build:fast"],
+      "inputs": ["src/**"],
       "outputs": ["dist/**"]
     },
     "lint": {
