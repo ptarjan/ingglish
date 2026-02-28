@@ -21,6 +21,9 @@ jobs:
           dict-cache: true
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Generate docs
+        run: npm run docs
+
       - name: Test
         run: npm test
 
