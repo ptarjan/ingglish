@@ -159,7 +159,7 @@ export function lookupIpa(dict: IpaDict, word: string): string | undefined {
   // Try exact, lowercase, title case, accent-stripped, then ß→ss normalization
   const lower = word.toLowerCase();
   const title = lower.charAt(0).toUpperCase() + lower.slice(1);
-  const stripped = stripAccents(lower);
+  const stripped = stripDiacritics(lower);
   if (entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped]) {
     return entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
   }
