@@ -34,6 +34,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@ingglish/ipa": "^1.0.0",
     "@ingglish/normalize": "^1.0.0",
     "@ingglish/phonemes": "^1.0.0"
   },

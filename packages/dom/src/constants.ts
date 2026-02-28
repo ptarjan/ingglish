@@ -31,3 +31,6 @@ export const ATTR_ORIGINAL_PREFIX = 'data-ingglish-original-';
 
 /** CSS class for words that differ between the current format and standard Ingglish */
 export const FORMAT_DIFF_CLASS = 'ingglish-format-diff';
+
+/** CSS class for words not found in the dictionary (G2P fallback or unknown foreign words) */
+export const NOT_FOUND_CLASS = 'ingglish-not-found';

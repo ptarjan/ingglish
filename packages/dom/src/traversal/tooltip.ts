@@ -7,6 +7,7 @@
 import {
   ATTR_ORIGINAL_WORD,
   FORMAT_DIFF_CLASS,
+  NOT_FOUND_CLASS,
   TOOLTIP_STYLES_ID,
   WORD_SPAN_CLASS,
 } from '../constants';
@@ -58,6 +59,13 @@ export const TOOLTIP_STYLES = `
 
 .${FORMAT_DIFF_CLASS} {
   border-bottom: 1.5px dotted currentColor;
+}
+
+.${NOT_FOUND_CLASS} {
+  opacity: 0.55;
+  text-decoration: underline dotted currentColor;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
 }
 `;
 

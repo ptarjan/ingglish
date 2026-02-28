@@ -8,7 +8,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
  */
 import type { IpaDict } from '../pronounce/dict-loader';
 import { loadDict } from '../pronounce/dict-loader';
-import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish';
+import { translateForeign } from '../pronounce/ipa-to-ingglish';
 import { isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
 
 // Re-export utilities that components need
@@ -173,10 +173,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const translateFn =
           isForeignMode && foreignDict
             ? (text: string, format: OutputFormat) =>
-                translateForeign(text, foreignDict, format, selectedLanguage).replaceAll(
-                  NOT_FOUND_MARKER,
-                  ''
-                )
+                translateForeign(text, foreignDict, format, selectedLanguage)
             : undefined;
 
         // Translate the DOM with tooltips and larger chunks for faster rendering

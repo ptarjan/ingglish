@@ -580,6 +580,81 @@ describe('dom-translator', () => {
     });
   });
 
+  describe('not-found word styling', () => {
+    it('should add ingglish-not-found class for G2P fallback words (English)', () => {
+      // "xyzzyplugh" is not in the dictionary, so G2P fallback is used (matched: false)
+      document.body.innerHTML = '<p>Hello xyzzyplugh world</p>';
+      translateDOMSync(document.body, { showTooltips: true });
+
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
+      expect(spans.length).toBeGreaterThanOrEqual(3);
+
+      // Dictionary words should NOT have not-found class
+      const helloSpan = Array.from(spans).find((s) => s.dataset.ingglishOrig === 'Hello');
+      expect(helloSpan).not.toBeNull();
+      expect(helloSpan?.classList.contains('ingglish-not-found')).toBe(false);
+
+      // G2P fallback word should have not-found class
+      const unknownSpan = Array.from(spans).find((s) => s.dataset.ingglishOrig === 'xyzzyplugh');
+      expect(unknownSpan).not.toBeNull();
+      expect(unknownSpan?.classList.contains('ingglish-not-found')).toBe(true);
+    });
+
+    it('should add ingglish-not-found class for NOT_FOUND_MARKER words (foreign translateFn)', () => {
+      document.body.innerHTML = '<p>Bonjour xyzzy monde</p>';
+      // Simulate foreign translateFn that returns NOT_FOUND_MARKER for unknown words
+      const MARKER = '\uFFFD';
+      const customFn = vi.fn((text: string) =>
+        text
+          .split(/(\s+)/)
+          .map((seg) => {
+            if (/^\s+$/.test(seg)) {return seg;}
+            if (seg.toLowerCase() === 'xyzzy') {return MARKER + seg;}
+            return seg.toUpperCase();
+          })
+          .join('')
+      );
+      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
+      // "Bonjour" and "monde" are translated (uppercased), "xyzzy" has marker
+      expect(spans.length).toBeGreaterThanOrEqual(2);
+
+      // Found word should NOT have not-found class
+      const bonjourSpan = Array.from(spans).find((s) => s.dataset.ingglishOrig === 'Bonjour');
+      expect(bonjourSpan).not.toBeNull();
+      expect(bonjourSpan?.classList.contains('ingglish-not-found')).toBe(false);
+
+      // Not-found word should have not-found class and stripped marker from display
+      const xyzzySpan = Array.from(spans).find((s) => s.dataset.ingglishOrig === 'xyzzy');
+      expect(xyzzySpan).not.toBeNull();
+      expect(xyzzySpan?.classList.contains('ingglish-not-found')).toBe(true);
+      expect(xyzzySpan?.textContent).not.toContain(MARKER);
+    });
+
+    it('should create tooltip span for not-found words even when text is unchanged', () => {
+      document.body.innerHTML = '<p>alpha beta</p>';
+      // translateFn returns the same word but with NOT_FOUND_MARKER prefix
+      const MARKER = '\uFFFD';
+      const customFn = vi.fn((text: string) =>
+        text
+          .split(/(\s+)/)
+          .map((seg) => {
+            if (/^\s+$/.test(seg)) {return seg;}
+            return MARKER + seg; // all words "not found" — text identical to original
+          })
+          .join('')
+      );
+      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+
+      // Even though text didn't change, spans should be created because of marker
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
+      expect(spans).toHaveLength(2);
+      expect(spans[0].classList.contains('ingglish-not-found')).toBe(true);
+      expect(spans[1].classList.contains('ingglish-not-found')).toBe(true);
+    });
+  });
+
   /**
    * Performance regression tests for tooltip fragment creation
    * These tests verify that performance optimizations remain in place:
