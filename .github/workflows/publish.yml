@@ -30,6 +30,9 @@ jobs:
       - name: Build
         run: npx turbo build
 
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
+
       - name: Publish packages
         run: |
           for pkg in normalize phonemes dictionary g2p ipa shavian deseret fallback core dom; do
