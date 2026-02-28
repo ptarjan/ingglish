@@ -2,13 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import { wordToPhonetic, wordToArpabet } from '@ingglish/g2p';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
-import {
-  translateWithStemming,
-  translateUnknown,
-  translateAsAcronym,
-  translateAsCompound,
-  translateAsBritish,
-} from './index';
+import { translateAsAcronym } from './acronyms';
+import { translateAsBritish } from './british';
+import { translateAsCompound } from './compounds';
+import { translateWithStemming } from './stemming';
+import { translateUnknown } from './index';
 
 describe('unknown-words', () => {
   describe('CUSTOM_PRONUNCIATIONS validation', () => {
