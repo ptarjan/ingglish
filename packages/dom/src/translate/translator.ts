@@ -30,8 +30,10 @@ export async function translateDOM(
   root: Document | Element,
   options: DOMTranslatorOptions = {}
 ): Promise<void> {
-  // Ensure dictionary is loaded by calling translate
-  await translate('');
+  // Skip English dictionary preload when a custom translateFn is provided
+  if (!options.translateFn) {
+    await translate('');
+  }
   const result = translateDOMSync(root, options as DOMTranslatorOptions & { chunked: true });
   // If chunked mode returns a Promise, await it
   if (result instanceof Promise) {
@@ -66,11 +68,16 @@ export function translateDOMSync(
     chunkSize = DEFAULT_CHUNK_SIZE,
     onProgress,
     outputFormat = 'ingglish',
-    showTooltips = false,
+    showTooltips: showTooltipsOption = false,
     skipClasses = DEFAULT_SKIP_CLASSES,
     skipTags = DEFAULT_SKIP_TAGS,
     translateAttributes = true,
+    translateFn,
   } = options;
+
+  // Auto-disable tooltips when translateFn is set — foreign translations
+  // don't have 1:1 word mappings needed for tooltip spans
+  const showTooltips = translateFn ? false : showTooltipsOption;
 
   // Get the document (works for both main document and iframes)
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
@@ -87,7 +94,7 @@ export function translateDOMSync(
 
   // Translate attributes if enabled (do this first, it's fast)
   if (translateAttributes) {
-    translateElementAttributes(root, skipTags, skipClasses, outputFormat);
+    translateElementAttributes(root, skipTags, skipClasses, outputFormat, translateFn);
   }
 
   // Chunked mode: use requestAnimationFrame for smooth rendering
@@ -95,7 +102,7 @@ export function translateDOMSync(
     return processChunked(
       textNodes,
       (node) => {
-        translateTextNode(node, showTooltips, outputFormat);
+        translateTextNode(node, showTooltips, outputFormat, translateFn);
       },
       chunkSize,
       onProgress
@@ -104,7 +111,7 @@ export function translateDOMSync(
 
   // Sync mode: translate all nodes immediately
   for (let i = 0; i < totalNodes; i++) {
-    translateTextNode(textNodes[i]!, showTooltips, outputFormat);
+    translateTextNode(textNodes[i]!, showTooltips, outputFormat, translateFn);
 
     if (onProgress) {
       onProgress(i + 1, totalNodes);
@@ -118,8 +125,11 @@ function translateElementAttributes(
   root: Document | Element,
   skipTags: string[],
   skipClasses: string[],
-  format: OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish',
+  customTranslateFn?: (text: string, format: OutputFormat) => string
 ): void {
+  const doTranslate = customTranslateFn ?? translateSync;
+
   // Only query elements that have translatable attributes (much smaller set than '*')
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
   const elements = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
@@ -137,7 +147,7 @@ function translateElementAttributes(
         if (!element.hasAttribute(originalAttrName)) {
           element.setAttribute(originalAttrName, attrValue);
         }
-        element.setAttribute(attrName, translateSync(attrValue, format));
+        element.setAttribute(attrName, doTranslate(attrValue, format));
       }
     }
   }
@@ -149,7 +159,8 @@ function translateElementAttributes(
 function translateTextNode(
   textNode: Text,
   showTooltips: boolean,
-  outputFormat: OutputFormat
+  outputFormat: OutputFormat,
+  customTranslateFn?: (text: string, format: OutputFormat) => string
 ): void {
   const originalText = textNode.textContent;
   if (!originalText) {
@@ -171,6 +182,7 @@ function translateTextNode(
     if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
       parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
     }
-    textNode.textContent = translateSync(originalText, outputFormat);
+    const doTranslate = customTranslateFn ?? translateSync;
+    textNode.textContent = doTranslate(originalText, outputFormat);
   }
 }

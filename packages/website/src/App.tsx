@@ -155,11 +155,16 @@ function App() {
   }, []);
 
   const handleShareUrl = useCallback(
-    (targetUrl: string): string => {
+    (targetUrl: string, lang?: string): string => {
       const shareUrl = buildShareUrl(targetUrl);
+      const url = new URL(shareUrl);
+      if (lang) {
+        url.searchParams.set('lang', lang);
+      }
+      const finalUrl = url.toString();
       // Preserve translator state so back button still works after sharing
-      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
-      return shareUrl;
+      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', finalUrl);
+      return finalUrl;
     },
     [buildShareUrl]
   );
@@ -332,6 +337,7 @@ function App() {
             {activeTab === 'url' && (
               <ErrorBoundary>
                 <UrlTranslator
+                  initialLang={initialLang}
                   initialUrl={initialUrl}
                   onNavigate={handleUrlNavigate}
                   onShare={handleShareUrl}

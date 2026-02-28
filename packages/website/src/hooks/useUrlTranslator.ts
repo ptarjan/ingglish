@@ -6,6 +6,9 @@ import type { OutputFormat } from '@ingglish/phonemes';
  * Handles fetching pages through CORS proxy, translating content,
  * and intercepting link navigation.
  */
+import type { IpaDict } from '../pronounce/dict-loader';
+import { loadDict } from '../pronounce/dict-loader';
+import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish';
 import { isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
 
 // Re-export utilities that components need
@@ -18,10 +21,12 @@ const CORS_PROXY: string =
 interface UseUrlTranslatorOptions {
   onNavigate?: (url: string) => void;
   outputFormat?: OutputFormat;
+  selectedLanguage?: string;
 }
 
 interface UseUrlTranslatorResult {
   clear: () => void;
+  dictLoading: boolean;
   error: null | string;
   hasContent: boolean;
   iframeRef: React.RefObject<HTMLIFrameElement | null>;
@@ -32,11 +37,14 @@ interface UseUrlTranslatorResult {
 }
 
 export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
-  const { onNavigate, outputFormat = 'ingglish' } = options;
+  const { onNavigate, outputFormat = 'ingglish', selectedLanguage = 'en' } = options;
+  const isForeignMode = selectedLanguage !== 'en';
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<null | string>(null);
+  const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
+  const [dictLoading, setDictLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Track the current translateUrl function for popstate handler
   const translateUrlRef = useRef<((url: string, pushHistory?: boolean) => Promise<void>) | null>(
@@ -48,6 +56,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const currentUrlRef = useRef<null | string>(null);
   // Track the previous format to detect changes
   const prevFormatRef = useRef<OutputFormat>(outputFormat);
+  // Track the previous language to detect changes
+  const prevLangRef = useRef<string>(selectedLanguage);
 
   // Handle hash-only navigation by scrolling within the iframe
   const scrollToHash = useCallback((hash: string) => {
@@ -69,6 +79,34 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       targetElement.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
+
+  // Load foreign dictionary when language changes
+  useEffect(() => {
+    if (!isForeignMode) {
+      setForeignDict(null);
+      return;
+    }
+
+    let cancelled = false;
+    setDictLoading(true);
+    loadDict(selectedLanguage)
+      .then((dict) => {
+        if (!cancelled) {
+          setForeignDict(dict);
+          setDictLoading(false);
+        }
+      })
+      .catch((error_: unknown) => {
+        if (!cancelled) {
+          console.error('Failed to load dictionary:', error_);
+          setDictLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isForeignMode, selectedLanguage]);
 
   const translateUrl = useCallback(
     async (targetUrl: string, pushHistory = true): Promise<void> => {
@@ -127,13 +165,24 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         // Show content immediately - translation happens in background
         setHasContent(true);
 
+        // Build translateFn for foreign mode
+        const translateFn =
+          isForeignMode && foreignDict
+            ? (text: string, format: OutputFormat) =>
+                translateForeign(text, foreignDict, format, selectedLanguage).replaceAll(
+                  NOT_FOUND_MARKER,
+                  ''
+                )
+            : undefined;
+
         // Translate the DOM with tooltips and larger chunks for faster rendering
         await translateDOM(iframeDoc.body, {
           chunked: true, // Use requestAnimationFrame for large pages
           chunkSize: 500, // Larger chunks = fewer DOM updates = faster
           outputFormat,
-          showTooltips: true,
+          showTooltips: !isForeignMode,
           translateAttributes: true,
+          translateFn,
         });
       } catch (error_) {
         setError(
@@ -143,7 +192,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat, onNavigate]
+    [outputFormat, onNavigate, isForeignMode, foreignDict, selectedLanguage]
   );
 
   const clear = useCallback(() => {
@@ -279,19 +328,27 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     };
   }, [scrollToHash]);
 
-  // Retranslate when output format changes
+  // Retranslate when output format or language changes
   useEffect(() => {
-    if (prevFormatRef.current !== outputFormat && hasContent && url.length > 0) {
-      // Format changed and we have content - retranslate without pushing history
-      translateUrlRef.current?.(url, false).catch((error_: unknown) => {
-        console.error('Format change retranslation failed:', error_);
-      });
+    const formatChanged = prevFormatRef.current !== outputFormat;
+    const langChanged = prevLangRef.current !== selectedLanguage;
+    if ((formatChanged || langChanged) && hasContent && url.length > 0) {
+      // Skip retranslation if switching to foreign mode but dict isn't loaded yet
+      if (isForeignMode && !foreignDict) {
+        // Will retranslate when dict finishes loading (foreignDict dep triggers this effect)
+      } else {
+        translateUrlRef.current?.(url, false).catch((error_: unknown) => {
+          console.error('Format/language change retranslation failed:', error_);
+        });
+      }
     }
     prevFormatRef.current = outputFormat;
-  }, [outputFormat, hasContent, url]);
+    prevLangRef.current = selectedLanguage;
+  }, [outputFormat, hasContent, url, selectedLanguage, isForeignMode, foreignDict]);
 
   return {
     clear,
+    dictLoading,
     error,
     hasContent,
     iframeRef,

@@ -524,6 +524,59 @@ describe('dom-translator', () => {
     });
   });
 
+  describe('translateFn option', () => {
+    it('should use custom translateFn for text nodes', () => {
+      document.body.innerHTML = '<p>Bonjour monde</p>';
+      const customFn = vi.fn((text: string) => text.toUpperCase());
+      translateDOMSync(document.body, { translateFn: customFn });
+      expect(document.body.textContent).toBe('BONJOUR MONDE');
+      expect(customFn).toHaveBeenCalledWith('Bonjour monde', 'ingglish');
+    });
+
+    it('should use custom translateFn for attributes', () => {
+      document.body.innerHTML = '<img alt="Bonjour" title="Cliquez ici">';
+      const customFn = vi.fn((text: string) => text.toUpperCase());
+      translateDOMSync(document.body, { translateAttributes: true, translateFn: customFn });
+      const img = document.querySelector('img');
+      expect(img?.getAttribute('alt')).toBe('BONJOUR');
+      expect(img?.getAttribute('title')).toBe('CLIQUEZ ICI');
+    });
+
+    it('should auto-disable tooltips when translateFn is set', () => {
+      document.body.innerHTML = '<p>Bonjour monde</p>';
+      const customFn = vi.fn((text: string) => text.toUpperCase());
+      translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
+      // Tooltips should be disabled — no .ingglish-word spans
+      const spans = document.querySelectorAll('.ingglish-word');
+      expect(spans).toHaveLength(0);
+      expect(document.body.textContent).toBe('BONJOUR MONDE');
+    });
+
+    it('should work in chunked mode', async () => {
+      document.body.innerHTML = '<p>Bonjour</p><p>monde</p>';
+      const customFn = vi.fn((text: string) => text.toUpperCase());
+      await translateDOM(document.body, { chunked: true, translateFn: customFn });
+      expect(document.body.textContent).toBe('BONJOURMONDE');
+    });
+
+    it('should skip English dictionary preload when translateFn is set', async () => {
+      document.body.innerHTML = '<p>Test</p>';
+      const customFn = vi.fn((text: string) => `[${text}]`);
+      // If this tries to load the English dictionary AND fails, it would throw.
+      // With translateFn, it should skip the preload entirely.
+      await translateDOM(document.body, { translateFn: customFn });
+      expect(document.body.textContent).toBe('[Test]');
+      expect(customFn).toHaveBeenCalled();
+    });
+
+    it('should respect outputFormat with custom translateFn', () => {
+      document.body.innerHTML = '<p>Test</p>';
+      const customFn = vi.fn((text: string) => text.toUpperCase());
+      translateDOMSync(document.body, { outputFormat: 'ipa', translateFn: customFn });
+      expect(customFn).toHaveBeenCalledWith('Test', 'ipa');
+    });
+  });
+
   /**
    * Performance regression tests for tooltip fragment creation
    * These tests verify that performance optimizations remain in place:

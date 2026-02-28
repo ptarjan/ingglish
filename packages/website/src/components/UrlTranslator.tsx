@@ -4,6 +4,7 @@ import { trackShare, trackUrlTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
 import { useShare } from '../hooks/useShare';
 import { normalizeUrl, useUrlTranslator } from '../hooks/useUrlTranslator';
+import { LANGUAGES } from '../pronounce/dict-loader';
 
 /**
  * Exit fullscreen icon (shrink arrows)
@@ -61,15 +62,19 @@ const EXAMPLE_URLS = [
 ];
 
 interface UrlTranslatorProps {
+  initialLang?: string;
   initialUrl?: string;
   onNavigate?: (url: string) => void;
-  onShare?: (url: string) => string;
+  onShare?: (url: string, lang?: string) => string;
 }
 
-function UrlTranslator({ initialUrl = '', onNavigate, onShare }: UrlTranslatorProps) {
+function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: UrlTranslatorProps) {
   const { format, toggleFormat } = useFormat();
-  const { clear, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
-    useUrlTranslator({ onNavigate, outputFormat: format });
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    () => initialLang ?? localStorage.getItem('ingglish-url-lang') ?? 'en'
+  );
+  const { clear, dictLoading, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
+    useUrlTranslator({ onNavigate, outputFormat: format, selectedLanguage });
   const formRef = useRef<HTMLFormElement>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
   const [copiedShare, shareLink] = useShare();
@@ -137,19 +142,38 @@ function UrlTranslator({ initialUrl = '', onNavigate, onShare }: UrlTranslatorPr
     [setUrl]
   );
 
+  const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const lang = e.target.value;
+    setSelectedLanguage(lang);
+    localStorage.setItem('ingglish-url-lang', lang);
+  }, []);
+
   const handleShare = useCallback(() => {
     if (onShare !== undefined && url.trim().length > 0) {
-      const shareUrl = onShare(url);
+      const lang = selectedLanguage === 'en' ? undefined : selectedLanguage;
+      const shareUrl = onShare(url, lang);
       shareLink(shareUrl, 'Ingglish URL Translation');
       trackShare('url', typeof navigator.share === 'function' ? 'webshare' : 'clipboard');
     }
-  }, [onShare, url, shareLink]);
+  }, [onShare, url, shareLink, selectedLanguage]);
 
   const formatLabel = getFormatLabel(format);
 
   return (
     <div className="url-translator">
       <form className="url-form" onSubmit={handleSubmit} ref={formRef}>
+        <select
+          className="language-select"
+          onChange={handleLanguageChange}
+          value={selectedLanguage}
+        >
+          <option value="en">English</option>
+          {LANGUAGES.map((lang) => (
+            <option key={lang.code} value={lang.code}>
+              {lang.label}
+            </option>
+          ))}
+        </select>
         <input
           className="url-input"
           onChange={(e) => {
@@ -184,6 +208,11 @@ function UrlTranslator({ initialUrl = '', onNavigate, onShare }: UrlTranslatorPr
         )}
       </form>
 
+      {dictLoading && (
+        <div className="error-message" style={{ color: 'var(--color-text-secondary)' }}>
+          Loading dictionary...
+        </div>
+      )}
       {error !== null && <div className="error-message">{error}</div>}
 
       <div

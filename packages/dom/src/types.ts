@@ -55,4 +55,12 @@ export interface DOMTranslatorOptions {
    * @default true
    */
   translateAttributes?: boolean;
+
+  /**
+   * Custom translation function. When provided, used instead of the built-in
+   * English→Ingglish translateSync(). Enables foreign language translation.
+   * Tooltips are auto-disabled when this is set (foreign translations don't
+   * have 1:1 word mappings needed for tooltip spans).
+   */
+  translateFn?: (text: string, format: OutputFormat) => string;
 }
