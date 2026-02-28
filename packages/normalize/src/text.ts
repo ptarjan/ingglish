@@ -88,6 +88,9 @@ const COMBINING_MARKS = /[\u0300-\u036F]/g;
  * Handles: ' (U+2019 right single quotation mark), ' (U+2018 left), ʼ (U+02BC modifier letter)
  */
 export function normalizeApostrophes(text: string): string {
+  if (!text.includes('\u2018') && !text.includes('\u2019') && !text.includes('\u02BC')) {
+    return text;
+  }
   return text.replaceAll(FANCY_APOSTROPHE, "'");
 }
 

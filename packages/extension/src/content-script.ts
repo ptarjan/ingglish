@@ -399,7 +399,7 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
     );
 
     if (newWords.length > 0) {
-      const newTranslations = await translateWordsBatch([...new Set(newWords)], format);
+      const newTranslations = await translateWordsBatch(newWords, format);
       Object.assign(translations, newTranslations);
     }
 

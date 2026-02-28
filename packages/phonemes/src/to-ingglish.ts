@@ -77,7 +77,8 @@ export function convertArpabet(
 
 // Pre-combined lookup: phoneme (with or without stress digit) → ingglish spelling.
 // Eliminates per-phoneme stripStress() + stressOverrides.get() calls.
-const INGGLISH_FULL_MAP: Record<string, string> = {};
+// Also used by to-pronunciation.ts for guide format.
+export const INGGLISH_FULL_MAP: Record<string, string> = {};
 for (const [base, spelling] of Object.entries(ARPABET_TO_INGGLISH_MAP)) {
   INGGLISH_FULL_MAP[base] = spelling;
   INGGLISH_FULL_MAP[base + '0'] = spelling;

@@ -8,23 +8,14 @@
 
 import { getStress, isVowel, stripStress } from './arpabet';
 import { registerFormat } from './format-registry';
-import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from './ingglish-maps';
+import { R_COLORED_FORWARD } from './ingglish-maps';
 import { findOnsetStart } from './phonotactics';
+import { INGGLISH_FULL_MAP } from './to-ingglish';
 
 export interface Syllable {
   phonemes: string[];
   stress: number;
 }
-
-// Pre-combined lookup: phoneme (with or without stress digit) → ingglish spelling.
-const GUIDE_MAP: Record<string, string> = {};
-for (const [base, spelling] of Object.entries(ARPABET_TO_INGGLISH_MAP)) {
-  GUIDE_MAP[base] = spelling;
-  GUIDE_MAP[base + '0'] = spelling;
-  GUIDE_MAP[base + '1'] = spelling;
-  GUIDE_MAP[base + '2'] = spelling;
-}
-GUIDE_MAP.AH0 = 'a'; // Unstressed schwa
 
 /**
  * Converts ARPAbet phonemes to guide pronunciation format.
@@ -121,7 +112,7 @@ function syllableToSpelling(phonemes: string[]): string {
         continue;
       }
     }
-    result += GUIDE_MAP[phoneme] ?? phoneme.toLowerCase();
+    result += INGGLISH_FULL_MAP[phoneme] ?? phoneme.toLowerCase();
   }
   return result;
 }

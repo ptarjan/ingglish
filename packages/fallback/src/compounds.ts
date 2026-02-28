@@ -70,7 +70,7 @@ export function dpDecompose(word: string): null | string[] {
         continue;
       }
       const chunk = word.slice(j, i);
-      const phonemes = lookupWord(chunk);
+      const phonemes = lookupPronunciation(chunk);
       if (!phonemes) {
         continue;
       }
@@ -132,7 +132,7 @@ export function translateAsCompound(
   const translations: string[] = [];
   let pos = 0;
   for (const part of parts) {
-    const phonemes = lookupWord(part);
+    const phonemes = lookupPronunciation(part);
     if (!phonemes) {
       return null;
     } // shouldn't happen but be safe
@@ -150,11 +150,4 @@ export function translateAsCompound(
   }
 
   return translations.join(getFormatJoinSeparator(format));
-}
-
-/**
- * Look up a word's pronunciation (custom overrides are handled inside lookupPronunciation).
- */
-function lookupWord(word: string): null | string[] {
-  return lookupPronunciation(word);
 }
