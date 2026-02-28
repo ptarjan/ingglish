@@ -116,9 +116,8 @@ export function createTooltipFragmentWithFn(
       notFound = true;
       trans = trans.replaceAll(NOT_FOUND_MARKER, '');
     }
-    // Show tooltip for all non-whitespace segments (even when translation matches
-    // original, so users can see the foreign word on hover)
-    if (orig !== undefined && !/^\s+$/.test(trans)) {
+    // Show tooltip for segments containing letters (skip pure punctuation/whitespace)
+    if (orig !== undefined && /\p{L}/u.test(trans)) {
       items.push({ notFound, text: trans, tooltip: orig });
     } else {
       items.push({ text: trans });
