@@ -396,9 +396,9 @@ describe('foreign sample coverage', () => {
 
       if (failures.length > 0 && !hasKaikki) {
         failures.push(
-          'HINT: Kaikki (Wiktionary) IPA data not found. Rebuild dicts:',
-          '  npx tsx packages/website/scripts/extract-kaikki-ipa.ts',
-          '  npx tsx packages/website/scripts/build-ipa-dicts.ts'
+          'HINT: Kaikki (Wiktionary) IPA data not found. Download it and rebuild dicts (in this order):',
+          '  1. npx tsx packages/website/scripts/extract-kaikki-ipa.ts',
+          '  2. npx tsx packages/website/scripts/build-ipa-dicts.ts'
         );
       }
       expect(failures).toStrictEqual([]);
