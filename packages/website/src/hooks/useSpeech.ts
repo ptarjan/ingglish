@@ -4,7 +4,7 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
 
 /**
  * Hook for text-to-speech using the Web Speech API.
- * Returns [speaking, speak, stop, supported, wordCount, hasVoiceForLang, hasBoundaryForLang].
+ * Returns [speaking, speak, stop, supported, spokenRange, hasVoiceForLang, hasBoundaryForLang].
  *
  * Chrome has a known bug where speech stalls after ~15s of continuous playback.
  * This hook works around it by pausing/resuming every 10s.
@@ -12,19 +12,23 @@ const CHROME_WORKAROUND_INTERVAL_MS = 10_000;
  * On mount, silently probes each language's preferred voice to detect whether
  * onboundary events fire (needed for word highlighting). Results are cached and
  * exposed via hasBoundaryForLang().
+ *
+ * spokenRange is a [start, end] tuple covering the currently-spoken words. For
+ * languages like Chinese where TTS groups multiple characters into one word, the
+ * range expands to cover any skipped visual tokens so nothing is missed.
  */
 export function useSpeech(): [
   boolean,
   (text: string, lang?: string) => void,
   () => void,
   boolean,
-  null | number,
+  [number, number] | null,
   (lang: string) => boolean,
   (lang: string) => boolean,
 ] {
   const supported = typeof speechSynthesis !== 'undefined';
   const [speaking, setSpeaking] = useState(false);
-  const [wordCount, setWordCount] = useState<null | number>(null);
+  const [spokenRange, setSpokenRange] = useState<[number, number] | null>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const [voiceLangs, setVoiceLangs] = useState<Set<string>>(new Set());
   const boundaryCacheRef = useRef(new Map<string, boolean>());
@@ -153,7 +157,7 @@ export function useSpeech(): [
     speechSynthesis.cancel();
     clearWorkaround();
     setSpeaking(false);
-    setWordCount(null);
+    setSpokenRange(null);
   }, [supported, clearWorkaround]);
 
   const speak = useCallback(
@@ -203,6 +207,7 @@ export function useSpeech(): [
       // sub-word splits of the first word (common in agglutinative languages).
       let boundaryCounter = -1;
       let charIndexEverAdvanced = false;
+      let prevWordIndex = -1;
 
       utterance.onboundary = (event) => {
         if (event.name === 'word') {
@@ -216,10 +221,11 @@ export function useSpeech(): [
           // agglutinative languages may fire multiple boundaries for word 1.
           const useFallback = !charIndexEverAdvanced && boundaryCounter >= 3;
 
+          let wordIndex: number;
           if (useFallback) {
-            setWordCount(Math.min(boundaryCounter, wordStarts.length - 1));
+            wordIndex = Math.min(boundaryCounter, wordStarts.length - 1);
           } else {
-            let wordIndex = 0;
+            wordIndex = 0;
             for (let i = 1; i < wordStarts.length; i++) {
               if (wordStarts[i]! <= event.charIndex) {
                 wordIndex = i;
@@ -227,19 +233,25 @@ export function useSpeech(): [
                 break;
               }
             }
-            setWordCount(wordIndex);
           }
+
+          // When TTS groups multiple visual tokens into one word (e.g. Chinese
+          // compound words), the boundary jumps by >1. Expand the range to cover
+          // skipped tokens so every character gets highlighted.
+          const rangeStart = Math.min(wordIndex, prevWordIndex + 1);
+          prevWordIndex = wordIndex;
+          setSpokenRange([rangeStart, wordIndex]);
         }
       };
       utterance.onend = () => {
         clearWorkaround();
         setSpeaking(false);
-        setWordCount(null);
+        setSpokenRange(null);
       };
       utterance.addEventListener('error', () => {
         clearWorkaround();
         setSpeaking(false);
-        setWordCount(null);
+        setSpokenRange(null);
       });
 
       speechSynthesis.speak(utterance);
@@ -270,7 +282,7 @@ export function useSpeech(): [
     };
   }, [supported, clearWorkaround]);
 
-  return [speaking, speak, stop, supported, wordCount, hasVoiceForLang, hasBoundaryForLang];
+  return [speaking, speak, stop, supported, spokenRange, hasVoiceForLang, hasBoundaryForLang];
 }
 
 /**

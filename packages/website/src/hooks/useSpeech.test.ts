@@ -240,30 +240,29 @@ describe('useSpeech', () => {
     expect(stop1).toBe(stop2);
   });
 
-  it('returns wordCount=null initially', () => {
+  it('returns spokenRange=null initially', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
     expect(result.current[4]).toBeNull();
   });
 
-  it('advances wordCount sequentially on boundary events', () => {
+  it('advances spokenRange sequentially on boundary events', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('hello world');
     });
-    // wordCount is null until first boundary event
     expect(result.current[4]).toBeNull();
 
     const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
   });
 
   it('skips punctuation-only segments when computing word index', () => {
@@ -280,16 +279,16 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     // "actually" at charIndex 7 → word 1 (not 2, because "—" was skipped)
     act(() => {
       utterance.onboundary?.({ charIndex: 7, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
   });
 
-  it('resets wordCount on stop', () => {
+  it('resets spokenRange on stop', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -303,7 +302,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
 
     act(() => {
       result.current[2](); // stop
@@ -325,19 +324,19 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     // Second boundary: "'t" at charIndex 3 → still word 0 (same whitespace token)
     act(() => {
       utterance.onboundary?.({ charIndex: 3, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     // Third boundary: "stop" at charIndex 6 → word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
   });
 
   it('falls back to counter when charIndex is always 0 (Windows TTS)', () => {
@@ -353,20 +352,20 @@ describe('useSpeech', () => {
       act(() => {
         utterance.onboundary?.({ charIndex: 0, name: 'word' });
       });
-      expect(result.current[4]).toBe(0);
+      expect(result.current[4]).toEqual([0, 0]);
     }
 
     // 4th event: charIndex=0 still — fallback kicks in, counter=3
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(3);
+    expect(result.current[4]).toEqual([1, 3]);
 
     // 5th event: stays in fallback mode, counter=4
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(4);
+    expect(result.current[4]).toEqual([4, 4]);
   });
 
   it('does not fall back when charIndex advances after initial zeros', () => {
@@ -381,18 +380,19 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    // Not enough events to trigger fallback yet (need 4+), charIndex=0 → word 0
+    expect(result.current[4]).toEqual([0, 0]);
 
     // Third boundary advances — charIndex works, no fallback
     act(() => {
       utterance.onboundary?.({ charIndex: 9, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
   });
 
   it('counts numbers as words for highlighting', () => {
@@ -408,28 +408,28 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     // "have" at charIndex 2 → word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toBe(1);
+    expect(result.current[4]).toEqual([1, 1]);
 
     // "42" at charIndex 7 → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 7, name: 'word' });
     });
-    expect(result.current[4]).toBe(2);
+    expect(result.current[4]).toEqual([2, 2]);
 
     // "cats" at charIndex 10 → word 3
     act(() => {
       utterance.onboundary?.({ charIndex: 10, name: 'word' });
     });
-    expect(result.current[4]).toBe(3);
+    expect(result.current[4]).toEqual([3, 3]);
   });
 
-  it('resets wordCount on utterance end', () => {
+  it('resets spokenRange on utterance end', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -440,12 +440,48 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toBe(0);
+    expect(result.current[4]).toEqual([0, 0]);
 
     act(() => {
       utterance.onend?.();
     });
     expect(result.current[4]).toBeNull();
+  });
+
+  it('expands spokenRange to cover skipped words (Chinese compound words)', () => {
+    // "满 纸 荒 唐 言" — TTS may group "荒唐" as one word, skipping "唐"
+    // wordStarts: [0, 2, 4, 6, 8] for chars at positions 0, 2, 4, 6, 8
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('满 纸 荒 唐 言');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // "满" at charIndex 0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([0, 0]);
+
+    // "纸" at charIndex 2 → word 1, no gap
+    act(() => {
+      utterance.onboundary?.({ charIndex: 2, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([1, 1]);
+
+    // "荒唐" at charIndex 4 → word 2, no gap
+    act(() => {
+      utterance.onboundary?.({ charIndex: 4, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([2, 2]);
+
+    // "言" at charIndex 8 → word 4, GAP: word 3 ("唐") was skipped
+    // Range should expand to [3, 4] to cover the skipped character
+    act(() => {
+      utterance.onboundary?.({ charIndex: 8, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([3, 4]);
   });
 
   it('does not set explicit voice for languages without confirmed boundary support', () => {

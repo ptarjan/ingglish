@@ -32,7 +32,7 @@ interface ForeignOutputDisplayProps {
   onHoverWord?: (index: null | number) => void;
   onScroll?: () => void;
   scrollRef?: React.Ref<HTMLDivElement>;
-  spokenWordIndex?: null | number;
+  spokenRange?: [number, number] | null;
   text: string;
 }
 
@@ -123,7 +123,7 @@ function ForeignOutputDisplay({
   onHoverWord,
   onScroll,
   scrollRef,
-  spokenWordIndex = null,
+  spokenRange = null,
   text,
 }: ForeignOutputDisplayProps) {
   if (dictLoading) {
@@ -166,7 +166,7 @@ function ForeignOutputDisplay({
         }
         const idx = wordIndex++;
         const isHighlighted = idx === highlightedWordIndex;
-        const isSpoken = idx === spokenWordIndex;
+        const isSpoken = spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
         if (seg.startsWith(NOT_FOUND_MARKER)) {
           const word = seg.slice(NOT_FOUND_MARKER.length);
           return (
@@ -226,7 +226,7 @@ function OverlayTextarea({
   onScroll,
   placeholder,
   scrollRef,
-  spokenWordIndex,
+  spokenRange,
   text,
 }: {
   highlightedWordIndex?: null | number;
@@ -236,7 +236,7 @@ function OverlayTextarea({
   onScroll?: () => void;
   placeholder?: string;
   scrollRef: React.Ref<HTMLTextAreaElement>;
-  spokenWordIndex: null | number;
+  spokenRange: [number, number] | null;
   text: string;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -311,7 +311,8 @@ function OverlayTextarea({
             const isWord = /[\p{L}\p{N}]/u.test(seg);
             const idx = isWord ? wordIndex++ : -1;
             const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
-            const isSpoken = idx >= 0 && idx === spokenWordIndex;
+            const isSpoken =
+              idx >= 0 && spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
             return (
               <span
                 className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
@@ -404,7 +405,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const [copiedEnglish, copyEnglish] = useClipboard();
   const [copiedIngglish, copyIngglish] = useClipboard();
   const [copiedShare, shareUrl] = useShare();
-  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenWordCount, hasVoice] =
+  const [speakingEnglish, speakEnglish, stopEnglish, speechSupported, spokenRange, hasVoice] =
     useSpeech();
 
   // Cross-pane word highlighting: hover on right → highlight on left
@@ -740,7 +741,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               isForeignMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
             }
             scrollRef={englishRef}
-            spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+            spokenRange={speakingEnglish ? spokenRange : null}
             text={displayEnglish}
           />
         </div>
@@ -779,7 +780,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                 handleScroll('ingglish');
               }}
               scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
-              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              spokenRange={speakingEnglish ? spokenRange : null}
               text={displayIngglish}
             />
           ) : (
@@ -800,7 +801,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               }}
               placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
               scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
-              spokenWordIndex={speakingEnglish ? spokenWordCount : null}
+              spokenRange={speakingEnglish ? spokenRange : null}
               text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
             />
           )}
