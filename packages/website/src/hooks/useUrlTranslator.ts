@@ -9,7 +9,7 @@ import type { OutputFormat } from '@ingglish/phonemes';
 import type { IpaDict } from '../pronounce/dict-loader';
 import { loadDict } from '../pronounce/dict-loader';
 import { translateForeignWithMapping } from '../pronounce/ipa-to-ingglish';
-import { isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
+import { getBaseUrl, isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../url-proxy';
@@ -131,50 +131,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
       try {
         const parsedUrl = new URL(targetUrl);
-
-        // Block translating ingglish.com itself — it's an SPA so the proxied
-        // HTML is just an empty shell after scripts are stripped.
-        if (parsedUrl.hostname === globalThis.location.hostname) {
-          throw new Error("You're already on Ingglish! Try translating a different website.");
-        }
-
-        const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
-
-        const response = await fetch(proxyUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.status}`);
-        }
-
-        const rawHtml = await response.text();
-
-        // Process HTML: sanitize, inject base tag, proxy fonts, add click handler
-        const { baseUrl, html } = processProxiedHtml(rawHtml, {
-          pageUrl: parsedUrl.href,
-          proxyUrl: CORS_PROXY,
-        });
-
-        // Load HTML into iframe using srcdoc and wait for load event
-        await new Promise<void>((resolve) => {
-          const onLoad = () => {
-            iframe.removeEventListener('load', onLoad);
-            resolve();
-          };
-          iframe.addEventListener('load', onLoad);
-          iframe.srcdoc = html;
-        });
-
-        const iframeDoc = iframe.contentDocument;
-        if (!iframeDoc?.body) {
-          throw new Error('Failed to access iframe content');
-        }
-
-        // Store base URL for resolving relative links from postMessage
-        baseUrlRef.current = baseUrl;
-        // Store current URL for detecting hash-only navigation
-        currentUrlRef.current = targetUrl;
-
-        // Show content immediately - translation happens in background
-        setHasContent(true);
+        const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
 
         // Build mapping fn for foreign mode
         const translateWithMappingFn =
@@ -183,15 +140,83 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
                 translateForeignWithMapping(text, foreignDict, format)
             : undefined;
 
-        // Translate the DOM with tooltips and larger chunks for faster rendering
-        await translateDOM(iframeDoc.body, {
-          chunked: true, // Use requestAnimationFrame for large pages
-          chunkSize: 500, // Larger chunks = fewer DOM updates = faster
-          outputFormat,
-          showTooltips: true,
-          translateAttributes: true,
-          translateWithMappingFn,
-        });
+        if (isSameOrigin) {
+          // Same-origin: load via src so scripts render the SPA, then translate
+          await new Promise<void>((resolve) => {
+            const onLoad = () => {
+              iframe.removeEventListener('load', onLoad);
+              resolve();
+            };
+            iframe.addEventListener('load', onLoad);
+            iframe.src = targetUrl;
+          });
+
+          // Wait for SPA to render (scripts need time after load event)
+          await new Promise((r) => setTimeout(r, 1500));
+
+          const iframeDoc = iframe.contentDocument;
+          if (!iframeDoc?.body) {
+            throw new Error('Failed to access iframe content');
+          }
+
+          baseUrlRef.current = getBaseUrl(targetUrl);
+          currentUrlRef.current = targetUrl;
+          setHasContent(true);
+
+          await translateDOM(iframeDoc.body, {
+            chunked: true,
+            chunkSize: 500,
+            outputFormat,
+            showTooltips: true,
+            translateAttributes: true,
+            translateWithMappingFn,
+          });
+        } else {
+          // Cross-origin: fetch via CORS proxy, strip scripts, load as srcdoc
+          const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
+
+          const response = await fetch(proxyUrl);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+          }
+
+          const rawHtml = await response.text();
+
+          // Process HTML: sanitize, inject base tag, proxy fonts, add click handler
+          const { baseUrl, html } = processProxiedHtml(rawHtml, {
+            pageUrl: parsedUrl.href,
+            proxyUrl: CORS_PROXY,
+          });
+
+          // Load HTML into iframe using srcdoc and wait for load event
+          await new Promise<void>((resolve) => {
+            const onLoad = () => {
+              iframe.removeEventListener('load', onLoad);
+              resolve();
+            };
+            iframe.addEventListener('load', onLoad);
+            iframe.srcdoc = html;
+          });
+
+          const iframeDoc = iframe.contentDocument;
+          if (!iframeDoc?.body) {
+            throw new Error('Failed to access iframe content');
+          }
+
+          // Store base URL for resolving relative links from postMessage
+          baseUrlRef.current = baseUrl;
+          currentUrlRef.current = targetUrl;
+          setHasContent(true);
+
+          await translateDOM(iframeDoc.body, {
+            chunked: true,
+            chunkSize: 500,
+            outputFormat,
+            showTooltips: true,
+            translateAttributes: true,
+            translateWithMappingFn,
+          });
+        }
       } catch (error_) {
         setError(
           `Failed to load page: ${error_ instanceof Error ? error_.message : 'Unknown error'}`
