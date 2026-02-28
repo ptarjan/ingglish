@@ -357,8 +357,15 @@ function extractHeadings(html: string): HeadingInfo[] {
   let match;
   while ((match = regex.exec(html)) !== null) {
     const level = Number.parseInt(match[1]!, 10);
-    // Strip HTML tags and decode entities to get plain text
-    const rawText = match[2]!.replaceAll(/<[^>]+>/g, '').trim();
+    // Strip HTML tags and decode entities to get plain text.
+    // Loop until stable to handle nested tags.
+    let rawText = match[2]!;
+    let prev: string;
+    do {
+      prev = rawText;
+      rawText = rawText.replaceAll(/<[^>]+>/g, '');
+    } while (rawText !== prev);
+    rawText = rawText.trim();
     const text = decodeHtmlEntities(rawText);
     const id = text
       .toLowerCase()

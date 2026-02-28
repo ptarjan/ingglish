@@ -224,7 +224,7 @@ export function stripScripts(html: string): string {
   // Fallback to regex for Node.js/test environments.
   // Loop until stable to prevent nested-tag bypasses like <scr<script>ipt>.
   const DANGEROUS_TAGS =
-    /<script[\s\S]*?<\/script>|<script[^>]*>|<noscript[\s\S]*?<\/noscript>|<iframe[\s\S]*?<\/iframe>|<iframe[^>]*>|<object[\s\S]*?<\/object>|<object[^>]*>|<embed[^>]*>|<frameset[\s\S]*?<\/frameset>|<frame[^>]*>/gi;
+    /<script[\s\S]*?<\/script>|<script[^>]*>|<noscript[\s\S]*?<\/noscript>|<iframe[\s\S]*?<\/iframe>|<iframe[^>]*>|<object[\s\S]*?<\/object>|<object[^>]*>|<embed[^>]*>|<frameset[\s\S]*?<\/frameset>|<frame[^>]*>|\s+on\w+\s*=[^>]*/gi;
   let result = html;
   let prev: string;
   do {

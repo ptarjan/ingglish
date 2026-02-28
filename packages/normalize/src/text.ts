@@ -21,7 +21,7 @@ export const EMAIL_REGEX = /[\w.%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi;
  * Includes optional path/query after the domain.
  */
 export const BARE_DOMAIN_REGEX =
-  /\b[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)*\.(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
+  /\b(?:[a-z0-9][-a-z0-9]*\.)+(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
 
 /**
  * Extracts URLs and emails from text, replacing them with placeholders.

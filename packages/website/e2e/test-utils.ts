@@ -30,14 +30,16 @@ async function mockExternalResources(
   await page.route('**/*', async (route) => {
     const url = route.request().url();
 
+    const { hostname } = new URL(url);
+
     // Allow localhost requests (the test server)
-    if (url.includes('localhost') || url.includes('127.0.0.1')) {
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
       await route.continue();
       return;
     }
 
     // Mock Google Fonts - return empty CSS
-    if (url.includes('fonts.googleapis.com')) {
+    if (hostname === 'fonts.googleapis.com') {
       await route.fulfill({
         body: '/* Mocked font CSS */',
         contentType: 'text/css',
@@ -47,7 +49,7 @@ async function mockExternalResources(
     }
 
     // Mock Google Fonts static files
-    if (url.includes('fonts.gstatic.com')) {
+    if (hostname === 'fonts.gstatic.com') {
       await route.fulfill({
         body: '',
         contentType: 'font/woff2',
@@ -57,7 +59,7 @@ async function mockExternalResources(
     }
 
     // Mock Google Analytics / Tag Manager
-    if (url.includes('googletagmanager.com') || url.includes('google-analytics.com')) {
+    if (hostname === 'googletagmanager.com' || hostname === 'google-analytics.com') {
       await route.fulfill({
         body: '/* Mocked GA */',
         contentType: 'application/javascript',
@@ -143,7 +145,11 @@ export const MOCK_PAGE_B_HTML = `<!DOCTYPE html>
  */
 export async function setupMockProxy(page: Page) {
   await mockExternalResources(page, async (url, route) => {
-    if (!url.includes('api.allorigins.win') && !url.includes('ingglish-cors-proxy')) {
+    const { hostname } = new URL(url);
+    if (
+      !hostname.endsWith('allorigins.win') &&
+      !hostname.endsWith('ingglish-cors-proxy.workers.dev')
+    ) {
       return false;
     }
 
