@@ -221,18 +221,17 @@ export function stripScripts(html: string): string {
     });
   }
 
-  // Fallback to regex for Node.js/test environments
-  return html
-    .replaceAll(/<script[\s\S]*?<\/script>/gi, '')
-    .replaceAll(/<script[^>]*>/gi, '')
-    .replaceAll(/<noscript[\s\S]*?<\/noscript>/gi, '')
-    .replaceAll(/<iframe[\s\S]*?<\/iframe>/gi, '')
-    .replaceAll(/<iframe[^>]*>/gi, '')
-    .replaceAll(/<object[\s\S]*?<\/object>/gi, '')
-    .replaceAll(/<object[^>]*>/gi, '')
-    .replaceAll(/<embed[^>]*>/gi, '')
-    .replaceAll(/<frame[^>]*>/gi, '')
-    .replaceAll(/<frameset[\s\S]*?<\/frameset>/gi, '');
+  // Fallback to regex for Node.js/test environments.
+  // Loop until stable to prevent nested-tag bypasses like <scr<script>ipt>.
+  const DANGEROUS_TAGS =
+    /<script[\s\S]*?<\/script>|<script[^>]*>|<noscript[\s\S]*?<\/noscript>|<iframe[\s\S]*?<\/iframe>|<iframe[^>]*>|<object[\s\S]*?<\/object>|<object[^>]*>|<embed[^>]*>|<frameset[\s\S]*?<\/frameset>|<frame[^>]*>/gi;
+  let result = html;
+  let prev: string;
+  do {
+    prev = result;
+    result = result.replaceAll(DANGEROUS_TAGS, '');
+  } while (result !== prev);
+  return result;
 }
 
 // Regex patterns for HTML tag matching (precompiled for performance)

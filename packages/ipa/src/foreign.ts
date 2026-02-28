@@ -179,9 +179,8 @@ export function lookupIpa(dict: IpaDict, word: string): string | undefined {
     }
   }
   // Language-specific lemmatization (strip inflections, find base form)
-  const lemmatizer = LEMMATIZERS[lang];
-  if (lemmatizer) {
-    const lemmaResult = lemmatizer(entries, lower);
+  if (Object.hasOwn(LEMMATIZERS, lang)) {
+    const lemmaResult = LEMMATIZERS[lang]!(entries, lower);
     if (lemmaResult) {
       return lemmaResult;
     }
@@ -194,9 +193,8 @@ export function lookupIpa(dict: IpaDict, word: string): string | undefined {
     }
   }
   // G2P fallback for phonetically regular languages (Finnish, Esperanto, Swahili, Malay)
-  const g2p = G2P_CONVERTERS[lang];
-  if (g2p) {
-    return g2p(lower);
+  if (Object.hasOwn(G2P_CONVERTERS, lang)) {
+    return G2P_CONVERTERS[lang]!(lower);
   }
   return undefined;
 }
