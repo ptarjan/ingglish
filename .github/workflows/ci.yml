@@ -96,6 +96,9 @@ jobs:
 
   test-e2e:
     runs-on: ubuntu-latest
+    # Playwright container includes browsers + system deps, skipping install-deps
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
     strategy:
       matrix:
         include:
@@ -115,10 +118,6 @@ jobs:
 
       - name: Build (from turbo cache)
         run: npm run build:fast
-
-      - uses: ./.github/actions/playwright
-        with:
-          browser: ${{ matrix.browser }}
 
       # Smoke test catches catastrophic failures fast before full suite (chromium only)
       - name: Smoke test
