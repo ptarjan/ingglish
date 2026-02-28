@@ -30,6 +30,7 @@ export function useSpeech(): [
   const [speaking, setSpeaking] = useState(false);
   const [spokenRange, setSpokenRange] = useState<[number, number] | null>(null);
   const workaroundRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const endTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [voiceLangs, setVoiceLangs] = useState<Set<string>>(new Set());
   const boundaryCacheRef = useRef(new Map<string, boolean>());
   const [boundaryLangs, setBoundaryLangs] = useState<Set<string>>(new Set());
@@ -150,15 +151,23 @@ export function useSpeech(): [
     }
   }, []);
 
+  const clearEndTimer = useCallback(() => {
+    if (endTimerRef.current !== undefined) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = undefined;
+    }
+  }, []);
+
   const stop = useCallback(() => {
     if (!supported) {
       return;
     }
     speechSynthesis.cancel();
     clearWorkaround();
+    clearEndTimer();
     setSpeaking(false);
     setSpokenRange(null);
-  }, [supported, clearWorkaround]);
+  }, [supported, clearWorkaround, clearEndTimer]);
 
   const speak = useCallback(
     (text: string, lang?: string) => {
@@ -168,6 +177,7 @@ export function useSpeech(): [
 
       speechSynthesis.cancel();
       clearWorkaround();
+      clearEndTimer();
 
       const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
@@ -315,11 +325,21 @@ export function useSpeech(): [
       };
       utterance.onend = () => {
         clearWorkaround();
-        setSpeaking(false);
-        setSpokenRange(null);
+        // Some voices stop firing boundary events before the last word.
+        // Flash-highlight all words so nothing is missed.
+        if (maxWordEnd >= 0) {
+          setSpokenRange([0, spacedWordStarts.length - 1]);
+        }
+        // Brief delay so the all-words highlight renders before clearing
+        endTimerRef.current = setTimeout(() => {
+          endTimerRef.current = undefined;
+          setSpeaking(false);
+          setSpokenRange(null);
+        }, 50);
       };
       utterance.addEventListener('error', () => {
         clearWorkaround();
+        clearEndTimer();
         setSpeaking(false);
         setSpokenRange(null);
       });
@@ -333,7 +353,7 @@ export function useSpeech(): [
         speechSynthesis.resume();
       }, CHROME_WORKAROUND_INTERVAL_MS);
     },
-    [supported, clearWorkaround]
+    [supported, clearWorkaround, clearEndTimer]
   );
 
   // Cancel speech on unmount and page unload (refresh/navigate)
@@ -349,8 +369,9 @@ export function useSpeech(): [
       window.removeEventListener('beforeunload', handleUnload);
       speechSynthesis.cancel();
       clearWorkaround();
+      clearEndTimer();
     };
-  }, [supported, clearWorkaround]);
+  }, [supported, clearWorkaround, clearEndTimer]);
 
   return [speaking, speak, stop, supported, spokenRange, hasVoiceForLang, hasBoundaryForLang];
 }

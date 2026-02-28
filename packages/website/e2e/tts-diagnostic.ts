@@ -21,6 +21,14 @@ interface BoundaryEvent {
   name: string;
 }
 
+interface CoverageResult {
+  firstHighlighted: number[];
+  missed: number;
+  shortestDuration: number;
+  total: number;
+  wordStarts: number[];
+}
+
 interface TTSResult {
   boundaries: BoundaryEvent[];
   endTime: number;
@@ -51,69 +59,12 @@ const TESTS = [
   },
 ];
 
-async function main(): Promise<void> {
-  const browser = await chromium.launch({ channel: 'chrome', headless: false });
-  const page = await browser.newPage();
-  await page.goto('about:blank');
-
-  // Wait for voices to load (Chrome loads them async)
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        if (speechSynthesis.getVoices().length > 0) {
-          resolve();
-          return;
-        }
-        speechSynthesis.addEventListener(
-          'voiceschanged',
-          () => {
-            resolve();
-          },
-          { once: true }
-        );
-        setTimeout(resolve, 3000);
-      })
-  );
-
-  const voiceCount = await page.evaluate(() => speechSynthesis.getVoices().length);
-  console.log(`${String(voiceCount)} voices available\n`);
-
-  for (const test of TESTS) {
-    console.log(`=== ${test.label} ===`);
-
-    const result = await speakAndRecord(page, test.lang, test.text);
-    console.log(`Voice: ${result.voiceName}`);
-    console.log(
-      `${String(result.boundaries.length)} boundary events (speech: ${String(result.endTime)}ms):`
-    );
-    printBoundaryEvents(result);
-
-    const wordBoundaries = result.boundaries.filter((b) => b.name === 'word');
-    if (wordBoundaries.length > 0) {
-      printIntervalStats(wordBoundaries, result.endTime);
-      printCoverageCheck(test.text, wordBoundaries, result.endTime);
-    }
-    console.log();
-  }
-
-  await browser.close();
-}
-
-function printBoundaryEvents(result: TTSResult): void {
-  let prevTime = 0;
-  for (let i = 0; i < result.boundaries.length; i++) {
-    const b = result.boundaries[i] as BoundaryEvent;
-    const delta = b.elapsed - prevTime;
-    const cl = b.charLength === undefined ? '' : ` cl=${String(b.charLength)}`;
-    console.log(
-      `  #${String(i)} t=${String(b.elapsed)}ms (+${String(delta)}ms) ci=${String(b.charIndex)}${cl} [${b.name}]`
-    );
-    prevTime = b.elapsed;
-  }
-}
-
-/** Simulate the cumulative highlighting algorithm from useSpeech and verify coverage. */
-function printCoverageCheck(text: string, wordBoundaries: BoundaryEvent[], endTime: number): void {
+/** Simulate the cumulative highlighting algorithm from useSpeech. */
+function checkCoverage(
+  text: string,
+  wordBoundaries: BoundaryEvent[],
+  endTime: number
+): CoverageResult {
   const WORD_RE = /[\p{L}\p{N}]/u;
   const segments = text.split(/(\s+)/);
   const wordStarts: number[] = [];
@@ -170,20 +121,123 @@ function printCoverageCheck(text: string, wordBoundaries: BoundaryEvent[], endTi
   const missed = firstHighlighted.filter((t) => t === -1).length;
   const durations = firstHighlighted.filter((t) => t >= 0).map((t) => endTime - t);
 
+  return {
+    firstHighlighted,
+    missed,
+    shortestDuration: durations.length > 0 ? Math.min(...durations) : 0,
+    total: wordStarts.length,
+    wordStarts,
+  };
+}
+
+async function main(): Promise<void> {
+  const browser = await chromium.launch({ channel: 'chrome', headless: false });
+  const page = await browser.newPage();
+  await page.goto('about:blank');
+
+  // Wait for voices to load (Chrome loads them async)
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        if (speechSynthesis.getVoices().length > 0) {
+          resolve();
+          return;
+        }
+        speechSynthesis.addEventListener(
+          'voiceschanged',
+          () => {
+            resolve();
+          },
+          { once: true }
+        );
+        setTimeout(resolve, 3000);
+      })
+  );
+
+  // Get all voices grouped by language
+  const allVoices = await page.evaluate(() =>
+    speechSynthesis.getVoices().map((v) => ({ lang: v.lang, name: v.name }))
+  );
+  console.log(`${String(allVoices.length)} voices available\n`);
+
+  for (const test of TESTS) {
+    // Find all voices matching this language
+    const voices = allVoices.filter(
+      (v) => v.lang.startsWith(test.lang + '-') || v.lang.toLowerCase() === test.lang.toLowerCase()
+    );
+    // Skip Google voices (no boundary events)
+    const testableVoices = voices.filter((v) => !v.name.startsWith('Google'));
+    console.log(
+      `=== ${test.label} (${String(testableVoices.length)} voices, ${String(voices.length - testableVoices.length)} Google skipped) ===`
+    );
+
+    for (const voice of testableVoices) {
+      const result = await speakAndRecord(page, test.lang, test.text, voice.name);
+      const wordBoundaries = result.boundaries.filter((b) => b.name === 'word');
+
+      // Compact output per voice — only show details if there's a problem
+      const coverage = checkCoverage(test.text, wordBoundaries, result.endTime);
+      const deltas =
+        wordBoundaries.length > 1
+          ? wordBoundaries.map((b, i) =>
+              i === 0 ? b.elapsed : b.elapsed - (wordBoundaries[i - 1] as BoundaryEvent).elapsed
+            )
+          : [];
+      const under10 = deltas.filter((d) => d < 10).length;
+
+      const status =
+        coverage.missed > 0
+          ? `FAIL: ${String(coverage.missed)}/${String(coverage.total)} words missed`
+          : `OK: ${String(coverage.total)} words, shortest=${String(coverage.shortestDuration)}ms`;
+
+      console.log(
+        `  ${voice.name}: ${String(wordBoundaries.length)} events, ${String(under10)} batched, ${status}`
+      );
+
+      // Show full details for failing voices
+      if (coverage.missed > 0 && wordBoundaries.length > 0) {
+        printBoundaryEvents(result);
+        printIntervalStats(wordBoundaries, result.endTime);
+        printCoverageCheck(test.text, wordBoundaries, result.endTime);
+      }
+    }
+    console.log();
+  }
+
+  await browser.close();
+}
+
+function printBoundaryEvents(result: TTSResult): void {
+  let prevTime = 0;
+  for (let i = 0; i < result.boundaries.length; i++) {
+    const b = result.boundaries[i] as BoundaryEvent;
+    const delta = b.elapsed - prevTime;
+    const cl = b.charLength === undefined ? '' : ` cl=${String(b.charLength)}`;
+    console.log(
+      `  #${String(i)} t=${String(b.elapsed)}ms (+${String(delta)}ms) ci=${String(b.charIndex)}${cl} [${b.name}]`
+    );
+    prevTime = b.elapsed;
+  }
+}
+
+/** Print detailed coverage results. */
+function printCoverageCheck(text: string, wordBoundaries: BoundaryEvent[], endTime: number): void {
+  const result = checkCoverage(text, wordBoundaries, endTime);
+
   console.log(`\n  Coverage (cumulative algorithm):`);
-  console.log(`    ${String(wordStarts.length)} words, ${String(maxEnd + 1)} covered`);
-  if (missed > 0) {
-    console.log(`    *** ${String(missed)} WORDS NEVER HIGHLIGHTED ***`);
-    firstHighlighted.forEach((t, i) => {
+  console.log(`    ${String(result.total)} words, ${String(result.total - result.missed)} covered`);
+  if (result.missed > 0) {
+    console.log(`    *** ${String(result.missed)} WORDS NEVER HIGHLIGHTED ***`);
+    result.firstHighlighted.forEach((t, i) => {
       if (t === -1) {
-        console.log(`      Word ${String(i)} at pos ${String(wordStarts[i])}`);
+        console.log(`      Word ${String(i)} at pos ${String(result.wordStarts[i])}`);
       }
     });
   } else {
     console.log(`    All words highlighted`);
   }
-  if (durations.length > 0) {
-    console.log(`    Shortest highlight duration: ${String(Math.min(...durations))}ms`);
+  if (result.shortestDuration > 0) {
+    console.log(`    Shortest highlight duration: ${String(result.shortestDuration)}ms`);
   }
 }
 
@@ -208,57 +262,27 @@ function printIntervalStats(wordBoundaries: BoundaryEvent[], endTime: number): v
 async function speakAndRecord(
   page: Awaited<ReturnType<Awaited<ReturnType<typeof chromium.launch>>['newPage']>>,
   lang: string,
-  text: string
+  text: string,
+  voiceName?: string
 ): Promise<TTSResult> {
-  return page.evaluate(
-    ({ lang, text }) => {
-      return new Promise<TTSResult>((resolve) => {
-        speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-
-        // Prefer non-Google voices (Google voices don't fire onboundary)
-        const voices = speechSynthesis.getVoices();
-        const matching = voices.filter(
-          (v) => v.lang.startsWith(lang + '-') || v.lang.toLowerCase() === lang.toLowerCase()
-        );
-        const voice = matching.find((v) => !v.name.startsWith('Google')) ?? matching[0];
-        if (voice) {
-          utterance.voice = voice;
-        }
-
-        const boundaries: BoundaryEvent[] = [];
-        const startTime = performance.now();
-        const finish = (): void => {
-          resolve({
-            boundaries,
-            endTime: Math.round(performance.now() - startTime),
-            text,
-            voiceName: voice?.name ?? 'default',
-          });
-        };
-
-        utterance.onboundary = (event) => {
-          boundaries.push({
-            charIndex: event.charIndex,
-            charLength: (event as unknown as { charLength?: number }).charLength,
-            elapsed: Math.round(performance.now() - startTime),
-            name: event.name,
-          });
-        };
-        utterance.onend = finish;
-        utterance.addEventListener('error', finish);
-        setTimeout(() => {
-          speechSynthesis.cancel();
-          finish();
-        }, 30_000);
-
-        speechSynthesis.speak(utterance);
-      });
-    },
-    { lang, text }
-  );
+  // Use string evaluation to avoid tsx __name decorators breaking in browser context
+  const js = `new Promise(resolve => {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(${JSON.stringify(text)});
+    u.lang = ${JSON.stringify(lang)};
+    const voices = speechSynthesis.getVoices();
+    const v = ${voiceName ? `voices.find(x => x.name === ${JSON.stringify(voiceName)})` : 'undefined'};
+    if (v) u.voice = v;
+    const bs = [];
+    const t0 = performance.now();
+    const r = () => resolve({ boundaries: bs, endTime: Math.round(performance.now() - t0), text: ${JSON.stringify(text)}, voiceName: v?.name ?? 'default' });
+    u.onboundary = e => bs.push({ charIndex: e.charIndex, charLength: e.charLength, elapsed: Math.round(performance.now() - t0), name: e.name });
+    u.onend = r;
+    u.addEventListener('error', r);
+    setTimeout(() => { speechSynthesis.cancel(); r(); }, 30000);
+    speechSynthesis.speak(u);
+  })`;
+  return page.evaluate(js) as unknown as Promise<TTSResult>;
 }
 
 main().catch((error: unknown) => {

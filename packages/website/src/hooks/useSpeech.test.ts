@@ -128,6 +128,7 @@ describe('useSpeech', () => {
     const utterance = getRealUtterance(mockSynthesis.speak);
     act(() => {
       utterance.onend?.();
+      vi.advanceTimersByTime(50);
     });
     expect(result.current[0]).toBe(false);
   });
@@ -429,7 +430,7 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([0, 3]);
   });
 
-  it('resets spokenRange on utterance end', () => {
+  it('highlights all words on end then clears after delay', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -437,15 +438,25 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
+    // Only first word got a boundary event
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     expect(result.current[4]).toEqual([0, 0]);
 
+    // On end, all words are highlighted immediately
     act(() => {
       utterance.onend?.();
     });
+    expect(result.current[4]).toEqual([0, 1]);
+    expect(result.current[0]).toBe(true); // still speaking briefly
+
+    // After 50ms delay, everything clears
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
     expect(result.current[4]).toBeNull();
+    expect(result.current[0]).toBe(false);
   });
 
   it('maps CJK charIndex correctly with spaced text', () => {
