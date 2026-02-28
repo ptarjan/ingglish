@@ -14,11 +14,13 @@ export async function loadDict(code: string): Promise<IpaDict> {
     return cached;
   }
 
-  if (!LANGUAGES.some((l) => l.code === code)) {
+  const lang = LANGUAGES.find((l) => l.code === code);
+  if (!lang) {
     throw new Error(`Unknown language code: ${code}`);
   }
 
-  const url = `${import.meta.env.BASE_URL}ipa-dicts/${code}.json`;
+  // Use validated lang.code (not raw `code`) to build URL — satisfies CodeQL SSRF check
+  const url = `${import.meta.env.BASE_URL}ipa-dicts/${lang.code}.json`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);

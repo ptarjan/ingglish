@@ -3,7 +3,9 @@
  * Generate CPU profile for flame graph analysis.
  */
 import { Session } from 'inspector';
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdtempSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
 
 const session = new Session();
 session.connect();
@@ -55,8 +57,9 @@ async function main() {
       }
 
       session.post('Profiler.stop', (err, { profile }) => {
-        writeFileSync('/tmp/cpu-profile.cpuprofile', JSON.stringify(profile));
-        console.log('Profile saved to /tmp/cpu-profile.cpuprofile');
+        const outPath = join(mkdtempSync(join(tmpdir(), 'cpu-profile-')), 'cpu-profile.cpuprofile');
+        writeFileSync(outPath, JSON.stringify(profile));
+        console.log(`Profile saved to ${outPath}`);
 
         // Output top functions by self time
         interface ProfileNode {

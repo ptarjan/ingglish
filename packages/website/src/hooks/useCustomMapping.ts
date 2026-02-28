@@ -245,7 +245,10 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
         if (colonIndex === -1) {
           continue;
         }
-        config.phonemeMap[pair.slice(0, colonIndex)] = pair.slice(colonIndex + 1);
+        const phonemeKey = pair.slice(0, colonIndex);
+        if (phonemeKey !== '__proto__') {
+          config.phonemeMap[phonemeKey] = pair.slice(colonIndex + 1);
+        }
       }
     } else if (key === 'r') {
       for (const pair of value.split(',')) {
@@ -253,7 +256,10 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
         if (colonIndex === -1) {
           continue;
         }
-        config.rColoredPrefixes[pair.slice(0, colonIndex)] = pair.slice(colonIndex + 1);
+        const rKey = pair.slice(0, colonIndex);
+        if (rKey !== '__proto__') {
+          config.rColoredPrefixes[rKey] = pair.slice(colonIndex + 1);
+        }
       }
     }
   }
