@@ -21,8 +21,16 @@ export const EMAIL_REGEX = /[\w.%+-]{1,64}@(?:[a-z0-9-]{1,63}\.){1,10}[a-z]{2,63
  * Matches common TLDs to avoid false positives like "Dr. Smith".
  * Includes optional path/query after the domain.
  */
-export const BARE_DOMAIN_REGEX =
-  /\b(?:[a-z0-9][-a-z0-9]*\.)+(?:com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil|info|biz|tv|me|app|dev|ai|xyz)\b(?:\/[^\s<>"')\]]*)?/gi;
+const COMMON_TLDS =
+  'com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil' +
+  '|info|biz|tv|me|app|dev|ai|xyz' +
+  // Newer/less common but seen on HN, Reddit, etc.
+  '|rs|site|tech|blog|news|club|lol|new|world|online|space|fun|live|shop|store' +
+  '|gg|fm|im|is|to|cc|ws|ly|gl|be|us|in|eu|asia|pro|cz|pl|fi|dk|pt|ie|nz|za|br|mx|ar|cl|kr|tw|hk|sg|id|th|vn|ph';
+export const BARE_DOMAIN_REGEX = new RegExp(
+  String.raw`\b(?:[a-z0-9][-a-z0-9]*\.)+(?:${COMMON_TLDS})\b(?:\/[^\s<>"')\]]*)?`,
+  'gi'
+);
 
 /**
  * Extracts URLs and emails from text, replacing them with placeholders.
