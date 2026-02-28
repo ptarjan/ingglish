@@ -186,7 +186,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   roommate: ['R', 'UW1', 'M', 'M', 'EY2', 'T'], // /ˈrumˌmeɪt/ — CMU missing geminate /mm/
   roommates: ['R', 'UW1', 'M', 'M', 'EY2', 'T', 'S'], // /ˈrumˌmeɪts/ — CMU missing geminate /mm/
   saturday: ['S', 'AE1', 'T', 'ER0', 'D', 'EY2'], // /ˈsætɝˌdeɪ/
-  soupcon: ['S', 'UW1', 'P', 'S', 'AA0', 'N'], // /ˈsupsɑn/
+  soupcon: ['S', 'UW0', 'P', 'S', 'AA1', 'N'], // /supˈsɑn/
   streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'], // /ˈstrɛtəm/
   sudo: ['S', 'UW1', 'D', 'OW0'], // /ˈsudoʊ/
 
