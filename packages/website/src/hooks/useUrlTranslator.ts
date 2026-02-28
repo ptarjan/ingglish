@@ -131,6 +131,13 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
       try {
         const parsedUrl = new URL(targetUrl);
+
+        // Block translating ingglish.com itself — it's an SPA so the proxied
+        // HTML is just an empty shell after scripts are stripped.
+        if (parsedUrl.hostname === globalThis.location.hostname) {
+          throw new Error("You're already on Ingglish! Try translating a different website.");
+        }
+
         const proxyUrl = `${CORS_PROXY}${encodeURIComponent(parsedUrl.href)}`;
 
         const response = await fetch(proxyUrl);
