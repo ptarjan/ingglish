@@ -90,7 +90,9 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  */
 function lookupByArpabet(arpabet: string[]): string[] {
   const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
-  if (!primary) {return [];}
+  if (!primary) {
+    return [];
+  }
 
   const primaryKey = primary.join(' ');
   const primaryMatches = lookupPhonemeKey(primaryKey);
