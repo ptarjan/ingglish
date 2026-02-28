@@ -157,9 +157,10 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
   // Try exact, lowercase, title case, accent-stripped, then ß→ss normalization
   const lower = word.toLowerCase();
   const title = lower.charAt(0).toUpperCase() + lower.slice(1);
-  const stripped = stripAccents(lower);
-  if (dict[word] ?? dict[lower] ?? dict[title] ?? dict[stripped]) {
-    return dict[word] ?? dict[lower] ?? dict[title] ?? dict[stripped];
+  const stripped = stripDiacritics(lower);
+  const result = dict[word] ?? dict[lower] ?? dict[title] ?? dict[stripped];
+  if (result) {
+    return result;
   }
   // German ß→ss normalization (e.g. "Bewußtsein" → dict["Bewusstsein"])
   if (lower.includes('ß')) {
@@ -297,9 +298,6 @@ function lookupKhmerCompound(dict: IpaDict, word: string): string | undefined {
   // Strip slashes from each part before joining so ipaToFormat sees clean IPA
   return parts.map((p) => p.replaceAll(IPA_SLASH_RE, '')).join(' ');
 }
-
-/** Strip combining diacritics (accents, tildes, etc.) from a string. */
-const stripAccents = stripDiacritics;
 
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
