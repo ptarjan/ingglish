@@ -15,6 +15,15 @@ const config: KnipConfig = {
     'packages/dom': {
       entry: ['scripts/**/*.{js,ts}'],
     },
+    'packages/fallback': {
+      entry: ['src/**/*.bench.ts'],
+    },
+    'packages/g2p': {
+      entry: ['src/**/*.bench.ts'],
+    },
+    'packages/phonemes': {
+      entry: ['src/**/*.bench.ts'],
+    },
     'packages/website': {
       entry: ['e2e/**/*.ts', 'scripts/**/*.{js,ts}'],
     },
@@ -26,8 +35,6 @@ const config: KnipConfig = {
     'packages/core/src/detect/index.ts',
     // Extension test files (vitest runs them but they're not entry points)
     'packages/extension/src/*.test.ts',
-    // Benchmark files (run manually, not entry points)
-    'packages/*/src/*.bench.ts',
   ],
   ignoreDependencies: [
     'eslint-plugin-prettier', // required by eslint-config-prettier
