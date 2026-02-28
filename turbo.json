@@ -20,6 +20,16 @@
     "bench": {
       "cache": false,
       "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
+    },
+    "//#knip": {
+      "inputs": [
+        "packages/*/src/**",
+        "packages/*/package.json",
+        "package.json",
+        "knip.config.ts",
+        "tsconfig.base.json"
+      ],
+      "outputs": []
     }
   }
 }

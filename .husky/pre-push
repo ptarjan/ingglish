@@ -31,8 +31,8 @@ if [ -n "$css_files" ]; then
   step "stylelint" bash -c 'echo "$1" | xargs npx stylelint' _ "$css_files"
 fi
 
-# Dead code detection (~7s) — catches unused files, unlisted deps
-step "knip" npm run knip
+# Dead code detection — turbo-cached, skip when no source files changed (~0s hit, ~7s miss)
+step "knip" npx turbo knip
 
 # Type-check the website package (~4s) — catches 90% of CI failures
 if echo "$changed_files" | grep -qE '^packages/(website|core|phonemes|ipa|normalize|dom)/'; then
