@@ -23,7 +23,7 @@ export const eo: Record<string, string> = {
   or: 'or',
   palas: 'palas',
   plorbruluma: 'plorbruluma',
-  resultaton: 'rezultaton',
+  resultaton: 'resultaton',
   sang: 'sanɡ',
   seĝetoj: 'sedʒetoj',
   sendignigan: 'sendignigan',
