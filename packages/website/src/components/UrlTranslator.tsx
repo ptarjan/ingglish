@@ -119,16 +119,16 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     }
   }, [onShare, url, shareLink, selectedLanguage]);
 
-  // For foreign languages, show samples that have source URLs as example links
+  // Show samples that have source URLs as example links for the selected language
   const exampleUrls = useMemo(() => {
-    if (selectedLanguage === 'en') {
-      return EXAMPLE_URLS;
-    }
     const samples = ALL_SAMPLES[selectedLanguage];
     if (!samples) {
       return EXAMPLE_URLS;
     }
-    return samples.filter((s) => s.source).map((s) => ({ name: s.label, url: s.source! }));
+    const fromSamples = samples
+      .filter((s) => s.source)
+      .map((s) => ({ name: s.label, url: s.source! }));
+    return fromSamples.length > 0 ? fromSamples : EXAMPLE_URLS;
   }, [selectedLanguage]);
 
   const formatLabel = getFormatLabel(format);
