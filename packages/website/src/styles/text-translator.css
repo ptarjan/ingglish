@@ -82,6 +82,7 @@
 
 .section-header-row {
   display: flex;
+  flex: 1;
   gap: 0.5rem;
   align-items: center;
   min-width: 0;
