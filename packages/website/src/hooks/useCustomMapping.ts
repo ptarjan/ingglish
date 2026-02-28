@@ -228,9 +228,18 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
     clean = raw;
   }
 
-  // Use null-prototype objects to prevent prototype pollution from user-controlled keys
-  const phonemeMap = Object.create(null) as Record<string, string>;
-  const rColoredPrefixes = Object.create(null) as Record<string, string>;
+  // Valid keys: ARPABET phonemes (optionally with stress digit 0-2) and AH0
+  const validPhonemeKeys = new Set(Object.keys(ARPABET_TO_INGGLISH_MAP));
+  validPhonemeKeys.add('AH0');
+  for (const base of Object.keys(ARPABET_TO_INGGLISH_MAP)) {
+    for (let d = 0; d <= 2; d++) {
+      validPhonemeKeys.add(`${base}${d}`);
+    }
+  }
+  const validRColoredKeys = new Set(R_COLORED_FORWARD.keys());
+
+  const phonemeMap: Record<string, string> = {};
+  const rColoredPrefixes: Record<string, string> = {};
   const params = clean.split('&');
 
   for (const param of params) {
@@ -247,7 +256,10 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
         if (colonIndex === -1) {
           continue;
         }
-        phonemeMap[pair.slice(0, colonIndex)] = pair.slice(colonIndex + 1);
+        const phonemeKey = pair.slice(0, colonIndex);
+        if (validPhonemeKeys.has(phonemeKey)) {
+          phonemeMap[phonemeKey] = pair.slice(colonIndex + 1);
+        }
       }
     } else if (key === 'r') {
       for (const pair of value.split(',')) {
@@ -255,7 +267,10 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
         if (colonIndex === -1) {
           continue;
         }
-        rColoredPrefixes[pair.slice(0, colonIndex)] = pair.slice(colonIndex + 1);
+        const rKey = pair.slice(0, colonIndex);
+        if (validRColoredKeys.has(rKey)) {
+          rColoredPrefixes[rKey] = pair.slice(colonIndex + 1);
+        }
       }
     }
   }
