@@ -204,9 +204,6 @@ const SW_VERB_PREFIXES: string[] = [
   'hawa',
   // 3 char
   'ali',
-  'ame',
-  'ana',
-  'ata',
   'uli',
   'ume',
   'una',
@@ -368,7 +365,7 @@ function lemmatizeEo(dict: IpaDict, word: string): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// Esperanto
+// Swahili
 // ---------------------------------------------------------------------------
 
 function lemmatizeSw(dict: IpaDict, word: string): string | undefined {

@@ -13,7 +13,6 @@ export const ma: Record<string, string> = {
   Lekiu: 'ləkiw',
   Malaysia: 'malejsia',
   merdeka: 'məɾdeka',
-  Mereka: 'məreka',
   mereka: 'məreka',
   Oleh: 'oleh',
   samarata: 'samarata',

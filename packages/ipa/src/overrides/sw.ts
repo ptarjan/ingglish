@@ -4,10 +4,10 @@ export const sw: Record<string, string> = {
   // that G2P can't handle (Arabic loanwords, foreign names).
 
   // Arabic loanword with "qi" — G2P doesn't have a rule for 'q'
-  sadiqi: '/sa.ˈdiː.ki/',
-  ulithiqi: '/u.li.ˈθi.ki/',
+  sadiqi: '/saˈdiːki/',
+  ulithiqi: '/uliˈθiki/',
   // Arabic "kh" = /x/ (voiceless velar fricative), not /kh/
-  usiikhini: '/u.si.i.ˈxi.ni/',
+  usiikhini: '/usiiˈxini/',
   // Foreign name — 'c' alone is not a Swahili phoneme
-  Victoria: '/vik.tɔ.ˈɾi.a/',
+  Victoria: '/viktɔˈɾia/',
 };
