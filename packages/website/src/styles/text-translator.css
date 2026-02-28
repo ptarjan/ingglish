@@ -80,18 +80,15 @@
   justify-content: space-between;
 }
 
-.section-header-row {
+.section-footer {
   display: flex;
-  flex: 1;
   gap: 0.5rem;
   align-items: center;
-  min-width: 0;
-  overflow: hidden;
+  justify-content: space-between;
 }
 
-.section-header .sample-select {
+.section-footer .sample-select {
   flex: 1;
-  width: 0;
   min-width: 5rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -266,15 +263,6 @@
 
   .format-cycle-btn {
     padding: 0.5rem 0.75rem;
-  }
-
-  .section-header-row {
-    width: 100%;
-  }
-
-  .section-header .sample-select {
-    flex: 1;
-    max-width: none;
   }
 
   .language-select,

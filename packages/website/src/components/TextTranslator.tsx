@@ -539,43 +539,18 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       <div className="translator-grid">
         <div className="input-section">
           <div className="section-header">
-            <div className="section-header-row">
-              <select
-                className="language-select"
-                onChange={handleLanguageChange}
-                value={selectedLanguage}
-              >
-                <option value="en">English</option>
-                {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.label}
-                  </option>
-                ))}
-              </select>
-              <select
-                aria-label="Load sample passage"
-                className="sample-select"
-                onChange={handleSampleSelect}
-                value={selectedSampleIndex === -1 ? '' : String(selectedSampleIndex)}
-              >
-                <option disabled value="">
-                  Sample...
+            <select
+              className="language-select"
+              onChange={handleLanguageChange}
+              value={selectedLanguage}
+            >
+              <option value="en">English</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.label}
                 </option>
-                {samples.map((s, i) => (
-                  <option key={i} value={i}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-              {selectedSampleSource && (
-                <a
-                  className="sample-source-link"
-                  href={`/url?url=${encodeURIComponent(selectedSampleSource)}${isTargetLangMode ? `&lang=${selectedLanguage}` : ''}`}
-                >
-                  Read full page &#x2197;
-                </a>
-              )}
-            </div>
+              ))}
+            </select>
             <div className="button-group">
               {speechSupported && hasVoice(isTargetLangMode ? selectedLanguage : 'en') && (
                 <button
@@ -605,17 +580,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               >
                 {copiedEnglish ? <CheckIcon /> : <CopyIcon />}
               </button>
-              {onShare && (
-                <button
-                  aria-label={copiedShare ? 'Link copied' : 'Share'}
-                  className={`btn-secondary btn-icon ${copiedShare ? 'btn-copied' : ''}`}
-                  disabled={!hasContent}
-                  onClick={handleShare}
-                  title={copiedShare ? 'Copied!' : 'Share'}
-                >
-                  {copiedShare ? <CheckIcon /> : <ShareIcon />}
-                </button>
-              )}
               <button
                 aria-label="Clear"
                 className="btn-secondary btn-icon"
@@ -649,6 +613,42 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             spokenRange={speakingEnglish ? spokenRange : null}
             text={displayEnglish}
           />
+          <div className="section-footer">
+            <select
+              aria-label="Load sample passage"
+              className="sample-select"
+              onChange={handleSampleSelect}
+              value={selectedSampleIndex === -1 ? '' : String(selectedSampleIndex)}
+            >
+              <option disabled value="">
+                Sample...
+              </option>
+              {samples.map((s, i) => (
+                <option key={i} value={i}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+            {selectedSampleSource && (
+              <a
+                className="sample-source-link"
+                href={`/url?url=${encodeURIComponent(selectedSampleSource)}${isTargetLangMode ? `&lang=${selectedLanguage}` : ''}`}
+              >
+                Read full page &#x2197;
+              </a>
+            )}
+            {onShare && (
+              <button
+                aria-label={copiedShare ? 'Link copied' : 'Share'}
+                className={`btn-secondary btn-icon ${copiedShare ? 'btn-copied' : ''}`}
+                disabled={!hasContent}
+                onClick={handleShare}
+                title={copiedShare ? 'Copied!' : 'Share'}
+              >
+                {copiedShare ? <CheckIcon /> : <ShareIcon />}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="input-section ingglish-section">
