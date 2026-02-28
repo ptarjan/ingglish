@@ -58,6 +58,10 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Wrong consonant in derived form
   deliciously: ['D', 'IH0', 'L', 'IH1', 'SH', 'AH0', 'S', 'L', 'IY0'], // /dɪˈlɪʃəsli/ — CMU has /ʃ/ for final /s/
   devs: ['D', 'EH1', 'V', 'Z'], // /dɛvz/
+  // Website/tech terms missing from CMU
+  digraph: ['D', 'AY1', 'G', 'R', 'AE2', 'F'], // /ˈdaɪˌɡræf/ — G2P gives short /ɪ/
+
+  digraphs: ['D', 'AY1', 'G', 'R', 'AE2', 'F', 'S'], // /ˈdaɪˌɡræfs/
   // Wrong syllable count
   doer: ['D', 'UW1', 'ER0'], // /ˈduɝ/ — CMU has 1 syllable (D UW1 R), should be 2 like doers
 
@@ -67,7 +71,6 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // Spurious /j/ glide (British /juː/ where AmE uses /uː/)
   dudes: ['D', 'UW1', 'D', 'Z'], // /duːdz/ — CMU has /dju/, should match dude's /du/
   duplicates: ['D', 'UW1', 'P', 'L', 'AH0', 'K', 'EY2', 'T', 'S'], // /ˈdupləˌkeɪts/ — CMU has /dju/
-
   duplication: ['D', 'UW2', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /ˌdupləˈkeɪʃən/ — CMU has /dju/
   emoji: ['IH0', 'M', 'OW1', 'JH', 'IY0'], // /ɪˈmoʊdʒi/
   engenders: ['EH0', 'N', 'JH', 'EH1', 'N', 'D', 'ER0', 'Z'], // /ɛnˈdʒɛndɝz/ — CMU has /ŋɡ/
@@ -88,34 +91,36 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
     'IY0',
   ], // /ɪkˈskruʃiˌeɪtɪŋli/ — CMU has /s/ (excruciating is correct)
   exposé: ['EH2', 'K', 'S', 'P', 'OW0', 'Z', 'EY1'], // /ˌɛkspoʊˈzeɪ/ — French noun (report), not verb "to expose"
+  favicon: ['F', 'AE1', 'V', 'IH0', 'K', 'AA2', 'N'], // /ˈfævɪˌkɑn/ — "favorite icon"
+
   fiancee: ['F', 'IY0', 'AA0', 'N', 'S', 'EY1'], // /fiɑnˈseɪ/ — CMU has wrong final syllable
+
   finagle: ['F', 'IH0', 'N', 'EY1', 'G', 'AH0', 'L'], // /fɪˈneɪɡəl/ — CMU has /ə/ for /eɪ/, wrong stress
-  flambe: ['F', 'L', 'AA0', 'M', 'B', 'EY1'], // /flɑmˈbeɪ/
-
-  // Missing phoneme
-  forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // /ˈfɔrdʒɪŋz/ — CMU missing /r/
-
-  fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈfrɔdʒələntli/ — CMU has /d/
 
   // ---------------------------------------------------------------------------
   // CMU corrections — wrong vowel or glide
   // ---------------------------------------------------------------------------
 
+  flambe: ['F', 'L', 'AA0', 'M', 'B', 'EY1'], // /flɑmˈbeɪ/
+  // Missing phoneme
+  forgings: ['F', 'AO1', 'R', 'JH', 'IH0', 'NG', 'Z'], // /ˈfɔrdʒɪŋz/ — CMU missing /r/
+  fraudulently: ['F', 'R', 'AO1', 'JH', 'AH0', 'L', 'AH0', 'N', 'T', 'L', 'IY0'], // /ˈfrɔdʒələntli/ — CMU has /d/
   // Days of the week: CMU v1 has /i/ but standard AmE uses /eɪ/
   friday: ['F', 'R', 'AY1', 'D', 'EY2'], // /ˈfraɪˌdeɪ/
   gestalt: ['G', 'AH0', 'SH', 'T', 'AA1', 'L', 'T'], // /ɡəˈʃtɑlt/
   git: ['G', 'IH1', 'T'], // /ɡɪt/
+
   github: ['G', 'IH1', 'T', 'HH', 'AH1', 'B'], // /ˈɡɪtˌhʌb/
   grandma: ['G', 'R', 'AE1', 'N', 'M', 'AA2'], // /ˈɡrænˌmɑ/ — CMU has spurious /d/
-  haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // /hæpˈhæzɝdli/ — CMU has /f/
 
+  haphazardly: ['HH', 'AE0', 'P', 'HH', 'AE1', 'Z', 'ER0', 'D', 'L', 'IY0'], // /hæpˈhæzɝdli/ — CMU has /f/
   headquartered: ['HH', 'EH1', 'D', 'K', 'W', 'AO2', 'R', 'T', 'ER0', 'D'], // /ˈhɛdˌkwɔrtɝd/ — CMU missing /w/
   hors: ['AO1', 'R'], // /ɔr/ — CMU wrong; French: silent h and s (hors d'oeuvres)
-
   immature: ['IH2', 'M', 'AH0', 'CH', 'UH1', 'R'], // /ˌɪməˈtʃʊr/ — CMU has /tj/ (British), should match mature's /tʃ/
   inattention: ['IH2', 'N', 'AH0', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ˌɪnəˈtɛnʃən/ — CMU has /tʃ/
   // N→NG + additional vowel fix (N→NG alone handled by normalizeVelarNasal)
   inconclusively: ['IH2', 'NG', 'K', 'AH0', 'NG', 'K', 'L', 'UW1', 'S', 'IH0', 'V', 'L', 'IY0'], // /ˌɪŋkəŋˈklusɪvli/ — CMU has /nk/
+  initialisms: ['IH0', 'N', 'IH1', 'SH', 'AH0', 'L', 'IH2', 'Z', 'AH0', 'M', 'Z'], // /ɪˈnɪʃəˌlɪzəmz/
   // CMU has /tʃ/ instead of /ʃ/ in -tion/-sion suffix after N
   intention: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'], // /ɪnˈtɛnʃən/ — CMU has /tʃ/
   intentions: ['IH0', 'N', 'T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ɪnˈtɛnʃənz/ — CMU has /tʃ/
@@ -129,52 +134,56 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   localhost: ['L', 'OW1', 'K', 'AH0', 'L', 'HH', 'OW2', 'S', 'T'], // /ˈloʊkəlˌhoʊst/
   manana: ['M', 'AE0', 'N', 'Y', 'AA1', 'N', 'AH0'], // /mænˈjɑnə/
   mansions: ['M', 'AE1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ˈmænʃənz/ — CMU has /tʃ/ (singular is correct)
+
+  // ---------------------------------------------------------------------------
+  // CMU corrections — wrong word sense or incomplete entry
+  // ---------------------------------------------------------------------------
+
   matured: ['M', 'AH0', 'CH', 'UH1', 'R', 'D'], // /məˈtʃʊrd/ — CMU has /tj/ (British), should match mature's /tʃ/
   meme: ['M', 'IY1', 'M'], // /mim/
   monday: ['M', 'AH1', 'N', 'D', 'EY2'], // /ˈmʌnˌdeɪ/
   negligee: ['N', 'EH1', 'G', 'L', 'AH0', 'ZH', 'EY2'], // /ˈnɛɡləˌʒeɪ/
 
   // ---------------------------------------------------------------------------
-  // CMU corrections — wrong word sense or incomplete entry
+  // CMU corrections — variant ordering (v1 wrong for standard AmE)
   // ---------------------------------------------------------------------------
 
   nemo: ['N', 'IY1', 'M', 'OW0'], // /ˈnimoʊ/ — CMU has /ɛ/ for /i/
   npm: ['EH1', 'N', 'P', 'IY1', 'EH1', 'M'], // /ɛn pi ɛm/
   oauth: ['OW1', 'AO1', 'TH'], // /oʊɔθ/
   obsequies: ['AA1', 'B', 'S', 'IH0', 'K', 'W', 'IY0', 'Z'], // /ˈɑbsɪkwiz/
-
-  // ---------------------------------------------------------------------------
-  // CMU corrections — variant ordering (v1 wrong for standard AmE)
-  // ---------------------------------------------------------------------------
-
   oppugnant: ['AH0', 'P', 'AH1', 'G', 'N', 'AH0', 'N', 'T'], // /əˈpʌɡnənt/
+
   oppugners: ['AH0', 'P', 'Y', 'UW1', 'N', 'ER0', 'Z'], // /əˈpjunɝz/ — silent g
+  orthographic: ['AO2', 'R', 'TH', 'AH0', 'G', 'R', 'AE1', 'F', 'IH0', 'K'], // /ˌɔrθəˈɡræfɪk/
   ow: ['AW1'], // /aʊ/ — CMU has /oʊ/
   padre: ['P', 'AA1', 'D', 'R', 'EY0'], // /ˈpɑdreɪ/ — CMU has /æ/ for /ɑ/
   patisserie: ['P', 'AH0', 'T', 'IH1', 'S', 'ER0', 'IY0'], // /pəˈtɪsɝi/
-
+  permalink: ['P', 'ER1', 'M', 'AH0', 'L', 'IH2', 'NG', 'K'], // /ˈpɝməˌlɪŋk/ — "permanent link"
   phaeton: ['F', 'EY1', 'IH0', 'T', 'AH0', 'N'], // /ˈfeɪɪtən/
+
   pinata: ['P', 'IH0', 'N', 'Y', 'AA1', 'T', 'AH0'], // /pɪnˈjɑtə/
   piquet: ['P', 'IH0', 'K', 'EY1'], // /pɪˈkeɪ/
-  podcast: ['P', 'AA1', 'D', 'K', 'AE2', 'S', 'T'], // /ˈpɑdˌkæst/
-  potshots: ['P', 'AA1', 'SH', 'AA2', 'T', 'S'], // /ˈpɑtˌʃɑts/ — CMU has /tʃ/, should match potshot's /ʃ/
-  president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // /ˈprɛzɪdənt/ — CMU has /ə/ for /ɪ/ and /ɛ/ for /ə/
-  // Voicing errors (/s/↔/z/, /θ/↔/ð/)
-  presidentially: ['P', 'R', 'EH2', 'Z', 'IH0', 'D', 'EH1', 'N', 'SH', 'AH0', 'L', 'IY0'], // /ˌprɛzɪˈdɛnʃəli/ — CMU has /s/
-
-  privatize: ['P', 'R', 'AY1', 'V', 'AH0', 'T', 'AY2', 'Z'], // /ˈpraɪvəˌtaɪz/ — CMU has /ɪ/ for /aɪ/, should match private
-  // Silent letter pronounced
-  psalm: ['S', 'AA1', 'M'], // /sɑm/ — CMU has /l/, but L is silent in psalm
 
   // ---------------------------------------------------------------------------
   // Additions — words not in CMU dictionary
   // ---------------------------------------------------------------------------
 
+  placeholder: ['P', 'L', 'EY1', 'S', 'HH', 'OW2', 'L', 'D', 'ER0'], // /ˈpleɪsˌhoʊldɝ/
+  podcast: ['P', 'AA1', 'D', 'K', 'AE2', 'S', 'T'], // /ˈpɑdˌkæst/
+  potshots: ['P', 'AA1', 'SH', 'AA2', 'T', 'S'], // /ˈpɑtˌʃɑts/ — CMU has /tʃ/, should match potshot's /ʃ/
+  president: ['P', 'R', 'EH1', 'Z', 'IH0', 'D', 'AH0', 'N', 'T'], // /ˈprɛzɪdənt/ — CMU has /ə/ for /ɪ/ and /ɛ/ for /ə/
+  // Voicing errors (/s/↔/z/, /θ/↔/ð/)
+  presidentially: ['P', 'R', 'EH2', 'Z', 'IH0', 'D', 'EH1', 'N', 'SH', 'AH0', 'L', 'IY0'], // /ˌprɛzɪˈdɛnʃəli/ — CMU has /s/
+  privatize: ['P', 'R', 'AY1', 'V', 'AH0', 'T', 'AY2', 'Z'], // /ˈpraɪvəˌtaɪz/ — CMU has /ɪ/ for /aɪ/, should match private
+  // Silent letter pronounced
+  psalm: ['S', 'AA1', 'M'], // /sɑm/ — CMU has /l/, but L is silent in psalm
   psalms: ['S', 'AA1', 'M', 'Z'], // /sɑmz/ — CMU has /l/, but L is silent in psalm
-  puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // /ˈpjuni/
 
+  puisne: ['P', 'Y', 'UW1', 'N', 'IY0'], // /ˈpjuni/
   // Homographs: CMU default is the less common sense
   read: ['R', 'IY1', 'D'], // /riːd/ — CMU default is past tense /rɛd/
+
   record: ['R', 'EH1', 'K', 'ER0', 'D'], // /ˈrɛkɝd/ — CMU default is verb /rɪˈkɔrd/
   rededicate: ['R', 'IY2', 'D', 'EH1', 'D', 'IH0', 'K', 'EY2', 'T'], // /ˌriˈdɛdɪˌkeɪt/ — CMU has /ə/ for /ɪ/
   rededication: ['R', 'IY0', 'D', 'EH2', 'D', 'IH0', 'K', 'EY1', 'SH', 'AH0', 'N'], // /riˌdɛdɪˈkeɪʃən/ — CMU has /ə/ for /ɪ/
@@ -189,8 +198,8 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   soupcon: ['S', 'UW0', 'P', 'S', 'AA1', 'N'], // /supˈsɑn/
   streatham: ['S', 'T', 'R', 'EH1', 'T', 'AH0', 'M'], // /ˈstrɛtəm/
   sudo: ['S', 'UW1', 'D', 'OW0'], // /ˈsudoʊ/
-
   temptation: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N'], // /tɛmpˈteɪʃən/ — CMU missing /p/
+
   temptations: ['T', 'EH0', 'M', 'P', 'T', 'EY1', 'SH', 'AH0', 'N', 'Z'], // /tɛmpˈteɪʃənz/ — CMU missing /p/
   tensions: ['T', 'EH1', 'N', 'SH', 'AH0', 'N', 'Z'], // /ˈtɛnʃənz/ — CMU has /tʃ/ (singular is correct)
   terpsichore: ['T', 'ER0', 'P', 'S', 'IH1', 'K', 'ER0', 'IY0'], // /tɝpˈsɪkɝi/
@@ -198,6 +207,7 @@ export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   "this'": ['DH', 'IH1', 'S', 'AH0', 'Z'], // /ðɪsəz/ — CMU has /ðɪs/ (same as "this", missing "is")
   thyme: ['T', 'AY1', 'M'], // /taɪm/ — CMU has /θ/, but h is silent
   touche: ['T', 'UW0', 'SH', 'EY1'], // /tuˈʃeɪ/ — CMU missing final syllable
+  transliteration: ['T', 'R', 'AE2', 'N', 'Z', 'L', 'IH0', 'T', 'ER0', 'EY1', 'SH', 'AH0', 'N'], // /ˌtrænzlɪtəˈreɪʃən/
   tuesday: ['T', 'UW1', 'Z', 'D', 'EY2'], // /ˈtuzˌdeɪ/
   tuition: ['T', 'UW0', 'IH1', 'SH', 'AH0', 'N'], // /tuˈɪʃən/ — CMU has /tju/
 
