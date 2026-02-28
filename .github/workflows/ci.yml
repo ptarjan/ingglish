@@ -78,7 +78,7 @@ jobs:
 
       - name: Check for large files
         run: |
-          max_kb=1024
+          max_kb=500
           oversized=$(git ls-files -z | xargs -0 -I{} sh -c 'size=$(wc -c < "{}"); if [ "$size" -gt '$((max_kb * 1024))' ]; then echo "  {}: $((size / 1024))KB"; fi')
           if [ -n "$oversized" ]; then
             echo "❌ Files exceeding ${max_kb}KB limit:"

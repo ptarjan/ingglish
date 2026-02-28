@@ -8,8 +8,8 @@
 import { execSync } from 'child_process';
 import { readFileSync, statSync } from 'fs';
 
-// Maximum file size in bytes (1MB)
-const MAX_FILE_SIZE = 1024 * 1024;
+// Maximum file size in bytes (500KB)
+const MAX_FILE_SIZE = 500 * 1024;
 
 /**
  * Get list of staged files
