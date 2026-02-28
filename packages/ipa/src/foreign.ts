@@ -13,6 +13,7 @@ import {
 } from '@ingglish/phonemes';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
+import { G2P_CONVERTERS } from './g2p';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 import { LEMMATIZERS } from './lemmatizers';
 import { ar } from './overrides/ar';
@@ -173,13 +174,19 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
   if (word.includes("'")) {
     const curly = word.replaceAll("'", '\u2019');
     const curlyLower = curly.toLowerCase();
-    return dict[curly] ?? dict[curlyLower];
+    const curlyResult = dict[curly] ?? dict[curlyLower];
+    if (curlyResult) {
+      return curlyResult;
+    }
   }
-  // Last fallback: language-specific lemmatization (strip inflections, find base form)
+  // Language-specific lemmatization (strip inflections, find base form)
   if (lang) {
     const lemmatizer = LEMMATIZERS[lang];
     if (lemmatizer) {
-      return lemmatizer(dict, lower);
+      const lemmaResult = lemmatizer(dict, lower);
+      if (lemmaResult) {
+        return lemmaResult;
+      }
     }
   }
   // Khmer compound fallback: try splitting into dictionary entries (longest-match-first)
@@ -187,6 +194,13 @@ export function lookupIpa(dict: IpaDict, word: string, lang?: string): string | 
     const compound = lookupKhmerCompound(dict, word);
     if (compound !== undefined) {
       return compound;
+    }
+  }
+  // G2P fallback for phonetically regular languages (Finnish, Esperanto, Swahili, Malay)
+  if (lang) {
+    const g2p = G2P_CONVERTERS[lang];
+    if (g2p) {
+      return g2p(lower);
     }
   }
   return undefined;
