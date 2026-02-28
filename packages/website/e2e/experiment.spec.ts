@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { type BrowserContext, expect, type Page, test } from '@playwright/test';
 
 import { blockExternalNetwork } from './test-utils';
 
@@ -7,18 +7,29 @@ async function waitForAppLoad(page: Page) {
   await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
 }
 
+// Share a single page to avoid re-loading the dictionary each time.
 test.describe('Experiment presets', () => {
-  // Dictionary load can take 15-20s on slow CI webkit, so allow extra time
-  test('IPA preset should not capitalize output', async ({ page }) => {
-    test.setTimeout(60_000);
+  test.describe.configure({ mode: 'serial' });
+
+  let page: Page;
+  let context: BrowserContext;
+
+  test.beforeAll(async ({ browser }, workerInfo) => {
+    context = await browser.newContext(workerInfo.project.use);
+    page = await context.newPage();
     await blockExternalNetwork(page);
     await page.goto('/experiment');
     await waitForAppLoad(page);
+  });
 
+  test.afterAll(async () => {
+    await context.close();
+  });
+
+  test('IPA preset should not capitalize output', async () => {
     // Type some text in the experiment input
     const textarea = page.locator('.experiment-input');
     await textarea.scrollIntoViewIfNeeded();
-    await expect(textarea).toBeEditable({ timeout: 10_000 });
     await textarea.fill('But the plural of ox becomes oxen.');
 
     // Wait for initial translation to appear
