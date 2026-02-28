@@ -239,16 +239,22 @@ export function useSpeech(): [
             charIndexEverAdvanced = true;
           }
 
-          // Auto-detect spaced vs spaceless mapping for CJK on first advancing charIndex.
-          // If the charIndex matches a spaceless word start but not a spaced one,
-          // the TTS engine stripped spaces internally — switch to spaceless mapping.
+          // Auto-detect spaced vs spaceless charIndex mapping for CJK text.
+          // Some TTS engines strip spaces internally (Japanese, Korean), making
+          // charIndex reference a spaceless string. We detect which mapping to use
+          // by checking whether charIndex matches a known word start position.
+          // Only finalize when we get a definitive match — sub-word splits within
+          // the first word (charIndex > 0 but not at any word start) are skipped.
           if (!detectedMapping && event.charIndex > 0 && spacelessWordStarts !== null) {
             const matchesSpaced = spacedWordStarts.includes(event.charIndex);
             const matchesSpaceless = spacelessWordStarts.includes(event.charIndex);
             if (matchesSpaceless && !matchesSpaced) {
               wordStarts = spacelessWordStarts;
+              detectedMapping = true;
+            } else if (matchesSpaced) {
+              detectedMapping = true;
             }
-            detectedMapping = true;
+            // If neither matches (sub-word split), keep trying on next event
           }
 
           // Use charIndex mapping when it works, fall back to counter otherwise.

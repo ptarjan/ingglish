@@ -566,6 +566,44 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([5, 5]);
   });
 
+  it('defers detection past sub-word splits of the first CJK word', () => {
+    // TTS fires charIndex=1 for second char of "国境" (sub-word split)
+    // This doesn't match either mapping's word starts — detection should defer
+    // until charIndex=2 (spaceless "の") which definitively matches spaceless
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+
+    act(() => {
+      result.current[1]('国境 の 長い');
+    });
+
+    const utterance = getRealUtterance(mockSynthesis.speak);
+    // First boundary: charIndex=0 → word 0
+    act(() => {
+      utterance.onboundary?.({ charIndex: 0, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([0, 0]);
+
+    // Sub-word split: charIndex=1 (second char of "国境")
+    // Neither spacedStarts=[0,3,5] nor spacelessStarts=[0,2,3] contain 1
+    // Detection should NOT finalize yet
+    act(() => {
+      utterance.onboundary?.({ charIndex: 1, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([0, 0]); // still word 0
+
+    // Now "の" at spaceless charIndex=2 → matches spaceless, not spaced → switch
+    act(() => {
+      utterance.onboundary?.({ charIndex: 2, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([1, 1]); // correctly maps to word 1
+
+    // "長い" at spaceless charIndex=3 → word 2
+    act(() => {
+      utterance.onboundary?.({ charIndex: 3, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([2, 2]);
+  });
+
   it('keeps spaced mapping when CJK TTS preserves spaces', () => {
     // Chinese single-char words: "满 纸 荒" — charIndex includes spaces
     // spacedWordStarts: [0, 2, 4]
