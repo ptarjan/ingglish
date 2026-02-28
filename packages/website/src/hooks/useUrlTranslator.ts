@@ -180,7 +180,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           chunked: true, // Use requestAnimationFrame for large pages
           chunkSize: 500, // Larger chunks = fewer DOM updates = faster
           outputFormat,
-          showTooltips: !isForeignMode,
+          showTooltips: true,
           translateAttributes: true,
           translateFn,
         });

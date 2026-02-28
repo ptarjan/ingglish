@@ -17,7 +17,7 @@ import {
 } from '../traversal';
 import type { DOMTranslatorOptions } from '../types';
 import { processChunked } from './chunked';
-import { createTooltipFragment } from './tooltip-fragment';
+import { createTooltipFragment, createTooltipFragmentWithFn } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
 const DEFAULT_CHUNK_SIZE = 100;
@@ -68,16 +68,12 @@ export function translateDOMSync(
     chunkSize = DEFAULT_CHUNK_SIZE,
     onProgress,
     outputFormat = 'ingglish',
-    showTooltips: showTooltipsOption = false,
+    showTooltips = false,
     skipClasses = DEFAULT_SKIP_CLASSES,
     skipTags = DEFAULT_SKIP_TAGS,
     translateAttributes = true,
     translateFn,
   } = options;
-
-  // Auto-disable tooltips when translateFn is set — foreign translations
-  // don't have 1:1 word mappings needed for tooltip spans
-  const showTooltips = translateFn ? false : showTooltipsOption;
 
   // Get the document (works for both main document and iframes)
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
@@ -171,7 +167,9 @@ function translateTextNode(
 
   if (showTooltips) {
     // Replace text node with tooltip spans
-    const fragment = createTooltipFragment(originalText, outputFormat);
+    const fragment = customTranslateFn
+      ? createTooltipFragmentWithFn(originalText, customTranslateFn, outputFormat)
+      : createTooltipFragment(originalText, outputFormat);
     // Store original text on parent for restoration
     if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
       parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);

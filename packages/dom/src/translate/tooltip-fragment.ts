@@ -78,6 +78,36 @@ export function createTooltipFragmentFromMap(
 }
 
 /**
+ * Creates a tooltip fragment using a custom translation function.
+ * Splits text on whitespace boundaries, translates each non-whitespace segment,
+ * and wraps changed segments in tooltip spans showing the original text.
+ * Used for foreign language translation where translateSyncWithMapping isn't available.
+ */
+export function createTooltipFragmentWithFn(
+  text: string,
+  translateFn: (text: string, format: OutputFormat) => string,
+  format: OutputFormat = 'ingglish'
+): DocumentFragment {
+  // Split into alternating [text, whitespace, text, whitespace, ...] segments
+  const segments = text.split(/(\s+)/);
+
+  return buildTooltipFragment(
+    segments.filter(Boolean).map((segment) => {
+      // Whitespace segments pass through unchanged
+      if (/^\s+$/.test(segment)) {
+        return { text: segment };
+      }
+      const translated = translateFn(segment, format);
+      // If translation changed the text, show original on hover
+      if (translated !== segment) {
+        return { text: translated, tooltip: segment };
+      }
+      return { text: segment };
+    })
+  );
+}
+
+/**
  * Builds a DocumentFragment from a sequence of items.
  * Items with a tooltip get wrapped in a span; others are batched into text nodes.
  */

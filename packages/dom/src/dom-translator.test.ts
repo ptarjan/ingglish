@@ -542,14 +542,17 @@ describe('dom-translator', () => {
       expect(img?.getAttribute('title')).toBe('CLIQUEZ ICI');
     });
 
-    it('should auto-disable tooltips when translateFn is set', () => {
+    it('should show tooltips with original text when translateFn + showTooltips', () => {
       document.body.innerHTML = '<p>Bonjour monde</p>';
       const customFn = vi.fn((text: string) => text.toUpperCase());
       translateDOMSync(document.body, { showTooltips: true, translateFn: customFn });
-      // Tooltips should be disabled — no .ingglish-word spans
-      const spans = document.querySelectorAll('.ingglish-word');
-      expect(spans).toHaveLength(0);
-      expect(document.body.textContent).toBe('BONJOUR MONDE');
+      // Each word should be wrapped in a tooltip span showing the original
+      const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
+      expect(spans).toHaveLength(2);
+      expect(spans[0].textContent).toBe('BONJOUR');
+      expect(spans[0].dataset.ingglishOrig).toBe('Bonjour');
+      expect(spans[1].textContent).toBe('MONDE');
+      expect(spans[1].dataset.ingglishOrig).toBe('monde');
     });
 
     it('should work in chunked mode', async () => {
