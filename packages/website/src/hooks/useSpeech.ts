@@ -169,14 +169,7 @@ export function useSpeech(): [
       speechSynthesis.cancel();
       clearWorkaround();
 
-      // CJK TTS engines strip spaces internally, so charIndex values reference
-      // a spaceless string. For CJK text, strip spaces and build per-character
-      // word starts so charIndex maps correctly to overlay word indices.
-      const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/;
-      const isCJK = CJK_RE.test(text);
-      const ttsText: string = isCJK ? text.replaceAll(/\s+/g, '') : text;
-
-      const utterance = new SpeechSynthesisUtterance(ttsText);
+      const utterance = new SpeechSynthesisUtterance(text);
       if (lang) {
         utterance.lang = lang;
         // Only set an explicit voice if the boundary probe confirmed it works.
@@ -198,24 +191,13 @@ export function useSpeech(): [
       // word counting which skips punctuation-only tokens like em dashes).
       const WORD_RE = /[\p{L}\p{N}]/u;
       const wordStarts: number[] = [];
-      if (isCJK) {
-        // For CJK: each character in the stripped text is a word token
-        let cjkIdx = 0;
-        for (const ch of ttsText) {
-          if (WORD_RE.test(ch)) {
-            wordStarts.push(cjkIdx);
-          }
-          cjkIdx++;
+      const segments = text.split(/(\s+)/);
+      let pos = 0;
+      for (const seg of segments) {
+        if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
+          wordStarts.push(pos);
         }
-      } else {
-        const segments = text.split(/(\s+)/);
-        let pos = 0;
-        for (const seg of segments) {
-          if (seg && !/^\s+$/.test(seg) && WORD_RE.test(seg)) {
-            wordStarts.push(pos);
-          }
-          pos += seg.length;
-        }
+        pos += seg.length;
       }
 
       // Some TTS voices (especially on Windows) report charIndex=0 for every

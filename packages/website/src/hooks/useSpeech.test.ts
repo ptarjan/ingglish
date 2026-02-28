@@ -448,18 +448,17 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('strips spaces for CJK text and maps charIndex correctly', () => {
-    // "满 纸 荒 唐 言" → TTS receives "满纸荒唐言" (spaces stripped)
-    // wordStarts: [0, 1, 2, 3, 4] (one per character in stripped text)
+  it('maps CJK charIndex correctly with spaced text', () => {
+    // "满 纸 荒 唐 言" — TTS receives original text (with spaces)
+    // wordStarts: [0, 2, 4, 6, 8] (position of each character in spaced text)
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
       result.current[1]('满 纸 荒 唐 言');
     });
 
-    // Verify TTS received the stripped text
     const utterance = getRealUtterance(mockSynthesis.speak);
-    expect(utterance.text).toBe('满纸荒唐言');
+    expect(utterance.text).toBe('满 纸 荒 唐 言');
 
     // "满" at charIndex 0 → word 0
     act(() => {
@@ -467,26 +466,26 @@ describe('useSpeech', () => {
     });
     expect(result.current[4]).toEqual([0, 0]);
 
-    // "纸" at charIndex 1 → word 1
-    act(() => {
-      utterance.onboundary?.({ charIndex: 1, name: 'word' });
-    });
-    expect(result.current[4]).toEqual([1, 1]);
-
-    // "荒唐" compound at charIndex 2 → word 2
+    // "纸" at charIndex 2 → word 1
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([1, 1]);
 
-    // "言" at charIndex 4 → word 4, GAP: word 3 ("唐") was skipped
+    // "荒唐" compound at charIndex 4 → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 4, name: 'word' });
+    });
+    expect(result.current[4]).toEqual([2, 2]);
+
+    // "言" at charIndex 8 → word 4, GAP: word 3 ("唐") was skipped
+    act(() => {
+      utterance.onboundary?.({ charIndex: 8, name: 'word' });
     });
     expect(result.current[4]).toEqual([3, 4]);
   });
 
-  it('uses charLength to expand range for CJK compound words', () => {
+  it('uses charLength to expand range for compound words', () => {
     // When charLength is available, the range covers the full compound
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
@@ -495,25 +494,25 @@ describe('useSpeech', () => {
     });
 
     const utterance = getRealUtterance(mockSynthesis.speak);
-    // "荒唐" compound with charLength=2 at charIndex 2
+    // "荒唐" compound with charLength=3 (covers chars 4-6 in spaced text) at charIndex 4
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
     act(() => {
-      utterance.onboundary?.({ charIndex: 1, name: 'word' });
+      utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
     act(() => {
-      utterance.onboundary?.({ charIndex: 2, charLength: 2, name: 'word' } as unknown as {
+      utterance.onboundary?.({ charIndex: 4, charLength: 3, name: 'word' } as unknown as {
         charIndex: number;
         name: string;
       });
     });
-    // charLength=2 → covers chars 2-3 → words 2-3 ("荒" and "唐")
+    // charLength=3 → covers chars 4-6 → words 2-3 ("荒" and "唐")
     expect(result.current[4]).toEqual([2, 3]);
 
-    // "言" at charIndex 4 — no gap since prevWordIndex is now 3
+    // "言" at charIndex 8 — no gap since prevWordIndex is now 3
     act(() => {
-      utterance.onboundary?.({ charIndex: 4, name: 'word' });
+      utterance.onboundary?.({ charIndex: 8, name: 'word' });
     });
     expect(result.current[4]).toEqual([4, 4]);
   });
