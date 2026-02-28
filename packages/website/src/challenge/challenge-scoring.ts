@@ -29,7 +29,8 @@ export interface WordScore {
   ingglish: string;
 }
 
-const EDGE_PUNCTUATION = /^[^a-z0-9]+|[^a-z0-9]+$/gi;
+const LEADING_PUNCTUATION = /^[^a-z0-9]+/gi;
+const TRAILING_PUNCTUATION = /[^a-z0-9]+$/gi;
 
 /**
  * Score a user's English guess against the expected sentence.
@@ -117,5 +118,5 @@ function isCloseEnough(actual: string, expected: string): boolean {
 }
 
 function stripPunctuation(word: string): string {
-  return word.replaceAll(EDGE_PUNCTUATION, '');
+  return word.replaceAll(LEADING_PUNCTUATION, '').replaceAll(TRAILING_PUNCTUATION, '');
 }
