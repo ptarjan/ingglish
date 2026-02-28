@@ -3,16 +3,7 @@
  */
 
 // Forward translation
-export {
-  type TranslatedToken,
-  translateSync,
-  translateSyncWithMapping,
-  translateWord,
-} from './forward';
+export { type TranslatedToken, translateSync, translateSyncWithMapping } from './forward';
 
 // Reverse translation
-export {
-  reverseTranslateSync,
-  reverseTranslateSyncWithMapping,
-  reverseTranslateWord,
-} from './reverse';
+export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './reverse';

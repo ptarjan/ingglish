@@ -69,13 +69,9 @@ export type { ForeignDictLoader, TranslateOptions } from './foreign-dict';
 export { getForeignDict, loadForeignDict, setForeignDictLoader } from './foreign-dict';
 
 // Sync API (dictionary must be loaded first via translate)
-export { translateSync, translateSyncWithMapping, translateWord } from './translate';
+export { translateSync, translateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
-export {
-  reverseTranslateSync,
-  reverseTranslateSyncWithMapping,
-  reverseTranslateWord,
-} from './translate';
+export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';
 
 export type { IpaDict } from '@ingglish/ipa';
 export type { Language } from '@ingglish/ipa';

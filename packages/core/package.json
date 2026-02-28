@@ -17,6 +17,13 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./reverse": {
+      "source": "./src/translate/reverse.ts",
+      "import": {
+        "types": "./dist/reverse.d.ts",
+        "default": "./dist/reverse.js"
+      }
     }
   },
   "files": [

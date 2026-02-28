@@ -6,7 +6,7 @@
  */
 
 import type { TranslatedToken } from 'ingglish';
-import { reverseTranslateWord } from 'ingglish';
+import { reverseTranslateWord } from 'ingglish/reverse';
 
 export interface SentenceScore {
   correct: number;

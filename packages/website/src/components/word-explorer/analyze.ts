@@ -1,4 +1,4 @@
-import { translateWord } from 'ingglish';
+import { translateSync } from 'ingglish';
 import {
   lookupPronunciation,
   lookupPhonemeKey,
@@ -35,8 +35,8 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
   const lower = word.toLowerCase().trim();
   const dictPhonemes = lookupPronunciation(lower);
   const isCustom = hasCustomPronunciation(lower);
-  const formatted = translateWord(lower, { format });
-  const ingglish = translateWord(lower, { format: 'ingglish' });
+  const formatted = translateSync(lower, { format });
+  const ingglish = translateSync(lower, { format: 'ingglish' });
 
   // Initialisms (URL, API, etc.) pass through unchanged in the translation,
   // but we tag them so the breakdown shows how they're pronounced letter-by-letter.
@@ -83,7 +83,7 @@ export function analyzeWord(word: string, format: OutputFormat): WordResult {
   }
 
   // Word not in dictionary — diagnose which fallback strategy handles it
-  const ipa = translateWord(lower, { format: 'ipa' }).replaceAll(/^\/|\/$/g, '');
+  const ipa = translateSync(lower, { format: 'ipa' }).replaceAll(/^\/|\/$/g, '');
   const diagnosis = diagnoseUnknown(lower) ?? undefined;
 
   // Extract phonemes from diagnosis for the PhonemeChain display

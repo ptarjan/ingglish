@@ -1,4 +1,4 @@
-import { translateWord } from 'ingglish';
+import { translateSync } from 'ingglish';
 import { getWordFrequency } from '@ingglish/dictionary';
 import { LETTER_PHONEMES } from '@ingglish/fallback';
 import type { G2PTrace } from '@ingglish/g2p';
@@ -33,7 +33,7 @@ export function BritishBreakdown({
         >
           <span className="chip-english">{american}</span>
           <span className="chip-arrow">&rarr;</span>
-          <span className="chip-translated">{translateWord(american, { format })}</span>
+          <span className="chip-translated">{translateSync(american, { format })}</span>
         </button>
       </div>
     </div>
@@ -63,7 +63,7 @@ export function CompoundBreakdown({
           >
             <span className="chip-english">{part}</span>
             <span className="chip-arrow">&rarr;</span>
-            <span className="chip-translated">{translateWord(part, { format })}</span>
+            <span className="chip-translated">{translateSync(part, { format })}</span>
           </button>
         ))}
       </div>
@@ -132,7 +132,7 @@ export function HomophoneList({
           >
             <span className="chip-english">{w}</span>
             <span className="chip-arrow">&rarr;</span>
-            <span className="chip-translated">{translateWord(w, { format })}</span>
+            <span className="chip-translated">{translateSync(w, { format })}</span>
             <span className="chip-freq">{formatFrequency(getWordFrequency(w))}</span>
           </button>
         ))}
@@ -241,7 +241,7 @@ export function StemmingBreakdown({
         >
           <span className="chip-english">{result.stem}</span>
           <span className="chip-arrow">&rarr;</span>
-          <span className="chip-translated">{translateWord(result.stem, { format })}</span>
+          <span className="chip-translated">{translateSync(result.stem, { format })}</span>
         </button>
         {result.suffix !== undefined && (
           <span className="homophone-chip" style={{ cursor: 'default' }}>
