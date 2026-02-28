@@ -29,7 +29,6 @@ const LANGUAGES: { code: string; name: string }[] = [
   { code: 'fr', name: 'French' },
   { code: 'is', name: 'Icelandic' },
   { code: 'ja', name: 'Japanese' },
-  // No kaikki dictionary for Jamaican Creole
   { code: 'km', name: 'Khmer' },
   { code: 'ko', name: 'Korean' },
   { code: 'ma', name: 'Malay' },

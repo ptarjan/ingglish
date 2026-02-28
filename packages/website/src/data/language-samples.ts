@@ -8,7 +8,6 @@ import { fi } from './samples/fi';
 import { fr } from './samples/fr';
 import { is } from './samples/is';
 import { ja } from './samples/ja';
-import { jam } from './samples/jam';
 import { km } from './samples/km';
 import { ko } from './samples/ko';
 import { ma } from './samples/ma';
@@ -47,7 +46,6 @@ export const ALL_SAMPLES: Record<string, Sample[]> = {
   fr,
   is,
   ja,
-  jam,
   km,
   ko,
   ma,

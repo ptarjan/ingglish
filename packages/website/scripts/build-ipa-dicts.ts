@@ -31,7 +31,6 @@ const LANGUAGES = [
   { code: 'fr', file: 'fr_FR.txt' },
   { code: 'is', file: 'is.txt' },
   { code: 'ja', file: 'ja.txt' },
-  { code: 'jam', file: 'jam.txt' },
   { code: 'km', file: 'km.txt' },
   { code: 'ko', file: 'ko.txt' },
   { code: 'ma', file: 'ma.txt' },

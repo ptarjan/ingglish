@@ -25,7 +25,6 @@ import { fi } from './overrides/fi';
 import { fr } from './overrides/fr';
 import { is } from './overrides/is';
 import { ja } from './overrides/ja';
-import { jam } from './overrides/jam';
 import { km } from './overrides/km';
 import { ko } from './overrides/ko';
 import { ma } from './overrides/ma';
@@ -93,7 +92,6 @@ export const LANGUAGES: Language[] = [
   { code: 'fr', label: 'French' },
   { code: 'de', label: 'German' },
   { code: 'is', label: 'Icelandic' },
-  { code: 'jam', label: 'Jamaican Creole' },
   { code: 'ja', label: 'Japanese' },
   { code: 'km', label: 'Khmer' },
   { code: 'ko', label: 'Korean' },
@@ -126,7 +124,6 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
   fr,
   is,
   ja,
-  jam,
   km,
   ko,
   ma,
