@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+/** vi.waitFor with 1ms polling (default 50ms wastes ~50ms × 27 calls = 1.4s) */
+function waitFor(cb: () => void, options?: { interval?: number; timeout?: number }) {
+  return vi.waitFor(cb, { interval: 1, ...options });
+}
+
 // Mock ingglish to avoid slow dictionary loading
 vi.mock('ingglish', () => ({
   translate: vi.fn().mockResolvedValue('mocked'),
@@ -130,7 +135,7 @@ describe('background script', () => {
       expect(result).toBe(true); // async response
 
       // Wait for async format retrieval
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
       });
     });
@@ -145,7 +150,7 @@ describe('background script', () => {
       messageHandler({ type: 'GET_STATE' }, {}, sendResponse);
 
       // Wait for async format retrieval
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
       });
     });
@@ -162,7 +167,7 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, sendResponse);
 
       // Wait for async operations
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith({
           files: ['content-script.global.js'],
           target: { tabId: 456 },
@@ -187,7 +192,7 @@ describe('background script', () => {
       expect(sendResponse).toHaveBeenCalledWith({ enabled: true, success: true });
 
       // Wait for async injection to fail
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
       });
 
@@ -197,7 +202,7 @@ describe('background script', () => {
       // State should be reverted after injection fails
       const stateResponse = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(stateResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
       });
     });
@@ -239,7 +244,7 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
 
       // Wait for injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
       });
 
@@ -265,14 +270,14 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
 
       // Wait for injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
       });
 
       // Verify tab is tracked
       const stateResponse = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(stateResponse).toHaveBeenCalledWith({ enabled: true, format: 'ingglish' });
       });
 
@@ -282,7 +287,7 @@ describe('background script', () => {
       // Verify tab is no longer tracked
       const stateResponse2 = vi.fn();
       messageHandler({ type: 'GET_STATE' }, {}, stateResponse2);
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(stateResponse2).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
       });
     });
@@ -298,7 +303,7 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
 
       // Wait for initial injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
       });
 
@@ -306,7 +311,7 @@ describe('background script', () => {
       tabUpdatedHandler(333, { status: 'loading', url: 'https://example.com/new-page' });
 
       // Wait for re-injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
       });
     });
@@ -320,7 +325,7 @@ describe('background script', () => {
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
 
       // Wait for initial injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
       });
 
@@ -328,7 +333,7 @@ describe('background script', () => {
       tabUpdatedHandler(555, { status: 'loading' });
 
       // Wait for re-injection
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
       });
     });
@@ -389,7 +394,7 @@ describe('background script', () => {
         sendResponse
       );
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(sendResponse).toHaveBeenCalled();
         const response = sendResponse.mock.calls[0][0] as {
           translations: Record<string, string>;
@@ -411,7 +416,7 @@ describe('background script', () => {
         ingglishResponse
       );
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(ingglishResponse).toHaveBeenCalled();
       });
 
@@ -429,7 +434,7 @@ describe('background script', () => {
         ipaResponse
       );
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(ipaResponse).toHaveBeenCalled();
       });
 
@@ -450,7 +455,7 @@ describe('background script', () => {
         ingglishResponse2
       );
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(ingglishResponse2).toHaveBeenCalled();
       });
 
@@ -471,7 +476,7 @@ describe('background script', () => {
 
       messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.storage.sync.set).toHaveBeenCalledWith({ outputFormat: 'ipa' });
         expect(sendResponse).toHaveBeenCalledWith({ format: 'ipa' });
       });
@@ -483,7 +488,7 @@ describe('background script', () => {
         callback([{ id: 501 }]);
       });
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
       });
 
@@ -491,7 +496,7 @@ describe('background script', () => {
         callback([{ id: 502 }]);
       });
       messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(2);
       });
 
@@ -509,7 +514,7 @@ describe('background script', () => {
       const sendResponse = vi.fn();
       messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         // Should send RETRANSLATE to both tabs
         expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
           501,
@@ -530,7 +535,7 @@ describe('background script', () => {
       const sendResponse = vi.fn();
       messageHandler({ format: 'ipa', type: 'SET_FORMAT' } as { type: string }, {}, sendResponse);
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ format: 'ipa' });
       });
 
@@ -556,7 +561,7 @@ describe('background script', () => {
       commandHandler('toggle-translation');
 
       // Should inject translator script
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalledWith(
           expect.objectContaining({
             target: { tabId },
@@ -565,7 +570,7 @@ describe('background script', () => {
       });
 
       // Should update icon to enabled state
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.action.setIcon).toHaveBeenCalled();
         const iconCall = mockChrome.action.setIcon.mock.calls.find(
           (call) => (call[0] as { tabId: number }).tabId === tabId
@@ -586,7 +591,7 @@ describe('background script', () => {
       // First enable translation via keyboard shortcut
       commandHandler('toggle-translation');
 
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
       });
 
@@ -605,7 +610,7 @@ describe('background script', () => {
       commandHandler('toggle-translation');
 
       // Should send RESTORE message to disable translation
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.tabs.sendMessage).toHaveBeenCalledWith(
           tabId,
           { type: 'RESTORE' },
@@ -614,7 +619,7 @@ describe('background script', () => {
       });
 
       // Should update icon to disabled state
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(mockChrome.action.setIcon).toHaveBeenCalled();
         const iconCall = mockChrome.action.setIcon.mock.calls.find(
           (call) => (call[0] as { tabId: number }).tabId === tabId

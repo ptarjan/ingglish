@@ -4,6 +4,11 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+/** vi.waitFor with 1ms polling (default 50ms adds unnecessary latency) */
+function waitFor(cb: () => void, options?: { interval?: number; timeout?: number }) {
+  return vi.waitFor(cb, { interval: 1, ...options });
+}
+
 // Suppress console during tests
 vi.spyOn(console, 'error').mockImplementation(() => {});
 vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -100,7 +105,7 @@ describe('content-script', () => {
       messageHandler({ type: 'RESTORE' }, {}, sendResponse);
 
       // Wait for processing
-      await vi.waitFor(() => {
+      await waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ success: true });
       });
 
@@ -138,7 +143,7 @@ describe('content-script', () => {
       messageHandler({ format: 'ipa', type: 'RETRANSLATE' }, {}, sendResponse);
 
       // Wait for async processing
-      await vi.waitFor(
+      await waitFor(
         () => {
           expect(sendResponse).toHaveBeenCalled();
         },
@@ -181,7 +186,7 @@ describe('content-script', () => {
       expect(initialResponseTime).toBeLessThan(100); // Should not block for long
 
       // Wait for completion
-      await vi.waitFor(
+      await waitFor(
         () => {
           expect(sendResponse).toHaveBeenCalled();
         },
