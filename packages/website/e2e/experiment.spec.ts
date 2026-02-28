@@ -8,13 +8,17 @@ async function waitForAppLoad(page: Page) {
 }
 
 test.describe('Experiment presets', () => {
+  // Dictionary load can take 15-20s on slow CI webkit, so allow extra time
   test('IPA preset should not capitalize output', async ({ page }) => {
+    test.setTimeout(60_000);
     await blockExternalNetwork(page);
     await page.goto('/experiment');
     await waitForAppLoad(page);
 
     // Type some text in the experiment input
     const textarea = page.locator('.experiment-input');
+    await textarea.scrollIntoViewIfNeeded();
+    await expect(textarea).toBeEditable({ timeout: 10_000 });
     await textarea.fill('But the plural of ox becomes oxen.');
 
     // Wait for initial translation to appear
