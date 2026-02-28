@@ -231,7 +231,9 @@ export function useSpeech(): [
       // sub-word splits of the first word (common in agglutinative languages).
       let boundaryCounter = -1;
       let charIndexEverAdvanced = false;
-      let prevWordIndex = -1;
+      // Track the furthest word spoken so far — cumulative highlighting ensures
+      // no words are skipped even if React batches rapid state updates.
+      let maxWordEnd = -1;
       // For CJK: which charIndex coordinate system the TTS uses (detected per-utterance)
       let cjkMapping: 'spaced' | 'spaceless' | null = null;
 
@@ -295,11 +297,8 @@ export function useSpeech(): [
             }
           }
 
-          // Also expand backward to catch any skipped tokens from the previous
-          // boundary event (fallback for when charLength is unavailable).
-          const rangeStart = Math.min(wordIndex, prevWordIndex + 1);
-          prevWordIndex = wordEnd;
-          setSpokenRange([rangeStart, wordEnd]);
+          maxWordEnd = Math.max(maxWordEnd, wordEnd);
+          setSpokenRange([0, maxWordEnd]);
         }
       };
       utterance.onend = () => {

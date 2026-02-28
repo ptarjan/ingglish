@@ -245,7 +245,7 @@ describe('useSpeech', () => {
     expect(result.current[4]).toBeNull();
   });
 
-  it('advances spokenRange sequentially on boundary events', () => {
+  it('advances spokenRange cumulatively on boundary events', () => {
     const { result } = renderHook(() => useSpeech()) as SpeechHook;
 
     act(() => {
@@ -262,7 +262,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
   });
 
   it('skips punctuation-only segments when computing word index', () => {
@@ -285,7 +285,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 7, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
   });
 
   it('resets spokenRange on stop', () => {
@@ -302,7 +302,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     act(() => {
       result.current[2](); // stop
@@ -336,7 +336,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 6, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
   });
 
   it('falls back to counter when charIndex is always 0 (Windows TTS)', () => {
@@ -359,13 +359,13 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 3]);
+    expect(result.current[4]).toEqual([0, 3]);
 
     // 5th event: stays in fallback mode, counter=4
     act(() => {
       utterance.onboundary?.({ charIndex: 0, name: 'word' });
     });
-    expect(result.current[4]).toEqual([4, 4]);
+    expect(result.current[4]).toEqual([0, 4]);
   });
 
   it('does not fall back when charIndex advances after initial zeros', () => {
@@ -392,7 +392,7 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 9, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
   });
 
   it('counts numbers as words for highlighting', () => {
@@ -414,19 +414,19 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     // "42" at charIndex 7 → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 7, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([0, 2]);
 
     // "cats" at charIndex 10 → word 3
     act(() => {
       utterance.onboundary?.({ charIndex: 10, name: 'word' });
     });
-    expect(result.current[4]).toEqual([3, 3]);
+    expect(result.current[4]).toEqual([0, 3]);
   });
 
   it('resets spokenRange on utterance end', () => {
@@ -470,19 +470,19 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     // "荒唐" compound at charIndex 4 → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 4, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([0, 2]);
 
-    // "言" at charIndex 8 → word 4, GAP: word 3 ("唐") was skipped
+    // "言" at charIndex 8 → word 4 (cumulative from 0)
     act(() => {
       utterance.onboundary?.({ charIndex: 8, name: 'word' });
     });
-    expect(result.current[4]).toEqual([3, 4]);
+    expect(result.current[4]).toEqual([0, 4]);
   });
 
   it('uses charLength to expand range for compound words', () => {
@@ -508,13 +508,13 @@ describe('useSpeech', () => {
       });
     });
     // charLength=3 → covers chars 4-6 → words 2-3 ("荒" and "唐")
-    expect(result.current[4]).toEqual([2, 3]);
+    expect(result.current[4]).toEqual([0, 3]);
 
-    // "言" at charIndex 8 — no gap since prevWordIndex is now 3
+    // "言" at charIndex 8 → cumulative [0, 4]
     act(() => {
       utterance.onboundary?.({ charIndex: 8, name: 'word' });
     });
-    expect(result.current[4]).toEqual([4, 4]);
+    expect(result.current[4]).toEqual([0, 4]);
   });
 
   it('detects spaceless CJK mapping via unique charIndex match', () => {
@@ -539,31 +539,31 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     // charIndex=3: spaceless word 2 (長い)
     act(() => {
       utterance.onboundary?.({ charIndex: 3, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([0, 2]);
 
     // charIndex=5: spaceless word 3 (トンネル)
     act(() => {
       utterance.onboundary?.({ charIndex: 5, name: 'word' });
     });
-    expect(result.current[4]).toEqual([3, 3]);
+    expect(result.current[4]).toEqual([0, 3]);
 
     // charIndex=9: spaceless word 4 (を)
     act(() => {
       utterance.onboundary?.({ charIndex: 9, name: 'word' });
     });
-    expect(result.current[4]).toEqual([4, 4]);
+    expect(result.current[4]).toEqual([0, 4]);
 
     // charIndex=10: spaceless word 5 (抜ける)
     act(() => {
       utterance.onboundary?.({ charIndex: 10, name: 'word' });
     });
-    expect(result.current[4]).toEqual([5, 5]);
+    expect(result.current[4]).toEqual([0, 5]);
   });
 
   it('uses spaced default before detection for CJK with shared positions', () => {
@@ -593,13 +593,13 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     // charIndex=3: spaceless word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 3, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([0, 2]);
   });
 
   it('uses spaced mapping for CJK when TTS preserves spaces', () => {
@@ -625,19 +625,19 @@ describe('useSpeech', () => {
     act(() => {
       utterance.onboundary?.({ charIndex: 2, name: 'word' });
     });
-    expect(result.current[4]).toEqual([1, 1]);
+    expect(result.current[4]).toEqual([0, 1]);
 
     // charIndex=4: spaced default → word 2
     act(() => {
       utterance.onboundary?.({ charIndex: 4, name: 'word' });
     });
-    expect(result.current[4]).toEqual([2, 2]);
+    expect(result.current[4]).toEqual([0, 2]);
 
-    // charIndex=8: spaced default → word 4, gap-fill catches word 3
+    // charIndex=8: spaced default → word 4 (cumulative from 0)
     act(() => {
       utterance.onboundary?.({ charIndex: 8, name: 'word' });
     });
-    expect(result.current[4]).toEqual([3, 4]);
+    expect(result.current[4]).toEqual([0, 4]);
   });
 
   it('does not set explicit voice for languages without confirmed boundary support', () => {
