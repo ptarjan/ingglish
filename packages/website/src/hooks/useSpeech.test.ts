@@ -479,7 +479,9 @@ describe('useSpeech', () => {
       (c: unknown[]) => c[0] === 'voiceschanged'
     )?.[1] as (() => void) | undefined;
     if (voicesChangedHandler) {
-      act(() => { voicesChangedHandler(); });
+      act(() => {
+        voicesChangedHandler();
+      });
     }
 
     // Speak French text
