@@ -22,7 +22,7 @@
     "lint:css": "stylelint \"packages/*/src/**/*.css\"",
     "lint:css:fix": "stylelint \"packages/*/src/**/*.css\" --fix",
     "debug:roundtrip": "npm run debug:roundtrip -w ingglish --",
-    "knip": "knip",
+    "knip": "knip --cache",
     "prepare": "husky"
   },
   "keywords": [
