@@ -63,13 +63,15 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     setIsFullscreen((prev) => !prev);
   }, []);
 
-  // Auto-translate if initialUrl is provided
+  // Auto-translate if initialUrl is provided (e.g. /url?url=... from share link
+  // or "Read full page" link). Don't push history — the URL is already in the
+  // address bar, so pushing would require an extra back-click to leave.
   useEffect(() => {
     if (initialUrl.length > 0) {
       const normalized = normalizeUrl(initialUrl);
       if (normalized !== null) {
         setUrl(normalized);
-        translateUrl(normalized).catch(() => {
+        translateUrl(normalized, false).catch(() => {
           // Error handled in hook
         });
       }

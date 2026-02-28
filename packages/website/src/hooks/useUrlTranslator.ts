@@ -123,6 +123,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         history.pushState({ translatorUrl: targetUrl }, '', globalThis.location.pathname);
         // Update URL in address bar immediately (before translation completes)
         onNavigate?.(targetUrl);
+      } else {
+        // Not pushing — just tag current entry with translator state so popstate
+        // handler knows about this URL (e.g. initial load from /url?url=...)
+        history.replaceState({ translatorUrl: targetUrl }, '', globalThis.location.href);
       }
 
       try {
