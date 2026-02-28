@@ -177,7 +177,7 @@ export function reverseTranslateSyncWithMapping(
   const { format = 'ingglish' } = options;
   const handler = getFormatHandler(format);
   if (handler?.reverseTextWithMapping) {
-    return handler.reverseTextWithMapping(text) as TranslatedToken[];
+    return handler.reverseTextWithMapping(text);
   }
   return reverseTranslateIngglishTextWithMapping(text);
 }

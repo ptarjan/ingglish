@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { registerPronunciation } from '@ingglish/phonemes';
+import '@ingglish/phonemes'; // registers 'pronunciation' format
 import type { IpaDict } from './foreign';
 import { lookupIpa, translateForeign, NOT_FOUND_MARKER } from './foreign';
 import { G2P_CONVERTERS } from './g2p';
-
-registerPronunciation();
 
 describe('G2P converters', () => {
   describe('Finnish', () => {

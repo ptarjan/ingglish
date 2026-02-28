@@ -35,14 +35,12 @@ export function arpabetToPronunciation(arpabet: string[]): string {
     .join('-');
 }
 
-export function registerPronunciation(): void {
-  registerFormat('pronunciation', {
-    forward: arpabetToPronunciation,
-    isLatinScript: true,
-    label: 'Guide',
-    preservesCase: false,
-  });
-}
+registerFormat('pronunciation', {
+  forward: arpabetToPronunciation,
+  isLatinScript: true,
+  label: 'Guide',
+  preservesCase: false,
+});
 
 /**
  * Syllabifies ARPAbet phonemes using the Maximal Onset Principle.

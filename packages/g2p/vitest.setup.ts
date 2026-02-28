@@ -1,3 +1,1 @@
-import { registerIPA } from '@ingglish/ipa';
-
-registerIPA();
+import '@ingglish/ipa'; // registers 'ipa' format

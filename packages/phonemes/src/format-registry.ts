@@ -1,3 +1,5 @@
+import type { TranslatedToken } from './translated-token';
+
 export interface FormatHandler {
   forward?: ForwardConverter;
   isLatinScript?: boolean;
@@ -19,24 +21,24 @@ export interface ForwardConverterOptions {
   disableRColoring?: boolean;
 }
 
-/** Token returned by reverse-with-mapping translation */
-export interface ReverseToken {
-  isWord: boolean;
-  matched?: boolean;
-  original: string;
-  translated: string;
+/** Internal resolved handler with defaults applied. */
+interface ResolvedHandler extends FormatHandler {
+  isLatinScript: boolean;
+  joinSeparator: string;
+  preservesCase: boolean;
 }
 
 type ReverseTextConverter = (text: string) => string;
 
-type ReverseTextWithMappingConverter = (text: string) => ReverseToken[];
+type ReverseTextWithMappingConverter = (text: string) => TranslatedToken[];
 
-const registry = new Map<string, FormatHandler>();
+const DEFAULT_HANDLER: ResolvedHandler = {
+  isLatinScript: true,
+  joinSeparator: '',
+  preservesCase: true,
+};
 
-// Precomputed caches for hot-path getters (populated by registerFormat).
-// Avoids optional chaining and nullish coalescing on every per-word call.
-const isLatinScriptCache = new Map<string, boolean>();
-const preservesCaseCache = new Map<string, boolean>();
+const registry = new Map<string, ResolvedHandler>();
 
 export function getFormatHandler(name: string): FormatHandler | undefined {
   return registry.get(name);
@@ -47,7 +49,7 @@ export function getFormatHandler(name: string): FormatHandler | undefined {
  * Defaults to true for unknown formats (safe for case handling).
  */
 export function getFormatIsLatinScript(name: string): boolean {
-  return isLatinScriptCache.get(name) ?? true;
+  return (registry.get(name) ?? DEFAULT_HANDLER).isLatinScript;
 }
 
 /**
@@ -55,7 +57,7 @@ export function getFormatIsLatinScript(name: string): boolean {
  * Defaults to '' (no separator).
  */
 export function getFormatJoinSeparator(name: string): string {
-  return registry.get(name)?.joinSeparator ?? '';
+  return (registry.get(name) ?? DEFAULT_HANDLER).joinSeparator;
 }
 
 /**
@@ -80,15 +82,18 @@ export function getFormatNativeLabel(name: string): string {
  * Falls back to isLatinScript, then true for unknown formats.
  */
 export function getFormatPreservesCase(name: string): boolean {
-  return preservesCaseCache.get(name) ?? true;
+  return (registry.get(name) ?? DEFAULT_HANDLER).preservesCase;
 }
 
 export function registerFormat(name: string, handler: FormatHandler): void {
   const existing = registry.get(name);
   const merged = { ...existing, ...handler };
-  registry.set(name, merged);
-
-  // Precompute derived booleans so hot-path getters are a single Map.get()
-  isLatinScriptCache.set(name, merged.isLatinScript ?? true);
-  preservesCaseCache.set(name, merged.preservesCase ?? merged.isLatinScript ?? true);
+  const isLatinScript = merged.isLatinScript ?? true;
+  const resolved: ResolvedHandler = {
+    ...merged,
+    isLatinScript,
+    joinSeparator: merged.joinSeparator ?? '',
+    preservesCase: merged.preservesCase ?? isLatinScript,
+  };
+  registry.set(name, resolved);
 }

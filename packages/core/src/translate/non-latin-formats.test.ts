@@ -1,13 +1,11 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { registerDeseret } from '@ingglish/deseret';
+import '@ingglish/deseret'; // registers 'deseret' format
 import { loadDictionary } from '@ingglish/dictionary';
-import { registerShavian } from '@ingglish/shavian';
+import '@ingglish/shavian'; // registers 'shavian' format
 import { translateSync, translateWord } from './forward';
 
 beforeAll(async () => {
   await loadDictionary();
-  registerShavian();
-  registerDeseret();
 });
 
 describe('non-Latin script translation of common words', () => {

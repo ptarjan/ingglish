@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { registerPronunciation } from '@ingglish/phonemes';
+import '@ingglish/phonemes'; // registers 'pronunciation' format
 import type { IpaDict } from './foreign';
 import {
   LANGUAGES,
@@ -11,8 +11,6 @@ import {
   translateForeignWithMapping,
   NOT_FOUND_MARKER,
 } from './foreign';
-
-registerPronunciation();
 
 /** Helper to create an IpaDict from entries and a language code. */
 function mkDict(entries: Record<string, string>, lang = ''): IpaDict {

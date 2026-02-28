@@ -1,6 +1,8 @@
 /* eslint-disable perfectionist/sort-exports */
 
 // Phoneme data & utilities
+// Side-effect import: registers 'pronunciation' format at load time
+import './to-pronunciation';
 export {
   ARPABET_CONSONANTS,
   ARPABET_VOWELS,
@@ -26,7 +28,6 @@ export {
 
 // Forward conversion (ARPAbet → display formats)
 export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
-export { registerPronunciation } from './to-pronunciation';
 
 // Reverse conversion (display formats → ARPAbet)
 export { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
@@ -42,7 +43,6 @@ export { createScriptReverseTranslator } from './reverse-factory';
 
 // Types
 export type { CustomMappingConfig } from './custom-format';
-export type { ReverseToken } from './format-registry';
 export type { ScriptReverseTranslator } from './reverse-factory';
 export type { OutputFormat } from './types';
 export type { TranslatedToken } from './translated-token';

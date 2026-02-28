@@ -1,19 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { registerDeseret } from '@ingglish/deseret';
-import { registerIPA } from '@ingglish/ipa';
-import { registerPronunciation } from '@ingglish/phonemes';
-import { registerShavian } from '@ingglish/shavian';
+import '@ingglish/deseret'; // registers 'deseret' format
+import '@ingglish/ipa'; // registers 'ipa' format
+import '@ingglish/shavian'; // registers 'shavian' format
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import { registerExperiment } from './hooks/useCustomMapping';
 import './styles/index.css';
 
-// Register format plugins
-registerPronunciation();
-registerIPA();
-registerShavian();
-registerDeseret();
+// Register custom experiment format
 registerExperiment();
 
 const rootElement = document.querySelector('#root');

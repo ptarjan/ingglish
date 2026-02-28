@@ -1,10 +1,10 @@
 // Background service worker for Ingglish extension
 
 import { translate, translateSync } from 'ingglish';
-import { registerDeseret } from '@ingglish/deseret';
-import { registerIPA } from '@ingglish/ipa';
+import '@ingglish/deseret'; // registers 'deseret' format
+import '@ingglish/ipa'; // registers 'ipa' format
 import type { OutputFormat } from '@ingglish/phonemes';
-import { registerShavian } from '@ingglish/shavian';
+import '@ingglish/shavian'; // registers 'shavian' format
 import type {
   ExtensionMessage,
   FormatResponse,
@@ -12,11 +12,6 @@ import type {
   ToggleResponse,
   TranslateWordsResponse,
 } from './types';
-
-// Register format plugins
-registerIPA();
-registerShavian();
-registerDeseret();
 
 // Track dictionary loading state
 let dictionaryLoaded = false;

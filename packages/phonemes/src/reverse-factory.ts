@@ -7,11 +7,11 @@
  * Only the tokenizer and toArpabet conversion differ per script.
  */
 
-import type { ReverseToken } from './format-registry';
+import type { TranslatedToken } from './translated-token';
 
 export interface ScriptReverseTranslator {
   reverseText: (text: string) => string;
-  reverseTextWithMapping: (text: string) => ReverseToken[];
+  reverseTextWithMapping: (text: string) => TranslatedToken[];
   reverseWord: (word: string) => string[];
 }
 
@@ -57,7 +57,7 @@ export function createScriptReverseTranslator(opts: {
       .join('');
   }
 
-  function reverseTextWithMapping(text: string): ReverseToken[] {
+  function reverseTextWithMapping(text: string): TranslatedToken[] {
     const tokens = tokenize(text);
     return tokens.map((token) => {
       if (token.isWord) {

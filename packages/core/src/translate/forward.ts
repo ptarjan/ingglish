@@ -17,6 +17,7 @@ import {
   translateAsAcronym,
 } from '@ingglish/fallback';
 import { lookupIpa, translateForeign, translateForeignWithMapping } from '@ingglish/ipa';
+import type { IpaDict } from '@ingglish/ipa';
 import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
@@ -38,6 +39,17 @@ import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
 export type { TranslatedToken } from '@ingglish/phonemes';
 
+/** Returns the loaded foreign dict for a language, or throws if not loaded. */
+function requireForeignDict(lang: string): IpaDict {
+  const dict = getForeignDict(lang);
+  if (!dict) {
+    throw new Error(
+      `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
+    );
+  }
+  return dict;
+}
+
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)
 const ALL_UPPER = /^[A-Z]+$/;
 const TRIPLE_CHAR = /(.)\1\1/;
@@ -58,13 +70,7 @@ export function translateSync(text: string, options: TranslateOptions = {}): str
   const { format = 'ingglish', lang } = options;
 
   if (isForeignLang(lang)) {
-    const dict = getForeignDict(lang);
-    if (!dict) {
-      throw new Error(
-        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
-      );
-    }
-    return translateForeign(text, dict, format);
+    return translateForeign(text, requireForeignDict(lang), format);
   }
 
   const { preserved, rawTokens } = extractTokens(text);
@@ -86,13 +92,7 @@ export function translateSyncWithMapping(
   const { format = 'ingglish', lang } = options;
 
   if (isForeignLang(lang)) {
-    const dict = getForeignDict(lang);
-    if (!dict) {
-      throw new Error(
-        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
-      );
-    }
-    return translateForeignWithMapping(text, dict, format);
+    return translateForeignWithMapping(text, requireForeignDict(lang), format);
   }
 
   const { preserved, rawTokens } = extractTokens(text);
@@ -114,14 +114,7 @@ export function translateWord(word: string, options: TranslateOptions = {}): str
   const { format = 'ingglish', lang } = options;
 
   if (isForeignLang(lang)) {
-    const dict = getForeignDict(lang);
-    if (!dict) {
-      throw new Error(
-        `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
-      );
-    }
-    const ipa = lookupIpa(dict, word);
-    return ipa ?? word;
+    return lookupIpa(requireForeignDict(lang), word) ?? word;
   }
 
   return translateWordInternal(word, format).translated;

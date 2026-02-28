@@ -1,15 +1,13 @@
 import { registerFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw } from './to-ipa';
 
-export function registerIPA(): void {
-  registerFormat('ipa', {
-    forward: arpabetToIPARaw,
-    isLatinScript: true,
-    joinSeparator: ' ',
-    label: 'IPA',
-    preservesCase: false,
-  });
-}
+registerFormat('ipa', {
+  forward: arpabetToIPARaw,
+  isLatinScript: true,
+  joinSeparator: ' ',
+  label: 'IPA',
+  preservesCase: false,
+});
 
 export {
   ipaToIngglish,

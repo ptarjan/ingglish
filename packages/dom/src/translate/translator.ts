@@ -22,6 +22,16 @@ import { createTooltipFragment, createTooltipFragmentFromTokens } from './toolti
 // Default chunk size for chunked DOM updates
 const DEFAULT_CHUNK_SIZE = 100;
 
+/** Internal context passed to translation helpers. */
+interface TranslateContext {
+  doTranslate: (text: string, format: OutputFormat) => string;
+  mappingFn?: (text: string, format: OutputFormat) => TranslatedToken[];
+  outputFormat: OutputFormat;
+  showTooltips: boolean;
+  skipClasses: string[];
+  skipTags: string[];
+}
+
 /**
  * Translates all text content within a DOM element (async, auto-loads dictionary).
  * This is the recommended entry point for DOM translation.
@@ -75,6 +85,21 @@ export function translateDOMSync(
     translateWithMappingFn,
   } = options;
 
+  // Build shared context for translation helpers
+  const ctx: TranslateContext = {
+    doTranslate: translateWithMappingFn
+      ? (text, format) =>
+          translateWithMappingFn(text, format)
+            .map((t) => t.translated)
+            .join('')
+      : (text, fmt) => translateSync(text, { format: fmt }),
+    mappingFn: translateWithMappingFn,
+    outputFormat,
+    showTooltips,
+    skipClasses,
+    skipTags,
+  };
+
   // Get the document (works for both main document and iframes)
   const targetDoc = root instanceof Document ? root : root.ownerDocument;
 
@@ -89,16 +114,8 @@ export function translateDOMSync(
   const totalNodes = textNodes.length;
 
   // Translate attributes if enabled (do this first, it's fast)
-  // Derive a flat string translate function from mapping fn for attributes
-  const customTranslateFn = translateWithMappingFn
-    ? (text: string, format: OutputFormat) =>
-        translateWithMappingFn(text, format)
-          .map((t) => t.translated)
-          .join('')
-    : undefined;
-
   if (translateAttributes) {
-    translateElementAttributes(root, skipTags, skipClasses, outputFormat, customTranslateFn);
+    translateElementAttributes(root, ctx);
   }
 
   // Chunked mode: use requestAnimationFrame for smooth rendering
@@ -106,13 +123,7 @@ export function translateDOMSync(
     return processChunked(
       textNodes,
       (node) => {
-        translateTextNode(
-          node,
-          showTooltips,
-          outputFormat,
-          customTranslateFn,
-          translateWithMappingFn
-        );
+        translateTextNode(node, ctx);
       },
       chunkSize,
       onProgress
@@ -121,13 +132,7 @@ export function translateDOMSync(
 
   // Sync mode: translate all nodes immediately
   for (let i = 0; i < totalNodes; i++) {
-    translateTextNode(
-      textNodes[i]!,
-      showTooltips,
-      outputFormat,
-      customTranslateFn,
-      translateWithMappingFn
-    );
+    translateTextNode(textNodes[i]!, ctx);
 
     if (onProgress) {
       onProgress(i + 1, totalNodes);
@@ -137,23 +142,13 @@ export function translateDOMSync(
 /**
  * Translates translatable attributes on elements.
  */
-function translateElementAttributes(
-  root: Document | Element,
-  skipTags: string[],
-  skipClasses: string[],
-  format: OutputFormat = 'ingglish',
-  customTranslateFn?: (text: string, format: OutputFormat) => string
-): void {
-  const doTranslate =
-    customTranslateFn ??
-    ((text: string, fmt: OutputFormat) => translateSync(text, { format: fmt }));
-
+function translateElementAttributes(root: Document | Element, ctx: TranslateContext): void {
   // Only query elements that have translatable attributes (much smaller set than '*')
   const attrSelector = TRANSLATABLE_ATTRIBUTES.map((attr) => `[${attr}]`).join(',');
   const elements = Array.from(root.querySelectorAll<HTMLElement>(attrSelector));
 
   for (const element of elements) {
-    if (shouldSkipElement(element, skipTags, skipClasses)) {
+    if (shouldSkipElement(element, ctx.skipTags, ctx.skipClasses)) {
       continue;
     }
 
@@ -165,7 +160,7 @@ function translateElementAttributes(
         if (!element.hasAttribute(originalAttrName)) {
           element.setAttribute(originalAttrName, attrValue);
         }
-        element.setAttribute(attrName, doTranslate(attrValue, format));
+        element.setAttribute(attrName, ctx.doTranslate(attrValue, ctx.outputFormat));
       }
     }
   }
@@ -174,13 +169,7 @@ function translateElementAttributes(
 /**
  * Translates a single text node (internal helper).
  */
-function translateTextNode(
-  textNode: Text,
-  showTooltips: boolean,
-  outputFormat: OutputFormat,
-  customTranslateFn?: (text: string, format: OutputFormat) => string,
-  customMappingFn?: (text: string, format: OutputFormat) => TranslatedToken[]
-): void {
+function translateTextNode(textNode: Text, ctx: TranslateContext): void {
   const originalText = textNode.textContent;
   if (!originalText) {
     return;
@@ -188,24 +177,19 @@ function translateTextNode(
 
   const parent = textNode.parentElement;
 
-  if (showTooltips) {
+  // Store original text on parent for restoration
+  if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
+    parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
+  }
+
+  if (ctx.showTooltips) {
     // Replace text node with tooltip spans
-    const fragment = customMappingFn
-      ? createTooltipFragmentFromTokens(customMappingFn(originalText, outputFormat))
-      : createTooltipFragment(originalText, outputFormat);
-    // Store original text on parent for restoration
-    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
-      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
-    }
+    const fragment = ctx.mappingFn
+      ? createTooltipFragmentFromTokens(ctx.mappingFn(originalText, ctx.outputFormat))
+      : createTooltipFragment(originalText, ctx.outputFormat);
     textNode.replaceWith(fragment);
   } else {
-    // Simple text replacement (original behavior)
-    if (parent && !parent.hasAttribute(ATTR_ORIGINAL_CONTENT)) {
-      parent.setAttribute(ATTR_ORIGINAL_CONTENT, originalText);
-    }
-    const doTranslate =
-      customTranslateFn ??
-      ((text: string, fmt: OutputFormat) => translateSync(text, { format: fmt }));
-    textNode.textContent = doTranslate(originalText, outputFormat);
+    // Simple text replacement
+    textNode.textContent = ctx.doTranslate(originalText, ctx.outputFormat);
   }
 }
