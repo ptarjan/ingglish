@@ -1,9 +1,8 @@
 import { translate } from 'ingglish';
 import type { ComponentType, LazyExoticComponent } from 'react';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { trackPageView } from './analytics';
 import ErrorBoundary from './components/ErrorBoundary';
-import { MoreIcon } from './components/Icons';
 import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 import { useTheme } from './hooks/useTheme';
@@ -269,18 +268,39 @@ function App() {
       </header>
 
       {activeTab !== 'tutorial' && (
-        <Nav
-          activeTab={activeTab}
-          isLoading={isLoading}
-          onTabClick={(tab, href) => {
-            if (tab === activeTab) {
-              globalThis.history.replaceState(null, '', href);
-              setResetKey((k) => k + 1);
-            } else {
-              setActiveTab(tab);
-            }
-          }}
-        />
+        <nav className="tabs" style={isLoading ? { visibility: 'hidden' } : undefined}>
+          {(
+            [
+              ['/', 'tutorial', 'Tutorial'],
+              ['/text', 'text', 'Translate Text'],
+              ['/url', 'url', 'Translate URL'],
+              ['/guide', 'guide', 'Spelling Guide'],
+              ['/docs', 'docs', 'Docs'],
+              ['/extension', 'extension', 'Extension'],
+              ['/explore', 'explore', 'Word Explorer'],
+              ['/experiment', 'experiment', 'Experiment'],
+              ['/challenge', 'challenge', 'Challenge'],
+            ] as const
+          ).map(([href, tab, label]) => (
+            <a
+              className={`tab ${activeTab === tab ? 'active' : ''}`}
+              href={href}
+              key={tab}
+              onClick={(e) => {
+                e.preventDefault();
+                if (tab === activeTab) {
+                  // Re-clicking active tab: clear query params and reset component
+                  globalThis.history.replaceState(null, '', href);
+                  setResetKey((k) => k + 1);
+                } else {
+                  setActiveTab(tab);
+                }
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
       )}
 
       <main className="main">
@@ -366,23 +386,6 @@ function App() {
   );
 }
 
-const PRIMARY_TABS = [
-  ['/', 'tutorial', 'Tutorial'],
-  ['/text', 'text', 'Translate Text'],
-  ['/url', 'url', 'Translate URL'],
-  ['/guide', 'guide', 'Spelling Guide'],
-  ['/docs', 'docs', 'Docs'],
-] as const;
-
-const OVERFLOW_TABS = [
-  ['/extension', 'extension', 'Extension'],
-  ['/explore', 'explore', 'Word Explorer'],
-  ['/experiment', 'experiment', 'Experiment'],
-  ['/challenge', 'challenge', 'Challenge'],
-] as const;
-
-const OVERFLOW_TAB_SET = new Set(OVERFLOW_TABS.map(([, tab]) => tab));
-
 function getInitialLang(): string | undefined {
   const params = new URLSearchParams(globalThis.location.search);
   return params.get('lang') ?? undefined;
@@ -417,86 +420,6 @@ function getTabFromPath(): Tab {
     return segment;
   }
   return 'tutorial';
-}
-
-function Nav({
-  activeTab,
-  isLoading,
-  onTabClick,
-}: {
-  activeTab: Tab;
-  isLoading: boolean;
-  onTabClick: (tab: Tab, href: string) => void;
-}) {
-  const [moreOpen, setMoreOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  // Close on click outside
-  useEffect(() => {
-    if (!moreOpen) {return;}
-    const handleClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setMoreOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClick, true);
-    return () => { document.removeEventListener('click', handleClick, true); };
-  }, [moreOpen]);
-
-  // Close on Escape
-  useEffect(() => {
-    if (!moreOpen) {return;}
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {setMoreOpen(false);}
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => { document.removeEventListener('keydown', handleKey); };
-  }, [moreOpen]);
-
-  const handleTabClick = (tab: Tab, href: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    setMoreOpen(false);
-    onTabClick(tab, href);
-  };
-
-  const isOverflowActive = OVERFLOW_TAB_SET.has(activeTab);
-
-  return (
-    <nav className="tabs" style={isLoading ? { visibility: 'hidden' } : undefined}>
-      {PRIMARY_TABS.map(([href, tab, label]) => (
-        <a
-          className={`tab ${activeTab === tab ? 'active' : ''}`}
-          href={href}
-          key={tab}
-          onClick={(e) => { handleTabClick(tab, href, e); }}
-        >
-          {label}
-        </a>
-      ))}
-      <div className="tab-more-wrapper" ref={wrapperRef}>
-        <button
-          className={`tab tab-more-button ${isOverflowActive ? 'active' : ''}`}
-          onClick={() => { setMoreOpen((o) => !o); }}
-        >
-          <MoreIcon /> More
-        </button>
-        {moreOpen && (
-          <div className="tab-more-menu">
-            {OVERFLOW_TABS.map(([href, tab, label]) => (
-              <a
-                className={`tab ${activeTab === tab ? 'active' : ''}`}
-                href={href}
-                key={tab}
-                onClick={(e) => { handleTabClick(tab, href, e); }}
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </nav>
-  );
 }
 
 export default App;

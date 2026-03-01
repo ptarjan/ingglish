@@ -125,16 +125,6 @@ export function FullscreenIcon() {
   );
 }
 
-export function MoreIcon() {
-  return (
-    <svg fill="currentColor" height="16" stroke="none" viewBox="0 0 24 24" width="16">
-      <circle cx="5" cy="12" r="2" />
-      <circle cx="12" cy="12" r="2" />
-      <circle cx="19" cy="12" r="2" />
-    </svg>
-  );
-}
-
 export function ShareIcon() {
   return (
     <svg
