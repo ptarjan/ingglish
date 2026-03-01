@@ -21,11 +21,12 @@ import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 import spellingIteration from '../../../../docs/spelling-iteration.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
+import type { DocId } from '../routes';
 
 interface DocEntry {
   content: string;
   filename?: string; // undefined for auto-generated docs
-  id: string;
+  id: DocId;
   section?: string; // section header label shown before this item (when it's first in its group)
   title: string;
 }

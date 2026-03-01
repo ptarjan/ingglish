@@ -6,8 +6,12 @@ import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { build as esbuild } from 'esbuild';
+import { DOC_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
 
 const BUILD_ID = randomUUID();
+
+// All routes that get their own index.html in dist/
+const ALL_ROUTES = [...TOP_LEVEL_ROUTES, ...DOC_ENTRIES.map((e) => `docs/${e.id}`)];
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -56,11 +60,6 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       'Complete guide to the Ingglish phonetic alphabet. See how every English sound maps to a consistent spelling.',
   },
-  poems: {
-    title: 'Ingglish Poems',
-    description:
-      'Classic poems translated into phonetic English. See how poetry sounds when every spelling always makes the same sound.',
-  },
   experiment: {
     title: 'Ingglish Experiment - Design Your Own Spelling',
     description:
@@ -76,6 +75,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       'Translate any webpage to phonetic English with one click. Drag the bookmarklet to your bookmarks bar or install the Chrome extension.',
   },
+  challenge: {
+    title: 'Ingglish Reading Challenge',
+    description:
+      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
+  },
   docs: {
     title: 'Ingglish Documentation',
     description:
@@ -83,83 +87,96 @@ const ROUTE_META: Record<string, RouteMeta> = {
   },
 };
 
+// Build a map from doc ID to title for per-doc metadata
+const DOC_TITLE_MAP = new Map(DOC_ENTRIES.map((e) => [e.id, e.title]));
+
 function customizeHtml(html: string, route: string): string {
-  const meta = ROUTE_META[route];
-  if (meta === undefined) {
-    return html;
+  let title: string;
+  let description: string;
+
+  // Check for doc sub-pages (e.g. 'docs/design-decisions')
+  const docId = route.startsWith('docs/') ? route.slice(5) : null;
+  if (docId !== null) {
+    const docTitle = DOC_TITLE_MAP.get(docId);
+    title = docTitle !== undefined ? `${docTitle} | Ingglish Docs` : ROUTE_META.docs.title;
+    description =
+      docTitle !== undefined
+        ? `Ingglish documentation — ${docTitle}. Technical reference for the phonemic English spelling system.`
+        : ROUTE_META.docs.description;
+  } else {
+    const meta = ROUTE_META[route];
+    if (meta === undefined) {
+      return html;
+    }
+    title = meta.title;
+    description = meta.description;
   }
+
   const url = `https://ingglish.com/${route}`;
   return html
+    .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
+    .replace(
+      /<meta name="description" content="[^"]*"/,
+      `<meta name="description" content="${description}"`
+    )
+    .replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${url}"`)
     .replace(
       /<meta property="og:title" content="[^"]*"/,
-      `<meta property="og:title" content="${meta.title}"`
+      `<meta property="og:title" content="${title}"`
     )
     .replace(
       /<meta property="og:description" content="[^"]*"/,
-      `<meta property="og:description" content="${meta.description}"`
+      `<meta property="og:description" content="${description}"`
     )
     .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
     .replace(
       /<meta name="twitter:title" content="[^"]*"/,
-      `<meta name="twitter:title" content="${meta.title}"`
+      `<meta name="twitter:title" content="${title}"`
     )
     .replace(
       /<meta name="twitter:description" content="[^"]*"/,
-      `<meta name="twitter:description" content="${meta.description}"`
-    )
-    .replace(/<title>[^<]*<\/title>/, `<title>${meta.title}</title>`);
+      `<meta name="twitter:description" content="${description}"`
+    );
 }
 
 // Copy index.html to each route path so GitHub Pages serves the SPA for all routes
 function copyRoutesToDist(): Plugin {
-  const docIds = [
-    'design-decisions',
-    'phoneme-mapping',
-    'orthography-comparison',
-    'spelling-reform-comparison',
-    'spelling-iteration',
-    'identical-words-analysis',
-    'false-friends',
-    'orthographic-transparency',
-    'morphological-analysis',
-    'dialect-assumptions',
-    'how-to-read-english',
-    'how-to-spell-english',
-    'architecture',
-    'api-reference',
-    'performance',
-    'deployment',
-    'contributing',
-    'troubleshooting',
-  ];
-  const routes = [
-    'text',
-    'url',
-    'guide',
-    'extension',
-    'poems',
-    'explore',
-    'experiment',
-    'docs',
-    ...docIds.map((id) => `docs/${id}`),
-  ];
-
   return {
     name: 'copy-routes-to-dist',
     writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       const srcPath = join(distDir, 'index.html');
       const baseHtml = readFileSync(srcPath, 'utf-8');
-      for (const route of routes) {
+      for (const route of ALL_ROUTES) {
         const dest = join(distDir, route, 'index.html');
         mkdirSync(dirname(dest), { recursive: true });
-        // Use first path segment for metadata lookup (e.g. 'docs/foo' → 'docs')
-        const metaKey = route.split('/')[0];
-        const html = customizeHtml(baseHtml, metaKey);
+        const html = customizeHtml(baseHtml, route);
         writeFileSync(dest, html);
       }
       // 404.html as catch-all fallback for GitHub Pages
       copyFileSync(srcPath, join(distDir, '404.html'));
+    },
+  };
+}
+
+// Generate sitemap.xml from the shared route list
+function generateSitemap(): Plugin {
+  return {
+    name: 'generate-sitemap',
+    writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      const allUrls = [
+        '', // homepage
+        ...ALL_ROUTES,
+      ];
+      const urls = allUrls
+        .map((r) => {
+          const loc = r === '' ? 'https://ingglish.com/' : `https://ingglish.com/${r}`;
+          return `  <url>\n    <loc>${loc}</loc>\n  </url>`;
+        })
+        .join('\n');
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/protocols/sitemap/0.9">\n${urls}\n</urlset>\n`;
+      writeFileSync(join(distDir, 'sitemap.xml'), sitemap);
     },
   };
 }
@@ -216,6 +233,7 @@ export default defineConfig({
     react(),
     processChunks(),
     copyRoutesToDist(),
+    generateSitemap(),
     writeBuildId(),
     buildBookmarklet(),
   ],
