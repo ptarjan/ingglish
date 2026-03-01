@@ -213,9 +213,11 @@
   background: var(--color-surface);
 }
 
-/* Main Content */
+/* Main Content — min-height pushes the footer below the viewport fold so that
+   layout shifts during loading (spinner → real content) don't count as CLS. */
 .main {
   flex: 1;
+  min-height: calc(100dvh - 4rem);
 }
 
 /* Footer */
