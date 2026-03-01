@@ -244,13 +244,14 @@ function Docs(): JSX.Element {
     });
   }, [activeDoc, currentDoc.content]);
 
-  // Update URL path when switching docs
+  // Update URL path and document title when switching docs
   useEffect(() => {
     const targetPath = `/docs/${activeDoc}`;
     if (globalThis.location.pathname !== targetPath) {
       globalThis.history.pushState(null, '', targetPath);
     }
-  }, [activeDoc]);
+    document.title = `${currentDoc.title} | Ingglish Docs`;
+  }, [activeDoc, currentDoc.title]);
 
   // Scroll to section on initial load
   useEffect(() => {
