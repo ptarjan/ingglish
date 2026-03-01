@@ -16,6 +16,7 @@ import {
   CloseIcon,
   CopyIcon,
   DiceIcon,
+  ExternalLinkIcon,
   ShareIcon,
   SpeakerIcon,
   StopIcon,
@@ -631,10 +632,12 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             </select>
             {selectedSampleSource && (
               <a
-                className="sample-source-link"
+                aria-label="Read full page"
+                className="btn-secondary btn-icon"
                 href={`/url?url=${encodeURIComponent(selectedSampleSource)}${isTargetLangMode ? `&lang=${selectedLanguage}` : ''}`}
+                title="Read full page"
               >
-                Read full page &#x2197;
+                <ExternalLinkIcon />
               </a>
             )}
             {onShare && (
