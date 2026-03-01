@@ -253,7 +253,7 @@ function App() {
               }
             }}
           >
-            <img alt="Ingglish logo" className="logo" src="/logo.svg" />
+            <img alt="Ingglish logo" className="logo" height={56} src="/logo.svg" width={56} />
             <h1>Ingglish</h1>
           </a>
           <button
