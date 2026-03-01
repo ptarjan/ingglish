@@ -433,24 +433,34 @@ function Nav({
 
   // Close on click outside
   useEffect(() => {
-    if (!moreOpen) {return;}
+    if (!moreOpen) {
+      return;
+    }
     const handleClick = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setMoreOpen(false);
       }
     };
     document.addEventListener('click', handleClick, true);
-    return () => { document.removeEventListener('click', handleClick, true); };
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+    };
   }, [moreOpen]);
 
   // Close on Escape
   useEffect(() => {
-    if (!moreOpen) {return;}
+    if (!moreOpen) {
+      return;
+    }
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {setMoreOpen(false);}
+      if (e.key === 'Escape') {
+        setMoreOpen(false);
+      }
     };
     document.addEventListener('keydown', handleKey);
-    return () => { document.removeEventListener('keydown', handleKey); };
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [moreOpen]);
 
   const handleTabClick = (tab: Tab, href: string, e: React.MouseEvent) => {
@@ -468,7 +478,9 @@ function Nav({
           className={`tab ${activeTab === tab ? 'active' : ''}`}
           href={href}
           key={tab}
-          onClick={(e) => { handleTabClick(tab, href, e); }}
+          onClick={(e) => {
+            handleTabClick(tab, href, e);
+          }}
         >
           {label}
         </a>
@@ -476,7 +488,9 @@ function Nav({
       <div className="tab-more-wrapper" ref={wrapperRef}>
         <button
           className={`tab tab-more-button ${isOverflowActive ? 'active' : ''}`}
-          onClick={() => { setMoreOpen((o) => !o); }}
+          onClick={() => {
+            setMoreOpen((o) => !o);
+          }}
         >
           <MoreIcon /> More
         </button>
@@ -487,7 +501,9 @@ function Nav({
                 className={`tab ${activeTab === tab ? 'active' : ''}`}
                 href={href}
                 key={tab}
-                onClick={(e) => { handleTabClick(tab, href, e); }}
+                onClick={(e) => {
+                  handleTabClick(tab, href, e);
+                }}
               >
                 {label}
               </a>
