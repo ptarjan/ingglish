@@ -2,7 +2,7 @@
 
 ## CI/CD
 
-Always `git pull --rebase` before starting any work to avoid conflicts with concurrent sessions.
+Always `git pull --rebase` before starting any work to avoid conflicts with concurrent sessions. Also `git pull --rebase` before every push — other sessions may have pushed while you were working.
 
 Push directly to main — don't create PRs or feature branches. Always commit and push whenever you reach a good stopping point — don't wait to be asked.
 
