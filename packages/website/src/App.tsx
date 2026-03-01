@@ -310,12 +310,31 @@ function App() {
             <p>{error}</p>
           </div>
         )}
-        {isLoading && (
+        {/* Tabs that don't need the dictionary render immediately */}
+        {(activeTab === 'docs' || activeTab === 'extension') && (
+          <Suspense
+            fallback={
+              <div className="loading-screen">
+                <div className="loading-spinner"></div>
+              </div>
+            }
+            key={resetKey}
+          >
+            {activeTab === 'extension' && <Extension />}
+            {activeTab === 'docs' && (
+              <ErrorBoundary>
+                <Docs />
+              </ErrorBoundary>
+            )}
+          </Suspense>
+        )}
+        {/* Tabs that need the dictionary wait for it to load */}
+        {activeTab !== 'docs' && activeTab !== 'extension' && isLoading && (
           <div className="loading-screen">
             <div className="loading-spinner"></div>
           </div>
         )}
-        {!isLoading && error === null && (
+        {activeTab !== 'docs' && activeTab !== 'extension' && !isLoading && error === null && (
           <Suspense
             fallback={
               <div className="loading-screen">
@@ -345,7 +364,6 @@ function App() {
               </ErrorBoundary>
             )}
             {activeTab === 'guide' && <SpellingGuide />}
-            {activeTab === 'extension' && <Extension />}
             {activeTab === 'explore' && (
               <ErrorBoundary>
                 <WordExplorer />
@@ -359,11 +377,6 @@ function App() {
             {activeTab === 'challenge' && (
               <ErrorBoundary>
                 <ReadingChallenge />
-              </ErrorBoundary>
-            )}
-            {activeTab === 'docs' && (
-              <ErrorBoundary>
-                <Docs />
               </ErrorBoundary>
             )}
           </Suspense>
