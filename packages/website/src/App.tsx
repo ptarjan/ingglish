@@ -106,17 +106,21 @@ function App() {
   const [initialUrl] = useState(getInitialUrl);
   const { cycleTheme, getThemeIcon } = useTheme();
   const updateAvailable = useUpdateCheck();
+  const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
 
-  // Sync URL path with active tab (docs manages its own sub-path)
+  // Sync URL path and document title with active tab (docs manages its own sub-path and title)
   useEffect(() => {
     const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
     const currentPath = globalThis.location.pathname.replace(/\/$/, '') || '/';
     if (currentPath !== targetPath && activeTab !== 'docs') {
       globalThis.history.pushState(null, '', targetPath);
     }
+    if (activeTab !== 'docs') {
+      document.title = meta.title;
+    }
     trackPageView(targetPath);
     window.scrollTo(0, 0);
-  }, [activeTab]);
+  }, [activeTab, meta.title]);
 
   // Handle browser back/forward
   useEffect(() => {
@@ -213,8 +217,6 @@ function App() {
     };
   }, []);
 
-  const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
-
   return (
     <div className="app">
       {updateAvailable && (
@@ -229,7 +231,6 @@ function App() {
           </button>
         </div>
       )}
-      <title>{meta.title}</title>
       <meta content={meta.description} name="description" />
       <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
       <div className="toggle-buttons">

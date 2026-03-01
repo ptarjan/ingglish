@@ -284,7 +284,6 @@ function Docs(): JSX.Element {
 
   return (
     <>
-      <title>{currentDoc.title} | Ingglish Docs</title>
       <meta
         content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
         name="description"
