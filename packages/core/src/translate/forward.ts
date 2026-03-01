@@ -16,8 +16,12 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { lookupIpa, translateForeign, translateForeignWithMapping } from '@ingglish/ipa';
-import type { IpaDict } from '@ingglish/ipa';
+import {
+  lookupIpa,
+  translateForeign,
+  translateForeignWithMapping,
+  type IpaDict,
+} from '@ingglish/ipa';
 import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
