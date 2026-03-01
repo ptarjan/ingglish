@@ -30,8 +30,8 @@ test.describe('Tutorial Auto-Typing Demo', () => {
     // Scroll the section into view
     await tryItSection.scrollIntoViewIfNeeded();
 
-    // Wait for auto-typing to complete (36 chars × 60ms ≈ 2.2s + buffer)
-    await expect(input).toHaveValue('The knight thought through the night', { timeout: 5000 });
+    // Wait for auto-typing to complete (37 chars × 60ms ≈ 2.2s + buffer)
+    await expect(input).toHaveValue('A knight fought through a rough night', { timeout: 5000 });
 
     // Translation output should be visible
     await expect(tryItSection.locator('.try-it-output')).toBeVisible();
@@ -42,7 +42,7 @@ test.describe('Tutorial Auto-Typing Demo', () => {
     const input = tryItSection.locator('.try-it-input');
 
     // Input should have the demo sentence from previous test
-    await expect(input).toHaveValue('The knight thought through the night');
+    await expect(input).toHaveValue('A knight fought through a rough night');
 
     // Click the input to interact
     await input.click();

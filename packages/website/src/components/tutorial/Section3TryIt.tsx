@@ -9,7 +9,7 @@ function isAllCaps(text: string): boolean {
   return letters.length >= 2 && letters === letters.toUpperCase();
 }
 
-const DEMO_SENTENCE = 'The knight thought through the night';
+const DEMO_SENTENCE = 'A knight fought through a rough night';
 const TYPING_INTERVAL_MS = 60;
 const POST_TYPING_PAUSE_MS = 500;
 

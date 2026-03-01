@@ -64,16 +64,16 @@ export interface ParagraphWord {
   trailing?: string;
 }
 
-// "The knight thought he could phone the city office to schedule a flight through
-// the night, but the receptionist said the physician was caught in traffic."
+// "A knight thought he could phone his city office to schedule a flight through
+// that rough night, but the receptionist said a physician was caught in traffic."
 export const paragraphWords: ParagraphWord[] = [
-  { english: 'The', ingglish: 'Dha', step: 6 },
+  { english: 'A', ingglish: 'A', step: 0 },
   { english: 'knight', ingglish: 'nait', step: 1 },
   { english: 'thought', ingglish: 'thawt', step: 2 },
   { english: 'he', ingglish: 'hee', step: 2 },
   { english: 'could', ingglish: 'kud', step: 1 },
   { english: 'phone', ingglish: 'fohn', step: 3 },
-  { english: 'the', ingglish: 'dha', step: 6 },
+  { english: 'his', ingglish: 'hiz', step: 2 },
   { english: 'city', ingglish: 'sitee', step: 4 },
   { english: 'office', ingglish: 'awfis', step: 4 },
   { english: 'to', ingglish: 'too', step: 2 },
@@ -81,13 +81,14 @@ export const paragraphWords: ParagraphWord[] = [
   { english: 'a', ingglish: 'a', step: 2 },
   { english: 'flight', ingglish: 'flait', step: 5 },
   { english: 'through', ingglish: 'throo', step: 2 },
-  { english: 'the', ingglish: 'dha', step: 6 },
+  { english: 'that', ingglish: 'dhat', step: 6 },
+  { english: 'rough', ingglish: 'ruhf', step: 2 },
   { english: 'night,', ingglish: 'nait,', step: 5 },
   { english: 'but', ingglish: 'buht', step: 2 },
   { english: 'the', ingglish: 'dha', step: 6 },
   { english: 'receptionist', ingglish: 'risepshanist', step: 4 },
   { english: 'said', ingglish: 'sed', step: 2 },
-  { english: 'the', ingglish: 'dha', step: 6 },
+  { english: 'a', ingglish: 'a', step: 0 },
   { english: 'physician', ingglish: 'fazishan', step: 3 },
   { english: 'was', ingglish: 'woz', step: 2 },
   { english: 'caught', ingglish: 'kot', step: 5 },
@@ -102,7 +103,7 @@ export const stepCaptions = [
   '"Ph" is just "f": phone, physician.',
   'C picks a lane: city, office, schedule.',
   'The silent "ght" club: flight, night, caught.',
-  '"Th" vs "dh": the gets its own sound.',
+  '"Th" vs "dh": that and the get their own sound.',
 ];
 
 // "Hints on Pronunciation for Foreigners" (attributed to T.S. Watt, 1954).
