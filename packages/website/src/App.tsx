@@ -229,9 +229,14 @@ function App() {
           </button>
         </div>
       )}
-      <title>{meta.title}</title>
-      <meta content={meta.description} name="description" />
-      <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
+      {/* Docs.tsx manages its own title/description/canonical per doc page */}
+      {activeTab !== 'docs' && (
+        <>
+          <title>{meta.title}</title>
+          <meta content={meta.description} name="description" />
+          <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
+        </>
+      )}
       <div className="toggle-buttons">
         <button aria-label="Toggle theme" className="theme-toggle" onClick={cycleTheme}>
           {getThemeIcon()}
