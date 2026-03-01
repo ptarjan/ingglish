@@ -381,7 +381,7 @@ const OVERFLOW_TABS = [
   ['/challenge', 'challenge', 'Challenge'],
 ] as const;
 
-const OVERFLOW_TAB_SET = new Set(OVERFLOW_TABS.map(([, tab]) => tab));
+const OVERFLOW_TAB_SET = new Set<string>(OVERFLOW_TABS.map(([, tab]) => tab));
 
 function getInitialLang(): string | undefined {
   const params = new URLSearchParams(globalThis.location.search);
