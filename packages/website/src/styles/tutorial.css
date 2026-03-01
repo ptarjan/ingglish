@@ -602,6 +602,11 @@
   grid-template-columns: repeat(2, auto);
   gap: 1rem;
   justify-content: center;
+  justify-items: center;
+}
+
+.cta-buttons .cta-primary {
+  grid-column: 1 / -1;
 }
 
 .cta-primary,
