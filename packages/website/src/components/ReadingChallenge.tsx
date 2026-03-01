@@ -269,7 +269,7 @@ function ReadingChallenge() {
             onClick={handleStart}
             ref={startRef}
           >
-            {reverseDictReady ? 'Start Challenge' : 'Loading...'}
+            Start Challenge
           </button>
         </div>
       </div>

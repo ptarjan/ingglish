@@ -553,17 +553,26 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               ))}
             </select>
             <div className="button-group">
-              {speechSupported && hasVoice(isTargetLangMode ? selectedLanguage : 'en') && (
-                <button
-                  aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
-                  className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
-                  disabled={!displayEnglish}
-                  onClick={handleSpeak}
-                  title={speakingEnglish ? 'Stop' : 'Listen'}
-                >
-                  {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
-                </button>
-              )}
+              {/* Always render to reserve space and avoid CLS; hide when speech unavailable */}
+              <button
+                aria-hidden={
+                  !speechSupported ||
+                  !hasVoice(isTargetLangMode ? selectedLanguage : 'en') ||
+                  undefined
+                }
+                aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
+                className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
+                disabled={!displayEnglish}
+                onClick={handleSpeak}
+                style={
+                  speechSupported && hasVoice(isTargetLangMode ? selectedLanguage : 'en')
+                    ? undefined
+                    : { visibility: 'hidden' }
+                }
+                title={speakingEnglish ? 'Stop' : 'Listen'}
+              >
+                {speakingEnglish ? <StopIcon /> : <SpeakerIcon />}
+              </button>
               <button
                 aria-label="Random sample"
                 className="btn-secondary btn-icon"
