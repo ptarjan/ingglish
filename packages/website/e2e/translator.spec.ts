@@ -81,7 +81,7 @@ test.describe('Web Vitals', () => {
   });
 
   // PerformanceObserver layout-shift is Chromium-only; skip on WebKit
-  test('CLS is below 0.01 during page load', async ({ page }, testInfo) => {
+  test('CLS is near zero during page load', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name.includes('safari'), 'WebKit has no layout-shift API');
     await blockExternalNetwork(page);
 
@@ -135,8 +135,8 @@ test.describe('Web Vitals', () => {
       }
     }
 
-    // Good CLS is < 0.1 per Web Vitals; we target < 0.01
-    expect(result.total).toBeLessThan(0.01);
+    // Good CLS is < 0.1 per Web Vitals; we target zero
+    expect(result.total).toBeLessThan(0.001);
   });
 
   // Test CLS on every page route (Chromium-only — WebKit has no layout-shift API)
@@ -150,7 +150,7 @@ test.describe('Web Vitals', () => {
     '/experiment',
     '/challenge',
   ]) {
-    test(`CLS is below 0.01 on ${route}`, async ({ page }, testInfo) => {
+    test(`CLS is near zero on ${route}`, async ({ page }, testInfo) => {
       test.skip(testInfo.project.name.includes('safari'), 'WebKit has no layout-shift API');
       await blockExternalNetwork(page);
 
@@ -201,7 +201,7 @@ test.describe('Web Vitals', () => {
         }
       }
 
-      expect(result.total).toBeLessThan(0.01);
+      expect(result.total).toBeLessThan(0.001);
     });
   }
 
