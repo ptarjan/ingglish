@@ -20,7 +20,7 @@ if (!force && existsSync(sampleFile)) {
   process.exit(0);
 }
 
-execSync('npx tsx scripts/extract-kaikki-ipa.ts', {
+execSync('npx tsx --conditions=source scripts/extract-kaikki-ipa.ts', {
   stdio: 'inherit',
   cwd: join(__dirname, '..'),
 });

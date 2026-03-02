@@ -16,7 +16,7 @@ import { promisify } from 'util';
 // Relative imports — this script runs via tsx, not through the package system
 import { ipaToArpabet } from '../../ipa/src/from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from '../../ipa/src/ipa-maps';
-import { getStress, isVowel } from '../../phonemes/src/arpabet';
+import { getStress, isVowel } from '@ingglish/phonemes';
 
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

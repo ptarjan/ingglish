@@ -20,7 +20,7 @@ if (!force && existsSync(sampleFile)) {
   process.exit(0);
 }
 
-execSync('npx tsx scripts/build-ipa-dicts.ts' + (force ? '' : ''), {
+execSync('npx tsx --conditions=source scripts/build-ipa-dicts.ts' + (force ? '' : ''), {
   stdio: 'inherit',
   cwd: join(__dirname, '..'),
 });
