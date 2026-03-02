@@ -47,9 +47,6 @@ const LEADING_NON_LETTER_RE = /^[^\p{L}\p{M}]/u;
 const TRAILING_NON_LETTER_RE = /[^\p{L}\p{M}]$/u;
 const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
-/** @deprecated Use {@link PhoneDict} instead. */
-export type IpaDict = PhoneDict;
-
 /**
  * Unified phoneme dictionary type. Entries are ARPAbet arrays, converted
  * from IPA at build time. English and foreign dicts share the same format.
@@ -235,9 +232,6 @@ function getOverridesArpabet(lang: string): Record<string, string[]> | undefined
   overridesArpabetCache.set(lang, cached);
   return cached;
 }
-
-/** @deprecated Use {@link lookupDict} instead. */
-export const lookupIpa = lookupDict;
 
 /**
  * Merged Khmer dict (raw dict + overrides) and its keys sorted longest-first.

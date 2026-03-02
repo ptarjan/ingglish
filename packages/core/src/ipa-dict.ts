@@ -1,5 +1,5 @@
 /**
- * IPA dictionary loader and cache.
+ * Dictionary loader and cache.
  *
  * Separated from index.ts to avoid circular dependencies with translate/forward.ts.
  */
@@ -12,11 +12,9 @@ import type { OutputFormat } from '@ingglish/phonemes';
 // =============================================================================
 
 export type DictLoader = (lang: string) => Promise<PhoneDict>;
-/** @deprecated Use {@link PhoneDict} instead. */
-export type IpaDict = PhoneDict;
 
 // =============================================================================
-// IPA dictionary loader
+// Dictionary loader
 // =============================================================================
 
 export interface TranslateOptions {
@@ -39,7 +37,7 @@ export function getDictReverseMap(lang: string): Map<string, string[]> | undefin
 }
 
 /**
- * Get a cached IPA dictionary (for sync use after a prior async load).
+ * Get a cached dictionary (for sync use after a prior async load).
  * Returns undefined if the dictionary hasn't been loaded yet.
  */
 export function getLangDict(lang: string): PhoneDict | undefined {
@@ -47,7 +45,7 @@ export function getLangDict(lang: string): PhoneDict | undefined {
 }
 
 /**
- * Load an IPA dictionary, returning it from cache if available.
+ * Load a dictionary, returning it from cache if available.
  * Requires a loader to have been registered via {@link setDictLoader}.
  */
 export async function loadLangDict(lang: string): Promise<PhoneDict> {
@@ -56,9 +54,7 @@ export async function loadLangDict(lang: string): Promise<PhoneDict> {
     return cached;
   }
   if (!dictLoader) {
-    throw new Error(
-      `No dictionary loader registered. Call setDictLoader() before translating foreign languages.`
-    );
+    throw new Error(`No dictionary loader registered. Call setDictLoader() before translating.`);
   }
   const dict: PhoneDict = await dictLoader(lang);
   dictCache.set(lang, dict);
@@ -66,7 +62,7 @@ export async function loadLangDict(lang: string): Promise<PhoneDict> {
 }
 
 /**
- * Register a function that loads IPA dictionaries for foreign languages.
+ * Register a function that loads dictionaries.
  * Called once at application startup (e.g. in the website's entry point).
  *
  * @example

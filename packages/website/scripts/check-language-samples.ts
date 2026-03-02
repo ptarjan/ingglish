@@ -26,7 +26,7 @@ for (const [lang, samples] of Object.entries(ALL_SAMPLES)) {
     totalWords += words.length;
 
     const missing = words.filter((w) => {
-      // Direct lookup (includes IPA_WORD_OVERRIDES via lookupIpa)
+      // Direct lookup (includes IPA_WORD_OVERRIDES via lookupDict)
       if (lookupDict(dict, w)) return false;
       // Try splitting contractions/hyphens (like translateDict does)
       const parts = w.split(/(?<=['-])|(?=['-])/);

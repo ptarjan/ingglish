@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { getStress, isVowel } from '@ingglish/phonemes'; // also registers 'pronunciation' format
-import type { PhoneDict } from './foreign';
+import type { PhoneDict } from './dict';
 import {
   LANGUAGES,
   lookupDict,
@@ -10,7 +10,7 @@ import {
   translateDict,
   translateDictWithMapping,
   NOT_FOUND_MARKER,
-} from './foreign';
+} from './dict';
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 
