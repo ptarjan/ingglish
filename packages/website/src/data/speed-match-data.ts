@@ -13,7 +13,7 @@ export interface MatchPair {
   ingglish: string;
 }
 
-/** Round 1: short, common words that kids know. */
+/** Round 1: short, common words. */
 const SIMPLE_POOL = [
   'phone',
   'know',
@@ -49,8 +49,49 @@ const SIMPLE_POOL = [
   'calm',
 ];
 
+/** Round 2: longer, trickier words with silent letters and unusual spellings. */
+const MEDIUM_POOL = [
+  'knight',
+  'enough',
+  'through',
+  'thought',
+  'people',
+  'ocean',
+  'science',
+  'measure',
+  'beautiful',
+  'daughter',
+  'foreign',
+  'tongue',
+  'building',
+  'receipt',
+  'island',
+  'listen',
+  'castle',
+  'Wednesday',
+  'answer',
+  'climb',
+  'doubt',
+  'subtle',
+  'rhythm',
+  'muscle',
+  'scissors',
+  'gnome',
+  'wreck',
+  'pneumonia',
+  'psychology',
+  'colonel',
+  'choir',
+  'aisle',
+  'debt',
+  'chaos',
+  'stomach',
+  'technique',
+  'unique',
+];
+
 /**
- * Hard-mode clusters: words that differ by ~1 vowel.
+ * Round 3: near-miss clusters — words that differ by ~1 vowel.
  * All words in each cluster look confusingly similar in English
  * but have distinct Ingglish translations, forcing careful decoding.
  */
@@ -67,18 +108,17 @@ const HARD_CLUSTERS = [
 
 /**
  * Pick 6 match pairs for a single round.
- * Rounds 0-1 use the easy pool (distinct words).
- * Round 2+ uses hard clusters (near-miss words that differ by a vowel).
+ * Round 1: simple common words. Round 2: tricky spellings. Round 3: near-miss clusters.
  * Translates at call time (dictionary must be loaded).
  */
 export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
   const rng = mulberry32(seed + roundIndex * 7919);
 
-  if (roundIndex >= 1) {
+  if (roundIndex >= 2) {
     return pickHardPairs(rng);
   }
 
-  const pool = shuffle([...SIMPLE_POOL], rng);
+  const pool = shuffle([...(roundIndex === 0 ? SIMPLE_POOL : MEDIUM_POOL)], rng);
   const pairs: MatchPair[] = [];
   for (const word of pool) {
     if (pairs.length >= 6) {
