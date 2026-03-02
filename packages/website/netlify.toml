@@ -21,6 +21,12 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Service worker must not be HTTP-cached
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
 # Cache static assets
 [[headers]]
   for = "/assets/*"

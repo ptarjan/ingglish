@@ -23,6 +23,8 @@ export function useUpdateCheck(): boolean {
         const remoteBuildId = resText.trim();
         if (remoteBuildId.length > 0 && remoteBuildId !== __BUILD_ID__) {
           setUpdateAvailable(true);
+          // Prompt browser to fetch updated service worker
+          void navigator.serviceWorker?.getRegistration().then((r) => r?.update());
         }
       } catch {
         // Network error — ignore

@@ -209,6 +209,25 @@ function writeBuildId(): Plugin {
   };
 }
 
+// Build sw.js — esbuild compiles src/sw.ts to dist/sw.js as IIFE with BUILD_ID injected
+function buildServiceWorker(): Plugin {
+  return {
+    name: 'build-service-worker',
+    async writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      await esbuild({
+        entryPoints: [join(__dirname, 'src/sw.ts')],
+        bundle: true,
+        format: 'iife',
+        outfile: join(distDir, 'sw.js'),
+        minify: true,
+        define: { __BUILD_ID__: JSON.stringify(BUILD_ID) },
+        logLevel: 'error',
+      });
+    },
+  };
+}
+
 // Build bookmarklet.js as a self-contained IIFE (includes dictionary, ~3MB gzipped)
 function buildBookmarklet(): Plugin {
   return {
@@ -266,6 +285,7 @@ export default defineConfig({
     generateSitemap(),
     writeBuildId(),
     buildBookmarklet(),
+    buildServiceWorker(),
   ],
   build: {
     outDir: 'dist',

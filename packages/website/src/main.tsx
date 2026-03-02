@@ -6,10 +6,16 @@ import '@ingglish/shavian'; // registers 'shavian' format
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import { registerExperiment } from './hooks/useCustomMapping';
+import { registerServiceWorker } from './register-sw';
 import './styles/index.css';
 
 // Register custom experiment format
 registerExperiment();
+
+// Register service worker in production
+if (!import.meta.env.DEV) {
+  registerServiceWorker();
+}
 
 const rootElement = document.querySelector('#root');
 if (rootElement === null) {
