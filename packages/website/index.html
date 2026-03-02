@@ -45,7 +45,7 @@
         }
       })();
     </script>
-    <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 } body { margin: 0 } .header h1 { visibility: hidden } .fonts-ready .header h1 { visibility: visible }</style>
+    <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 } body { margin: 0 } .fonts-loading .header h1 { visibility: hidden }</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -53,7 +53,12 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Shavian&display=swap" rel="stylesheet" /></noscript>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Deseret&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Deseret&display=swap" rel="stylesheet" /></noscript>
-    <script>document.fonts.ready.then(function(){document.documentElement.classList.add('fonts-ready')})</script>
+    <script>
+      if(!document.fonts.check('1em Inter')){
+        document.documentElement.classList.add('fonts-loading');
+        document.fonts.ready.then(function(){document.documentElement.classList.remove('fonts-loading')});
+      }
+    </script>
   </head>
   <body>
     <div id="root">
