@@ -15,9 +15,15 @@ interface RoundResult {
 }
 
 function getScoreLabel(pct: number): string {
-  if (pct >= 90) {return 'Perfect ear! You know your homophones!';}
-  if (pct >= 70) {return 'Great job! You understand Ingglish well!';}
-  if (pct >= 50) {return 'Not bad! Homophones are tricky.';}
+  if (pct >= 90) {
+    return 'Perfect ear! You know your homophones!';
+  }
+  if (pct >= 70) {
+    return 'Great job! You understand Ingglish well!';
+  }
+  if (pct >= 50) {
+    return 'Not bad! Homophones are tricky.';
+  }
   return "Keep practicing — you'll get there!";
 }
 
@@ -80,9 +86,13 @@ function HomophonesQuiz() {
 
   const handleChoiceClick = useCallback(
     (choice: string) => {
-      if (selectedChoice !== null) {return;} // already answered
+      if (selectedChoice !== null) {
+        return;
+      } // already answered
       const question = questions[round];
-      if (!question) {return;}
+      if (!question) {
+        return;
+      }
 
       const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
       const isCorrect = question.correctAnswers.some(
@@ -203,10 +213,20 @@ function HomophonesQuiz() {
           </div>
 
           <div className="game-result-actions">
-            <button className="btn-secondary" onClick={() => { startQuiz(seed); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(seed);
+              }}
+            >
               Try Again
             </button>
-            <button className="btn-secondary" onClick={() => { startQuiz(Date.now()); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(Date.now());
+              }}
+            >
               New Quiz
             </button>
             <button
@@ -227,7 +247,9 @@ function HomophonesQuiz() {
 
   // --- Playing ---
   const currentQ = questions[round];
-  if (!currentQ) {return null;}
+  if (!currentQ) {
+    return null;
+  }
 
   const answered = selectedChoice !== null;
   const isCorrectAnswer = (choice: string) =>
@@ -272,7 +294,9 @@ function HomophonesQuiz() {
               className={className}
               disabled={answered}
               key={choice}
-              onClick={() => { handleChoiceClick(choice); }}
+              onClick={() => {
+                handleChoiceClick(choice);
+              }}
             >
               {choice}
             </button>

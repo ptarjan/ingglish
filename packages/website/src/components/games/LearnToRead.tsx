@@ -42,9 +42,13 @@ function LearnToRead() {
   }, []);
 
   const handleQuizSubmit = useCallback(() => {
-    if (!activeLesson || showFeedback) {return;}
+    if (!activeLesson || showFeedback) {
+      return;
+    }
     const current = activeLesson.quiz[quizIndex];
-    if (!current || !quizInput.trim()) {return;}
+    if (!current || !quizInput.trim()) {
+      return;
+    }
 
     const isCorrect = quizInput.trim().toLowerCase() === current.english.toLowerCase();
     setQuizResults((prev) => [...prev, isCorrect]);
@@ -53,7 +57,9 @@ function LearnToRead() {
   }, [activeLesson, quizIndex, quizInput, showFeedback]);
 
   const handleQuizNext = useCallback(() => {
-    if (!activeLesson) {return;}
+    if (!activeLesson) {
+      return;
+    }
     const nextIndex = quizIndex + 1;
     if (nextIndex >= activeLesson.quiz.length) {
       // Quiz done — save progress
@@ -118,7 +124,9 @@ function LearnToRead() {
               <button
                 className={`learn-lesson-card ${isCompleted ? 'learn-lesson-completed' : ''}`}
                 key={lesson.id}
-                onClick={() => { startLesson(lesson); }}
+                onClick={() => {
+                  startLesson(lesson);
+                }}
               >
                 <div className="learn-lesson-number">{lesson.id}</div>
                 <div className="learn-lesson-info">
@@ -139,14 +147,21 @@ function LearnToRead() {
     );
   }
 
-  if (!activeLesson) {return null;}
+  if (!activeLesson) {
+    return null;
+  }
 
   // --- Lesson (teaching phase) ---
   if (phase === 'lesson') {
     return (
       <div className="game-page">
         <div className="learn-lesson-header">
-          <button className="btn-secondary learn-back-btn" onClick={() => { setPhase('menu'); }}>
+          <button
+            className="btn-secondary learn-back-btn"
+            onClick={() => {
+              setPhase('menu');
+            }}
+          >
             Back
           </button>
           <h2>
@@ -184,7 +199,9 @@ function LearnToRead() {
   // --- Quiz ---
   if (phase === 'quiz') {
     const current = activeLesson.quiz[quizIndex];
-    if (!current) {return null;}
+    if (!current) {
+      return null;
+    }
 
     return (
       <div className="game-page">
@@ -210,7 +227,9 @@ function LearnToRead() {
           <input
             className="game-input"
             disabled={showFeedback}
-            onChange={(e) => { setQuizInput(e.target.value); }}
+            onChange={(e) => {
+              setQuizInput(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Type the English word..."
             ref={inputRef}
@@ -288,13 +307,23 @@ function LearnToRead() {
         </div>
 
         <div className="game-result-actions">
-          <button className="btn-secondary" onClick={() => { startLesson(activeLesson); }}>
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              startLesson(activeLesson);
+            }}
+          >
             Review Lesson
           </button>
           <button className="btn-secondary" onClick={startQuiz}>
             Retry Quiz
           </button>
-          <button className="btn-primary" onClick={() => { setPhase('menu'); }}>
+          <button
+            className="btn-primary"
+            onClick={() => {
+              setPhase('menu');
+            }}
+          >
             Back to Lessons
           </button>
         </div>
