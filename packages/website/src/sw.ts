@@ -15,7 +15,7 @@ sw.addEventListener('install', () => {
   void sw.skipWaiting();
 });
 
-// Activate: delete old versioned caches (keep assets cache), claim clients
+// Activate: delete old versioned caches, prune stale assets, claim clients
 sw.addEventListener('activate', (event: ExtendableEvent) => {
   event.waitUntil(
     caches
@@ -26,6 +26,15 @@ sw.addEventListener('activate', (event: ExtendableEvent) => {
             .filter((k) => k.startsWith('ingglish-pages-') && k !== PAGES_CACHE)
             .map((k) => caches.delete(k))
         )
+      )
+      // Prune asset cache: keep at most 50 entries (a fresh build has ~15).
+      // Oldest entries (from previous deploys) are evicted first.
+      .then(() => caches.open(ASSETS_CACHE))
+      .then((cache) =>
+        cache.keys().then((reqs) => {
+          const excess = reqs.slice(0, Math.max(0, reqs.length - 50));
+          return Promise.all(excess.map((r) => cache.delete(r)));
+        })
       )
       .then(() => sw.clients.claim())
   );
