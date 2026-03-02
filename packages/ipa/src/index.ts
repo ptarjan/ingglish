@@ -17,7 +17,6 @@ export {
   // eslint-disable-next-line @typescript-eslint/no-deprecated -- backward compat re-export
   lookupIpa,
   NOT_FOUND_MARKER,
-  reverseDictText,
   segmentKhmerText,
   translateDict,
   translateDictWithMapping,

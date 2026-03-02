@@ -7,10 +7,8 @@ import {
 import {
   arpabetToFormat,
   arpabetToIngglish,
-  expandArpabetAlternatives,
   getFormatPreservesCase,
   getStress,
-  ingglishToArpabet,
   isVowel,
   stripStress,
 } from '@ingglish/phonemes';
@@ -384,84 +382,8 @@ export function buildReverseMap(dict: PhoneDict): Map<string, string[]> {
   return map;
 }
 
-/**
- * Reverse-translates Ingglish text back to the source language using a pre-built
- * reverse map. Converts each word: Ingglish → ARPAbet → reverse map lookup,
- * preserving whitespace, punctuation, and case.
- */
-export function reverseDictText(text: string, reverseMap: Map<string, string[]>): string {
-  const segments = text.split(WHITESPACE_SPLIT_RE);
-  const result: string[] = [];
-
-  for (const segment of segments) {
-    if (WHITESPACE_RE.test(segment)) {
-      result.push(segment);
-      continue;
-    }
-    if (!segment) {
-      continue;
-    }
-
-    // Strip leading/trailing punctuation
-    const leading: string[] = [];
-    const trailing: string[] = [];
-    let core = segment;
-
-    while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
-      leading.push(core[0]!);
-      core = core.slice(1);
-    }
-    while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
-      trailing.unshift(core.at(-1)!);
-      core = core.slice(0, -1);
-    }
-
-    if (!core) {
-      result.push(segment);
-      continue;
-    }
-
-    const casePattern = detectCasePattern(core);
-    const arpabet = ingglishToArpabet(core);
-
-    if (!arpabet) {
-      result.push(segment);
-      continue;
-    }
-
-    // Try primary interpretation and alternatives (e.g. AE↔AH ambiguity)
-    const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
-    if (!primary) {
-      result.push(segment);
-      continue;
-    }
-
-    const primaryKey = primary.map((p) => stripStress(p)).join(' ');
-    let matches = reverseMap.get(primaryKey);
-
-    if (!matches || matches.length === 0) {
-      for (const variant of alternatives) {
-        const key = variant.map((p) => stripStress(p)).join(' ');
-        matches = reverseMap.get(key);
-        if (matches && matches.length > 0) {
-          break;
-        }
-      }
-    }
-
-    if (matches && matches.length > 0) {
-      const word = applyCasePattern(matches[0]!, casePattern);
-      result.push(leading.join('') + word + trailing.join(''));
-    } else {
-      result.push(segment);
-    }
-  }
-
-  return result.join('');
-}
-
 // ============================================================================
-// Reverse Translation (Ingglish → source language)
+// Forward Translation (source language → Ingglish)
 // ============================================================================
 
 /**
