@@ -471,7 +471,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     } else if (displayEnglish) {
       trackSpeak();
       speakEnglish(
-        displayEnglish.replaceAll(/\n+/g, ' '),
+        displayEnglish.replaceAll(/\n+/g, ' ').replaceAll('\u2014', ','),
         isTargetLangMode ? selectedLanguage : undefined
       );
     }
