@@ -7,9 +7,12 @@ import {
 import {
   arpabetToFormat,
   arpabetToIngglish,
+  expandArpabetAlternatives,
   getFormatPreservesCase,
   getStress,
+  ingglishToArpabet,
   isVowel,
+  stripStress,
 } from '@ingglish/phonemes';
 import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
@@ -268,6 +271,15 @@ function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
 }
 
 /**
+ * Check if a word's first character belongs to a caseless script
+ * (e.g. Arabic, Japanese, Chinese, Korean) where toUpperCase === toLowerCase.
+ */
+function isCaselessWord(word: string): boolean {
+  const ch = word[0];
+  return ch !== undefined && ch.toUpperCase() === ch.toLowerCase();
+}
+
+/**
  * Try to decompose a Khmer compound into known dictionary entries.
  * Uses longest-match-first greedy segmentation. Returns concatenated IPA or undefined.
  * Searches both the raw IPA dictionary and Khmer overrides so that browser-segmented
@@ -301,28 +313,150 @@ export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
 const SENTENCE_END_RE = /[.!?。！？]$/;
 
 /**
+ * Builds a reverse map from an IPA dictionary: stress-free ARPAbet key → source words.
+ * Used for reverse-translating Ingglish back to the source language.
+ *
+ * Processes both dictionary entries and per-language IPA overrides.
+ * Overrides take priority (their IPA is used when a word exists in both).
+ */
+export function buildReverseMap(dict: IpaDict): Map<string, string[]> {
+  const { entries, lang } = dict;
+  const overrides = IPA_LANGUAGE_OVERRIDES[lang];
+  const wordOverrides = IPA_WORD_OVERRIDES[lang];
+
+  // Merge entries with overrides (overrides win)
+  const allWords = new Map<string, string>();
+  for (const [word, ipa] of Object.entries(entries)) {
+    allWords.set(word, ipa);
+  }
+  if (wordOverrides) {
+    for (const [word, ipa] of Object.entries(wordOverrides)) {
+      allWords.set(word, ipa);
+    }
+  }
+
+  const map = new Map<string, string[]>();
+  for (const [word, ipa] of allWords) {
+    const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
+    const arpabet = ipaToArpabet(clean, overrides);
+    const key = arpabet.map((p) => stripStress(p)).join(' ');
+    if (!key) {
+      continue;
+    }
+    const existing = map.get(key);
+    if (existing) {
+      existing.push(word);
+    } else {
+      map.set(key, [word]);
+    }
+  }
+
+  return map;
+}
+
+/**
+ * Reverse-translates Ingglish text back to the source language using a pre-built
+ * reverse map. Converts each word: Ingglish → ARPAbet → reverse map lookup,
+ * preserving whitespace, punctuation, and case.
+ */
+export function reverseDictText(text: string, reverseMap: Map<string, string[]>): string {
+  const segments = text.split(WHITESPACE_SPLIT_RE);
+  const result: string[] = [];
+
+  for (const segment of segments) {
+    if (WHITESPACE_RE.test(segment)) {
+      result.push(segment);
+      continue;
+    }
+    if (!segment) {
+      continue;
+    }
+
+    // Strip leading/trailing punctuation
+    const leading: string[] = [];
+    const trailing: string[] = [];
+    let core = segment;
+
+    while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
+      leading.push(core[0]!);
+      core = core.slice(1);
+    }
+    while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
+      trailing.unshift(core.at(-1)!);
+      core = core.slice(0, -1);
+    }
+
+    if (!core) {
+      result.push(segment);
+      continue;
+    }
+
+    const casePattern = detectCasePattern(core);
+    const arpabet = ingglishToArpabet(core);
+
+    if (!arpabet) {
+      result.push(segment);
+      continue;
+    }
+
+    // Try primary interpretation and alternatives (e.g. AE↔AH ambiguity)
+    const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+    if (!primary) {
+      result.push(segment);
+      continue;
+    }
+
+    const primaryKey = primary.map((p) => stripStress(p)).join(' ');
+    let matches = reverseMap.get(primaryKey);
+
+    if (!matches || matches.length === 0) {
+      for (const variant of alternatives) {
+        const key = variant.map((p) => stripStress(p)).join(' ');
+        matches = reverseMap.get(key);
+        if (matches && matches.length > 0) {
+          break;
+        }
+      }
+    }
+
+    if (matches && matches.length > 0) {
+      const word = applyCasePattern(matches[0]!, casePattern);
+      result.push(leading.join('') + word + trailing.join(''));
+    } else {
+      result.push(segment);
+    }
+  }
+
+  return result.join('');
+}
+
+// ============================================================================
+// Reverse Translation (Ingglish → source language)
+// ============================================================================
+
+/**
  * Translates foreign text to the specified output format.
  * Words not found in the dictionary are returned with a marker prefix.
  *
  * For caseless scripts (Arabic, Japanese, Chinese, Korean), sentence-initial
  * words are automatically capitalized in the output.
  */
-export function translateForeign(
+export function translateDict(
   text: string,
   dict: IpaDict,
   format: OutputFormat = 'ingglish'
 ): string {
-  const tokens = translateForeignWithMapping(text, dict, format);
+  const tokens = translateDictWithMapping(text, dict, format);
   return tokens
     .map((t) => (!t.matched && t.isWord ? NOT_FOUND_MARKER + t.original : t.translated))
     .join('');
 }
 
 /**
- * Like {@link translateForeign}, but returns token-by-token mappings instead of a string.
+ * Like {@link translateDict}, but returns token-by-token mappings instead of a string.
  * Each token includes the original text, translation, and whether it matched the dictionary.
  */
-export function translateForeignWithMapping(
+export function translateDictWithMapping(
   text: string,
   dict: IpaDict,
   format: OutputFormat = 'ingglish'
@@ -480,13 +614,4 @@ export function translateForeignWithMapping(
   }
 
   return tokens;
-}
-
-/**
- * Check if a word's first character belongs to a caseless script
- * (e.g. Arabic, Japanese, Chinese, Korean) where toUpperCase === toLowerCase.
- */
-function isCaselessWord(word: string): boolean {
-  const ch = word[0];
-  return ch !== undefined && ch.toUpperCase() === ch.toLowerCase();
 }

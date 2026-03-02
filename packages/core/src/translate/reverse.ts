@@ -7,7 +7,7 @@
  */
 
 import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
-import { ipaToArpabetClean } from '@ingglish/ipa';
+import { ipaToArpabetClean, reverseDictText } from '@ingglish/ipa';
 import { applyCasePattern, detectCasePattern, tokenizeIPA } from '@ingglish/normalize';
 import {
   expandArpabetAlternatives,
@@ -15,7 +15,8 @@ import {
   ingglishToArpabet,
   registerFormat,
 } from '@ingglish/phonemes';
-import type { TranslateOptions } from '../foreign-dict';
+import { getDictReverseMap } from '../ipa-dict';
+import type { TranslateOptions } from '../ipa-dict';
 import type { TranslatedToken } from './forward';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
@@ -155,9 +156,22 @@ registerFormat('ipa', {
 
 /**
  * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
+ * For non-English languages, the reverse map must have been built by a prior
+ * `await reverseTranslate(text, { lang })` call.
  */
 export function reverseTranslateSync(text: string, options: TranslateOptions = {}): string {
-  const { format = 'ingglish' } = options;
+  const { format = 'ingglish', lang } = options;
+
+  if (lang && lang !== 'en') {
+    const reverseMap = getDictReverseMap(lang);
+    if (!reverseMap) {
+      throw new Error(
+        `Reverse map for "${lang}" not built. Call reverseTranslate(text, { lang: "${lang}" }) first.`
+      );
+    }
+    return reverseDictText(text, reverseMap);
+  }
+
   const handler = getFormatHandler(format);
   if (handler?.reverseText) {
     return handler.reverseText(text);
@@ -174,7 +188,15 @@ export function reverseTranslateSyncWithMapping(
   text: string,
   options: TranslateOptions = {}
 ): TranslatedToken[] {
-  const { format = 'ingglish' } = options;
+  const { format = 'ingglish', lang } = options;
+
+  // For non-English languages, fall back to string-based reverse + simple tokenization
+  if (lang && lang !== 'en') {
+    const reversed = reverseTranslateSync(text, options);
+    // Return as a single matched token (foreign reverse doesn't have per-word mapping yet)
+    return [{ isWord: true, matched: true, original: text, translated: reversed }];
+  }
+
   const handler = getFormatHandler(format);
   if (handler?.reverseTextWithMapping) {
     return handler.reverseTextWithMapping(text);

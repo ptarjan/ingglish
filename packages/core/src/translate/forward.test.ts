@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
 import type { IpaDict } from '@ingglish/ipa';
-import type { ForeignDictLoader } from '../foreign-dict';
-import { getForeignDict } from '../foreign-dict';
-import { reverseTranslate, setForeignDictLoader, translate } from '../index';
+import { reverseTranslate, setDictLoader, translate } from '../index';
+import type { DictLoader } from '../ipa-dict';
+import { getLangDict } from '../ipa-dict';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
@@ -36,7 +36,7 @@ describe('async API loads only required dictionaries', () => {
       lang: 'test-fr',
     };
     const loader = vi.fn().mockResolvedValue(mockDict);
-    setForeignDictLoader(loader);
+    setDictLoader(loader);
 
     const result = await translate('bonjour', { lang: 'test-fr' });
     expect(loader).toHaveBeenCalledWith('test-fr');
@@ -44,7 +44,7 @@ describe('async API loads only required dictionaries', () => {
     expect(result.length).toBeGreaterThan(0);
 
     // Dict should now be cached
-    expect(getForeignDict('test-fr')).toBe(mockDict);
+    expect(getLangDict('test-fr')).toBe(mockDict);
 
     // Sync should work after async load
     const syncResult = translateSync('bonjour', { lang: 'test-fr' });
@@ -58,9 +58,9 @@ describe('async API loads only required dictionaries', () => {
 
   it('translate() rejects when no loader registered for foreign lang', async () => {
     // Use a fresh lang code that won't be cached
-    setForeignDictLoader(undefined as unknown as ForeignDictLoader);
+    setDictLoader(undefined as unknown as DictLoader);
     await expect(translate('test', { lang: 'xx' })).rejects.toThrow(
-      /No foreign dictionary loader registered/
+      /No dictionary loader registered/
     );
   });
 });
@@ -458,19 +458,19 @@ describe('translator', () => {
 
     it('translateSync throws for unknown foreign lang without loaded dict', () => {
       expect(() => translateSync('bonjour', { lang: 'fr' })).toThrow(
-        /Foreign dictionary for "fr" not loaded/
+        /Dictionary for "fr" not loaded/
       );
     });
 
     it('translateSyncWithMapping throws for unknown foreign lang without loaded dict', () => {
       expect(() => translateSyncWithMapping('bonjour', { lang: 'fr' })).toThrow(
-        /Foreign dictionary for "fr" not loaded/
+        /Dictionary for "fr" not loaded/
       );
     });
 
     it('translateWord throws for unknown foreign lang without loaded dict', () => {
       expect(() => translateWord('bonjour', { lang: 'fr' })).toThrow(
-        /Foreign dictionary for "fr" not loaded/
+        /Dictionary for "fr" not loaded/
       );
     });
 

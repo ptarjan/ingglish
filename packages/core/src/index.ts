@@ -11,9 +11,9 @@
  */
 
 import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
-import { translateForeign } from '@ingglish/ipa';
-import type { TranslateOptions } from './foreign-dict';
-import { isForeignLang, loadForeignDict } from './foreign-dict';
+import { buildReverseMap, translateDict } from '@ingglish/ipa';
+import type { TranslateOptions } from './ipa-dict';
+import { getDictReverseMap, loadLangDict, setDictReverseMap } from './ipa-dict';
 import { reverseTranslateSync, translateSync } from './translate';
 
 // =============================================================================
@@ -21,19 +21,31 @@ import { reverseTranslateSync, translateSync } from './translate';
 // =============================================================================
 
 /**
- * Translates Ingglish/IPA text back to English.
- * Auto-loads the dictionary on first call.
+ * Translates Ingglish/IPA text back to the source language.
+ * Auto-loads dictionaries on first call.
  * For homophones, uses the most common word.
  *
+ * For English (default): uses the CMU reverse dictionary.
+ * For other languages: builds/caches a reverse map from the IPA dictionary.
+ *
  * @param text - Text in Ingglish or IPA format
- * @param options - Translation options (format)
- * @returns English text
+ * @param options - Translation options (format, lang)
+ * @returns Source language text
  */
 export async function reverseTranslate(
   text: string,
   options: TranslateOptions = {}
 ): Promise<string> {
-  const { format = 'ingglish' } = options;
+  const { format = 'ingglish', lang } = options;
+
+  if (lang && lang !== 'en') {
+    const dict = await loadLangDict(lang);
+    if (!getDictReverseMap(lang)) {
+      setDictReverseMap(lang, buildReverseMap(dict));
+    }
+    return reverseTranslateSync(text, { format, lang });
+  }
+
   await Promise.all([loadReverseDictionary(), loadFrequencies()]);
   return reverseTranslateSync(text, { format });
 }
@@ -52,9 +64,9 @@ export async function reverseTranslate(
 export async function translate(text: string, options: TranslateOptions = {}): Promise<string> {
   const { format = 'ingglish', lang } = options;
 
-  if (isForeignLang(lang)) {
-    const dict = await loadForeignDict(lang);
-    return translateForeign(text, dict, format);
+  if (lang && lang !== 'en') {
+    const dict = await loadLangDict(lang);
+    return translateDict(text, dict, format);
   }
 
   await Promise.all([loadDictionary(), loadFrequencies()]);
@@ -65,8 +77,8 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // Re-exports
 // =============================================================================
 
-export type { ForeignDictLoader, TranslateOptions } from './foreign-dict';
-export { setForeignDictLoader } from './foreign-dict';
+export type { DictLoader, TranslateOptions } from './ipa-dict';
+export { loadLangDict, setDictLoader } from './ipa-dict';
 
 // Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';

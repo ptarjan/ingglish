@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
 import type { IpaDict } from './foreign';
-import { lookupIpa, translateForeign, NOT_FOUND_MARKER } from './foreign';
+import { lookupIpa, translateDict, NOT_FOUND_MARKER } from './foreign';
 import { G2P_CONVERTERS } from './g2p';
 
 describe('G2P converters', () => {
@@ -127,17 +127,17 @@ describe('G2P integration', () => {
     expect(lookupIpa(dict, 'talo')).toBe('/tɑːlo/');
   });
 
-  it('translateForeign produces output via G2P fallback', () => {
-    expect(translateForeign('talo', { entries: {}, lang: 'fi' }, 'ingglish')).not.toContain(
+  it('translateDict produces output via G2P fallback', () => {
+    expect(translateDict('talo', { entries: {}, lang: 'fi' }, 'ingglish')).not.toContain(
       NOT_FOUND_MARKER
     );
-    expect(translateForeign('saluton', { entries: {}, lang: 'eo' }, 'ingglish')).not.toContain(
+    expect(translateDict('saluton', { entries: {}, lang: 'eo' }, 'ingglish')).not.toContain(
       NOT_FOUND_MARKER
     );
-    expect(translateForeign('habari', { entries: {}, lang: 'sw' }, 'ingglish')).not.toContain(
+    expect(translateDict('habari', { entries: {}, lang: 'sw' }, 'ingglish')).not.toContain(
       NOT_FOUND_MARKER
     );
-    expect(translateForeign('makan', { entries: {}, lang: 'ma' }, 'ingglish')).not.toContain(
+    expect(translateDict('makan', { entries: {}, lang: 'ma' }, 'ingglish')).not.toContain(
       NOT_FOUND_MARKER
     );
   });

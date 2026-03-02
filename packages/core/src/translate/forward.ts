@@ -16,12 +16,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import {
-  lookupIpa,
-  translateForeign,
-  translateForeignWithMapping,
-  type IpaDict,
-} from '@ingglish/ipa';
+import { lookupIpa, translateDict, translateDictWithMapping, type IpaDict } from '@ingglish/ipa';
 import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
@@ -35,20 +30,20 @@ import {
   getFormatIsLatinScript,
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
-import type { TranslateOptions } from '../foreign-dict';
-import { getForeignDict, isForeignLang } from '../foreign-dict';
+import type { TranslateOptions } from '../ipa-dict';
+import { getLangDict } from '../ipa-dict';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
 export type { TranslatedToken } from '@ingglish/phonemes';
 
-/** Returns the loaded foreign dict for a language, or throws if not loaded. */
-function requireForeignDict(lang: string): IpaDict {
-  const dict = getForeignDict(lang);
+/** Returns the loaded IPA dict for a language, or throws if not loaded. */
+function requireLangDict(lang: string): IpaDict {
+  const dict = getLangDict(lang);
   if (!dict) {
     throw new Error(
-      `Foreign dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadForeignDict("${lang}") first.`
+      `Dictionary for "${lang}" not loaded. Call translate(text, { lang: "${lang}" }) or loadLangDict("${lang}") first.`
     );
   }
   return dict;
@@ -67,14 +62,14 @@ const TITLE_CASE = /^[A-Z][a-z]*$/;
 /**
  * Synchronous version of {@link translate}. Dictionary must already be loaded.
  *
- * For foreign languages, the dictionary must have been loaded by a prior
- * `await translate(text, { lang })` or `await loadForeignDict(lang)` call.
+ * For non-English languages, the dictionary must have been loaded by a prior
+ * `await translate(text, { lang })` or `await loadLangDict(lang)` call.
  */
 export function translateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
 
-  if (isForeignLang(lang)) {
-    return translateForeign(text, requireForeignDict(lang), format);
+  if (lang && lang !== 'en') {
+    return translateDict(text, requireLangDict(lang), format);
   }
 
   const { preserved, rawTokens } = extractTokens(text);
@@ -86,8 +81,8 @@ export function translateSync(text: string, options: TranslateOptions = {}): str
  * Each token includes the original text, translation, and whether it matched
  * the dictionary. Dictionary must already be loaded.
  *
- * For foreign languages, the dictionary must have been loaded by a prior
- * `await translate(text, { lang })` or `await loadForeignDict(lang)` call.
+ * For non-English languages, the dictionary must have been loaded by a prior
+ * `await translate(text, { lang })` or `await loadLangDict(lang)` call.
  */
 export function translateSyncWithMapping(
   text: string,
@@ -95,8 +90,8 @@ export function translateSyncWithMapping(
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
 
-  if (isForeignLang(lang)) {
-    return translateForeignWithMapping(text, requireForeignDict(lang), format);
+  if (lang && lang !== 'en') {
+    return translateDictWithMapping(text, requireLangDict(lang), format);
   }
 
   const { preserved, rawTokens } = extractTokens(text);
@@ -107,7 +102,7 @@ export function translateSyncWithMapping(
  * Translates a single word (or contraction) to the specified format.
  * Handles contractions like "don't", "I'm", etc.
  *
- * For foreign languages, looks up the word in the cached IPA dictionary
+ * For non-English languages, looks up the word in the cached IPA dictionary
  * (must have been loaded by a prior async call).
  *
  * @param word - The word to translate
@@ -117,8 +112,8 @@ export function translateSyncWithMapping(
 export function translateWord(word: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
 
-  if (isForeignLang(lang)) {
-    return lookupIpa(requireForeignDict(lang), word) ?? word;
+  if (lang && lang !== 'en') {
+    return lookupIpa(requireLangDict(lang), word) ?? word;
   }
 
   return translateWordInternal(word, format).translated;

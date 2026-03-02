@@ -1,4 +1,4 @@
-import { reverseTranslate, translateSyncWithMapping } from 'ingglish';
+import { loadLangDict, reverseTranslate, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { segmentKhmerText } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
@@ -8,9 +8,7 @@ import { ALL_SAMPLES, pickSample } from '../data/language-samples';
 import { useClipboard } from '../hooks/useClipboard';
 import { useShare } from '../hooks/useShare';
 import { useSpeech } from '../hooks/useSpeech';
-import type { IpaDict } from '../pronounce/dict-loader';
-import { LANGUAGES, loadDict } from '../pronounce/dict-loader';
-import { NOT_FOUND_MARKER, translateForeign } from '../pronounce/ipa-to-ingglish';
+import { LANGUAGES } from '../pronounce/dict-loader';
 import {
   CheckIcon,
   CloseIcon,
@@ -21,8 +19,6 @@ import {
   SpeakerIcon,
   StopIcon,
 } from './Icons';
-
-const WORD_RE = /[\p{L}\p{N}]/u;
 
 type EditingPane = 'english' | 'ingglish';
 
@@ -36,17 +32,6 @@ export const OUTPUT_PLACEHOLDERS: Record<string, string> = {
   shavian:
     '\u{10451}\u{10472}\u{10450} \u{10456}\u{10471}\u{1045D}\u{1045E}\u{1046F} \u{10463}\u{10477}\u2026',
 };
-
-interface TargetOutputDisplayProps {
-  dictLoading: boolean;
-  format: string;
-  highlightedWordIndex?: null | number;
-  onHoverWord?: (index: null | number) => void;
-  onScroll?: () => void;
-  scrollRef?: React.Ref<HTMLDivElement>;
-  spokenRange?: [number, number] | null;
-  text: string;
-}
 
 interface TextTranslatorProps {
   initialLang?: string;
@@ -180,102 +165,6 @@ function OverlayTextarea({
   );
 }
 
-function TargetOutputDisplay({
-  dictLoading,
-  format,
-  highlightedWordIndex = null,
-  onHoverWord,
-  onScroll,
-  scrollRef,
-  spokenRange = null,
-  text,
-}: TargetOutputDisplayProps) {
-  if (dictLoading) {
-    return (
-      <div className="text-input target-output" ref={scrollRef}>
-        <span className="target-output-loading">Loading dictionary...</span>
-      </div>
-    );
-  }
-
-  if (!text.trim()) {
-    return (
-      <div className="text-input target-output" onScroll={onScroll} ref={scrollRef}>
-        <span className="target-output-placeholder">
-          {OUTPUT_PLACEHOLDERS[format] ?? 'Translation will appear here\u2026'}
-        </span>
-      </div>
-    );
-  }
-
-  // Parse text: NOT_FOUND_MARKER prefixed words are "not found"
-  const segments = text.split(/(\s+)/);
-  let wordIndex = 0;
-  return (
-    <div
-      className="text-input target-output"
-      onMouseLeave={
-        onHoverWord
-          ? () => {
-              onHoverWord(null);
-            }
-          : undefined
-      }
-      onScroll={onScroll}
-      ref={scrollRef}
-    >
-      {segments.map((seg, i) => {
-        if (/^\s+$/.test(seg)) {
-          return <span key={i}>{seg}</span>;
-        }
-        // Only count segments with letters/digits as words, matching
-        // useSpeech and OverlayTextarea (punctuation-only tokens are skipped)
-        const isWord = WORD_RE.test(
-          seg.startsWith(NOT_FOUND_MARKER) ? seg.slice(NOT_FOUND_MARKER.length) : seg
-        );
-        const idx = isWord ? wordIndex++ : -1;
-        const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
-        const isSpoken =
-          idx >= 0 && spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
-        if (seg.startsWith(NOT_FOUND_MARKER)) {
-          const word = seg.slice(NOT_FOUND_MARKER.length);
-          return (
-            <span
-              className={`word-token target-not-found ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
-              key={i}
-              onMouseEnter={
-                onHoverWord
-                  ? () => {
-                      onHoverWord(idx);
-                    }
-                  : undefined
-              }
-              title="Not found in dictionary"
-            >
-              {word}
-            </span>
-          );
-        }
-        return (
-          <span
-            className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
-            key={i}
-            onMouseEnter={
-              onHoverWord
-                ? () => {
-                    onHoverWord(idx);
-                  }
-                : undefined
-            }
-          >
-            {seg}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
 function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslatorProps) {
   const { format, toggleFormat } = useFormat();
 
@@ -300,22 +189,18 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
-  const [targetDict, setTargetDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
-  const isTargetLangMode = selectedLanguage !== 'en';
 
-  // Load target-language dictionary when language changes
+  // Load IPA dictionary when a non-English language is selected
   useEffect(() => {
-    if (!isTargetLangMode) {
-      setTargetDict(null);
+    if (selectedLanguage === 'en') {
       return;
     }
     let cancelled = false;
     setDictLoading(true);
-    loadDict(selectedLanguage)
-      .then((dict) => {
+    loadLangDict(selectedLanguage)
+      .then(() => {
         if (!cancelled) {
-          setTargetDict(dict);
           setDictLoading(false);
         }
       })
@@ -328,7 +213,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     return () => {
       cancelled = true;
     };
-  }, [selectedLanguage, isTargetLangMode]);
+  }, [selectedLanguage]);
 
   // Reset panes when switching languages
   const handleLanguageChange = useCallback(
@@ -352,20 +237,14 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Compute translations based on which pane was last edited
   const { computedIngglish, unmatchedWords } = useMemo(() => {
-    if (lastEdited !== 'english' || !deferredEnglish.trim()) {
+    if (dictLoading || lastEdited !== 'english' || !deferredEnglish.trim()) {
       return { computedIngglish: null, unmatchedWords: null };
     }
-    if (isTargetLangMode) {
-      if (!targetDict) {
-        return { computedIngglish: null, unmatchedWords: null };
-      }
-      return {
-        computedIngglish: translateForeign(deferredEnglish, targetDict, format),
-        unmatchedWords: null,
-      };
-    }
     try {
-      const tokens = translateSyncWithMapping(deferredEnglish, { format });
+      const tokens = translateSyncWithMapping(deferredEnglish, {
+        format,
+        lang: selectedLanguage,
+      });
       const text = tokens.map((t) => t.translated).join('');
       const unmatched = new Set<number>();
       let wordIdx = 0;
@@ -382,21 +261,17 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       console.warn('Translation failed:', error);
       return { computedIngglish: null, unmatchedWords: null };
     }
-  }, [deferredEnglish, lastEdited, format, isTargetLangMode, targetDict]);
+  }, [deferredEnglish, lastEdited, format, selectedLanguage, dictLoading]);
 
   // Async reverse translation with useEffect
   const [computedEnglish, setComputedEnglish] = useState<null | string>(null);
   useEffect(() => {
-    if (isTargetLangMode) {
-      setComputedEnglish(null);
-      return;
-    }
     if (lastEdited !== 'ingglish' || !deferredIngglish.trim()) {
       setComputedEnglish(null);
       return;
     }
     let cancelled = false;
-    reverseTranslate(deferredIngglish, { format })
+    reverseTranslate(deferredIngglish, { format, lang: selectedLanguage })
       .then((result) => {
         if (!cancelled) {
           setComputedEnglish(result);
@@ -411,7 +286,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     return () => {
       cancelled = true;
     };
-  }, [deferredIngglish, lastEdited, format, isTargetLangMode]);
+  }, [deferredIngglish, lastEdited, format, selectedLanguage]);
 
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
@@ -420,11 +295,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const displayEnglish = selectedLanguage === 'km' ? segmentKhmerText(rawEnglish) : rawEnglish;
   const displayIngglish =
     lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
-
-  // Strip NOT_FOUND_MARKER from display (the TargetOutputDisplay handles rendering)
-  const displayIngglishClean = isTargetLangMode
-    ? displayIngglish.replaceAll(NOT_FOUND_MARKER, '')
-    : displayIngglish;
 
   const handleEnglishChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -478,10 +348,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   }, [displayEnglish, copyEnglish]);
 
   const handleCopyIngglish = useCallback(() => {
-    if (displayIngglishClean) {
-      copyIngglish(displayIngglishClean);
+    if (displayIngglish) {
+      copyIngglish(displayIngglish);
     }
-  }, [displayIngglishClean, copyIngglish]);
+  }, [displayIngglish, copyIngglish]);
 
   const handleSpeak = useCallback(() => {
     if (speakingEnglish) {
@@ -490,17 +360,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
       trackSpeak();
       speakEnglish(
         displayEnglish.replaceAll(/\n+/g, ' ').replaceAll('\u2014', ','),
-        isTargetLangMode ? selectedLanguage : undefined
+        selectedLanguage === 'en' ? undefined : selectedLanguage
       );
     }
-  }, [
-    speakingEnglish,
-    stopEnglish,
-    displayEnglish,
-    speakEnglish,
-    isTargetLangMode,
-    selectedLanguage,
-  ]);
+  }, [speakingEnglish, stopEnglish, displayEnglish, speakEnglish, selectedLanguage]);
 
   const handleClear = useCallback(() => {
     stopEnglish();
@@ -510,11 +373,11 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   const handleShare = useCallback(() => {
     if (onShare && displayEnglish.trim()) {
-      const url = onShare(displayEnglish, isTargetLangMode ? selectedLanguage : undefined);
+      const url = onShare(displayEnglish, selectedLanguage === 'en' ? undefined : selectedLanguage);
       shareUrl(url, 'Ingglish Text Translation');
       trackShare('text', typeof navigator.share === 'function' ? 'webshare' : 'clipboard');
     }
-  }, [onShare, displayEnglish, shareUrl, isTargetLangMode, selectedLanguage]);
+  }, [onShare, displayEnglish, shareUrl, selectedLanguage]);
 
   // Track typed text with debounce
   useEffect(() => {
@@ -537,7 +400,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Sync scroll positions between paired panes
   const englishRef = useRef<HTMLTextAreaElement>(null);
-  const ingglishRef = useRef<HTMLDivElement | HTMLTextAreaElement>(null);
+  const ingglishRef = useRef<HTMLTextAreaElement>(null);
   const scrolling = useRef(false);
 
   const syncScroll = useCallback((from: Element | null, to: Element | null) => {
@@ -559,9 +422,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     [syncScroll]
   );
 
-  const languageLabel = isTargetLangMode
-    ? (LANGUAGES.find((l) => l.code === selectedLanguage)?.label ?? selectedLanguage)
-    : 'English';
+  const languageLabel = LANGUAGES.find((l) => l.code === selectedLanguage)?.label ?? 'English';
 
   return (
     <div className="text-translator">
@@ -583,17 +444,13 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             <div className="button-group">
               {/* Always render to reserve space and avoid CLS; hide when speech unavailable */}
               <button
-                aria-hidden={
-                  !speechSupported ||
-                  !hasVoice(isTargetLangMode ? selectedLanguage : 'en') ||
-                  undefined
-                }
+                aria-hidden={!speechSupported || !hasVoice(selectedLanguage) || undefined}
                 aria-label={speakingEnglish ? 'Stop speaking' : 'Listen'}
                 className={`btn-secondary btn-icon ${speakingEnglish ? 'btn-speaking' : ''}`}
                 disabled={!displayEnglish}
                 onClick={handleSpeak}
                 style={
-                  speechSupported && hasVoice(isTargetLangMode ? selectedLanguage : 'en')
+                  speechSupported && hasVoice(selectedLanguage)
                     ? undefined
                     : { visibility: 'hidden' }
                 }
@@ -633,7 +490,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             highlightedWordIndex={hoveredWordIndex}
             onChange={handleEnglishChange}
             onFocus={
-              !isTargetLangMode && lastEdited === 'ingglish' && computedEnglish !== null
+              lastEdited === 'ingglish' && computedEnglish !== null
                 ? () => {
                     setEnglishText(computedEnglish);
                     setLastEdited('english');
@@ -644,9 +501,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             onScroll={() => {
               handleScroll('english');
             }}
-            placeholder={
-              isTargetLangMode ? `Type ${languageLabel} text here...` : 'Type English text here...'
-            }
+            placeholder={`Type ${languageLabel} text here...`}
             scrollRef={englishRef}
             spokenRange={speakingEnglish ? spokenRange : null}
             text={displayEnglish}
@@ -671,7 +526,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               <a
                 aria-label="Read full page"
                 className="btn-secondary btn-icon"
-                href={`/url?url=${encodeURIComponent(selectedSampleSource)}${isTargetLangMode ? `&lang=${selectedLanguage}` : ''}`}
+                href={`/url?url=${encodeURIComponent(selectedSampleSource)}${selectedLanguage === 'en' ? '' : `&lang=${selectedLanguage}`}`}
                 title="Read full page"
               >
                 <ExternalLinkIcon />
@@ -707,7 +562,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               <button
                 aria-label={copiedIngglish ? 'Copied' : 'Copy'}
                 className={`btn-secondary btn-icon ${copiedIngglish ? 'btn-copied' : ''}`}
-                disabled={!displayIngglishClean}
+                disabled={!displayIngglish}
                 onClick={handleCopyIngglish}
                 title={copiedIngglish ? 'Copied!' : 'Copy'}
               >
@@ -715,46 +570,31 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               </button>
             </div>
           </div>
-          {isTargetLangMode ? (
-            <TargetOutputDisplay
-              dictLoading={dictLoading}
-              format={format}
-              highlightedWordIndex={hoveredWordIndex}
-              onHoverWord={setHoveredWordIndex}
-              onScroll={() => {
-                handleScroll('ingglish');
-              }}
-              scrollRef={ingglishRef as React.Ref<HTMLDivElement>}
-              spokenRange={speakingEnglish ? spokenRange : null}
-              text={displayIngglish}
-            />
-          ) : (
-            <OverlayTextarea
-              highlightedWordIndex={hoveredWordIndex}
-              onChange={handleIngglishChange}
-              onFocus={
-                lastEdited === 'english' && computedIngglish !== null
-                  ? () => {
-                      setIngglishText(computedIngglish);
-                      setLastEdited('ingglish');
-                    }
-                  : undefined
-              }
-              onHoverWord={setHoveredWordIndex}
-              onScroll={() => {
-                handleScroll('ingglish');
-              }}
-              placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
-              scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
-              spokenRange={speakingEnglish ? spokenRange : null}
-              text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
-              unmatchedWords={lastEdited === 'english' ? unmatchedWords : null}
-            />
-          )}
+          <OverlayTextarea
+            highlightedWordIndex={hoveredWordIndex}
+            onChange={handleIngglishChange}
+            onFocus={
+              lastEdited === 'english' && computedIngglish !== null
+                ? () => {
+                    setIngglishText(computedIngglish);
+                    setLastEdited('ingglish');
+                  }
+                : undefined
+            }
+            onHoverWord={setHoveredWordIndex}
+            onScroll={() => {
+              handleScroll('ingglish');
+            }}
+            placeholder={OUTPUT_PLACEHOLDERS[format] ?? ''}
+            scrollRef={ingglishRef}
+            spokenRange={speakingEnglish ? spokenRange : null}
+            text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
+            unmatchedWords={lastEdited === 'english' ? unmatchedWords : null}
+          />
         </div>
       </div>
 
-      {!isTargetLangMode && lastEdited === 'english' && isAllCaps(englishText) && (
+      {lastEdited === 'english' && isAllCaps(englishText) && (
         <div className="warning-message">
           Ingglish is case-sensitive — type in normal case for accurate translations.
         </div>

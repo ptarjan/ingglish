@@ -2,6 +2,6 @@
 export {
   ipaToIngglish,
   NOT_FOUND_MARKER,
-  translateForeign,
-  translateForeignWithMapping,
+  translateDict,
+  translateDictWithMapping,
 } from '@ingglish/ipa';

@@ -28,7 +28,7 @@ for (const [lang, samples] of Object.entries(ALL_SAMPLES)) {
     const missing = words.filter((w) => {
       // Direct lookup (includes IPA_WORD_OVERRIDES via lookupIpa)
       if (lookupIpa(dict, w)) return false;
-      // Try splitting contractions/hyphens (like translateForeign does)
+      // Try splitting contractions/hyphens (like translateDict does)
       const parts = w.split(/(?<=['-])|(?=['-])/);
       if (parts.length > 1) {
         const realParts = parts.filter((p) => p !== "'" && p !== '-');

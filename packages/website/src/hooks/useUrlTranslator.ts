@@ -1,14 +1,7 @@
+import { loadLangDict, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/phonemes';
-/**
- * Custom hook for URL translation functionality.
- * Handles fetching pages through CORS proxy, translating content,
- * and intercepting link navigation.
- */
-import type { IpaDict } from '../pronounce/dict-loader';
-import { loadDict } from '../pronounce/dict-loader';
-import { translateForeignWithMapping } from '../pronounce/ipa-to-ingglish';
 import { getBaseUrl, isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
 
 // Re-export utilities that components need
@@ -38,12 +31,10 @@ interface UseUrlTranslatorResult {
 
 export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
   const { onNavigate, outputFormat = 'ingglish', selectedLanguage = 'en' } = options;
-  const isForeignMode = selectedLanguage !== 'en';
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<null | string>(null);
-  const [foreignDict, setForeignDict] = useState<IpaDict | null>(null);
   const [dictLoading, setDictLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Track the current translateUrl function for popstate handler
@@ -80,19 +71,18 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     }
   }, []);
 
-  // Load foreign dictionary when language changes
+  // Load IPA dictionary when a non-English language is selected
   useEffect(() => {
-    if (!isForeignMode) {
-      setForeignDict(null);
+    if (selectedLanguage === 'en') {
+      setDictLoading(false);
       return;
     }
 
     let cancelled = false;
     setDictLoading(true);
-    loadDict(selectedLanguage)
-      .then((dict) => {
+    loadLangDict(selectedLanguage)
+      .then(() => {
         if (!cancelled) {
-          setForeignDict(dict);
           setDictLoading(false);
         }
       })
@@ -106,7 +96,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     return () => {
       cancelled = true;
     };
-  }, [isForeignMode, selectedLanguage]);
+  }, [selectedLanguage]);
 
   const translateUrl = useCallback(
     async (targetUrl: string, pushHistory = true): Promise<void> => {
@@ -133,12 +123,12 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
 
-        // Build mapping fn for foreign mode
+        // Build mapping fn for non-English languages
         const translateWithMappingFn =
-          isForeignMode && foreignDict
-            ? (text: string, format: OutputFormat) =>
-                translateForeignWithMapping(text, foreignDict, format)
-            : undefined;
+          selectedLanguage === 'en'
+            ? undefined
+            : (text: string, format: OutputFormat) =>
+                translateSyncWithMapping(text, { format, lang: selectedLanguage });
 
         if (isSameOrigin) {
           // Same-origin: load via src so scripts render the SPA, then translate
@@ -257,7 +247,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat, onNavigate, isForeignMode, foreignDict, scrollToHash]
+    [outputFormat, onNavigate, selectedLanguage, scrollToHash]
   );
 
   const clear = useCallback(() => {
@@ -398,9 +388,9 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     const formatChanged = prevFormatRef.current !== outputFormat;
     const langChanged = prevLangRef.current !== selectedLanguage;
     if ((formatChanged || langChanged) && hasContent && url.length > 0) {
-      // Skip retranslation if switching to foreign mode but dict isn't loaded yet
-      if (isForeignMode && !foreignDict) {
-        // Will retranslate when dict finishes loading (foreignDict dep triggers this effect)
+      // Skip retranslation if switching to non-English but dict isn't loaded yet
+      if (selectedLanguage !== 'en' && dictLoading) {
+        // Will retranslate when dict finishes loading (dictLoading dep triggers this effect)
       } else {
         translateUrlRef.current?.(url, false).catch((error_: unknown) => {
           console.error('Format/language change retranslation failed:', error_);
@@ -409,7 +399,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     }
     prevFormatRef.current = outputFormat;
     prevLangRef.current = selectedLanguage;
-  }, [outputFormat, hasContent, url, selectedLanguage, isForeignMode, foreignDict]);
+  }, [outputFormat, hasContent, url, selectedLanguage, dictLoading]);
 
   return {
     clear,

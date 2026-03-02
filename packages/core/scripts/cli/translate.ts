@@ -16,7 +16,7 @@ import {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from '../../src/translate/reverse.js';
-import { LANGUAGES, NOT_FOUND_MARKER, translateForeign } from '@ingglish/ipa';
+import { LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
 import type { IpaDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -81,7 +81,7 @@ async function main() {
     // Show per-word output
     const words = text.match(/\S+/g) || [];
     for (const word of words) {
-      const result = translateForeign(word, dict, 'ingglish');
+      const result = translateDict(word, dict, 'ingglish');
       if (result.includes(NOT_FOUND_MARKER)) {
         const clean = result.replaceAll(NOT_FOUND_MARKER, '');
         console.log(`? "${word}" -> not found (kept as "${clean}")`);
@@ -91,7 +91,7 @@ async function main() {
     }
 
     console.log('---');
-    console.log('Full translation:', translateForeign(text, dict, 'ingglish'));
+    console.log('Full translation:', translateDict(text, dict, 'ingglish'));
     return;
   }
 

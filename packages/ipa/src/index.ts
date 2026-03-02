@@ -10,13 +10,15 @@ registerFormat('ipa', {
 });
 
 export {
+  buildReverseMap,
   ipaToIngglish,
   LANGUAGES,
   lookupIpa,
   NOT_FOUND_MARKER,
+  reverseDictText,
   segmentKhmerText,
-  translateForeign,
-  translateForeignWithMapping,
+  translateDict,
+  translateDictWithMapping,
 } from './foreign';
 export type { IpaDict, Language } from './foreign';
 export { ipaToArpabetClean } from './from-ipa';
