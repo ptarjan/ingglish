@@ -16,6 +16,9 @@ export const GAME_ENTRIES = [
   { id: 'reading', title: 'Reading Challenge' },
   { id: 'homophones', title: 'Homophones Quiz' },
   { id: 'learn', title: 'Learn to Read' },
+  { id: 'daily', title: 'Daily Challenge' },
+  { id: 'speedmatch', title: 'Speed Match' },
+  { id: 'reverse', title: 'Reverse Spelling' },
 ] as const;
 
 export type GameId = (typeof GAME_ENTRIES)[number]['id'];

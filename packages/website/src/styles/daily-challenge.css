@@ -1,0 +1,127 @@
+/**
+ * Daily Challenge styles.
+ */
+
+.daily-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* === Intro === */
+
+.daily-intro {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.daily-intro h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+.daily-intro p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* === Colored squares row === */
+
+.daily-squares {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.daily-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-bg);
+  border-radius: 0.375rem;
+}
+
+.daily-square-green {
+  background: var(--color-success);
+}
+
+.daily-square-yellow {
+  background: #eab308;
+}
+
+.daily-square-red {
+  background: var(--color-error);
+}
+
+/* === Streak === */
+
+.daily-streak {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* === Countdown === */
+
+.daily-countdown {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.daily-countdown-time {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+/* === Already done === */
+
+.daily-done {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.daily-done h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.daily-done-score {
+  margin-bottom: 0.5rem;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.daily-done-label {
+  margin-bottom: 2rem;
+  color: var(--color-text-muted);
+}
+
+.daily-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* === Mobile === */
+
+@media (max-width: 640px) {
+  .daily-page {
+    padding: 0 0.5rem;
+  }
+
+  .daily-done-score {
+    font-size: 2.5rem;
+  }
+}

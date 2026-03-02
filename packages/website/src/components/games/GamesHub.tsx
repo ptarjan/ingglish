@@ -31,6 +31,27 @@ const GAMES: GameCard[] = [
     id: 'learn',
     title: 'Learn to Read',
   },
+  {
+    description:
+      'A new puzzle every day! 5 Ingglish rounds with Wordle-style colored squares. Same challenge for everyone.',
+    difficulty: 'All levels',
+    id: 'daily',
+    title: 'Daily Challenge',
+  },
+  {
+    description:
+      'Match Ingglish words to their English translations as fast as you can. Race the clock across 3 rounds.',
+    difficulty: 'All levels',
+    id: 'speedmatch',
+    title: 'Speed Match',
+  },
+  {
+    description:
+      'See an English word and type how it looks in Ingglish. Tests your knowledge of phonetic spelling rules.',
+    difficulty: 'Intermediate',
+    id: 'reverse',
+    title: 'Reverse Spelling',
+  },
 ];
 
 function GamesHub({ onSelectGame }: { onSelectGame: (id: GameId) => void }): JSX.Element {

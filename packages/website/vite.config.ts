@@ -107,6 +107,21 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       '8 progressive lessons teaching you to read phonetic English. From unchanged words to full sentences.',
   },
+  'games/daily': {
+    title: 'Ingglish Daily Challenge',
+    description:
+      'A new Ingglish puzzle every day. 5 rounds with Wordle-style colored squares. Same challenge for everyone.',
+  },
+  'games/speedmatch': {
+    title: 'Ingglish Speed Match',
+    description:
+      'Match Ingglish words to their English translations as fast as you can. Race the clock across 3 rounds.',
+  },
+  'games/reverse': {
+    title: 'Ingglish Reverse Spelling',
+    description:
+      'See an English word and type how it looks in Ingglish. Tests your knowledge of phonetic spelling rules.',
+  },
   docs: {
     title: 'Ingglish Documentation',
     description:

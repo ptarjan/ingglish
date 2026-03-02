@@ -1,0 +1,124 @@
+/**
+ * Reverse Spelling styles.
+ */
+
+.reverse-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.reverse-intro {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.reverse-intro h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+.reverse-intro p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* === Prompt card === */
+
+.reverse-prompt {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+}
+
+.reverse-prompt-label {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reverse-prompt-word {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* === Feedback comparison === */
+
+.reverse-feedback-comparison {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.reverse-feedback-item {
+  text-align: center;
+}
+
+.reverse-feedback-label {
+  margin-bottom: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reverse-feedback-word {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.reverse-feedback-correct {
+  color: var(--color-success);
+}
+
+.reverse-feedback-fuzzy {
+  color: var(--color-warning, #ca8a04);
+}
+
+.reverse-feedback-incorrect {
+  color: var(--color-error);
+}
+
+/* === Results === */
+
+.reverse-results {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.reverse-results h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.reverse-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* === Mobile === */
+
+@media (max-width: 640px) {
+  .reverse-page {
+    padding: 0 0.5rem;
+  }
+
+  .reverse-prompt-word {
+    font-size: 1.5rem;
+  }
+}
