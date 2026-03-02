@@ -89,7 +89,7 @@ const HARD_CLUSTERS = [
 export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
   const rng = mulberry32(seed + roundIndex * 7919);
 
-  if (roundIndex >= 2) {
+  if (roundIndex >= 1) {
     return pickHardPairs(rng);
   }
 
