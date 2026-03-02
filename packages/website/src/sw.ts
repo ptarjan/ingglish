@@ -1,5 +1,4 @@
 /// <reference lib="webworker" />
- 
 
 declare const __BUILD_ID__: string;
 
@@ -48,7 +47,9 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
   if (pathname.startsWith('/assets/')) {
     event.respondWith(
       caches.match(request).then((cached) => {
-        if (cached) {return cached;}
+        if (cached) {
+          return cached;
+        }
         return fetch(request).then((response) => {
           if (response.ok) {
             const clone = response.clone();
@@ -75,7 +76,9 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
         () =>
           caches.match(request).then((cached) => {
             // SPA fallback: serve cached / for navigation requests
-            if (cached) {return cached;}
+            if (cached) {
+              return cached;
+            }
             return caches.match('/');
           }) as Promise<Response>
       )

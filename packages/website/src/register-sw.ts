@@ -1,10 +1,14 @@
 export function registerServiceWorker(): void {
-  if (!('serviceWorker' in navigator)) {return;}
+  if (!('serviceWorker' in navigator)) {
+    return;
+  }
 
   // ?reset-sw escape hatch: unregister SW and clear all caches
   if (location.search.includes('reset-sw')) {
     void navigator.serviceWorker.getRegistration().then((r) => r?.unregister());
-    void caches.keys().then((keys) => { keys.forEach((k) => void caches.delete(k)); });
+    void caches.keys().then((keys) => {
+      keys.forEach((k) => void caches.delete(k));
+    });
     return;
   }
 
