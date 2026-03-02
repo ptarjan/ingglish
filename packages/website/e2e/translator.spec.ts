@@ -442,7 +442,8 @@ test.describe('Web Vitals', () => {
     {
       route: '/url',
       interact: async (page) => {
-        await page.locator('.example-link').first().click();
+        // Fill input instead of clicking example link (which triggers an unmocked fetch)
+        await page.locator('.url-input').fill('https://example.com');
       },
     },
     {
