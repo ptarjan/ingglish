@@ -28,8 +28,15 @@ export type WordRenderer = (word: string) => string;
 export type WordTranslator = (word: string) => TranslateResult;
 
 // Pre-compiled regex patterns
-const SENTENCE_END = /[.?!]/;
+const SENTENCE_END = /[.?!。！？]/;
 export const HAS_LETTER = /[a-z]/i;
+
+/**
+ * Unicode word regex for non-Latin scripts (Arabic, CJK, Khmer, etc.).
+ * Matches sequences of Unicode letters and combining marks (including apostrophes).
+ * Uses a capturing group so split() interleaves words and separators.
+ */
+const UNICODE_WORD_REGEX = /([\p{L}\p{M}']+)/u;
 
 /**
  * Stage 1: Normalize text and extract preserved patterns (URLs, emails).
@@ -42,6 +49,21 @@ export function extractTokens(text: string): {
   const normalized = normalizeApostrophes(text);
   const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalized);
   const rawTokens = textWithPlaceholders.split(WORD_SPLIT_REGEX);
+  return { preserved, rawTokens };
+}
+
+/**
+ * Stage 1 (Unicode variant): Like extractTokens but uses a Unicode-aware
+ * word regex that handles non-Latin scripts (Arabic, CJK, Khmer, etc.).
+ * Latin-script languages should use extractTokens for digit-boundary handling.
+ */
+export function extractTokensUnicode(text: string): {
+  preserved: Map<string, string>;
+  rawTokens: string[];
+} {
+  const normalized = normalizeApostrophes(text);
+  const { preserved, text: textWithPlaceholders } = extractPreservedPatterns(normalized);
+  const rawTokens = textWithPlaceholders.split(UNICODE_WORD_REGEX);
   return { preserved, rawTokens };
 }
 

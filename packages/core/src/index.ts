@@ -11,7 +11,7 @@
  */
 
 import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
-import { buildReverseMap, translateDict } from '@ingglish/ipa';
+import { buildReverseMap } from '@ingglish/ipa';
 import type { TranslateOptions } from './ipa-dict';
 import { getDictReverseMap, loadLangDict, setDictReverseMap } from './ipa-dict';
 import { reverseTranslateSync, translateSync } from './translate';
@@ -64,13 +64,11 @@ export async function reverseTranslate(
 export async function translate(text: string, options: TranslateOptions = {}): Promise<string> {
   const { format = 'ingglish', lang } = options;
 
-  if (lang && lang !== 'en') {
-    const dict = await loadLangDict(lang);
-    return translateDict(text, dict, format);
-  }
+  await (lang && lang !== 'en'
+    ? loadLangDict(lang)
+    : Promise.all([loadDictionary(), loadFrequencies()]));
 
-  await Promise.all([loadDictionary(), loadFrequencies()]);
-  return translateSync(text, { format });
+  return translateSync(text, { format, lang });
 }
 
 // =============================================================================
