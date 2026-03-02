@@ -1,11 +1,11 @@
 /**
  * Downloads IPA dictionaries from ipa-dict (MIT license) and converts
- * each to a JS module for lazy-loading in the browser.
+ * each to ARPAbet arrays for zero-parse-cost lookups at runtime.
  *
  * Source: https://github.com/open-dict-data/ipa-dict
  *
  * Each TSV line: word\t/IPA/
- * Output: export default {"word":"/IPA/", ...}
+ * Output: {"word":["HH","AH0","L","OW1"], ...}  (ARPAbet arrays)
  */
 
 import { execFile } from 'child_process';
@@ -13,6 +13,10 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { promisify } from 'util';
+// Relative imports — this script runs via tsx, not through the package system
+import { ipaToArpabet } from '../../ipa/src/from-ipa';
+import { IPA_LANGUAGE_OVERRIDES } from '../../ipa/src/ipa-maps';
+import { getStress, isVowel } from '@ingglish/phonemes';
 
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +24,9 @@ const OUTPUT_DIR = path.join(__dirname, '..', 'public', 'ipa-dicts');
 const KAIKKI_DIR = path.join(__dirname, '..', 'data', 'kaikki');
 
 const BASE_URL = 'https://raw.githubusercontent.com/open-dict-data/ipa-dict/master/data';
+
+// Pre-compiled regex to strip IPA slashes and syllable dots
+const IPA_SLASH_RE = /^\/|\/$/g;
 
 const LANGUAGES = [
   { code: 'ar', file: 'ar.txt' },
@@ -76,8 +83,40 @@ function parseTsv(text: string): Record<string, string> {
   return dict;
 }
 
-function toJson(dict: Record<string, string>): string {
-  return JSON.stringify(dict);
+/**
+ * If no vowel carries a stress digit, apply stress 1 to the last vowel.
+ * Gives useful output for languages whose IPA dicts omit stress (e.g. French).
+ */
+function applyDefaultStress(arpabet: string[]): string[] {
+  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
+  if (hasStress) return arpabet;
+  const result = [...arpabet];
+  for (let i = result.length - 1; i >= 0; i--) {
+    if (isVowel(result[i]!)) {
+      result[i] = result[i]! + '1';
+      break;
+    }
+  }
+  return result;
+}
+
+/**
+ * Convert an IPA dict (word → IPA string) to ARPAbet dict (word → string[]).
+ */
+function convertToArpabet(
+  ipaDict: Record<string, string>,
+  langCode: string
+): Record<string, string[]> {
+  const overrides = IPA_LANGUAGE_OVERRIDES[langCode];
+  const result: Record<string, string[]> = {};
+  for (const [word, ipa] of Object.entries(ipaDict)) {
+    const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
+    const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
+    if (arpabet.length > 0) {
+      result[word] = arpabet;
+    }
+  }
+  return result;
 }
 
 /**
@@ -103,18 +142,21 @@ async function buildAll(): Promise<void> {
 
     console.log(`Downloading ${lang.code} from ${url}...`);
     const text = await download(url);
-    const dict = parseTsv(text);
-    const ipaCount = Object.keys(dict).length;
+    const ipaDict = parseTsv(text);
+    const ipaCount = Object.keys(ipaDict).length;
 
     // Merge kaikki data on top (higher quality, overwrites ipa-dict)
     const kaikki = await readKaikkiTsv(lang.code);
     const kaikkiCount = Object.keys(kaikki).length;
     if (kaikkiCount > 0) {
-      Object.assign(dict, kaikki);
+      Object.assign(ipaDict, kaikki);
     }
 
-    const mergedCount = Object.keys(dict).length;
-    const json = toJson(dict);
+    const mergedCount = Object.keys(ipaDict).length;
+
+    // Convert IPA → ARPAbet arrays
+    const arpabetDict = convertToArpabet(ipaDict, lang.code);
+    const json = JSON.stringify(arpabetDict);
 
     await fs.writeFile(outPath, json, 'utf8');
     if (kaikkiCount > 0) {

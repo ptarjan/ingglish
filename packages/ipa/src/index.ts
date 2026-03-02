@@ -13,6 +13,8 @@ export {
   buildReverseMap,
   ipaToIngglish,
   LANGUAGES,
+  lookupDict,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- backward compat re-export
   lookupIpa,
   NOT_FOUND_MARKER,
   reverseDictText,
@@ -20,7 +22,8 @@ export {
   translateDict,
   translateDictWithMapping,
 } from './foreign';
-export type { IpaDict, Language } from './foreign';
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- backward compat re-export
+export type { IpaDict, Language, PhoneDict } from './foreign';
 export { ipaToArpabetClean } from './from-ipa';
 // Export individual functions for direct use
 export { arpabetPhonemeToIPA, arpabetToIPARaw } from './to-ipa';

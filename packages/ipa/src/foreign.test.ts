@@ -1,20 +1,45 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import '@ingglish/phonemes'; // registers 'pronunciation' format
-import type { IpaDict } from './foreign';
+import { getStress, isVowel } from '@ingglish/phonemes'; // also registers 'pronunciation' format
+import type { PhoneDict } from './foreign';
 import {
   LANGUAGES,
-  lookupIpa,
+  lookupDict,
   segmentKhmerText,
   translateDict,
   translateDictWithMapping,
   NOT_FOUND_MARKER,
 } from './foreign';
+import { ipaToArpabet } from './from-ipa';
+import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 
-/** Helper to create an IpaDict from entries and a language code. */
-function mkDict(entries: Record<string, string>, lang = ''): IpaDict {
-  return { entries, lang };
+/** Convert IPA string → ARPAbet with default stress applied. */
+function ipa(ipaStr: string, lang?: string): string[] {
+  const clean = ipaStr.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
+  const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
+  const arpabet = ipaToArpabet(clean, overrides);
+  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
+  if (hasStress) {
+    return arpabet;
+  }
+  const result = [...arpabet];
+  for (let i = result.length - 1; i >= 0; i--) {
+    if (isVowel(result[i]!)) {
+      result[i] = result[i]! + '1';
+      break;
+    }
+  }
+  return result;
+}
+
+/** Helper to create a PhoneDict from IPA entries (converted to ARPAbet) and a language code. */
+function mkDict(entries: Record<string, string>, lang = ''): PhoneDict {
+  const arpabetEntries: Record<string, string[]> = {};
+  for (const [word, ipaStr] of Object.entries(entries)) {
+    arpabetEntries[word] = ipa(ipaStr, lang || undefined);
+  }
+  return { entries: arpabetEntries, lang };
 }
 
 describe('translateDict', () => {
@@ -216,9 +241,9 @@ describe('translateDict', () => {
       'de'
     );
     expect(translateDict('da\u00DF', deDict)).not.toContain(NOT_FOUND_MARKER);
-    expect(lookupIpa(deDict, 'Bewu\u00DFtsein')).toBeDefined();
+    expect(lookupDict(deDict, 'Bewu\u00DFtsein')).toBeDefined();
     // Word not in dict or overrides should still be undefined
-    expect(lookupIpa(deDict, 'xyz\u00DF')).toBeUndefined();
+    expect(lookupDict(deDict, 'xyz\u00DF')).toBeUndefined();
   });
 
   it('applies IPA override for French "est" (silent st)', () => {
@@ -244,7 +269,7 @@ describe('translateDictWithMapping', () => {
   });
 
   it('returns unmatched token for unknown word', () => {
-    const dict = mkDict({}, 'fr');
+    const dict: PhoneDict = { entries: {}, lang: 'fr' };
     const tokens = translateDictWithMapping('xyzzy', dict);
     expect(tokens).toHaveLength(1);
     expect(tokens[0].isWord).toBe(true);
@@ -306,54 +331,49 @@ describe('Khmer compound decomposition', () => {
   const hasDicts = fs.existsSync(kmDictPath);
 
   it.skipIf(!hasDicts)('strips slashes from compound IPA parts', () => {
-    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string>;
-    const dict = mkDict(raw, 'km');
-    // "លើក្បាលទា" decomposes to លើ + ក្បាល + ទា (all in dict with /.../ values)
-    const ipa = lookupIpa(dict, 'លើក្បាលទា');
-    expect(ipa).toBeDefined();
-    // Should not contain any slashes — they should be stripped before joining
-    expect(ipa).not.toContain('/');
+    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string[]>;
+    const dict: PhoneDict = { entries: raw, lang: 'km' };
+    // "លើក្បាលទា" decomposes to លើ + ក្បាល + ទា (all in dict)
+    const arpabet = lookupDict(dict, 'លើក្បាលទា');
+    expect(arpabet).toBeDefined();
+    // ARPAbet arrays should not contain any slashes
+    if (arpabet) {
+      expect(arpabet.join(' ')).not.toContain('/');
+    }
   });
 
   it.skipIf(!hasDicts)('translates Khmer phrases that browsers may segment differently', () => {
-    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string>;
-    const dict = mkDict(raw, 'km');
+    const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string[]>;
+    const dict: PhoneDict = { entries: raw, lang: 'km' };
     // These words may appear as standalone segments in some browsers' Intl.Segmenter
-    // even though Node keeps them joined with neighbors. Each component of a
-    // compound override must be individually resolvable.
     const browserSegments = [
-      // Proverbs — browser splits compounds
-      'ញាក់', // part of ញាក់ចិញ្ចើម
-      'ណាយ', // part of ណាយចិត្ត
-      'លើក្បាលទា', // compound-decomposable
-      'ធ្វើរបង', // compound-decomposable
-      // UDHR — browser splits compound overrides
-      'សេចក្ដី', // part of សេចក្ដីថ្លៃថ្នូរ
-      'ថ្នែក', // aspect, class
-      'ថ្នូរ', // part of សេចក្ដីថ្លៃថ្នូរ
-      'សតិ', // part of សតិសម្បជញ្ញៈ
-      'សម្បជញ្ញៈ', // part of សតិសម្បជញ្ញៈ
-      'ភាតរ', // part of ភាតរភាព
-      // Preah Chinawong — browser splits ព្រះ-prefixed compounds
-      'មហេសី', // part of ព្រះមហេសី
-      'រាជ', // part of ព្រះរាជបុត្រ
-      'បុត្រ', // part of ព្រះរាជបុត្រ
-      'រាជា', // part of ព្រះរាជា
-      'រាជបុត្រ', // part of ព្រះរាជបុត្រ
-      // Nokor Reach / Constitution — browser splits មហា compounds
-      'មហា', // part of មហាក្សត្រ, មហាជាតិ
-      'រុង', // part of រុងរឿង
-      'ជ័យ', // part of ជ័យមង្គល
-      'មង្គល', // part of ជ័យមង្គល
-      'ថ្កើង', // part of ថ្កើងថ្កាន
-      'ថ្កាន', // part of ថ្កើងថ្កាន
-      'សួ', // browser splits សួស្តី
-      'ស្តី', // browser splits សួស្តី
-      'វេទនា', // part of ទុក្ខវេទនា
-      // Compound decomposition — these should decompose via merged dict
-      'ហើយឬក្សត្រ', // ហើយ(dict) + ឬ(dict) + ក្សត្រ(override)
-      'ក្នុងថ្នែក', // ក្នុង(dict) + ថ្នែក(override)
-      'និងសតិ', // និង(dict) + សតិ(override)
+      'ញាក់',
+      'ណាយ',
+      'លើក្បាលទា',
+      'ធ្វើរបង',
+      'សេចក្ដី',
+      'ថ្នែក',
+      'ថ្នូរ',
+      'សតិ',
+      'សម្បជញ្ញៈ',
+      'ភាតរ',
+      'មហេសី',
+      'រាជ',
+      'បុត្រ',
+      'រាជា',
+      'រាជបុត្រ',
+      'មហា',
+      'រុង',
+      'ជ័យ',
+      'មង្គល',
+      'ថ្កើង',
+      'ថ្កាន',
+      'សួ',
+      'ស្តី',
+      'វេទនា',
+      'ហើយឬក្សត្រ',
+      'ក្នុងថ្នែក',
+      'និងសតិ',
     ];
     const failures: string[] = [];
     for (const word of browserSegments) {
@@ -367,11 +387,9 @@ describe('Khmer compound decomposition', () => {
 });
 
 describe('foreign sample coverage', () => {
-  // Load samples dynamically (the file is TS but we can import it)
   const samplesPath = path.resolve(__dirname, '../../website/src/data/language-samples.ts');
   const dictsDir = path.resolve(__dirname, '../../website/public/ipa-dicts');
 
-  // Skip if sample file or dicts don't exist (CI without website package)
   const hasSamples = fs.existsSync(samplesPath);
   const hasDicts = fs.existsSync(dictsDir);
   const kaikkiDir = path.resolve(__dirname, '../../website/data/kaikki');
@@ -395,34 +413,29 @@ describe('foreign sample coverage', () => {
         if (!fs.existsSync(dictPath)) {
           continue;
         }
-        const raw = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as Record<string, string>;
-        const dict = mkDict(raw, code);
+        const raw = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as Record<string, string[]>;
+        const dict: PhoneDict = { entries: raw, lang: code };
 
         for (const sample of samples) {
-          // Khmer has no inherent word boundaries — segment before splitting
           const text = code === 'km' ? segmentKhmerText(sample.text) : sample.text;
-          // Extract words: split on whitespace, strip punctuation
           const words = text
             .split(/\s+/)
-            // Preserve combining marks (\p{M}) for scripts like Odia, Khmer
             .map((w) => w.replace(/^[^\p{L}\p{M}]+/u, '').replace(/[^\p{L}\p{M}]+$/u, ''))
             .filter(Boolean);
 
           const missing: string[] = [];
           for (const word of words) {
-            // Use lookupIpa which tries exact, lower, title, accent-stripped + overrides
-            if (lookupIpa(dict, word)) {
+            if (lookupDict(dict, word)) {
               continue;
             }
-            // Also try splitting on apostrophe/hyphen (French contractions)
             const parts = word.split(/(?<=['-])|(?=['-])/);
             if (parts.length > 1) {
               const allFound = parts.every(
                 (p) =>
                   p === "'" ||
                   p === '-' ||
-                  lookupIpa(dict, p) !== undefined ||
-                  lookupIpa(dict, `${p}'`) !== undefined
+                  lookupDict(dict, p) !== undefined ||
+                  lookupDict(dict, `${p}'`) !== undefined
               );
               if (allFound) {
                 continue;

@@ -1,14 +1,14 @@
 import { setDictLoader } from 'ingglish';
-import type { IpaDict } from '@ingglish/ipa';
+import type { PhoneDict } from '@ingglish/ipa';
 import { LANGUAGES } from '@ingglish/ipa';
 
-export type { IpaDict } from '@ingglish/ipa';
-export { LANGUAGES, lookupIpa } from '@ingglish/ipa';
+export type { PhoneDict } from '@ingglish/ipa';
+export { LANGUAGES, lookupDict } from '@ingglish/ipa';
 export type { Language } from '@ingglish/ipa';
 
-const cache = new Map<string, IpaDict>();
+const cache = new Map<string, PhoneDict>();
 
-export async function loadDict(code: string): Promise<IpaDict> {
+export async function loadDict(code: string): Promise<PhoneDict> {
   const cached = cache.get(code);
   if (cached) {
     return cached;
@@ -25,8 +25,8 @@ export async function loadDict(code: string): Promise<IpaDict> {
   if (!response.ok) {
     throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);
   }
-  const entries = (await response.json()) as Record<string, string>;
-  const dict: IpaDict = { entries, lang: code };
+  const entries = (await response.json()) as Record<string, string[]>;
+  const dict: PhoneDict = { entries, lang: code };
   cache.set(code, dict);
   return dict;
 }

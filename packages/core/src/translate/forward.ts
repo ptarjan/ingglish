@@ -16,7 +16,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { lookupIpa, translateDict, translateDictWithMapping, type IpaDict } from '@ingglish/ipa';
+import { lookupDict, translateDict, translateDictWithMapping, type PhoneDict } from '@ingglish/ipa';
 import type { CasePattern } from '@ingglish/normalize';
 import {
   applyCasePattern,
@@ -38,8 +38,8 @@ import { extractTokens, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
 export type { TranslatedToken } from '@ingglish/phonemes';
 
-/** Returns the loaded IPA dict for a language, or throws if not loaded. */
-function requireLangDict(lang: string): IpaDict {
+/** Returns the loaded dict for a language, or throws if not loaded. */
+function requireLangDict(lang: string): PhoneDict {
   const dict = getLangDict(lang);
   if (!dict) {
     throw new Error(
@@ -113,7 +113,8 @@ export function translateWord(word: string, options: TranslateOptions = {}): str
   const { format = 'ingglish', lang } = options;
 
   if (lang && lang !== 'en') {
-    return lookupIpa(requireLangDict(lang), word) ?? word;
+    const phonemes = lookupDict(requireLangDict(lang), word);
+    return phonemes ? arpabetToFormat(phonemes, format, { disableRColoring: true }) : word;
   }
 
   return translateWordInternal(word, format).translated;

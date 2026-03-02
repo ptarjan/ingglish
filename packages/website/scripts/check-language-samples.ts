@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { lookupIpa } from '@ingglish/ipa';
-import type { IpaDict } from '@ingglish/ipa';
+import { lookupDict } from '@ingglish/ipa';
+import type { PhoneDict } from '@ingglish/ipa';
 import { ALL_SAMPLES } from '../src/data/language-samples';
 
 const dictDir = path.resolve(import.meta.dirname, '../public/ipa-dicts');
@@ -15,8 +15,8 @@ for (const [lang, samples] of Object.entries(ALL_SAMPLES)) {
     console.log(`MISSING DICT: ${lang}`);
     continue;
   }
-  const entries = JSON.parse(fs.readFileSync(dictPath, 'utf-8')) as Record<string, string>;
-  const dict: IpaDict = { entries, lang };
+  const entries = JSON.parse(fs.readFileSync(dictPath, 'utf-8')) as Record<string, string[]>;
+  const dict: PhoneDict = { entries, lang };
 
   for (const sample of samples) {
     const words = sample.text
@@ -27,12 +27,12 @@ for (const [lang, samples] of Object.entries(ALL_SAMPLES)) {
 
     const missing = words.filter((w) => {
       // Direct lookup (includes IPA_WORD_OVERRIDES via lookupIpa)
-      if (lookupIpa(dict, w)) return false;
+      if (lookupDict(dict, w)) return false;
       // Try splitting contractions/hyphens (like translateDict does)
       const parts = w.split(/(?<=['-])|(?=['-])/);
       if (parts.length > 1) {
         const realParts = parts.filter((p) => p !== "'" && p !== '-');
-        if (realParts.some((p) => lookupIpa(dict, p))) return false;
+        if (realParts.some((p) => lookupDict(dict, p))) return false;
       }
       return true;
     });

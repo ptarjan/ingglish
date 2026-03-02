@@ -17,17 +17,17 @@ import {
   reverseTranslateSyncWithMapping,
 } from '../../src/translate/reverse.js';
 import { LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
-import type { IpaDict } from '@ingglish/ipa';
+import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-function loadIpaDict(langCode: string): IpaDict {
+function loadPhoneDict(langCode: string): PhoneDict {
   const dictPath = resolve(
     import.meta.dirname,
     '../../../website/public/ipa-dicts',
     `${langCode}.json`
   );
-  const entries = JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string>;
+  const entries = JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string[]>;
   return { entries, lang: langCode };
 }
 
@@ -74,7 +74,7 @@ async function main() {
       process.exit(1);
     }
 
-    const dict = loadIpaDict(langCode);
+    const dict = loadPhoneDict(langCode);
     console.log(`${lang.label}:`, text);
     console.log('---');
 

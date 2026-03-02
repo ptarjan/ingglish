@@ -49,8 +49,15 @@ const LEADING_NON_LETTER_RE = /^[^\p{L}\p{M}]/u;
 const TRAILING_NON_LETTER_RE = /[^\p{L}\p{M}]$/u;
 const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
-export interface IpaDict {
-  entries: Record<string, string>;
+/** @deprecated Use {@link PhoneDict} instead. */
+export type IpaDict = PhoneDict;
+
+/**
+ * Unified phoneme dictionary type. Entries are ARPAbet arrays, converted
+ * from IPA at build time. English and foreign dicts share the same format.
+ */
+export interface PhoneDict {
+  entries: Record<string, string[]>;
   lang: string;
 }
 
@@ -115,12 +122,10 @@ export const LANGUAGES: Language[] = [
 ];
 
 /**
- * Word-level IPA overrides per language.
- *
- * Some IPA dictionary entries are incorrect or represent a different
- * word form. These overrides take priority over the dictionary.
+ * Raw IPA word overrides per language (source format — IPA strings for readability).
+ * Converted to ARPAbet at first access via getOverridesArpabet().
  */
-const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
+const IPA_WORD_OVERRIDES_RAW: Record<string, Record<string, string>> = {
   ar,
   de,
   eo,
@@ -143,6 +148,9 @@ const IPA_WORD_OVERRIDES: Record<string, Record<string, string>> = {
   vi,
 };
 
+/** Cache of converted override maps: lang → word → ARPAbet string[] */
+const overridesArpabetCache = new Map<string, Record<string, string[]>>();
+
 /**
  * Converts an IPA transcription to Ingglish spelling.
  * Strips slashes and syllable dots before conversion.
@@ -153,9 +161,15 @@ export function ipaToIngglish(ipa: string): string {
   return arpabetToIngglish(arpabet);
 }
 
-export function lookupIpa(dict: IpaDict, word: string): string | undefined {
+/**
+ * Look up a word in a PhoneDict, returning ARPAbet string[] or undefined.
+ * Tries: overrides → exact → lowercase → title → accent-stripped → ß→ss →
+ * curly apostrophes → lemmatization → compound splitting → G2P.
+ */
+export function lookupDict(dict: PhoneDict, word: string): string[] | undefined {
   const { entries, lang } = dict;
-  const override = getIpaOverride(lang, word) ?? getIpaOverride(lang, word.toLowerCase());
+  const overrides = getOverridesArpabet(lang);
+  const override = overrides?.[word] ?? overrides?.[word.toLowerCase()];
   if (override) {
     return override;
   }
@@ -163,8 +177,9 @@ export function lookupIpa(dict: IpaDict, word: string): string | undefined {
   const lower = word.toLowerCase();
   const title = lower.charAt(0).toUpperCase() + lower.slice(1);
   const stripped = stripDiacritics(lower);
-  if (entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped]) {
-    return entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
+  const directHit = entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
+  if (directHit) {
+    return directHit;
   }
   // German ß→ss normalization (e.g. "Bewußtsein" → dict["Bewusstsein"])
   if (lower.includes('ß')) {
@@ -202,12 +217,35 @@ export function lookupIpa(dict: IpaDict, word: string): string | undefined {
   return undefined;
 }
 
+/** Get ARPAbet-converted overrides for a language (lazy, one-time per language). */
+function getOverridesArpabet(lang: string): Record<string, string[]> | undefined {
+  const raw = IPA_WORD_OVERRIDES_RAW[lang];
+  if (!raw) {
+    return undefined;
+  }
+  let cached = overridesArpabetCache.get(lang);
+  if (cached) {
+    return cached;
+  }
+  const langOverrides = IPA_LANGUAGE_OVERRIDES[lang];
+  cached = {};
+  for (const [word, ipa] of Object.entries(raw)) {
+    const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
+    cached[word] = applyDefaultStress(ipaToArpabet(clean, langOverrides));
+  }
+  overridesArpabetCache.set(lang, cached);
+  return cached;
+}
+
+/** @deprecated Use {@link lookupDict} instead. */
+export const lookupIpa = lookupDict;
+
 /**
  * Merged Khmer dict (raw dict + overrides) and its keys sorted longest-first.
  * Compound decomposition must search overrides too, not just the raw dict,
  * because browser segmenters can produce words whose parts only exist in overrides.
  */
-let khmerMergedDict: Record<string, string> | undefined;
+let khmerMergedDict: Record<string, string[]> | undefined;
 let khmerDictKeys: string[] | undefined;
 
 /**
@@ -232,42 +270,34 @@ function applyDefaultStress(arpabet: string[]): string[] {
   return result;
 }
 
+/**
+ * Converts ARPAbet phonemes to the specified output format with foreign-language options.
+ * Disables English R-coloring rules since foreign languages treat R as
+ * a regular consonant (e.g. Korean 사랑 → "sarang" not "sarrang").
+ */
+function arpabetToFormatForeign(arpabet: string[], format: OutputFormat): string {
+  return arpabetToFormat(arpabet, format, { disableRColoring: true });
+}
+
 function decomposeKhmer(
-  dict: Record<string, string>,
+  dict: Record<string, string[]>,
   keys: string[],
   remaining: string,
-  acc: string[]
-): null | string[] {
+  acc: string[][]
+): null | string[][] {
   if (remaining.length === 0) {
     return acc;
   }
   for (const key of keys) {
-    const ipa = dict[key];
-    if (remaining.startsWith(key) && ipa !== undefined) {
-      const result = decomposeKhmer(dict, keys, remaining.slice(key.length), [...acc, ipa]);
+    const phonemes = dict[key];
+    if (remaining.startsWith(key) && phonemes !== undefined) {
+      const result = decomposeKhmer(dict, keys, remaining.slice(key.length), [...acc, phonemes]);
       if (result !== null) {
         return result;
       }
     }
   }
   return null;
-}
-
-function getIpaOverride(lang: string, word: string): string | undefined {
-  return IPA_WORD_OVERRIDES[lang]?.[word];
-}
-
-/**
- * Converts an IPA transcription to the specified output format.
- * Accepts optional language code for language-specific IPA overrides.
- * Disables English R-coloring rules since foreign languages treat R as
- * a regular consonant (e.g. Korean 사랑 → "sarang" not "sarrang").
- */
-function ipaToFormat(ipa: string, format: OutputFormat, lang?: string): string {
-  const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
-  const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
-  const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
-  return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
 /**
@@ -281,14 +311,17 @@ function isCaselessWord(word: string): boolean {
 
 /**
  * Try to decompose a Khmer compound into known dictionary entries.
- * Uses longest-match-first greedy segmentation. Returns concatenated IPA or undefined.
- * Searches both the raw IPA dictionary and Khmer overrides so that browser-segmented
+ * Uses longest-match-first greedy segmentation. Returns concatenated ARPAbet or undefined.
+ * Searches both the dict and Khmer overrides so that browser-segmented
  * compounds whose parts only exist in overrides (e.g. ថ្នែក, សតិ) can still decompose.
  */
-function lookupKhmerCompound(entries: Record<string, string>, word: string): string | undefined {
+function lookupKhmerCompound(
+  entries: Record<string, string[]>,
+  word: string
+): string[] | undefined {
   if (khmerMergedDict === undefined) {
     khmerMergedDict = { ...entries };
-    const overrides = IPA_WORD_OVERRIDES.km;
+    const overrides = getOverridesArpabet('km');
     if (overrides) {
       for (const [k, v] of Object.entries(overrides)) {
         khmerMergedDict[k] = v;
@@ -302,8 +335,8 @@ function lookupKhmerCompound(entries: Record<string, string>, word: string): str
   if (parts === null || parts.length < 2) {
     return undefined;
   }
-  // Strip slashes from each part before joining so ipaToFormat sees clean IPA
-  return parts.map((p) => p.replaceAll(IPA_SLASH_RE, '')).join(' ');
+  // Concatenate ARPAbet arrays of all parts
+  return parts.flat();
 }
 
 /** Marker for words not found in the dictionary */
@@ -313,32 +346,29 @@ export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
 const SENTENCE_END_RE = /[.!?。！？]$/;
 
 /**
- * Builds a reverse map from an IPA dictionary: stress-free ARPAbet key → source words.
+ * Builds a reverse map from a PhoneDict: stress-free ARPAbet key → source words.
  * Used for reverse-translating Ingglish back to the source language.
  *
- * Processes both dictionary entries and per-language IPA overrides.
- * Overrides take priority (their IPA is used when a word exists in both).
+ * Processes both dictionary entries and per-language overrides.
+ * Overrides take priority (their phonemes are used when a word exists in both).
  */
-export function buildReverseMap(dict: IpaDict): Map<string, string[]> {
+export function buildReverseMap(dict: PhoneDict): Map<string, string[]> {
   const { entries, lang } = dict;
-  const overrides = IPA_LANGUAGE_OVERRIDES[lang];
-  const wordOverrides = IPA_WORD_OVERRIDES[lang];
+  const wordOverrides = getOverridesArpabet(lang);
 
   // Merge entries with overrides (overrides win)
-  const allWords = new Map<string, string>();
-  for (const [word, ipa] of Object.entries(entries)) {
-    allWords.set(word, ipa);
+  const allWords = new Map<string, string[]>();
+  for (const [word, phonemes] of Object.entries(entries)) {
+    allWords.set(word, phonemes);
   }
   if (wordOverrides) {
-    for (const [word, ipa] of Object.entries(wordOverrides)) {
-      allWords.set(word, ipa);
+    for (const [word, phonemes] of Object.entries(wordOverrides)) {
+      allWords.set(word, phonemes);
     }
   }
 
   const map = new Map<string, string[]>();
-  for (const [word, ipa] of allWords) {
-    const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
-    const arpabet = ipaToArpabet(clean, overrides);
+  for (const [word, arpabet] of allWords) {
     const key = arpabet.map((p) => stripStress(p)).join(' ');
     if (!key) {
       continue;
@@ -443,7 +473,7 @@ export function reverseDictText(text: string, reverseMap: Map<string, string[]>)
  */
 export function translateDict(
   text: string,
-  dict: IpaDict,
+  dict: PhoneDict,
   format: OutputFormat = 'ingglish'
 ): string {
   const tokens = translateDictWithMapping(text, dict, format);
@@ -458,7 +488,7 @@ export function translateDict(
  */
 export function translateDictWithMapping(
   text: string,
-  dict: IpaDict,
+  dict: PhoneDict,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
   const { lang } = dict;
@@ -514,9 +544,9 @@ export function translateDictWithMapping(
     const leadStr = leading.join('');
     const trailStr = trailing.join('');
 
-    const ipa = lookupIpa(dict, core);
-    if (ipa) {
-      const translated = ipaToFormat(ipa, format, lang);
+    const phonemes = lookupDict(dict, core);
+    if (phonemes) {
+      const translated = arpabetToFormatForeign(phonemes, format);
       const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
       tokens.push({
         isWord: true,
@@ -530,27 +560,27 @@ export function translateDictWithMapping(
     // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
     const parts = core.split(CONTRACTION_SPLIT_RE);
     if (parts.length > 1) {
-      // Collect IPA for each non-separator part
-      const partIpas: (string | undefined)[] = parts.map((part, i) => {
+      // Collect phonemes for each non-separator part
+      const partPhonemes: (string[] | undefined)[] = parts.map((part, i) => {
         if (part === "'" || part === '-') {
           return;
         }
-        let ipa: string | undefined;
+        let phonemes: string[] | undefined;
         // In contraction context, prefer clitic form (d' → /d‿/) over
         // bare letter name (d → /de/) so the consonant merges naturally
         if (parts[i + 1] === "'") {
-          ipa = lookupIpa(dict, part + "'");
+          phonemes = lookupDict(dict, part + "'");
         }
-        ipa ??= lookupIpa(dict, part);
-        return ipa;
+        phonemes ??= lookupDict(dict, part);
+        return phonemes;
       });
 
       const allFound = parts.every(
-        (part, i) => part === "'" || part === '-' || partIpas[i] !== undefined
+        (part, i) => part === "'" || part === '-' || partPhonemes[i] !== undefined
       );
 
       if (allFound) {
-        // Merge IPA across apostrophes, keep hyphens as group separators.
+        // Merge phonemes across apostrophes, keep hyphens as group separators.
         // French clitics (l', s', d') flow into the next word phonetically
         // (e.g. l'ordre → /lɔʁdʁ/ → "lawrdr", not "el'awrdr").
         const groups: string[][] = [[]];
@@ -563,10 +593,10 @@ export function translateDictWithMapping(
             groups.push([]);
             continue;
           }
-          const ipa = partIpas[i]!;
-          groups.at(-1)!.push(ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', ''));
+          const ph = partPhonemes[i]!;
+          groups.at(-1)!.push(...ph);
         }
-        const translated = groups.map((ipas) => ipaToFormat(ipas.join(''), format, lang)).join('-');
+        const translated = groups.map((ph) => arpabetToFormatForeign(ph, format)).join('-');
         const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
         tokens.push({
           isWord: true,
@@ -585,9 +615,9 @@ export function translateDictWithMapping(
         }
         const partCase = isFirstPart ? casePattern : detectCasePattern(part);
         isFirstPart = false;
-        const partIpa = partIpas[i];
-        if (partIpa) {
-          const partTranslated = ipaToFormat(partIpa, format, lang);
+        const partPh = partPhonemes[i];
+        if (partPh) {
+          const partTranslated = arpabetToFormatForeign(partPh, format);
           return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
         }
         return NOT_FOUND_MARKER + part;

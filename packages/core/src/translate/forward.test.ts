@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
-import type { IpaDict } from '@ingglish/ipa';
+import type { PhoneDict } from '@ingglish/ipa';
 import { reverseTranslate, setDictLoader, translate } from '../index';
 import type { DictLoader } from '../ipa-dict';
 import { getLangDict } from '../ipa-dict';
@@ -31,8 +31,8 @@ describe('async API loads only required dictionaries', () => {
   });
 
   it('translate() with lang loads foreign dict via registered loader', async () => {
-    const mockDict: IpaDict = {
-      entries: { bonjour: '/bɔ̃.ʒuʁ/' },
+    const mockDict: PhoneDict = {
+      entries: { bonjour: ['B', 'AO1', 'ZH', 'UH1', 'R'] },
       lang: 'test-fr',
     };
     const loader = vi.fn().mockResolvedValue(mockDict);

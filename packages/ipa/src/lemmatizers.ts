@@ -1,4 +1,4 @@
-export type Lemmatizer = (dict: Record<string, string>, word: string) => string | undefined;
+export type Lemmatizer = (dict: Record<string, string[]>, word: string) => string[] | undefined;
 
 export const LEMMATIZERS: Partial<Record<string, Lemmatizer>> = {
   eo: lemmatizeEo,
@@ -11,8 +11,8 @@ export const LEMMATIZERS: Partial<Record<string, Lemmatizer>> = {
   sw: lemmatizeSw,
 };
 
-/** Try candidates in the dictionary, return first IPA match. */
-function tryLookup(dict: Record<string, string>, ...candidates: string[]): string | undefined {
+/** Try candidates in the dictionary, return first match. */
+function tryLookup(dict: Record<string, string[]>, ...candidates: string[]): string[] | undefined {
   for (const c of candidates) {
     if (c && dict[c]) {
       return dict[c];
@@ -52,7 +52,7 @@ const SV_SUFFIXES: [string, string[]][] = [
   ['n', ['']],
 ];
 
-function lemmatizeSv(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeSv(dict: Record<string, string[]>, word: string): string[] | undefined {
   // First pass: try stripping each suffix (longest-first) and checking dict
   for (const [suffix, replacements] of SV_SUFFIXES) {
     if (word.length > suffix.length && word.endsWith(suffix)) {
@@ -112,7 +112,7 @@ const RO_PREFIX_RESTORE: [string, string][] = [
   ['m', 'mă'],
 ];
 
-function lemmatizeRo(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeRo(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Suffix stripping
   for (const [suffix, replacements] of RO_SUFFIXES) {
     if (word.length > suffix.length && word.endsWith(suffix)) {
@@ -254,7 +254,7 @@ const SW_DERIV_SUFFIXES: [string, string[]][] = [
  * -jn (plural accusative), verb tenses -as/-is/-os/-us/-u, participles
  * -anta/-inta/-onta/-ata/-ita/-ota.
  */
-function lemmatizeEo(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeEo(dict: Record<string, string[]>, word: string): string[] | undefined {
   let w = word;
 
   // Strip accusative -n
@@ -370,7 +370,7 @@ function lemmatizeEo(dict: Record<string, string>, word: string): string | undef
 // Swahili
 // ---------------------------------------------------------------------------
 
-function lemmatizeSw(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeSw(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Try stripping known verb prefix combinations
   for (const prefix of SW_VERB_PREFIXES) {
     if (word.length > prefix.length + 1 && word.startsWith(prefix)) {
@@ -580,7 +580,7 @@ function applyFiStrengthening(stem: string): string {
   return stem;
 }
 
-function lemmatizeFi(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeFi(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Try verb suffixes first (longest matches)
   for (const [suffix, replacements] of FI_VERB_SUFFIXES) {
     if (word.length > suffix.length + 1 && word.endsWith(suffix)) {
@@ -706,7 +706,7 @@ const NB_SUFFIXES: [string, string[]][] = [
   ['r', ['', 'e']],
 ];
 
-function lemmatizeNb(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeNb(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Try old orthography modernization first
   const modern = modernizeNb(word);
   for (const m of modern) {
@@ -781,7 +781,7 @@ const MA_PREFIXES: [string, string[]][] = [
   ['ku', ['']],
 ];
 
-function lemmatizeMa(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeMa(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Try suffix stripping first
   for (const suffix of MA_SUFFIXES) {
     if (word.length > suffix.length + 2 && word.endsWith(suffix)) {
@@ -801,7 +801,7 @@ function lemmatizeMa(dict: Record<string, string>, word: string): string | undef
   return tryMaPrefixStrip(dict, word);
 }
 
-function tryMaPrefixStrip(dict: Record<string, string>, word: string): string | undefined {
+function tryMaPrefixStrip(dict: Record<string, string[]>, word: string): string[] | undefined {
   for (const [prefix, restorations] of MA_PREFIXES) {
     if (word.length > prefix.length + 1 && word.startsWith(prefix)) {
       const remainder = word.slice(prefix.length);
@@ -833,7 +833,7 @@ function tryMaPrefixStrip(dict: Record<string, string>, word: string): string | 
  */
 const ZWNJ = '\u200C'; // Zero-width non-joiner
 
-function lemmatizeFa(dict: Record<string, string>, word: string): string | undefined {
+function lemmatizeFa(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Split on ZWNJ and try each part
   if (word.includes(ZWNJ)) {
     const parts = word.split(ZWNJ);

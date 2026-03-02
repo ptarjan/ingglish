@@ -4,14 +4,16 @@
  * Separated from index.ts to avoid circular dependencies with translate/forward.ts.
  */
 
-import type { IpaDict } from '@ingglish/ipa';
+import type { PhoneDict } from '@ingglish/ipa';
 import type { OutputFormat } from '@ingglish/phonemes';
 
 // =============================================================================
 // Types
 // =============================================================================
 
-export type DictLoader = (lang: string) => Promise<IpaDict>;
+export type DictLoader = (lang: string) => Promise<PhoneDict>;
+/** @deprecated Use {@link PhoneDict} instead. */
+export type IpaDict = PhoneDict;
 
 // =============================================================================
 // IPA dictionary loader
@@ -25,7 +27,7 @@ export interface TranslateOptions {
 }
 
 let dictLoader: DictLoader | undefined;
-const dictCache = new Map<string, IpaDict>();
+const dictCache = new Map<string, PhoneDict>();
 const dictReverseCache = new Map<string, Map<string, string[]>>();
 
 /**
@@ -40,7 +42,7 @@ export function getDictReverseMap(lang: string): Map<string, string[]> | undefin
  * Get a cached IPA dictionary (for sync use after a prior async load).
  * Returns undefined if the dictionary hasn't been loaded yet.
  */
-export function getLangDict(lang: string): IpaDict | undefined {
+export function getLangDict(lang: string): PhoneDict | undefined {
   return dictCache.get(lang);
 }
 
@@ -48,7 +50,7 @@ export function getLangDict(lang: string): IpaDict | undefined {
  * Load an IPA dictionary, returning it from cache if available.
  * Requires a loader to have been registered via {@link setDictLoader}.
  */
-export async function loadLangDict(lang: string): Promise<IpaDict> {
+export async function loadLangDict(lang: string): Promise<PhoneDict> {
   const cached = dictCache.get(lang);
   if (cached) {
     return cached;
@@ -58,7 +60,7 @@ export async function loadLangDict(lang: string): Promise<IpaDict> {
       `No dictionary loader registered. Call setDictLoader() before translating foreign languages.`
     );
   }
-  const dict = await dictLoader(lang);
+  const dict: PhoneDict = await dictLoader(lang);
   dictCache.set(lang, dict);
   return dict;
 }

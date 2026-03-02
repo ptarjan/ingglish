@@ -1,14 +1,44 @@
 /**
  * G2P (grapheme-to-phoneme) converters for phonetically regular languages.
- * These provide a fallback when a word isn't found in the IPA dictionary.
- * Each converter takes a lowercase word and returns an IPA string with stress markers.
+ * These provide a fallback when a word isn't found in the dictionary.
+ * Each converter takes a lowercase word and returns ARPAbet string[].
+ *
+ * Internally, each converter produces IPA then wraps with ipaToArpabet()
+ * and applyDefaultStress(). This keeps the rule tables readable while
+ * returning the unified ARPAbet format.
  */
 
-type G2PConverter = (word: string) => string;
+import { getStress, isVowel } from '@ingglish/phonemes';
+import { ipaToArpabet } from './from-ipa';
+import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+
+type G2PConverter = (word: string) => string[];
+
+/**
+ * Convert IPA string to ARPAbet with default stress applied.
+ * If no vowel has stress, assigns primary stress (1) to the last vowel.
+ */
+function ipaToArpabetWithStress(ipa: string, lang?: string): string[] {
+  const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
+  const arpabet = ipaToArpabet(ipa, overrides);
+  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
+  if (hasStress) {
+    return arpabet;
+  }
+  // Apply stress to last vowel
+  const result = [...arpabet];
+  for (let i = result.length - 1; i >= 0; i--) {
+    if (isVowel(result[i]!)) {
+      result[i] = result[i]! + '1';
+      break;
+    }
+  }
+  return result;
+}
 
 /**
  * Map of language codes to G2P converter functions.
- * Used as the last fallback in lookupIpa() before returning NOT_FOUND.
+ * Used as the last fallback in lookupDict() before returning NOT_FOUND.
  */
 export const G2P_CONVERTERS: Record<string, G2PConverter> = {
   eo: esperantoG2P,
@@ -137,8 +167,8 @@ const FINNISH_RULES: [string, string][] = [
 ];
 
 /** Finnish G2P: stress always on the first syllable. */
-function finnishG2P(word: string): string {
-  return addFirstSyllableStress(applyRules(word, FINNISH_RULES));
+function finnishG2P(word: string): string[] {
+  return ipaToArpabetWithStress(addFirstSyllableStress(applyRules(word, FINNISH_RULES)), 'fi');
 }
 
 // --- Esperanto ---
@@ -178,8 +208,8 @@ const ESPERANTO_RULES: [string, string][] = [
 ];
 
 /** Esperanto G2P: stress always on the penultimate syllable. */
-function esperantoG2P(word: string): string {
-  return addPenultimateStress(applyRules(word, ESPERANTO_RULES));
+function esperantoG2P(word: string): string[] {
+  return ipaToArpabetWithStress(addPenultimateStress(applyRules(word, ESPERANTO_RULES)), 'eo');
 }
 
 // --- Swahili ---
@@ -224,8 +254,8 @@ const SWAHILI_RULES: [string, string][] = [
 ];
 
 /** Swahili G2P: stress on the penultimate syllable. */
-function swahiliG2P(word: string): string {
-  return addPenultimateStress(applyRules(word, SWAHILI_RULES));
+function swahiliG2P(word: string): string[] {
+  return ipaToArpabetWithStress(addPenultimateStress(applyRules(word, SWAHILI_RULES)), 'sw');
 }
 
 // --- Malay ---
@@ -294,6 +324,6 @@ function addMalayStress(ipa: string): string {
 }
 
 /** Malay G2P: stress on the penultimate syllable (skips schwa). */
-function malayG2P(word: string): string {
-  return addMalayStress(applyRules(word, MALAY_RULES));
+function malayG2P(word: string): string[] {
+  return ipaToArpabetWithStress(addMalayStress(applyRules(word, MALAY_RULES)), 'ma');
 }
