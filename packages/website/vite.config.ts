@@ -6,13 +6,19 @@ import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { build as esbuild } from 'esbuild';
-import { DOC_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
+import { DOC_ENTRIES, GAME_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
 import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
 
 const BUILD_ID = randomUUID();
 
 // All routes that get their own index.html in dist/
-const ALL_ROUTES = [...TOP_LEVEL_ROUTES, ...DOC_ENTRIES.map((e) => `docs/${e.id}`)];
+const ALL_ROUTES = [
+  ...TOP_LEVEL_ROUTES,
+  // Backward compat: /challenge redirects to /games/reading
+  'challenge',
+  ...GAME_ENTRIES.map((e) => `games/${e.id}`),
+  ...DOC_ENTRIES.map((e) => `docs/${e.id}`),
+];
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -76,10 +82,30 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       'Translate any webpage to phonetic English with one click. Drag the bookmarklet to your bookmarks bar or install the Chrome extension.',
   },
+  games: {
+    title: 'Ingglish Games',
+    description:
+      'Practice reading and understanding Ingglish with interactive games. Reading challenge, homophones quiz, and learn-to-read lessons.',
+  },
   challenge: {
     title: 'Ingglish Reading Challenge',
     description:
       'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
+  },
+  'games/reading': {
+    title: 'Ingglish Reading Challenge',
+    description:
+      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
+  },
+  'games/homophones': {
+    title: 'Ingglish Homophones Quiz',
+    description:
+      'Can you tell which English word an Ingglish spelling represents? Test your knowledge of homophones and phonetic spelling.',
+  },
+  'games/learn': {
+    title: 'Learn to Read Ingglish',
+    description:
+      '8 progressive lessons teaching you to read phonetic English. From unchanged words to full sentences.',
   },
   docs: {
     title: 'Ingglish Documentation',

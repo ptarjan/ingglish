@@ -948,6 +948,7 @@ const NRL_RULES: Record<string, string[]> = {
     '[TCH]=/CH/',
     '#:[TTED] =/T IH D/',
     '[TT]=/T/',
+    'F[TEN]=/AX N/', // silent T: often, soften
     '[T]=/T/',
   ],
   U: [

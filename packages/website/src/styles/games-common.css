@@ -1,0 +1,292 @@
+/**
+ * Shared game styles — used by all games in the hub.
+ */
+
+.game-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* === Intro screen === */
+
+.game-intro {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.game-intro h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+.game-intro p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.game-rules {
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.game-rules li {
+  margin-bottom: 0.5rem;
+  margin-left: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.game-rules li:last-child {
+  margin-bottom: 0;
+}
+
+/* === Progress bar === */
+
+.game-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.game-progress-bar {
+  flex: 1;
+  height: 4px;
+  margin: 0 1rem;
+  overflow: hidden;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.game-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.game-timer {
+  min-width: 2.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.game-timer-warning {
+  color: var(--color-error);
+  animation: game-timer-pulse 1s ease-in-out infinite;
+}
+
+@keyframes game-timer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.game-tier-badge {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-surface-hover);
+  border-radius: 0.25rem;
+}
+
+/* === Results screen === */
+
+.game-results {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.game-results h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.game-overall-score {
+  margin-bottom: 0.5rem;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.game-score-label {
+  margin-bottom: 2rem;
+  color: var(--color-text-muted);
+}
+
+.game-round-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.game-round-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.game-round-label {
+  flex-shrink: 0;
+  width: 5rem;
+  color: var(--color-text-muted);
+}
+
+.game-round-bar {
+  flex: 1;
+  height: 1.25rem;
+  overflow: hidden;
+  background: var(--color-surface-hover);
+  border-radius: 0.25rem;
+}
+
+.game-round-fill {
+  height: 100%;
+  border-radius: 0.25rem;
+  transition: width 0.5s ease;
+}
+
+.game-round-fill-good {
+  background: var(--color-success);
+}
+
+.game-round-fill-ok {
+  background: #eab308;
+}
+
+.game-round-fill-bad {
+  background: var(--color-error);
+}
+
+.game-round-pct {
+  width: 3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.game-round-time {
+  width: 2.5rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.game-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* === Card (for prompts/sentences) === */
+
+.game-card {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+}
+
+.game-card-label {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.game-card-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* === Input area === */
+
+.game-input-area {
+  margin-bottom: 1rem;
+}
+
+.game-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.game-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.game-input:disabled {
+  opacity: 0.6;
+}
+
+.game-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* === Feedback === */
+
+.game-feedback {
+  padding: 1rem;
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.game-feedback-score {
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+/* === Mobile === */
+
+@media (max-width: 640px) {
+  .game-page {
+    padding: 0 0.5rem;
+  }
+
+  .game-card-text {
+    font-size: 1.1rem;
+  }
+
+  .game-overall-score {
+    font-size: 2.5rem;
+  }
+}

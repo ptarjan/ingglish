@@ -1,0 +1,88 @@
+/**
+ * Games hub landing page styles.
+ */
+
+.games-hub {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.games-hub-header {
+  padding: 2rem 0 1.5rem;
+  text-align: center;
+}
+
+.games-hub-header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.games-hub-header p {
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.games-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+
+.games-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.games-hub-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+}
+
+.games-hub-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.games-hub-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.games-hub-difficulty {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.2rem 0.5rem;
+  margin-top: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-surface-hover);
+  border-radius: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .games-hub {
+    padding: 0 0.5rem;
+  }
+
+  .games-hub-grid {
+    grid-template-columns: 1fr;
+  }
+}

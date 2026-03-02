@@ -8,9 +8,17 @@ export const TOP_LEVEL_ROUTES = [
   'extension',
   'explore',
   'experiment',
-  'challenge',
+  'games',
   'docs',
 ] as const;
+
+export const GAME_ENTRIES = [
+  { id: 'reading', title: 'Reading Challenge' },
+  { id: 'homophones', title: 'Homophones Quiz' },
+  { id: 'learn', title: 'Learn to Read' },
+] as const;
+
+export type GameId = (typeof GAME_ENTRIES)[number]['id'];
 
 export const DOC_ENTRIES = [
   // Ingglish Design

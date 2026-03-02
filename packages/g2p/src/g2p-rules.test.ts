@@ -40,6 +40,16 @@ describe('wordToArpabet', () => {
     expect(wordToArpabet('djinn')[0]).toBe('JH');
   });
 
+  it('handles silent T in -ften words (often, soften)', () => {
+    const often = wordToArpabet('often');
+    // T should be silent: often = AO F AH N (no T)
+    expect(often).not.toContain('T');
+    expect(often.some((p) => p.startsWith('F'))).toBe(true);
+
+    const soften = wordToArpabet('soften');
+    expect(soften).not.toContain('T');
+  });
+
   it('handles doubled consonants (bb, dd, tt)', () => {
     const rabbit = wordToArpabet('rabbit');
     // BB should collapse to single B

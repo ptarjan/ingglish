@@ -27,25 +27,19 @@ const Extension = lazyWithReload(() => import('./components/Extension'));
 const Docs = lazyWithReload(() => import('./components/Docs'));
 const Experiment = lazyWithReload(() => import('./components/Experiment'));
 const WordExplorer = lazyWithReload(() => import('./components/WordExplorer'));
-const ReadingChallenge = lazyWithReload(() => import('./components/ReadingChallenge'));
+const Games = lazyWithReload(() => import('./components/Games'));
 
 type Tab =
-  | 'challenge'
   | 'docs'
   | 'experiment'
   | 'explore'
   | 'extension'
+  | 'games'
   | 'guide'
   | 'text'
   | 'tutorial'
   | 'url';
 const ROUTE_META: Record<Tab, { description: string; path: string; title: string }> = {
-  challenge: {
-    description:
-      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
-    path: '/challenge',
-    title: 'Reading Challenge | Ingglish',
-  },
   docs: {
     description:
       'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
@@ -69,6 +63,12 @@ const ROUTE_META: Record<Tab, { description: string; path: string; title: string
       'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
     path: '/extension',
     title: 'Browser Extension | Ingglish',
+  },
+  games: {
+    description:
+      'Practice reading and understanding Ingglish with interactive games. Reading challenge, homophones quiz, and learn-to-read lessons.',
+    path: '/games',
+    title: 'Games | Ingglish',
   },
   guide: {
     description:
@@ -108,14 +108,14 @@ function App() {
   const updateAvailable = useUpdateCheck();
   const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
 
-  // Sync URL path and document title with active tab (docs manages its own sub-path and title)
+  // Sync URL path and document title with active tab (docs and games manage their own sub-paths and titles)
   useEffect(() => {
     const targetPath = activeTab === 'tutorial' ? '/' : `/${activeTab}`;
     const currentPath = globalThis.location.pathname.replace(/\/$/, '') || '/';
-    if (currentPath !== targetPath && activeTab !== 'docs') {
+    if (currentPath !== targetPath && activeTab !== 'docs' && activeTab !== 'games') {
       globalThis.history.pushState(null, '', targetPath);
     }
-    if (activeTab !== 'docs') {
+    if (activeTab !== 'docs' && activeTab !== 'games') {
       document.title = meta.title;
     }
     trackPageView(targetPath);
@@ -280,7 +280,7 @@ function App() {
               ['/extension', 'extension', 'Extension'],
               ['/explore', 'explore', 'Word Explorer'],
               ['/experiment', 'experiment', 'Experiment'],
-              ['/challenge', 'challenge', 'Challenge'],
+              ['/games', 'games', 'Games'],
             ] as const
           ).map(([href, tab, label]) => (
             <a
@@ -375,9 +375,9 @@ function App() {
                 <Experiment />
               </ErrorBoundary>
             )}
-            {activeTab === 'challenge' && (
+            {activeTab === 'games' && (
               <ErrorBoundary>
-                <ReadingChallenge />
+                <Games />
               </ErrorBoundary>
             )}
           </Suspense>
@@ -421,6 +421,9 @@ function getTabFromPath(): Tab {
   if (segment === 'docs') {
     return 'docs';
   }
+  if (segment === 'games' || segment === 'challenge') {
+    return 'games';
+  }
   if (
     segment === 'tutorial' ||
     segment === 'text' ||
@@ -428,8 +431,7 @@ function getTabFromPath(): Tab {
     segment === 'guide' ||
     segment === 'extension' ||
     segment === 'experiment' ||
-    segment === 'explore' ||
-    segment === 'challenge'
+    segment === 'explore'
   ) {
     return segment;
   }

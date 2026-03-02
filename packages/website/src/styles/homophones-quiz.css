@@ -1,0 +1,92 @@
+/**
+ * Homophones Quiz styles.
+ */
+
+.homophones-prompt {
+  padding: 1rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.homophones-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.homophones-choice {
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 0.75rem;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.homophones-choice:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary);
+}
+
+.homophones-choice:disabled {
+  cursor: default;
+}
+
+.homophones-choice-correct {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: var(--color-success);
+}
+
+.homophones-choice-incorrect {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-error);
+}
+
+.homophones-choice-dimmed {
+  opacity: 0.5;
+}
+
+.homophones-feedback {
+  padding: 1rem;
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.homophones-feedback-correct {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.homophones-feedback-incorrect {
+  margin-bottom: 1rem;
+  color: var(--color-text-muted);
+}
+
+.homophones-round-word {
+  width: 6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .homophones-prompt {
+    font-size: 1.5rem;
+  }
+
+  .homophones-choices {
+    grid-template-columns: 1fr;
+  }
+}

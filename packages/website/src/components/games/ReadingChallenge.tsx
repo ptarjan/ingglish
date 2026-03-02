@@ -1,10 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { loadReverseDictionary } from '@ingglish/dictionary';
-import type { SentenceScore } from '../challenge/challenge-scoring';
-import { scoreSentence } from '../challenge/challenge-scoring';
-import { renderScoreCard } from '../challenge/render-score-card';
-import type { ChallengeSentence } from '../data/challenge-data';
-import { pickChallenge } from '../data/challenge-data';
+import type { SentenceScore } from '../../challenge/challenge-scoring';
+import { scoreSentence } from '../../challenge/challenge-scoring';
+import { renderScoreCard } from '../../challenge/render-score-card';
+import type { ChallengeSentence } from '../../data/challenge-data';
+import { pickChallenge } from '../../data/challenge-data';
+import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -19,14 +20,6 @@ const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = {
   2: 25,
   3: 20,
 };
-
-function downloadCanvas(canvas: HTMLCanvasElement): void {
-  const url = canvas.toDataURL('image/png');
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ingglish-score.png';
-  a.click();
-}
 
 function getScoreLabel(pct: number): string {
   if (pct >= 90) {
@@ -211,7 +204,8 @@ function ReadingChallenge() {
     () =>
       renderScoreCard(
         results.map((r) => ({ score: r.score.score, timeTaken: r.timeTaken })),
-        overallPct
+        overallPct,
+        { footerUrl: 'ingglish.com/games/reading', gameTitle: 'INGGLISH READING CHALLENGE' }
       ),
     [results, overallPct]
   );
@@ -226,23 +220,12 @@ function ReadingChallenge() {
 
   const handleShareResult = useCallback(() => {
     const canvas = getScoreCanvas();
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        return;
-      }
-      navigator.clipboard
-        .write([new ClipboardItem({ 'image/png': blob })])
-        .then(showCopied)
-        .catch(() => {
-          // Clipboard image not supported — download instead
-          downloadCanvas(canvas);
-        });
-    }, 'image/png');
+    copyCanvasToClipboard(canvas, showCopied, 'ingglish-reading-score.png');
   }, [getScoreCanvas, showCopied]);
 
   const handleSaveImage = useCallback(() => {
     const canvas = getScoreCanvas();
-    downloadCanvas(canvas);
+    downloadCanvas(canvas, 'ingglish-reading-score.png');
   }, [getScoreCanvas]);
 
   const getIngglishText = (sentence: ChallengeSentence): string =>

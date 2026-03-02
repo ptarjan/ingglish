@@ -1,6 +1,11 @@
-interface RoundData {
+export interface RoundData {
   score: number; // 0-1
   timeTaken: number; // seconds
+}
+
+interface ScoreCardOptions {
+  footerUrl?: string;
+  gameTitle?: string;
 }
 
 const W = 600;
@@ -17,7 +22,13 @@ const ACCENT = '#6366f1';
  * Render a score card to an offscreen canvas.
  * Returns an HTMLCanvasElement ready for toBlob()/toDataURL().
  */
-export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCanvasElement {
+export function renderScoreCard(
+  rounds: RoundData[],
+  overallPct: number,
+  options?: ScoreCardOptions
+): HTMLCanvasElement {
+  const gameTitle = options?.gameTitle ?? 'INGGLISH READING CHALLENGE';
+  const footerUrl = options?.footerUrl ?? 'ingglish.com/games/reading';
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
@@ -31,7 +42,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
   ctx.fillStyle = MUTED;
   ctx.font = '600 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('INGGLISH READING CHALLENGE', W / 2, 36);
+  ctx.fillText(gameTitle, W / 2, 36);
 
   // Overall score
   ctx.fillStyle = ACCENT;
@@ -96,7 +107,7 @@ export function renderScoreCard(rounds: RoundData[], overallPct: number): HTMLCa
   ctx.fillStyle = MUTED;
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('ingglish.com/challenge', W / 2, H - 20);
+  ctx.fillText(footerUrl, W / 2, H - 20);
 
   return canvas;
 }
