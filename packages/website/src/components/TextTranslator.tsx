@@ -408,15 +408,23 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
     ? displayIngglish.replaceAll(NOT_FOUND_MARKER, '')
     : displayIngglish;
 
-  const handleEnglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEnglishText(e.target.value);
-    setLastEdited('english');
-  }, []);
+  const handleEnglishChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      stopEnglish();
+      setEnglishText(e.target.value);
+      setLastEdited('english');
+    },
+    [stopEnglish]
+  );
 
-  const handleIngglishChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIngglishText(e.target.value);
-    setLastEdited('ingglish');
-  }, []);
+  const handleIngglishChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      stopEnglish();
+      setIngglishText(e.target.value);
+      setLastEdited('ingglish');
+    },
+    [stopEnglish]
+  );
 
   // Sample data for current language
   const samples = useMemo(() => ALL_SAMPLES[selectedLanguage] ?? [], [selectedLanguage]);
@@ -424,6 +432,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   const handleSampleSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
+      stopEnglish();
       const index = Number.parseInt(e.target.value, 10);
       if (!Number.isNaN(index) && samples[index] !== undefined) {
         setEnglishText(samples[index].text);
@@ -431,17 +440,18 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
         trackTextTranslate(samples[index].text.length, format);
       }
     },
-    [samples, format]
+    [stopEnglish, samples, format]
   );
 
   const handleRandom = useCallback(() => {
+    stopEnglish();
     const text = pickSample(selectedLanguage, englishText);
     if (text) {
       setEnglishText(text);
       setLastEdited('english');
       trackTextTranslate(text.length, format);
     }
-  }, [format, englishText, selectedLanguage]);
+  }, [stopEnglish, format, englishText, selectedLanguage]);
 
   const handleCopyEnglish = useCallback(() => {
     if (displayEnglish) {
