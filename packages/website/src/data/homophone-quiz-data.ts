@@ -87,6 +87,48 @@ const GROUPS: HomophoneGroup[] = [
 
   // === Tier 2: Less obvious ===
   {
+    answers: ['not', 'knot'],
+    distractors: ['note', 'nut', 'net', 'knit'],
+    ingglish: 'not',
+    tier: 2,
+  },
+  {
+    answers: ['him', 'hymn'],
+    distractors: ['ham', 'hum', 'hem', 'harm'],
+    ingglish: 'him',
+    tier: 2,
+  },
+  {
+    answers: ['way', 'weigh'],
+    distractors: ['why', 'woe', 'wig', 'wag'],
+    ingglish: 'way',
+    tier: 2,
+  },
+  {
+    answers: ['whole', 'hole'],
+    distractors: ['whale', 'hale', 'hull', 'while'],
+    ingglish: 'hohl',
+    tier: 2,
+  },
+  {
+    answers: ['made', 'maid'],
+    distractors: ['mad', 'mid', 'mode', 'mud'],
+    ingglish: 'mayd',
+    tier: 2,
+  },
+  {
+    answers: ['die', 'dye'],
+    distractors: ['doe', 'due', 'dee', 'day'],
+    ingglish: 'dai',
+    tier: 2,
+  },
+  {
+    answers: ['or', 'ore', 'oar'],
+    distractors: ['our', 'air', 'err', 'ire'],
+    ingglish: 'or',
+    tier: 2,
+  },
+  {
     answers: ['knight', 'night'],
     distractors: ['knit', 'nit', 'knot', 'neat'],
     ingglish: 'nait',
@@ -184,6 +226,90 @@ const GROUPS: HomophoneGroup[] = [
   },
 
   // === Tier 3: Tricky ===
+  {
+    answers: ['so', 'sew'],
+    distractors: ['saw', 'sue', 'say', 'sow'],
+    ingglish: 'soh',
+    tier: 3,
+  },
+  {
+    answers: ['where', 'wear', 'ware'],
+    distractors: ['war', 'wire', 'were', 'wore'],
+    ingglish: 'wair',
+    tier: 3,
+  },
+  {
+    answers: ['would', 'wood'],
+    distractors: ['wade', 'weed', 'word', 'wild'],
+    ingglish: 'wud',
+    tier: 3,
+  },
+  {
+    answers: ['through', 'threw'],
+    distractors: ['throw', 'thorough', 'thaw', 'three'],
+    ingglish: 'throo',
+    tier: 3,
+  },
+  {
+    answers: ['which', 'witch'],
+    distractors: ['watch', 'wish', 'with', 'such'],
+    ingglish: 'wich',
+    tier: 3,
+  },
+  {
+    answers: ['course', 'coarse'],
+    distractors: ['curse', 'worse', 'horse', 'cross'],
+    ingglish: 'kors',
+    tier: 3,
+  },
+  {
+    answers: ['scene', 'seen'],
+    distractors: ['scan', 'sane', 'soon', 'sin'],
+    ingglish: 'seen',
+    tier: 3,
+  },
+  {
+    answers: ['morning', 'mourning'],
+    distractors: ['mooring', 'meaning', 'mining', 'moaning'],
+    ingglish: 'morning',
+    tier: 3,
+  },
+  {
+    answers: ['check', 'cheque', 'czech'],
+    distractors: ['chick', 'chuck', 'choke', 'chalk'],
+    ingglish: 'chek',
+    tier: 3,
+  },
+  {
+    answers: ['heard', 'herd'],
+    distractors: ['hard', 'hoard', 'hired', 'horde'],
+    ingglish: 'herd',
+    tier: 3,
+  },
+  {
+    answers: ['knows', 'nose'],
+    distractors: ['noise', 'noose', 'knees', 'nosy'],
+    ingglish: 'nohz',
+    tier: 3,
+  },
+  {
+    answers: ['great', 'grate'],
+    distractors: ['greet', 'groat', 'grit', 'grout'],
+    ingglish: 'grayt',
+    tier: 3,
+  },
+  {
+    answers: ['done', 'dun'],
+    distractors: ['don', 'dine', 'dane', 'dune'],
+    ingglish: 'duhn',
+    tier: 3,
+  },
+  {
+    answers: ['damn', 'dam'],
+    distractors: ['dame', 'dim', 'dome', 'deem'],
+    ingglish: 'dam',
+    tier: 3,
+  },
   {
     answers: ['gnu', 'new', 'knew'],
     distractors: ['now', 'know', 'anew', 'gnaw'],
