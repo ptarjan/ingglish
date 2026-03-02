@@ -1,13 +1,13 @@
 /**
  * Forward translation: text → Ingglish/IPA (all languages).
  *
- * Unified pipeline for English and foreign languages:
+ * Unified pipeline for all languages:
  *   text → [Khmer segmentation] → extractTokens → renderText → output
  *
  * English word pipeline: fast paths → initialisms → contractions → camelCase
  *   → dictionary → fallback (compounds, stemming, G2P)
  *
- * Foreign word pipeline: lookupDict (overrides, dict, lemmatizers, G2P)
+ * Non-English word pipeline: lookupDict (overrides, dict, lemmatizers, G2P)
  *   → clitic/contraction splitting → NOT_FOUND_MARKER
  *
  * Every code path converges on an ARPAbet phoneme array before converting to
@@ -36,8 +36,8 @@ import {
   getFormatIsLatinScript,
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
-import type { TranslateOptions } from '../ipa-dict';
-import { getLangDict } from '../ipa-dict';
+import type { TranslateOptions } from '../dict-loader';
+import { getLangDict } from '../dict-loader';
 import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, extractTokensUnicode, HAS_LETTER, mapTokens, renderText } from './pipeline';
@@ -81,23 +81,23 @@ const CLITIC_SPLIT_RE = /(?<=['-])|(?=['-])/;
  */
 export function translateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const isForeign = !!lang && lang !== 'en';
+  const isNonEnglish = !!lang && lang !== 'en';
 
   // Pre-processing: Khmer has no inherent word boundaries
   const processed = lang === 'km' ? segmentKhmerText(text) : text;
 
   // Tokenize: Latin-aware for English/Latin-script languages, Unicode for others
   const { preserved, rawTokens } =
-    isForeign && NON_LATIN_LANGS.has(lang)
+    isNonEnglish && NON_LATIN_LANGS.has(lang)
       ? extractTokensUnicode(processed)
       : extractTokens(processed);
 
-  if (isForeign) {
+  if (isNonEnglish) {
     const dict = requireLangDict(lang);
     return renderText(
       rawTokens,
       preserved,
-      (w) => translateForeignWordString(w, dict, format),
+      (w) => translateLangWordString(w, dict, format),
       format
     );
   }
@@ -119,18 +119,18 @@ export function translateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
-  const isForeign = !!lang && lang !== 'en';
+  const isNonEnglish = !!lang && lang !== 'en';
 
   const processed = lang === 'km' ? segmentKhmerText(text) : text;
 
   const { preserved, rawTokens } =
-    isForeign && NON_LATIN_LANGS.has(lang)
+    isNonEnglish && NON_LATIN_LANGS.has(lang)
       ? extractTokensUnicode(processed)
       : extractTokens(processed);
 
-  if (isForeign) {
+  if (isNonEnglish) {
     const dict = requireLangDict(lang);
-    return mapTokens(rawTokens, preserved, (w) => translateForeignWordInternal(w, dict, format));
+    return mapTokens(rawTokens, preserved, (w) => translateLangWordInternal(w, dict, format));
   }
 
   return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
@@ -138,7 +138,7 @@ export function translateSyncWithMapping(
 
 /**
  * Translates a single word (or contraction) to the specified format.
- * Handles English contractions (don't, I'm) and foreign clitics (l', s').
+ * Handles English contractions (don't, I'm) and clitics (l', s').
  *
  * @param word - The word to translate
  * @param options - Translation options (format, lang)
@@ -149,7 +149,7 @@ export function translateWord(word: string, options: TranslateOptions = {}): str
 
   if (lang && lang !== 'en') {
     const dict = requireLangDict(lang);
-    const result = translateForeignWordInternal(word, dict, format);
+    const result = translateLangWordInternal(word, dict, format);
     return result.translated;
   }
 
@@ -157,10 +157,10 @@ export function translateWord(word: string, options: TranslateOptions = {}): str
 }
 
 /**
- * Converts ARPAbet phonemes to the specified output format with foreign-language options.
- * Disables English R-coloring since foreign languages treat R as a regular consonant.
+ * Converts ARPAbet phonemes to the specified output format for non-English languages.
+ * Disables English R-coloring since other languages treat R as a regular consonant.
  */
-function arpabetToFormatForeign(arpabet: string[], format: OutputFormat): string {
+function arpabetToFormatNonEnglish(arpabet: string[], format: OutputFormat): string {
   return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
@@ -214,10 +214,10 @@ function isTitleCaseAscii(word: string): boolean {
 }
 
 /**
- * Translate a foreign word, returning both the translated word and match status.
+ * Translate a non-English word, returning both the translated word and match status.
  * Handles direct dict lookup, clitic/contraction splitting, and case preservation.
  */
-function translateForeignWordInternal(
+function translateLangWordInternal(
   word: string,
   dict: PhoneDict,
   format: OutputFormat
@@ -228,7 +228,7 @@ function translateForeignWordInternal(
   // Direct lookup (includes overrides, lemmatizers, G2P, compound decomposition)
   const phonemes = lookupDict(dict, word);
   if (phonemes) {
-    const translated = arpabetToFormatForeign(phonemes, format);
+    const translated = arpabetToFormatNonEnglish(phonemes, format);
     const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
     return { matched: true, translated: cased };
   }
@@ -247,15 +247,15 @@ function translateForeignWordInternal(
 }
 
 // ============================================================================
-// Foreign word translation
+// Non-English word translation
 // ============================================================================
 
 /**
- * String-only foreign word translation for renderText.
+ * String-only non-English word translation for renderText.
  * Prepends NOT_FOUND_MARKER to unmatched words.
  */
-function translateForeignWordString(word: string, dict: PhoneDict, format: OutputFormat): string {
-  const result = translateForeignWordInternal(word, dict, format);
+function translateLangWordString(word: string, dict: PhoneDict, format: OutputFormat): string {
+  const result = translateLangWordInternal(word, dict, format);
   return result.matched ? result.translated : NOT_FOUND_MARKER + word;
 }
 
@@ -471,7 +471,7 @@ function tryCliticSplit(
       const ph = partPhonemes[i]!;
       groups.at(-1)!.push(...ph);
     }
-    const translated = groups.map((ph) => arpabetToFormatForeign(ph, format)).join('-');
+    const translated = groups.map((ph) => arpabetToFormatNonEnglish(ph, format)).join('-');
     const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
     return { matched: true, translated: cased };
   }
@@ -491,7 +491,7 @@ function tryCliticSplit(
         isFirstPart = false;
         const ph = partPhonemes[i];
         if (ph) {
-          const t = arpabetToFormatForeign(ph, format);
+          const t = arpabetToFormatNonEnglish(ph, format);
           return preservesCase ? applyCasePattern(t, partCase) : t;
         }
         return part;

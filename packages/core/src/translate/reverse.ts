@@ -1,13 +1,13 @@
 /**
  * Reverse translation: Ingglish/IPA → source language.
  *
- * Unified pipeline for English and foreign languages:
+ * Unified pipeline for all languages:
  *   text → extractTokens → mapTokens(reverseWord) → output
  *
  * English reverse: ingglishToArpabet → expandAlternatives → lookupPhonemeKey
  *   (uses frequency-based disambiguation with 5x threshold)
  *
- * Foreign reverse: ingglishToArpabet → stripStress → reverseMap lookup
+ * Non-English reverse: ingglishToArpabet → stripStress → reverseMap lookup
  *   (uses pre-built reverse map from PhoneDict)
  */
 
@@ -21,8 +21,8 @@ import {
   registerFormat,
   stripStress,
 } from '@ingglish/phonemes';
-import { getDictReverseMap } from '../ipa-dict';
-import type { TranslateOptions } from '../ipa-dict';
+import { getDictReverseMap } from '../dict-loader';
+import type { TranslateOptions } from '../dict-loader';
 import type { TranslatedToken } from './forward';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
@@ -171,13 +171,13 @@ registerFormat('ipa', {
  */
 export function reverseTranslateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const isForeign = !!lang && lang !== 'en';
+  const isNonEnglish = !!lang && lang !== 'en';
 
-  if (isForeign) {
+  if (isNonEnglish) {
     const reverseMap = requireReverseMap(lang);
     // Ingglish output is always Latin script, so use standard extractTokens
     const { preserved, rawTokens } = extractTokens(text);
-    return mapTokens(rawTokens, preserved, (w) => reverseForeignWordAsResult(w, reverseMap))
+    return mapTokens(rawTokens, preserved, (w) => reverseLangWordAsResult(w, reverseMap))
       .map((t) => t.translated)
       .join('');
   }
@@ -199,12 +199,12 @@ export function reverseTranslateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
-  const isForeign = !!lang && lang !== 'en';
+  const isNonEnglish = !!lang && lang !== 'en';
 
-  if (isForeign) {
+  if (isNonEnglish) {
     const reverseMap = requireReverseMap(lang);
     const { preserved, rawTokens } = extractTokens(text);
-    return mapTokens(rawTokens, preserved, (w) => reverseForeignWordAsResult(w, reverseMap));
+    return mapTokens(rawTokens, preserved, (w) => reverseLangWordAsResult(w, reverseMap));
   }
 
   const handler = getFormatHandler(format);
@@ -228,13 +228,10 @@ function requireReverseMap(lang: string): Map<string, string[]> {
 }
 
 /**
- * Reverse-translate a single Ingglish word back to a foreign language
+ * Reverse-translate a single Ingglish word back to a non-English language
  * using the pre-built reverse map.
  */
-function reverseForeignWordAsResult(
-  word: string,
-  reverseMap: Map<string, string[]>
-): TranslateResult {
+function reverseLangWordAsResult(word: string, reverseMap: Map<string, string[]>): TranslateResult {
   if (!HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }

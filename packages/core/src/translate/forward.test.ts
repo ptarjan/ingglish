@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
+import type { DictLoader } from '../dict-loader';
+import { getLangDict } from '../dict-loader';
 import { reverseTranslate, setDictLoader, translate } from '../index';
-import type { DictLoader } from '../ipa-dict';
-import { getLangDict } from '../ipa-dict';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {

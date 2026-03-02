@@ -12,8 +12,8 @@
 
 import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { buildReverseMap } from '@ingglish/ipa';
-import type { TranslateOptions } from './ipa-dict';
-import { getDictReverseMap, loadLangDict, setDictReverseMap } from './ipa-dict';
+import type { TranslateOptions } from './dict-loader';
+import { getDictReverseMap, loadLangDict, setDictReverseMap } from './dict-loader';
 import { reverseTranslateSync, translateSync } from './translate';
 
 // =============================================================================
@@ -26,7 +26,7 @@ import { reverseTranslateSync, translateSync } from './translate';
  * For homophones, uses the most common word.
  *
  * For English (default): uses the CMU reverse dictionary.
- * For other languages: builds/caches a reverse map from the IPA dictionary.
+ * For other languages: builds/caches a reverse map from the dictionary.
  *
  * @param text - Text in Ingglish or IPA format
  * @param options - Translation options (format, lang)
@@ -55,7 +55,7 @@ export async function reverseTranslate(
  * Auto-loads dictionaries on first call.
  *
  * For English (default): loads the CMU pronunciation dictionary.
- * For foreign languages: loads the IPA dictionary via the registered loader.
+ * For non-English languages: loads the dictionary via the registered loader.
  *
  * @param text - The text to translate
  * @param options - Translation options (format, lang)
@@ -75,8 +75,8 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // Re-exports
 // =============================================================================
 
-export type { DictLoader, TranslateOptions } from './ipa-dict';
-export { loadLangDict, setDictLoader } from './ipa-dict';
+export type { DictLoader, TranslateOptions } from './dict-loader';
+export { loadLangDict, setDictLoader } from './dict-loader';
 
 // Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';
