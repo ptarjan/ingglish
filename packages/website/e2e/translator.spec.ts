@@ -373,7 +373,7 @@ test.describe('Web Vitals', () => {
     '/experiment',
     '/challenge',
   ]) {
-    test(`FCP is below 1800ms on ${route}`, async ({ page }) => {
+    test(`FCP is below 500ms on ${route}`, async ({ page }) => {
       await blockExternalNetwork(page);
       await page.goto(route);
       await waitForAppLoad(page);
@@ -383,7 +383,7 @@ test.describe('Web Vitals', () => {
       );
       console.log(`FCP on ${route}: ${String(Math.round(fcp ?? 0))}ms`);
       expect(fcp).toBeDefined();
-      expect(fcp).toBeLessThan(1800);
+      expect(fcp).toBeLessThan(500);
     });
   }
 
@@ -467,7 +467,7 @@ test.describe('Web Vitals', () => {
   ];
 
   for (const { route, interact } of inpRoutes) {
-    test(`INP is below 200ms on ${route}`, async ({ page }, testInfo) => {
+    test(`INP is below 100ms on ${route}`, async ({ page }, testInfo) => {
       test.skip(testInfo.project.name.includes('safari'), 'WebKit has no Event Timing API');
       await blockExternalNetwork(page);
 
@@ -501,7 +501,7 @@ test.describe('Web Vitals', () => {
         `INP on ${route}: worst=${String(result?.worst ?? 0)}ms, interactions=${String(result?.interactions.length ?? 0)}`
       );
       expect(result).toBeDefined();
-      expect(result?.worst).toBeLessThan(200);
+      expect(result?.worst).toBeLessThan(100);
     });
   }
 });
