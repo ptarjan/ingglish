@@ -4,6 +4,6 @@ export {
   hasCustomPronunciation,
 } from './custom-words';
 export { getCorpusTotal, getWordFrequency, loadFrequencies, sortByFrequency } from './frequency';
-export { getDictionary, isDictionaryLoaded, loadDictionary } from './loader';
+export { getDictionary, isDictionaryLoaded, loadDictionary, setDictionaryLoader } from './loader';
 export { lookupPronunciation, lookupPronunciationLower } from './lookup';
 export { loadReverseDictionary, lookupPhonemeKey } from './reverse';

@@ -404,6 +404,11 @@ describe('foreign sample coverage', () => {
       const failures: string[] = [];
 
       for (const { code } of LANGUAGES) {
+        // Skip English — it uses its own fallback chain (G2P, stemming, compounds)
+        // in forward.ts, not lookupDict
+        if (code === 'en') {
+          continue;
+        }
         const samples: undefined | { text: string }[] = ALL_SAMPLES[code];
         if (!samples) {
           continue;

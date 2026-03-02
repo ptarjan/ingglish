@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import wordFrequencies from 'subtlex-word-frequencies';
+import { CUSTOM_PRONUNCIATIONS } from '../src/custom-words';
 
 const execFileAsync = promisify(execFile);
 
@@ -21,6 +22,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'cmudict.js');
 const REVERSE_OUTPUT_PATH = path.join(__dirname, '..', 'src', 'reverse-cmudict.js');
 const WORD_FREQ_OUTPUT_PATH = path.join(__dirname, '..', 'src', 'data', 'word-frequencies.js');
+// en.json for the website (CMU dict + custom words merged)
+const EN_JSON_PATH = path.join(__dirname, '..', '..', 'website', 'public', 'ipa-dicts', 'en.json');
 
 const CMUDICT_URL = 'https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict';
 
@@ -143,9 +146,10 @@ async function main(): Promise<void> {
   // Check if all generated files exist
   const forwardExists = await fileExists(OUTPUT_PATH);
   const reverseExists = await fileExists(REVERSE_OUTPUT_PATH);
+  const enJsonExists = await fileExists(EN_JSON_PATH);
 
   // Skip if all dictionaries already exist (unless --force)
-  if (!forceUpdate && forwardExists && reverseExists) {
+  if (!forceUpdate && forwardExists && reverseExists && enJsonExists) {
     console.log('Dictionaries already exist, skipping download (use --force to re-download)');
     return;
   }
@@ -169,6 +173,9 @@ async function main(): Promise<void> {
 
   // Generate reverse dictionary (phoneme key -> words, sorted by frequency)
   await generateReverseDictionary(dict);
+
+  // Generate en.json for the website (CMU dict + custom words merged)
+  await generateEnJson(dict);
 }
 
 async function generateWordFrequencies(): Promise<void> {
@@ -350,6 +357,31 @@ async function generateReverseDictionary(dict: CMUDictionary): Promise<void> {
     reverseDict,
     'reverseCmudict',
     'Auto-generated reverse CMU dictionary - do not edit'
+  );
+}
+
+/**
+ * Generates en.json for the website: CMU dict + custom words merged.
+ * Custom pronunciations override CMU entries.
+ */
+async function generateEnJson(dict: CMUDictionary): Promise<void> {
+  console.log('Generating en.json (CMU + custom words merged)...');
+  const merged = { ...dict };
+  let overrides = 0;
+  let additions = 0;
+  for (const [word, phonemes] of Object.entries(CUSTOM_PRONUNCIATIONS)) {
+    if (word in merged) {
+      overrides++;
+    } else {
+      additions++;
+    }
+    merged[word] = phonemes;
+  }
+  const json = JSON.stringify(merged);
+  await fs.mkdir(path.dirname(EN_JSON_PATH), { recursive: true });
+  await fs.writeFile(EN_JSON_PATH, json, 'utf8');
+  console.log(
+    `  en.json: ${Object.keys(merged).length} entries (${overrides} overrides, ${additions} additions), ${(json.length / 1024 / 1024).toFixed(1)} MB`
   );
 }
 

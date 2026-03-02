@@ -98,6 +98,7 @@ export const LANGUAGES: Language[] = [
   { code: 'ar', label: 'Arabic' },
   { code: 'yue', label: 'Cantonese' },
   { code: 'nl', label: 'Dutch' },
+  { code: 'en', label: 'English' },
   { code: 'eo', label: 'Esperanto' },
   { code: 'fi', label: 'Finnish' },
   { code: 'fr', label: 'French' },

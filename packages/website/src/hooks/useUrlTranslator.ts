@@ -71,7 +71,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     }
   }, []);
 
-  // Load IPA dictionary when a non-English language is selected
+  // Load dictionary when a non-English language is selected.
+  // English dict is preloaded by App.tsx via translate('').
   useEffect(() => {
     if (selectedLanguage === 'en') {
       setDictLoading(false);

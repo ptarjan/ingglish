@@ -147,7 +147,6 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
           onChange={handleLanguageChange}
           value={selectedLanguage}
         >
-          <option value="en">English</option>
           {LANGUAGES.map((lang) => (
             <option key={lang.code} value={lang.code}>
               {lang.label}

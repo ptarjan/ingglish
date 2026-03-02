@@ -191,7 +191,8 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
   const [dictLoading, setDictLoading] = useState(false);
 
-  // Load IPA dictionary when a non-English language is selected
+  // Load dictionary when a non-English language is selected.
+  // English dict is preloaded by App.tsx via translate('').
   useEffect(() => {
     if (selectedLanguage === 'en') {
       return;
@@ -434,7 +435,6 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               onChange={handleLanguageChange}
               value={selectedLanguage}
             >
-              <option value="en">English</option>
               {LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
                   {lang.label}
