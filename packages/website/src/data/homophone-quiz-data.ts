@@ -78,55 +78,9 @@ export interface QuizQuestion {
   tier: 1 | 2 | 3;
 }
 
-// Common English distractors for generating wrong choices
-const DISTRACTORS = [
-  'the',
-  'and',
-  'but',
-  'not',
-  'run',
-  'big',
-  'old',
-  'red',
-  'hot',
-  'cat',
-  'dog',
-  'hat',
-  'cup',
-  'pen',
-  'box',
-  'map',
-  'car',
-  'bus',
-  'hill',
-  'tree',
-  'book',
-  'fish',
-  'bird',
-  'cake',
-  'rain',
-  'snow',
-  'wind',
-  'fire',
-  'gold',
-  'blue',
-  'dark',
-  'fast',
-  'slow',
-  'tall',
-  'deep',
-  'soft',
-  'loud',
-  'kind',
-  'brave',
-  'clean',
-  'fresh',
-  'sweet',
-  'proud',
-  'quiet',
-  'sharp',
-  'warm',
-];
+// Collect all unique answers across groups so distractors come from other
+// homophone sets — much more plausible than random common words.
+const ALL_ANSWERS = [...new Set(GROUPS.flatMap((g) => g.answers.map((a) => a.toLowerCase())))];
 
 /**
  * Pick quiz questions: 3 tier-1 + 4 tier-2 + 3 tier-3, shuffled within tiers.
@@ -157,9 +111,9 @@ export function pickQuiz(seed: number, count = 10): QuizQuestion[] {
     // Pick one correct answer to show
     const correct = group.answers[Math.floor(rng() * group.answers.length)]!;
 
-    // Build distractors: pick words that aren't in the answer set
+    // Build distractors from other homophone groups' answers (more plausible)
     const answerSet = new Set(group.answers.map((a) => a.toLowerCase()));
-    const available = DISTRACTORS.filter((d) => !answerSet.has(d.toLowerCase()));
+    const available = ALL_ANSWERS.filter((d) => !answerSet.has(d));
     const shuffledDistractors = shuffle([...available], rng);
     const wrongChoices = shuffledDistractors.slice(0, 3);
 
