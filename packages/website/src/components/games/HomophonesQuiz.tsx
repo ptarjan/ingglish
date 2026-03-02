@@ -309,12 +309,13 @@ function HomophonesQuiz() {
           {isCorrectAnswer(selectedChoice) ? (
             <div className="homophones-feedback-correct">Correct!</div>
           ) : (
-            <div className="homophones-feedback-incorrect">
-              Not quite — <strong>{currentQ.correctAnswers.join(', ')}</strong>{' '}
-              {currentQ.correctAnswers.length > 1 ? 'are all' : 'is'} spelled "{currentQ.ingglish}"
-              in Ingglish.
-            </div>
+            <div className="homophones-feedback-incorrect">Not quite!</div>
           )}
+          <div className="homophones-feedback-all">
+            <strong>{currentQ.correctAnswers.join(', ')}</strong>{' '}
+            {currentQ.correctAnswers.length > 1 ? 'are all' : 'is'} spelled "{currentQ.ingglish}" in
+            Ingglish.
+          </div>
           <div className="game-actions">
             <button className="btn-primary" onClick={handleNext} ref={nextRef}>
               {round + 1 >= questions.length ? 'See Results' : 'Next'}
