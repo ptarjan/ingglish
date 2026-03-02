@@ -18,9 +18,15 @@ interface RoundResult {
 const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = { 1: 30, 2: 25, 3: 20 };
 
 function getScoreLabel(pct: number): string {
-  if (pct >= 90) {return 'Amazing! You know Ingglish spelling inside-out!';}
-  if (pct >= 70) {return 'Great job! You have a solid grasp of the rules!';}
-  if (pct >= 50) {return 'Not bad! Phonetic spelling takes practice.';}
+  if (pct >= 90) {
+    return 'Amazing! You know Ingglish spelling inside-out!';
+  }
+  if (pct >= 70) {
+    return 'Great job! You have a solid grasp of the rules!';
+  }
+  if (pct >= 50) {
+    return 'Not bad! Phonetic spelling takes practice.';
+  }
   return "Keep at it — you'll internalize the patterns!";
 }
 
@@ -54,22 +60,30 @@ function ReverseSpelling() {
 
   // Focus start button on mount
   useEffect(() => {
-    if (phase === 'intro') {startRef.current?.focus();}
+    if (phase === 'intro') {
+      startRef.current?.focus();
+    }
   }, [phase]);
 
   // Focus next button after feedback
   useEffect(() => {
-    if (currentResult) {setTimeout(() => nextRef.current?.focus(), 0);}
+    if (currentResult) {
+      setTimeout(() => nextRef.current?.focus(), 0);
+    }
   }, [currentResult]);
 
   // Focus share on results
   useEffect(() => {
-    if (phase === 'results') {setTimeout(() => shareRef.current?.focus(), 0);}
+    if (phase === 'results') {
+      setTimeout(() => shareRef.current?.focus(), 0);
+    }
   }, [phase]);
 
   // Countdown timer
   useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null || timeLeft <= 0) {return;}
+    if (phase !== 'playing' || currentResult !== null || timeLeft <= 0) {
+      return;
+    }
     const id = setInterval(() => {
       setTimeLeft((t) => t - 1);
     }, 1000);
@@ -80,9 +94,13 @@ function ReverseSpelling() {
 
   // Auto-submit on timer expiry
   useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null || timeLeft > 0) {return;}
+    if (phase !== 'playing' || currentResult !== null || timeLeft > 0) {
+      return;
+    }
     const word = words[round];
-    if (!word) {return;}
+    if (!word) {
+      return;
+    }
     const score = scoreAnswer('', word.ingglish);
     const elapsed = TIER_TIME_LIMITS[word.tier];
     const result: RoundResult = { score, timeTaken: elapsed, word };
@@ -110,7 +128,9 @@ function ReverseSpelling() {
 
   const handleSubmit = useCallback(() => {
     const word = words[round];
-    if (!word || !input.trim()) {return;}
+    if (!word || !input.trim()) {
+      return;
+    }
     const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
     const score = scoreAnswer(input.trim(), word.ingglish);
     const result: RoundResult = { score, timeTaken: elapsed, word };
@@ -162,7 +182,9 @@ function ReverseSpelling() {
   const showCopied = useCallback(() => {
     setCopiedShare(true);
     clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => { setCopiedShare(false); }, 1500);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedShare(false);
+    }, 1500);
   }, []);
 
   const handleShareResult = useCallback(() => {
@@ -233,10 +255,20 @@ function ReverseSpelling() {
           </div>
 
           <div className="reverse-result-actions">
-            <button className="btn-secondary" onClick={() => { startGame(seed); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startGame(seed);
+              }}
+            >
               Try Again
             </button>
-            <button className="btn-secondary" onClick={() => { startGame(Date.now()); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startGame(Date.now());
+              }}
+            >
               New Words
             </button>
             <button
@@ -257,7 +289,9 @@ function ReverseSpelling() {
 
   // --- Playing ---
   const currentWord = words[round];
-  if (!currentWord) {return null;}
+  if (!currentWord) {
+    return null;
+  }
 
   const feedbackClass = currentResult
     ? currentResult.score === 1
@@ -296,7 +330,9 @@ function ReverseSpelling() {
         <input
           className="challenge-input"
           disabled={currentResult !== null}
-          onChange={(e) => { setInput(e.target.value); }}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Type the Ingglish spelling..."
           ref={inputRef}
@@ -338,11 +374,17 @@ function ReverseSpelling() {
  * exact = 1.0, close enough = 0.5, wrong = 0
  */
 function scoreAnswer(userInput: string, expected: string): number {
-  if (!userInput) {return 0;}
+  if (!userInput) {
+    return 0;
+  }
   const actual = userInput.toLowerCase();
   const exp = expected.toLowerCase();
-  if (actual === exp) {return 1;}
-  if (isCloseEnough(actual, exp)) {return 0.5;}
+  if (actual === exp) {
+    return 1;
+  }
+  if (isCloseEnough(actual, exp)) {
+    return 0.5;
+  }
   return 0;
 }
 

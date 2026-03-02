@@ -15,7 +15,7 @@ interface RoundTime {
   time: number; // seconds
 }
 
-type Selection = null | { id: number; side: 'left' | 'right'; };
+type Selection = null | { id: number; side: 'left' | 'right' };
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -52,12 +52,16 @@ function SpeedMatch() {
 
   // Focus start button
   useEffect(() => {
-    if (phase === 'intro') {startRef.current?.focus();}
+    if (phase === 'intro') {
+      startRef.current?.focus();
+    }
   }, [phase]);
 
   // Focus share on results
   useEffect(() => {
-    if (phase === 'results') {setTimeout(() => shareRef.current?.focus(), 0);}
+    if (phase === 'results') {
+      setTimeout(() => shareRef.current?.focus(), 0);
+    }
   }, [phase]);
 
   const setupRound = useCallback((gameSeed: number, roundIndex: number) => {
@@ -90,7 +94,9 @@ function SpeedMatch() {
 
   // Check if all pairs are matched (round complete)
   useEffect(() => {
-    if (phase !== 'playing' || matched.size < PAIRS_PER_ROUND) {return;}
+    if (phase !== 'playing' || matched.size < PAIRS_PER_ROUND) {
+      return;
+    }
     // Round complete
     const roundTime = Math.round((Date.now() - roundStartRef.current) / 1000);
     const nextRound = currentRound + 1;
@@ -119,8 +125,12 @@ function SpeedMatch() {
 
   const handleWordClick = useCallback(
     (side: 'left' | 'right', id: number) => {
-      if (matched.has(id) && side === 'left' && left.some((w) => w.id === id)) {return;}
-      if (wrongPair) {return;} // wait for shake animation to finish
+      if (matched.has(id) && side === 'left' && left.some((w) => w.id === id)) {
+        return;
+      }
+      if (wrongPair) {
+        return;
+      } // wait for shake animation to finish
 
       if (!selection) {
         // First selection
@@ -183,7 +193,9 @@ function SpeedMatch() {
   const showCopied = useCallback(() => {
     setCopiedShare(true);
     clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => { setCopiedShare(false); }, 1500);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedShare(false);
+    }, 1500);
   }, []);
 
   const handleShareResult = useCallback(() => {
@@ -243,10 +255,20 @@ function SpeedMatch() {
           </div>
 
           <div className="speed-match-result-actions">
-            <button className="btn-secondary" onClick={() => { startGame(seed); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startGame(seed);
+              }}
+            >
               Try Again
             </button>
-            <button className="btn-secondary" onClick={() => { startGame(Date.now()); }}>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startGame(Date.now());
+              }}
+            >
               New Words
             </button>
             <button
@@ -300,7 +322,9 @@ function SpeedMatch() {
                 className={cls}
                 disabled={isMatched}
                 key={item.id}
-                onClick={() => { handleWordClick('left', item.id); }}
+                onClick={() => {
+                  handleWordClick('left', item.id);
+                }}
               >
                 {item.text}
               </button>
@@ -326,7 +350,9 @@ function SpeedMatch() {
                 className={cls}
                 disabled={isMatched}
                 key={item.id}
-                onClick={() => { handleWordClick('right', item.id); }}
+                onClick={() => {
+                  handleWordClick('right', item.id);
+                }}
               >
                 {item.text}
               </button>

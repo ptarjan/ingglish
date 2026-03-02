@@ -15,7 +15,7 @@ export interface ReverseWord {
   tier: 1 | 2 | 3;
 }
 
-const WORD_POOL: { tier: 1 | 2 | 3; word: string; }[] = [
+const WORD_POOL: { tier: 1 | 2 | 3; word: string }[] = [
   // === Tier 1: Easy — common words with visible changes ===
   { tier: 1, word: 'night' },
   { tier: 1, word: 'light' },

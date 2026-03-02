@@ -94,7 +94,9 @@ function DailyChallenge() {
 
   // Countdown timer ticking
   useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null || timeLeft <= 0) {return;}
+    if (phase !== 'playing' || currentFeedback !== null || timeLeft <= 0) {
+      return;
+    }
     const id = setInterval(() => {
       setTimeLeft((t) => t - 1);
     }, 1000);
@@ -105,9 +107,13 @@ function DailyChallenge() {
 
   // Auto-submit on timer expiry
   useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null || timeLeft > 0) {return;}
+    if (phase !== 'playing' || currentFeedback !== null || timeLeft > 0) {
+      return;
+    }
     const sentence = sentences[round];
-    if (!sentence) {return;}
+    if (!sentence) {
+      return;
+    }
     const score = scoreSentence(sentence.tokens, input || '');
     setCurrentFeedback(score);
     setRoundScores((prev) => [...prev, score.score]);
@@ -115,7 +121,9 @@ function DailyChallenge() {
 
   // Next-challenge countdown (for already-done screen)
   useEffect(() => {
-    if (phase !== 'already-done' && phase !== 'completed') {return;}
+    if (phase !== 'already-done' && phase !== 'completed') {
+      return;
+    }
     const tick = () => {
       setCountdown(formatCountdown(msUntilNextChallenge()));
     };
@@ -141,7 +149,9 @@ function DailyChallenge() {
 
   const handleSubmit = useCallback(() => {
     const sentence = sentences[round];
-    if (!sentence || !input.trim()) {return;}
+    if (!sentence || !input.trim()) {
+      return;
+    }
     const score = scoreSentence(sentence.tokens, input);
     setCurrentFeedback(score);
     setRoundScores((prev) => [...prev, score.score]);
@@ -209,7 +219,9 @@ function DailyChallenge() {
   const showCopied = useCallback(() => {
     setCopiedShare(true);
     clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => { setCopiedShare(false); }, 1500);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedShare(false);
+    }, 1500);
   }, []);
 
   const handleShareImage = useCallback(() => {
@@ -307,7 +319,9 @@ function DailyChallenge() {
 
   // --- Playing ---
   const currentSentence = sentences[round];
-  if (!currentSentence) {return null;}
+  if (!currentSentence) {
+    return null;
+  }
 
   return (
     <div className="daily-page">
@@ -337,7 +351,9 @@ function DailyChallenge() {
         <input
           className="challenge-input"
           disabled={currentFeedback !== null}
-          onChange={(e) => { setInput(e.target.value); }}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Type the English here..."
           ref={inputRef}

@@ -75,7 +75,9 @@ export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
 
   const pairs: MatchPair[] = [];
   for (const word of pool) {
-    if (pairs.length >= 6) {break;}
+    if (pairs.length >= 6) {
+      break;
+    }
     const ingglish = translateSync(word, { format: 'ingglish' });
     // Only include words that actually change
     if (ingglish.toLowerCase() !== word.toLowerCase()) {

@@ -20,15 +20,23 @@ export function getDailySeed(dateKey: string): number {
 
 /** Map a score (0–1) to a square color for the Wordle-style grid. */
 export function getSquareColor(score: number): 'green' | 'red' | 'yellow' {
-  if (score >= 0.8) {return 'green';}
-  if (score >= 0.5) {return 'yellow';}
+  if (score >= 0.8) {
+    return 'green';
+  }
+  if (score >= 0.5) {
+    return 'yellow';
+  }
   return 'red';
 }
 
 /** Map a score to an emoji square. */
 export function getSquareEmoji(score: number): string {
-  if (score >= 0.8) {return '🟩';}
-  if (score >= 0.5) {return '🟨';}
+  if (score >= 0.8) {
+    return '🟩';
+  }
+  if (score >= 0.5) {
+    return '🟨';
+  }
   return '🟥';
 }
 
