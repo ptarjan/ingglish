@@ -33,10 +33,10 @@ const GAMES: GameCard[] = [
   },
   {
     description:
-      'A new puzzle every day! 5 Ingglish rounds with Wordle-style colored squares. Same challenge for everyone.',
+      'Guess the 5-letter Ingglish word in 6 tries — Wordle-style! Green, yellow, and gray tiles show how close you are. Same word for everyone each day.',
     difficulty: 'All levels',
     id: 'daily',
-    title: 'Daily Challenge',
+    title: 'Ingglish Wordle',
   },
   {
     description:

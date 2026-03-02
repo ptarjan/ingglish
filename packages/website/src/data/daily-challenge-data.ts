@@ -1,12 +1,28 @@
 /**
- * Daily Challenge data helpers.
+ * Daily Challenge (Ingglish Wordle) data helpers.
  *
- * Provides a deterministic seed from today's date so every user
- * gets the same 5-round challenge each day.
+ * Builds a pool of 5-letter Ingglish words from the CMU dictionary,
+ * picks a daily answer seeded by the UTC date, and validates guesses.
  */
 
-import type { ChallengeSentence } from './challenge-data';
-import { pickChallenge } from './challenge-data';
+import { translateSync } from 'ingglish';
+import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
+import { mulberry32 } from '../games/prng';
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export type LetterResult = 'absent' | 'correct' | 'present';
+
+export interface WordPair {
+  english: string;
+  ingglish: string;
+}
+
+// ---------------------------------------------------------------------------
+// Date / seed helpers (kept from original)
+// ---------------------------------------------------------------------------
 
 /** Simple hash of a YYYY-MM-DD string to a stable integer seed. */
 export function getDailySeed(dateKey: string): number {
@@ -16,28 +32,6 @@ export function getDailySeed(dateKey: string): number {
     hash = Math.trunc(hash); // int32
   }
   return Math.abs(hash);
-}
-
-/** Map a score (0–1) to a square color for the Wordle-style grid. */
-export function getSquareColor(score: number): 'green' | 'red' | 'yellow' {
-  if (score >= 0.8) {
-    return 'green';
-  }
-  if (score >= 0.5) {
-    return 'yellow';
-  }
-  return 'red';
-}
-
-/** Map a score to an emoji square. */
-export function getSquareEmoji(score: number): string {
-  if (score >= 0.8) {
-    return '🟩';
-  }
-  if (score >= 0.5) {
-    return '🟨';
-  }
-  return '🟥';
 }
 
 /** Today's date key in YYYY-MM-DD (UTC). */
@@ -55,8 +49,114 @@ export function msUntilNextChallenge(): number {
   return tomorrow.getTime() - now.getTime();
 }
 
-/** Pick 5 challenge sentences seeded by today's date. */
-export function pickDailyChallenge(): ChallengeSentence[] {
+// ---------------------------------------------------------------------------
+// Word pool building
+// ---------------------------------------------------------------------------
+
+const FIVE_LETTER = /^[a-z]{5}$/;
+
+/**
+ * Filter the full pool to common words suitable as daily answers.
+ * Uses word frequency data to pick ~300-500 well-known words.
+ */
+export function buildAnswerPool(pool: WordPair[]): WordPair[] {
+  // Sort by frequency (most common first) and take the top slice.
+  // getWordFrequency returns a raw count; higher = more common.
+  const scored = pool
+    .map((w) => ({ ...w, freq: getWordFrequency(w.english) ?? 0 }))
+    .filter((w) => w.freq > 0);
+
+  scored.sort((a, b) => b.freq - a.freq);
+
+  // Take the top 400 most common words
+  return scored.slice(0, 400);
+}
+
+/**
+ * Build the full pool of 5-letter Ingglish words.
+ * Translates every word in the CMU dictionary and keeps entries where
+ * the Ingglish form is exactly 5 lowercase letters and differs from
+ * the English spelling.
+ *
+ * Must be called after loadDictionary() + loadFrequencies().
+ */
+export function buildWordPool(): WordPair[] {
+  const dict = getDictionary();
+  const pool: WordPair[] = [];
+  const seen = new Set<string>();
+
+  for (const english of Object.keys(dict)) {
+    // Skip entries with digits/punctuation (e.g. "a's", "1st")
+    if (!/^[a-z]+$/.test(english)) {
+      continue;
+    }
+
+    const ingglish = translateSync(english).toLowerCase();
+
+    if (!FIVE_LETTER.test(ingglish)) {
+      continue;
+    }
+    if (ingglish === english) {
+      continue;
+    } // must differ from English
+    if (seen.has(ingglish)) {
+      continue;
+    } // deduplicate Ingglish forms
+
+    seen.add(ingglish);
+    pool.push({ english, ingglish });
+  }
+
+  return pool;
+}
+
+/**
+ * Compare a 5-letter guess against the answer.
+ * Returns a per-letter result array following standard Wordle rules:
+ * - 'correct': right letter, right position (green)
+ * - 'present': right letter, wrong position (yellow)
+ * - 'absent':  letter not in word (gray)
+ */
+export function checkGuess(guess: string, answer: string): LetterResult[] {
+  const result: LetterResult[] = Array.from({ length: 5 }, () => 'absent');
+
+  // Count remaining letters in the answer (not yet matched as correct)
+  const remaining: Record<string, number> = {};
+
+  // First pass: mark correct (green) letters
+  for (let i = 0; i < 5; i++) {
+    if (guess[i] === answer[i]) {
+      result[i] = 'correct';
+    } else {
+      remaining[answer[i]!] = (remaining[answer[i]!] ?? 0) + 1;
+    }
+  }
+
+  // Second pass: mark present (yellow) letters
+  for (let i = 0; i < 5; i++) {
+    if (result[i] === 'correct') {
+      continue;
+    }
+    const letter = guess[i]!;
+    if ((remaining[letter] ?? 0) > 0) {
+      result[i] = 'present';
+      remaining[letter]!--;
+    }
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Guess checking (core Wordle algorithm)
+// ---------------------------------------------------------------------------
+
+/**
+ * Pick today's answer from the answer pool using a seeded PRNG.
+ */
+export function pickDailyWord(answerPool: WordPair[]): WordPair {
   const seed = getDailySeed(getTodayKey());
-  return pickChallenge(seed, 5);
+  const rng = mulberry32(seed);
+  const idx = Math.floor(rng() * answerPool.length);
+  return answerPool[idx]!;
 }

@@ -1,27 +1,38 @@
 /**
- * Wordle-style canvas score card for the Daily Challenge.
- * Shows 5 colored squares + overall score + streak.
+ * Canvas score card for the Ingglish Wordle Daily Challenge.
+ * Renders the guess grid as colored tiles (green/yellow/gray),
+ * attempt count, streak, and date.
  */
 
+import type { LetterResult } from '../data/daily-challenge-data';
+
 const W = 600;
-const H = 340;
+const H = 420;
 const BG = '#1a1a2e';
 const TEXT = '#e8e8f0';
 const MUTED = '#8888aa';
-const GREEN = '#22c55e';
-const YELLOW = '#eab308';
-const RED = '#ef4444';
-const ACCENT = '#6366f1';
+const GREEN = '#538d4e';
+const YELLOW = '#b59f3b';
+const GRAY = '#3a3a4c';
+const TILE_SIZE = 44;
+const TILE_GAP = 6;
 
-interface DailyScoreCardOptions {
+interface WordleScoreCardOptions {
   dateKey: string;
-  overallPct: number;
-  roundScores: number[]; // 0-1 per round
+  guessResults: LetterResult[][]; // each row is 5 LetterResults
   streak: number;
+  won: boolean;
 }
 
-export function renderDailyScoreCard(options: DailyScoreCardOptions): HTMLCanvasElement {
-  const { dateKey, overallPct, roundScores, streak } = options;
+/** Build the emoji grid string for text sharing. */
+export function buildEmojiGrid(guessResults: LetterResult[][]): string {
+  return guessResults
+    .map((row) => row.map((r) => (r === 'correct' ? '🟩' : r === 'present' ? '🟨' : '⬛')).join(''))
+    .join('\n');
+}
+
+export function renderDailyScoreCard(options: WordleScoreCardOptions): HTMLCanvasElement {
+  const { dateKey, guessResults, streak, won } = options;
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
@@ -35,47 +46,41 @@ export function renderDailyScoreCard(options: DailyScoreCardOptions): HTMLCanvas
   ctx.fillStyle = MUTED;
   ctx.font = '600 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('INGGLISH DAILY CHALLENGE', W / 2, 36);
+  ctx.fillText('INGGLISH WORDLE', W / 2, 36);
 
   // Date
   ctx.fillStyle = MUTED;
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.fillText(dateKey, W / 2, 56);
 
-  // Overall score
-  ctx.fillStyle = ACCENT;
-  ctx.font = '700 64px system-ui, sans-serif';
-  ctx.fillText(`${overallPct}%`, W / 2, 125);
+  // Attempt count
+  const attemptText = won ? `${guessResults.length}/6` : 'X/6';
+  ctx.fillStyle = TEXT;
+  ctx.font = '700 48px system-ui, sans-serif';
+  ctx.fillText(attemptText, W / 2, 108);
 
-  // Colored squares
-  const squareSize = 48;
-  const gap = 12;
-  const totalW = roundScores.length * squareSize + (roundScores.length - 1) * gap;
-  const startX = (W - totalW) / 2;
-  const squareY = 150;
+  // Grid of colored tiles
+  const gridW = 5 * TILE_SIZE + 4 * TILE_GAP;
+  const gridStartX = (W - gridW) / 2;
+  const gridStartY = 130;
 
-  for (const [i, score] of roundScores.entries()) {
-    const x = startX + i * (squareSize + gap);
-    ctx.fillStyle = squareColor(score);
-    roundRect(ctx, x, squareY, squareSize, squareSize, 6);
-    ctx.fill();
-
-    // Percentage inside square
-    ctx.fillStyle = BG;
-    ctx.font = '700 14px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${Math.round(score * 100)}`, x + squareSize / 2, squareY + squareSize / 2);
+  for (const [row, results] of guessResults.entries()) {
+    for (const [col, result] of results.entries()) {
+      const x = gridStartX + col * (TILE_SIZE + TILE_GAP);
+      const y = gridStartY + row * (TILE_SIZE + TILE_GAP);
+      ctx.fillStyle = result === 'correct' ? GREEN : result === 'present' ? YELLOW : GRAY;
+      roundRect(ctx, x, y, TILE_SIZE, TILE_SIZE, 4);
+      ctx.fill();
+    }
   }
 
-  ctx.textBaseline = 'alphabetic';
-
   // Streak
+  const streakY = gridStartY + guessResults.length * (TILE_SIZE + TILE_GAP) + 20;
   if (streak > 0) {
     ctx.fillStyle = TEXT;
     ctx.font = '600 16px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`${streak} day streak`, W / 2, 240);
+    ctx.fillText(`${streak} day streak`, W / 2, streakY);
   }
 
   // Footer
@@ -106,8 +111,4 @@ function roundRect(
   ctx.lineTo(x, y + r);
   ctx.quadraticCurveTo(x, y, x + r, y);
   ctx.closePath();
-}
-
-function squareColor(score: number): string {
-  return score >= 0.8 ? GREEN : score >= 0.5 ? YELLOW : RED;
 }
