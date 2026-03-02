@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { build as esbuild } from 'esbuild';
 import { DOC_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
+import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
 
 const BUILD_ID = randomUUID();
 
@@ -113,6 +114,14 @@ function customizeHtml(html: string, route: string): string {
   }
 
   const url = `https://ingglish.com/${route}`;
+
+  // Use the first path segment to look up the OG image (e.g. 'docs/foo' → 'docs')
+  const ogKey = route.split('/')[0];
+  const ogImageUrl =
+    ogKey in ROUTE_OG
+      ? `https://ingglish.com/og/${ogKey}.png`
+      : 'https://ingglish.com/og-image.png';
+
   return html
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(
@@ -130,12 +139,20 @@ function customizeHtml(html: string, route: string): string {
     )
     .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
     .replace(
+      /<meta property="og:image" content="[^"]*"/,
+      `<meta property="og:image" content="${ogImageUrl}"`
+    )
+    .replace(
       /<meta name="twitter:title" content="[^"]*"/,
       `<meta name="twitter:title" content="${title}"`
     )
     .replace(
       /<meta name="twitter:description" content="[^"]*"/,
       `<meta name="twitter:description" content="${description}"`
+    )
+    .replace(
+      /<meta name="twitter:image" content="[^"]*"/,
+      `<meta name="twitter:image" content="${ogImageUrl}"`
     );
 }
 
@@ -211,6 +228,18 @@ function buildBookmarklet(): Plugin {
   };
 }
 
+// Generate per-route OG images (SVG → PNG via resvg)
+function ogImages(): Plugin {
+  return {
+    name: 'generate-og-images',
+    writeBundle(options) {
+      const distDir = options.dir ?? join(__dirname, 'dist');
+      const svgPath = join(distDir, 'og-image.svg');
+      generateOgImages(distDir, svgPath);
+    },
+  };
+}
+
 export default defineConfig({
   resolve: {
     conditions: ['source'],
@@ -232,6 +261,7 @@ export default defineConfig({
     markdown(),
     react(),
     processChunks(),
+    ogImages(),
     copyRoutesToDist(),
     generateSitemap(),
     writeBuildId(),
