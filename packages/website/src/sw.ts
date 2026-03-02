@@ -4,14 +4,18 @@ declare const __BUILD_ID__: string;
 
 const sw = globalThis as unknown as ServiceWorkerGlobalScope;
 
-const CACHE_NAME = `ingglish-v1-${__BUILD_ID__}`;
+// Stable cache for /assets/* — content-hashed filenames are immutable,
+// so these survive across deploys (avoids re-downloading the ~5MB dictionary)
+const ASSETS_CACHE = 'ingglish-assets';
+// Versioned cache for HTML and other mutable responses
+const PAGES_CACHE = `ingglish-pages-${__BUILD_ID__}`;
 
 // Install: activate immediately, no precaching
 sw.addEventListener('install', () => {
   void sw.skipWaiting();
 });
 
-// Activate: delete old caches, claim clients
+// Activate: delete old versioned caches (keep assets cache), claim clients
 sw.addEventListener('activate', (event: ExtendableEvent) => {
   event.waitUntil(
     caches
@@ -19,7 +23,7 @@ sw.addEventListener('activate', (event: ExtendableEvent) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((k) => k.startsWith('ingglish-') && k !== CACHE_NAME)
+            .filter((k) => k.startsWith('ingglish-pages-') && k !== PAGES_CACHE)
             .map((k) => caches.delete(k))
         )
       )
@@ -43,32 +47,33 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
     return;
   }
 
-  // /assets/* — cache-first (content-hashed, immutable)
+  // /assets/* — cache-first (content-hashed, immutable → stable cache)
   if (pathname.startsWith('/assets/')) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            void caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+      caches.open(ASSETS_CACHE).then((cache) =>
+        cache.match(request).then((cached) => {
+          if (cached) {
+            return cached;
           }
-          return response;
-        });
-      })
+          return fetch(request).then((response) => {
+            if (response.ok) {
+              void cache.put(request, response.clone());
+            }
+            return response;
+          });
+        })
+      )
     );
     return;
   }
 
-  // Everything else — network-first with cached fallback
+  // Everything else — network-first with cached fallback (versioned cache)
   event.respondWith(
     fetch(request)
       .then((response) => {
         if (response.ok) {
           const clone = response.clone();
-          void caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          void caches.open(PAGES_CACHE).then((cache) => cache.put(request, clone));
         }
         return response;
       })
