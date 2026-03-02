@@ -1,4 +1,4 @@
-import { reverseTranslate, translateSync } from 'ingglish';
+import { reverseTranslate, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { segmentKhmerText } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
@@ -76,6 +76,7 @@ function OverlayTextarea({
   scrollRef,
   spokenRange,
   text,
+  unmatchedWords = null,
 }: {
   highlightedWordIndex?: null | number;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -86,6 +87,7 @@ function OverlayTextarea({
   scrollRef: React.Ref<HTMLTextAreaElement>;
   spokenRange: [number, number] | null;
   text: string;
+  unmatchedWords?: null | Set<number>;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const handleScroll = useCallback(
@@ -161,9 +163,10 @@ function OverlayTextarea({
             const isHighlighted = idx >= 0 && idx === highlightedWordIndex;
             const isSpoken =
               idx >= 0 && spokenRange !== null && idx >= spokenRange[0] && idx <= spokenRange[1];
+            const isUnmatched = idx >= 0 && unmatchedWords?.has(idx) === true;
             return (
               <span
-                className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''}`}
+                className={`word-token ${isHighlighted ? 'highlighted' : ''} ${isSpoken ? 'spoken' : ''} ${isUnmatched ? 'unmatched' : ''}`}
                 data-word-index={idx >= 0 ? idx : undefined}
                 key={i}
               >
@@ -348,21 +351,36 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
   const deferredIngglish = useDeferredValue(ingglishText);
 
   // Compute translations based on which pane was last edited
-  const computedIngglish = useMemo(() => {
+  const { computedIngglish, unmatchedWords } = useMemo(() => {
     if (lastEdited !== 'english' || !deferredEnglish.trim()) {
-      return null;
+      return { computedIngglish: null, unmatchedWords: null };
     }
     if (isTargetLangMode) {
       if (!targetDict) {
-        return null;
+        return { computedIngglish: null, unmatchedWords: null };
       }
-      return translateForeign(deferredEnglish, targetDict, format);
+      return {
+        computedIngglish: translateForeign(deferredEnglish, targetDict, format),
+        unmatchedWords: null,
+      };
     }
     try {
-      return translateSync(deferredEnglish, { format });
+      const tokens = translateSyncWithMapping(deferredEnglish, { format });
+      const text = tokens.map((t) => t.translated).join('');
+      const unmatched = new Set<number>();
+      let wordIdx = 0;
+      for (const t of tokens) {
+        if (t.isWord) {
+          if (!t.matched) {
+            unmatched.add(wordIdx);
+          }
+          wordIdx++;
+        }
+      }
+      return { computedIngglish: text, unmatchedWords: unmatched.size > 0 ? unmatched : null };
     } catch (error) {
       console.warn('Translation failed:', error);
-      return null;
+      return { computedIngglish: null, unmatchedWords: null };
     }
   }, [deferredEnglish, lastEdited, format, isTargetLangMode, targetDict]);
 
@@ -730,6 +748,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
               scrollRef={ingglishRef as React.Ref<HTMLTextAreaElement>}
               spokenRange={speakingEnglish ? spokenRange : null}
               text={lastEdited === 'ingglish' ? ingglishText : displayIngglish}
+              unmatchedWords={lastEdited === 'english' ? unmatchedWords : null}
             />
           )}
         </div>

@@ -227,6 +227,12 @@
   color: var(--color-text-muted);
 }
 
+.word-token.unmatched {
+  text-decoration: underline dotted var(--color-text-muted);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+}
+
 .target-not-found {
   text-decoration: underline wavy var(--color-error);
   text-decoration-thickness: 1.5px;
