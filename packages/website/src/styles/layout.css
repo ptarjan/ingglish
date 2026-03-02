@@ -234,7 +234,7 @@
   color: var(--color-text-muted);
 }
 
-.footer a {
+.footer p a {
   text-decoration: underline;
 }
 
