@@ -312,7 +312,9 @@ function DailyChallenge() {
   // ------------------------------------------------------------------
   const displayGuesses = guesses;
   const displayResults = allResults;
-  const won = phase === 'won' || (phase === 'already-done' && guesses.includes(answer?.ingglish));
+  const won =
+    phase === 'won' ||
+    (phase === 'already-done' && answer !== null && guesses.includes(answer.ingglish));
   const displayStreak =
     phase === 'already-done'
       ? progress.streak
