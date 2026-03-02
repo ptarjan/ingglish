@@ -1,19 +1,25 @@
 /**
- * Reverse translation: Ingglish/IPA -> English.
+ * Reverse translation: Ingglish/IPA → source language.
  *
- * Uses ARPAbet matching to find English words that would produce
- * the given spelling. Handles homophones by preferring more common
- * words based on frequency data.
+ * Unified pipeline for English and foreign languages:
+ *   text → extractTokens → mapTokens(reverseWord) → output
+ *
+ * English reverse: ingglishToArpabet → expandAlternatives → lookupPhonemeKey
+ *   (uses frequency-based disambiguation with 5x threshold)
+ *
+ * Foreign reverse: ingglishToArpabet → stripStress → reverseMap lookup
+ *   (uses pre-built reverse map from PhoneDict)
  */
 
 import { lookupPhonemeKey, sortByFrequency, getWordFrequency } from '@ingglish/dictionary';
-import { ipaToArpabetClean, reverseDictText } from '@ingglish/ipa';
+import { ipaToArpabetClean } from '@ingglish/ipa';
 import { applyCasePattern, detectCasePattern, tokenizeIPA } from '@ingglish/normalize';
 import {
   expandArpabetAlternatives,
   getFormatHandler,
   ingglishToArpabet,
   registerFormat,
+  stripStress,
 } from '@ingglish/phonemes';
 import { getDictReverseMap } from '../ipa-dict';
 import type { TranslateOptions } from '../ipa-dict';
@@ -155,21 +161,25 @@ registerFormat('ipa', {
 });
 
 /**
- * Synchronous version of {@link reverseTranslate}. Dictionary must already be loaded.
+ * Synchronous reverse translation. Dictionary/reverse map must already be loaded.
+ *
+ * All languages go through the same pipeline:
+ *   text → extractTokens → mapTokens(reverseWord) → output
+ *
  * For non-English languages, the reverse map must have been built by a prior
  * `await reverseTranslate(text, { lang })` call.
  */
 export function reverseTranslateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
+  const isForeign = !!lang && lang !== 'en';
 
-  if (lang && lang !== 'en') {
-    const reverseMap = getDictReverseMap(lang);
-    if (!reverseMap) {
-      throw new Error(
-        `Reverse map for "${lang}" not built. Call reverseTranslate(text, { lang: "${lang}" }) first.`
-      );
-    }
-    return reverseDictText(text, reverseMap);
+  if (isForeign) {
+    const reverseMap = requireReverseMap(lang);
+    // Ingglish output is always Latin script, so use standard extractTokens
+    const { preserved, rawTokens } = extractTokens(text);
+    return mapTokens(rawTokens, preserved, (w) => reverseForeignWordAsResult(w, reverseMap))
+      .map((t) => t.translated)
+      .join('');
   }
 
   const handler = getFormatHandler(format);
@@ -189,12 +199,12 @@ export function reverseTranslateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
+  const isForeign = !!lang && lang !== 'en';
 
-  // For non-English languages, fall back to string-based reverse + simple tokenization
-  if (lang && lang !== 'en') {
-    const reversed = reverseTranslateSync(text, options);
-    // Return as a single matched token (foreign reverse doesn't have per-word mapping yet)
-    return [{ isWord: true, matched: true, original: text, translated: reversed }];
+  if (isForeign) {
+    const reverseMap = requireReverseMap(lang);
+    const { preserved, rawTokens } = extractTokens(text);
+    return mapTokens(rawTokens, preserved, (w) => reverseForeignWordAsResult(w, reverseMap));
   }
 
   const handler = getFormatHandler(format);
@@ -205,6 +215,68 @@ export function reverseTranslateSyncWithMapping(
 }
 
 /**
+ * Returns the reverse map for a language, or throws if not built.
+ */
+function requireReverseMap(lang: string): Map<string, string[]> {
+  const reverseMap = getDictReverseMap(lang);
+  if (!reverseMap) {
+    throw new Error(
+      `Reverse map for "${lang}" not built. Call reverseTranslate(text, { lang: "${lang}" }) first.`
+    );
+  }
+  return reverseMap;
+}
+
+/**
+ * Reverse-translate a single Ingglish word back to a foreign language
+ * using the pre-built reverse map.
+ */
+function reverseForeignWordAsResult(
+  word: string,
+  reverseMap: Map<string, string[]>
+): TranslateResult {
+  if (!HAS_LETTER.test(word)) {
+    return { matched: true, translated: word };
+  }
+
+  const casePattern = detectCasePattern(word);
+  const arpabet = ingglishToArpabet(word);
+  if (!arpabet) {
+    return { matched: false, translated: word };
+  }
+
+  // Try primary interpretation and alternatives (e.g. AE↔AH ambiguity)
+  const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+  if (!primary) {
+    return { matched: false, translated: word };
+  }
+
+  const primaryKey = primary.map((p) => stripStress(p)).join(' ');
+  let matches = reverseMap.get(primaryKey);
+
+  if (!matches || matches.length === 0) {
+    for (const variant of alternatives) {
+      const key = variant.map((p) => stripStress(p)).join(' ');
+      matches = reverseMap.get(key);
+      if (matches && matches.length > 0) {
+        break;
+      }
+    }
+  }
+
+  if (matches && matches.length > 0) {
+    const result = applyCasePattern(matches[0]!, casePattern);
+    return { matched: true, translated: result };
+  }
+
+  return { matched: false, translated: word };
+}
+
+// ============================================================================
+// Reverse Translation with Mapping
+// ============================================================================
+
+/**
  * Translates Ingglish text back to English.
  * URLs and emails are preserved unchanged.
  */
@@ -213,10 +285,6 @@ function reverseTranslateIngglishText(text: string): string {
     .map((t) => t.translated)
     .join('');
 }
-
-// ============================================================================
-// Reverse Translation with Mapping
-// ============================================================================
 
 /**
  * Ingglish reverse translation with token-by-token mapping.
