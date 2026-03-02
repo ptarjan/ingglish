@@ -431,43 +431,78 @@ test.describe('Web Vitals', () => {
     });
   }
 
-  // INP test — Chromium only, /text page (most interaction-heavy)
-  test('INP is below 200ms on /text', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name.includes('safari'), 'WebKit has no Event Timing API');
-    await blockExternalNetwork(page);
+  // INP tests — Chromium only (WebKit has no Event Timing API)
+  const inpRoutes: { route: string; interact: (page: Page) => Promise<void> }[] = [
+    {
+      route: '/text',
+      interact: async (page) => {
+        await page.locator('textarea.text-input').first().fill('hello world');
+      },
+    },
+    {
+      route: '/url',
+      interact: async (page) => {
+        await page.locator('.example-link').first().click();
+      },
+    },
+    {
+      route: '/explore',
+      interact: async (page) => {
+        await page.locator('.explorer-input').fill('hello');
+      },
+    },
+    {
+      route: '/experiment',
+      interact: async (page) => {
+        await page.locator('.experiment-input').fill('hello world');
+      },
+    },
+    {
+      route: '/challenge',
+      interact: async (page) => {
+        await page.locator('.btn-primary').first().click();
+      },
+    },
+  ];
 
-    // Install INP observer BEFORE navigating
-    await page.addInitScript(() => {
-      (globalThis as unknown as { __inp: INPData }).__inp = { interactions: [], worst: 0 };
-      const observer = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          const inp = (globalThis as unknown as { __inp: INPData }).__inp;
-          inp.interactions.push({ duration: entry.duration, name: entry.name });
-          if (entry.duration > inp.worst) {
-            inp.worst = entry.duration;
+  for (const { route, interact } of inpRoutes) {
+    test(`INP is below 200ms on ${route}`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name.includes('safari'), 'WebKit has no Event Timing API');
+      await blockExternalNetwork(page);
+
+      // Install INP observer BEFORE navigating
+      await page.addInitScript(() => {
+        (globalThis as unknown as { __inp: INPData }).__inp = { interactions: [], worst: 0 };
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const inp = (globalThis as unknown as { __inp: INPData }).__inp;
+            inp.interactions.push({ duration: entry.duration, name: entry.name });
+            if (entry.duration > inp.worst) {
+              inp.worst = entry.duration;
+            }
           }
-        }
+        });
+        observer.observe({ durationThreshold: 16, type: 'event' } as PerformanceObserverInit);
       });
-      observer.observe({ durationThreshold: 16, type: 'event' } as PerformanceObserverInit);
+
+      await page.goto(route);
+      await waitForAppLoad(page);
+
+      await interact(page);
+
+      // Wait for interaction entries to settle
+      await page.waitForTimeout(300);
+
+      const result = await page.evaluate(
+        () => (globalThis as unknown as { __inp?: INPData }).__inp
+      );
+      console.log(
+        `INP on ${route}: worst=${String(result?.worst ?? 0)}ms, interactions=${String(result?.interactions.length ?? 0)}`
+      );
+      expect(result).toBeDefined();
+      expect(result?.worst).toBeLessThan(200);
     });
-
-    await page.goto('/text');
-    await waitForAppLoad(page);
-
-    // Type into the English textarea to trigger interactions
-    const englishInput = page.locator('textarea.text-input').first();
-    await englishInput.fill('hello world');
-
-    // Wait for interaction entries to settle
-    await page.waitForTimeout(300);
-
-    const result = await page.evaluate(() => (globalThis as unknown as { __inp?: INPData }).__inp);
-    console.log(
-      `INP on /text: worst=${String(result?.worst ?? 0)}ms, interactions=${String(result?.interactions.length ?? 0)}`
-    );
-    expect(result).toBeDefined();
-    expect(result?.worst).toBeLessThan(200);
-  });
+  }
 });
 
 // Share a single page across tests to avoid re-loading the 10MB dictionary each time.
