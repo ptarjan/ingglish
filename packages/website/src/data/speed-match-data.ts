@@ -13,55 +13,40 @@ export interface MatchPair {
   ingglish: string;
 }
 
-const EASY_POOL = [
-  'knight',
-  'know',
-  'write',
+/** Round 1: short, common words that kids know. */
+const SIMPLE_POOL = [
   'phone',
+  'know',
+  'knee',
+  'night',
+  'light',
   'laugh',
-  'enough',
-  'through',
-  'thought',
+  'come',
+  'some',
+  'done',
+  'one',
+  'two',
+  'eight',
   'would',
   'should',
-  'people',
-  'light',
-  'ocean',
-  'science',
-  'measure',
-  'beautiful',
-  'daughter',
-  'foreign',
-  'tongue',
-  'building',
-  'receipt',
-  'island',
-  'listen',
-  'castle',
-  'Wednesday',
-  'answer',
-  'climb',
-  'doubt',
-  'subtle',
-  'rhythm',
-  'muscle',
-  'scissors',
-  'gnome',
-  'kneel',
-  'wreck',
-  'pneumonia',
-  'psychology',
-  'colonel',
-  'choir',
-  'aisle',
-  'debt',
-  'chaos',
-  'stomach',
-  'ache',
-  'echo',
-  'anchor',
-  'technique',
-  'unique',
+  'could',
+  'whole',
+  'write',
+  'wrong',
+  'high',
+  'walk',
+  'talk',
+  'half',
+  'love',
+  'move',
+  'give',
+  'said',
+  'sure',
+  'once',
+  'gone',
+  'does',
+  'sign',
+  'calm',
 ];
 
 /**
@@ -93,7 +78,7 @@ export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
     return pickHardPairs(rng);
   }
 
-  const pool = shuffle([...EASY_POOL], rng);
+  const pool = shuffle([...SIMPLE_POOL], rng);
   const pairs: MatchPair[] = [];
   for (const word of pool) {
     if (pairs.length >= 6) {
