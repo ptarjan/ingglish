@@ -1,6 +1,6 @@
 import { loadLangDict, reverseTranslate, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { segmentKhmerText } from '@ingglish/ipa';
+import { getLanguage } from '@ingglish/ipa';
 import { getFormatLabel } from '@ingglish/phonemes';
 import { trackShare, trackSpeak, trackTextTranslate } from '../analytics';
 import { useFormat } from '../contexts/FormatContext';
@@ -291,9 +291,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Display values: show computed translation in the non-edited pane
   // Fall back to the stored text (not empty) during deferred value transitions
-  // Segment Khmer text so input pane word boundaries match translated output
+  // Pre-process text (e.g. Khmer word segmentation) so input pane word boundaries match output
   const rawEnglish = lastEdited === 'ingglish' ? (computedEnglish ?? englishText) : englishText;
-  const displayEnglish = selectedLanguage === 'km' ? segmentKhmerText(rawEnglish) : rawEnglish;
+  const langPreprocess = getLanguage(selectedLanguage)?.preprocess;
+  const displayEnglish = langPreprocess ? langPreprocess(rawEnglish) : rawEnglish;
   const displayIngglish =
     lastEdited === 'english' ? (computedIngglish ?? ingglishText) : ingglishText;
 
