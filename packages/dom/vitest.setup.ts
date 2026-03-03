@@ -1,18 +1,5 @@
-import {
-  CUSTOM_PRONUNCIATIONS,
-  getDictionary,
-  loadDictionary,
-  loadFrequencies,
-  loadReverseDictionary,
-} from '@ingglish/dictionary';
-import { getLanguage } from '@ingglish/ipa';
-import { setLangDict } from 'ingglish'; // side-effect: registers English word resolver + G2P
+import { loadReverseDictionary } from '@ingglish/dictionary';
+import { loadLangDict } from 'ingglish'; // side-effect: registers English word resolver + G2P
 
-// Pre-load dictionary before any tests run in this worker
-// This avoids timeout issues in beforeAll hooks
-await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
-
-// Build and cache the English PhoneDict so translateSync() works without await
-const entries = { ...getDictionary(), ...CUSTOM_PRONUNCIATIONS };
-const enMeta = getLanguage('en');
-setLangDict('en', { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' });
+// Pre-load dictionaries before any tests run in this worker
+await Promise.all([loadLangDict('en'), loadReverseDictionary()]);
