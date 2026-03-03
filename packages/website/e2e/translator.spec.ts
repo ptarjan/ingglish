@@ -201,9 +201,7 @@ test.describe('Web Vitals', () => {
         }
       }
 
-      // Allow tiny CLS from font loading / CI rendering quirks
-      // Good threshold: 0.01 (Google considers < 0.1 "good")
-      expect(result.total).toBeLessThan(0.01);
+      expect(result.total).toBe(0);
     });
   }
 
