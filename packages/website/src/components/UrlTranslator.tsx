@@ -123,6 +123,8 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
 
   // For foreign languages, show samples that have source URLs as example links.
   // For English, use the curated EXAMPLE_URLS (familiar site names).
+  // De-duplicate by URL to avoid React key collisions (some languages have
+  // multiple samples from the same source).
   const exampleUrls = useMemo(() => {
     if (selectedLanguage === 'en') {
       return EXAMPLE_URLS;
@@ -131,9 +133,14 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     if (!samples) {
       return EXAMPLE_URLS;
     }
-    const fromSamples = samples
-      .filter((s) => s.source)
-      .map((s) => ({ name: s.label, url: s.source! }));
+    const seen = new Set<string>();
+    const fromSamples: { name: string; url: string }[] = [];
+    for (const s of samples) {
+      if (s.source && !seen.has(s.source)) {
+        seen.add(s.source);
+        fromSamples.push({ name: s.label, url: s.source });
+      }
+    }
     return fromSamples.length > 0 ? fromSamples : EXAMPLE_URLS;
   }, [selectedLanguage]);
 
