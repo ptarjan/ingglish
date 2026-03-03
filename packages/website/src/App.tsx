@@ -179,8 +179,10 @@ function App() {
     (targetUrl: string, lang?: string) => {
       const shareUrl = buildShareUrl(targetUrl);
       const parsed = new URL(shareUrl);
-      if (lang) {
-        parsed.searchParams.set('lang', lang);
+      // Preserve existing lang param when not explicitly provided (e.g. hash navigations)
+      const effectiveLang = lang ?? new URL(globalThis.location.href).searchParams.get('lang');
+      if (effectiveLang) {
+        parsed.searchParams.set('lang', effectiveLang);
       }
       // Explicitly set the correct state - don't rely on history.state which may be stale
       globalThis.history.replaceState({ translatorUrl: targetUrl }, '', parsed.toString());
