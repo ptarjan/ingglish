@@ -21,6 +21,8 @@ export default defineConfig({
     // Allow time for React to render + dictionary load
     actionTimeout: 10000,
     navigationTimeout: 15000,
+    // Disable service worker so it doesn't interfere with route mocking
+    serviceWorkers: 'block',
   },
   projects: [
     {
