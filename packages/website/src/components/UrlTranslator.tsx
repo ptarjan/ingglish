@@ -127,11 +127,15 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
   // Sync browser URL's lang param when language changes (manual or auto-detected)
   useEffect(() => {
     const browserUrl = new URL(globalThis.location.href);
-    if (!browserUrl.searchParams.has('url')) {return;}
+    if (!browserUrl.searchParams.has('url')) {
+      return;
+    }
 
     const currentLang = browserUrl.searchParams.get('lang');
     const newLang = selectedLanguage === 'en' ? null : selectedLanguage;
-    if (currentLang === newLang) {return;}
+    if (currentLang === newLang) {
+      return;
+    }
 
     if (newLang) {
       browserUrl.searchParams.set('lang', newLang);
