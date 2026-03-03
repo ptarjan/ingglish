@@ -35,6 +35,8 @@ const config: KnipConfig = {
     'packages/core/src/detect/index.ts',
     // Extension test files (vitest runs them but they're not entry points)
     'packages/extension/src/*.test.ts',
+    // Service worker built via custom vite plugin (not a regular import)
+    'packages/website/src/sw.ts',
   ],
   ignoreDependencies: [
     'eslint-plugin-prettier', // required by eslint-config-prettier

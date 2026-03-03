@@ -148,7 +148,7 @@ test.describe('Web Vitals', () => {
     '/docs',
     '/explore',
     '/experiment',
-    '/challenge',
+    '/games',
   ]) {
     test(`zero CLS on ${route}`, async ({ page }, testInfo) => {
       test.skip(testInfo.project.name.includes('safari'), 'WebKit has no layout-shift API');
@@ -214,7 +214,7 @@ test.describe('Web Vitals', () => {
     '/docs',
     '/explore',
     '/experiment',
-    '/challenge',
+    '/games',
   ]) {
     test(`header position stable across load on ${route}`, async ({ page }) => {
       await blockExternalNetwork(page);
@@ -371,7 +371,7 @@ test.describe('Web Vitals', () => {
     '/docs',
     '/explore',
     '/experiment',
-    '/challenge',
+    '/games',
   ]) {
     test(`FCP is below 500ms on ${route}`, async ({ page }) => {
       await blockExternalNetwork(page);
@@ -397,7 +397,7 @@ test.describe('Web Vitals', () => {
     '/docs',
     '/explore',
     '/experiment',
-    '/challenge',
+    '/games',
   ]) {
     test(`LCP is below 3000ms on ${route}`, async ({ page }, testInfo) => {
       test.skip(testInfo.project.name.includes('safari'), 'WebKit has no LCP API');
@@ -459,9 +459,9 @@ test.describe('Web Vitals', () => {
       },
     },
     {
-      route: '/challenge',
+      route: '/games',
       interact: async (page) => {
-        await page.locator('.btn-primary').first().click();
+        await page.locator('.games-hub-card').first().click();
       },
     },
   ];
@@ -818,16 +818,16 @@ test.describe('Text Translator', () => {
     // Switch to Swedish
     await page.locator('.language-select').selectOption('sv');
 
-    // Wait for dict to load (target output pane appears instead of textarea)
-    const targetOutput = page.locator('.target-output');
-    await expect(targetOutput).toBeVisible({ timeout: 15_000 });
+    // Wait for dict to load
+    const ingglishPane = page.locator('.ingglish-section');
+    await expect(ingglishPane).toBeVisible({ timeout: 15_000 });
 
     // Type Swedish text to trigger translation
     const englishInput = page.locator('textarea.text-input').first();
     await englishInput.fill('Hej världen');
 
     // Wait for translated content to render
-    await expect(targetOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+    await expect(ingglishPane.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
 
     const left = page.locator('.input-section').first();
     const right = page.locator('.input-section').last();
@@ -849,8 +849,8 @@ test.describe('Text Translator', () => {
     // Switch to Khmer
     await page.locator('.language-select').selectOption('km');
 
-    const targetOutput = page.locator('.target-output');
-    await expect(targetOutput).toBeVisible({ timeout: 15_000 });
+    const ingglishPane = page.locator('.ingglish-section');
+    await expect(ingglishPane).toBeVisible({ timeout: 15_000 });
 
     const englishInput = page.locator('textarea.text-input').first();
     const sampleSelect = page.locator('.sample-select');
@@ -865,16 +865,16 @@ test.describe('Text Translator', () => {
       // Wait for input to have text
       await expect(englishInput).not.toHaveValue('', { timeout: 5000 });
       // Wait for translation to render
-      await expect(targetOutput.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
+      await expect(ingglishPane.locator('.word-token').first()).toBeVisible({ timeout: 15_000 });
 
-      // Check that no words are untranslated
-      const notFound = targetOutput.locator('.target-not-found');
-      const notFoundCount = await notFound.count();
-      if (notFoundCount > 0) {
+      // Check that no words are untranslated (unmatched class = not in dictionary)
+      const unmatched = ingglishPane.locator('.word-token.unmatched');
+      const unmatchedCount = await unmatched.count();
+      if (unmatchedCount > 0) {
         // Collect the untranslated words for a useful error message
-        const words = await notFound.allTextContents();
+        const words = await unmatched.allTextContents();
         const label = (await sampleSelect.locator('option:checked').textContent()) ?? '?';
-        expect(notFoundCount, `${label}: untranslated words: ${words.join(', ')}`).toBe(0);
+        expect(unmatchedCount, `${label}: untranslated words: ${words.join(', ')}`).toBe(0);
       }
     }
 

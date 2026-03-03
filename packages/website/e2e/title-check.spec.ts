@@ -23,8 +23,8 @@ test('non-docs pages have correct titles', async ({ page }) => {
   await page.goto('/text');
   await expect(page).toHaveTitle('Text Translator | Ingglish');
 
-  await page.goto('/challenge');
-  await expect(page).toHaveTitle('Reading Challenge | Ingglish');
+  await page.goto('/games');
+  await expect(page).toHaveTitle('Games | Ingglish');
 });
 
 test('docs page title loads without flash', async ({ page }) => {

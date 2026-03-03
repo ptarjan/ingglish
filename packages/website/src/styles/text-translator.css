@@ -213,31 +213,10 @@
   transition: none;
 }
 
-/* Target-language output display */
-.target-output {
-  flex: 1;
-  overflow-y: auto;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
-.target-output-placeholder,
-.target-output-loading {
-  font-style: italic;
-  color: var(--color-text-muted);
-}
-
 .word-token.unmatched {
   text-decoration: underline dotted var(--color-text-muted);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.2em;
-}
-
-.target-not-found {
-  text-decoration: underline wavy var(--color-error);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 0.2em;
-  opacity: 0.6;
 }
 
 /* Mobile */
