@@ -106,6 +106,8 @@ const HARD_CLUSTERS = [
   ['fill', 'fall', 'fail', 'full', 'fell', 'foal'],
 ];
 
+const ROUND_POOLS: (readonly string[])[] = [SIMPLE_POOL, MEDIUM_POOL];
+
 /**
  * Pick 6 match pairs for a single round.
  * Round 1: simple common words. Round 2: tricky spellings. Round 3: near-miss clusters.
@@ -114,20 +116,19 @@ const HARD_CLUSTERS = [
 export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
   const rng = mulberry32(seed + roundIndex * 7919);
 
-  if (roundIndex >= 2) {
-    return pickHardPairs(rng);
-  }
+  const pool = ROUND_POOLS[roundIndex]
+    ? shuffle([...ROUND_POOLS[roundIndex]], rng)
+    : shuffle([...shuffle([...HARD_CLUSTERS], rng)[0]!], rng);
 
-  const pool = shuffle([...(roundIndex === 0 ? SIMPLE_POOL : MEDIUM_POOL)], rng);
   const pairs: MatchPair[] = [];
+  const seenIngglish = new Set<string>();
   for (const word of pool) {
-    if (pairs.length >= 6) {
-      break;
-    }
+    if (pairs.length >= 6) {break;}
     const ingglish = translateSync(word, { format: 'ingglish' });
-    if (ingglish.toLowerCase() !== word.toLowerCase()) {
-      pairs.push({ english: word, ingglish });
-    }
+    const ingLower = ingglish.toLowerCase();
+    if (seenIngglish.has(ingLower) || ingLower === word.toLowerCase()) {continue;}
+    seenIngglish.add(ingLower);
+    pairs.push({ english: word, ingglish });
   }
   return pairs;
 }
@@ -150,27 +151,4 @@ export function shuffleColumns(
   );
 
   return { left, right };
-}
-
-/** Pick 6 pairs from a hard cluster (words that look confusingly similar). */
-function pickHardPairs(rng: () => number): MatchPair[] {
-  const cluster = shuffle([...HARD_CLUSTERS], rng)[0]!;
-  const words = shuffle([...cluster], rng);
-
-  const pairs: MatchPair[] = [];
-  const seenIngglish = new Set<string>();
-  for (const word of words) {
-    if (pairs.length >= 6) {
-      break;
-    }
-    const ingglish = translateSync(word, { format: 'ingglish' });
-    const ingLower = ingglish.toLowerCase();
-    // Skip homophones (same Ingglish) and words that don't change
-    if (seenIngglish.has(ingLower) || ingLower === word.toLowerCase()) {
-      continue;
-    }
-    seenIngglish.add(ingLower);
-    pairs.push({ english: word, ingglish });
-  }
-  return pairs;
 }
