@@ -33,11 +33,11 @@ interface UrlTranslatorProps {
 function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: UrlTranslatorProps) {
   const { format, toggleFormat } = useFormat();
   const [selectedLanguage, setSelectedLanguage] = useState(
-    () => initialLang ?? localStorage.getItem('ingglish-url-lang') ?? 'en'
+    () => initialLang ?? localStorage.getItem('selectedLanguage') ?? 'en'
   );
   const handleLanguageDetected = useCallback((lang: string) => {
     setSelectedLanguage(lang);
-    localStorage.setItem('ingglish-url-lang', lang);
+    localStorage.setItem('selectedLanguage', lang);
   }, []);
   const { clear, dictLoading, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
     useUrlTranslator({
@@ -120,7 +120,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
   const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     const lang = e.target.value;
     setSelectedLanguage(lang);
-    localStorage.setItem('ingglish-url-lang', lang);
+    localStorage.setItem('selectedLanguage', lang);
   }, []);
 
   // Sync browser URL's lang param when language changes (manual or auto-detected)
