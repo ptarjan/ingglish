@@ -75,8 +75,8 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // Re-exports
 // =============================================================================
 
-export type { DictLoader, TranslateOptions } from './dict-loader';
-export { isDictLoaderRegistered, loadLangDict, setDictLoader, setLangDict } from './dict-loader';
+export type { TranslateOptions } from './dict-loader';
+export { loadLangDict, setDictLoader, setLangDict } from './dict-loader';
 
 // Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';
