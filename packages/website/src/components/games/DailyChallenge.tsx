@@ -452,7 +452,7 @@ function DailyChallenge() {
 
           {answer && (
             <div className="daily-done-answer">
-              The word was <strong>{answer.ingglish}</strong> ({answer.english})
+              The word was <strong>{answer.ingglish}</strong>
             </div>
           )}
 
@@ -561,13 +561,6 @@ function DailyChallenge() {
           );
         })}
       </div>
-
-      {/* English hint for the answer */}
-      {answer && (
-        <div className="wordle-hint">
-          English word: <strong>{answer.english}</strong>
-        </div>
-      )}
 
       {/* On-screen keyboard */}
       <div className="wordle-keyboard">
