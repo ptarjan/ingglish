@@ -170,6 +170,11 @@ function isTitleCaseAscii(word: string): boolean {
 // Unified word translation
 // ============================================================================
 
+/** Create a lookup function from PhoneDict entries (same pattern as WORD_RESOLVERS). */
+function makeDictLookup(dict: PhoneDict): (word: string) => null | string[] {
+  return (w: string) => dict.entries[w] ?? dict.entries[w.toLowerCase()] ?? null;
+}
+
 /** Convert ARPAbet to format, respecting dict's R-coloring setting. */
 function toFormat(phonemes: string[], format: OutputFormat, dict: PhoneDict): string {
   return arpabetToFormat(phonemes, format, { disableRColoring: dict.disableRColoring });
@@ -187,6 +192,7 @@ function toFormat(phonemes: string[], format: OutputFormat, dict: PhoneDict): st
  */
 function translateWithLowConfidenceG2P(
   word: string,
+  dict: PhoneDict,
   format: OutputFormat,
   casePattern: ReturnType<typeof detectCasePattern>
 ): TranslateResult {
@@ -199,7 +205,7 @@ function translateWithLowConfidenceG2P(
 
   // Use stripped form so G2P gets clean ASCII (brûlée→brulee, piñata→pinata)
   const stripped = stripDiacritics(word);
-  const fallbackResult = translateUnknown(stripped, format);
+  const fallbackResult = translateUnknown(stripped, format, makeDictLookup(dict));
 
   if (!fallbackResult || fallbackResult.length === 0) {
     return { matched: false, translated: word };
@@ -296,7 +302,7 @@ function translateWordInternal(
   // 9. Low-confidence G2P fallback (e.g. English NRL rules)
   const g2p = G2P_CONVERTERS[dict.lang];
   if (g2p && !g2p.confident) {
-    return translateWithLowConfidenceG2P(word, format, casePattern);
+    return translateWithLowConfidenceG2P(word, dict, format, casePattern);
   }
 
   // Not found — return original word
@@ -354,7 +360,7 @@ function tryCamelCase(word: string, dict: PhoneDict, format: OutputFormat): null
       translated = toFormat(phonemes, format, dict);
     } else {
       allMatched = false;
-      translated = translateUnknown(part, format);
+      translated = translateUnknown(part, format, makeDictLookup(dict));
     }
     return getFormatPreservesCase(format)
       ? applyCasePattern(translated, partCase, part)

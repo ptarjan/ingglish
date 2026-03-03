@@ -20,7 +20,9 @@ import { wordToArpabetTraced, wordToPhonetic } from '@ingglish/g2p';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToFormat } from '@ingglish/phonemes';
 import { isInitialism, translateAsAcronym } from './acronyms';
+import type { LookupFn } from './british';
 import { matchBritish, translateAsBritish } from './british';
+import type { FreqFn } from './compounds';
 import { dpDecompose, translateAsCompound } from './compounds';
 import { matchStemming, translateWithStemming } from './stemming';
 
@@ -92,16 +94,28 @@ export function diagnoseUnknown(word: string): null | WordDiagnosis {
  *
  * @param word The unknown word
  * @param format The output format
+ * @param lookup Optional lookup function (defaults to CMU dict lookupPronunciation)
+ * @param getFreq Optional frequency function (defaults to CMU word frequencies)
  * @returns The translated word
  */
-export function translateUnknown(word: string, format: OutputFormat = 'ingglish'): string {
-  return translateUnknownCore(word, format).translated;
+export function translateUnknown(
+  word: string,
+  format: OutputFormat = 'ingglish',
+  lookup?: LookupFn,
+  getFreq?: FreqFn
+): string {
+  return translateUnknownCore(word, format, lookup, getFreq).translated;
 }
 
 /**
  * Core implementation that returns both the strategy used and the translated word.
  */
-function translateUnknownCore(word: string, format: OutputFormat): FallbackResult {
+function translateUnknownCore(
+  word: string,
+  format: OutputFormat,
+  lookup?: LookupFn,
+  getFreq?: FreqFn
+): FallbackResult {
   // Check custom pronunciations first
   const customPhonemes = getCustomPronunciation(word);
   if (customPhonemes !== undefined) {
@@ -114,19 +128,19 @@ function translateUnknownCore(word: string, format: OutputFormat): FallbackResul
   }
 
   // Try British spelling normalization (colour -> color)
-  const britishResult = translateAsBritish(word, format);
+  const britishResult = translateAsBritish(word, format, lookup);
   if (britishResult !== null && britishResult.length > 0) {
     return { strategy: 'british', translated: britishResult };
   }
 
   // Try compound word splitting (github -> git + hub)
-  const compoundResult = translateAsCompound(word, format);
+  const compoundResult = translateAsCompound(word, format, lookup, getFreq);
   if (compoundResult !== null && compoundResult.length > 0) {
     return { strategy: 'compound', translated: compoundResult };
   }
 
   // Try stemming
-  const stemmedResult = translateWithStemming(word, format);
+  const stemmedResult = translateWithStemming(word, format, lookup);
   if (stemmedResult !== null && stemmedResult.length > 0) {
     return { strategy: 'stemming', translated: stemmedResult };
   }

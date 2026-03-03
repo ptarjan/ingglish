@@ -130,16 +130,19 @@ export function dpDecompose(word: string, lookup?: LookupFn, getFreq?: FreqFn): 
  */
 export function translateAsCompound(
   word: string,
-  format: OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish',
+  lookup?: LookupFn,
+  getFreq?: FreqFn
 ): null | string {
   const lowerWord = word.toLowerCase();
+  const lookupFn = lookup ?? lookupPronunciation;
 
   // Only try compound splitting for words 6+ characters
   if (lowerWord.length < 6) {
     return null;
   }
 
-  const parts = dpDecompose(lowerWord);
+  const parts = dpDecompose(lowerWord, lookup, getFreq);
   if (!parts) {
     return null;
   }
@@ -148,7 +151,7 @@ export function translateAsCompound(
   const translations: string[] = [];
   let pos = 0;
   for (const part of parts) {
-    const phonemes = lookupPronunciation(part);
+    const phonemes = lookupFn(part);
     if (!phonemes) {
       return null;
     } // shouldn't happen but be safe

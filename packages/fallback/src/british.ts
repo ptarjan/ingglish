@@ -90,8 +90,12 @@ export function matchBritish(word: string, lookup?: LookupFn): BritishMatch | nu
  * @param format The output format
  * @returns The translated word, or null if no American variant was found
  */
-export function translateAsBritish(word: string, format: OutputFormat = 'ingglish'): null | string {
-  const match = matchBritish(word);
+export function translateAsBritish(
+  word: string,
+  format: OutputFormat = 'ingglish',
+  lookup?: LookupFn
+): null | string {
+  const match = matchBritish(word, lookup);
   if (match === null) {
     return null;
   }

@@ -188,9 +188,10 @@ export function matchStemming(word: string, lookup?: LookupFn): null | StemmingM
  */
 export function translateWithStemming(
   word: string,
-  format: OutputFormat = 'ingglish'
+  format: OutputFormat = 'ingglish',
+  lookup?: LookupFn
 ): null | string {
-  const match = matchStemming(word);
+  const match = matchStemming(word, lookup);
   if (match === null) {
     return null;
   }
