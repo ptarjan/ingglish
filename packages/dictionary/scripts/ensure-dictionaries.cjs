@@ -26,7 +26,7 @@ if (!force && requiredFiles.every(existsSync)) {
 }
 
 // Run the full build script
-execSync('npx tsx scripts/build-dictionary.ts' + (force ? ' --force' : ''), {
+execSync('npx tsx --conditions=source scripts/build-dictionary.ts' + (force ? ' --force' : ''), {
   stdio: 'inherit',
   cwd: join(__dirname, '..'),
 });
