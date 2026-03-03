@@ -125,17 +125,12 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
 
-        // Ensure the dictionary is loaded for non-English languages before translating
-        if (selectedLanguage !== 'en') {
-          await loadLangDict(selectedLanguage);
-        }
+        // Ensure the dictionary is loaded before translating (English resolves from cache)
+        await loadLangDict(selectedLanguage);
 
-        // Build mapping fn for non-English languages
-        const translateWithMappingFn =
-          selectedLanguage === 'en'
-            ? undefined
-            : (text: string, format: OutputFormat) =>
-                translateSyncWithMapping(text, { format, lang: selectedLanguage });
+        // Build mapping fn that passes the selected language through
+        const translateWithMappingFn = (text: string, format: OutputFormat) =>
+          translateSyncWithMapping(text, { format, lang: selectedLanguage });
 
         if (isSameOrigin) {
           // Same-origin: load via src so scripts render the SPA, then translate
@@ -395,8 +390,8 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     const formatChanged = prevFormatRef.current !== outputFormat;
     const langChanged = prevLangRef.current !== selectedLanguage;
     if ((formatChanged || langChanged) && hasContent && url.length > 0) {
-      // Skip retranslation if switching to non-English but dict isn't loaded yet
-      if (selectedLanguage !== 'en' && dictLoading) {
+      // Skip retranslation while dict is still loading (will retrigger when dictLoading changes)
+      if (dictLoading) {
         // Will retranslate when dict finishes loading (dictLoading dep triggers this effect)
       } else {
         translateUrlRef.current?.(url, false).catch((error_: unknown) => {
