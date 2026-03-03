@@ -231,7 +231,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
         )}
       </form>
 
-      {dictLoading && (
+      {dictLoading && hasContent && (
         <div className="error-message" style={{ color: 'var(--color-text-secondary)' }}>
           Loading dictionary...
         </div>
