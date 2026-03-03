@@ -12,7 +12,9 @@ const ARPABET_VOWELS = new Set(Object.keys(IPA_VOWEL_MAP));
 
 // Pre-compiled regexes (avoid per-call RegExp object creation)
 const NASAL_VOWEL_RE = /([aeiouɑɛɔəɐɒæøœʌɝɚɘɜɞɤʏʊɪɨɯy])\u0303/g;
-const MODIFIER_RE = /[\u02B0\u02D0\u02D1\u02E5-\u02E9\u0303\u1D5D]/g; // eslint-disable-line no-misleading-character-class
+const MODIFIER_RE =
+  // eslint-disable-next-line no-misleading-character-class
+  /[\u02B0\u02B1\u02B3\u02B6\u02B7\u02BC\u02D0\u02D1\u02E0-\u02E4\u02E5-\u02E9\u0303\u1D5D\u2070-\u207E\u2080-\u208E]/g;
 const COMBINING_NON_CEDILLA_RE = /(?!\u0327)\p{Mn}/gu;
 
 // Cache merged override maps per language (avoids object spread on every call)
