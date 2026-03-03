@@ -205,6 +205,30 @@ export function isHashOnlyChange(oldUrl: string, newUrl: string): boolean {
 }
 
 /**
+ * Replaces non-UTF-8 charset declarations with UTF-8.
+ *
+ * After decoding a page from its original encoding (e.g. Shift_JIS) to a
+ * JavaScript string, the HTML still contains the original charset declaration.
+ * When loaded via iframe srcdoc (which is always UTF-8), the browser sees the
+ * stale charset and tries to re-decode the already-UTF-8 content, causing
+ * double-mangling. This function normalizes all charset declarations to UTF-8.
+ */
+export function normalizeCharsetToUtf8(html: string): string {
+  let result = html;
+
+  // Remove XML declaration (not valid in HTML5, and contains encoding="...")
+  result = result.replace(/<\?xml[^?]*\?>\s*/i, '');
+
+  // Replace <meta charset="..."> with UTF-8
+  result = result.replaceAll(/(<meta\s[^>]*charset\s*=\s*["']?)[^\s"';>]+/gi, '$1utf-8');
+
+  // Replace charset in <meta http-equiv="Content-Type" content="...;charset=...">
+  result = result.replaceAll(/(content\s*=\s*["'][^"']*charset\s*=\s*)[^\s"';>]+/gi, '$1utf-8');
+
+  return result;
+}
+
+/**
  * Normalizes a URL input (adds https:// if missing).
  * Returns null if invalid.
  */
@@ -361,11 +385,12 @@ export interface ProcessHtmlResult {
  *
  * Pipeline:
  * 1. Detect bot protection pages (throws if detected)
- * 2. Strip scripts and dangerous elements (DOMPurify)
- * 3. Inject base tag for relative URL resolution
- * 4. Proxy font URLs through CORS proxy
- * 5. Inject CSP meta tag with nonce (defense-in-depth)
- * 6. Inject nonce'd click handler for link navigation
+ * 2. Normalize charset declarations to UTF-8 (content is already decoded)
+ * 3. Strip scripts and dangerous elements (DOMPurify)
+ * 4. Inject base tag for relative URL resolution
+ * 5. Proxy font URLs through CORS proxy
+ * 6. Inject CSP meta tag with nonce (defense-in-depth)
+ * 7. Inject nonce'd click handler for link navigation
  *
  * @throws Error if bot protection is detected
  */
@@ -379,8 +404,11 @@ export function processProxiedHtml(
     throw new Error(botProtectionError);
   }
 
-  // Step 2-3: Strip scripts and inject base tag
-  const sanitized = stripScripts(rawHtml);
+  // Step 2: Normalize charset to UTF-8 for srcdoc (content is already decoded)
+  const normalized = normalizeCharsetToUtf8(rawHtml);
+
+  // Step 3-4: Strip scripts and inject base tag
+  const sanitized = stripScripts(normalized);
   const existingBase = extractBaseHref(sanitized);
   // If the page has a canonical URL (from <link rel="canonical"> or og:url),
   // prefer it over the request URL — the CORS proxy follows redirects silently,

@@ -4,6 +4,7 @@ import {
   decodeResponse,
   detectBotProtection,
   detectCharsetFromHeader,
+  normalizeCharsetToUtf8,
   escapeHtmlAttr,
   extractBaseHref,
   extractCanonicalUrl,
@@ -73,6 +74,41 @@ describe('decodeHtmlBuffer', () => {
 
     const result = decodeHtmlBuffer(combined.buffer);
     expect(result).toContain('こんにちは');
+  });
+});
+
+describe('normalizeCharsetToUtf8', () => {
+  it('removes XML declaration with encoding', () => {
+    const html = '<?xml version="1.0" encoding="Shift_JIS"?>\n<html><body>test</body></html>';
+    const result = normalizeCharsetToUtf8(html);
+    expect(result).not.toContain('<?xml');
+    expect(result).toContain('<html>');
+  });
+
+  it('replaces meta charset', () => {
+    const html = '<html><head><meta charset="Shift_JIS"></head><body>test</body></html>';
+    const result = normalizeCharsetToUtf8(html);
+    expect(result).toContain('charset="utf-8"');
+    expect(result).not.toContain('Shift_JIS');
+  });
+
+  it('replaces http-equiv Content-Type charset', () => {
+    const html =
+      '<html><head><meta http-equiv="Content-Type" content="text/html;charset=Shift_JIS"></head></html>';
+    const result = normalizeCharsetToUtf8(html);
+    expect(result).toContain('charset=utf-8');
+    expect(result).not.toContain('Shift_JIS');
+  });
+
+  it('leaves UTF-8 pages unchanged (except casing)', () => {
+    const html = '<html><head><meta charset="UTF-8"></head><body>test</body></html>';
+    const result = normalizeCharsetToUtf8(html);
+    expect(result).toContain('charset="utf-8"');
+  });
+
+  it('handles page with no charset declarations', () => {
+    const html = '<html><body>hello</body></html>';
+    expect(normalizeCharsetToUtf8(html)).toBe(html);
   });
 });
 
