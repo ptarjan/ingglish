@@ -123,10 +123,14 @@ export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
   const pairs: MatchPair[] = [];
   const seenIngglish = new Set<string>();
   for (const word of pool) {
-    if (pairs.length >= 6) {break;}
+    if (pairs.length >= 6) {
+      break;
+    }
     const ingglish = translateSync(word, { format: 'ingglish' });
     const ingLower = ingglish.toLowerCase();
-    if (seenIngglish.has(ingLower) || ingLower === word.toLowerCase()) {continue;}
+    if (seenIngglish.has(ingLower) || ingLower === word.toLowerCase()) {
+      continue;
+    }
     seenIngglish.add(ingLower);
     pairs.push({ english: word, ingglish });
   }
