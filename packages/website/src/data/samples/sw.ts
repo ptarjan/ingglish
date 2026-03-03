@@ -13,8 +13,6 @@ export const sw: Sample[] = [
   },
   {
     label: 'UDHR — Tamko la Haki za Binadamu, Ibara ya 1',
-    source:
-      'https://www.ohchr.org/en/human-rights/universal-declaration/translations/swahilikiswahili',
     text: 'Watu wote wamezaliwa huru, hadhi na haki zao ni sawa. Wote wamejaliwa akili na dhamiri, hivyo yapasa watendeane kindugu.',
   },
   {
@@ -64,7 +62,6 @@ export const sw: Sample[] = [
   },
   {
     label: 'Qurani Tukufu — Surat al-Fatiha',
-    source: 'https://www.iium.edu.my/deed/quran/swahili/1.html',
     text: 'Kwa jina la Mwenyeezi Mungu Mwingi wa Rehema Mwenye Kurehemu. Sifa njema zote ni za Mwenyeezi Mungu, Mola Mlezi wa viumbe vyote. Mwingi wa Rehema Mwenye Kurehemu. Mwenye kumiliki siku ya malipo.',
   },
   {

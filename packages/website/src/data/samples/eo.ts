@@ -8,7 +8,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'L.L. Zamenhof — La vojo',
-    source: 'https://eo.wikisource.org/wiki/Fundamenta_Krestomatio/La_vojo',
     text: "Tra densa mallumo briletas la celo, al kiu kuraĝe ni iras. Simile al stelo en nokta ĉielo, al ni la direkton ĝi diras. Kaj nin ne timigas la noktaj fantomoj, nek batoj de l' sorto, nek mokoj de l' homoj, ĉar klara kaj rekta kaj tre difinita ĝi estas, la voj' elektita.",
   },
   {

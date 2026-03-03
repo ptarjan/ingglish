@@ -43,7 +43,6 @@ export const ja: Sample[] = [
   },
   {
     label: '芥川龍之介 — 蜘蛛の糸',
-    source: 'https://www.aozora.gr.jp/cards/000879/files/33_15286.html',
     text: 'ある 日 の 事 で ございます 御 釈迦 様 は 極楽 の 蓮 池 の ふち を 一人 で ぶらぶら お 歩き に なる て いらっしゃる た 池 の 中 に 咲く て いる 蓮 の 花 は みんな 玉 の よう に 真っ白 で ある',
   },
   {
@@ -63,7 +62,6 @@ export const ja: Sample[] = [
   },
   {
     label: '森鷗外 — 舞姫',
-    source: 'https://www.aozora.gr.jp/cards/000042/files/818_15954.html',
     text: '石炭 を ば 早 や 積み 果つ て し と 見える て 船 は はた と やむ 沖 の かた の 風 は いたう 吹く く 煤煙 は 甲板 を 掠める て うみ の かた へ なびく て いる',
   },
   {
@@ -79,7 +77,6 @@ export const ja: Sample[] = [
   },
   {
     label: '紫式部 — 源氏物語',
-    source: 'https://www.sainet.or.jp/~eshibuya/',
     text: 'いづれ の 御 時 に か 女御 更衣 あまた 候う 給う なか に いと やんごとなし 際 に は あらぬ が すぐれる て 時めく 給う ある けり',
   },
   {

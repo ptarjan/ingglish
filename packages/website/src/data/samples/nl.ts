@@ -3,12 +3,10 @@ import type { Sample } from './types';
 export const nl: Sample[] = [
   {
     label: 'Anne Frank — Het Achterhuis',
-    source: 'https://www.annefrank.org/nl/anne-frank/dagboek/',
     text: 'Ik zal hoop ik aan jou alles kunnen toevertrouwen, zoals ik het nog aan niemand gekund heb, en ik hoop dat je een grote steun voor me zult zijn.',
   },
   {
     label: 'Multatuli — Max Havelaar',
-    source: 'https://www.dbnl.org/tekst/mult001maxh01_01/',
     text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
   },
   {
@@ -106,7 +104,6 @@ export const nl: Sample[] = [
   },
   {
     label: 'Louis Paul Boon — De Kapellekensbaan',
-    source: 'https://www.dbnl.org/tekst/boon001kape01_01/boon001kape01_01_0003.php',
     text: 'Ge ziet van uit uw open zolderraam hoe het niemandsbos in het rood wordt geverfd door de zakkende zon, en ge ziet ook daar tusschen de boomen en braamstoelen den spoorwegzate, waar ge de werkmenschen langs ziet gaan, heel klein daaronder.',
   },
 ];

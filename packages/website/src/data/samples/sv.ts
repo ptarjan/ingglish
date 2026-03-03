@@ -78,7 +78,6 @@ export const sv: Sample[] = [
   },
   {
     label: 'Gustaf Fröding — En morgondröm',
-    source: 'https://svenskadikter.com/Gustaf_Fröding',
     text: 'Jag drömde en morgon en underbar dröm, om sommar och sol, om en blommande ström, om ängar och lundar och fågelsång, och sällsam musik med förunderlig klang.',
   },
   {

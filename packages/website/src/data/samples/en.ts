@@ -35,7 +35,6 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
   },
   {
     label: 'Gettysburg Address',
-    source: 'https://www.archives.gov/exhibits/featured-documents/gettysburg-address',
     text: `Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure.`,
   },
   {

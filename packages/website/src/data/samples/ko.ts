@@ -3,7 +3,6 @@ import type { Sample } from './types';
 export const ko: Sample[] = [
   {
     label: '윤동주 — 서시',
-    source: 'https://ko.wikisource.org/wiki/서시',
     text: '죽다 날 까지 하늘 을 우러르다 한 점 부끄럼 이 없다 기 를 잎새 에 이다 바람 에 도 나 는 괴롭다 별 을 노래 하다 마음 으로 모든 죽다 가다 것 을 사랑 하다 그리고 나 한테 주다 길 을 걷다',
   },
   {
@@ -48,12 +47,10 @@ export const ko: Sample[] = [
   },
   {
     label: '백석 — 나와 나타샤와 흰 당나귀',
-    source: 'https://namu.wiki/w/나와_나타샤와_흰_당나귀',
     text: '가난하다 나 가 아름답다 나타샤 를 사랑 하다 오늘 밤 은 푹푹 눈 이 내리다 나타샤 사랑 은 하다 눈 은 푹푹 날리다 나 는 혼자 쓸쓸히 앉다 소주 를 마시다',
   },
   {
     label: '한용운 — 알 수 없어요',
-    source: 'https://namu.wiki/w/님의_침묵',
     text: '바람 도 없다 공중 에 수직 의 파문 을 내다 며 고요히 떨어지다 오동잎 은 누구 의 발자취 이다 가 지리다 파도 소리 가 철석 거리다 때 아니다 바다 가 꿈꾸다 듯 푸르다 하늘 에 바다 의 기억 이 스미다',
   },
   {
@@ -93,7 +90,6 @@ export const ko: Sample[] = [
   },
   {
     label: '윤동주 — 십자가',
-    source: 'https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000761',
     text: '쫓기다 어 온 하늘 에 도 슬퍼하다 것 이 있다 면 괴롭다 사나이 의 정수리 위 에 하늘 이 열리다 어두 컴컴하다 가운데 하늘 이 열리다 살 과 뼈 에 스미다 바람 이 차다',
   },
   {

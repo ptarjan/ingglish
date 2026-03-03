@@ -24,8 +24,6 @@ export const or: Sample[] = [
   },
   {
     label: 'ଭୀମ ଭୋଇ — ସ୍ତୁତିଚିନ୍ତାମଣି',
-    source:
-      'https://www.bhubaneswarbuzz.com/stories-by-people/bhima-bhoi-wanted-know-great-poet-odisha',
     text: 'ପ୍ରାଣୀମାନଙ୍କ ଆରତ ଦୁଃଖ ଅପ୍ରମିତ ଦେଖି ଦେଖି କେବା ସହୁ, ମୋ ଜୀବନ ପଛେ ନର୍କେ ପଡ଼ିଥାଉ ଜଗତ ଉଦ୍ଧାର ହେଉ।',
   },
   {

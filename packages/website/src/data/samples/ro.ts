@@ -8,12 +8,10 @@ export const ro: Sample[] = [
   },
   {
     label: 'Eminescu — Mai am un singur dor',
-    source: 'https://www.versuri.ro/versuri/mihai-eminescu-mai-am-un-singur-dor/',
     text: 'Mai am un singur dor: în liniștea serii să mă lăsați să mor la marginea mării. Să-mi fie somnul lin și codrul aproape, pe-ntinsele ape să am un cer senin.',
   },
   {
     label: 'Eminescu — Dorința',
-    source: 'https://www.versuri.ro/versuri/mihai-eminescu-dorinta-1/',
     text: 'Vino-n codru la izvorul care tremură pe prund, unde prispa cea de brazde crengi plecate o ascund. Și în brațele-mi întinse să alergi, pe piept să-mi cazi, să-ți desprind din creștet vălul, să-l ridic de pe obraz.',
   },
   {
@@ -38,7 +36,6 @@ export const ro: Sample[] = [
   },
   {
     label: 'Nichita Stănescu — Lecția despre cub',
-    source: 'https://www.versuri.ro/versuri/nichita-stanescu-lectia-despre-cub/',
     text: 'Se ia o bucată de piatră, se cioplește cu o daltă de sânge, se lustruiește cu ochiul lui Homer, se răzuiește cu raze până cubul iese perfect.',
   },
   {
@@ -111,7 +108,6 @@ export const ro: Sample[] = [
   },
   {
     label: 'Miorița — Baladă populară',
-    source: 'https://lyricstranslate.com/en/mioriță-little-sheep-popular-ballad.html',
     text: 'Pe-un picior de plai, pe-o gură de rai, iată vin în cale, se cobor la vale, trei turme de miei, cu trei ciobănei.',
   },
 ];

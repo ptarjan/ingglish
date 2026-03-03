@@ -74,7 +74,6 @@ export const is: Sample[] = [
   },
   {
     label: 'Hrafnkels saga Freysgoða — Opening',
-    source: 'https://sagadb.org/hrafnkels_saga_freysgoða.is',
     text: 'Það var á dögum Haralds konungs hins hárfagra að maður bjó í Fljótsdal sem Hallfreður hét. Hann nam Hrafnkelsdal allan upp frá Lagarfljóti. Hrafnkell var sonur Hallfreðs. Hrafnkell reisti hof mikið og eflaði blót stór.',
   },
   {

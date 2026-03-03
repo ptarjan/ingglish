@@ -23,12 +23,10 @@ export const pt: Sample[] = [
   },
   {
     label: 'Machado de Assis — Memórias Póstumas de Brás Cubas',
-    source: 'https://machadodeassis.net/texto/memorias-postumas-de-bras-cubas/5985',
     text: 'Algum tempo hesitei se devia abrir estas memórias pelo princípio ou pelo fim, isto é, se poria em primeiro lugar o meu nascimento ou a minha morte. Suposto o uso vulgar seja começar pelo nascimento, duas considerações me levaram a adotar diferente método: a primeira é que eu não sou propriamente um autor defunto, mas um defunto autor, para quem a campa foi outro berço.',
   },
   {
     label: 'Machado de Assis — Dom Casmurro',
-    source: 'https://machadodeassis.net/texto/dom-casmurro/11503',
     text: 'Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao pé de mim, falou da Lua e dos ministros, e acabou recitando-me versos. A viagem era curta, e os versos pode ser que não fossem inteiramente maus.',
   },
   {
@@ -44,8 +42,6 @@ export const pt: Sample[] = [
   },
   {
     label: 'Eça de Queirós — Os Maias',
-    source:
-      'https://www.curso-objetivo.br/vestibular/assets/download/obras-literarias/eca-de-queiros/os-maias.pdf',
     text: 'A casa que os Maias vieram habitar em Lisboa, no outono de 1875, era conhecida na vizinhança da rua de S. Francisco de Paula, e em todo o bairro das Janelas Verdes, pela casa do Ramalhete ou simplesmente o Ramalhete.',
   },
   {
@@ -71,8 +67,6 @@ export const pt: Sample[] = [
   },
   {
     label: 'Guimarães Rosa — Grande Sertão: Veredas',
-    source:
-      'https://www.ileel.ufu.br/lexicoSertanista/arquivos/43b0ce78-34a9-461d-b8c5-55ee0b0e5528_Grande%20Sert%C3%A3o%20Veredas.pdf',
     text: 'Nonada. Tiros que o senhor ouviu foram de briga de homem não, Deus esteja. Alvejei mira em árvore, no quintal, no baixo do córrego. Por meu acerto. Todo dia isso faço, gosto; desde mal em minha mocidade.',
   },
   {
