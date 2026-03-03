@@ -1,20 +1,18 @@
 /**
  * Forward translation: text → Ingglish/IPA (all languages).
  *
- * Unified pipeline for all languages:
- *   text → [Khmer segmentation] → extractTokens → renderText → output
+ * Unified pipeline — one code path for every language:
+ *   text → [preprocess] → extractTokens → renderText → output
  *
- * English word pipeline: fast paths → initialisms → contractions → camelCase
- *   → dictionary → fallback (compounds, stemming, G2P)
- *
- * Non-English word pipeline: lookupDict (overrides, dict, lemmatizers, G2P)
- *   → clitic/contraction splitting → NOT_FOUND_MARKER
+ * Word pipeline (all languages):
+ *   fast paths → initialisms → camelCase → lookupDict (overrides, dict,
+ *   word resolvers, apostrophe splitting, confident G2P) → low-confidence
+ *   G2P fallback → pass-through
  *
  * Every code path converges on an ARPAbet phoneme array before converting to
  * the requested output format.
  */
 
-import { lookupPronunciation, lookupPronunciationLower } from '@ingglish/dictionary';
 import {
   translateUnknown,
   isInitialism,
@@ -22,8 +20,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { lookupDict, NOT_FOUND_MARKER, segmentKhmerText, type PhoneDict } from '@ingglish/ipa';
-import type { CasePattern } from '@ingglish/normalize';
+import { G2P_CONVERTERS, lookupDict, NOT_FOUND_MARKER, type PhoneDict } from '@ingglish/ipa';
 import {
   applyCasePattern,
   detectCasePattern,
@@ -38,7 +35,6 @@ import {
 } from '@ingglish/phonemes';
 import type { TranslateOptions } from '../dict-loader';
 import { getLangDict } from '../dict-loader';
-import { translateContraction } from './contractions';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, extractTokensUnicode, HAS_LETTER, mapTokens, renderText } from './pipeline';
 
@@ -62,47 +58,24 @@ const HAS_VOWEL = /[aeiouy]/i;
 const TITLE_CASE = /^[A-Z][a-z]*$/;
 
 /**
- * Languages whose primary script is non-Latin.
- * These need the Unicode word tokenizer instead of the Latin-aware one.
- */
-const NON_LATIN_LANGS = new Set(['ar', 'fa', 'ja', 'km', 'ko', 'or', 'yue', 'zh']);
-
-/** Regex to split on apostrophes and hyphens (keeping the separators) */
-const CLITIC_SPLIT_RE = /(?<=['-])|(?=['-])/;
-
-/**
  * Synchronous forward translation. Dictionary must already be loaded.
  *
  * All languages go through the same pipeline:
- *   text → [Khmer segmentation] → extractTokens → renderText → output
- *
- * For non-English languages, the dictionary must have been loaded by a prior
- * `await translate(text, { lang })` or `await loadLangDict(lang)` call.
+ *   text → [preprocess] → extractTokens → renderText → output
  */
 export function translateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const isNonEnglish = !!lang && lang !== 'en';
+  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
+  const dict = requireLangDict(effectiveLang);
 
-  // Pre-processing: Khmer has no inherent word boundaries
-  const processed = lang === 'km' ? segmentKhmerText(text) : text;
+  // Pre-processing (e.g. Khmer word segmentation)
+  const processed = dict.preprocess === undefined ? text : dict.preprocess(text);
 
-  // Tokenize: Latin-aware for English/Latin-script languages, Unicode for others
+  // Tokenize: Unicode for non-Latin scripts, Latin-aware for everything else
   const { preserved, rawTokens } =
-    isNonEnglish && NON_LATIN_LANGS.has(lang)
-      ? extractTokensUnicode(processed)
-      : extractTokens(processed);
+    dict.nonLatinScript === true ? extractTokensUnicode(processed) : extractTokens(processed);
 
-  if (isNonEnglish) {
-    const dict = requireLangDict(lang);
-    return renderText(
-      rawTokens,
-      preserved,
-      (w) => translateLangWordString(w, dict, format),
-      format
-    );
-  }
-
-  return renderText(rawTokens, preserved, (w) => translateWordString(w, format), format);
+  return renderText(rawTokens, preserved, (w) => translateWordString(w, dict, format), format);
 }
 
 // ============================================================================
@@ -119,26 +92,19 @@ export function translateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
-  const isNonEnglish = !!lang && lang !== 'en';
+  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
+  const dict = requireLangDict(effectiveLang);
 
-  const processed = lang === 'km' ? segmentKhmerText(text) : text;
+  const processed = dict.preprocess === undefined ? text : dict.preprocess(text);
 
   const { preserved, rawTokens } =
-    isNonEnglish && NON_LATIN_LANGS.has(lang)
-      ? extractTokensUnicode(processed)
-      : extractTokens(processed);
+    dict.nonLatinScript === true ? extractTokensUnicode(processed) : extractTokens(processed);
 
-  if (isNonEnglish) {
-    const dict = requireLangDict(lang);
-    return mapTokens(rawTokens, preserved, (w) => translateLangWordInternal(w, dict, format));
-  }
-
-  return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, format));
+  return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, dict, format));
 }
 
 /**
  * Translates a single word (or contraction) to the specified format.
- * Handles English contractions (don't, I'm) and clitics (l', s').
  *
  * @param word - The word to translate
  * @param options - Translation options (format, lang)
@@ -146,22 +112,9 @@ export function translateSyncWithMapping(
  */
 export function translateWord(word: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-
-  if (lang && lang !== 'en') {
-    const dict = requireLangDict(lang);
-    const result = translateLangWordInternal(word, dict, format);
-    return result.translated;
-  }
-
-  return translateWordInternal(word, format).translated;
-}
-
-/**
- * Converts ARPAbet phonemes to the specified output format for non-English languages.
- * Disables English R-coloring since other languages treat R as a regular consonant.
- */
-function arpabetToFormatNonEnglish(arpabet: string[], format: OutputFormat): string {
-  return arpabetToFormat(arpabet, format, { disableRColoring: true });
+  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
+  const dict = requireLangDict(effectiveLang);
+  return translateWordInternal(word, dict, format).translated;
 }
 
 // ============================================================================
@@ -213,60 +166,29 @@ function isTitleCaseAscii(word: string): boolean {
   return true;
 }
 
-/**
- * Translate a non-English word, returning both the translated word and match status.
- * Handles direct dict lookup, clitic/contraction splitting, and case preservation.
- */
-function translateLangWordInternal(
-  word: string,
-  dict: PhoneDict,
-  format: OutputFormat
-): TranslateResult {
-  const preservesCase = getFormatPreservesCase(format);
-  const casePattern = detectCasePattern(word);
+// ============================================================================
+// Unified word translation
+// ============================================================================
 
-  // Direct lookup (includes overrides, lemmatizers, G2P, compound decomposition)
-  const phonemes = lookupDict(dict, word);
-  if (phonemes) {
-    const translated = arpabetToFormatNonEnglish(phonemes, format);
-    const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-    return { matched: true, translated: cased };
-  }
-
-  // Try splitting on apostrophes/hyphens (French clitics: l'essentiel, allez-vous)
-  const parts = word.split(CLITIC_SPLIT_RE);
-  if (parts.length > 1) {
-    const result = tryCliticSplit(parts, dict, format, casePattern, preservesCase);
-    if (result) {
-      return result;
-    }
-  }
-
-  // Not found — return original word
-  return { matched: false, translated: word };
+/** Convert ARPAbet to format, respecting dict's R-coloring setting. */
+function toFormat(phonemes: string[], format: OutputFormat, dict: PhoneDict): string {
+  return arpabetToFormat(phonemes, format, { disableRColoring: dict.disableRColoring });
 }
 
 // ============================================================================
-// Non-English word translation
+// Low-confidence G2P fallback
 // ============================================================================
 
 /**
- * String-only non-English word translation for renderText.
- * Prepends NOT_FOUND_MARKER to unmatched words.
- */
-function translateLangWordString(word: string, dict: PhoneDict, format: OutputFormat): string {
-  const result = translateLangWordInternal(word, dict, format);
-  return result.matched ? result.translated : NOT_FOUND_MARKER + word;
-}
-
-/**
- * Translate an unknown word using fallback strategies (compounds, stemming, G2P, etc.).
+ * Translate an unknown word using low-confidence G2P (e.g. English NRL rules).
+ * Also uses the existing translateUnknown fallback which includes custom
+ * pronunciations and initialism spelling.
  * Pass-through words that are clearly non-words (triple chars, no vowels).
  */
-function translateWithFallback(
+function translateWithLowConfidenceG2P(
   word: string,
   format: OutputFormat,
-  casePattern: CasePattern
+  casePattern: ReturnType<typeof detectCasePattern>
 ): TranslateResult {
   // Pass through obvious non-words before running G2P:
   // - 3+ consecutive identical characters (e.g., "sssss", "hellooo")
@@ -306,21 +228,24 @@ function translateWithFallback(
  *  2. Fast path — pure lowercase ASCII dictionary word (most common)
  *  3. Title-case fast path — The, Hello, World
  *  4. Initialism+suffix — IDs, TVs, API's (before contractions)
- *  5. Contraction — don't, I'm
- *  6. Bare initialism — UI, API, HTML
- *  7. All-caps passthrough — NASA, ASAP (Latin scripts only)
- *  8. CamelCase — iPhone, MacBook, ChatGPT
- *  9. Dictionary lookup — case-insensitive, with diacritics fallback
- * 10. Fallback — compounds, stemming, G2P
+ *  5. Bare initialism — UI, API, HTML
+ *  6. All-caps passthrough — NASA, ASAP (Latin scripts only)
+ *  7. CamelCase — iPhone, MacBook, ChatGPT
+ *  8. lookupDict — unified (overrides, dict, word resolvers, apostrophe splitting, confident G2P)
+ *  9. Low-confidence G2P fallback (English NRL rules)
  */
-function translateWordInternal(word: string, format: OutputFormat): TranslateResult {
+function translateWordInternal(
+  word: string,
+  dict: PhoneDict,
+  format: OutputFormat
+): TranslateResult {
   // 1. Empty / non-letter tokens
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
 
   // 2–3. Fast paths for common dictionary words (pure lowercase or title-case)
-  const fast = tryFastPath(word, format) ?? tryTitleCaseFastPath(word, format);
+  const fast = tryFastPath(word, dict, format) ?? tryTitleCaseFastPath(word, dict, format);
   if (fast !== null) {
     return { matched: true, translated: fast };
   }
@@ -333,44 +258,50 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
     return initialismSuffix;
   }
 
-  // 5. Contractions (don't, I'm, etc.)
-  if (word.includes("'")) {
-    return {
-      matched: true,
-      translated: translateContraction(word, format, (w, f) => translateWord(w, { format: f })),
-    };
-  }
-
-  // 6. Bare initialisms (UI, API, HTML)
+  // 5. Bare initialisms (UI, API, HTML)
   const initialism = tryInitialism(word, format, isLatinScript);
   if (initialism) {
     return initialism;
   }
 
-  // 7. All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
+  // 6. All-caps words (≥2 chars) pass through for Latin scripts (acronyms, abbreviations)
   if (isLatinScript && word.length >= 2 && ALL_UPPER.test(word)) {
     return { matched: true, translated: word };
   }
 
-  // 8. CamelCase words (iPhone, MacBook, ChatGPT)
-  const camel = tryCamelCase(word, format);
+  // 7. CamelCase words (iPhone, MacBook, ChatGPT)
+  const camel = tryCamelCase(word, dict, format);
   if (camel) {
     return camel;
   }
 
-  // 9. Dictionary / custom pronunciation lookup (with diacritics fallback)
+  // 8. lookupDict — unified lookup (overrides, dict, word resolvers, apostrophe splitting, confident G2P)
   const casePattern = detectCasePattern(word);
-  const dictResult = tryDictionaryLookup(word, format, casePattern);
-  if (dictResult) {
-    return dictResult;
+  const phonemes = lookupDict(dict, word);
+  if (phonemes) {
+    let translated = toFormat(phonemes, format, dict);
+    if (getFormatPreservesCase(format)) {
+      // I-contractions (I'm, I'll, I've, I'd) should be lowercase
+      // because "I" is only capitalized in English by convention, not phonetically special
+      translated = word.startsWith("I'")
+        ? translated.toLowerCase()
+        : applyCasePattern(translated, casePattern, word);
+    }
+    return { matched: true, translated };
   }
 
-  // 10. Fallback strategies (compounds, stemming, G2P)
-  return translateWithFallback(word, format, casePattern);
+  // 9. Low-confidence G2P fallback (e.g. English NRL rules)
+  const g2p = G2P_CONVERTERS[dict.lang];
+  if (g2p && !g2p.confident) {
+    return translateWithLowConfidenceG2P(word, format, casePattern);
+  }
+
+  // Not found — return original word
+  return { matched: false, translated: word };
 }
 
 // ============================================================================
-// English core pipeline
+// String-only fast path for renderText
 // ============================================================================
 
 /**
@@ -379,22 +310,29 @@ function translateWordInternal(word: string, format: OutputFormat): TranslateRes
  * allocation for the ~80% of words that are simple dictionary lookups).
  * Falls through to the full pipeline for everything else.
  */
-function translateWordString(word: string, format: OutputFormat): string {
+function translateWordString(word: string, dict: PhoneDict, format: OutputFormat): string {
   if (!word || !HAS_LETTER.test(word)) {
     return word;
   }
-  return (
-    tryFastPath(word, format) ??
-    tryTitleCaseFastPath(word, format) ??
-    translateWordInternal(word, format).translated
-  );
+  const fast = tryFastPath(word, dict, format) ?? tryTitleCaseFastPath(word, dict, format);
+  if (fast !== null) {
+    return fast;
+  }
+  const result = translateWordInternal(word, dict, format);
+  // For languages with low-confidence G2P (English), unmatched words still have
+  // a useful G2P translation. Only prepend NOT_FOUND_MARKER when the word truly
+  // couldn't be translated (matched=false AND no G2P fallback was applied).
+  if (!result.matched && result.translated === word) {
+    return NOT_FOUND_MARKER + word;
+  }
+  return result.translated;
 }
 
 /**
  * Handle camelCase words by translating each component separately.
  * Returns null if not camelCase.
  */
-function tryCamelCase(word: string, format: OutputFormat): null | TranslateResult {
+function tryCamelCase(word: string, dict: PhoneDict, format: OutputFormat): null | TranslateResult {
   const parts = splitCamelCase(word);
   if (parts === null || parts.length <= 1) {
     return null;
@@ -407,10 +345,10 @@ function tryCamelCase(word: string, format: OutputFormat): null | TranslateResul
       return part;
     }
     const partCase = detectCasePattern(part);
-    const phonemes = lookupPronunciation(part);
+    const phonemes = lookupDict(dict, part);
     let translated: string;
     if (phonemes) {
-      translated = arpabetToFormat(phonemes, format);
+      translated = toFormat(phonemes, format, dict);
     } else {
       allMatched = false;
       translated = translateUnknown(part, format);
@@ -428,134 +366,20 @@ function tryCamelCase(word: string, format: OutputFormat): null | TranslateResul
 // ============================================================================
 
 /**
- * Try to translate a word by splitting on apostrophes and hyphens (clitics).
- * French: l'homme → l' + homme, allez-vous → allez + vous
- * Returns null if the split didn't help.
- */
-function tryCliticSplit(
-  parts: string[],
-  dict: PhoneDict,
-  format: OutputFormat,
-  casePattern: CasePattern,
-  preservesCase: boolean
-): null | TranslateResult {
-  // Look up each non-separator part
-  const partPhonemes: (string[] | undefined)[] = parts.map((part, i) => {
-    if (part === "'" || part === '-') {
-      return;
-    }
-    // Prefer clitic form (d' → /d‿/) in contraction context
-    let ph: string[] | undefined;
-    if (parts[i + 1] === "'") {
-      ph = lookupDict(dict, part + "'");
-    }
-    ph ??= lookupDict(dict, part);
-    return ph;
-  });
-
-  const allFound = parts.every(
-    (part, i) => part === "'" || part === '-' || partPhonemes[i] !== undefined
-  );
-
-  if (allFound) {
-    // Merge phonemes across apostrophes, keep hyphens as group separators
-    const groups: string[][] = [[]];
-    for (const [i, part] of parts.entries()) {
-      if (part === "'") {
-        continue;
-      }
-      if (part === '-') {
-        groups.push([]);
-        continue;
-      }
-      const ph = partPhonemes[i]!;
-      groups.at(-1)!.push(...ph);
-    }
-    const translated = groups.map((ph) => arpabetToFormatNonEnglish(ph, format)).join('-');
-    const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-    return { matched: true, translated: cased };
-  }
-
-  // Partial match — translate what we can, pass through the rest
-  const hasAnyMatch = parts.some(
-    (part, i) => part !== "'" && part !== '-' && partPhonemes[i] !== undefined
-  );
-  if (hasAnyMatch) {
-    let isFirstPart = true;
-    const translated = parts
-      .map((part, i) => {
-        if (part === "'" || part === '-') {
-          return part;
-        }
-        const partCase = isFirstPart ? casePattern : detectCasePattern(part);
-        isFirstPart = false;
-        const ph = partPhonemes[i];
-        if (ph) {
-          const t = arpabetToFormatNonEnglish(ph, format);
-          return preservesCase ? applyCasePattern(t, partCase) : t;
-        }
-        return part;
-      })
-      .join('');
-    return { matched: false, translated };
-  }
-
-  return null;
-}
-
-/**
- * Look up a word in custom pronunciations or the dictionary.
- * Tries stripping diacritics as a fallback (café→cafe, naïve→naive).
- * Returns null if not found in any dictionary.
- */
-function tryDictionaryLookup(
-  word: string,
-  format: OutputFormat,
-  casePattern: CasePattern
-): null | TranslateResult {
-  const wordLower = word.toLowerCase();
-  const phonemes = lookupPronunciationLower(wordLower);
-
-  if (phonemes) {
-    let result = arpabetToFormat(phonemes, format);
-    if (getFormatPreservesCase(format)) {
-      result = applyCasePattern(result, casePattern, word);
-    }
-    return { matched: true, translated: result };
-  }
-
-  // Try stripping diacritics (café→cafe, naïve→naive) before fallback
-  const stripped = stripDiacritics(word);
-  if (stripped !== word) {
-    const strippedLower = stripped.toLowerCase();
-    const strippedPhonemes = lookupPronunciationLower(strippedLower);
-    if (strippedPhonemes) {
-      let result = arpabetToFormat(strippedPhonemes, format);
-      if (getFormatPreservesCase(format)) {
-        result = applyCasePattern(result, casePattern, word);
-      }
-      return { matched: true, translated: result };
-    }
-  }
-
-  return null;
-}
-
-/**
  * Fast path for pure lowercase ASCII dictionary words (most common in natural text).
  * Pure a-z words exclude camelCase, contractions, and diacritics, so we can skip
  * all those checks and go straight to dictionary lookup.
  * Returns the translated string, or null if the word doesn't qualify.
  */
-function tryFastPath(word: string, format: OutputFormat): null | string {
+function tryFastPath(word: string, dict: PhoneDict, format: OutputFormat): null | string {
   if (!isAllLowerAscii(word)) {
     return null;
   }
   if (isInitialismLower(word)) {
     return null;
   }
-  const phonemes = lookupPronunciationLower(word);
-  return phonemes ? arpabetToFormat(phonemes, format) : null;
+  const phonemes = dict.entries[word];
+  return phonemes ? toFormat(phonemes, format, dict) : null;
 }
 
 /**
@@ -607,7 +431,7 @@ function tryInitialismWithSuffix(
  * These are the first word of every sentence — very common in natural text.
  * Returns the translated string, or null if the word doesn't qualify.
  */
-function tryTitleCaseFastPath(word: string, format: OutputFormat): null | string {
+function tryTitleCaseFastPath(word: string, dict: PhoneDict, format: OutputFormat): null | string {
   if (!isTitleCaseAscii(word)) {
     return null;
   }
@@ -617,12 +441,12 @@ function tryTitleCaseFastPath(word: string, format: OutputFormat): null | string
     return null;
   }
 
-  const phonemes = lookupPronunciationLower(lower);
+  const phonemes = dict.entries[lower];
   if (!phonemes) {
     return null;
   }
 
-  let translated = arpabetToFormat(phonemes, format);
+  let translated = toFormat(phonemes, format, dict);
   if (getFormatPreservesCase(format) && translated.length > 0) {
     translated = translated.charAt(0).toUpperCase() + translated.slice(1);
   }

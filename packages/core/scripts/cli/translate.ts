@@ -6,6 +6,8 @@
  *        npm run translate -- -l fr "bonjour monde"     (foreign language)
  */
 import {
+  CUSTOM_PRONUNCIATIONS,
+  getDictionary,
   loadDictionary,
   loadReverseDictionary,
   loadFrequencies,
@@ -16,6 +18,8 @@ import {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from '../../src/translate/reverse.js';
+import '../../src/register-english.js';
+import { setLangDict } from '../../src/dict-loader.js';
 import { LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
@@ -95,8 +99,10 @@ async function main() {
     return;
   }
 
-  // English mode — load dictionaries
+  // English mode — load dictionaries and build PhoneDict
   await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
+  const entries = { ...getDictionary(), ...CUSTOM_PRONUNCIATIONS };
+  setLangDict('en', { entries, lang: 'en' });
 
   if (reverse) {
     const tokens = reverseTranslateSyncWithMapping(text);

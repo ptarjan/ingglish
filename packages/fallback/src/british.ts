@@ -10,6 +10,8 @@ import { lookupPronunciation } from '@ingglish/dictionary';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToFormat } from '@ingglish/phonemes';
 
+export type LookupFn = (word: string) => null | string[] | undefined;
+
 /**
  * British-to-American spelling rules, ordered by specificity.
  * Each rule has a regex to match and a replacement string.
@@ -61,14 +63,15 @@ export interface BritishMatch {
  * Matches a word against British-to-American spelling rules.
  * Returns the American spelling and its phonemes, or null if no match.
  */
-export function matchBritish(word: string): BritishMatch | null {
+export function matchBritish(word: string, lookup?: LookupFn): BritishMatch | null {
   const lower = word.toLowerCase();
+  const lookupFn = lookup ?? lookupPronunciation;
 
   for (const { pattern, replacement } of BRITISH_TO_AMERICAN) {
     if (pattern.test(lower)) {
       const american = lower.replace(pattern, replacement);
       if (american !== lower) {
-        const phonemes = lookupPronunciation(american);
+        const phonemes = lookupFn(american);
         if (phonemes) {
           return { american, phonemes };
         }

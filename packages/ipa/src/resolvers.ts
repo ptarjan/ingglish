@@ -1,6 +1,9 @@
-export type Lemmatizer = (dict: Record<string, string[]>, word: string) => string[] | undefined;
+export type WordResolver = (
+  entries: Record<string, string[]>,
+  word: string
+) => string[] | undefined;
 
-export const LEMMATIZERS: Partial<Record<string, Lemmatizer>> = {
+export const WORD_RESOLVERS: Partial<Record<string, WordResolver>> = {
   eo: lemmatizeEo,
   fa: lemmatizeFa,
   fi: lemmatizeFi,

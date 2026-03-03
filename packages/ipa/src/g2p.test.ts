@@ -6,7 +6,7 @@ import { G2P_CONVERTERS } from './g2p';
 
 describe('G2P converters', () => {
   describe('Finnish', () => {
-    const g2p = G2P_CONVERTERS.fi!;
+    const g2p = G2P_CONVERTERS.fi!.convert;
 
     it('returns ARPAbet arrays', () => {
       const result = g2p('talo');
@@ -22,7 +22,7 @@ describe('G2P converters', () => {
   });
 
   describe('Esperanto', () => {
-    const g2p = G2P_CONVERTERS.eo!;
+    const g2p = G2P_CONVERTERS.eo!.convert;
 
     it('returns ARPAbet arrays', () => {
       const result = g2p('saluton');
@@ -37,7 +37,7 @@ describe('G2P converters', () => {
   });
 
   describe('Swahili', () => {
-    const g2p = G2P_CONVERTERS.sw!;
+    const g2p = G2P_CONVERTERS.sw!.convert;
 
     it('returns ARPAbet arrays', () => {
       const result = g2p('habari');
@@ -47,7 +47,7 @@ describe('G2P converters', () => {
   });
 
   describe('Malay', () => {
-    const g2p = G2P_CONVERTERS.ma!;
+    const g2p = G2P_CONVERTERS.ma!.convert;
 
     it('returns ARPAbet arrays', () => {
       const result = g2p('selamat');

@@ -10,10 +10,11 @@
  * ```
  */
 
-import { loadDictionary, loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
+import { loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { buildReverseMap } from '@ingglish/ipa';
 import type { TranslateOptions } from './dict-loader';
 import { getDictReverseMap, loadLangDict, setDictReverseMap } from './dict-loader';
+import './register-english';
 import { reverseTranslateSync, translateSync } from './translate';
 
 // =============================================================================
@@ -63,10 +64,9 @@ export async function reverseTranslate(
  */
 export async function translate(text: string, options: TranslateOptions = {}): Promise<string> {
   const { format = 'ingglish', lang } = options;
+  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
 
-  await (lang && lang !== 'en'
-    ? loadLangDict(lang)
-    : Promise.all([loadDictionary(), loadFrequencies()]));
+  await loadLangDict(effectiveLang);
 
   return translateSync(text, { format, lang });
 }
@@ -76,7 +76,7 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // =============================================================================
 
 export type { DictLoader, TranslateOptions } from './dict-loader';
-export { loadLangDict, setDictLoader } from './dict-loader';
+export { isDictLoaderRegistered, loadLangDict, setDictLoader, setLangDict } from './dict-loader';
 
 // Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';

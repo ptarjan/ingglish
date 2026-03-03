@@ -8,6 +8,7 @@
 import { lookupPronunciation } from '@ingglish/dictionary';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToFormat, stripStress } from '@ingglish/phonemes';
+import type { LookupFn } from './british';
 
 /** Voiceless consonants for -ed allomorph selection */
 const VOICELESS = new Set(['CH', 'F', 'HH', 'K', 'P', 'S', 'SH', 'T', 'TH']);
@@ -139,14 +140,15 @@ export interface StemmingMatch {
  * Matches a word against stemming rules (suffix/prefix removal + allomorph selection).
  * Returns the matched components and combined phonemes, or null if no match.
  */
-export function matchStemming(word: string): null | StemmingMatch {
+export function matchStemming(word: string, lookup?: LookupFn): null | StemmingMatch {
   const lowerWord = word.toLowerCase();
+  const lookupFn = lookup ?? lookupPronunciation;
 
   for (const { phonemes: suffixArpabet, suffix } of SUFFIX_PHONEMES) {
     if (lowerWord.endsWith(suffix) && lowerWord.length > suffix.length + 2) {
       const stem = lowerWord.slice(0, -suffix.length);
       for (const variant of getStemVariants(stem, suffix)) {
-        const baseArpabet = lookupPronunciation(variant);
+        const baseArpabet = lookupFn(variant);
         if (baseArpabet) {
           const resolvedSuffix = resolveSuffixPhonemes(suffix, suffixArpabet, baseArpabet);
           return {
@@ -162,7 +164,7 @@ export function matchStemming(word: string): null | StemmingMatch {
   for (const { phonemes: prefixArpabet, prefix } of PREFIX_PHONEMES) {
     if (lowerWord.startsWith(prefix) && lowerWord.length > prefix.length + 2) {
       const stem = lowerWord.slice(prefix.length);
-      const baseArpabet = lookupPronunciation(stem);
+      const baseArpabet = lookupFn(stem);
       if (baseArpabet) {
         return {
           phonemes: [...prefixArpabet, ...baseArpabet],

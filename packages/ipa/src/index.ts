@@ -21,5 +21,9 @@ export {
 } from './dict';
 export type { Language, PhoneDict } from './dict';
 export { ipaToArpabetClean } from './from-ipa';
+export { G2P_CONVERTERS } from './g2p';
+export type { G2PConverter, G2PEntry } from './g2p';
+export { WORD_RESOLVERS } from './resolvers';
+export type { WordResolver } from './resolvers';
 // Export individual functions for direct use
 export { arpabetPhonemeToIPA, arpabetToIPARaw } from './to-ipa';

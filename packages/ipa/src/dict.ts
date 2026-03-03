@@ -16,7 +16,6 @@ import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { G2P_CONVERTERS } from './g2p';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
-import { LEMMATIZERS } from './lemmatizers';
 import { ar } from './overrides/ar';
 import { de } from './overrides/de';
 import { eo } from './overrides/eo';
@@ -37,6 +36,7 @@ import { ro } from './overrides/ro';
 import { sv } from './overrides/sv';
 import { sw } from './overrides/sw';
 import { vi } from './overrides/vi';
+import { WORD_RESOLVERS } from './resolvers';
 
 // Pre-compiled regexes (avoid per-call RegExp object creation)
 const IPA_SLASH_RE = /^\/|\/$/g;
@@ -52,8 +52,14 @@ const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
  * from IPA at build time. English and foreign dicts share the same format.
  */
 export interface PhoneDict {
+  /** True for non-English languages — disables English R-coloring rules. */
+  disableRColoring?: boolean;
   entries: Record<string, string[]>;
   lang: string;
+  /** True for non-Latin scripts (Arabic, CJK, Khmer) — uses Unicode tokenizer. */
+  nonLatinScript?: boolean;
+  /** Pre-process text before tokenization (e.g. Khmer word segmentation). */
+  preprocess?: (text: string) => string;
 }
 
 /**
@@ -160,7 +166,7 @@ export function ipaToIngglish(ipa: string): string {
 /**
  * Look up a word in a PhoneDict, returning ARPAbet string[] or undefined.
  * Tries: overrides → exact → lowercase → title → accent-stripped → ß→ss →
- * curly apostrophes → lemmatization → compound splitting → G2P.
+ * curly apostrophes → word resolvers → apostrophe splitting → confident G2P.
  */
 export function lookupDict(dict: PhoneDict, word: string): string[] | undefined {
   const { entries, lang } = dict;
@@ -192,23 +198,46 @@ export function lookupDict(dict: PhoneDict, word: string): string[] | undefined 
       return curlyResult;
     }
   }
-  // Language-specific lemmatization (strip inflections, find base form)
-  if (Object.hasOwn(LEMMATIZERS, lang)) {
-    const lemmaResult = LEMMATIZERS[lang]!(entries, lower);
-    if (lemmaResult) {
-      return lemmaResult;
+  // Language-specific word resolution (inflection stripping, compounds, spelling normalization)
+  if (Object.hasOwn(WORD_RESOLVERS, lang)) {
+    const resolved = WORD_RESOLVERS[lang]!(entries, lower);
+    if (resolved) {
+      return resolved;
     }
   }
-  // Khmer compound fallback: try splitting into dictionary entries (longest-match-first)
-  if (lang === 'km') {
-    const compound = lookupKhmerCompound(entries, word);
-    if (compound !== undefined) {
-      return compound;
+  // Apostrophe splitting (all languages: English contractions, French clitics, etc.)
+  if (word.includes("'")) {
+    const parts = word.split(/(?<=')|(?=')/);
+    if (parts.length > 1) {
+      const merged: string[] = [];
+      let allFound = true;
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i] === "'") {
+          continue;
+        }
+        const part = parts[i]!;
+        let ph: string[] | undefined;
+        // In contraction context, prefer clitic form (d' → /d‿/) over bare letter name.
+        // Use lookupDictNoSplit to avoid infinite recursion (clitic form has apostrophe).
+        if (parts[i + 1] === "'") {
+          ph = lookupDictNoSplit(dict, part + "'");
+        }
+        ph ??= lookupDictNoSplit(dict, part);
+        if (!ph) {
+          allFound = false;
+          break;
+        }
+        merged.push(...ph);
+      }
+      if (allFound && merged.length > 0) {
+        return merged;
+      }
     }
   }
-  // G2P fallback for phonetically regular languages (Finnish, Esperanto, Swahili, Malay)
-  if (Object.hasOwn(G2P_CONVERTERS, lang)) {
-    return G2P_CONVERTERS[lang]!(lower);
+  // G2P fallback — only for confident converters (phonetically regular languages)
+  const g2p = G2P_CONVERTERS[lang];
+  if (g2p?.confident === true) {
+    return g2p.convert(lower);
   }
   return undefined;
 }
@@ -231,6 +260,52 @@ function getOverridesArpabet(lang: string): Record<string, string[]> | undefined
   }
   overridesArpabetCache.set(lang, cached);
   return cached;
+}
+
+/**
+ * Core lookup without apostrophe splitting. Used by apostrophe splitting
+ * to avoid infinite recursion (clitic forms like "d'" contain apostrophes).
+ */
+function lookupDictNoSplit(dict: PhoneDict, word: string): string[] | undefined {
+  const { entries, lang } = dict;
+  const overrides = getOverridesArpabet(lang);
+  const override = overrides?.[word] ?? overrides?.[word.toLowerCase()];
+  if (override) {
+    return override;
+  }
+
+  const lower = word.toLowerCase();
+  const title = lower.charAt(0).toUpperCase() + lower.slice(1);
+  const stripped = stripDiacritics(lower);
+  const directHit = entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
+  if (directHit) {
+    return directHit;
+  }
+
+  if (lower.includes('ß')) {
+    const ssLower = lower.replaceAll('ß', 'ss');
+    const ssTitle = ssLower.charAt(0).toUpperCase() + ssLower.slice(1);
+    return entries[ssLower] ?? entries[ssTitle];
+  }
+  if (word.includes("'")) {
+    const curly = word.replaceAll("'", '\u2019');
+    const curlyLower = curly.toLowerCase();
+    const curlyResult = entries[curly] ?? entries[curlyLower];
+    if (curlyResult) {
+      return curlyResult;
+    }
+  }
+  if (Object.hasOwn(WORD_RESOLVERS, lang)) {
+    const resolved = WORD_RESOLVERS[lang]!(entries, lower);
+    if (resolved) {
+      return resolved;
+    }
+  }
+  const g2p = G2P_CONVERTERS[lang];
+  if (g2p?.confident === true) {
+    return g2p.convert(lower);
+  }
+  return undefined;
 }
 
 /**
@@ -331,6 +406,9 @@ function lookupKhmerCompound(
   // Concatenate ARPAbet arrays of all parts
   return parts.flat();
 }
+
+// Register Khmer word resolver (greedy compound segmentation)
+WORD_RESOLVERS.km = (entries, word) => lookupKhmerCompound(entries, word);
 
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character

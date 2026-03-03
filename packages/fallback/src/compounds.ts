@@ -12,6 +12,9 @@ import {
   getFormatJoinSeparator,
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
+import type { LookupFn } from './british';
+
+export type FreqFn = (word: string) => number | undefined;
 
 /**
  * Capitalizes the first letter of a string.
@@ -51,7 +54,9 @@ const MAX_PART_LENGTH = 15;
  *
  * Returns an array of parts, or null if no complete decomposition exists.
  */
-export function dpDecompose(word: string): null | string[] {
+export function dpDecompose(word: string, lookup?: LookupFn, getFreq?: FreqFn): null | string[] {
+  const lookupFn = lookup ?? lookupPronunciation;
+  const freqFn = getFreq ?? getWordFrequency;
   const n = word.length;
   // Store backtrace index + score + part count instead of copying arrays.
   // dp[i].from = split point j (word[j..i] is the last part), dp[i].count = number of parts.
@@ -71,12 +76,12 @@ export function dpDecompose(word: string): null | string[] {
         continue;
       }
       const chunk = word.slice(j, i);
-      const phonemes = lookupPronunciation(chunk);
+      const phonemes = lookupFn(chunk);
       if (!phonemes) {
         continue;
       }
 
-      const freq = getWordFrequency(chunk);
+      const freq = freqFn(chunk);
       // Skip parts that are obscure (not in SUBTLEX or below frequency threshold)
       if (freq === undefined || freq < MIN_PART_FREQUENCY) {
         continue;

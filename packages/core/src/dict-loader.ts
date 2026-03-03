@@ -45,6 +45,13 @@ export function getLangDict(lang: string): PhoneDict | undefined {
 }
 
 /**
+ * Check if a dictionary loader has been registered.
+ */
+export function isDictLoaderRegistered(): boolean {
+  return dictLoader !== undefined;
+}
+
+/**
  * Load a dictionary, returning it from cache if available.
  * Requires a loader to have been registered via {@link setDictLoader}.
  */
@@ -83,4 +90,12 @@ export function setDictLoader(loader: DictLoader): void {
  */
 export function setDictReverseMap(lang: string, map: Map<string, string[]>): void {
   dictReverseCache.set(lang, map);
+}
+
+/**
+ * Manually cache a PhoneDict for a language.
+ * Useful for setting up English or test dictionaries without a loader.
+ */
+export function setLangDict(lang: string, dict: PhoneDict): void {
+  dictCache.set(lang, dict);
 }

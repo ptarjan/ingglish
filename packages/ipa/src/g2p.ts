@@ -12,7 +12,12 @@ import { getStress, isVowel } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 
-type G2PConverter = (word: string) => string[];
+export type G2PConverter = (word: string) => string[];
+
+export interface G2PEntry {
+  confident: boolean;
+  convert: G2PConverter;
+}
 
 /**
  * Convert IPA string to ARPAbet with default stress applied.
@@ -37,14 +42,15 @@ function ipaToArpabetWithStress(ipa: string, lang?: string): string[] {
 }
 
 /**
- * Map of language codes to G2P converter functions.
- * Used as the last fallback in lookupDict() before returning NOT_FOUND.
+ * Map of language codes to G2P converters with confidence level.
+ * Confident converters (phonetically regular languages) run inside lookupDict().
+ * Non-confident converters (e.g. English NRL rules) run after lookupDict() in forward.ts.
  */
-export const G2P_CONVERTERS: Record<string, G2PConverter> = {
-  eo: esperantoG2P,
-  fi: finnishG2P,
-  ma: malayG2P,
-  sw: swahiliG2P,
+export const G2P_CONVERTERS: Record<string, G2PEntry> = {
+  eo: { confident: true, convert: esperantoG2P },
+  fi: { confident: true, convert: finnishG2P },
+  ma: { confident: true, convert: malayG2P },
+  sw: { confident: true, convert: swahiliG2P },
 };
 
 // --- Shared helpers ---

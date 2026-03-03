@@ -1,11 +1,14 @@
 import { setDictLoader } from 'ingglish';
 import { setDictionaryLoader } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
-import { LANGUAGES } from '@ingglish/ipa';
+import { LANGUAGES, segmentKhmerText } from '@ingglish/ipa';
 
 export type { PhoneDict } from '@ingglish/ipa';
 export { LANGUAGES, lookupDict } from '@ingglish/ipa';
 export type { Language } from '@ingglish/ipa';
+
+/** Languages whose primary script is non-Latin (need Unicode tokenizer). */
+const NON_LATIN_LANGS = new Set(['ar', 'fa', 'ja', 'km', 'ko', 'or', 'yue', 'zh']);
 
 const cache = new Map<string, PhoneDict>();
 
@@ -16,7 +19,13 @@ export async function loadDict(code: string): Promise<PhoneDict> {
   }
 
   const entries = await fetchDictEntries(code);
-  const dict: PhoneDict = { entries, lang: code };
+  const dict: PhoneDict = {
+    entries,
+    lang: code,
+    ...(code !== 'en' && { disableRColoring: true }),
+    ...(NON_LATIN_LANGS.has(code) && { nonLatinScript: true }),
+    ...(code === 'km' && { preprocess: segmentKhmerText }),
+  };
   cache.set(code, dict);
   return dict;
 }
