@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
-  decodeHtmlBuffer,
+  decodeResponse,
   getBaseUrl,
   isHashOnlyChange,
   processProxiedHtml,
@@ -204,7 +204,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             throw new Error(`Failed to fetch: ${response.status}`);
           }
 
-          const rawHtml = decodeHtmlBuffer(await response.arrayBuffer());
+          const rawHtml = await decodeResponse(response);
 
           // Process HTML: sanitize, inject base tag, proxy fonts, add click handler
           const { baseUrl, html } = processProxiedHtml(rawHtml, {

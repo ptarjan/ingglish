@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   decodeHtmlBuffer,
+  decodeResponse,
   detectBotProtection,
+  detectCharsetFromHeader,
   escapeHtmlAttr,
   extractBaseHref,
   extractCanonicalUrl,
@@ -704,5 +706,82 @@ describe('processProxiedHtml', () => {
     });
 
     expect(result.baseUrl).toBe('https://real-site.com/articles/');
+  });
+});
+
+describe('detectCharsetFromHeader', () => {
+  it('extracts charset from Content-Type header', () => {
+    const response = new Response('', {
+      headers: { 'Content-Type': 'text/html; charset=Shift_JIS' },
+    });
+    expect(detectCharsetFromHeader(response)).toBe('Shift_JIS');
+  });
+
+  it('extracts charset with quotes', () => {
+    const response = new Response('', {
+      headers: { 'Content-Type': 'text/html; charset="EUC-JP"' },
+    });
+    expect(detectCharsetFromHeader(response)).toBe('EUC-JP');
+  });
+
+  it('is case-insensitive', () => {
+    const response = new Response('', {
+      headers: { 'Content-Type': 'text/html; Charset=ISO-8859-1' },
+    });
+    expect(detectCharsetFromHeader(response)).toBe('ISO-8859-1');
+  });
+
+  it('returns null when no Content-Type header', () => {
+    // Response() sets a default Content-Type, so build one without it
+    const response = new Response(null, { status: 200 });
+    response.headers.delete('content-type');
+    expect(detectCharsetFromHeader(response)).toBeNull();
+  });
+
+  it('returns null when no charset in Content-Type', () => {
+    const response = new Response('', {
+      headers: { 'Content-Type': 'text/html' },
+    });
+    expect(detectCharsetFromHeader(response)).toBeNull();
+  });
+});
+
+describe('decodeResponse', () => {
+  it('uses Content-Type header charset when available', async () => {
+    const metaPart = new TextEncoder().encode('<html><body>');
+    const sjisBytes = new Uint8Array([0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd]);
+    const endPart = new TextEncoder().encode('</body></html>');
+    const body = new Uint8Array([...metaPart, ...sjisBytes, ...endPart]);
+
+    const response = new Response(body, {
+      headers: { 'Content-Type': 'text/html; charset=Shift_JIS' },
+    });
+
+    const result = await decodeResponse(response);
+    expect(result).toContain('こんにちは');
+  });
+
+  it('falls back to byte-level detection when no header charset', async () => {
+    const metaPart = new TextEncoder().encode(
+      '<html><head><meta charset="Shift_JIS"></head><body>'
+    );
+    const sjisBytes = new Uint8Array([0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd]);
+    const endPart = new TextEncoder().encode('</body></html>');
+    const body = new Uint8Array([...metaPart, ...sjisBytes, ...endPart]);
+
+    const response = new Response(body, {
+      headers: { 'Content-Type': 'text/html' },
+    });
+
+    const result = await decodeResponse(response);
+    expect(result).toContain('こんにちは');
+  });
+
+  it('defaults to UTF-8 when no charset anywhere', async () => {
+    const html = '<html><body>Hello world</body></html>';
+    const response = new Response(html);
+
+    const result = await decodeResponse(response);
+    expect(result).toBe(html);
   });
 });

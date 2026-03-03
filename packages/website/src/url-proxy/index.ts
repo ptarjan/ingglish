@@ -30,6 +30,27 @@ export function decodeHtmlBuffer(buffer: ArrayBuffer): string {
 }
 
 /**
+ * Decodes a fetch Response with correct charset detection.
+ * Detection order:
+ * 1. Content-Type header charset
+ * 2. HTML meta tag / XML declaration (ASCII scan of first 2KB)
+ * 3. Default: UTF-8
+ */
+export async function decodeResponse(response: Response): Promise<string> {
+  const headerCharset = detectCharsetFromHeader(response);
+  if (headerCharset) {
+    const buffer = await response.arrayBuffer();
+    try {
+      return new TextDecoder(headerCharset, { fatal: true }).decode(buffer);
+    } catch {
+      // Header charset was wrong, fall through to byte-level detection
+      return decodeHtmlBuffer(buffer);
+    }
+  }
+  return decodeHtmlBuffer(await response.arrayBuffer());
+}
+
+/**
  * Detects if HTML content is a bot protection/challenge page.
  * Returns a user-friendly error message if detected, null otherwise.
  */
@@ -59,6 +80,17 @@ export function detectBotProtection(html: string): null | string {
   }
 
   return null;
+}
+
+/**
+ * Parses the Content-Type header for a charset parameter.
+ * e.g. "text/html; charset=Shift_JIS" → "Shift_JIS"
+ */
+export function detectCharsetFromHeader(response: Response): null | string {
+  const contentType = response.headers.get('content-type');
+  if (!contentType) {return null;}
+  const match = /charset\s*=\s*["']?([^\s"';,]+)/i.exec(contentType);
+  return match?.[1] ?? null;
 }
 
 /**
