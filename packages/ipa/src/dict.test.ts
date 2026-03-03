@@ -14,6 +14,25 @@ import {
 import { ipaToArpabet } from './from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 
+/** Convert dict entries from IPA strings to ARPAbet arrays if needed. */
+function convertIpaEntriesToArpabet(
+  raw: Record<string, string | string[]>,
+  lang: string
+): Record<string, string[]> {
+  const firstValue = Object.values(raw)[0];
+  if (firstValue === undefined || Array.isArray(firstValue)) {
+    return raw as Record<string, string[]>;
+  }
+  const result: Record<string, string[]> = {};
+  for (const [word, val] of Object.entries(raw)) {
+    const arpabet = ipa(val as string, lang);
+    if (arpabet.length > 0) {
+      result[word] = arpabet;
+    }
+  }
+  return result;
+}
+
 /** Convert IPA string → ARPAbet with default stress applied. */
 function ipa(ipaStr: string, lang?: string): string[] {
   const clean = ipaStr.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
@@ -332,11 +351,13 @@ describe('translateDictWithMapping', () => {
   });
 });
 
-function mkKhmerDict(raw: Record<string, string[]>): PhoneDict {
+function mkKhmerDict(raw: Record<string, string | string[]>): PhoneDict {
   const langMeta = getLanguage('km')!;
+  // Dict files may contain IPA strings instead of ARPAbet arrays — convert at load time
+  const entries = convertIpaEntriesToArpabet(raw, 'km');
   return {
     disableRColoring: langMeta.disableRColoring,
-    entries: raw,
+    entries,
     lang: 'km',
     nonLatinScript: langMeta.nonLatinScript,
     preprocess: langMeta.preprocess,
