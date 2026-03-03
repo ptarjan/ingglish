@@ -88,7 +88,9 @@ export function detectBotProtection(html: string): null | string {
  */
 export function detectCharsetFromHeader(response: Response): null | string {
   const contentType = response.headers.get('content-type');
-  if (!contentType) {return null;}
+  if (!contentType) {
+    return null;
+  }
   const match = /charset\s*=\s*["']?([^\s"';,]+)/i.exec(contentType);
   return match?.[1] ?? null;
 }
