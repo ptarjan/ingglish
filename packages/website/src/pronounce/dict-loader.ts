@@ -1,5 +1,10 @@
 import { setDictLoader } from 'ingglish';
-import { setDictionaryLoader } from '@ingglish/dictionary';
+import {
+  getDictionary,
+  loadDictionary,
+  loadFrequencies,
+  setDictionaryLoader,
+} from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import { getLanguage, LANGUAGES } from '@ingglish/ipa';
 
@@ -15,7 +20,21 @@ export async function loadDict(code: string): Promise<PhoneDict> {
     return cached;
   }
 
-  const entries = await fetchDictEntries(code);
+  let entries: Record<string, string[]>;
+
+  if (code === 'en') {
+    // Load the CMU dictionary singleton and word frequencies in parallel.
+    // loadDictionary() uses our custom loader (set below) which fetches en.json.
+    // We then reuse getDictionary() for the PhoneDict entries — no double fetch.
+    // The @ingglish/fallback package calls lookupPronunciation → getDictionary()
+    // directly (compound splitting, stemming, British spelling), so the CMU
+    // singleton must be populated or those calls throw.
+    await Promise.all([loadDictionary(), loadFrequencies()]);
+    entries = getDictionary();
+  } else {
+    entries = await fetchDictEntries(code);
+  }
+
   const langMeta = getLanguage(code);
   const dict: PhoneDict = {
     conventionalCapitals: langMeta?.conventionalCapitals,
