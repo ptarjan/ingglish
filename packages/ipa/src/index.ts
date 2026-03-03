@@ -11,6 +11,7 @@ registerFormat('ipa', {
 
 export {
   buildReverseMap,
+  getLanguage,
   ipaToIngglish,
   LANGUAGES,
   lookupDict,

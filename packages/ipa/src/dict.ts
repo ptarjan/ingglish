@@ -52,6 +52,8 @@ const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
  * from IPA at build time. English and foreign dicts share the same format.
  */
 export interface PhoneDict {
+  /** Pronouns capitalized by convention, not phonetics (e.g. English "I"). Lowered in contraction output. */
+  conventionalCapitals?: Set<string>;
   /** True for non-English languages — disables English R-coloring rules. */
   disableRColoring?: boolean;
   entries: Record<string, string[]>;
@@ -73,7 +75,12 @@ const khmerSegmenter =
 
 export interface Language {
   code: string;
+  /** Pronouns capitalized by convention, not phonetics (e.g. English "I"). */
+  conventionalCapitals?: Set<string>;
+  disableRColoring?: boolean;
   label: string;
+  nonLatinScript?: boolean;
+  preprocess?: (text: string) => string;
 }
 
 /** Insert spaces between adjacent Khmer words that have no separator. */
@@ -98,30 +105,43 @@ export function segmentKhmerText(text: string): string {
 }
 
 export const LANGUAGES: Language[] = [
-  { code: 'ar', label: 'Arabic' },
-  { code: 'yue', label: 'Cantonese' },
-  { code: 'nl', label: 'Dutch' },
-  { code: 'en', label: 'English' },
-  { code: 'eo', label: 'Esperanto' },
-  { code: 'fi', label: 'Finnish' },
-  { code: 'fr', label: 'French' },
-  { code: 'de', label: 'German' },
-  { code: 'is', label: 'Icelandic' },
-  { code: 'ja', label: 'Japanese' },
-  { code: 'km', label: 'Khmer' },
-  { code: 'ko', label: 'Korean' },
-  { code: 'ma', label: 'Malay' },
-  { code: 'zh', label: 'Mandarin' },
-  { code: 'nb', label: 'Norwegian' },
-  { code: 'or', label: 'Odia' },
-  { code: 'fa', label: 'Persian' },
-  { code: 'pt', label: 'Portuguese' },
-  { code: 'ro', label: 'Romanian' },
-  { code: 'es', label: 'Spanish' },
-  { code: 'sw', label: 'Swahili' },
-  { code: 'sv', label: 'Swedish' },
-  { code: 'vi', label: 'Vietnamese' },
+  { code: 'ar', disableRColoring: true, label: 'Arabic', nonLatinScript: true },
+  { code: 'yue', disableRColoring: true, label: 'Cantonese', nonLatinScript: true },
+  { code: 'nl', disableRColoring: true, label: 'Dutch' },
+  { code: 'en', conventionalCapitals: new Set(['I']), label: 'English' },
+  { code: 'eo', disableRColoring: true, label: 'Esperanto' },
+  { code: 'fi', disableRColoring: true, label: 'Finnish' },
+  { code: 'fr', disableRColoring: true, label: 'French' },
+  { code: 'de', disableRColoring: true, label: 'German' },
+  { code: 'is', disableRColoring: true, label: 'Icelandic' },
+  { code: 'ja', disableRColoring: true, label: 'Japanese', nonLatinScript: true },
+  {
+    code: 'km',
+    disableRColoring: true,
+    label: 'Khmer',
+    nonLatinScript: true,
+    preprocess: segmentKhmerText,
+  },
+  { code: 'ko', disableRColoring: true, label: 'Korean', nonLatinScript: true },
+  { code: 'ma', disableRColoring: true, label: 'Malay' },
+  { code: 'zh', disableRColoring: true, label: 'Mandarin', nonLatinScript: true },
+  { code: 'nb', disableRColoring: true, label: 'Norwegian' },
+  { code: 'or', disableRColoring: true, label: 'Odia', nonLatinScript: true },
+  { code: 'fa', disableRColoring: true, label: 'Persian', nonLatinScript: true },
+  { code: 'pt', disableRColoring: true, label: 'Portuguese' },
+  { code: 'ro', disableRColoring: true, label: 'Romanian' },
+  { code: 'es', disableRColoring: true, label: 'Spanish' },
+  { code: 'sw', disableRColoring: true, label: 'Swahili' },
+  { code: 'sv', disableRColoring: true, label: 'Swedish' },
+  { code: 'vi', disableRColoring: true, label: 'Vietnamese' },
 ];
+
+const LANG_MAP = new Map(LANGUAGES.map((l) => [l.code, l]));
+
+/** Look up a Language by its code. */
+export function getLanguage(code: string): Language | undefined {
+  return LANG_MAP.get(code);
+}
 
 /**
  * Raw IPA word overrides per language (source format — IPA strings for readability).
@@ -165,7 +185,7 @@ export function ipaToIngglish(ipa: string): string {
 
 /**
  * Look up a word in a PhoneDict, returning ARPAbet string[] or undefined.
- * Tries: overrides → exact → lowercase → title → accent-stripped → ß→ss →
+ * Tries: overrides → exact → lowercase → title → accent-stripped →
  * curly apostrophes → word resolvers → apostrophe splitting → confident G2P.
  */
 export function lookupDict(dict: PhoneDict, word: string): string[] | undefined {
@@ -182,12 +202,6 @@ export function lookupDict(dict: PhoneDict, word: string): string[] | undefined 
   const directHit = entries[word] ?? entries[lower] ?? entries[title] ?? entries[stripped];
   if (directHit) {
     return directHit;
-  }
-  // German ß→ss normalization (e.g. "Bewußtsein" → dict["Bewusstsein"])
-  if (lower.includes('ß')) {
-    const ssLower = lower.replaceAll('ß', 'ss');
-    const ssTitle = ssLower.charAt(0).toUpperCase() + ssLower.slice(1);
-    return entries[ssLower] ?? entries[ssTitle];
   }
   // Some dicts use curly apostrophes (U+2019) — try matching if word has straight ones
   if (word.includes("'")) {
@@ -282,11 +296,6 @@ function lookupDictNoSplit(dict: PhoneDict, word: string): string[] | undefined 
     return directHit;
   }
 
-  if (lower.includes('ß')) {
-    const ssLower = lower.replaceAll('ß', 'ss');
-    const ssTitle = ssLower.charAt(0).toUpperCase() + ssLower.slice(1);
-    return entries[ssLower] ?? entries[ssTitle];
-  }
   if (word.includes("'")) {
     const curly = word.replaceAll("'", '\u2019');
     const curlyLower = curly.toLowerCase();
@@ -336,15 +345,6 @@ function applyDefaultStress(arpabet: string[]): string[] {
     }
   }
   return result;
-}
-
-/**
- * Converts ARPAbet phonemes to the specified output format with foreign-language options.
- * Disables English R-coloring rules since foreign languages treat R as
- * a regular consonant (e.g. Korean 사랑 → "sarang" not "sarrang").
- */
-function arpabetToFormatForeign(arpabet: string[], format: OutputFormat): string {
-  return arpabetToFormat(arpabet, format, { disableRColoring: true });
 }
 
 function decomposeKhmer(
@@ -486,11 +486,10 @@ export function translateDictWithMapping(
   dict: PhoneDict,
   format: OutputFormat = 'ingglish'
 ): TranslatedToken[] {
-  const { lang } = dict;
   let atSentenceStart = true;
 
-  // Khmer has no inherent word boundaries — segment before processing
-  const processed = lang === 'km' ? segmentKhmerText(text) : text;
+  // Pre-process text (e.g. Khmer word segmentation)
+  const processed = dict.preprocess ? dict.preprocess(text) : text;
 
   const tokens: TranslatedToken[] = [];
 
@@ -541,7 +540,9 @@ export function translateDictWithMapping(
 
     const phonemes = lookupDict(dict, core);
     if (phonemes) {
-      const translated = arpabetToFormatForeign(phonemes, format);
+      const translated = arpabetToFormat(phonemes, format, {
+        disableRColoring: dict.disableRColoring,
+      });
       const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
       tokens.push({
         isWord: true,
@@ -591,7 +592,9 @@ export function translateDictWithMapping(
           const ph = partPhonemes[i]!;
           groups.at(-1)!.push(...ph);
         }
-        const translated = groups.map((ph) => arpabetToFormatForeign(ph, format)).join('-');
+        const translated = groups
+          .map((ph) => arpabetToFormat(ph, format, { disableRColoring: dict.disableRColoring }))
+          .join('-');
         const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
         tokens.push({
           isWord: true,
@@ -612,7 +615,9 @@ export function translateDictWithMapping(
         isFirstPart = false;
         const partPh = partPhonemes[i];
         if (partPh) {
-          const partTranslated = arpabetToFormatForeign(partPh, format);
+          const partTranslated = arpabetToFormat(partPh, format, {
+            disableRColoring: dict.disableRColoring,
+          });
           return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
         }
         return NOT_FOUND_MARKER + part;

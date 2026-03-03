@@ -281,11 +281,14 @@ function translateWordInternal(
   if (phonemes) {
     let translated = toFormat(phonemes, format, dict);
     if (getFormatPreservesCase(format)) {
-      // I-contractions (I'm, I'll, I've, I'd) should be lowercase
-      // because "I" is only capitalized in English by convention, not phonetically special
-      translated = word.startsWith("I'")
-        ? translated.toLowerCase()
-        : applyCasePattern(translated, casePattern, word);
+      // Conventionally-capitalized pronouns in contractions (e.g. English "I'm", "I'll")
+      // should be lowered since the capitalization isn't phonetically meaningful
+      const apostropheIdx = word.indexOf("'");
+      const beforeApostrophe = apostropheIdx > 0 ? word.slice(0, apostropheIdx) : null;
+      translated =
+        beforeApostrophe !== null && dict.conventionalCapitals?.has(beforeApostrophe) === true
+          ? translated.toLowerCase()
+          : applyCasePattern(translated, casePattern, word);
     }
     return { matched: true, translated };
   }

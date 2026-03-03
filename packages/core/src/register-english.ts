@@ -15,7 +15,7 @@ import {
 } from '@ingglish/dictionary';
 import { dpDecompose, matchBritish, matchStemming } from '@ingglish/fallback';
 import { wordToArpabet } from '@ingglish/g2p';
-import { G2P_CONVERTERS, WORD_RESOLVERS } from '@ingglish/ipa';
+import { G2P_CONVERTERS, getLanguage, WORD_RESOLVERS } from '@ingglish/ipa';
 import { isDictLoaderRegistered, setDictLoader, setLangDict } from './dict-loader';
 
 // English word resolver: British → stemming → compounds
@@ -52,11 +52,12 @@ WORD_RESOLVERS.en = (entries, word) => {
 G2P_CONVERTERS.en = { confident: false, convert: wordToArpabet };
 
 /** Build an English PhoneDict from the CMU dictionary + custom pronunciations. */
-function buildEnglishPhoneDict(): { entries: Record<string, string[]>; lang: 'en' } {
+function buildEnglishPhoneDict() {
   const cmuDict = getDictionary();
   // Merge CMU dict with custom pronunciations (custom wins)
   const entries: Record<string, string[]> = { ...cmuDict, ...CUSTOM_PRONUNCIATIONS };
-  return { entries, lang: 'en' };
+  const enMeta = getLanguage('en');
+  return { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' as const };
 }
 
 // Register a default dict loader for Node.js/test usage.

@@ -171,10 +171,9 @@ registerFormat('ipa', {
  */
 export function reverseTranslateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const isNonEnglish = !!lang && lang !== 'en';
+  const reverseMap = lang ? getDictReverseMap(lang) : undefined;
 
-  if (isNonEnglish) {
-    const reverseMap = requireReverseMap(lang);
+  if (reverseMap) {
     // Ingglish output is always Latin script, so use standard extractTokens
     const { preserved, rawTokens } = extractTokens(text);
     return mapTokens(rawTokens, preserved, (w) => reverseLangWordAsResult(w, reverseMap))
@@ -199,10 +198,9 @@ export function reverseTranslateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
-  const isNonEnglish = !!lang && lang !== 'en';
+  const reverseMap = lang ? getDictReverseMap(lang) : undefined;
 
-  if (isNonEnglish) {
-    const reverseMap = requireReverseMap(lang);
+  if (reverseMap) {
     const { preserved, rawTokens } = extractTokens(text);
     return mapTokens(rawTokens, preserved, (w) => reverseLangWordAsResult(w, reverseMap));
   }
@@ -212,19 +210,6 @@ export function reverseTranslateSyncWithMapping(
     return handler.reverseTextWithMapping(text);
   }
   return reverseTranslateIngglishTextWithMapping(text);
-}
-
-/**
- * Returns the reverse map for a language, or throws if not built.
- */
-function requireReverseMap(lang: string): Map<string, string[]> {
-  const reverseMap = getDictReverseMap(lang);
-  if (!reverseMap) {
-    throw new Error(
-      `Reverse map for "${lang}" not built. Call reverseTranslate(text, { lang: "${lang}" }) first.`
-    );
-  }
-  return reverseMap;
 }
 
 /**

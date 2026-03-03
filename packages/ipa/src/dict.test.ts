@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { getStress, isVowel } from '@ingglish/phonemes'; // also registers 'pronunciation' format
 import type { PhoneDict } from './dict';
 import {
+  getLanguage,
   LANGUAGES,
   lookupDict,
-  segmentKhmerText,
   translateDict,
   translateDictWithMapping,
   NOT_FOUND_MARKER,
@@ -39,7 +39,14 @@ function mkDict(entries: Record<string, string>, lang = ''): PhoneDict {
   for (const [word, ipaStr] of Object.entries(entries)) {
     arpabetEntries[word] = ipa(ipaStr, lang || undefined);
   }
-  return { entries: arpabetEntries, lang };
+  const langMeta = lang ? getLanguage(lang) : undefined;
+  return {
+    disableRColoring: langMeta?.disableRColoring,
+    entries: arpabetEntries,
+    lang,
+    nonLatinScript: langMeta?.nonLatinScript,
+    preprocess: langMeta?.preprocess,
+  };
 }
 
 describe('translateDict', () => {
@@ -325,6 +332,17 @@ describe('translateDictWithMapping', () => {
   });
 });
 
+function mkKhmerDict(raw: Record<string, string[]>): PhoneDict {
+  const langMeta = getLanguage('km')!;
+  return {
+    disableRColoring: langMeta.disableRColoring,
+    entries: raw,
+    lang: 'km',
+    nonLatinScript: langMeta.nonLatinScript,
+    preprocess: langMeta.preprocess,
+  };
+}
+
 describe('Khmer compound decomposition', () => {
   const dictsDir = path.resolve(__dirname, '../../website/public/ipa-dicts');
   const kmDictPath = path.join(dictsDir, 'km.json');
@@ -332,7 +350,7 @@ describe('Khmer compound decomposition', () => {
 
   it.skipIf(!hasDicts)('strips slashes from compound IPA parts', () => {
     const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string[]>;
-    const dict: PhoneDict = { entries: raw, lang: 'km' };
+    const dict = mkKhmerDict(raw);
     // "លើក្បាលទា" decomposes to លើ + ក្បាល + ទា (all in dict)
     const arpabet = lookupDict(dict, 'លើក្បាលទា');
     expect(arpabet).toBeDefined();
@@ -344,7 +362,7 @@ describe('Khmer compound decomposition', () => {
 
   it.skipIf(!hasDicts)('translates Khmer phrases that browsers may segment differently', () => {
     const raw = JSON.parse(fs.readFileSync(kmDictPath, 'utf8')) as Record<string, string[]>;
-    const dict: PhoneDict = { entries: raw, lang: 'km' };
+    const dict = mkKhmerDict(raw);
     // These words may appear as standalone segments in some browsers' Intl.Segmenter
     const browserSegments = [
       'ញាក់',
@@ -419,10 +437,17 @@ describe('foreign sample coverage', () => {
           continue;
         }
         const raw = JSON.parse(fs.readFileSync(dictPath, 'utf8')) as Record<string, string[]>;
-        const dict: PhoneDict = { entries: raw, lang: code };
+        const langMeta = getLanguage(code);
+        const dict: PhoneDict = {
+          disableRColoring: langMeta?.disableRColoring,
+          entries: raw,
+          lang: code,
+          nonLatinScript: langMeta?.nonLatinScript,
+          preprocess: langMeta?.preprocess,
+        };
 
         for (const sample of samples) {
-          const text = code === 'km' ? segmentKhmerText(sample.text) : sample.text;
+          const text = dict.preprocess ? dict.preprocess(sample.text) : sample.text;
           const words = text
             .split(/\s+/)
             .map((w) => w.replace(/^[^\p{L}\p{M}]+/u, '').replace(/[^\p{L}\p{M}]+$/u, ''))

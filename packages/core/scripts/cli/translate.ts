@@ -20,7 +20,7 @@ import {
 } from '../../src/translate/reverse.js';
 import '../../src/register-english.js';
 import { setLangDict } from '../../src/dict-loader.js';
-import { LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
+import { getLanguage, LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -32,7 +32,14 @@ function loadPhoneDict(langCode: string): PhoneDict {
     `${langCode}.json`
   );
   const entries = JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string[]>;
-  return { entries, lang: langCode };
+  const langMeta = getLanguage(langCode);
+  return {
+    disableRColoring: langMeta?.disableRColoring,
+    entries,
+    lang: langCode,
+    nonLatinScript: langMeta?.nonLatinScript,
+    preprocess: langMeta?.preprocess,
+  };
 }
 
 async function main() {
@@ -102,7 +109,8 @@ async function main() {
   // English mode — load dictionaries and build PhoneDict
   await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]);
   const entries = { ...getDictionary(), ...CUSTOM_PRONUNCIATIONS };
-  setLangDict('en', { entries, lang: 'en' });
+  const enMeta = getLanguage('en');
+  setLangDict('en', { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' });
 
   if (reverse) {
     const tokens = reverseTranslateSyncWithMapping(text);

@@ -4,6 +4,7 @@ export type WordResolver = (
 ) => string[] | undefined;
 
 export const WORD_RESOLVERS: Partial<Record<string, WordResolver>> = {
+  de: resolveDeEszett,
   eo: lemmatizeEo,
   fa: lemmatizeFa,
   fi: lemmatizeFi,
@@ -13,6 +14,15 @@ export const WORD_RESOLVERS: Partial<Record<string, WordResolver>> = {
   sv: lemmatizeSv,
   sw: lemmatizeSw,
 };
+
+/** German ß→ss normalization (e.g. "daß" → dict["dass"], "Bewußtsein" → dict["Bewusstsein"]). */
+function resolveDeEszett(entries: Record<string, string[]>, word: string): string[] | undefined {
+  if (word.includes('ß')) {
+    const ss = word.replaceAll('ß', 'ss');
+    const title = ss.charAt(0).toUpperCase() + ss.slice(1);
+    return entries[ss] ?? entries[title];
+  }
+}
 
 /** Try candidates in the dictionary, return first match. */
 function tryLookup(dict: Record<string, string[]>, ...candidates: string[]): string[] | undefined {

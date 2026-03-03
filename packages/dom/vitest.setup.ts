@@ -5,6 +5,7 @@ import {
   loadFrequencies,
   loadReverseDictionary,
 } from '@ingglish/dictionary';
+import { getLanguage } from '@ingglish/ipa';
 import { setLangDict } from 'ingglish'; // side-effect: registers English word resolver + G2P
 
 // Pre-load dictionary before any tests run in this worker
@@ -13,4 +14,5 @@ await Promise.all([loadDictionary(), loadReverseDictionary(), loadFrequencies()]
 
 // Build and cache the English PhoneDict so translateSync() works without await
 const entries = { ...getDictionary(), ...CUSTOM_PRONUNCIATIONS };
-setLangDict('en', { entries, lang: 'en' });
+const enMeta = getLanguage('en');
+setLangDict('en', { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' });
