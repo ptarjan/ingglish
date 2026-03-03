@@ -128,6 +128,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         history.replaceState({ translatorUrl: targetUrl }, '', globalThis.location.href);
       }
 
+      const skipLoadingReset = false;
       try {
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
@@ -254,7 +255,9 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           `Failed to load page: ${error_ instanceof Error ? error_.message : 'Unknown error'}`
         );
       } finally {
-        setIsLoading(false);
+        if (!skipLoadingReset) {
+          setIsLoading(false);
+        }
       }
     },
     [outputFormat, onNavigate, onLanguageDetected, selectedLanguage, scrollToHash]

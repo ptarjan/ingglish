@@ -39,7 +39,6 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     setSelectedLanguage(lang);
     localStorage.setItem('ingglish-url-lang', lang);
   }, []);
-
   const { clear, dictLoading, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
     useUrlTranslator({
       onLanguageDetected: handleLanguageDetected,
