@@ -125,6 +125,11 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
 
+        // Ensure the dictionary is loaded for non-English languages before translating
+        if (selectedLanguage !== 'en') {
+          await loadLangDict(selectedLanguage);
+        }
+
         // Build mapping fn for non-English languages
         const translateWithMappingFn =
           selectedLanguage === 'en'
