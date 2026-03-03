@@ -45,6 +45,7 @@ const config: KnipConfig = {
     '@ingglish/*', // workspace packages resolved via npm workspaces
     'ingglish', // root workspace package used in tests
     'playwright', // used in standalone diagnostic script (not @playwright/test)
+    'tsx', // invoked via npx tsx in build scripts (.cjs wrappers)
   ],
   ignoreBinaries: ['playwright', 'vite-node'],
   ignoreExportsUsedInFile: true,
