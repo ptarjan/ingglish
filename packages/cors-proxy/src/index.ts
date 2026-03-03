@@ -154,29 +154,34 @@ export default {
         redirect: 'follow',
       });
 
-      // Get content type
+      // Get content type and raw body (preserve original encoding for non-UTF-8 pages)
       const contentType = response.headers.get('Content-Type') ?? 'text/html';
-      const html = await response.text();
+      const body = await response.arrayBuffer();
 
       // Check if content is HTML - either by content-type or by content inspection
       // Some sites return text/plain for HTML or block proxies with wrong content-type
       const isHtmlContentType =
         contentType.includes('text/html') || contentType.includes('application/xhtml');
-      const looksLikeHtml =
-        html.trimStart().startsWith('<!') ||
-        html.trimStart().toLowerCase().startsWith('<html') ||
-        /<html[\s>]/i.test(html.slice(0, 1000));
 
-      if (!isHtmlContentType && !looksLikeHtml) {
-        // Include first 200 chars of body for debugging blocked responses
-        const preview = html.slice(0, 200);
-        return new Response(
-          `Only HTML content is supported (received: ${contentType})\n\nBody preview:\n${preview}`,
-          {
-            headers: corsHeaders(origin),
-            status: 415,
-          }
-        );
+      if (!isHtmlContentType) {
+        // Peek at first 1000 bytes as Latin1 (preserves all byte values regardless of encoding)
+        const peek = new TextDecoder('latin1').decode(body.slice(0, 1000));
+        const looksLikeHtml =
+          peek.trimStart().startsWith('<!') ||
+          peek.trimStart().startsWith('<?') ||
+          peek.trimStart().toLowerCase().startsWith('<html') ||
+          /<html[\s>]/i.test(peek);
+
+        if (!looksLikeHtml) {
+          const preview = peek.slice(0, 200);
+          return new Response(
+            `Only HTML content is supported (received: ${contentType})\n\nBody preview:\n${preview}`,
+            {
+              headers: corsHeaders(origin),
+              status: 415,
+            }
+          );
+        }
       }
 
       // Ensure minimum 5 minute cache, default to 1 hour
@@ -193,7 +198,7 @@ export default {
       }
       const cacheControl = `public, max-age=${cacheSeconds}`;
 
-      return new Response(html, {
+      return new Response(body, {
         headers: Object.assign({}, corsHeaders(origin), {
           'Cache-Control': cacheControl,
           'Content-Type': contentType,

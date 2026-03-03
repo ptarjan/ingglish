@@ -96,6 +96,49 @@ describe('cors-proxy', () => {
       vi.restoreAllMocks();
     });
 
+    it('should preserve raw bytes for non-UTF-8 pages', async () => {
+      // Shift_JIS encoded bytes for "テスト" (katakana "test")
+      const shiftJisBytes = new Uint8Array([
+        0x3c,
+        0x68,
+        0x74,
+        0x6d,
+        0x6c,
+        0x3e, // <html>
+        0x83,
+        0x65,
+        0x83,
+        0x58,
+        0x83,
+        0x67, // テスト in Shift_JIS
+        0x3c,
+        0x2f,
+        0x68,
+        0x74,
+        0x6d,
+        0x6c,
+        0x3e, // </html>
+      ]);
+
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(shiftJisBytes, {
+          headers: { 'Content-Type': 'text/html' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.jp/page.html', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+
+      // Verify raw bytes are preserved (not decoded/re-encoded as UTF-8)
+      const body = new Uint8Array(await response.arrayBuffer());
+      expect(body).toEqual(shiftJisBytes);
+    });
+
     it('should handle OPTIONS preflight with valid origin', async () => {
       const request = new Request('https://proxy.example.com/', {
         headers: { Origin: 'https://ingglish.com' },
