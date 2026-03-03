@@ -52,7 +52,13 @@ For reverse translation (Ingglish → English):
 npm run translate -- -r "haloh werld"
 ```
 
-This is useful for debugging translation issues and understanding how specific words behave.
+For non-English languages:
+```bash
+npm run translate -- -l fr "bonjour monde"
+npm run translate -- -l ja "東京"
+```
+
+Run without arguments to see all available language codes.
 
 ## Running Inline Scripts
 
