@@ -41,7 +41,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<null | string>(null);
-  const [dictLoading, setDictLoading] = useState(false);
+  const [dictLoading, setDictLoading] = useState(selectedLanguage !== 'en');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Track the current translateUrl function for popstate handler
   const translateUrlRef = useRef<((url: string, pushHistory?: boolean) => Promise<void>) | null>(

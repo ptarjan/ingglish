@@ -189,7 +189,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
-  const [dictLoading, setDictLoading] = useState(false);
+  const [dictLoading, setDictLoading] = useState(selectedLanguage !== 'en');
 
   // Load dictionary when a non-English language is selected.
   // English dict is preloaded by App.tsx via translate('').
