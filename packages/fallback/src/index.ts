@@ -46,9 +46,7 @@ export {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from './acronyms';
-export type { LookupFn } from './british';
 export { matchBritish } from './british';
-export type { FreqFn } from './compounds';
 export { dpDecompose } from './compounds';
 export { matchStemming } from './stemming';
 
