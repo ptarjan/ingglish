@@ -81,6 +81,8 @@ export const ja: Record<string, string> = {
 
   候う: '/soːɾoː/', // archaic polite auxiliary
   呼んで: '/joɴde/',
+  憚: '/habaka/', // kun'yomi reading (as in 憚る)
+  止: '/to/', // kun'yomi reading (as in 止まる)
   止まった: '/tomatːa/',
   痩: '/jase/', // thin
   白く: '/ɕiɾokɯ/',

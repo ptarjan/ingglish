@@ -8,6 +8,7 @@ export const WORD_RESOLVERS: Partial<Record<string, WordResolver>> = {
   eo: lemmatizeEo,
   fa: lemmatizeFa,
   fi: lemmatizeFi,
+  ja: resolveJaKana,
   ma: lemmatizeMa,
   nb: lemmatizeNb,
   ro: lemmatizeRo,
@@ -22,6 +23,58 @@ function resolveDeEszett(entries: Record<string, string[]>, word: string): strin
     const title = ss.charAt(0).toUpperCase() + ss.slice(1);
     return entries[ss] ?? entries[title];
   }
+}
+
+/** Characters that are structural kana markers (not full morae). */
+const JA_SKIP_CHARS = new Set([
+  'ー', // chōon (long vowel mark)
+  'っ', // sokuon (gemination) — doubles next consonant
+  'ッ', // katakana sokuon
+]);
+
+/**
+ * Japanese character-by-character kana fallback.
+ * Hiragana/katakana are fully phonetic — each character maps to a mora.
+ * For words not in the dictionary, try decomposing into individual characters
+ * (2-char first for combined kana like きゃ, then 1-char).
+ * Returns undefined if any character can't be resolved (e.g. unknown kanji).
+ */
+function resolveJaKana(entries: Record<string, string[]>, word: string): string[] | undefined {
+  const result: string[] = [];
+  let allSkippable = true;
+  for (let i = 0; i < word.length; i++) {
+    const ch = word[i]!;
+    // Skip structural markers (っ, ッ, ー) — they modify adjacent sounds
+    // but can't produce phonemes in isolation
+    if (JA_SKIP_CHARS.has(ch)) {
+      continue;
+    }
+    allSkippable = false;
+    // Try 2-char match first (combined kana: きゃ, しゅ, etc.)
+    if (i + 1 < word.length) {
+      const twoChar = ch + word[i + 1]!;
+      const twoEntry = entries[twoChar];
+      if (twoEntry) {
+        result.push(...twoEntry);
+        i += 1; // skip next char (loop will increment again)
+        continue;
+      }
+    }
+    // Try 1-char match
+    const oneEntry = entries[ch];
+    if (oneEntry) {
+      result.push(...oneEntry);
+      continue;
+    }
+    // Unknown character — can't resolve this word
+    return undefined;
+  }
+  // If only structural markers were present (e.g. just っ), return empty
+  // phoneme array rather than undefined to avoid NOT_FOUND_MARKER
+  if (result.length === 0 && allSkippable) {
+    return [];
+  }
+  return result.length > 0 ? result : undefined;
 }
 
 /** Try candidates in the dictionary, return first match. */

@@ -165,7 +165,11 @@ describe('translateDict', () => {
   });
 
   it('capitalizes sentence-initial words from caseless scripts', () => {
-    const jaDict = mkDict({ '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/' }, 'ja');
+    // Segmenter splits あった→あっ+た, いた→い+た
+    const jaDict = mkDict(
+      { '\u3042\u3063': '/at\u02D0/', '\u3044': '/i/', '\u305F': '/ta/' },
+      'ja'
+    );
     const result = translateDict('\u3042\u3063\u305F \u3044\u305F', jaDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     const words = result.split(' ');
@@ -174,8 +178,9 @@ describe('translateDict', () => {
   });
 
   it('capitalizes after sentence-ending punctuation in caseless scripts', () => {
-    const jaDict = mkDict({ '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/' }, 'ja');
-    const result = translateDict('\u3042\u3063\u305F\u3002 \u3044\u305F', jaDict);
+    // Use single-character words that won't be split by the segmenter
+    const jaDict = mkDict({ '\u3042': '/a/', '\u3044': '/i/' }, 'ja');
+    const result = translateDict('\u3042\u3002 \u3044', jaDict);
     expect(result).not.toContain(NOT_FOUND_MARKER);
     const words = result.split(/\s+/);
     expect(words[0]![0]).toBe(words[0]![0]!.toUpperCase());
@@ -189,8 +194,14 @@ describe('translateDict', () => {
   });
 
   it('does not capitalize mid-sentence caseless words', () => {
+    // Segmenter splits あった→あっ+た, いた→い+た, その stays whole
     const jaDict = mkDict(
-      { '\u3042\u3063\u305F': '/at\u02D0a/', '\u3044\u305F': '/ita/', '\u305D\u306E': '/sono/' },
+      {
+        '\u3042\u3063': '/at\u02D0/',
+        '\u3044': '/i/',
+        '\u305D\u306E': '/sono/',
+        '\u305F': '/ta/',
+      },
       'ja'
     );
     const result = translateDict('\u3042\u3063\u305F \u3044\u305F \u305D\u306E', jaDict);

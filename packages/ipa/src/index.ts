@@ -16,6 +16,7 @@ export {
   LANGUAGES,
   lookupDict,
   NOT_FOUND_MARKER,
+  segmentJapaneseText,
   segmentKhmerText,
   translateDict,
   translateDictWithMapping,

@@ -104,6 +104,33 @@ export function segmentKhmerText(text: string): string {
   return result;
 }
 
+/**
+ * Japanese word segmenter. Japanese has no spaces between words,
+ * so we use Intl.Segmenter to insert word boundaries.
+ */
+const japaneseSegmenter =
+  typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter('ja', { granularity: 'word' })
+    : undefined;
+
+/** Insert spaces between adjacent Japanese words that have no separator. */
+export function segmentJapaneseText(text: string): string {
+  if (japaneseSegmenter === undefined) {
+    return text;
+  }
+  const segments = [...japaneseSegmenter.segment(text)];
+  let result = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i]!;
+    result += seg.segment;
+    const next = segments[i + 1];
+    if (seg.isWordLike === true && next?.isWordLike === true) {
+      result += ' ';
+    }
+  }
+  return result;
+}
+
 export const LANGUAGES: Language[] = [
   { code: 'ar', disableRColoring: true, label: 'Arabic', nonLatinScript: true },
   { code: 'yue', disableRColoring: true, label: 'Cantonese', nonLatinScript: true },
@@ -114,7 +141,13 @@ export const LANGUAGES: Language[] = [
   { code: 'fr', disableRColoring: true, label: 'French' },
   { code: 'de', disableRColoring: true, label: 'German' },
   { code: 'is', disableRColoring: true, label: 'Icelandic' },
-  { code: 'ja', disableRColoring: true, label: 'Japanese', nonLatinScript: true },
+  {
+    code: 'ja',
+    disableRColoring: true,
+    label: 'Japanese',
+    nonLatinScript: true,
+    preprocess: segmentJapaneseText,
+  },
   {
     code: 'km',
     disableRColoring: true,
