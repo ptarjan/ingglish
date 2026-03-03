@@ -13,6 +13,7 @@ export { LANGUAGES, lookupDict } from '@ingglish/ipa';
 export type { Language } from '@ingglish/ipa';
 
 const cache = new Map<string, PhoneDict>();
+const entriesCache = new Map<string, Record<string, string[]>>();
 
 export async function loadDict(code: string): Promise<PhoneDict> {
   const cached = cache.get(code);
@@ -48,8 +49,13 @@ export async function loadDict(code: string): Promise<PhoneDict> {
   return dict;
 }
 
-/** Fetch a JSON dict file from the public directory. */
+/** Fetch a JSON dict file from the public directory. Cached to avoid double-fetching. */
 async function fetchDictEntries(code: string): Promise<Record<string, string[]>> {
+  const cachedEntries = entriesCache.get(code);
+  if (cachedEntries) {
+    return cachedEntries;
+  }
+
   const lang = LANGUAGES.find((l) => l.code === code);
   if (!lang) {
     throw new Error(`Unknown language code: ${code}`);
@@ -60,7 +66,9 @@ async function fetchDictEntries(code: string): Promise<Record<string, string[]>>
   if (!response.ok) {
     throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);
   }
-  return (await response.json()) as Record<string, string[]>;
+  const entries = (await response.json()) as Record<string, string[]>;
+  entriesCache.set(code, entries);
+  return entries;
 }
 
 // Register the fetch-based loader so that `translate(text, { lang })` and
@@ -69,7 +77,7 @@ setDictLoader(loadDict);
 
 // Override the CMU dictionary loader so English loads from en.json (same as
 // other languages) instead of importing the bundled 10MB cmudict.js.
+// Uses entriesCache so this is instant if loadDict('en') already ran.
 setDictionaryLoader(async () => {
-  const entries = await fetchDictEntries('en');
-  return entries;
+  return fetchDictEntries('en');
 });
