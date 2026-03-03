@@ -19,7 +19,7 @@
 
 .homophones-choice {
   padding: 1rem;
-  font-family: inherit;
+  font-family: inherit; /* eslint-disable-line css/font-family-fallbacks -- button reset */
   font-size: 1.1rem;
   font-weight: 500;
   color: var(--color-text);

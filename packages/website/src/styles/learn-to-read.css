@@ -14,7 +14,7 @@
   gap: 1rem;
   align-items: center;
   padding: 1rem 1.25rem;
-  font-family: inherit;
+  font-family: inherit; /* eslint-disable-line css/font-family-fallbacks -- button reset */
   font-size: inherit;
   color: inherit;
   text-align: left;

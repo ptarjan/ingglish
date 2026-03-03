@@ -34,7 +34,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.5rem;
-  font-family: inherit;
+  font-family: inherit; /* eslint-disable-line css/font-family-fallbacks -- button reset */
   font-size: inherit;
   color: inherit;
   text-align: left;
