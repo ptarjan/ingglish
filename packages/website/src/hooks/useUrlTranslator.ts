@@ -1,6 +1,7 @@
 import { loadLangDict, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { translateDOM } from '@ingglish/dom';
+import { getLanguage } from '@ingglish/ipa';
 import type { OutputFormat } from '@ingglish/phonemes';
 import {
   decodeResponse,
@@ -18,6 +19,7 @@ const CORS_PROXY: string =
   import.meta.env.VITE_CORS_PROXY_URL ?? 'https://api.allorigins.win/raw?url=';
 
 interface UseUrlTranslatorOptions {
+  onLanguageDetected?: (lang: string) => void;
   onNavigate?: (url: string) => void;
   outputFormat?: OutputFormat;
   selectedLanguage?: string;
@@ -36,7 +38,12 @@ interface UseUrlTranslatorResult {
 }
 
 export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlTranslatorResult {
-  const { onNavigate, outputFormat = 'ingglish', selectedLanguage = 'en' } = options;
+  const {
+    onLanguageDetected,
+    onNavigate,
+    outputFormat = 'ingglish',
+    selectedLanguage = 'en',
+  } = options;
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
@@ -125,12 +132,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
 
-        // Ensure the dictionary is loaded before translating (English resolves from cache)
-        await loadLangDict(selectedLanguage);
-
-        // Build mapping fn that passes the selected language through
-        const translateWithMappingFn = (text: string, format: OutputFormat) =>
-          translateSyncWithMapping(text, { format, lang: selectedLanguage });
+        let iframeDoc: Document;
 
         if (isSameOrigin) {
           // Same-origin: load via src so scripts render the SPA, then translate
@@ -146,23 +148,14 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           // Wait for SPA to render (scripts need time after load event)
           await new Promise((r) => setTimeout(r, 1500));
 
-          const iframeDoc = iframe.contentDocument;
-          if (!iframeDoc?.body) {
+          if (!iframe.contentDocument?.body) {
             throw new Error('Failed to access iframe content');
           }
+          iframeDoc = iframe.contentDocument;
 
           baseUrlRef.current = getBaseUrl(targetUrl);
           currentUrlRef.current = targetUrl;
           setHasContent(true);
-
-          await translateDOM(iframeDoc.body, {
-            chunked: true,
-            chunkSize: 500,
-            outputFormat,
-            showTooltips: true,
-            translateAttributes: true,
-            translateWithMappingFn,
-          });
 
           // Intercept link clicks so navigation re-translates instead of
           // loading an untranslated page. Same-origin iframes don't get the
@@ -222,25 +215,40 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             iframe.srcdoc = html;
           });
 
-          const iframeDoc = iframe.contentDocument;
-          if (!iframeDoc?.body) {
+          if (!iframe.contentDocument?.body) {
             throw new Error('Failed to access iframe content');
           }
+          iframeDoc = iframe.contentDocument;
 
           // Store base URL for resolving relative links from postMessage
           baseUrlRef.current = baseUrl;
           currentUrlRef.current = targetUrl;
           setHasContent(true);
-
-          await translateDOM(iframeDoc.body, {
-            chunked: true,
-            chunkSize: 500,
-            outputFormat,
-            showTooltips: true,
-            translateAttributes: true,
-            translateWithMappingFn,
-          });
         }
+
+        // Auto-detect page language from <html lang="..."> attribute
+        let effectiveLang = selectedLanguage;
+        const pageLang = iframeDoc.documentElement.lang?.split('-')[0]?.toLowerCase();
+        if (pageLang && pageLang !== selectedLanguage && getLanguage(pageLang)) {
+          effectiveLang = pageLang;
+          // Update prevLangRef so the retranslation effect won't double-translate
+          prevLangRef.current = pageLang;
+          onLanguageDetected?.(pageLang);
+        }
+
+        // Load dictionary for the effective language and translate
+        await loadLangDict(effectiveLang);
+        const translateWithMappingFn = (text: string, format: OutputFormat) =>
+          translateSyncWithMapping(text, { format, lang: effectiveLang });
+
+        await translateDOM(iframeDoc.body, {
+          chunked: true,
+          chunkSize: 500,
+          outputFormat,
+          showTooltips: true,
+          translateAttributes: true,
+          translateWithMappingFn,
+        });
       } catch (error_) {
         setError(
           `Failed to load page: ${error_ instanceof Error ? error_.message : 'Unknown error'}`
@@ -249,7 +257,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         setIsLoading(false);
       }
     },
-    [outputFormat, onNavigate, selectedLanguage, scrollToHash]
+    [outputFormat, onNavigate, onLanguageDetected, selectedLanguage, scrollToHash]
   );
 
   const clear = useCallback(() => {

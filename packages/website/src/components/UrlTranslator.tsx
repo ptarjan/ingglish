@@ -35,8 +35,18 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
   const [selectedLanguage, setSelectedLanguage] = useState(
     () => initialLang ?? localStorage.getItem('ingglish-url-lang') ?? 'en'
   );
+  const handleLanguageDetected = useCallback((lang: string) => {
+    setSelectedLanguage(lang);
+    localStorage.setItem('ingglish-url-lang', lang);
+  }, []);
+
   const { clear, dictLoading, error, hasContent, iframeRef, isLoading, setUrl, translateUrl, url } =
-    useUrlTranslator({ onNavigate, outputFormat: format, selectedLanguage });
+    useUrlTranslator({
+      onLanguageDetected: handleLanguageDetected,
+      onNavigate,
+      outputFormat: format,
+      selectedLanguage,
+    });
   const formRef = useRef<HTMLFormElement>(null);
   const iframeContainerRef = useRef<HTMLDivElement>(null);
   const [copiedShare, shareLink] = useShare();
@@ -66,8 +76,10 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
   // Auto-translate if initialUrl is provided (e.g. /url?url=... from share link
   // or "Read full page" link). Don't push history — the URL is already in the
   // address bar, so pushing would require an extra back-click to leave.
+  const initialTranslatedRef = useRef(false);
   useEffect(() => {
-    if (initialUrl.length > 0) {
+    if (initialUrl.length > 0 && !initialTranslatedRef.current) {
+      initialTranslatedRef.current = true;
       const normalized = normalizeUrl(initialUrl);
       if (normalized !== null) {
         setUrl(normalized);
