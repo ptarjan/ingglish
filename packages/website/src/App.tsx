@@ -176,10 +176,14 @@ function App() {
   // Update browser URL without copying to clipboard (for navigation)
   // Use the translatorUrl state that should have been set by translateUrl's pushState
   const handleUrlNavigate = useCallback(
-    (targetUrl: string) => {
+    (targetUrl: string, lang?: string) => {
       const shareUrl = buildShareUrl(targetUrl);
+      const parsed = new URL(shareUrl);
+      if (lang) {
+        parsed.searchParams.set('lang', lang);
+      }
       // Explicitly set the correct state - don't rely on history.state which may be stale
-      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', shareUrl);
+      globalThis.history.replaceState({ translatorUrl: targetUrl }, '', parsed.toString());
     },
     [buildShareUrl]
   );

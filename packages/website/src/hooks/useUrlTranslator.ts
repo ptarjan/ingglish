@@ -20,7 +20,7 @@ const CORS_PROXY: string =
 
 interface UseUrlTranslatorOptions {
   onLanguageDetected?: (lang: string) => void;
-  onNavigate?: (url: string) => void;
+  onNavigate?: (url: string, lang?: string) => void;
   outputFormat?: OutputFormat;
   selectedLanguage?: string;
 }
@@ -121,7 +121,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       if (pushHistory) {
         history.pushState({ translatorUrl: targetUrl }, '', globalThis.location.pathname);
         // Update URL in address bar immediately (before translation completes)
-        onNavigate?.(targetUrl);
+        onNavigate?.(targetUrl, selectedLanguage === 'en' ? undefined : selectedLanguage);
       } else {
         // Not pushing — just tag current entry with translator state so popstate
         // handler knows about this URL (e.g. initial load from /url?url=...)

@@ -26,7 +26,7 @@ const EXAMPLE_URLS = [
 interface UrlTranslatorProps {
   initialLang?: string;
   initialUrl?: string;
-  onNavigate?: (url: string) => void;
+  onNavigate?: (url: string, lang?: string) => void;
   onShare?: (url: string, lang?: string) => string;
 }
 
@@ -123,6 +123,23 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     setSelectedLanguage(lang);
     localStorage.setItem('ingglish-url-lang', lang);
   }, []);
+
+  // Sync browser URL's lang param when language changes (manual or auto-detected)
+  useEffect(() => {
+    const browserUrl = new URL(globalThis.location.href);
+    if (!browserUrl.searchParams.has('url')) {return;}
+
+    const currentLang = browserUrl.searchParams.get('lang');
+    const newLang = selectedLanguage === 'en' ? null : selectedLanguage;
+    if (currentLang === newLang) {return;}
+
+    if (newLang) {
+      browserUrl.searchParams.set('lang', newLang);
+    } else {
+      browserUrl.searchParams.delete('lang');
+    }
+    globalThis.history.replaceState(history.state, '', browserUrl.toString());
+  }, [selectedLanguage]);
 
   const handleShare = useCallback(() => {
     if (onShare !== undefined && url.trim().length > 0) {
