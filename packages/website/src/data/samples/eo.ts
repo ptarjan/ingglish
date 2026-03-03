@@ -23,7 +23,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'UDHR — Universala Deklaracio de Homaj Rajtoj, Artikoloj 3-5',
-    source: 'https://pages.ucsd.edu/~dkjordan/eo/homrajtoj.html',
     text: 'Ĉiu havas la rajtojn je vivo, libereco kaj persona sekureco. Neniu estu tenata en sklaveco aŭ servuteco; sklaveco kaj sklavkomerco estu malpermesitaj en ĉiuj siaj formoj. Neniu suferu torturon aŭ kruelan, nehoman aŭ sendignigan traktadon aŭ punon.',
   },
   {
@@ -38,7 +37,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'L.L. Zamenhof — Preĝo sub la verda standardo',
-    source: 'https://www.gutenberg.org/files/8224/8224-h/8224-h.htm',
     text: "Al Vi, ho potenca senkorpa mistero, Fortego, la mondon reganta, Al Vi, granda fonto de l'amo kaj vero kaj fonto de vivo konstanta, Al Vi, kiun ĉiuj malsame prezentas, sed ĉiuj egale en koro Vin sentas, Al Vi, kiu kreas, al Vi, kiu reĝas, hodiaŭ ni preĝas.",
   },
   {
@@ -48,7 +46,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'L.L. Zamenhof — Al la fratoj',
-    source: 'https://www.gutenberg.org/files/8224/8224-h/8224-h.htm',
     text: "Forte ni staru, brave laboru, kuraĝe, ho nia rondo! Nia afero kresku kaj floru per ni en tuta la mondo! Ni ĝin kondukos ne ripozante, kaj nin lacigos nenio; ni ĝin traportos, sankte ĵurante, tra l' tuta mondo de Dio!",
   },
   {
@@ -63,17 +60,14 @@ export const eo: Sample[] = [
   },
   {
     label: 'L.L. Zamenhof — Fundamento de Esperanto, Ekzercaro §38',
-    source: 'https://eo.wikisource.org/wiki/Fundamento_de_Esperanto/Ekzercaro',
     text: 'Mi aĉetis por la infanoj tableton kaj kelke da seĝetoj. En nia lando sin ne trovas montoj, sed nur montetoj. Tuj post la hejto la forno estis varmega, post unu horo ĝi estis jam nur varma, post du horoj ĝi estis nur iom varmeta, kaj post tri horoj ĝi estis jam tute malvarma.',
   },
   {
     label: 'H.C. Andersen (trad. Zamenhof) — La novaj vestoj de la reĝo',
-    source: 'https://www.gutenberg.org/files/8224/8224-h/8224-h.htm',
     text: 'Antaŭ multaj jaroj vivis unu reĝo, kiu tiel amis belajn novajn vestojn, ke li elspezadis sian tutan monon, por nur esti ĉiam bele ornamita. Li ne zorgadis pri siaj soldatoj, nek pri teatro kaj ĉaso, esceptinte nur se ili donadis al li okazon montri siajn novajn vestojn.',
   },
   {
     label: 'H.C. Andersen (trad. Zamenhof) — La virineto de maro',
-    source: 'https://www.gutenberg.org/files/8224/8224-h/8224-h.htm',
     text: 'Malproksime en la maro la akvo estas tiel blua, kiel la folioj de la plej bela cejano, kaj klara, kiel la plej pura vitro, sed ĝi estas tre profunda, pli profunda, ol povas atingi ia ankro; multaj turoj devus esti starigitaj unu sur la alia, por atingi de la fundo ĝis super la akvo. Tie loĝas la popolo de maro.',
   },
   {
@@ -88,7 +82,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'Julio Baghy — Estas mi esperantisto',
-    source: 'https://sezonoj.ru/2017/03/baghy-2/',
     text: 'Verda stelo sur la brusto iom palas pro la rusto. Mi ne estas purigisto; estas mi esperantisto. Kuŝas ie sub tegmento "Netuŝebla Fundamento". Tuŝu ĝin nur la Mefisto; estas mi esperantisto.',
   },
   {

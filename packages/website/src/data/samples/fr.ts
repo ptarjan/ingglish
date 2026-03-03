@@ -38,7 +38,6 @@ export const fr: Sample[] = [
   },
   {
     label: 'Voltaire — Candide (Pangloss)',
-    source: 'https://www.gutenberg.org/ebooks/4650',
     text: "Pangloss enseignait la métaphysico-théologo-cosmolonigologie. Il prouvait admirablement qu'il n'y a point d'effet sans cause, et que, dans ce meilleur des mondes possibles, le château de monseigneur le baron était le plus beau des châteaux et madame la meilleure des baronnes possibles.",
   },
   {

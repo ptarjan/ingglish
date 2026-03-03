@@ -41,7 +41,6 @@ export const sw: Sample[] = [
   },
   {
     label: 'Euphrase Kezilahabi — Rosa Mistika (sura ya pili)',
-    source: 'https://en.wikipedia.org/wiki/Euphrase_Kezilahabi',
     text: 'Usiku Rosa hakulala. Aliamka kuangalia dirishani. Aliona bado giza. Alijaribu kufumba macho apate usingizi. Kazi bure; usingizi hauwezi kushurutishwa.',
   },
   {
@@ -56,8 +55,6 @@ export const sw: Sample[] = [
   },
   {
     label: 'Mwana Kupona — Ushauri kwa Binti',
-    source:
-      'https://mahfoudhdiary.wordpress.com/2017/07/22/utenzi-wa-mwana-kupona-bint-msham-part-1/',
     text: 'La kwanda kamata dini, faradhi usiikhini. Pili uwe na adabu, na ulimi wa thawabu, uwe mtu mahabubu. La tatu uwe sadiqi, uambiwalo ulithiqi.',
   },
   {
@@ -82,8 +79,6 @@ export const sw: Sample[] = [
   },
   {
     label: 'UDHR — Dibaji',
-    source:
-      'https://www.ohchr.org/en/human-rights/universal-declaration/translations/swahilikiswahili',
     text: 'Kwa kuwa kukiri heshima ya asili na haki sawa kwa binadamu wote ndio msingi wa uhuru, haki na amani duniani.',
   },
   {

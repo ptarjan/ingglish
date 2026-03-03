@@ -23,7 +23,6 @@ export const ma: Sample[] = [
   },
   {
     label: 'UDHR — Perisytiharan Hak Asasi Manusia, Perkara 3-5',
-    source: 'https://www.ohchr.org/sites/default/files/UDHR/Documents/UDHR_Translations/mli.pdf',
     text: 'Setiap orang adalah berhak kepada nyawa, kebebasan dan keselamatan diri. Tiada sesiapa pun boleh diperhamba atau diperabdikan; keabdian dan dagangan hamba abdi hendaklah dilarang dalam semua bentuknya. Tiada sesiapa pun boleh dikenakan seksaan atau layanan atau hukuman yang zalim, tidak berperikemanusiaan atau menghinakan.',
   },
   {
@@ -33,7 +32,6 @@ export const ma: Sample[] = [
   },
   {
     label: 'Hikayat Hang Tuah — Pertempuran dengan Hang Jebat',
-    source: 'http://aimiejensurah.blogspot.com/2015/05/analisis-teks-klasik-hikayat-hang-tuah.html',
     text: 'Maka titah baginda, "Dapatkah kekasihku membunuh Si Jebat demikian itu?" Maka sembah laksamana, "Daulat tuanku, patik mohonkan ampun."',
   },
   {

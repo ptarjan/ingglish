@@ -79,12 +79,10 @@ export const fi: Sample[] = [
   },
   {
     label: 'Eino Leino — Elegia (loppu)',
-    source: 'https://runosto.net/eino-leino/halla/elegia/',
     text: 'Toivoton taisto taivaan valtoja vastaan! Kaikuvi kannel; lohduta laulu ei lastaan. Hallatar haastaa, soi sävel sortuvin siivin. Rotkoni rauhaan kuin peto kuoleva hiivin.',
   },
   {
     label: 'J.L. Runeberg — Saarijärven Paavo (loppu)',
-    source: 'https://fi.wikisource.org/wiki/Saarijärven_Paavo_(Cajander)',
     text: "Vaimon käteen tarttuin Paavo lausui: «Vaimo, vaimo, sit' ei kuri kaada, veljeään ken hädässä ei hylkää. Pane leipään puolet petäjäistä, veihän naapurimme touon halla.»",
   },
   {
