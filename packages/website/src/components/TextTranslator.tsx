@@ -189,14 +189,11 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
   // Cross-pane word highlighting: hover on right → highlight on left
   const [hoveredWordIndex, setHoveredWordIndex] = useState<null | number>(null);
-  const [dictLoading, setDictLoading] = useState(selectedLanguage !== 'en');
+  const [dictLoading, setDictLoading] = useState(true);
 
-  // Load dictionary when a non-English language is selected.
-  // English dict is preloaded by App.tsx via translate('').
+  // Load dictionary for the selected language.
+  // English is preloaded by App.tsx so loadLangDict resolves instantly from cache.
   useEffect(() => {
-    if (selectedLanguage === 'en') {
-      return;
-    }
     let cancelled = false;
     setDictLoading(true);
     loadLangDict(selectedLanguage)

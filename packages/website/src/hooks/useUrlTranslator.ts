@@ -41,7 +41,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   const [isLoading, setIsLoading] = useState(false);
   const [hasContent, setHasContent] = useState(false);
   const [error, setError] = useState<null | string>(null);
-  const [dictLoading, setDictLoading] = useState(selectedLanguage !== 'en');
+  const [dictLoading, setDictLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Track the current translateUrl function for popstate handler
   const translateUrlRef = useRef<((url: string, pushHistory?: boolean) => Promise<void>) | null>(
@@ -77,14 +77,9 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     }
   }, []);
 
-  // Load dictionary when a non-English language is selected.
-  // English dict is preloaded by App.tsx via translate('').
+  // Load dictionary for the selected language.
+  // English is preloaded by App.tsx so loadLangDict resolves instantly from cache.
   useEffect(() => {
-    if (selectedLanguage === 'en') {
-      setDictLoading(false);
-      return;
-    }
-
     let cancelled = false;
     setDictLoading(true);
     loadLangDict(selectedLanguage)
