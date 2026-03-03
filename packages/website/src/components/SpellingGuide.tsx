@@ -200,6 +200,15 @@ function SpellingGuide(): React.JSX.Element {
           When certain vowels are followed by R, they combine into special r-colored sounds. See the
           R-Colored Vowels table in the Vowels section above for the complete list of mappings.
         </p>
+
+        <h4>Hyphen Separator</h4>
+        <p>
+          When two adjacent sounds would produce three or more of the same letter in a row, a hyphen
+          is inserted to keep the spelling readable. For example, the Romanian word "copil&#259;rie"
+          ends with an "ee" sound followed by a short "e" sound — without a separator that would be
+          "eee", so Ingglish writes "ee-e" instead. This mostly occurs in foreign language
+          translations and spelled-out initialisms (e.g. HTML → aychtee-emel, CSS → see-eses).
+        </p>
       </div>
     </div>
   );
