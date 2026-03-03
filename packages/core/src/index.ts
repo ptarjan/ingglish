@@ -83,7 +83,4 @@ export { translateSync, translateSyncWithMapping } from './translate';
 export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
 
-export { LANGUAGES } from '@ingglish/ipa';
-export type { Language } from '@ingglish/ipa';
-
 export type { OutputFormat } from '@ingglish/phonemes';
