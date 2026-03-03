@@ -29,7 +29,7 @@ export type WordTranslator = (word: string) => TranslateResult;
 
 // Pre-compiled regex patterns
 const SENTENCE_END = /[.?!。！？]/;
-export const HAS_LETTER = /[a-z]/i;
+export const HAS_LETTER = /\p{L}/u;
 
 /**
  * Unicode word regex for non-Latin scripts (Arabic, CJK, Khmer, etc.).

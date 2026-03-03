@@ -21,9 +21,10 @@ export {
   translateDictWithMapping,
 } from './dict';
 export type { Language, PhoneDict } from './dict';
-export { ipaToArpabetClean } from './from-ipa';
+export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';
 export { G2P_CONVERTERS } from './g2p';
 export type { G2PConverter, G2PEntry } from './g2p';
+export { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 export { WORD_RESOLVERS } from './resolvers';
 export type { WordResolver } from './resolvers';
 // Export individual functions for direct use
