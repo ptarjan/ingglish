@@ -149,6 +149,7 @@ export const IPA_APPROXIMATION_MAP: Record<string, string> = {
   ɦ: 'HH', // /ɦ/ voiced glottal fricative — Korean 합 ≈ H
   // --- Central/back vowels not in English ---
   ɨ: 'IH', // /ɨ/ close central — Russian "ы" ≈ "bit"
+  ʲ: 'IY', // /ʲ/ palatalization — Romanian/Russian word-final "i" ≈ short "ee"
   ʝ: 'Y', // /ʝ/ voiced palatal fricative — Spanish "y" ≈ Y (palatal approximant)
   ɬ: 'L', // /ɬ/ voiceless lateral fricative — Welsh "ll" ≈ L
 
