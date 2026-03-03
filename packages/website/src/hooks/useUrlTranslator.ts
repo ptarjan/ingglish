@@ -228,20 +228,20 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
         }
 
         // Auto-detect page language from <html lang="..."> attribute.
-        // Skip "en" — many non-English pages incorrectly declare lang="en",
-        // and English is already the default so there's no value in switching to it.
+        // Only when the user hasn't explicitly chosen a language (still on
+        // the default "en"). Many pages have incorrect lang attributes
+        // (e.g. lang="en" on Odia pages, lang="nb" on Icelandic sagas,
+        // lang="zh" on Cantonese pages), so once the user picks a language
+        // we trust their choice.
         let effectiveLang = selectedLanguage;
-        const pageLang = iframeDoc.documentElement.lang?.split('-')[0]?.toLowerCase();
-        if (
-          pageLang &&
-          pageLang !== 'en' &&
-          pageLang !== selectedLanguage &&
-          getLanguage(pageLang)
-        ) {
-          effectiveLang = pageLang;
-          // Update prevLangRef so the retranslation effect won't double-translate
-          prevLangRef.current = pageLang;
-          onLanguageDetected?.(pageLang);
+        if (selectedLanguage === 'en') {
+          const pageLang = iframeDoc.documentElement.lang?.split('-')[0]?.toLowerCase();
+          if (pageLang && pageLang !== 'en' && getLanguage(pageLang)) {
+            effectiveLang = pageLang;
+            // Update prevLangRef so the retranslation effect won't double-translate
+            prevLangRef.current = pageLang;
+            onLanguageDetected?.(pageLang);
+          }
         }
 
         // Load dictionary for the effective language and translate
