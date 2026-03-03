@@ -175,6 +175,17 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['B', 'AO1', 'R'])).toBe('bor');
     });
 
+    it('should insert hyphen to break 3+ identical consecutive letters', () => {
+      // IY+EH = "ee"+"e" → "ee-e" (not "eee")
+      expect(arpabetToIngglish(['K', 'IY1', 'EH'])).toBe('kee-e');
+      // Full word: Romanian "copilărie" /ko.pi.ləˈri.e/
+      expect(arpabetToIngglish(['K', 'OW', 'P', 'IY', 'L', 'AH0', 'R', 'IY1', 'EH'])).toBe(
+        'kohpeeluhree-e'
+      );
+      // UW+UH = "oo"+"u" is fine (no triple), should not get a hyphen
+      expect(arpabetToIngglish(['K', 'UW1', 'UH'])).toBe('koou');
+    });
+
     it('should handle consonant sounds correctly', () => {
       expect(arpabetToIngglish(['B'])).toBe('b');
       expect(arpabetToIngglish(['CH'])).toBe('ch');

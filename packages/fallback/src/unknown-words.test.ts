@@ -929,7 +929,7 @@ describe('unknown-words', () => {
     });
 
     it('should handle i→y stem change with -er (easier→easy+er)', () => {
-      expect(translateWithStemming('easier')).toBe('eezeeer');
+      expect(translateWithStemming('easier')).toBe('eezee-er');
     });
 
     it('should handle -ify suffix (uglify→ugly+ify)', () => {
@@ -1054,7 +1054,7 @@ describe('unknown-words', () => {
 
     it('should spell out HTML correctly', () => {
       const result = translateAsAcronym('html');
-      expect(result).toBe('aychteeemel');
+      expect(result).toBe('aychtee-emel');
     });
 
     it('should spell out API correctly', () => {
@@ -1063,9 +1063,9 @@ describe('unknown-words', () => {
     });
 
     it('should spell out CSS correctly', () => {
-      // C=see, S=es, S=es → "seeeses"
+      // C=see, S=es, S=es → "see-eses"
       const result = translateAsAcronym('css');
-      expect(result).toBe('seeeses');
+      expect(result).toBe('see-eses');
     });
 
     it('should handle uppercase input', () => {
@@ -1087,7 +1087,7 @@ describe('unknown-words', () => {
 
     it('should translate html as spelled-out letters', () => {
       const result = translateUnknown('html');
-      expect(result).toBe('aychteeemel');
+      expect(result).toBe('aychtee-emel');
     });
 
     it('should translate api as spelled-out letters', () => {

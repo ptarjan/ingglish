@@ -64,15 +64,38 @@ export function convertArpabet(
     }
 
     // Check exact phoneme with stress (AH0, EY0, etc.)
-    const stressOverride = stressOverrides.get(phoneme);
-    if (stressOverride !== undefined) {
-      result += stressOverride;
-      continue;
-    }
+    const chunk = stressOverrides.get(phoneme) ?? phonemeMap[base] ?? phoneme.toLowerCase();
 
-    result += phonemeMap[base] ?? phoneme.toLowerCase();
+    result = appendWithSeparator(result, chunk);
   }
   return result;
+}
+
+/**
+ * Append a chunk to the result, inserting a hyphen if the junction would
+ * create 3+ identical consecutive letters (e.g. "ee"+"e" → "ee-e").
+ */
+function appendWithSeparator(result: string, chunk: string): string {
+  if (result.length > 0 && chunk.length > 0) {
+    const lastChar = result.at(-1)!;
+    if (chunk.startsWith(lastChar)) {
+      // Count trailing run of lastChar in result
+      let runLen = 0;
+      for (let j = result.length - 1; j >= 0 && result[j] === lastChar; j--) {
+        runLen++;
+      }
+      // Count leading run of lastChar in chunk
+      let chunkRun = 0;
+      for (let j = 0; j < chunk.length && chunk[j] === lastChar; j++) {
+        chunkRun++;
+      }
+      // Would create 3+ of the same letter in a row
+      if (runLen + chunkRun >= 3) {
+        return result + '-' + chunk;
+      }
+    }
+  }
+  return result + chunk;
 }
 
 // Pre-combined lookup: phoneme (with or without stress digit) → ingglish spelling.
@@ -110,7 +133,8 @@ export function arpabetToIngglish(arpabet: string[]): string {
         continue;
       }
     }
-    result += INGGLISH_FULL_MAP[phoneme] ?? phoneme.toLowerCase();
+    const chunk = INGGLISH_FULL_MAP[phoneme] ?? phoneme.toLowerCase();
+    result = appendWithSeparator(result, chunk);
   }
   return result;
 }
