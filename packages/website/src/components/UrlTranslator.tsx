@@ -117,11 +117,20 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
     [setUrl]
   );
 
-  const handleLanguageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const lang = e.target.value;
-    setSelectedLanguage(lang);
-    localStorage.setItem('selectedLanguage', lang);
-  }, []);
+  const handleLanguageChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const lang = e.target.value;
+      setSelectedLanguage(lang);
+      localStorage.setItem('selectedLanguage', lang);
+      // Clear loaded content so the user picks a URL in the new language
+      if (hasContent) {
+        clear();
+        // Clean up the browser URL (remove ?url= and ?lang= params)
+        globalThis.history.replaceState(null, '', globalThis.location.pathname);
+      }
+    },
+    [hasContent, clear]
+  );
 
   // Sync browser URL's lang param when language changes (manual or auto-detected)
   useEffect(() => {
