@@ -3,7 +3,7 @@ import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@inggli
 import * as dictModule from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import type { DictLoader } from '../dict-loader';
-import { getLangDict } from '../dict-loader';
+import { getLangDict, setLangDict } from '../dict-loader';
 import { reverseTranslate, setDictLoader, translate } from '../index';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 
@@ -448,7 +448,8 @@ describe('translator', () => {
     it('translateSyncWithMapping accepts options object', () => {
       const tokens = translateSyncWithMapping('hello world', { format: 'ingglish' });
       expect(tokens).toHaveLength(3);
-      expect(tokens[0]!.translated).toBe('haloh');
+      // First word of multi-word text is capitalized (sentence start)
+      expect(tokens[0]!.translated).toBe('Haloh');
     });
 
     it('translateWord accepts options object with format', () => {
@@ -480,6 +481,61 @@ describe('translator', () => {
 
     it('translateSync ignores empty lang', () => {
       expect(translateSync('hello', { lang: '' })).toBe('haloh');
+    });
+  });
+
+  describe('sentence-start capitalization for caseless scripts', () => {
+    const MOCK_JA_LANG = 'test-ja';
+    const mockJaDict: PhoneDict = {
+      entries: {
+        desu: ['D', 'EH1', 'S', 'UW0'],
+        inu: ['IH1', 'N', 'UW0'],
+        neko: ['N', 'EH1', 'K', 'OW0'],
+      },
+      lang: MOCK_JA_LANG,
+      nonLatinScript: true,
+    };
+
+    // Pre-register the mock dict (preprocessor not needed — test uses pre-segmented text)
+    setLangDict(MOCK_JA_LANG, mockJaDict);
+
+    it('translateSyncWithMapping capitalizes first word of each sentence', () => {
+      // Simulates pre-segmented Japanese text: "neko desu. inu desu."
+      const tokens = translateSyncWithMapping('neko desu. inu desu.', {
+        format: 'ingglish',
+        lang: MOCK_JA_LANG,
+      });
+
+      const words = tokens.filter((t) => t.isWord);
+      // First sentence start: capitalized
+      expect(words[0]!.translated.charAt(0)).toBe(words[0]!.translated.charAt(0).toUpperCase());
+      // Second sentence start (after "."): capitalized
+      expect(words[2]!.translated.charAt(0)).toBe(words[2]!.translated.charAt(0).toUpperCase());
+      // Non-sentence-start words: lowercase
+      expect(words[1]!.translated.charAt(0)).toBe(words[1]!.translated.charAt(0).toLowerCase());
+    });
+
+    it('translateSync also capitalizes sentence starts for caseless scripts', () => {
+      const result = translateSync('neko desu. inu desu.', {
+        format: 'ingglish',
+        lang: MOCK_JA_LANG,
+      });
+
+      // First word capitalized
+      expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
+      // Word after period capitalized
+      const afterPeriod = result.split('. ')[1]!;
+      expect(afterPeriod.charAt(0)).toBe(afterPeriod.charAt(0).toUpperCase());
+    });
+
+    it('single word stays lowercase in translateSyncWithMapping', () => {
+      const tokens = translateSyncWithMapping('neko', {
+        format: 'ingglish',
+        lang: MOCK_JA_LANG,
+      });
+      const word = tokens.find((t) => t.isWord);
+      // Single word: no capitalization
+      expect(word!.translated.charAt(0)).toBe(word!.translated.charAt(0).toLowerCase());
     });
   });
 });

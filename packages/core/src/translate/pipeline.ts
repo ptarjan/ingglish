@@ -124,6 +124,53 @@ const expandPlaceholderText = (token: string, preserved: Map<string, string>): n
 };
 
 /**
+ * Capitalize the first word of each sentence in a TranslatedToken[] array.
+ * Mirrors the sentence-start capitalization logic in renderText, but operates
+ * on the token array used by translateSyncWithMapping / DOM translation.
+ *
+ * For caseless scripts (Japanese, Chinese, Arabic, etc.) the source word has no
+ * case, so detectCasePattern returns 'lower' and the translation stays lowercase.
+ * This function capitalizes those sentence-initial translations.
+ */
+export function capitalizeSentenceStarts(tokens: TranslatedToken[], format: OutputFormat): void {
+  if (!getFormatPreservesCase(format)) {
+    return;
+  }
+
+  let sentenceStart = true;
+  let wordCount = 0;
+  let firstWordIdx = -1;
+
+  for (const [i, token_] of tokens.entries()) {
+    const token = token_;
+    if (token.isWord && token.translated.length > 0) {
+      wordCount++;
+      if (sentenceStart) {
+        if (wordCount === 1) {
+          // Defer first-word capitalization until we know there are multiple words
+          firstWordIdx = i;
+        } else {
+          token.translated = token.translated.charAt(0).toUpperCase() + token.translated.slice(1);
+        }
+        sentenceStart = false;
+      }
+    } else if (
+      !token.isWord &&
+      SENTENCE_END.test(token.translated) &&
+      !HAS_LETTER.test(token.translated)
+    ) {
+      sentenceStart = true;
+    }
+  }
+
+  // Capitalize first word only if there were multiple words
+  if (wordCount > 1 && firstWordIdx >= 0) {
+    const token = tokens[firstWordIdx]!;
+    token.translated = token.translated.charAt(0).toUpperCase() + token.translated.slice(1);
+  }
+}
+
+/**
  * Fused single-pass string builder: maps tokens, applies sentence capitalization,
  * and joins into one function. Eliminates intermediate TranslatedToken[] arrays
  * and extra iteration passes.

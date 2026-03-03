@@ -36,7 +36,14 @@ import {
 import type { TranslateOptions } from '../dict-loader';
 import { getLangDict } from '../dict-loader';
 import type { TranslateResult } from './pipeline';
-import { extractTokens, extractTokensUnicode, HAS_LETTER, mapTokens, renderText } from './pipeline';
+import {
+  capitalizeSentenceStarts,
+  extractTokens,
+  extractTokensUnicode,
+  HAS_LETTER,
+  mapTokens,
+  renderText,
+} from './pipeline';
 
 export type { TranslatedToken } from '@ingglish/phonemes';
 
@@ -100,7 +107,9 @@ export function translateSyncWithMapping(
   const { preserved, rawTokens } =
     dict.nonLatinScript === true ? extractTokensUnicode(processed) : extractTokens(processed);
 
-  return mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, dict, format));
+  const tokens = mapTokens(rawTokens, preserved, (w) => translateWordInternal(w, dict, format));
+  capitalizeSentenceStarts(tokens, format);
+  return tokens;
 }
 
 /**
