@@ -45,14 +45,14 @@
     "packages/*/src/**/*.{ts,tsx}": [
       "eslint --fix"
     ],
-    "*.{ts,tsx}": [
+    "**/*.{ts,tsx}": [
       "prettier --write"
     ],
-    "*.css": [
+    "**/*.css": [
       "stylelint --fix",
       "prettier --write"
     ],
-    "*.{js,jsx,json,md}": [
+    "**/*.{js,jsx,json,md}": [
       "prettier --write"
     ]
   },
