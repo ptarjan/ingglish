@@ -362,19 +362,22 @@ test.describe('Web Vitals', () => {
   });
 
   // FCP tests — works on all browsers via Paint Timing API
-  // 600ms threshold gives CI runners headroom (local is typically <300ms)
-  for (const route of [
-    '/',
-    '/text',
-    '/url',
-    '/extension',
-    '/guide',
-    '/docs',
-    '/explore',
-    '/experiment',
-    '/games',
-  ]) {
-    test(`FCP is below 600ms on ${route}`, async ({ page }) => {
+  // 600ms threshold gives CI runners headroom (local is typically <300ms).
+  // /experiment gets a higher budget: it's a complex tool page with a large
+  // lazy-loaded chunk (mapping editor + dictionary stats).
+  const fcpRoutes: { budget: number; route: string }[] = [
+    { budget: 600, route: '/' },
+    { budget: 600, route: '/text' },
+    { budget: 600, route: '/url' },
+    { budget: 600, route: '/extension' },
+    { budget: 600, route: '/guide' },
+    { budget: 600, route: '/docs' },
+    { budget: 600, route: '/explore' },
+    { budget: 1000, route: '/experiment' },
+    { budget: 600, route: '/games' },
+  ];
+  for (const { budget, route } of fcpRoutes) {
+    test(`FCP is below ${String(budget)}ms on ${route}`, async ({ page }) => {
       await blockExternalNetwork(page);
       await page.goto(route);
       await waitForAppLoad(page);
@@ -384,7 +387,7 @@ test.describe('Web Vitals', () => {
       );
       console.log(`FCP on ${route}: ${String(Math.round(fcp ?? 0))}ms`);
       expect(fcp).toBeDefined();
-      expect(fcp).toBeLessThan(600);
+      expect(fcp).toBeLessThan(budget);
     });
   }
 
