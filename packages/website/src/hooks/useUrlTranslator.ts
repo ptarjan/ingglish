@@ -2,7 +2,13 @@ import { loadLangDict, translateSyncWithMapping } from 'ingglish';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { translateDOM } from '@ingglish/dom';
 import type { OutputFormat } from '@ingglish/phonemes';
-import { getBaseUrl, isHashOnlyChange, processProxiedHtml, shouldSkipUrl } from '../url-proxy';
+import {
+  decodeHtmlBuffer,
+  getBaseUrl,
+  isHashOnlyChange,
+  processProxiedHtml,
+  shouldSkipUrl,
+} from '../url-proxy';
 
 // Re-export utilities that components need
 export { normalizeUrl } from '../url-proxy';
@@ -203,7 +209,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
             throw new Error(`Failed to fetch: ${response.status}`);
           }
 
-          const rawHtml = await response.text();
+          const rawHtml = decodeHtmlBuffer(await response.arrayBuffer());
 
           // Process HTML: sanitize, inject base tag, proxy fonts, add click handler
           const { baseUrl, html } = processProxiedHtml(rawHtml, {

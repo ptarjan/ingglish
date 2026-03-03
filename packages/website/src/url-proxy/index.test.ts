@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  decodeHtmlBuffer,
   detectBotProtection,
   escapeHtmlAttr,
   extractBaseHref,
@@ -13,6 +14,65 @@ import {
   shouldSkipUrl,
   stripScripts,
 } from '.';
+
+/** Encode a UTF-8 string to an ArrayBuffer. */
+function encodeUtf8(text: string): ArrayBuffer {
+  return new TextEncoder().encode(text).buffer;
+}
+
+describe('decodeHtmlBuffer', () => {
+  it('decodes UTF-8 by default', () => {
+    const html = '<html><body>Hello</body></html>';
+    expect(decodeHtmlBuffer(encodeUtf8(html))).toBe(html);
+  });
+
+  it('detects charset from XML declaration', () => {
+    // Shift_JIS bytes for こんにちは
+    const prefix = '<?xml version="1.0" encoding="Shift_JIS"?>\n<html><body>';
+    const suffix = '</body></html>';
+    const jpBytes = new Uint8Array([0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd]);
+    const prefixBytes = new TextEncoder().encode(prefix);
+    const suffixBytes = new TextEncoder().encode(suffix);
+    const combined = new Uint8Array(prefixBytes.length + jpBytes.length + suffixBytes.length);
+    combined.set(prefixBytes, 0);
+    combined.set(jpBytes, prefixBytes.length);
+    combined.set(suffixBytes, prefixBytes.length + jpBytes.length);
+
+    const result = decodeHtmlBuffer(combined.buffer);
+    expect(result).toContain('こんにちは');
+  });
+
+  it('detects charset from meta charset tag', () => {
+    const prefix = '<html><head><meta charset="Shift_JIS"></head><body>';
+    const suffix = '</body></html>';
+    const jpBytes = new Uint8Array([0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd]);
+    const prefixBytes = new TextEncoder().encode(prefix);
+    const suffixBytes = new TextEncoder().encode(suffix);
+    const combined = new Uint8Array(prefixBytes.length + jpBytes.length + suffixBytes.length);
+    combined.set(prefixBytes, 0);
+    combined.set(jpBytes, prefixBytes.length);
+    combined.set(suffixBytes, prefixBytes.length + jpBytes.length);
+
+    const result = decodeHtmlBuffer(combined.buffer);
+    expect(result).toContain('こんにちは');
+  });
+
+  it('detects charset from http-equiv Content-Type', () => {
+    const prefix =
+      '<html><head><meta http-equiv="Content-Type" content="text/html;charset=Shift_JIS"></head><body>';
+    const suffix = '</body></html>';
+    const jpBytes = new Uint8Array([0x82, 0xb1, 0x82, 0xf1, 0x82, 0xc9, 0x82, 0xbf, 0x82, 0xcd]);
+    const prefixBytes = new TextEncoder().encode(prefix);
+    const suffixBytes = new TextEncoder().encode(suffix);
+    const combined = new Uint8Array(prefixBytes.length + jpBytes.length + suffixBytes.length);
+    combined.set(prefixBytes, 0);
+    combined.set(jpBytes, prefixBytes.length);
+    combined.set(suffixBytes, prefixBytes.length + jpBytes.length);
+
+    const result = decodeHtmlBuffer(combined.buffer);
+    expect(result).toContain('こんにちは');
+  });
+});
 
 describe('escapeHtmlAttr', () => {
   it('escapes ampersands', () => {

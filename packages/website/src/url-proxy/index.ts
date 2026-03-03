@@ -5,6 +5,31 @@
 import DOMPurify from 'dompurify';
 
 /**
+ * Decodes an ArrayBuffer to a string, detecting charset from the HTML content.
+ *
+ * Many older websites (especially Japanese) use non-UTF-8 encodings like
+ * Shift_JIS or EUC-JP. The `response.text()` API always decodes as UTF-8,
+ * which produces mojibake for these pages. This function:
+ *
+ * 1. Peeks at the first ~2KB decoded as ASCII to find charset declarations
+ *    (XML declaration, `<meta charset>`, `<meta http-equiv="Content-Type">`)
+ * 2. Uses TextDecoder with the detected encoding to decode the full buffer
+ */
+export function decodeHtmlBuffer(buffer: ArrayBuffer): string {
+  // Peek at first 2KB as Latin1 (preserves all byte values) to find charset
+  const peek = new TextDecoder('latin1').decode(buffer.slice(0, 2048));
+
+  const charset = detectCharset(peek);
+
+  try {
+    return new TextDecoder(charset, { fatal: true }).decode(buffer);
+  } catch {
+    // If the detected encoding fails, fall back to UTF-8
+    return new TextDecoder('utf-8', { fatal: false }).decode(buffer);
+  }
+}
+
+/**
  * Detects if HTML content is a bot protection/challenge page.
  * Returns a user-friendly error message if detected, null otherwise.
  */
@@ -232,6 +257,29 @@ export function stripScripts(html: string): string {
     result = result.replaceAll(DANGEROUS_TAGS, '');
   } while (result !== prev);
   return result;
+}
+
+/** Extract charset from XML declaration or meta tags. */
+function detectCharset(html: string): string {
+  // XML declaration: <?xml ... encoding="Shift_JIS"?>
+  const xmlMatch = /encoding\s*=\s*["']([^"']+)["']/i.exec(html);
+  if (xmlMatch?.[1]) {
+    return xmlMatch[1];
+  }
+
+  // <meta charset="...">
+  const metaCharset = /<meta\s[^>]*charset\s*=\s*["']?([^\s"';>]+)/i.exec(html);
+  if (metaCharset?.[1]) {
+    return metaCharset[1];
+  }
+
+  // <meta http-equiv="Content-Type" content="...;charset=...">
+  const httpEquiv = /content\s*=\s*["'][^"']*charset\s*=\s*([^\s"';>]+)/i.exec(html);
+  if (httpEquiv?.[1]) {
+    return httpEquiv[1];
+  }
+
+  return 'utf8';
 }
 
 // Regex patterns for HTML tag matching (precompiled for performance)
