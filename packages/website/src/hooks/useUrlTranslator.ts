@@ -227,10 +227,17 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           setHasContent(true);
         }
 
-        // Auto-detect page language from <html lang="..."> attribute
+        // Auto-detect page language from <html lang="..."> attribute.
+        // Skip "en" — many non-English pages incorrectly declare lang="en",
+        // and English is already the default so there's no value in switching to it.
         let effectiveLang = selectedLanguage;
         const pageLang = iframeDoc.documentElement.lang?.split('-')[0]?.toLowerCase();
-        if (pageLang && pageLang !== selectedLanguage && getLanguage(pageLang)) {
+        if (
+          pageLang &&
+          pageLang !== 'en' &&
+          pageLang !== selectedLanguage &&
+          getLanguage(pageLang)
+        ) {
           effectiveLang = pageLang;
           // Update prevLangRef so the retranslation effect won't double-translate
           prevLangRef.current = pageLang;
