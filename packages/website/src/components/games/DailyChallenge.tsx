@@ -35,11 +35,14 @@ const DEFAULT_PROGRESS: DailyProgress = {
   streak: 0,
 };
 
+// Ingglish doesn't use c, q, or x — omit from keyboard
 const KEYBOARD_ROWS = [
-  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+  ['w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['Enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
+  ['Enter', 'z', 'v', 'b', 'n', 'm', 'Backspace'],
 ];
+
+const INGGLISH_LETTERS = new Set('abdefghijklmnoprstuvwyz');
 
 // ---------------------------------------------------------------------------
 // Component
@@ -245,7 +248,7 @@ function DailyChallenge() {
       } else if (e.key === 'Backspace') {
         e.preventDefault();
         setCurrentInput((prev) => prev.slice(0, -1));
-      } else if (/^[a-z]$/i.test(e.key)) {
+      } else if (/^[a-z]$/i.test(e.key) && INGGLISH_LETTERS.has(e.key.toLowerCase())) {
         e.preventDefault();
         setCurrentInput((prev) => (prev.length < WORD_LENGTH ? prev + e.key.toLowerCase() : prev));
       }
