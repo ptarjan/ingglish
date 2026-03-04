@@ -35,14 +35,14 @@ const DEFAULT_PROGRESS: DailyProgress = {
   streak: 0,
 };
 
-// Ingglish doesn't use c, q, or x — omit from keyboard
+// Ingglish doesn't use q or x — omit from keyboard (c is needed for 'ch' digraph)
 const KEYBOARD_ROWS = [
   ['w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['Enter', 'z', 'v', 'b', 'n', 'm', 'Backspace'],
+  ['Enter', 'z', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
 ];
 
-const INGGLISH_LETTERS = new Set('abdefghijklmnoprstuvwyz');
+const INGGLISH_LETTERS = new Set('abcdefghijklmnoprstuvwyz');
 
 // ---------------------------------------------------------------------------
 // Component
