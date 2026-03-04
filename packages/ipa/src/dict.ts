@@ -68,10 +68,45 @@ export interface PhoneDict {
  * Khmer word segmenter. Khmer script has no inherent word boundaries,
  * so we use Intl.Segmenter to insert spaces between words.
  */
-const khmerSegmenter =
-  typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
-    ? new Intl.Segmenter('km', { granularity: 'word' })
-    : undefined;
+// =============================================================================
+// Word segmentation for spaceless scripts
+// =============================================================================
+
+const HAS_INTL_SEGMENTER = typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function';
+
+/**
+ * Create a word segmenter for a given locale. Returns a function that inserts
+ * spaces between adjacent word-like segments. Used for scripts that don't use
+ * spaces (Chinese, Japanese, Khmer).
+ */
+function makeSegmenter(
+  locale: string,
+  options?: { normalizeZWS?: boolean }
+): (text: string) => string {
+  if (!HAS_INTL_SEGMENTER) {
+    return (text: string) => text;
+  }
+  const segmenter = new Intl.Segmenter(locale, { granularity: 'word' });
+  const normalizeZWS = options?.normalizeZWS === true;
+  return (text: string): string => {
+    const input = normalizeZWS ? text.replaceAll('\u200B', ' ') : text;
+    const segments = [...segmenter.segment(input)];
+    let result = '';
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i]!;
+      result += seg.segment;
+      const next = segments[i + 1];
+      if (seg.isWordLike === true && next?.isWordLike === true) {
+        result += ' ';
+      }
+    }
+    return result;
+  };
+}
+
+export const segmentChineseText = makeSegmenter('zh');
+export const segmentJapaneseText = makeSegmenter('ja');
+export const segmentKhmerText = makeSegmenter('km', { normalizeZWS: true });
 
 export interface Language {
   code: string;
@@ -83,57 +118,15 @@ export interface Language {
   preprocess?: (text: string) => string;
 }
 
-/** Insert spaces between adjacent Khmer words that have no separator. */
-export function segmentKhmerText(text: string): string {
-  if (khmerSegmenter === undefined) {
-    return text;
-  }
-  // Replace zero-width spaces (common Khmer word boundary marker) with real spaces
-  const normalized = text.replaceAll('\u200B', ' ');
-  const segments = [...khmerSegmenter.segment(normalized)];
-  let result = '';
-  for (let i = 0; i < segments.length; i++) {
-    const seg = segments[i]!;
-    result += seg.segment;
-    // Insert space between adjacent word-like segments (no existing separator)
-    const next = segments[i + 1];
-    if (seg.isWordLike === true && next?.isWordLike === true) {
-      result += ' ';
-    }
-  }
-  return result;
-}
-
-/**
- * Japanese word segmenter. Japanese has no spaces between words,
- * so we use Intl.Segmenter to insert word boundaries.
- */
-const japaneseSegmenter =
-  typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
-    ? new Intl.Segmenter('ja', { granularity: 'word' })
-    : undefined;
-
-/** Insert spaces between adjacent Japanese words that have no separator. */
-export function segmentJapaneseText(text: string): string {
-  if (japaneseSegmenter === undefined) {
-    return text;
-  }
-  const segments = [...japaneseSegmenter.segment(text)];
-  let result = '';
-  for (let i = 0; i < segments.length; i++) {
-    const seg = segments[i]!;
-    result += seg.segment;
-    const next = segments[i + 1];
-    if (seg.isWordLike === true && next?.isWordLike === true) {
-      result += ' ';
-    }
-  }
-  return result;
-}
-
 export const LANGUAGES: Language[] = [
   { code: 'ar', disableRColoring: true, label: 'Arabic', nonLatinScript: true },
-  { code: 'yue', disableRColoring: true, label: 'Cantonese', nonLatinScript: true },
+  {
+    code: 'yue',
+    disableRColoring: true,
+    label: 'Cantonese',
+    nonLatinScript: true,
+    preprocess: segmentChineseText,
+  },
   { code: 'nl', disableRColoring: true, label: 'Dutch' },
   { code: 'en', conventionalCapitals: new Set(['I']), label: 'English' },
   { code: 'eo', disableRColoring: true, label: 'Esperanto' },
@@ -157,7 +150,13 @@ export const LANGUAGES: Language[] = [
   },
   { code: 'ko', disableRColoring: true, label: 'Korean', nonLatinScript: true },
   { code: 'ma', disableRColoring: true, label: 'Malay' },
-  { code: 'zh', disableRColoring: true, label: 'Mandarin', nonLatinScript: true },
+  {
+    code: 'zh',
+    disableRColoring: true,
+    label: 'Mandarin',
+    nonLatinScript: true,
+    preprocess: segmentChineseText,
+  },
   { code: 'nb', disableRColoring: true, label: 'Norwegian' },
   { code: 'or', disableRColoring: true, label: 'Odia', nonLatinScript: true },
   { code: 'fa', disableRColoring: true, label: 'Persian', nonLatinScript: true },
