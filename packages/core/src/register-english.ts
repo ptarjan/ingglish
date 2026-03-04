@@ -15,7 +15,7 @@ import {
 } from '@ingglish/dictionary';
 import { dpDecompose, matchBritish, matchStemming } from '@ingglish/fallback';
 import { wordToArpabet } from '@ingglish/g2p';
-import { G2P_CONVERTERS, getLanguage, WORD_RESOLVERS } from '@ingglish/ipa';
+import { G2P_CONVERTERS, getLanguage, toNullProto, WORD_RESOLVERS } from '@ingglish/ipa';
 import { isDictLoaderRegistered, setDictLoader, setLangDict } from './dict-loader';
 
 // English word resolver: British → stemming → compounds
@@ -55,7 +55,7 @@ G2P_CONVERTERS.en = { confident: false, convert: wordToArpabet };
 function buildEnglishPhoneDict() {
   const cmuDict = getDictionary();
   // Merge CMU dict with custom pronunciations (custom wins)
-  const entries: Record<string, string[]> = { ...cmuDict, ...CUSTOM_PRONUNCIATIONS };
+  const entries = toNullProto<string[]>({ ...cmuDict, ...CUSTOM_PRONUNCIATIONS });
   const enMeta = getLanguage('en');
   return { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' as const };
 }

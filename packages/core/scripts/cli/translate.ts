@@ -20,7 +20,13 @@ import {
 } from '../../src/translate/reverse.js';
 import '../../src/register-english.js';
 import { setLangDict } from '../../src/dict-loader.js';
-import { getLanguage, LANGUAGES, NOT_FOUND_MARKER, translateDict } from '@ingglish/ipa';
+import {
+  getLanguage,
+  LANGUAGES,
+  NOT_FOUND_MARKER,
+  toNullProto,
+  translateDict,
+} from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -31,7 +37,9 @@ function loadPhoneDict(langCode: string): PhoneDict {
     '../../../website/public/ipa-dicts',
     `${langCode}.json`
   );
-  const entries = JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string[]>;
+  const entries = toNullProto(
+    JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string[]>
+  );
   const langMeta = getLanguage(langCode);
   return {
     disableRColoring: langMeta?.disableRColoring,

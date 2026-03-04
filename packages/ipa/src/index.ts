@@ -15,6 +15,7 @@ export {
   LANGUAGES,
   lookupDict,
   NOT_FOUND_MARKER,
+  toNullProto,
   translateDict,
   translateDictWithMapping,
 } from './dict';

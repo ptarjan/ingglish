@@ -7,9 +7,9 @@ import { normalizeApostrophes } from './text';
 // Shared regex patterns for word tokenization (exported for use in dom package)
 /** Regex to split text into word and non-word tokens (includes accented Latin chars).
  *  Digit lookaround prevents matching letters in escape sequences like \u2014. */
-export const WORD_SPLIT_REGEX = /((?<!\d)[a-zA-Z\u00C0-\u024F']+(?!\d))/;
+export const WORD_SPLIT_REGEX = /((?<!\d)[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+(?!\d))/;
 /** Regex to test if a token is a word (includes accented Latin chars) */
-export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F']+$/;
+export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+$/;
 
 // Common IPA symbols used in phonetic transcription (Set for O(1) lookup).
 // Exported for reuse in language detection (core/detect).

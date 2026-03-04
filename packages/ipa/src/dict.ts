@@ -38,6 +38,14 @@ import { sw } from './overrides/sw';
 import { vi } from './overrides/vi';
 import { WORD_RESOLVERS } from './resolvers';
 
+/**
+ * Creates a null-prototype copy of a record. Prevents prototype pollution
+ * (e.g. `entries["constructor"]` returning `Object.prototype.constructor`).
+ */
+export function toNullProto<V>(obj: Record<string, V>): Record<string, V> {
+  return Object.assign(Object.create(null) as Record<string, V>, obj);
+}
+
 // Pre-compiled regexes (avoid per-call RegExp object creation)
 const IPA_SLASH_RE = /^\/|\/$/g;
 const WHITESPACE_SPLIT_RE = /(\s+)/;
@@ -299,7 +307,7 @@ function getOverridesArpabet(lang: string): Record<string, string[]> | undefined
     return cached;
   }
   const langOverrides = IPA_LANGUAGE_OVERRIDES[lang];
-  cached = {};
+  cached = Object.create(null) as Record<string, string[]>;
   for (const [word, ipa] of Object.entries(raw)) {
     const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
     cached[word] = applyDefaultStress(ipaToArpabet(clean, langOverrides));

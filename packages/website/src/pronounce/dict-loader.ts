@@ -1,7 +1,13 @@
 import { setDictLoader } from 'ingglish';
 import { loadDictionary, loadFrequencies, setDictionaryLoader } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
-import { getLanguage, IPA_LANGUAGE_OVERRIDES, ipaToArpabet, LANGUAGES } from '@ingglish/ipa';
+import {
+  getLanguage,
+  IPA_LANGUAGE_OVERRIDES,
+  ipaToArpabet,
+  LANGUAGES,
+  toNullProto,
+} from '@ingglish/ipa';
 import { getStress, isVowel } from '@ingglish/phonemes';
 
 export type { PhoneDict } from '@ingglish/ipa';
@@ -76,12 +82,12 @@ function convertIpaEntries(
   // Check first entry to detect format
   const firstValue = Object.values(raw)[0];
   if (firstValue === undefined || Array.isArray(firstValue)) {
-    return raw as Record<string, string[]>;
+    return toNullProto(raw as Record<string, string[]>);
   }
 
   // Entries are IPA strings — convert to ARPAbet
   const overrides = IPA_LANGUAGE_OVERRIDES[langCode];
-  const result: Record<string, string[]> = {};
+  const result: Record<string, string[]> = Object.create(null) as Record<string, string[]>;
   for (const [word, ipa] of Object.entries(raw)) {
     const clean = (ipa as string).replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
     const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));

@@ -20,7 +20,7 @@ const DEFAULT_CHUNK_SIZE = 100;
 const SYNC_THRESHOLD = 500;
 
 // Word matching regex for exec-based processing (faster than split+test)
-const WORD_REGEX = /(?<!\d)[a-zA-Z\u00C0-\u024F']+(?!\d)/g;
+const WORD_REGEX = /(?<!\d)[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+(?!\d)/g;
 
 /**
  * Options for applying pre-computed translations.
