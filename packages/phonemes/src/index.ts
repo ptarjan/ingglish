@@ -1,8 +1,7 @@
 /* eslint-disable perfectionist/sort-exports */
 
 // Phoneme data & utilities
-// Side-effect import: registers 'pronunciation' format at load time
-import './to-pronunciation';
+export { registerPronunciation } from './to-pronunciation';
 export {
   ARPABET_CONSONANTS,
   ARPABET_VOWELS,

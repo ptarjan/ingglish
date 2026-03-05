@@ -35,12 +35,17 @@ export function arpabetToPronunciation(arpabet: string[]): string {
     .join('-');
 }
 
-registerFormat('pronunciation', {
-  forward: arpabetToPronunciation,
-  isLatinScript: true,
-  label: 'Guide',
-  preservesCase: false,
-});
+/** Register the Guide pronunciation format. Safe to call multiple times. */
+export function registerPronunciation(): void {
+  registerFormat('pronunciation', {
+    forward: arpabetToPronunciation,
+    isLatinScript: true,
+    label: 'Guide',
+    preservesCase: false,
+  });
+}
+
+registerPronunciation();
 
 /**
  * Syllabifies ARPAbet phonemes using the Maximal Onset Principle.

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { registerDeseret } from '@ingglish/deseret';
 import { registerIPA } from '@ingglish/ipa';
+import { registerPronunciation } from '@ingglish/phonemes';
 import { registerShavian } from '@ingglish/shavian';
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
@@ -12,6 +13,7 @@ import './styles/index.css';
 // Explicit calls ensure bundlers cannot tree-shake these registrations
 registerDeseret();
 registerIPA();
+registerPronunciation();
 registerShavian();
 
 // Register custom experiment format
