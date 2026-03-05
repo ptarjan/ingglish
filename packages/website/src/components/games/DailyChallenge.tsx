@@ -39,7 +39,7 @@ const DEFAULT_PROGRESS: DailyProgress = {
 const KEYBOARD_ROWS = [
   ['w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['Enter', 'z', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
+  ['z', 'c', 'v', 'b', 'n', 'm', 'Backspace', 'Enter'],
 ];
 
 const INGGLISH_LETTERS = new Set('abcdefghijklmnoprstuvwyz');
