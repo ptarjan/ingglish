@@ -5,12 +5,17 @@ import {
 } from './from-deseret';
 import { arpabetToDeseret } from './to-deseret';
 
-registerFormat('deseret', {
-  forward: arpabetToDeseret,
-  isLatinScript: false,
-  label: 'Deseret',
-  nativeLabel: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
-  preservesCase: false,
-  reverseText: reverseTranslateDeseretText,
-  reverseTextWithMapping: reverseTranslateDeseretTextWithMapping,
-});
+/** Register the Deseret output format. Safe to call multiple times. */
+export function registerDeseret(): void {
+  registerFormat('deseret', {
+    forward: arpabetToDeseret,
+    isLatinScript: false,
+    label: 'Deseret',
+    nativeLabel: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
+    preservesCase: false,
+    reverseText: reverseTranslateDeseretText,
+    reverseTextWithMapping: reverseTranslateDeseretTextWithMapping,
+  });
+}
+
+registerDeseret();

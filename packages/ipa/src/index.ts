@@ -1,13 +1,18 @@
 import { registerFormat } from '@ingglish/phonemes';
 import { arpabetToIPARaw } from './to-ipa';
 
-registerFormat('ipa', {
-  forward: arpabetToIPARaw,
-  isLatinScript: true,
-  joinSeparator: ' ',
-  label: 'IPA',
-  preservesCase: false,
-});
+/** Register the IPA output format. Safe to call multiple times. */
+export function registerIPA(): void {
+  registerFormat('ipa', {
+    forward: arpabetToIPARaw,
+    isLatinScript: true,
+    joinSeparator: ' ',
+    label: 'IPA',
+    preservesCase: false,
+  });
+}
+
+registerIPA();
 
 export {
   buildReverseMap,

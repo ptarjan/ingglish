@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import '@ingglish/deseret'; // registers 'deseret' format
-import '@ingglish/ipa'; // registers 'ipa' format
-import '@ingglish/shavian'; // registers 'shavian' format
+import { registerDeseret } from '@ingglish/deseret';
+import { registerIPA } from '@ingglish/ipa';
+import { registerShavian } from '@ingglish/shavian';
 import App from './App';
 import { FormatProvider } from './contexts/FormatContext';
 import { registerExperiment } from './hooks/useCustomMapping';
 import { registerServiceWorker } from './register-sw';
 import './styles/index.css';
+
+// Explicit calls ensure bundlers cannot tree-shake these registrations
+registerDeseret();
+registerIPA();
+registerShavian();
 
 // Register custom experiment format
 registerExperiment();

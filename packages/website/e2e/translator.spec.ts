@@ -550,6 +550,39 @@ test.describe('Text Translator', () => {
     await expect(ingglishInput).toHaveValue('haloh');
   });
 
+  test('format toggle cycles through all registered formats', async () => {
+    const englishInput = page.locator('textarea.text-input').first();
+    const outputInput = page.locator('textarea.text-input').last();
+    const formatBtn = page.locator('.format-toggle');
+
+    await englishInput.fill('hello');
+    await expect(outputInput).toHaveValue('haloh');
+
+    // Ingglish → Guide
+    await formatBtn.click();
+    await expect(formatBtn).toContainText('Guide');
+    await expect(outputInput).not.toHaveValue('haloh');
+
+    // Guide → IPA (must be registered, not lowercase "ipa")
+    await formatBtn.click();
+    await expect(formatBtn).toContainText('IPA');
+    const ipaValue = await outputInput.inputValue();
+    expect(ipaValue).toContain('loʊ'); // IPA for "hello" contains loʊ
+
+    // IPA → Shavian
+    await formatBtn.click();
+    await expect(formatBtn).toContainText('Shavian');
+
+    // Shavian → Deseret
+    await formatBtn.click();
+    await expect(formatBtn).toContainText('Deseret');
+
+    // Deseret → back to Ingglish
+    await formatBtn.click();
+    await expect(formatBtn).toContainText('Ingglish');
+    await expect(outputInput).toHaveValue('haloh');
+  });
+
   test('preserves capitalization', async () => {
     const englishInput = page.locator('textarea.text-input').first();
     const ingglishInput = page.locator('textarea.text-input').last();
