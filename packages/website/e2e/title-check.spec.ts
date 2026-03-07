@@ -44,6 +44,8 @@ test('docs title updates when navigating between docs', async ({ page }) => {
   await page.goto('/docs/design-decisions');
   await page.waitForSelector('.docs-content');
 
-  await page.click('a.docs-nav-item:has-text("Architecture")');
+  const navLink = page.locator('a.docs-nav-item:has-text("Architecture")');
+  await navLink.scrollIntoViewIfNeeded();
+  await navLink.click();
   await expect(page).toHaveTitle('Architecture | Ingglish Docs');
 });
