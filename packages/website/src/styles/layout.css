@@ -148,12 +148,10 @@
 }
 
 .toggle-buttons {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  margin-left: auto;
 }
 
 .theme-toggle {
@@ -268,12 +266,6 @@
 
   .subtitle-link {
     display: none;
-  }
-
-  .toggle-buttons {
-    top: 0.5rem;
-    right: 0.5rem;
-    gap: 0.25rem;
   }
 
   .theme-toggle {

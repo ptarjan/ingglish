@@ -239,11 +239,6 @@ function App() {
       )}
       <meta content={meta.description} name="description" />
       <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
-      <div className="toggle-buttons">
-        <button aria-label="Toggle theme" className="theme-toggle" onClick={cycleTheme}>
-          {getThemeIcon()}
-        </button>
-      </div>
       <header className="header">
         <div className="header-title">
           <a
@@ -271,6 +266,11 @@ function App() {
           >
             What if English spelling made sense?
           </button>
+          <div className="toggle-buttons">
+            <button aria-label="Toggle theme" className="theme-toggle" onClick={cycleTheme}>
+              {getThemeIcon()}
+            </button>
+          </div>
         </div>
       </header>
 
