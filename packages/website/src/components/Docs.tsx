@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import architecture from '../../../../docs/architecture.md';
 import communityLandscape from '../../../../docs/community-landscape.md';
@@ -176,6 +176,11 @@ function Docs(): JSX.Element {
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // Scroll the active pill into view in the horizontal nav
+  const activePillRef = useCallback((node: HTMLAnchorElement | null) => {
+    node?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, []);
+
   const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0]!;
 
   // Extract headings from current doc for TOC
@@ -303,7 +308,7 @@ function Docs(): JSX.Element {
           </button>
           <ul>
             {docs.map((doc) => (
-              <li key={doc.id}>
+              <li className={doc.section === undefined ? '' : 'docs-section-start'} key={doc.id}>
                 {doc.section !== undefined && (
                   <div className="docs-section-header">{doc.section}</div>
                 )}
@@ -315,6 +320,7 @@ function Docs(): JSX.Element {
                     setActiveDoc(doc.id);
                     window.scrollTo(0, 0);
                   }}
+                  ref={activeDoc === doc.id ? activePillRef : undefined}
                 >
                   {doc.title}
                 </a>
