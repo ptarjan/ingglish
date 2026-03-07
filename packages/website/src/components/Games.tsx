@@ -11,6 +11,7 @@ const LearnToRead = lazy(() => import('./games/LearnToRead'));
 const DailyChallenge = lazy(() => import('./games/DailyChallenge'));
 const SpeedMatch = lazy(() => import('./games/SpeedMatch'));
 const ReverseSpelling = lazy(() => import('./games/ReverseSpelling'));
+const SpellingRuleQuiz = lazy(() => import('./games/SpellingRuleQuiz'));
 
 function Games(): JSX.Element {
   const [activeGame, setActiveGame] = useState<GameId | null>(parseGamesPath);
@@ -63,6 +64,7 @@ function Games(): JSX.Element {
         {activeGame === 'daily' && <DailyChallenge />}
         {activeGame === 'speedmatch' && <SpeedMatch />}
         {activeGame === 'reverse' && <ReverseSpelling />}
+        {activeGame === 'spelling-rules' && <SpellingRuleQuiz />}
       </ErrorBoundary>
     </Suspense>
   );

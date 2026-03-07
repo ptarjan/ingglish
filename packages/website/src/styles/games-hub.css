@@ -22,6 +22,24 @@
   color: var(--color-text-muted);
 }
 
+.games-hub-section {
+  margin-bottom: 2rem;
+}
+
+.games-hub-section-header {
+  margin-bottom: 1rem;
+}
+
+.games-hub-section-header h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.games-hub-section-header p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
 .games-hub-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

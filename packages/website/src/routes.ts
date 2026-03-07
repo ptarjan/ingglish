@@ -19,6 +19,11 @@ export const GAME_ENTRIES = [
   { id: 'daily', title: 'Daily Challenge' },
   { id: 'speedmatch', title: 'Speed Match' },
   { id: 'reverse', title: 'Reverse Spelling' },
+  { id: 'spelling-rules', title: 'Spelling Rule Quiz' },
+  { id: 'spell-that-sound', title: 'Spell That Sound' },
+  { id: 'rule-or-exception', title: 'Rule or Exception?' },
+  { id: 'pattern-sort', title: 'Pattern Sort' },
+  { id: 'origin-detective', title: 'Origin Detective' },
 ] as const;
 
 export type GameId = (typeof GAME_ENTRIES)[number]['id'];
