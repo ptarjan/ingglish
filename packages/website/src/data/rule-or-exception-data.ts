@@ -341,6 +341,23 @@ const QUESTIONS: RuleOrExceptionQuestion[] = [
     tier: 2,
     word: 'tapping',
   },
+  {
+    category: 'double-consonant',
+    explanation: '"Rolling" is an exception — LL doesn\'t shorten the O, which still says "oh".',
+    isException: true,
+    rule: 'Double consonant keeps the vowel short',
+    tier: 2,
+    word: 'rolling',
+  },
+  {
+    category: 'double-consonant',
+    explanation:
+      '"Falling" is an exception — LL doesn\'t keep A short; it makes the "aw" sound instead.',
+    isException: true,
+    rule: 'Double consonant keeps the vowel short',
+    tier: 3,
+    word: 'falling',
+  },
 ];
 
 /**
