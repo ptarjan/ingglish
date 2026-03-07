@@ -37,8 +37,6 @@ interface HeadingInfo {
   text: string;
 }
 
-const GITHUB_EDIT_BASE = 'https://github.com/ptarjan/ingglish/edit/main/docs/';
-
 const docs: DocEntry[] = [
   // Ingglish Design — how the project works
   {
@@ -298,10 +296,10 @@ function Docs(): JSX.Element {
             onClick={() => {
               setSidebarOpen((o) => !o);
             }}
+            title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             type="button"
           >
-            {sidebarOpen ? 'Collapse' : currentDoc.title}{' '}
-            <span className={`docs-sidebar-chevron ${sidebarOpen ? '' : 'open'}`}>&#x25B4;</span>
+            {sidebarOpen ? '\u00AB' : '\u00BB'}
           </button>
           <ul>
             {docs.map((doc) => (
@@ -344,18 +342,6 @@ function Docs(): JSX.Element {
           </ul>
         </nav>
         <article className="docs-content">
-          {currentDoc.filename !== undefined && (
-            <div className="docs-header">
-              <a
-                className="docs-edit-link"
-                href={`${GITHUB_EDIT_BASE}${currentDoc.filename}`}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Edit on GitHub
-              </a>
-            </div>
-          )}
           <div dangerouslySetInnerHTML={{ __html: currentDoc.content }} ref={contentRef} />
         </article>
       </div>

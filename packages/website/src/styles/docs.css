@@ -10,9 +10,11 @@
 }
 
 .docs-sidebar {
+  position: relative;
   flex-shrink: 0;
   width: 200px;
   overflow: hidden;
+  transition: width 0.2s ease;
 }
 
 .docs-sidebar > ul {
@@ -105,32 +107,6 @@
   flex: 1;
   min-width: 0;
   overflow-x: auto;
-}
-
-.docs-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-}
-
-.docs-edit-link {
-  display: inline-flex;
-  gap: 0.375rem;
-  align-items: center;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  background: var(--color-surface);
-  border-radius: 0.375rem;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-.docs-edit-link:hover {
-  color: var(--color-text);
-  background: var(--color-surface-hover);
 }
 
 .docs-content h1 {
@@ -238,47 +214,39 @@
   border-left: 3px solid var(--color-primary);
 }
 
-/* Desktop sidebar toggle */
+/* Desktop sidebar toggle icon */
 .docs-sidebar-toggle {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  margin-bottom: 0.5rem;
+  position: absolute;
+  top: 0;
+  right: -1.25rem;
+  width: 1.25rem;
+  height: 1.5rem;
+  padding: 0;
   font-size: 0.75rem;
-  font-weight: 600;
+  line-height: 1.5rem;
   color: var(--color-text-muted);
+  text-align: center;
   cursor: pointer;
-  background: none;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
+  border-left: none;
+  border-radius: 0 0.25rem 0.25rem 0;
 }
 
 .docs-sidebar-toggle:hover {
   color: var(--color-text);
-  background: var(--color-surface);
+  background: var(--color-surface-hover);
 }
 
-.docs-sidebar-chevron {
-  transition: transform 0.15s ease;
-}
-
-.docs-sidebar-chevron.open {
-  transform: rotate(180deg);
-}
-
-/* Collapsed sidebar on desktop */
 .docs-sidebar.collapsed {
-  width: auto;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-.docs-sidebar.collapsed > ul {
-  display: none;
-}
-
-/* Backdrop — not used on desktop */
-.docs-sidebar-backdrop {
-  display: none;
+.docs-sidebar.collapsed .docs-sidebar-toggle {
+  right: -2rem;
+  width: 2rem;
 }
 
 /* Tablet and below — horizontal pill bar */
@@ -292,7 +260,15 @@
   }
 
   .docs-sidebar {
+    position: static;
     width: 100%;
+    transition: none;
+  }
+
+  .docs-sidebar.collapsed {
+    width: 100%;
+    padding: 0;
+    overflow: visible;
   }
 
   .docs-sidebar > ul {
@@ -328,14 +304,5 @@
   /* Hide subsections on mobile — too cluttered */
   .docs-subsections {
     display: none;
-  }
-
-  /* Force sidebar visible even if collapsed class is set */
-  .docs-sidebar.collapsed {
-    width: 100%;
-  }
-
-  .docs-sidebar.collapsed > ul {
-    display: flex;
   }
 }
