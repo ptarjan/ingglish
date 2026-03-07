@@ -294,7 +294,9 @@ function Docs(): JSX.Element {
         <button
           aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
           className="docs-sidebar-toggle"
-          onClick={() => { setSidebarOpen((o) => !o); }}
+          onClick={() => {
+            setSidebarOpen((o) => !o);
+          }}
           type="button"
         >
           {sidebarOpen ? '\u2715' : '\u2630'} {currentDoc.title}
@@ -302,9 +304,13 @@ function Docs(): JSX.Element {
         {sidebarOpen && (
           <div
             className="docs-sidebar-backdrop"
-            onClick={() => { setSidebarOpen(false); }}
+            onClick={() => {
+              setSidebarOpen(false);
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Escape') {setSidebarOpen(false);}
+              if (e.key === 'Escape') {
+                setSidebarOpen(false);
+              }
             }}
             role="presentation"
           />
