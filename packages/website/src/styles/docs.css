@@ -233,14 +233,6 @@
   background: var(--color-surface-hover);
 }
 
-.docs-sidebar.collapsed {
-  width: auto;
-}
-
-.docs-sidebar.collapsed > ul {
-  display: none;
-}
-
 /* Tablet and below — horizontal pill bar */
 @media (max-width: 1024px) {
   .docs-container {
@@ -251,14 +243,9 @@
     display: none;
   }
 
-  .docs-sidebar,
-  .docs-sidebar.collapsed {
+  .docs-sidebar {
     width: 100%;
     overflow: visible;
-  }
-
-  .docs-sidebar.collapsed > ul {
-    display: flex;
   }
 
   .docs-sidebar > ul {
