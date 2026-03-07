@@ -304,7 +304,7 @@ function Docs(): JSX.Element {
             title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             type="button"
           >
-            {sidebarOpen ? '\u00AB' : '\u00BB'}
+            {sidebarOpen ? '\u00AB Hide' : '\u00BB Show nav'}
           </button>
           <ul>
             {docs.map((doc) => (
