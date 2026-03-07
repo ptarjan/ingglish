@@ -103,6 +103,38 @@ test.describe('Smoke Tests', () => {
     expect(errors).toEqual([]);
   });
 
+  test('/docs sidebar toggle hides and shows nav without layout breakage', async ({ page }) => {
+    await blockExternalNetwork(page);
+    // Use desktop viewport so the sidebar toggle is visible
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/docs');
+    await waitForAppLoad(page);
+    await expect(page.locator('.docs-content')).toBeVisible({ timeout: 10_000 });
+
+    // Sidebar should be visible initially
+    await expect(page.locator('.docs-sidebar')).toBeVisible();
+
+    // Click hide
+    const hideBtn = page.locator('.docs-sidebar-toggle', { hasText: 'Hide' });
+    await hideBtn.click();
+
+    // Sidebar should be gone
+    await expect(page.locator('.docs-sidebar')).not.toBeVisible();
+
+    // Content should still be visible and take up most of the viewport
+    const content = page.locator('.docs-content');
+    await expect(content).toBeVisible();
+    const box = await content.boundingBox();
+    expect(box).not.toBeNull();
+    // Content should be at least 80% of viewport width (no grey covering)
+    expect(box!.width).toBeGreaterThan(1200 * 0.8);
+
+    // Click show to bring it back
+    const showBtn = page.locator('.docs-sidebar-toggle');
+    await showBtn.click();
+    await expect(page.locator('.docs-sidebar')).toBeVisible();
+  });
+
   test('/extension loads', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
