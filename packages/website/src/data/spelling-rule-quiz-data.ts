@@ -777,5 +777,8 @@ export function pickQuiz(seed: number, count = 10): SpellingRuleQuestion[] {
   const t3Count = Math.min(3, Math.floor(count * 0.3));
   const t2Count = count - t1Count - t3Count;
 
-  return [...t1.slice(0, t1Count), ...t2.slice(0, t2Count), ...t3.slice(0, t3Count)];
+  return [...t1.slice(0, t1Count), ...t2.slice(0, t2Count), ...t3.slice(0, t3Count)].map((q) => ({
+    ...q,
+    choices: shuffle([...q.choices], rng),
+  }));
 }
