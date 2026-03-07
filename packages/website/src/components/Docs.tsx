@@ -294,80 +294,59 @@ function Docs(): JSX.Element {
       />
       <link href={`https://ingglish.com/docs/${currentDoc.id}`} rel="canonical" />
       <div className="docs-container">
-        {!sidebarOpen && (
-          <button
-            aria-label="Expand navigation"
-            className="docs-sidebar-toggle"
-            onClick={() => {
-              setSidebarOpen(true);
-            }}
-            title="Expand sidebar"
-            type="button"
-          >
-            {'\u00BB'}
-          </button>
-        )}
-        {sidebarOpen && (
-          <nav className="docs-sidebar">
-            <button
-              aria-label="Collapse navigation"
-              className="docs-sidebar-toggle"
-              onClick={() => {
-                setSidebarOpen(false);
-              }}
-              title="Collapse sidebar"
-              type="button"
-            >
-              {'\u00AB Hide'}
-            </button>
-            <ul>
-              {docs.map((doc) => (
-                <li className={doc.section === undefined ? '' : 'docs-section-start'} key={doc.id}>
-                  {doc.section !== undefined && (
-                    <div className="docs-section-header">{doc.section}</div>
-                  )}
-                  <a
-                    className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
-                    href={`/docs/${doc.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveDoc(doc.id);
-                      window.scrollTo(0, 0);
-                    }}
-                    ref={activeDoc === doc.id ? activePillRef : undefined}
-                  >
-                    {doc.title}
-                  </a>
-                  {activeDoc === doc.id && currentHeadings.length > 0 && (
-                    <ul className="docs-subsections">
-                      {currentHeadings.map((heading) => (
-                        <li key={heading.id}>
-                          <a
-                            className={`docs-subsection-link docs-subsection-h${heading.level}`}
-                            href={`/docs/${doc.id}#${heading.id}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              document
-                                .querySelector(`#${CSS.escape(heading.id)}`)
-                                ?.scrollIntoView();
-                              globalThis.history.pushState(
-                                null,
-                                '',
-                                `/docs/${doc.id}#${heading.id}`
-                              );
-                            }}
-                          >
-                            {heading.text}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        <button
+          aria-label={sidebarOpen ? 'Collapse navigation' : 'Expand navigation'}
+          className="docs-sidebar-toggle"
+          onClick={() => {
+            setSidebarOpen((o) => !o);
+          }}
+          title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+          type="button"
+        >
+          {sidebarOpen ? '\u00AB' : '\u00BB'}
+        </button>
+        <nav className={`docs-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+          <ul>
+            {docs.map((doc) => (
+              <li className={doc.section === undefined ? '' : 'docs-section-start'} key={doc.id}>
+                {doc.section !== undefined && (
+                  <div className="docs-section-header">{doc.section}</div>
+                )}
+                <a
+                  className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
+                  href={`/docs/${doc.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveDoc(doc.id);
+                    window.scrollTo(0, 0);
+                  }}
+                  ref={activeDoc === doc.id ? activePillRef : undefined}
+                >
+                  {doc.title}
+                </a>
+                {activeDoc === doc.id && currentHeadings.length > 0 && (
+                  <ul className="docs-subsections">
+                    {currentHeadings.map((heading) => (
+                      <li key={heading.id}>
+                        <a
+                          className={`docs-subsection-link docs-subsection-h${heading.level}`}
+                          href={`/docs/${doc.id}#${heading.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document.querySelector(`#${CSS.escape(heading.id)}`)?.scrollIntoView();
+                            globalThis.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
+                          }}
+                        >
+                          {heading.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
         <article className="docs-content">
           <div dangerouslySetInnerHTML={{ __html: currentDoc.content }} ref={contentRef} />
         </article>

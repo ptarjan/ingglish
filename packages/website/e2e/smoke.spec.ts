@@ -111,28 +111,34 @@ test.describe('Smoke Tests', () => {
     await waitForAppLoad(page);
     await expect(page.locator('.docs-content')).toBeVisible({ timeout: 10_000 });
 
-    // Sidebar should be visible initially
-    await expect(page.locator('.docs-sidebar')).toBeVisible();
+    // Sidebar should be visible initially with non-zero width
+    const sidebar = page.locator('.docs-sidebar');
+    const sidebarBox = await sidebar.boundingBox();
+    expect(sidebarBox).not.toBeNull();
+    expect(sidebarBox!.width).toBeGreaterThan(100);
 
-    // Click hide
-    const hideBtn = page.locator('.docs-sidebar-toggle', { hasText: 'Hide' });
-    await hideBtn.click();
+    // Click collapse
+    const toggleBtn = page.locator('.docs-sidebar-toggle');
+    await toggleBtn.click();
 
-    // Sidebar should be gone
-    await expect(page.locator('.docs-sidebar')).not.toBeVisible();
+    // Wait for animation to finish, then sidebar should have ~0 width
+    await page.waitForTimeout(300);
+    const collapsedBox = await sidebar.boundingBox();
+    expect(collapsedBox).not.toBeNull();
+    expect(collapsedBox!.width).toBeLessThan(5);
 
-    // Content should still be visible and take up most of the viewport
+    // Content should take up most of the viewport
     const content = page.locator('.docs-content');
-    await expect(content).toBeVisible();
-    const box = await content.boundingBox();
-    expect(box).not.toBeNull();
-    // Content should be at least 80% of viewport width (no grey covering)
-    expect(box!.width).toBeGreaterThan(1200 * 0.8);
+    const contentBox = await content.boundingBox();
+    expect(contentBox).not.toBeNull();
+    expect(contentBox!.width).toBeGreaterThan(1200 * 0.8);
 
-    // Click show to bring it back
-    const showBtn = page.locator('.docs-sidebar-toggle');
-    await showBtn.click();
-    await expect(page.locator('.docs-sidebar')).toBeVisible();
+    // Click expand to bring it back
+    await toggleBtn.click();
+    await page.waitForTimeout(300);
+    const expandedBox = await sidebar.boundingBox();
+    expect(expandedBox).not.toBeNull();
+    expect(expandedBox!.width).toBeGreaterThan(100);
   });
 
   test('/extension loads', async ({ page }) => {

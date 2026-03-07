@@ -13,6 +13,11 @@
   flex-shrink: 0;
   width: 200px;
   overflow: hidden;
+  transition: width 0.2s ease;
+}
+
+.docs-sidebar.collapsed {
+  width: 0;
 }
 
 .docs-sidebar > ul {
@@ -242,9 +247,11 @@
     display: none;
   }
 
-  .docs-sidebar {
+  .docs-sidebar,
+  .docs-sidebar.collapsed {
     width: 100%;
     overflow: visible;
+    transition: none;
   }
 
   .docs-sidebar > ul {
