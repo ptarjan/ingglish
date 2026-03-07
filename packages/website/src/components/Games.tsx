@@ -12,6 +12,10 @@ const DailyChallenge = lazy(() => import('./games/DailyChallenge'));
 const SpeedMatch = lazy(() => import('./games/SpeedMatch'));
 const ReverseSpelling = lazy(() => import('./games/ReverseSpelling'));
 const SpellingRuleQuiz = lazy(() => import('./games/SpellingRuleQuiz'));
+const SpellThatSound = lazy(() => import('./games/SpellThatSound'));
+const RuleOrException = lazy(() => import('./games/RuleOrException'));
+const PatternSort = lazy(() => import('./games/PatternSort'));
+const OriginDetective = lazy(() => import('./games/OriginDetective'));
 
 function Games(): JSX.Element {
   const [activeGame, setActiveGame] = useState<GameId | null>(parseGamesPath);
@@ -65,27 +69,20 @@ function Games(): JSX.Element {
         {activeGame === 'speedmatch' && <SpeedMatch />}
         {activeGame === 'reverse' && <ReverseSpelling />}
         {activeGame === 'spelling-rules' && <SpellingRuleQuiz />}
+        {activeGame === 'spell-that-sound' && <SpellThatSound />}
+        {activeGame === 'rule-or-exception' && <RuleOrException />}
+        {activeGame === 'pattern-sort' && <PatternSort />}
+        {activeGame === 'origin-detective' && <OriginDetective />}
       </ErrorBoundary>
     </Suspense>
   );
 }
 
-/** Games that have an implemented component. */
-const IMPLEMENTED_GAMES = new Set<GameId>([
-  'daily',
-  'homophones',
-  'learn',
-  'reading',
-  'reverse',
-  'speedmatch',
-  'spelling-rules',
-]);
-
 function parseGamesPath(): GameId | null {
   const segments = globalThis.location.pathname.replace(/\/$/, '').split('/');
   // segments: ['', 'games', 'reading'] or ['', 'games']
   const gameId = segments[2] as GameId | undefined;
-  if (gameId && IMPLEMENTED_GAMES.has(gameId)) {
+  if (gameId && GAME_ENTRIES.some((g) => g.id === gameId)) {
     return gameId;
   }
   return null;

@@ -67,6 +67,36 @@ const GAMES: GameCard[] = [
     section: 'english-spelling',
     title: 'Spelling Rule Quiz',
   },
+  {
+    description: 'See a sound and a word with a blank — pick the correct spelling to complete it.',
+    difficulty: 'All levels',
+    id: 'spell-that-sound',
+    section: 'english-spelling',
+    title: 'Spell That Sound',
+  },
+  {
+    description: 'See a word and a spelling rule — does the word follow the rule or break it?',
+    difficulty: 'All levels',
+    id: 'rule-or-exception',
+    section: 'english-spelling',
+    title: 'Rule or Exception?',
+  },
+  {
+    description:
+      'Words appear one at a time — sort them into pronunciation buckets by how the pattern sounds.',
+    difficulty: 'Intermediate',
+    id: 'pattern-sort',
+    section: 'english-spelling',
+    title: 'Pattern Sort',
+  },
+  {
+    description:
+      "Guess a word's language of origin from its unusual spelling. Germanic, French, Latin, or Greek?",
+    difficulty: 'Advanced',
+    id: 'origin-detective',
+    section: 'english-spelling',
+    title: 'Origin Detective',
+  },
 ];
 
 const SECTIONS = [

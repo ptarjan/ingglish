@@ -1,0 +1,316 @@
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { renderScoreCard } from '../../challenge/render-score-card';
+import type { SpellThatSoundQuestion } from '../../data/spell-that-sound-data';
+import { pickQuiz } from '../../data/spell-that-sound-data';
+import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import '../../styles/spelling-rule-quiz.css';
+
+type Phase = 'intro' | 'playing' | 'results';
+
+interface RoundResult {
+  correct: boolean;
+  question: SpellThatSoundQuestion;
+  selectedAnswer: string;
+  timeTaken: number;
+}
+
+function getScoreLabel(pct: number): string {
+  if (pct >= 90) {
+    return 'Spelling champion!';
+  }
+  if (pct >= 70) {
+    return 'Great spelling instincts!';
+  }
+  if (pct >= 50) {
+    return 'English spelling is tough — nice work!';
+  }
+  return 'English has too many ways to spell the same sound!';
+}
+
+function SpellThatSound() {
+  const [phase, setPhase] = useState<Phase>('intro');
+  const [seed, setSeed] = useState(() => Date.now());
+  const [questions, setQuestions] = useState<SpellThatSoundQuestion[]>([]);
+  const [round, setRound] = useState(0);
+  const [results, setResults] = useState<RoundResult[]>([]);
+  const [selectedChoice, setSelectedChoice] = useState<null | string>(null);
+  const roundStartRef = useRef(0);
+  const startRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const shareRef = useRef<HTMLButtonElement>(null);
+  const [copiedShare, setCopiedShare] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(
+    () => () => {
+      clearTimeout(copiedTimerRef.current);
+    },
+    []
+  );
+  useEffect(() => {
+    if (phase === 'intro') {
+      startRef.current?.focus();
+    }
+  }, [phase]);
+  useEffect(() => {
+    if (selectedChoice !== null) {
+      setTimeout(() => nextRef.current?.focus(), 0);
+    }
+  }, [selectedChoice]);
+  useEffect(() => {
+    if (phase === 'results') {
+      setTimeout(() => shareRef.current?.focus(), 0);
+    }
+  }, [phase]);
+
+  const startQuiz = useCallback((newSeed: number) => {
+    setSeed(newSeed);
+    setQuestions(pickQuiz(newSeed));
+    setRound(0);
+    setResults([]);
+    setSelectedChoice(null);
+    roundStartRef.current = Date.now();
+    setPhase('playing');
+  }, []);
+
+  const handleChoiceClick = useCallback(
+    (choice: string) => {
+      if (selectedChoice !== null) {
+        return;
+      }
+      const question = questions[round];
+      if (!question) {
+        return;
+      }
+      const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
+      const isCorrect = choice === question.correctSpelling;
+      setSelectedChoice(choice);
+      setResults((prev) => [
+        ...prev,
+        { correct: isCorrect, question, selectedAnswer: choice, timeTaken: elapsed },
+      ]);
+    },
+    [selectedChoice, questions, round]
+  );
+
+  const handleNext = useCallback(() => {
+    if (round + 1 >= questions.length) {
+      setPhase('results');
+    } else {
+      setRound(round + 1);
+      setSelectedChoice(null);
+      roundStartRef.current = Date.now();
+    }
+  }, [round, questions]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && selectedChoice !== null) {
+        handleNext();
+      }
+    },
+    [selectedChoice, handleNext]
+  );
+
+  const overallPct =
+    results.length > 0
+      ? Math.round((results.filter((r) => r.correct).length / results.length) * 100)
+      : 0;
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        results.map((r) => ({ score: r.correct ? 1 : 0, timeTaken: r.timeTaken })),
+        overallPct,
+        { footerUrl: 'ingglish.com/games/spell-that-sound', gameTitle: 'SPELL THAT SOUND' }
+      ),
+    [results, overallPct]
+  );
+
+  const showCopied = useCallback(() => {
+    setCopiedShare(true);
+    clearTimeout(copiedTimerRef.current);
+    copiedTimerRef.current = setTimeout(() => {
+      setCopiedShare(false);
+    }, 1500);
+  }, []);
+
+  const handleShareResult = useCallback(() => {
+    copyCanvasToClipboard(getScoreCanvas(), showCopied, 'spell-that-sound-score.png');
+  }, [getScoreCanvas, showCopied]);
+
+  const handleSaveImage = useCallback(() => {
+    downloadCanvas(getScoreCanvas(), 'spell-that-sound-score.png');
+  }, [getScoreCanvas]);
+
+  if (phase === 'intro') {
+    return (
+      <div className="game-page">
+        <div className="game-intro">
+          <h2>Spell That Sound</h2>
+          <p>
+            English has multiple ways to spell the same sound. Can you pick the right spelling for
+            each word?
+          </p>
+          <ol className="game-rules">
+            <li>See a sound and a word with a missing spelling</li>
+            <li>Pick the correct letters to complete the word</li>
+            <li>10 rounds, from common patterns to tricky ones</li>
+          </ol>
+          <button
+            className="btn-primary"
+            onClick={() => {
+              startQuiz(seed);
+            }}
+            ref={startRef}
+          >
+            Start Quiz
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'results') {
+    const correctCount = results.filter((r) => r.correct).length;
+    return (
+      <div className="game-page">
+        <div className="game-results">
+          <h2>Quiz Complete!</h2>
+          <div className="game-overall-score">
+            {correctCount}/{results.length}
+          </div>
+          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
+          <div className="game-round-bars">
+            {results.map((r, i) => (
+              <div className="game-round-row" key={i}>
+                <span className="game-round-label">Q{i + 1}</span>
+                <div className="game-round-bar">
+                  <div
+                    className={`game-round-fill ${r.correct ? 'game-round-fill-good' : 'game-round-fill-bad'}`}
+                    style={{ width: `${r.correct ? 100 : 0}%` }}
+                  />
+                </div>
+                <span className="sr-round-word">
+                  {r.question.wordBefore}_{r.question.wordAfter}
+                </span>
+                <span className="game-round-time">{r.timeTaken}s</span>
+              </div>
+            ))}
+          </div>
+          <div className="game-result-actions">
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(seed);
+              }}
+            >
+              Try Again
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(Date.now());
+              }}
+            >
+              New Quiz
+            </button>
+            <button
+              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
+              onClick={handleShareResult}
+              ref={shareRef}
+            >
+              {copiedShare ? 'Copied!' : 'Share Result'}
+            </button>
+            <button className="btn-secondary" onClick={handleSaveImage}>
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentQ = questions[round];
+  if (!currentQ) {
+    return null;
+  }
+  const answered = selectedChoice !== null;
+
+  return (
+    <div className="game-page" onKeyDown={handleKeyDown}>
+      <div className="game-progress">
+        <span>
+          {round + 1} / {questions.length}
+        </span>
+        <div className="game-progress-bar">
+          <div
+            className="game-progress-fill"
+            style={{ width: `${((round + 1) / questions.length) * 100}%` }}
+          />
+        </div>
+        <span className="game-tier-badge">
+          {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
+        </span>
+      </div>
+
+      <div className="game-card">
+        <div className="game-card-label">Fill in the {currentQ.soundDescription}</div>
+        <div className="sr-word">
+          {currentQ.wordBefore}
+          <span className="sr-highlight">{answered ? currentQ.correctSpelling : '___'}</span>
+          {currentQ.wordAfter}
+        </div>
+      </div>
+
+      <div className="sr-choices">
+        {currentQ.choices.map((choice) => {
+          let className = 'sr-choice';
+          if (answered) {
+            if (choice === currentQ.correctSpelling) {
+              className += ' sr-choice-correct';
+            } else if (choice === selectedChoice) {
+              className += ' sr-choice-incorrect';
+            } else {
+              className += ' sr-choice-dimmed';
+            }
+          }
+          return (
+            <button
+              className={className}
+              disabled={answered}
+              key={choice}
+              onClick={() => {
+                handleChoiceClick(choice);
+              }}
+            >
+              {currentQ.wordBefore}
+              <strong>{choice}</strong>
+              {currentQ.wordAfter}
+            </button>
+          );
+        })}
+      </div>
+
+      {answered && (
+        <div className="sr-feedback">
+          {selectedChoice === currentQ.correctSpelling ? (
+            <div className="sr-feedback-correct">Correct!</div>
+          ) : (
+            <div className="sr-feedback-incorrect">
+              Not quite — it{'\u2019'}s <strong>{currentQ.correctSpelling}</strong>
+            </div>
+          )}
+          <div className="sr-explanation">{currentQ.explanation}</div>
+          <div className="game-actions">
+            <button className="btn-primary" onClick={handleNext} ref={nextRef}>
+              {round + 1 >= questions.length ? 'See Results' : 'Next'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default SpellThatSound;
