@@ -303,6 +303,17 @@ function App() {
                   setActiveTab(tab);
                 }
               }}
+              ref={
+                activeTab === tab
+                  ? (node) => {
+                      node?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center',
+                      });
+                    }
+                  : undefined
+              }
             >
               {label}
             </a>
