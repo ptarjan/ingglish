@@ -29,7 +29,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // English "ch" as in chip
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"ch" as in chip',
     explanation: 'English-origin words use CH for the "ch" sound as in "church".',
     pattern: 'ch',
@@ -39,7 +39,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"ch" as in chip',
     explanation: 'CH makes the "ch" sound in native English words like "child".',
     pattern: 'ch',
@@ -49,7 +49,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"ch" as in chip',
     explanation: 'In everyday English words, CH sounds like "ch" in "chip".',
     pattern: 'ch',
@@ -60,7 +60,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Greek "k"
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"k" as in kite',
     explanation: 'Greek-origin words use CH for a "k" sound. "School" comes from Greek scholē.',
     pattern: 'ch',
@@ -70,7 +70,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"k" as in kite',
     explanation: 'CH sounds like "k" in Greek-origin words like "chorus".',
     pattern: 'ch',
@@ -80,7 +80,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"k" as in kite',
     explanation: 'The CH in "anchor" sounds like "k", reflecting its Greek roots.',
     pattern: 'ch',
@@ -90,7 +90,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"k" as in kite',
     explanation: 'The CH in "stomach" sounds like "k" — it came through Greek and Latin.',
     pattern: 'ch',
@@ -101,7 +101,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // French "sh"
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"sh" as in ship',
     explanation: 'French-origin words use CH for an "sh" sound. "Machine" is from French.',
     pattern: 'ch',
@@ -111,7 +111,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"sh" as in ship',
     explanation: 'CH sounds like "sh" in French loanwords like "chef".',
     pattern: 'ch',
@@ -121,7 +121,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ch-digraph',
-    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship'],
+    choices: ['"ch" as in chip', '"k" as in kite', '"sh" as in ship', '"s" as in sit'],
     correctSound: '"sh" as in ship',
     explanation: '"Charade" is French, so CH makes the "sh" sound.',
     pattern: 'ch',
@@ -134,7 +134,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Voiceless (as in "think")
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in thin',
     explanation: 'The TH in "think" is voiceless — air only, your vocal cords don\'t vibrate.',
     pattern: 'th',
@@ -144,7 +144,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in thin',
     explanation: 'The TH in "bath" is voiceless, like in "think".',
     pattern: 'th',
@@ -154,7 +154,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in thin',
     explanation: 'TH in "three" is voiceless — feel the difference by touching your throat.',
     pattern: 'th',
@@ -164,7 +164,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in thin',
     explanation: 'The TH in "mouth" (noun) is voiceless, like in "think".',
     pattern: 'th',
@@ -175,7 +175,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Voiced (as in "this")
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in that',
     explanation: 'TH is voiced in common function words like "this" — your throat buzzes.',
     pattern: 'th',
@@ -185,7 +185,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in that',
     explanation: '"The" uses the voiced TH — most function words (the, this, that, them) do.',
     pattern: 'th',
@@ -195,7 +195,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in that',
     explanation: 'The verb "breathe" has a voiced TH, while the noun "breath" has a voiceless TH.',
     pattern: 'th',
@@ -205,7 +205,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'th-digraph',
-    choices: ['"th" as in thin', '"th" as in that'],
+    choices: ['"th" as in thin', '"th" as in that', '"t" as in top', '"d" as in dog'],
     correctSound: '"th" as in that',
     explanation: '"Smooth" ends with a voiced TH, like in "this".',
     pattern: 'th',
@@ -218,7 +218,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // "ee" as in feet
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"ee" as in feet',
     explanation: 'EA usually makes a long "ee" sound, as in "beat", "eat", "read" (present).',
     pattern: 'ea',
@@ -228,7 +228,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"ee" as in feet',
     explanation: 'EA sounds like "ee" in "clean" — this is the more common pronunciation.',
     pattern: 'ea',
@@ -238,7 +238,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"ee" as in feet',
     explanation: 'EA in "dream" makes the long "ee" sound.',
     pattern: 'ea',
@@ -249,7 +249,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // "e" as in bed
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"e" as in bed',
     explanation: 'EA sounds like short "e" in "bread" — you just have to memorize these.',
     pattern: 'ea',
@@ -259,7 +259,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"e" as in bed',
     explanation: 'The EA in "head" sounds like short "e", not "ee". Many common words do this.',
     pattern: 'ea',
@@ -269,7 +269,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"e" as in bed',
     explanation: '"Dead" rhymes with "head" and "bread" — EA sounds like short "e".',
     pattern: 'ea',
@@ -279,7 +279,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ea-vowel',
-    choices: ['"ee" as in feet', '"e" as in bed'],
+    choices: ['"ee" as in feet', '"e" as in bed', '"ay" as in day', '"i" as in sit'],
     correctSound: '"e" as in bed',
     explanation: '"Sweat" has the short "e" sound even though "sweet" has "ee".',
     pattern: 'ea',
@@ -292,7 +292,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Rule works
   {
     category: 'silent-e',
-    choices: ['"ay" as in day', '"a" as in cat', '"u" as in cup'],
+    choices: ['"ay" as in day', '"a" as in cat', '"u" as in cup', '"e" as in bed'],
     correctSound: '"ay" as in day',
     explanation: 'Silent E makes the preceding vowel "say its name": cake has the "ay" sound.',
     pattern: 'a_e',
@@ -302,7 +302,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"eye" as in mine', '"i" as in sit', '"ee" as in feet'],
+    choices: ['"eye" as in mine', '"i" as in sit', '"ee" as in feet', '"ay" as in day'],
     correctSound: '"eye" as in mine',
     explanation: 'Silent E makes I say its name: "pine" vs "pin".',
     pattern: 'i_e',
@@ -312,7 +312,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup'],
+    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup', '"aw" as in law'],
     correctSound: '"oh" as in go',
     explanation: 'Silent E makes O say its name: "hope" vs "hop".',
     pattern: 'o_e',
@@ -322,7 +322,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"yoo" as in use', '"u" as in cup', '"oo" as in pool'],
+    choices: ['"yoo" as in use', '"u" as in cup', '"oo" as in pool', '"oh" as in go'],
     correctSound: '"yoo" as in use',
     explanation: 'Silent E makes U say its name: "cute" vs "cut".',
     pattern: 'u_e',
@@ -333,7 +333,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Exceptions
   {
     category: 'silent-e',
-    choices: ['"ay" as in day', '"a" as in cat', '"u" as in cup'],
+    choices: ['"ay" as in day', '"a" as in cat', '"u" as in cup', '"e" as in bed'],
     correctSound: '"a" as in cat',
     explanation: '"Have" breaks the silent E rule — A still sounds like "a" in "cat".',
     pattern: 'a_e',
@@ -343,7 +343,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup'],
+    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup', '"aw" as in law'],
     correctSound: '"u" as in cup',
     explanation: '"Love" breaks the silent E rule — O sounds like "u" in "cup".',
     pattern: 'o_e',
@@ -353,7 +353,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup'],
+    choices: ['"oh" as in go', '"o" as in hot', '"u" as in cup', '"aw" as in law'],
     correctSound: '"o" as in hot',
     explanation: '"Gone" breaks the silent E rule — O sounds like "o" in "hot".',
     pattern: 'o_e',
@@ -363,7 +363,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'silent-e',
-    choices: ['"eye" as in mine', '"i" as in sit', '"ee" as in feet'],
+    choices: ['"eye" as in mine', '"i" as in sit', '"ee" as in feet', '"ay" as in day'],
     correctSound: '"i" as in sit',
     explanation: '"Give" breaks the silent E rule — I sounds like "i" in "sit".',
     pattern: 'i_e',
@@ -480,7 +480,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Soft C ("s" before e, i, y)
   {
     category: 'soft-cg',
-    choices: ['"s" as in sit', '"k" as in kite'],
+    choices: ['"s" as in sit', '"k" as in kite', '"ch" as in chip', '"sh" as in ship'],
     correctSound: '"s" as in sit',
     explanation: 'C sounds like "s" before E, I, or Y: "city", "cent", "cycle".',
     pattern: 'c',
@@ -490,7 +490,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'soft-cg',
-    choices: ['"s" as in sit', '"k" as in kite'],
+    choices: ['"s" as in sit', '"k" as in kite', '"ch" as in chip', '"sh" as in ship'],
     correctSound: '"s" as in sit',
     explanation: 'C before E sounds like "s": "cell" starts with an S sound.',
     pattern: 'c',
@@ -501,7 +501,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Hard C ("k")
   {
     category: 'soft-cg',
-    choices: ['"s" as in sit', '"k" as in kite'],
+    choices: ['"s" as in sit', '"k" as in kite', '"ch" as in chip', '"sh" as in ship'],
     correctSound: '"k" as in kite',
     explanation: 'C sounds like "k" before A, O, U, or consonants: "cat", "cold", "cup".',
     pattern: 'c',
@@ -512,7 +512,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Soft G ("j" before e, i, y)
   {
     category: 'soft-cg',
-    choices: ['"j" as in jump', '"g" as in go'],
+    choices: ['"j" as in jump', '"g" as in go', '"zh" as in measure', '"h" as in hat'],
     correctSound: '"j" as in jump',
     explanation: 'G often sounds like "j" before E, I, or Y: "gem", "giant".',
     pattern: 'g',
@@ -522,7 +522,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'soft-cg',
-    choices: ['"j" as in jump', '"g" as in go'],
+    choices: ['"j" as in jump', '"g" as in go', '"zh" as in measure', '"h" as in hat'],
     correctSound: '"j" as in jump',
     explanation: 'G before I usually sounds like "j": "giraffe" starts with a J sound.',
     pattern: 'g',
@@ -533,7 +533,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // Hard G exceptions before e/i
   {
     category: 'soft-cg',
-    choices: ['"j" as in jump', '"g" as in go'],
+    choices: ['"j" as in jump', '"g" as in go', '"zh" as in measure', '"h" as in hat'],
     correctSound: '"g" as in go',
     explanation:
       '"Get" breaks the soft-G rule — G stays hard despite the E. Germanic words often do this.',
@@ -544,7 +544,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'soft-cg',
-    choices: ['"j" as in jump', '"g" as in go'],
+    choices: ['"j" as in jump', '"g" as in go', '"zh" as in measure', '"h" as in hat'],
     correctSound: '"g" as in go',
     explanation: '"Girl" keeps the hard G before I — another Germanic exception.',
     pattern: 'g',
@@ -554,7 +554,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'soft-cg',
-    choices: ['"j" as in jump', '"g" as in go'],
+    choices: ['"j" as in jump', '"g" as in go', '"zh" as in measure', '"h" as in hat'],
     correctSound: '"g" as in go',
     explanation:
       '"Give" has a hard G despite the I. Old English words often resist the soft-G rule.',
@@ -567,7 +567,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // === -ED suffix ===
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"t" sound',
     explanation: 'After voiceless sounds (k, p, s, etc.), -ED sounds like "t".',
     pattern: 'ed',
@@ -577,7 +577,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"d" sound',
     explanation: 'After voiced sounds (vowels, l, n, etc.), -ED sounds like "d".',
     pattern: 'ed',
@@ -587,7 +587,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"id" (extra syllable)',
     explanation: 'After a T or D sound, -ED adds a whole extra syllable: "want-id".',
     pattern: 'ed',
@@ -597,7 +597,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"t" sound',
     explanation: '"Laughed" ends in an F sound (voiceless), so -ED sounds like "t".',
     pattern: 'ed',
@@ -607,7 +607,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"id" (extra syllable)',
     explanation: '"Land" ends in a D sound, so -ED adds a syllable: "land-id".',
     pattern: 'ed',
@@ -617,7 +617,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ed-suffix',
-    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)'],
+    choices: ['"t" sound', '"d" sound', '"id" (extra syllable)', '"ed" (rhymes with red)'],
     correctSound: '"d" sound',
     explanation: '"Love" ends in a voiced V sound, so -ED sounds like "d".',
     pattern: 'ed',
@@ -629,7 +629,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // === OW (two sounds) ===
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"ow" as in ouch',
     explanation: 'OW sounds like "ow" in "cow", "how", "now".',
     pattern: 'ow',
@@ -639,7 +639,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"oh" as in go',
     explanation: 'OW sounds like "oh" in "show", "know", "grow".',
     pattern: 'ow',
@@ -649,7 +649,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"ow" as in ouch',
     explanation: 'OW in "down" sounds like "ow" — no rule tells you which sound OW makes.',
     pattern: 'ow',
@@ -659,7 +659,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"oh" as in go',
     explanation:
       'OW in "own" sounds like "oh". Compare with "down" — same spelling, different sound.',
@@ -670,7 +670,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"oh" as in go',
     explanation: 'OW in "bowl" sounds like "oh", but in "howl" it sounds like "ow"!',
     pattern: 'ow',
@@ -680,7 +680,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'ow-vowel',
-    choices: ['"ow" as in ouch', '"oh" as in go'],
+    choices: ['"ow" as in ouch', '"oh" as in go', '"oo" as in pool', '"aw" as in law'],
     correctSound: '"ow" as in ouch',
     explanation: '"Fowl" has the "ow" sound — compare with "bowl" which has the "oh" sound.',
     pattern: 'ow',
@@ -692,7 +692,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   // === OO (two sounds) ===
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"oo" as in pool',
     explanation: 'OO usually makes the long sound as in "food", "moon", "cool".',
     pattern: 'oo',
@@ -702,7 +702,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"oo" as in look',
     explanation: 'OO makes the short sound in "book", "look", "cook".',
     pattern: 'oo',
@@ -712,7 +712,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"oo" as in pool',
     explanation: 'OO in "moon" makes the long sound.',
     pattern: 'oo',
@@ -722,7 +722,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"oo" as in look',
     explanation: 'OO in "good" is the short sound — compare with "food" which is long.',
     pattern: 'oo',
@@ -732,7 +732,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"u" as in cup',
     explanation: '"Flood" is even stranger — OO sounds like "u" in "cup"! Same with "blood".',
     pattern: 'oo',
@@ -742,7 +742,7 @@ const QUESTIONS: SpellingRuleQuestion[] = [
   },
   {
     category: 'oo-vowel',
-    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup'],
+    choices: ['"oo" as in pool', '"oo" as in look', '"u" as in cup', '"oh" as in go'],
     correctSound: '"u" as in cup',
     explanation: 'OO in "blood" sounds like "u" in "cup" — a third sound for the same spelling.',
     pattern: 'oo',

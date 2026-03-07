@@ -24,7 +24,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === K sound spellings ===
   {
     category: 'k-sound',
-    choices: ['c', 'k', 'ck'],
+    choices: ['c', 'k', 'ck', 'ch'],
     correctSpelling: 'c',
     explanation: 'Before A, O, U, the "k" sound is usually spelled C: "cake".',
     soundDescription: '"k" sound',
@@ -34,7 +34,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'k-sound',
-    choices: ['c', 'k', 'ck'],
+    choices: ['c', 'k', 'ck', 'ch'],
     correctSpelling: 'k',
     explanation: 'Before I and E, the "k" sound is spelled K (C would be soft): "kite".',
     soundDescription: '"k" sound',
@@ -44,7 +44,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'k-sound',
-    choices: ['c', 'k', 'ck'],
+    choices: ['c', 'k', 'ck', 'ch'],
     correctSpelling: 'ck',
     explanation: 'After a short vowel at the end of a word, use CK: "back".',
     soundDescription: '"k" sound',
@@ -54,7 +54,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'k-sound',
-    choices: ['c', 'k', 'ck'],
+    choices: ['c', 'k', 'ck', 'ch'],
     correctSpelling: 'k',
     explanation: 'After a long vowel or consonant, use K alone: "book".',
     soundDescription: '"k" sound',
@@ -64,7 +64,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'k-sound',
-    choices: ['k', 'qu', 'ck'],
+    choices: ['k', 'qu', 'ck', 'c'],
     correctSpelling: 'qu',
     explanation: 'QU spells the "kw" sound in "unique" — from French/Latin.',
     soundDescription: '"k" sound',
@@ -74,7 +74,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'k-sound',
-    choices: ['k', 'ch', 'ck'],
+    choices: ['k', 'ch', 'ck', 'c'],
     correctSpelling: 'ch',
     explanation: 'In Greek-origin words, CH spells the "k" sound: "school".',
     soundDescription: '"k" sound',
@@ -86,7 +86,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === Long A spellings ===
   {
     category: 'long-a',
-    choices: ['ai', 'ay', 'a_e'],
+    choices: ['ai', 'ay', 'a_e', 'ei'],
     correctSpelling: 'ai',
     explanation: 'In the middle of a word, long A is often spelled AI: "rain".',
     soundDescription: 'long "ay" sound',
@@ -96,7 +96,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-a',
-    choices: ['ai', 'ay', 'a_e'],
+    choices: ['ai', 'ay', 'a_e', 'ei'],
     correctSpelling: 'ay',
     explanation: 'At the end of a word, long A is spelled AY: "play".',
     soundDescription: 'long "ay" sound',
@@ -106,7 +106,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-a',
-    choices: ['ai', 'ay', 'a_e'],
+    choices: ['ai', 'ay', 'a_e', 'ei'],
     correctSpelling: 'a_e',
     explanation: 'Split by a consonant + silent E: "game" (a-consonant-e pattern).',
     soundDescription: 'long "ay" sound',
@@ -116,7 +116,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-a',
-    choices: ['ai', 'ay', 'ea'],
+    choices: ['ai', 'ay', 'ea', 'a_e'],
     correctSpelling: 'ea',
     explanation: '"Great" is one of the few words where EA makes the long A sound.',
     soundDescription: 'long "ay" sound',
@@ -126,7 +126,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-a',
-    choices: ['ai', 'a_e', 'ea'],
+    choices: ['ai', 'a_e', 'ea', 'ay'],
     correctSpelling: 'ea',
     explanation: '"Steak" uses EA for the long A sound — a rare exception.',
     soundDescription: 'long "ay" sound',
@@ -138,7 +138,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === -TION / -SION ===
   {
     category: 'shun-sound',
-    choices: ['tion', 'sion', 'shun'],
+    choices: ['tion', 'sion', 'shun', 'cian'],
     correctSpelling: 'tion',
     explanation: 'After most consonants and vowels, use -TION: "nation".',
     soundDescription: '"shun" sound',
@@ -148,7 +148,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'shun-sound',
-    choices: ['tion', 'sion', 'shun'],
+    choices: ['tion', 'sion', 'shun', 'cian'],
     correctSpelling: 'sion',
     explanation: 'After vowels (especially when the root ends in -de or -se), use -SION: "vision".',
     soundDescription: '"shun" sound',
@@ -158,7 +158,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'shun-sound',
-    choices: ['tion', 'sion', 'cion'],
+    choices: ['tion', 'sion', 'cion', 'shun'],
     correctSpelling: 'tion',
     explanation: '-TION is by far the most common spelling for the "shun" sound: "action".',
     soundDescription: '"shun" sound',
@@ -168,7 +168,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'shun-sound',
-    choices: ['tion', 'sion', 'zion'],
+    choices: ['tion', 'sion', 'zion', 'cian'],
     correctSpelling: 'sion',
     explanation: '-SION can also make a "zhun" sound: "decision".',
     soundDescription: '"zhun" sound',
@@ -178,7 +178,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'shun-sound',
-    choices: ['tion', 'sion', 'shion'],
+    choices: ['tion', 'sion', 'shion', 'cian'],
     correctSpelling: 'tion',
     explanation: 'After -ate words, drop the E and add -ION → -ATION: "education".',
     soundDescription: '"shun" sound',
@@ -190,7 +190,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === Long E spellings ===
   {
     category: 'long-e',
-    choices: ['ea', 'ee', 'ie'],
+    choices: ['ea', 'ee', 'ie', 'ey'],
     correctSpelling: 'ea',
     explanation: 'EA is one of the most common long E spellings: "team".',
     soundDescription: 'long "ee" sound',
@@ -200,7 +200,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-e',
-    choices: ['ea', 'ee', 'e'],
+    choices: ['ea', 'ee', 'e', 'ie'],
     correctSpelling: 'ee',
     explanation: 'EE often appears in the middle or end of words: "free".',
     soundDescription: 'long "ee" sound',
@@ -210,7 +210,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-e',
-    choices: ['ea', 'ee', 'ie'],
+    choices: ['ea', 'ee', 'ie', 'ey'],
     correctSpelling: 'ie',
     explanation: 'IE spells long E in some words: "believe" (I before E rule).',
     soundDescription: 'long "ee" sound',
@@ -220,7 +220,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-e',
-    choices: ['ea', 'ee', 'ie'],
+    choices: ['ea', 'ee', 'ie', 'ey'],
     correctSpelling: 'ie',
     explanation: 'IE spells long E in "thief" — I before E except after C.',
     soundDescription: 'long "ee" sound',
@@ -230,7 +230,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'long-e',
-    choices: ['ea', 'ee', 'ei'],
+    choices: ['ea', 'ee', 'ei', 'ie'],
     correctSpelling: 'ei',
     explanation: 'After C, it flips to EI: "receive" (I before E except after C).',
     soundDescription: 'long "ee" sound',
@@ -242,7 +242,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === S vs Z sound for S ===
   {
     category: 's-z',
-    choices: ['s', 'z', 'se'],
+    choices: ['s', 'z', 'se', 'ss'],
     correctSpelling: 's',
     explanation: 'The word "is" spells the Z sound with just S — very common in short words.',
     soundDescription: '"z" sound',
@@ -252,7 +252,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 's-z',
-    choices: ['s', 'z', 'zz'],
+    choices: ['s', 'z', 'zz', 'se'],
     correctSpelling: 's',
     explanation: 'S between vowels often sounds like Z: "rose".',
     soundDescription: '"z" sound',
@@ -264,7 +264,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   // === F sound spellings ===
   {
     category: 'f-sound',
-    choices: ['f', 'ph', 'gh'],
+    choices: ['f', 'ph', 'gh', 'ff'],
     correctSpelling: 'ph',
     explanation: 'PH spells the "f" sound in Greek-origin words: "phone".',
     soundDescription: '"f" sound',
@@ -274,7 +274,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'f-sound',
-    choices: ['f', 'ph', 'gh'],
+    choices: ['f', 'ph', 'gh', 'ff'],
     correctSpelling: 'gh',
     explanation: 'GH can spell the "f" sound: "laugh".',
     soundDescription: '"f" sound',
@@ -284,7 +284,7 @@ const QUESTIONS: SpellThatSoundQuestion[] = [
   },
   {
     category: 'f-sound',
-    choices: ['f', 'ph', 'gh'],
+    choices: ['f', 'ph', 'gh', 'ff'],
     correctSpelling: 'gh',
     explanation: 'GH at the end of "enough" sounds like "f".',
     soundDescription: '"f" sound',

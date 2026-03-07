@@ -23,7 +23,7 @@ export interface OriginDetectiveQuestion {
 const QUESTIONS: OriginDetectiveQuestion[] = [
   // === Greek ===
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'CH = "k" is a hallmark of Greek: school, chorus, chemistry, character.',
     spellingClue: 'CH sounds like "k"',
@@ -31,7 +31,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'school',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'Silent P in PS- is Greek: psychology, psalm, pseudo, pneumonia.',
     spellingClue: 'Starts with silent P',
@@ -39,7 +39,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'psychology',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'PH = "f" is a Greek spelling: phone, photo, philosophy, pharmacy.',
     spellingClue: 'PH sounds like "f"',
@@ -47,7 +47,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'phone',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'RH- and Y as a vowel are Greek markers: rhythm, rhyme, myth.',
     spellingClue: 'RH and no vowel pattern',
@@ -55,7 +55,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'rhythm',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'Silent PT- is Greek: pterodactyl, Ptolemy. The P was pronounced in Greek.',
     spellingClue: 'Starts with silent P',
@@ -63,7 +63,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'pterodactyl',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Greek',
     explanation: 'Multiple Greek markers: CH = "k", TH digraph, and -um ending.',
     spellingClue: 'CH sounds like "k", TH, -um ending',
@@ -73,7 +73,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
 
   // === French ===
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'CH = "sh" is French: machine, chef, chauffeur, brochure.',
     spellingClue: 'CH sounds like "sh"',
@@ -81,7 +81,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'machine',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'Silent final consonants are a French hallmark: ballet, bouquet, depot.',
     spellingClue: 'Silent T at the end',
@@ -89,7 +89,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'ballet',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'CH = "sh" plus the -EUR ending are French markers.',
     spellingClue: 'CH = "sh" and -EUR ending',
@@ -97,7 +97,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'chauffeur',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'The AU vowel and -ANT ending suggest French origin.',
     spellingClue: 'Silent letters and -ANT ending',
@@ -105,7 +105,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'restaurant',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'Five letters, one sound — the extreme silent letters are French.',
     spellingClue: 'UEUE is all silent after Q',
@@ -113,7 +113,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'queue',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'French',
     explanation: 'Named after the French region. CH = "sh" and -GNE are French patterns.',
     spellingClue: 'CH = "sh" and -AGNE ending',
@@ -123,7 +123,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
 
   // === Germanic (Old English) ===
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation:
       'Silent KN- and -GH are Old English: knight, know, night, light. The K and GH were once pronounced.',
@@ -132,7 +132,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'knight',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation: 'Silent WR- is Old English: write, wrong, wrist. The W was once pronounced.',
     spellingClue: 'Silent W',
@@ -140,7 +140,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'write',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation: '-OUGH spellings are Old English. The GH was once a throaty sound.',
     spellingClue: '-OUGH with "off" sound',
@@ -148,7 +148,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'cough',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation: 'Silent GH inside a word is Old English: daughter, thought, eight.',
     spellingClue: 'Silent GH in the middle',
@@ -156,7 +156,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'daughter',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation: 'Silent GN- is Old English/Germanic: gnaw, gnat, gnome.',
     spellingClue: 'Silent G before N',
@@ -164,7 +164,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'gnaw',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Germanic',
     explanation: 'The silent W in "sword" is from Old English — the W was once pronounced.',
     spellingClue: 'Silent W',
@@ -174,7 +174,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
 
   // === Latin ===
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'SC = "s" before E or I comes from Latin: science, scissors, scene.',
     spellingClue: 'SC sounds like "s"',
@@ -182,7 +182,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'science',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'Silent C in -SCLE is Latin: muscle (from Latin musculus, "little mouse").',
     spellingClue: 'Silent C',
@@ -190,7 +190,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'muscle',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'The silent B was added by scholars to show the Latin root "debitum".',
     spellingClue: 'Silent B',
@@ -198,7 +198,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'debt',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'Like "debt", the B was added to show the Latin root "dubitare".',
     spellingClue: 'Silent B',
@@ -206,7 +206,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'doubt',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'The silent P was added to show the Latin root "recepta".',
     spellingClue: 'Silent P',
@@ -214,7 +214,7 @@ const QUESTIONS: OriginDetectiveQuestion[] = [
     word: 'receipt',
   },
   {
-    choices: ['Germanic', 'French', 'Latin', 'Greek'],
+    choices: ['French', 'Germanic', 'Greek', 'Latin'],
     correctOrigin: 'Latin',
     explanation: 'The silent B reflects the Latin "subtilis". English borrowed it through French.',
     spellingClue: 'Silent B',
@@ -246,8 +246,5 @@ export function pickQuiz(seed: number, count = 10): OriginDetectiveQuestion[] {
   const t3Count = Math.min(3, Math.floor(count * 0.3));
   const t2Count = count - t1Count - t3Count;
 
-  return [...t1.slice(0, t1Count), ...t2.slice(0, t2Count), ...t3.slice(0, t3Count)].map((q) => ({
-    ...q,
-    choices: shuffle([...q.choices], rng),
-  }));
+  return [...t1.slice(0, t1Count), ...t2.slice(0, t2Count), ...t3.slice(0, t3Count)];
 }

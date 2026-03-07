@@ -335,12 +335,11 @@ const QUESTIONS: RuleOrExceptionQuestion[] = [
   },
   {
     category: 'double-consonant',
-    explanation:
-      '"Hoping" has a single P, so the vowel stays long — this is the contrast that proves the rule.',
-    isException: true,
+    explanation: '"Tapping" follows the rule — double P keeps A short (compare "taping").',
+    isException: false,
     rule: 'Double consonant keeps the vowel short',
     tier: 2,
-    word: 'hoping',
+    word: 'tapping',
   },
 ];
 
