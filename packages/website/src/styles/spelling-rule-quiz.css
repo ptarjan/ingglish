@@ -61,6 +61,10 @@
   opacity: 0.5;
 }
 
+.sr-choice:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .sr-feedback {
   padding: 1rem;
   margin-top: 1rem;
