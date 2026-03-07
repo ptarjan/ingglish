@@ -238,8 +238,8 @@
   border-left: 3px solid var(--color-primary);
 }
 
-/* Mobile */
-@media (max-width: 640px) {
+/* Tablet and below — horizontal pill bar instead of sidebar */
+@media (max-width: 1024px) {
   .docs-container {
     flex-direction: column;
   }
