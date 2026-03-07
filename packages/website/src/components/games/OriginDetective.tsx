@@ -105,11 +105,19 @@ function OriginDetective() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && selectedChoice !== null) {
+      if (selectedChoice === null) {
+        const choices = questions[round]?.choices;
+        if (choices) {
+          const idx = Number.parseInt(e.key, 10) - 1;
+          if (idx >= 0 && idx < choices.length) {
+            handleChoiceClick(choices[idx]!);
+          }
+        }
+      } else if (e.key === 'Enter') {
         handleNext();
       }
     },
-    [selectedChoice, handleNext]
+    [selectedChoice, handleNext, questions, round, handleChoiceClick]
   );
 
   const overallPct =

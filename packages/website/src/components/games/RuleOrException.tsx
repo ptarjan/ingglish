@@ -105,11 +105,17 @@ function RuleOrException() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && selectedChoice !== null) {
+      if (selectedChoice === null) {
+        if (e.key === '1') {
+          handleChoiceClick(false);
+        } else if (e.key === '2') {
+          handleChoiceClick(true);
+        }
+      } else if (e.key === 'Enter') {
         handleNext();
       }
     },
-    [selectedChoice, handleNext]
+    [selectedChoice, handleNext, handleChoiceClick]
   );
 
   const overallPct =

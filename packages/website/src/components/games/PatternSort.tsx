@@ -143,11 +143,17 @@ function PatternSort() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && selectedBucket !== null) {
+      if (selectedBucket === null) {
+        if (e.key === '1') {
+          handleBucketClick('a');
+        } else if (e.key === '2') {
+          handleBucketClick('b');
+        }
+      } else if (e.key === 'Enter') {
         handleNext();
       }
     },
-    [selectedBucket, handleNext]
+    [selectedBucket, handleNext, handleBucketClick]
   );
 
   const totalCorrect = roundResults.reduce((sum, r) => sum + r.correct, 0);
