@@ -243,17 +243,30 @@
   display: none;
 }
 
+.docs-sidebar-chevron {
+  transition: transform 0.15s ease;
+}
+
+.docs-sidebar-chevron.open {
+  transform: rotate(180deg);
+}
+
 /* Backdrop overlay — only used on tablet/mobile */
 .docs-sidebar-backdrop {
   display: none;
 }
 
-/* Tablet and below — collapsible sidebar drawer */
+/* Tablet and below — dropdown menu from toggle button */
 @media (max-width: 1024px) {
+  .docs-container {
+    position: relative;
+  }
+
   .docs-sidebar-toggle {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    width: 100%;
     padding: 0.5rem 0.75rem;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
@@ -266,23 +279,24 @@
   }
 
   .docs-sidebar {
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: 2.75rem;
+    right: 0;
     left: 0;
     z-index: 100;
-    width: 280px;
-    max-width: 80vw;
-    height: 100dvh;
-    padding: 1rem;
+    display: none;
+    width: auto;
+    max-height: 70vh;
+    padding: 0.5rem;
     overflow-y: auto;
     background: var(--color-bg);
-    box-shadow: 2px 0 12px rgb(0 0 0 / 0.2);
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.15);
   }
 
   .docs-sidebar.open {
-    transform: translateX(0);
+    display: block;
   }
 
   .docs-sidebar-backdrop {
@@ -293,6 +307,6 @@
     display: block;
     width: 100%;
     height: 100%;
-    background: rgb(0 0 0 / 0.4);
+    background: transparent;
   }
 }

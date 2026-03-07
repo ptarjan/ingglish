@@ -299,7 +299,8 @@ function Docs(): JSX.Element {
           }}
           type="button"
         >
-          {sidebarOpen ? '\u2715' : '\u2630'} {currentDoc.title}
+          {currentDoc.title}{' '}
+          <span className={`docs-sidebar-chevron ${sidebarOpen ? 'open' : ''}`}>&#x25BE;</span>
         </button>
         {sidebarOpen && (
           <div
