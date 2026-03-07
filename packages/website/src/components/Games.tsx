@@ -70,11 +70,22 @@ function Games(): JSX.Element {
   );
 }
 
+/** Games that have an implemented component. */
+const IMPLEMENTED_GAMES = new Set<GameId>([
+  'daily',
+  'homophones',
+  'learn',
+  'reading',
+  'reverse',
+  'speedmatch',
+  'spelling-rules',
+]);
+
 function parseGamesPath(): GameId | null {
   const segments = globalThis.location.pathname.replace(/\/$/, '').split('/');
   // segments: ['', 'games', 'reading'] or ['', 'games']
   const gameId = segments[2] as GameId | undefined;
-  if (gameId && GAME_ENTRIES.some((g) => g.id === gameId)) {
+  if (gameId && IMPLEMENTED_GAMES.has(gameId)) {
     return gameId;
   }
   return null;
