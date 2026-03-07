@@ -176,7 +176,7 @@ function Docs(): JSX.Element {
     }
     return docs[0]!.id;
   });
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0]!;
 
@@ -291,32 +291,18 @@ function Docs(): JSX.Element {
       />
       <link href={`https://ingglish.com/docs/${currentDoc.id}`} rel="canonical" />
       <div className="docs-container">
-        <button
-          aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
-          className="docs-sidebar-toggle"
-          onClick={() => {
-            setSidebarOpen((o) => !o);
-          }}
-          type="button"
-        >
-          {currentDoc.title}{' '}
-          <span className={`docs-sidebar-chevron ${sidebarOpen ? 'open' : ''}`}>&#x25BE;</span>
-        </button>
-        {sidebarOpen && (
-          <div
-            className="docs-sidebar-backdrop"
+        <nav className={`docs-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+          <button
+            aria-label={sidebarOpen ? 'Collapse navigation' : 'Expand navigation'}
+            className="docs-sidebar-toggle"
             onClick={() => {
-              setSidebarOpen(false);
+              setSidebarOpen((o) => !o);
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                setSidebarOpen(false);
-              }
-            }}
-            role="presentation"
-          />
-        )}
-        <nav className={`docs-sidebar ${sidebarOpen ? 'open' : ''}`}>
+            type="button"
+          >
+            {sidebarOpen ? 'Collapse' : currentDoc.title}{' '}
+            <span className={`docs-sidebar-chevron ${sidebarOpen ? '' : 'open'}`}>&#x25B4;</span>
+          </button>
           <ul>
             {docs.map((doc) => (
               <li key={doc.id}>
@@ -329,7 +315,6 @@ function Docs(): JSX.Element {
                   onClick={(e) => {
                     e.preventDefault();
                     setActiveDoc(doc.id);
-                    setSidebarOpen(false);
                     window.scrollTo(0, 0);
                   }}
                 >
@@ -346,7 +331,6 @@ function Docs(): JSX.Element {
                             e.preventDefault();
                             document.querySelector(`#${CSS.escape(heading.id)}`)?.scrollIntoView();
                             globalThis.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
-                            setSidebarOpen(false);
                           }}
                         >
                           {heading.text}
