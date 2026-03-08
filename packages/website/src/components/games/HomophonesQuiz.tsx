@@ -156,7 +156,7 @@ function HomophonesQuiz() {
     if (!q) {
       return;
     }
-    speak(`What English word is this? ${q.ingglish}`);
+    speak(`What English word is this? ${q.correctAnswers[0]}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected
@@ -172,9 +172,9 @@ function HomophonesQuiz() {
     const answers = q.correctAnswers.join(', ');
     const verb = q.correctAnswers.length > 1 ? 'are all' : 'is';
     if (correct) {
-      speak(`Correct! ${answers} ${verb} spelled ${q.ingglish} in Ingglish.`);
+      speak(`Correct! ${answers} ${verb} spelled the same in Ingglish.`);
     } else {
-      speak(`Not quite! ${answers} ${verb} spelled ${q.ingglish} in Ingglish.`);
+      speak(`Not quite! The answer is ${answers}.`);
     }
   }, [selectedChoice, questions, round, speak]);
 

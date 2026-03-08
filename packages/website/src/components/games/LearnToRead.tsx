@@ -115,7 +115,7 @@ function LearnToRead() {
     if (!current) {
       return;
     }
-    speak(`What English word is this? ${current.ingglish}`);
+    speak(`What English word is this? ${current.english}`);
   }, [phase, quizIndex, showFeedback, activeLesson, speak]);
 
   // Speak feedback

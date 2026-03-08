@@ -196,7 +196,7 @@ function ReverseSpelling() {
     if (currentResult.score === 1) {
       speak('Correct!');
     } else {
-      speak(`The correct spelling is ${currentResult.word.ingglish}`);
+      speak(`Not quite. The correct spelling is shown on screen.`);
     }
   }, [currentResult, speak]);
 

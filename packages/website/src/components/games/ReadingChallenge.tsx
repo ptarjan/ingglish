@@ -208,7 +208,7 @@ function ReadingChallenge() {
     if (!s) {
       return;
     }
-    speak(s.tokens.map((t) => t.translated).join(' '));
+    speak(s.english);
   }, [phase, round, currentFeedback, sentences, speak]);
 
   // Speak feedback when answer is checked
