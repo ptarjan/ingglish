@@ -31,6 +31,7 @@
     "build:fast": "tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
+    "test:cli": "vitest run --config vitest.config.cli.ts --no-color",
     "bench": "vitest bench --no-color",
     "test:watch": "vitest",
     "translate": "npx vite-node scripts/cli/translate.ts",

@@ -20,6 +20,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // Exclude CLI integration tests — they spawn vite-node processes (~3s each).
+    // Run them separately via: npx vitest run scripts/
+    include: ['src/**/*.test.ts'],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       reporter: ['text', 'json', 'html'],

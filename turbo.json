@@ -21,6 +21,12 @@
     "test": {
       "inputs": ["src/**", "scripts/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
     },
+    "test:cli": {
+      "inputs": ["scripts/**", "src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
+    },
+    "test:dict-coverage": {
+      "inputs": ["src/**", "tsconfig*.json", "vitest.config.*"]
+    },
     "bench": {
       "cache": false,
       "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
