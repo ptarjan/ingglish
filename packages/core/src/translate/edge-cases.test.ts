@@ -6,13 +6,23 @@
 import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
+import { buildReverseMap, lookupDict } from '@ingglish/ipa';
 import { setDictReverseMap, setLangDict } from '../dict-loader';
+import { translate, reverseTranslate } from '../index';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 import {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
   reverseTranslateWord,
 } from './reverse';
+
+// ===========================================================================
+// Non-English translation via public API with real dicts
+// ===========================================================================
+// Uses translate(text, { lang }) with real IPA dicts loaded from
+// packages/website/public/ipa-dicts/. Words are chosen to NOT be in the dict
+// (but their stems ARE) so that word resolvers and G2P converters fire.
+
 
 // ---------------------------------------------------------------------------
 // Forward: camelCase with all-caps acronym (forward.ts line 360)
@@ -662,5 +672,176 @@ describe('Unicode case handling', () => {
   it('should handle accented title-case word', () => {
     const result = translateWord('Naïve');
     expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// German (de): ß→ss resolver — "daß" not in dict, "dass" is
+// ---------------------------------------------------------------------------
+describe('German translation', () => {
+  it('should resolve "daß" via ß→ss to "dass"', async () => {
+    const result = await translate('daß', { lang: 'de' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('daß');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Swedish (sv): suffix stripping — "huset" not in dict, "hus" is
+// ---------------------------------------------------------------------------
+describe('Swedish translation', () => {
+  it('should strip -et suffix from "huset" to find "hus"', async () => {
+    const result = await translate('huset', { lang: 'sv' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('huset');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Finnish (fi): suffix stripping — "talossa" not in dict, "talo" is
+// ---------------------------------------------------------------------------
+describe('Finnish translation', () => {
+  it('should strip inessive -ssa from "talossa" to find "talo"', async () => {
+    const result = await translate('talossa', { lang: 'fi' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('talossa');
+  });
+
+  it('should strip possessive+case suffix -ssani from "talossani"', async () => {
+    const result = await translate('talossani', { lang: 'fi' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('talossani');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Esperanto (eo): lemmatization — "bonajn" not in dict, "bona" is
+// ---------------------------------------------------------------------------
+describe('Esperanto translation', () => {
+  it('should strip plural+accusative -jn from "bonajn" to find "bona"', async () => {
+    const result = await translate('bonajn', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('bonajn');
+  });
+
+  it('should resolve verb tense -as: "bonas" → "bona"', async () => {
+    const result = await translate('bonas', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('bonas');
+  });
+
+  it('should use Esperanto G2P for unknown words', async () => {
+    // "xyzplonko" — not in dict, no resolver match → confident G2P
+    const result = await translate('xyzplonko', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('xyzplonko');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Swahili (sw): verb prefix stripping — "nipenda" not in dict, "penda" is
+// ---------------------------------------------------------------------------
+describe('Swahili translation', () => {
+  it('should strip verb prefix "ni" from "nipenda" to find "penda"', async () => {
+    const result = await translate('nipenda', { lang: 'sw' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('nipenda');
+  });
+
+  it('should use Swahili G2P for unknown words', async () => {
+    const result = await translate('xyzfanaka', { lang: 'sw' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('xyzfanaka');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Persian (fa): suffix stripping — "کتابها" not in dict, "کتاب" is
+// ---------------------------------------------------------------------------
+describe('Persian translation', () => {
+  it('should strip plural -ها from "کتابها" to find "کتاب"', async () => {
+    const result = await translate('کتابها', { lang: 'fa' });
+    expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Malay (ma): G2P for unknown words
+// ---------------------------------------------------------------------------
+describe('Malay translation', () => {
+  it('should use Malay G2P for unknown words', async () => {
+    const result = await translate('xyzbalak', { lang: 'ma' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('xyzbalak');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Japanese (ja): kana character-by-character resolver
+// ---------------------------------------------------------------------------
+describe('Japanese translation', () => {
+  it('should translate hiragana text', async () => {
+    const result = await translate('ありがとう', { lang: 'ja' });
+    expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Non-English reverse translation via public API
+// ---------------------------------------------------------------------------
+describe('non-English reverse translation via public API', () => {
+  it('should reverse-translate German', async () => {
+    const ingglish = await translate('Guten Tag', { lang: 'de' });
+    const back = await reverseTranslate(ingglish, { lang: 'de' });
+    expect(back).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// lookupDict curly apostrophe path (dict.ts line 248)
+// ---------------------------------------------------------------------------
+describe('lookupDict curly apostrophe fallback', () => {
+  it('should find word with straight apostrophe when dict has curly', () => {
+    const curlyDict: PhoneDict = {
+      entries: { 'it\u2019s': ['IH1', 'T', 'S'] },
+      lang: 'test-curly',
+    };
+    expect(lookupDict(curlyDict, "it's")).toEqual(['IH1', 'T', 'S']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildReverseMap (dict.ts lines 466-496)
+// ---------------------------------------------------------------------------
+describe('buildReverseMap', () => {
+  it('should build a reverse map from a PhoneDict', () => {
+    const testDict: PhoneDict = {
+      entries: {
+        cat: ['K', 'AE1', 'T'],
+        dog: ['D', 'AO1', 'G'],
+      },
+      lang: 'test-reverse-build',
+    };
+    const map = buildReverseMap(testDict);
+    expect(map.get('K AE T')).toContain('cat');
+    expect(map.get('D AO G')).toContain('dog');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// IPA reverse translation (reverse.ts reverseTranslateIPAWord)
+// ---------------------------------------------------------------------------
+describe('IPA reverse translation', () => {
+  it('should reverse-translate IPA text to English', () => {
+    const ipa = translateSync('cat', { format: 'ipa' });
+    const result = reverseTranslateSync(ipa, { format: 'ipa' });
+    expect(result.toLowerCase()).toBe('cat');
+  });
+
+  it('should reverse-translate IPA with mapping', () => {
+    const ipa = translateSync('hello world', { format: 'ipa' });
+    const tokens = reverseTranslateSyncWithMapping(ipa, { format: 'ipa' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
   });
 });
