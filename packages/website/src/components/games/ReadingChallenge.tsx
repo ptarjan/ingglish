@@ -6,9 +6,9 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
 import { getTierLabel } from '../../games/game-utils';
+import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { useShareActions } from '../../hooks/useShareActions';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
@@ -54,7 +54,6 @@ function ReadingChallenge() {
   const inputRef = useRef<HTMLInputElement>(null);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const shareRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useAutoFocus(startRef, reverseDictReady && phase === 'intro');
@@ -197,7 +196,7 @@ function ReadingChallenge() {
     [results, overallPct]
   );
 
-  const { copied, handleSave, handleShare } = useShareActions(
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
     getScoreCanvas,
     'ingglish-reading-score.png'
   );

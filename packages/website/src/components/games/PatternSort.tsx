@@ -2,9 +2,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { PatternSortRound } from '../../data/pattern-sort-data';
 import { pickRounds } from '../../data/pattern-sort-data';
+import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { useShareActions } from '../../hooks/useShareActions';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
@@ -49,7 +49,6 @@ function PatternSort() {
   const [selectedBucket, setSelectedBucket] = useState<'a' | 'b' | null>(null);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const shareRef = useRef<HTMLButtonElement>(null);
   const roundStartRef = useRef(0);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
@@ -193,7 +192,7 @@ function PatternSort() {
     [roundResults, overallPct]
   );
 
-  const { copied, handleSave, handleShare } = useShareActions(
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
     getScoreCanvas,
     'pattern-sort-score.png'
   );

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import { pickMatchPairs, shuffleColumns } from '../../data/speed-match-data';
+import { useGameShare } from '../../games/useGameShare';
 import { useStopwatch } from '../../games/useStopwatch';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { useShareActions } from '../../hooks/useShareActions';
 import '../../styles/speed-match.css';
 import { GameIntro } from './GameIntro';
 import { GameResultActions } from './GameResultActions';
@@ -40,7 +40,6 @@ function SpeedMatch() {
   const [isNewRecord, setIsNewRecord] = useState(false);
   const stopwatch = useStopwatch();
   const startRef = useRef<HTMLButtonElement>(null);
-  const shareRef = useRef<HTMLButtonElement>(null);
   const { speak } = useGameSpeech();
   const wrongTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
@@ -185,7 +184,7 @@ function SpeedMatch() {
     [roundTimes, totalTime]
   );
 
-  const { copied, handleSave, handleShare } = useShareActions(
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
     getScoreCanvas,
     'ingglish-speedmatch-score.png'
   );
