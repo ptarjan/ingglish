@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { translateSync, translateWord } from './forward';
-import { reverseTranslateSyncWithMapping } from './reverse';
+import { reverseTranslateSyncWithMapping, translateSync } from '../index';
+import { translateWord } from './forward';
 
 describe('non-Latin script translation of common words', () => {
   it('should translate "it" to shavian', () => {

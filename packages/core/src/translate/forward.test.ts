@@ -4,8 +4,14 @@ import * as dictModule from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import type { DictLoader } from '../dict-loader';
 import { getLangDict, setLangDict } from '../dict-loader';
-import { reverseTranslate, setDictLoader, translate } from '../index';
-import { translateSync, translateSyncWithMapping, translateWord } from './forward';
+import {
+  reverseTranslate,
+  setDictLoader,
+  translate,
+  translateSync,
+  translateSyncWithMapping,
+} from '../index';
+import { translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
   // Dictionaries pre-loaded by vitest.setup.ts

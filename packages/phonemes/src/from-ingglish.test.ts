@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
+import { expandArpabetAlternatives, ingglishToArpabet } from './index';
 
 describe('ingglishToArpabet', () => {
   it('returns null for empty string', () => {

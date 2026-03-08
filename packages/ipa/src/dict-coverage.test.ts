@@ -8,10 +8,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { isVowel } from '@ingglish/phonemes';
-import type { PhoneDict } from './dict';
-import { getLanguage, LANGUAGES, lookupDict, NOT_FOUND_MARKER, translateDict } from './dict';
-import { ipaToArpabet } from './from-ipa';
-import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+import type { PhoneDict } from './index';
+import {
+  getLanguage,
+  ipaToArpabet,
+  IPA_LANGUAGE_OVERRIDES,
+  LANGUAGES,
+  lookupDict,
+  NOT_FOUND_MARKER,
+  translateDict,
+} from './index';
 
 /** Convert dict entries from IPA strings to ARPAbet arrays if needed. */
 function convertIpaEntriesToArpabet(

@@ -1,14 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import { isLikelyIngglish } from '../detect/language';
+import { reverseTranslateSync, reverseTranslateSyncWithMapping, translateSync } from '../index';
 import { SAMPLE_TEXT } from '../test-setup';
-import { translateSync, translateWord } from './forward';
-import {
-  reverseTranslateIPAWord,
-  reverseTranslateSync,
-  reverseTranslateSyncWithMapping,
-  reverseTranslateWord,
-} from './reverse';
+import { translateWord } from './forward';
+import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
 
 describe('reverse-translator', () => {
   describe('reverseTranslateWord', () => {

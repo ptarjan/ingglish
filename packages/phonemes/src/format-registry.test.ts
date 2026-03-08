@@ -7,7 +7,7 @@ import {
   getFormatNativeLabel,
   getFormatPreservesCase,
   registerFormat,
-} from './format-registry';
+} from './index';
 
 describe('format-registry', () => {
   describe('registerFormat and getFormatHandler', () => {

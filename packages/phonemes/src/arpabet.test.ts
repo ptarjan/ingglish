@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getStress } from './arpabet';
+import { getStress } from './index';
 
 describe('arpabet utilities', () => {
   describe('getStress', () => {

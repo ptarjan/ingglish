@@ -8,13 +8,16 @@ import { lookupPronunciation } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import { buildReverseMap, lookupDict } from '@ingglish/ipa';
 import { setDictReverseMap, setLangDict } from '../dict-loader';
-import { translate, reverseTranslate } from '../index';
-import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 import {
+  reverseTranslate,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
-  reverseTranslateWord,
-} from './reverse';
+  translate,
+  translateSync,
+  translateSyncWithMapping,
+} from '../index';
+import { translateWord } from './forward';
+import { reverseTranslateWord } from './reverse';
 
 // ===========================================================================
 // Non-English translation via public API with real dicts

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createScriptReverseTranslator } from './reverse-factory';
+import { createScriptReverseTranslator } from './index';
 
 function makeTranslator(dict: Record<string, string[]> = {}, frequencies: string[] = []) {
   return createScriptReverseTranslator({

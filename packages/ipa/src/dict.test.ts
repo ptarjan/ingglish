@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { getStress, isVowel } from '@ingglish/phonemes'; // also registers 'pronunciation' format
-import type { PhoneDict } from './dict';
+import type { PhoneDict } from './index';
 import {
   getLanguage,
+  ipaToArpabet,
+  IPA_LANGUAGE_OVERRIDES,
   lookupDict,
+  NOT_FOUND_MARKER,
   translateDict,
   translateDictWithMapping,
-  NOT_FOUND_MARKER,
-} from './dict';
-import { ipaToArpabet } from './from-ipa';
-import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
+} from './index';
 
 /** Convert IPA string → ARPAbet with default stress applied. */
 function ipa(ipaStr: string, lang?: string): string[] {

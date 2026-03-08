@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { translateSync } from './translate/forward';
+import { translateSync } from './index';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TUTORIAL_PATH = path.join(__dirname, '../../website/src/data/tutorial-data.ts');

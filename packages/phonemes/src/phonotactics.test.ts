@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { findOnsetStart, isValidOnset, VALID_ONSETS } from './phonotactics';
+import { isValidOnset, VALID_ONSETS } from './phonotactics';
+import { findOnsetStart } from './index';
 
 describe('phonotactics', () => {
   describe('VALID_ONSETS', () => {

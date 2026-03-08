@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createCustomConverter } from './custom-format';
+import { createCustomConverter } from './index';
 
 describe('createCustomConverter', () => {
   it('should produce identical output to default with empty overrides', () => {
