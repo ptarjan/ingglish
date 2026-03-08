@@ -300,7 +300,10 @@ const allOptions = [...allChars, ...allDigraphs];
 // PHASE 1: Base phoneme search (stress-aware baseline)
 // ============================================================
 
-const phonemes = Object.keys(ARPABET_TO_INGGLISH_MAP);
+const limitArg = process.argv.find((a) => a.startsWith('--limit='));
+const phonemeLimit = limitArg ? parseInt(limitArg.split('=')[1]!) : Infinity;
+
+const phonemes = Object.keys(ARPABET_TO_INGGLISH_MAP).slice(0, phonemeLimit);
 const totalTests = phonemes.length * allOptions.length;
 console.log(
   `Testing ${phonemes.length} phonemes × ${allOptions.length} options = ${totalTests} combinations...\n`
@@ -477,7 +480,7 @@ let stressTested = 0;
 let stressSkippedNotBetter = 0;
 let stressSkippedCollisions = 0;
 
-const sortedStress0 = [...stress0Phonemes].sort();
+const sortedStress0 = [...stress0Phonemes].sort().slice(0, phonemeLimit);
 for (let si = 0; si < sortedStress0.length; si++) {
   const rawPhoneme = sortedStress0[si];
   const basePhoneme = stripStress(rawPhoneme);

@@ -7,7 +7,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { loadDictionary, loadFrequencies, lookupPronunciation } from '@ingglish/dictionary';
-import { translateSync } from 'ingglish';
+import { loadLangDict, translateSync } from 'ingglish';
 
 // Strip markdown syntax to get plain text
 function stripMarkdown(md: string): string {
@@ -45,7 +45,7 @@ function stripMarkdown(md: string): string {
 }
 
 async function main() {
-  await Promise.all([loadDictionary(), loadFrequencies()]);
+  await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
 
   const allWords = new Set<string>();
 

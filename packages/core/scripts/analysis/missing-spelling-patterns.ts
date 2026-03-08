@@ -17,7 +17,7 @@ import {
 } from '@ingglish/dictionary';
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import { getStress, isVowel, stripStress } from '@ingglish/phonemes';
-import { translateSync } from '../../src/translate/forward.js';
+import { loadLangDict, translateSync } from 'ingglish';
 import { consonantGroups, vowelGroups } from '../../../website/src/data/spelling-guide-data.js';
 
 // ---------------------------------------------------------------------------
@@ -62,7 +62,7 @@ function parseExistingPatterns(): Map<string, Set<string>> {
 // ---------------------------------------------------------------------------
 
 async function main() {
-  await Promise.all([loadDictionary(), loadFrequencies()]);
+  await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
   const cmudict = getDictionary();
 
   const existingPatterns = parseExistingPatterns();

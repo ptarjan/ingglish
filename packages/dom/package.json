@@ -31,6 +31,7 @@
     "lint": "eslint --cache src",
     "bench": "vitest bench --no-color",
     "test": "vitest run --no-color",
+    "test:cli": "vitest run --config vitest.config.cli.ts --no-color",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },

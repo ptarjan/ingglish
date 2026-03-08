@@ -12,9 +12,11 @@ async function main() {
   // 1. Dictionary loading
   console.log('--- Dictionary Loading ---');
   const { loadDictionary, getDictionary } = await import('@ingglish/dictionary');
+  const { loadLangDict } = await import('ingglish');
 
   await profileAsync('loadDictionary (first call)', async () => {
     await loadDictionary();
+    await loadLangDict('en');
   });
 
   await profileAsync('loadDictionary (cached)', async () => {

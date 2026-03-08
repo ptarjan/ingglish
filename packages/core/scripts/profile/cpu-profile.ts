@@ -11,10 +11,9 @@ const session = new Session();
 session.connect();
 
 async function main() {
-  const { loadDictionary } = await import('@ingglish/dictionary');
-  const { translateSync } = await import('../../src/translate/forward');
+  const { translateSync, loadLangDict } = await import('ingglish');
 
-  await loadDictionary();
+  await loadLangDict('en');
 
   // Real-world text samples
   const samples = [

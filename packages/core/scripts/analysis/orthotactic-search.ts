@@ -433,7 +433,10 @@ function signedPM(raw: number): string {
 // PHASE 1: Base phoneme search
 // ============================================================
 
-const phonemes = Object.keys(ARPABET_TO_INGGLISH_MAP);
+const limitArg = process.argv.find((a) => a.startsWith('--limit='));
+const phonemeLimit = limitArg ? parseInt(limitArg.split('=')[1]!) : Infinity;
+
+const phonemes = Object.keys(ARPABET_TO_INGGLISH_MAP).slice(0, phonemeLimit);
 const totalTests = phonemes.length * allOptions.length;
 console.log(`\n${'='.repeat(90)}\nPHASE 1: BASE PHONEME SEARCH\n${'='.repeat(90)}`);
 console.log(
@@ -584,7 +587,7 @@ let stressSkippedNotBetter = 0;
 let stressSkippedCollisions = 0;
 let stressSkippedConflicts = 0;
 
-const sortedStress0 = [...stress0Phonemes].sort();
+const sortedStress0 = [...stress0Phonemes].sort().slice(0, phonemeLimit);
 for (let si = 0; si < sortedStress0.length; si++) {
   const rawPhoneme = sortedStress0[si]!;
   const basePhoneme = stripStress(rawPhoneme);

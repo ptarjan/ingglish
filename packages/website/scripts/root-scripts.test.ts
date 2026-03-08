@@ -1,6 +1,21 @@
+import { execSync } from 'child_process';
+import { join } from 'path';
 import { describe, expect, it } from 'vitest';
 import { postprocessDocs } from '../../../scripts/postprocess-docs.js';
 import { lintGitignoreContent } from '../../../scripts/pre-commit-checks.js';
+
+const repoRoot = join(import.meta.dirname, '..', '..', '..');
+
+describe('review-languages', () => {
+  it('runs successfully', () => {
+    const output = execSync('npx vite-node scripts/review-languages.ts', {
+      cwd: repoRoot,
+      encoding: 'utf-8',
+      timeout: 30_000,
+    });
+    expect(output.length).toBeGreaterThan(0);
+  }, 60_000);
+});
 
 describe('postprocessDocs', () => {
   it('links heading directly followed by Defined in', () => {

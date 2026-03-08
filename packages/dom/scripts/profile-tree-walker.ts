@@ -186,6 +186,7 @@ async function main() {
   console.log('');
 
   // Benchmark each
+  const ITERATIONS = 200;
   function bench(name: string, fn: () => Text[]): number {
     // Warmup
     for (let i = 0; i < 50; i++) {

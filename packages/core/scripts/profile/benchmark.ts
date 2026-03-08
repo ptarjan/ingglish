@@ -17,7 +17,7 @@ async function main() {
     lookupPronunciation,
     sortByFrequency,
   } = await import('@ingglish/dictionary');
-  const { translateSync } = await import('../../src/translate/forward');
+  const { translateSync, loadLangDict } = await import('ingglish');
   const { reverseTranslateWord, reverseTranslateSync } =
     await import('../../src/translate/reverse');
   const { ingglishToArpabet } = await import('@ingglish/phonemes');
@@ -27,6 +27,7 @@ async function main() {
   console.log('Loading dictionary...');
   await loadDictionary();
   await loadReverseDictionary();
+  await loadLangDict('en');
   const dict = getDictionary();
   console.log(`Dictionary loaded: ${Object.keys(dict).length} entries\n`);
 

@@ -205,6 +205,8 @@ function applyChange(rules: Record<string, string[]>, change: Change): Record<st
 
 async function main() {
   const doApply = process.argv.includes('--apply');
+  const maxRoundsArg = process.argv.find((a) => a.startsWith('--max-rounds='));
+  const maxRounds = maxRoundsArg ? parseInt(maxRoundsArg.split('=')[1]) : Infinity;
 
   console.log('Loading dictionary and frequencies...');
   const testData = await loadTestData();
@@ -215,7 +217,7 @@ async function main() {
   const appliedChanges: Change[] = [];
   let round = 0;
 
-  while (true) {
+  while (round < maxRounds) {
     round++;
     console.log(`\n${'='.repeat(60)}`);
     console.log(`Round ${round}`);

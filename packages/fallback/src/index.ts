@@ -46,9 +46,9 @@ export {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from './acronyms';
-export { matchBritish } from './british';
-export { dpDecompose } from './compounds';
-export { matchStemming } from './stemming';
+export { matchBritish, translateAsBritish } from './british';
+export { dpDecompose, translateAsCompound } from './compounds';
+export { matchStemming, translateWithStemming } from './stemming';
 
 type FallbackStrategy = 'british' | 'compound' | 'custom' | 'g2p' | 'initialism' | 'stemming';
 
