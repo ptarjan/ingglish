@@ -3,6 +3,7 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import { pickMatchPairs, shuffleColumns } from '../../data/speed-match-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import { useStopwatch } from '../../games/useStopwatch';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/speed-match.css';
 
 type Phase = 'intro' | 'playing' | 'results';
@@ -39,6 +40,7 @@ function SpeedMatch() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { speak } = useGameSpeech();
   const wrongTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
 
@@ -166,6 +168,14 @@ function SpeedMatch() {
   );
 
   const totalTime = roundTimes.reduce((sum, r) => sum + r.time, 0);
+
+  // Speak result when game ends
+  useEffect(() => {
+    if (phase === 'results') {
+      speak(`All matched! Total time: ${formatTime(totalTime)}`);
+    }
+  }, [phase, totalTime, speak]);
+
   const bestTime = (() => {
     try {
       const raw = localStorage.getItem('ingglish-games-speedmatch-best');

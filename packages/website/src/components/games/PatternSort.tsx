@@ -3,7 +3,9 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { PatternSortRound } from '../../data/pattern-sort-data';
 import { pickRounds } from '../../data/pattern-sort-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/spelling-rule-quiz.css';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -48,6 +50,7 @@ function PatternSort() {
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -71,17 +74,21 @@ function PatternSort() {
     }
   }, [phase]);
 
-  const startGame = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    setRounds(pickRounds(newSeed));
-    setRoundIdx(0);
-    setWordIdx(0);
-    setWordResults([]);
-    setRoundResults([]);
-    setSelectedBucket(null);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-  }, []);
+  const startGame = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      setRounds(pickRounds(newSeed));
+      setRoundIdx(0);
+      setWordIdx(0);
+      setWordResults([]);
+      setRoundResults([]);
+      setSelectedBucket(null);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+    },
+    [stop]
+  );
 
   const handleBucketClick = useCallback(
     (bucket: 'a' | 'b') => {
@@ -143,6 +150,10 @@ function PatternSort() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm') {
+        toggleMute();
+        return;
+      }
       if (selectedBucket === null) {
         if (e.key === '1') {
           handleBucketClick('a');
@@ -153,8 +164,38 @@ function PatternSort() {
         handleNext();
       }
     },
-    [selectedBucket, handleNext, handleBucketClick]
+    [selectedBucket, handleNext, handleBucketClick, toggleMute]
   );
+
+  // Speak question when word changes
+  useEffect(() => {
+    if (phase !== 'playing' || selectedBucket !== null) {
+      return;
+    }
+    const r = rounds[roundIdx];
+    const w = r?.words[wordIdx];
+    if (!r || !w) {
+      return;
+    }
+    speak(`Sort by the ${r.pattern} sound. ${w.word}`);
+  }, [phase, roundIdx, wordIdx, selectedBucket, rounds, speak]);
+
+  // Speak feedback when bucket is selected
+  useEffect(() => {
+    if (selectedBucket === null) {
+      return;
+    }
+    const r = rounds[roundIdx];
+    const w = r?.words[wordIdx];
+    if (!r || !w) {
+      return;
+    }
+    if (selectedBucket === w.bucket) {
+      speak('Correct!');
+    } else {
+      speak(`Not quite, ${w.word} belongs in ${w.bucket === 'a' ? r.bucketA : r.bucketB}`);
+    }
+  }, [selectedBucket, rounds, roundIdx, wordIdx, speak]);
 
   const totalCorrect = roundResults.reduce((sum, r) => sum + r.correct, 0);
   const totalWords = roundResults.reduce((sum, r) => sum + r.total, 0);
@@ -307,6 +348,16 @@ function PatternSort() {
           />
         </div>
         <span className="game-tier-badge">{currentRound.pattern}</span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="game-card">

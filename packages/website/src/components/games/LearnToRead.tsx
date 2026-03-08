@@ -2,6 +2,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Lesson } from '../../data/learn-to-read-data';
 import { LESSONS } from '../../data/learn-to-read-data';
 import { useGameProgress } from '../../games/useGameProgress';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 import '../../styles/learn-to-read.css';
 
 interface LessonProgress {
@@ -26,6 +28,7 @@ function LearnToRead() {
     'ingglish-games-learn',
     DEFAULT_PROGRESS
   );
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   const startLesson = useCallback((lesson: Lesson) => {
     setActiveLesson(lesson);
@@ -33,13 +36,14 @@ function LearnToRead() {
   }, []);
 
   const startQuiz = useCallback(() => {
+    stop();
     setQuizIndex(0);
     setQuizInput('');
     setQuizResults([]);
     setShowFeedback(false);
     setPhase('quiz');
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, []);
+  }, [stop]);
 
   const handleQuizSubmit = useCallback(() => {
     if (!activeLesson || showFeedback) {
@@ -87,6 +91,10 @@ function LearnToRead() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (e.key === 'Enter') {
         if (showFeedback) {
           handleQuizNext();
@@ -95,8 +103,36 @@ function LearnToRead() {
         }
       }
     },
-    [showFeedback, handleQuizNext, handleQuizSubmit]
+    [showFeedback, handleQuizNext, handleQuizSubmit, toggleMute]
   );
+
+  // Speak question when quiz index changes
+  useEffect(() => {
+    if (phase !== 'quiz' || showFeedback) {
+      return;
+    }
+    const current = activeLesson?.quiz[quizIndex];
+    if (!current) {
+      return;
+    }
+    speak(`What English word is this? ${current.ingglish}`);
+  }, [phase, quizIndex, showFeedback, activeLesson, speak]);
+
+  // Speak feedback
+  useEffect(() => {
+    if (showFeedback !== true) {
+      return;
+    }
+    const current = activeLesson?.quiz[quizIndex];
+    if (!current) {
+      return;
+    }
+    if (quizResults[quizIndex] === true) {
+      speak('Correct!');
+    } else {
+      speak(`The answer is ${current.english}`);
+    }
+  }, [showFeedback, activeLesson, quizIndex, quizResults, speak]);
 
   // Auto-focus input when quiz starts
   useEffect(() => {
@@ -216,6 +252,16 @@ function LearnToRead() {
             />
           </div>
           <span className="game-tier-badge">Lesson {activeLesson.id}</span>
+          {supported && (
+            <button
+              aria-label={muted ? 'Unmute' : 'Mute'}
+              className="game-sound-toggle"
+              onClick={toggleMute}
+              title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+            >
+              {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+            </button>
+          )}
         </div>
 
         <div className="game-card">

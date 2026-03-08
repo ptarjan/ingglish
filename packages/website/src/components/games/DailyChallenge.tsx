@@ -12,6 +12,7 @@ import {
 } from '../../data/daily-challenge-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import { useGameProgress } from '../../games/useGameProgress';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/daily-challenge.css';
 
 // ---------------------------------------------------------------------------
@@ -100,6 +101,7 @@ function DailyChallenge() {
 
   const toastTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { speak } = useGameSpeech();
   const shareRef = useRef<HTMLButtonElement>(null);
 
   // Cleanup timers
@@ -309,6 +311,15 @@ function DailyChallenge() {
       setTimeout(() => shareRef.current?.focus(), 0);
     }
   }, [phase]);
+
+  // Speak result when game ends
+  useEffect(() => {
+    if (phase === 'won') {
+      speak('Well done!');
+    } else if (phase === 'lost' && answer) {
+      speak(`Better luck tomorrow. The word was ${answer.ingglish}`);
+    }
+  }, [phase, answer, speak]);
 
   // ------------------------------------------------------------------
   // Sharing

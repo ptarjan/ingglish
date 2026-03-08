@@ -4,6 +4,8 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ReverseWord } from '../../data/reverse-spelling-data';
 import { pickReverseSpelling } from '../../data/reverse-spelling-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 import '../../styles/reverse-spelling.css';
 
 type Phase = 'intro' | 'playing' | 'results';
@@ -50,6 +52,7 @@ function ReverseSpelling() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -108,19 +111,23 @@ function ReverseSpelling() {
     setResults((prev) => [...prev, result]);
   }, [timeLeft, phase, currentResult, words, round]);
 
-  const startGame = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    const picked = pickReverseSpelling(newSeed);
-    setWords(picked);
-    setRound(0);
-    setResults([]);
-    setCurrentResult(null);
-    setInput('');
-    setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, []);
+  const startGame = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      const picked = pickReverseSpelling(newSeed);
+      setWords(picked);
+      setRound(0);
+      setResults([]);
+      setCurrentResult(null);
+      setInput('');
+      setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+      setTimeout(() => inputRef.current?.focus(), 0);
+    },
+    [stop]
+  );
 
   const handleStart = useCallback(() => {
     startGame(seed);
@@ -154,6 +161,10 @@ function ReverseSpelling() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (e.key === 'Enter') {
         if (currentResult) {
           handleNext();
@@ -162,8 +173,26 @@ function ReverseSpelling() {
         }
       }
     },
-    [currentResult, handleNext, handleSubmit]
+    [currentResult, handleNext, handleSubmit, toggleMute]
   );
+
+  // Speak English word when round changes
+  useEffect(() => {
+    if (phase !== 'playing' || currentResult !== null) return;
+    const w = words[round];
+    if (!w) return;
+    speak(`Spell this word in Ingglish: ${w.english}`);
+  }, [phase, round, currentResult, words, speak]);
+
+  // Speak feedback when result appears
+  useEffect(() => {
+    if (!currentResult) return;
+    if (currentResult.score === 1) {
+      speak('Correct!');
+    } else {
+      speak(`The correct spelling is ${currentResult.word.ingglish}`);
+    }
+  }, [currentResult, speak]);
 
   const overallScore =
     results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0;
@@ -319,6 +348,16 @@ function ReverseSpelling() {
           </span>
         )}
         <span className="challenge-tier-badge">{getTierLabel(currentWord.tier)}</span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="reverse-prompt">

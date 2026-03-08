@@ -6,6 +6,8 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -61,6 +63,7 @@ function ReadingChallenge() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
   useEffect(
     () => () => {
       clearTimeout(copiedTimerRef.current);
@@ -131,19 +134,23 @@ function ReadingChallenge() {
     setResults((prev) => [...prev, { score, sentence, timeTaken: elapsed }]);
   }, [timeLeft, phase, currentFeedback, sentences, round, input]);
 
-  const startChallenge = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    const picked = pickChallenge(newSeed);
-    setSentences(picked);
-    setRound(0);
-    setResults([]);
-    setCurrentFeedback(null);
-    setInput('');
-    setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, []);
+  const startChallenge = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      const picked = pickChallenge(newSeed);
+      setSentences(picked);
+      setRound(0);
+      setResults([]);
+      setCurrentFeedback(null);
+      setInput('');
+      setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+      setTimeout(() => inputRef.current?.focus(), 0);
+    },
+    [stop]
+  );
 
   const handleStart = useCallback(() => {
     startChallenge(seed);
@@ -177,6 +184,10 @@ function ReadingChallenge() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (e.key === 'Enter') {
         if (currentFeedback) {
           handleNext();
@@ -185,8 +196,22 @@ function ReadingChallenge() {
         }
       }
     },
-    [currentFeedback, handleNext, handleSubmit]
+    [currentFeedback, handleNext, handleSubmit, toggleMute]
   );
+
+  // Speak Ingglish sentence when round changes
+  useEffect(() => {
+    if (phase !== 'playing' || currentFeedback !== null) return;
+    const s = sentences[round];
+    if (!s) return;
+    speak(s.tokens.map((t) => t.translated).join(' '));
+  }, [phase, round, currentFeedback, sentences, speak]);
+
+  // Speak feedback when answer is checked
+  useEffect(() => {
+    if (!currentFeedback) return;
+    speak(`${currentFeedback.correct} of ${currentFeedback.total} words correct`);
+  }, [currentFeedback, speak]);
 
   const handleTryAgain = useCallback(() => {
     startChallenge(seed);
@@ -342,6 +367,16 @@ function ReadingChallenge() {
           </span>
         )}
         <span className="challenge-tier-badge">{tierLabel}</span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="challenge-sentence-card">
