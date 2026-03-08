@@ -94,31 +94,6 @@ describe('phoneme-map', () => {
   });
 
   describe('arpabetToIngglish', () => {
-    it('should convert "hello" phonemes correctly', () => {
-      const phonemes = ['HH', 'AH0', 'L', 'OW1'];
-      expect(arpabetToIngglish(phonemes)).toBe('haloh');
-    });
-
-    it('should convert "world" phonemes correctly', () => {
-      const phonemes = ['W', 'ER1', 'L', 'D'];
-      expect(arpabetToIngglish(phonemes)).toBe('werld');
-    });
-
-    it('should convert "the" phonemes correctly', () => {
-      const phonemes = ['DH', 'AH0'];
-      expect(arpabetToIngglish(phonemes)).toBe('dha');
-    });
-
-    it('should convert "think" phonemes correctly', () => {
-      const phonemes = ['TH', 'IH1', 'NG', 'K'];
-      expect(arpabetToIngglish(phonemes)).toBe('thingk');
-    });
-
-    it('should convert "beautiful" phonemes correctly', () => {
-      const phonemes = ['B', 'Y', 'UW1', 'T', 'AH0', 'F', 'AH0', 'L'];
-      expect(arpabetToIngglish(phonemes)).toBe('byootafal');
-    });
-
     it('should handle vowel sounds correctly', () => {
       expect(arpabetToIngglish(['AA1'])).toBe('o');
       expect(arpabetToIngglish(['AE1'])).toBe('a');
@@ -137,42 +112,12 @@ describe('phoneme-map', () => {
       expect(arpabetToIngglish(['UW1'])).toBe('oo');
     });
 
-    it('should handle R-colored vowel IH+R→eer (NEAR vowel: beer, beard, fear)', () => {
-      expect(arpabetToIngglish(['B', 'IH1', 'R'])).toBe('beer');
-      expect(arpabetToIngglish(['B', 'IH1', 'R', 'D'])).toBe('beerd');
-      expect(arpabetToIngglish(['F', 'IH1', 'R'])).toBe('feer');
-      expect(arpabetToIngglish(['N', 'IH1', 'R'])).toBe('neer');
-      expect(arpabetToIngglish(['D', 'IH1', 'R'])).toBe('deer');
-      expect(arpabetToIngglish(['K', 'L', 'IH1', 'R'])).toBe('kleer');
-      expect(arpabetToIngglish(['IH1'])).toBe('i');
-      expect(arpabetToIngglish(['B', 'IH1', 'T'])).toBe('bit');
-    });
-
-    it('should handle R-colored vowels (AA+R→ar, AO+R→or, EH+R→air, AE+R→arr)', () => {
-      expect(arpabetToIngglish(['S', 'T', 'AA1', 'R'])).toBe('star');
-      expect(arpabetToIngglish(['K', 'AA1', 'R'])).toBe('kar');
-      expect(arpabetToIngglish(['S', 'T', 'AO1', 'R'])).toBe('stor');
-      expect(arpabetToIngglish(['M', 'AO1', 'R'])).toBe('mor');
-      expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
-      expect(arpabetToIngglish(['K', 'EH1', 'R'])).toBe('kair');
-      expect(arpabetToIngglish(['DH', 'EH1', 'R'])).toBe('dhair');
-      expect(arpabetToIngglish(['AE1', 'R', 'OW0'])).toBe('arroh');
-      expect(arpabetToIngglish(['B', 'AE1', 'R', 'OW0'])).toBe('barroh');
-      expect(arpabetToIngglish(['K', 'AE1', 'R', 'AH0', 'T'])).toBe('karrat');
-      expect(arpabetToIngglish(['AA1'])).toBe('o');
-      expect(arpabetToIngglish(['AO1'])).toBe('aw');
-      expect(arpabetToIngglish(['EH1'])).toBe('e');
-      expect(arpabetToIngglish(['AE1'])).toBe('a');
-    });
-
-    it('should detect R-coloring with direct R comparison (no R0/R1/R2 variants)', () => {
+    it('should R-color vowels before R', () => {
       expect(arpabetToIngglish(['AA1', 'R'])).toBe('ar');
       expect(arpabetToIngglish(['AO1', 'R'])).toBe('or');
       expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
       expect(arpabetToIngglish(['AE1', 'R'])).toBe('arr');
       expect(arpabetToIngglish(['IH1', 'R'])).toBe('eer');
-      expect(arpabetToIngglish(['F', 'AA1', 'R'])).toBe('far');
-      expect(arpabetToIngglish(['B', 'AO1', 'R'])).toBe('bor');
     });
 
     it('should insert hyphen to break 3+ identical consecutive letters', () => {

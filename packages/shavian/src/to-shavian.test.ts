@@ -76,30 +76,6 @@ describe('arpabetToShavian', () => {
     expect(arpabetToShavian(['IH1', 'R'])).toBe('𐑽');
   });
 
-  it('should convert "hello" (HH AH0 L OW1)', () => {
-    expect(arpabetToShavian(['HH', 'AH0', 'L', 'OW1'])).toBe('𐑣𐑩𐑤𐑴');
-  });
-
-  it('should convert "world" (W ER1 L D)', () => {
-    expect(arpabetToShavian(['W', 'ER1', 'L', 'D'])).toBe('𐑢𐑻𐑤𐑛');
-  });
-
-  it('should convert "the" (DH AH0)', () => {
-    expect(arpabetToShavian(['DH', 'AH0'])).toBe('𐑞𐑩');
-  });
-
-  it('should convert "cat" (K AE1 T)', () => {
-    expect(arpabetToShavian(['K', 'AE1', 'T'])).toBe('𐑒𐑨𐑑');
-  });
-
-  it('should convert "star" (S T AA1 R) with ligature', () => {
-    expect(arpabetToShavian(['S', 'T', 'AA1', 'R'])).toBe('𐑕𐑑𐑸');
-  });
-
-  it('should convert "think" (TH IH1 NG K)', () => {
-    expect(arpabetToShavian(['TH', 'IH1', 'NG', 'K'])).toBe('𐑔𐑦𐑙𐑒');
-  });
-
   it('should handle empty input', () => {
     expect(arpabetToShavian([])).toBe('');
   });

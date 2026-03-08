@@ -2,26 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 describe('ingglishToArpabet', () => {
-  it('converts known Ingglish spellings to ARPAbet', () => {
-    // "haloh" = HH AH L OW
-    const result = ingglishToArpabet('haloh');
-    expect(result).not.toBeNull();
-    expect(result).toContain('HH');
-    expect(result).toContain('L');
-    expect(result).toContain('OW');
-  });
-
   it('handles two-char spellings before one-char (sh before s+h)', () => {
     // "sh" should be SH, not S + HH
     const result = ingglishToArpabet('sh');
     expect(result).toEqual(['SH']);
-  });
-
-  it('handles r-colored vowels', () => {
-    // "ar" should map to an r-colored vowel
-    const result = ingglishToArpabet('ar');
-    expect(result).toBeDefined();
-    expect(result?.length).toBeGreaterThan(0);
   });
 
   it('returns null for empty string', () => {

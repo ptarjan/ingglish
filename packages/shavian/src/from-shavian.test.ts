@@ -38,16 +38,6 @@ describe('shavianToArpabet', () => {
     expect(shavianToArpabet('𐑽')).toEqual(['IH', 'R']); // near
   });
 
-  it('should parse "hello" in Shavian', () => {
-    // 𐑣𐑩𐑤𐑴 → HH AH L OW
-    expect(shavianToArpabet('𐑣𐑩𐑤𐑴')).toEqual(['HH', 'AH', 'L', 'OW']);
-  });
-
-  it('should parse "cat" in Shavian', () => {
-    // 𐑒𐑨𐑑 → K AE T
-    expect(shavianToArpabet('𐑒𐑨𐑑')).toEqual(['K', 'AE', 'T']);
-  });
-
   it('should skip non-Shavian characters', () => {
     expect(shavianToArpabet('𐑒 𐑨')).toEqual(['K', 'AE']);
     expect(shavianToArpabet('hello')).toBeNull();

@@ -433,6 +433,168 @@ describe('translator', () => {
     });
   });
 
+  describe('R-colored vowels', () => {
+    it('should translate NEAR vowel words (IH+R → eer)', () => {
+      expect(translateWord('beer')).toBe('beer');
+      expect(translateWord('beard')).toBe('beerd');
+      expect(translateWord('fear')).toBe('feer');
+      expect(translateWord('near')).toBe('neer');
+      expect(translateWord('deer')).toBe('deer');
+      expect(translateWord('clear')).toBe('kleer');
+    });
+
+    it('should translate START vowel words (AA+R → ar)', () => {
+      expect(translateWord('star')).toBe('star');
+      expect(translateWord('car')).toBe('kar');
+      expect(translateWord('far')).toBe('far');
+    });
+
+    it('should translate NORTH vowel words (AO+R → or)', () => {
+      expect(translateWord('store')).toBe('stor');
+      expect(translateWord('more')).toBe('mor');
+      expect(translateWord('bore')).toBe('bor');
+    });
+
+    it('should translate SQUARE vowel words (EH+R → air)', () => {
+      expect(translateWord('care')).toBe('kair');
+      expect(translateWord('there')).toBe('dhair');
+    });
+
+    it('should translate words with TRAP before R (AE+R → arr)', () => {
+      expect(translateWord('arrow')).toBe('arroh');
+      expect(translateWord('barrow')).toBe('barroh');
+      expect(translateWord('carrot')).toBe('karrat');
+    });
+  });
+
+  describe('common word translations', () => {
+    it('should translate NG cluster words', () => {
+      expect(translateWord('think')).toBe('thingk');
+    });
+
+    it('should translate multi-syllable words', () => {
+      expect(translateWord('beautiful')).toBe('byootafal');
+    });
+  });
+
+  describe('British spelling handling', () => {
+    it('should convert -our → -or (colour)', () => {
+      expect(translateWord('colour')).toBe('kuhler');
+    });
+
+    it('should convert -ise → -ize (realise)', () => {
+      expect(translateWord('realise')).toBe('reealaiz');
+    });
+
+    it('should convert -re → -er (centre)', () => {
+      expect(translateWord('centre')).toBe('senter');
+    });
+
+    it('should convert -isation → -ization', () => {
+      expect(translateWord('organisation')).toBe('organizayshan');
+    });
+
+    it('should convert -ence → -ense (defence)', () => {
+      expect(translateWord('defence')).toBe('difens');
+    });
+
+    it('should convert -ogue → -og (catalogue)', () => {
+      expect(translateWord('catalogue')).toBe('katalawg');
+    });
+
+    it('should handle -oured suffix (favoured)', () => {
+      expect(translateWord('favoured')).toBe('fayverd');
+    });
+
+    it('should convert -ey → -y (curtsey)', () => {
+      expect(translateWord('curtsey')).toBe('kertsee');
+    });
+
+    it('should handle grey → gray', () => {
+      expect(translateWord('grey')).toBe('gray');
+    });
+  });
+
+  describe('stemming and morphology', () => {
+    it('should handle -ly suffix', () => {
+      expect(translateWord('quickly')).toBe('kwiklee');
+    });
+
+    it('should handle un- prefix', () => {
+      expect(translateWord('unhappy')).toBe('anhapee');
+    });
+
+    it('should handle re- prefix', () => {
+      expect(translateWord('rebuild')).toBe('reebild');
+    });
+
+    it('should handle i→y stem change', () => {
+      expect(translateWord('loveliest')).toBe('luhvleeast');
+      expect(translateWord('happily')).toBe('hapalee');
+      expect(translateWord('easier')).toBe('eezee-er');
+    });
+
+    it('should handle -ify suffix', () => {
+      expect(translateWord('uglify')).toBe('uhgleeifai');
+    });
+
+    it('should handle -ification suffix', () => {
+      expect(translateWord('uglification')).toBe('uhgleeifikayshan');
+    });
+
+    it('should handle -ifying suffix', () => {
+      expect(translateWord('uglifying')).toBe('uhgleeifaiing');
+    });
+  });
+
+  describe('compound word splitting', () => {
+    it('should split and translate compound words', () => {
+      const result = translateWord('bedpost');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('IPA format for common words', () => {
+    const WJ = '\u2060';
+
+    it('should translate hello to IPA', () => {
+      expect(translateWord('hello', { format: 'ipa' })).toBe(`hə${WJ}ˈ${WJ}loʊ`);
+    });
+
+    it('should translate world to IPA', () => {
+      expect(translateWord('world', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}wɝld`);
+    });
+
+    it('should translate the to IPA', () => {
+      expect(translateWord('the', { format: 'ipa' })).toBe('ðə');
+    });
+
+    it('should translate think to IPA', () => {
+      expect(translateWord('think', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}θɪŋk`);
+    });
+
+    it('should translate beautiful to IPA', () => {
+      expect(translateWord('beautiful', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bjutəfəl`);
+    });
+
+    it('should translate affricates (church, judge)', () => {
+      expect(translateWord('church', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}tʃɝtʃ`);
+      expect(translateWord('judge', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dʒʌdʒ`);
+    });
+
+    it('should translate diphthongs (time, coin)', () => {
+      expect(translateWord('time', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}taɪm`);
+      expect(translateWord('coin', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}kɔɪn`);
+    });
+
+    it('should place secondary stress correctly (examination)', () => {
+      expect(translateWord('examination', { format: 'ipa' })).toBe(
+        `ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən`
+      );
+    });
+  });
+
   describe('TranslateOptions API', () => {
     it('translateSync accepts options object with format', () => {
       const withOptions = translateSync('hello', { format: 'ipa' });

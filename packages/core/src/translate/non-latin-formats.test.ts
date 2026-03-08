@@ -55,3 +55,28 @@ describe('non-Latin script translation of common words', () => {
     expect(result).not.toMatch(/[a-z]/i);
   });
 });
+
+describe('Shavian word translations', () => {
+  it('should translate common words to Shavian', () => {
+    expect(translateWord('hello', { format: 'shavian' })).toBe('𐑣𐑩𐑤𐑴');
+    expect(translateWord('world', { format: 'shavian' })).toBe('𐑢𐑻𐑤𐑛');
+    expect(translateWord('the', { format: 'shavian' })).toBe('𐑞𐑩');
+    expect(translateWord('cat', { format: 'shavian' })).toBe('𐑒𐑨𐑑');
+  });
+
+  it('should translate words with R-ligatures to Shavian', () => {
+    expect(translateWord('star', { format: 'shavian' })).toBe('𐑕𐑑𐑸');
+  });
+
+  it('should translate NG cluster words to Shavian', () => {
+    expect(translateWord('think', { format: 'shavian' })).toBe('𐑔𐑦𐑙𐑒');
+  });
+});
+
+describe('Deseret word translations', () => {
+  it('should translate common words to Deseret', () => {
+    expect(translateWord('hello', { format: 'deseret' })).toBe('𐐸𐐱𐑊𐐬');
+    expect(translateWord('cat', { format: 'deseret' })).toBe('𐐿𐐰𐐻');
+    expect(translateWord('the', { format: 'deseret' })).toBe('𐑄𐐱');
+  });
+});

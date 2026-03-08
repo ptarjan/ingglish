@@ -44,18 +44,6 @@ describe('arpabetToDeseret', () => {
     expect(arpabetToDeseret(['M', 'Y', 'UW1', 'Z', 'IH0', 'K'])).toBe('𐑋𐑏𐑆𐐮𐐿');
   });
 
-  it('converts a full word: "hello" = HH AH0 L OW1', () => {
-    expect(arpabetToDeseret(['HH', 'AH0', 'L', 'OW1'])).toBe('𐐸𐐱𐑊𐐬');
-  });
-
-  it('converts "cat" = K AE1 T', () => {
-    expect(arpabetToDeseret(['K', 'AE1', 'T'])).toBe('𐐿𐐰𐐻');
-  });
-
-  it('converts "the" = DH AH0', () => {
-    expect(arpabetToDeseret(['DH', 'AH0'])).toBe('𐑄𐐱');
-  });
-
   it('converts all consonant phonemes', () => {
     const consonants = [
       ['P', '𐐹'],
