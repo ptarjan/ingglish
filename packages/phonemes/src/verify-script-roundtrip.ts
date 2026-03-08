@@ -43,10 +43,7 @@ export function verifyScriptRoundTrip(
       // Check if this is a known divergence
       const key = input.join(',');
       const accepted = knownDivergences?.[key];
-      if (
-        accepted?.length === resultBase.length &&
-        accepted.every((p, i) => p === resultBase[i])
-      ) {
+      if (accepted?.length === resultBase.length && accepted.every((p, i) => p === resultBase[i])) {
         return;
       }
 
