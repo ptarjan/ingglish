@@ -10,11 +10,16 @@ import { ARPABET_CONSONANTS, ARPABET_VOWELS, stripStress } from './arpabet';
  * @param multiPhonemeRules - Multi-phoneme sequences that map to single characters
  *   (e.g., `['Y', 'UW']` for Deseret Ew). Stress markers are optional — if
  *   omitted, stress 1 is used for vowels.
+ * @param knownDivergences - Phoneme inputs (comma-joined) whose round-trip
+ *   produces a known, acceptable different result. Value is the expected
+ *   stress-stripped output. E.g., `{ AH0: ['AE'] }` for Ingglish's
+ *   intentional schwa→short-a ambiguity.
  */
 export function verifyScriptRoundTrip(
   forward: (arpabet: string[]) => string,
   toArpabet: (text: string) => null | string[],
-  multiPhonemeRules?: string[][]
+  multiPhonemeRules?: string[][],
+  knownDivergences?: Record<string, string[]>
 ): void {
   const failures: string[] = [];
 
@@ -35,6 +40,16 @@ export function verifyScriptRoundTrip(
       resultBase.length !== expectedBase.length ||
       resultBase.some((p, i) => p !== expectedBase[i])
     ) {
+      // Check if this is a known divergence
+      const key = input.join(',');
+      const accepted = knownDivergences?.[key];
+      if (
+        accepted?.length === resultBase.length &&
+        accepted.every((p, i) => p === resultBase[i])
+      ) {
+        return;
+      }
+
       failures.push(
         `  [${input.join(', ')}] → ${JSON.stringify(scriptText)} → [${resultBase.join(', ')}] (expected [${expectedBase.join(', ')}])`
       );

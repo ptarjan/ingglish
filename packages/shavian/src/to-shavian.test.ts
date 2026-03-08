@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { verifyScriptRoundTrip } from '@ingglish/phonemes';
-import { shavianToArpabet } from './from-shavian';
-import { arpabetToShavian } from './to-shavian';
+import { arpabetToShavian, shavianToArpabet } from './index';
 
 describe('arpabetToShavian', () => {
   it('should handle empty input', () => {

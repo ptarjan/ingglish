@@ -19,3 +19,6 @@ export function registerShavian(): void {
 }
 
 registerShavian();
+
+export { shavianToArpabet } from './from-shavian';
+export { arpabetToShavian } from './to-shavian';

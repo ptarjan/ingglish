@@ -19,3 +19,6 @@ export function registerDeseret(): void {
 }
 
 registerDeseret();
+
+export { deseretToArpabet } from './from-deseret';
+export { arpabetToDeseret } from './to-deseret';

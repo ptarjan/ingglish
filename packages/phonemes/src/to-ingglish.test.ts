@@ -7,7 +7,9 @@ import {
   ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
   arpabetToFormat,
   arpabetToIngglish,
+  ingglishToArpabet,
   stripStress,
+  verifyScriptRoundTrip,
 } from './index';
 
 describe('phoneme-map', () => {
@@ -104,6 +106,29 @@ describe('phoneme-map', () => {
       // UW+UH = "oo"+"u" is fine (no triple), should not get a hyphen
       expect(arpabetToIngglish(['K', 'UW1', 'UH'])).toBe('koou');
     });
+  });
+});
+
+describe('arpabetToIngglish round-trip', () => {
+  it('should round-trip all phonemes', () => {
+    expect(() => {
+      verifyScriptRoundTrip(
+        arpabetToIngglish,
+        ingglishToArpabet,
+        [
+          ['AA1', 'R'],
+          ['AO1', 'R'],
+          ['EH1', 'R'],
+          ['AE1', 'R'],
+          ['IH1', 'R'],
+          ['UH1', 'R'],
+          ['AH1', 'R'],
+        ],
+        // AH0 (schwa) → 'a' → AE is a known, intentional ambiguity
+        // resolved at a higher level via expandArpabetAlternatives
+        { AH0: ['AE'] }
+      );
+    }).not.toThrow();
   });
 });
 

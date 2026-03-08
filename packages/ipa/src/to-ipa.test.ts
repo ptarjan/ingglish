@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { verifyScriptRoundTrip } from '@ingglish/phonemes';
-import { ipaToArpabet } from './from-ipa';
-import { arpabetToIPA, arpabetPhonemeToIPA } from './to-ipa';
+import { arpabetPhonemeToIPA, arpabetToIPARaw, ipaToArpabet } from './index';
 
 describe('arpabet-to-ipa', () => {
   describe('arpabetPhonemeToIPA', () => {
@@ -12,7 +11,7 @@ describe('arpabet-to-ipa', () => {
 
   it('should round-trip all phonemes', () => {
     expect(() => {
-      verifyScriptRoundTrip(arpabetToIPA, ipaToArpabet);
+      verifyScriptRoundTrip(arpabetToIPARaw, ipaToArpabet);
     }).not.toThrow();
   });
 });
