@@ -5,8 +5,8 @@ import { arpabetToDeseret } from './to-deseret';
 
 describe('arpabetToDeseret', () => {
   it('should round-trip all phonemes', () => {
-    expect(() =>
-      { verifyScriptRoundTrip(arpabetToDeseret, deseretToArpabet, [['Y', 'UW1']]); }
-    ).not.toThrow();
+    expect(() => {
+      verifyScriptRoundTrip(arpabetToDeseret, deseretToArpabet, [['Y', 'UW1']]);
+    }).not.toThrow();
   });
 });

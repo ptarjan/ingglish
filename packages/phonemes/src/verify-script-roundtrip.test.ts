@@ -16,39 +16,49 @@ const emptyReverse = () => [] as string[];
 
 const badReverseYUW = (text: string): string[] => {
   // Y-UW comes back as just Y
-  if (text === 'Y-UW') {return ['Y'];}
+  if (text === 'Y-UW') {
+    return ['Y'];
+  }
   return text.split('-');
 };
 
 describe('verifyScriptRoundTrip', () => {
   it('should pass for consistent forward/reverse', () => {
-    expect(() => { verifyScriptRoundTrip(forward, toArpabet); }).not.toThrow();
+    expect(() => {
+      verifyScriptRoundTrip(forward, toArpabet);
+    }).not.toThrow();
   });
 
   it('should throw for divergent reverse', () => {
-    expect(() => { verifyScriptRoundTrip(forward, badReverseER); }).toThrow(
-      /round-trip verification failed/i
-    );
-    expect(() => { verifyScriptRoundTrip(forward, badReverseER); }).toThrow(/ER/);
+    expect(() => {
+      verifyScriptRoundTrip(forward, badReverseER);
+    }).toThrow(/round-trip verification failed/i);
+    expect(() => {
+      verifyScriptRoundTrip(forward, badReverseER);
+    }).toThrow(/ER/);
   });
 
   it('should throw when toArpabet returns null', () => {
-    expect(() => { verifyScriptRoundTrip(forward, nullReverse); }).toThrow(
-      /round-trip verification failed/i
-    );
+    expect(() => {
+      verifyScriptRoundTrip(forward, nullReverse);
+    }).toThrow(/round-trip verification failed/i);
   });
 
   it('should throw when toArpabet returns empty array', () => {
-    expect(() => { verifyScriptRoundTrip(forward, emptyReverse); }).toThrow(
-      /round-trip verification failed/i
-    );
+    expect(() => {
+      verifyScriptRoundTrip(forward, emptyReverse);
+    }).toThrow(/round-trip verification failed/i);
   });
 
   it('should verify multi-phoneme rules', () => {
-    expect(() => { verifyScriptRoundTrip(forward, toArpabet, [['Y', 'UW']]); }).not.toThrow();
+    expect(() => {
+      verifyScriptRoundTrip(forward, toArpabet, [['Y', 'UW']]);
+    }).not.toThrow();
   });
 
   it('should throw when multi-phoneme rule fails round-trip', () => {
-    expect(() => { verifyScriptRoundTrip(forward, badReverseYUW, [['Y', 'UW']]); }).toThrow(/Y.*UW/);
+    expect(() => {
+      verifyScriptRoundTrip(forward, badReverseYUW, [['Y', 'UW']]);
+    }).toThrow(/Y.*UW/);
   });
 });

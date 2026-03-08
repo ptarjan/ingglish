@@ -14,14 +14,14 @@ describe('arpabetToShavian', () => {
   });
 
   it('should round-trip all phonemes', () => {
-    expect(() =>
-      { verifyScriptRoundTrip(arpabetToShavian, shavianToArpabet, [
+    expect(() => {
+      verifyScriptRoundTrip(arpabetToShavian, shavianToArpabet, [
         ['AA1', 'R'],
         ['AO1', 'R'],
         ['EH1', 'R'],
         ['AH0', 'R'],
         ['IH1', 'R'],
-      ]); }
-    ).not.toThrow();
+      ]);
+    }).not.toThrow();
   });
 });
