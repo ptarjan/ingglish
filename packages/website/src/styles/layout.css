@@ -102,14 +102,16 @@
 
 /* Header */
 .header {
+  position: relative;
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .header-title {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  gap: 1rem;
   align-items: center;
+  justify-content: center;
 }
 
 .logo-link {
@@ -122,10 +124,9 @@
 }
 
 .header-right {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  justify-self: end;
+  position: absolute;
+  top: 0.5rem;
+  right: 0;
 }
 
 .subtitle-link {

@@ -257,16 +257,16 @@ function App() {
             <img alt="Ingglish logo" className="logo" height={56} src="/logo.svg" width={56} />
             <h1>Ingglish</h1>
           </a>
+          <button
+            className="subtitle-link"
+            onClick={() => {
+              setActiveTab('guide');
+            }}
+            style={isLoading ? { visibility: 'hidden' } : undefined}
+          >
+            What if English spelling made sense?
+          </button>
           <div className="header-right">
-            <button
-              className="subtitle-link"
-              onClick={() => {
-                setActiveTab('guide');
-              }}
-              style={isLoading ? { visibility: 'hidden' } : undefined}
-            >
-              What if English spelling made sense?
-            </button>
             <button aria-label="Toggle theme" className="theme-toggle" onClick={cycleTheme}>
               {getThemeIcon()}
             </button>
