@@ -1,6 +1,6 @@
 import type { SpellingRuleQuestion } from '../../data/spelling-rule-quiz-data';
 import { pickQuiz } from '../../data/spelling-rule-quiz-data';
-import { getTierLabel } from '../../games/game-utils';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import '../../styles/spelling-rule-quiz.css';
 import { GameIntro } from './GameIntro';
@@ -9,18 +9,12 @@ import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Amazing! You really know English spelling rules!';
-  }
-  if (pct >= 70) {
-    return 'Great job! English spelling is tricky but you handle it well.';
-  }
-  if (pct >= 50) {
-    return 'Not bad! English spelling trips up even native speakers.';
-  }
-  return 'English spelling is wild — keep practicing!';
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great job! English spelling is tricky but you handle it well.',
+  great: 'Amazing! You really know English spelling rules!',
+  low: 'English spelling is wild — keep practicing!',
+  ok: 'Not bad! English spelling trips up even native speakers.',
+});
 
 /**
  * Renders a word with a specific pattern highlighted.

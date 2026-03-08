@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { QuizGameReturn } from '../../hooks/useQuizGame';
 import { GameResultActions } from './GameResultActions';
+import { GameResults } from './GameResults';
 import { GameRoundBars } from './GameRoundBars';
 
 interface QuizResultsProps<Q> {
@@ -19,37 +20,37 @@ export function QuizResults<Q>({
   renderWordLabel,
 }: QuizResultsProps<Q>): ReactNode {
   return (
-    <div className="game-page">
-      <div className="game-results">
-        <h2>{heading}</h2>
-        <div className="game-overall-score">
+    <GameResults
+      heading={heading}
+      score={
+        <>
           {game.correctCount}/{game.results.length}
-        </div>
-        <p className="game-score-label">{getScoreLabel(game.overallPct)}</p>
+        </>
+      }
+      scoreLabel={getScoreLabel(game.overallPct)}
+    >
+      <GameRoundBars
+        rows={game.results.map((r, i) => ({
+          data: <span className="quiz-round-word">{renderWordLabel(r.question)}</span>,
+          fillPct: r.correct ? 100 : 0,
+          label: `Q${i + 1}`,
+          time: r.timeTaken,
+        }))}
+      />
 
-        <GameRoundBars
-          rows={game.results.map((r, i) => ({
-            data: <span className="quiz-round-word">{renderWordLabel(r.question)}</span>,
-            fillPct: r.correct ? 100 : 0,
-            label: `Q${i + 1}`,
-            time: r.timeTaken,
-          }))}
-        />
-
-        <GameResultActions
-          copied={game.copied}
-          newGameLabel={newGameLabel}
-          onNewGame={() => {
-            game.startQuiz(Date.now());
-          }}
-          onSave={game.handleSave}
-          onShare={game.handleShare}
-          onTryAgain={() => {
-            game.startQuiz(game.seed);
-          }}
-          shareRef={game.shareRef}
-        />
-      </div>
-    </div>
+      <GameResultActions
+        copied={game.copied}
+        newGameLabel={newGameLabel}
+        onNewGame={() => {
+          game.startQuiz(Date.now());
+        }}
+        onSave={game.handleSave}
+        onShare={game.handleShare}
+        onTryAgain={() => {
+          game.startQuiz(game.seed);
+        }}
+        shareRef={game.shareRef}
+      />
+    </GameResults>
   );
 }

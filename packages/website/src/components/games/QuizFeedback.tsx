@@ -3,8 +3,8 @@ import type { ReactNode, RefObject } from 'react';
 interface QuizFeedbackProps {
   /** Whether the selected answer was correct. */
   correct: boolean;
-  /** Optional explanation text shown below the correct/incorrect message. */
-  explanation?: string;
+  /** Optional explanation shown below the correct/incorrect message. */
+  explanation?: ReactNode;
   /** Message shown when the answer is incorrect (can include JSX with the correct answer). */
   incorrectMessage?: ReactNode;
   /** Whether this is the last question (changes button label). */
@@ -31,7 +31,7 @@ export function QuizFeedback({
       ) : (
         <div className="quiz-feedback-incorrect">{incorrectMessage ?? 'Not quite!'}</div>
       )}
-      {explanation && <div className="quiz-explanation">{explanation}</div>}
+      {explanation !== undefined && <div className="quiz-explanation">{explanation}</div>}
       <div className="game-actions">
         <button className="btn-primary" onClick={onNext} ref={nextRef}>
           {isLast ? 'See Results' : 'Next'}

@@ -12,7 +12,7 @@ async function playQuizRounds(page: Page, maxRounds: number) {
     await page.locator('.quiz-choice').first().click();
 
     // Click the Next/See Results button in feedback
-    const nextBtn = page.locator('.quiz-feedback .btn-primary, .homophones-feedback .btn-primary');
+    const nextBtn = page.locator('.quiz-feedback .btn-primary');
     await nextBtn.click();
 
     // If results appeared, stop

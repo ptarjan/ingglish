@@ -3,6 +3,7 @@ import type { Lesson } from '../../data/learn-to-read-data';
 import { LESSONS } from '../../data/learn-to-read-data';
 import { useGameProgress } from '../../games/useGameProgress';
 import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+import { GameResults } from './GameResults';
 import { GameRoundBars } from './GameRoundBars';
 
 import '../../styles/learn-to-read.css';
@@ -308,51 +309,51 @@ function LearnToRead() {
   const pct = Math.round((correctCount / totalCount) * 100);
 
   return (
-    <div className="game-page">
-      <div className="game-results">
-        <h2>Lesson {activeLesson.id} Complete!</h2>
-        <div className="game-overall-score">
+    <GameResults
+      heading={`Lesson ${activeLesson.id} Complete!`}
+      score={
+        <>
           {correctCount}/{totalCount}
-        </div>
-        <p className="game-score-label">
-          {pct >= 80
-            ? 'Excellent! You understand this rule well.'
-            : pct >= 60
-              ? 'Good work! A little more practice will help.'
-              : 'Review the lesson and try again.'}
-        </p>
+        </>
+      }
+      scoreLabel={
+        pct >= 80
+          ? 'Excellent! You understand this rule well.'
+          : pct >= 60
+            ? 'Good work! A little more practice will help.'
+            : 'Review the lesson and try again.'
+      }
+    >
+      <GameRoundBars
+        rows={activeLesson.quiz.map((q, i) => ({
+          data: <span className="learn-result-answer">{q.english}</span>,
+          fillPct: (quizResults[i] ?? false) ? 100 : 0,
+          label: q.ingglish,
+        }))}
+      />
 
-        <GameRoundBars
-          rows={activeLesson.quiz.map((q, i) => ({
-            data: <span className="learn-result-answer">{q.english}</span>,
-            fillPct: (quizResults[i] ?? false) ? 100 : 0,
-            label: q.ingglish,
-          }))}
-        />
-
-        <div className="game-result-actions">
-          <button
-            className="btn-secondary"
-            onClick={() => {
-              startLesson(activeLesson);
-            }}
-          >
-            Review Lesson
-          </button>
-          <button className="btn-secondary" onClick={startQuiz}>
-            Retry Quiz
-          </button>
-          <button
-            className="btn-primary"
-            onClick={() => {
-              setPhase('menu');
-            }}
-          >
-            Back to Lessons
-          </button>
-        </div>
+      <div className="game-result-actions">
+        <button
+          className="btn-secondary"
+          onClick={() => {
+            startLesson(activeLesson);
+          }}
+        >
+          Review Lesson
+        </button>
+        <button className="btn-secondary" onClick={startQuiz}>
+          Retry Quiz
+        </button>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            setPhase('menu');
+          }}
+        >
+          Back to Lessons
+        </button>
       </div>
-    </div>
+    </GameResults>
   );
 }
 

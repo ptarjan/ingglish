@@ -1,25 +1,20 @@
 import type { QuizQuestion } from '../../data/homophone-quiz-data';
 import { pickQuiz } from '../../data/homophone-quiz-data';
-import { getTierLabel } from '../../games/game-utils';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import '../../styles/homophones-quiz.css';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { QuizChoices } from './QuizChoices';
+import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Perfect ear! You know your homophones!';
-  }
-  if (pct >= 70) {
-    return 'Great job! You understand Ingglish well!';
-  }
-  if (pct >= 50) {
-    return 'Not bad! Homophones are tricky.';
-  }
-  return "Keep practicing — you'll get there!";
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great job! You understand Ingglish well!',
+  great: 'Perfect ear! You know your homophones!',
+  low: "Keep practicing — you'll get there!",
+  ok: 'Not bad! Homophones are tricky.',
+});
 
 const isCorrect = (choice: string, question: QuizQuestion) =>
   question.correctAnswers.some((a) => a.toLowerCase() === choice.toLowerCase());
@@ -102,23 +97,19 @@ function HomophonesQuiz() {
       />
 
       {game.answered && (
-        <div className="card game-feedback">
-          {isCorrect(game.selectedChoice!, currentQ) ? (
-            <div className="homophones-feedback-correct">Correct!</div>
-          ) : (
-            <div className="homophones-feedback-incorrect">Not quite!</div>
-          )}
-          <div className="homophones-feedback-all">
-            <strong>{currentQ.correctAnswers.join(', ')}</strong>{' '}
-            {currentQ.correctAnswers.length > 1 ? 'are all' : 'is'} spelled "{currentQ.ingglish}" in
-            Ingglish.
-          </div>
-          <div className="game-actions">
-            <button className="btn-primary" onClick={game.handleNext} ref={game.nextRef}>
-              {game.round + 1 >= game.questions.length ? 'See Results' : 'Next'}
-            </button>
-          </div>
-        </div>
+        <QuizFeedback
+          correct={isCorrect(game.selectedChoice!, currentQ)}
+          explanation={
+            <>
+              <strong>{currentQ.correctAnswers.join(', ')}</strong>{' '}
+              {currentQ.correctAnswers.length > 1 ? 'are all' : 'is'} spelled &ldquo;
+              {currentQ.ingglish}&rdquo; in Ingglish.
+            </>
+          }
+          isLast={game.round + 1 >= game.questions.length}
+          nextRef={game.nextRef}
+          onNext={game.handleNext}
+        />
       )}
     </div>
   );

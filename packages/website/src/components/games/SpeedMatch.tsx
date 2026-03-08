@@ -9,11 +9,18 @@ import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/speed-match.css';
 import { GameIntro } from './GameIntro';
 import { GameResultActions } from './GameResultActions';
+import { GameResults } from './GameResults';
 
 type Phase = 'intro' | 'playing' | 'results';
 
 const ROUNDS = 3;
 const PAIRS_PER_ROUND = 6;
+
+interface MatchColumnProps {
+  items: { id: number; matched: boolean; selected: boolean; text: string; wrong: boolean }[];
+  onWordClick: (side: 'left' | 'right', id: number) => void;
+  side: 'left' | 'right';
+}
 
 interface RoundTime {
   roundIndex: number;
@@ -26,6 +33,25 @@ function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return m > 0 ? `${m}:${String(s).padStart(2, '0')}` : `${s}s`;
+}
+
+function MatchColumn({ items, onWordClick, side }: MatchColumnProps) {
+  return (
+    <div className="speed-match-column">
+      {items.map((item) => (
+        <button
+          className={`speed-match-word${item.matched ? ' speed-match-word-matched' : ''}${item.selected ? ' speed-match-word-selected' : ''}${item.wrong ? ' speed-match-word-wrong' : ''}`}
+          disabled={item.matched}
+          key={item.id}
+          onClick={() => {
+            onWordClick(side, item.id);
+          }}
+        >
+          {item.text}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function SpeedMatch() {
@@ -219,36 +245,32 @@ function SpeedMatch() {
   // --- Results ---
   if (phase === 'results') {
     return (
-      <div className="game-page">
-        <div className="game-results">
-          <h2>All Matched!</h2>
-          <div className="game-overall-score">{formatTime(totalTime)}</div>
-          {isNewRecord && <div className="speed-match-record">New Record!</div>}
+      <GameResults heading="All Matched!" score={formatTime(totalTime)}>
+        {isNewRecord && <div className="speed-match-record">New Record!</div>}
 
-          <div className="game-round-bars">
-            {roundTimes.map((r) => (
-              <div className="game-round-row" key={r.roundIndex}>
-                <span className="game-round-label">Round {r.roundIndex + 1}</span>
-                <span className="speed-match-round-time">{formatTime(r.time)}</span>
-              </div>
-            ))}
-          </div>
-
-          <GameResultActions
-            copied={copied}
-            newGameLabel="New Words"
-            onNewGame={() => {
-              startGame(Date.now());
-            }}
-            onSave={handleSave}
-            onShare={handleShare}
-            onTryAgain={() => {
-              startGame(seed);
-            }}
-            shareRef={shareRef}
-          />
+        <div className="game-round-bars">
+          {roundTimes.map((r) => (
+            <div className="game-round-row" key={r.roundIndex}>
+              <span className="game-round-label">Round {r.roundIndex + 1}</span>
+              <span className="speed-match-round-time">{formatTime(r.time)}</span>
+            </div>
+          ))}
         </div>
-      </div>
+
+        <GameResultActions
+          copied={copied}
+          newGameLabel="New Words"
+          onNewGame={() => {
+            startGame(Date.now());
+          }}
+          onSave={handleSave}
+          onShare={handleShare}
+          onTryAgain={() => {
+            startGame(seed);
+          }}
+          shareRef={shareRef}
+        />
+      </GameResults>
     );
   }
 
@@ -269,61 +291,26 @@ function SpeedMatch() {
         <div className="speed-match-column-label">Ingglish</div>
         <div className="speed-match-column-label">English</div>
 
-        <div className="speed-match-column">
-          {left.map((item) => {
-            const isMatched = matched.has(item.id);
-            const isSelected = selection?.side === 'left' && selection.id === item.id;
-            const isWrong = wrongPair?.left === item.id;
-            const cls = [
-              'speed-match-word',
-              isMatched ? 'speed-match-word-matched' : '',
-              isSelected ? 'speed-match-word-selected' : '',
-              isWrong ? 'speed-match-word-wrong' : '',
-            ]
-              .filter(Boolean)
-              .join(' ');
-            return (
-              <button
-                className={cls}
-                disabled={isMatched}
-                key={item.id}
-                onClick={() => {
-                  handleWordClick('left', item.id);
-                }}
-              >
-                {item.text}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="speed-match-column">
-          {right.map((item) => {
-            const isMatched = matched.has(item.id);
-            const isSelected = selection?.side === 'right' && selection.id === item.id;
-            const isWrong = wrongPair?.right === item.id;
-            const cls = [
-              'speed-match-word',
-              isMatched ? 'speed-match-word-matched' : '',
-              isSelected ? 'speed-match-word-selected' : '',
-              isWrong ? 'speed-match-word-wrong' : '',
-            ]
-              .filter(Boolean)
-              .join(' ');
-            return (
-              <button
-                className={cls}
-                disabled={isMatched}
-                key={item.id}
-                onClick={() => {
-                  handleWordClick('right', item.id);
-                }}
-              >
-                {item.text}
-              </button>
-            );
-          })}
-        </div>
+        <MatchColumn
+          items={left.map((item) => ({
+            ...item,
+            matched: matched.has(item.id),
+            selected: selection?.side === 'left' && selection.id === item.id,
+            wrong: wrongPair?.left === item.id,
+          }))}
+          onWordClick={handleWordClick}
+          side="left"
+        />
+        <MatchColumn
+          items={right.map((item) => ({
+            ...item,
+            matched: matched.has(item.id),
+            selected: selection?.side === 'right' && selection.id === item.id,
+            wrong: wrongPair?.right === item.id,
+          }))}
+          onWordClick={handleWordClick}
+          side="right"
+        />
       </div>
     </div>
   );

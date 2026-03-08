@@ -1,101 +1,47 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { loadReverseDictionary } from '@ingglish/dictionary';
 import type { SentenceScore } from '../../challenge/challenge-scoring';
 import { scoreSentence } from '../../challenge/challenge-scoring';
-import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
-import { getTierLabel } from '../../games/game-utils';
-import { useCountdown } from '../../games/useCountdown';
-import { useGameShare } from '../../games/useGameShare';
-import { useAutoFocus } from '../../hooks/useAutoFocus';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
+import { useTimedInputGame } from '../../hooks/useTimedInputGame';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
+import { GameResults } from './GameResults';
 import { GameRoundBars } from './GameRoundBars';
 
-type Phase = 'intro' | 'playing' | 'results';
+const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = { 1: 30, 2: 25, 3: 20 };
 
-interface RoundResult {
-  score: SentenceScore;
-  sentence: ChallengeSentence;
-  timeTaken: number; // seconds taken for this round
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great job! You picked it up quickly!',
+  great: 'Amazing! You read Ingglish like a pro!',
+  low: "Keep practicing — you'll get the hang of it!",
+  ok: 'Not bad! Ingglish takes a little practice.',
+});
 
-const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = {
-  1: 30,
-  2: 25,
-  3: 20,
-};
-
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Amazing! You read Ingglish like a pro!';
-  }
-  if (pct >= 70) {
-    return 'Great job! You picked it up quickly!';
-  }
-  if (pct >= 50) {
-    return 'Not bad! Ingglish takes a little practice.';
-  }
-  return "Keep practicing — you'll get the hang of it!";
-}
+const getIngglishText = (sentence: ChallengeSentence): string =>
+  sentence.tokens.map((t) => t.translated).join('');
 
 function ReadingChallenge() {
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [seed, setSeed] = useState(() => Date.now());
-  const [sentences, setSentences] = useState<ChallengeSentence[]>([]);
-  const [round, setRound] = useState(0);
-  const [input, setInput] = useState('');
-  const [results, setResults] = useState<RoundResult[]>([]);
-  const [currentFeedback, setCurrentFeedback] = useState<null | SentenceScore>(null);
   const [reverseDictReady, setReverseDictReady] = useState(false);
-  const roundStartRef = useRef(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const startRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  const handleExpire = useCallback(() => {
-    const sentence = sentences[round];
-    if (!sentence || currentFeedback !== null) {
-      return;
-    }
-    const score = scoreSentence(sentence.tokens, input || '');
-    const elapsed = TIER_TIME_LIMITS[sentence.tier];
-    setCurrentFeedback(score);
-    setResults((prev) => [...prev, { score, sentence, timeTaken: elapsed }]);
-  }, [sentences, round, input, currentFeedback]);
-
-  const { reset: resetCountdown, timeLeft } = useCountdown({
-    onExpire: handleExpire,
-    paused: phase !== 'playing' || currentFeedback !== null,
-    seconds: 0,
+  const game = useTimedInputGame<ChallengeSentence, SentenceScore>({
+    getScoreValue: (feedback) => feedback.score,
+    getTier: (item) => item.tier,
+    pickItems: pickChallenge,
+    scoreCard: {
+      filename: 'ingglish-reading-score.png',
+      footerUrl: 'ingglish.com/games/reading',
+      gameTitle: 'INGGLISH READING CHALLENGE',
+    },
+    scoreInput: (input, item) => scoreSentence(item.tokens, input),
+    scoreOnExpiry: (input, item) => scoreSentence(item.tokens, input || ''),
+    speakFeedback: (feedback) => `${feedback.correct} of ${feedback.total} words correct`,
+    speakQuestion: (item) => item.english,
+    tierTimeLimits: TIER_TIME_LIMITS,
   });
-
-  const overallScore =
-    results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
-  const overallPct = Math.round(overallScore * 100);
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.score.score, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/reading', gameTitle: 'INGGLISH READING CHALLENGE' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'ingglish-reading-score.png'
-  );
-
-  useAutoFocus(startRef, reverseDictReady && phase === 'intro');
-  useAutoFocus(nextRef, currentFeedback !== null);
-  useAutoFocus(shareRef, phase === 'results');
 
   // Load reverse dictionary on mount (needed for homophone scoring)
   useEffect(() => {
@@ -104,91 +50,8 @@ function ReadingChallenge() {
     });
   }, []);
 
-  const startChallenge = useCallback(
-    (newSeed: number) => {
-      stop();
-      setSeed(newSeed);
-      const picked = pickChallenge(newSeed);
-      setSentences(picked);
-      setRound(0);
-      setResults([]);
-      setCurrentFeedback(null);
-      setInput('');
-      resetCountdown(TIER_TIME_LIMITS[picked[0]!.tier]);
-      roundStartRef.current = Date.now();
-      setPhase('playing');
-      setTimeout(() => inputRef.current?.focus(), 0);
-    },
-    [stop, resetCountdown]
-  );
-
-  const handleSubmit = useCallback(() => {
-    if (!sentences[round] || !input.trim()) {
-      return;
-    }
-
-    const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
-    const score = scoreSentence(sentences[round].tokens, input);
-    setCurrentFeedback(score);
-    setResults((prev) => [...prev, { score, sentence: sentences[round]!, timeTaken: elapsed }]);
-  }, [sentences, round, input]);
-
-  const handleNext = useCallback(() => {
-    const nextRound = round + 1;
-    if (nextRound >= sentences.length) {
-      setPhase('results');
-    } else {
-      setRound(nextRound);
-      setInput('');
-      setCurrentFeedback(null);
-      resetCountdown(TIER_TIME_LIMITS[sentences[nextRound]!.tier]);
-      roundStartRef.current = Date.now();
-      // Focus input on next tick
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [round, sentences, resetCountdown]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {
-        return;
-      }
-      if (e.key === 'Enter') {
-        if (currentFeedback) {
-          handleNext();
-        } else {
-          handleSubmit();
-        }
-      }
-    },
-    [currentFeedback, handleNext, handleSubmit, handleMuteKey]
-  );
-
-  // Speak Ingglish sentence when round changes
-  useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null) {
-      return;
-    }
-    const s = sentences[round];
-    if (!s) {
-      return;
-    }
-    speak(s.english);
-  }, [phase, round, currentFeedback, sentences, speak]);
-
-  // Speak feedback when answer is checked
-  useEffect(() => {
-    if (!currentFeedback) {
-      return;
-    }
-    speak(`${currentFeedback.correct} of ${currentFeedback.total} words correct`);
-  }, [currentFeedback, speak]);
-
-  const getIngglishText = (sentence: ChallengeSentence): string =>
-    sentence.tokens.map((t) => t.translated).join('');
-
   // --- Intro ---
-  if (phase === 'intro') {
+  if (game.phase === 'intro') {
     return (
       <div className="game-page">
         <GameIntro
@@ -196,14 +59,14 @@ function ReadingChallenge() {
           description="Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test. You'll see 10 sentences written in Ingglish — type what you think the English is."
           disabled={!reverseDictReady}
           onStart={() => {
-            startChallenge(seed);
+            game.startGame(game.seed);
           }}
           rules={[
             'Read the Ingglish sentence shown to you',
             'Type what you think it says in English before time runs out',
             'Get scored word-by-word (homophones accepted!)',
           ]}
-          startRef={startRef}
+          startRef={game.startRef}
           title="Reading Challenge"
         />
       </div>
@@ -211,42 +74,40 @@ function ReadingChallenge() {
   }
 
   // --- Results ---
-  if (phase === 'results') {
+  if (game.phase === 'results') {
     return (
-      <div className="game-page">
-        <div className="game-results">
-          <h2>Challenge Complete!</h2>
-          <div className="game-overall-score">{overallPct}%</div>
-          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
+      <GameResults
+        heading="Challenge Complete!"
+        score={`${game.overallPct}%`}
+        scoreLabel={getScoreLabel(game.overallPct)}
+      >
+        <GameRoundBars
+          rows={game.results.map((r, i) => ({
+            data: <span className="game-round-pct">{Math.round(r.feedback.score * 100)}%</span>,
+            fillPct: Math.round(r.feedback.score * 100),
+            label: `Round ${i + 1}`,
+            time: r.timeTaken,
+          }))}
+        />
 
-          <GameRoundBars
-            rows={results.map((r, i) => ({
-              data: <span className="game-round-pct">{Math.round(r.score.score * 100)}%</span>,
-              fillPct: Math.round(r.score.score * 100),
-              label: `Round ${i + 1}`,
-              time: r.timeTaken,
-            }))}
-          />
-
-          <GameResultActions
-            copied={copied}
-            onNewGame={() => {
-              startChallenge(Date.now());
-            }}
-            onSave={handleSave}
-            onShare={handleShare}
-            onTryAgain={() => {
-              startChallenge(seed);
-            }}
-            shareRef={shareRef}
-          />
-        </div>
-      </div>
+        <GameResultActions
+          copied={game.copied}
+          onNewGame={() => {
+            game.startGame(Date.now());
+          }}
+          onSave={game.handleSave}
+          onShare={game.handleShare}
+          onTryAgain={() => {
+            game.startGame(game.seed);
+          }}
+          shareRef={game.shareRef}
+        />
+      </GameResults>
     );
   }
 
   // --- Playing ---
-  const currentSentence = sentences[round];
+  const currentSentence = game.currentItem;
   if (!currentSentence) {
     return null;
   }
@@ -254,19 +115,19 @@ function ReadingChallenge() {
   return (
     <div className="game-page">
       <GameProgressBar
-        current={round + 1}
-        muted={muted}
-        onToggleMute={toggleMute}
-        supported={supported}
+        current={game.round + 1}
+        muted={game.speech.muted}
+        onToggleMute={game.speech.toggleMute}
+        supported={game.speech.supported}
         tierLabel={getTierLabel(currentSentence.tier)}
         timer={
-          currentFeedback === null ? (
-            <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
-              {timeLeft}s
+          game.currentFeedback === null ? (
+            <span className={`game-timer${game.timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
+              {game.timeLeft}s
             </span>
           ) : undefined
         }
-        total={sentences.length}
+        total={game.items.length}
       />
 
       <div className="card game-card">
@@ -277,37 +138,37 @@ function ReadingChallenge() {
       <div className="game-input-area">
         <input
           className="game-input"
-          disabled={currentFeedback !== null}
+          disabled={game.currentFeedback !== null}
           onChange={(e) => {
-            setInput(e.target.value);
+            game.setInput(e.target.value);
           }}
-          onKeyDown={handleKeyDown}
+          onKeyDown={game.handleKeyDown}
           placeholder="Type the English here..."
-          ref={inputRef}
+          ref={game.inputRef}
           type="text"
-          value={input}
+          value={game.input}
         />
       </div>
 
       <div className="game-actions">
-        {currentFeedback === null ? (
-          <button className="btn-primary" disabled={!input.trim()} onClick={handleSubmit}>
+        {game.currentFeedback === null ? (
+          <button className="btn-primary" disabled={!game.input.trim()} onClick={game.handleSubmit}>
             Check
           </button>
         ) : (
-          <button className="btn-primary" onClick={handleNext} ref={nextRef}>
-            {round + 1 >= sentences.length ? 'See Results' : 'Next'}
+          <button className="btn-primary" onClick={game.handleNext} ref={game.nextRef}>
+            {game.round + 1 >= game.items.length ? 'See Results' : 'Next'}
           </button>
         )}
       </div>
 
-      {currentFeedback && (
+      {game.currentFeedback && (
         <div className="card game-feedback">
           <div className="game-feedback-score">
-            {currentFeedback.correct} / {currentFeedback.total} words correct
+            {game.currentFeedback.correct} / {game.currentFeedback.total} words correct
           </div>
           <div className="challenge-feedback-words">
-            {currentFeedback.words.map((w, i) => (
+            {game.currentFeedback.words.map((w, i) => (
               <span className="challenge-word" key={i}>
                 <span className="challenge-word-ingglish">{w.ingglish}</span>
                 <span

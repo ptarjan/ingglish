@@ -1,6 +1,6 @@
 import type { OriginDetectiveQuestion } from '../../data/origin-detective-data';
 import { pickQuiz } from '../../data/origin-detective-data';
-import { getTierLabel } from '../../games/game-utils';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
@@ -8,18 +8,12 @@ import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'True etymology detective!';
-  }
-  if (pct >= 70) {
-    return 'Great instincts for word origins!';
-  }
-  if (pct >= 50) {
-    return 'Word origins are fascinating but tricky!';
-  }
-  return 'English borrowed from everywhere!';
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great instincts for word origins!',
+  great: 'True etymology detective!',
+  low: 'English borrowed from everywhere!',
+  ok: 'Word origins are fascinating but tricky!',
+});
 
 function OriginDetective() {
   const game = useQuizGame<OriginDetectiveQuestion>({

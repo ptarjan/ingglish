@@ -1,6 +1,6 @@
 import type { SpellThatSoundQuestion } from '../../data/spell-that-sound-data';
 import { pickQuiz } from '../../data/spell-that-sound-data';
-import { getTierLabel } from '../../games/game-utils';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import '../../styles/spelling-rule-quiz.css';
 import { GameIntro } from './GameIntro';
@@ -9,18 +9,12 @@ import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Spelling champion!';
-  }
-  if (pct >= 70) {
-    return 'Great spelling instincts!';
-  }
-  if (pct >= 50) {
-    return 'English spelling is tough — nice work!';
-  }
-  return 'English has too many ways to spell the same sound!';
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great spelling instincts!',
+  great: 'Spelling champion!',
+  low: 'English has too many ways to spell the same sound!',
+  ok: 'English spelling is tough — nice work!',
+});
 
 function SpellThatSound() {
   const game = useQuizGame<SpellThatSoundQuestion>({

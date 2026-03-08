@@ -1,198 +1,58 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { isCloseEnough } from '../../challenge/challenge-scoring';
-import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ReverseWord } from '../../data/reverse-spelling-data';
 import { pickReverseSpelling } from '../../data/reverse-spelling-data';
-import { getTierLabel } from '../../games/game-utils';
-import { useCountdown } from '../../games/useCountdown';
-import { useGameShare } from '../../games/useGameShare';
-import { useAutoFocus } from '../../hooks/useAutoFocus';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
+import { useTimedInputGame } from '../../hooks/useTimedInputGame';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
+import { GameResults } from './GameResults';
 import { GameRoundBars } from './GameRoundBars';
 
 import '../../styles/reverse-spelling.css';
 
-type Phase = 'intro' | 'playing' | 'results';
-
-interface RoundResult {
-  /** 0 | 0.5 | 1 */
-  score: number;
-  timeTaken: number;
-  word: ReverseWord;
-}
-
 const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = { 1: 30, 2: 25, 3: 20 };
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Amazing! You know Ingglish spelling inside-out!';
-  }
-  if (pct >= 70) {
-    return 'Great job! You have a solid grasp of the rules!';
-  }
-  if (pct >= 50) {
-    return 'Not bad! Phonetic spelling takes practice.';
-  }
-  return "Keep at it — you'll internalize the patterns!";
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great job! You have a solid grasp of the rules!',
+  great: 'Amazing! You know Ingglish spelling inside-out!',
+  low: "Keep at it — you'll internalize the patterns!",
+  ok: 'Not bad! Phonetic spelling takes practice.',
+});
 
 function ReverseSpelling() {
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [seed, setSeed] = useState(() => Date.now());
-  const [words, setWords] = useState<ReverseWord[]>([]);
-  const [round, setRound] = useState(0);
-  const [input, setInput] = useState('');
-  const [results, setResults] = useState<RoundResult[]>([]);
-  const [currentResult, setCurrentResult] = useState<null | RoundResult>(null);
-  const roundStartRef = useRef(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const startRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
-
-  const handleExpire = useCallback(() => {
-    const word = words[round];
-    if (!word || currentResult !== null) {
-      return;
-    }
-    const score = scoreAnswer('', word.ingglish);
-    const elapsed = TIER_TIME_LIMITS[word.tier];
-    const result: RoundResult = { score, timeTaken: elapsed, word };
-    setCurrentResult(result);
-    setResults((prev) => [...prev, result]);
-  }, [words, round, currentResult]);
-
-  const { reset: resetCountdown, timeLeft } = useCountdown({
-    onExpire: handleExpire,
-    paused: phase !== 'playing' || currentResult !== null,
-    seconds: 0,
+  const game = useTimedInputGame<ReverseWord, number>({
+    getScoreValue: (score) => score,
+    getTier: (item) => item.tier,
+    pickItems: pickReverseSpelling,
+    scoreCard: {
+      filename: 'ingglish-reverse-score.png',
+      footerUrl: 'ingglish.com/games/reverse',
+      gameTitle: 'INGGLISH REVERSE SPELLING',
+    },
+    scoreInput: (input, item) => scoreAnswer(input, item.ingglish),
+    scoreOnExpiry: (_input, item) => scoreAnswer('', item.ingglish),
+    speakFeedback: (score) =>
+      score === 1 ? 'Correct!' : 'Not quite. The correct spelling is shown on screen.',
+    speakQuestion: (item) => `Spell this word in Ingglish: ${item.english}`,
+    tierTimeLimits: TIER_TIME_LIMITS,
   });
 
-  const overallScore =
-    results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0;
-  const overallPct = Math.round(overallScore * 100);
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.score, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/reverse', gameTitle: 'INGGLISH REVERSE SPELLING' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'ingglish-reverse-score.png'
-  );
-
-  useAutoFocus(startRef, phase === 'intro');
-  useAutoFocus(nextRef, currentResult !== null);
-  useAutoFocus(shareRef, phase === 'results');
-
-  const startGame = useCallback(
-    (newSeed: number) => {
-      stop();
-      setSeed(newSeed);
-      const picked = pickReverseSpelling(newSeed);
-      setWords(picked);
-      setRound(0);
-      setResults([]);
-      setCurrentResult(null);
-      setInput('');
-      resetCountdown(TIER_TIME_LIMITS[picked[0]!.tier]);
-      roundStartRef.current = Date.now();
-      setPhase('playing');
-      setTimeout(() => inputRef.current?.focus(), 0);
-    },
-    [stop, resetCountdown]
-  );
-
-  const handleSubmit = useCallback(() => {
-    const word = words[round];
-    if (!word || !input.trim()) {
-      return;
-    }
-    const elapsed = Math.round((Date.now() - roundStartRef.current) / 1000);
-    const score = scoreAnswer(input.trim(), word.ingglish);
-    const result: RoundResult = { score, timeTaken: elapsed, word };
-    setCurrentResult(result);
-    setResults((prev) => [...prev, result]);
-  }, [words, round, input]);
-
-  const handleNext = useCallback(() => {
-    const nextRound = round + 1;
-    if (nextRound >= words.length) {
-      setPhase('results');
-    } else {
-      setRound(nextRound);
-      setInput('');
-      setCurrentResult(null);
-      resetCountdown(TIER_TIME_LIMITS[words[nextRound]!.tier]);
-      roundStartRef.current = Date.now();
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [round, words, resetCountdown]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {
-        return;
-      }
-      if (e.key === 'Enter') {
-        if (currentResult) {
-          handleNext();
-        } else {
-          handleSubmit();
-        }
-      }
-    },
-    [currentResult, handleNext, handleSubmit, handleMuteKey]
-  );
-
-  // Speak English word when round changes
-  useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null) {
-      return;
-    }
-    const w = words[round];
-    if (!w) {
-      return;
-    }
-    speak(`Spell this word in Ingglish: ${w.english}`);
-  }, [phase, round, currentResult, words, speak]);
-
-  // Speak feedback when result appears
-  useEffect(() => {
-    if (!currentResult) {
-      return;
-    }
-    if (currentResult.score === 1) {
-      speak('Correct!');
-    } else {
-      speak(`Not quite. The correct spelling is shown on screen.`);
-    }
-  }, [currentResult, speak]);
-
   // --- Intro ---
-  if (phase === 'intro') {
+  if (game.phase === 'intro') {
     return (
       <div className="game-page">
         <GameIntro
           description="Can you spell in Ingglish? You'll see an English word — type how it would look in phonetic Ingglish spelling. Close misspellings get partial credit!"
           onStart={() => {
-            startGame(seed);
+            game.startGame(game.seed);
           }}
           rules={[
             'See an English word displayed on screen',
             'Type the Ingglish spelling before time runs out',
             'Exact match = full credit, close = half credit',
           ]}
-          startRef={startRef}
+          startRef={game.startRef}
           title="Reverse Spelling"
         />
       </div>
@@ -200,110 +60,111 @@ function ReverseSpelling() {
   }
 
   // --- Results ---
-  if (phase === 'results') {
+  if (game.phase === 'results') {
     return (
-      <div className="game-page">
-        <div className="game-results">
-          <h2>Challenge Complete!</h2>
-          <div className="game-overall-score">{overallPct}%</div>
-          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
+      <GameResults
+        heading="Challenge Complete!"
+        score={`${game.overallPct}%`}
+        scoreLabel={getScoreLabel(game.overallPct)}
+      >
+        <GameRoundBars
+          rows={game.results.map((r) => ({
+            data: <span className="game-round-pct">{Math.round(r.feedback * 100)}%</span>,
+            fillPct: Math.round(r.feedback * 100),
+            label: r.item.english,
+            time: r.timeTaken,
+          }))}
+        />
 
-          <GameRoundBars
-            rows={results.map((r) => ({
-              data: <span className="game-round-pct">{Math.round(r.score * 100)}%</span>,
-              fillPct: Math.round(r.score * 100),
-              label: r.word.english,
-              time: r.timeTaken,
-            }))}
-          />
-
-          <GameResultActions
-            copied={copied}
-            newGameLabel="New Words"
-            onNewGame={() => {
-              startGame(Date.now());
-            }}
-            onSave={handleSave}
-            onShare={handleShare}
-            onTryAgain={() => {
-              startGame(seed);
-            }}
-            shareRef={shareRef}
-          />
-        </div>
-      </div>
+        <GameResultActions
+          copied={game.copied}
+          newGameLabel="New Words"
+          onNewGame={() => {
+            game.startGame(Date.now());
+          }}
+          onSave={game.handleSave}
+          onShare={game.handleShare}
+          onTryAgain={() => {
+            game.startGame(game.seed);
+          }}
+          shareRef={game.shareRef}
+        />
+      </GameResults>
     );
   }
 
   // --- Playing ---
-  const currentWord = words[round];
+  const currentWord = game.currentItem;
   if (!currentWord) {
     return null;
   }
 
-  const feedbackClass = currentResult
-    ? currentResult.score === 1
-      ? 'reverse-feedback-correct'
-      : currentResult.score === 0.5
-        ? 'reverse-feedback-fuzzy'
-        : 'reverse-feedback-incorrect'
-    : '';
+  const feedbackClass =
+    game.currentFeedback === null
+      ? ''
+      : game.currentFeedback === 1
+        ? 'reverse-feedback-correct'
+        : game.currentFeedback === 0.5
+          ? 'reverse-feedback-fuzzy'
+          : 'reverse-feedback-incorrect';
 
   return (
     <div className="game-page">
       <GameProgressBar
-        current={round + 1}
-        muted={muted}
-        onToggleMute={toggleMute}
-        supported={supported}
+        current={game.round + 1}
+        muted={game.speech.muted}
+        onToggleMute={game.speech.toggleMute}
+        supported={game.speech.supported}
         tierLabel={getTierLabel(currentWord.tier)}
         timer={
-          currentResult === null ? (
-            <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
-              {timeLeft}s
+          game.currentFeedback === null ? (
+            <span className={`game-timer${game.timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
+              {game.timeLeft}s
             </span>
           ) : undefined
         }
-        total={words.length}
+        total={game.items.length}
       />
 
-      <div className="card reverse-prompt">
-        <div className="label-caps reverse-prompt-label">Spell this word in Ingglish:</div>
+      <div className="card game-card" style={{ textAlign: 'center' }}>
+        <div className="label-caps game-card-label">Spell this word in Ingglish:</div>
         <div className="reverse-prompt-word">{currentWord.english}</div>
       </div>
 
       <div className="game-input-area">
         <input
           className="game-input"
-          disabled={currentResult !== null}
+          disabled={game.currentFeedback !== null}
           onChange={(e) => {
-            setInput(e.target.value);
+            game.setInput(e.target.value);
           }}
-          onKeyDown={handleKeyDown}
+          onKeyDown={game.handleKeyDown}
           placeholder="Type the Ingglish spelling..."
-          ref={inputRef}
+          ref={game.inputRef}
           type="text"
-          value={input}
+          value={game.input}
         />
       </div>
 
       <div className="game-actions">
-        {currentResult === null ? (
-          <button className="btn-primary" disabled={!input.trim()} onClick={handleSubmit}>
+        {game.currentFeedback === null ? (
+          <button className="btn-primary" disabled={!game.input.trim()} onClick={game.handleSubmit}>
             Check
           </button>
         ) : (
-          <button className="btn-primary" onClick={handleNext} ref={nextRef}>
-            {round + 1 >= words.length ? 'See Results' : 'Next'}
+          <button className="btn-primary" onClick={game.handleNext} ref={game.nextRef}>
+            {game.round + 1 >= game.items.length ? 'See Results' : 'Next'}
           </button>
         )}
       </div>
 
-      {currentResult && (
+      {game.currentFeedback !== null && (
         <div className="card reverse-feedback-comparison">
           <div className="reverse-feedback-item">
             <div className="reverse-feedback-label">Your answer</div>
-            <div className={`reverse-feedback-word ${feedbackClass}`}>{input.trim() || '—'}</div>
+            <div className={`reverse-feedback-word ${feedbackClass}`}>
+              {game.input.trim() || '—'}
+            </div>
           </div>
           <div className="reverse-feedback-item">
             <div className="reverse-feedback-label">Correct</div>
@@ -320,7 +181,7 @@ function ReverseSpelling() {
  * exact = 1.0, close enough = 0.5, wrong = 0
  */
 function scoreAnswer(userInput: string, expected: string): number {
-  if (!userInput) {
+  if (userInput === '') {
     return 0;
   }
   const actual = userInput.toLowerCase();

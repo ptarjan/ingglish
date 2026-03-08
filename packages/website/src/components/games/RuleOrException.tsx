@@ -1,6 +1,6 @@
 import type { RuleOrExceptionQuestion } from '../../data/rule-or-exception-data';
 import { pickQuiz } from '../../data/rule-or-exception-data';
-import { getTierLabel } from '../../games/game-utils';
+import { getTierLabel, makeScoreLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
@@ -8,18 +8,12 @@ import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'You really know your spelling rules!';
-  }
-  if (pct >= 70) {
-    return 'Great instincts for English patterns!';
-  }
-  if (pct >= 50) {
-    return 'English has a lot of exceptions — nice effort!';
-  }
-  return 'English spelling is full of surprises!';
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great instincts for English patterns!',
+  great: 'You really know your spelling rules!',
+  low: 'English spelling is full of surprises!',
+  ok: 'English has a lot of exceptions — nice effort!',
+});
 
 function RuleOrException() {
   const game = useQuizGame<RuleOrExceptionQuestion>({

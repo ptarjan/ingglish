@@ -3,19 +3,7 @@
  * Shared styles come from games-common.css.
  */
 
-/* === Prompt card === */
-
-.reverse-prompt {
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  border-radius: 0.75rem;
-}
-
-.reverse-prompt-label {
-  margin-bottom: 0.75rem;
-  color: var(--color-text-muted);
-}
+/* === Prompt word (large centered text in game-card) === */
 
 .reverse-prompt-word {
   font-size: 2rem;

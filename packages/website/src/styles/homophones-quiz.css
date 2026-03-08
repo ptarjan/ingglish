@@ -11,17 +11,6 @@
   text-align: center;
 }
 
-.homophones-feedback-correct {
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: var(--color-success);
-}
-
-.homophones-feedback-incorrect {
-  margin-bottom: 1rem;
-  color: var(--color-text-muted);
-}
-
 @media (max-width: 640px) {
   .homophones-prompt {
     font-size: 1.5rem;

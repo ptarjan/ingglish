@@ -2,12 +2,14 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { PatternSortRound } from '../../data/pattern-sort-data';
 import { pickRounds } from '../../data/pattern-sort-data';
+import { makeScoreLabel } from '../../games/game-utils';
 import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
+import { GameResults } from './GameResults';
 import { GameRoundBars } from './GameRoundBars';
 import { QuizFeedback } from './QuizFeedback';
 
@@ -27,18 +29,12 @@ interface WordResult {
   word: string;
 }
 
-function getScoreLabel(pct: number): string {
-  if (pct >= 90) {
-    return 'Amazing sorting skills!';
-  }
-  if (pct >= 70) {
-    return 'Great pattern recognition!';
-  }
-  if (pct >= 50) {
-    return 'English sounds are tricky to sort!';
-  }
-  return 'These patterns take practice!';
-}
+const getScoreLabel = makeScoreLabel({
+  good: 'Great pattern recognition!',
+  great: 'Amazing sorting skills!',
+  low: 'These patterns take practice!',
+  ok: 'English sounds are tricky to sort!',
+});
 
 function PatternSort() {
   const [phase, setPhase] = useState<Phase>('intro');
@@ -222,38 +218,39 @@ function PatternSort() {
 
   if (phase === 'results') {
     return (
-      <div className="game-page">
-        <div className="game-results">
-          <h2>All Sorted!</h2>
-          <div className="game-overall-score">
+      <GameResults
+        heading="All Sorted!"
+        score={
+          <>
             {totalCorrect}/{totalWords}
-          </div>
-          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
-          <GameRoundBars
-            rows={roundResults.map((r) => ({
-              data: (
-                <span className="game-round-pct">
-                  {r.correct}/{r.total}
-                </span>
-              ),
-              fillPct: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
-              label: r.pattern,
-            }))}
-          />
-          <GameResultActions
-            copied={copied}
-            onNewGame={() => {
-              startGame(Date.now());
-            }}
-            onSave={handleSave}
-            onShare={handleShare}
-            onTryAgain={() => {
-              startGame(seed);
-            }}
-            shareRef={shareRef}
-          />
-        </div>
-      </div>
+          </>
+        }
+        scoreLabel={getScoreLabel(overallPct)}
+      >
+        <GameRoundBars
+          rows={roundResults.map((r) => ({
+            data: (
+              <span className="game-round-pct">
+                {r.correct}/{r.total}
+              </span>
+            ),
+            fillPct: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
+            label: r.pattern,
+          }))}
+        />
+        <GameResultActions
+          copied={copied}
+          onNewGame={() => {
+            startGame(Date.now());
+          }}
+          onSave={handleSave}
+          onShare={handleShare}
+          onTryAgain={() => {
+            startGame(seed);
+          }}
+          shareRef={shareRef}
+        />
+      </GameResults>
     );
   }
 
