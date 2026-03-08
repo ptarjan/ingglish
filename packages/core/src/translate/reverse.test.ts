@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { ipaToArpabetClean } from '@ingglish/ipa';
-import { ingglishToArpabet } from '@ingglish/phonemes';
 import { isLikelyIngglish } from '../detect/language';
 import { SAMPLE_TEXT } from '../test-setup';
 import { translateSync, translateWord } from './forward';
@@ -13,32 +11,6 @@ import {
 } from './reverse';
 
 describe('reverse-translator', () => {
-  describe('ingglishToArpabet', () => {
-    it('should parse simple Ingglish words to phonemes', () => {
-      // "kat" -> K AE T
-      expect(ingglishToArpabet('kat')).toEqual(['K', 'AE', 'T']);
-    });
-
-    it('should parse words with digraphs correctly', () => {
-      // "dha" -> DH AE (the) - 'a' maps to AE (AH alternative handles reverse lookup)
-      expect(ingglishToArpabet('dha')).toEqual(['DH', 'AE']);
-    });
-
-    it('should parse longer spellings before shorter ones', () => {
-      // "she" -> SH IY (not S HH EH)
-      expect(ingglishToArpabet('shee')).toEqual(['SH', 'IY']);
-    });
-
-    it('should parse "thingk" correctly', () => {
-      // "thingk" -> TH IH NG K
-      expect(ingglishToArpabet('thingk')).toEqual(['TH', 'IH', 'NG', 'K']);
-    });
-
-    it('should return null for empty input', () => {
-      expect(ingglishToArpabet('')).toEqual(null);
-    });
-  });
-
   describe('reverseTranslateWord', () => {
     it('should translate simple words', () => {
       // "kat" should map to "cat"
@@ -247,27 +219,6 @@ describe('reverse-translator', () => {
       // Pure words without distinctive patterns
       const result = isLikelyIngglish('hello');
       expect(typeof result).toBe('boolean');
-    });
-  });
-
-  describe('ipaToArpabetClean', () => {
-    it('should parse simple IPA to phonemes', () => {
-      // /kæt/ -> K AE T
-      expect(ipaToArpabetClean('kæt')).toEqual(['K', 'AE', 'T']);
-    });
-
-    it('should parse IPA with diphthongs', () => {
-      // /haɪ/ -> HH AY (hi/high)
-      expect(ipaToArpabetClean('haɪ')).toEqual(['HH', 'AY']);
-    });
-
-    it('should strip stress markers', () => {
-      // /həˈloʊ/ -> HH AH L OW (hello)
-      expect(ipaToArpabetClean('həˈloʊ')).toEqual(['HH', 'AH', 'L', 'OW']);
-    });
-
-    it('should return null for empty input', () => {
-      expect(ipaToArpabetClean('')).toEqual(null);
     });
   });
 

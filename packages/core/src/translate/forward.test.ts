@@ -475,6 +475,43 @@ describe('translator', () => {
     it('should translate multi-syllable words', () => {
       expect(translateWord('beautiful')).toBe('byootafal');
     });
+
+    it('should translate all vowel sounds', () => {
+      expect(translateWord('hot')).toBe('hot'); // AA
+      expect(translateWord('dog')).toBe('dawg'); // AO
+      expect(translateWord('law')).toBe('law'); // AO
+      expect(translateWord('cow')).toBe('kou'); // AW
+      expect(translateWord('out')).toBe('out'); // AW
+      expect(translateWord('bed')).toBe('bed'); // EH
+      expect(translateWord('red')).toBe('red'); // EH
+      expect(translateWord('day')).toBe('day'); // EY
+      expect(translateWord('say')).toBe('say'); // EY
+      expect(translateWord('see')).toBe('see'); // IY
+      expect(translateWord('me')).toBe('mee'); // IY
+      expect(translateWord('book')).toBe('buk'); // UH
+      expect(translateWord('put')).toBe('put'); // UH
+      expect(translateWord('boy')).toBe('boi'); // OY
+      expect(translateWord('my')).toBe('mai'); // AY
+      expect(translateWord('go')).toBe('goh'); // OW
+      expect(translateWord('zoo')).toBe('zoo'); // UW
+      expect(translateWord('cup')).toBe('kuhp'); // AH (stressed)
+      expect(translateWord('love')).toBe('luhv'); // AH (stressed)
+      expect(translateWord('buzz')).toBe('buhz'); // AH (stressed)
+    });
+
+    it('should translate all consonant sounds', () => {
+      expect(translateWord('go')).toBe('goh'); // G
+      expect(translateWord('pen')).toBe('pen'); // P
+      expect(translateWord('she')).toBe('shee'); // SH
+      expect(translateWord('fish')).toBe('fish'); // SH
+      expect(translateWord('very')).toBe('vairee'); // V
+      expect(translateWord('zoo')).toBe('zoo'); // Z
+      expect(translateWord('measure')).toBe('mezher'); // ZH
+      expect(translateWord('jump')).toBe('juhmp'); // JH, M, P
+      expect(translateWord('yes')).toBe('yes'); // Y (before non-UW vowel)
+      expect(translateWord('not')).toBe('not'); // N
+      expect(translateWord('bat')).toBe('bat'); // B
+    });
   });
 
   describe('British spelling handling', () => {
@@ -592,6 +629,26 @@ describe('translator', () => {
       expect(translateWord('examination', { format: 'ipa' })).toBe(
         `ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən`
       );
+    });
+
+    it('should translate all vowel sounds to IPA', () => {
+      expect(translateWord('hot', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}hɑt`); // AA → ɑ
+      expect(translateWord('dog', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dɔɡ`); // AO → ɔ
+      expect(translateWord('out', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}aʊt`); // AW → aʊ
+      expect(translateWord('bed', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bɛd`); // EH → ɛ
+      expect(translateWord('see', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}si`); // IY → i
+      expect(translateWord('book', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bʊk`); // UH → ʊ
+    });
+
+    it('should translate all consonant sounds to IPA', () => {
+      expect(translateWord('pen', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}pɛn`); // P → p
+      expect(translateWord('red', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɹɛd`); // R → ɹ
+      expect(translateWord('say', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}seɪ`); // S → s
+      expect(translateWord('very', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}vɛɹi`); // V → v
+      expect(translateWord('measure', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}mɛʒɝ`); // ZH → ʒ
+      expect(translateWord('go', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɡoʊ`); // G → ɡ
+      expect(translateWord('yes', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}jɛs`); // Y → j
+      expect(translateWord('she', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ʃi`); // SH → ʃ
     });
   });
 

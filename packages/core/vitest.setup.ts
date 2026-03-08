@@ -5,7 +5,9 @@ import {
   loadReverseDictionary,
   loadFrequencies,
 } from '@ingglish/dictionary';
+import '@ingglish/deseret'; // registers 'deseret' format
 import '@ingglish/ipa'; // registers 'ipa' format
+import '@ingglish/shavian'; // registers 'shavian' format
 import { getLanguage } from '@ingglish/ipa';
 import './src/register-english'; // registers English word resolver + G2P + default loader
 import { setLangDict } from './src/dict-loader';

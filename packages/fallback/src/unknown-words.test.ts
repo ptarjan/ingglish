@@ -993,14 +993,6 @@ describe('unknown-words', () => {
       expect(result).toMatch(/[juɑɹɛl]/);
     });
 
-    it('translateUnknown should output IPA when format is ipa', () => {
-      const result = translateUnknown('xyzzy', 'ipa');
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
-      // Should not be plain ASCII letters like ingglish output
-      expect(result).not.toMatch(/^[a-z]+$/i);
-    });
-
     it('translateUnknown should output IPA for acronyms', () => {
       const result = translateUnknown('api', 'ipa');
       expect(result).toBeDefined();

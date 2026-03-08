@@ -5,9 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import '@ingglish/deseret'; // registers 'deseret' format
 import type { PhoneDict } from '@ingglish/ipa';
-import '@ingglish/shavian'; // registers 'shavian' format
 import { setDictReverseMap, setLangDict } from '../dict-loader';
 import { translateSync, translateSyncWithMapping, translateWord } from './forward';
 import {

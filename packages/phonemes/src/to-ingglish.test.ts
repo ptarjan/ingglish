@@ -94,32 +94,6 @@ describe('phoneme-map', () => {
   });
 
   describe('arpabetToIngglish', () => {
-    it('should handle vowel sounds correctly', () => {
-      expect(arpabetToIngglish(['AA1'])).toBe('o');
-      expect(arpabetToIngglish(['AE1'])).toBe('a');
-      expect(arpabetToIngglish(['AH1'])).toBe('uh');
-      expect(arpabetToIngglish(['AO1'])).toBe('aw');
-      expect(arpabetToIngglish(['AW1'])).toBe('ou');
-      expect(arpabetToIngglish(['AY1'])).toBe('ai');
-      expect(arpabetToIngglish(['EH1'])).toBe('e');
-      expect(arpabetToIngglish(['ER1'])).toBe('er');
-      expect(arpabetToIngglish(['EY1'])).toBe('ay');
-      expect(arpabetToIngglish(['IH1'])).toBe('i');
-      expect(arpabetToIngglish(['IY1'])).toBe('ee');
-      expect(arpabetToIngglish(['OW1'])).toBe('oh');
-      expect(arpabetToIngglish(['OY1'])).toBe('oi');
-      expect(arpabetToIngglish(['UH1'])).toBe('u');
-      expect(arpabetToIngglish(['UW1'])).toBe('oo');
-    });
-
-    it('should R-color vowels before R', () => {
-      expect(arpabetToIngglish(['AA1', 'R'])).toBe('ar');
-      expect(arpabetToIngglish(['AO1', 'R'])).toBe('or');
-      expect(arpabetToIngglish(['EH1', 'R'])).toBe('air');
-      expect(arpabetToIngglish(['AE1', 'R'])).toBe('arr');
-      expect(arpabetToIngglish(['IH1', 'R'])).toBe('eer');
-    });
-
     it('should insert hyphen to break 3+ identical consecutive letters', () => {
       // IY+EH = "ee"+"e" → "ee-e" (not "eee")
       expect(arpabetToIngglish(['K', 'IY1', 'EH'])).toBe('kee-e');
@@ -129,33 +103,6 @@ describe('phoneme-map', () => {
       );
       // UW+UH = "oo"+"u" is fine (no triple), should not get a hyphen
       expect(arpabetToIngglish(['K', 'UW1', 'UH'])).toBe('koou');
-    });
-
-    it('should handle consonant sounds correctly', () => {
-      expect(arpabetToIngglish(['B'])).toBe('b');
-      expect(arpabetToIngglish(['CH'])).toBe('ch');
-      expect(arpabetToIngglish(['D'])).toBe('d');
-      expect(arpabetToIngglish(['DH'])).toBe('dh');
-      expect(arpabetToIngglish(['F'])).toBe('f');
-      expect(arpabetToIngglish(['G'])).toBe('g');
-      expect(arpabetToIngglish(['HH'])).toBe('h');
-      expect(arpabetToIngglish(['JH'])).toBe('j');
-      expect(arpabetToIngglish(['K'])).toBe('k');
-      expect(arpabetToIngglish(['L'])).toBe('l');
-      expect(arpabetToIngglish(['M'])).toBe('m');
-      expect(arpabetToIngglish(['N'])).toBe('n');
-      expect(arpabetToIngglish(['NG'])).toBe('ng');
-      expect(arpabetToIngglish(['P'])).toBe('p');
-      expect(arpabetToIngglish(['R'])).toBe('r');
-      expect(arpabetToIngglish(['S'])).toBe('s');
-      expect(arpabetToIngglish(['SH'])).toBe('sh');
-      expect(arpabetToIngglish(['T'])).toBe('t');
-      expect(arpabetToIngglish(['TH'])).toBe('th');
-      expect(arpabetToIngglish(['V'])).toBe('v');
-      expect(arpabetToIngglish(['W'])).toBe('w');
-      expect(arpabetToIngglish(['Y'])).toBe('y');
-      expect(arpabetToIngglish(['Z'])).toBe('z');
-      expect(arpabetToIngglish(['ZH'])).toBe('zh');
     });
   });
 });

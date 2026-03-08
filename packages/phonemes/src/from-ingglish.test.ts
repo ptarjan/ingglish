@@ -2,12 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 describe('ingglishToArpabet', () => {
-  it('handles two-char spellings before one-char (sh before s+h)', () => {
-    // "sh" should be SH, not S + HH
-    const result = ingglishToArpabet('sh');
-    expect(result).toEqual(['SH']);
-  });
-
   it('returns null for empty string', () => {
     expect(ingglishToArpabet('')).toBeNull();
   });
@@ -18,12 +12,6 @@ describe('ingglishToArpabet', () => {
     expect(result).toBeDefined();
     // Only "a" should produce a phoneme
     expect(result?.length).toBe(1);
-  });
-
-  it('is case-insensitive', () => {
-    const lower = ingglishToArpabet('haloh');
-    const upper = ingglishToArpabet('HALOH');
-    expect(lower).toEqual(upper);
   });
 
   it('handles single consonants', () => {

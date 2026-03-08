@@ -35,6 +35,13 @@ export function deseretToArpabet(text: string): null | string[] {
     }
   }
 
+  // Recombine AH + R → ER (forward path decomposes ER → AH + R)
+  for (let i = 0; i < result.length - 1; i++) {
+    if (result[i] === 'AH' && result[i + 1] === 'R') {
+      result.splice(i, 2, 'ER');
+    }
+  }
+
   return result.length > 0 ? result : null;
 }
 
