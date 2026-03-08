@@ -1,39 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { getStress, isVowel } from '@ingglish/phonemes'; // also registers 'pronunciation' format
+import '@ingglish/phonemes'; // registers 'pronunciation' format
 import type { PhoneDict } from './dict';
-import { getLanguage, lookupDict } from './dict';
-import { ipaToArpabet } from './from-ipa';
-import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
-
-/** Convert IPA string → ARPAbet with default stress applied. */
-function ipa(ipaStr: string, lang?: string): string[] {
-  const clean = ipaStr.replaceAll(/^\/|\/$/g, '').replaceAll('.', '');
-  const overrides = lang ? IPA_LANGUAGE_OVERRIDES[lang] : undefined;
-  const arpabet = ipaToArpabet(clean, overrides);
-  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
-  if (hasStress) {
-    return arpabet;
-  }
-  const result = [...arpabet];
-  for (let i = result.length - 1; i >= 0; i--) {
-    if (isVowel(result[i]!)) {
-      result[i] = result[i]! + '1';
-      break;
-    }
-  }
-  return result;
-}
+import { convertIpaEntries, getLanguage, lookupDict } from './dict';
 
 /** Helper to create a PhoneDict from IPA entries (converted to ARPAbet) and a language code. */
 function mkDict(entries: Record<string, string>, lang = ''): PhoneDict {
-  const arpabetEntries: Record<string, string[]> = {};
-  for (const [word, ipaStr] of Object.entries(entries)) {
-    arpabetEntries[word] = ipa(ipaStr, lang || undefined);
-  }
   const langMeta = lang ? getLanguage(lang) : undefined;
   return {
     disableRColoring: langMeta?.disableRColoring,
-    entries: arpabetEntries,
+    entries: convertIpaEntries(entries, lang),
     lang,
     nonLatinScript: langMeta?.nonLatinScript,
     preprocess: langMeta?.preprocess,
