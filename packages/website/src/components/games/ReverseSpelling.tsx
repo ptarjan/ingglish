@@ -3,8 +3,13 @@ import { isCloseEnough } from '../../challenge/challenge-scoring';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ReverseWord } from '../../data/reverse-spelling-data';
 import { pickReverseSpelling } from '../../data/reverse-spelling-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+import { getTierLabel } from '../../games/game-utils';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
+import { GameIntro } from './GameIntro';
+import { GameProgressBar } from './GameProgressBar';
+import { GameResultActions } from './GameResultActions';
 
 import '../../styles/reverse-spelling.css';
 
@@ -32,10 +37,6 @@ function getScoreLabel(pct: number): string {
   return "Keep at it — you'll internalize the patterns!";
 }
 
-function getTierLabel(tier: 1 | 2 | 3): string {
-  return tier === 1 ? 'Easy' : tier === 2 ? 'Medium' : 'Hard';
-}
-
 function ReverseSpelling() {
   const [phase, setPhase] = useState<Phase>('intro');
   const [seed, setSeed] = useState(() => Date.now());
@@ -50,37 +51,11 @@ function ReverseSpelling() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  useEffect(
-    () => () => {
-      clearTimeout(copiedTimerRef.current);
-    },
-    []
-  );
-
-  // Focus start button on mount
-  useEffect(() => {
-    if (phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [phase]);
-
-  // Focus next button after feedback
-  useEffect(() => {
-    if (currentResult) {
-      setTimeout(() => nextRef.current?.focus(), 0);
-    }
-  }, [currentResult]);
-
-  // Focus share on results
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
+  useAutoFocus(startRef, phase === 'intro');
+  useAutoFocus(nextRef, currentResult !== null);
+  useAutoFocus(shareRef, phase === 'results');
 
   // Countdown timer
   useEffect(() => {
@@ -128,10 +103,6 @@ function ReverseSpelling() {
     },
     [stop]
   );
-
-  const handleStart = useCallback(() => {
-    startGame(seed);
-  }, [startGame, seed]);
 
   const handleSubmit = useCallback(() => {
     const word = words[round];
@@ -213,43 +184,28 @@ function ReverseSpelling() {
     [results, overallPct]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    const canvas = getScoreCanvas();
-    copyCanvasToClipboard(canvas, showCopied, 'ingglish-reverse-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    const canvas = getScoreCanvas();
-    downloadCanvas(canvas, 'ingglish-reverse-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'ingglish-reverse-score.png'
+  );
 
   // --- Intro ---
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Reverse Spelling</h2>
-          <p>
-            Can you spell in Ingglish? You'll see an English word — type how it would look in
-            phonetic Ingglish spelling. Close misspellings get partial credit!
-          </p>
-          <ol className="card game-rules">
-            <li>See an English word displayed on screen</li>
-            <li>Type the Ingglish spelling before time runs out</li>
-            <li>Exact match = full credit, close = half credit</li>
-          </ol>
-          <button className="btn-primary" onClick={handleStart} ref={startRef}>
-            Start
-          </button>
-        </div>
+        <GameIntro
+          description="Can you spell in Ingglish? You'll see an English word — type how it would look in phonetic Ingglish spelling. Close misspellings get partial credit!"
+          onStart={() => {
+            startGame(seed);
+          }}
+          rules={[
+            'See an English word displayed on screen',
+            'Type the Ingglish spelling before time runs out',
+            'Exact match = full credit, close = half credit',
+          ]}
+          startRef={startRef}
+          title="Reverse Spelling"
+        />
       </div>
     );
   }
@@ -285,34 +241,19 @@ function ReverseSpelling() {
             })}
           </div>
 
-          <div className="game-result-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(seed);
-              }}
-            >
-              Try Again
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(Date.now());
-              }}
-            >
-              New Words
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            newGameLabel="New Words"
+            onNewGame={() => {
+              startGame(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startGame(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );
@@ -334,24 +275,21 @@ function ReverseSpelling() {
 
   return (
     <div className="game-page">
-      <div className="game-progress">
-        <span>
-          {round + 1} / {words.length}
-        </span>
-        <div className="game-progress-bar">
-          <div
-            className="game-progress-fill"
-            style={{ width: `${((round + 1) / words.length) * 100}%` }}
-          />
-        </div>
-        {currentResult === null && (
-          <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
-            {timeLeft}s
-          </span>
-        )}
-        <span className="label-caps game-tier-badge">{getTierLabel(currentWord.tier)}</span>
-        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
-      </div>
+      <GameProgressBar
+        current={round + 1}
+        muted={muted}
+        onToggleMute={toggleMute}
+        supported={supported}
+        tierLabel={getTierLabel(currentWord.tier)}
+        timer={
+          currentResult === null ? (
+            <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
+              {timeLeft}s
+            </span>
+          ) : undefined
+        }
+        total={words.length}
+      />
 
       <div className="card reverse-prompt">
         <div className="label-caps reverse-prompt-label">Spell this word in Ingglish:</div>

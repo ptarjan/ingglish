@@ -2,9 +2,13 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { PatternSortRound } from '../../data/pattern-sort-data';
 import { pickRounds } from '../../data/pattern-sort-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
-import '../../styles/spelling-rule-quiz.css';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
+import { GameIntro } from './GameIntro';
+import { GameProgressBar } from './GameProgressBar';
+import { GameResultActions } from './GameResultActions';
+import { QuizFeedback } from './QuizFeedback';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -46,32 +50,12 @@ function PatternSort() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  useEffect(
-    () => () => {
-      clearTimeout(copiedTimerRef.current);
-    },
-    []
-  );
-  useEffect(() => {
-    if (phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [phase]);
-  useEffect(() => {
-    if (selectedBucket !== null) {
-      setTimeout(() => nextRef.current?.focus(), 0);
-    }
-  }, [selectedBucket]);
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
+  useAutoFocus(startRef, phase === 'intro');
+  useAutoFocus(nextRef, selectedBucket !== null);
+  useAutoFocus(shareRef, phase === 'results');
 
   const startGame = useCallback(
     (newSeed: number) => {
@@ -124,8 +108,7 @@ function PatternSort() {
     }
 
     if (wordIdx + 1 >= round.words.length) {
-      // End of round
-      const newResults = [...wordResults]; // wordResults already updated
+      const newResults = [...wordResults];
       const roundCorrect = newResults.filter((r) => r.correct).length;
       setRoundResults((prev) => [
         ...prev,
@@ -165,7 +148,6 @@ function PatternSort() {
     [selectedBucket, handleNext, handleBucketClick, handleMuteKey]
   );
 
-  // Speak question when word changes
   useEffect(() => {
     if (phase !== 'playing' || selectedBucket !== null) {
       return;
@@ -178,7 +160,6 @@ function PatternSort() {
     speak(`Sort by the ${r.pattern} sound. ${w.word}. 1, ${r.bucketA}. 2, ${r.bucketB}.`);
   }, [phase, roundIdx, wordIdx, selectedBucket, rounds, speak]);
 
-  // Speak feedback when bucket is selected
   useEffect(() => {
     if (selectedBucket === null) {
       return;
@@ -212,46 +193,28 @@ function PatternSort() {
     [roundResults, overallPct]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    copyCanvasToClipboard(getScoreCanvas(), showCopied, 'pattern-sort-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    downloadCanvas(getScoreCanvas(), 'pattern-sort-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'pattern-sort-score.png'
+  );
 
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Pattern Sort</h2>
-          <p>
-            The same letter pattern can make different sounds. Sort words into the right
-            pronunciation bucket!
-          </p>
-          <ol className="card game-rules">
-            <li>See a word with a common spelling pattern</li>
-            <li>Tap which pronunciation bucket it belongs in</li>
-            <li>3 rounds with different patterns</li>
-          </ol>
-          <button
-            className="btn-primary"
-            onClick={() => {
-              startGame(seed);
-            }}
-            ref={startRef}
-          >
-            Start Game
-          </button>
-        </div>
+        <GameIntro
+          buttonLabel="Start Game"
+          description="The same letter pattern can make different sounds. Sort words into the right pronunciation bucket!"
+          onStart={() => {
+            startGame(seed);
+          }}
+          rules={[
+            'See a word with a common spelling pattern',
+            'Tap which pronunciation bucket it belongs in',
+            '3 rounds with different patterns',
+          ]}
+          startRef={startRef}
+          title="Pattern Sort"
+        />
       </div>
     );
   }
@@ -287,34 +250,18 @@ function PatternSort() {
               );
             })}
           </div>
-          <div className="game-result-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(seed);
-              }}
-            >
-              Try Again
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(Date.now());
-              }}
-            >
-              New Game
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            onNewGame={() => {
+              startGame(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startGame(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );
@@ -335,19 +282,14 @@ function PatternSort() {
 
   return (
     <div className="game-page" onKeyDown={handleKeyDown}>
-      <div className="game-progress">
-        <span>
-          {globalWordIdx + 1} / {globalTotal}
-        </span>
-        <div className="game-progress-bar">
-          <div
-            className="game-progress-fill"
-            style={{ width: `${((globalWordIdx + 1) / globalTotal) * 100}%` }}
-          />
-        </div>
-        <span className="label-caps game-tier-badge">{currentRound.pattern}</span>
-        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
-      </div>
+      <GameProgressBar
+        current={globalWordIdx + 1}
+        muted={muted}
+        onToggleMute={toggleMute}
+        supported={supported}
+        tierLabel={currentRound.pattern}
+        total={globalTotal}
+      />
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Sort by the {currentRound.pattern} sound</div>
@@ -376,25 +318,20 @@ function PatternSort() {
       </div>
 
       {answered && (
-        <div className="quiz-feedback">
-          {selectedBucket === currentWord.bucket ? (
-            <div className="quiz-feedback-correct">Correct!</div>
-          ) : (
-            <div className="quiz-feedback-incorrect">
+        <QuizFeedback
+          correct={selectedBucket === currentWord.bucket}
+          incorrectMessage={
+            <>
               Not quite — {'\u201C'}
               {currentWord.word}
               {'\u201D'} belongs in{' '}
               {currentWord.bucket === 'a' ? currentRound.bucketA : currentRound.bucketB}
-            </div>
-          )}
-          <div className="game-actions">
-            <button className="btn-primary" onClick={handleNext} ref={nextRef}>
-              {wordIdx + 1 >= currentRound.words.length && roundIdx + 1 >= rounds.length
-                ? 'See Results'
-                : 'Next'}
-            </button>
-          </div>
-        </div>
+            </>
+          }
+          isLast={wordIdx + 1 >= currentRound.words.length && roundIdx + 1 >= rounds.length}
+          nextRef={nextRef}
+          onNext={handleNext}
+        />
       )}
     </div>
   );

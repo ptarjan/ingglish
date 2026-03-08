@@ -2,9 +2,14 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { RuleOrExceptionQuestion } from '../../data/rule-or-exception-data';
 import { pickQuiz } from '../../data/rule-or-exception-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
-import '../../styles/spelling-rule-quiz.css';
+import { getTierLabel } from '../../games/game-utils';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
+import { GameIntro } from './GameIntro';
+import { GameProgressBar } from './GameProgressBar';
+import { GameResultActions } from './GameResultActions';
+import { QuizFeedback } from './QuizFeedback';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -39,31 +44,11 @@ function RuleOrException() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  useEffect(
-    () => () => {
-      clearTimeout(copiedTimerRef.current);
-    },
-    []
-  );
-  useEffect(() => {
-    if (phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [phase]);
-  useEffect(() => {
-    if (selectedChoice !== null) {
-      setTimeout(() => nextRef.current?.focus(), 0);
-    }
-  }, [selectedChoice]);
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
+  useAutoFocus(startRef, phase === 'intro');
+  useAutoFocus(nextRef, selectedChoice !== null);
+  useAutoFocus(shareRef, phase === 'results');
 
   const startQuiz = useCallback(
     (newSeed: number) => {
@@ -127,7 +112,6 @@ function RuleOrException() {
     [selectedChoice, handleNext, handleChoiceClick, handleMuteKey]
   );
 
-  // Speak question when round changes
   useEffect(() => {
     if (phase !== 'playing' || selectedChoice !== null) {
       return;
@@ -139,7 +123,6 @@ function RuleOrException() {
     speak(`${q.word}. Rule: ${q.rule}. 1, Follows Rule. 2, Exception.`);
   }, [phase, round, selectedChoice, questions, speak]);
 
-  // Speak feedback when answer is selected
   useEffect(() => {
     if (selectedChoice === null) {
       return;
@@ -172,45 +155,28 @@ function RuleOrException() {
     [results, overallPct]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    copyCanvasToClipboard(getScoreCanvas(), showCopied, 'rule-or-exception-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    downloadCanvas(getScoreCanvas(), 'rule-or-exception-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'rule-or-exception-score.png'
+  );
 
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Rule or Exception?</h2>
-          <p>
-            English spelling has rules, but also lots of exceptions. Can you tell which is which?
-          </p>
-          <ol className="card game-rules">
-            <li>See a word and a spelling rule</li>
-            <li>Decide: does the word follow the rule, or is it an exception?</li>
-            <li>10 rounds, from obvious to tricky</li>
-          </ol>
-          <button
-            className="btn-primary"
-            onClick={() => {
-              startQuiz(seed);
-            }}
-            ref={startRef}
-          >
-            Start Quiz
-          </button>
-        </div>
+        <GameIntro
+          buttonLabel="Start Quiz"
+          description="English spelling has rules, but also lots of exceptions. Can you tell which is which?"
+          onStart={() => {
+            startQuiz(seed);
+          }}
+          rules={[
+            'See a word and a spelling rule',
+            'Decide: does the word follow the rule, or is it an exception?',
+            '10 rounds, from obvious to tricky',
+          ]}
+          startRef={startRef}
+          title="Rule or Exception?"
+        />
       </div>
     );
   }
@@ -240,34 +206,19 @@ function RuleOrException() {
               </div>
             ))}
           </div>
-          <div className="game-result-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startQuiz(seed);
-              }}
-            >
-              Try Again
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startQuiz(Date.now());
-              }}
-            >
-              New Quiz
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            newGameLabel="New Quiz"
+            onNewGame={() => {
+              startQuiz(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startQuiz(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );
@@ -281,21 +232,14 @@ function RuleOrException() {
 
   return (
     <div className="game-page" onKeyDown={handleKeyDown}>
-      <div className="game-progress">
-        <span>
-          {round + 1} / {questions.length}
-        </span>
-        <div className="game-progress-bar">
-          <div
-            className="game-progress-fill"
-            style={{ width: `${((round + 1) / questions.length) * 100}%` }}
-          />
-        </div>
-        <span className="label-caps game-tier-badge">
-          {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
-        </span>
-        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
-      </div>
+      <GameProgressBar
+        current={round + 1}
+        muted={muted}
+        onToggleMute={toggleMute}
+        supported={supported}
+        tierLabel={getTierLabel(currentQ.tier)}
+        total={questions.length}
+      />
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Rule: {currentQ.rule}</div>
@@ -324,21 +268,18 @@ function RuleOrException() {
       </div>
 
       {answered && (
-        <div className="quiz-feedback">
-          {selectedChoice === currentQ.isException ? (
-            <div className="quiz-feedback-correct">Correct!</div>
-          ) : (
-            <div className="quiz-feedback-incorrect">
+        <QuizFeedback
+          correct={selectedChoice === currentQ.isException}
+          explanation={currentQ.explanation}
+          incorrectMessage={
+            <>
               Not quite — it{'\u2019'}s {currentQ.isException ? 'an exception' : 'a rule follower'}!
-            </div>
-          )}
-          <div className="quiz-explanation">{currentQ.explanation}</div>
-          <div className="game-actions">
-            <button className="btn-primary" onClick={handleNext} ref={nextRef}>
-              {round + 1 >= questions.length ? 'See Results' : 'Next'}
-            </button>
-          </div>
-        </div>
+            </>
+          }
+          isLast={round + 1 >= questions.length}
+          nextRef={nextRef}
+          onNext={handleNext}
+        />
       )}
     </div>
   );

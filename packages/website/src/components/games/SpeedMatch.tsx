@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import { pickMatchPairs, shuffleColumns } from '../../data/speed-match-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import { useStopwatch } from '../../games/useStopwatch';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
 import '../../styles/speed-match.css';
+import { GameIntro } from './GameIntro';
+import { GameResultActions } from './GameResultActions';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -38,33 +41,19 @@ function SpeedMatch() {
   const stopwatch = useStopwatch();
   const startRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { speak } = useGameSpeech();
   const wrongTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
 
+  useAutoFocus(startRef, phase === 'intro');
+  useAutoFocus(shareRef, phase === 'results');
+
   useEffect(
     () => () => {
-      clearTimeout(copiedTimerRef.current);
       clearTimeout(wrongTimerRef.current);
     },
     []
   );
-
-  // Focus start button
-  useEffect(() => {
-    if (phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [phase]);
-
-  // Focus share on results
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
 
   const setupRound = useCallback((gameSeed: number, roundIndex: number) => {
     const newPairs = pickMatchPairs(gameSeed, roundIndex);
@@ -89,10 +78,6 @@ function SpeedMatch() {
     },
     [setupRound, stopwatch]
   );
-
-  const handleStart = useCallback(() => {
-    startGame(seed);
-  }, [startGame, seed]);
 
   // Check if all pairs are matched (round complete)
   useEffect(() => {
@@ -200,48 +185,34 @@ function SpeedMatch() {
     [roundTimes, totalTime]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    const canvas = getScoreCanvas();
-    copyCanvasToClipboard(canvas, showCopied, 'ingglish-speedmatch-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    const canvas = getScoreCanvas();
-    downloadCanvas(canvas, 'ingglish-speedmatch-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'ingglish-speedmatch-score.png'
+  );
 
   // --- Intro ---
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Speed Match</h2>
-          <p>
-            Match Ingglish words to their English translations as fast as you can! Click one word
-            from each column to make a pair. 3 rounds of 6 pairs each.
-          </p>
-          <ol className="card game-rules">
-            <li>Click an Ingglish word on the left</li>
-            <li>Click its English match on the right</li>
-            <li>Match all pairs as fast as possible!</li>
-          </ol>
+        <GameIntro
+          description="Match Ingglish words to their English translations as fast as you can! Click one word from each column to make a pair. 3 rounds of 6 pairs each."
+          onStart={() => {
+            startGame(seed);
+          }}
+          rules={[
+            'Click an Ingglish word on the left',
+            'Click its English match on the right',
+            'Match all pairs as fast as possible!',
+          ]}
+          startRef={startRef}
+          title="Speed Match"
+        >
           {bestTime !== null && (
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
               Best time: {formatTime(bestTime)}
             </p>
           )}
-          <button className="btn-primary" onClick={handleStart} ref={startRef}>
-            Start
-          </button>
-        </div>
+        </GameIntro>
       </div>
     );
   }
@@ -264,34 +235,19 @@ function SpeedMatch() {
             ))}
           </div>
 
-          <div className="game-result-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(seed);
-              }}
-            >
-              Try Again
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startGame(Date.now());
-              }}
-            >
-              New Words
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            newGameLabel="New Words"
+            onNewGame={() => {
+              startGame(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startGame(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );

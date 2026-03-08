@@ -2,9 +2,16 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { SpellThatSoundQuestion } from '../../data/spell-that-sound-data';
 import { pickQuiz } from '../../data/spell-that-sound-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { getTierLabel } from '../../games/game-utils';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
 import '../../styles/spelling-rule-quiz.css';
-import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+import { GameIntro } from './GameIntro';
+import { GameProgressBar } from './GameProgressBar';
+import { GameResultActions } from './GameResultActions';
+import { QuizChoices } from './QuizChoices';
+import { QuizFeedback } from './QuizFeedback';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -39,31 +46,11 @@ function SpellThatSound() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  useEffect(
-    () => () => {
-      clearTimeout(copiedTimerRef.current);
-    },
-    []
-  );
-  useEffect(() => {
-    if (phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [phase]);
-  useEffect(() => {
-    if (selectedChoice !== null) {
-      setTimeout(() => nextRef.current?.focus(), 0);
-    }
-  }, [selectedChoice]);
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
+  useAutoFocus(startRef, phase === 'intro');
+  useAutoFocus(nextRef, selectedChoice !== null);
+  useAutoFocus(shareRef, phase === 'results');
 
   const startQuiz = useCallback(
     (newSeed: number) => {
@@ -129,7 +116,6 @@ function SpellThatSound() {
     [selectedChoice, handleNext, questions, round, handleChoiceClick, handleMuteKey]
   );
 
-  // Speak question when round changes
   useEffect(() => {
     if (phase !== 'playing' || selectedChoice !== null) {
       return;
@@ -144,7 +130,6 @@ function SpellThatSound() {
     speak(`Fill in the ${q.soundDescription}. ${q.wordBefore} blank ${q.wordAfter}. ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
-  // Speak feedback when answer is selected
   useEffect(() => {
     if (selectedChoice === null) {
       return;
@@ -175,46 +160,28 @@ function SpellThatSound() {
     [results, overallPct]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    copyCanvasToClipboard(getScoreCanvas(), showCopied, 'spell-that-sound-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    downloadCanvas(getScoreCanvas(), 'spell-that-sound-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'spell-that-sound-score.png'
+  );
 
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Spell That Sound</h2>
-          <p>
-            English has multiple ways to spell the same sound. Can you pick the right spelling for
-            each word?
-          </p>
-          <ol className="card game-rules">
-            <li>See a sound and a word with a missing spelling</li>
-            <li>Pick the correct letters to complete the word</li>
-            <li>10 rounds, from common patterns to tricky ones</li>
-          </ol>
-          <button
-            className="btn-primary"
-            onClick={() => {
-              startQuiz(seed);
-            }}
-            ref={startRef}
-          >
-            Start Quiz
-          </button>
-        </div>
+        <GameIntro
+          buttonLabel="Start Quiz"
+          description="English has multiple ways to spell the same sound. Can you pick the right spelling for each word?"
+          onStart={() => {
+            startQuiz(seed);
+          }}
+          rules={[
+            'See a sound and a word with a missing spelling',
+            'Pick the correct letters to complete the word',
+            '10 rounds, from common patterns to tricky ones',
+          ]}
+          startRef={startRef}
+          title="Spell That Sound"
+        />
       </div>
     );
   }
@@ -246,34 +213,19 @@ function SpellThatSound() {
               </div>
             ))}
           </div>
-          <div className="game-result-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startQuiz(seed);
-              }}
-            >
-              Try Again
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                startQuiz(Date.now());
-              }}
-            >
-              New Quiz
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            newGameLabel="New Quiz"
+            onNewGame={() => {
+              startQuiz(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startQuiz(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );
@@ -287,21 +239,14 @@ function SpellThatSound() {
 
   return (
     <div className="game-page" onKeyDown={handleKeyDown}>
-      <div className="game-progress">
-        <span>
-          {round + 1} / {questions.length}
-        </span>
-        <div className="game-progress-bar">
-          <div
-            className="game-progress-fill"
-            style={{ width: `${((round + 1) / questions.length) * 100}%` }}
-          />
-        </div>
-        <span className="label-caps game-tier-badge">
-          {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
-        </span>
-        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
-      </div>
+      <GameProgressBar
+        current={round + 1}
+        muted={muted}
+        onToggleMute={toggleMute}
+        supported={supported}
+        tierLabel={getTierLabel(currentQ.tier)}
+        total={questions.length}
+      />
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Fill in the {currentQ.soundDescription}</div>
@@ -312,51 +257,34 @@ function SpellThatSound() {
         </div>
       </div>
 
-      <div className="quiz-choices">
-        {currentQ.choices.map((choice) => {
-          let className = 'quiz-choice';
-          if (answered) {
-            if (choice === currentQ.correctSpelling) {
-              className += ' quiz-choice-correct';
-            } else if (choice === selectedChoice) {
-              className += ' quiz-choice-incorrect';
-            } else {
-              className += ' quiz-choice-dimmed';
-            }
-          }
-          return (
-            <button
-              className={className}
-              disabled={answered}
-              key={choice}
-              onClick={() => {
-                handleChoiceClick(choice);
-              }}
-            >
-              {currentQ.wordBefore}
-              <strong>{choice}</strong>
-              {currentQ.wordAfter}
-            </button>
-          );
-        })}
-      </div>
+      <QuizChoices
+        answered={answered}
+        choices={currentQ.choices}
+        isCorrectAnswer={(choice) => choice === currentQ.correctSpelling}
+        onChoiceClick={handleChoiceClick}
+        renderContent={(choice) => (
+          <>
+            {currentQ.wordBefore}
+            <strong>{choice}</strong>
+            {currentQ.wordAfter}
+          </>
+        )}
+        selectedChoice={selectedChoice}
+      />
 
       {answered && (
-        <div className="quiz-feedback">
-          {selectedChoice === currentQ.correctSpelling ? (
-            <div className="quiz-feedback-correct">Correct!</div>
-          ) : (
-            <div className="quiz-feedback-incorrect">
+        <QuizFeedback
+          correct={selectedChoice === currentQ.correctSpelling}
+          explanation={currentQ.explanation}
+          incorrectMessage={
+            <>
               Not quite — it{'\u2019'}s <strong>{currentQ.correctSpelling}</strong>
-            </div>
-          )}
-          <div className="quiz-explanation">{currentQ.explanation}</div>
-          <div className="game-actions">
-            <button className="btn-primary" onClick={handleNext} ref={nextRef}>
-              {round + 1 >= questions.length ? 'See Results' : 'Next'}
-            </button>
-          </div>
-        </div>
+            </>
+          }
+          isLast={round + 1 >= questions.length}
+          nextRef={nextRef}
+          onNext={handleNext}
+        />
       )}
     </div>
   );

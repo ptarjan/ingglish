@@ -12,6 +12,8 @@ import {
 } from '../../data/daily-challenge-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import { useGameProgress } from '../../games/useGameProgress';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useCopiedState } from '../../hooks/useCopiedState';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/daily-challenge.css';
 
@@ -97,10 +99,9 @@ function DailyChallenge() {
   const [revealingRow, setRevealingRow] = useState(-1);
   const [bounceRow, setBounceRow] = useState(false);
   const [countdown, setCountdown] = useState('');
-  const [copiedShare, setCopiedShare] = useState(false);
+  const [copiedShare, showCopied] = useCopiedState();
 
   const toastTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { speak } = useGameSpeech();
   const shareRef = useRef<HTMLButtonElement>(null);
 
@@ -108,10 +109,11 @@ function DailyChallenge() {
   useEffect(
     () => () => {
       clearTimeout(toastTimerRef.current);
-      clearTimeout(copiedTimerRef.current);
     },
     []
   );
+
+  useAutoFocus(shareRef, phase === 'won' || phase === 'lost' || phase === 'already-done');
 
   // ------------------------------------------------------------------
   // Load word pool & determine phase
@@ -305,13 +307,6 @@ function DailyChallenge() {
     };
   }, [phase]);
 
-  // Auto-focus share on result
-  useEffect(() => {
-    if (phase === 'won' || phase === 'lost' || phase === 'already-done') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
-
   // Speak result when game ends
   useEffect(() => {
     if (phase === 'won') {
@@ -337,14 +332,6 @@ function DailyChallenge() {
         : won
           ? 1
           : 0;
-
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
 
   const getScoreCanvas = useCallback(
     () =>

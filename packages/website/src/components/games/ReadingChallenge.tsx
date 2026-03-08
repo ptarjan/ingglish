@@ -5,8 +5,13 @@ import { scoreSentence } from '../../challenge/challenge-scoring';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+import { getTierLabel } from '../../games/game-utils';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { useShareActions } from '../../hooks/useShareActions';
+import { GameIntro } from './GameIntro';
+import { GameProgressBar } from './GameProgressBar';
+import { GameResultActions } from './GameResultActions';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -35,16 +40,6 @@ function getScoreLabel(pct: number): string {
   return "Keep practicing — you'll get the hang of it!";
 }
 
-function getTierLabel(tier: 1 | 2 | 3): string {
-  if (tier === 1) {
-    return 'Easy';
-  }
-  if (tier === 2) {
-    return 'Medium';
-  }
-  return 'Hard';
-}
-
 function ReadingChallenge() {
   const [phase, setPhase] = useState<Phase>('intro');
   const [seed, setSeed] = useState(() => Date.now());
@@ -60,15 +55,11 @@ function ReadingChallenge() {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
-  useEffect(
-    () => () => {
-      clearTimeout(copiedTimerRef.current);
-    },
-    []
-  );
+
+  useAutoFocus(startRef, reverseDictReady && phase === 'intro');
+  useAutoFocus(nextRef, currentFeedback !== null);
+  useAutoFocus(shareRef, phase === 'results');
 
   // Load reverse dictionary on mount (needed for homophone scoring)
   useEffect(() => {
@@ -76,27 +67,6 @@ function ReadingChallenge() {
       setReverseDictReady(true);
     });
   }, []);
-
-  // Auto-focus Start button once dictionary is ready
-  useEffect(() => {
-    if (reverseDictReady && phase === 'intro') {
-      startRef.current?.focus();
-    }
-  }, [reverseDictReady, phase]);
-
-  // Auto-focus Next button when feedback appears
-  useEffect(() => {
-    if (currentFeedback) {
-      setTimeout(() => nextRef.current?.focus(), 0);
-    }
-  }, [currentFeedback]);
-
-  // Auto-focus Share button on results screen
-  useEffect(() => {
-    if (phase === 'results') {
-      setTimeout(() => shareRef.current?.focus(), 0);
-    }
-  }, [phase]);
 
   // Countdown timer — ticks every second while playing and not showing feedback
   useEffect(() => {
@@ -150,10 +120,6 @@ function ReadingChallenge() {
     },
     [stop]
   );
-
-  const handleStart = useCallback(() => {
-    startChallenge(seed);
-  }, [startChallenge, seed]);
 
   const handleSubmit = useCallback(() => {
     if (!sentences[round] || !input.trim()) {
@@ -217,14 +183,6 @@ function ReadingChallenge() {
     speak(`${currentFeedback.correct} of ${currentFeedback.total} words correct`);
   }, [currentFeedback, speak]);
 
-  const handleTryAgain = useCallback(() => {
-    startChallenge(seed);
-  }, [startChallenge, seed]);
-
-  const handleNewChallenge = useCallback(() => {
-    startChallenge(Date.now());
-  }, [startChallenge]);
-
   const overallScore =
     results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
   const overallPct = Math.round(overallScore * 100);
@@ -239,23 +197,10 @@ function ReadingChallenge() {
     [results, overallPct]
   );
 
-  const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
-    }, 1500);
-  }, []);
-
-  const handleShareResult = useCallback(() => {
-    const canvas = getScoreCanvas();
-    copyCanvasToClipboard(canvas, showCopied, 'ingglish-reading-score.png');
-  }, [getScoreCanvas, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    const canvas = getScoreCanvas();
-    downloadCanvas(canvas, 'ingglish-reading-score.png');
-  }, [getScoreCanvas]);
+  const { copied, handleSave, handleShare } = useShareActions(
+    getScoreCanvas,
+    'ingglish-reading-score.png'
+  );
 
   const getIngglishText = (sentence: ChallengeSentence): string =>
     sentence.tokens.map((t) => t.translated).join('');
@@ -264,26 +209,21 @@ function ReadingChallenge() {
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <div className="game-intro">
-          <h2>Reading Challenge</h2>
-          <p>
-            Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test.
-            You'll see 10 sentences written in Ingglish — type what you think the English is.
-          </p>
-          <ol className="card game-rules">
-            <li>Read the Ingglish sentence shown to you</li>
-            <li>Type what you think it says in English before time runs out</li>
-            <li>Get scored word-by-word (homophones accepted!)</li>
-          </ol>
-          <button
-            className="btn-primary"
-            disabled={!reverseDictReady}
-            onClick={handleStart}
-            ref={startRef}
-          >
-            Start Challenge
-          </button>
-        </div>
+        <GameIntro
+          buttonLabel="Start Challenge"
+          description="Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test. You'll see 10 sentences written in Ingglish — type what you think the English is."
+          disabled={!reverseDictReady}
+          onStart={() => {
+            startChallenge(seed);
+          }}
+          rules={[
+            'Read the Ingglish sentence shown to you',
+            'Type what you think it says in English before time runs out',
+            'Get scored word-by-word (homophones accepted!)',
+          ]}
+          startRef={startRef}
+          title="Reading Challenge"
+        />
       </div>
     );
   }
@@ -319,24 +259,18 @@ function ReadingChallenge() {
             })}
           </div>
 
-          <div className="game-result-actions">
-            <button className="btn-secondary" onClick={handleTryAgain}>
-              Try Again
-            </button>
-            <button className="btn-secondary" onClick={handleNewChallenge}>
-              New Challenge
-            </button>
-            <button
-              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
-              onClick={handleShareResult}
-              ref={shareRef}
-            >
-              {copiedShare ? 'Copied!' : 'Share Result'}
-            </button>
-            <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
-            </button>
-          </div>
+          <GameResultActions
+            copied={copied}
+            onNewGame={() => {
+              startChallenge(Date.now());
+            }}
+            onSave={handleSave}
+            onShare={handleShare}
+            onTryAgain={() => {
+              startChallenge(seed);
+            }}
+            shareRef={shareRef}
+          />
         </div>
       </div>
     );
@@ -348,28 +282,23 @@ function ReadingChallenge() {
     return null;
   }
 
-  const tierLabel = getTierLabel(currentSentence.tier);
-
   return (
     <div className="game-page">
-      <div className="game-progress">
-        <span>
-          {round + 1} / {sentences.length}
-        </span>
-        <div className="game-progress-bar">
-          <div
-            className="game-progress-fill"
-            style={{ width: `${((round + 1) / sentences.length) * 100}%` }}
-          />
-        </div>
-        {currentFeedback === null && (
-          <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
-            {timeLeft}s
-          </span>
-        )}
-        <span className="label-caps game-tier-badge">{tierLabel}</span>
-        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
-      </div>
+      <GameProgressBar
+        current={round + 1}
+        muted={muted}
+        onToggleMute={toggleMute}
+        supported={supported}
+        tierLabel={getTierLabel(currentSentence.tier)}
+        timer={
+          currentFeedback === null ? (
+            <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
+              {timeLeft}s
+            </span>
+          ) : undefined
+        }
+        total={sentences.length}
+      />
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Read this Ingglish sentence:</div>
