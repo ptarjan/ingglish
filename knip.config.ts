@@ -53,7 +53,7 @@ const config: KnipConfig = {
     'playwright', // used in standalone diagnostic script (not @playwright/test)
     'tsx', // invoked via npx tsx in build scripts (.cjs wrappers)
   ],
-  ignoreBinaries: ['playwright', 'vite-node'],
+  ignoreBinaries: ['playwright'],
   ignoreExportsUsedInFile: true,
   // Don't report unused exports — public API surface is intentionally broad
   exclude: ['exports', 'types'],

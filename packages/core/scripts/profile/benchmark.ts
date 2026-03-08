@@ -21,7 +21,7 @@ async function main() {
   const { reverseTranslateWord, reverseTranslateSync } =
     await import('../../src/translate/reverse');
   const { ingglishToArpabet } = await import('@ingglish/phonemes');
-  const { arpabetToIPA } = await import('@ingglish/ipa');
+  const { arpabetToIPARaw } = await import('@ingglish/ipa');
 
   // Load dictionary first
   console.log('Loading dictionary...');
@@ -107,15 +107,15 @@ async function main() {
 
   const arpabet = ['HH', 'AH0', 'L', 'OW1'];
   results.push(
-    benchmark('arpabetToIPA(4 phonemes)', () => {
-      arpabetToIPA(arpabet);
+    benchmark('arpabetToIPARaw(4 phonemes)', () => {
+      arpabetToIPARaw(arpabet);
     })
   );
 
   const longArpabet = ['K', 'AH0', 'M', 'P', 'Y', 'UW1', 'T', 'ER0'];
   results.push(
-    benchmark('arpabetToIPA(8 phonemes)', () => {
-      arpabetToIPA(longArpabet);
+    benchmark('arpabetToIPARaw(8 phonemes)', () => {
+      arpabetToIPARaw(longArpabet);
     })
   );
 

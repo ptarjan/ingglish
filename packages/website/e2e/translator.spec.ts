@@ -362,19 +362,20 @@ test.describe('Web Vitals', () => {
   });
 
   // FCP tests — works on all browsers via Paint Timing API
-  // 600ms threshold gives CI runners headroom (local is typically <300ms).
+  // 1000ms threshold gives CI runners headroom (local is typically <300ms,
+  // WebKit mobile-safari can spike to 700-950ms on CI runners).
   // /experiment gets a higher budget: it's a complex tool page with a large
   // lazy-loaded chunk (mapping editor + dictionary stats).
   const fcpRoutes: { budget: number; route: string }[] = [
-    { budget: 600, route: '/' },
-    { budget: 600, route: '/text' },
-    { budget: 600, route: '/url' },
-    { budget: 600, route: '/extension' },
-    { budget: 600, route: '/guide' },
-    { budget: 600, route: '/docs' },
-    { budget: 600, route: '/explore' },
-    { budget: 1000, route: '/experiment' },
-    { budget: 600, route: '/games' },
+    { budget: 1000, route: '/' },
+    { budget: 1000, route: '/text' },
+    { budget: 1000, route: '/url' },
+    { budget: 1000, route: '/extension' },
+    { budget: 1000, route: '/guide' },
+    { budget: 1000, route: '/docs' },
+    { budget: 1000, route: '/explore' },
+    { budget: 1500, route: '/experiment' },
+    { budget: 1000, route: '/games' },
   ];
   for (const { budget, route } of fcpRoutes) {
     test(`FCP is below ${String(budget)}ms on ${route}`, async ({ page }) => {

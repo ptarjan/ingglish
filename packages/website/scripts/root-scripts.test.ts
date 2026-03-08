@@ -8,7 +8,7 @@ const repoRoot = join(import.meta.dirname, '..', '..', '..');
 
 describe('review-languages', () => {
   it('runs successfully', () => {
-    const output = execSync('npx vite-node scripts/review-languages.ts', {
+    const output = execSync('npx tsx --conditions=source scripts/review-languages.ts', {
       cwd: repoRoot,
       encoding: 'utf-8',
       timeout: 30_000,

@@ -7,7 +7,7 @@ const websiteDir = join(import.meta.dirname, '..');
 describe('check-language-samples', () => {
   it('runs and reports coverage', () => {
     try {
-      const output = execSync('npx vite-node scripts/check-language-samples.ts', {
+      const output = execSync('npx tsx --conditions=source scripts/check-language-samples.ts', {
         cwd: websiteDir,
         encoding: 'utf-8',
         timeout: 30_000,
