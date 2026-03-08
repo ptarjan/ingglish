@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
+import '@ingglish/deseret'; // registers 'deseret' format
 import type { PhoneDict } from '@ingglish/ipa';
 import '@ingglish/shavian'; // registers 'shavian' format
 import { setDictReverseMap, setLangDict } from '../dict-loader';
@@ -90,68 +91,57 @@ describe('reverse contraction handling', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Stemming: -ed allomorphs (stemming.ts lines 28, 33)
+// Stemming: -ed allomorphs via word resolver (stemming.ts lines 26-33)
+// Uses words NOT in CMU dict so they go through the stemming word resolver
 // ---------------------------------------------------------------------------
-describe('stemming -ed allomorphs', () => {
-  it('should translate -ed after T/D with /ɪd/ (e.g. "hunted")', () => {
-    // "hunt" is in dictionary, "hunted" exercises -ed after T → IH0 D
-    const pron = lookupPronunciation('hunt');
-    if (!pron) {
-      return; // skip if not in dictionary
-    }
-    const result = translateWord('hunted');
+describe('stemming -ed allomorphs (word resolver path)', () => {
+  it('should translate -ed after T/D with /ɪd/ (e.g. "formatted")', () => {
+    // "format" is in dict, "formatted" is not → word resolver → matchStemming
+    // T ending → IH0 D allomorph (stemming.ts line 28)
+    expect(lookupPronunciation('formatted')).toBeNull();
+    const result = translateWord('formatted');
     expect(result).toBeTruthy();
-    expect(result.toLowerCase()).not.toBe('hunted'); // should be translated
+    expect(result.toLowerCase()).not.toBe('formatted');
   });
 
-  it('should translate -ed after voiced consonant with /d/ (e.g. "slammed")', () => {
-    const pron = lookupPronunciation('slam');
-    if (!pron) {
-      return;
-    }
-    const result = translateWord('slammed');
+  it('should translate -ed after voiced consonant with /d/ (e.g. "blogged")', () => {
+    // "blog" ends in G (voiced) → D allomorph (stemming.ts line 33)
+    expect(lookupPronunciation('blogged')).toBeNull();
+    const result = translateWord('blogged');
     expect(result).toBeTruthy();
-    expect(result.toLowerCase()).not.toBe('slammed');
+    expect(result.toLowerCase()).not.toBe('blogged');
   });
 
-  it('should translate -ed after voiceless consonant with /t/ (e.g. "walked")', () => {
-    const pron = lookupPronunciation('walk');
-    if (!pron) {
-      return;
-    }
-    const result = translateWord('walked');
+  it('should translate -ed after voiceless consonant with /t/ (e.g. "skyped")', () => {
+    // "skype" ends in P (voiceless) → T allomorph (stemming.ts line 31)
+    expect(lookupPronunciation('skyped')).toBeNull();
+    const result = translateWord('skyped');
     expect(result).toBeTruthy();
   });
 });
 
 // ---------------------------------------------------------------------------
-// Stemming: -s allomorphs (stemming.ts lines 45, 48)
+// Stemming: -s allomorphs via word resolver (stemming.ts lines 42-50)
 // ---------------------------------------------------------------------------
-describe('stemming -s/-es allomorphs', () => {
-  it('should translate -es after sibilants with /ɪz/ (e.g. "foxes")', () => {
-    const pron = lookupPronunciation('fox');
-    if (!pron) {
-      return;
-    }
-    const result = translateWord('foxes');
+describe('stemming -s/-es allomorphs (word resolver path)', () => {
+  it('should translate -es after sibilants with /ɪz/ (e.g. "relaunches")', () => {
+    // "relaunch" ends in CH (sibilant) → IH0 Z allomorph (stemming.ts line 45)
+    expect(lookupPronunciation('relaunches')).toBeNull();
+    const result = translateWord('relaunches');
     expect(result).toBeTruthy();
   });
 
-  it('should translate -s after voiced consonant with /z/ (e.g. "blogs")', () => {
-    const pron = lookupPronunciation('blog');
-    if (!pron) {
-      return;
-    }
-    const result = translateWord('blogs');
+  it('should translate -s after voiced consonant with /z/ (e.g. "debugs")', () => {
+    // "debug" ends in G (voiced) → Z allomorph (stemming.ts line 50)
+    expect(lookupPronunciation('debugs')).toBeNull();
+    const result = translateWord('debugs');
     expect(result).toBeTruthy();
   });
 
-  it('should translate -s after voiceless consonant with /s/ (e.g. "cups")', () => {
-    const pron = lookupPronunciation('cup');
-    if (!pron) {
-      return;
-    }
-    const result = translateWord('cups');
+  it('should translate -s after voiceless consonant with /s/ (e.g. "podcasts")', () => {
+    // "podcast" ends in T (voiceless) → S allomorph (stemming.ts line 48)
+    expect(lookupPronunciation('podcasts')).toBeNull();
+    const result = translateWord('podcasts');
     expect(result).toBeTruthy();
   });
 });
@@ -482,5 +472,197 @@ describe('round-trip edge cases', () => {
     // Should contain recognizable words
     expect(back.toLowerCase()).toContain('the');
     expect(back.toLowerCase()).toContain('dog');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// IPA format output (to-ipa.ts)
+// ---------------------------------------------------------------------------
+describe('IPA format translation', () => {
+  it('should translate to IPA format', () => {
+    const result = translateWord('hello', { format: 'ipa' });
+    // IPA should contain IPA characters, not Latin
+    expect(result).toContain('l');
+    expect(result).toBeTruthy();
+  });
+
+  it('should translate sentence to IPA', () => {
+    const result = translateSync('hello world', { format: 'ipa' });
+    expect(result).toBeTruthy();
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('should translate unknown word to IPA via G2P', () => {
+    const result = translateWord('flonkify', { format: 'ipa' });
+    expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pronunciation/guide format (to-pronunciation.ts)
+// ---------------------------------------------------------------------------
+describe('pronunciation format translation', () => {
+  it('should translate to guide pronunciation format', () => {
+    const result = translateWord('hello', { format: 'pronunciation' });
+    // Guide format uses hyphens between syllables and CAPS for stress
+    expect(result).toContain('-');
+    expect(result).toMatch(/[A-Z]/);
+  });
+
+  it('should translate multisyllabic word to pronunciation', () => {
+    const result = translateWord('beautiful', { format: 'pronunciation' });
+    expect(result).toContain('-');
+    // Should have at least 2 syllables
+    expect(result.split('-').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('should translate monosyllabic word to pronunciation', () => {
+    const result = translateWord('cat', { format: 'pronunciation' });
+    // No hyphen for single syllable
+    expect(result).not.toContain('-');
+    // Should be in caps (stressed)
+    expect(result).toBe(result.toUpperCase());
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Deseret format (to-deseret.ts, from-deseret.ts, tokenize.ts)
+// ---------------------------------------------------------------------------
+describe('deseret format translation', () => {
+  it('should translate to Deseret script', () => {
+    const result = translateSync('hello world', { format: 'deseret' });
+    // Should not contain Latin letters
+    expect(result).not.toMatch(/[a-z]/i);
+    expect(result).toBeTruthy();
+  });
+
+  it('should reverse-translate Deseret text', () => {
+    const deseret = translateSync('cat', { format: 'deseret' });
+    const back = reverseTranslateSync(deseret, { format: 'deseret' });
+    expect(back.toLowerCase()).toBe('cat');
+  });
+
+  it('should reverse-translate Deseret with mapping', () => {
+    const deseret = translateSync('hello world', { format: 'deseret' });
+    const tokens = reverseTranslateSyncWithMapping(deseret, { format: 'deseret' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Shavian reverse translation (from-shavian.ts, reverse-factory.ts)
+// ---------------------------------------------------------------------------
+describe('shavian reverse translation', () => {
+  it('should reverse-translate Shavian text', () => {
+    const shavian = translateSync('cat', { format: 'shavian' });
+    const back = reverseTranslateSync(shavian, { format: 'shavian' });
+    expect(back.toLowerCase()).toBe('cat');
+  });
+
+  it('should reverse-translate Shavian with mapping', () => {
+    const shavian = translateSync('hello world', { format: 'shavian' });
+    const tokens = reverseTranslateSyncWithMapping(shavian, { format: 'shavian' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
+    for (const w of words) {
+      expect(w.matched).toBe(true);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Non-English with disableRColoring (to-ingglish.ts line 178)
+// ---------------------------------------------------------------------------
+describe('non-English translation with R-coloring disabled', () => {
+  const R_LANG = 'test-lang-rcolor';
+  const rDict: PhoneDict = {
+    disableRColoring: true,
+    entries: {
+      // "car" = K AA1 R — with R-coloring disabled, vowel+R handled differently
+      kar: ['K', 'AA1', 'R'],
+    },
+    lang: R_LANG,
+    nonLatinScript: false,
+  };
+  setLangDict(R_LANG, rDict);
+
+  it('should translate with R-coloring disabled', () => {
+    const result = translateSync('kar', { lang: R_LANG });
+    expect(result).toBeTruthy();
+    expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Compound word case preservation (compounds.ts lines 151-171)
+// ---------------------------------------------------------------------------
+describe('compound word case preservation paths', () => {
+  it('should translate uppercase compound word', () => {
+    const result = translateWord('SUNLIGHT');
+    expect(result).toBeTruthy();
+    // All caps should be preserved
+    expect(result).toBe(result.toUpperCase());
+  });
+
+  it('should handle compound with mixed-case parts', () => {
+    // "GitHub" — compound where first part should preserve case
+    const result = translateWord('GitHub');
+    expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// British spelling resolver (register-english.ts line 25-28)
+// ---------------------------------------------------------------------------
+describe('British spelling resolution', () => {
+  it('should translate British -ise spelling via American -ize', () => {
+    const result = translateWord('realise');
+    // Should translate (via "realize" lookup)
+    expect(result).toBeTruthy();
+    expect(result.toLowerCase()).not.toBe('realise');
+  });
+
+  it('should translate British -our spelling via American -or', () => {
+    const result = translateWord('colour');
+    // Should translate (via "color" lookup)
+    expect(result).toBeTruthy();
+  });
+
+  it('should translate British -re spelling via American -er', () => {
+    const result = translateWord('centre');
+    // Should translate (via "center" lookup)
+    expect(result).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Stemming: compound decomposition (register-english.ts lines 35-47)
+// ---------------------------------------------------------------------------
+describe('compound decomposition via word resolver', () => {
+  it('should decompose unknown compound word into known parts', () => {
+    // "catdog" — not in dict, but "cat" + "dog" are
+    if (!lookupPronunciation('cat') || !lookupPronunciation('dog')) {
+      return;
+    }
+    const result = translateWord('catdog');
+    expect(result).toBeTruthy();
+    expect(result.toLowerCase()).not.toBe('catdog');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Unicode case patterns (normalize/case.ts)
+// ---------------------------------------------------------------------------
+describe('Unicode case handling', () => {
+  it('should handle accented uppercase word', () => {
+    // "CAFÉ" — all caps with accent
+    const result = translateSync('CAFÉ');
+    expect(result).toBeTruthy();
+  });
+
+  it('should handle accented title-case word', () => {
+    const result = translateWord('Naïve');
+    expect(result).toBeTruthy();
   });
 });
