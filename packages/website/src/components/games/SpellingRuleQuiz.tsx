@@ -4,8 +4,7 @@ import type { SpellingRuleQuestion } from '../../data/spelling-rule-quiz-data';
 import { pickQuiz } from '../../data/spelling-rule-quiz-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import '../../styles/spelling-rule-quiz.css';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -87,7 +86,7 @@ function SpellingRuleQuiz() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
+  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -171,10 +170,7 @@ function SpellingRuleQuiz() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'm' || e.key === 'M') {
-        toggleMute();
-        return;
-      }
+      if (handleMuteKey(e)) {return;}
       if (selectedChoice === null) {
         const choices = questions[round]?.choices;
         if (choices) {
@@ -187,7 +183,7 @@ function SpellingRuleQuiz() {
         handleNext();
       }
     },
-    [selectedChoice, handleNext, questions, round, handleChoiceClick, toggleMute]
+    [selectedChoice, handleNext, questions, round, handleChoiceClick, handleMuteKey]
   );
 
   // Speak question when round changes
@@ -359,16 +355,7 @@ function SpellingRuleQuiz() {
         <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
-        {supported && (
-          <button
-            aria-label={muted ? 'Unmute' : 'Mute'}
-            className="btn-reset game-sound-toggle"
-            onClick={toggleMute}
-            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
-          >
-            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
-          </button>
-        )}
+        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
       </div>
 
       <div className="card game-card">

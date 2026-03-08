@@ -3,9 +3,8 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { PatternSortRound } from '../../data/pattern-sort-data';
 import { pickRounds } from '../../data/pattern-sort-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/spelling-rule-quiz.css';
-import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -50,7 +49,7 @@ function PatternSort() {
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
-  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
+  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -150,10 +149,7 @@ function PatternSort() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'm') {
-        toggleMute();
-        return;
-      }
+      if (handleMuteKey(e)) {return;}
       if (selectedBucket === null) {
         if (e.key === '1') {
           handleBucketClick('a');
@@ -164,7 +160,7 @@ function PatternSort() {
         handleNext();
       }
     },
-    [selectedBucket, handleNext, handleBucketClick, toggleMute]
+    [selectedBucket, handleNext, handleBucketClick, handleMuteKey]
   );
 
   // Speak question when word changes
@@ -348,16 +344,7 @@ function PatternSort() {
           />
         </div>
         <span className="label-caps game-tier-badge">{currentRound.pattern}</span>
-        {supported && (
-          <button
-            aria-label={muted ? 'Unmute' : 'Mute'}
-            className="btn-reset game-sound-toggle"
-            onClick={toggleMute}
-            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
-          >
-            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
-          </button>
-        )}
+        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
       </div>
 
       <div className="card game-card">

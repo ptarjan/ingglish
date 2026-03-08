@@ -2,8 +2,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Lesson } from '../../data/learn-to-read-data';
 import { LESSONS } from '../../data/learn-to-read-data';
 import { useGameProgress } from '../../games/useGameProgress';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+
 import '../../styles/learn-to-read.css';
 
 interface LessonProgress {
@@ -28,7 +28,7 @@ function LearnToRead() {
     'ingglish-games-learn',
     DEFAULT_PROGRESS
   );
-  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
+  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   const startLesson = useCallback((lesson: Lesson) => {
     setActiveLesson(lesson);
@@ -91,10 +91,7 @@ function LearnToRead() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'm' || e.key === 'M') {
-        toggleMute();
-        return;
-      }
+      if (handleMuteKey(e)) {return;}
       if (e.key === 'Enter') {
         if (showFeedback) {
           handleQuizNext();
@@ -103,7 +100,7 @@ function LearnToRead() {
         }
       }
     },
-    [showFeedback, handleQuizNext, handleQuizSubmit, toggleMute]
+    [showFeedback, handleQuizNext, handleQuizSubmit, handleMuteKey]
   );
 
   // Speak question when quiz index changes
@@ -252,16 +249,7 @@ function LearnToRead() {
             />
           </div>
           <span className="label-caps game-tier-badge">Lesson {activeLesson.id}</span>
-          {supported && (
-            <button
-              aria-label={muted ? 'Unmute' : 'Mute'}
-              className="btn-reset game-sound-toggle"
-              onClick={toggleMute}
-              title={muted ? 'Sound on (m)' : 'Sound off (m)'}
-            >
-              {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
-            </button>
-          )}
+          <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
         </div>
 
         <div className="card game-card">

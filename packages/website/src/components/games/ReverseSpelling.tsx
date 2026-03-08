@@ -4,8 +4,8 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ReverseWord } from '../../data/reverse-spelling-data';
 import { pickReverseSpelling } from '../../data/reverse-spelling-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+
 import '../../styles/reverse-spelling.css';
 
 type Phase = 'intro' | 'playing' | 'results';
@@ -52,7 +52,7 @@ function ReverseSpelling() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
+  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -161,10 +161,7 @@ function ReverseSpelling() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'm' || e.key === 'M') {
-        toggleMute();
-        return;
-      }
+      if (handleMuteKey(e)) {return;}
       if (e.key === 'Enter') {
         if (currentResult) {
           handleNext();
@@ -173,7 +170,7 @@ function ReverseSpelling() {
         }
       }
     },
-    [currentResult, handleNext, handleSubmit, toggleMute]
+    [currentResult, handleNext, handleSubmit, handleMuteKey]
   );
 
   // Speak English word when round changes
@@ -351,16 +348,7 @@ function ReverseSpelling() {
           </span>
         )}
         <span className="label-caps game-tier-badge">{getTierLabel(currentWord.tier)}</span>
-        {supported && (
-          <button
-            aria-label={muted ? 'Unmute' : 'Mute'}
-            className="btn-reset game-sound-toggle"
-            onClick={toggleMute}
-            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
-          >
-            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
-          </button>
-        )}
+        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
       </div>
 
       <div className="card reverse-prompt">

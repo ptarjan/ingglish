@@ -6,8 +6,7 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -63,7 +62,7 @@ function ReadingChallenge() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
+  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
   useEffect(
     () => () => {
       clearTimeout(copiedTimerRef.current);
@@ -184,10 +183,7 @@ function ReadingChallenge() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'm' || e.key === 'M') {
-        toggleMute();
-        return;
-      }
+      if (handleMuteKey(e)) {return;}
       if (e.key === 'Enter') {
         if (currentFeedback) {
           handleNext();
@@ -196,7 +192,7 @@ function ReadingChallenge() {
         }
       }
     },
-    [currentFeedback, handleNext, handleSubmit, toggleMute]
+    [currentFeedback, handleNext, handleSubmit, handleMuteKey]
   );
 
   // Speak Ingglish sentence when round changes
@@ -370,16 +366,7 @@ function ReadingChallenge() {
           </span>
         )}
         <span className="label-caps game-tier-badge">{tierLabel}</span>
-        {supported && (
-          <button
-            aria-label={muted ? 'Unmute' : 'Mute'}
-            className="btn-reset game-sound-toggle"
-            onClick={toggleMute}
-            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
-          >
-            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
-          </button>
-        )}
+        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
       </div>
 
       <div className="card game-card">
