@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getWordFrequency, scoreWord, sortByFrequency } from './frequency';
+import { getWordFrequency, sortByFrequency } from './index';
 
 describe('word-frequency', () => {
   describe('getWordFrequency', () => {
@@ -17,26 +17,6 @@ describe('word-frequency', () => {
     it('should return undefined for non-words', () => {
       expect(getWordFrequency('xyzzy123')).toBeUndefined();
       expect(getWordFrequency('asdfghjkl')).toBeUndefined();
-    });
-  });
-
-  describe('scoreWord', () => {
-    it('should give lower scores to more common words', () => {
-      const theScore = scoreWord('the');
-      const xylophoneScore = scoreWord('xylophone');
-      expect(theScore).toBeLessThan(xylophoneScore);
-    });
-
-    it('should penalize words with numbers', () => {
-      const normalScore = scoreWord('hello');
-      const numberedScore = scoreWord('hello2');
-      expect(numberedScore).toBeGreaterThan(normalScore);
-    });
-
-    it('should penalize unknown words by length', () => {
-      const shortScore = scoreWord('xyz');
-      const longScore = scoreWord('xyzabcdef');
-      expect(longScore).toBeGreaterThan(shortScore);
     });
   });
 

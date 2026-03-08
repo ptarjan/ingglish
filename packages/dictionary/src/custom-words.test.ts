@@ -4,9 +4,10 @@ import { ARPABET_VOWELS, ARPABET_CONSONANTS } from '@ingglish/phonemes';
 import {
   CUSTOM_PRONUNCIATIONS,
   getCustomPronunciation,
+  getDictionary,
   hasCustomPronunciation,
-} from './custom-words';
-import { loadDictionary, getDictionary } from './loader';
+  loadDictionary,
+} from './index';
 
 /** All valid ARPAbet base phonemes (vowels + consonants) */
 const VALID_BASES = new Set<string>([...ARPABET_VOWELS, ...ARPABET_CONSONANTS]);

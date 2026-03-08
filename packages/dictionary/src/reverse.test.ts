@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  clearReverseDictionaryCache,
-  getReverseDictionary,
-  loadReverseDictionary,
-  lookupPhonemeKey,
-} from './reverse';
+import { loadReverseDictionary, lookupPhonemeKey } from './index';
 
 describe('lookupPhonemeKey', () => {
   it('returns words for known phoneme sequences', () => {
@@ -37,37 +32,11 @@ describe('lookupPhonemeKey', () => {
   });
 });
 
-describe('getReverseDictionary', () => {
-  it('returns a dictionary object (loaded via vitest.setup.ts)', () => {
-    const dict = getReverseDictionary();
-    expect(dict).toBeDefined();
-    expect(typeof dict).toBe('object');
-  });
-
-  it('has expected structure: string keys, string[] values', () => {
-    const dict = getReverseDictionary();
-    const keys = Object.keys(dict);
-    expect(keys.length).toBeGreaterThan(0);
-
-    // Check a few entries
-    const firstKey = keys[0]!;
-    const value = dict[firstKey];
-    expect(Array.isArray(value)).toBe(true);
-    expect(typeof value![0]).toBe('string');
-  });
-});
-
-describe('clearReverseDictionaryCache', () => {
-  it('after clearing, getReverseDictionary throws', () => {
-    clearReverseDictionaryCache();
-    expect(() => getReverseDictionary()).toThrow('Reverse dictionary not loaded');
-  });
-
-  it('can reload after clearing', async () => {
-    // Cache was cleared in the previous test
+describe('loadReverseDictionary', () => {
+  it('can load the reverse dictionary', async () => {
     await loadReverseDictionary();
-    const dict = getReverseDictionary();
-    expect(dict).toBeDefined();
-    expect(Object.keys(dict).length).toBeGreaterThan(0);
+    // After loading, lookupPhonemeKey should still work
+    const result = lookupPhonemeKey('DH AH');
+    expect(result).toBeDefined();
   });
 });

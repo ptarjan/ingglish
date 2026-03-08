@@ -3,9 +3,7 @@
  */
 import { translateSyncWithMapping } from 'ingglish';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { observeAndTranslate } from './observe';
-import { applyTranslationsMap, restoreDOM, translateDOM, translateDOMSync } from './translate';
-import { skipElement, unskipElement } from './traversal';
+import { applyTranslationsMap, restoreDOM, translateDOM } from './index';
 
 /** Helper to create a simple mapping fn that uppercases words */
 function uppercaseMappingFn(text: string) {
@@ -19,48 +17,26 @@ function uppercaseMappingFn(text: string) {
 }
 
 describe('dom-translator', () => {
-  // Track stop functions to ensure cleanup even if tests fail
-  let activeObservers: (() => void)[] = [];
-
   beforeEach(() => {
     document.body.innerHTML = '';
-    activeObservers = [];
   });
 
   afterEach(() => {
-    // Clean up any active MutationObservers to prevent process hanging
-    for (const stop of activeObservers) {
-      try {
-        stop();
-      } catch {
-        // Ignore errors if already stopped
-      }
-    }
-    activeObservers = [];
+    document.body.innerHTML = '';
   });
 
-  // Wrapper to track observers for cleanup
-  function createObserver(
-    root: Document | Element,
-    options?: Parameters<typeof observeAndTranslate>[1]
-  ) {
-    const stop = observeAndTranslate(root, options);
-    activeObservers.push(stop);
-    return stop;
-  }
-
-  describe('translateDOMSync', () => {
-    it('should translate text content', () => {
+  describe('translateDOM', () => {
+    it('should translate text content', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
-      translateDOMSync(document.body);
+      await translateDOM(document.body);
       // Verify translation happened (content changed)
       expect(document.body.textContent).not.toBe('Hello world');
       expect(document.body.textContent?.length).toBeGreaterThan(0);
     });
 
-    it('should translate multiple text nodes', () => {
+    it('should translate multiple text nodes', async () => {
       document.body.innerHTML = '<div><p>Hello</p><p>World</p></div>';
-      translateDOMSync(document.body);
+      await translateDOM(document.body);
       // Verify translation happened (content changed)
       const content = document.querySelector('div')?.textContent;
       expect(content).not.toBe('HelloWorld');
@@ -81,37 +57,37 @@ describe('dom-translator', () => {
         '<p data-ingglish-skip>Hello</p>',
         '<p data-ingglish-skip="">Hello</p>',
       ],
-    ])('should skip %s elements by default', (_name, input, expected) => {
+    ])('should skip %s elements by default', async (_name, input, expected) => {
       document.body.innerHTML = input;
-      translateDOMSync(document.body);
+      await translateDOM(document.body);
       expect(document.body.innerHTML).toBe(expected);
     });
 
-    it('should skip custom classes', () => {
+    it('should skip custom classes', async () => {
       document.body.innerHTML = '<p class="no-translate">Hello</p>';
-      translateDOMSync(document.body, { skipClasses: ['no-translate'] });
+      await translateDOM(document.body, { skipClasses: ['no-translate'] });
       expect(document.body.innerHTML).toBe('<p class="no-translate">Hello</p>');
     });
 
-    it('should translate attributes when enabled', () => {
+    it('should translate attributes when enabled', async () => {
       document.body.innerHTML = '<img alt="Hello world" title="Click here">';
-      translateDOMSync(document.body, { translateAttributes: true });
+      await translateDOM(document.body, { translateAttributes: true });
       const img = document.querySelector('img');
       // Verify attributes were translated (changed from original)
       expect(img?.getAttribute('alt')).not.toBe('Hello world');
       expect(img?.getAttribute('title')).not.toBe('Click here');
     });
 
-    it('should not translate attributes when disabled', () => {
+    it('should not translate attributes when disabled', async () => {
       document.body.innerHTML = '<img alt="Hello world">';
-      translateDOMSync(document.body, { translateAttributes: false });
+      await translateDOM(document.body, { translateAttributes: false });
       expect(document.querySelector('img')?.getAttribute('alt')).toBe('Hello world');
     });
 
-    it('should call onProgress callback', () => {
+    it('should call onProgress callback', async () => {
       document.body.innerHTML = '<p>Hello</p><p>World</p>';
       const progressCalls: [number, number][] = [];
-      translateDOMSync(document.body, {
+      await translateDOM(document.body, {
         onProgress: (processed, total) => progressCalls.push([processed, total]),
       });
       expect(progressCalls.length).toBe(2);
@@ -119,13 +95,13 @@ describe('dom-translator', () => {
       expect(progressCalls[1]).toEqual([2, 2]);
     });
 
-    it('should walk the DOM only once (performance optimization)', () => {
+    it('should walk the DOM only once (performance optimization)', async () => {
       document.body.innerHTML = '<p>Hello</p><p>World</p><p>Test</p>';
 
       // Spy on createTreeWalker to count DOM walks
       const createTreeWalkerSpy = vi.spyOn(document, 'createTreeWalker');
 
-      translateDOMSync(document.body, {
+      await translateDOM(document.body, {
         onProgress: () => {
           /* progress callback enabled */
         },
@@ -138,140 +114,52 @@ describe('dom-translator', () => {
     });
   });
 
-  describe('skipElement / unskipElement', () => {
-    it('should add data-ingglish-skip attribute', () => {
+  describe('data-ingglish-skip attribute', () => {
+    it('should add data-ingglish-skip attribute directly', () => {
       document.body.innerHTML = '<p>Hello</p>';
       const p = document.querySelector('p');
       expect(p).not.toBeNull();
       if (p !== null) {
-        skipElement(p);
+        p.dataset.ingglishSkip = '';
         expect(Object.hasOwn(p.dataset, 'ingglishSkip')).toBe(true);
       }
     });
 
-    it('should remove data-ingglish-skip attribute', () => {
+    it('should remove data-ingglish-skip attribute directly', () => {
       document.body.innerHTML = '<p data-ingglish-skip>Hello</p>';
       const p = document.querySelector('p');
       expect(p).not.toBeNull();
       if (p !== null) {
-        unskipElement(p);
+        delete p.dataset.ingglishSkip;
         expect(Object.hasOwn(p.dataset, 'ingglishSkip')).toBe(false);
       }
     });
 
-    it('should prevent translation after skipElement', () => {
+    it('should prevent translation after setting data-ingglish-skip', async () => {
       document.body.innerHTML = '<p>Hello</p>';
       const p = document.querySelector('p');
       expect(p).not.toBeNull();
       if (p !== null) {
-        skipElement(p);
-        translateDOMSync(document.body);
+        p.dataset.ingglishSkip = '';
+        await translateDOM(document.body);
         expect(p.textContent).toBe('Hello');
       }
     });
   });
 
   describe('nested elements', () => {
-    it('should translate nested text', () => {
+    it('should translate nested text', async () => {
       document.body.innerHTML = '<div><span>Hello</span> <strong>world</strong></div>';
-      translateDOMSync(document.body);
+      await translateDOM(document.body);
       // Verify translation happened (content changed)
       expect(document.body.textContent).not.toBe('Hello world');
       expect(document.body.textContent?.length).toBeGreaterThan(0);
     });
 
-    it('should skip nested elements inside skipped parent', () => {
+    it('should skip nested elements inside skipped parent', async () => {
       document.body.innerHTML = '<pre><span>Hello</span></pre>';
-      translateDOMSync(document.body);
+      await translateDOM(document.body);
       expect(document.querySelector('span')?.textContent).toBe('Hello');
-    });
-  });
-
-  describe('observeAndTranslate', () => {
-    it('should return a stop function', () => {
-      const stop = createObserver(document.body);
-      expect(typeof stop).toBe('function');
-    });
-
-    it('should translate newly added text nodes', async () => {
-      createObserver(document.body);
-
-      // Add a new element with text
-      const p = document.createElement('p');
-      p.textContent = 'World';
-      document.body.append(p);
-
-      // Wait for MutationObserver to process
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Verify translation happened (content changed)
-      expect(p.textContent).not.toBe('World');
-      expect(p.textContent?.length).toBeGreaterThan(0);
-    });
-
-    it('should translate newly added element nodes', async () => {
-      createObserver(document.body);
-
-      // Add a new element with nested text
-      const div = document.createElement('div');
-      div.innerHTML = '<span>World</span>';
-      document.body.append(div);
-
-      // Wait for MutationObserver to process
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Verify translation happened (content changed)
-      expect(div.querySelector('span')?.textContent).not.toBe('World');
-    });
-
-    it('should skip elements inside skipped tags', async () => {
-      createObserver(document.body);
-
-      // Add a code element that should be skipped
-      const code = document.createElement('code');
-      code.textContent = 'Hello';
-      document.body.append(code);
-
-      // Wait for MutationObserver to process
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      expect(code.textContent).toBe('Hello');
-    });
-
-    it('should stop observing when stop function is called', async () => {
-      const stop = createObserver(document.body);
-      stop();
-
-      // Add a new element after stopping
-      const p = document.createElement('p');
-      p.textContent = 'Hello';
-      document.body.append(p);
-
-      // Wait a bit
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Should not be translated since observer was stopped
-      expect(p.textContent).toBe('Hello');
-    });
-
-    it('should translate character data changes', async () => {
-      // First add an element
-      const p = document.createElement('p');
-      p.textContent = 'Test';
-      document.body.append(p);
-
-      // Now start observing
-      createObserver(document.body);
-
-      // Change the text content
-      p.textContent = 'World';
-
-      // Wait for MutationObserver to process
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Verify translation happened (content changed)
-      expect(p.textContent).not.toBe('World');
-      expect(p.textContent?.length).toBeGreaterThan(0);
     });
   });
 
@@ -315,9 +203,9 @@ describe('dom-translator', () => {
   });
 
   describe('showTooltips option', () => {
-    it('should wrap translated words in spans with data-ingglish-orig attribute', () => {
+    it('should wrap translated words in spans with data-ingglish-orig attribute', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
-      translateDOMSync(document.body, { showTooltips: true });
+      await translateDOM(document.body, { showTooltips: true });
 
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
@@ -331,9 +219,9 @@ describe('dom-translator', () => {
       expect(spans[1].textContent).not.toBe('world'); // Translated
     });
 
-    it('should not wrap unchanged words in spans', () => {
+    it('should not wrap unchanged words in spans', async () => {
       document.body.innerHTML = '<p>123 hello</p>';
-      translateDOMSync(document.body, { showTooltips: true });
+      await translateDOM(document.body, { showTooltips: true });
 
       // Only "hello" should be wrapped (numbers stay as text)
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
@@ -341,9 +229,9 @@ describe('dom-translator', () => {
       expect(spans[0].dataset.ingglishOrig).toBe('hello');
     });
 
-    it('should inject tooltip CSS styles and preserve punctuation', () => {
+    it('should inject tooltip CSS styles and preserve punctuation', async () => {
       document.body.innerHTML = '<p>Hello, world!</p>';
-      translateDOMSync(document.body, { showTooltips: true });
+      await translateDOM(document.body, { showTooltips: true });
 
       // CSS styles injected
       const styleElement = document.querySelector('#ingglish-tooltip-styles');
@@ -356,21 +244,6 @@ describe('dom-translator', () => {
       expect(p?.textContent).toContain('!');
       expect(p?.textContent).not.toBe('Hello, world!');
       expect(p?.querySelectorAll('.ingglish-word')).toHaveLength(2);
-    });
-
-    it('should work with observer for dynamic content', async () => {
-      createObserver(document.body, { showTooltips: true });
-
-      const p = document.createElement('p');
-      p.textContent = 'Hello';
-      document.body.append(p);
-
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      const span = p.querySelector<HTMLElement>('.ingglish-word');
-      expect(span).not.toBeNull();
-      expect(span?.dataset.ingglishOrig).toBe('Hello');
-      expect(span?.textContent).not.toBe('Hello'); // Translated
     });
 
     // Note: Tests for raw text nodes with showTooltips are complex due to
@@ -536,18 +409,18 @@ describe('dom-translator', () => {
   });
 
   describe('translateWithMappingFn option', () => {
-    it('should use custom mapping fn for text nodes', () => {
+    it('should use custom mapping fn for text nodes', async () => {
       document.body.innerHTML = '<p>Bonjour monde</p>';
       const customFn = vi.fn(uppercaseMappingFn);
-      translateDOMSync(document.body, { translateWithMappingFn: customFn });
+      await translateDOM(document.body, { translateWithMappingFn: customFn });
       expect(document.body.textContent).toBe('BONJOUR MONDE');
       expect(customFn).toHaveBeenCalledWith('Bonjour monde', 'ingglish');
     });
 
-    it('should use custom mapping fn for attributes (via token join)', () => {
+    it('should use custom mapping fn for attributes (via token join)', async () => {
       document.body.innerHTML = '<img alt="Bonjour" title="Cliquez ici">';
       const customFn = vi.fn(uppercaseMappingFn);
-      translateDOMSync(document.body, {
+      await translateDOM(document.body, {
         translateAttributes: true,
         translateWithMappingFn: customFn,
       });
@@ -556,10 +429,10 @@ describe('dom-translator', () => {
       expect(img?.getAttribute('title')).toBe('CLIQUEZ ICI');
     });
 
-    it('should show tooltips with original text when mapping fn + showTooltips', () => {
+    it('should show tooltips with original text when mapping fn + showTooltips', async () => {
       document.body.innerHTML = '<p>Bonjour monde</p>';
       const customFn = vi.fn(uppercaseMappingFn);
-      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
+      await translateDOM(document.body, { showTooltips: true, translateWithMappingFn: customFn });
       // Each word should be wrapped in a tooltip span showing the original
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans).toHaveLength(2);
@@ -586,19 +459,19 @@ describe('dom-translator', () => {
       expect(customFn).toHaveBeenCalled();
     });
 
-    it('should respect outputFormat with custom mapping fn', () => {
+    it('should respect outputFormat with custom mapping fn', async () => {
       document.body.innerHTML = '<p>Test</p>';
       const customFn = vi.fn(uppercaseMappingFn);
-      translateDOMSync(document.body, { outputFormat: 'ipa', translateWithMappingFn: customFn });
+      await translateDOM(document.body, { outputFormat: 'ipa', translateWithMappingFn: customFn });
       expect(customFn).toHaveBeenCalledWith('Test', 'ipa');
     });
   });
 
   describe('not-found word styling', () => {
-    it('should add ingglish-not-found class for G2P fallback words (English)', () => {
+    it('should add ingglish-not-found class for G2P fallback words (English)', async () => {
       // "xyzzyplugh" is not in the dictionary, so G2P fallback is used (matched: false)
       document.body.innerHTML = '<p>Hello xyzzyplugh world</p>';
-      translateDOMSync(document.body, { showTooltips: true });
+      await translateDOM(document.body, { showTooltips: true });
 
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans.length).toBeGreaterThanOrEqual(3);
@@ -614,7 +487,7 @@ describe('dom-translator', () => {
       expect(unknownSpan?.classList.contains('ingglish-not-found')).toBe(true);
     });
 
-    it('should add ingglish-not-found class for unmatched tokens (foreign mapping fn)', () => {
+    it('should add ingglish-not-found class for unmatched tokens (foreign mapping fn)', async () => {
       document.body.innerHTML = '<p>Bonjour xyzzy monde</p>';
       // Simulate foreign mapping fn with matched/unmatched tokens
       const customFn = vi.fn((text: string) =>
@@ -631,7 +504,7 @@ describe('dom-translator', () => {
             return { isWord: true, matched: true, original: seg, translated: seg.toUpperCase() };
           })
       );
-      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
+      await translateDOM(document.body, { showTooltips: true, translateWithMappingFn: customFn });
 
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');
       expect(spans.length).toBeGreaterThanOrEqual(2);
@@ -647,7 +520,7 @@ describe('dom-translator', () => {
       expect(xyzzySpan?.classList.contains('ingglish-not-found')).toBe(true);
     });
 
-    it('should create tooltip span for not-found words even when text is unchanged', () => {
+    it('should create tooltip span for not-found words even when text is unchanged', async () => {
       document.body.innerHTML = '<p>alpha beta</p>';
       // Mapping fn returns unmatched tokens (translated === original)
       const customFn = vi.fn((text: string) =>
@@ -661,7 +534,7 @@ describe('dom-translator', () => {
             return { isWord: true, matched: false, original: seg, translated: seg };
           })
       );
-      translateDOMSync(document.body, { showTooltips: true, translateWithMappingFn: customFn });
+      await translateDOM(document.body, { showTooltips: true, translateWithMappingFn: customFn });
 
       // Even though text didn't change, spans should be created because matched=false
       const spans = document.querySelectorAll<HTMLElement>('.ingglish-word');

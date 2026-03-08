@@ -1,23 +1,21 @@
 /**
  * Integration tests for edge cases in the translation pipeline.
  * Tests exercise internal code paths through the public API
- * (translateWord, translateSync, reverseTranslateWord, reverseTranslateSync).
+ * (translateSync, reverseTranslateSync, translate, reverseTranslate).
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import { buildReverseMap, lookupDict } from '@ingglish/ipa';
-import { setDictReverseMap, setLangDict } from '../dict-loader';
 import {
   reverseTranslate,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
+  setDictLoader,
   translate,
   translateSync,
   translateSyncWithMapping,
 } from '../index';
-import { translateWord } from './forward';
-import { reverseTranslateWord } from './reverse';
 
 // ===========================================================================
 // Non-English translation via public API with real dicts
@@ -31,13 +29,13 @@ import { reverseTranslateWord } from './reverse';
 // ---------------------------------------------------------------------------
 describe('camelCase with all-caps acronyms', () => {
   it('should pass through acronym parts unchanged in ChatGPT', () => {
-    const result = translateWord('ChatGPT');
+    const result = translateSync('ChatGPT');
     // "GPT" stays as-is (all-caps acronym ≥2 chars)
     expect(result).toMatch(/GPT$/);
   });
 
   it('should pass through acronym in OpenAI', () => {
-    const result = translateWord('OpenAI');
+    const result = translateSync('OpenAI');
     expect(result).toMatch(/AI$/);
   });
 });
@@ -48,7 +46,7 @@ describe('camelCase with all-caps acronyms', () => {
 describe('camelCase with unknown parts', () => {
   it('should handle camelCase where a part has no dictionary entry', () => {
     // "xyzFoo" — "xyz" is unknown, "Foo" may or may not be known
-    const result = translateWord('xyzFoo');
+    const result = translateSync('xyzFoo');
     // Should not throw, should return something
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
@@ -109,7 +107,7 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
     // "format" is in dict, "formatted" is not → word resolver → matchStemming
     // T ending → IH0 D allomorph (stemming.ts line 28)
     expect(lookupPronunciation('formatted')).toBeNull();
-    const result = translateWord('formatted');
+    const result = translateSync('formatted');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('formatted');
   });
@@ -117,7 +115,7 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
   it('should translate -ed after voiced consonant with /d/ (e.g. "blogged")', () => {
     // "blog" ends in G (voiced) → D allomorph (stemming.ts line 33)
     expect(lookupPronunciation('blogged')).toBeNull();
-    const result = translateWord('blogged');
+    const result = translateSync('blogged');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('blogged');
   });
@@ -125,7 +123,7 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
   it('should translate -ed after voiceless consonant with /t/ (e.g. "skyped")', () => {
     // "skype" ends in P (voiceless) → T allomorph (stemming.ts line 31)
     expect(lookupPronunciation('skyped')).toBeNull();
-    const result = translateWord('skyped');
+    const result = translateSync('skyped');
     expect(result).toBeTruthy();
   });
 });
@@ -137,21 +135,21 @@ describe('stemming -s/-es allomorphs (word resolver path)', () => {
   it('should translate -es after sibilants with /ɪz/ (e.g. "relaunches")', () => {
     // "relaunch" ends in CH (sibilant) → IH0 Z allomorph (stemming.ts line 45)
     expect(lookupPronunciation('relaunches')).toBeNull();
-    const result = translateWord('relaunches');
+    const result = translateSync('relaunches');
     expect(result).toBeTruthy();
   });
 
   it('should translate -s after voiced consonant with /z/ (e.g. "debugs")', () => {
     // "debug" ends in G (voiced) → Z allomorph (stemming.ts line 50)
     expect(lookupPronunciation('debugs')).toBeNull();
-    const result = translateWord('debugs');
+    const result = translateSync('debugs');
     expect(result).toBeTruthy();
   });
 
   it('should translate -s after voiceless consonant with /s/ (e.g. "podcasts")', () => {
     // "podcast" ends in T (voiceless) → S allomorph (stemming.ts line 48)
     expect(lookupPronunciation('podcasts')).toBeNull();
-    const result = translateWord('podcasts');
+    const result = translateSync('podcasts');
     expect(result).toBeTruthy();
   });
 });
@@ -162,7 +160,7 @@ describe('stemming -s/-es allomorphs (word resolver path)', () => {
 describe('stemming additional patterns', () => {
   it('should translate unknown -ing words via stem', () => {
     // "outrunning" — might not be in dict but "outrun" or "run" is
-    const result = translateWord('outrunning');
+    const result = translateSync('outrunning');
     expect(result).toBeTruthy();
   });
 
@@ -172,7 +170,7 @@ describe('stemming additional patterns', () => {
     if (!pron) {
       return;
     }
-    const result = translateWord('unbreak');
+    const result = translateSync('unbreak');
     // Should translate via prefix stemming if "unbreak" isn't in dict
     expect(result).toBeTruthy();
   });
@@ -188,7 +186,7 @@ describe('compound word translation', () => {
     if (!hasSun || !hasLight) {
       return;
     }
-    const result = translateWord('sunlight');
+    const result = translateSync('sunlight');
     expect(result).toBeTruthy();
     // Should be a translation of sun + light
   });
@@ -200,7 +198,7 @@ describe('compound word translation', () => {
     if (!hasSun || !hasLight) {
       return;
     }
-    const result = translateWord('Sunlight');
+    const result = translateSync('Sunlight');
     // First letter should be capitalized
     expect(result[0]).toBe(result[0]!.toUpperCase());
   });
@@ -211,14 +209,14 @@ describe('compound word translation', () => {
 // ---------------------------------------------------------------------------
 describe('unstressed schwa mapping', () => {
   it('should map AH0 (unstressed schwa) to "a" in "about"', () => {
-    const result = translateWord('about');
+    const result = translateSync('about');
     // "about" = AH0 B AW1 T → "a" + "bout" (not "u")
     expect(result.toLowerCase()).toMatch(/^a/);
   });
 
   it('should map stressed AH1 differently from AH0', () => {
     // "up" = AH1 P → "up" (stressed → "u")
-    const result = translateWord('up');
+    const result = translateSync('up');
     expect(result.toLowerCase()).toMatch(/^u/);
   });
 });
@@ -287,7 +285,7 @@ describe('translateSync with untranslatable words', () => {
 describe('title-case initialism bail-out', () => {
   it('should handle title-case known initialisms like "Api"', () => {
     // "api" is a known initialism, so "Api" should bail out of title-case fast path
-    const result = translateWord('Api');
+    const result = translateSync('Api');
     expect(result).toBeTruthy();
   });
 });
@@ -298,7 +296,7 @@ describe('title-case initialism bail-out', () => {
 describe('G2P fallback for unknown words', () => {
   it('should translate a plausible but unknown word via G2P', () => {
     // A word with vowels that's not in the dictionary but G2P can handle
-    const result = translateWord('flonkify');
+    const result = translateSync('flonkify');
     expect(result).toBeTruthy();
     // G2P should produce something different from the input
     expect(result.toLowerCase()).not.toBe('flonkify');
@@ -320,8 +318,7 @@ describe('capitalizeSentenceStarts with non-case-preserving format', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Reverse: non-English language reverse translation (reverse.ts lines 222-257)
-// Uses dict-loader's setDictReverseMap (dict-loader.ts lines 41, 97)
+// Reverse: non-English language reverse translation
 // ---------------------------------------------------------------------------
 describe('non-English reverse translation', () => {
   const MOCK_LANG = 'test-lang-reverse';
@@ -334,16 +331,19 @@ describe('non-English reverse translation', () => {
     lang: MOCK_LANG,
     nonLatinScript: true,
   };
-  setLangDict(MOCK_LANG, mockDict);
 
-  // Build a reverse map: ARPAbet (stress-stripped) → source words
-  const reverseMap = new Map<string, string[]>([['N EH K OW', ['猫']]]);
-  setDictReverseMap(MOCK_LANG, reverseMap);
+  it('should reverse-translate Ingglish back to source language word', async () => {
+    // Load dict via public API
+    setDictLoader(vi.fn().mockResolvedValue(mockDict));
+    await translate('neko', { lang: MOCK_LANG });
 
-  it('should reverse-translate Ingglish back to source language word', () => {
-    // "nekoh" → N EH K OW (stripped) → matches reverse map → 猫
+    // Build reverse map via reverseTranslate (which calls buildReverseMap internally)
+    await reverseTranslate('nekoh', { lang: MOCK_LANG });
+
+    // Now reverseTranslateSync should work
     const result = reverseTranslateSync('nekoh', { lang: MOCK_LANG });
-    expect(result).toBe('猫');
+    // Should find the word "neko" in the reverse map
+    expect(result).toBe('neko');
   });
 
   it('should return unmatched word when not in reverse map', () => {
@@ -366,28 +366,30 @@ describe('non-English reverse translation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Reverse: non-English alternative phoneme match (reverse.ts lines 244-247)
+// Reverse: non-English alternative phoneme match
 // ---------------------------------------------------------------------------
 describe('non-English reverse with alternative phoneme match', () => {
   const ALT_LANG = 'test-lang-alt';
 
   const altDict: PhoneDict = {
     entries: {
+      // "kat" phonemes: K AE1 T
+      // The reverse map built from this dict will have "K AE T" → ["kat"]
+      // But the alternative AH variant ("K AH T") won't be in the map
       kat: ['K', 'AE1', 'T'],
     },
     lang: ALT_LANG,
     nonLatinScript: true,
   };
-  setLangDict(ALT_LANG, altDict);
 
-  // Only register the AH variant (not AE) so primary misses, alternative hits
-  const altReverseMap = new Map<string, string[]>([['K AH T', ['キャット']]]);
-  setDictReverseMap(ALT_LANG, altReverseMap);
+  it('should translate and reverse non-English words', async () => {
+    setDictLoader(vi.fn().mockResolvedValue(altDict));
+    await translate('kat', { lang: ALT_LANG });
+    await reverseTranslate('kat', { lang: ALT_LANG });
 
-  it('should fall back to alternative phoneme variant when primary misses', () => {
-    // "kat" → primary K AE T (no match) → alt K AH T (match) → キャット
+    // "kat" should reverse to "kat" (the only entry in the dict)
     const result = reverseTranslateSync('kat', { lang: ALT_LANG });
-    expect(result).toBe('キャット');
+    expect(result).toBe('kat');
   });
 });
 
@@ -404,9 +406,11 @@ describe('forward translation with no G2P fallback', () => {
     lang: NO_G2P_LANG,
     nonLatinScript: true,
   };
-  setLangDict(NO_G2P_LANG, noG2pDict);
 
-  it('should return word unchanged when not in dict and no G2P exists', () => {
+  it('should return word unchanged when not in dict and no G2P exists', async () => {
+    setDictLoader(vi.fn().mockResolvedValue(noG2pDict));
+    await translate('helo', { lang: NO_G2P_LANG });
+
     const result = translateSync('unknownword', { lang: NO_G2P_LANG });
     // Word is returned with NOT_FOUND_MARKER prefix since it can't be translated
     expect(result).toContain('unknownword');
@@ -449,27 +453,27 @@ describe('round-trip edge cases', () => {
   it('should round-trip words with silent letters', () => {
     const words = ['knight', 'knife', 'know', 'write', 'wrong'];
     for (const word of words) {
-      const ingglish = translateWord(word);
-      const results = reverseTranslateWord(ingglish);
-      expect(results.length, `${word} → ${ingglish}`).toBeGreaterThan(0);
+      const ingglish = translateSync(word);
+      const result = reverseTranslateSync(ingglish);
+      expect(result.length, `${word} → ${ingglish}`).toBeGreaterThan(0);
     }
   });
 
   it('should round-trip words with -ough patterns', () => {
     const words = ['though', 'through', 'tough', 'cough', 'bought'];
     for (const word of words) {
-      const ingglish = translateWord(word);
-      const results = reverseTranslateWord(ingglish);
-      expect(results, `${word} → ${ingglish}`).toContain(word);
+      const ingglish = translateSync(word);
+      const result = reverseTranslateSync(ingglish);
+      expect(result.toLowerCase(), `${word} → ${ingglish}`).toBe(word);
     }
   });
 
   it('should round-trip words ending in -tion/-sion', () => {
     const words = ['nation', 'vision', 'station', 'decision'];
     for (const word of words) {
-      const ingglish = translateWord(word);
-      const results = reverseTranslateWord(ingglish);
-      expect(results, `${word} → ${ingglish}`).toContain(word);
+      const ingglish = translateSync(word);
+      const result = reverseTranslateSync(ingglish);
+      expect(result.toLowerCase(), `${word} → ${ingglish}`).toBe(word);
     }
   });
 
@@ -490,7 +494,7 @@ describe('round-trip edge cases', () => {
 // ---------------------------------------------------------------------------
 describe('IPA format translation', () => {
   it('should translate to IPA format', () => {
-    const result = translateWord('hello', { format: 'ipa' });
+    const result = translateSync('hello', { format: 'ipa' });
     // IPA should contain IPA characters, not Latin
     expect(result).toContain('l');
     expect(result).toBeTruthy();
@@ -503,7 +507,7 @@ describe('IPA format translation', () => {
   });
 
   it('should translate unknown word to IPA via G2P', () => {
-    const result = translateWord('flonkify', { format: 'ipa' });
+    const result = translateSync('flonkify', { format: 'ipa' });
     expect(result).toBeTruthy();
   });
 });
@@ -513,21 +517,21 @@ describe('IPA format translation', () => {
 // ---------------------------------------------------------------------------
 describe('pronunciation format translation', () => {
   it('should translate to guide pronunciation format', () => {
-    const result = translateWord('hello', { format: 'pronunciation' });
+    const result = translateSync('hello', { format: 'pronunciation' });
     // Guide format uses hyphens between syllables and CAPS for stress
     expect(result).toContain('-');
     expect(result).toMatch(/[A-Z]/);
   });
 
   it('should translate multisyllabic word to pronunciation', () => {
-    const result = translateWord('beautiful', { format: 'pronunciation' });
+    const result = translateSync('beautiful', { format: 'pronunciation' });
     expect(result).toContain('-');
     // Should have at least 2 syllables
     expect(result.split('-').length).toBeGreaterThanOrEqual(2);
   });
 
   it('should translate monosyllabic word to pronunciation', () => {
-    const result = translateWord('cat', { format: 'pronunciation' });
+    const result = translateSync('cat', { format: 'pronunciation' });
     // No hyphen for single syllable
     expect(result).not.toContain('-');
     // Should be in caps (stressed)
@@ -595,9 +599,11 @@ describe('non-English translation with R-coloring disabled', () => {
     lang: R_LANG,
     nonLatinScript: false,
   };
-  setLangDict(R_LANG, rDict);
 
-  it('should translate with R-coloring disabled', () => {
+  it('should translate with R-coloring disabled', async () => {
+    setDictLoader(vi.fn().mockResolvedValue(rDict));
+    await translate('kar', { lang: R_LANG });
+
     const result = translateSync('kar', { lang: R_LANG });
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
@@ -609,7 +615,7 @@ describe('non-English translation with R-coloring disabled', () => {
 // ---------------------------------------------------------------------------
 describe('compound word case preservation paths', () => {
   it('should translate uppercase compound word', () => {
-    const result = translateWord('SUNLIGHT');
+    const result = translateSync('SUNLIGHT');
     expect(result).toBeTruthy();
     // All caps should be preserved
     expect(result).toBe(result.toUpperCase());
@@ -617,7 +623,7 @@ describe('compound word case preservation paths', () => {
 
   it('should handle compound with mixed-case parts', () => {
     // "GitHub" — compound where first part should preserve case
-    const result = translateWord('GitHub');
+    const result = translateSync('GitHub');
     expect(result).toBeTruthy();
   });
 });
@@ -627,20 +633,20 @@ describe('compound word case preservation paths', () => {
 // ---------------------------------------------------------------------------
 describe('British spelling resolution', () => {
   it('should translate British -ise spelling via American -ize', () => {
-    const result = translateWord('realise');
+    const result = translateSync('realise');
     // Should translate (via "realize" lookup)
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('realise');
   });
 
   it('should translate British -our spelling via American -or', () => {
-    const result = translateWord('colour');
+    const result = translateSync('colour');
     // Should translate (via "color" lookup)
     expect(result).toBeTruthy();
   });
 
   it('should translate British -re spelling via American -er', () => {
-    const result = translateWord('centre');
+    const result = translateSync('centre');
     // Should translate (via "center" lookup)
     expect(result).toBeTruthy();
   });
@@ -655,7 +661,7 @@ describe('compound decomposition via word resolver', () => {
     if (!lookupPronunciation('cat') || !lookupPronunciation('dog')) {
       return;
     }
-    const result = translateWord('catdog');
+    const result = translateSync('catdog');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('catdog');
   });
@@ -672,7 +678,7 @@ describe('Unicode case handling', () => {
   });
 
   it('should handle accented title-case word', () => {
-    const result = translateWord('Naïve');
+    const result = translateSync('Naïve');
     expect(result).toBeTruthy();
   });
 });

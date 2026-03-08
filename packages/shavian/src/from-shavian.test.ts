@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { shavianToArpabet } from './from-shavian';
+import { shavianToArpabet } from './index';
 
 describe('shavianToArpabet', () => {
   it('should skip non-Shavian characters', () => {

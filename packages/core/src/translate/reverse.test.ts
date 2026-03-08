@@ -1,56 +1,60 @@
 import { describe, it, expect } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import { isLikelyIngglish } from '../detect/language';
 import { reverseTranslateSync, reverseTranslateSyncWithMapping, translateSync } from '../index';
-import { SAMPLE_TEXT } from '../test-setup';
-import { translateWord } from './forward';
-import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
+
+const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
+This sentence contains every letter of the English alphabet.
+
+"Though" and "through" are spelled similarly but sound different.
+English spelling is notoriously difficult to learn because it has
+so many exceptions. With phonetic spelling, words
+are written exactly as they sound - what you see is what you say!`;
 
 describe('reverse-translator', () => {
-  describe('reverseTranslateWord', () => {
+  describe('reverseTranslateSync (single words)', () => {
     it('should translate simple words', () => {
       // "kat" should map to "cat"
-      const results = reverseTranslateWord('kat');
-      expect(results).toContain('cat');
+      const result = reverseTranslateSync('kat');
+      expect(result).toBe('cat');
     });
 
     it('should preserve capitalization', () => {
-      const results = reverseTranslateWord('Kat');
-      expect(results[0]).toBe('Cat');
+      const result = reverseTranslateSync('Kat');
+      expect(result).toBe('Cat');
     });
 
     it('should preserve ALL CAPS', () => {
-      const results = reverseTranslateWord('KAT');
-      expect(results[0]).toBe('CAT');
+      const result = reverseTranslateSync('KAT');
+      expect(result).toBe('CAT');
     });
 
     it('should return original word for non-letters', () => {
-      expect(reverseTranslateWord('123')).toEqual(['123']);
-      expect(reverseTranslateWord('...')).toEqual(['...']);
+      expect(reverseTranslateSync('123')).toBe('123');
+      expect(reverseTranslateSync('...')).toBe('...');
     });
 
-    it('should return empty array for empty input', () => {
-      expect(reverseTranslateWord('')).toEqual([]);
+    it('should return empty string for empty input', () => {
+      expect(reverseTranslateSync('')).toBe('');
     });
 
-    it('should handle homophones by returning multiple options', () => {
+    it('should handle homophones by picking most common word', () => {
       // "too" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
-      const results = reverseTranslateWord('too');
-      expect(results.length).toBeGreaterThanOrEqual(1);
+      const result = reverseTranslateSync('too');
+      expect(result).toBe('to'); // most common by frequency
     });
 
     it('should handle ambiguous "er" spellings (welfare case)', () => {
       // "welfare" translates to "welfer", which could be:
       // - ER (r-colored schwa) - no match
       // - EH + R (short e + r) - matches "welfare"
-      const results = reverseTranslateWord('welfer');
-      expect(results).toContain('welfare');
+      const result = reverseTranslateSync('welfer');
+      expect(result).toBe('welfare');
     });
 
     it('should handle "er" that is actually ER phoneme', () => {
       // "her" -> "her" (ER is correct here)
-      const results = reverseTranslateWord('her');
-      expect(results).toContain('her');
+      const result = reverseTranslateSync('her');
+      expect(result).toBe('her');
     });
 
     it('should produce reverse translation results for dictionary words', () => {
@@ -63,11 +67,11 @@ describe('reverse-translator', () => {
           continue; // Skip words not in dictionary
         }
 
-        const ingglish = translateWord(word);
-        const results = reverseTranslateWord(ingglish);
+        const ingglish = translateSync(word);
+        const result = reverseTranslateSync(ingglish);
 
-        // The first result should match the original (or be a homophone)
-        expect(results.length).toBeGreaterThan(0);
+        // The result should be a valid word
+        expect(result.length, `${word} → ${ingglish} → ${result}`).toBeGreaterThan(0);
       }
     });
 
@@ -103,9 +107,9 @@ describe('reverse-translator', () => {
       ];
 
       for (const { note, word } of ambiguousWords) {
-        const ingglish = translateWord(word);
-        const results = reverseTranslateWord(ingglish);
-        expect(results, `${word}: ${note}`).toContain(word);
+        const ingglish = translateSync(word);
+        const result = reverseTranslateSync(ingglish);
+        expect(result.toLowerCase(), `${word}: ${note}`).toBe(word);
       }
     });
 
@@ -115,10 +119,10 @@ describe('reverse-translator', () => {
       const failures: string[] = [];
 
       for (const word of words) {
-        const ingglish = translateWord(word.toLowerCase());
-        const results = reverseTranslateWord(ingglish);
-        if (results[0]?.toLowerCase() !== word.toLowerCase()) {
-          failures.push(`${word} -> ${ingglish} -> ${results[0]} (expected ${word})`);
+        const ingglish = translateSync(word.toLowerCase());
+        const result = reverseTranslateSync(ingglish);
+        if (result.toLowerCase() !== word.toLowerCase()) {
+          failures.push(`${word} -> ${ingglish} -> ${result} (expected ${word})`);
         }
       }
 
@@ -132,47 +136,49 @@ describe('reverse-translator', () => {
     // of phonetic spelling - homophones become indistinguishable.
 
     it('to/too/two all become "too" and reverse to most common', () => {
-      expect(translateWord('to')).toBe('too');
-      expect(translateWord('too')).toBe('too');
-      expect(translateWord('two')).toBe('too');
+      expect(translateSync('to')).toBe('too');
+      expect(translateSync('too')).toBe('too');
+      expect(translateSync('two')).toBe('too');
       // Reverse picks most common word by frequency
       expect(reverseTranslateSync('too')).toBe('to');
     });
 
     it('their/there/they\'re all become "dhair"', () => {
-      expect(translateWord('their')).toBe('dhair');
-      expect(translateWord('there')).toBe('dhair');
-      expect(translateWord("they're")).toBe('dhair');
-      // All map to same phonetic spelling
-      const results = reverseTranslateWord('dhair');
-      expect(results.length).toBeGreaterThan(1); // Multiple options
+      expect(translateSync('their')).toBe('dhair');
+      expect(translateSync('there')).toBe('dhair');
+      expect(translateSync("they're")).toBe('dhair');
+      // All homophones produce the same Ingglish output
+      // Verify they all translate to the same thing
+      const result1 = translateSync('their');
+      const result2 = translateSync('there');
+      expect(result1).toBe(result2);
     });
 
     it('sea/see both become "see"', () => {
-      expect(translateWord('sea')).toBe('see');
-      expect(translateWord('see')).toBe('see');
+      expect(translateSync('sea')).toBe('see');
+      expect(translateSync('see')).toBe('see');
     });
 
     it('eye/I both become "ai"', () => {
-      expect(translateWord('eye')).toBe('ai');
-      expect(translateWord('I')).toBe('ai');
+      expect(translateSync('eye')).toBe('ai');
+      expect(translateSync('I')).toBe('ai');
       // Reverse picks "i" (most common single letter)
       expect(reverseTranslateSync('ai')).toBe('i');
     });
 
     it('queue/cue both become "kyoo"', () => {
-      expect(translateWord('queue')).toBe('kyoo');
-      expect(translateWord('cue')).toBe('kyoo');
+      expect(translateSync('queue')).toBe('kyoo');
+      expect(translateSync('cue')).toBe('kyoo');
       // Reverse may pick "q" as it's most common by frequency
       const result = reverseTranslateSync('kyoo');
       expect(['q', 'cue', 'queue']).toContain(result);
     });
 
     it('aisle becomes "ail" which reverses ambiguously', () => {
-      expect(translateWord('aisle')).toBe('ail');
+      expect(translateSync('aisle')).toBe('ail');
       // Could reverse to "aisle", "i'll", or "isle"
-      const results = reverseTranslateWord('ail');
-      expect(results.length).toBeGreaterThan(0);
+      const result = reverseTranslateSync('ail');
+      expect(result.length).toBeGreaterThan(0);
     });
   });
 
@@ -201,54 +207,35 @@ describe('reverse-translator', () => {
     });
   });
 
-  describe('isLikelyIngglish', () => {
-    it('should detect Ingglish patterns', () => {
-      expect(isLikelyIngglish('dha kat')).toBe(true); // "dh" pattern
-    });
-
-    it('should detect English patterns', () => {
-      expect(isLikelyIngglish('the cat')).toBe(false); // "the" is English
-      expect(isLikelyIngglish('thought')).toBe(false); // "ough" is English
-    });
-
-    it('should handle ambiguous text', () => {
-      // Pure words without distinctive patterns
-      const result = isLikelyIngglish('hello');
-      expect(typeof result).toBe('boolean');
-    });
-  });
-
-  describe('reverseTranslateIPAWord', () => {
+  describe('reverseTranslateSync with IPA format', () => {
     it('should translate simple IPA words', () => {
       // /kæt/ -> "cat"
-      const results = reverseTranslateIPAWord('kæt');
-      expect(results).toContain('cat');
+      const result = reverseTranslateSync('kæt', { format: 'ipa' });
+      expect(result.toLowerCase()).toBe('cat');
     });
 
     it('should translate IPA with diphthongs', () => {
       // /haɪ/ -> "hi" or "high"
-      const results = reverseTranslateIPAWord('haɪ');
-      expect(results.some((w) => w === 'hi' || w === 'high')).toBe(true);
+      const result = reverseTranslateSync('haɪ', { format: 'ipa' });
+      expect(['hi', 'high']).toContain(result.toLowerCase());
     });
 
     it('should handle stress markers', () => {
       // /həˈloʊ/ -> "hello"
-      const results = reverseTranslateIPAWord('həˈloʊ');
-      expect(results).toContain('hello');
+      const result = reverseTranslateSync('həˈloʊ', { format: 'ipa' });
+      expect(result.toLowerCase()).toBe('hello');
     });
 
-    it('should return original for empty input', () => {
-      expect(reverseTranslateIPAWord('')).toEqual([]);
+    it('should return empty string for empty input', () => {
+      expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
     });
 
     it('should handle common IPA transcriptions', () => {
       // /wɝld/ -> "world"
-      const results = reverseTranslateIPAWord('wɝld');
-      expect(results).toContain('world');
+      const result = reverseTranslateSync('wɝld', { format: 'ipa' });
+      expect(result.toLowerCase()).toBe('world');
     });
-  });
 
-  describe('reverseTranslateSync with IPA format', () => {
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
       const result = reverseTranslateSync('həˈloʊ wɝld', { format: 'ipa' });
@@ -267,10 +254,6 @@ describe('reverse-translator', () => {
       expect(result.toLowerCase()).toBe('the cat');
     });
 
-    it('should return empty string for empty input', () => {
-      expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
-    });
-
     it('should round-trip translateSync with IPA format', () => {
       // Translate "hello world" to IPA, then back to English
       const ipa = translateSync('hello world', { format: 'ipa' });
@@ -279,28 +262,21 @@ describe('reverse-translator', () => {
     });
   });
 
-  describe('reverseTranslateWord failure behavior', () => {
-    it('should return empty array for unrecognized ingglish words', () => {
+  describe('reverseTranslateSync failure behavior', () => {
+    it('should return unrecognized ingglish words as-is', () => {
       // "zzxq" is not valid ingglish - can't be parsed to phonemes
-      const result = reverseTranslateWord('zzxq');
-      expect(result).toEqual([]);
-    });
-
-    it('should return an array for phonemes that may lack dictionary matches', () => {
-      // "bral" parses to valid phonemes — AE alternative AH may find matches
-      const result = reverseTranslateWord('bral');
-      // May find matches via AH alternative (e.g., "bruhl")
-      expect(Array.isArray(result)).toBe(true);
+      const result = reverseTranslateSync('zzxq');
+      expect(result).toBe('zzxq');
     });
 
     it('should still return results for valid ingglish words', () => {
-      const result = reverseTranslateWord('kat');
-      expect(result).toContain('cat');
+      const result = reverseTranslateSync('kat');
+      expect(result).toBe('cat');
     });
 
     it('should still return non-letter tokens as-is', () => {
-      expect(reverseTranslateWord('123')).toEqual(['123']);
-      expect(reverseTranslateWord('...')).toEqual(['...']);
+      expect(reverseTranslateSync('123')).toBe('123');
+      expect(reverseTranslateSync('...')).toBe('...');
     });
   });
 

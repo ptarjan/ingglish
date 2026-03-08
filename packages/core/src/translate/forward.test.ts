@@ -2,8 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { loadDictionary, isDictionaryLoaded, lookupPronunciation } from '@ingglish/dictionary';
 import * as dictModule from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
-import type { DictLoader } from '../dict-loader';
-import { getLangDict, setLangDict } from '../dict-loader';
 import {
   reverseTranslate,
   setDictLoader,
@@ -11,7 +9,6 @@ import {
   translateSync,
   translateSyncWithMapping,
 } from '../index';
-import { translateWord } from './forward';
 
 describe('async API loads only required dictionaries', () => {
   // Dictionaries pre-loaded by vitest.setup.ts
@@ -49,9 +46,6 @@ describe('async API loads only required dictionaries', () => {
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
 
-    // Dict should now be cached
-    expect(getLangDict('test-fr')).toBe(mockDict);
-
     // Sync should work after async load
     const syncResult = translateSync('bonjour', { lang: 'test-fr' });
     expect(syncResult).toBe(result);
@@ -64,7 +58,8 @@ describe('async API loads only required dictionaries', () => {
 
   it('translate() rejects when no loader registered for foreign lang', async () => {
     // Use a fresh lang code that won't be cached
-    setDictLoader(undefined as unknown as DictLoader);
+
+    setDictLoader(undefined as unknown as Parameters<typeof setDictLoader>[0]);
     await expect(translate('test', { lang: 'xx' })).rejects.toThrow(
       /No dictionary loader registered/
     );
@@ -111,34 +106,33 @@ describe('translator', () => {
     });
   });
 
-  describe('translateWord', () => {
+  describe('translateSync (single words)', () => {
     it('should translate common words', () => {
       // hello = HH AH0 L OW1 -> haloh (American pronunciation)
-      expect(translateWord('hello')).toBe('haloh');
-      expect(translateWord('world')).toBe('werld');
+      expect(translateSync('hello')).toBe('haloh');
+      expect(translateSync('world')).toBe('werld');
     });
 
     it('should preserve capitalization', () => {
-      const hello = translateWord('hello');
-      expect(translateWord('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
+      const hello = translateSync('hello');
+      expect(translateSync('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
     });
 
     it('should pass through all-caps words unchanged', () => {
       // All-caps words (≥2 chars) pass through as acronyms/emphasis
-      expect(translateWord('HELLO')).toBe('HELLO');
+      expect(translateSync('HELLO')).toBe('HELLO');
     });
 
     it('should handle unknown words with fallback', () => {
       // Unknown words use G2P rules to produce a phonetic translation
-      // Exact G2P results are covered by 134+ tests in unknown-words.test.ts
-      const result = translateWord('splonk');
+      const result = translateSync('splonk');
       expect(typeof result).toBe('string');
       expect(result).not.toBe('splonk'); // Should be transformed by G2P
     });
 
     it('should translate url from dictionary', () => {
       // "url" is in CMU dictionary
-      expect(translateWord('url')).toBe('url');
+      expect(translateSync('url')).toBe('url');
     });
   });
 
@@ -268,13 +262,13 @@ describe('translator', () => {
 
     it('should preserve all caps on contractions', () => {
       // DON'T should stay uppercase
-      const result = translateWord("DON'T");
+      const result = translateSync("DON'T");
       expect(result).toBe(result.toUpperCase());
     });
 
     it('should handle contractions not in dictionary via apostrophe splitting', () => {
       // Made-up contraction — apostrophe splitting finds foo + t individually
-      const result = translateWord("foo't");
+      const result = translateSync("foo't");
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
     });
@@ -283,26 +277,26 @@ describe('translator', () => {
   describe('case preservation for unknown words', () => {
     it('should preserve all caps on unknown words', () => {
       // KUBERNETES is not in CMU dictionary
-      const result = translateWord('KUBERNETES');
+      const result = translateSync('KUBERNETES');
       expect(result).toBe(result.toUpperCase());
     });
 
     it('should preserve title case on unknown words', () => {
       // Kubernetes is not in CMU dictionary
-      const result = translateWord('Kubernetes');
+      const result = translateSync('Kubernetes');
       expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
       expect(result.slice(1)).toBe(result.slice(1).toLowerCase());
     });
 
     it('should preserve mixed case on unknown words like GitHub', () => {
       // GitHub has internal capital - AH1 in "hub" produces "huhb"
-      const result = translateWord('GitHub');
+      const result = translateSync('GitHub');
       expect(result).toBe('GitHuhb');
     });
 
     it('should translate GitHub with correct phonetics (t+h not θ)', () => {
       // GitHub = git + hub, the "th" should NOT become theta sound
-      const ipa = translateWord('GitHub', { format: 'ipa' });
+      const ipa = translateSync('GitHub', { format: 'ipa' });
       expect(ipa).toContain('t'); // separate t
       expect(ipa).toContain('h'); // separate h
       expect(ipa).not.toContain('θ'); // NOT theta digraph
@@ -311,28 +305,26 @@ describe('translator', () => {
 
   describe('edge cases for coverage', () => {
     it('should handle word with leading apostrophe', () => {
-      const result = translateWord("'xyz");
+      const result = translateSync("'xyz");
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
     });
 
     it('should handle words with only non-letter characters', () => {
-      expect(translateWord('123')).toBe('123');
-      expect(translateWord('!!!')).toBe('!!!');
+      expect(translateSync('123')).toBe('123');
+      expect(translateSync('!!!')).toBe('!!!');
     });
 
     it('should translate unknown words to IPA format', () => {
       // Unknown word in IPA format should return IPA characters
-      const result = translateWord('xyzzy', { format: 'ipa' });
+      const result = translateSync('xyzzy', { format: 'ipa' });
       expect(result).toBeDefined();
       expect(result.length).toBeGreaterThan(0);
       // IPA result should contain non-ASCII characters
       expect(result).not.toMatch(/^[a-z]+$/i);
     });
 
-    it('should use translateSyncWithMapping for token mapping', async () => {
-      // Test the mapping function used by DOM translator
-      const { translateSyncWithMapping } = await import('./forward');
+    it('should use translateSyncWithMapping for token mapping', () => {
       const tokens = translateSyncWithMapping('Hello world', { format: 'ingglish' });
       expect(tokens).toHaveLength(3);
       expect(tokens[0]!.isWord).toBe(true);
@@ -342,35 +334,44 @@ describe('translator', () => {
   });
 
   describe('non-word passthrough', () => {
-    it('should pass through words with 3+ repeated characters', () => {
-      expect(translateWord('ssssss')).toBe('ssssss');
-      expect(translateWord('dddddddddd')).toBe('dddddddddd');
-      expect(translateWord('hellooo')).toBe('hellooo');
-      expect(translateWord('nooo')).toBe('nooo');
-    });
+    it.each(['ssssss', 'dddddddddd', 'hellooo', 'nooo'])(
+      'should pass through "%s" with 3+ repeated characters',
+      (word) => {
+        // translateSyncWithMapping shows the raw word (without NOT_FOUND_MARKER)
+        const tokens = translateSyncWithMapping(word);
+        const wordToken = tokens.find((t) => t.isWord);
+        expect(wordToken?.translated).toBe(word);
+        expect(wordToken?.matched).toBe(false);
+      }
+    );
 
     it('should still translate dictionary words with 3+ repeated chars', () => {
       // oooh and hmmm are in CMU dictionary
-      expect(translateWord('oooh')).not.toBe('oooh');
-      expect(translateWord('hmmm')).not.toBe('hmmm');
+      expect(translateSync('oooh')).not.toBe('oooh');
+      expect(translateSync('hmmm')).not.toBe('hmmm');
     });
 
-    it('should pass through vowelless strings not in dictionary', () => {
-      expect(translateWord('bcdfghjk')).toBe('bcdfghjk');
-      expect(translateWord('xkcd')).toBe('xkcd');
-    });
+    it.each(['bcdfghjk', 'xkcd'])(
+      'should pass through vowelless "%s" not in dictionary',
+      (word) => {
+        const tokens = translateSyncWithMapping(word);
+        const wordToken = tokens.find((t) => t.isWord);
+        expect(wordToken?.translated).toBe(word);
+        expect(wordToken?.matched).toBe(false);
+      }
+    );
 
     it('should still translate dictionary words without vowels', () => {
       // hmm, shh, nth are in CMU dictionary
-      expect(translateWord('hmm')).not.toBe('hmm');
-      expect(translateWord('shh')).not.toBe('shh');
-      expect(translateWord('nth')).not.toBe('nth');
+      expect(translateSync('hmm')).not.toBe('hmm');
+      expect(translateSync('shh')).not.toBe('shh');
+      expect(translateSync('nth')).not.toBe('nth');
     });
 
     it('should not affect normal words with doubled letters', () => {
-      expect(translateWord('hello')).toBe('haloh');
-      expect(translateWord('running')).toBe('ruhning');
-      expect(translateWord('butter')).toBe('buhter');
+      expect(translateSync('hello')).toBe('haloh');
+      expect(translateSync('running')).toBe('ruhning');
+      expect(translateSync('butter')).toBe('buhter');
     });
   });
 
@@ -412,8 +413,7 @@ describe('translator', () => {
       expect(result).toContain('x@y.com');
     });
 
-    it('should preserve URLs in translateSyncWithMapping', async () => {
-      const { translateSyncWithMapping } = await import('./forward');
+    it('should preserve URLs in translateSyncWithMapping', () => {
       const tokens = translateSyncWithMapping('Visit https://example.com', { format: 'ingglish' });
       const urlToken = tokens.find((t) => t.original === 'https://example.com');
       expect(urlToken).toBeDefined();
@@ -441,158 +441,158 @@ describe('translator', () => {
 
   describe('R-colored vowels', () => {
     it('should translate NEAR vowel words (IH+R → eer)', () => {
-      expect(translateWord('beer')).toBe('beer');
-      expect(translateWord('beard')).toBe('beerd');
-      expect(translateWord('fear')).toBe('feer');
-      expect(translateWord('near')).toBe('neer');
-      expect(translateWord('deer')).toBe('deer');
-      expect(translateWord('clear')).toBe('kleer');
+      expect(translateSync('beer')).toBe('beer');
+      expect(translateSync('beard')).toBe('beerd');
+      expect(translateSync('fear')).toBe('feer');
+      expect(translateSync('near')).toBe('neer');
+      expect(translateSync('deer')).toBe('deer');
+      expect(translateSync('clear')).toBe('kleer');
     });
 
     it('should translate START vowel words (AA+R → ar)', () => {
-      expect(translateWord('star')).toBe('star');
-      expect(translateWord('car')).toBe('kar');
-      expect(translateWord('far')).toBe('far');
+      expect(translateSync('star')).toBe('star');
+      expect(translateSync('car')).toBe('kar');
+      expect(translateSync('far')).toBe('far');
     });
 
     it('should translate NORTH vowel words (AO+R → or)', () => {
-      expect(translateWord('store')).toBe('stor');
-      expect(translateWord('more')).toBe('mor');
-      expect(translateWord('bore')).toBe('bor');
+      expect(translateSync('store')).toBe('stor');
+      expect(translateSync('more')).toBe('mor');
+      expect(translateSync('bore')).toBe('bor');
     });
 
     it('should translate SQUARE vowel words (EH+R → air)', () => {
-      expect(translateWord('care')).toBe('kair');
-      expect(translateWord('there')).toBe('dhair');
+      expect(translateSync('care')).toBe('kair');
+      expect(translateSync('there')).toBe('dhair');
     });
 
     it('should translate words with TRAP before R (AE+R → arr)', () => {
-      expect(translateWord('arrow')).toBe('arroh');
-      expect(translateWord('barrow')).toBe('barroh');
-      expect(translateWord('carrot')).toBe('karrat');
+      expect(translateSync('arrow')).toBe('arroh');
+      expect(translateSync('barrow')).toBe('barroh');
+      expect(translateSync('carrot')).toBe('karrat');
     });
   });
 
   describe('common word translations', () => {
     it('should translate NG cluster words', () => {
-      expect(translateWord('think')).toBe('thingk');
+      expect(translateSync('think')).toBe('thingk');
     });
 
     it('should translate multi-syllable words', () => {
-      expect(translateWord('beautiful')).toBe('byootafal');
+      expect(translateSync('beautiful')).toBe('byootafal');
     });
 
     it('should translate all vowel sounds', () => {
-      expect(translateWord('hot')).toBe('hot'); // AA
-      expect(translateWord('dog')).toBe('dawg'); // AO
-      expect(translateWord('law')).toBe('law'); // AO
-      expect(translateWord('cow')).toBe('kou'); // AW
-      expect(translateWord('out')).toBe('out'); // AW
-      expect(translateWord('bed')).toBe('bed'); // EH
-      expect(translateWord('red')).toBe('red'); // EH
-      expect(translateWord('day')).toBe('day'); // EY
-      expect(translateWord('say')).toBe('say'); // EY
-      expect(translateWord('see')).toBe('see'); // IY
-      expect(translateWord('me')).toBe('mee'); // IY
-      expect(translateWord('book')).toBe('buk'); // UH
-      expect(translateWord('put')).toBe('put'); // UH
-      expect(translateWord('boy')).toBe('boi'); // OY
-      expect(translateWord('my')).toBe('mai'); // AY
-      expect(translateWord('go')).toBe('goh'); // OW
-      expect(translateWord('zoo')).toBe('zoo'); // UW
-      expect(translateWord('cup')).toBe('kuhp'); // AH (stressed)
-      expect(translateWord('love')).toBe('luhv'); // AH (stressed)
-      expect(translateWord('buzz')).toBe('buhz'); // AH (stressed)
+      expect(translateSync('hot')).toBe('hot'); // AA
+      expect(translateSync('dog')).toBe('dawg'); // AO
+      expect(translateSync('law')).toBe('law'); // AO
+      expect(translateSync('cow')).toBe('kou'); // AW
+      expect(translateSync('out')).toBe('out'); // AW
+      expect(translateSync('bed')).toBe('bed'); // EH
+      expect(translateSync('red')).toBe('red'); // EH
+      expect(translateSync('day')).toBe('day'); // EY
+      expect(translateSync('say')).toBe('say'); // EY
+      expect(translateSync('see')).toBe('see'); // IY
+      expect(translateSync('me')).toBe('mee'); // IY
+      expect(translateSync('book')).toBe('buk'); // UH
+      expect(translateSync('put')).toBe('put'); // UH
+      expect(translateSync('boy')).toBe('boi'); // OY
+      expect(translateSync('my')).toBe('mai'); // AY
+      expect(translateSync('go')).toBe('goh'); // OW
+      expect(translateSync('zoo')).toBe('zoo'); // UW
+      expect(translateSync('cup')).toBe('kuhp'); // AH (stressed)
+      expect(translateSync('love')).toBe('luhv'); // AH (stressed)
+      expect(translateSync('buzz')).toBe('buhz'); // AH (stressed)
     });
 
     it('should translate all consonant sounds', () => {
-      expect(translateWord('go')).toBe('goh'); // G
-      expect(translateWord('pen')).toBe('pen'); // P
-      expect(translateWord('she')).toBe('shee'); // SH
-      expect(translateWord('fish')).toBe('fish'); // SH
-      expect(translateWord('very')).toBe('vairee'); // V
-      expect(translateWord('zoo')).toBe('zoo'); // Z
-      expect(translateWord('measure')).toBe('mezher'); // ZH
-      expect(translateWord('jump')).toBe('juhmp'); // JH, M, P
-      expect(translateWord('yes')).toBe('yes'); // Y (before non-UW vowel)
-      expect(translateWord('not')).toBe('not'); // N
-      expect(translateWord('bat')).toBe('bat'); // B
+      expect(translateSync('go')).toBe('goh'); // G
+      expect(translateSync('pen')).toBe('pen'); // P
+      expect(translateSync('she')).toBe('shee'); // SH
+      expect(translateSync('fish')).toBe('fish'); // SH
+      expect(translateSync('very')).toBe('vairee'); // V
+      expect(translateSync('zoo')).toBe('zoo'); // Z
+      expect(translateSync('measure')).toBe('mezher'); // ZH
+      expect(translateSync('jump')).toBe('juhmp'); // JH, M, P
+      expect(translateSync('yes')).toBe('yes'); // Y (before non-UW vowel)
+      expect(translateSync('not')).toBe('not'); // N
+      expect(translateSync('bat')).toBe('bat'); // B
     });
   });
 
   describe('British spelling handling', () => {
     it('should convert -our → -or (colour)', () => {
-      expect(translateWord('colour')).toBe('kuhler');
+      expect(translateSync('colour')).toBe('kuhler');
     });
 
     it('should convert -ise → -ize (realise)', () => {
-      expect(translateWord('realise')).toBe('reealaiz');
+      expect(translateSync('realise')).toBe('reealaiz');
     });
 
     it('should convert -re → -er (centre)', () => {
-      expect(translateWord('centre')).toBe('senter');
+      expect(translateSync('centre')).toBe('senter');
     });
 
     it('should convert -isation → -ization', () => {
-      expect(translateWord('organisation')).toBe('organizayshan');
+      expect(translateSync('organisation')).toBe('organizayshan');
     });
 
     it('should convert -ence → -ense (defence)', () => {
-      expect(translateWord('defence')).toBe('difens');
+      expect(translateSync('defence')).toBe('difens');
     });
 
     it('should convert -ogue → -og (catalogue)', () => {
-      expect(translateWord('catalogue')).toBe('katalawg');
+      expect(translateSync('catalogue')).toBe('katalawg');
     });
 
     it('should handle -oured suffix (favoured)', () => {
-      expect(translateWord('favoured')).toBe('fayverd');
+      expect(translateSync('favoured')).toBe('fayverd');
     });
 
     it('should convert -ey → -y (curtsey)', () => {
-      expect(translateWord('curtsey')).toBe('kertsee');
+      expect(translateSync('curtsey')).toBe('kertsee');
     });
 
     it('should handle grey → gray', () => {
-      expect(translateWord('grey')).toBe('gray');
+      expect(translateSync('grey')).toBe('gray');
     });
   });
 
   describe('stemming and morphology', () => {
     it('should handle -ly suffix', () => {
-      expect(translateWord('quickly')).toBe('kwiklee');
+      expect(translateSync('quickly')).toBe('kwiklee');
     });
 
     it('should handle un- prefix', () => {
-      expect(translateWord('unhappy')).toBe('anhapee');
+      expect(translateSync('unhappy')).toBe('anhapee');
     });
 
     it('should handle re- prefix', () => {
-      expect(translateWord('rebuild')).toBe('reebild');
+      expect(translateSync('rebuild')).toBe('reebild');
     });
 
     it('should handle i→y stem change', () => {
-      expect(translateWord('loveliest')).toBe('luhvleeast');
-      expect(translateWord('happily')).toBe('hapalee');
-      expect(translateWord('easier')).toBe('eezee-er');
+      expect(translateSync('loveliest')).toBe('luhvleeast');
+      expect(translateSync('happily')).toBe('hapalee');
+      expect(translateSync('easier')).toBe('eezee-er');
     });
 
     it('should handle -ify suffix', () => {
-      expect(translateWord('uglify')).toBe('uhgleeifai');
+      expect(translateSync('uglify')).toBe('uhgleeifai');
     });
 
     it('should handle -ification suffix', () => {
-      expect(translateWord('uglification')).toBe('uhgleeifikayshan');
+      expect(translateSync('uglification')).toBe('uhgleeifikayshan');
     });
 
     it('should handle -ifying suffix', () => {
-      expect(translateWord('uglifying')).toBe('uhgleeifaiing');
+      expect(translateSync('uglifying')).toBe('uhgleeifaiing');
     });
   });
 
   describe('compound word splitting', () => {
     it('should split and translate compound words', () => {
-      const result = translateWord('bedpost');
+      const result = translateSync('bedpost');
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });
@@ -602,59 +602,59 @@ describe('translator', () => {
     const WJ = '\u2060';
 
     it('should translate hello to IPA', () => {
-      expect(translateWord('hello', { format: 'ipa' })).toBe(`hə${WJ}ˈ${WJ}loʊ`);
+      expect(translateSync('hello', { format: 'ipa' })).toBe(`hə${WJ}ˈ${WJ}loʊ`);
     });
 
     it('should translate world to IPA', () => {
-      expect(translateWord('world', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}wɝld`);
+      expect(translateSync('world', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}wɝld`);
     });
 
     it('should translate the to IPA', () => {
-      expect(translateWord('the', { format: 'ipa' })).toBe('ðə');
+      expect(translateSync('the', { format: 'ipa' })).toBe('ðə');
     });
 
     it('should translate think to IPA', () => {
-      expect(translateWord('think', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}θɪŋk`);
+      expect(translateSync('think', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}θɪŋk`);
     });
 
     it('should translate beautiful to IPA', () => {
-      expect(translateWord('beautiful', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bjutəfəl`);
+      expect(translateSync('beautiful', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bjutəfəl`);
     });
 
     it('should translate affricates (church, judge)', () => {
-      expect(translateWord('church', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}tʃɝtʃ`);
-      expect(translateWord('judge', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dʒʌdʒ`);
+      expect(translateSync('church', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}tʃɝtʃ`);
+      expect(translateSync('judge', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dʒʌdʒ`);
     });
 
     it('should translate diphthongs (time, coin)', () => {
-      expect(translateWord('time', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}taɪm`);
-      expect(translateWord('coin', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}kɔɪn`);
+      expect(translateSync('time', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}taɪm`);
+      expect(translateSync('coin', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}kɔɪn`);
     });
 
     it('should place secondary stress correctly (examination)', () => {
-      expect(translateWord('examination', { format: 'ipa' })).toBe(
+      expect(translateSync('examination', { format: 'ipa' })).toBe(
         `ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən`
       );
     });
 
     it('should translate all vowel sounds to IPA', () => {
-      expect(translateWord('hot', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}hɑt`); // AA → ɑ
-      expect(translateWord('dog', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dɔɡ`); // AO → ɔ
-      expect(translateWord('out', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}aʊt`); // AW → aʊ
-      expect(translateWord('bed', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bɛd`); // EH → ɛ
-      expect(translateWord('see', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}si`); // IY → i
-      expect(translateWord('book', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bʊk`); // UH → ʊ
+      expect(translateSync('hot', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}hɑt`); // AA → ɑ
+      expect(translateSync('dog', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dɔɡ`); // AO → ɔ
+      expect(translateSync('out', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}aʊt`); // AW → aʊ
+      expect(translateSync('bed', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bɛd`); // EH → ɛ
+      expect(translateSync('see', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}si`); // IY → i
+      expect(translateSync('book', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bʊk`); // UH → ʊ
     });
 
     it('should translate all consonant sounds to IPA', () => {
-      expect(translateWord('pen', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}pɛn`); // P → p
-      expect(translateWord('red', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɹɛd`); // R → ɹ
-      expect(translateWord('say', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}seɪ`); // S → s
-      expect(translateWord('very', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}vɛɹi`); // V → v
-      expect(translateWord('measure', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}mɛʒɝ`); // ZH → ʒ
-      expect(translateWord('go', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɡoʊ`); // G → ɡ
-      expect(translateWord('yes', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}jɛs`); // Y → j
-      expect(translateWord('she', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ʃi`); // SH → ʃ
+      expect(translateSync('pen', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}pɛn`); // P → p
+      expect(translateSync('red', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɹɛd`); // R → ɹ
+      expect(translateSync('say', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}seɪ`); // S → s
+      expect(translateSync('very', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}vɛɹi`); // V → v
+      expect(translateSync('measure', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}mɛʒɝ`); // ZH → ʒ
+      expect(translateSync('go', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɡoʊ`); // G → ɡ
+      expect(translateSync('yes', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}jɛs`); // Y → j
+      expect(translateSync('she', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ʃi`); // SH → ʃ
     });
   });
 
@@ -677,11 +677,6 @@ describe('translator', () => {
       expect(tokens[0]!.translated).toBe('Haloh');
     });
 
-    it('translateWord accepts options object with format', () => {
-      const withOptions = translateWord('hello', { format: 'ingglish' });
-      expect(withOptions).toBe('haloh');
-    });
-
     it('translateSync throws for unknown foreign lang without loaded dict', () => {
       expect(() => translateSync('bonjour', { lang: 'fr' })).toThrow(
         /Dictionary for "fr" not loaded/
@@ -690,12 +685,6 @@ describe('translator', () => {
 
     it('translateSyncWithMapping throws for unknown foreign lang without loaded dict', () => {
       expect(() => translateSyncWithMapping('bonjour', { lang: 'fr' })).toThrow(
-        /Dictionary for "fr" not loaded/
-      );
-    });
-
-    it('translateWord throws for unknown foreign lang without loaded dict', () => {
-      expect(() => translateWord('bonjour', { lang: 'fr' })).toThrow(
         /Dictionary for "fr" not loaded/
       );
     });
@@ -721,10 +710,11 @@ describe('translator', () => {
       nonLatinScript: true,
     };
 
-    // Pre-register the mock dict (preprocessor not needed — test uses pre-segmented text)
-    setLangDict(MOCK_JA_LANG, mockJaDict);
+    it('translateSyncWithMapping capitalizes first word of each sentence', async () => {
+      // Load the mock dict via setDictLoader + translate()
+      setDictLoader(vi.fn().mockResolvedValue(mockJaDict));
+      await translate('neko', { lang: MOCK_JA_LANG });
 
-    it('translateSyncWithMapping capitalizes first word of each sentence', () => {
       // Simulates pre-segmented Japanese text: "neko desu. inu desu."
       const tokens = translateSyncWithMapping('neko desu. inu desu.', {
         format: 'ingglish',
@@ -741,6 +731,7 @@ describe('translator', () => {
     });
 
     it('translateSync also capitalizes sentence starts for caseless scripts', () => {
+      // Dict already loaded from previous test
       const result = translateSync('neko desu. inu desu.', {
         format: 'ingglish',
         lang: MOCK_JA_LANG,

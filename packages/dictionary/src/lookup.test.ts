@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lookupPronunciation } from './lookup';
+import { lookupPronunciation } from './index';
 
 describe('lookupPronunciation', () => {
   it('returns phoneme array for known words', () => {

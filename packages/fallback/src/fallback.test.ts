@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { isInitialism, parseInitialismWithSuffix, translateAsAcronym } from './acronyms';
-import { translateAsBritish } from './british';
-import { translateAsCompound } from './compounds';
-import { translateWithStemming } from './stemming';
-import { translateUnknown } from './index';
+import {
+  isInitialism,
+  parseInitialismWithSuffix,
+  translateAsAcronym,
+  translateAsBritish,
+  translateAsCompound,
+  translateUnknown,
+  translateWithStemming,
+} from './index';
 
 describe('translateAsBritish', () => {
   it('converts -our to -or (colour → color)', () => {

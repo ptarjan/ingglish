@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deseretToArpabet } from './from-deseret';
+import { deseretToArpabet } from './index';
 
 describe('deseretToArpabet', () => {
   it('should skip non-Deseret characters', () => {
