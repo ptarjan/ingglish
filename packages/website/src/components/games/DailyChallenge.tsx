@@ -10,10 +10,9 @@ import {
   msUntilNextChallenge,
   pickDailyWord,
 } from '../../data/daily-challenge-data';
-import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import { useGameProgress } from '../../games/useGameProgress';
+import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
-import { useCopiedState } from '../../hooks/useCopiedState';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/daily-challenge.css';
 
@@ -99,11 +98,8 @@ function DailyChallenge() {
   const [revealingRow, setRevealingRow] = useState(-1);
   const [bounceRow, setBounceRow] = useState(false);
   const [countdown, setCountdown] = useState('');
-  const [copiedShare, showCopied] = useCopiedState();
-
   const toastTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { speak } = useGameSpeech();
-  const shareRef = useRef<HTMLButtonElement>(null);
 
   // Cleanup timers
   useEffect(
@@ -344,10 +340,13 @@ function DailyChallenge() {
     [todayKey, displayResults, won, displayStreak]
   );
 
-  const handleShareImage = useCallback(() => {
-    const canvas = getScoreCanvas();
-    copyCanvasToClipboard(canvas, showCopied, 'ingglish-wordle.png');
-  }, [getScoreCanvas, showCopied]);
+  const {
+    copied: copiedShare,
+    handleSave: handleSaveImage,
+    handleShare: handleShareImage,
+    shareRef,
+    showCopied,
+  } = useGameShare(getScoreCanvas, 'ingglish-wordle.png');
 
   const handleShareText = useCallback(() => {
     const emojiGrid = buildEmojiGrid(displayResults);
@@ -355,11 +354,6 @@ function DailyChallenge() {
     const text = `Ingglish Wordle ${todayKey} ${attemptText}\n\n${emojiGrid}\n\ningglish.com/games/daily`;
     void navigator.clipboard.writeText(text).then(showCopied);
   }, [displayResults, displayGuesses, won, todayKey, showCopied]);
-
-  const handleSaveImage = useCallback(() => {
-    const canvas = getScoreCanvas();
-    downloadCanvas(canvas, 'ingglish-wordle.png');
-  }, [getScoreCanvas]);
 
   // ------------------------------------------------------------------
   // Render: Intro
