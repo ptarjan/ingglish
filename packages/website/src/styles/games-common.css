@@ -108,6 +108,23 @@
   border-radius: 0.25rem;
 }
 
+.game-sound-toggle {
+  flex-shrink: 0;
+  padding: 0.2rem;
+  margin-left: 0.5rem;
+  line-height: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.game-sound-toggle:hover {
+  opacity: 1;
+}
+
 /* === Results screen === */
 
 .game-results {

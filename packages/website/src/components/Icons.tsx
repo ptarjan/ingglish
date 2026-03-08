@@ -165,6 +165,25 @@ export function SpeakerIcon() {
   );
 }
 
+export function SpeakerMutedIcon() {
+  return (
+    <svg
+      fill="none"
+      height="16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" x2="17" y1="9" y2="15" />
+      <line x1="17" x2="23" y1="9" y2="15" />
+    </svg>
+  );
+}
+
 export function StopIcon() {
   return (
     <svg

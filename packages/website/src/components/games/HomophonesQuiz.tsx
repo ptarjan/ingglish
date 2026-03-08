@@ -3,7 +3,9 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { QuizQuestion } from '../../data/homophone-quiz-data';
 import { pickQuiz } from '../../data/homophone-quiz-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/homophones-quiz.css';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -40,6 +42,7 @@ function HomophonesQuiz() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -69,16 +72,20 @@ function HomophonesQuiz() {
     }
   }, [phase]);
 
-  const startQuiz = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    const picked = pickQuiz(newSeed);
-    setQuestions(picked);
-    setRound(0);
-    setResults([]);
-    setSelectedChoice(null);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-  }, []);
+  const startQuiz = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      const picked = pickQuiz(newSeed);
+      setQuestions(picked);
+      setRound(0);
+      setResults([]);
+      setSelectedChoice(null);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+    },
+    [stop]
+  );
 
   const handleStart = useCallback(() => {
     startQuiz(seed);
@@ -121,6 +128,10 @@ function HomophonesQuiz() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (selectedChoice === null) {
         const choices = questions[round]?.choices;
         if (choices) {
@@ -133,8 +144,31 @@ function HomophonesQuiz() {
         handleNext();
       }
     },
-    [selectedChoice, handleNext, questions, round, handleChoiceClick]
+    [selectedChoice, handleNext, questions, round, handleChoiceClick, toggleMute]
   );
+
+  // Speak question when round changes
+  useEffect(() => {
+    if (phase !== 'playing' || selectedChoice !== null) {return;}
+    const q = questions[round];
+    if (!q) {return;}
+    speak(`What English word is this? ${q.ingglish}`);
+  }, [phase, round, selectedChoice, questions, speak]);
+
+  // Speak feedback when answer is selected
+  useEffect(() => {
+    if (selectedChoice === null) {return;}
+    const q = questions[round];
+    if (!q) {return;}
+    const correct = q.correctAnswers.some((a) => a.toLowerCase() === selectedChoice.toLowerCase());
+    const answers = q.correctAnswers.join(', ');
+    const verb = q.correctAnswers.length > 1 ? 'are all' : 'is';
+    if (correct) {
+      speak(`Correct! ${answers} ${verb} spelled ${q.ingglish} in Ingglish.`);
+    } else {
+      speak(`Not quite! ${answers} ${verb} spelled ${q.ingglish} in Ingglish.`);
+    }
+  }, [selectedChoice, questions, round, speak]);
 
   const overallScore =
     results.length > 0 ? results.filter((r) => r.correct).length / results.length : 0;
@@ -278,6 +312,16 @@ function HomophonesQuiz() {
         <span className="game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="game-card">

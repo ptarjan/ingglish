@@ -3,6 +3,8 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { OriginDetectiveQuestion } from '../../data/origin-detective-data';
 import { pickQuiz } from '../../data/origin-detective-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 import '../../styles/spelling-rule-quiz.css';
 
 type Phase = 'intro' | 'playing' | 'results';
@@ -40,6 +42,7 @@ function OriginDetective() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -63,15 +66,19 @@ function OriginDetective() {
     }
   }, [phase]);
 
-  const startQuiz = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    setQuestions(pickQuiz(newSeed));
-    setRound(0);
-    setResults([]);
-    setSelectedChoice(null);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-  }, []);
+  const startQuiz = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      setQuestions(pickQuiz(newSeed));
+      setRound(0);
+      setResults([]);
+      setSelectedChoice(null);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+    },
+    [stop]
+  );
 
   const handleChoiceClick = useCallback(
     (choice: string) => {
@@ -105,6 +112,10 @@ function OriginDetective() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (selectedChoice === null) {
         const choices = questions[round]?.choices;
         if (choices) {
@@ -117,8 +128,28 @@ function OriginDetective() {
         handleNext();
       }
     },
-    [selectedChoice, handleNext, questions, round, handleChoiceClick]
+    [selectedChoice, handleNext, questions, round, handleChoiceClick, toggleMute]
   );
+
+  // Speak question when round changes
+  useEffect(() => {
+    if (phase !== 'playing' || selectedChoice !== null) {return;}
+    const q = questions[round];
+    if (!q) {return;}
+    speak(`${q.word}. Clue: ${q.spellingClue}`);
+  }, [phase, round, selectedChoice, questions, speak]);
+
+  // Speak feedback when answer is selected
+  useEffect(() => {
+    if (selectedChoice === null) {return;}
+    const q = questions[round];
+    if (!q) {return;}
+    if (selectedChoice === q.correctOrigin) {
+      speak(`Correct! ${q.explanation}`);
+    } else {
+      speak(`Not quite, it's ${q.correctOrigin}. ${q.explanation}`);
+    }
+  }, [selectedChoice, questions, round, speak]);
 
   const overallPct =
     results.length > 0
@@ -258,6 +289,16 @@ function OriginDetective() {
         <span className="game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="game-card">

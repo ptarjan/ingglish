@@ -4,6 +4,8 @@ import type { SpellingRuleQuestion } from '../../data/spelling-rule-quiz-data';
 import { pickQuiz } from '../../data/spelling-rule-quiz-data';
 import { copyCanvasToClipboard, downloadCanvas } from '../../games/share-helpers';
 import '../../styles/spelling-rule-quiz.css';
+import { useGameSpeech } from '../../hooks/useGameSpeech';
+import { SpeakerIcon, SpeakerMutedIcon } from '../Icons';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -85,6 +87,7 @@ function SpellingRuleQuiz() {
   const shareRef = useRef<HTMLButtonElement>(null);
   const [copiedShare, setCopiedShare] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
   useEffect(
     () => () => {
@@ -114,16 +117,20 @@ function SpellingRuleQuiz() {
     }
   }, [phase]);
 
-  const startQuiz = useCallback((newSeed: number) => {
-    setSeed(newSeed);
-    const picked = pickQuiz(newSeed);
-    setQuestions(picked);
-    setRound(0);
-    setResults([]);
-    setSelectedChoice(null);
-    roundStartRef.current = Date.now();
-    setPhase('playing');
-  }, []);
+  const startQuiz = useCallback(
+    (newSeed: number) => {
+      stop();
+      setSeed(newSeed);
+      const picked = pickQuiz(newSeed);
+      setQuestions(picked);
+      setRound(0);
+      setResults([]);
+      setSelectedChoice(null);
+      roundStartRef.current = Date.now();
+      setPhase('playing');
+    },
+    [stop]
+  );
 
   const handleStart = useCallback(() => {
     startQuiz(seed);
@@ -164,6 +171,10 @@ function SpellingRuleQuiz() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.key === 'm' || e.key === 'M') {
+        toggleMute();
+        return;
+      }
       if (selectedChoice === null) {
         const choices = questions[round]?.choices;
         if (choices) {
@@ -176,8 +187,36 @@ function SpellingRuleQuiz() {
         handleNext();
       }
     },
-    [selectedChoice, handleNext, questions, round, handleChoiceClick]
+    [selectedChoice, handleNext, questions, round, handleChoiceClick, toggleMute]
   );
+
+  // Speak question when round changes
+  useEffect(() => {
+    if (phase !== 'playing' || selectedChoice !== null) {
+      return;
+    }
+    const q = questions[round];
+    if (!q) {
+      return;
+    }
+    speak(`What sound does the highlighted pattern make in ${q.word}?`);
+  }, [phase, round, selectedChoice, questions, speak]);
+
+  // Speak feedback when answer is selected
+  useEffect(() => {
+    if (selectedChoice === null) {
+      return;
+    }
+    const q = questions[round];
+    if (!q) {
+      return;
+    }
+    if (selectedChoice === q.correctSound) {
+      speak(`Correct! ${q.explanation}`);
+    } else {
+      speak(`Not quite, it's ${q.correctSound}. ${q.explanation}`);
+    }
+  }, [selectedChoice, questions, round, speak]);
 
   const overallScore =
     results.length > 0 ? results.filter((r) => r.correct).length / results.length : 0;
@@ -319,6 +358,16 @@ function SpellingRuleQuiz() {
         <span className="game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
+        {supported && (
+          <button
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            className="game-sound-toggle"
+            onClick={toggleMute}
+            title={muted ? 'Sound on (m)' : 'Sound off (m)'}
+          >
+            {muted ? <SpeakerMutedIcon /> : <SpeakerIcon />}
+          </button>
+        )}
       </div>
 
       <div className="game-card">
