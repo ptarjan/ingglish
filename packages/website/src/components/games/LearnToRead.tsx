@@ -91,7 +91,9 @@ function LearnToRead() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {return;}
+      if (handleMuteKey(e)) {
+        return;
+      }
       if (e.key === 'Enter') {
         if (showFeedback) {
           handleQuizNext();

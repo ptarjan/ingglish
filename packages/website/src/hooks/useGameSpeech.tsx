@@ -15,7 +15,9 @@ export function GameSoundToggle({
   supported: boolean;
   toggleMute: () => void;
 }) {
-  if (!supported) {return null;}
+  if (!supported) {
+    return null;
+  }
   return (
     <button
       aria-label={muted ? 'Unmute' : 'Mute'}

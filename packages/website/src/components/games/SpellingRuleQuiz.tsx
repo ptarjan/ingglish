@@ -170,7 +170,9 @@ function SpellingRuleQuiz() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {return;}
+      if (handleMuteKey(e)) {
+        return;
+      }
       if (selectedChoice === null) {
         const choices = questions[round]?.choices;
         if (choices) {

@@ -149,7 +149,9 @@ function PatternSort() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {return;}
+      if (handleMuteKey(e)) {
+        return;
+      }
       if (selectedBucket === null) {
         if (e.key === '1') {
           handleBucketClick('a');

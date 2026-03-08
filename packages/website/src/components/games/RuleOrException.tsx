@@ -111,7 +111,9 @@ function RuleOrException() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (handleMuteKey(e)) {return;}
+      if (handleMuteKey(e)) {
+        return;
+      }
       if (selectedChoice === null) {
         if (e.key === '1') {
           handleChoiceClick(false);
