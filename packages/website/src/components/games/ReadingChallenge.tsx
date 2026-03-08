@@ -201,15 +201,21 @@ function ReadingChallenge() {
 
   // Speak Ingglish sentence when round changes
   useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null) return;
+    if (phase !== 'playing' || currentFeedback !== null) {
+      return;
+    }
     const s = sentences[round];
-    if (!s) return;
+    if (!s) {
+      return;
+    }
     speak(s.tokens.map((t) => t.translated).join(' '));
   }, [phase, round, currentFeedback, sentences, speak]);
 
   // Speak feedback when answer is checked
   useEffect(() => {
-    if (!currentFeedback) return;
+    if (!currentFeedback) {
+      return;
+    }
     speak(`${currentFeedback.correct} of ${currentFeedback.total} words correct`);
   }, [currentFeedback, speak]);
 

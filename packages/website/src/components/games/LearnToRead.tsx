@@ -120,7 +120,7 @@ function LearnToRead() {
 
   // Speak feedback
   useEffect(() => {
-    if (showFeedback !== true) {
+    if (!showFeedback) {
       return;
     }
     const current = activeLesson?.quiz[quizIndex];

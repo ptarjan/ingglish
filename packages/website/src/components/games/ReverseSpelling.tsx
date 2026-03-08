@@ -178,15 +178,21 @@ function ReverseSpelling() {
 
   // Speak English word when round changes
   useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null) return;
+    if (phase !== 'playing' || currentResult !== null) {
+      return;
+    }
     const w = words[round];
-    if (!w) return;
+    if (!w) {
+      return;
+    }
     speak(`Spell this word in Ingglish: ${w.english}`);
   }, [phase, round, currentResult, words, speak]);
 
   // Speak feedback when result appears
   useEffect(() => {
-    if (!currentResult) return;
+    if (!currentResult) {
+      return;
+    }
     if (currentResult.score === 1) {
       speak('Correct!');
     } else {
