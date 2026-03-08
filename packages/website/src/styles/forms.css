@@ -79,7 +79,13 @@
   border: 2px solid transparent;
   border-top-color: currentcolor;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: btn-spin 0.8s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-primary.btn-loading::after {

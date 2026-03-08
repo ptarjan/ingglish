@@ -329,7 +329,7 @@
 .progressive-word.highlighted {
   padding: 0 2px;
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 }
 
 .progressive-caption {
@@ -371,7 +371,7 @@
 }
 
 .progressive-btn-next {
-  color: #ffffff;
+  color: white;
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -459,7 +459,7 @@
 .poem-word.highlighted {
   padding: 0 2px;
   background: color-mix(in srgb, var(--color-primary) 15%, transparent);
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 }
 
 /* --- Section 6: Reading test --- */
@@ -634,7 +634,7 @@
 }
 
 .cta-primary {
-  color: #ffffff;
+  color: white;
   background: var(--color-primary);
 }
 

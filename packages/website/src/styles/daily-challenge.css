@@ -26,28 +26,28 @@
 .wordle-board {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.375rem;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
 .wordle-row {
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .wordle-tile {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 3.5rem;
+  height: 3.5rem;
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--color-text);
   text-transform: uppercase;
   border: 2px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 0.25rem;
   transition: border-color 0.1s;
 }
 
@@ -147,7 +147,7 @@
   color: var(--color-bg);
   pointer-events: none;
   background: var(--color-text);
-  border-radius: 6px;
+  border-radius: 0.375rem;
   transform: translateX(-50%);
   animation: wordle-toast-in 0.2s ease;
 }
@@ -169,22 +169,22 @@
 .wordle-keyboard {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.375rem;
   align-items: center;
 }
 
 .wordle-keyboard-row {
   display: flex;
-  gap: 5px;
+  gap: 0.3125rem;
 }
 
 .wordle-key {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 52px;
-  padding: 0 8px;
+  min-width: 2rem;
+  height: 3.25rem;
+  padding: 0 0.5rem;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-text);
@@ -192,7 +192,7 @@
   cursor: pointer;
   background: var(--color-surface-hover);
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   transition: background 0.1s;
 }
 
@@ -201,7 +201,7 @@
 }
 
 .wordle-key-wide {
-  min-width: 56px;
+  min-width: 3.5rem;
   font-size: 0.7rem;
 }
 
@@ -280,27 +280,27 @@
   }
 
   .wordle-tile {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     font-size: 1.5rem;
   }
 
   .wordle-key {
-    min-width: 26px;
-    height: 46px;
-    padding: 0 5px;
+    min-width: 1.625rem;
+    height: 2.875rem;
+    padding: 0 0.3125rem;
     font-size: 0.7rem;
   }
 
   .wordle-key-wide {
-    min-width: 44px;
+    min-width: 2.75rem;
   }
 }
 
 @media (max-width: 360px) {
   .wordle-tile {
-    width: 42px;
-    height: 42px;
+    width: 2.625rem;
+    height: 2.625rem;
     font-size: 1.3rem;
   }
 }

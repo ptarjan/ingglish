@@ -56,7 +56,7 @@
 }
 
 .reverse-feedback-fuzzy {
-  color: var(--color-warning, #ca8a04);
+  color: var(--color-warning);
 }
 
 .reverse-feedback-incorrect {

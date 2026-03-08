@@ -58,13 +58,13 @@
   margin: 0 1rem;
   overflow: hidden;
   background: var(--color-border);
-  border-radius: 2px;
+  border-radius: 0.125rem;
 }
 
 .game-progress-fill {
   height: 100%;
   background: var(--color-primary);
-  border-radius: 2px;
+  border-radius: 0.125rem;
   transition: width 0.3s ease;
 }
 

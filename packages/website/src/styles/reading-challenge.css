@@ -34,7 +34,7 @@
 }
 
 .challenge-word-fuzzy {
-  color: var(--color-warning, #ca8a04);
+  color: var(--color-warning);
   background: rgba(234, 179, 8, 0.15);
 }
 
