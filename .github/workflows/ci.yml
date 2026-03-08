@@ -132,6 +132,12 @@ jobs:
             echo "| \`$clean\` | $raw | $gz |" >> $GITHUB_STEP_SUMMARY
           done
 
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@fcd65974f7c4c2bf0ee9d09b84d2489183c29726 # v12
+        with:
+          configPath: .lighthouserc.json
+          uploadArtifacts: true
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
