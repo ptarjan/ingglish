@@ -57,8 +57,19 @@ runs:
       uses: actions/cache@v5
       with:
         path: .turbo/cache
-        key: turbo-${{ runner.os }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-        restore-keys: turbo-${{ runner.os }}-
+        key: turbo-${{ runner.os }}-${{ hashFiles('package-lock.json', 'turbo.json') }}-${{ github.sha }}
+        restore-keys: turbo-${{ runner.os }}-${{ hashFiles('package-lock.json', 'turbo.json') }}-
+
+    # Turbo never prunes old cache entries, so stale hashes accumulate
+    # across pushes (300MB → 2GB). Keep only the 20 newest entries.
+    - name: Prune stale turbo cache
+      run: |
+        if [ -d .turbo/cache ] && [ "$(ls .turbo/cache/ 2>/dev/null | wc -l)" -gt 20 ]; then
+          echo "Pruning turbo cache ($(du -sh .turbo/cache | cut -f1))"
+          ls -t .turbo/cache/ | tail -n +21 | xargs -I{} rm -f ".turbo/cache/{}"
+          echo "After pruning: $(du -sh .turbo/cache | cut -f1)"
+        fi
+      shell: bash
 
     - name: Install dependencies
       if: steps.nm-cache.outputs.cache-hit != 'true'
