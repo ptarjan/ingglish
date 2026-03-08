@@ -102,16 +102,15 @@
 
 /* Header */
 .header {
+  position: relative;
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .header-title {
-  position: relative;
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 .logo-link {
@@ -150,6 +149,7 @@
 
 .toggle-buttons {
   position: absolute;
+  top: 0.5rem;
   right: 0;
   display: flex;
   gap: 0.5rem;
