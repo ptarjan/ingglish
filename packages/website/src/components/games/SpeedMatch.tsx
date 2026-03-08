@@ -228,7 +228,7 @@ function SpeedMatch() {
             Match Ingglish words to their English translations as fast as you can! Click one word
             from each column to make a pair. 3 rounds of 6 pairs each.
           </p>
-          <ol className="challenge-rules">
+          <ol className="card challenge-rules">
             <li>Click an Ingglish word on the left</li>
             <li>Click its English match on the right</li>
             <li>Match all pairs as fast as possible!</li>

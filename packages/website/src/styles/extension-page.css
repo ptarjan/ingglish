@@ -103,9 +103,6 @@
   font-size: inherit;
   color: var(--color-primary);
   text-decoration: underline;
-  cursor: pointer;
-  background: none;
-  border: none;
 }
 
 .link-button:hover {

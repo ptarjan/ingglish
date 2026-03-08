@@ -279,7 +279,7 @@ function MappingStats({ version }: MappingStatsProps) {
 
   if (stats === null) {
     return (
-      <div className="mapping-stats">
+      <div className="card mapping-stats">
         <h3>Statistics</h3>
         <div className="stats-loading">Computing...</div>
       </div>
@@ -289,7 +289,7 @@ function MappingStats({ version }: MappingStatsProps) {
   const { experiment, ingglish } = stats;
 
   return (
-    <div className="mapping-stats">
+    <div className="card mapping-stats">
       <h3>Statistics {computing && <span className="stats-updating">(updating...)</span>}</h3>
 
       <div className="stats-cards">

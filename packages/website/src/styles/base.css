@@ -51,6 +51,8 @@ html {
   --font-mono: 'SF Mono', 'Fira Code', monospace;
   --font-shavian: 'Noto Sans Shavian', sans-serif;
   --font-deseret: 'Noto Sans Deseret', sans-serif;
+  --color-warning-fill: #eab308;
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 [data-theme='dark'] {
@@ -149,4 +151,33 @@ a:hover {
   to {
     opacity: 1;
   }
+}
+
+/* --- Utility classes --- */
+
+.btn-reset {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.label-caps {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

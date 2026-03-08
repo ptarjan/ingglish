@@ -158,7 +158,7 @@ function LearnToRead() {
             const bestScore = progress.scores[lesson.id];
             return (
               <button
-                className={`learn-lesson-card ${isCompleted ? 'learn-lesson-completed' : ''}`}
+                className={`card learn-lesson-card ${isCompleted ? 'learn-lesson-completed' : ''}`}
                 key={lesson.id}
                 onClick={() => {
                   startLesson(lesson);
@@ -205,7 +205,7 @@ function LearnToRead() {
           </h2>
         </div>
 
-        <div className="learn-explanation">
+        <div className="card learn-explanation">
           <p>{activeLesson.explanation}</p>
         </div>
 
@@ -213,7 +213,7 @@ function LearnToRead() {
           <h3>Examples</h3>
           <div className="learn-example-grid">
             {activeLesson.examples.map((ex) => (
-              <div className="learn-example-row" key={ex.english}>
+              <div className="card learn-example-row" key={ex.english}>
                 <span className="learn-example-english">{ex.english}</span>
                 <span aria-hidden="true" className="learn-example-arrow" />
                 <span className="learn-example-ingglish">{ex.ingglish}</span>
@@ -251,11 +251,11 @@ function LearnToRead() {
               style={{ width: `${((quizIndex + 1) / activeLesson.quiz.length) * 100}%` }}
             />
           </div>
-          <span className="game-tier-badge">Lesson {activeLesson.id}</span>
+          <span className="label-caps game-tier-badge">Lesson {activeLesson.id}</span>
           {supported && (
             <button
               aria-label={muted ? 'Unmute' : 'Mute'}
-              className="game-sound-toggle"
+              className="btn-reset game-sound-toggle"
               onClick={toggleMute}
               title={muted ? 'Sound on (m)' : 'Sound off (m)'}
             >
@@ -264,8 +264,8 @@ function LearnToRead() {
           )}
         </div>
 
-        <div className="game-card">
-          <div className="game-card-label">What English word is this?</div>
+        <div className="card game-card">
+          <div className="label-caps game-card-label">What English word is this?</div>
           <div className="learn-quiz-word">{current.ingglish}</div>
         </div>
 
@@ -293,7 +293,7 @@ function LearnToRead() {
         )}
 
         {showFeedback && (
-          <div className="game-feedback">
+          <div className="card game-feedback">
             {quizResults[quizIndex] === true ? (
               <div className="game-feedback-score" style={{ color: 'var(--color-success)' }}>
                 Correct!

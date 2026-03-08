@@ -202,7 +202,7 @@ function SpellThatSound() {
             English has multiple ways to spell the same sound. Can you pick the right spelling for
             each word?
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See a sound and a word with a missing spelling</li>
             <li>Pick the correct letters to complete the word</li>
             <li>10 rounds, from common patterns to tricky ones</li>
@@ -299,13 +299,13 @@ function SpellThatSound() {
             style={{ width: `${((round + 1) / questions.length) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">
+        <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -314,8 +314,8 @@ function SpellThatSound() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">Fill in the {currentQ.soundDescription}</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">Fill in the {currentQ.soundDescription}</div>
         <div className="sr-word">
           {currentQ.wordBefore}
           <span className="sr-highlight">{answered ? currentQ.correctSpelling : '___'}</span>

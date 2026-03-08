@@ -261,7 +261,7 @@ function SpellingRuleQuiz() {
             English uses the same letters for different sounds depending on word origin and context.
             Can you predict what sound a letter pattern makes?
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See a word with a highlighted spelling pattern</li>
             <li>Pick what sound that pattern makes in the word</li>
             <li>10 rounds, from common rules to tricky exceptions</li>
@@ -356,13 +356,13 @@ function SpellingRuleQuiz() {
             style={{ width: `${((round + 1) / questions.length) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">
+        <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -371,8 +371,10 @@ function SpellingRuleQuiz() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">What sound does the highlighted pattern make?</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">
+          What sound does the highlighted pattern make?
+        </div>
         <HighlightedWord
           pattern={currentQ.pattern}
           patternStart={currentQ.patternStart}

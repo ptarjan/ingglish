@@ -258,7 +258,7 @@ function App() {
             <h1>Ingglish</h1>
           </a>
           <button
-            className="subtitle-link"
+            className="btn-reset subtitle-link"
             onClick={() => {
               setActiveTab('guide');
             }}
@@ -275,7 +275,10 @@ function App() {
       </header>
 
       {activeTab !== 'tutorial' && (
-        <nav className="tabs" style={isLoading ? { visibility: 'hidden' } : undefined}>
+        <nav
+          className="tabs hide-scrollbar"
+          style={isLoading ? { visibility: 'hidden' } : undefined}
+        >
           {(
             [
               ['/', 'tutorial', 'Tutorial'],

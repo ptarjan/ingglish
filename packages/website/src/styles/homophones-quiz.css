@@ -58,9 +58,6 @@
 .homophones-feedback {
   padding: 1rem;
   margin-top: 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
 }
 
 .homophones-feedback-correct {

@@ -57,8 +57,6 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   transition:
     border-color 0.2s,
@@ -86,11 +84,7 @@
   align-self: flex-start;
   padding: 0.2rem 0.5rem;
   margin-top: auto;
-  font-size: 0.75rem;
-  font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   background: var(--color-surface-hover);
   border-radius: 0.25rem;
 }

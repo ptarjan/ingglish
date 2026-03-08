@@ -122,16 +122,13 @@
   font-size: 0.875rem;
   color: var(--color-warning);
   background: rgba(234, 179, 8, 0.1);
-  border: 1px solid #eab308;
+  border: 1px solid var(--color-warning-fill);
   border-radius: 0.5rem;
 }
 
 /* Info Box */
 .info-box {
   padding: 1.5rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
 }
 
 .info-box h3 {

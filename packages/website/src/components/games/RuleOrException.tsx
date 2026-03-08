@@ -198,7 +198,7 @@ function RuleOrException() {
           <p>
             English spelling has rules, but also lots of exceptions. Can you tell which is which?
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See a word and a spelling rule</li>
             <li>Decide: does the word follow the rule, or is it an exception?</li>
             <li>10 rounds, from obvious to tricky</li>
@@ -293,13 +293,13 @@ function RuleOrException() {
             style={{ width: `${((round + 1) / questions.length) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">
+        <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -308,8 +308,8 @@ function RuleOrException() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">Rule: {currentQ.rule}</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">Rule: {currentQ.rule}</div>
         <div className="sr-word">{currentQ.word}</div>
       </div>
 

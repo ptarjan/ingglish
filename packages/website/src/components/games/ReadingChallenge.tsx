@@ -272,7 +272,7 @@ function ReadingChallenge() {
             Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test.
             You'll see 10 sentences written in Ingglish — type what you think the English is.
           </p>
-          <ol className="challenge-rules">
+          <ol className="card challenge-rules">
             <li>Read the Ingglish sentence shown to you</li>
             <li>Type what you think it says in English before time runs out</li>
             <li>Get scored word-by-word (homophones accepted!)</li>
@@ -372,11 +372,11 @@ function ReadingChallenge() {
             {timeLeft}s
           </span>
         )}
-        <span className="challenge-tier-badge">{tierLabel}</span>
+        <span className="label-caps challenge-tier-badge">{tierLabel}</span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -385,8 +385,8 @@ function ReadingChallenge() {
         )}
       </div>
 
-      <div className="challenge-sentence-card">
-        <div className="challenge-sentence-label">Read this Ingglish sentence:</div>
+      <div className="card challenge-sentence-card">
+        <div className="label-caps challenge-sentence-label">Read this Ingglish sentence:</div>
         <div className="challenge-sentence-text">{getIngglishText(currentSentence)}</div>
       </div>
 
@@ -418,7 +418,7 @@ function ReadingChallenge() {
       </div>
 
       {currentFeedback && (
-        <div className="challenge-feedback">
+        <div className="card challenge-feedback">
           <div className="challenge-feedback-score">
             {currentFeedback.correct} / {currentFeedback.total} words correct
           </div>

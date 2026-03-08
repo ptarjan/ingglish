@@ -125,7 +125,7 @@ export default function WordExplorer() {
       )}
 
       {results.map((result) => (
-        <div className="word-card" key={result.word}>
+        <div className="card word-card" key={result.word}>
           <div className="word-card-header">
             <div className="word-main">
               <span className="word-english">{result.word}</span>
@@ -208,15 +208,15 @@ export default function WordExplorer() {
               <h4>All Formats</h4>
               <div className="format-comparison">
                 <div className="format-item">
-                  <span className="format-label">Ingglish</span>
+                  <span className="label-caps format-label">Ingglish</span>
                   <span className="format-value mono">{result.ingglish}</span>
                 </div>
                 <div className="format-item">
-                  <span className="format-label">IPA</span>
+                  <span className="label-caps format-label">IPA</span>
                   <span className="format-value mono">/{result.ipa}/</span>
                 </div>
                 <div className="format-item">
-                  <span className="format-label">{formatLabel}</span>
+                  <span className="label-caps format-label">{formatLabel}</span>
                   <span className="format-value mono">{result.formatted}</span>
                 </div>
               </div>

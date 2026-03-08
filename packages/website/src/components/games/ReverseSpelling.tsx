@@ -242,7 +242,7 @@ function ReverseSpelling() {
             Can you spell in Ingglish? You'll see an English word — type how it would look in
             phonetic Ingglish spelling. Close misspellings get partial credit!
           </p>
-          <ol className="challenge-rules">
+          <ol className="card challenge-rules">
             <li>See an English word displayed on screen</li>
             <li>Type the Ingglish spelling before time runs out</li>
             <li>Exact match = full credit, close = half credit</li>
@@ -353,11 +353,11 @@ function ReverseSpelling() {
             {timeLeft}s
           </span>
         )}
-        <span className="challenge-tier-badge">{getTierLabel(currentWord.tier)}</span>
+        <span className="label-caps challenge-tier-badge">{getTierLabel(currentWord.tier)}</span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -366,8 +366,8 @@ function ReverseSpelling() {
         )}
       </div>
 
-      <div className="reverse-prompt">
-        <div className="reverse-prompt-label">Spell this word in Ingglish:</div>
+      <div className="card reverse-prompt">
+        <div className="label-caps reverse-prompt-label">Spell this word in Ingglish:</div>
         <div className="reverse-prompt-word">{currentWord.english}</div>
       </div>
 
@@ -399,7 +399,7 @@ function ReverseSpelling() {
       </div>
 
       {currentResult && (
-        <div className="reverse-feedback-comparison">
+        <div className="card reverse-feedback-comparison">
           <div className="reverse-feedback-item">
             <div className="reverse-feedback-label">Your answer</div>
             <div className={`reverse-feedback-word ${feedbackClass}`}>{input.trim() || '—'}</div>

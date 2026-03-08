@@ -200,7 +200,7 @@ function OriginDetective() {
             English borrowed words from many languages, and the weird spellings are often clues to
             where a word came from. Can you guess the origin?
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See a word and a spelling clue</li>
             <li>Guess whether it came from Germanic, French, Latin, or Greek</li>
             <li>10 rounds, from obvious to surprising</li>
@@ -295,13 +295,13 @@ function OriginDetective() {
             style={{ width: `${((round + 1) / questions.length) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">
+        <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -310,8 +310,8 @@ function OriginDetective() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">Clue: {currentQ.spellingClue}</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">Clue: {currentQ.spellingClue}</div>
         <div className="sr-word">{currentQ.word}</div>
       </div>
 

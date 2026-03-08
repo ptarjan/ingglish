@@ -58,7 +58,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   const selectedIndex = enSamples.findIndex((p) => p.text === text);
 
   return (
-    <div className="experiment-translator">
+    <div className="card experiment-translator">
       <div className="experiment-translator-header">
         <h3>Test</h3>
         <select
@@ -94,7 +94,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
 
       {hasContent && (
         <div className="experiment-output">
-          <div className="experiment-output-label">Translated:</div>
+          <div className="label-caps experiment-output-label">Translated:</div>
           <MappedWordDisplay
             className="experiment-words"
             diffMap={diffMap}

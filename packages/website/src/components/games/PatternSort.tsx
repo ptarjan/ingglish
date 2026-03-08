@@ -239,7 +239,7 @@ function PatternSort() {
             The same letter pattern can make different sounds. Sort words into the right
             pronunciation bucket!
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See a word with a common spelling pattern</li>
             <li>Tap which pronunciation bucket it belongs in</li>
             <li>3 rounds with different patterns</li>
@@ -347,11 +347,11 @@ function PatternSort() {
             style={{ width: `${((globalWordIdx + 1) / globalTotal) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">{currentRound.pattern}</span>
+        <span className="label-caps game-tier-badge">{currentRound.pattern}</span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -360,8 +360,8 @@ function PatternSort() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">Sort by the {currentRound.pattern} sound</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">Sort by the {currentRound.pattern} sound</div>
         <div className="sr-word">{currentWord.word}</div>
       </div>
 

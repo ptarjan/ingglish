@@ -221,7 +221,7 @@ function HomophonesQuiz() {
             In Ingglish, words that sound the same are spelled the same. Can you figure out which
             English word an Ingglish spelling represents?
           </p>
-          <ol className="game-rules">
+          <ol className="card game-rules">
             <li>See an Ingglish word</li>
             <li>Pick which English word it could be</li>
             <li>10 rounds, from obvious to tricky</li>
@@ -318,13 +318,13 @@ function HomophonesQuiz() {
             style={{ width: `${((round + 1) / questions.length) * 100}%` }}
           />
         </div>
-        <span className="game-tier-badge">
+        <span className="label-caps game-tier-badge">
           {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
         </span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
-            className="game-sound-toggle"
+            className="btn-reset game-sound-toggle"
             onClick={toggleMute}
             title={muted ? 'Sound on (m)' : 'Sound off (m)'}
           >
@@ -333,8 +333,8 @@ function HomophonesQuiz() {
         )}
       </div>
 
-      <div className="game-card">
-        <div className="game-card-label">What English word is this?</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">What English word is this?</div>
         <div className="homophones-prompt">{currentQ.ingglish}</div>
       </div>
 
@@ -366,7 +366,7 @@ function HomophonesQuiz() {
       </div>
 
       {answered && (
-        <div className="homophones-feedback">
+        <div className="card homophones-feedback">
           {isCorrectAnswer(selectedChoice) ? (
             <div className="homophones-feedback-correct">Correct!</div>
           ) : (

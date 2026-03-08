@@ -306,7 +306,7 @@ function Docs(): JSX.Element {
           {sidebarOpen ? '\u00AB' : '\u00BB'}
         </button>
         <nav className={`docs-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
-          <ul>
+          <ul className="hide-scrollbar">
             {docs.map((doc) => (
               <li className={doc.section === undefined ? '' : 'docs-section-start'} key={doc.id}>
                 {doc.section !== undefined && (

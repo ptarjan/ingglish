@@ -117,7 +117,7 @@ function Extension(): React.JSX.Element {
         </ol>
         <p className="note">
           Or{' '}
-          <button className="link-button" onClick={handleCopy}>
+          <button className="btn-reset link-button" onClick={handleCopy}>
             {copied ? 'Copied!' : 'copy the bookmarklet code'}
           </button>{' '}
           and create a bookmark manually.

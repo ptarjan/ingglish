@@ -29,9 +29,6 @@
   padding: 1.25rem;
   margin-bottom: 2rem;
   text-align: left;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
 }
 
 .game-rules li {
@@ -99,11 +96,7 @@
 
 .game-tier-badge {
   padding: 0.2rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   background: var(--color-surface-hover);
   border-radius: 0.25rem;
 }
@@ -114,9 +107,6 @@
   margin-left: 0.5rem;
   line-height: 0;
   color: var(--color-text-muted);
-  cursor: pointer;
-  background: none;
-  border: none;
   opacity: 0.6;
   transition: opacity 0.2s;
 }
@@ -189,7 +179,7 @@
 }
 
 .game-round-fill-ok {
-  background: #eab308;
+  background: var(--color-warning-fill);
 }
 
 .game-round-fill-bad {
@@ -223,18 +213,12 @@
 .game-card {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
 }
 
 .game-card-label {
   margin-bottom: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .game-card-text {
@@ -264,7 +248,7 @@
 .game-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  box-shadow: var(--focus-ring);
 }
 
 .game-input:disabled {
@@ -282,9 +266,6 @@
 .game-feedback {
   padding: 1rem;
   margin-top: 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
 }
 
 .game-feedback-score {

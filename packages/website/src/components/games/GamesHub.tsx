@@ -129,7 +129,7 @@ function GamesHub({ onSelectGame }: { onSelectGame: (id: GameId) => void }): JSX
             <div className="games-hub-grid">
               {sectionGames.map((game) => (
                 <button
-                  className="games-hub-card"
+                  className="card games-hub-card"
                   key={game.id}
                   onClick={() => {
                     onSelectGame(game.id);
@@ -137,7 +137,7 @@ function GamesHub({ onSelectGame }: { onSelectGame: (id: GameId) => void }): JSX
                 >
                   <h3>{game.title}</h3>
                   <p>{game.description}</p>
-                  <span className="games-hub-difficulty">{game.difficulty}</span>
+                  <span className="label-caps games-hub-difficulty">{game.difficulty}</span>
                 </button>
               ))}
             </div>
