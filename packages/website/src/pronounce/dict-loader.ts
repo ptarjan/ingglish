@@ -1,14 +1,7 @@
 import { setDictLoader } from 'ingglish';
 import { loadDictionary, loadFrequencies, setDictionaryLoader } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
-import {
-  getLanguage,
-  IPA_LANGUAGE_OVERRIDES,
-  ipaToArpabet,
-  LANGUAGES,
-  toNullProto,
-} from '@ingglish/ipa';
-import { getStress, isVowel } from '@ingglish/phonemes';
+import { convertIpaEntries, getLanguage, LANGUAGES } from '@ingglish/ipa';
 
 export type { PhoneDict } from '@ingglish/ipa';
 export { LANGUAGES, lookupDict } from '@ingglish/ipa';
@@ -45,57 +38,6 @@ export async function loadDict(code: string): Promise<PhoneDict> {
   };
   cache.set(code, dict);
   return dict;
-}
-
-// Pre-compiled regex to strip IPA slashes and syllable dots
-const IPA_SLASH_RE = /^\/|\/$/g;
-
-/**
- * If no vowel carries a stress digit, apply stress 1 to the last vowel.
- * Gives useful output for languages whose IPA dicts omit stress.
- */
-function applyDefaultStress(arpabet: string[]): string[] {
-  const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
-  if (hasStress) {
-    return arpabet;
-  }
-  const result = [...arpabet];
-  for (let i = result.length - 1; i >= 0; i--) {
-    if (isVowel(result[i]!)) {
-      result[i] = result[i]! + '1';
-      break;
-    }
-  }
-  return result;
-}
-
-/**
- * Converts IPA string entries to ARPAbet arrays at load time.
- * Some dict files store entries as IPA strings (e.g. "/bɔ̃.ʒuʁ/") instead of
- * pre-converted ARPAbet arrays (e.g. ["B", "AO1", "N", "ZH", "UH1", "R"]).
- * This detects and converts them so the pipeline works uniformly.
- */
-function convertIpaEntries(
-  raw: Record<string, string | string[]>,
-  langCode: string
-): Record<string, string[]> {
-  // Check first entry to detect format
-  const firstValue = Object.values(raw)[0];
-  if (firstValue === undefined || Array.isArray(firstValue)) {
-    return toNullProto(raw as Record<string, string[]>);
-  }
-
-  // Entries are IPA strings — convert to ARPAbet
-  const overrides = IPA_LANGUAGE_OVERRIDES[langCode];
-  const result: Record<string, string[]> = Object.create(null) as Record<string, string[]>;
-  for (const [word, ipa] of Object.entries(raw)) {
-    const clean = (ipa as string).replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
-    const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
-    if (arpabet.length > 0) {
-      result[word] = arpabet;
-    }
-  }
-  return result;
 }
 
 /** Fetch a JSON dict file from the public directory. Cached to avoid double-fetching. */

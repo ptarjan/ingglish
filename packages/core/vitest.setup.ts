@@ -10,8 +10,7 @@ import {
 import '@ingglish/deseret'; // registers 'deseret' format
 import '@ingglish/ipa'; // registers 'ipa' format
 import '@ingglish/shavian'; // registers 'shavian' format
-import { getLanguage, IPA_LANGUAGE_OVERRIDES, ipaToArpabet, toNullProto } from '@ingglish/ipa';
-import { getStress, isVowel } from '@ingglish/phonemes';
+import { convertIpaEntries, getLanguage } from '@ingglish/ipa';
 import './src/register-english'; // registers English word resolver + G2P + default loader
 import { setDictLoader, setLangDict } from './src/dict-loader';
 
@@ -33,37 +32,10 @@ setDictLoader(async (lang) => {
   const json = await readFile(resolve(DICT_DIR, `${lang}.json`), 'utf-8');
   const raw = JSON.parse(json) as Record<string, string | string[]>;
   const langMeta = getLanguage(lang);
-  // Convert IPA strings to ARPABET arrays (mirrors website's convertIpaEntries)
-  const firstValue = Object.values(raw)[0];
-  let converted: Record<string, string[]>;
-  if (firstValue === undefined || Array.isArray(firstValue)) {
-    converted = toNullProto(raw as Record<string, string[]>);
-  } else {
-    const IPA_SLASH_RE = /^\/|\/$/g;
-    const overrides = IPA_LANGUAGE_OVERRIDES[lang];
-    converted = Object.create(null) as Record<string, string[]>;
-    for (const [word, ipa] of Object.entries(raw)) {
-      const clean = (ipa as string).replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
-      const arpabet = ipaToArpabet(clean, overrides);
-      // Apply default stress if needed
-      const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
-      if (!hasStress) {
-        for (let i = arpabet.length - 1; i >= 0; i--) {
-          if (isVowel(arpabet[i]!)) {
-            arpabet[i] = arpabet[i]! + '1';
-            break;
-          }
-        }
-      }
-      if (arpabet.length > 0) {
-        converted[word] = arpabet;
-      }
-    }
-  }
   const dict = {
     conventionalCapitals: langMeta?.conventionalCapitals,
     disableRColoring: langMeta?.disableRColoring,
-    entries: converted,
+    entries: convertIpaEntries(raw, lang),
     lang,
     nonLatinScript: langMeta?.nonLatinScript,
     preprocess: langMeta?.preprocess,

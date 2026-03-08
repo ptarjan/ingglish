@@ -16,6 +16,7 @@ registerIPA();
 
 export {
   buildReverseMap,
+  convertIpaEntries,
   getLanguage,
   LANGUAGES,
   lookupDict,

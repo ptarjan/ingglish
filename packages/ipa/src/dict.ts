@@ -495,6 +495,35 @@ export function buildReverseMap(dict: PhoneDict): Map<string, string[]> {
   return map;
 }
 
+/**
+ * Converts IPA string entries to ARPAbet arrays.
+ * Some dict files store entries as IPA strings (e.g. "/bɔ̃.ʒuʁ/") instead of
+ * pre-converted ARPAbet arrays (e.g. ["B", "AO1", "N", "ZH", "UH1", "R"]).
+ * This detects and converts them so the pipeline works uniformly.
+ */
+export function convertIpaEntries(
+  raw: Record<string, string | string[]>,
+  langCode: string
+): Record<string, string[]> {
+  // Check first entry to detect format
+  const firstValue = Object.values(raw)[0];
+  if (firstValue === undefined || Array.isArray(firstValue)) {
+    return toNullProto(raw as Record<string, string[]>);
+  }
+
+  // Entries are IPA strings — convert to ARPAbet
+  const overrides = IPA_LANGUAGE_OVERRIDES[langCode];
+  const result: Record<string, string[]> = Object.create(null) as Record<string, string[]>;
+  for (const [word, ipa] of Object.entries(raw)) {
+    const clean = (ipa as string).replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
+    const arpabet = applyDefaultStress(ipaToArpabet(clean, overrides));
+    if (arpabet.length > 0) {
+      result[word] = arpabet;
+    }
+  }
+  return result;
+}
+
 // ============================================================================
 // Forward Translation (source language → Ingglish)
 // ============================================================================
