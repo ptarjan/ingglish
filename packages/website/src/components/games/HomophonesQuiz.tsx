@@ -149,17 +149,25 @@ function HomophonesQuiz() {
 
   // Speak question when round changes
   useEffect(() => {
-    if (phase !== 'playing' || selectedChoice !== null) {return;}
+    if (phase !== 'playing' || selectedChoice !== null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     speak(`What English word is this? ${q.ingglish}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected
   useEffect(() => {
-    if (selectedChoice === null) {return;}
+    if (selectedChoice === null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     const correct = q.correctAnswers.some((a) => a.toLowerCase() === selectedChoice.toLowerCase());
     const answers = q.correctAnswers.join(', ');
     const verb = q.correctAnswers.length > 1 ? 'are all' : 'is';

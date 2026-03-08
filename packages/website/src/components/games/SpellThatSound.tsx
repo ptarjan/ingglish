@@ -133,17 +133,25 @@ function SpellThatSound() {
 
   // Speak question when round changes
   useEffect(() => {
-    if (phase !== 'playing' || selectedChoice !== null) {return;}
+    if (phase !== 'playing' || selectedChoice !== null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     speak(`Fill in the ${q.soundDescription}. ${q.wordBefore} blank ${q.wordAfter}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected
   useEffect(() => {
-    if (selectedChoice === null) {return;}
+    if (selectedChoice === null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     if (selectedChoice === q.correctSpelling) {
       speak(`Correct! ${q.explanation}`);
     } else {

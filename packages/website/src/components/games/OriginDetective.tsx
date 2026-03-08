@@ -133,17 +133,25 @@ function OriginDetective() {
 
   // Speak question when round changes
   useEffect(() => {
-    if (phase !== 'playing' || selectedChoice !== null) {return;}
+    if (phase !== 'playing' || selectedChoice !== null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     speak(`${q.word}. Clue: ${q.spellingClue}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected
   useEffect(() => {
-    if (selectedChoice === null) {return;}
+    if (selectedChoice === null) {
+      return;
+    }
     const q = questions[round];
-    if (!q) {return;}
+    if (!q) {
+      return;
+    }
     if (selectedChoice === q.correctOrigin) {
       speak(`Correct! ${q.explanation}`);
     } else {
