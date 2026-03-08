@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import { pickMatchPairs, shuffleColumns } from '../../data/speed-match-data';
+import { useGameProgress } from '../../games/useGameProgress';
 import { useGameShare } from '../../games/useGameShare';
 import { useStopwatch } from '../../games/useStopwatch';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
@@ -41,6 +42,10 @@ function SpeedMatch() {
   const stopwatch = useStopwatch();
   const startRef = useRef<HTMLButtonElement>(null);
   const { speak } = useGameSpeech();
+  const { progress, update: updateProgress } = useGameProgress<{ bestTime: null | number }>(
+    'ingglish-games-speedmatch',
+    { bestTime: null }
+  );
   const wrongTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
 
@@ -113,23 +118,25 @@ function SpeedMatch() {
     if (nextRound >= ROUNDS) {
       // Game complete
       const totalTime = stopwatch.stop();
-      // Check best time
-      const bestKey = 'ingglish-games-speedmatch-best';
-      try {
-        const prev = localStorage.getItem(bestKey);
-        const prevBest = prev ? Number(prev) : Infinity;
-        if (totalTime < prevBest) {
-          localStorage.setItem(bestKey, String(totalTime));
-          setIsNewRecord(true);
-        }
-      } catch {
-        // ignore
+      const prevBest = progress.bestTime ?? Infinity;
+      if (totalTime < prevBest) {
+        updateProgress(() => ({ bestTime: totalTime }));
+        setIsNewRecord(true);
       }
       setPhase('results');
     } else {
       setupRound(seed, nextRound);
     }
-  }, [matched, phase, currentRound, seed, setupRound, stopwatch]);
+  }, [
+    matched,
+    phase,
+    currentRound,
+    seed,
+    setupRound,
+    stopwatch,
+    progress.bestTime,
+    updateProgress,
+  ]);
 
   const handleWordClick = useCallback(
     (side: 'left' | 'right', id: number) => {
@@ -180,14 +187,7 @@ function SpeedMatch() {
     }
   }, [phase, totalTime, speak]);
 
-  const bestTime = (() => {
-    try {
-      const raw = localStorage.getItem('ingglish-games-speedmatch-best');
-      return raw ? Number(raw) : null;
-    } catch {
-      return null;
-    }
-  })();
+  const bestTime = progress.bestTime;
 
   // --- Intro ---
   if (phase === 'intro') {

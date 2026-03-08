@@ -6,6 +6,7 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ChallengeSentence } from '../../data/challenge-data';
 import { pickChallenge } from '../../data/challenge-data';
 import { getTierLabel } from '../../games/game-utils';
+import { useCountdown } from '../../games/useCountdown';
 import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
@@ -50,12 +51,28 @@ function ReadingChallenge() {
   const [results, setResults] = useState<RoundResult[]>([]);
   const [currentFeedback, setCurrentFeedback] = useState<null | SentenceScore>(null);
   const [reverseDictReady, setReverseDictReady] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
   const roundStartRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
+
+  const handleExpire = useCallback(() => {
+    const sentence = sentences[round];
+    if (!sentence || currentFeedback !== null) {
+      return;
+    }
+    const score = scoreSentence(sentence.tokens, input || '');
+    const elapsed = TIER_TIME_LIMITS[sentence.tier];
+    setCurrentFeedback(score);
+    setResults((prev) => [...prev, { score, sentence, timeTaken: elapsed }]);
+  }, [sentences, round, input, currentFeedback]);
+
+  const { reset: resetCountdown, timeLeft } = useCountdown({
+    onExpire: handleExpire,
+    paused: phase !== 'playing' || currentFeedback !== null,
+    seconds: 0,
+  });
 
   const overallScore =
     results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
@@ -87,41 +104,6 @@ function ReadingChallenge() {
     });
   }, []);
 
-  // Countdown timer — ticks every second while playing and not showing feedback
-  useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null) {
-      return;
-    }
-    if (timeLeft <= 0) {
-      return;
-    }
-    const id = setInterval(() => {
-      setTimeLeft((t) => t - 1);
-    }, 1000);
-    return () => {
-      clearInterval(id);
-    };
-  }, [phase, currentFeedback, timeLeft]);
-
-  // Auto-submit when timer reaches 0
-  useEffect(() => {
-    if (phase !== 'playing' || currentFeedback !== null) {
-      return;
-    }
-    if (timeLeft > 0) {
-      return;
-    }
-    // Time's up — submit whatever is in the input (may be empty)
-    const sentence = sentences[round];
-    if (!sentence) {
-      return;
-    }
-    const score = scoreSentence(sentence.tokens, input || '');
-    const elapsed = TIER_TIME_LIMITS[sentence.tier];
-    setCurrentFeedback(score);
-    setResults((prev) => [...prev, { score, sentence, timeTaken: elapsed }]);
-  }, [timeLeft, phase, currentFeedback, sentences, round, input]);
-
   const startChallenge = useCallback(
     (newSeed: number) => {
       stop();
@@ -132,12 +114,12 @@ function ReadingChallenge() {
       setResults([]);
       setCurrentFeedback(null);
       setInput('');
-      setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
+      resetCountdown(TIER_TIME_LIMITS[picked[0]!.tier]);
       roundStartRef.current = Date.now();
       setPhase('playing');
       setTimeout(() => inputRef.current?.focus(), 0);
     },
-    [stop]
+    [stop, resetCountdown]
   );
 
   const handleSubmit = useCallback(() => {
@@ -159,12 +141,12 @@ function ReadingChallenge() {
       setRound(nextRound);
       setInput('');
       setCurrentFeedback(null);
-      setTimeLeft(TIER_TIME_LIMITS[sentences[nextRound]!.tier]);
+      resetCountdown(TIER_TIME_LIMITS[sentences[nextRound]!.tier]);
       roundStartRef.current = Date.now();
       // Focus input on next tick
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [round, sentences]);
+  }, [round, sentences, resetCountdown]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

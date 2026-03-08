@@ -4,6 +4,7 @@ import { renderScoreCard } from '../../challenge/render-score-card';
 import type { ReverseWord } from '../../data/reverse-spelling-data';
 import { pickReverseSpelling } from '../../data/reverse-spelling-data';
 import { getTierLabel } from '../../games/game-utils';
+import { useCountdown } from '../../games/useCountdown';
 import { useGameShare } from '../../games/useGameShare';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useGameSpeech } from '../../hooks/useGameSpeech';
@@ -46,12 +47,29 @@ function ReverseSpelling() {
   const [input, setInput] = useState('');
   const [results, setResults] = useState<RoundResult[]>([]);
   const [currentResult, setCurrentResult] = useState<null | RoundResult>(null);
-  const [timeLeft, setTimeLeft] = useState(0);
   const roundStartRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
+
+  const handleExpire = useCallback(() => {
+    const word = words[round];
+    if (!word || currentResult !== null) {
+      return;
+    }
+    const score = scoreAnswer('', word.ingglish);
+    const elapsed = TIER_TIME_LIMITS[word.tier];
+    const result: RoundResult = { score, timeTaken: elapsed, word };
+    setCurrentResult(result);
+    setResults((prev) => [...prev, result]);
+  }, [words, round, currentResult]);
+
+  const { reset: resetCountdown, timeLeft } = useCountdown({
+    onExpire: handleExpire,
+    paused: phase !== 'playing' || currentResult !== null,
+    seconds: 0,
+  });
 
   const overallScore =
     results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0;
@@ -76,35 +94,6 @@ function ReverseSpelling() {
   useAutoFocus(nextRef, currentResult !== null);
   useAutoFocus(shareRef, phase === 'results');
 
-  // Countdown timer
-  useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null || timeLeft <= 0) {
-      return;
-    }
-    const id = setInterval(() => {
-      setTimeLeft((t) => t - 1);
-    }, 1000);
-    return () => {
-      clearInterval(id);
-    };
-  }, [phase, currentResult, timeLeft]);
-
-  // Auto-submit on timer expiry
-  useEffect(() => {
-    if (phase !== 'playing' || currentResult !== null || timeLeft > 0) {
-      return;
-    }
-    const word = words[round];
-    if (!word) {
-      return;
-    }
-    const score = scoreAnswer('', word.ingglish);
-    const elapsed = TIER_TIME_LIMITS[word.tier];
-    const result: RoundResult = { score, timeTaken: elapsed, word };
-    setCurrentResult(result);
-    setResults((prev) => [...prev, result]);
-  }, [timeLeft, phase, currentResult, words, round]);
-
   const startGame = useCallback(
     (newSeed: number) => {
       stop();
@@ -115,12 +104,12 @@ function ReverseSpelling() {
       setResults([]);
       setCurrentResult(null);
       setInput('');
-      setTimeLeft(TIER_TIME_LIMITS[picked[0]!.tier]);
+      resetCountdown(TIER_TIME_LIMITS[picked[0]!.tier]);
       roundStartRef.current = Date.now();
       setPhase('playing');
       setTimeout(() => inputRef.current?.focus(), 0);
     },
-    [stop]
+    [stop, resetCountdown]
   );
 
   const handleSubmit = useCallback(() => {
@@ -143,11 +132,11 @@ function ReverseSpelling() {
       setRound(nextRound);
       setInput('');
       setCurrentResult(null);
-      setTimeLeft(TIER_TIME_LIMITS[words[nextRound]!.tier]);
+      resetCountdown(TIER_TIME_LIMITS[words[nextRound]!.tier]);
       roundStartRef.current = Date.now();
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [round, words]);
+  }, [round, words, resetCountdown]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
