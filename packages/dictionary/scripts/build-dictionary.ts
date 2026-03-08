@@ -54,7 +54,7 @@ async function downloadDictionary(): Promise<string> {
   }
 }
 
-function parseDictionary(text: string): CMUDictionary {
+export function parseDictionary(text: string): CMUDictionary {
   console.log('Parsing dictionary...');
   const dict: CMUDictionary = {};
   const lines = text.split('\n');
@@ -207,7 +207,7 @@ async function generateWordFrequencies(): Promise<void> {
 /**
  * Strips stress markers (0, 1, 2) from the end of a phoneme.
  */
-function stripStress(phoneme: string): string {
+export function stripStress(phoneme: string): string {
   const lastChar = phoneme.charCodeAt(phoneme.length - 1);
   // '0' = 48, '1' = 49, '2' = 50
   if (lastChar >= 48 && lastChar <= 50) {
@@ -302,7 +302,7 @@ const NUMERIC_REGEX = /[0-9]/;
 /**
  * Score a word for sorting (higher = more common, should come first).
  */
-function getWordScore(word: string, freqMap: Map<string, number>): number {
+export function getWordScore(word: string, freqMap: Map<string, number>): number {
   const freq = freqMap.get(word.toLowerCase()) ?? 0;
   const isContraction = COMMON_CONTRACTIONS.has(word.toLowerCase());
 
@@ -385,4 +385,6 @@ async function generateEnJson(dict: CMUDictionary): Promise<void> {
   );
 }
 
-main().catch(console.error);
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch(console.error);
+}

@@ -1,0 +1,69 @@
+import { describe, expect, it } from 'vitest';
+import { applyDefaultStress, parseTsv } from './build-ipa-dicts';
+
+describe('parseTsv', () => {
+  it('parses tab-separated word/IPA pairs', () => {
+    const text = 'hello\t/hɛˈloʊ/\nworld\t/wɜːld/\n';
+    const dict = parseTsv(text);
+    expect(dict['hello']).toBe('/hɛˈloʊ/');
+    expect(dict['world']).toBe('/wɜːld/');
+  });
+
+  it('skips empty lines', () => {
+    const text = 'hello\t/hɛˈloʊ/\n\n\nworld\t/wɜːld/\n';
+    const dict = parseTsv(text);
+    expect(Object.keys(dict)).toHaveLength(2);
+  });
+
+  it('skips lines without tabs', () => {
+    const text = 'no tabs here\nhello\t/hɛˈloʊ/\n';
+    const dict = parseTsv(text);
+    expect(Object.keys(dict)).toEqual(['hello']);
+  });
+
+  it('keeps only first pronunciation when multiple separated by comma', () => {
+    const text = 'live\t/lɪv/, /laɪv/\n';
+    const dict = parseTsv(text);
+    expect(dict['live']).toBe('/lɪv/');
+  });
+
+  it('keeps first occurrence for duplicate words', () => {
+    const text = 'read\t/ɹiːd/\nread\t/ɹɛd/\n';
+    const dict = parseTsv(text);
+    expect(dict['read']).toBe('/ɹiːd/');
+  });
+});
+
+describe('applyDefaultStress', () => {
+  it('leaves already-stressed vowels unchanged', () => {
+    const input = ['HH', 'AH0', 'L', 'OW1'];
+    expect(applyDefaultStress(input)).toEqual(['HH', 'AH0', 'L', 'OW1']);
+  });
+
+  it('adds stress 1 to last vowel if none have stress', () => {
+    const input = ['HH', 'AH', 'L', 'OW'];
+    const result = applyDefaultStress(input);
+    // Last vowel OW gets stress 1
+    expect(result).toEqual(['HH', 'AH', 'L', 'OW1']);
+  });
+
+  it('handles single vowel', () => {
+    const input = ['K', 'AA'];
+    const result = applyDefaultStress(input);
+    expect(result).toEqual(['K', 'AA1']);
+  });
+
+  it('handles all consonants (no vowels)', () => {
+    const input = ['S', 'T', 'R'];
+    const result = applyDefaultStress(input);
+    // No vowels, nothing to stress
+    expect(result).toEqual(['S', 'T', 'R']);
+  });
+
+  it('does not mutate the original array', () => {
+    const input = ['HH', 'AH', 'L', 'OW'];
+    const original = [...input];
+    applyDefaultStress(input);
+    expect(input).toEqual(original);
+  });
+});

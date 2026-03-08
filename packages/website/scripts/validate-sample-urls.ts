@@ -14,6 +14,7 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 const SAMPLES_DIR = join(import.meta.dirname, '..', 'src', 'data', 'samples');
 const TIMEOUT_MS = 15_000;
@@ -63,14 +64,14 @@ interface CheckResult {
 }
 
 /** Extract charset from Content-Type header. */
-function charsetFromHeader(contentType: string | null): string | null {
+export function charsetFromHeader(contentType: string | null): string | null {
   if (!contentType) return null;
   const match = /charset\s*=\s*([^\s;]+)/i.exec(contentType);
   return match?.[1]?.replace(/['"]/g, '') ?? null;
 }
 
 /** Extract charset from HTML content (same logic as decodeHtmlBuffer). */
-function charsetFromHtml(html: string): string | null {
+export function charsetFromHtml(html: string): string | null {
   // XML declaration
   const xml = /encoding\s*=\s*["']([^"']+)["']/i.exec(html);
   if (xml?.[1]) return xml[1];
@@ -262,7 +263,9 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

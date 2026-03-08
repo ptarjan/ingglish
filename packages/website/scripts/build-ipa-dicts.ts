@@ -64,7 +64,7 @@ async function download(url: string): Promise<string> {
   return stdout;
 }
 
-function parseTsv(text: string): Record<string, string> {
+export function parseTsv(text: string): Record<string, string> {
   const dict: Record<string, string> = {};
   for (const line of text.split('\n')) {
     const trimmed = line.trim();
@@ -87,7 +87,7 @@ function parseTsv(text: string): Record<string, string> {
  * If no vowel carries a stress digit, apply stress 1 to the last vowel.
  * Gives useful output for languages whose IPA dicts omit stress (e.g. French).
  */
-function applyDefaultStress(arpabet: string[]): string[] {
+export function applyDefaultStress(arpabet: string[]): string[] {
   const hasStress = arpabet.some((p) => isVowel(p) && getStress(p) !== null);
   if (hasStress) return arpabet;
   const result = [...arpabet];
@@ -171,7 +171,9 @@ async function buildAll(): Promise<void> {
   console.log('Done!');
 }
 
-buildAll().catch((err: unknown) => {
-  console.error('Failed to build IPA dictionaries:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  buildAll().catch((err: unknown) => {
+    console.error('Failed to build IPA dictionaries:', err);
+    process.exit(1);
+  });
+}

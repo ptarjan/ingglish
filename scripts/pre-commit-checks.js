@@ -7,6 +7,7 @@
 
 import { execSync } from 'child_process';
 import { readFileSync, statSync } from 'fs';
+import { fileURLToPath } from 'url';
 
 // Maximum file size in bytes (500KB)
 const MAX_FILE_SIZE = 500 * 1024;
@@ -28,15 +29,15 @@ function getStagedFiles() {
 /**
  * Check for large files in staged changes
  */
-function checkLargeFiles(files) {
+export function checkLargeFiles(files, maxSize = MAX_FILE_SIZE) {
   const errors = [];
 
   for (const file of files) {
     try {
       const stats = statSync(file);
-      if (stats.size > MAX_FILE_SIZE) {
+      if (stats.size > maxSize) {
         const sizeKB = (stats.size / 1024).toFixed(1);
-        const maxKB = (MAX_FILE_SIZE / 1024).toFixed(0);
+        const maxKB = (maxSize / 1024).toFixed(0);
         errors.push(`${file}: ${sizeKB}KB exceeds ${maxKB}KB limit`);
       }
     } catch {
@@ -48,18 +49,10 @@ function checkLargeFiles(files) {
 }
 
 /**
- * Lint a .gitignore file for common issues
+ * Lint .gitignore content for common issues (pure function — no I/O).
  */
-function lintGitignore(filepath) {
+export function lintGitignoreContent(content, filepath) {
   const errors = [];
-  let content;
-
-  try {
-    content = readFileSync(filepath, 'utf8');
-  } catch {
-    return errors;
-  }
-
   const lines = content.split('\n');
 
   // Track patterns for duplicate detection
@@ -101,6 +94,21 @@ function lintGitignore(filepath) {
   }
 
   return errors;
+}
+
+/**
+ * Lint a .gitignore file for common issues
+ */
+function lintGitignore(filepath) {
+  let content;
+
+  try {
+    content = readFileSync(filepath, 'utf8');
+  } catch {
+    return [];
+  }
+
+  return lintGitignoreContent(content, filepath);
 }
 
 /**
@@ -154,4 +162,6 @@ function main() {
   }
 }
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

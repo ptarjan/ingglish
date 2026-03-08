@@ -58,7 +58,7 @@ interface KaikkiEntry {
  * Extract the best IPA from a kaikki sounds array.
  * Prefers phonemic /xxx/ over phonetic [xxx].
  */
-function extractIpa(sounds: KaikkiSound[]): string | null {
+export function extractIpa(sounds: KaikkiSound[]): string | null {
   let phonetic: string | null = null;
 
   for (const s of sounds) {
@@ -181,7 +181,9 @@ async function main(): Promise<void> {
   console.log(`\nDone! Total: ${totalEntries} entries across ${LANGUAGES.length} languages`);
 }
 
-main().catch((err: unknown) => {
-  console.error('Failed to extract kaikki IPA:', err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err: unknown) => {
+    console.error('Failed to extract kaikki IPA:', err);
+    process.exit(1);
+  });
+}
