@@ -69,7 +69,6 @@ export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
 
   useAutoFocus(startRef, phase === 'intro');
   useAutoFocus(nextRef, selectedChoice !== null);
-  useAutoFocus(shareRef, phase === 'results');
 
   const startQuiz = useCallback(
     (newSeed: number) => {
@@ -157,6 +156,8 @@ export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
     getScoreCanvas,
     scoreCard.filename
   );
+
+  useAutoFocus(shareRef, phase === 'results');
 
   const currentQuestion = questions[round];
   const answered = selectedChoice !== null;
