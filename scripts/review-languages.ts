@@ -153,9 +153,19 @@ const languages: LangTest[] = [
 
 const NOT_FOUND = '\uFFFD';
 
+/** Convert a dict entry (IPA string or ARPAbet array) to Ingglish. */
+function toIngglish(entry: string | string[], overrides?: Record<string, string>): string {
+  if (Array.isArray(entry)) {
+    return arpabetToFormat(entry, 'ingglish', opts);
+  }
+  const clean = entry.replace(/^\/|\/$/g, '').replaceAll('.', '');
+  const arp = ipaToArpabet(clean, overrides);
+  return arpabetToFormat(arp, 'ingglish', opts);
+}
+
 function translateQuote(
   text: string,
-  dict: Record<string, string>,
+  dict: Record<string, string | string[]>,
   overrides?: Record<string, string>
 ): string {
   return text
@@ -177,12 +187,9 @@ function translateQuote(
       }
       if (!core) return segment;
 
-      const ipa = dict[core] ?? dict[core.toLowerCase()];
-      if (ipa != null) {
-        const clean = ipa.replace(/^\/|\/$/g, '').replaceAll('.', '');
-        const arp = ipaToArpabet(clean, overrides);
-        const ing = arpabetToFormat(arp, 'ingglish', opts);
-        return leading.join('') + ing + trailing.join('');
+      const entry = dict[core] ?? dict[core.toLowerCase()];
+      if (entry != null) {
+        return leading.join('') + toIngglish(entry, overrides) + trailing.join('');
       }
 
       // Try splitting on apostrophes/hyphens
@@ -191,12 +198,10 @@ function translateQuote(
         let anyFound = false;
         const translated = parts.map((part) => {
           if (part === "'" || part === '-') return part;
-          const partIpa = dict[part] ?? dict[part.toLowerCase()];
-          if (partIpa != null) {
+          const partEntry = dict[part] ?? dict[part.toLowerCase()];
+          if (partEntry != null) {
             anyFound = true;
-            const clean = partIpa.replace(/^\/|\/$/g, '').replaceAll('.', '');
-            const arp = ipaToArpabet(clean, overrides);
-            return arpabetToFormat(arp, 'ingglish', opts);
+            return toIngglish(partEntry, overrides);
           }
           return NOT_FOUND + part;
         });
@@ -215,7 +220,7 @@ function translateQuote(
 // Main
 for (const lang of languages) {
   const dictPath = `${process.cwd()}/packages/website/public/ipa-dicts/${lang.file}`;
-  let dict: Record<string, string>;
+  let dict: Record<string, string | string[]>;
   try {
     dict = JSON.parse(fs.readFileSync(dictPath, 'utf-8'));
   } catch {
