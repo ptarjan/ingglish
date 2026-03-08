@@ -1,6 +1,6 @@
 import type React from 'react';
 import type { RefObject } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { renderScoreCard } from '../challenge/render-score-card';
 import { useGameShare } from '../games/useGameShare';
 import { useAutoFocus } from './useAutoFocus';
@@ -15,18 +15,11 @@ export interface QuizGameConfig<Q> {
     footerUrl: string;
     gameTitle: string;
   };
+  speakFeedback?: (question: Q, selectedChoice: string, correct: boolean) => string;
+  speakQuestion?: (question: Q) => string;
 }
 
-export interface QuizRoundResult<Q> {
-  correct: boolean;
-  question: Q;
-  selectedAnswer: string;
-  timeTaken: number;
-}
-
-type Phase = 'intro' | 'playing' | 'results';
-
-interface QuizGameReturn<Q> {
+export interface QuizGameReturn<Q> {
   answered: boolean;
   copied: boolean;
   correctCount: number;
@@ -47,10 +40,18 @@ interface QuizGameReturn<Q> {
   selectedChoice: null | string;
   shareRef: RefObject<HTMLButtonElement | null>;
   speech: ReturnType<typeof useGameSpeech>;
-
   startQuiz: (seed: number) => void;
   startRef: RefObject<HTMLButtonElement | null>;
 }
+
+export interface QuizRoundResult<Q> {
+  correct: boolean;
+  question: Q;
+  selectedAnswer: string;
+  timeTaken: number;
+}
+
+type Phase = 'intro' | 'playing' | 'results';
 
 export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
   const { getChoices, isCorrect, pickQuiz, scoreCard } = config;
@@ -65,10 +66,42 @@ export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const speech = useGameSpeech();
-  const { handleMuteKey, stop } = speech;
+  const { handleMuteKey, speak, stop } = speech;
+  const speakQuestionRef = useRef(config.speakQuestion);
+  const speakFeedbackRef = useRef(config.speakFeedback);
+  speakQuestionRef.current = config.speakQuestion;
+  speakFeedbackRef.current = config.speakFeedback;
 
   useAutoFocus(startRef, phase === 'intro');
   useAutoFocus(nextRef, selectedChoice !== null);
+
+  useEffect(() => {
+    const fn = speakQuestionRef.current;
+    if (!fn || phase !== 'playing' || selectedChoice !== null) {
+      return;
+    }
+    const q = questions[round];
+    if (q === undefined) {
+      return;
+    }
+    speak(fn(q));
+  }, [phase, round, selectedChoice, questions, speak]);
+
+  useEffect(() => {
+    const fn = speakFeedbackRef.current;
+    if (!fn || selectedChoice === null) {
+      return;
+    }
+    const q = questions[round];
+    if (q === undefined) {
+      return;
+    }
+    const lastResult = results.at(-1);
+    if (!lastResult) {
+      return;
+    }
+    speak(fn(q, selectedChoice, lastResult.correct));
+  }, [selectedChoice, questions, round, results, speak]);
 
   const startQuiz = useCallback(
     (newSeed: number) => {

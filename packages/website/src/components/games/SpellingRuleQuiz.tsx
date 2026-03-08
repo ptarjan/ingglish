@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import type { SpellingRuleQuestion } from '../../data/spelling-rule-quiz-data';
 import { pickQuiz } from '../../data/spelling-rule-quiz-data';
 import { getTierLabel } from '../../games/game-utils';
@@ -6,9 +5,9 @@ import { useQuizGame } from '../../hooks/useQuizGame';
 import '../../styles/spelling-rule-quiz.css';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
-import { GameResultActions } from './GameResultActions';
 import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
+import { QuizResults } from './QuizResults';
 
 function getScoreLabel(pct: number): string {
   if (pct >= 90) {
@@ -75,36 +74,15 @@ function SpellingRuleQuiz() {
       footerUrl: 'ingglish.com/games/spelling-rules',
       gameTitle: 'ENGLISH SPELLING RULE QUIZ',
     },
+    speakFeedback: (q, selectedChoice, _correct) =>
+      selectedChoice === q.correctSound
+        ? `Correct! ${q.explanation}`
+        : `Not quite, it's ${q.correctSound}. ${q.explanation}`,
+    speakQuestion: (q) => {
+      const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
+      return `What sound does the highlighted pattern make in ${q.word}? ${choiceList}`;
+    },
   });
-
-  const { speak } = game.speech;
-
-  useEffect(() => {
-    if (game.phase !== 'playing' || game.selectedChoice !== null) {
-      return;
-    }
-    const q = game.currentQuestion;
-    if (!q) {
-      return;
-    }
-    const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
-    speak(`What sound does the highlighted pattern make in ${q.word}? ${choiceList}`);
-  }, [game.phase, game.round, game.selectedChoice, game.currentQuestion, speak]);
-
-  useEffect(() => {
-    if (game.selectedChoice === null) {
-      return;
-    }
-    const q = game.currentQuestion;
-    if (!q) {
-      return;
-    }
-    if (game.selectedChoice === q.correctSound) {
-      speak(`Correct! ${q.explanation}`);
-    } else {
-      speak(`Not quite, it's ${q.correctSound}. ${q.explanation}`);
-    }
-  }, [game.selectedChoice, game.currentQuestion, game.round, speak]);
 
   if (game.phase === 'intro') {
     return (
@@ -127,46 +105,7 @@ function SpellingRuleQuiz() {
 
   if (game.phase === 'results') {
     return (
-      <div className="game-page">
-        <div className="game-results">
-          <h2>Quiz Complete!</h2>
-          <div className="game-overall-score">
-            {game.correctCount}/{game.results.length}
-          </div>
-          <p className="game-score-label">{getScoreLabel(game.overallPct)}</p>
-
-          <div className="game-round-bars">
-            {game.results.map((r, i) => {
-              const pct = r.correct ? 100 : 0;
-              const fillClass = r.correct ? 'game-round-fill-good' : 'game-round-fill-bad';
-              return (
-                <div className="game-round-row" key={i}>
-                  <span className="game-round-label">Q{i + 1}</span>
-                  <div className="game-round-bar">
-                    <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
-                  </div>
-                  <span className="quiz-round-word">{r.question.word}</span>
-                  <span className="game-round-time">{r.timeTaken}s</span>
-                </div>
-              );
-            })}
-          </div>
-
-          <GameResultActions
-            copied={game.copied}
-            newGameLabel="New Quiz"
-            onNewGame={() => {
-              game.startQuiz(Date.now());
-            }}
-            onSave={game.handleSave}
-            onShare={game.handleShare}
-            onTryAgain={() => {
-              game.startQuiz(game.seed);
-            }}
-            shareRef={game.shareRef}
-          />
-        </div>
-      </div>
+      <QuizResults game={game} getScoreLabel={getScoreLabel} renderWordLabel={(q) => q.word} />
     );
   }
 
