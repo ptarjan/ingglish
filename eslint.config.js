@@ -230,6 +230,7 @@ export default tseslint.config(
       'css/no-invalid-properties': 'off', // Can't validate CSS custom properties (var(--*))
       'css/use-baseline': 'off', // We target modern browsers; baseline warnings are noise
       'css/no-important': 'off', // Existing !important usage is intentional overrides
+      'css/font-family-fallbacks': 'off', // All fonts use CSS vars; only fires on `inherit` button resets
     },
   }
 );
