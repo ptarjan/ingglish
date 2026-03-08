@@ -67,6 +67,8 @@ export default {
       true,
       {
         available: 'widely',
+        // :has() — progressive enhancement for cursor animation in tutorial
+        ignoreSelectors: ['has'],
         ignoreProperties: {
           // Progressive enhancement — has -webkit-scrollbar fallback
           'scrollbar-width': ['/^.+$/'],

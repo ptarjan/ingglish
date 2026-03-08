@@ -7,13 +7,16 @@ const config: KnipConfig = {
       entry: ['scripts/*.{js,ts}'],
     },
     'packages/core': {
-      entry: ['scripts/**/*.{js,ts}'],
+      entry: ['scripts/**/*.{js,ts}', 'src/**/*.bench.ts'],
     },
     'packages/dictionary': {
       entry: ['scripts/**/*.{js,ts}'],
     },
     'packages/dom': {
-      entry: ['scripts/**/*.{js,ts}'],
+      entry: ['scripts/**/*.{js,ts}', 'src/**/*.bench.ts'],
+    },
+    'packages/normalize': {
+      entry: ['src/**/*.bench.ts'],
     },
     'packages/fallback': {
       entry: ['src/**/*.bench.ts'],
