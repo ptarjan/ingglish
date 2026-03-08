@@ -138,7 +138,7 @@ function RuleOrException() {
     if (!q) {
       return;
     }
-    speak(`${q.word}. Rule: ${q.rule}`);
+    speak(`${q.word}. Rule: ${q.rule}. 1, Follows Rule. 2, Exception.`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected

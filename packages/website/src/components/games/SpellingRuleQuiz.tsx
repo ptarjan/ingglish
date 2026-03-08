@@ -199,7 +199,8 @@ function SpellingRuleQuiz() {
     if (!q) {
       return;
     }
-    speak(`What sound does the highlighted pattern make in ${q.word}?`);
+    const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
+    speak(`What sound does the highlighted pattern make in ${q.word}? ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected

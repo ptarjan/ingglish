@@ -140,7 +140,8 @@ function OriginDetective() {
     if (!q) {
       return;
     }
-    speak(`${q.word}. Clue: ${q.spellingClue}`);
+    const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
+    speak(`${q.word}. Clue: ${q.spellingClue}. ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected

@@ -156,7 +156,8 @@ function HomophonesQuiz() {
     if (!q) {
       return;
     }
-    speak(`What English word is this? ${q.correctAnswers[0]}`);
+    const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
+    speak(`What English word is this? ${q.correctAnswers[0]}. ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected

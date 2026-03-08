@@ -140,7 +140,10 @@ function SpellThatSound() {
     if (!q) {
       return;
     }
-    speak(`Fill in the ${q.soundDescription}. ${q.wordBefore} blank ${q.wordAfter}`);
+    const choiceList = q.choices
+      .map((c, i) => `${i + 1}, ${q.wordBefore}${c}${q.wordAfter}`)
+      .join('. ');
+    speak(`Fill in the ${q.soundDescription}. ${q.wordBefore} blank ${q.wordAfter}. ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
   // Speak feedback when answer is selected

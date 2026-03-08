@@ -177,7 +177,7 @@ function PatternSort() {
     if (!r || !w) {
       return;
     }
-    speak(`Sort by the ${r.pattern} sound. ${w.word}`);
+    speak(`Sort by the ${r.pattern} sound. ${w.word}. 1, ${r.bucketA}. 2, ${r.bucketB}.`);
   }, [phase, roundIdx, wordIdx, selectedBucket, rounds, speak]);
 
   // Speak feedback when bucket is selected
