@@ -537,14 +537,6 @@ button.preset-action:disabled {
     grid-template-columns: 1fr;
   }
 
-  .experiment-right {
-    position: static;
-  }
-
-  .stats-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .experiment-table th,
   .experiment-table td {
     padding: 0.5rem;

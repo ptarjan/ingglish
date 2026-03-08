@@ -255,7 +255,6 @@
   }
 
   .docs-sidebar > ul {
-    position: static;
     display: flex;
     flex-wrap: nowrap;
     gap: 0.375rem;

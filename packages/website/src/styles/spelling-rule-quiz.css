@@ -98,8 +98,4 @@
   .sr-word {
     font-size: 2rem;
   }
-
-  .sr-choices {
-    grid-template-columns: 1fr 1fr;
-  }
 }
