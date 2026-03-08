@@ -15,6 +15,9 @@ const config: KnipConfig = {
     'packages/dom': {
       entry: ['scripts/**/*.{js,ts}', 'src/**/*.bench.ts'],
     },
+    'packages/extension': {
+      entry: ['scripts/**/*.{js,ts}'],
+    },
     'packages/normalize': {
       entry: ['src/**/*.bench.ts'],
     },

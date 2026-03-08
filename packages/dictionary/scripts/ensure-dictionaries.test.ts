@@ -12,7 +12,7 @@ describe('ensure-dictionaries', () => {
       encoding: 'utf-8',
       timeout: 10_000,
     });
-    expect(output).toContain('Dictionaries exist');
+    expect(output).toMatch(/Dictionaries (exist|already exist)/);
   });
 });
 
