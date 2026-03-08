@@ -2,9 +2,9 @@ import type React from 'react';
 import type { RefObject } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { renderScoreCard } from '../challenge/render-score-card';
+import { useGameShare } from '../games/useGameShare';
 import { useAutoFocus } from './useAutoFocus';
 import { useGameSpeech } from './useGameSpeech';
-import { useShareActions } from './useShareActions';
 
 export interface QuizGameConfig<Q> {
   getChoices: (question: Q) => string[];
@@ -64,8 +64,6 @@ export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
   const roundStartRef = useRef(0);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const shareRef = useRef<HTMLButtonElement>(null);
-
   const speech = useGameSpeech();
   const { handleMuteKey, stop } = speech;
 
@@ -155,7 +153,10 @@ export function useQuizGame<Q>(config: QuizGameConfig<Q>): QuizGameReturn<Q> {
     [results, overallPct, scoreCard.footerUrl, scoreCard.gameTitle]
   );
 
-  const { copied, handleSave, handleShare } = useShareActions(getScoreCanvas, scoreCard.filename);
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
+    getScoreCanvas,
+    scoreCard.filename
+  );
 
   const currentQuestion = questions[round];
   const answered = selectedChoice !== null;
