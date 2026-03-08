@@ -1,6 +1,6 @@
 // Popup script for Ingglish extension
 
-import type { OutputFormat } from '@ingglish/phonemes';
+import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import type { FormatResponse, StateResponse, ToggleResponse } from './types';
 
 const toggleBtn = document.querySelector<HTMLButtonElement>('#toggle-btn');
@@ -89,6 +89,10 @@ formatBtn.addEventListener('click', () => {
   );
 });
 
+function updateFormatUI(): void {
+  formatBtn.textContent = getFormatNativeLabel(currentFormat);
+}
+
 function updateUI(): void {
   if (isEnabled) {
     toggleBtn.textContent = 'Turn Off';
@@ -103,14 +107,4 @@ function updateUI(): void {
     statusText.style.color = '#888';
     statusDot.style.background = '#888';
   }
-}
-
-const FORMAT_LABELS: Record<string, string> = {
-  deseret: '𐐔𐐯𐑅𐐨𐑉𐐯𐐻',
-  ingglish: 'Ingglish',
-  ipa: 'IPA',
-  shavian: '𐑖𐑱𐑝𐑾𐑯',
-};
-function updateFormatUI(): void {
-  formatBtn.textContent = FORMAT_LABELS[currentFormat] ?? currentFormat;
 }

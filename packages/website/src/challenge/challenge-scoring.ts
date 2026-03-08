@@ -69,9 +69,8 @@ export function scoreSentence(tokens: TranslatedToken[], userInput: string): Sen
   let correct = 0;
 
   for (const [i, wordToken] of wordTokens.entries()) {
-    const token = wordToken;
-    const expected = stripPunctuation(token.original);
-    const ingglish = stripPunctuation(token.translated);
+    const expected = stripPunctuation(wordToken.original);
+    const ingglish = stripPunctuation(wordToken.translated);
     const actual = stripPunctuation(userWords[i] ?? '');
 
     if (!expected) {

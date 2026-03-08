@@ -2,6 +2,8 @@
 // Delegates translation to the background service worker via message passing
 
 import {
+  ATTR_ORIGINAL_WORD,
+  WORD_SPAN_CLASS,
   applyTranslationsMap,
   collectTextNodes,
   DEFAULT_SKIP_CLASSES,
@@ -268,7 +270,7 @@ async function retranslatePage(format: OutputFormat): Promise<void> {
   await new Promise((r) => requestAnimationFrame(r));
 
   const queryStart = performance.now();
-  const wordSpans = document.querySelectorAll('.ingglish-word[data-ingglish-orig]');
+  const wordSpans = document.querySelectorAll(`.${WORD_SPAN_CLASS}[${ATTR_ORIGINAL_WORD}]`);
   perf.query = performance.now() - queryStart;
 
   if (wordSpans.length === 0) {
@@ -409,7 +411,7 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
       const chunk = nodesToProcess.slice(i, i + CHUNK_SIZE);
       for (const textNode of chunk) {
         const parent = textNode.parentElement;
-        if (parent && !parent.closest('.ingglish-word')) {
+        if (parent && !parent.closest(`.${WORD_SPAN_CLASS}`)) {
           // Direct text replacement to avoid re-traversing
           await applyTranslationsMap(parent, translations, {
             showTooltips: true,
@@ -440,10 +442,8 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
       return;
     }
 
-    // Collect new nodes (Array.from needed for TypeScript type safety)
     for (const mutation of mutations) {
-      const nodes: Node[] = Array.from(mutation.addedNodes);
-      for (const node of nodes) {
+      for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const text = (node as Text).textContent?.trim() ?? '';
           if (text.length > 0) {

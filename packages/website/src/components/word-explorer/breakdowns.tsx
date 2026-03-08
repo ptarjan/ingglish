@@ -2,9 +2,9 @@ import { translateSync } from 'ingglish';
 import { getWordFrequency } from '@ingglish/dictionary';
 import { LETTER_PHONEMES } from '@ingglish/fallback';
 import type { G2PTrace } from '@ingglish/g2p';
-import { arpabetPhonemeToIPA } from '@ingglish/ipa';
 import type { OutputFormat } from '@ingglish/phonemes';
 import { arpabetToFormat, getFormatLabel, isVowel } from '@ingglish/phonemes';
+import { getCleanIPA } from '../phoneme-display';
 import { formatFrequency } from './analyze';
 
 export function BritishBreakdown({
@@ -88,11 +88,7 @@ export function G2PRuleTrace({ format, trace }: { format: OutputFormat; trace: G
             <tr key={i}>
               <td className="mono">{step.letters}</td>
               <td className="mono rule-code">{step.rule}</td>
-              <td className="mono">
-                {step.phonemes
-                  .map((p) => arpabetPhonemeToIPA(p).replaceAll('\u2060', ''))
-                  .join(' ')}
-              </td>
+              <td className="mono">{step.phonemes.map((p) => getCleanIPA(p)).join(' ')}</td>
               <td className="mono highlight">
                 {step.phonemes.length > 0 ? arpabetToFormat(step.phonemes, format) : '\u2014'}
               </td>
@@ -168,11 +164,7 @@ export function InitialismBreakdown({ format, word }: { format: OutputFormat; wo
                 <tr key={i}>
                   <td className="mono">{letter.toUpperCase()}</td>
                   <td className="mono">
-                    {phonemes
-                      ? phonemes
-                          .map((p) => arpabetPhonemeToIPA(p).replaceAll('\u2060', ''))
-                          .join(' ')
-                      : '\u2014'}
+                    {phonemes ? phonemes.map((p) => getCleanIPA(p)).join(' ') : '\u2014'}
                   </td>
                   <td className="mono highlight">
                     {phonemes ? arpabetToFormat(phonemes, format) : '\u2014'}
@@ -203,7 +195,7 @@ export function PhonemeChain({ format, phonemes }: { format: OutputFormat; phone
           {phonemes.map((p, i) => (
             <tr className={isVowel(p) ? 'vowel-row' : ''} key={i}>
               <td className="mono">{p}</td>
-              <td className="mono">{arpabetPhonemeToIPA(p).replaceAll('\u2060', '')}</td>
+              <td className="mono">{getCleanIPA(p)}</td>
               <td className="mono highlight">{arpabetToFormat([p], format)}</td>
               <td className="type-label">{isVowel(p) ? 'vowel' : 'consonant'}</td>
             </tr>

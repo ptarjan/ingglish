@@ -5,12 +5,10 @@
  */
 
 import type { LetterResult } from '../data/daily-challenge-data';
+import { CARD_BG, CARD_MUTED, CARD_TEXT, roundRect } from './canvas-utils';
 
 const W = 600;
 const H = 420;
-const BG = '#1a1a2e';
-const TEXT = '#e8e8f0';
-const MUTED = '#8888aa';
 const GREEN = '#538d4e';
 const YELLOW = '#b59f3b';
 const GRAY = '#3a3a4c';
@@ -39,23 +37,23 @@ export function renderDailyScoreCard(options: WordleScoreCardOptions): HTMLCanva
   const ctx = canvas.getContext('2d')!;
 
   // Background
-  ctx.fillStyle = BG;
+  ctx.fillStyle = CARD_BG;
   ctx.fillRect(0, 0, W, H);
 
   // Title
-  ctx.fillStyle = MUTED;
+  ctx.fillStyle = CARD_MUTED;
   ctx.font = '600 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('INGGLISH WORDLE', W / 2, 36);
 
   // Date
-  ctx.fillStyle = MUTED;
+  ctx.fillStyle = CARD_MUTED;
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.fillText(dateKey, W / 2, 56);
 
   // Attempt count
   const attemptText = won ? `${guessResults.length}/6` : 'X/6';
-  ctx.fillStyle = TEXT;
+  ctx.fillStyle = CARD_TEXT;
   ctx.font = '700 48px system-ui, sans-serif';
   ctx.fillText(attemptText, W / 2, 108);
 
@@ -77,38 +75,17 @@ export function renderDailyScoreCard(options: WordleScoreCardOptions): HTMLCanva
   // Streak
   const streakY = gridStartY + guessResults.length * (TILE_SIZE + TILE_GAP) + 20;
   if (streak > 0) {
-    ctx.fillStyle = TEXT;
+    ctx.fillStyle = CARD_TEXT;
     ctx.font = '600 16px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`${streak} day streak`, W / 2, streakY);
   }
 
   // Footer
-  ctx.fillStyle = MUTED;
+  ctx.fillStyle = CARD_MUTED;
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('ingglish.com/games/daily', W / 2, H - 20);
 
   return canvas;
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-): void {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
 }

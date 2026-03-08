@@ -127,19 +127,19 @@ function translateUnknownCore(
 
   // Try British spelling normalization (colour -> color)
   const britishResult = translateAsBritish(word, format, lookup);
-  if (britishResult !== null && britishResult.length > 0) {
+  if (britishResult !== null) {
     return { strategy: 'british', translated: britishResult };
   }
 
   // Try compound word splitting (github -> git + hub)
   const compoundResult = translateAsCompound(word, format, lookup, getFreq);
-  if (compoundResult !== null && compoundResult.length > 0) {
+  if (compoundResult !== null) {
     return { strategy: 'compound', translated: compoundResult };
   }
 
   // Try stemming
   const stemmedResult = translateWithStemming(word, format, lookup);
-  if (stemmedResult !== null && stemmedResult.length > 0) {
+  if (stemmedResult !== null) {
     return { strategy: 'stemming', translated: stemmedResult };
   }
 

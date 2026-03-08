@@ -20,6 +20,18 @@ const DEFAULT_R_COLORED: Record<string, string> = Object.fromEntries(R_COLORED_F
 /** Storage key for localStorage */
 const STORAGE_KEY = 'experimentMapping';
 
+/** Valid phoneme keys for URL hash decoding (built once at module load) */
+const VALID_PHONEME_KEYS: ReadonlySet<string> = (() => {
+  const keys = new Set(Object.keys(ARPABET_TO_INGGLISH_MAP));
+  keys.add('AH0');
+  for (const base of Object.keys(ARPABET_TO_INGGLISH_MAP)) {
+    for (let d = 0; d <= 2; d++) {
+      keys.add(`${base}${d}`);
+    }
+  }
+  return keys;
+})();
+
 export interface UseCustomMappingReturn {
   /** The underlying diff-only config */
   config: CustomMappingConfig;
@@ -224,14 +236,6 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
     clean = raw;
   }
 
-  // Valid keys: ARPABET phonemes (optionally with stress digit 0-2) and AH0
-  const validPhonemeKeys = new Set(Object.keys(ARPABET_TO_INGGLISH_MAP));
-  validPhonemeKeys.add('AH0');
-  for (const base of Object.keys(ARPABET_TO_INGGLISH_MAP)) {
-    for (let d = 0; d <= 2; d++) {
-      validPhonemeKeys.add(`${base}${d}`);
-    }
-  }
   const validRColoredKeys = new Set(R_COLORED_FORWARD.keys());
 
   const phonemeMap: Record<string, string> = {};
@@ -253,7 +257,7 @@ function decodeFromHash(hash: string): CustomMappingConfig | null {
           continue;
         }
         const phonemeKey = pair.slice(0, colonIndex);
-        if (validPhonemeKeys.has(phonemeKey)) {
+        if (VALID_PHONEME_KEYS.has(phonemeKey)) {
           phonemeMap[phonemeKey] = pair.slice(colonIndex + 1);
         }
       }

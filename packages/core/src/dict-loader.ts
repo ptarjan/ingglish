@@ -24,6 +24,11 @@ export interface TranslateOptions {
   lang?: string;
 }
 
+/** Resolve a possibly-undefined lang option to a concrete language code. */
+export function resolveLang(lang?: string): string {
+  return lang !== undefined && lang !== '' ? lang : 'en';
+}
+
 let dictLoader: DictLoader | undefined;
 const dictCache = new Map<string, PhoneDict>();
 const dictReverseCache = new Map<string, Map<string, string[]>>();

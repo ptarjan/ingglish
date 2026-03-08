@@ -34,7 +34,7 @@ import {
   getFormatPreservesCase,
 } from '@ingglish/phonemes';
 import type { TranslateOptions } from '../dict-loader';
-import { getLangDict } from '../dict-loader';
+import { getLangDict, resolveLang } from '../dict-loader';
 import type { TranslateResult } from './pipeline';
 import {
   capitalizeSentenceStarts,
@@ -72,8 +72,7 @@ const TITLE_CASE = /^[A-Z][a-z]*$/;
  */
 export function translateSync(text: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
-  const dict = requireLangDict(effectiveLang);
+  const dict = requireLangDict(resolveLang(lang));
 
   // Pre-processing (e.g. Khmer word segmentation)
   const processed = dict.preprocess === undefined ? text : dict.preprocess(text);
@@ -99,8 +98,7 @@ export function translateSyncWithMapping(
   options: TranslateOptions = {}
 ): TranslatedToken[] {
   const { format = 'ingglish', lang } = options;
-  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
-  const dict = requireLangDict(effectiveLang);
+  const dict = requireLangDict(resolveLang(lang));
 
   const processed = dict.preprocess === undefined ? text : dict.preprocess(text);
 
@@ -121,8 +119,7 @@ export function translateSyncWithMapping(
  */
 export function translateWord(word: string, options: TranslateOptions = {}): string {
   const { format = 'ingglish', lang } = options;
-  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
-  const dict = requireLangDict(effectiveLang);
+  const dict = requireLangDict(resolveLang(lang));
   return translateWordInternal(word, dict, format).translated;
 }
 

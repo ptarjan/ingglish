@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDictionary, getWordFrequency } from '@ingglish/dictionary';
 import { arpabetToFormat } from '@ingglish/phonemes';
-import { computeWeightedMetrics, type MetricInput } from '../lib/mapping-metrics';
+import { NON_ALPHA, computeWeightedMetrics, type MetricInput } from '../lib/mapping-metrics';
 
 interface FormatStats {
   /** Collision map for collision analysis */
@@ -30,9 +30,6 @@ interface WordChange {
   standard: string;
   word: string;
 }
-
-/** Pre-compiled regex for filtering dictionary entries with punctuation */
-const NON_ALPHA = /[^a-z]/i;
 
 /**
  * Pre-computed standard Ingglish data. Computed once on first use since the

@@ -1,6 +1,11 @@
 import { translateSync } from 'ingglish';
 import { useState, useCallback, useMemo } from 'react';
-import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD, stripStress } from '@ingglish/phonemes';
+import {
+  ARPABET_TO_INGGLISH_MAP,
+  R_COLORED_FORWARD,
+  isVowel,
+  stripStress,
+} from '@ingglish/phonemes';
 import {
   vowelGroups,
   consonantGroups,
@@ -9,62 +14,6 @@ import {
 } from '../data/spelling-guide-data';
 import type { UseCustomMappingReturn } from '../hooks/useCustomMapping';
 import { getCleanIPA, renderDynamicExamples } from './phoneme-display';
-
-/** Check for duplicate spellings (two phonemes mapped to same spelling) */
-function findDuplicates(phonemeMap: Record<string, string>): Map<string, string[]> {
-  const spellingToPhonemes = new Map<string, string[]>();
-  for (const [phoneme, spelling] of Object.entries(phonemeMap)) {
-    if (spelling.length === 0) {
-      continue;
-    }
-    const existing = spellingToPhonemes.get(spelling);
-    if (existing) {
-      existing.push(phoneme);
-    } else {
-      spellingToPhonemes.set(spelling, [phoneme]);
-    }
-  }
-  // Only return entries with >1 phoneme (actual duplicates)
-  const dupes = new Map<string, string[]>();
-  for (const [spelling, phonemes] of spellingToPhonemes) {
-    if (phonemes.length > 1) {
-      dupes.set(spelling, phonemes);
-    }
-  }
-  return dupes;
-}
-
-/** Get the default spelling for a phoneme */
-function getDefault(phoneme: string): string {
-  if (phoneme === 'AH0') {
-    return 'a';
-  }
-  // For stress variants (EY0, EY1, etc.), fall back to the base phoneme's spelling
-  return (
-    ARPABET_TO_INGGLISH_MAP[phoneme] ??
-    ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
-    phoneme.toLowerCase()
-  );
-}
-
-/** Check if a phoneme is a vowel (exists in the vowel map) */
-const VOWEL_PHONEMES = new Set([
-  'AA',
-  'AE',
-  'AH',
-  'AO',
-  'AW',
-  'AY',
-  'EH',
-  'ER',
-  'EY',
-  'IH',
-  'IY',
-  'OW',
-  'OY',
-  'UH',
-  'UW',
-]);
 
 interface EditableCellProps {
   defaultValue: string;
@@ -109,6 +58,43 @@ function EditableCell({ defaultValue, isDuplicate = false, onChange, value }: Ed
         value={editing ? editValue : value}
       />
     </td>
+  );
+}
+
+/** Check for duplicate spellings (two phonemes mapped to same spelling) */
+function findDuplicates(phonemeMap: Record<string, string>): Map<string, string[]> {
+  const spellingToPhonemes = new Map<string, string[]>();
+  for (const [phoneme, spelling] of Object.entries(phonemeMap)) {
+    if (spelling.length === 0) {
+      continue;
+    }
+    const existing = spellingToPhonemes.get(spelling);
+    if (existing) {
+      existing.push(phoneme);
+    } else {
+      spellingToPhonemes.set(spelling, [phoneme]);
+    }
+  }
+  // Only return entries with >1 phoneme (actual duplicates)
+  const dupes = new Map<string, string[]>();
+  for (const [spelling, phonemes] of spellingToPhonemes) {
+    if (phonemes.length > 1) {
+      dupes.set(spelling, phonemes);
+    }
+  }
+  return dupes;
+}
+
+/** Get the default spelling for a phoneme */
+function getDefault(phoneme: string): string {
+  if (phoneme === 'AH0') {
+    return 'a';
+  }
+  // For stress variants (EY0, EY1, etc.), fall back to the base phoneme's spelling
+  return (
+    ARPABET_TO_INGGLISH_MAP[phoneme] ??
+    ARPABET_TO_INGGLISH_MAP[stripStress(phoneme)] ??
+    phoneme.toLowerCase()
   );
 }
 
@@ -241,7 +227,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
       if (
         (advancedMode || showSchwa) &&
         ARPABET_TO_INGGLISH_MAP[phoneme] !== undefined &&
-        VOWEL_PHONEMES.has(phoneme)
+        isVowel(phoneme)
       ) {
         // Which stress variants to show
         const variants = advancedMode ? STRESS_VARIANTS : showSchwa ? ['0'] : [];

@@ -31,6 +31,9 @@ import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
 // than the primary to override it (prevents "kat" → "cut" while allowing "haloh" → "hello")
 const ALT_FREQUENCY_THRESHOLD = 5;
 
+/** Strips leading/trailing IPA notation brackets (/, [, ]) */
+const IPA_BRACKETS = /^[/[\]]+|[/[\]]+$/g;
+
 // ============================================================================
 // Core Translation Functions
 // ============================================================================
@@ -281,7 +284,7 @@ function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[
  */
 function reverseTranslateIPATextInternal(text: string): string {
   // Strip leading/trailing IPA notation brackets (/, [, ]) but preserve internal punctuation
-  const cleanText = text.replaceAll(/^[/[\]]+|[/[\]]+$/g, '');
+  const cleanText = text.replaceAll(IPA_BRACKETS, '');
   const tokens = tokenizeIPA(cleanText);
 
   return tokens
@@ -299,7 +302,7 @@ function reverseTranslateIPATextInternal(text: string): string {
  * Translates IPA text back to English with token-by-token mapping.
  */
 function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
-  const cleanText = text.replaceAll(/^[/[\]]+|[/[\]]+$/g, '');
+  const cleanText = text.replaceAll(IPA_BRACKETS, '');
   const tokens = tokenizeIPA(cleanText);
 
   return tokens.map((token) => {

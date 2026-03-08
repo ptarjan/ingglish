@@ -9,7 +9,6 @@ export type ExtensionMessage =
   | RetranslateMessage
   | SetFormatMessage
   | ToggleMessage
-  | TranslateMessage
   | TranslateWordsMessage;
 
 export interface FormatResponse {
@@ -49,15 +48,6 @@ export interface ToggleMessage {
 
 export interface ToggleResponse {
   enabled?: boolean;
-  error?: string;
-  success: boolean;
-}
-
-export interface TranslateMessage {
-  type: 'TRANSLATE';
-}
-
-export interface TranslateResponse {
   error?: string;
   success: boolean;
 }

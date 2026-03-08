@@ -13,7 +13,7 @@
 import { loadReverseDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { buildReverseMap } from '@ingglish/ipa';
 import type { TranslateOptions } from './dict-loader';
-import { getDictReverseMap, loadLangDict, setDictReverseMap } from './dict-loader';
+import { getDictReverseMap, loadLangDict, resolveLang, setDictReverseMap } from './dict-loader';
 import './register-english';
 import { reverseTranslateSync, translateSync } from './translate';
 
@@ -64,9 +64,8 @@ export async function reverseTranslate(
  */
 export async function translate(text: string, options: TranslateOptions = {}): Promise<string> {
   const { format = 'ingglish', lang } = options;
-  const effectiveLang = lang !== undefined && lang !== '' ? lang : 'en';
 
-  await loadLangDict(effectiveLang);
+  await loadLangDict(resolveLang(lang));
 
   return translateSync(text, { format, lang });
 }

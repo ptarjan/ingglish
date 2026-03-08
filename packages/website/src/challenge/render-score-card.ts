@@ -1,3 +1,5 @@
+import { CARD_BG, CARD_MUTED, CARD_TEXT, roundRect } from './canvas-utils';
+
 export interface RoundData {
   score: number; // 0-1
   timeTaken: number; // seconds
@@ -10,9 +12,6 @@ interface ScoreCardOptions {
 
 const W = 600;
 const H = 400;
-const BG = '#1a1a2e';
-const TEXT = '#e8e8f0';
-const MUTED = '#8888aa';
 const GREEN = '#22c55e';
 const YELLOW = '#eab308';
 const RED = '#ef4444';
@@ -35,11 +34,11 @@ export function renderScoreCard(
   const ctx = canvas.getContext('2d')!;
 
   // Background
-  ctx.fillStyle = BG;
+  ctx.fillStyle = CARD_BG;
   ctx.fillRect(0, 0, W, H);
 
   // Title
-  ctx.fillStyle = MUTED;
+  ctx.fillStyle = CARD_MUTED;
   ctx.font = '600 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(gameTitle, W / 2, 36);
@@ -72,7 +71,7 @@ export function renderScoreCard(
     const pct = Math.round(round.score * 100);
 
     // Round label
-    ctx.fillStyle = MUTED;
+    ctx.fillStyle = CARD_MUTED;
     ctx.font = '500 12px system-ui, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText(`${i + 1}`, barX - 16, mid);
@@ -91,20 +90,20 @@ export function renderScoreCard(
     }
 
     // Percentage
-    ctx.fillStyle = TEXT;
+    ctx.fillStyle = CARD_TEXT;
     ctx.font = '600 12px system-ui, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText(`${pct}%`, barX + barW + 36, mid);
 
     // Time
-    ctx.fillStyle = MUTED;
+    ctx.fillStyle = CARD_MUTED;
     ctx.font = '400 11px system-ui, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText(`${round.timeTaken}s`, barX + barW + 70, mid);
   }
 
   // Footer
-  ctx.fillStyle = MUTED;
+  ctx.fillStyle = CARD_MUTED;
   ctx.font = '400 13px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(footerUrl, W / 2, H - 20);
@@ -114,26 +113,4 @@ export function renderScoreCard(
 
 function barColor(pct: number): string {
   return pct >= 80 ? GREEN : pct >= 50 ? YELLOW : RED;
-}
-
-/** Draw a rounded rectangle path and leave it ready for fill/stroke. */
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-): void {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
 }

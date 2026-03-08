@@ -11,7 +11,7 @@ import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 
 /** Pre-compiled regex for filtering dictionary entries with punctuation */
-const NON_ALPHA = /[^a-z]/i;
+export const NON_ALPHA = /[^a-z]/i;
 
 // ============================================================
 // Types
