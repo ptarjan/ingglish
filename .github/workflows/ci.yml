@@ -33,9 +33,6 @@ jobs:
       - name: Unit tests
         run: npm test -- -- --coverage
 
-      - name: CLI integration tests
-        run: npx turbo test:cli
-
       - name: IPA dict coverage tests
         run: npx turbo test:dict-coverage
 
@@ -45,6 +42,18 @@ jobs:
         with:
           files: packages/*/coverage/coverage-final.json
           fail_ci_if_error: false
+
+  # CLI integration tests (script smoke tests) — run in parallel since they're slow (~4 min)
+  test-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          dict-cache: true
+
+      - name: CLI integration tests
+        run: npx turbo test:cli
 
   # Detect dead code, unused exports, and missing dependencies
   knip:
