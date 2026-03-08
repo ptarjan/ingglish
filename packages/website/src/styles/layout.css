@@ -107,6 +107,7 @@
 }
 
 .header-title {
+  position: relative;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -148,10 +149,11 @@
 }
 
 .toggle-buttons {
+  position: absolute;
+  right: 0;
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-left: auto;
 }
 
 .theme-toggle {
