@@ -209,14 +209,15 @@ describe('case-utils', () => {
    * Performance regression tests
    */
   describe('performance optimizations', () => {
-    it('detectCasePattern should minimize toLowerCase calls for lowercase and capitalized words', () => {
+    it('detectCasePattern should avoid toLowerCase for ASCII lowercase words', () => {
       const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
 
+      // ASCII lowercase words use codepoint loop — zero toLowerCase calls
       toLowerCaseSpy.mockClear();
       detectCasePattern('hello');
-      expect(toLowerCaseSpy).toHaveBeenCalledTimes(1);
+      expect(toLowerCaseSpy).toHaveBeenCalledTimes(0);
 
-      // Capitalized words now use charCode loop instead of slice+toLowerCase
+      // Capitalized words also use charCode loop instead of slice+toLowerCase
       toLowerCaseSpy.mockClear();
       detectCasePattern('Hello');
       expect(toLowerCaseSpy).toHaveBeenCalledTimes(0);
@@ -238,7 +239,7 @@ describe('case-utils', () => {
       expect(Object.is(result, mixedCaseWord)).toBe(false);
     });
 
-    it('detectCasePattern should handle many lowercase words efficiently', () => {
+    it('detectCasePattern should handle many lowercase words without toLowerCase', () => {
       const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');
 
       const lowercaseWords = ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'lazy', 'dog'];
@@ -248,7 +249,8 @@ describe('case-utils', () => {
         expect(detectCasePattern(word)).toBe('lower');
       }
 
-      expect(toLowerCaseSpy).toHaveBeenCalledTimes(lowercaseWords.length);
+      // All ASCII lowercase — zero toLowerCase calls via codepoint loop
+      expect(toLowerCaseSpy).toHaveBeenCalledTimes(0);
 
       toLowerCaseSpy.mockRestore();
     });

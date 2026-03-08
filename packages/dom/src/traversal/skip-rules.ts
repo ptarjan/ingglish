@@ -48,6 +48,12 @@ export const TRANSLATABLE_ATTRIBUTES = [
   'aria-description',
 ];
 
+// One-entry cache for non-default skip arrays (avoids re-creating Sets per call)
+let cachedTagsArr: string[] | undefined;
+let cachedTagsSet: Set<string> | undefined;
+let cachedClassesArr: string[] | undefined;
+let cachedClassesSet: Set<string> | undefined;
+
 /**
  * Checks if an element should be skipped during translation.
  */
@@ -56,11 +62,7 @@ export function shouldSkipElement(
   skipTags: string[],
   skipClasses: string[]
 ): boolean {
-  // Convert to Sets for O(1) lookup (cached if using defaults)
-  const tagsSet = skipTags === DEFAULT_SKIP_TAGS ? DEFAULT_SKIP_TAGS_SET : new Set(skipTags);
-  const classesSet =
-    skipClasses === DEFAULT_SKIP_CLASSES ? DEFAULT_SKIP_CLASSES_SET : new Set(skipClasses);
-  return checkElementSkip(element, tagsSet, classesSet);
+  return checkElementSkip(element, resolveTagsSet(skipTags), resolveClassesSet(skipClasses));
 }
 
 /**
@@ -134,4 +136,28 @@ function checkElementSkip(
   }
 
   return false;
+}
+
+function resolveClassesSet(skipClasses: string[]): Set<string> {
+  if (skipClasses === DEFAULT_SKIP_CLASSES) {
+    return DEFAULT_SKIP_CLASSES_SET;
+  }
+  if (skipClasses === cachedClassesArr) {
+    return cachedClassesSet!;
+  }
+  cachedClassesArr = skipClasses;
+  cachedClassesSet = new Set(skipClasses);
+  return cachedClassesSet;
+}
+
+function resolveTagsSet(skipTags: string[]): Set<string> {
+  if (skipTags === DEFAULT_SKIP_TAGS) {
+    return DEFAULT_SKIP_TAGS_SET;
+  }
+  if (skipTags === cachedTagsArr) {
+    return cachedTagsSet!;
+  }
+  cachedTagsArr = skipTags;
+  cachedTagsSet = new Set(skipTags);
+  return cachedTagsSet;
 }

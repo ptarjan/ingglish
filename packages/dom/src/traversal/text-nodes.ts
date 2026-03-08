@@ -5,6 +5,9 @@
 import { requireBrowser } from './browser';
 import { DEFAULT_SKIP_CLASSES, DEFAULT_SKIP_TAGS, shouldSkipElement } from './skip-rules';
 
+/** Pre-compiled regex to detect non-whitespace without allocating a trimmed string. */
+const HAS_NON_WHITESPACE = /\S/;
+
 /**
  * Collects all translatable text nodes from a DOM tree.
  * Skips elements based on tags, classes, and data attributes.
@@ -31,9 +34,11 @@ export function collectTextNodes(
           : NodeFilter.FILTER_SKIP;
       }
 
-      // For text nodes: accept if non-empty
-      const text = (node as Text).textContent?.trim() ?? '';
-      return text.length > 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      // For text nodes: accept if contains non-whitespace (avoids .trim() allocation)
+      const text = (node as Text).textContent;
+      return text !== null && HAS_NON_WHITESPACE.test(text)
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_SKIP;
     },
   });
 

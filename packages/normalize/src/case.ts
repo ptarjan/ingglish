@@ -63,8 +63,8 @@ export function detectCasePattern(word: string): CasePattern {
     (firstCode >= 65 && firstCode <= 90) || // A-Z (fast ASCII path)
     (firstCode > 127 && firstChar !== firstChar.toLowerCase()); // Unicode (É, Ö, etc.)
 
-  // All lowercase - most common case
-  if (!isFirstUpper && word === word.toLowerCase()) {
+  // All lowercase - most common case (codepoint check avoids string allocation)
+  if (!isFirstUpper && isAllLowerCase(word)) {
     return 'lower';
   }
 
@@ -176,4 +176,18 @@ function applyMixedCase(translated: string, original: string): string {
   }
 
   return result;
+}
+
+/** Checks if all characters are lowercase without allocating a new string. */
+function isAllLowerCase(word: string): boolean {
+  for (let i = 0; i < word.length; i++) {
+    const c = word.codePointAt(i)!;
+    if (c >= 65 && c <= 90) {
+      return false;
+    } // ASCII uppercase A-Z
+    if (c > 127 && word[i] !== word[i]!.toLowerCase()) {
+      return false;
+    } // Unicode
+  }
+  return true;
 }
