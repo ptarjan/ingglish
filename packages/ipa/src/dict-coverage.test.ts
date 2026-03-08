@@ -8,16 +8,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { isVowel } from '@ingglish/phonemes';
-import type { PhoneDict } from './index';
-import {
-  getLanguage,
-  ipaToArpabet,
-  IPA_LANGUAGE_OVERRIDES,
-  LANGUAGES,
-  lookupDict,
-  NOT_FOUND_MARKER,
-  translateDict,
-} from './index';
+import type { PhoneDict } from './dict';
+import { getLanguage, LANGUAGES, lookupDict } from './dict';
+import { ipaToArpabet } from './from-ipa';
+import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
 
 /** Convert dict entries from IPA strings to ARPAbet arrays if needed. */
 function convertIpaEntriesToArpabet(
@@ -118,8 +112,7 @@ describe('Khmer compound decomposition', () => {
     ];
     const failures: string[] = [];
     for (const word of browserSegments) {
-      const result = translateDict(word, dict);
-      if (result.includes(NOT_FOUND_MARKER)) {
+      if (!lookupDict(dict, word)) {
         failures.push(word);
       }
     }

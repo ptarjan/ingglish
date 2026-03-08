@@ -20,13 +20,7 @@ import {
 } from '../../src/translate/reverse.js';
 import '../../src/register-english.js';
 import { setLangDict } from '../../src/dict-loader.js';
-import {
-  getLanguage,
-  LANGUAGES,
-  NOT_FOUND_MARKER,
-  toNullProto,
-  translateDict,
-} from '@ingglish/ipa';
+import { getLanguage, LANGUAGES, NOT_FOUND_MARKER, toNullProto } from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -94,13 +88,14 @@ async function main() {
     }
 
     const dict = loadPhoneDict(langCode);
+    setLangDict(langCode, dict);
     console.log(`${lang.label}:`, text);
     console.log('---');
 
     // Show per-word output
     const words = text.match(/\S+/g) || [];
     for (const word of words) {
-      const result = translateDict(word, dict, 'ingglish');
+      const result = translateSync(word, { lang: langCode });
       if (result.includes(NOT_FOUND_MARKER)) {
         const clean = result.replaceAll(NOT_FOUND_MARKER, '');
         console.log(`? "${word}" -> not found (kept as "${clean}")`);
@@ -110,7 +105,7 @@ async function main() {
     }
 
     console.log('---');
-    console.log('Full translation:', translateDict(text, dict, 'ingglish'));
+    console.log('Full translation:', translateSync(text, { lang: langCode }));
     return;
   }
 

@@ -22,8 +22,6 @@ export {
   lookupDict,
   NOT_FOUND_MARKER,
   toNullProto,
-  translateDict,
-  translateDictWithMapping,
 } from './dict';
 export type { Language, PhoneDict } from './dict';
 export { ipaToArpabet, ipaToArpabetClean } from './from-ipa';

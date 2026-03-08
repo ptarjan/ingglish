@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
-import type { PhoneDict } from './index';
-import { G2P_CONVERTERS, lookupDict, NOT_FOUND_MARKER, translateDict } from './index';
+import type { PhoneDict } from './dict';
+import { lookupDict } from './dict';
+import { G2P_CONVERTERS } from './g2p';
 
 describe('G2P converters', () => {
   describe('Finnish', () => {
@@ -75,19 +76,11 @@ describe('G2P integration', () => {
     expect(lookupDict(dict, 'talo')).toEqual(['T', 'AA1', 'L', 'OW0']);
   });
 
-  it('translateDict produces output via G2P fallback', () => {
-    expect(translateDict('talo', { entries: {}, lang: 'fi' }, 'ingglish')).not.toContain(
-      NOT_FOUND_MARKER
-    );
-    expect(translateDict('saluton', { entries: {}, lang: 'eo' }, 'ingglish')).not.toContain(
-      NOT_FOUND_MARKER
-    );
-    expect(translateDict('habari', { entries: {}, lang: 'sw' }, 'ingglish')).not.toContain(
-      NOT_FOUND_MARKER
-    );
-    expect(translateDict('makan', { entries: {}, lang: 'ma' }, 'ingglish')).not.toContain(
-      NOT_FOUND_MARKER
-    );
+  it('lookupDict falls back to G2P for all supported languages', () => {
+    expect(lookupDict({ entries: {}, lang: 'fi' }, 'talo')).toBeDefined();
+    expect(lookupDict({ entries: {}, lang: 'eo' }, 'saluton')).toBeDefined();
+    expect(lookupDict({ entries: {}, lang: 'sw' }, 'habari')).toBeDefined();
+    expect(lookupDict({ entries: {}, lang: 'ma' }, 'makan')).toBeDefined();
   });
 
   it('does not apply G2P to unsupported languages', () => {

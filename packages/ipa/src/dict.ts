@@ -1,18 +1,5 @@
-import {
-  applyCasePattern,
-  detectCasePattern,
-  normalizeApostrophes,
-  stripDiacritics,
-} from '@ingglish/normalize';
-import {
-  arpabetToFormat,
-  arpabetToIngglish,
-  getFormatPreservesCase,
-  getStress,
-  isVowel,
-  stripStress,
-} from '@ingglish/phonemes';
-import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
+import { stripDiacritics } from '@ingglish/normalize';
+import { arpabetToIngglish, getStress, isVowel, stripStress } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { G2P_CONVERTERS } from './g2p';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
@@ -48,12 +35,6 @@ export function toNullProto<V>(obj: Record<string, V>): Record<string, V> {
 
 // Pre-compiled regexes (avoid per-call RegExp object creation)
 const IPA_SLASH_RE = /^\/|\/$/g;
-const WHITESPACE_SPLIT_RE = /(\s+)/;
-const WHITESPACE_RE = /^\s+$/;
-// Include \p{M} (combining marks) so Odia/Khmer vowel signs aren't stripped
-const LEADING_NON_LETTER_RE = /^[^\p{L}\p{M}]/u;
-const TRAILING_NON_LETTER_RE = /[^\p{L}\p{M}]$/u;
-const CONTRACTION_SPLIT_RE = /(?<=['-])|(?=['-])/;
 
 /**
  * Unified phoneme dictionary type. Entries are ARPAbet arrays, converted
@@ -228,7 +209,9 @@ export function ipaToIngglish(ipa: string): string {
  * Tries: overrides → exact → lowercase → title → accent-stripped →
  * curly apostrophes → word resolvers → apostrophe splitting → confident G2P.
  */
-export function lookupDict(dict: PhoneDict, word: string): string[] | undefined {
+export function lookupDict(dict: PhoneDict, rawWord: string): string[] | undefined {
+  // Normalize curly apostrophes to straight (U+2019 → U+0027)
+  const word = rawWord.includes('\u2019') ? rawWord.replaceAll('\u2019', "'") : rawWord;
   const { entries, lang } = dict;
   const overrides = getOverridesArpabet(lang);
   const override = overrides?.[word] ?? overrides?.[word.toLowerCase()];
@@ -409,15 +392,6 @@ function decomposeKhmer(
 }
 
 /**
- * Check if a word's first character belongs to a caseless script
- * (e.g. Arabic, Japanese, Chinese, Korean) where toUpperCase === toLowerCase.
- */
-function isCaselessWord(word: string): boolean {
-  const ch = word[0];
-  return ch !== undefined && ch.toUpperCase() === ch.toLowerCase();
-}
-
-/**
  * Try to decompose a Khmer compound into known dictionary entries.
  * Uses longest-match-first greedy segmentation. Returns concatenated ARPAbet or undefined.
  * Searches both the dict and Khmer overrides so that browser-segmented
@@ -452,9 +426,6 @@ WORD_RESOLVERS.km = (entries, word) => lookupKhmerCompound(entries, word);
 
 /** Marker for words not found in the dictionary */
 export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
-
-/** Sentence-ending punctuation (Latin and CJK) */
-const SENTENCE_END_RE = /[.!?。！？]$/;
 
 /**
  * Builds a reverse map from a PhoneDict: stress-free ARPAbet key → source words.
@@ -522,195 +493,4 @@ export function convertIpaEntries(
     }
   }
   return result;
-}
-
-// ============================================================================
-// Forward Translation (source language → Ingglish)
-// ============================================================================
-
-/**
- * Translates foreign text to the specified output format.
- * Words not found in the dictionary are returned with a marker prefix.
- *
- * For caseless scripts (Arabic, Japanese, Chinese, Korean), sentence-initial
- * words are automatically capitalized in the output.
- */
-export function translateDict(
-  text: string,
-  dict: PhoneDict,
-  format: OutputFormat = 'ingglish'
-): string {
-  const tokens = translateDictWithMapping(text, dict, format);
-  return tokens
-    .map((t) => (!t.matched && t.isWord ? NOT_FOUND_MARKER + t.original : t.translated))
-    .join('');
-}
-
-/**
- * Like {@link translateDict}, but returns token-by-token mappings instead of a string.
- * Each token includes the original text, translation, and whether it matched the dictionary.
- */
-export function translateDictWithMapping(
-  text: string,
-  dict: PhoneDict,
-  format: OutputFormat = 'ingglish'
-): TranslatedToken[] {
-  let atSentenceStart = true;
-
-  // Pre-process text (e.g. Khmer word segmentation)
-  const processed = dict.preprocess ? dict.preprocess(text) : text;
-
-  const tokens: TranslatedToken[] = [];
-
-  for (const segment of normalizeApostrophes(processed).split(WHITESPACE_SPLIT_RE)) {
-    // Preserve whitespace segments as-is
-    if (WHITESPACE_RE.test(segment)) {
-      tokens.push({ isWord: false, matched: true, original: segment, translated: segment });
-      continue;
-    }
-    if (!segment) {
-      continue;
-    }
-
-    // Strip leading/trailing punctuation for lookup
-    const leading: string[] = [];
-    const trailing: string[] = [];
-    let core = segment;
-
-    // Peel off leading non-letter characters (Unicode-aware so Arabic/CJK aren't stripped)
-    while (core.length > 0 && LEADING_NON_LETTER_RE.test(core)) {
-      leading.push(core[0]!);
-      core = core.slice(1);
-    }
-    // Peel off trailing non-letter characters
-    while (core.length > 0 && TRAILING_NON_LETTER_RE.test(core)) {
-      trailing.unshift(core.at(-1)!);
-      core = core.slice(0, -1);
-    }
-
-    if (!core) {
-      tokens.push({ isWord: false, matched: true, original: segment, translated: segment });
-      continue;
-    }
-
-    let casePattern = detectCasePattern(core);
-    const preservesCase = getFormatPreservesCase(format);
-
-    // For caseless scripts, capitalize sentence-initial words
-    if (atSentenceStart && preservesCase && casePattern === 'lower' && isCaselessWord(core)) {
-      casePattern = 'capitalized';
-    }
-
-    // Update sentence tracking: sentence ends after . ! ? 。 ！ ？
-    atSentenceStart = SENTENCE_END_RE.test(trailing.join(''));
-
-    const leadStr = leading.join('');
-    const trailStr = trailing.join('');
-
-    const phonemes = lookupDict(dict, core);
-    if (phonemes) {
-      const translated = arpabetToFormat(phonemes, format, {
-        disableRColoring: dict.disableRColoring,
-      });
-      const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-      tokens.push({
-        isWord: true,
-        matched: true,
-        original: segment,
-        translated: leadStr + cased + trailStr,
-      });
-      continue;
-    }
-
-    // Try splitting on apostrophes/hyphens (French contractions: l'essentiel, s'il, allez-vous)
-    const parts = core.split(CONTRACTION_SPLIT_RE);
-    if (parts.length > 1) {
-      // Collect phonemes for each non-separator part
-      const partPhonemes: (string[] | undefined)[] = parts.map((part, i) => {
-        if (part === "'" || part === '-') {
-          return;
-        }
-        let phonemes: string[] | undefined;
-        // In contraction context, prefer clitic form (d' → /d‿/) over
-        // bare letter name (d → /de/) so the consonant merges naturally
-        if (parts[i + 1] === "'") {
-          phonemes = lookupDict(dict, part + "'");
-        }
-        phonemes ??= lookupDict(dict, part);
-        return phonemes;
-      });
-
-      const allFound = parts.every(
-        (part, i) => part === "'" || part === '-' || partPhonemes[i] !== undefined
-      );
-
-      if (allFound) {
-        // Merge phonemes across apostrophes, keep hyphens as group separators.
-        // French clitics (l', s', d') flow into the next word phonetically
-        // (e.g. l'ordre → /lɔʁdʁ/ → "lawrdr", not "el'awrdr").
-        const groups: string[][] = [[]];
-        for (const [i, part_] of parts.entries()) {
-          const part = part_;
-          if (part === "'") {
-            continue;
-          }
-          if (part === '-') {
-            groups.push([]);
-            continue;
-          }
-          const ph = partPhonemes[i]!;
-          groups.at(-1)!.push(...ph);
-        }
-        const translated = groups
-          .map((ph) => arpabetToFormat(ph, format, { disableRColoring: dict.disableRColoring }))
-          .join('-');
-        const cased = preservesCase ? applyCasePattern(translated, casePattern) : translated;
-        tokens.push({
-          isWord: true,
-          matched: true,
-          original: segment,
-          translated: leadStr + cased + trailStr,
-        });
-        continue;
-      }
-
-      // Fallback: some parts not found — translate each independently
-      let isFirstPart = true;
-      const translated = parts.map((part, i) => {
-        if (part === "'" || part === '-') {
-          return part;
-        }
-        const partCase = isFirstPart ? casePattern : detectCasePattern(part);
-        isFirstPart = false;
-        const partPh = partPhonemes[i];
-        if (partPh) {
-          const partTranslated = arpabetToFormat(partPh, format, {
-            disableRColoring: dict.disableRColoring,
-          });
-          return preservesCase ? applyCasePattern(partTranslated, partCase) : partTranslated;
-        }
-        return NOT_FOUND_MARKER + part;
-      });
-      if (
-        translated.some(
-          (t, i) => parts[i] !== "'" && parts[i] !== '-' && !t.startsWith(NOT_FOUND_MARKER)
-        )
-      ) {
-        // Partial match — strip NOT_FOUND_MARKERs in the token translated text
-        const translatedText = translated.map((t) => t.replaceAll(NOT_FOUND_MARKER, '')).join('');
-        tokens.push({
-          isWord: true,
-          matched: false,
-          original: segment,
-          translated: leadStr + translatedText + trailStr,
-        });
-        continue;
-      }
-    }
-
-    // Not found — return original
-    tokens.push({ isWord: true, matched: false, original: segment, translated: segment });
-  }
-
-  return tokens;
 }
