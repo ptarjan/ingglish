@@ -2,15 +2,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { renderScoreCard } from '../../challenge/render-score-card';
 import type { QuizQuestion } from '../../data/homophone-quiz-data';
 import { pickQuiz } from '../../data/homophone-quiz-data';
-import { getTierLabel } from '../../games/game-utils';
-import { useAutoFocus } from '../../hooks/useAutoFocus';
-import { useGameSpeech } from '../../hooks/useGameSpeech';
-import { useShareActions } from '../../hooks/useShareActions';
+import { useGameShare } from '../../games/useGameShare';
+import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
 import '../../styles/homophones-quiz.css';
-import { GameIntro } from './GameIntro';
-import { GameProgressBar } from './GameProgressBar';
-import { GameResultActions } from './GameResultActions';
-import { QuizChoices } from './QuizChoices';
 
 type Phase = 'intro' | 'playing' | 'results';
 
@@ -44,12 +38,47 @@ function HomophonesQuiz() {
   const roundStartRef = useRef(0);
   const startRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const shareRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
-  useAutoFocus(startRef, phase === 'intro');
-  useAutoFocus(nextRef, selectedChoice !== null);
-  useAutoFocus(shareRef, phase === 'results');
+  const overallScore =
+    results.length > 0 ? results.filter((r) => r.correct).length / results.length : 0;
+  const overallPct = Math.round(overallScore * 100);
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        results.map((r) => ({ score: r.correct ? 1 : 0, timeTaken: r.timeTaken })),
+        overallPct,
+        { footerUrl: 'ingglish.com/games/homophones', gameTitle: 'INGGLISH HOMOPHONES QUIZ' }
+      ),
+    [results, overallPct]
+  );
+
+  const { copiedShare, handleSaveImage, handleShareResult, shareRef } = useGameShare(
+    getScoreCanvas,
+    'ingglish-homophones-score.png'
+  );
+
+  // Auto-focus Start button
+  useEffect(() => {
+    if (phase === 'intro') {
+      startRef.current?.focus();
+    }
+  }, [phase]);
+
+  // Auto-focus Next button when feedback appears
+  useEffect(() => {
+    if (selectedChoice !== null) {
+      setTimeout(() => nextRef.current?.focus(), 0);
+    }
+  }, [selectedChoice]);
+
+  // Auto-focus Share button on results screen
+  useEffect(() => {
+    if (phase === 'results') {
+      setTimeout(() => shareRef.current?.focus(), 0);
+    }
+  }, [phase, shareRef]);
 
   const startQuiz = useCallback(
     (newSeed: number) => {
@@ -74,7 +103,7 @@ function HomophonesQuiz() {
     (choice: string) => {
       if (selectedChoice !== null) {
         return;
-      }
+      } // already answered
       const question = questions[round];
       if (!question) {
         return;
@@ -125,6 +154,7 @@ function HomophonesQuiz() {
     [selectedChoice, handleNext, questions, round, handleChoiceClick, handleMuteKey]
   );
 
+  // Speak question when round changes
   useEffect(() => {
     if (phase !== 'playing' || selectedChoice !== null) {
       return;
@@ -137,6 +167,7 @@ function HomophonesQuiz() {
     speak(`What English word is this? ${q.correctAnswers[0]}. ${choiceList}`);
   }, [phase, round, selectedChoice, questions, speak]);
 
+  // Speak feedback when answer is selected
   useEffect(() => {
     if (selectedChoice === null) {
       return;
@@ -155,44 +186,30 @@ function HomophonesQuiz() {
     }
   }, [selectedChoice, questions, round, speak]);
 
-  const overallScore =
-    results.length > 0 ? results.filter((r) => r.correct).length / results.length : 0;
-  const overallPct = Math.round(overallScore * 100);
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.correct ? 1 : 0, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/homophones', gameTitle: 'INGGLISH HOMOPHONES QUIZ' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare } = useShareActions(
-    getScoreCanvas,
-    'ingglish-homophones-score.png'
-  );
-
+  // --- Intro ---
   if (phase === 'intro') {
     return (
       <div className="game-page">
-        <GameIntro
-          buttonLabel="Start Quiz"
-          description="In Ingglish, words that sound the same are spelled the same. Can you figure out which English word an Ingglish spelling represents?"
-          onStart={handleStart}
-          rules={[
-            'See an Ingglish word',
-            'Pick which English word it could be',
-            '10 rounds, from obvious to tricky',
-          ]}
-          startRef={startRef}
-          title="Homophones Quiz"
-        />
+        <div className="game-intro">
+          <h2>Homophones Quiz</h2>
+          <p>
+            In Ingglish, words that sound the same are spelled the same. Can you figure out which
+            English word an Ingglish spelling represents?
+          </p>
+          <ol className="card game-rules">
+            <li>See an Ingglish word</li>
+            <li>Pick which English word it could be</li>
+            <li>10 rounds, from obvious to tricky</li>
+          </ol>
+          <button className="btn-primary" onClick={handleStart} ref={startRef}>
+            Start Quiz
+          </button>
+        </div>
       </div>
     );
   }
 
+  // --- Results ---
   if (phase === 'results') {
     const correctCount = results.filter((r) => r.correct).length;
     return (
@@ -221,24 +238,40 @@ function HomophonesQuiz() {
             })}
           </div>
 
-          <GameResultActions
-            copied={copied}
-            newGameLabel="New Quiz"
-            onNewGame={() => {
-              startQuiz(Date.now());
-            }}
-            onSave={handleSave}
-            onShare={handleShare}
-            onTryAgain={() => {
-              startQuiz(seed);
-            }}
-            shareRef={shareRef}
-          />
+          <div className="game-result-actions">
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(seed);
+              }}
+            >
+              Try Again
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                startQuiz(Date.now());
+              }}
+            >
+              New Quiz
+            </button>
+            <button
+              className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
+              onClick={handleShareResult}
+              ref={shareRef}
+            >
+              {copiedShare ? 'Copied!' : 'Share Result'}
+            </button>
+            <button className="btn-secondary" onClick={handleSaveImage}>
+              Save
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
+  // --- Playing ---
   const currentQ = questions[round];
   if (!currentQ) {
     return null;
@@ -250,27 +283,53 @@ function HomophonesQuiz() {
 
   return (
     <div className="game-page" onKeyDown={handleKeyDown}>
-      <GameProgressBar
-        current={round + 1}
-        muted={muted}
-        onToggleMute={toggleMute}
-        supported={supported}
-        tierLabel={getTierLabel(currentQ.tier)}
-        total={questions.length}
-      />
+      <div className="game-progress">
+        <span>
+          {round + 1} / {questions.length}
+        </span>
+        <div className="game-progress-bar">
+          <div
+            className="game-progress-fill"
+            style={{ width: `${((round + 1) / questions.length) * 100}%` }}
+          />
+        </div>
+        <span className="label-caps game-tier-badge">
+          {currentQ.tier === 1 ? 'Easy' : currentQ.tier === 2 ? 'Medium' : 'Hard'}
+        </span>
+        <GameSoundToggle muted={muted} supported={supported} toggleMute={toggleMute} />
+      </div>
 
       <div className="card game-card">
         <div className="label-caps game-card-label">What English word is this?</div>
         <div className="homophones-prompt">{currentQ.ingglish}</div>
       </div>
 
-      <QuizChoices
-        answered={answered}
-        choices={currentQ.choices}
-        isCorrectAnswer={isCorrectAnswer}
-        onChoiceClick={handleChoiceClick}
-        selectedChoice={selectedChoice}
-      />
+      <div className="quiz-choices">
+        {currentQ.choices.map((choice) => {
+          let className = 'quiz-choice';
+          if (answered) {
+            if (isCorrectAnswer(choice)) {
+              className += ' quiz-choice-correct';
+            } else if (choice === selectedChoice) {
+              className += ' quiz-choice-incorrect';
+            } else {
+              className += ' quiz-choice-dimmed';
+            }
+          }
+          return (
+            <button
+              className={className}
+              disabled={answered}
+              key={choice}
+              onClick={() => {
+                handleChoiceClick(choice);
+              }}
+            >
+              {choice}
+            </button>
+          );
+        })}
+      </div>
 
       {answered && (
         <div className="card homophones-feedback">
