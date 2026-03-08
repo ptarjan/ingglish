@@ -1,7 +1,12 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { verifyScriptRoundTrip } from '@ingglish/phonemes';
+import { deseretToArpabet } from './from-deseret';
+import { arpabetToDeseret } from './to-deseret';
 
 describe('arpabetToDeseret', () => {
-  // All phoneme mapping tests have been lifted to word-level tests in
-  // packages/core/src/translate/non-latin-formats.test.ts
-  it.todo('covered by word-level Deseret tests in core');
+  it('should round-trip all phonemes', () => {
+    expect(() =>
+      { verifyScriptRoundTrip(arpabetToDeseret, deseretToArpabet, [['Y', 'UW1']]); }
+    ).not.toThrow();
+  });
 });

@@ -40,6 +40,9 @@ export { createCustomConverter } from './custom-format';
 // Reverse translation factory for Unicode scripts
 export { createScriptReverseTranslator } from './reverse-factory';
 
+// Test utilities
+export { verifyScriptRoundTrip } from './verify-script-roundtrip';
+
 // Types
 export type { CustomMappingConfig } from './custom-format';
 export type { ScriptReverseTranslator } from './reverse-factory';
