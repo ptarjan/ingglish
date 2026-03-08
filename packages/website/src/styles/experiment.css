@@ -336,19 +336,6 @@ button.preset-action:disabled {
   text-underline-offset: 0.2em;
 }
 
-.experiment-plain-output {
-  margin-top: 0.75rem;
-}
-
-.experiment-plain-text {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-text-muted);
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
 /* Mapping stats */
 .mapping-stats {
   padding: 1.25rem;
@@ -535,11 +522,5 @@ button.preset-action:disabled {
 
   .cell-input {
     font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .experiment-share-bar {
-    flex-direction: column;
   }
 }

@@ -119,16 +119,19 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
 
       // Push to browser history so back button works
       if (pushHistory) {
-        history.pushState({ translatorUrl: targetUrl }, '', globalThis.location.pathname);
+        globalThis.history.pushState(
+          { translatorUrl: targetUrl },
+          '',
+          globalThis.location.pathname
+        );
         // Update URL in address bar immediately (before translation completes)
         onNavigate?.(targetUrl, selectedLanguage === 'en' ? undefined : selectedLanguage);
       } else {
         // Not pushing — just tag current entry with translator state so popstate
         // handler knows about this URL (e.g. initial load from /url?url=...)
-        history.replaceState({ translatorUrl: targetUrl }, '', globalThis.location.href);
+        globalThis.history.replaceState({ translatorUrl: targetUrl }, '', globalThis.location.href);
       }
 
-      const skipLoadingReset = false;
       try {
         const parsedUrl = new URL(targetUrl);
         const isSameOrigin = parsedUrl.origin === globalThis.location.origin;
@@ -262,9 +265,7 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
           `Failed to load page: ${error_ instanceof Error ? error_.message : 'Unknown error'}`
         );
       } finally {
-        if (!skipLoadingReset) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     },
     [outputFormat, onNavigate, onLanguageDetected, selectedLanguage, scrollToHash]
@@ -333,9 +334,9 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
       }
     };
 
-    window.addEventListener('message', handleMessage);
+    globalThis.addEventListener('message', handleMessage);
     return () => {
-      window.removeEventListener('message', handleMessage);
+      globalThis.removeEventListener('message', handleMessage);
     };
   }, [scrollToHash, onNavigate]);
 
@@ -396,10 +397,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
     };
 
     globalThis.addEventListener('popstate', handlePopState);
-    window.addEventListener('pageshow', handlePageShow);
+    globalThis.addEventListener('pageshow', handlePageShow);
     return () => {
       globalThis.removeEventListener('popstate', handlePopState);
-      window.removeEventListener('pageshow', handlePageShow);
+      globalThis.removeEventListener('pageshow', handlePageShow);
     };
   }, [scrollToHash]);
 
@@ -407,15 +408,10 @@ export function useUrlTranslator(options: UseUrlTranslatorOptions = {}): UseUrlT
   useEffect(() => {
     const formatChanged = prevFormatRef.current !== outputFormat;
     const langChanged = prevLangRef.current !== selectedLanguage;
-    if ((formatChanged || langChanged) && hasContent && url.length > 0) {
-      // Skip retranslation while dict is still loading (will retrigger when dictLoading changes)
-      if (dictLoading) {
-        // Will retranslate when dict finishes loading (dictLoading dep triggers this effect)
-      } else {
-        translateUrlRef.current?.(url, false).catch((error_: unknown) => {
-          console.error('Format/language change retranslation failed:', error_);
-        });
-      }
+    if ((formatChanged || langChanged) && hasContent && url.length > 0 && !dictLoading) {
+      translateUrlRef.current?.(url, false).catch((error_: unknown) => {
+        console.error('Format/language change retranslation failed:', error_);
+      });
     }
     prevFormatRef.current = outputFormat;
     prevLangRef.current = selectedLanguage;

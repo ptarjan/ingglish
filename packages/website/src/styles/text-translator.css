@@ -73,13 +73,7 @@
   overflow: hidden;
 }
 
-.section-header {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
+.section-header,
 .section-footer {
   display: flex;
   gap: 0.5rem;

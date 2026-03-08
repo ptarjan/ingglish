@@ -16,6 +16,7 @@ type Phase = 'intro' | 'playing' | 'results';
 interface RoundResult {
   correct: number;
   pattern: string;
+  timeTaken: number;
   total: number;
 }
 
@@ -62,7 +63,7 @@ function PatternSort() {
       renderScoreCard(
         roundResults.map((r) => ({
           score: r.total > 0 ? r.correct / r.total : 0,
-          timeTaken: Math.round((Date.now() - roundStartRef.current) / 1000),
+          timeTaken: r.timeTaken,
         })),
         overallPct,
         { footerUrl: 'ingglish.com/games/pattern-sort', gameTitle: 'PATTERN SORT' }
@@ -130,11 +131,11 @@ function PatternSort() {
     }
 
     if (wordIdx + 1 >= round.words.length) {
-      const newResults = [...wordResults];
-      const roundCorrect = newResults.filter((r) => r.correct).length;
+      const roundCorrect = wordResults.filter((r) => r.correct).length;
+      const timeTaken = Math.round((Date.now() - roundStartRef.current) / 1000);
       setRoundResults((prev) => [
         ...prev,
-        { correct: roundCorrect, pattern: round.pattern, total: round.words.length },
+        { correct: roundCorrect, pattern: round.pattern, timeTaken, total: round.words.length },
       ]);
 
       if (roundIdx + 1 >= rounds.length) {

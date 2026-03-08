@@ -9,7 +9,10 @@ import { useEffect } from 'react';
 export function useAutoFocus(ref: RefObject<HTMLElement | null>, condition: boolean): void {
   useEffect(() => {
     if (condition) {
-      setTimeout(() => ref.current?.focus(), 0);
+      const id = setTimeout(() => ref.current?.focus(), 0);
+      return () => {
+        clearTimeout(id);
+      };
     }
   }, [condition, ref]);
 }

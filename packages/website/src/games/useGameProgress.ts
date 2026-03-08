@@ -9,7 +9,6 @@ export function useGameProgress<T>(
   defaultValue: T
 ): {
   progress: T;
-  reset: () => void;
   update: (updater: (prev: T) => T) => void;
 } {
   const [progress, setProgress] = useState<T>(() => {
@@ -39,14 +38,5 @@ export function useGameProgress<T>(
     [storageKey]
   );
 
-  const reset = useCallback(() => {
-    try {
-      localStorage.removeItem(storageKey);
-    } catch {
-      // ignore
-    }
-    setProgress(defaultValue);
-  }, [storageKey, defaultValue]);
-
-  return { progress, reset, update };
+  return { progress, update };
 }

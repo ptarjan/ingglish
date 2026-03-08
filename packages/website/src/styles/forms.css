@@ -115,14 +115,6 @@
   border-radius: 0.5rem;
 }
 
-.success-message {
-  padding: 1rem;
-  color: var(--color-success);
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid var(--color-success);
-  border-radius: 0.5rem;
-}
-
 .warning-message {
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
@@ -130,36 +122,6 @@
   background: rgba(234, 179, 8, 0.1);
   border: 1px solid var(--color-warning-fill);
   border-radius: 0.5rem;
-}
-
-/* Info Box */
-.info-box {
-  padding: 1.5rem;
-}
-
-.info-box h3 {
-  margin-bottom: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.info-box p {
-  margin-bottom: 0.75rem;
-  color: var(--color-text-muted);
-}
-
-.info-box ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  color: var(--color-text-muted);
-  list-style: none;
-}
-
-.info-box li strong {
-  font-family: var(--font-mono);
-  color: var(--color-primary);
 }
 
 .note {

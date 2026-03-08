@@ -68,10 +68,7 @@ function LearnToRead() {
     const nextIndex = quizIndex + 1;
     if (nextIndex >= activeLesson.quiz.length) {
       // Quiz done — save progress
-      const correctCount =
-        quizResults.length > 0 ? quizResults.filter(Boolean).length + (showFeedback ? 0 : 0) : 0;
-      // Include the current answer (already in quizResults at this point)
-      const score = correctCount;
+      const score = quizResults.filter(Boolean).length;
       updateProgress((prev) => ({
         completed: prev.completed.includes(activeLesson.id)
           ? prev.completed
@@ -88,7 +85,7 @@ function LearnToRead() {
       setShowFeedback(false);
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [activeLesson, quizIndex, quizResults, showFeedback, updateProgress]);
+  }, [activeLesson, quizIndex, quizResults, updateProgress]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

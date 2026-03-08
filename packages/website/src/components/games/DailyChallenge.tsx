@@ -313,8 +313,6 @@ function DailyChallenge() {
   // ------------------------------------------------------------------
   // Sharing
   // ------------------------------------------------------------------
-  const displayGuesses = guesses;
-  const displayResults = allResults;
   const won =
     phase === 'won' ||
     (phase === 'already-done' && answer !== null && guesses.includes(answer.ingglish));
@@ -331,11 +329,11 @@ function DailyChallenge() {
     () =>
       renderDailyScoreCard({
         dateKey: todayKey,
-        guessResults: displayResults,
+        guessResults: allResults,
         streak: displayStreak,
         won,
       }),
-    [todayKey, displayResults, won, displayStreak]
+    [todayKey, allResults, won, displayStreak]
   );
 
   const {
@@ -349,11 +347,11 @@ function DailyChallenge() {
   useAutoFocus(shareRef, phase === 'won' || phase === 'lost' || phase === 'already-done');
 
   const handleShareText = useCallback(() => {
-    const emojiGrid = buildEmojiGrid(displayResults);
-    const attemptText = won ? `${displayGuesses.length}/6` : 'X/6';
+    const emojiGrid = buildEmojiGrid(allResults);
+    const attemptText = won ? `${guesses.length}/6` : 'X/6';
     const text = `Ingglish Wordle ${todayKey} ${attemptText}\n\n${emojiGrid}\n\ningglish.com/games/daily`;
     void navigator.clipboard.writeText(text).then(showCopied);
-  }, [displayResults, displayGuesses, won, todayKey, showCopied]);
+  }, [allResults, guesses, won, todayKey, showCopied]);
 
   // ------------------------------------------------------------------
   // Render: Intro
@@ -451,11 +449,11 @@ function DailyChallenge() {
             </div>
           )}
 
-          {won && <div className="game-overall-score">{displayGuesses.length}/6</div>}
+          {won && <div className="game-overall-score">{guesses.length}/6</div>}
 
           {/* Mini emoji grid */}
           <div style={{ lineHeight: '1.6', marginBottom: '1rem' }}>
-            {displayResults.map((row, i) => (
+            {allResults.map((row, i) => (
               <div key={i}>
                 {row.map((r, j) => (
                   <span key={j}>{r === 'correct' ? '🟩' : r === 'present' ? '🟨' : '⬛'}</span>

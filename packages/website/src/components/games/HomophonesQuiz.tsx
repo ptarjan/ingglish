@@ -102,7 +102,7 @@ function HomophonesQuiz() {
       />
 
       {game.answered && (
-        <div className="card homophones-feedback">
+        <div className="card game-feedback">
           {isCorrect(game.selectedChoice!, currentQ) ? (
             <div className="homophones-feedback-correct">Correct!</div>
           ) : (
