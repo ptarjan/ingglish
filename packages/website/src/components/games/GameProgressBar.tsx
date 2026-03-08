@@ -11,7 +11,7 @@ interface GameProgressBarProps {
   /** Whether speech synthesis is supported. */
   supported: boolean;
   /** Label shown as a badge (e.g. "Easy", "Medium", "Hard", or a pattern name). */
-  tierLabel: string;
+  tierLabel?: string;
   /** Optional timer element to render (e.g. countdown). */
   timer?: ReactNode;
   /** Total number of rounds/questions. */
@@ -36,8 +36,8 @@ export function GameProgressBar({
       <div className="game-progress-bar">
         <div className="game-progress-fill" style={{ width: `${(current / total) * 100}%` }} />
       </div>
+      {tierLabel && <span className="label-caps game-tier-badge">{tierLabel}</span>}
       {timer}
-      <span className="label-caps game-tier-badge">{tierLabel}</span>
       <GameSoundToggle muted={muted} supported={supported} toggleMute={onToggleMute} />
     </div>
   );

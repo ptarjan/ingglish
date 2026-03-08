@@ -1,37 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { copyCanvasToClipboard, downloadCanvas } from '../games/share-helpers';
+import { useCopiedState } from './useCopiedState';
 
 /**
- * Shared hook for the copy-to-clipboard / save-image pattern used by game result screens.
- * Returns { copied, handleShare, handleSave } — a simpler alternative to useGameShare
- * for components that manage their own shareRef.
+ * Provides share (copy to clipboard) and save (download) actions for a score card canvas.
  */
-export function useShareActions(getScoreCanvas: () => HTMLCanvasElement, filename: string) {
-  const [copied, setCopied] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(
-    () => () => {
-      clearTimeout(timerRef.current);
-    },
-    []
-  );
-
-  const showCopied = useCallback(() => {
-    setCopied(true);
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setCopied(false);
-    }, 1500);
-  }, []);
+export function useShareActions(
+  getCanvas: () => HTMLCanvasElement,
+  filename: string
+): { copied: boolean; handleSave: () => void; handleShare: () => void } {
+  const [copied, showCopied] = useCopiedState();
 
   const handleShare = useCallback(() => {
-    copyCanvasToClipboard(getScoreCanvas(), showCopied, filename);
-  }, [getScoreCanvas, showCopied, filename]);
+    const canvas = getCanvas();
+    copyCanvasToClipboard(canvas, showCopied, filename);
+  }, [getCanvas, showCopied, filename]);
 
   const handleSave = useCallback(() => {
-    downloadCanvas(getScoreCanvas(), filename);
-  }, [getScoreCanvas, filename]);
+    const canvas = getCanvas();
+    downloadCanvas(canvas, filename);
+  }, [getCanvas, filename]);
 
   return { copied, handleSave, handleShare };
 }

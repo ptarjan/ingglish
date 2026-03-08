@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 interface QuizChoicesProps {
   /** Whether an answer has been selected. */
   answered: boolean;
@@ -7,6 +9,8 @@ interface QuizChoicesProps {
   isCorrectAnswer: (choice: string) => boolean;
   /** Called when a choice is clicked. */
   onChoiceClick: (choice: string) => void;
+  /** Optional custom render function for choice content. */
+  renderContent?: (choice: string) => ReactNode;
   /** The currently selected choice (null if unanswered). */
   selectedChoice: null | string;
 }
@@ -17,6 +21,7 @@ export function QuizChoices({
   choices,
   isCorrectAnswer,
   onChoiceClick,
+  renderContent,
   selectedChoice,
 }: QuizChoicesProps) {
   return (
@@ -41,7 +46,7 @@ export function QuizChoices({
               onChoiceClick(choice);
             }}
           >
-            {choice}
+            {renderContent ? renderContent(choice) : choice}
           </button>
         );
       })}
