@@ -11,6 +11,8 @@ describe('arpabet-to-ipa', () => {
   });
 
   it('should round-trip all phonemes', () => {
-    expect(() => { verifyScriptRoundTrip(arpabetToIPA, ipaToArpabet); }).not.toThrow();
+    expect(() => {
+      verifyScriptRoundTrip(arpabetToIPA, ipaToArpabet);
+    }).not.toThrow();
   });
 });
