@@ -10,6 +10,33 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "ingglish#build": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "ingglish#build:fast": {
+      "dependsOn": ["^build:fast"],
+      "inputs": ["src/**"],
+      "cache": false
+    },
+    "@ingglish/dictionary#build": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "@ingglish/dictionary#build:fast": {
+      "dependsOn": ["^build:fast"],
+      "inputs": ["src/**"],
+      "cache": false
+    },
+    "@ingglish/website#build": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "@ingglish/website#build:fast": {
+      "dependsOn": ["^build:fast"],
+      "inputs": ["src/**"],
+      "cache": false
+    },
     "build:fast": {
       "dependsOn": ["^build:fast"],
       "inputs": ["src/**"],
