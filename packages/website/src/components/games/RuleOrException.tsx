@@ -22,7 +22,6 @@ function getScoreLabel(pct: number): string {
 }
 
 function RuleOrException() {
-<<<<<<< HEAD
   const game = useQuizGame<RuleOrExceptionQuestion>({
     getChoices: () => ['false', 'true'],
     isCorrect: (choice, q) => (choice === 'true') === q.isException,
@@ -31,33 +30,6 @@ function RuleOrException() {
       filename: 'rule-or-exception-score.png',
       footerUrl: 'ingglish.com/games/rule-or-exception',
       gameTitle: 'RULE OR EXCEPTION?',
-=======
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [seed, setSeed] = useState(() => Date.now());
-  const [questions, setQuestions] = useState<RuleOrExceptionQuestion[]>([]);
-  const [round, setRound] = useState(0);
-  const [results, setResults] = useState<RoundResult[]>([]);
-  const [selectedChoice, setSelectedChoice] = useState<boolean | null>(null);
-  const roundStartRef = useRef(0);
-  const startRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
-
-  useAutoFocus(startRef, phase === 'intro');
-  useAutoFocus(nextRef, selectedChoice !== null);
-  useAutoFocus(shareRef, phase === 'results');
-
-  const startQuiz = useCallback(
-    (newSeed: number) => {
-      stop();
-      setSeed(newSeed);
-      setQuestions(pickQuiz(newSeed));
-      setRound(0);
-      setResults([]);
-      setSelectedChoice(null);
-      roundStartRef.current = Date.now();
-      setPhase('playing');
->>>>>>> f900b321 (fix: sort useGameShare imports alphabetically to satisfy lint)
     },
   });
 
@@ -92,31 +64,7 @@ function RuleOrException() {
     }
   }, [game.selectedChoice, game.currentQuestion, game.round, speak]);
 
-<<<<<<< HEAD
   if (game.phase === 'intro') {
-=======
-  const overallPct =
-    results.length > 0
-      ? Math.round((results.filter((r) => r.correct).length / results.length) * 100)
-      : 0;
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.correct ? 1 : 0, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/rule-or-exception', gameTitle: 'RULE OR EXCEPTION?' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'rule-or-exception-score.png'
-  );
-
-  if (phase === 'intro') {
->>>>>>> f900b321 (fix: sort useGameShare imports alphabetically to satisfy lint)
     return (
       <div className="game-page">
         <GameIntro

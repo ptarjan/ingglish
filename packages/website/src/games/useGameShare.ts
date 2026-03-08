@@ -6,32 +6,32 @@ import { copyCanvasToClipboard, downloadCanvas } from './share-helpers';
  * Manages copiedShare flash state, timer cleanup, and share/save callbacks.
  */
 export function useGameShare(getScoreCanvas: () => HTMLCanvasElement, filename: string) {
-  const [copiedShare, setCopiedShare] = useState(false);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const shareRef = useRef<HTMLButtonElement>(null);
 
   useEffect(
     () => () => {
-      clearTimeout(copiedTimerRef.current);
+      clearTimeout(timerRef.current);
     },
     []
   );
 
   const showCopied = useCallback(() => {
-    setCopiedShare(true);
-    clearTimeout(copiedTimerRef.current);
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedShare(false);
+    setCopied(true);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setCopied(false);
     }, 1500);
   }, []);
 
-  const handleShareResult = useCallback(() => {
+  const handleShare = useCallback(() => {
     copyCanvasToClipboard(getScoreCanvas(), showCopied, filename);
   }, [getScoreCanvas, showCopied, filename]);
 
-  const handleSaveImage = useCallback(() => {
+  const handleSave = useCallback(() => {
     downloadCanvas(getScoreCanvas(), filename);
   }, [getScoreCanvas, filename]);
 
-  return { copiedShare, handleSaveImage, handleShareResult, shareRef, showCopied };
+  return { copied, handleSave, handleShare, shareRef, showCopied };
 }

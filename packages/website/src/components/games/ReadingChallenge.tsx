@@ -56,6 +56,25 @@ function ReadingChallenge() {
   const nextRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
+  const overallScore =
+    results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
+  const overallPct = Math.round(overallScore * 100);
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        results.map((r) => ({ score: r.score.score, timeTaken: r.timeTaken })),
+        overallPct,
+        { footerUrl: 'ingglish.com/games/reading', gameTitle: 'INGGLISH READING CHALLENGE' }
+      ),
+    [results, overallPct]
+  );
+
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
+    getScoreCanvas,
+    'ingglish-reading-score.png'
+  );
+
   useAutoFocus(startRef, reverseDictReady && phase === 'intro');
   useAutoFocus(nextRef, currentFeedback !== null);
   useAutoFocus(shareRef, phase === 'results');
@@ -181,25 +200,6 @@ function ReadingChallenge() {
     }
     speak(`${currentFeedback.correct} of ${currentFeedback.total} words correct`);
   }, [currentFeedback, speak]);
-
-  const overallScore =
-    results.length > 0 ? results.reduce((sum, r) => sum + r.score.score, 0) / results.length : 0;
-  const overallPct = Math.round(overallScore * 100);
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.score.score, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/reading', gameTitle: 'INGGLISH READING CHALLENGE' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'ingglish-reading-score.png'
-  );
 
   const getIngglishText = (sentence: ChallengeSentence): string =>
     sentence.tokens.map((t) => t.translated).join('');

@@ -23,7 +23,6 @@ function getScoreLabel(pct: number): string {
 }
 
 function OriginDetective() {
-<<<<<<< HEAD
   const game = useQuizGame<OriginDetectiveQuestion>({
     getChoices: (q) => q.choices,
     isCorrect: (choice, q) => choice === q.correctOrigin,
@@ -32,53 +31,6 @@ function OriginDetective() {
       filename: 'origin-detective-score.png',
       footerUrl: 'ingglish.com/games/origin-detective',
       gameTitle: 'ORIGIN DETECTIVE',
-=======
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [seed, setSeed] = useState(() => Date.now());
-  const [questions, setQuestions] = useState<OriginDetectiveQuestion[]>([]);
-  const [round, setRound] = useState(0);
-  const [results, setResults] = useState<RoundResult[]>([]);
-  const [selectedChoice, setSelectedChoice] = useState<null | string>(null);
-  const roundStartRef = useRef(0);
-  const startRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
-
-  const overallPct =
-    results.length > 0
-      ? Math.round((results.filter((r) => r.correct).length / results.length) * 100)
-      : 0;
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.correct ? 1 : 0, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/origin-detective', gameTitle: 'ORIGIN DETECTIVE' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'origin-detective-score.png'
-  );
-
-  useAutoFocus(startRef, phase === 'intro');
-  useAutoFocus(nextRef, selectedChoice !== null);
-  useAutoFocus(shareRef, phase === 'results');
-
-  const startQuiz = useCallback(
-    (newSeed: number) => {
-      stop();
-      setSeed(newSeed);
-      setQuestions(pickQuiz(newSeed));
-      setRound(0);
-      setResults([]);
-      setSelectedChoice(null);
-      roundStartRef.current = Date.now();
-      setPhase('playing');
->>>>>>> f900b321 (fix: sort useGameShare imports alphabetically to satisfy lint)
     },
   });
 
@@ -111,11 +63,7 @@ function OriginDetective() {
     }
   }, [game.selectedChoice, game.currentQuestion, game.round, speak]);
 
-<<<<<<< HEAD
   if (game.phase === 'intro') {
-=======
-  if (phase === 'intro') {
->>>>>>> f900b321 (fix: sort useGameShare imports alphabetically to satisfy lint)
     return (
       <div className="game-page">
         <GameIntro

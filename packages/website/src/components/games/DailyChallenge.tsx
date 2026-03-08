@@ -109,8 +109,6 @@ function DailyChallenge() {
     []
   );
 
-  useAutoFocus(shareRef, phase === 'won' || phase === 'lost' || phase === 'already-done');
-
   // ------------------------------------------------------------------
   // Load word pool & determine phase
   // ------------------------------------------------------------------
@@ -347,6 +345,8 @@ function DailyChallenge() {
     shareRef,
     showCopied,
   } = useGameShare(getScoreCanvas, 'ingglish-wordle.png');
+
+  useAutoFocus(shareRef, phase === 'won' || phase === 'lost' || phase === 'already-done');
 
   const handleShareText = useCallback(() => {
     const emojiGrid = buildEmojiGrid(displayResults);

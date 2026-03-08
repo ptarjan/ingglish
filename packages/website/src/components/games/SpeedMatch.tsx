@@ -44,6 +44,28 @@ function SpeedMatch() {
   const wrongTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const roundStartRef = useRef(0);
 
+  const totalTime = roundTimes.reduce((sum, r) => sum + r.time, 0);
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        roundTimes.map((r) => ({
+          // Invert time to a "score" (faster = better). Cap at 60s max for display.
+          score: Math.max(0, 1 - r.time / 60),
+          timeTaken: r.time,
+        })),
+        // Show total time as a percentage-like display (lower is better)
+        totalTime,
+        { footerUrl: 'ingglish.com/games/speedmatch', gameTitle: 'INGGLISH SPEED MATCH' }
+      ),
+    [roundTimes, totalTime]
+  );
+
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
+    getScoreCanvas,
+    'ingglish-speedmatch-score.png'
+  );
+
   useAutoFocus(startRef, phase === 'intro');
   useAutoFocus(shareRef, phase === 'results');
 
@@ -151,8 +173,6 @@ function SpeedMatch() {
     [selection, matched, wrongPair, left]
   );
 
-  const totalTime = roundTimes.reduce((sum, r) => sum + r.time, 0);
-
   // Speak result when game ends
   useEffect(() => {
     if (phase === 'results') {
@@ -168,26 +188,6 @@ function SpeedMatch() {
       return null;
     }
   })();
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        roundTimes.map((r) => ({
-          // Invert time to a "score" (faster = better). Cap at 60s max for display.
-          score: Math.max(0, 1 - r.time / 60),
-          timeTaken: r.time,
-        })),
-        // Show total time as a percentage-like display (lower is better)
-        totalTime,
-        { footerUrl: 'ingglish.com/games/speedmatch', gameTitle: 'INGGLISH SPEED MATCH' }
-      ),
-    [roundTimes, totalTime]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'ingglish-speedmatch-score.png'
-  );
 
   // --- Intro ---
   if (phase === 'intro') {

@@ -52,6 +52,25 @@ function ReverseSpelling() {
   const nextRef = useRef<HTMLButtonElement>(null);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
+  const overallScore =
+    results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0;
+  const overallPct = Math.round(overallScore * 100);
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        results.map((r) => ({ score: r.score, timeTaken: r.timeTaken })),
+        overallPct,
+        { footerUrl: 'ingglish.com/games/reverse', gameTitle: 'INGGLISH REVERSE SPELLING' }
+      ),
+    [results, overallPct]
+  );
+
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
+    getScoreCanvas,
+    'ingglish-reverse-score.png'
+  );
+
   useAutoFocus(startRef, phase === 'intro');
   useAutoFocus(nextRef, currentResult !== null);
   useAutoFocus(shareRef, phase === 'results');
@@ -168,25 +187,6 @@ function ReverseSpelling() {
       speak(`Not quite. The correct spelling is shown on screen.`);
     }
   }, [currentResult, speak]);
-
-  const overallScore =
-    results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0;
-  const overallPct = Math.round(overallScore * 100);
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        results.map((r) => ({ score: r.score, timeTaken: r.timeTaken })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/reverse', gameTitle: 'INGGLISH REVERSE SPELLING' }
-      ),
-    [results, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'ingglish-reverse-score.png'
-  );
 
   // --- Intro ---
   if (phase === 'intro') {

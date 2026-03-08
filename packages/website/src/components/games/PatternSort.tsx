@@ -52,6 +52,28 @@ function PatternSort() {
   const roundStartRef = useRef(0);
   const { handleMuteKey, muted, speak, stop, supported, toggleMute } = useGameSpeech();
 
+  const totalCorrect = roundResults.reduce((sum, r) => sum + r.correct, 0);
+  const totalWords = roundResults.reduce((sum, r) => sum + r.total, 0);
+  const overallPct = totalWords > 0 ? Math.round((totalCorrect / totalWords) * 100) : 0;
+
+  const getScoreCanvas = useCallback(
+    () =>
+      renderScoreCard(
+        roundResults.map((r) => ({
+          score: r.total > 0 ? r.correct / r.total : 0,
+          timeTaken: Math.round((Date.now() - roundStartRef.current) / 1000),
+        })),
+        overallPct,
+        { footerUrl: 'ingglish.com/games/pattern-sort', gameTitle: 'PATTERN SORT' }
+      ),
+    [roundResults, overallPct]
+  );
+
+  const { copied, handleSave, handleShare, shareRef } = useGameShare(
+    getScoreCanvas,
+    'pattern-sort-score.png'
+  );
+
   useAutoFocus(startRef, phase === 'intro');
   useAutoFocus(nextRef, selectedBucket !== null);
   useAutoFocus(shareRef, phase === 'results');
@@ -174,28 +196,6 @@ function PatternSort() {
       speak(`Not quite, ${w.word} belongs in ${w.bucket === 'a' ? r.bucketA : r.bucketB}`);
     }
   }, [selectedBucket, rounds, roundIdx, wordIdx, speak]);
-
-  const totalCorrect = roundResults.reduce((sum, r) => sum + r.correct, 0);
-  const totalWords = roundResults.reduce((sum, r) => sum + r.total, 0);
-  const overallPct = totalWords > 0 ? Math.round((totalCorrect / totalWords) * 100) : 0;
-
-  const getScoreCanvas = useCallback(
-    () =>
-      renderScoreCard(
-        roundResults.map((r) => ({
-          score: r.total > 0 ? r.correct / r.total : 0,
-          timeTaken: Math.round((Date.now() - roundStartRef.current) / 1000),
-        })),
-        overallPct,
-        { footerUrl: 'ingglish.com/games/pattern-sort', gameTitle: 'PATTERN SORT' }
-      ),
-    [roundResults, overallPct]
-  );
-
-  const { copied, handleSave, handleShare, shareRef } = useGameShare(
-    getScoreCanvas,
-    'pattern-sort-score.png'
-  );
 
   if (phase === 'intro') {
     return (
