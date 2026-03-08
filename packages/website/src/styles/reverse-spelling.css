@@ -1,27 +1,7 @@
 /**
- * Reverse Spelling styles.
+ * Reverse Spelling styles — game-specific only.
+ * Shared styles come from games-common.css.
  */
-
-.reverse-page {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.reverse-intro {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.reverse-intro h2 {
-  margin-bottom: 1rem;
-  font-size: 1.75rem;
-}
-
-.reverse-intro p {
-  margin-bottom: 1.5rem;
-  line-height: 1.7;
-  color: var(--color-text-muted);
-}
 
 /* === Prompt card === */
 
@@ -83,32 +63,9 @@
   color: var(--color-error);
 }
 
-/* === Results === */
-
-.reverse-results {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.reverse-results h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.75rem;
-}
-
-.reverse-result-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
-
 /* === Mobile === */
 
 @media (max-width: 640px) {
-  .reverse-page {
-    padding: 0 0.5rem;
-  }
-
   .reverse-prompt-word {
     font-size: 1.5rem;
   }

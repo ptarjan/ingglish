@@ -235,14 +235,14 @@ function ReverseSpelling() {
   // --- Intro ---
   if (phase === 'intro') {
     return (
-      <div className="reverse-page">
-        <div className="reverse-intro">
+      <div className="game-page">
+        <div className="game-intro">
           <h2>Reverse Spelling</h2>
           <p>
             Can you spell in Ingglish? You'll see an English word — type how it would look in
             phonetic Ingglish spelling. Close misspellings get partial credit!
           </p>
-          <ol className="card challenge-rules">
+          <ol className="card game-rules">
             <li>See an English word displayed on screen</li>
             <li>Type the Ingglish spelling before time runs out</li>
             <li>Exact match = full credit, close = half credit</li>
@@ -258,38 +258,35 @@ function ReverseSpelling() {
   // --- Results ---
   if (phase === 'results') {
     return (
-      <div className="reverse-page">
-        <div className="reverse-results">
+      <div className="game-page">
+        <div className="game-results">
           <h2>Challenge Complete!</h2>
-          <div className="challenge-overall-score">{overallPct}%</div>
-          <p className="challenge-score-label">{getScoreLabel(overallPct)}</p>
+          <div className="game-overall-score">{overallPct}%</div>
+          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
 
-          <div className="challenge-round-bars">
+          <div className="game-round-bars">
             {results.map((r, i) => {
               const pct = Math.round(r.score * 100);
               const fillClass =
                 pct >= 80
-                  ? 'challenge-round-fill-good'
+                  ? 'game-round-fill-good'
                   : pct >= 50
-                    ? 'challenge-round-fill-ok'
-                    : 'challenge-round-fill-bad';
+                    ? 'game-round-fill-ok'
+                    : 'game-round-fill-bad';
               return (
-                <div className="challenge-round-row" key={i}>
-                  <span className="challenge-round-label">{r.word.english}</span>
-                  <div className="challenge-round-bar">
-                    <div
-                      className={`challenge-round-fill ${fillClass}`}
-                      style={{ width: `${pct}%` }}
-                    />
+                <div className="game-round-row" key={i}>
+                  <span className="game-round-label">{r.word.english}</span>
+                  <div className="game-round-bar">
+                    <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="challenge-round-pct">{pct}%</span>
-                  <span className="challenge-round-time">{r.timeTaken}s</span>
+                  <span className="game-round-pct">{pct}%</span>
+                  <span className="game-round-time">{r.timeTaken}s</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="reverse-result-actions">
+          <div className="game-result-actions">
             <button
               className="btn-secondary"
               onClick={() => {
@@ -337,23 +334,23 @@ function ReverseSpelling() {
     : '';
 
   return (
-    <div className="reverse-page">
-      <div className="challenge-progress">
+    <div className="game-page">
+      <div className="game-progress">
         <span>
           {round + 1} / {words.length}
         </span>
-        <div className="challenge-progress-bar">
+        <div className="game-progress-bar">
           <div
-            className="challenge-progress-fill"
+            className="game-progress-fill"
             style={{ width: `${((round + 1) / words.length) * 100}%` }}
           />
         </div>
         {currentResult === null && (
-          <span className={`challenge-timer${timeLeft <= 5 ? ' challenge-timer-warning' : ''}`}>
+          <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
             {timeLeft}s
           </span>
         )}
-        <span className="label-caps challenge-tier-badge">{getTierLabel(currentWord.tier)}</span>
+        <span className="label-caps game-tier-badge">{getTierLabel(currentWord.tier)}</span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
@@ -371,9 +368,9 @@ function ReverseSpelling() {
         <div className="reverse-prompt-word">{currentWord.english}</div>
       </div>
 
-      <div className="challenge-input-area">
+      <div className="game-input-area">
         <input
-          className="challenge-input"
+          className="game-input"
           disabled={currentResult !== null}
           onChange={(e) => {
             setInput(e.target.value);
@@ -386,7 +383,7 @@ function ReverseSpelling() {
         />
       </div>
 
-      <div className="challenge-actions">
+      <div className="game-actions">
         {currentResult === null ? (
           <button className="btn-primary" disabled={!input.trim()} onClick={handleSubmit}>
             Check

@@ -237,7 +237,7 @@ function RuleOrException() {
                     style={{ width: `${r.correct ? 100 : 0}%` }}
                   />
                 </div>
-                <span className="sr-round-word">{r.question.word}</span>
+                <span className="quiz-round-word">{r.question.word}</span>
                 <span className="game-round-time">{r.timeTaken}s</span>
               </div>
             ))}
@@ -310,12 +310,12 @@ function RuleOrException() {
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Rule: {currentQ.rule}</div>
-        <div className="sr-word">{currentQ.word}</div>
+        <div className="quiz-word">{currentQ.word}</div>
       </div>
 
-      <div className="sr-choices">
+      <div className="quiz-choices">
         <button
-          className={`sr-choice${answered ? (currentQ.isException ? ' sr-choice-incorrect' : ' sr-choice-correct') + (!selectedChoice && answered ? '' : '') : ''}`}
+          className={`quiz-choice${answered ? (currentQ.isException ? ' quiz-choice-incorrect' : ' quiz-choice-correct') + (!selectedChoice && answered ? '' : '') : ''}`}
           disabled={answered}
           onClick={() => {
             handleChoiceClick(false);
@@ -324,7 +324,7 @@ function RuleOrException() {
           Follows Rule
         </button>
         <button
-          className={`sr-choice${answered ? (currentQ.isException ? ' sr-choice-correct' : ' sr-choice-incorrect') : ''}`}
+          className={`quiz-choice${answered ? (currentQ.isException ? ' quiz-choice-correct' : ' quiz-choice-incorrect') : ''}`}
           disabled={answered}
           onClick={() => {
             handleChoiceClick(true);
@@ -335,15 +335,15 @@ function RuleOrException() {
       </div>
 
       {answered && (
-        <div className="sr-feedback">
+        <div className="quiz-feedback">
           {selectedChoice === currentQ.isException ? (
-            <div className="sr-feedback-correct">Correct!</div>
+            <div className="quiz-feedback-correct">Correct!</div>
           ) : (
-            <div className="sr-feedback-incorrect">
+            <div className="quiz-feedback-incorrect">
               Not quite — it{'\u2019'}s {currentQ.isException ? 'an exception' : 'a rule follower'}!
             </div>
           )}
-          <div className="sr-explanation">{currentQ.explanation}</div>
+          <div className="quiz-explanation">{currentQ.explanation}</div>
           <div className="game-actions">
             <button className="btn-primary" onClick={handleNext} ref={nextRef}>
               {round + 1 >= questions.length ? 'See Results' : 'Next'}

@@ -52,7 +52,7 @@ function HighlightedWord({
     const endIndex = word.length; // silent E is at the end
     const lastLen = lastChars.length;
     return (
-      <div className="sr-word">
+      <div className="quiz-word">
         {patternStart > 0 && word.slice(0, patternStart)}
         <span className="sr-highlight">{word[patternStart]}</span>
         {word.slice(patternStart + 1, endIndex - lastLen)}
@@ -66,7 +66,7 @@ function HighlightedWord({
   const highlighted = word.slice(patternStart, patternStart + pattern.length);
   const after = word.slice(patternStart + pattern.length);
   return (
-    <div className="sr-word">
+    <div className="quiz-word">
       {before}
       <span className="sr-highlight">{highlighted}</span>
       {after}
@@ -296,7 +296,7 @@ function SpellingRuleQuiz() {
                   <div className="game-round-bar">
                     <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="sr-round-word">{r.question.word}</span>
+                  <span className="quiz-round-word">{r.question.word}</span>
                   <span className="game-round-time">{r.timeTaken}s</span>
                 </div>
               );
@@ -382,16 +382,16 @@ function SpellingRuleQuiz() {
         />
       </div>
 
-      <div className="sr-choices">
+      <div className="quiz-choices">
         {currentQ.choices.map((choice) => {
-          let className = 'sr-choice';
+          let className = 'quiz-choice';
           if (answered) {
             if (choice === currentQ.correctSound) {
-              className += ' sr-choice-correct';
+              className += ' quiz-choice-correct';
             } else if (choice === selectedChoice) {
-              className += ' sr-choice-incorrect';
+              className += ' quiz-choice-incorrect';
             } else {
-              className += ' sr-choice-dimmed';
+              className += ' quiz-choice-dimmed';
             }
           }
           return (
@@ -410,15 +410,15 @@ function SpellingRuleQuiz() {
       </div>
 
       {answered && (
-        <div className="sr-feedback">
+        <div className="quiz-feedback">
           {selectedChoice === currentQ.correctSound ? (
-            <div className="sr-feedback-correct">Correct!</div>
+            <div className="quiz-feedback-correct">Correct!</div>
           ) : (
-            <div className="sr-feedback-incorrect">
+            <div className="quiz-feedback-incorrect">
               Not quite — it&apos;s {currentQ.correctSound}
             </div>
           )}
-          <div className="sr-explanation">{currentQ.explanation}</div>
+          <div className="quiz-explanation">{currentQ.explanation}</div>
           <div className="game-actions">
             <button className="btn-primary" onClick={handleNext} ref={nextRef}>
               {round + 1 >= questions.length ? 'See Results' : 'Next'}

@@ -1,101 +1,11 @@
 /**
- * Spelling Rule Quiz styles.
+ * Spelling Rule Quiz styles — game-specific only.
+ * Shared styles come from games-common.css.
  */
-
-.sr-word {
-  padding: 1rem 0;
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-}
 
 .sr-highlight {
   padding: 0.1em 0.15em;
   color: var(--color-primary);
   background: rgba(99, 102, 241, 0.12);
   border-radius: 0.25rem;
-}
-
-.sr-choices {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.sr-choice {
-  padding: 1rem;
-  font-family: inherit; /* eslint-disable-line css/font-family-fallbacks -- button reset */
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: 0.75rem;
-  transition:
-    border-color 0.2s,
-    background 0.2s;
-}
-
-.sr-choice:hover:not(:disabled) {
-  background: var(--color-surface-hover);
-  border-color: var(--color-primary);
-}
-
-.sr-choice:disabled {
-  cursor: default;
-}
-
-.sr-choice-correct {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: var(--color-success);
-}
-
-.sr-choice-incorrect {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: var(--color-error);
-}
-
-.sr-choice-dimmed {
-  opacity: 0.5;
-}
-
-.sr-feedback {
-  padding: 1rem;
-  margin-top: 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-}
-
-.sr-feedback-correct {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-success);
-}
-
-.sr-feedback-incorrect {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-error);
-}
-
-.sr-explanation {
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  color: var(--color-text-muted);
-}
-
-.sr-round-word {
-  width: 6rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-align: left;
-}
-
-@media (max-width: 640px) {
-  .sr-word {
-    font-size: 2rem;
-  }
 }

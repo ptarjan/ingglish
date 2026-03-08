@@ -1,27 +1,7 @@
 /**
- * Speed Match styles.
+ * Speed Match styles — game-specific only.
+ * Shared styles come from games-common.css.
  */
-
-.speed-match-page {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.speed-match-intro {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.speed-match-intro h2 {
-  margin-bottom: 1rem;
-  font-size: 1.75rem;
-}
-
-.speed-match-intro p {
-  margin-bottom: 1.5rem;
-  line-height: 1.7;
-  color: var(--color-text-muted);
-}
 
 /* === Board === */
 
@@ -121,24 +101,7 @@
   }
 }
 
-/* === Results === */
-
-.speed-match-results {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.speed-match-results h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.75rem;
-}
-
-.speed-match-total-time {
-  margin-bottom: 0.5rem;
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
+/* === Results (game-specific) === */
 
 .speed-match-record {
   margin-bottom: 1rem;
@@ -147,51 +110,15 @@
   color: var(--color-success);
 }
 
-.speed-match-round-times {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  text-align: left;
-}
-
-.speed-match-round-row {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  font-size: 0.875rem;
-}
-
-.speed-match-round-label {
-  flex-shrink: 0;
-  width: 5rem;
-  color: var(--color-text-muted);
-}
-
 .speed-match-round-time {
   font-weight: 600;
-}
-
-.speed-match-result-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
 }
 
 /* === Mobile === */
 
 @media (max-width: 640px) {
-  .speed-match-page {
-    padding: 0 0.5rem;
-  }
-
   .speed-match-word {
     padding: 0.5rem;
     font-size: 0.85rem;
-  }
-
-  .speed-match-total-time {
-    font-size: 2.5rem;
   }
 }

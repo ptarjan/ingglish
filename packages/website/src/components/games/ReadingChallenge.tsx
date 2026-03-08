@@ -265,14 +265,14 @@ function ReadingChallenge() {
   // --- Intro ---
   if (phase === 'intro') {
     return (
-      <div className="challenge-page">
-        <div className="challenge-intro">
+      <div className="game-page">
+        <div className="game-intro">
           <h2>Reading Challenge</h2>
           <p>
             Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test.
             You'll see 10 sentences written in Ingglish — type what you think the English is.
           </p>
-          <ol className="card challenge-rules">
+          <ol className="card game-rules">
             <li>Read the Ingglish sentence shown to you</li>
             <li>Type what you think it says in English before time runs out</li>
             <li>Get scored word-by-word (homophones accepted!)</li>
@@ -293,38 +293,35 @@ function ReadingChallenge() {
   // --- Results ---
   if (phase === 'results') {
     return (
-      <div className="challenge-page">
-        <div className="challenge-results">
+      <div className="game-page">
+        <div className="game-results">
           <h2>Challenge Complete!</h2>
-          <div className="challenge-overall-score">{overallPct}%</div>
-          <p className="challenge-score-label">{getScoreLabel(overallPct)}</p>
+          <div className="game-overall-score">{overallPct}%</div>
+          <p className="game-score-label">{getScoreLabel(overallPct)}</p>
 
-          <div className="challenge-round-bars">
+          <div className="game-round-bars">
             {results.map((r, i) => {
               const pct = Math.round(r.score.score * 100);
               const fillClass =
                 pct >= 80
-                  ? 'challenge-round-fill-good'
+                  ? 'game-round-fill-good'
                   : pct >= 50
-                    ? 'challenge-round-fill-ok'
-                    : 'challenge-round-fill-bad';
+                    ? 'game-round-fill-ok'
+                    : 'game-round-fill-bad';
               return (
-                <div className="challenge-round-row" key={i}>
-                  <span className="challenge-round-label">Round {i + 1}</span>
-                  <div className="challenge-round-bar">
-                    <div
-                      className={`challenge-round-fill ${fillClass}`}
-                      style={{ width: `${pct}%` }}
-                    />
+                <div className="game-round-row" key={i}>
+                  <span className="game-round-label">Round {i + 1}</span>
+                  <div className="game-round-bar">
+                    <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="challenge-round-pct">{pct}%</span>
-                  <span className="challenge-round-time">{r.timeTaken}s</span>
+                  <span className="game-round-pct">{pct}%</span>
+                  <span className="game-round-time">{r.timeTaken}s</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="challenge-result-actions">
+          <div className="game-result-actions">
             <button className="btn-secondary" onClick={handleTryAgain}>
               Try Again
             </button>
@@ -356,23 +353,23 @@ function ReadingChallenge() {
   const tierLabel = getTierLabel(currentSentence.tier);
 
   return (
-    <div className="challenge-page">
-      <div className="challenge-progress">
+    <div className="game-page">
+      <div className="game-progress">
         <span>
           {round + 1} / {sentences.length}
         </span>
-        <div className="challenge-progress-bar">
+        <div className="game-progress-bar">
           <div
-            className="challenge-progress-fill"
+            className="game-progress-fill"
             style={{ width: `${((round + 1) / sentences.length) * 100}%` }}
           />
         </div>
         {currentFeedback === null && (
-          <span className={`challenge-timer${timeLeft <= 5 ? ' challenge-timer-warning' : ''}`}>
+          <span className={`game-timer${timeLeft <= 5 ? ' game-timer-warning' : ''}`}>
             {timeLeft}s
           </span>
         )}
-        <span className="label-caps challenge-tier-badge">{tierLabel}</span>
+        <span className="label-caps game-tier-badge">{tierLabel}</span>
         {supported && (
           <button
             aria-label={muted ? 'Unmute' : 'Mute'}
@@ -385,14 +382,14 @@ function ReadingChallenge() {
         )}
       </div>
 
-      <div className="card challenge-sentence-card">
-        <div className="label-caps challenge-sentence-label">Read this Ingglish sentence:</div>
-        <div className="challenge-sentence-text">{getIngglishText(currentSentence)}</div>
+      <div className="card game-card">
+        <div className="label-caps game-card-label">Read this Ingglish sentence:</div>
+        <div className="game-card-text">{getIngglishText(currentSentence)}</div>
       </div>
 
-      <div className="challenge-input-area">
+      <div className="game-input-area">
         <input
-          className="challenge-input"
+          className="game-input"
           disabled={currentFeedback !== null}
           onChange={(e) => {
             setInput(e.target.value);
@@ -405,7 +402,7 @@ function ReadingChallenge() {
         />
       </div>
 
-      <div className="challenge-actions">
+      <div className="game-actions">
         {currentFeedback === null ? (
           <button className="btn-primary" disabled={!input.trim()} onClick={handleSubmit}>
             Check
@@ -418,8 +415,8 @@ function ReadingChallenge() {
       </div>
 
       {currentFeedback && (
-        <div className="card challenge-feedback">
-          <div className="challenge-feedback-score">
+        <div className="card game-feedback">
+          <div className="game-feedback-score">
             {currentFeedback.correct} / {currentFeedback.total} words correct
           </div>
           <div className="challenge-feedback-words">

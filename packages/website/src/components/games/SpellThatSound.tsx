@@ -241,7 +241,7 @@ function SpellThatSound() {
                     style={{ width: `${r.correct ? 100 : 0}%` }}
                   />
                 </div>
-                <span className="sr-round-word">
+                <span className="quiz-round-word">
                   {r.question.wordBefore}_{r.question.wordAfter}
                 </span>
                 <span className="game-round-time">{r.timeTaken}s</span>
@@ -316,23 +316,23 @@ function SpellThatSound() {
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Fill in the {currentQ.soundDescription}</div>
-        <div className="sr-word">
+        <div className="quiz-word">
           {currentQ.wordBefore}
           <span className="sr-highlight">{answered ? currentQ.correctSpelling : '___'}</span>
           {currentQ.wordAfter}
         </div>
       </div>
 
-      <div className="sr-choices">
+      <div className="quiz-choices">
         {currentQ.choices.map((choice) => {
-          let className = 'sr-choice';
+          let className = 'quiz-choice';
           if (answered) {
             if (choice === currentQ.correctSpelling) {
-              className += ' sr-choice-correct';
+              className += ' quiz-choice-correct';
             } else if (choice === selectedChoice) {
-              className += ' sr-choice-incorrect';
+              className += ' quiz-choice-incorrect';
             } else {
-              className += ' sr-choice-dimmed';
+              className += ' quiz-choice-dimmed';
             }
           }
           return (
@@ -353,15 +353,15 @@ function SpellThatSound() {
       </div>
 
       {answered && (
-        <div className="sr-feedback">
+        <div className="quiz-feedback">
           {selectedChoice === currentQ.correctSpelling ? (
-            <div className="sr-feedback-correct">Correct!</div>
+            <div className="quiz-feedback-correct">Correct!</div>
           ) : (
-            <div className="sr-feedback-incorrect">
+            <div className="quiz-feedback-incorrect">
               Not quite — it{'\u2019'}s <strong>{currentQ.correctSpelling}</strong>
             </div>
           )}
-          <div className="sr-explanation">{currentQ.explanation}</div>
+          <div className="quiz-explanation">{currentQ.explanation}</div>
           <div className="game-actions">
             <button className="btn-primary" onClick={handleNext} ref={nextRef}>
               {round + 1 >= questions.length ? 'See Results' : 'Next'}

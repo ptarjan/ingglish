@@ -221,14 +221,14 @@ function SpeedMatch() {
   // --- Intro ---
   if (phase === 'intro') {
     return (
-      <div className="speed-match-page">
-        <div className="speed-match-intro">
+      <div className="game-page">
+        <div className="game-intro">
           <h2>Speed Match</h2>
           <p>
             Match Ingglish words to their English translations as fast as you can! Click one word
             from each column to make a pair. 3 rounds of 6 pairs each.
           </p>
-          <ol className="card challenge-rules">
+          <ol className="card game-rules">
             <li>Click an Ingglish word on the left</li>
             <li>Click its English match on the right</li>
             <li>Match all pairs as fast as possible!</li>
@@ -249,22 +249,22 @@ function SpeedMatch() {
   // --- Results ---
   if (phase === 'results') {
     return (
-      <div className="speed-match-page">
-        <div className="speed-match-results">
+      <div className="game-page">
+        <div className="game-results">
           <h2>All Matched!</h2>
-          <div className="speed-match-total-time">{formatTime(totalTime)}</div>
+          <div className="game-overall-score">{formatTime(totalTime)}</div>
           {isNewRecord && <div className="speed-match-record">New Record!</div>}
 
-          <div className="speed-match-round-times">
+          <div className="game-round-bars">
             {roundTimes.map((r) => (
-              <div className="speed-match-round-row" key={r.roundIndex}>
-                <span className="speed-match-round-label">Round {r.roundIndex + 1}</span>
+              <div className="game-round-row" key={r.roundIndex}>
+                <span className="game-round-label">Round {r.roundIndex + 1}</span>
                 <span className="speed-match-round-time">{formatTime(r.time)}</span>
               </div>
             ))}
           </div>
 
-          <div className="speed-match-result-actions">
+          <div className="game-result-actions">
             <button
               className="btn-secondary"
               onClick={() => {
@@ -299,7 +299,7 @@ function SpeedMatch() {
 
   // --- Playing ---
   return (
-    <div className="speed-match-page">
+    <div className="game-page">
       <div className="speed-match-header">
         <span>
           Round {currentRound + 1} / {ROUNDS}

@@ -362,12 +362,12 @@ function PatternSort() {
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Sort by the {currentRound.pattern} sound</div>
-        <div className="sr-word">{currentWord.word}</div>
+        <div className="quiz-word">{currentWord.word}</div>
       </div>
 
-      <div className="sr-choices">
+      <div className="quiz-choices">
         <button
-          className={`sr-choice${answered ? (currentWord.bucket === 'a' ? ' sr-choice-correct' : selectedBucket === 'a' ? ' sr-choice-incorrect' : ' sr-choice-dimmed') : ''}`}
+          className={`quiz-choice${answered ? (currentWord.bucket === 'a' ? ' quiz-choice-correct' : selectedBucket === 'a' ? ' quiz-choice-incorrect' : ' quiz-choice-dimmed') : ''}`}
           disabled={answered}
           onClick={() => {
             handleBucketClick('a');
@@ -376,7 +376,7 @@ function PatternSort() {
           {currentRound.bucketA}
         </button>
         <button
-          className={`sr-choice${answered ? (currentWord.bucket === 'b' ? ' sr-choice-correct' : selectedBucket === 'b' ? ' sr-choice-incorrect' : ' sr-choice-dimmed') : ''}`}
+          className={`quiz-choice${answered ? (currentWord.bucket === 'b' ? ' quiz-choice-correct' : selectedBucket === 'b' ? ' quiz-choice-incorrect' : ' quiz-choice-dimmed') : ''}`}
           disabled={answered}
           onClick={() => {
             handleBucketClick('b');
@@ -387,11 +387,11 @@ function PatternSort() {
       </div>
 
       {answered && (
-        <div className="sr-feedback">
+        <div className="quiz-feedback">
           {selectedBucket === currentWord.bucket ? (
-            <div className="sr-feedback-correct">Correct!</div>
+            <div className="quiz-feedback-correct">Correct!</div>
           ) : (
-            <div className="sr-feedback-incorrect">
+            <div className="quiz-feedback-incorrect">
               Not quite — {'\u201C'}
               {currentWord.word}
               {'\u201D'} belongs in{' '}

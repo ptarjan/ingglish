@@ -13,24 +13,6 @@
   margin: 0 auto;
 }
 
-/* === Intro === */
-
-.daily-intro {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.daily-intro h2 {
-  margin-bottom: 1rem;
-  font-size: 1.75rem;
-}
-
-.daily-intro p {
-  margin-bottom: 1.5rem;
-  line-height: 1.7;
-  color: var(--color-text-muted);
-}
-
 /* === Loading === */
 
 .daily-loading {
@@ -279,16 +261,6 @@
 
 /* === Result (won/lost/already-done) === */
 
-.daily-done {
-  padding: 2rem 0;
-  text-align: center;
-}
-
-.daily-done h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.75rem;
-}
-
 .daily-done-answer {
   margin-bottom: 1rem;
   font-size: 1.125rem;
@@ -298,20 +270,6 @@
 .daily-done-answer strong {
   color: var(--color-text);
   text-transform: uppercase;
-}
-
-.daily-done-attempts {
-  margin-bottom: 0.5rem;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.daily-result-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
 }
 
 /* === Mobile === */

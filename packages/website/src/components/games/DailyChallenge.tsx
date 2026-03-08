@@ -380,7 +380,7 @@ function DailyChallenge() {
   if (phase === 'intro') {
     return (
       <div className="daily-page">
-        <div className="daily-intro">
+        <div className="game-intro">
           <h2>Ingglish Wordle</h2>
           <p>
             Guess the 5-letter Ingglish word in 6 tries. Each guess must be a valid Ingglish word.
@@ -455,7 +455,7 @@ function DailyChallenge() {
   if (phase === 'won' || phase === 'lost' || phase === 'already-done') {
     return (
       <div className="daily-page">
-        <div className="daily-done">
+        <div className="game-results">
           <h2>
             {phase === 'won'
               ? 'Well done!'
@@ -470,7 +470,7 @@ function DailyChallenge() {
             </div>
           )}
 
-          {won && <div className="daily-done-attempts">{displayGuesses.length}/6</div>}
+          {won && <div className="game-overall-score">{displayGuesses.length}/6</div>}
 
           {/* Mini emoji grid */}
           <div style={{ lineHeight: '1.6', marginBottom: '1rem' }}>
@@ -490,7 +490,7 @@ function DailyChallenge() {
             <div className="daily-countdown-time">{countdown}</div>
           </div>
 
-          <div className="daily-result-actions">
+          <div className="game-result-actions">
             <button
               className={`btn-primary ${copiedShare ? 'btn-copied' : ''}`}
               onClick={handleShareImage}

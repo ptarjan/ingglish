@@ -256,7 +256,7 @@ function HomophonesQuiz() {
                   <div className="game-round-bar">
                     <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="homophones-round-word">{r.question.ingglish}</span>
+                  <span className="quiz-round-word">{r.question.ingglish}</span>
                   <span className="game-round-time">{r.timeTaken}s</span>
                 </div>
               );
@@ -338,16 +338,16 @@ function HomophonesQuiz() {
         <div className="homophones-prompt">{currentQ.ingglish}</div>
       </div>
 
-      <div className="homophones-choices">
+      <div className="quiz-choices">
         {currentQ.choices.map((choice) => {
-          let className = 'homophones-choice';
+          let className = 'quiz-choice';
           if (answered) {
             if (isCorrectAnswer(choice)) {
-              className += ' homophones-choice-correct';
+              className += ' quiz-choice-correct';
             } else if (choice === selectedChoice) {
-              className += ' homophones-choice-incorrect';
+              className += ' quiz-choice-incorrect';
             } else {
-              className += ' homophones-choice-dimmed';
+              className += ' quiz-choice-dimmed';
             }
           }
           return (

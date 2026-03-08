@@ -239,7 +239,7 @@ function OriginDetective() {
                     style={{ width: `${r.correct ? 100 : 0}%` }}
                   />
                 </div>
-                <span className="sr-round-word">{r.question.word}</span>
+                <span className="quiz-round-word">{r.question.word}</span>
                 <span className="game-round-time">{r.timeTaken}s</span>
               </div>
             ))}
@@ -312,19 +312,19 @@ function OriginDetective() {
 
       <div className="card game-card">
         <div className="label-caps game-card-label">Clue: {currentQ.spellingClue}</div>
-        <div className="sr-word">{currentQ.word}</div>
+        <div className="quiz-word">{currentQ.word}</div>
       </div>
 
-      <div className="sr-choices">
+      <div className="quiz-choices">
         {currentQ.choices.map((choice) => {
-          let className = 'sr-choice';
+          let className = 'quiz-choice';
           if (answered) {
             if (choice === currentQ.correctOrigin) {
-              className += ' sr-choice-correct';
+              className += ' quiz-choice-correct';
             } else if (choice === selectedChoice) {
-              className += ' sr-choice-incorrect';
+              className += ' quiz-choice-incorrect';
             } else {
-              className += ' sr-choice-dimmed';
+              className += ' quiz-choice-dimmed';
             }
           }
           return (
@@ -343,15 +343,15 @@ function OriginDetective() {
       </div>
 
       {answered && (
-        <div className="sr-feedback">
+        <div className="quiz-feedback">
           {selectedChoice === currentQ.correctOrigin ? (
-            <div className="sr-feedback-correct">Correct!</div>
+            <div className="quiz-feedback-correct">Correct!</div>
           ) : (
-            <div className="sr-feedback-incorrect">
+            <div className="quiz-feedback-incorrect">
               Not quite — it{'\u2019'}s <strong>{currentQ.correctOrigin}</strong>
             </div>
           )}
-          <div className="sr-explanation">{currentQ.explanation}</div>
+          <div className="quiz-explanation">{currentQ.explanation}</div>
           <div className="game-actions">
             <button className="btn-primary" onClick={handleNext} ref={nextRef}>
               {round + 1 >= questions.length ? 'See Results' : 'Next'}
