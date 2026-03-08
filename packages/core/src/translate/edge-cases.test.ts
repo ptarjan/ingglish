@@ -698,6 +698,12 @@ describe('Swedish translation', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('huset');
   });
+
+  it('should resolve two-level genitive: "barnens" → strip s → "barnen" → strip en → "barn"', async () => {
+    const result = await translate('barnens', { lang: 'sv' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('barnens');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -822,6 +828,12 @@ describe('Norwegian Bokmål translation', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('gaarden');
   });
+
+  it('should modernize old spelling: "af" → "av"', async () => {
+    const result = await translate('af', { lang: 'nb' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('af');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -838,6 +850,12 @@ describe('Romanian translation', () => {
     const result = await translate('camerele', { lang: 'ro' });
     expect(result).toBeTruthy();
     expect(result).not.toBe('camerele');
+  });
+
+  it('should restore prefix n→în: "nțeleg" → "înțeleg"', async () => {
+    const result = await translate('nțeleg', { lang: 'ro' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('nțeleg');
   });
 });
 
@@ -861,6 +879,18 @@ describe('Malay translation', () => {
     const result = await translate('dipikir', { lang: 'ma' });
     expect(result).toBeTruthy();
     expect(result).not.toBe('dipikir');
+  });
+
+  it('should strip meny- prefix and restore s: "menyewa" → "sewa"', async () => {
+    const result = await translate('menyewa', { lang: 'ma' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('menyewa');
+  });
+
+  it('should strip suffix then prefix: "menyewakan" → strip -kan → "menyewa" → strip meny- → restore s → "sewa"', async () => {
+    const result = await translate('menyewakan', { lang: 'ma' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('menyewakan');
   });
 });
 
@@ -918,6 +948,32 @@ describe('Esperanto advanced lemmatization', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('maldormis');
   });
+
+  it('should strip accusative -n directly: "hundon" → "hundo"', async () => {
+    const result = await translate('hundon', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('hundon');
+  });
+
+  it('should strip plural+accusative then derivational suffix: "lernilojn"', async () => {
+    // lernilojn → strip n → lerniloj → strip j → lernilo → suffix ilo → lern → lerno
+    const result = await translate('lernilojn', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('lernilojn');
+  });
+
+  it('should resolve adverb -e: "maldorme" → "maldorma"', async () => {
+    const result = await translate('maldorme', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('maldorme');
+  });
+
+  it('should resolve prefix ek- with recursive lemmatization: "ekadmonas"', async () => {
+    // ekadmonas → prefix ek → admonas → verb -as → admoni
+    const result = await translate('ekadmonas', { lang: 'eo' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('ekadmonas');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -934,6 +990,12 @@ describe('Swahili advanced morphology', () => {
     const result = await translate('walipenda', { lang: 'sw' });
     expect(result).toBeTruthy();
     expect(result).not.toBe('walipenda');
+  });
+
+  it('should strip prefix + derivational suffix + ku- form: "walisomisha" → "kusoma"', async () => {
+    const result = await translate('walisomisha', { lang: 'sw' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('walisomisha');
   });
 });
 
