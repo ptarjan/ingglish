@@ -8,6 +8,7 @@ import { useGameSpeech } from '../../hooks/useGameSpeech';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
+import { GameRoundBars } from './GameRoundBars';
 import { QuizFeedback } from './QuizFeedback';
 
 type Phase = 'intro' | 'playing' | 'results';
@@ -227,28 +228,17 @@ function PatternSort() {
             {totalCorrect}/{totalWords}
           </div>
           <p className="game-score-label">{getScoreLabel(overallPct)}</p>
-          <div className="game-round-bars">
-            {roundResults.map((r, i) => {
-              const pct = r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0;
-              const fillClass =
-                pct >= 80
-                  ? 'game-round-fill-good'
-                  : pct >= 50
-                    ? 'game-round-fill-ok'
-                    : 'game-round-fill-bad';
-              return (
-                <div className="game-round-row" key={i}>
-                  <span className="game-round-label">{r.pattern}</span>
-                  <div className="game-round-bar">
-                    <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
-                  </div>
-                  <span className="game-round-pct">
-                    {r.correct}/{r.total}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <GameRoundBars
+            rows={roundResults.map((r) => ({
+              data: (
+                <span className="game-round-pct">
+                  {r.correct}/{r.total}
+                </span>
+              ),
+              fillPct: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
+              label: r.pattern,
+            }))}
+          />
           <GameResultActions
             copied={copied}
             onNewGame={() => {

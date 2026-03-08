@@ -3,6 +3,7 @@ import type { Lesson } from '../../data/learn-to-read-data';
 import { LESSONS } from '../../data/learn-to-read-data';
 import { useGameProgress } from '../../games/useGameProgress';
 import { GameSoundToggle, useGameSpeech } from '../../hooks/useGameSpeech';
+import { GameRoundBars } from './GameRoundBars';
 
 import '../../styles/learn-to-read.css';
 
@@ -324,23 +325,13 @@ function LearnToRead() {
               : 'Review the lesson and try again.'}
         </p>
 
-        <div className="game-round-bars">
-          {activeLesson.quiz.map((q, i) => {
-            const isCorrect = quizResults[i] ?? false;
-            return (
-              <div className="game-round-row" key={i}>
-                <span className="game-round-label">{q.ingglish}</span>
-                <div className="game-round-bar">
-                  <div
-                    className={`game-round-fill ${isCorrect ? 'game-round-fill-good' : 'game-round-fill-bad'}`}
-                    style={{ width: isCorrect ? '100%' : '0%' }}
-                  />
-                </div>
-                <span className="learn-result-answer">{q.english}</span>
-              </div>
-            );
-          })}
-        </div>
+        <GameRoundBars
+          rows={activeLesson.quiz.map((q, i) => ({
+            data: <span className="learn-result-answer">{q.english}</span>,
+            fillPct: (quizResults[i] ?? false) ? 100 : 0,
+            label: q.ingglish,
+          }))}
+        />
 
         <div className="game-result-actions">
           <button

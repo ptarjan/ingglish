@@ -4,6 +4,7 @@ import { getTierLabel } from '../../games/game-utils';
 import { useQuizGame } from '../../hooks/useQuizGame';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
+import { QuizChoices } from './QuizChoices';
 import { QuizFeedback } from './QuizFeedback';
 import { QuizResults } from './QuizResults';
 
@@ -83,26 +84,21 @@ function RuleOrException() {
         <div className="quiz-word">{currentQ.word}</div>
       </div>
 
-      <div className="quiz-choices">
-        <button
-          className={`quiz-choice${game.answered ? (currentQ.isException ? ' quiz-choice-incorrect' : ' quiz-choice-correct') : ''}`}
-          disabled={game.answered}
-          onClick={() => {
-            game.handleChoiceClick('false');
-          }}
-        >
-          Follows Rule
-        </button>
-        <button
-          className={`quiz-choice${game.answered ? (currentQ.isException ? ' quiz-choice-correct' : ' quiz-choice-incorrect') : ''}`}
-          disabled={game.answered}
-          onClick={() => {
-            game.handleChoiceClick('true');
-          }}
-        >
-          Exception!
-        </button>
-      </div>
+      <QuizChoices
+        answered={game.answered}
+        choices={['Follows Rule', 'Exception!']}
+        isCorrectAnswer={(c) => (c === 'Exception!') === currentQ.isException}
+        onChoiceClick={(c) => {
+          game.handleChoiceClick(c === 'Exception!' ? 'true' : 'false');
+        }}
+        selectedChoice={
+          game.selectedChoice === 'false'
+            ? 'Follows Rule'
+            : game.selectedChoice === 'true'
+              ? 'Exception!'
+              : null
+        }
+      />
 
       {game.answered && (
         <QuizFeedback

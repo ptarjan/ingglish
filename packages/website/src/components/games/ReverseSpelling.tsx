@@ -10,6 +10,7 @@ import { useGameSpeech } from '../../hooks/useGameSpeech';
 import { GameIntro } from './GameIntro';
 import { GameProgressBar } from './GameProgressBar';
 import { GameResultActions } from './GameResultActions';
+import { GameRoundBars } from './GameRoundBars';
 
 import '../../styles/reverse-spelling.css';
 
@@ -218,27 +219,14 @@ function ReverseSpelling() {
           <div className="game-overall-score">{overallPct}%</div>
           <p className="game-score-label">{getScoreLabel(overallPct)}</p>
 
-          <div className="game-round-bars">
-            {results.map((r, i) => {
-              const pct = Math.round(r.score * 100);
-              const fillClass =
-                pct >= 80
-                  ? 'game-round-fill-good'
-                  : pct >= 50
-                    ? 'game-round-fill-ok'
-                    : 'game-round-fill-bad';
-              return (
-                <div className="game-round-row" key={i}>
-                  <span className="game-round-label">{r.word.english}</span>
-                  <div className="game-round-bar">
-                    <div className={`game-round-fill ${fillClass}`} style={{ width: `${pct}%` }} />
-                  </div>
-                  <span className="game-round-pct">{pct}%</span>
-                  <span className="game-round-time">{r.timeTaken}s</span>
-                </div>
-              );
-            })}
-          </div>
+          <GameRoundBars
+            rows={results.map((r) => ({
+              data: <span className="game-round-pct">{Math.round(r.score * 100)}%</span>,
+              fillPct: Math.round(r.score * 100),
+              label: r.word.english,
+              time: r.timeTaken,
+            }))}
+          />
 
           <GameResultActions
             copied={copied}
