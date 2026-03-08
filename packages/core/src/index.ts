@@ -74,12 +74,9 @@ export async function translate(text: string, options: TranslateOptions = {}): P
 // Re-exports
 // =============================================================================
 
-export type { TranslateOptions } from './dict-loader';
 export { loadLangDict, setDictLoader } from './dict-loader';
 
 // Sync API (dictionary must be loaded first via translate() or reverseTranslate())
 export { translateSync, translateSyncWithMapping } from './translate';
 export { reverseTranslateSync, reverseTranslateSyncWithMapping } from './translate';
 export type { TranslatedToken } from './translate';
-
-export type { OutputFormat } from '@ingglish/phonemes';
