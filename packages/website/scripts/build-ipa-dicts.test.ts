@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyDefaultStress, parseTsv } from './build-ipa-dicts';
+import { applyDefaultStress, convertToArpabet, parseTsv } from './build-ipa-dicts';
 
 describe('parseTsv', () => {
   it('parses tab-separated word/IPA pairs', () => {
@@ -65,5 +65,37 @@ describe('applyDefaultStress', () => {
     const original = [...input];
     applyDefaultStress(input);
     expect(input).toEqual(original);
+  });
+});
+
+describe('convertToArpabet (full pipeline)', () => {
+  it('converts IPA dict entries to ARPAbet arrays', () => {
+    const ipaDict = { hello: '/hɛloʊ/' };
+    const result = convertToArpabet(ipaDict, 'en');
+    expect(result['hello']).toBeDefined();
+    expect(Array.isArray(result['hello'])).toBe(true);
+    expect(result['hello']!.length).toBeGreaterThan(0);
+  });
+
+  it('strips slashes and dots from IPA', () => {
+    // Syllable dots like /hɛ.loʊ/ should be removed before conversion
+    const ipaDict = { test: '/tɛ.st/' };
+    const result = convertToArpabet(ipaDict, 'en');
+    expect(result['test']).toBeDefined();
+  });
+
+  it('handles parseTsv → convertToArpabet pipeline', () => {
+    const tsv = 'bonjour\t/bɔ̃ʒuʁ/\nmerci\t/mɛʁsi/\n';
+    const ipaDict = parseTsv(tsv);
+    const arpabetDict = convertToArpabet(ipaDict, 'fr');
+    // Both words should produce some ARPAbet output
+    expect(Object.keys(arpabetDict).length).toBeGreaterThan(0);
+  });
+
+  it('skips entries that produce empty ARPAbet', () => {
+    // An empty IPA should produce no entry
+    const ipaDict = { empty: '/' };
+    const result = convertToArpabet(ipaDict, 'en');
+    expect(result['empty']).toBeUndefined();
   });
 });

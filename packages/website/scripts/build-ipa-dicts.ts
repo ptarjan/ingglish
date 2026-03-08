@@ -103,7 +103,7 @@ export function applyDefaultStress(arpabet: string[]): string[] {
 /**
  * Convert an IPA dict (word → IPA string) to ARPAbet dict (word → string[]).
  */
-function convertToArpabet(
+export function convertToArpabet(
   ipaDict: Record<string, string>,
   langCode: string
 ): Record<string, string[]> {

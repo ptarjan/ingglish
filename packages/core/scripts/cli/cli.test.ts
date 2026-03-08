@@ -52,3 +52,11 @@ describe('debug-roundtrip CLI', () => {
     expect(output).toContain('Round-trip');
   });
 });
+
+describe('collision-analysis CLI', () => {
+  it('runs and produces collision report', () => {
+    const output = run('collision-analysis', '');
+    expect(output).toContain('Collision Analysis');
+    expect(output).toContain('Total words analyzed');
+  });
+}, 60_000);
