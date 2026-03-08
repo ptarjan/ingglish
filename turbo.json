@@ -19,7 +19,7 @@
       "inputs": ["src/**", "tsconfig*.json"]
     },
     "test": {
-      "inputs": ["src/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
+      "inputs": ["src/**", "scripts/**", "tsconfig*.json", "vitest.config.*", "vitest.setup.*"]
     },
     "bench": {
       "cache": false,
