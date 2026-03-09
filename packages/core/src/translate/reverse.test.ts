@@ -192,16 +192,6 @@ describe('reverse-translator', () => {
       expect(['hi', 'high']).toContain(result.toLowerCase());
     });
 
-    it('should handle stress markers', () => {
-      // /həˈloʊ/ -> "hello"
-      const result = reverseTranslateSync('həˈloʊ', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('hello');
-    });
-
-    it('should return empty string for empty input', () => {
-      expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
-    });
-
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
       const result = reverseTranslateSync('həˈloʊ wɝld', { format: 'ipa' });

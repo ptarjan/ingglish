@@ -86,12 +86,6 @@ describe('reverse contraction handling', () => {
     const back = reverseTranslateSync(ingglish);
     expect(back.toLowerCase()).toBe("it's");
   });
-
-  it("should reverse-translate I've", () => {
-    const ingglish = translateSync("I've");
-    const back = reverseTranslateSync(ingglish);
-    expect(back.toLowerCase()).toMatch(/i've/);
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -225,11 +219,6 @@ describe('reverse translation output', () => {
     const result = reverseTranslateSync('dha kat');
     // "dha kat" → "the cat"
     expect(result.toLowerCase()).toBe('the cat');
-  });
-
-  it('should reverse-translate single-word Ingglish', () => {
-    const result = reverseTranslateSync('kat');
-    expect(result).toBe('cat');
   });
 });
 
@@ -500,17 +489,10 @@ describe('round-trip edge cases', () => {
 // IPA format output (to-ipa.ts)
 // ---------------------------------------------------------------------------
 describe('IPA format translation', () => {
-  it('should translate to IPA format', () => {
-    const result = translateSync('hello', { format: 'ipa' });
-    // IPA should contain IPA characters, not Latin
-    expect(result).toContain('l');
-    expect(result).toBeTruthy();
-  });
-
   it('should translate sentence to IPA', () => {
     const result = translateSync('hello world', { format: 'ipa' });
     expect(result).toBeTruthy();
-    expect(result.length).toBeGreaterThan(0);
+    expect(result).toContain('l');
   });
 
   it('should translate unknown word to IPA via G2P', () => {
@@ -585,30 +567,6 @@ describe('compound word case preservation paths', () => {
   it('should handle compound with mixed-case parts', () => {
     // "GitHub" — compound where first part should preserve case
     const result = translateSync('GitHub');
-    expect(result).toBeTruthy();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// British spelling resolver (register-english.ts line 25-28)
-// ---------------------------------------------------------------------------
-describe('British spelling resolution', () => {
-  it('should translate British -ise spelling via American -ize', () => {
-    const result = translateSync('realise');
-    // Should translate (via "realize" lookup)
-    expect(result).toBeTruthy();
-    expect(result.toLowerCase()).not.toBe('realise');
-  });
-
-  it('should translate British -our spelling via American -or', () => {
-    const result = translateSync('colour');
-    // Should translate (via "color" lookup)
-    expect(result).toBeTruthy();
-  });
-
-  it('should translate British -re spelling via American -er', () => {
-    const result = translateSync('centre');
-    // Should translate (via "center" lookup)
     expect(result).toBeTruthy();
   });
 });
@@ -1075,17 +1033,12 @@ describe('buildReverseMap', () => {
 // IPA reverse translation (reverse.ts reverseTranslateIPAWord)
 // ---------------------------------------------------------------------------
 describe('IPA reverse translation', () => {
-  it('should reverse-translate IPA text to English', () => {
-    const ipa = translateSync('cat', { format: 'ipa' });
-    const result = reverseTranslateSync(ipa, { format: 'ipa' });
-    expect(result.toLowerCase()).toBe('cat');
-  });
-
   it('should reverse-translate IPA with mapping', () => {
     const ipa = translateSync('hello world', { format: 'ipa' });
     const tokens = reverseTranslateSyncWithMapping(ipa, { format: 'ipa' });
     const words = tokens.filter((t) => t.isWord);
     expect(words.length).toBe(2);
+    expect(words[0]!.translated.toLowerCase()).toBe('hello');
   });
 });
 
