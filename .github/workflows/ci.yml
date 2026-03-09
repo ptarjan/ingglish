@@ -43,7 +43,7 @@ jobs:
           files: packages/*/coverage/coverage-final.json
           fail_ci_if_error: false
 
-  # CLI integration tests — split into separate jobs to run in parallel (~2 min each)
+  # CLI integration tests — split across runners since each test spawns CPU-bound subprocesses
   test-cli:
     runs-on: ubuntu-latest
     strategy:
@@ -51,17 +51,25 @@ jobs:
         include:
           - scope: ingglish
             name: core
+            shard: 1/2
+          - scope: ingglish
+            name: core
+            shard: 2/2
           - scope: "@ingglish/dom"
             name: dom
-    name: test-cli (${{ matrix.name }})
+            shard: ""
+    name: test-cli (${{ matrix.name }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
         with:
           dict-cache: true
 
-      - name: CLI integration tests (${{ matrix.name }})
-        run: npx turbo test:cli --filter=${{ matrix.scope }}
+      - name: CLI integration tests
+        run: |
+          shard_arg=""
+          if [ -n "${{ matrix.shard }}" ]; then shard_arg="-- --shard=${{ matrix.shard }}"; fi
+          npx turbo test:cli --filter=${{ matrix.scope }} $shard_arg
 
   # Detect dead code, unused exports, and missing dependencies
   knip:
