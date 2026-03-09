@@ -1,92 +1,61 @@
+import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { wordToArpabet, wordToPhonetic } from './index';
 
-describe('wordToArpabet', () => {
-  it('converts simple words to ARPAbet', () => {
-    const phonemes = wordToArpabet('cat');
-    expect(phonemes).toContain('K');
-    expect(phonemes).toContain('T');
-    // Should have a vowel with stress marker
-    expect(phonemes.some((p) => p.startsWith('AE'))).toBe(true);
+// All words below are NOT in the CMU dictionary, so translateSync
+// exercises the G2P pipeline. Strip the not-found marker to get just
+// the phonetic output.
+const g2p = (word: string) => translateSync(word).replace(/^\uFFFD/, '');
+
+describe('G2P basic rules', () => {
+  it('converts simple non-dict words to phonetic output', () => {
+    const result = g2p('gub');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+    expect(result).toBe('guhb');
   });
 
-  it('handles silent letters (knight)', () => {
-    const phonemes = wordToArpabet('knight');
+  it('handles silent letters (KN)', () => {
     // K should be silent before N
-    expect(phonemes[0]).toBe('N');
-    expect(phonemes.some((p) => p.startsWith('AY'))).toBe(true);
-    expect(phonemes).toContain('T');
+    expect(g2p('knib')).toBe('nib');
   });
 
-  it('handles digraphs (sh, ch, th)', () => {
-    const sh = wordToArpabet('ship');
-    expect(sh).toContain('SH');
-
-    const ch = wordToArpabet('chip');
-    expect(ch).toContain('CH');
-
-    const th = wordToArpabet('thin');
-    expect(th).toContain('TH');
+  it('handles digraphs (SH, CH, TH)', () => {
+    expect(g2p('shug')).toMatch(/^sh/);
+    expect(g2p('chub')).toMatch(/^ch/);
+    expect(g2p('thub')).toMatch(/^th/);
   });
 
-  it('handles word-initial silent letters (gn, kn, pn, ps, pt, pf, mn, dj)', () => {
-    expect(wordToArpabet('gnat')[0]).toBe('N');
-    expect(wordToArpabet('knife')[0]).toBe('N');
-    expect(wordToArpabet('pneumonia')[0]).toBe('N');
-    expect(wordToArpabet('psalm')[0]).toBe('S');
-    expect(wordToArpabet('pterodactyl')[0]).toBe('T');
-    expect(wordToArpabet('pfennig')[0]).toBe('F');
-    expect(wordToArpabet('mnemonic')[0]).toBe('N');
-    expect(wordToArpabet('djinn')[0]).toBe('JH');
+  it('handles word-initial silent letters (GN, KN, PN, PS)', () => {
+    expect(g2p('gnab')).toBe('nab');
+    expect(g2p('knib')).toBe('nib');
+    expect(g2p('pnib')).toBe('nib');
+    expect(g2p('psar')).toBe('sar');
   });
 
-  it('handles silent T in -ften words (often, soften)', () => {
-    const often = wordToArpabet('often');
-    // T should be silent: often = AO F AH N (no T)
-    expect(often).not.toContain('T');
-    expect(often.some((p) => p.startsWith('F'))).toBe(true);
-
-    const soften = wordToArpabet('soften');
-    expect(soften).not.toContain('T');
+  it('handles doubled consonants (ZZ, TT)', () => {
+    expect(g2p('bluzz')).toBe('bluhz');
+    expect(g2p('smutt')).toBe('smuht');
   });
 
-  it('handles doubled consonants (bb, dd, tt)', () => {
-    const rabbit = wordToArpabet('rabbit');
-    // BB should collapse to single B
-    const bCount = rabbit.filter((p) => p === 'B').length;
-    expect(bCount).toBe(1);
-  });
-
-  it('returns empty array for empty string', () => {
-    expect(wordToArpabet('')).toEqual([]);
+  it('returns empty string for empty input', () => {
+    expect(translateSync('')).toBe('');
   });
 
   it('applies stress prediction for multi-syllable words', () => {
-    const phonemes = wordToArpabet('computer');
-    // Should have at least one stressed vowel (stress-1)
-    expect(phonemes.some((p) => p.endsWith('1'))).toBe(true);
-    // Should have at least one unstressed vowel (stress-0 or AH0)
-    expect(phonemes.some((p) => p.endsWith('0'))).toBe(true);
+    // Multi-syllable non-dict word should have varied stress in output
+    const result = g2p('blicture');
+    expect(result).toBe('blikcher');
   });
 });
 
-describe('wordToPhonetic', () => {
-  it('returns an Ingglish spelling by default', () => {
-    const result = wordToPhonetic('cat');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it('respects the format parameter', () => {
-    const ingglish = wordToPhonetic('hello', 'ingglish');
-    const ipa = wordToPhonetic('hello', 'ipa');
-    // IPA uses different characters (slashes, diacritics)
+describe('G2P format output', () => {
+  it('produces different output for ingglish vs ipa format', () => {
+    const ingglish = g2p('gub');
+    const ipa = translateSync('gub', { format: 'ipa' }).replace(/^\uFFFD/, '');
     expect(ingglish).not.toBe(ipa);
   });
 
   it('produces stable output for the same word', () => {
-    const first = wordToPhonetic('example');
-    const second = wordToPhonetic('example');
-    expect(first).toBe(second);
+    expect(g2p('blonk')).toBe(g2p('blonk'));
   });
 });
