@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { translate, setDictLoader  } from 'ingglish';
+import { translate, setDictLoader } from 'ingglish';
 import { describe, expect, it, beforeAll } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
 import { type PhoneDict, convertIpaEntries, getLanguage, lookupDict } from './index';
