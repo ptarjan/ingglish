@@ -86,7 +86,7 @@ describe('tutorial page examples', () => {
   describe('verify all examples translate correctly', () => {
     for (const ex of unique) {
       it(`"${ex.english}" → "${ex.ingglish}" (${ex.source}:${ex.line})`, () => {
-        const result = translateSync(ex.english, { format: 'ingglish' });
+        const result = translateSync(ex.english);
         expect(result.toLowerCase()).toBe(ex.ingglish.toLowerCase());
       });
     }

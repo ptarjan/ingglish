@@ -325,7 +325,7 @@ describe('translator', () => {
     });
 
     it('should use translateSyncWithMapping for token mapping', () => {
-      const tokens = translateSyncWithMapping('Hello world', { format: 'ingglish' });
+      const tokens = translateSyncWithMapping('Hello world');
       expect(tokens).toHaveLength(3);
       expect(tokens[0]!.isWord).toBe(true);
       expect(tokens[1]!.isWord).toBe(false);
@@ -414,7 +414,7 @@ describe('translator', () => {
     });
 
     it('should preserve URLs in translateSyncWithMapping', () => {
-      const tokens = translateSyncWithMapping('Visit https://example.com', { format: 'ingglish' });
+      const tokens = translateSyncWithMapping('Visit https://example.com');
       const urlToken = tokens.find((t) => t.original === 'https://example.com');
       expect(urlToken).toBeDefined();
       expect(urlToken?.translated).toBe('https://example.com');
@@ -671,7 +671,7 @@ describe('translator', () => {
     });
 
     it('translateSyncWithMapping accepts options object', () => {
-      const tokens = translateSyncWithMapping('hello world', { format: 'ingglish' });
+      const tokens = translateSyncWithMapping('hello world');
       expect(tokens).toHaveLength(3);
       // First word of multi-word text is capitalized (sentence start)
       expect(tokens[0]!.translated).toBe('Haloh');
@@ -717,7 +717,6 @@ describe('translator', () => {
 
       // Simulates pre-segmented Japanese text: "neko desu. inu desu."
       const tokens = translateSyncWithMapping('neko desu. inu desu.', {
-        format: 'ingglish',
         lang: MOCK_JA_LANG,
       });
 
@@ -733,7 +732,6 @@ describe('translator', () => {
     it('translateSync also capitalizes sentence starts for caseless scripts', () => {
       // Dict already loaded from previous test
       const result = translateSync('neko desu. inu desu.', {
-        format: 'ingglish',
         lang: MOCK_JA_LANG,
       });
 
@@ -746,7 +744,6 @@ describe('translator', () => {
 
     it('single word stays lowercase in translateSyncWithMapping', () => {
       const tokens = translateSyncWithMapping('neko', {
-        format: 'ingglish',
         lang: MOCK_JA_LANG,
       });
       const word = tokens.find((t) => t.isWord);
