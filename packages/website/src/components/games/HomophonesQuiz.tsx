@@ -38,7 +38,7 @@ function HomophonesQuiz() {
     },
     speakQuestion: (q) => {
       const choiceList = q.choices.map((c, i) => `${i + 1}. ${c}`).join(' ... ');
-      return `What English word is this? ${q.correctAnswers[0]} ... ${choiceList}`;
+      return `What English word is this? ... ${q.correctAnswers[0]} ... ${choiceList}`;
     },
   });
 

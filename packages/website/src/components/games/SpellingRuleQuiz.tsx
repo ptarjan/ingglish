@@ -74,7 +74,7 @@ function SpellingRuleQuiz() {
         : `Not quite, it's ${q.correctSound}. ${q.explanation}`,
     speakQuestion: (q) => {
       const choiceList = q.choices.map((c, i) => `${i + 1}. ${c}`).join(' ... ');
-      return `What sound does the highlighted pattern make in ${q.word}? ... ${choiceList}`;
+      return `What sound does the highlighted pattern make in ... ${q.word}? ... ${choiceList}`;
     },
   });
 
