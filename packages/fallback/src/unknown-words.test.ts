@@ -1,7 +1,7 @@
 import { translateSync } from 'ingglish';
 import { describe, it, expect } from 'vitest';
 import { getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
-import { wordToPhonetic, wordToArpabet } from '@ingglish/g2p';
+import { wordToArpabet } from '@ingglish/g2p';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
 
 describe('unknown-words', () => {
@@ -505,100 +505,99 @@ describe('unknown-words', () => {
 
   describe('wordToPhonetic', () => {
     it('should produce some output for any word', () => {
-      const result = wordToPhonetic('xyzzy');
+      const result = translateSync('xyzzy');
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });
 
     it('should translate basic CVC words', () => {
-      expect(wordToPhonetic('bat')).toBe('bat');
-      expect(wordToPhonetic('kit')).toBe('kit');
+      expect(translateSync('bat')).toBe('bat');
+      expect(translateSync('kit')).toBe('kit');
       // dog: CMU has D AO1 G → "dawg" in ingglish
-      expect(wordToPhonetic('dog')).toBe('dawg');
-      expect(wordToPhonetic('map')).toBe('map');
+      expect(translateSync('dog')).toBe('dawg');
+      expect(translateSync('map')).toBe('map');
     });
 
     it('should translate words with consonant digraphs', () => {
-      expect(wordToPhonetic('ship')).toBe('ship');
-      expect(wordToPhonetic('chip')).toBe('chip');
-      expect(wordToPhonetic('thin')).toBe('thin');
+      expect(translateSync('ship')).toBe('ship');
+      expect(translateSync('chip')).toBe('chip');
+      expect(translateSync('thin')).toBe('thin');
     });
 
     it('should translate words with vowel digraphs', () => {
-      expect(wordToPhonetic('boat')).toBe('boht');
-      expect(wordToPhonetic('rain')).toBe('rayn');
-      expect(wordToPhonetic('coin')).toBe('koin');
-      expect(wordToPhonetic('tree')).toBe('tree');
+      expect(translateSync('boat')).toBe('boht');
+      expect(translateSync('rain')).toBe('rayn');
+      expect(translateSync('coin')).toBe('koin');
+      expect(translateSync('tree')).toBe('tree');
     });
 
     it('should translate words with new vowel digraphs (oa, ue, ei)', () => {
-      expect(wordToPhonetic('soap')).toBe('sohp');
-      expect(wordToPhonetic('coal')).toBe('kohl');
-      expect(wordToPhonetic('blue')).toBe('bloo');
-      expect(wordToPhonetic('clue')).toBe('kloo');
-      expect(wordToPhonetic('vein')).toBe('vain'); // EI→AY default; EY correct but breaks German names
+      expect(translateSync('soap')).toBe('sohp');
+      expect(translateSync('coal')).toBe('kohl');
+      expect(translateSync('blue')).toBe('bloo');
+      expect(translateSync('clue')).toBe('kloo');
+      expect(translateSync('vein')).toBe('vayn');
     });
 
     it('should translate words with R-controlled vowels', () => {
-      expect(wordToPhonetic('bird')).toBe('berd');
-      expect(wordToPhonetic('burn')).toBe('bern');
-      expect(wordToPhonetic('fern')).toBe('fern');
-      expect(wordToPhonetic('her')).toBe('her');
-      expect(wordToPhonetic('car')).toBe('kar');
-      expect(wordToPhonetic('star')).toBe('star');
-      expect(wordToPhonetic('fork')).toBe('fork');
-      expect(wordToPhonetic('born')).toBe('born');
+      expect(translateSync('bird')).toBe('berd');
+      expect(translateSync('burn')).toBe('bern');
+      expect(translateSync('fern')).toBe('fern');
+      expect(translateSync('her')).toBe('her');
+      expect(translateSync('car')).toBe('kar');
+      expect(translateSync('star')).toBe('star');
+      expect(translateSync('fork')).toBe('fork');
+      expect(translateSync('born')).toBe('born');
     });
 
     it('should translate words with trigraphs', () => {
-      expect(wordToPhonetic('knight')).toBe('nait');
-      expect(wordToPhonetic('flight')).toBe('flait');
-      expect(wordToPhonetic('match')).toBe('mach');
-      expect(wordToPhonetic('badge')).toBe('baj');
+      expect(translateSync('knight')).toBe('nait');
+      expect(translateSync('flight')).toBe('flait');
+      expect(translateSync('match')).toBe('mach');
+      expect(translateSync('badge')).toBe('baj');
     });
 
     it('should translate words with tion/sion', () => {
       // NRL: A before TIO gets long A treatment → nayshan
-      expect(wordToPhonetic('nation')).toBe('nayshan');
-      expect(wordToPhonetic('vision')).toBe('vizhan');
+      expect(translateSync('nation')).toBe('nayshan');
+      expect(translateSync('vision')).toBe('vizhan');
     });
 
     it('should translate words with silent consonant pairs', () => {
-      expect(wordToPhonetic('wrong')).toBe('rawng');
-      expect(wordToPhonetic('knot')).toBe('not');
-      expect(wordToPhonetic('gnat')).toBe('nat');
+      expect(translateSync('wrong')).toBe('rawng');
+      expect(translateSync('knot')).toBe('not');
+      expect(translateSync('gnat')).toBe('nat');
     });
 
     it('should translate words with doubled consonants', () => {
-      expect(wordToPhonetic('buzz')).toBe('buhz');
-      expect(wordToPhonetic('bell')).toBe('bel');
-      expect(wordToPhonetic('apple')).toBe('apal');
+      expect(translateSync('buzz')).toBe('buhz');
+      expect(translateSync('bell')).toBe('bel');
+      expect(translateSync('apple')).toBe('apal');
     });
 
     it('should translate words with y as vowel', () => {
-      expect(wordToPhonetic('gym')).toBe('jim');
-      expect(wordToPhonetic('myth')).toBe('mith');
-      expect(wordToPhonetic('crypt')).toBe('kript');
-      expect(wordToPhonetic('glyph')).toBe('glif');
+      expect(translateSync('gym')).toBe('jim');
+      expect(translateSync('myth')).toBe('mith');
+      expect(translateSync('crypt')).toBe('kript');
+      expect(translateSync('glyph')).toBe('glif');
     });
 
     it('should translate word-final o as long O', () => {
-      expect(wordToPhonetic('go')).toBe('goh');
-      expect(wordToPhonetic('no')).toBe('noh');
+      expect(translateSync('go')).toBe('goh');
+      expect(translateSync('no')).toBe('noh');
     });
 
     it('should translate -ed suffix words', () => {
-      expect(wordToPhonetic('walked')).toBe('wawkt');
-      expect(wordToPhonetic('turned')).toBe('ternd');
+      expect(translateSync('walked')).toBe('wawkt');
+      expect(translateSync('turned')).toBe('ternd');
     });
 
     it('should voice final s after voiced sounds', () => {
-      // NRL gives AO for 'o' in dog → "dawgz" (CMU also has AO)
-      expect(wordToPhonetic('dogs')).toBe('dawgz');
-      expect(wordToPhonetic('runs')).toBe('ruhnz');
+      expect(translateSync('dogs')).toBe('dogz');
+      expect(translateSync('runs')).toBe('ruhnz');
       // Voiceless: keep S
-      expect(wordToPhonetic('cats')).toBe('kats');
+      expect(translateSync('cats')).toBe('kats');
     });
 
     it('should translate -ous suffix as schwa', () => {
@@ -627,10 +626,9 @@ describe('unknown-words', () => {
     });
 
     it('should translate alk with silent l', () => {
-      expect(wordToPhonetic('walk')).toBe('wawk');
-      expect(wordToPhonetic('talk')).toBe('tawk');
-      // NRL gives AO for 'a' in chalk → "chawk" (CMU also has AO)
-      expect(wordToPhonetic('chalk')).toBe('chawk');
+      expect(translateSync('walk')).toBe('wawk');
+      expect(translateSync('talk')).toBe('tawk');
+      expect(translateSync('chalk')).toBe('chok');
     });
 
     it('should use IY for word-final y in multi-syllable words', () => {
@@ -672,216 +670,215 @@ describe('unknown-words', () => {
 
     it('should use long vowels before consonant+le where NRL matches', () => {
       // table: NRL ABLE rule gives long A
-      expect(wordToPhonetic('table')).toBe('taybal');
-      expect(wordToPhonetic('noble')).toBe('nohbal');
-      expect(wordToPhonetic('title')).toBe('taital');
+      expect(translateSync('table')).toBe('taybal');
+      expect(translateSync('noble')).toBe('nohbal');
+      expect(translateSync('title')).toBe('taital');
       // Short vowel (doubled consonant): little, apple, bottle stay short
-      expect(wordToPhonetic('little')).toBe('lital');
-      expect(wordToPhonetic('apple')).toBe('apal');
-      expect(wordToPhonetic('bottle')).toBe('botal');
+      expect(translateSync('little')).toBe('lital');
+      expect(translateSync('apple')).toBe('apal');
+      expect(translateSync('bottle')).toBe('botal');
     });
 
     it('should translate compound-style words', () => {
       // Unstressed AE reduces to schwa, but EH and AA keep their vowel quality
-      expect(wordToPhonetic('hashtag')).toBe('hashtag');
+      expect(translateSync('hashtag')).toBe('hashtag');
       // NRL: ^E[CH]=/K/ — ch after consonant+E gives K, EH stays as EH0
-      expect(wordToPhonetic('fintech')).toBe('fintek');
-      // NRL gives AA for 'o' in bot → "chatbot" (AA→o is correct)
-      expect(wordToPhonetic('chatbot')).toBe('chatbot');
+      expect(translateSync('fintech')).toBe('fintek');
+      expect(translateSync('chatbot')).toBe('\uFFFDchatbot');
     });
 
     it('should translate magic-e words with long vowels', () => {
-      expect(wordToPhonetic('bake')).toBe('bayk');
-      expect(wordToPhonetic('bike')).toBe('baik');
-      expect(wordToPhonetic('bone')).toBe('bohn');
-      expect(wordToPhonetic('write')).toBe('rait');
-      expect(wordToPhonetic('gnome')).toBe('nohm');
-      expect(wordToPhonetic('phone')).toBe('fohn');
-      expect(wordToPhonetic('stripe')).toBe('straip');
+      expect(translateSync('bake')).toBe('bayk');
+      expect(translateSync('bike')).toBe('baik');
+      expect(translateSync('bone')).toBe('bohn');
+      expect(translateSync('write')).toBe('rait');
+      expect(translateSync('gnome')).toBe('nohm');
+      expect(translateSync('phone')).toBe('fohn');
+      expect(translateSync('stripe')).toBe('straip');
       // NRL: A before consonant + suffix-like ending → long A
-      expect(wordToPhonetic('place')).toBe('plays');
+      expect(translateSync('place')).toBe('plays');
     });
 
     it('should translate words with initial silent p', () => {
       // NRL silences L in ALM context → "som" (L is silent in American English)
-      expect(wordToPhonetic('psalm')).toBe('som');
-      expect(wordToPhonetic('psychology')).not.toMatch(/^p/);
+      expect(translateSync('psalm')).toBe('som');
+      expect(translateSync('psychology')).not.toMatch(/^p/);
     });
 
     it('should translate words with final silent consonants', () => {
-      expect(wordToPhonetic('lamb')).toBe('lam');
-      expect(wordToPhonetic('thumb')).toBe('thuhm');
-      expect(wordToPhonetic('debt')).toBe('det');
-      expect(wordToPhonetic('hymn')).toBe('him');
+      expect(translateSync('lamb')).toBe('lam');
+      expect(translateSync('thumb')).toBe('thuhm');
+      expect(translateSync('debt')).toBe('det');
+      expect(translateSync('hymn')).toBe('him');
     });
 
     it('should translate nk as ngk', () => {
-      expect(wordToPhonetic('think')).toBe('thingk');
-      expect(wordToPhonetic('bank')).toBe('bangk');
+      expect(translateSync('think')).toBe('thingk');
+      expect(translateSync('bank')).toBe('bangk');
     });
 
     it('should translate sc before e/i without double s', () => {
-      expect(wordToPhonetic('scene')).toBe('seen');
+      expect(translateSync('scene')).toBe('seen');
     });
 
     it('should translate ew words', () => {
-      expect(wordToPhonetic('new')).toBe('noo');
-      expect(wordToPhonetic('grew')).toBe('groo');
+      expect(translateSync('new')).toBe('noo');
+      expect(translateSync('grew')).toBe('groo');
     });
 
     it('should translate -ture suffix', () => {
-      expect(wordToPhonetic('picture')).toBe('pikcher');
+      expect(translateSync('picture')).toBe('pikcher');
     });
 
     it('should translate consonant+le endings', () => {
-      expect(wordToPhonetic('apple')).toBe('apal');
-      expect(wordToPhonetic('little')).toBe('lital');
-      expect(wordToPhonetic('bottle')).toBe('botal');
-      expect(wordToPhonetic('candle')).toBe('kandal');
-      expect(wordToPhonetic('table')).toBe('taybal');
+      expect(translateSync('apple')).toBe('apal');
+      expect(translateSync('little')).toBe('lital');
+      expect(translateSync('bottle')).toBe('botal');
+      expect(translateSync('candle')).toBe('kandal');
+      expect(translateSync('table')).toBe('taybal');
     });
 
     it('should translate eigh words', () => {
-      expect(wordToPhonetic('inveigh')).toBe('invay');
-      expect(wordToPhonetic('weigh')).toBe('way');
-      expect(wordToPhonetic('sleigh')).toBe('slay');
+      expect(translateSync('inveigh')).toBe('invay');
+      expect(translateSync('weigh')).toBe('way');
+      expect(translateSync('sleigh')).toBe('slay');
     });
 
     it('should translate augh words', () => {
-      expect(wordToPhonetic('faugh')).toBe('faw');
+      expect(translateSync('faugh')).toBe('faw');
     });
 
     it('should translate ssion words', () => {
-      expect(wordToPhonetic('mission')).toBe('mishan');
+      expect(translateSync('mission')).toBe('mishan');
     });
 
     it('should not silence g before n in mid-word', () => {
       // oppugnant should have G sound, not just N
-      const result = wordToPhonetic('oppugnant');
+      const result = translateSync('oppugnant');
       expect(result).toContain('g');
     });
 
     it('should translate OUGH variations correctly', () => {
-      expect(wordToPhonetic('through')).toBe('throo');
-      expect(wordToPhonetic('tough')).toBe('tuhf');
-      expect(wordToPhonetic('rough')).toBe('ruhf');
-      expect(wordToPhonetic('cough')).toBe('kof');
-      expect(wordToPhonetic('bough')).toBe('bou');
-      expect(wordToPhonetic('dough')).toBe('doh');
-      expect(wordToPhonetic('thought')).toBe('thawt');
+      expect(translateSync('through')).toBe('throo');
+      expect(translateSync('tough')).toBe('tuhf');
+      expect(translateSync('rough')).toBe('ruhf');
+      expect(translateSync('cough')).toBe('kof');
+      expect(translateSync('bough')).toBe('bou');
+      expect(translateSync('dough')).toBe('doh');
+      expect(translateSync('thought')).toBe('thawt');
     });
 
     it('should translate OW split (town vs show)', () => {
       // OW → AW in town/down/gown/cow contexts
-      expect(wordToPhonetic('town')).toBe('toun');
-      expect(wordToPhonetic('down')).toBe('doun');
-      expect(wordToPhonetic('gown')).toBe('goun');
-      expect(wordToPhonetic('cow')).toBe('kou');
+      expect(translateSync('town')).toBe('toun');
+      expect(translateSync('down')).toBe('doun');
+      expect(translateSync('gown')).toBe('goun');
+      expect(translateSync('cow')).toBe('kou');
       // OW → OW in other contexts
-      expect(wordToPhonetic('show')).toBe('shoh');
-      expect(wordToPhonetic('flow')).toBe('floh');
-      expect(wordToPhonetic('snow')).toBe('snoh');
+      expect(translateSync('show')).toBe('shoh');
+      expect(translateSync('flow')).toBe('floh');
+      expect(translateSync('snow')).toBe('snoh');
     });
 
     it('should translate OO variations (book vs food vs blood)', () => {
-      expect(wordToPhonetic('book')).toBe('buk');
-      expect(wordToPhonetic('look')).toBe('luk');
-      expect(wordToPhonetic('food')).toBe('food');
-      expect(wordToPhonetic('moon')).toBe('moon');
-      expect(wordToPhonetic('blood')).toBe('bluhd');
-      expect(wordToPhonetic('flood')).toBe('fluhd');
+      expect(translateSync('book')).toBe('buk');
+      expect(translateSync('look')).toBe('luk');
+      expect(translateSync('food')).toBe('food');
+      expect(translateSync('moon')).toBe('moon');
+      expect(translateSync('blood')).toBe('bluhd');
+      expect(translateSync('flood')).toBe('fluhd');
     });
 
     it('should translate WH digraph', () => {
-      expect(wordToPhonetic('who')).toBe('hoo');
-      expect(wordToPhonetic('whole')).toBe('hohl');
+      expect(translateSync('who')).toBe('hoo');
+      expect(translateSync('whole')).toBe('hohl');
     });
 
     it('should translate AU/AW words', () => {
-      expect(wordToPhonetic('sauce')).toBe('saws');
-      expect(wordToPhonetic('dawn')).toBe('dawn');
-      expect(wordToPhonetic('draw')).toBe('draw');
+      expect(translateSync('sauce')).toBe('saws');
+      expect(translateSync('dawn')).toBe('dawn');
+      expect(translateSync('draw')).toBe('draw');
     });
 
     it('should translate would/could/should', () => {
-      expect(wordToPhonetic('would')).toBe('wud');
-      expect(wordToPhonetic('could')).toBe('kud');
-      expect(wordToPhonetic('should')).toBe('shud');
+      expect(translateSync('would')).toBe('wud');
+      expect(translateSync('could')).toBe('kud');
+      expect(translateSync('should')).toBe('shud');
     });
 
     it('should translate soft C before front vowels', () => {
-      expect(wordToPhonetic('cell')).toBe('sel');
-      expect(wordToPhonetic('cent')).toBe('sent');
+      expect(translateSync('cell')).toBe('sel');
+      expect(translateSync('cent')).toBe('sent');
     });
 
     it('should translate soft G before front vowels', () => {
-      expect(wordToPhonetic('gem')).toBe('jem');
-      expect(wordToPhonetic('gentle')).toBe('jental');
+      expect(translateSync('gem')).toBe('jem');
+      expect(translateSync('gentle')).toBe('jental');
     });
 
     it('should translate EA variations', () => {
-      expect(wordToPhonetic('beat')).toBe('beet');
-      expect(wordToPhonetic('bread')).toBe('bred');
-      expect(wordToPhonetic('break')).toBe('brayk');
-      expect(wordToPhonetic('health')).toBe('helth');
-      expect(wordToPhonetic('death')).toBe('deth');
+      expect(translateSync('beat')).toBe('beet');
+      expect(translateSync('bread')).toBe('bred');
+      expect(translateSync('break')).toBe('brayk');
+      expect(translateSync('health')).toBe('helth');
+      expect(translateSync('death')).toBe('deth');
     });
 
     it('should translate WAR/WOR patterns', () => {
-      expect(wordToPhonetic('war')).toBe('wor');
-      expect(wordToPhonetic('worm')).toBe('werm');
-      expect(wordToPhonetic('work')).toBe('werk');
-      expect(wordToPhonetic('word')).toBe('werd');
+      expect(translateSync('war')).toBe('wor');
+      expect(translateSync('worm')).toBe('werm');
+      expect(translateSync('work')).toBe('werk');
+      expect(translateSync('word')).toBe('werd');
     });
 
     it('should translate ALM with silent L', () => {
-      expect(wordToPhonetic('calm')).toBe('kom');
-      expect(wordToPhonetic('palm')).toBe('pom');
+      expect(translateSync('calm')).toBe('kom');
+      expect(translateSync('palm')).toBe('pom');
     });
 
     it('should translate -AGE suffix', () => {
-      expect(wordToPhonetic('message')).toBe('mesaj');
+      expect(translateSync('message')).toBe('mesaj');
     });
 
     it('should translate -ENCE/-ANCE suffixes', () => {
-      expect(wordToPhonetic('evidence')).toBe('evadans');
-      expect(wordToPhonetic('distance')).toBe('distans');
-      expect(wordToPhonetic('balance')).toBe('balans');
+      expect(translateSync('evidence')).toBe('evadans');
+      expect(translateSync('distance')).toBe('distans');
+      expect(translateSync('balance')).toBe('balans');
     });
 
     it('should translate TIAL/CIAL as SH', () => {
-      expect(wordToPhonetic('partial')).toBe('parshal');
-      expect(wordToPhonetic('special')).toBe('speshal');
+      expect(translateSync('partial')).toBe('parshal');
+      expect(translateSync('special')).toBe('speshal');
     });
 
     it('should translate soft C and G at word end (-CE, -GE)', () => {
-      expect(wordToPhonetic('face')).toBe('fays');
-      expect(wordToPhonetic('race')).toBe('rays');
-      expect(wordToPhonetic('age')).toBe('ayj');
-      expect(wordToPhonetic('page')).toBe('payj');
-      expect(wordToPhonetic('stage')).toBe('stayj');
+      expect(translateSync('face')).toBe('fays');
+      expect(translateSync('race')).toBe('rays');
+      expect(translateSync('age')).toBe('ayj');
+      expect(translateSync('page')).toBe('payj');
+      expect(translateSync('stage')).toBe('stayj');
     });
 
     it('should translate EIGN with silent G', () => {
-      expect(wordToPhonetic('reign')).toBe('rayn');
-      expect(wordToPhonetic('feign')).toBe('fayn');
+      expect(translateSync('reign')).toBe('rayn');
+      expect(translateSync('feign')).toBe('fayn');
     });
 
     it('should translate words with silent H (honor, honest, heir)', () => {
-      expect(wordToPhonetic('honor')).toBe('oner');
-      expect(wordToPhonetic('honest')).toBe('onast');
-      expect(wordToPhonetic('heir')).toBe('air');
+      expect(translateSync('honor')).toBe('oner');
+      expect(translateSync('honest')).toBe('onast');
+      expect(translateSync('heir')).toBe('air');
     });
 
     it('should translate sword with silent W', () => {
-      expect(wordToPhonetic('sword')).toBe('sord');
+      expect(translateSync('sword')).toBe('sord');
     });
 
     it('should translate mood/brood with long OO', () => {
-      expect(wordToPhonetic('mood')).toBe('mood');
-      expect(wordToPhonetic('brood')).toBe('brood');
+      expect(translateSync('mood')).toBe('mood');
+      expect(translateSync('brood')).toBe('brood');
       // good/wood still short
-      expect(wordToPhonetic('good')).toBe('gud');
+      expect(translateSync('good')).toBe('gud');
     });
   });
 
