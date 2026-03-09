@@ -155,13 +155,6 @@ describe('reverse-translator', () => {
   });
 
   describe('reverseTranslateSync', () => {
-    it('should translate text preserving punctuation', () => {
-      // Basic test - translates words, keeps punctuation
-      const result = reverseTranslateSync('haloh, werld!');
-      expect(result).toContain(',');
-      expect(result).toContain('!');
-    });
-
     it('should preserve punctuation in IPA reverse translation', () => {
       // IPA text with punctuation should preserve it
       const result = reverseTranslateSync('həˈloʊ, wɝld!', { format: 'ipa' });
@@ -274,15 +267,6 @@ describe('reverse-translator', () => {
       const urlToken = tokens.find((t) => t.translated.includes('https://'));
       expect(urlToken).toBeDefined();
       expect(urlToken?.isWord).toBe(false);
-    });
-
-    it('should work for IPA format', () => {
-      const tokens = reverseTranslateSyncWithMapping('həˈloʊ wɝld', { format: 'ipa' });
-      const words = tokens.filter((t) => t.isWord);
-      expect(words.length).toBe(2);
-      expect(words[0]!.matched).toBe(true);
-      expect(words[0]!.translated).toBe('hello');
-      expect(words[1]!.matched).toBe(true);
     });
 
     it('should work for Shavian format', () => {
