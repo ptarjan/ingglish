@@ -43,17 +43,25 @@ jobs:
           files: packages/*/coverage/coverage-final.json
           fail_ci_if_error: false
 
-  # CLI integration tests (script smoke tests) — run in parallel since they're slow (~4 min)
+  # CLI integration tests — split into separate jobs to run in parallel (~2 min each)
   test-cli:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - scope: ingglish
+            name: core
+          - scope: "@ingglish/dom"
+            name: dom
+    name: test-cli (${{ matrix.name }})
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
         with:
           dict-cache: true
 
-      - name: CLI integration tests
-        run: npx turbo test:cli
+      - name: CLI integration tests (${{ matrix.name }})
+        run: npx turbo test:cli --filter=${{ matrix.scope }}
 
   # Detect dead code, unused exports, and missing dependencies
   knip:
