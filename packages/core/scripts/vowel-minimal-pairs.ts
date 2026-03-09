@@ -19,6 +19,7 @@ import {
   getWordFrequency,
 } from '@ingglish/dictionary';
 import { ARPABET_VOWELS, stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 
 const VOWELS = new Set<string>(ARPABET_VOWELS);
 
@@ -30,6 +31,7 @@ interface MinimalPair {
 
 async function main(): Promise<void> {
   await Promise.all([loadDictionary(), loadFrequencies()]);
+  const limit = parseWordLimit();
   const dict = getDictionary();
 
   // Build a map: "frame" → Map<vowel, {word, freq}[]>
@@ -38,8 +40,10 @@ async function main(): Promise<void> {
   const frames = new Map<string, Map<string, { word: string; freq: number }[]>>();
 
   const words = Object.keys(dict);
+  let count = 0;
   for (const word of words) {
     if (/[^a-z]/.test(word)) continue;
+    if (++count > limit) break;
     const phonemes = dict[word];
     const freq = getWordFrequency(word) ?? 0;
     if (freq === 0) continue; // skip words with no frequency data

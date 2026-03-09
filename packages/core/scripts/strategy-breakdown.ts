@@ -7,6 +7,7 @@
 import { loadDictionary, getDictionary, loadFrequencies } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress, registerFormat } from '@ingglish/phonemes';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 import {
   translateAsBritish,
   translateAsCompound,
@@ -25,6 +26,7 @@ registerFormat('arpabet', {
 async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
   const words = Object.keys(dict).filter((w) => /^[a-z]+$/i.test(w) && w.length >= 3);
 
   const strategyErrors: Record<string, number> = {};
@@ -35,7 +37,9 @@ async function main() {
     british: [],
   };
 
+  let count = 0;
   for (const word of words) {
+    if (++count > limit) break;
     const cmuNoStress = dict[word].map(stripStress).join(' ');
 
     // Temporarily hide from dictionary to simulate unknown word

@@ -13,6 +13,7 @@
 import { loadDictionary } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 
 // --- Levenshtein alignment ---
 
@@ -101,6 +102,7 @@ interface SubstitutionRecord {
 
 async function main() {
   const dict = await loadDictionary();
+  const limit = parseWordLimit();
   const words = Object.keys(dict);
 
   // Map: "context|wrong|correct" -> SubstitutionRecord
@@ -114,7 +116,7 @@ async function main() {
   for (const word of words) {
     // Only a-z, length >= 3
     if (/[^a-z]/.test(word) || word.length < 3) continue;
-    totalWords++;
+    if (++totalWords > limit) break;
 
     const cmuPhonemes = dict[word];
     const g2pPhonemes = wordToArpabet(word);

@@ -10,9 +10,11 @@
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';
 import { loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 
 await loadDictionary();
 await loadFrequencies();
+const limit = parseWordLimit();
 const cmudict = getDictionary();
 
 // All words without variant markers like (2)
@@ -87,8 +89,10 @@ const errors: PhonemeCountError[] = [];
 // Track word+stem pairs we've already reported to avoid duplicates
 const reported = new Set<string>();
 
+let count = 0;
 for (const word of allWords) {
   if (alreadyFixed.has(word)) continue;
+  if (++count > limit) break;
 
   const wordPhonemes = cmudict[word];
   if (!Array.isArray(wordPhonemes)) continue;

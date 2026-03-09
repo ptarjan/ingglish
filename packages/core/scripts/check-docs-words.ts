@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { loadDictionary, loadFrequencies, lookupPronunciation } from '@ingglish/dictionary';
 import { loadLangDict, translateSync } from 'ingglish';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 
 // Strip markdown syntax to get plain text
 function stripMarkdown(md: string): string {
@@ -46,6 +47,7 @@ function stripMarkdown(md: string): string {
 
 async function main() {
   await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
+  const limit = parseWordLimit();
 
   const allWords = new Set<string>();
 
@@ -136,7 +138,9 @@ async function main() {
   const missing: { word: string; translated: string }[] = [];
   let inDict = 0;
 
+  let count = 0;
   for (const word of [...allWords].sort()) {
+    if (++count > limit) break;
     const pron = lookupPronunciation(word);
     if (pron) {
       inDict++;
