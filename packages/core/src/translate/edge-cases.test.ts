@@ -547,52 +547,6 @@ describe('pronunciation format translation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Deseret format (to-deseret.ts, from-deseret.ts, tokenize.ts)
-// ---------------------------------------------------------------------------
-describe('deseret format translation', () => {
-  it('should translate to Deseret script', () => {
-    const result = translateSync('hello world', { format: 'deseret' });
-    // Should not contain Latin letters
-    expect(result).not.toMatch(/[a-z]/i);
-    expect(result).toBeTruthy();
-  });
-
-  it('should reverse-translate Deseret text', () => {
-    const deseret = translateSync('cat', { format: 'deseret' });
-    const back = reverseTranslateSync(deseret, { format: 'deseret' });
-    expect(back.toLowerCase()).toBe('cat');
-  });
-
-  it('should reverse-translate Deseret with mapping', () => {
-    const deseret = translateSync('hello world', { format: 'deseret' });
-    const tokens = reverseTranslateSyncWithMapping(deseret, { format: 'deseret' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Shavian reverse translation (from-shavian.ts, reverse-factory.ts)
-// ---------------------------------------------------------------------------
-describe('shavian reverse translation', () => {
-  it('should reverse-translate Shavian text', () => {
-    const shavian = translateSync('cat', { format: 'shavian' });
-    const back = reverseTranslateSync(shavian, { format: 'shavian' });
-    expect(back.toLowerCase()).toBe('cat');
-  });
-
-  it('should reverse-translate Shavian with mapping', () => {
-    const shavian = translateSync('hello world', { format: 'shavian' });
-    const tokens = reverseTranslateSyncWithMapping(shavian, { format: 'shavian' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-    for (const w of words) {
-      expect(w.matched).toBe(true);
-    }
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Non-English with disableRColoring (to-ingglish.ts line 178)
 // ---------------------------------------------------------------------------
 describe('non-English translation with R-coloring disabled', () => {

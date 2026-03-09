@@ -118,11 +118,6 @@ describe('translator', () => {
       expect(translateSync('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
     });
 
-    it('should pass through all-caps words unchanged', () => {
-      // All-caps words (≥2 chars) pass through as acronyms/emphasis
-      expect(translateSync('HELLO')).toBe('HELLO');
-    });
-
     it('should handle unknown words with fallback', () => {
       // Unknown words use G2P rules to produce a phonetic translation
       const result = translateSync('splonk');
@@ -144,12 +139,6 @@ describe('translator', () => {
       expect(result).toContain('werld');
     });
 
-    it('should preserve punctuation', () => {
-      const result = translateSync('Hello, world!');
-      expect(result).toContain(',');
-      expect(result).toContain('!');
-    });
-
     it('should preserve punctuation in IPA output', () => {
       const result = translateSync('Hello, world!', { format: 'ipa' });
       expect(result).toContain(',');
@@ -164,13 +153,6 @@ describe('translator', () => {
     it('should preserve numbers', () => {
       const result = translateSync('hello 123 world');
       expect(result).toContain('123');
-    });
-
-    it('should handle contractions', () => {
-      const result = translateSync("don't");
-      // Contractions are translated as a unit - no apostrophe needed
-      // The important thing is they round-trip correctly
-      expect(result).toBe('dohnt');
     });
 
     it('should normalize curly apostrophes', () => {

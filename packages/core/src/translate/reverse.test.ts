@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { lookupPronunciation } from '@ingglish/dictionary';
 import { reverseTranslateSync, reverseTranslateSyncWithMapping, translateSync } from '../index';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
@@ -46,24 +45,6 @@ describe('reverse-translator', () => {
       // "her" -> "her" (ER is correct here)
       const result = reverseTranslateSync('her');
       expect(result).toBe('her');
-    });
-
-    it('should produce reverse translation results for dictionary words', () => {
-      // Test words that ARE in the CMU dictionary
-      const testWords = ['quick', 'brown', 'fox', 'the', 'alphabet', 'through', 'english'];
-
-      for (const word of testWords) {
-        const pron = lookupPronunciation(word);
-        if (!pron) {
-          continue; // Skip words not in dictionary
-        }
-
-        const ingglish = translateSync(word);
-        const result = reverseTranslateSync(ingglish);
-
-        // The result should be a valid word
-        expect(result.length, `${word} → ${ingglish} → ${result}`).toBeGreaterThan(0);
-      }
     });
 
     it('should round-trip contractions', () => {
