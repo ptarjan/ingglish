@@ -4,8 +4,10 @@ import {
   ARPABET_CONSONANTS,
   ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
   ARPABET_VOWELS,
+  arpabetPhonemeToIngglish,
   arpabetToFormat,
   arpabetToIngglish,
+  isVowel,
   stripStress,
 } from './index';
 
@@ -195,6 +197,36 @@ describe('common word translations', () => {
     expect(translateSync('yes')).toBe('yes'); // Y (before non-UW vowel)
     expect(translateSync('not')).toBe('not'); // N
     expect(translateSync('bat')).toBe('bat'); // B
+  });
+});
+
+describe('arpabetPhonemeToIngglish', () => {
+  it('returns "a" for unstressed schwa AH0', () => {
+    expect(arpabetPhonemeToIngglish('AH0')).toBe('a');
+  });
+
+  it('returns lowercase for unknown phonemes', () => {
+    expect(arpabetPhonemeToIngglish('XX')).toBe('xx');
+  });
+});
+
+describe('arpabetToFormat fallback', () => {
+  it('falls back to ingglish for unknown format', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    expect(arpabetToFormat(['K', 'AE1', 'T'], 'nonexistent' as any)).toBe('kat');
+  });
+});
+
+describe('isVowel', () => {
+  it('identifies vowels with stress markers', () => {
+    expect(isVowel('AH0')).toBe(true);
+    expect(isVowel('EY1')).toBe(true);
+    expect(isVowel('IY2')).toBe(true);
+  });
+
+  it('identifies consonants as non-vowels', () => {
+    expect(isVowel('B')).toBe(false);
+    expect(isVowel('TH')).toBe(false);
   });
 });
 
