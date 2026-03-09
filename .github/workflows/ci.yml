@@ -187,8 +187,11 @@ jobs:
             shard: 2/2
           - browser: webkit
             projects: "mobile-safari"
-            shard: ""
-    name: test-e2e (${{ matrix.browser }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+            shard: 1/2
+          - browser: webkit
+            projects: "mobile-safari"
+            shard: 2/2
+    name: test-e2e (${{ matrix.browser }} ${{ matrix.shard }})
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
@@ -212,13 +215,13 @@ jobs:
           cd packages/website
           args=""
           for p in ${{ matrix.projects }}; do args="$args --project=$p"; done
-          if [ -n "${{ matrix.shard }}" ]; then args="$args --shard=${{ matrix.shard }}"; fi
+          args="$args --shard=${{ matrix.shard }}"
           npx playwright test $args
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-${{ matrix.browser }}${{ matrix.shard && format('-{0}', matrix.shard) || '' }}
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.shard }}
           path: packages/website/test-results/
           retention-days: 7
