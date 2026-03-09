@@ -61,7 +61,7 @@ function parseExistingPatterns(): Map<string, Set<string>> {
 // Step 2: Collect letter→phoneme patterns from G2P trace
 // ---------------------------------------------------------------------------
 
-async function main() {
+export async function main() {
   await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
   const cmudict = getDictionary();
 
@@ -269,4 +269,4 @@ function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('missing-spelling-patterns')) main().catch(console.error);
