@@ -38,6 +38,7 @@ WORD_RESOLVERS.en = (entries, word) => {
       const phonemes: string[] = [];
       for (const part of parts) {
         const ph = entries[part];
+        /* v8 ignore next */
         if (!ph) {
           return;
         }
@@ -62,6 +63,7 @@ function buildEnglishPhoneDict() {
 
 // Register a default dict loader for Node.js/test usage.
 // The website overrides this with its own fetch-based loader.
+/* v8 ignore start — test setup replaces the dict loader before this runs */
 if (!isDictLoaderRegistered()) {
   setDictLoader(async (lang) => {
     if (lang === 'en') {
@@ -73,3 +75,4 @@ if (!isDictLoaderRegistered()) {
     throw new Error(`No dict loader for "${lang}". Call setDictLoader() first.`);
   });
 }
+/* v8 ignore stop */

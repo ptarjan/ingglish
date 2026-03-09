@@ -213,6 +213,7 @@ function translateWithLowConfidenceG2P(
   const stripped = stripDiacritics(word);
   const fallbackResult = translateUnknown(stripped, format, makeDictLookup(dict));
 
+  /* v8 ignore next 2 — translateUnknown always returns a non-empty string */
   if (!fallbackResult || fallbackResult.length === 0) {
     return { matched: false, translated: word };
   }
@@ -223,6 +224,7 @@ function translateWithLowConfidenceG2P(
       fallbackResult !== fallbackResult.toLowerCase() &&
       fallbackResult !== fallbackResult.toUpperCase() &&
       !TITLE_CASE.test(fallbackResult);
+    /* v8 ignore next 2 — compound camelCase already handled by tryCamelCase */
     if (hasInternalMixedCase) {
       return { matched: false, translated: fallbackResult };
     }
@@ -252,6 +254,7 @@ function translateWordInternal(
   format: OutputFormat
 ): TranslateResult {
   // 1. Empty / non-letter tokens
+  /* v8 ignore next 2 — callers (translateWordString, mapTokens) pre-filter non-letter tokens */
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }

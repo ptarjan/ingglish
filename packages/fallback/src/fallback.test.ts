@@ -69,14 +69,15 @@ describe('compound word translation', () => {
 
 describe('stemming translation', () => {
   it('handles -es suffix after sibilants (stemming)', () => {
-    // "quizzes" -> stem "quiz" (ends in Z sibilant) + -es
-    const result = translateSync('quizzes');
-    expect(result).toBeTruthy();
+    // "rehashes" not in CMU dict; stem "rehash" ends in SH (sibilant)
+    // sibilant -es allomorph adds IH0 Z → "iz"
+    expect(translateSync('rehashes')).toBe('reehashiz');
   });
 
   it('handles -s suffix after voiced consonants (stemming)', () => {
-    const result = translateSync('blogs');
-    expect(result).toBeTruthy();
+    // "debugs" not in CMU dict; stem "debug" ends in G (voiced)
+    // voiced -s allomorph adds Z → "z"
+    expect(translateSync('debugs')).toBe('deebuhgz');
   });
 
   it('handles -ing suffix (detoxing → detox + ing)', () => {

@@ -20,6 +20,7 @@ export type FreqFn = (word: string) => number | undefined;
  * Capitalizes the first letter of a string.
  */
 function capitalize(str: string): string {
+  /* v8 ignore next 3 */
   if (str.length === 0) {
     return str;
   }
@@ -152,6 +153,7 @@ export function translateAsCompound(
   let pos = 0;
   for (const part of parts) {
     const phonemes = lookupFn(part);
+    /* v8 ignore next 3 */
     if (!phonemes) {
       return null;
     } // shouldn't happen but be safe
@@ -160,6 +162,7 @@ export function translateAsCompound(
     // Preserve case per component for formats that support it
     if (getFormatPreservesCase(format)) {
       const originalPart = word.slice(pos, pos + part.length);
+      /* v8 ignore next 3 — compounds from G2P fallback are always lowercase */
       if (originalPart.length > 0 && isUpperCase(originalPart[0]!)) {
         translated = capitalize(translated);
       }

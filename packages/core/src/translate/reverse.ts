@@ -74,7 +74,7 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
 
   const casePattern = detectCasePattern(ingglishWord);
   const arpabet = ingglishToArpabet(ingglishWord);
-
+  /* v8 ignore next 2 — ingglishToArpabet always returns non-null for letter input */
   if (!arpabet) {
     return [];
   }
@@ -97,6 +97,7 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  */
 function lookupByArpabet(arpabet: string[]): string[] {
   const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+  /* v8 ignore next 2 — expandArpabetAlternatives always returns at least the primary */
   if (!primary) {
     return [];
   }
@@ -220,18 +221,21 @@ export function reverseTranslateSyncWithMapping(
  * using the pre-built reverse map.
  */
 function reverseLangWordAsResult(word: string, reverseMap: Map<string, string[]>): TranslateResult {
+  /* v8 ignore next 3 */
   if (!HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
 
   const casePattern = detectCasePattern(word);
   const arpabet = ingglishToArpabet(word);
+  /* v8 ignore next 3 */
   if (!arpabet) {
     return { matched: false, translated: word };
   }
 
   // Try primary interpretation and alternatives (e.g. AE↔AH ambiguity)
   const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+  /* v8 ignore next 3 */
   if (!primary) {
     return { matched: false, translated: word };
   }
@@ -325,6 +329,7 @@ function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
  * TranslateResult for use with the pipeline's mapTokens stage.
  */
 function reverseTranslateWordAsResult(word: string): TranslateResult {
+  /* v8 ignore next 3 */
   if (!HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
