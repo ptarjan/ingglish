@@ -222,6 +222,158 @@ describe('cors-proxy', () => {
       expect(await response.text()).toBe('Invalid protocol');
     });
 
+    it('should return 415 for non-HTML content that does not look like HTML', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('{"key": "value"}', {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/api/data', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(415);
+      const text = await response.text();
+      expect(text).toContain('Only HTML content is supported');
+      expect(text).toContain('application/json');
+    });
+
+    it('should accept non-HTML content-type if body starts with <!', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<!DOCTYPE html><html><body>Hello</body></html>', {
+          headers: { 'Content-Type': 'text/plain' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+    });
+
+    it('should accept non-HTML content-type if body starts with <html', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<html><body>Hello</body></html>', {
+          headers: { 'Content-Type': 'text/plain' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+    });
+
+    it('should accept non-HTML content-type if body contains <html> tag', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('some preamble <html lang="en"><body>Hello</body></html>', {
+          headers: { 'Content-Type': 'text/plain' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+    });
+
+    it('should accept non-HTML content-type if body starts with <?', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<?xml version="1.0"?><html><body>Hello</body></html>', {
+          headers: { 'Content-Type': 'application/xml' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+    });
+
+    it('should respect upstream Cache-Control max-age when >= 5 minutes', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<html><body>Hello</body></html>', {
+          headers: {
+            'Cache-Control': 'max-age=7200',
+            'Content-Type': 'text/html',
+          },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.headers.get('Cache-Control')).toBe('public, max-age=7200');
+    });
+
+    it('should enforce minimum 5 minute cache when upstream max-age is too low', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<html><body>Hello</body></html>', {
+          headers: {
+            'Cache-Control': 'max-age=60',
+            'Content-Type': 'text/html',
+          },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.headers.get('Cache-Control')).toBe('public, max-age=300');
+    });
+
+    it('should default to 1 hour cache when no upstream Cache-Control', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('<html><body>Hello</body></html>', {
+          headers: {
+            'Content-Type': 'text/html',
+          },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');
+    });
+
+    it('should return 502 when upstream fetch fails', async () => {
+      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('Network error'));
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(502);
+      expect(await response.text()).toBe('Proxy error: failed to fetch upstream resource');
+    });
+
     it('should block requests to private networks (SSRF protection)', async () => {
       const privateUrls = [
         'http://localhost/admin',

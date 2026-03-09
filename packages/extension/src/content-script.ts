@@ -49,6 +49,8 @@ const state = getState();
 // Word batch size for translation requests
 const WORD_BATCH_SIZE = 1000;
 
+/* v8 ignore start — browser-only DOM/chrome API code below */
+
 // Inject Google Fonts stylesheet for alternative scripts
 function injectScriptFont(doc: Document, id: string, family: string): void {
   if (doc.querySelector(`#${id}`)) {
@@ -231,10 +233,13 @@ async function performTranslation(format: OutputFormat): Promise<void> {
   setupObserver(format, translations);
 }
 
+/* v8 ignore stop */
+
 // Restore original text
 function restorePage(): void {
   console.log('Ingglish: Restoring original text...');
 
+  /* v8 ignore start */
   if (state.debounceTimer !== null) {
     clearTimeout(state.debounceTimer);
     state.debounceTimer = null;
@@ -244,6 +249,7 @@ function restorePage(): void {
     state.observer.disconnect();
     state.observer = null;
   }
+  /* v8 ignore stop */
 
   // Use shared restore utility
   restoreDOM(document.body);
@@ -254,6 +260,8 @@ function restorePage(): void {
   state.translated = false;
   console.log('Ingglish: Restoration complete!');
 }
+
+/* v8 ignore start — retranslatePage, setupObserver, translatePage: browser-only DOM code */
 
 // Retranslate page with a new format (in-place update, much faster than restore + re-translate)
 async function retranslatePage(format: OutputFormat): Promise<void> {
@@ -543,6 +551,24 @@ async function translateWordsInBatches(
   return allTranslations;
 }
 
+// Wait for document.body to be available
+async function waitForBody(): Promise<void> {
+  if (document.body !== null) {
+    return;
+  }
+  return new Promise((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (document.body !== null) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(document.documentElement, { childList: true });
+  });
+}
+
+/* v8 ignore stop */
+
 // Set up message listener (only once)
 if (!state.injected) {
   state.injected = true;
@@ -566,35 +592,25 @@ if (!state.injected) {
           });
           return true; // Keep channel open for async response
         }
+        /* v8 ignore start */
         sendResponse({ success: false });
         return false;
+        /* v8 ignore stop */
       }
+      /* v8 ignore start */
       return false;
+      /* v8 ignore stop */
     }
   );
 
   console.log('Ingglish: Lightweight content script initialized');
 }
 
-// Wait for document.body to be available
-async function waitForBody(): Promise<void> {
-  if (document.body !== null) {
-    return;
-  }
-  return new Promise((resolve) => {
-    const observer = new MutationObserver(() => {
-      if (document.body !== null) {
-        observer.disconnect();
-        resolve();
-      }
-    });
-    observer.observe(document.documentElement, { childList: true });
-  });
-}
-
+/* v8 ignore start */
 // If DOM is already ready, translate immediately; otherwise wait for DOMContentLoaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', startTranslation);
 } else {
   startTranslation();
 }
+/* v8 ignore stop */

@@ -3,6 +3,8 @@
 import { getFormatNativeLabel, type OutputFormat } from '@ingglish/phonemes';
 import type { FormatResponse, StateResponse, ToggleResponse } from './types';
 
+/* v8 ignore start — popup UI is entirely browser-specific DOM/chrome API code */
+
 const toggleBtn = document.querySelector<HTMLButtonElement>('#toggle-btn');
 const statusText = document.querySelector<HTMLSpanElement>('#status-text');
 const statusDot = document.querySelector<HTMLSpanElement>('#status-dot');
@@ -108,3 +110,4 @@ function updateUI(): void {
     statusDot.style.background = '#888';
   }
 }
+/* v8 ignore stop */

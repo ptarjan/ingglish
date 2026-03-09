@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/** vi.waitFor with 1ms polling (default 50ms wastes ~50ms × 27 calls = 1.4s) */
+/** vi.waitFor with 1ms polling (default 50ms wastes ~50ms x 27 calls = 1.4s) */
 function waitFor(cb: () => void, options?: { interval?: number; timeout?: number }) {
   return vi.waitFor(cb, { interval: 1, ...options });
 }
@@ -152,6 +152,42 @@ describe('background script', () => {
       // Wait for async format retrieval
       await waitFor(() => {
         expect(sendResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
+    });
+
+    it('responds using sender tab id when available', async () => {
+      const sendResponse = vi.fn();
+
+      // Enable translation for tab 900 first
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: 900 }]);
+      });
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+
+      // Wait for injection
+      await waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalled();
+      });
+
+      // Now GET_STATE with sender.tab.id
+      const result = messageHandler({ type: 'GET_STATE' }, { tab: { id: 900 } }, sendResponse);
+      expect(result).toBe(true);
+
+      await waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ enabled: true, format: 'ingglish' });
+      });
+    });
+  });
+
+  describe('GET_FORMAT message', () => {
+    it('responds with the current format', async () => {
+      const sendResponse = vi.fn();
+
+      const result = messageHandler({ type: 'GET_FORMAT' }, {}, sendResponse);
+      expect(result).toBe(true);
+
+      await waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ format: 'ingglish' });
       });
     });
   });
@@ -347,6 +383,33 @@ describe('background script', () => {
 
       expect(mockChrome.scripting.executeScript).not.toHaveBeenCalled();
     });
+
+    it('disables tab when re-injection fails during navigation', async () => {
+      // Enable translation for tab
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: 700 }]);
+      });
+      messageHandler({ type: 'TOGGLE' }, {}, vi.fn());
+      await waitFor(() => {
+        expect(mockChrome.scripting.executeScript).toHaveBeenCalledTimes(1);
+      });
+
+      // Make injection fail on navigation
+      mockChrome.scripting.insertCSS.mockRejectedValueOnce(new Error('No access'));
+
+      // Simulate navigation
+      tabUpdatedHandler(700, { status: 'loading' });
+
+      // Wait for async injection to fail
+      await new Promise((r) => setTimeout(r, 50));
+
+      // Tab should be disabled now
+      const stateResponse = vi.fn();
+      messageHandler({ type: 'GET_STATE' }, {}, stateResponse);
+      await waitFor(() => {
+        expect(stateResponse).toHaveBeenCalledWith({ enabled: false, format: 'ingglish' });
+      });
+    });
   });
 
   describe('unknown message types', () => {
@@ -467,6 +530,22 @@ describe('background script', () => {
       expect(ingglishTranslations2.hello).toBe(ingglishTranslations.hello);
       expect(ingglishTranslations2.world).toBe(ingglishTranslations.world);
       expect(ingglishTranslations2.the).toBe(ingglishTranslations.the);
+    });
+
+    it('returns empty translations when translate() rejects', async () => {
+      const { translate } = await import('ingglish');
+      (translate as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Load failed'));
+
+      const sendResponse = vi.fn();
+      messageHandler(
+        { format: 'ingglish', type: 'TRANSLATE_WORDS', words: ['hello'] } as { type: string },
+        {},
+        sendResponse
+      );
+
+      await waitFor(() => {
+        expect(sendResponse).toHaveBeenCalledWith({ translations: {} });
+      });
     });
   });
 
