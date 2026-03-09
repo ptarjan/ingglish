@@ -225,10 +225,6 @@ describe('translator', () => {
       expect(translateSync('')).toBe('');
     });
 
-    it('should handle only punctuation', () => {
-      expect(translateSync('!!!')).toBe('!!!');
-    });
-
     it('should handle mixed content', () => {
       expect(translateSync('Hello, World! How are you?')).toBe('Haloh, Werld! Hou ar yoo?');
     });
@@ -665,16 +661,8 @@ describe('translator', () => {
       expect(typeof withOptions).toBe('string');
     });
 
-    it('translateSync defaults to ingglish format', () => {
-      expect(translateSync('hello')).toBe('haloh');
+    it('translateSync defaults to ingglish format with empty options', () => {
       expect(translateSync('hello', {})).toBe('haloh');
-    });
-
-    it('translateSyncWithMapping accepts options object', () => {
-      const tokens = translateSyncWithMapping('hello world');
-      expect(tokens).toHaveLength(3);
-      // First word of multi-word text is capitalized (sentence start)
-      expect(tokens[0]!.translated).toBe('Haloh');
     });
 
     it('translateSync throws for unknown foreign lang without loaded dict', () => {

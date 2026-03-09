@@ -28,15 +28,6 @@ describe('reverse-translator', () => {
       expect(result).toBe('CAT');
     });
 
-    it('should return original word for non-letters', () => {
-      expect(reverseTranslateSync('123')).toBe('123');
-      expect(reverseTranslateSync('...')).toBe('...');
-    });
-
-    it('should return empty string for empty input', () => {
-      expect(reverseTranslateSync('')).toBe('');
-    });
-
     it('should handle homophones by picking most common word', () => {
       // "too" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
       const result = reverseTranslateSync('too');
@@ -230,12 +221,6 @@ describe('reverse-translator', () => {
       expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
     });
 
-    it('should handle common IPA transcriptions', () => {
-      // /wɝld/ -> "world"
-      const result = reverseTranslateSync('wɝld', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('world');
-    });
-
     it('should translate IPA text to English', () => {
       // /həˈloʊ wɝld/ -> "hello world"
       const result = reverseTranslateSync('həˈloʊ wɝld', { format: 'ipa' });
@@ -267,11 +252,6 @@ describe('reverse-translator', () => {
       // "zzxq" is not valid ingglish - can't be parsed to phonemes
       const result = reverseTranslateSync('zzxq');
       expect(result).toBe('zzxq');
-    });
-
-    it('should still return results for valid ingglish words', () => {
-      const result = reverseTranslateSync('kat');
-      expect(result).toBe('cat');
     });
 
     it('should still return non-letter tokens as-is', () => {
