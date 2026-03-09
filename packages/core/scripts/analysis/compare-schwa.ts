@@ -15,55 +15,55 @@ import {
 import { stripStress } from '@ingglish/phonemes';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
 
-/** Pad/truncate string to fixed width (left-aligned). */
-function pad(s: string, width: number): string {
-  return s.length >= width ? s : s + ' '.repeat(width - s.length);
-}
+export async function main() {
+  /** Pad/truncate string to fixed width (left-aligned). */
+  function pad(s: string, width: number): string {
+    return s.length >= width ? s : s + ' '.repeat(width - s.length);
+  }
 
-/**
- * Translate a phoneme array to Ingglish, but with AH0 mapped to a custom value.
- * This duplicates the logic of arpabetToIngglish() but intercepts AH0 specifically.
- */
-function arpabetToIngglishWithSchwa(arpabet: string[], schwaMapping: string): string {
-  let result = '';
-  const len = arpabet.length;
+  /**
+   * Translate a phoneme array to Ingglish, but with AH0 mapped to a custom value.
+   * This duplicates the logic of arpabetToIngglish() but intercepts AH0 specifically.
+   */
+  function arpabetToIngglishWithSchwa(arpabet: string[], schwaMapping: string): string {
+    let result = '';
+    const len = arpabet.length;
 
-  for (let i = 0; i < len; i++) {
-    const phoneme = arpabet[i];
-    const base = stripStress(phoneme);
+    for (let i = 0; i < len; i++) {
+      const phoneme = arpabet[i];
+      const base = stripStress(phoneme);
 
-    // R-colored vowel check (same as original)
-    if (i + 1 < len) {
-      const next = arpabet[i + 1];
-      if (next === 'R') {
-        const rPrefix = R_COLORED_FORWARD.get(base);
-        if (rPrefix !== undefined) {
-          result += rPrefix;
-          continue;
+      // R-colored vowel check (same as original)
+      if (i + 1 < len) {
+        const next = arpabet[i + 1];
+        if (next === 'R') {
+          const rPrefix = R_COLORED_FORWARD.get(base);
+          if (rPrefix !== undefined) {
+            result += rPrefix;
+            continue;
+          }
         }
       }
-    }
 
-    // Intercept AH0 specifically
-    if (phoneme === 'AH0') {
-      result += schwaMapping;
-      continue;
-    }
+      // Intercept AH0 specifically
+      if (phoneme === 'AH0') {
+        result += schwaMapping;
+        continue;
+      }
 
-    result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
+      result += ARPABET_TO_INGGLISH_MAP[base] ?? phoneme.toLowerCase();
+    }
+    return result;
   }
-  return result;
-}
 
-interface WordComparison {
-  english: string;
-  phonemes: string[];
-  current: string; // AH0 -> 'u'
-  proposed: string; // AH0 -> 'a'
-  frequency: number;
-}
+  interface WordComparison {
+    english: string;
+    phonemes: string[];
+    current: string; // AH0 -> 'u'
+    proposed: string; // AH0 -> 'a'
+    frequency: number;
+  }
 
-async function main() {
   await Promise.all([loadDictionary(), loadFrequencies()]);
   const dict = getDictionary();
 
@@ -540,4 +540,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('compare-schwa')) main().catch(console.error);

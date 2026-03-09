@@ -15,7 +15,7 @@ import {
 } from '@ingglish/dictionary';
 import { ARPABET_TO_INGGLISH_MAP, R_COLORED_FORWARD } from '@ingglish/phonemes';
 
-async function main() {
+export async function main() {
   // Load dictionary and frequencies
   await Promise.all([loadDictionary(), loadFrequencies()]);
   const cmudict = getDictionary();
