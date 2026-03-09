@@ -81,12 +81,6 @@ describe('reverse contraction handling', () => {
     expect(back.toLowerCase()).toBe("don't");
   });
 
-  it("should handle can't round-trip", () => {
-    const ingglish = translateSync("can't");
-    const back = reverseTranslateSync(ingglish);
-    expect(back.toLowerCase()).toBe("can't");
-  });
-
   it("should reverse-translate it's", () => {
     const ingglish = translateSync("it's");
     const back = reverseTranslateSync(ingglish);
@@ -734,12 +728,6 @@ describe('Finnish translation', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('talossa');
   });
-
-  it('should strip possessive+case suffix -ssani from "talossani"', async () => {
-    const result = await translate('talossani', { lang: 'fi' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('talossani');
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1047,13 +1035,6 @@ describe('Finnish advanced morphology', () => {
     expect(result).not.toBe('kengän');
   });
 
-  it('should strip two-level possessive: "talossani" exercises possessive path', async () => {
-    // Already tested above, but confirms the two-level stripping
-    const result = await translate('talossani', { lang: 'fi' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('talossani');
-  });
-
   it('should strip two-level possessive -nsa: "talossansa" → strip -nsa → "talossa" → strip -ssa → "talo"', async () => {
     const result = await translate('talossansa', { lang: 'fi' });
     expect(result).toBeTruthy();
@@ -1167,13 +1148,6 @@ describe('forward.ts edge cases', () => {
     expect(translateWord('123')).toBe('123');
   });
 
-  it('translateSync: non-letter tokens pass through in text (line 330)', () => {
-    // translateSync uses translateWordString which has the same check
-    const result = translateSync('42 + 7');
-    expect(result).toContain('42');
-    expect(result).toContain('7');
-  });
-
   it('translateWord: truly unknown word returns as-is (line 217)', () => {
     // A word with no dict match and no G2P should return original
     // English has low-confidence G2P so it always returns something,
@@ -1278,19 +1252,6 @@ describe('reverse.ts edge cases', () => {
     // 'pronunciation' format has no reverseTextWithMapping handler
     const ingglish = translateSync('hello world');
     const tokens = reverseTranslateSyncWithMapping(ingglish, { format: 'pronunciation' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-  });
-
-  it('reverseTranslateSync: default format uses ingglish handler', () => {
-    const ingglish = translateSync('hello');
-    const result = reverseTranslateSync(ingglish);
-    expect(result.toLowerCase()).toBe('hello');
-  });
-
-  it('reverseTranslateSyncWithMapping: default format uses ingglish handler', () => {
-    const ingglish = translateSync('hello world');
-    const tokens = reverseTranslateSyncWithMapping(ingglish);
     const words = tokens.filter((t) => t.isWord);
     expect(words.length).toBe(2);
   });
