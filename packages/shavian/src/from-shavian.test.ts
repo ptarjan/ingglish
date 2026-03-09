@@ -1,16 +1,15 @@
-import { reverseTranslate, translate } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import './index'; // registers shavian format
 
 describe('Shavian → English', () => {
-  it('should reverse translate Shavian words', async () => {
-    const shavian = await translate('cat', { format: 'shavian' });
-    const english = await reverseTranslate(shavian, { format: 'shavian' });
+  it('should reverse translate Shavian words', () => {
+    const shavian = translateSync('cat', { format: 'shavian' });
+    const english = reverseTranslateSync(shavian, { format: 'shavian' });
     expect(english).toBe('cat');
   });
 
-  it('should pass through non-Shavian input unchanged', async () => {
-    expect(await reverseTranslate('', { format: 'shavian' })).toBe('');
-    expect(await reverseTranslate('hello', { format: 'shavian' })).toBe('hello');
+  it('should pass through non-Shavian input unchanged', () => {
+    expect(reverseTranslateSync('', { format: 'shavian' })).toBe('');
+    expect(reverseTranslateSync('hello', { format: 'shavian' })).toBe('hello');
   });
 });

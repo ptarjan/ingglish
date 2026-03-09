@@ -1,24 +1,24 @@
-import { reverseTranslate, translate, translateSync } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import './index'; // registers IPA format
 
 describe('IPA translation', () => {
-  it('should produce valid IPA output', async () => {
-    const ipa = await translate('cat', { format: 'ipa' });
+  it('should produce valid IPA output', () => {
+    const ipa = translateSync('cat', { format: 'ipa' });
     expect(ipa).toBeDefined();
     expect(typeof ipa).toBe('string');
     expect(ipa).toMatch(/[æɑɛɪɔʊəɹŋʃʒθðˈˌ]/);
   });
 
-  it('should produce non-empty IPA for any word', async () => {
-    const ipa = await translate('hello', { format: 'ipa' });
+  it('should produce non-empty IPA for any word', () => {
+    const ipa = translateSync('hello', { format: 'ipa' });
     expect(ipa.length).toBeGreaterThan(0);
   });
 
-  it('should round-trip words through IPA', async () => {
+  it('should round-trip words through IPA', () => {
     for (const word of ['cat', 'hello', 'world', 'think', 'bird', 'the']) {
-      const ipa = await translate(word, { format: 'ipa' });
-      const english = await reverseTranslate(ipa, { format: 'ipa' });
+      const ipa = translateSync(word, { format: 'ipa' });
+      const english = reverseTranslateSync(ipa, { format: 'ipa' });
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
   });

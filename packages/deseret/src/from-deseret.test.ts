@@ -1,16 +1,15 @@
-import { reverseTranslate, translate } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import './index'; // registers deseret format
 
 describe('Deseret → English', () => {
-  it('should reverse translate Deseret words', async () => {
-    const deseret = await translate('bat', { format: 'deseret' });
-    const english = await reverseTranslate(deseret, { format: 'deseret' });
+  it('should reverse translate Deseret words', () => {
+    const deseret = translateSync('bat', { format: 'deseret' });
+    const english = reverseTranslateSync(deseret, { format: 'deseret' });
     expect(english).toBe('bat');
   });
 
-  it('should pass through non-Deseret input unchanged', async () => {
-    expect(await reverseTranslate('', { format: 'deseret' })).toBe('');
-    expect(await reverseTranslate('hello', { format: 'deseret' })).toBe('hello');
+  it('should pass through non-Deseret input unchanged', () => {
+    expect(reverseTranslateSync('', { format: 'deseret' })).toBe('');
+    expect(reverseTranslateSync('hello', { format: 'deseret' })).toBe('hello');
   });
 });

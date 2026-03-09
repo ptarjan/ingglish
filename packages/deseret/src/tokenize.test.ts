@@ -1,43 +1,42 @@
-import { reverseTranslate, translate } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import './index'; // registers deseret format
 
 describe('Deseret character recognition', () => {
-  it('translates to Deseret and back for lowercase Deseret chars', async () => {
-    const deseret = await translate('cat', { format: 'deseret' });
+  it('translates to Deseret and back for lowercase Deseret chars', () => {
+    const deseret = translateSync('cat', { format: 'deseret' });
     // Output should contain Deseret characters (U+10400-U+1044F)
     expect(deseret).toMatch(/[\u{10400}-\u{1044F}]/u);
-    const english = await reverseTranslate(deseret, { format: 'deseret' });
+    const english = reverseTranslateSync(deseret, { format: 'deseret' });
     expect(english).toBe('cat');
   });
 
-  it('passes through non-Deseret text unchanged', async () => {
-    const result = await reverseTranslate('hello', { format: 'deseret' });
+  it('passes through non-Deseret text unchanged', () => {
+    const result = reverseTranslateSync('hello', { format: 'deseret' });
     expect(result).toBe('hello');
   });
 
-  it('handles empty input', async () => {
-    expect(await reverseTranslate('', { format: 'deseret' })).toBe('');
+  it('handles empty input', () => {
+    expect(reverseTranslateSync('', { format: 'deseret' })).toBe('');
   });
 });
 
 describe('Deseret tokenization', () => {
-  it('translates multi-word text', async () => {
-    const deseret = await translate('cat dog', { format: 'deseret' });
+  it('translates multi-word text', () => {
+    const deseret = translateSync('cat dog', { format: 'deseret' });
     expect(deseret).toContain(' ');
-    const english = await reverseTranslate(deseret, { format: 'deseret' });
+    const english = reverseTranslateSync(deseret, { format: 'deseret' });
     expect(english).toBe('cat dog');
   });
 
-  it('preserves punctuation', async () => {
-    const deseret = await translate('hello!', { format: 'deseret' });
+  it('preserves punctuation', () => {
+    const deseret = translateSync('hello!', { format: 'deseret' });
     expect(deseret).toContain('!');
   });
 
-  it('round-trips several words', async () => {
+  it('round-trips several words', () => {
     for (const word of ['the', 'hello', 'world', 'think']) {
-      const deseret = await translate(word, { format: 'deseret' });
-      const english = await reverseTranslate(deseret, { format: 'deseret' });
+      const deseret = translateSync(word, { format: 'deseret' });
+      const english = reverseTranslateSync(deseret, { format: 'deseret' });
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
   });

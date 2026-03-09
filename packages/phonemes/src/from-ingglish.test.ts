@@ -1,48 +1,48 @@
-import { reverseTranslate, translate } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 
 describe('reverse Ingglish translation', () => {
-  it('returns empty for empty input', async () => {
-    expect(await reverseTranslate('')).toBe('');
+  it('returns empty for empty input', () => {
+    expect(reverseTranslateSync('')).toBe('');
   });
 
-  it('handles single consonant input', async () => {
-    const result = await reverseTranslate('b');
+  it('handles single consonant input', () => {
+    const result = reverseTranslateSync('b');
     expect(typeof result).toBe('string');
   });
 
-  it('handles single vowel input', async () => {
-    const result = await reverseTranslate('a');
+  it('handles single vowel input', () => {
+    const result = reverseTranslateSync('a');
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 });
 
 describe('phoneme alternative expansion in reverse', () => {
-  it('reverses simple words', async () => {
-    const ingglish = await translate('but');
-    const english = await reverseTranslate(ingglish);
+  it('reverses simple words', () => {
+    const ingglish = translateSync('but');
+    const english = reverseTranslateSync(ingglish);
     expect(english).toBe('but');
   });
 
-  it('reverses words with ER phoneme', async () => {
+  it('reverses words with ER phoneme', () => {
     // 'bird' has ER phoneme, reverse should handle ER↔EH+R ambiguity
-    const ingglish = await translate('bird');
-    const english = await reverseTranslate(ingglish);
+    const ingglish = translateSync('bird');
+    const english = reverseTranslateSync(ingglish);
     expect(english).toBe('bird');
   });
 
-  it('reverses words with SH phoneme', async () => {
+  it('reverses words with SH phoneme', () => {
     // 'ship' has SH phoneme, reverse should handle SH↔S+HH ambiguity
-    const ingglish = await translate('ship');
-    const english = await reverseTranslate(ingglish);
+    const ingglish = translateSync('ship');
+    const english = reverseTranslateSync(ingglish);
     expect(english).toBe('ship');
   });
 
-  it('handles words with multiple ambiguous phonemes', async () => {
+  it('handles words with multiple ambiguous phonemes', () => {
     // 'shiver' has both SH and ER phonemes
-    const ingglish = await translate('shiver');
-    const english = await reverseTranslate(ingglish);
+    const ingglish = translateSync('shiver');
+    const english = reverseTranslateSync(ingglish);
     expect(english).toBe('shiver');
   });
 });

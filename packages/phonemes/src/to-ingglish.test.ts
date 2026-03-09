@@ -1,4 +1,4 @@
-import { reverseTranslate, translate, translateSync } from 'ingglish';
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import {
   ARPABET_CONSONANTS,
@@ -107,11 +107,11 @@ describe('phoneme-map', () => {
 });
 
 describe('arpabetToIngglish round-trip', () => {
-  it('should round-trip words through Ingglish', async () => {
+  it('should round-trip words through Ingglish', () => {
     // Test words covering various phoneme categories including R-colored vowels
     for (const word of ['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world']) {
-      const ingglish = await translate(word);
-      const english = await reverseTranslate(ingglish);
+      const ingglish = translateSync(word);
+      const english = reverseTranslateSync(ingglish);
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
   });
