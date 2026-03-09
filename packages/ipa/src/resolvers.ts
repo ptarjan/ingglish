@@ -620,9 +620,6 @@ function applyFiGradation(stem: string): string {
   if (stem.endsWith('rk')) {
     return stem.slice(0, -2) + 'r';
   }
-  if (stem.endsWith('hk')) {
-    return stem.slice(0, -2) + 'h';
-  }
   return stem;
 }
 
@@ -688,13 +685,12 @@ function lemmatizeFi(dict: Record<string, string[]>, word: string): string[] | u
     }
   }
 
-  // Two-level: strip possessive then try suffix stripping on remainder
+  // Two-level: strip possessive then try suffix stripping on remainder.
+  // Note: dict[inner] is already tried by the main suffix loop above (all possessives
+  // are in FI_SUFFIXES with replacement ['']), so we only do the second-level strip here.
   for (const poss of ['ni', 'si', 'nsa', 'nsä', 'mme', 'nne'] as const) {
     if (word.endsWith(poss) && word.length > poss.length + 2) {
       const inner = word.slice(0, -poss.length);
-      if (dict[inner]) {
-        return dict[inner];
-      }
       // Try suffix stripping on the inner form (one level only)
       for (const [suffix, replacements] of FI_SUFFIXES) {
         if (inner.length > suffix.length + 1 && inner.endsWith(suffix)) {
@@ -718,12 +714,9 @@ function lemmatizeFi(dict: Record<string, string[]>, word: string): string[] | u
 /** Old orthography mappings (Riksmål/Danish → modern Bokmål). */
 function modernizeNb(word: string): string[] {
   const variants: string[] = [];
-  // aa → å
+  // aa → å (input is always lowercase from lookupDict)
   if (word.includes('aa')) {
     variants.push(word.replaceAll('aa', 'å'));
-  }
-  if (word.includes('Aa')) {
-    variants.push(word.replaceAll('Aa', 'Å'));
   }
   // Old spellings
   if (word === 'af') {
@@ -731,9 +724,6 @@ function modernizeNb(word: string): string[] {
   }
   if (word === 'efter') {
     variants.push('etter');
-  }
-  if (word === 'imod') {
-    variants.push('imot');
   }
   return variants;
 }

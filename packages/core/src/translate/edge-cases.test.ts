@@ -863,6 +863,12 @@ describe('Romanian translation', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('nțeleg');
   });
+
+  it('should resolve î+word: "mbarca" → "îmbarca"', async () => {
+    const result = await translate('mbarca', { lang: 'ro' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('mbarca');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -917,6 +923,18 @@ describe('Japanese kana decomposition', () => {
   it('should handle sokuon (っ) skip: "きって"', async () => {
     const result = await translate('きって', { lang: 'ja' });
     expect(result).toBeTruthy();
+  });
+
+  it('should fall back when kana resolver hits unknown char: "き龠"', async () => {
+    // 龠 is not in the dict, so kana resolver returns undefined → falls back to G2P
+    const result = await translate('き龠', { lang: 'ja' });
+    expect(result).toBeTruthy();
+  });
+
+  it('should handle structural-only kana: "っー" (sokuon + chōon)', async () => {
+    // Only skip chars → allSkippable path returns empty phoneme array
+    const result = await translate('っー', { lang: 'ja' });
+    expect(result).toBeDefined();
   });
 });
 
@@ -1022,6 +1040,18 @@ describe('Finnish advanced morphology', () => {
     expect(result).toBeTruthy();
     expect(result).not.toBe('talossani');
   });
+
+  it('should strip two-level possessive -nsa: "talossansa" → strip -nsa → "talossa" → strip -ssa → "talo"', async () => {
+    const result = await translate('talossansa', { lang: 'fi' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('talossansa');
+  });
+
+  it('should strip two-level possessive -mme: "talollamme" → strip -mme → "talolla" → strip -lla → "talo"', async () => {
+    const result = await translate('talollamme', { lang: 'fi' });
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('talollamme');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1035,6 +1065,18 @@ describe('Persian advanced morphology', () => {
 
   it('should strip -ای indefinite suffix', async () => {
     const result = await translate('کتابای', { lang: 'fa' });
+    expect(result).toBeTruthy();
+  });
+
+  it('should strip نمی ZWNJ verb ending: "نمی‌خوانند" → strip ند → "خوان"', async () => {
+    const result = await translate('\u0646\u0645\u06CC\u200C\u062E\u0648\u0627\u0646\u0646\u062F', {
+      lang: 'fa',
+    });
+    expect(result).toBeTruthy();
+  });
+
+  it('should join ZWNJ parts: "آبا‌دان" → "آبادان"', async () => {
+    const result = await translate('\u0622\u0628\u0627\u200C\u062F\u0627\u0646', { lang: 'fa' });
     expect(result).toBeTruthy();
   });
 });

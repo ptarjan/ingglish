@@ -33,10 +33,11 @@ export const HAS_LETTER = /\p{L}/u;
 
 /**
  * Unicode word regex for non-Latin scripts (Arabic, CJK, Khmer, etc.).
- * Matches sequences of Unicode letters and combining marks (including apostrophes).
+ * Matches sequences of Unicode letters, combining marks, apostrophes,
+ * and ZWNJ (\u200C) — Persian uses ZWNJ to join prefixes to verbs (e.g. می‌کند).
  * Uses a capturing group so split() interleaves words and separators.
  */
-const UNICODE_WORD_REGEX = /([\p{L}\p{M}']+)/u;
+const UNICODE_WORD_REGEX = /([\p{L}\p{M}'\u200C]+)/u;
 
 /**
  * Stage 1: Normalize text and extract preserved patterns (URLs, emails).
