@@ -31,9 +31,7 @@ function SpellThatSound() {
         ? `Correct! ${q.explanation}`
         : `Not quite, it's ${q.correctSpelling}. ${q.explanation}`,
     speakQuestion: (q) => {
-      const choiceList = q.choices
-        .map((c, i) => `${i + 1}. ${q.wordBefore}${c}${q.wordAfter}`)
-        .join(' ... ');
+      const choiceList = q.choices.map((c) => `${q.wordBefore}${c}${q.wordAfter}`).join(' ... ');
       return `Fill in the ${q.soundDescription} ... ${q.wordBefore} blank ${q.wordAfter} ... ${choiceList}`;
     },
   });

@@ -37,7 +37,7 @@ function HomophonesQuiz() {
         : `Not quite! The answer is ${answers}.`;
     },
     speakQuestion: (q) => {
-      const choiceList = q.choices.map((c, i) => `${i + 1}. ${c}`).join(' ... ');
+      const choiceList = q.choices.join(' ... ');
       return `What English word is this? ... ${q.correctAnswers[0]} ... ${choiceList}`;
     },
   });
