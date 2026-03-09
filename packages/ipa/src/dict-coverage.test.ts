@@ -8,8 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import '@ingglish/phonemes';
-import type { PhoneDict } from './dict';
-import { convertIpaEntries, getLanguage, LANGUAGES, lookupDict } from './dict';
+import { type PhoneDict, convertIpaEntries, getLanguage, LANGUAGES, lookupDict } from './index';
 
 function mkKhmerDict(raw: Record<string, string | string[]>): PhoneDict {
   const langMeta = getLanguage('km')!;

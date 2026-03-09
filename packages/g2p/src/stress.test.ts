@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyStressPrediction } from './stress';
+import { applyStressPrediction } from './index';
 
 describe('applyStressPrediction', () => {
   it('passes through monosyllabic words unchanged', () => {

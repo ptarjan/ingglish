@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { wordToArpabet, wordToPhonetic } from './g2p-rules';
+import { wordToArpabet, wordToPhonetic } from './index';
 
 describe('wordToArpabet', () => {
   it('converts simple words to ARPAbet', () => {

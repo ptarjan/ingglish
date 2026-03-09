@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
-import type { PhoneDict } from './dict';
-import { convertIpaEntries, getLanguage, lookupDict } from './dict';
+import { type PhoneDict, convertIpaEntries, getLanguage, lookupDict } from './index';
 
 /** Helper to create a PhoneDict from IPA entries (converted to ARPAbet) and a language code. */
 function mkDict(entries: Record<string, string>, lang = ''): PhoneDict {

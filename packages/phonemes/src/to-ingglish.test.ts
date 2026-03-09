@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  INGGLISH_CONSONANT_MAP as CONSONANT_MAP,
-  INGGLISH_VOWEL_MAP as VOWEL_MAP,
-} from './ingglish-maps';
-import {
+  ARPABET_CONSONANTS,
   ARPABET_TO_INGGLISH_MAP as ARPABET_MAP,
+  ARPABET_VOWELS,
   arpabetToFormat,
   arpabetToIngglish,
   ingglishToArpabet,
@@ -70,8 +68,8 @@ describe('phoneme-map', () => {
     });
 
     it('should have 39 total phonemes (15 vowels + 24 consonants)', () => {
-      expect(Object.keys(VOWEL_MAP).length).toBe(15);
-      expect(Object.keys(CONSONANT_MAP).length).toBe(24);
+      expect(ARPABET_VOWELS.length).toBe(15);
+      expect(ARPABET_CONSONANTS.length).toBe(24);
       expect(Object.keys(ARPABET_MAP).length).toBe(39);
     });
   });

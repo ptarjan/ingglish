@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { applyCasePattern, detectCasePattern, splitCamelCase } from './case';
+import { applyCasePattern, detectCasePattern, splitCamelCase } from './index';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {

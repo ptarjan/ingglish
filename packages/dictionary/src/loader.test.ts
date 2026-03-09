@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getDictionary, isDictionaryLoaded, loadDictionary } from './loader';
+import { getDictionary, isDictionaryLoaded, loadDictionary } from './index';
 
 describe('getDictionary', () => {
   it('returns a dictionary object (loaded via vitest.setup.ts)', () => {

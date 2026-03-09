@@ -1,27 +1,8 @@
 import { translateSync } from 'ingglish';
 import { describe, it, expect, vi } from 'vitest';
-import { INITIALISM_EXPANSIONS, isInitialism } from './acronyms';
+import { isInitialism, KNOWN_INITIALISMS } from './index';
 
 describe('initialisms', () => {
-  describe('INITIALISM_EXPANSIONS', () => {
-    it('should have expansions for common tech initialisms', () => {
-      expect(INITIALISM_EXPANSIONS.ui).toEqual(['user', 'interface']);
-      expect(INITIALISM_EXPANSIONS.api).toEqual(['application', 'programming', 'interface']);
-      expect(INITIALISM_EXPANSIONS.url).toEqual(['uniform', 'resource', 'locator']);
-      expect(INITIALISM_EXPANSIONS.cpu).toEqual(['central', 'processing', 'unit']);
-    });
-
-    it('should have expansions for AI-related terms', () => {
-      expect(INITIALISM_EXPANSIONS.ai).toEqual(['artificial', 'intelligence']);
-      expect(INITIALISM_EXPANSIONS.ml).toEqual(['machine', 'learning']);
-      expect(INITIALISM_EXPANSIONS.llm).toEqual(['large', 'language', 'model']);
-    });
-
-    it('should have US as an initialism', () => {
-      expect(INITIALISM_EXPANSIONS.us).toEqual(['united', 'states']);
-    });
-  });
-
   describe('isInitialism', () => {
     it('should recognize known initialisms', () => {
       expect(isInitialism('UI')).toBe(true);
@@ -64,7 +45,7 @@ describe('initialisms', () => {
     it('should verify max initialism length matches longest entry', () => {
       // Ensure our MAX_INITIALISM_LENGTH constant is correct
       // If someone adds a longer initialism, this test fails as a reminder to update the constant
-      const maxLen = Math.max(...Object.keys(INITIALISM_EXPANSIONS).map((k) => k.length));
+      const maxLen = Math.max(...[...KNOWN_INITIALISMS].map((k) => k.length));
       expect(maxLen).toBe(5); // "https" and "nosql" are the longest
     });
   });
