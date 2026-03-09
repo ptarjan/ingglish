@@ -30,7 +30,8 @@ function ipaToArpabetWithStress(ipa: string, lang?: string): string[] {
   if (hasStress) {
     return arpabet;
   }
-  // Apply stress to last vowel
+  /* c8 ignore start */
+  // Apply stress to last vowel (defensive — all current G2P converters add IPA stress markers)
   const result = [...arpabet];
   for (let i = result.length - 1; i >= 0; i--) {
     if (isVowel(result[i]!)) {
@@ -39,6 +40,7 @@ function ipaToArpabetWithStress(ipa: string, lang?: string): string[] {
     }
   }
   return result;
+  /* c8 ignore stop */
 }
 
 /**

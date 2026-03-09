@@ -249,4 +249,10 @@ describe('ipaToArpabet', () => {
     // Finnish loanword "bébé" — accented e's should still produce EH
     expect(ipaToArpabet('bébé')).toEqual(['B', 'EH', 'B', 'EH']);
   });
+
+  it('handles two-char override with multi-phoneme value (space-separated)', () => {
+    // Exercise lines 102-105: a two-character IPA sequence mapped to a space-separated ARPAbet value
+    const overrides = { ab: 'AE B' };
+    expect(ipaToArpabet('ab', overrides)).toEqual(['AE', 'B']);
+  });
 });

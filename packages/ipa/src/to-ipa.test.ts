@@ -1,6 +1,6 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { arpabetPhonemeToIPA } from './index';
+import { arpabetPhonemeToIPA, arpabetToIPARaw } from './index';
 
 describe('IPA translation', () => {
   it('should produce valid IPA output', () => {
@@ -111,5 +111,13 @@ describe('arpabetPhonemeToIPA edge cases', () => {
   it('returns IPA for consonants (no stress)', () => {
     expect(arpabetPhonemeToIPA('B')).toBe('b');
     expect(arpabetPhonemeToIPA('TH')).toBe('θ');
+  });
+});
+
+describe('arpabetToIPA/arpabetToIPARaw unknown phoneme handling', () => {
+  it('lowercases unknown phonemes in array conversion (lines 78-79)', () => {
+    // An unknown phoneme like "XX" should be lowercased in the output
+    const result = arpabetToIPARaw(['HH', 'XX', 'AH0', 'L']);
+    expect(result).toContain('xx');
   });
 });

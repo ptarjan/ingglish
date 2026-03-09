@@ -114,6 +114,19 @@ describe('WORD_RESOLVERS', () => {
     it('tries î + word', () => {
       expect(resolve(dict, 'ntâlni')).toBeDefined();
     });
+
+    it('tries î + word directly (lines 200-202)', () => {
+      // Word that doesn't start with n/l/m (those trigger prefix restoration first)
+      const dictI: Record<string, string[]> = {
+        îvăț: ['IH0', 'V', 'AH1', 'T', 'S'],
+      };
+      // "văț" → no suffix match → no prefix restoration (doesn't start with n/l/m) → try î + văț = îvăț
+      expect(resolve(dictI, 'văț')).toEqual(['IH0', 'V', 'AH1', 'T', 'S']);
+    });
+
+    it('returns undefined when no Romanian resolution works (line 205)', () => {
+      expect(resolve(dict, 'xyzabc')).toBeUndefined();
+    });
   });
 
   describe('eo (Esperanto lemmatization)', () => {
@@ -164,6 +177,27 @@ describe('WORD_RESOLVERS', () => {
     it('strips derivational suffix -isto', () => {
       expect(resolve(dict, 'laboristo')).toEqual(['L', 'AH0', 'B', 'OW1', 'R', 'OW0']);
     });
+
+    it('strips plural -j then continues to verb ending (line 336)', () => {
+      // laborisj → strip -j → laboris → not in dict → w = "laboris"
+      // → verb ending -is → stem "labor" → try "labori" → found!
+      // This exercises line 336 where -j is stripped but the result isn't directly in dict
+      expect(resolve(dict, 'laborisj')).toEqual(['L', 'AH0', 'B', 'OW1', 'R', 'IY0']);
+    });
+
+    it('strips prefix mal- then recursively lemmatizes remainder (lines 415-417)', () => {
+      // malbonaj → strip -j → malbona → strip -a → malbon → not in dict
+      // → strip prefix mal- → bon → not in dict → recursively lemmatize bon
+      // → strip -n (accusative) → bo → not in dict → eventually try dict[bono]
+      // Need: malbonaj → mal + bonaj → bonaj → strip -j → bona → not found → strip -a → bon → not found
+      // But we already test malbono. Let's test a deeper recursive case:
+      // malrapide → strip prefix mal- → rapide → lemmatize → strip -e → rapida
+      expect(resolve(dict, 'malrapide')).toEqual(['R', 'AH0', 'P', 'IY1', 'D', 'AH0']);
+    });
+
+    it('returns undefined when prefix stripping fails recursively', () => {
+      expect(resolve(dict, 'malxyz')).toBeUndefined();
+    });
   });
 
   describe('sw (Swahili lemmatization)', () => {
@@ -197,6 +231,27 @@ describe('WORD_RESOLVERS', () => {
         soma: ['S', 'OW1', 'M', 'AH0'],
       };
       expect(resolve(dictSuf, 'somana')).toEqual(['S', 'OW1', 'M', 'AH0']);
+    });
+
+    it('strips prefix + derivational suffix to find stem (lines 444-454)', () => {
+      // walimika → prefix wa- + limika → derivational suffix -ika → lim + 'a' → lima
+      const dictDeriv: Record<string, string[]> = {
+        lima: ['L', 'IY1', 'M', 'AH0'],
+      };
+      expect(resolve(dictDeriv, 'walimika')).toEqual(['L', 'IY1', 'M', 'AH0']);
+    });
+
+    it('strips prefix + derivational suffix with ku- form (line 453-454)', () => {
+      // walisomisha → prefix wali- + somisha → derivational -isha → som + 'a' → soma → not found
+      // → try ku + soma → kusoma
+      const dictKuDeriv: Record<string, string[]> = {
+        kusoma: ['K', 'UW0', 'S', 'OW1', 'M', 'AH0'],
+      };
+      expect(resolve(dictKuDeriv, 'walisomisha')).toEqual(['K', 'UW0', 'S', 'OW1', 'M', 'AH0']);
+    });
+
+    it('returns undefined for unknown prefix+suffix combo', () => {
+      expect(resolve(dict, 'walixyzika')).toBeUndefined();
     });
   });
 
@@ -340,6 +395,10 @@ describe('WORD_RESOLVERS', () => {
 
     it('strips -er suffix', () => {
       expect(resolve(dict, 'hunder')).toEqual(['HH', 'UH1', 'N', 'D']);
+    });
+
+    it('returns undefined for completely unresolvable words (line 792)', () => {
+      expect(resolve(dict, 'zzz')).toBeUndefined();
     });
   });
 

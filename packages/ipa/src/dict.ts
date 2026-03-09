@@ -72,9 +72,11 @@ function makeSegmenter(
   locale: string,
   options?: { normalizeZWS?: boolean }
 ): (text: string) => string {
+  /* c8 ignore start */
   if (!HAS_INTL_SEGMENTER) {
     return (text: string) => text;
   }
+  /* c8 ignore stop */
   const segmenter = new Intl.Segmenter(locale, { granularity: 'word' });
   const normalizeZWS = options?.normalizeZWS === true;
   return (text: string): string => {
