@@ -1,5 +1,5 @@
 import { stripDiacritics } from '@ingglish/normalize';
-import { arpabetToIngglish, getStress, isVowel, stripStress } from '@ingglish/phonemes';
+import { getStress, isVowel, stripStress } from '@ingglish/phonemes';
 import { ipaToArpabet } from './from-ipa';
 import { G2P_CONVERTERS } from './g2p';
 import { IPA_LANGUAGE_OVERRIDES } from './ipa-maps';
@@ -193,16 +193,6 @@ const IPA_WORD_OVERRIDES_RAW: Record<string, Record<string, string>> = {
 
 /** Cache of converted override maps: lang → word → ARPAbet string[] */
 const overridesArpabetCache = new Map<string, Record<string, string[]>>();
-
-/**
- * Converts an IPA transcription to Ingglish spelling.
- * Strips slashes and syllable dots before conversion.
- */
-export function ipaToIngglish(ipa: string): string {
-  const clean = ipa.replaceAll(IPA_SLASH_RE, '').replaceAll('.', '');
-  const arpabet = ipaToArpabet(clean);
-  return arpabetToIngglish(arpabet);
-}
 
 /**
  * Look up a word in a PhoneDict, returning ARPAbet string[] or undefined.

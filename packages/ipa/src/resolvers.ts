@@ -131,16 +131,11 @@ function lemmatizeSv(dict: Record<string, string[]>, word: string): string[] | u
     }
   }
 
-  // Two-level for genitive chains: strip -s, then try lemmatizing the remainder
-  // e.g. "solens" -> "solen" -> strip -en -> "sol"
+  // Two-level for genitive chains: strip -s, then recursively lemmatize the remainder.
+  // e.g. "barnens" → strip -s → "barnen" → strip -en → "barn"
+  // (The direct dict[inner] case is already handled by the suffix 's' pattern above.)
   if (word.endsWith('s') && word.length > 2) {
-    const inner = word.slice(0, -1);
-    // Try inner directly first
-    if (dict[inner]) {
-      return dict[inner];
-    }
-    // Recursively lemmatize the inner form
-    return lemmatizeSv(dict, inner);
+    return lemmatizeSv(dict, word.slice(0, -1));
   }
 
   return undefined;
@@ -339,11 +334,6 @@ function lemmatizeEo(dict: Record<string, string[]>, word: string): string[] | u
       return dict[stripped];
     }
     w = stripped;
-  }
-
-  // Try the current form (after stripping -n and/or -j)
-  if (dict[w]) {
-    return dict[w];
   }
 
   // Verb endings → infinitive (-i)
@@ -764,14 +754,11 @@ const NB_SUFFIXES: [string, string[]][] = [
 
 function lemmatizeNb(dict: Record<string, string[]>, word: string): string[] | undefined {
   // Try old orthography modernization first
+  // (word is already lowercase from lookupDict, so modernized variants are too)
   const modern = modernizeNb(word);
   for (const m of modern) {
     if (dict[m]) {
       return dict[m];
-    }
-    const lower = m.toLowerCase();
-    if (dict[lower]) {
-      return dict[lower];
     }
   }
 
@@ -899,13 +886,10 @@ function lemmatizeFa(dict: Record<string, string[]>, word: string): string[] | u
         return dict[part];
       }
     }
-    // For verb forms with می (mi-) prefix, try the verb part
+    // For verb forms with می (mi-) / نمی (nemi-) prefix, try stripping verb endings.
+    // (dict[verb] is already tried by the part loop above.)
     if (parts.length === 2 && (parts[0] === 'می' || parts[0] === 'نمی')) {
       const verb = parts[1]!;
-      if (dict[verb]) {
-        return dict[verb];
-      }
-      // Try stripping verb endings
       for (const ending of ['ند', 'م', 'ی', 'د', 'یم', 'ید'] as const) {
         if (verb.endsWith(ending) && verb.length > ending.length) {
           const stem = verb.slice(0, -ending.length);
