@@ -302,10 +302,12 @@ export interface TestData {
 /**
  * Load dictionary and frequencies. Returns filtered word list (alpha-only, len >= 3).
  * Precomputes stressless CMU strings and frequencies for fast repeated evaluation.
+ * Respects --limit=N from argv to test on a subset of words.
  */
 export async function loadTestData(): Promise<TestData> {
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
 
   const words: string[] = [];
   const cmuStressless: Record<string, string> = {};
@@ -315,6 +317,7 @@ export async function loadTestData(): Promise<TestData> {
     words.push(word);
     cmuStressless[word] = dict[word]!.map(stripStress).join(' ');
     freqs[word] = getWordFrequency(word) ?? 0;
+    if (words.length >= limit) break;
   }
 
   return { dict, words, cmuStressless, freqs };
@@ -448,6 +451,15 @@ export function writeNRLRules(
   const before = source.substring(0, startIdx);
   const after = source.substring(startIdx + endIdx + 1);
   fs.writeFileSync(filePath, before + newBlock + after, 'utf-8');
+}
+
+/**
+ * Parse --limit=N from process.argv. Returns Infinity if not set.
+ * Used by CI tests to run scripts on a subset of words for faster smoke tests.
+ */
+export function parseWordLimit(): number {
+  const arg = process.argv.find((a) => a.startsWith('--limit='));
+  return arg ? parseInt(arg.split('=')[1]!, 10) : Infinity;
 }
 
 export { getWordFrequency, stripStress };

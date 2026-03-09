@@ -7,9 +7,11 @@
 import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './eval-g2p.js';
 async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
   let total = 0,
     match = 0;
   let freqTotal = 0,
@@ -17,6 +19,7 @@ async function main() {
   for (const word of Object.keys(dict)) {
     if (/[^a-z]/i.test(word) || word.length < 3) continue;
     total++;
+    if (total > limit) break;
     const freq = getWordFrequency(word) ?? 0;
     freqTotal += freq;
     if (wordToArpabet(word).map(stripStress).join(' ') === dict[word].map(stripStress).join(' ')) {

@@ -13,6 +13,7 @@ import { loadDictionary, getDictionary, loadFrequencies } from '@ingglish/dictio
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress, registerFormat } from '@ingglish/phonemes';
 import { translateUnknown } from '@ingglish/fallback';
+import { parseWordLimit } from './eval-g2p.js';
 
 // Register an 'arpabet' format that returns phonemes joined with spaces
 registerFormat('arpabet', {
@@ -24,6 +25,7 @@ registerFormat('arpabet', {
 async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
   const words = Object.keys(dict);
 
   let total = 0;
@@ -41,6 +43,7 @@ async function main() {
     if (word.length < 3) continue;
 
     total++;
+    if (total > limit) break;
 
     const cmuPhonemes = dict[word];
     const cmuStr = cmuPhonemes.join(' ');

@@ -15,6 +15,7 @@ import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dic
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import type { G2PTrace, G2PTraceStep } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './eval-g2p.js';
 
 // ---------------------------------------------------------------------------
 // Levenshtein alignment
@@ -152,7 +153,8 @@ interface ErrorPattern {
 async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
-  const words = Object.keys(dict);
+  const limit = parseWordLimit();
+  const allWords = Object.keys(dict);
 
   const patterns = new Map<string, ErrorPattern>();
   const ruleTotalErrors = new Map<string, { count: number; freq: number }>();
@@ -163,9 +165,10 @@ async function main() {
   let errorWords = 0;
   let totalErrorOps = 0;
 
-  for (const word of words) {
+  for (const word of allWords) {
     if (/[^a-z]/i.test(word) || word.length < 3) continue;
     totalWords++;
+    if (totalWords > limit) break;
 
     const cmuPhonemes = dict[word]!;
     const trace = wordToArpabetTraced(word);

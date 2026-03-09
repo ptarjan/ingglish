@@ -9,6 +9,7 @@
 import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './eval-g2p.js';
 async function main() {
   const target = process.argv[2] || '';
   if (!target) {
@@ -17,14 +18,17 @@ async function main() {
   }
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
   console.log(`Rule: ${target}\n`);
   let shown = 0,
     correct = 0,
     wrong = 0;
   let freqCorrect = 0,
     freqWrong = 0;
+  let wordCount = 0;
   for (const word of Object.keys(dict)) {
     if (/[^a-z]/i.test(word) || word.length < 3) continue;
+    if (++wordCount > limit) break;
     const freq = getWordFrequency(word) ?? 0;
     const trace = wordToArpabetTraced(word);
     const g2p = trace.phonemes.map(stripStress).join(' ');

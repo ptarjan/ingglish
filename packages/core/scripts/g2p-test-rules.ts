@@ -10,11 +10,15 @@
 import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './g2p/eval-g2p.js';
 
 async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
-  const words = Object.keys(dict).filter((w) => /^[a-z]+$/.test(w) && w.length >= 3);
+  const limit = parseWordLimit();
+  const words = Object.keys(dict)
+    .filter((w) => /^[a-z]+$/.test(w) && w.length >= 3)
+    .slice(0, limit);
 
   // Run baseline
   let baseline = 0;

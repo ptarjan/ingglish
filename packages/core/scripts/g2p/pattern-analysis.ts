@@ -4,9 +4,11 @@
  */
 import { loadDictionary } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
+import { parseWordLimit } from './eval-g2p.js';
 
 async function main() {
   const dict = await loadDictionary();
+  const limit = parseWordLimit();
 
   const patterns: Record<string, { total: number; wrong: number; examples: string[] }> = {};
 
@@ -25,7 +27,9 @@ async function main() {
     }
   }
 
+  let count = 0;
   for (const [word, cmu] of Object.entries(dict) as [string, string[]][]) {
+    if (++count > limit) break;
     const g2p = wordToArpabet(word);
 
     // AA digraph

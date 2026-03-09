@@ -9,14 +9,18 @@
 import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
+import { parseWordLimit } from './eval-g2p.js';
 async function main() {
   const n = parseInt(process.argv[2] || '80', 10);
   const dict = await loadDictionary();
   await loadFrequencies();
+  const limit = parseWordLimit();
   let freqTotal = 0;
+  let count = 0;
   const errors: { word: string; freq: number; got: string; want: string }[] = [];
   for (const word of Object.keys(dict)) {
     if (/[^a-z]/i.test(word) || word.length < 3) continue;
+    if (++count > limit) break;
     const freq = getWordFrequency(word) ?? 0;
     freqTotal += freq;
     const g2p = wordToArpabet(word).map(stripStress).join(' ');
