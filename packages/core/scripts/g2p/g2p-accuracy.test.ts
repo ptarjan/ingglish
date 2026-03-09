@@ -15,7 +15,7 @@ function run(script: string, args = '', timeout = 60_000): string {
   });
 }
 
-describe('g2p scripts (1/2)', () => {
+describe('g2p accuracy', () => {
   it('measure', () => {
     const output = run('measure');
     expect(output).toContain('Unweighted:');

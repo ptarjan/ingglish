@@ -15,7 +15,7 @@ function run(script: string, args = '', timeout = 60_000): string {
   });
 }
 
-describe('g2p scripts (2/2)', () => {
+describe('g2p tuning', () => {
   it('pattern-analysis', () => {
     const output = run('pattern-analysis');
     expect(output.length).toBeGreaterThan(0);
