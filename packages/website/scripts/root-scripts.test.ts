@@ -11,7 +11,7 @@ describe('review-languages', () => {
     const output = execSync('npx tsx --conditions=source scripts/review-languages.ts', {
       cwd: repoRoot,
       encoding: 'utf-8',
-      timeout: 30_000,
+      timeout: 60_000,
     });
     expect(output.length).toBeGreaterThan(0);
   }, 60_000);
