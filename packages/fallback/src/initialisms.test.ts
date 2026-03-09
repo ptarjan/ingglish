@@ -3,6 +3,25 @@ import { describe, it, expect, vi } from 'vitest';
 import { isInitialism, KNOWN_INITIALISMS } from './index';
 
 describe('initialisms', () => {
+  describe('KNOWN_INITIALISMS', () => {
+    it('should include common tech initialisms', () => {
+      expect(KNOWN_INITIALISMS.has('ui')).toBe(true);
+      expect(KNOWN_INITIALISMS.has('api')).toBe(true);
+      expect(KNOWN_INITIALISMS.has('url')).toBe(true);
+      expect(KNOWN_INITIALISMS.has('cpu')).toBe(true);
+    });
+
+    it('should include AI-related terms', () => {
+      expect(KNOWN_INITIALISMS.has('ai')).toBe(true);
+      expect(KNOWN_INITIALISMS.has('ml')).toBe(true);
+      expect(KNOWN_INITIALISMS.has('llm')).toBe(true);
+    });
+
+    it('should include US', () => {
+      expect(KNOWN_INITIALISMS.has('us')).toBe(true);
+    });
+  });
+
   describe('isInitialism', () => {
     it('should recognize known initialisms', () => {
       expect(isInitialism('UI')).toBe(true);
