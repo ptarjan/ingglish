@@ -79,6 +79,15 @@ describe('diagnoseUnknown', () => {
   });
 });
 
+describe('diagnoseUnknown custom pronunciation', () => {
+  it('diagnoses custom pronunciation words', () => {
+    // 'vlog' has a custom pronunciation entry in CUSTOM_PRONUNCIATIONS
+    const result = diagnoseUnknown('vlog');
+    expect(result).not.toBeNull();
+    expect(result!.strategy).toBe('custom');
+  });
+});
+
 describe('diagnoseUnknown returns strategy', () => {
   it('returns correct strategy string for each type', () => {
     expect(diagnoseUnknown('omg')?.strategy).toBe('initialism');

@@ -39,6 +39,15 @@ describe('British spelling translation', () => {
   });
 });
 
+describe('custom pronunciation translation', () => {
+  it('translates custom pronunciation words (nginx)', () => {
+    // nginx has custom pronunciation, not in CMU dict
+    const result = translateSync('nginx');
+    expect(result).toBeTruthy();
+    expect(result).not.toBe('nginx');
+  });
+});
+
 describe('compound word translation', () => {
   it('translates "catdog" by splitting into known parts', () => {
     expect(translateSync('catdog')).toBe('katdawg');
@@ -59,6 +68,17 @@ describe('compound word translation', () => {
 });
 
 describe('stemming translation', () => {
+  it('handles -es suffix after sibilants (stemming)', () => {
+    // "quizzes" -> stem "quiz" (ends in Z sibilant) + -es
+    const result = translateSync('quizzes');
+    expect(result).toBeTruthy();
+  });
+
+  it('handles -s suffix after voiced consonants (stemming)', () => {
+    const result = translateSync('blogs');
+    expect(result).toBeTruthy();
+  });
+
   it('handles -ing suffix (detoxing → detox + ing)', () => {
     expect(translateSync('detoxing')).toBe('deetoksing');
   });
@@ -164,5 +184,27 @@ describe('unknown word integration', () => {
     const ingglish = translateSync('blorgify');
     const ipa = translateSync('blorgify', { format: 'ipa' });
     expect(ingglish).not.toBe(ipa);
+  });
+
+  it('preserves case in camelCase compounds with IPA format', () => {
+    const result = translateSync('catDog', { format: 'ipa' });
+    expect(result).toBeTruthy();
+  });
+});
+
+describe('URL/email preservation via translateSync', () => {
+  it('preserves URLs in translated text', () => {
+    const result = translateSync('Visit https://example.com today');
+    expect(result).toContain('https://example.com');
+  });
+
+  it('preserves emails in translated text', () => {
+    const result = translateSync('Email test@example.com please');
+    expect(result).toContain('test@example.com');
+  });
+
+  it('preserves bare domains', () => {
+    const result = translateSync('Visit google.com today');
+    expect(result).toContain('google.com');
   });
 });

@@ -40,6 +40,15 @@ describe('case-utils', () => {
       expect(detectCasePattern('hElLo')).toBe('mixed');
     });
 
+    it('returns lower for empty string', () => {
+      expect(detectCasePattern('')).toBe('lower');
+    });
+
+    it('detects mixed case with Unicode uppercase after lowercase', () => {
+      // \u00E9\u00C9 - lowercase first, uppercase unicode second
+      expect(detectCasePattern('\u00E9\u00C9')).toBe('mixed');
+    });
+
     it('should handle accented uppercase letters (Unicode)', () => {
       expect(detectCasePattern('Ég')).toBe('capitalized');
       expect(detectCasePattern('Über')).toBe('capitalized');
