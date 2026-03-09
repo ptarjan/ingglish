@@ -718,9 +718,7 @@ describe('dom-translator', () => {
     it('should store original content on parent element', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await applyTranslationsMap(document.body, { hello: 'haloh' });
-      expect(document.querySelector('p')?.dataset.ingglishOriginal).toBe(
-        'Hello world'
-      );
+      expect(document.querySelector('p')?.dataset.ingglishOriginal).toBe('Hello world');
     });
   });
 
