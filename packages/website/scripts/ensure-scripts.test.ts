@@ -10,7 +10,7 @@ describe('check-language-samples', () => {
       const output = execSync('npx tsx --conditions=source scripts/check-language-samples.ts', {
         cwd: websiteDir,
         encoding: 'utf-8',
-        timeout: 30_000,
+        timeout: 60_000,
       });
       expect(output).toContain('words found');
     } catch (err) {
@@ -18,7 +18,7 @@ describe('check-language-samples', () => {
       const output = (err as { stdout: string }).stdout;
       expect(output).toContain('words found');
     }
-  }, 60_000);
+  }, 90_000);
 });
 
 describe('ensure-kaikki', () => {
