@@ -126,7 +126,7 @@ export function pickMatchPairs(seed: number, roundIndex: number): MatchPair[] {
     if (pairs.length >= 6) {
       break;
     }
-    const ingglish = translateSync(word, { format: 'ingglish' });
+    const ingglish = translateSync(word);
     const ingLower = ingglish.toLowerCase();
     if (seenIngglish.has(ingLower) || ingLower === word.toLowerCase()) {
       continue;

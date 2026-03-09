@@ -91,7 +91,7 @@ export function pickReverseSpelling(seed: number, count = 10): ReverseWord[] {
 
   return selected.map((w) => ({
     english: w.word,
-    ingglish: translateSync(w.word, { format: 'ingglish' }),
+    ingglish: translateSync(w.word),
     tier: w.tier,
   }));
 }
