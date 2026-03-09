@@ -213,10 +213,12 @@ function translateWithLowConfidenceG2P(
   const stripped = stripDiacritics(word);
   const fallbackResult = translateUnknown(stripped, format, makeDictLookup(dict));
 
-  /* v8 ignore next 2 — translateUnknown always returns a non-empty string */
+  // translateUnknown always returns a non-empty string
+  /* v8 ignore start */
   if (!fallbackResult || fallbackResult.length === 0) {
     return { matched: false, translated: word };
   }
+  /* v8 ignore stop */
 
   if (getFormatPreservesCase(format)) {
     // Skip case application if result already has mixed case (e.g., compound words)
@@ -224,10 +226,12 @@ function translateWithLowConfidenceG2P(
       fallbackResult !== fallbackResult.toLowerCase() &&
       fallbackResult !== fallbackResult.toUpperCase() &&
       !TITLE_CASE.test(fallbackResult);
-    /* v8 ignore next 2 — compound camelCase already handled by tryCamelCase */
+    // compound camelCase already handled by tryCamelCase
+    /* v8 ignore start */
     if (hasInternalMixedCase) {
       return { matched: false, translated: fallbackResult };
     }
+    /* v8 ignore stop */
     return { matched: false, translated: applyCasePattern(fallbackResult, casePattern, word) };
   }
   return { matched: false, translated: fallbackResult };
@@ -254,10 +258,12 @@ function translateWordInternal(
   format: OutputFormat
 ): TranslateResult {
   // 1. Empty / non-letter tokens
-  /* v8 ignore next 2 — callers (translateWordString, mapTokens) pre-filter non-letter tokens */
+  // callers (translateWordString, mapTokens) pre-filter non-letter tokens
+  /* v8 ignore start */
   if (!word || !HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
+  /* v8 ignore stop */
 
   // 2–3. Fast paths for common dictionary words (pure lowercase or title-case)
   const fast = tryFastPath(word, dict, format) ?? tryTitleCaseFastPath(word, dict, format);

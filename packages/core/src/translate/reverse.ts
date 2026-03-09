@@ -74,10 +74,12 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
 
   const casePattern = detectCasePattern(ingglishWord);
   const arpabet = ingglishToArpabet(ingglishWord);
-  /* v8 ignore next 2 — ingglishToArpabet always returns non-null for letter input */
+  // ingglishToArpabet always returns non-null for letter input
+  /* v8 ignore start */
   if (!arpabet) {
     return [];
   }
+  /* v8 ignore stop */
 
   const matches = lookupByArpabet(arpabet);
 
@@ -97,10 +99,12 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  */
 function lookupByArpabet(arpabet: string[]): string[] {
   const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
-  /* v8 ignore next 2 — expandArpabetAlternatives always returns at least the primary */
+  // expandArpabetAlternatives always returns at least the primary
+  /* v8 ignore start */
   if (!primary) {
     return [];
   }
+  /* v8 ignore stop */
 
   const primaryKey = primary.join(' ');
   const primaryMatches = lookupPhonemeKey(primaryKey);
@@ -221,24 +225,27 @@ export function reverseTranslateSyncWithMapping(
  * using the pre-built reverse map.
  */
 function reverseLangWordAsResult(word: string, reverseMap: Map<string, string[]>): TranslateResult {
-  /* v8 ignore next 3 */
+  /* v8 ignore start */
   if (!HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
+  /* v8 ignore stop */
 
   const casePattern = detectCasePattern(word);
   const arpabet = ingglishToArpabet(word);
-  /* v8 ignore next 3 */
+  /* v8 ignore start */
   if (!arpabet) {
     return { matched: false, translated: word };
   }
+  /* v8 ignore stop */
 
   // Try primary interpretation and alternatives (e.g. AE↔AH ambiguity)
   const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
-  /* v8 ignore next 3 */
+  /* v8 ignore start */
   if (!primary) {
     return { matched: false, translated: word };
   }
+  /* v8 ignore stop */
 
   const primaryKey = primary.map((p) => stripStress(p)).join(' ');
   let matches = reverseMap.get(primaryKey);
@@ -329,10 +336,11 @@ function reverseTranslateIPATextWithMapping(text: string): TranslatedToken[] {
  * TranslateResult for use with the pipeline's mapTokens stage.
  */
 function reverseTranslateWordAsResult(word: string): TranslateResult {
-  /* v8 ignore next 3 */
+  /* v8 ignore start */
   if (!HAS_LETTER.test(word)) {
     return { matched: true, translated: word };
   }
+  /* v8 ignore stop */
 
   if (word.includes("'")) {
     // Handle contractions by splitting on apostrophe

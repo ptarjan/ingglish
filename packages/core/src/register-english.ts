@@ -38,10 +38,11 @@ WORD_RESOLVERS.en = (entries, word) => {
       const phonemes: string[] = [];
       for (const part of parts) {
         const ph = entries[part];
-        /* v8 ignore next */
+        /* v8 ignore start */
         if (!ph) {
           return;
         }
+        /* v8 ignore stop */
         phonemes.push(...ph);
       }
       return phonemes;
@@ -52,6 +53,10 @@ WORD_RESOLVERS.en = (entries, word) => {
 // English G2P: low-confidence (49% accuracy) — forward.ts uses with matched: false
 G2P_CONVERTERS.en = { confident: false, convert: wordToArpabet };
 
+// Register a default dict loader for Node.js/test usage.
+// The website overrides this with its own fetch-based loader.
+/* v8 ignore start — test setup replaces the dict loader before this runs */
+
 /** Build an English PhoneDict from the CMU dictionary + custom pronunciations. */
 function buildEnglishPhoneDict() {
   const cmuDict = getDictionary();
@@ -60,10 +65,6 @@ function buildEnglishPhoneDict() {
   const enMeta = getLanguage('en');
   return { conventionalCapitals: enMeta?.conventionalCapitals, entries, lang: 'en' as const };
 }
-
-// Register a default dict loader for Node.js/test usage.
-// The website overrides this with its own fetch-based loader.
-/* v8 ignore start — test setup replaces the dict loader before this runs */
 if (!isDictLoaderRegistered()) {
   setDictLoader(async (lang) => {
     if (lang === 'en') {

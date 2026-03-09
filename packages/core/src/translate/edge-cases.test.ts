@@ -15,6 +15,7 @@ import {
   translateSync,
   translateSyncWithMapping,
 } from '../index';
+import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
 
 // ===========================================================================
 // Non-English translation via public API with real dicts
@@ -1165,6 +1166,45 @@ describe('reverse.ts edge cases', () => {
     const result = reverseTranslateSync('xzqwp');
     // Should return the original word since no arpabet mapping exists
     expect(result).toBe('xzqwp');
+  });
+});
+
+// ===========================================================================
+// Coverage: register-english.ts British spelling path (line 27)
+// ===========================================================================
+describe('British spelling word resolver', () => {
+  it('translates British spellings like "vapour" via matchBritish', () => {
+    // "vapour" is not in CMU dict but matchBritish maps it to "vapor" which is
+    const result = translateSync('vapour');
+    expect(result).toBe(translateSync('vapor'));
+  });
+});
+
+// ===========================================================================
+// Coverage: reverse.ts exported function edge cases
+// ===========================================================================
+describe('reverseTranslateIPAWord edge cases', () => {
+  it('returns [] for empty string', () => {
+    expect(reverseTranslateIPAWord('')).toEqual([]);
+  });
+
+  it('returns [ipaWord] for whitespace-only input', () => {
+    expect(reverseTranslateIPAWord('   ')).toEqual(['   ']);
+  });
+
+  it('returns [ipaWord] when IPA cannot convert to arpabet', () => {
+    // A click consonant that has no arpabet mapping
+    expect(reverseTranslateIPAWord('\u01C0')).toEqual(['\u01C0']);
+  });
+});
+
+describe('reverseTranslateWord edge cases', () => {
+  it('returns [] for empty string', () => {
+    expect(reverseTranslateWord('')).toEqual([]);
+  });
+
+  it('returns [ingglishWord] for non-letter input like "123"', () => {
+    expect(reverseTranslateWord('123')).toEqual(['123']);
   });
 });
 
