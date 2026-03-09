@@ -217,41 +217,87 @@ describe('WORD_RESOLVERS', () => {
     });
 
     it('applies consonant strengthening nn→nt', () => {
-      // FI_SUFFIXES: -a → replacements ['']
-      // rannaa → stem "rann" + suffix "a" → candidates: "rann" → no match
-      // strengthening: nn→nt → "rant" → candidates: "rant" → no match
-      // Actually need suffix with replacement that produces the dict entry
-      // Try: -n → replacements ['']
-      // rannan → stem "ranna" + suffix "n" → candidates: "ranna" → no match
-      // Wait — need stem ending in nn/ll etc.
-      // linnassa → suffix -ssa → linna → candidates: linna, linnas → no match
-      // strengthening: linna ends in nn → nt → linta → candidates: linta, lintas → no match
-      // gradation: linna ends in nn → nt is strengthening, we need the reverse
-      // Actually applyFiGradation: nt→nn, lt→ll, nk→ng etc
-      // applyFiStrengthening: nn→nt, ll→lt, ng→nk etc
-      // For linnassa: stem = "linna", apply gradation (nt→nn): doesn't match
-      // apply strengthening (nn→nt): "linta" → not in dict
-      // This is hard to trigger with mock data. Let me try a case with -a suffix:
-      const dictGrad: Record<string, string[]> = {
-        linna: ['L', 'IH1'],
-      };
-      // linnaa → suffix -a → linna → linna is in dict!
-      expect(resolve(dictGrad, 'linnaa')).toEqual(['L', 'IH1']);
+      // rannt → suffix -t → stem "rann" → strengthening: nn → nt → "rant" → match!
+      const d: Record<string, string[]> = { rant: ['R', 'AH1', 'N', 'T'] };
+      expect(resolve(d, 'rannt')).toEqual(['R', 'AH1', 'N', 'T']);
     });
 
-    it('applies consonant gradation nk→ng for suffix stripping', () => {
-      // Need a word where stem ends in nk, suffix-stripped has ng
-      // e.g. dict has "kaupunki", input "kaupungissa"
-      // kaupungissa → suffix -ssa → kaupungi → candidates: kaupungi, kaupungis → no match
-      // gradation: kaupungi doesn't end in nt/lt/nk etc → no change
-      // strengthening: kaupungi doesn't end in nn/ll/ng etc → no change
-      // Try suffix -a: kaupunkia → stem "kaupunki" → candidate "kaupunki" → match!
-      expect(resolve(dict, 'kaupunkia')).toEqual(['K', 'AW1', 'P', 'UH0', 'NG', 'K', 'IY0']);
+    it('applies consonant strengthening ng→nk', () => {
+      // langat → suffix -at → stem "lang" → replacements ['a'] → "langa" → no match
+      // strengthening: "lang" ends in ng → nk → "lank" → replacements ['a'] → "lanka" → match!
+      const d: Record<string, string[]> = { lanka: ['L', 'AH1', 'NG', 'K', 'AH0'] };
+      expect(resolve(d, 'langat')).toEqual(['L', 'AH1', 'NG', 'K', 'AH0']);
     });
 
-    it('handles two-level possessive stripping', () => {
-      // talossani -> strip -ni -> talossa -> strip -ssa -> talo
+    it('applies consonant strengthening ll→lt', () => {
+      // sullt → suffix -t → stem "sull" → strengthening: ll → lt → "sult" → match!
+      const d: Record<string, string[]> = { sult: ['S', 'UH1', 'L', 'T'] };
+      expect(resolve(d, 'sullt')).toEqual(['S', 'UH1', 'L', 'T']);
+    });
+
+    it('applies consonant strengthening rr→rt', () => {
+      const d: Record<string, string[]> = { part: ['P', 'AH1', 'R', 'T'] };
+      expect(resolve(d, 'parrt')).toEqual(['P', 'AH1', 'R', 'T']);
+    });
+
+    it('applies consonant strengthening mm→mp', () => {
+      const d: Record<string, string[]> = { kamp: ['K', 'AH1', 'M', 'P'] };
+      expect(resolve(d, 'kammt')).toEqual(['K', 'AH1', 'M', 'P']);
+    });
+
+    it('applies consonant gradation nt→nn', () => {
+      // rantn → suffix -n → stem "rant" → gradation: nt → nn → "rann" → match!
+      const d: Record<string, string[]> = { rann: ['R', 'AH1', 'N'] };
+      expect(resolve(d, 'rantn')).toEqual(['R', 'AH1', 'N']);
+    });
+
+    it('applies consonant gradation nk→ng', () => {
+      // lankn → suffix -n → stem "lank" → gradation: nk → ng → "lang" → match!
+      const d: Record<string, string[]> = { lang: ['L', 'AH1', 'NG'] };
+      expect(resolve(d, 'lankn')).toEqual(['L', 'AH1', 'NG']);
+    });
+
+    it('applies consonant gradation mp→mm', () => {
+      // kampn → suffix -n → stem "kamp" → gradation: mp → mm → "kamm" → match!
+      const d: Record<string, string[]> = { kamm: ['K', 'AH1', 'M'] };
+      expect(resolve(d, 'kampn')).toEqual(['K', 'AH1', 'M']);
+    });
+
+    it('applies consonant gradation lt→ll', () => {
+      const d: Record<string, string[]> = { sull: ['S', 'UH1', 'L'] };
+      expect(resolve(d, 'sultn')).toEqual(['S', 'UH1', 'L']);
+    });
+
+    it('applies consonant gradation rt→rr', () => {
+      const d: Record<string, string[]> = { parr: ['P', 'AH1', 'R'] };
+      expect(resolve(d, 'partn')).toEqual(['P', 'AH1', 'R']);
+    });
+
+    it('applies consonant gradation lk→l', () => {
+      // jalkn → suffix -n → stem "jalk" → gradation: lk → "jal" → match!
+      const d: Record<string, string[]> = { jal: ['Y', 'AH1', 'L'] };
+      expect(resolve(d, 'jalkn')).toEqual(['Y', 'AH1', 'L']);
+    });
+
+    it('applies consonant gradation rk→r', () => {
+      // markn → suffix -n → stem "mark" → gradation: rk → "mar" → match!
+      const d: Record<string, string[]> = { mar: ['M', 'AH1', 'R'] };
+      expect(resolve(d, 'markn')).toEqual(['M', 'AH1', 'R']);
+    });
+
+    it('handles two-level possessive stripping with -ni', () => {
+      // talossani → strip -ni → talossa → strip -ssa → talo
       expect(resolve(dict, 'talossani')).toEqual(['T', 'AH1', 'L', 'OW0']);
+    });
+
+    it('handles two-level possessive stripping with -nsa', () => {
+      // talossansa → strip -nsa → talossa → strip -ssa → talo
+      expect(resolve(dict, 'talossansa')).toEqual(['T', 'AH1', 'L', 'OW0']);
+    });
+
+    it('handles two-level possessive stripping with -mme', () => {
+      // talossamme → strip -mme → talossa → strip -ssa → talo
+      expect(resolve(dict, 'talossamme')).toEqual(['T', 'AH1', 'L', 'OW0']);
     });
 
     it('strips verb suffix -nut', () => {
