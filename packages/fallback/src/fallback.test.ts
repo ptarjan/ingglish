@@ -1,166 +1,143 @@
+import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import {
-  isInitialism,
-  parseInitialismWithSuffix,
-  translateAsAcronym,
-  translateAsBritish,
-  translateAsCompound,
-  translateUnknown,
-  translateWithStemming,
-} from './index';
 
-describe('translateAsBritish', () => {
+describe('British spelling translation', () => {
   it('converts -our to -or (colour → color)', () => {
-    const result = translateAsBritish('colour');
-    expect(result).toBeTruthy();
-    expect(result?.length).toBeGreaterThan(0);
+    expect(translateSync('colour')).toBe(translateSync('color'));
   });
 
   it('converts -re to -er (centre → center)', () => {
-    const result = translateAsBritish('centre');
-    expect(result).toBeTruthy();
-    expect(result?.length).toBeGreaterThan(0);
+    expect(translateSync('centre')).toBe(translateSync('center'));
   });
 
   it('converts -lled to -led (travelled → traveled)', () => {
-    const result = translateAsBritish('travelled');
-    expect(result).toBeTruthy();
-    expect(result?.length).toBeGreaterThan(0);
+    expect(translateSync('travelled')).toBe(translateSync('traveled'));
   });
 
-  it('returns null when no British variant matches', () => {
-    expect(translateAsBritish('hello')).toBeNull();
-  });
-
-  it('returns null when American form not in dictionary', () => {
-    // A word that matches a rule but the American form isn't real
-    expect(translateAsBritish('xyzour')).toBeNull();
+  it('translates non-British words normally', () => {
+    const result = translateSync('hello');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
   });
 });
 
-describe('translateAsCompound', () => {
-  it('splits "herself" into known parts', () => {
-    const result = translateAsCompound('herself');
-    expect(result).toBeTruthy();
-    expect(result?.length).toBeGreaterThan(0);
-  });
-
-  it('returns null for non-compound words', () => {
-    expect(translateAsCompound('xyzabc')).toBeNull();
-  });
-
-  it('splits compound words with N parts', () => {
-    // "nevertheless" can split as "never"+"the"+"less"
-    const result = translateAsCompound('nevertheless');
-    expect(result).toBeTruthy();
-  });
-});
-
-describe('translateWithStemming', () => {
-  it('handles -ing suffix (jumping → jump + ing)', () => {
-    const result = translateWithStemming('jumping');
-    expect(result).toBeTruthy();
-    expect(result?.length).toBeGreaterThan(0);
-  });
-
-  it('handles -ly suffix (quickly → quick + ly)', () => {
-    const result = translateWithStemming('quickly');
-    expect(result).toBeTruthy();
-  });
-
-  it('handles prefix stripping (rewrite → re + write)', () => {
-    const result = translateWithStemming('rewrite');
-    expect(result).toBeTruthy();
-  });
-
-  it('returns null when no stem is found', () => {
-    expect(translateWithStemming('xyzabc')).toBeNull();
-  });
-
-  it('handles e-reinsertion (hoping → hope + ing)', () => {
-    const result = translateWithStemming('hoping');
-    expect(result).toBeTruthy();
-  });
-});
-
-describe('isInitialism', () => {
-  it('recognizes known initialisms', () => {
-    expect(isInitialism('URL')).toBe(true);
-    expect(isInitialism('HTML')).toBe(true);
-    expect(isInitialism('API')).toBe(true);
-  });
-
-  it('is case-insensitive', () => {
-    expect(isInitialism('url')).toBe(true);
-    expect(isInitialism('Url')).toBe(true);
-  });
-
-  it('rejects unknown words', () => {
-    expect(isInitialism('hello')).toBe(false);
-    expect(isInitialism('XYZABC')).toBe(false);
-  });
-
-  it('rejects words longer than max initialism length', () => {
-    expect(isInitialism('ABCDEFGH')).toBe(false);
-  });
-});
-
-describe('parseInitialismWithSuffix', () => {
-  it('parses plural initialisms (URLs)', () => {
-    const result = parseInitialismWithSuffix('URLs');
-    expect(result).toEqual({ base: 'URL', suffix: 's' });
-  });
-
-  it("parses possessive initialisms (API's)", () => {
-    const result = parseInitialismWithSuffix("API's");
-    expect(result).toEqual({ base: 'API', suffix: "'s" });
-  });
-
-  it('returns null for non-initialisms', () => {
-    expect(parseInitialismWithSuffix('cats')).toBeNull();
-  });
-});
-
-describe('translateAsAcronym', () => {
-  it('spells out letters for known initialisms', () => {
-    const result = translateAsAcronym('URL');
+describe('compound word translation', () => {
+  it('translates "herself" by splitting into known parts', () => {
+    const result = translateSync('herself');
+    expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 
+  it('translates non-compound words via G2P', () => {
+    const result = translateSync('xyzabc');
+    expect(typeof result).toBe('string');
+  });
+
+  it('translates multi-part compounds like "nevertheless"', () => {
+    const result = translateSync('nevertheless');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+describe('stemming translation', () => {
+  it('handles -ing suffix (jumping → jump + ing)', () => {
+    const result = translateSync('jumping');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('handles -ly suffix (quickly → quick + ly)', () => {
+    const result = translateSync('quickly');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('handles prefix stripping (rewrite → re + write)', () => {
+    const result = translateSync('rewrite');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('translates words without stems via G2P', () => {
+    const result = translateSync('xyzabc');
+    expect(typeof result).toBe('string');
+  });
+
+  it('handles e-reinsertion (hoping → hope + ing)', () => {
+    const result = translateSync('hoping');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+describe('initialism passthrough', () => {
+  it('passes through known initialisms unchanged', () => {
+    expect(translateSync('URL')).toBe('URL');
+    expect(translateSync('HTML')).toBe('HTML');
+    expect(translateSync('API')).toBe('API');
+  });
+
+  it('is case-insensitive for initialisms', () => {
+    expect(translateSync('url')).toBe('url');
+    expect(translateSync('Url')).toBe('Url');
+  });
+
+  it('translates non-initialism words normally', () => {
+    const result = translateSync('hello');
+    expect(result).not.toBe('hello'); // should be translated, not passed through
+  });
+});
+
+describe('plural and possessive initialisms', () => {
+  it('passes through plural initialisms (URLs)', () => {
+    expect(translateSync('URLs')).toBe('URLs');
+  });
+
+  it("passes through possessive initialisms (API's)", () => {
+    expect(translateSync("API's")).toBe("API's");
+  });
+
+  it('translates non-initialism plurals normally', () => {
+    const result = translateSync('cats');
+    expect(typeof result).toBe('string');
+    expect(result).not.toBe('cats');
+  });
+});
+
+describe('acronym spelling', () => {
+  it('spells out non-initialism acronyms', () => {
+    const result = translateSync('nfl');
+    expect(result).toBe('enefel');
+  });
+
   it('produces consistent output', () => {
-    const first = translateAsAcronym('API');
-    const second = translateAsAcronym('API');
-    expect(first).toBe(second);
+    expect(translateSync('nfl')).toBe(translateSync('nfl'));
   });
 
   it('produces different output for ingglish vs ipa format', () => {
-    const ingglish = translateAsAcronym('URL', 'ingglish');
-    const ipa = translateAsAcronym('URL', 'ipa');
+    const ingglish = translateSync('nfl');
+    const ipa = translateSync('nfl', { format: 'ipa' });
     expect(ingglish).not.toBe(ipa);
   });
 });
 
-describe('translateUnknown (integration)', () => {
-  it('translates custom pronunciation words', () => {
-    // Custom pronunciations are tested indirectly — the function should
-    // never return empty for any word (it falls back to rule-based G2P)
-    const result = translateUnknown('xylophone');
+describe('unknown word integration', () => {
+  it('translates words not in dictionary', () => {
+    const result = translateSync('xylophone');
+    expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 
-  it('always returns a non-empty string (rule-based fallback)', () => {
-    const result = translateUnknown('supercalifragilisticexpialidocious');
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it('translates known initialisms', () => {
-    const result = translateUnknown('URL');
+  it('always returns a non-empty string for very long words', () => {
+    const result = translateSync('supercalifragilisticexpialidocious');
+    expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 
   it('produces different output for ingglish vs ipa format', () => {
-    const ingglish = translateUnknown('github', 'ingglish');
-    const ipa = translateUnknown('github', 'ipa');
+    const ingglish = translateSync('github');
+    const ipa = translateSync('github', { format: 'ipa' });
     expect(ingglish).not.toBe(ipa);
   });
 });
