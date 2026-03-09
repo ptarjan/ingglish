@@ -1,5 +1,6 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
+import { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';
 
 describe('reverse Ingglish translation', () => {
   it('returns empty for empty input', () => {
@@ -44,5 +45,28 @@ describe('phoneme alternative expansion in reverse', () => {
     const ingglish = translateSync('shiver');
     const english = reverseTranslateSync(ingglish);
     expect(english).toBe('shiver');
+  });
+});
+
+describe('expandArpabetAlternatives', () => {
+  it('generates all-replaced variant when multiple same-length ambiguous phonemes', () => {
+    // Two AE phonemes should produce the all-replaced AH variant (line 73)
+    const arpabet = ['AE', 'K', 'AE', 'T'];
+    const results = expandArpabetAlternatives(arpabet);
+    // Should include original, two single-position AH substitutions, and the all-replaced variant
+    expect(results).toContainEqual(['AH', 'K', 'AH', 'T']);
+  });
+});
+
+describe('ingglishToArpabet', () => {
+  it('skips unknown characters like digits and symbols', () => {
+    // Digits and symbols should be skipped (line 143)
+    const result = ingglishToArpabet('b2b');
+    // Should parse 'b' and 'b', skipping '2'
+    expect(result).toEqual(['B', 'B']);
+  });
+
+  it('returns null for input with only unknown characters', () => {
+    expect(ingglishToArpabet('123!@#')).toBeNull();
   });
 });

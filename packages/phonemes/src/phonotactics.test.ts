@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isValidOnset } from './phonotactics';
 import { findOnsetStart } from './index';
 
 describe('phonotactics', () => {
@@ -38,6 +39,12 @@ describe('phonotactics', () => {
     it('falls back to last consonant when nothing is valid', () => {
       // NG alone is not a valid onset
       expect(findOnsetStart(['NG'])).toBe(0);
+    });
+  });
+
+  describe('isValidOnset', () => {
+    it('returns true for empty consonant array (null onset)', () => {
+      expect(isValidOnset([])).toBe(true);
     });
   });
 });

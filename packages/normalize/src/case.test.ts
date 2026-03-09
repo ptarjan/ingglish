@@ -94,6 +94,11 @@ describe('case-utils', () => {
     it('should handle mixed case without original (defaults to lower)', () => {
       expect(applyCasePattern('github', 'mixed')).toBe('github');
     });
+
+    it('should return lowercase for invalid pattern (default case)', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+      expect(applyCasePattern('Test', 'invalid' as any)).toBe('test');
+    });
   });
 
   describe('round-trip', () => {

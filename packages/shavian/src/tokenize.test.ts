@@ -1,5 +1,6 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
+import { isShavianChar } from './tokenize';
 
 describe('Shavian character recognition', () => {
   it('translates to Shavian and back', () => {
@@ -35,5 +36,11 @@ describe('Shavian tokenization', () => {
       const english = reverseTranslateSync(shavian, { format: 'shavian' });
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
+  });
+});
+
+describe('isShavianChar', () => {
+  it('returns false for empty string', () => {
+    expect(isShavianChar('')).toBe(false);
   });
 });
