@@ -6,7 +6,7 @@ When an English word is translated to Ingglish, it sometimes produces a spelling
 
 | Metric | Count |
 |--------|-------|
-| Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's 135,166 entries) |
+| Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's ~126,000 entries) |
 | False friends (Ingglish matches different English word) | 1,360 |
 | False friends involving common words (freq >= 20 /M) | 175 |
 

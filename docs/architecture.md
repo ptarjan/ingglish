@@ -7,7 +7,7 @@ High-level architecture of the Ingglish project.
 ```
 ingglish/
 ├── packages/
-│   ├── normalize/      # Text cleanup, case handling, tokenization
+│   ├── normalize/      # Text cleanup, case handling, tokenization, word patterns
 │   ├── phonemes/       # Phoneme data + conversion
 │   ├── dictionary/     # CMU dict, lookup, frequency
 │   ├── g2p/            # Rule-based grapheme-to-phoneme
@@ -240,10 +240,10 @@ Ingglish Text          IPA Text
 
 **CMU Dictionary**
 ```typescript
-// Word → Phoneme string (space-separated)
+// Word → Phoneme array (pre-split at build time)
 {
-  "hello": "HH AH0 L OW1",
-  "world": "W ER1 L D",
+  "hello": ["HH", "AH0", "L", "OW1"],
+  "world": ["W", "ER1", "L", "D"],
   ...
 }
 ```
@@ -436,7 +436,7 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 ┌───────────────────────────────────────────────────────────────────┐
 │                         Build Time                                │
 ├───────────────────────────────────────────────────────────────────┤
-│  CMU Dictionary (134K words) ──> bundled with @ingglish/dictionary│
+│  CMU Dictionary (126K words) ──> bundled with @ingglish/dictionary│
 │  SUBTLEX Frequencies (74K) ──> bundled with @ingglish/dictionary  │
 └───────────────────────────────────────────────────────────────────┘
                               │

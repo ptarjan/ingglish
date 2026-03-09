@@ -11,7 +11,7 @@ For why we chose these spellings, see [Design Decisions](design-decisions.md).
 ## Pronunciation Dictionary
 
 We use the **CMU Pronouncing Dictionary** (cmudict):
-- Contains 135,166 entries (~126,000 unique words after excluding variant pronunciations)
+- Contains ~126,000 entries (variant pronunciations are pre-resolved at build time)
 - Uses ARPAbet phoneme notation
 - Includes stress markers (0=none, 1=primary, 2=secondary)
 - Maintained by Carnegie Mellon University

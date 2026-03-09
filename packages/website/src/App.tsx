@@ -410,7 +410,7 @@ function App() {
           <a href="https://github.com/cmusphinx/cmudict" rel="noopener noreferrer" target="_blank">
             CMU Pronouncing Dictionary
           </a>{' '}
-          (134,000+ words) to convert English words to their phonemic spellings.{' '}
+          (126,000+ words) to convert English words to their phonemic spellings.{' '}
           <a href="https://github.com/ptarjan/ingglish" rel="noopener noreferrer" target="_blank">
             View on GitHub
           </a>

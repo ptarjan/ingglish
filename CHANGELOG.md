@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### ingglish
 - Bidirectional translation between English and phonetic spelling (Ingglish)
 - IPA (International Phonetic Alphabet) output format with stress markers
-- CMU Pronouncing Dictionary integration (134,000+ words)
-- Neural G2P fallback via phonemize for unknown words
+- CMU Pronouncing Dictionary integration (126,000+ words)
+- Rule-based G2P fallback for unknown words
 - Contraction support ("wouldn't", "can't", "you're", etc.)
 - Case preservation (lowercase, UPPERCASE, Capitalized, camelCase)
 - Initialism expansion (URL, HTML, API, etc.)

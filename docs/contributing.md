@@ -151,9 +151,10 @@ Website e2e tests use Playwright:
 
 ```typescript
 test('translates text', async ({ page }) => {
-  await page.goto('/');
-  await page.fill('[data-testid="english-input"]', 'hello');
-  await expect(page.locator('[data-testid="ingglish-output"]'))
+  await page.goto('/text');
+  await page.locator('textarea.text-input').first().fill('hello');
+  // Check the output textarea shows the translated text
+  await expect(page.locator('textarea.text-input').nth(1))
     .toHaveValue('haloh');
 });
 ```

@@ -12,7 +12,7 @@ My 5-year-old is learning to read and I keep having to say "yeah sorry, that let
 
 ## Overview
 
-Ingglish translates English text into a consistent, phonemic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (134,000+ words), it strips away the inconsistencies that make English spelling so hard to learn.
+Ingglish translates English text into a consistent, phonemic spelling system where each sound has exactly one representation. Using the CMU Pronouncing Dictionary (126,000+ words), it strips away the inconsistencies that make English spelling so hard to learn.
 
 ### Features
 
@@ -31,9 +31,8 @@ This is a monorepo containing:
 | Package | Description |
 |---------|-------------|
 | **ingglish** | Translation API — translate and reverse-translate text |
-| **@ingglish/normalize** | Text cleanup, case handling |
+| **@ingglish/normalize** | Text cleanup, case handling, tokenization |
 | **@ingglish/phonemes** | Phoneme data + ARPAbet/IPA/Ingglish conversion |
-| **@ingglish/tokenize** | Tokenization, word patterns |
 | **@ingglish/dictionary** | CMU dictionary, lookup, word frequency |
 | **@ingglish/g2p** | Rule-based grapheme-to-phoneme conversion |
 | **@ingglish/fallback** | Unknown word strategies (G2P, stemming, compounds) |
@@ -81,7 +80,7 @@ const ingglish = await translate('Hello, world!');
 console.log(ingglish); // "Haloh, werld!"
 
 // Translate English → IPA
-const ipa = await translate('Hello, world!', 'ipa');
+const ipa = await translate('Hello, world!', { format: 'ipa' });
 console.log(ipa); // "/həˈloʊ, wɝld!/"
 
 // Translate Ingglish → English (async, loads dictionary + word frequencies)
@@ -89,7 +88,7 @@ const english = await reverseTranslate('haloh, werld!');
 console.log(english); // "hello, world!"
 
 // Translate IPA → English
-const fromIpa = await reverseTranslate('/həˈloʊ, wɝld!/', 'ipa');
+const fromIpa = await reverseTranslate('/həˈloʊ, wɝld!/', { format: 'ipa' });
 console.log(fromIpa); // "hello, world!"
 ```
 
@@ -216,9 +215,9 @@ For words not in the CMU dictionary, Ingglish uses a multi-step fallback strateg
 
 1. **Custom pronunciations** - Known tech terms and brand names (e.g., "GitHub" → "git-hub")
 2. **Initialisms** - Spell out as letters (e.g., "URL" → "you-are-ell", "API" → "ay-pee-ai")
-3. **Compound splitting** - Split on common boundaries (e.g., "github" → "git" + "hub")
-4. **Stemming** - Find known base word + suffix (e.g., "running" → "run" + "ing")
-5. **Neural G2P** - Use grapheme-to-phoneme neural network for complex words
+3. **British spelling normalization** - Try American spelling (e.g., "colour" → "color")
+4. **Compound splitting** - Split on common boundaries (e.g., "github" → "git" + "hub")
+5. **Stemming** - Find known base word + suffix (e.g., "running" → "run" + "ing")
 6. **Rule-based G2P** - Fall back to letter-to-sound conversion rules
 
 ## Deployment
