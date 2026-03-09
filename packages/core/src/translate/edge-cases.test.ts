@@ -5,9 +5,8 @@
  */
 import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
-import type { PhoneDict } from '@ingglish/ipa';
-import { buildReverseMap, lookupDict } from '@ingglish/ipa';
 import {
+  type PhoneDict,
   reverseTranslate,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
@@ -16,8 +15,6 @@ import {
   translateSync,
   translateSyncWithMapping,
 } from '../index';
-import { translateWord } from './forward';
-import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
 
 // ===========================================================================
 // Non-English translation via public API with real dicts
@@ -986,33 +983,37 @@ describe('non-English reverse translation via public API', () => {
 });
 
 // ---------------------------------------------------------------------------
-// lookupDict curly apostrophe path (dict.ts line 248)
+// lookupDict curly apostrophe normalization (dict.ts line 248)
 // ---------------------------------------------------------------------------
-describe('lookupDict curly apostrophe fallback', () => {
-  it('should find word with straight apostrophe when dict has curly', () => {
-    const curlyDict: PhoneDict = {
-      entries: { 'it\u2019s': ['IH1', 'T', 'S'] },
-      lang: 'test-curly',
-    };
-    expect(lookupDict(curlyDict, "it's")).toEqual(['IH1', 'T', 'S']);
+describe('curly apostrophe normalization', () => {
+  it('should translate curly apostrophes same as straight', () => {
+    const straight = translateSync("it's");
+    const curly = translateSync('it\u2019s');
+    expect(curly).toBe(straight);
   });
 });
 
 // ---------------------------------------------------------------------------
-// buildReverseMap (dict.ts lines 466-496)
+// Reverse map built via reverseTranslate (dict.ts lines 466-496)
 // ---------------------------------------------------------------------------
-describe('buildReverseMap', () => {
-  it('should build a reverse map from a PhoneDict', () => {
-    const testDict: PhoneDict = {
-      entries: {
-        cat: ['K', 'AE1', 'T'],
-        dog: ['D', 'AO1', 'G'],
-      },
-      lang: 'test-reverse-build',
-    };
-    const map = buildReverseMap(testDict);
-    expect(map.get('K AE T')).toContain('cat');
-    expect(map.get('D AO G')).toContain('dog');
+describe('reverse map built via reverseTranslate', () => {
+  const BUILD_LANG = 'test-reverse-build';
+  const testDict: PhoneDict = {
+    entries: {
+      cat: ['K', 'AE1', 'T'],
+      dog: ['D', 'AO1', 'G'],
+    },
+    lang: BUILD_LANG,
+    nonLatinScript: true,
+  };
+
+  it('should reverse-translate words from a built reverse map', async () => {
+    setDictLoader(() => Promise.resolve(testDict));
+    await translate('cat', { lang: BUILD_LANG });
+    await reverseTranslate('kat', { lang: BUILD_LANG });
+
+    expect(reverseTranslateSync('kat', { lang: BUILD_LANG })).toBe('cat');
+    expect(reverseTranslateSync('dawg', { lang: BUILD_LANG })).toBe('dog');
   });
 });
 
@@ -1034,19 +1035,19 @@ describe('IPA reverse translation', () => {
 // ===========================================================================
 
 describe('forward.ts edge cases', () => {
-  it('translateWord: empty string returns empty (line 256)', () => {
-    expect(translateWord('')).toBe('');
+  it('empty string returns empty (line 256)', () => {
+    expect(translateSync('')).toBe('');
   });
 
-  it('translateWord: non-letter token passes through (line 256)', () => {
-    expect(translateWord('123')).toBe('123');
+  it('non-letter token passes through (line 256)', () => {
+    expect(translateSync('123')).toBe('123');
   });
 
-  it('translateWord: truly unknown word returns as-is (line 217)', () => {
+  it('truly unknown word returns something (line 217)', () => {
     // A word with no dict match and no G2P should return original
     // English has low-confidence G2P so it always returns something,
     // but we can test that it returns a non-empty result
-    const result = translateWord('xyzzy');
+    const result = translateSync('xyzzy');
     expect(result).toBeTruthy();
   });
 
@@ -1062,7 +1063,7 @@ describe('forward.ts edge cases', () => {
 
   it('single uppercase letter: isTitleCaseAscii returns false (line 158)', () => {
     // "A" is single char — isTitleCaseAscii returns false, falls through to lookupDict
-    const result = translateWord('A');
+    const result = translateSync('A');
     expect(result).toBeTruthy();
   });
 
@@ -1097,41 +1098,36 @@ describe('forward.ts edge cases', () => {
 // ===========================================================================
 
 describe('reverse.ts edge cases', () => {
-  it('reverseTranslateIPAWord: empty string (line 47)', () => {
-    expect(reverseTranslateIPAWord('')).toEqual([]);
+  it('reverse IPA: empty string returns empty', () => {
+    expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
   });
 
-  it('reverseTranslateIPAWord: whitespace-only (line 47)', () => {
-    expect(reverseTranslateIPAWord('   ')).toEqual(['   ']);
+  it('reverse IPA: whitespace-only passes through', () => {
+    expect(reverseTranslateSync('   ', { format: 'ipa' })).toBe('   ');
   });
 
-  it('reverseTranslateIPAWord: unparseable IPA returns original (line 53)', () => {
-    // A string that ipaToArpabetClean can't parse
-    const result = reverseTranslateIPAWord('!!!');
-    expect(result).toEqual(['!!!']);
+  it('reverse IPA: unparseable IPA returns original', () => {
+    const result = reverseTranslateSync('!!!', { format: 'ipa' });
+    expect(result).toBe('!!!');
   });
 
-  it('reverseTranslateIPAWord: valid arpabet but no phoneme key match (line 59)', () => {
+  it('reverse IPA: no phoneme key match returns original', () => {
     // An IPA sequence that converts to arpabet but has no dictionary entry
-    // Using a rare phoneme combination
-    const result = reverseTranslateIPAWord('ʒʒʒ');
-    // Should return the original IPA since no match found
-    expect(result).toEqual(['ʒʒʒ']);
+    const result = reverseTranslateSync('ʒʒʒ', { format: 'ipa' });
+    expect(result).toBe('ʒʒʒ');
   });
 
-  it('reverseTranslateWord: empty string (line 72)', () => {
-    expect(reverseTranslateWord('')).toEqual([]);
+  it('reverse Ingglish: empty string returns empty', () => {
+    expect(reverseTranslateSync('')).toBe('');
   });
 
-  it('reverseTranslateWord: non-letter token (line 72)', () => {
-    expect(reverseTranslateWord('123')).toEqual(['123']);
+  it('reverse Ingglish: non-letter token passes through', () => {
+    expect(reverseTranslateSync('123')).toBe('123');
   });
 
-  it('reverseTranslateWord: no arpabet match returns empty (line 79)', () => {
-    // A gibberish ingglish word that produces no arpabet
-    const result = reverseTranslateWord('zzzzz');
-    // Either returns empty or the word — depends on ingglishToArpabet behavior
-    expect(result).toBeDefined();
+  it('reverse Ingglish: gibberish returns as-is', () => {
+    const result = reverseTranslateSync('zzzzz');
+    expect(result).toBe('zzzzz');
   });
 
   it('reverseTranslateSync: pronunciation format falls through (line 191)', () => {
