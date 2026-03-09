@@ -2,28 +2,24 @@ import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 
 describe('British spelling translation', () => {
-  it('converts -our → -or (colour)', () => {
-    expect(translateSync('colour')).toBe('kuhler');
+  it('converts -our → -or (vapour)', () => {
+    expect(translateSync('vapour')).toBe('vayper');
   });
 
-  it('converts -ise → -ize (realise)', () => {
-    expect(translateSync('realise')).toBe('reealaiz');
+  it('converts -ise → -ize (organise)', () => {
+    expect(translateSync('organise')).toBe('organaiz');
   });
 
-  it('converts -re → -er (centre)', () => {
-    expect(translateSync('centre')).toBe('senter');
+  it('converts -re → -er (meagre)', () => {
+    expect(translateSync('meagre')).toBe('meeger');
   });
 
-  it('converts -isation → -ization (organisation)', () => {
-    expect(translateSync('organisation')).toBe('organizayshan');
+  it('converts -isation → -ization (modernisation)', () => {
+    expect(translateSync('modernisation')).toBe('modernazayshan');
   });
 
-  it('converts -ence → -ense (defence)', () => {
-    expect(translateSync('defence')).toBe('difens');
-  });
-
-  it('converts -ogue → -og (catalogue)', () => {
-    expect(translateSync('catalogue')).toBe('katalawg');
+  it('converts -ence → -ense (offence)', () => {
+    expect(translateSync('offence')).toBe('afens');
   });
 
   it('handles -oured suffix (favoured)', () => {
@@ -34,20 +30,18 @@ describe('British spelling translation', () => {
     expect(translateSync('curtsey')).toBe('kertsee');
   });
 
-  it('handles grey → gray', () => {
-    expect(translateSync('grey')).toBe('gray');
+  it('handles grey → gray (greyer)', () => {
+    expect(translateSync('greyer')).toBe('grayer');
   });
 
-  it('converts -lled → -led (travelled)', () => {
-    expect(translateSync('travelled')).toBe('travald');
+  it('converts -lled → -led (modelled)', () => {
+    expect(translateSync('modelled')).toBe('modald');
   });
 });
 
 describe('compound word translation', () => {
-  it('translates "herself" by splitting into known parts', () => {
-    const result = translateSync('herself');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('translates "catdog" by splitting into known parts', () => {
+    expect(translateSync('catdog')).toBe('katdawg');
   });
 
   it('translates non-compound words via G2P', () => {
@@ -55,10 +49,8 @@ describe('compound word translation', () => {
     expect(typeof result).toBe('string');
   });
 
-  it('translates multi-part compounds like "nevertheless"', () => {
-    const result = translateSync('nevertheless');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('translates compounds like "hatbox"', () => {
+    expect(translateSync('hatbox')).toBe('hatboks');
   });
 
   it('splits and translates "bedpost"', () => {
@@ -67,22 +59,26 @@ describe('compound word translation', () => {
 });
 
 describe('stemming translation', () => {
-  it('handles -ly suffix (quickly)', () => {
-    expect(translateSync('quickly')).toBe('kwiklee');
+  it('handles -ing suffix (detoxing → detox + ing)', () => {
+    expect(translateSync('detoxing')).toBe('deetoksing');
   });
 
-  it('handles un- prefix (unhappy)', () => {
-    expect(translateSync('unhappy')).toBe('anhapee');
+  it('handles -ly suffix (boringly → boring + ly)', () => {
+    expect(translateSync('boringly')).toBe('boringlee');
   });
 
-  it('handles re- prefix (rebuild)', () => {
-    expect(translateSync('rebuild')).toBe('reebild');
+  it('handles un- prefix (unsorted)', () => {
+    expect(translateSync('unsorted')).toBe('ansortid');
   });
 
-  it('handles i→y stem change (loveliest, happily, easier)', () => {
+  it('handles re- prefix (rebooting → re + boot + ing)', () => {
+    expect(translateSync('rebooting')).toBe('reebooting');
+  });
+
+  it('handles i→y stem change', () => {
     expect(translateSync('loveliest')).toBe('luhvleeast');
-    expect(translateSync('happily')).toBe('hapalee');
-    expect(translateSync('easier')).toBe('eezee-er');
+    expect(translateSync('fussily')).toBe('fuhseelee');
+    expect(translateSync('fussier')).toBe('fuhser');
   });
 
   it('handles -ify suffix (uglify)', () => {
@@ -97,16 +93,8 @@ describe('stemming translation', () => {
     expect(translateSync('uglifying')).toBe('uhgleeifaiing');
   });
 
-  it('handles -ing suffix (jumping)', () => {
-    expect(translateSync('jumping')).toBe('juhmping');
-  });
-
-  it('handles e-reinsertion (hoping)', () => {
-    expect(translateSync('hoping')).toBe('hohping');
-  });
-
-  it('handles re- prefix (rewrite)', () => {
-    expect(translateSync('rewrite')).toBe('reerait');
+  it('handles e-reinsertion (transposing → transpose + ing)', () => {
+    expect(translateSync('transposing')).toBe('transpohzing');
   });
 });
 
@@ -163,9 +151,7 @@ describe('acronym spelling', () => {
 
 describe('unknown word integration', () => {
   it('translates words not in dictionary', () => {
-    const result = translateSync('xylophone');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+    expect(translateSync('blorgify')).toBe('blorjafai');
   });
 
   it('always returns a non-empty string for very long words', () => {
@@ -175,8 +161,8 @@ describe('unknown word integration', () => {
   });
 
   it('produces different output for ingglish vs ipa format', () => {
-    const ingglish = translateSync('github');
-    const ipa = translateSync('github', { format: 'ipa' });
+    const ingglish = translateSync('blorgify');
+    const ipa = translateSync('blorgify', { format: 'ipa' });
     expect(ingglish).not.toBe(ipa);
   });
 });

@@ -149,9 +149,8 @@ describe('stemming -s/-es allomorphs (word resolver path)', () => {
 // ---------------------------------------------------------------------------
 describe('stemming additional patterns', () => {
   it('should translate unknown -ing words via stem', () => {
-    // "outrunning" — might not be in dict but "outrun" or "run" is
-    const result = translateSync('outrunning');
-    expect(result).toBeTruthy();
+    // "detoxing" — not in dict but "detox" is → stemming resolver
+    expect(translateSync('detoxing')).toBe('deetoksing');
   });
 
   it('should handle un- prefixed words', () => {
@@ -170,27 +169,15 @@ describe('stemming additional patterns', () => {
 // Compounds: case preservation (compounds.ts line 164)
 // ---------------------------------------------------------------------------
 describe('compound word translation', () => {
-  it('should translate compound words like "sunlight"', () => {
-    const hasSun = lookupPronunciation('sun');
-    const hasLight = lookupPronunciation('light');
-    if (!hasSun || !hasLight) {
-      return;
-    }
-    const result = translateSync('sunlight');
-    expect(result).toBeTruthy();
-    // Should be a translation of sun + light
+  it('should translate compound words like "catdog"', () => {
+    // "catdog" not in dict, but "cat" + "dog" are → compound resolver
+    expect(translateSync('catdog')).toBe('katdawg');
   });
 
   it('should preserve capitalization in compound words', () => {
-    // "Sunlight" with capital S
-    const hasSun = lookupPronunciation('sun');
-    const hasLight = lookupPronunciation('light');
-    if (!hasSun || !hasLight) {
-      return;
-    }
-    const result = translateSync('Sunlight');
-    // First letter should be capitalized
-    expect(result[0]).toBe(result[0]!.toUpperCase());
+    // "Catdog" with capital C — compound resolver + title case preservation
+    const result = translateSync('Catdog');
+    expect(result).toBe('Katdawg');
   });
 });
 
@@ -558,7 +545,7 @@ describe('non-English translation with R-coloring disabled', () => {
 // ---------------------------------------------------------------------------
 describe('compound word case preservation paths', () => {
   it('should translate uppercase compound word', () => {
-    const result = translateSync('SUNLIGHT');
+    const result = translateSync('CATDOG');
     expect(result).toBeTruthy();
     // All caps should be preserved
     expect(result).toBe(result.toUpperCase());
