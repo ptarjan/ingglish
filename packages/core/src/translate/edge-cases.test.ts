@@ -3,7 +3,7 @@
  * Tests exercise internal code paths through the public API
  * (translateSync, reverseTranslateSync, translate, reverseTranslate).
  */
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import type { PhoneDict } from '@ingglish/ipa';
 import { buildReverseMap, lookupDict } from '@ingglish/ipa';
@@ -334,7 +334,7 @@ describe('non-English reverse translation', () => {
 
   it('should reverse-translate Ingglish back to source language word', async () => {
     // Load dict via public API
-    setDictLoader(vi.fn().mockResolvedValue(mockDict));
+    setDictLoader(() => Promise.resolve(mockDict));
     await translate('neko', { lang: MOCK_LANG });
 
     // Build reverse map via reverseTranslate (which calls buildReverseMap internally)
@@ -383,7 +383,7 @@ describe('non-English reverse with alternative phoneme match', () => {
   };
 
   it('should translate and reverse non-English words', async () => {
-    setDictLoader(vi.fn().mockResolvedValue(altDict));
+    setDictLoader(() => Promise.resolve(altDict));
     await translate('kat', { lang: ALT_LANG });
     await reverseTranslate('kat', { lang: ALT_LANG });
 
@@ -408,7 +408,7 @@ describe('forward translation with no G2P fallback', () => {
   };
 
   it('should return word unchanged when not in dict and no G2P exists', async () => {
-    setDictLoader(vi.fn().mockResolvedValue(noG2pDict));
+    setDictLoader(() => Promise.resolve(noG2pDict));
     await translate('helo', { lang: NO_G2P_LANG });
 
     const result = translateSync('unknownword', { lang: NO_G2P_LANG });
@@ -601,7 +601,7 @@ describe('non-English translation with R-coloring disabled', () => {
   };
 
   it('should translate with R-coloring disabled', async () => {
-    setDictLoader(vi.fn().mockResolvedValue(rDict));
+    setDictLoader(() => Promise.resolve(rDict));
     await translate('kar', { lang: R_LANG });
 
     const result = translateSync('kar', { lang: R_LANG });

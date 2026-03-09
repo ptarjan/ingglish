@@ -712,7 +712,7 @@ describe('translator', () => {
 
     it('translateSyncWithMapping capitalizes first word of each sentence', async () => {
       // Load the mock dict via setDictLoader + translate()
-      setDictLoader(vi.fn().mockResolvedValue(mockJaDict));
+      setDictLoader(() => Promise.resolve(mockJaDict));
       await translate('neko', { lang: MOCK_JA_LANG });
 
       // Simulates pre-segmented Japanese text: "neko desu. inu desu."
