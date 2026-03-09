@@ -2,22 +2,44 @@ import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 
 describe('British spelling translation', () => {
-  it('converts -our to -or (colour → color)', () => {
-    expect(translateSync('colour')).toBe(translateSync('color'));
+  it('converts -our → -or (colour)', () => {
+    expect(translateSync('colour')).toBe('kuhler');
   });
 
-  it('converts -re to -er (centre → center)', () => {
-    expect(translateSync('centre')).toBe(translateSync('center'));
+  it('converts -ise → -ize (realise)', () => {
+    expect(translateSync('realise')).toBe('reealaiz');
   });
 
-  it('converts -lled to -led (travelled → traveled)', () => {
-    expect(translateSync('travelled')).toBe(translateSync('traveled'));
+  it('converts -re → -er (centre)', () => {
+    expect(translateSync('centre')).toBe('senter');
   });
 
-  it('translates non-British words normally', () => {
-    const result = translateSync('hello');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('converts -isation → -ization (organisation)', () => {
+    expect(translateSync('organisation')).toBe('organizayshan');
+  });
+
+  it('converts -ence → -ense (defence)', () => {
+    expect(translateSync('defence')).toBe('difens');
+  });
+
+  it('converts -ogue → -og (catalogue)', () => {
+    expect(translateSync('catalogue')).toBe('katalawg');
+  });
+
+  it('handles -oured suffix (favoured)', () => {
+    expect(translateSync('favoured')).toBe('fayverd');
+  });
+
+  it('converts -ey → -y (curtsey)', () => {
+    expect(translateSync('curtsey')).toBe('kertsee');
+  });
+
+  it('handles grey → gray', () => {
+    expect(translateSync('grey')).toBe('gray');
+  });
+
+  it('converts -lled → -led (travelled)', () => {
+    expect(translateSync('travelled')).toBe('travald');
   });
 });
 
@@ -38,36 +60,53 @@ describe('compound word translation', () => {
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
+
+  it('splits and translates "bedpost"', () => {
+    expect(translateSync('bedpost')).toBe('bedpohst');
+  });
 });
 
 describe('stemming translation', () => {
-  it('handles -ing suffix (jumping → jump + ing)', () => {
-    const result = translateSync('jumping');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('handles -ly suffix (quickly)', () => {
+    expect(translateSync('quickly')).toBe('kwiklee');
   });
 
-  it('handles -ly suffix (quickly → quick + ly)', () => {
-    const result = translateSync('quickly');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('handles un- prefix (unhappy)', () => {
+    expect(translateSync('unhappy')).toBe('anhapee');
   });
 
-  it('handles prefix stripping (rewrite → re + write)', () => {
-    const result = translateSync('rewrite');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('handles re- prefix (rebuild)', () => {
+    expect(translateSync('rebuild')).toBe('reebild');
   });
 
-  it('translates words without stems via G2P', () => {
-    const result = translateSync('xyzabc');
-    expect(typeof result).toBe('string');
+  it('handles i→y stem change (loveliest, happily, easier)', () => {
+    expect(translateSync('loveliest')).toBe('luhvleeast');
+    expect(translateSync('happily')).toBe('hapalee');
+    expect(translateSync('easier')).toBe('eezee-er');
   });
 
-  it('handles e-reinsertion (hoping → hope + ing)', () => {
-    const result = translateSync('hoping');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('handles -ify suffix (uglify)', () => {
+    expect(translateSync('uglify')).toBe('uhgleeifai');
+  });
+
+  it('handles -ification suffix (uglification)', () => {
+    expect(translateSync('uglification')).toBe('uhgleeifikayshan');
+  });
+
+  it('handles -ifying suffix (uglifying)', () => {
+    expect(translateSync('uglifying')).toBe('uhgleeifaiing');
+  });
+
+  it('handles -ing suffix (jumping)', () => {
+    expect(translateSync('jumping')).toBe('juhmping');
+  });
+
+  it('handles e-reinsertion (hoping)', () => {
+    expect(translateSync('hoping')).toBe('hohping');
+  });
+
+  it('handles re- prefix (rewrite)', () => {
+    expect(translateSync('rewrite')).toBe('reerait');
   });
 });
 

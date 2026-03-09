@@ -1,4 +1,4 @@
-import { reverseTranslate, translate } from 'ingglish';
+import { reverseTranslate, translate, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import {
   ARPABET_CONSONANTS,
@@ -114,6 +114,87 @@ describe('arpabetToIngglish round-trip', () => {
       const english = await reverseTranslate(ingglish);
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
+  });
+});
+
+describe('R-colored vowels', () => {
+  it('translates NEAR vowel words (IH+R → eer)', () => {
+    expect(translateSync('beer')).toBe('beer');
+    expect(translateSync('beard')).toBe('beerd');
+    expect(translateSync('fear')).toBe('feer');
+    expect(translateSync('near')).toBe('neer');
+    expect(translateSync('deer')).toBe('deer');
+    expect(translateSync('clear')).toBe('kleer');
+  });
+
+  it('translates START vowel words (AA+R → ar)', () => {
+    expect(translateSync('star')).toBe('star');
+    expect(translateSync('car')).toBe('kar');
+    expect(translateSync('far')).toBe('far');
+  });
+
+  it('translates NORTH vowel words (AO+R → or)', () => {
+    expect(translateSync('store')).toBe('stor');
+    expect(translateSync('more')).toBe('mor');
+    expect(translateSync('bore')).toBe('bor');
+  });
+
+  it('translates SQUARE vowel words (EH+R → air)', () => {
+    expect(translateSync('care')).toBe('kair');
+    expect(translateSync('there')).toBe('dhair');
+  });
+
+  it('translates words with TRAP before R (AE+R → arr)', () => {
+    expect(translateSync('arrow')).toBe('arroh');
+    expect(translateSync('barrow')).toBe('barroh');
+    expect(translateSync('carrot')).toBe('karrat');
+  });
+});
+
+describe('common word translations', () => {
+  it('translates NG cluster words', () => {
+    expect(translateSync('think')).toBe('thingk');
+  });
+
+  it('translates multi-syllable words', () => {
+    expect(translateSync('beautiful')).toBe('byootafal');
+  });
+
+  it('translates all vowel sounds', () => {
+    expect(translateSync('hot')).toBe('hot'); // AA
+    expect(translateSync('dog')).toBe('dawg'); // AO
+    expect(translateSync('law')).toBe('law'); // AO
+    expect(translateSync('cow')).toBe('kou'); // AW
+    expect(translateSync('out')).toBe('out'); // AW
+    expect(translateSync('bed')).toBe('bed'); // EH
+    expect(translateSync('red')).toBe('red'); // EH
+    expect(translateSync('day')).toBe('day'); // EY
+    expect(translateSync('say')).toBe('say'); // EY
+    expect(translateSync('see')).toBe('see'); // IY
+    expect(translateSync('me')).toBe('mee'); // IY
+    expect(translateSync('book')).toBe('buk'); // UH
+    expect(translateSync('put')).toBe('put'); // UH
+    expect(translateSync('boy')).toBe('boi'); // OY
+    expect(translateSync('my')).toBe('mai'); // AY
+    expect(translateSync('go')).toBe('goh'); // OW
+    expect(translateSync('zoo')).toBe('zoo'); // UW
+    expect(translateSync('cup')).toBe('kuhp'); // AH (stressed)
+    expect(translateSync('love')).toBe('luhv'); // AH (stressed)
+    expect(translateSync('buzz')).toBe('buhz'); // AH (stressed)
+  });
+
+  it('translates all consonant sounds', () => {
+    expect(translateSync('go')).toBe('goh'); // G
+    expect(translateSync('pen')).toBe('pen'); // P
+    expect(translateSync('she')).toBe('shee'); // SH
+    expect(translateSync('fish')).toBe('fish'); // SH
+    expect(translateSync('very')).toBe('vairee'); // V
+    expect(translateSync('zoo')).toBe('zoo'); // Z
+    expect(translateSync('measure')).toBe('mezher'); // ZH
+    expect(translateSync('jump')).toBe('juhmp'); // JH, M, P
+    expect(translateSync('yes')).toBe('yes'); // Y (before non-UW vowel)
+    expect(translateSync('not')).toBe('not'); // N
+    expect(translateSync('bat')).toBe('bat'); // B
   });
 });
 
