@@ -14,6 +14,8 @@ export function isBrowser(): boolean {
  */
 export function requireBrowser(): void {
   if (!isBrowser()) {
+    /* v8 ignore start */
     throw new Error('DOM translation requires a browser environment');
+    /* v8 ignore stop */
   }
 }

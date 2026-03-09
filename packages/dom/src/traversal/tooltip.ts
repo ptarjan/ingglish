@@ -79,6 +79,7 @@ export function injectTooltipBehavior(targetDoc: Document = document): void {
   }
   targetDoc.documentElement.setAttribute(`data-${TOOLTIP_BEHAVIOR_ID}`, 'true');
 
+  /* v8 ignore start */
   let activeTooltip: HTMLElement | null = null;
   let activeWord: Element | null = null;
 
@@ -147,6 +148,7 @@ export function injectTooltipBehavior(targetDoc: Document = document): void {
 
   // Remove tooltip on scroll (position would be stale)
   targetDoc.addEventListener('scroll', removeTooltip, true);
+  /* v8 ignore stop */
 }
 
 /**

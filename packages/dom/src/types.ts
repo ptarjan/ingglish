@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * Shared types for @ingglish/dom
  */
@@ -64,3 +65,4 @@ export interface DOMTranslatorOptions {
    */
   translateWithMappingFn?: (text: string, format: OutputFormat) => TranslatedToken[];
 }
+/* v8 ignore stop */

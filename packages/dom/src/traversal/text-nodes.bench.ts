@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { bench, describe } from 'vitest';
 import { collectTextNodes } from './text-nodes';
 

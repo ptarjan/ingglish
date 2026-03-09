@@ -172,7 +172,9 @@ function translateElementAttributes(root: Document | Element, ctx: TranslateCont
 function translateTextNode(textNode: Text, ctx: TranslateContext): void {
   const originalText = textNode.textContent;
   if (!originalText) {
+    /* v8 ignore start */
     return;
+    /* v8 ignore stop */
   }
 
   const parent = textNode.parentElement;

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * DOM translation utilities.
  */
@@ -24,3 +25,4 @@ export { collectTextNodes } from './text-nodes';
 
 // Tooltip styles
 export { injectTooltipBehavior, injectTooltipStyles, TOOLTIP_STYLES } from './tooltip';
+/* v8 ignore stop */

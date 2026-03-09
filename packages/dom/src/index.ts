@@ -1,3 +1,4 @@
+/* v8 ignore start */
 /**
  * @ingglish/dom - DOM Translation Utilities
  *
@@ -20,3 +21,4 @@ export {
   injectTooltipBehavior,
   injectTooltipStyles,
 } from './traversal';
+/* v8 ignore stop */

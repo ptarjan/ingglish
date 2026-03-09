@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { bench, describe } from 'vitest';
 import {
   DEFAULT_SKIP_CLASSES,

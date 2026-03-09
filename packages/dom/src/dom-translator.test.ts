@@ -3,6 +3,16 @@
  */
 import { translateSyncWithMapping } from 'ingglish';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { processChunked } from './translate/chunked';
+import { extractWords, extractWordsFromNodes } from './traversal/extract';
+import {
+  shouldSkipTextNode,
+  skipElement,
+  unskipElement,
+  shouldSkipElement,
+  DEFAULT_SKIP_TAGS,
+  DEFAULT_SKIP_CLASSES,
+} from './traversal/skip-rules';
 import { applyTranslationsMap, restoreDOM, translateDOM } from './index';
 
 /** Helper to create a simple mapping fn that uppercases words */
@@ -671,6 +681,204 @@ describe('dom-translator', () => {
       expect(totalSpanCalls).toBeLessThanOrEqual(1);
 
       createElementSpy.mockRestore();
+    });
+  });
+
+  describe('applyTranslationsMap without tooltips', () => {
+    it('should apply translations via regex word replacement', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
+      expect(document.querySelector('p')?.textContent).toBe('Haloh werld');
+    });
+
+    it('should preserve case patterns in regex replacement', async () => {
+      document.body.innerHTML = '<p>HELLO World hello</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
+      expect(document.querySelector('p')?.textContent).toBe('HALOH Werld haloh');
+    });
+
+    it('should preserve punctuation in regex replacement', async () => {
+      document.body.innerHTML = '<p>Hello, world!</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
+      expect(document.querySelector('p')?.textContent).toBe('Haloh, werld!');
+    });
+
+    it('should skip words not in the map', async () => {
+      document.body.innerHTML = '<p>Hello beautiful world</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
+      expect(document.querySelector('p')?.textContent).toBe('Haloh beautiful werld');
+    });
+
+    it('should handle text with no translatable words', async () => {
+      document.body.innerHTML = '<p>123 456</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh' });
+      expect(document.querySelector('p')?.textContent).toBe('123 456');
+    });
+
+    it('should store original content on parent element', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh' });
+      expect(document.querySelector('p')?.dataset.ingglishOriginal).toBe(
+        'Hello world'
+      );
+    });
+  });
+
+  describe('extractWords', () => {
+    it('should extract unique lowercase words from text', () => {
+      const words = extractWords('Hello World hello');
+      expect(words).toEqual(['hello', 'world']);
+    });
+
+    it('should handle empty text', () => {
+      expect(extractWords('')).toEqual([]);
+    });
+
+    it('should skip numbers and non-word tokens', () => {
+      const words = extractWords('Hello 123 world!');
+      expect(words).toEqual(['hello', 'world']);
+    });
+
+    it('should normalize apostrophes', () => {
+      const words = extractWords('don\u2019t won\u2019t');
+      expect(words).toEqual(["don't", "won't"]);
+    });
+  });
+
+  describe('extractWordsFromNodes', () => {
+    it('should extract unique words from multiple text nodes', () => {
+      const node1 = document.createTextNode('Hello world');
+      const node2 = document.createTextNode('Hello test');
+      const words = extractWordsFromNodes([node1, node2]);
+      expect(words).toEqual(['hello', 'world', 'test']);
+    });
+
+    it('should handle empty array', () => {
+      expect(extractWordsFromNodes([])).toEqual([]);
+    });
+
+    it('should handle nodes with null text content', () => {
+      const node = document.createTextNode('');
+      const words = extractWordsFromNodes([node]);
+      expect(words).toEqual([]);
+    });
+  });
+
+  describe('processChunked', () => {
+    it('should call onProgress in sync path', async () => {
+      const items = [1, 2, 3];
+      const processed: number[] = [];
+      const progressCalls: [number, number][] = [];
+
+      await processChunked(
+        items,
+        (item) => processed.push(item),
+        10,
+        (p, t) => progressCalls.push([p, t]),
+        10 // syncThreshold > items.length, so sync path
+      );
+
+      expect(processed).toEqual([1, 2, 3]);
+      expect(progressCalls).toEqual([
+        [1, 3],
+        [2, 3],
+        [3, 3],
+      ]);
+    });
+
+    it('should handle empty items', async () => {
+      const result = processChunked([], () => {}, 10);
+      expect(result).toBeInstanceOf(Promise);
+      await result;
+    });
+  });
+
+  describe('shouldSkipTextNode', () => {
+    it('should return true when parent is a skip tag', () => {
+      document.body.innerHTML = '<code>hello</code>';
+      const textNode = document.querySelector('code')!.firstChild as Text;
+      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
+    });
+
+    it('should return true when ancestor is a skip tag', () => {
+      document.body.innerHTML = '<pre><span>hello</span></pre>';
+      const textNode = document.querySelector('span')!.firstChild as Text;
+      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
+    });
+
+    it('should return false for normal text nodes', () => {
+      document.body.innerHTML = '<p>hello</p>';
+      const textNode = document.querySelector('p')!.firstChild as Text;
+      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(false);
+    });
+  });
+
+  describe('skipElement / unskipElement', () => {
+    it('should mark and unmark elements for skipping', () => {
+      document.body.innerHTML = '<p>hello</p>';
+      const p = document.querySelector('p')!;
+
+      skipElement(p);
+      expect(shouldSkipElement(p, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
+
+      unskipElement(p);
+      expect(shouldSkipElement(p, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(false);
+    });
+  });
+
+  describe('shouldSkipElement with custom skip lists', () => {
+    it('should use cached sets for repeated custom arrays', () => {
+      document.body.innerHTML = '<p>hello</p>';
+      const p = document.querySelector('p')!;
+      const customTags = ['P'];
+      const customClasses = ['skip-me'];
+
+      // First call creates the set
+      expect(shouldSkipElement(p, customTags, customClasses)).toBe(true);
+      // Second call should use cached set (same array reference)
+      expect(shouldSkipElement(p, customTags, customClasses)).toBe(true);
+    });
+
+    it('should skip elements with ATTR_ORIGINAL_WORD', () => {
+      document.body.innerHTML = '<span data-ingglish-orig="Hello">Haloh</span>';
+      const span = document.querySelector('span')!;
+      expect(shouldSkipElement(span, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
+    });
+  });
+
+  describe('translateDOM with empty text nodes', () => {
+    it('should handle text nodes with empty content', async () => {
+      // Create an element with an empty text node
+      const p = document.createElement('p');
+      const emptyText = document.createTextNode('');
+      const realText = document.createTextNode('Hello');
+      p.append(emptyText, realText);
+      document.body.append(p);
+      // Empty text nodes are filtered by collectTextNodes (whitespace check)
+      await translateDOM(document.body);
+      // Should not crash; only the real text node should be translated
+      expect(p.textContent?.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('translateDOM with skipped attribute elements', () => {
+    it('should not translate attributes on skipped elements', async () => {
+      document.body.innerHTML = '<code title="Hello">code</code>';
+      await translateDOM(document.body, { translateAttributes: true });
+      // CODE is in DEFAULT_SKIP_TAGS, so its title should not be translated
+      expect(document.querySelector('code')?.getAttribute('title')).toBe('Hello');
+    });
+  });
+
+  describe('tooltip fragment isDiff class', () => {
+    it('should add ingglish-format-diff class for IPA format differences', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await translateDOM(document.body, { outputFormat: 'ipa', showTooltips: true });
+
+      const diffSpans = document.querySelectorAll('.ingglish-format-diff');
+      // At least some words should have format-diff class when showing IPA
+      // (IPA differs from standard Ingglish for most words)
+      expect(diffSpans.length).toBeGreaterThan(0);
     });
   });
 });
