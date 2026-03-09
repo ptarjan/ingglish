@@ -92,4 +92,24 @@ describe('arpabetPhonemeToIPA edge cases', () => {
   it('returns schwa for unstressed AH0', () => {
     expect(arpabetPhonemeToIPA('AH0')).toBe('ə');
   });
+
+  it('adds primary stress marker for stress 1', () => {
+    const WJ = '\u2060';
+    expect(arpabetPhonemeToIPA('AE1')).toBe(`${WJ}ˈ${WJ}æ`);
+  });
+
+  it('adds secondary stress marker for stress 2', () => {
+    const WJ = '\u2060';
+    expect(arpabetPhonemeToIPA('AE2')).toBe(`${WJ}ˌ${WJ}æ`);
+  });
+
+  it('returns plain IPA for unstressed non-schwa vowel', () => {
+    // AE without stress marker — returns plain æ
+    expect(arpabetPhonemeToIPA('AE')).toBe('æ');
+  });
+
+  it('returns IPA for consonants (no stress)', () => {
+    expect(arpabetPhonemeToIPA('B')).toBe('b');
+    expect(arpabetPhonemeToIPA('TH')).toBe('θ');
+  });
 });

@@ -132,4 +132,32 @@ describe('G2P edge cases', () => {
     const result = lookupDict({ entries: {}, lang: 'fi' }, 'café');
     expect(result).toBeDefined();
   });
+
+  it('Malay G2P applies stress (multi-syllable)', () => {
+    const g2p = G2P_CONVERTERS.ma!.convert;
+    const result = g2p('selamat');
+    // Should have stress on a vowel
+    expect(result.some((p) => p.endsWith('1'))).toBe(true);
+  });
+
+  it('Malay G2P handles monosyllabic word', () => {
+    const g2p = G2P_CONVERTERS.ma!.convert;
+    const result = g2p('di');
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('Swahili G2P applies penultimate stress', () => {
+    const g2p = G2P_CONVERTERS.sw!.convert;
+    const result = g2p('habari');
+    expect(result.some((p) => p.endsWith('1'))).toBe(true);
+  });
+
+  it('ipaToArpabetWithStress adds stress when IPA has none', () => {
+    // Finnish G2P produces stress-less IPA, then ipaToArpabetWithStress adds it
+    const g2p = G2P_CONVERTERS.fi!.convert;
+    const result = g2p('talo');
+    // Should have stress added to a vowel
+    expect(result.some((p) => p.endsWith('1'))).toBe(true);
+  });
 });
