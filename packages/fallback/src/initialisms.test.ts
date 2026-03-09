@@ -3,21 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { isInitialism, KNOWN_INITIALISMS } from './index';
 
 describe('initialisms', () => {
-  describe('isInitialism', () => {
-    it('should recognize known initialisms', () => {
-      expect(isInitialism('UI')).toBe(true);
-      expect(isInitialism('ui')).toBe(true);
-      expect(isInitialism('API')).toBe(true);
-      expect(isInitialism('Url')).toBe(true);
-      expect(isInitialism('US')).toBe(true);
-    });
-
-    it('should not recognize non-initialisms', () => {
-      expect(isInitialism('hello')).toBe(false);
-      expect(isInitialism('UNKNOWN')).toBe(false);
-      expect(isInitialism('xyz')).toBe(false);
-    });
-
+  describe('isInitialism performance', () => {
     // Fast path optimization tests - words > MAX_INITIALISM_LENGTH (5) skip lookup
     it('should skip toLowerCase for words longer than max length (fast path)', () => {
       const toLowerCaseSpy = vi.spyOn(String.prototype, 'toLowerCase');

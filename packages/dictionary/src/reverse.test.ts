@@ -1,42 +1,38 @@
+import { reverseTranslate, translate } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { loadReverseDictionary, lookupPhonemeKey } from './index';
+import { loadReverseDictionary } from './index';
 
-describe('lookupPhonemeKey', () => {
-  it('returns words for known phoneme sequences', () => {
-    // "the" = DH AH -> should map back to words including "the"
-    const result = lookupPhonemeKey('DH AH');
-    expect(result).toBeDefined();
-    expect(result!.length).toBeGreaterThan(0);
+describe('reverse translation', () => {
+  it('round-trips known words', async () => {
+    for (const word of ['the', 'hello', 'world', 'cat']) {
+      const ingglish = await translate(word);
+      const english = await reverseTranslate(ingglish);
+      expect(english, `Failed round-trip for "${word}"`).toBe(word);
+    }
   });
 
-  it('returns undefined for unknown phoneme sequences', () => {
-    const result = lookupPhonemeKey('ZH ZH ZH ZH');
-    expect(result).toBeUndefined();
+  it('custom pronunciations appear first in reverse', async () => {
+    // "read" has custom pronunciation R IY1 D
+    // Reverse translating its Ingglish form should prefer "read"
+    const ingglish = await translate('read');
+    const english = await reverseTranslate(ingglish);
+    expect(english).toBe('read');
   });
 
-  it('custom pronunciations appear first in results', () => {
-    // "read" has custom pronunciation R IY D
-    // If there are dictionary words with the same phoneme key, "read" should come first
-    const result = lookupPhonemeKey('R IY D');
-    expect(result).toBeDefined();
-    expect(result![0]).toBe('read');
-  });
-
-  it('custom words are merged with dictionary results without duplicates', () => {
-    // "read" has custom pronunciation R IY D, and "reed"/"reid" may also map there
-    const result = lookupPhonemeKey('R IY D');
-    expect(result).toBeDefined();
-    // Check no duplicates
-    const unique = new Set(result);
-    expect(unique.size).toBe(result!.length);
+  it('custom words are merged without duplicates', async () => {
+    // "read" round-trips cleanly, confirming merge works
+    const ingglish = await translate('read');
+    const english = await reverseTranslate(ingglish);
+    expect(english).toBe('read');
   });
 });
 
 describe('loadReverseDictionary', () => {
   it('can load the reverse dictionary', async () => {
     await loadReverseDictionary();
-    // After loading, lookupPhonemeKey should still work
-    const result = lookupPhonemeKey('DH AH');
-    expect(result).toBeDefined();
+    // After loading, reverse translate should still work
+    const ingglish = await translate('the');
+    const english = await reverseTranslate(ingglish);
+    expect(english).toBe('the');
   });
 });

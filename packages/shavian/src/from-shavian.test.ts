@@ -1,13 +1,16 @@
+import { reverseTranslate, translate } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { shavianToArpabet } from './index';
+import './index'; // registers shavian format
 
-describe('shavianToArpabet', () => {
-  it('should skip non-Shavian characters', () => {
-    expect(shavianToArpabet('𐑒 𐑨')).toEqual(['K', 'AE']);
-    expect(shavianToArpabet('hello')).toBeNull();
+describe('Shavian → English', () => {
+  it('should reverse translate Shavian words', async () => {
+    const shavian = await translate('cat', { format: 'shavian' });
+    const english = await reverseTranslate(shavian, { format: 'shavian' });
+    expect(english).toBe('cat');
   });
 
-  it('should return null for empty input', () => {
-    expect(shavianToArpabet('')).toBeNull();
+  it('should pass through non-Shavian input unchanged', async () => {
+    expect(await reverseTranslate('', { format: 'shavian' })).toBe('');
+    expect(await reverseTranslate('hello', { format: 'shavian' })).toBe('hello');
   });
 });

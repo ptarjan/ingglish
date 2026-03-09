@@ -1,48 +1,44 @@
+import { reverseTranslate, translate } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { deseretToArpabet } from './index';
+import './index'; // registers deseret format
 
 describe('Deseret character recognition', () => {
-  it('converts lowercase Deseret characters', () => {
-    expect(deseretToArpabet('𐐨')).not.toBeNull(); // U+10428
-    expect(deseretToArpabet('𐑍')).not.toBeNull(); // U+1044D
-    expect(deseretToArpabet('𐑏')).not.toBeNull(); // U+1044F
+  it('translates to Deseret and back for lowercase Deseret chars', async () => {
+    const deseret = await translate('cat', { format: 'deseret' });
+    // Output should contain Deseret characters (U+10400-U+1044F)
+    expect(deseret).toMatch(/[\u{10400}-\u{1044F}]/u);
+    const english = await reverseTranslate(deseret, { format: 'deseret' });
+    expect(english).toBe('cat');
   });
 
-  it('converts uppercase Deseret characters', () => {
-    expect(deseretToArpabet('𐐀')).not.toBeNull(); // U+10400
-    expect(deseretToArpabet('𐐧')).not.toBeNull(); // U+10427
+  it('passes through non-Deseret text unchanged', async () => {
+    const result = await reverseTranslate('hello', { format: 'deseret' });
+    expect(result).toBe('hello');
   });
 
-  it('rejects non-Deseret characters', () => {
-    expect(deseretToArpabet('a')).toBeNull();
-    expect(deseretToArpabet('𐑐')).toBeNull(); // Shavian
-  });
-
-  it('returns null for empty string', () => {
-    expect(deseretToArpabet('')).toBeNull();
+  it('handles empty input', async () => {
+    expect(await reverseTranslate('', { format: 'deseret' })).toBe('');
   });
 });
 
 describe('Deseret tokenization', () => {
-  it('tokenizes pure Deseret text', () => {
-    const result = deseretToArpabet('𐐿𐐰𐐻');
-    expect(result).not.toBeNull();
-    expect(result!.length).toBeGreaterThan(0);
+  it('translates multi-word text', async () => {
+    const deseret = await translate('cat dog', { format: 'deseret' });
+    expect(deseret).toContain(' ');
+    const english = await reverseTranslate(deseret, { format: 'deseret' });
+    expect(english).toBe('cat dog');
   });
 
-  it('tokenizes multi-word Deseret text', () => {
-    const result = deseretToArpabet('𐐿𐐰𐐻 𐐼𐐫𐑀');
-    expect(result).not.toBeNull();
-    expect(result!.length).toBeGreaterThan(3);
+  it('preserves punctuation', async () => {
+    const deseret = await translate('hello!', { format: 'deseret' });
+    expect(deseret).toContain('!');
   });
 
-  it('skips punctuation between Deseret words', () => {
-    const withPunct = deseretToArpabet('𐐸𐐱𐑊𐐬!');
-    const without = deseretToArpabet('𐐸𐐱𐑊𐐬');
-    expect(withPunct).toEqual(without);
-  });
-
-  it('returns null for pure ASCII text', () => {
-    expect(deseretToArpabet('hello')).toBeNull();
+  it('round-trips several words', async () => {
+    for (const word of ['the', 'hello', 'world', 'think']) {
+      const deseret = await translate(word, { format: 'deseret' });
+      const english = await reverseTranslate(deseret, { format: 'deseret' });
+      expect(english, `Failed round-trip for "${word}"`).toBe(word);
+    }
   });
 });

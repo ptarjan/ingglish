@@ -1,13 +1,16 @@
+import { reverseTranslate, translate } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import { deseretToArpabet } from './index';
+import './index'; // registers deseret format
 
-describe('deseretToArpabet', () => {
-  it('should skip non-Deseret characters', () => {
-    expect(deseretToArpabet('𐐺 𐐰 𐐻')).toEqual(['B', 'AE', 'T']);
+describe('Deseret → English', () => {
+  it('should reverse translate Deseret words', async () => {
+    const deseret = await translate('bat', { format: 'deseret' });
+    const english = await reverseTranslate(deseret, { format: 'deseret' });
+    expect(english).toBe('bat');
   });
 
-  it('should return null for empty or non-Deseret input', () => {
-    expect(deseretToArpabet('')).toBeNull();
-    expect(deseretToArpabet('hello')).toBeNull();
+  it('should pass through non-Deseret input unchanged', async () => {
+    expect(await reverseTranslate('', { format: 'deseret' })).toBe('');
+    expect(await reverseTranslate('hello', { format: 'deseret' })).toBe('hello');
   });
 });
