@@ -181,8 +181,14 @@ jobs:
         include:
           - browser: chromium
             projects: "chromium mobile-chrome"
+            shard: 1/2
+          - browser: chromium
+            projects: "chromium mobile-chrome"
+            shard: 2/2
           - browser: webkit
             projects: "mobile-safari"
+            shard: ""
+    name: test-e2e (${{ matrix.browser }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
@@ -196,22 +202,23 @@ jobs:
       - name: Build (from turbo cache)
         run: npm run build:fast
 
-      # Smoke test catches catastrophic failures fast before full suite (chromium only)
+      # Smoke test catches catastrophic failures fast before full suite (chromium shard 1 only)
       - name: Smoke test
-        if: matrix.browser == 'chromium'
+        if: matrix.shard == '1/2'
         run: cd packages/website && npx playwright test --project=chromium -g "displays header" --reporter=line
 
-      - name: E2E tests (${{ matrix.browser }})
+      - name: E2E tests
         run: |
           cd packages/website
           args=""
           for p in ${{ matrix.projects }}; do args="$args --project=$p"; done
+          if [ -n "${{ matrix.shard }}" ]; then args="$args --shard=${{ matrix.shard }}"; fi
           npx playwright test $args
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser }}${{ matrix.shard && format('-{0}', matrix.shard) || '' }}
           path: packages/website/test-results/
           retention-days: 7
