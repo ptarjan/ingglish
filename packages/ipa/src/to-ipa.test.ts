@@ -1,7 +1,6 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
-import './index'; // registers IPA format
-import { arpabetPhonemeToIPA } from './to-ipa';
+import { arpabetPhonemeToIPA } from './index';
 
 describe('IPA translation', () => {
   it('should produce valid IPA output', () => {
