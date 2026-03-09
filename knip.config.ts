@@ -37,8 +37,6 @@ const config: KnipConfig = {
   ignore: [
     // Website bookmarklet (standalone script)
     'packages/website/src/bookmarklet.ts',
-    // Detect module re-exports (barrel file)
-    'packages/core/src/detect/index.ts',
     // Extension test files (vitest runs them but they're not entry points)
     'packages/extension/src/*.test.ts',
     // Service worker built via custom vite plugin (not a regular import)
