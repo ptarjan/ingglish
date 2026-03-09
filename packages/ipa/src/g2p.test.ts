@@ -1,6 +1,34 @@
-import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { translate, setDictLoader } from 'ingglish';
+import { describe, expect, it, beforeAll } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
-import { type PhoneDict, lookupDict, G2P_CONVERTERS } from './index';
+import {
+  type PhoneDict,
+  lookupDict,
+  G2P_CONVERTERS,
+  convertIpaEntries,
+  getLanguage,
+} from './index';
+
+// Register a file-based dict loader for non-English languages
+const DICT_DIR = path.resolve(import.meta.dirname, '..', '..', 'website', 'public', 'ipa-dicts');
+
+beforeAll(() => {
+  setDictLoader(async (lang) => {
+    const json = await readFile(path.resolve(DICT_DIR, `${lang}.json`), 'utf8');
+    const raw = JSON.parse(json) as Record<string, string | string[]>;
+    const langMeta = getLanguage(lang);
+    return {
+      conventionalCapitals: langMeta?.conventionalCapitals,
+      disableRColoring: langMeta?.disableRColoring,
+      entries: convertIpaEntries(raw, lang),
+      lang,
+      nonLatinScript: langMeta?.nonLatinScript,
+      preprocess: langMeta?.preprocess,
+    };
+  });
+});
 
 describe('G2P converters', () => {
   describe('Finnish', () => {
@@ -83,5 +111,25 @@ describe('G2P integration', () => {
 
   it('does not apply G2P to unsupported languages', () => {
     expect(lookupDict({ entries: {}, lang: 'es' }, 'hola')).toBeUndefined();
+  });
+});
+
+describe('G2P edge cases', () => {
+  it('handles monosyllabic words', async () => {
+    // Spanish single-syllable word exercises addPenultimateStress with <=1 vowel
+    const result = await translate('la', { lang: 'es' });
+    expect(result).toBeTruthy();
+  }, 30_000);
+
+  it('handles monosyllabic words via G2P converter', () => {
+    // Finnish single-syllable word - goes through addFirstSyllableStress
+    const result = lookupDict({ entries: {}, lang: 'fi' }, 'on');
+    expect(result).toBeDefined();
+  });
+
+  it('skips unknown characters in applyRules', () => {
+    // Word with characters not in Finnish rules — unknown chars are skipped
+    const result = lookupDict({ entries: {}, lang: 'fi' }, 'café');
+    expect(result).toBeDefined();
   });
 });

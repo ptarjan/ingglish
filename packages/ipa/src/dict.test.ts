@@ -1,6 +1,28 @@
-import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { translate, setDictLoader  } from 'ingglish';
+import { describe, expect, it, beforeAll } from 'vitest';
 import '@ingglish/phonemes'; // registers 'pronunciation' format
 import { type PhoneDict, convertIpaEntries, getLanguage, lookupDict } from './index';
+
+// Register a file-based dict loader for non-English languages
+const DICT_DIR = path.resolve(import.meta.dirname, '..', '..', 'website', 'public', 'ipa-dicts');
+
+beforeAll(() => {
+  setDictLoader(async (lang) => {
+    const json = await readFile(path.resolve(DICT_DIR, `${lang}.json`), 'utf8');
+    const raw = JSON.parse(json) as Record<string, string | string[]>;
+    const langMeta = getLanguage(lang);
+    return {
+      conventionalCapitals: langMeta?.conventionalCapitals,
+      disableRColoring: langMeta?.disableRColoring,
+      entries: convertIpaEntries(raw, lang),
+      lang,
+      nonLatinScript: langMeta?.nonLatinScript,
+      preprocess: langMeta?.preprocess,
+    };
+  });
+});
 
 /** Helper to create a PhoneDict from IPA entries (converted to ARPAbet) and a language code. */
 function mkDict(entries: Record<string, string>, lang = ''): PhoneDict {
@@ -95,6 +117,66 @@ describe('lookupDict', () => {
     const dict = mkDict({ hello: '/hɛloʊ/' });
     expect(lookupDict(dict, 'Hello')).toBeDefined();
     expect(lookupDict(dict, 'HELLO')).toBeDefined();
+  });
+});
+
+describe('convertIpaEntries', () => {
+  it('passes through already-ARPAbet entries', () => {
+    const entries = { hello: ['HH', 'AH0', 'L', 'OW1'] };
+    const result = convertIpaEntries(entries, 'en');
+    expect(result.hello).toEqual(['HH', 'AH0', 'L', 'OW1']);
+  });
+
+  it('handles empty entries', () => {
+    const result = convertIpaEntries({}, 'en');
+    expect(Object.keys(result)).toHaveLength(0);
+  });
+});
+
+describe('language resolvers via translate', () => {
+  it('German ß normalization', async () => {
+    const result = await translate('daß', { lang: 'de' });
+    expect(result).toBeTruthy();
+  }, 30_000);
+
+  it('Swedish suffix stripping', async () => {
+    const result = await translate('flickorna', { lang: 'sv' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Finnish morphology', async () => {
+    const result = await translate('talossani', { lang: 'fi' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Esperanto morphology', async () => {
+    const result = await translate('laboris', { lang: 'eo' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Romanian suffix stripping', async () => {
+    const result = await translate('băiatul', { lang: 'ro' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Norwegian old orthography', async () => {
+    const result = await translate('af', { lang: 'nb' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Malay prefix-suffix', async () => {
+    const result = await translate('memakan', { lang: 'ma' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Persian verb forms', async () => {
+    const result = await translate('میکند', { lang: 'fa' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Swahili verb prefixes', async () => {
+    const result = await translate('wanakula', { lang: 'sw' });
+    expect(result).toBeTruthy();
   });
 });
 

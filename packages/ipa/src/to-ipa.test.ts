@@ -1,6 +1,7 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import './index'; // registers IPA format
+import { arpabetPhonemeToIPA } from './to-ipa';
 
 describe('IPA translation', () => {
   it('should produce valid IPA output', () => {
@@ -81,5 +82,15 @@ describe('IPA format for common words', () => {
     expect(translateSync('go', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɡoʊ`); // G → ɡ
     expect(translateSync('yes', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}jɛs`); // Y → j
     expect(translateSync('she', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ʃi`); // SH → ʃ
+  });
+});
+
+describe('arpabetPhonemeToIPA edge cases', () => {
+  it('returns lowercase for unknown phonemes', () => {
+    expect(arpabetPhonemeToIPA('XX')).toBe('xx');
+  });
+
+  it('returns schwa for unstressed AH0', () => {
+    expect(arpabetPhonemeToIPA('AH0')).toBe('ə');
   });
 });
