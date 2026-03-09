@@ -6,7 +6,7 @@
 
 import { profile, profileAsync } from './harness';
 
-async function main() {
+export async function main() {
   console.log('=== Ingglish Performance Profile ===\n');
 
   // 1. Dictionary loading
@@ -129,4 +129,4 @@ async function main() {
   console.log('\n=== Profile Complete ===');
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('overview')) main().catch(console.error);

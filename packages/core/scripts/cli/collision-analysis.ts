@@ -101,7 +101,7 @@ async function analyzeCollisions(): Promise<AnalysisResult> {
   };
 }
 
-async function main() {
+export async function main() {
   const result = await analyzeCollisions();
 
   // Compute corpus total for per-million rates
@@ -164,4 +164,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('collision-analysis')) main().catch(console.error);

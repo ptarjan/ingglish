@@ -203,7 +203,7 @@ function applyChange(rules: Record<string, string[]>, change: Change): Record<st
   return newRules;
 }
 
-async function main() {
+export async function main() {
   const doApply = process.argv.includes('--apply');
   const maxRoundsArg = process.argv.find((a) => a.startsWith('--max-rounds='));
   const maxRounds = maxRoundsArg ? parseInt(maxRoundsArg.split('=')[1]) : Infinity;
@@ -310,4 +310,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('hill-climb')) main().catch(console.error);

@@ -98,7 +98,7 @@ setDictLoader(async (lang: string) => {
 // Main
 // ---------------------------------------------------------------------------
 
-async function main() {
+export async function main() {
   // Pre-load English dict — the translator's initialism path needs it
   // even when translating non-English text.
   await loadLangDict('en');
@@ -203,7 +203,8 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1]?.includes('coverage'))
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

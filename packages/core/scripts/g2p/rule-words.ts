@@ -10,7 +10,7 @@ import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dic
 import { wordToArpabetTraced } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './eval-g2p.js';
-async function main() {
+export async function main() {
   const target = process.argv[2] || '';
   if (!target) {
     console.error('Usage: rule-words.ts "[RULE]=/PHONEMES/"');
@@ -53,4 +53,4 @@ async function main() {
   console.log(`\nCorrect: ${correct} (freq ${freqCorrect}), Wrong: ${wrong} (freq ${freqWrong})`);
   console.log(`Error rate: ${((wrong / (correct + wrong)) * 100).toFixed(1)}%`);
 }
-main().catch(console.error);
+if (process.argv[1]?.includes('rule-words')) main().catch(console.error);

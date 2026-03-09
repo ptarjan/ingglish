@@ -17,7 +17,7 @@ import { wordToArpabetTraced } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-async function main() {
+export async function main() {
   const target = process.argv[2];
   if (!target) {
     console.error('Usage: g2p-rule-words.ts "RULE_STRING" [N]');
@@ -60,4 +60,4 @@ async function main() {
     `\nCorrect: ${correct}, Wrong: ${wrong}, Rate: ${((wrong / (correct + wrong)) * 100).toFixed(1)}%`
   );
 }
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-rule-words')) main().catch(console.error);

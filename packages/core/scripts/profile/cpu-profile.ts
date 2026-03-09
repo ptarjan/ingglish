@@ -10,7 +10,7 @@ import { tmpdir } from 'os';
 const session = new Session();
 session.connect();
 
-async function main() {
+export async function main() {
   const { translateSync, loadLangDict } = await import('ingglish');
 
   await loadLangDict('en');
@@ -94,4 +94,4 @@ async function main() {
   });
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('cpu-profile')) main().catch(console.error);

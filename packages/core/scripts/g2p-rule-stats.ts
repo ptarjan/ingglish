@@ -11,7 +11,7 @@ import { wordToArpabetTraced } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-async function main() {
+export async function main() {
   const n = parseInt(process.argv[2] || '30', 10);
   const dict = await loadDictionary();
   await loadFrequencies();
@@ -85,4 +85,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-rule-stats')) main().catch(console.error);

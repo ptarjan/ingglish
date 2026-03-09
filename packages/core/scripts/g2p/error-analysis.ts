@@ -150,7 +150,7 @@ interface ErrorPattern {
 // Main
 // ---------------------------------------------------------------------------
 
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
   const limit = parseWordLimit();
@@ -423,4 +423,4 @@ function printPatternTable(pats: ErrorPattern[], sortBy: 'count' | 'freq') {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('error-analysis')) main().catch(console.error);

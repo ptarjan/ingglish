@@ -6,7 +6,7 @@ import { loadDictionary } from '@ingglish/dictionary';
 import { wordToArpabet } from '@ingglish/g2p';
 import { parseWordLimit } from './eval-g2p.js';
 
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   const limit = parseWordLimit();
 

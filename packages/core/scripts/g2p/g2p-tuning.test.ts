@@ -1,54 +1,58 @@
-import { execSync } from 'child_process';
-import { join } from 'path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-const coreDir = join(import.meta.dirname, '..', '..');
-
-const LIMIT = '--limit=500';
-
-function run(script: string, args = '', timeout = 60_000): string {
-  const allArgs = args ? `${args} ${LIMIT}` : LIMIT;
-  const cmd = `npx vite-node scripts/g2p/${script}.ts -- ${allArgs}`;
-  return execSync(cmd, {
-    cwd: coreDir,
-    encoding: 'utf-8',
-    timeout,
+/** Import a script's main(), inject --limit=500 into argv, capture stdout. */
+async function run(scriptPath: string, extraArgs: string[] = []): Promise<string> {
+  const original = [...process.argv];
+  process.argv = ['node', 'test', ...extraArgs, '--limit=500'];
+  const lines: string[] = [];
+  const spy = vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+    lines.push(args.map(String).join(' '));
   });
+  const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    const mod = await import(scriptPath);
+    await mod.main();
+    return lines.join('\n');
+  } finally {
+    spy.mockRestore();
+    errSpy.mockRestore();
+    process.argv = original;
+  }
 }
 
 describe('g2p tuning', () => {
-  it('pattern-analysis', () => {
-    const output = run('pattern-analysis');
+  it('pattern-analysis', async () => {
+    const output = await run('./pattern-analysis.js');
     expect(output.length).toBeGreaterThan(0);
-  }, 30_000);
+  });
 
-  it('find-rules (single letter)', () => {
-    const output = run('find-rules', 'A');
+  it('find-rules (single letter)', async () => {
+    const output = await run('./find-rules.js', ['A']);
     expect(output.length).toBeGreaterThan(0);
-  }, 30_000);
+  });
 
-  it('try-removal (single letter)', () => {
-    const output = run('try-removal', 'A');
+  it('try-removal (single letter)', async () => {
+    const output = await run('./try-removal.js', ['A']);
     expect(output.length).toBeGreaterThan(0);
-  }, 30_000);
+  });
 
-  it('try-reorder (single letter)', () => {
-    const output = run('try-reorder', 'A');
+  it('try-reorder (single letter)', async () => {
+    const output = await run('./try-reorder.js', ['A']);
     expect(output.length).toBeGreaterThan(0);
-  }, 30_000);
+  });
 
-  it('try-rule', () => {
-    const output = run('try-rule', 'A 0 "[ATE] =/EY T/"');
+  it('try-rule', async () => {
+    const output = await run('./try-rule.js', ['A', '0', '[ATE] =/EY T/']);
     expect(output.length).toBeGreaterThan(0);
-  }, 30_000);
+  });
 
-  it('hill-climb (dry run, 1 round)', () => {
-    const output = run('hill-climb', '--max-rounds=1');
+  it('hill-climb (dry run, 1 round)', async () => {
+    const output = await run('./hill-climb.js', ['--max-rounds=1']);
     expect(output).toContain('Round 1');
-  }, 60_000);
+  });
 
-  it('backtest', () => {
-    const output = run('backtest');
+  it('backtest', async () => {
+    const output = await run('./backtest.js');
     expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
+  });
 });

@@ -12,7 +12,7 @@ import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
   const limit = parseWordLimit();
@@ -130,4 +130,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-test-rules')) main().catch(console.error);

@@ -155,7 +155,7 @@ async function debugText(text: string) {
   }
 }
 
-async function main() {
+export async function main() {
   const startTime = performance.now();
   const input = process.argv.slice(2).join(' ');
 
@@ -188,4 +188,4 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('debug-roundtrip')) main().catch(console.error);

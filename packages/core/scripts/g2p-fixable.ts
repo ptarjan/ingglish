@@ -13,7 +13,7 @@ import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-async function main() {
+export async function main() {
   const args = process.argv.slice(2);
   const minFreqArg = args.find((a) => a.startsWith('--min-freq='));
   const minFreq = minFreqArg ? parseInt(minFreqArg.split('=')[1], 10) : 200;
@@ -87,4 +87,4 @@ async function main() {
   }
   console.log(`\nFixable same-length: ${fixableCount}, Length mismatch: ${mismatchCount}`);
 }
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-fixable')) main().catch(console.error);

@@ -100,7 +100,7 @@ interface SubstitutionRecord {
   samples: string[]; // example words (up to 5)
 }
 
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   const limit = parseWordLimit();
   const words = Object.keys(dict);
@@ -224,4 +224,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-error-deep')) main().catch(console.error);

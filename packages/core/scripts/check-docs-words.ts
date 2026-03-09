@@ -45,7 +45,7 @@ function stripMarkdown(md: string): string {
   );
 }
 
-async function main() {
+export async function main() {
   await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
   const limit = parseWordLimit();
 
@@ -191,4 +191,4 @@ async function main() {
   console.log(`Using fallback:     ${missing.length}`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('check-docs-words')) main().catch(console.error);

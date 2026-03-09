@@ -29,7 +29,7 @@ interface MinimalPair {
   freq: number; // min frequency of the pair (both must be known)
 }
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   await Promise.all([loadDictionary(), loadFrequencies()]);
   const limit = parseWordLimit();
   const dict = getDictionary();
@@ -176,4 +176,4 @@ const VOWEL_SPELLINGS: Record<string, string> = {
   UW: 'uu',
 };
 
-main().catch(console.error);
+if (process.argv[1]?.includes('vowel-minimal-pairs')) main().catch(console.error);

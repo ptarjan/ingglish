@@ -8,7 +8,7 @@ import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dic
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './eval-g2p.js';
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
   const limit = parseWordLimit();
@@ -32,4 +32,5 @@ async function main() {
   console.log(`Unweighted: ${match}/${total} = ${unweighted}%`);
   console.log(`Freq-weighted: ${weighted}%`);
 }
-main().catch(console.error);
+// Run as CLI when invoked directly
+if (process.argv[1]?.includes('measure')) main().catch(console.error);

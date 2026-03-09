@@ -24,7 +24,7 @@ import {
   stripStress,
 } from './eval-g2p';
 
-async function main() {
+export async function main() {
   const letter = process.argv[2]?.toUpperCase();
   const indexArg = process.argv[3];
   const ruleStr = process.argv[4];
@@ -112,4 +112,4 @@ async function main() {
   console.log(`\nTotal: +${gained} gained, -${lost} lost = net ${delta >= 0 ? '+' : ''}${delta}`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('try-rule')) main().catch(console.error);

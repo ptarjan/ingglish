@@ -21,7 +21,7 @@ import {
   stripStress,
 } from './eval-g2p';
 
-async function main() {
+export async function main() {
   const letterFilter = process.argv[2]?.toUpperCase();
   const contextSize = parseInt(process.argv[3] || '2', 10);
 
@@ -149,4 +149,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('find-rules')) main().catch(console.error);

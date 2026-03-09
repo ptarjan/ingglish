@@ -23,7 +23,7 @@ registerFormat('arpabet', {
   label: 'ARPAbet',
 });
 
-async function main() {
+export async function main() {
   const dict = await loadDictionary();
   await loadFrequencies();
   const limit = parseWordLimit();
@@ -119,4 +119,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('strategy-breakdown')) main().catch(console.error);

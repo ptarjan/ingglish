@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 
 const ITERATIONS = 100;
 
-async function main() {
+export async function main() {
   console.log('=== translateSync Deep Profile ===\n');
 
   const { loadDictionary, lookupPronunciation } = await import('@ingglish/dictionary');
@@ -116,4 +116,4 @@ async function main() {
   console.log(`Time per word: ${((totalAvg / words.length) * 1000).toFixed(2)}µs`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('translate')) main().catch(console.error);

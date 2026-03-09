@@ -1,40 +1,45 @@
-import { execSync } from 'child_process';
-import { join } from 'path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-const coreDir = join(import.meta.dirname, '..', '..');
-
-function run(script: string, timeout = 60_000): string {
-  return execSync(`npx vite-node scripts/profile/${script}.ts`, {
-    cwd: coreDir,
-    encoding: 'utf-8',
-    timeout,
+/** Import a script's main(), capture stdout. */
+async function run(scriptPath: string): Promise<string> {
+  const lines: string[] = [];
+  const spy = vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+    lines.push(args.map(String).join(' '));
   });
+  const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    const mod = await import(scriptPath);
+    await mod.main();
+    return lines.join('\n');
+  } finally {
+    spy.mockRestore();
+    errSpy.mockRestore();
+  }
 }
 
 describe('profile scripts', () => {
-  it('benchmark', () => {
-    const output = run('benchmark');
+  it('benchmark', async () => {
+    const output = await run('./benchmark.js');
     expect(output).toContain('=== Ingglish Core Benchmarks ===');
-  }, 60_000);
+  });
 
-  it('convert', () => {
-    const output = run('convert');
+  it('convert', async () => {
+    const output = await run('./convert.js');
     expect(output).toContain('=== arpabetToIngglish Deep Profile ===');
-  }, 60_000);
+  });
 
-  it('cpu-profile', () => {
-    const output = run('cpu-profile');
+  it('cpu-profile', async () => {
+    const output = await run('./cpu-profile.js');
     expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
+  });
 
-  it('overview', () => {
-    const output = run('overview');
+  it('overview', async () => {
+    const output = await run('./overview.js');
     expect(output).toContain('=== Ingglish Performance Profile ===');
-  }, 60_000);
+  });
 
-  it('translate', () => {
-    const output = run('translate');
+  it('translate', async () => {
+    const output = await run('./translate.js');
     expect(output).toContain('=== translateSync Deep Profile ===');
-  }, 60_000);
+  });
 });

@@ -44,7 +44,7 @@ function loadPhoneDict(langCode: string): PhoneDict {
   };
 }
 
-async function main() {
+export async function main() {
   const args = process.argv.slice(2);
 
   // Parse flags
@@ -143,4 +143,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('translate')) main().catch(console.error);

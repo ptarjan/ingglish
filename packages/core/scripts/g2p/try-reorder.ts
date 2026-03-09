@@ -24,7 +24,7 @@ import {
   stripStress,
 } from './eval-g2p';
 
-async function main() {
+export async function main() {
   const letterFilter = process.argv[2]?.toUpperCase();
 
   console.log('Loading dictionary and frequencies...');
@@ -161,4 +161,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('try-reorder')) main().catch(console.error);

@@ -14,7 +14,7 @@ import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-async function main() {
+export async function main() {
   const args = process.argv.slice(2);
   const skipTrivial = args.includes('--skip-trivial');
   const n = parseInt(args.find((a) => !a.startsWith('--')) || '80', 10);
@@ -69,4 +69,4 @@ async function main() {
     );
   }
 }
-main().catch(console.error);
+if (process.argv[1]?.includes('g2p-freq-errors')) main().catch(console.error);

@@ -12,17 +12,6 @@ import { loadFrequencies, getWordFrequency } from '@ingglish/dictionary';
 import { CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import { parseWordLimit } from './g2p/eval-g2p.js';
 
-await loadDictionary();
-await loadFrequencies();
-const limit = parseWordLimit();
-const cmudict = getDictionary();
-
-// All words without variant markers like (2)
-const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0 && !w.includes('('));
-
-// Skip words we've already fixed
-const alreadyFixed = new Set(Object.keys(CUSTOM_PRONUNCIATIONS));
-
 // Suffix definitions: [spelling suffix, phoneme suffix]
 // Some suffixes have multiple possible phoneme realizations
 const SUFFIX_DEFS: [string, string[]][] = [
@@ -85,96 +74,111 @@ interface PhonemeCountError {
   frequency: number;
 }
 
-const errors: PhonemeCountError[] = [];
-// Track word+stem pairs we've already reported to avoid duplicates
-const reported = new Set<string>();
+export async function main() {
+  await loadDictionary();
+  await loadFrequencies();
+  const limit = parseWordLimit();
+  const cmudict = getDictionary();
 
-let count = 0;
-for (const word of allWords) {
-  if (alreadyFixed.has(word)) continue;
-  if (++count > limit) break;
+  // All words without variant markers like (2)
+  const allWords = Object.keys(cmudict).filter((w) => cmudict[w]?.length > 0 && !w.includes('('));
 
-  const wordPhonemes = cmudict[word];
-  if (!Array.isArray(wordPhonemes)) continue;
+  // Skip words we've already fixed
+  const alreadyFixed = new Set(Object.keys(CUSTOM_PRONUNCIATIONS));
 
-  const wordFreq = getWordFrequency(word) ?? 0;
+  const errors: PhonemeCountError[] = [];
+  // Track word+stem pairs we've already reported to avoid duplicates
+  const reported = new Set<string>();
 
-  for (const [suffix, suffixPhonemes] of SUFFIX_DEFS) {
-    if (!word.endsWith(suffix)) continue;
-    if (word.length <= suffix.length + 2) continue; // stem must be at least 3 chars
+  let count = 0;
+  for (const word of allWords) {
+    if (alreadyFixed.has(word)) continue;
+    if (++count > limit) break;
 
-    // Try normal stem and e-drop stem
-    const normalStem = word.slice(0, -suffix.length);
-    const eDropStem = normalStem + 'e';
-    const stems = [normalStem, eDropStem];
+    const wordPhonemes = cmudict[word];
+    if (!Array.isArray(wordPhonemes)) continue;
 
-    for (const stem of stems) {
-      if (alreadyFixed.has(stem)) continue;
-      const stemPhonemes = cmudict[stem];
-      if (!stemPhonemes || !Array.isArray(stemPhonemes)) continue;
+    const wordFreq = getWordFrequency(word) ?? 0;
 
-      const stemFreq = getWordFrequency(stem) ?? 0;
+    for (const [suffix, suffixPhonemes] of SUFFIX_DEFS) {
+      if (!word.endsWith(suffix)) continue;
+      if (word.length <= suffix.length + 2) continue; // stem must be at least 3 chars
 
-      // Both must have freq >= 5
-      if (wordFreq < 5 || stemFreq < 5) continue;
+      // Try normal stem and e-drop stem
+      const normalStem = word.slice(0, -suffix.length);
+      const eDropStem = normalStem + 'e';
+      const stems = [normalStem, eDropStem];
 
-      // Calculate expected phoneme count
-      const expectedCount = stemPhonemes.length + suffixPhonemes.length;
-      const actualCount = wordPhonemes.length;
-      const diff = actualCount - expectedCount;
+      for (const stem of stems) {
+        if (alreadyFixed.has(stem)) continue;
+        const stemPhonemes = cmudict[stem];
+        if (!stemPhonemes || !Array.isArray(stemPhonemes)) continue;
 
-      // Only report if off by exactly 1 (missing or extra phoneme)
-      if (Math.abs(diff) !== 1) continue;
+        const stemFreq = getWordFrequency(stem) ?? 0;
 
-      // Deduplicate: only report first suffix match per word+stem pair
-      const key = `${word}|${stem}`;
-      if (reported.has(key)) continue;
-      reported.add(key);
+        // Both must have freq >= 5
+        if (wordFreq < 5 || stemFreq < 5) continue;
 
-      const freq = Math.max(wordFreq, stemFreq);
+        // Calculate expected phoneme count
+        const expectedCount = stemPhonemes.length + suffixPhonemes.length;
+        const actualCount = wordPhonemes.length;
+        const diff = actualCount - expectedCount;
 
-      errors.push({
-        word,
-        stem,
-        wordPhonemes,
-        stemPhonemes,
-        suffixSpelling: suffix,
-        suffixPhonemes,
-        expectedCount,
-        actualCount,
-        diff,
-        frequency: freq,
-      });
+        // Only report if off by exactly 1 (missing or extra phoneme)
+        if (Math.abs(diff) !== 1) continue;
+
+        // Deduplicate: only report first suffix match per word+stem pair
+        const key = `${word}|${stem}`;
+        if (reported.has(key)) continue;
+        reported.add(key);
+
+        const freq = Math.max(wordFreq, stemFreq);
+
+        errors.push({
+          word,
+          stem,
+          wordPhonemes,
+          stemPhonemes,
+          suffixSpelling: suffix,
+          suffixPhonemes,
+          expectedCount,
+          actualCount,
+          diff,
+          frequency: freq,
+        });
+      }
     }
+  }
+
+  // Sort by frequency descending
+  errors.sort((a, b) => b.frequency - a.frequency);
+
+  // Print results
+  console.log('='.repeat(90));
+  console.log('PHONEME COUNT ERRORS: inflected form has wrong number of phonemes');
+  console.log('='.repeat(90));
+  console.log(`Total errors found: ${errors.length}`);
+  console.log(`  Missing phoneme (actual < expected): ${errors.filter((e) => e.diff < 0).length}`);
+  console.log(`  Extra phoneme (actual > expected):   ${errors.filter((e) => e.diff > 0).length}`);
+  console.log();
+
+  // Show top 100
+  const top = errors.slice(0, 100);
+  for (let i = 0; i < top.length; i++) {
+    const e = top[i];
+    const diffLabel = e.diff < 0 ? 'MISSING' : 'EXTRA';
+    const stemBare = e.stemPhonemes.map(stripStress).join(' ');
+    const wordBare = e.wordPhonemes.map(stripStress).join(' ');
+    const suffixBare = e.suffixPhonemes.map(stripStress).join(' ');
+
+    console.log(
+      `${String(i + 1).padStart(3)}. ${e.word.padEnd(22)} freq=${String(e.frequency).padStart(7)}  ${diffLabel} phoneme`
+    );
+    console.log(`     stem "${e.stem}" (${e.stemPhonemes.length}p): ${stemBare}`);
+    console.log(`     suffix -${e.suffixSpelling} (${e.suffixPhonemes.length}p): ${suffixBare}`);
+    console.log(`     expected ${e.expectedCount}p, actual ${e.actualCount}p: ${wordBare}`);
+    console.log();
   }
 }
 
-// Sort by frequency descending
-errors.sort((a, b) => b.frequency - a.frequency);
-
-// Print results
-console.log('='.repeat(90));
-console.log('PHONEME COUNT ERRORS: inflected form has wrong number of phonemes');
-console.log('='.repeat(90));
-console.log(`Total errors found: ${errors.length}`);
-console.log(`  Missing phoneme (actual < expected): ${errors.filter((e) => e.diff < 0).length}`);
-console.log(`  Extra phoneme (actual > expected):   ${errors.filter((e) => e.diff > 0).length}`);
-console.log();
-
-// Show top 100
-const top = errors.slice(0, 100);
-for (let i = 0; i < top.length; i++) {
-  const e = top[i];
-  const diffLabel = e.diff < 0 ? 'MISSING' : 'EXTRA';
-  const stemBare = e.stemPhonemes.map(stripStress).join(' ');
-  const wordBare = e.wordPhonemes.map(stripStress).join(' ');
-  const suffixBare = e.suffixPhonemes.map(stripStress).join(' ');
-
-  console.log(
-    `${String(i + 1).padStart(3)}. ${e.word.padEnd(22)} freq=${String(e.frequency).padStart(7)}  ${diffLabel} phoneme`
-  );
-  console.log(`     stem "${e.stem}" (${e.stemPhonemes.length}p): ${stemBare}`);
-  console.log(`     suffix -${e.suffixSpelling} (${e.suffixPhonemes.length}p): ${suffixBare}`);
-  console.log(`     expected ${e.expectedCount}p, actual ${e.actualCount}p: ${wordBare}`);
-  console.log();
-}
+if (process.argv[1]?.includes('phoneme-count-errors')) main().catch(console.error);

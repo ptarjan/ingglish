@@ -10,7 +10,7 @@ import { loadDictionary, loadFrequencies, getWordFrequency } from '@ingglish/dic
 import { wordToArpabet } from '@ingglish/g2p';
 import { stripStress } from '@ingglish/phonemes';
 import { parseWordLimit } from './eval-g2p.js';
-async function main() {
+export async function main() {
   const n = parseInt(process.argv[2] || '80', 10);
   const dict = await loadDictionary();
   await loadFrequencies();
@@ -45,4 +45,4 @@ async function main() {
     );
   }
 }
-main().catch(console.error);
+if (process.argv[1]?.includes('freq-errors')) main().catch(console.error);

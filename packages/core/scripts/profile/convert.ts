@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 
 const ITERATIONS = 10000;
 
-async function main() {
+export async function main() {
   console.log('=== arpabetToIngglish Deep Profile ===\n');
 
   const { STRESS_MARKER_REGEX, stripStress, ARPABET_TO_INGGLISH_MAP } =
@@ -115,4 +115,4 @@ async function main() {
   });
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('convert')) main().catch(console.error);

@@ -6,7 +6,7 @@
 
 import { benchmark, formatResult, type BenchmarkResult } from './harness';
 
-async function main() {
+export async function main() {
   console.log('=== Ingglish Core Benchmarks ===\n');
 
   // Load modules
@@ -163,4 +163,4 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('benchmark')) main().catch(console.error);
