@@ -1,5 +1,6 @@
 import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
+import { clearReverseDictionaryCache, loadReverseDictionary } from './reverse';
 
 describe('reverse translation', () => {
   it('round-trips known words', () => {
@@ -32,5 +33,17 @@ describe('loadReverseDictionary', () => {
     const ingglish = translateSync('the');
     const english = reverseTranslateSync(ingglish);
     expect(english).toBe('the');
+  });
+});
+
+describe('clearReverseDictionaryCache', () => {
+  it('clears cache and allows reload', async () => {
+    clearReverseDictionaryCache();
+    // Reload after clearing
+    await loadReverseDictionary();
+    // Verify it works after reload
+    const ingglish = translateSync('hello');
+    const english = reverseTranslateSync(ingglish);
+    expect(english).toBe('hello');
   });
 });

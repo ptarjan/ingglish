@@ -14,12 +14,14 @@ interface FrequencyData {
 const loader = createLazyLoader<FrequencyData>(async () => {
   const json = await loadJson<Record<string, number>>('data/word-frequencies');
   let raw: Record<string, number>;
+  /* v8 ignore start -- loadJson returns non-null in Node, null in browser */
   if (json === null) {
     const mod = await import('./data/word-frequencies');
     raw = mod.default;
   } else {
     raw = json;
   }
+  /* v8 ignore stop */
   const map = new Map<string, number>();
   let corpusTotal = 0;
   for (const [word, count] of Object.entries(raw)) {
@@ -35,7 +37,9 @@ const loader = createLazyLoader<FrequencyData>(async () => {
  */
 export function getCorpusTotal(): number {
   if (!loader.isLoaded()) {
+    /* v8 ignore start -- defensive guard: frequencies always loaded before use */
     return 0;
+    /* v8 ignore stop */
   }
   return loader.get().corpusTotal;
 }
@@ -46,7 +50,9 @@ export function getCorpusTotal(): number {
  */
 export function getWordFrequency(word: string): number | undefined {
   if (!loader.isLoaded()) {
+    /* v8 ignore start -- defensive guard: frequencies always loaded before use */
     return undefined;
+    /* v8 ignore stop */
   }
   return loader.get().map.get(word.toLowerCase());
 }

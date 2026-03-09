@@ -13,7 +13,9 @@
  */
 export async function loadJson<T>(basename: string): Promise<null | T> {
   if (typeof process === 'undefined' || !process.versions?.node) {
+    /* v8 ignore start -- only reached in browser environments */
     return null;
+    /* v8 ignore stop */
   }
   try {
     // Dynamic imports so Node.js builtins aren't bundled into the browser build.

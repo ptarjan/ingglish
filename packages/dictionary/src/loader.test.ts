@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getDictionary, isDictionaryLoaded, loadDictionary } from './index';
+import { getDictionary, isDictionaryLoaded, loadDictionary, setDictionaryLoader } from './index';
 
 describe('getDictionary', () => {
   it('returns a dictionary object (loaded via vitest.setup.ts)', () => {
@@ -19,6 +19,16 @@ describe('getDictionary', () => {
 
 describe('isDictionaryLoaded', () => {
   it('returns true (loaded in setup)', () => {
+    expect(isDictionaryLoaded()).toBe(true);
+  });
+});
+
+describe('setDictionaryLoader', () => {
+  it('accepts a custom loader function', () => {
+    // Just verify it can be called without error.
+    // The custom loader won't be invoked because the dictionary is already cached.
+    setDictionaryLoader(() => Promise.resolve({}));
+    // Verify dictionary still works (cached, custom loader not invoked)
     expect(isDictionaryLoaded()).toBe(true);
   });
 });

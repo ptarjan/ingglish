@@ -15,12 +15,14 @@ import type { ReverseDictionary } from './types';
 const loader = createLazyLoader<ReverseDictionary>(async () => {
   const json = await loadJson<ReverseDictionary>('reverse-cmudict');
   let dict: ReverseDictionary;
+  /* v8 ignore start -- loadJson returns non-null in Node, null in browser */
   if (json === null) {
     const mod = await import('./reverse-cmudict');
     dict = mod.default;
   } else {
     dict = json;
   }
+  /* v8 ignore stop */
 
   // Ensure frequency data is loaded before sorting custom pronunciations.
   // Without this, concurrent loading (Promise.all) could cause sortByFrequency

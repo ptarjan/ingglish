@@ -25,7 +25,9 @@ export function setDictionaryLoader(loader: () => Promise<CMUDictionary>): void 
 const loader = createLazyLoader<CMUDictionary>(async () => {
   let dict: CMUDictionary;
   if (customLoader) {
+    /* v8 ignore start -- customLoader path used by website, not testable without loader reset */
     dict = await customLoader();
+    /* v8 ignore stop */
   } else {
     // Velar nasal normalization (N → NG before K/G) is done at build time
     // by scripts/build-dictionary.ts — no runtime normalization needed.
