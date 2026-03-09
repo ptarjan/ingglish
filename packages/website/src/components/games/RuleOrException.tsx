@@ -29,7 +29,7 @@ function RuleOrException() {
       correct
         ? `Correct! ${q.explanation}`
         : `Not quite, it's ${q.isException ? 'an exception' : 'a rule follower'}. ${q.explanation}`,
-    speakQuestion: (q) => `${q.word}. Rule: ${q.rule}. 1, Follows Rule. 2, Exception.`,
+    speakQuestion: (q) => `${q.word}. Rule: ${q.rule} ... 1. Follows Rule ... 2. Exception.`,
   });
 
   if (game.phase === 'intro') {

@@ -30,8 +30,8 @@ function OriginDetective() {
         ? `Correct! ${q.explanation}`
         : `Not quite, it's ${q.correctOrigin}. ${q.explanation}`,
     speakQuestion: (q) => {
-      const choiceList = q.choices.map((c, i) => `${i + 1}, ${c}`).join('. ');
-      return `${q.word}. Clue: ${q.spellingClue}. ${choiceList}`;
+      const choiceList = q.choices.map((c, i) => `${i + 1}. ${c}`).join(' ... ');
+      return `${q.word}. Clue: ${q.spellingClue} ... ${choiceList}`;
     },
   });
 
