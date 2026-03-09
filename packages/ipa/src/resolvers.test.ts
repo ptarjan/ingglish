@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { WORD_RESOLVERS } from './resolvers';
+import { WORD_RESOLVERS } from './index';
 
 describe('WORD_RESOLVERS', () => {
   describe('de (German ß→ss)', () => {
