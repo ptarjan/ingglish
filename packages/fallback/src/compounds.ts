@@ -20,10 +20,11 @@ export type FreqFn = (word: string) => number | undefined;
  * Capitalizes the first letter of a string.
  */
 function capitalize(str: string): string {
-  /* v8 ignore next */
+  /* v8 ignore start */
   if (str.length === 0) {
     return str;
   }
+  /* v8 ignore stop */
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -153,10 +154,11 @@ export function translateAsCompound(
   let pos = 0;
   for (const part of parts) {
     const phonemes = lookupFn(part);
-    /* v8 ignore next */
+    /* v8 ignore start */
     if (!phonemes) {
       return null;
     } // shouldn't happen but be safe
+    /* v8 ignore stop */
     let translated = arpabetToFormat(phonemes, format);
 
     // Preserve case per component for formats that support it

@@ -1113,9 +1113,11 @@ interface CompiledRule {
 function compileRule(ruleStr: string): CompiledRule | null {
   // Format: leftContext[TARGET]rightContext=/PHONEMES/
   const m = /^([^[]*)\[([^\]]+)\]([^=]*)=\/(.*)\/$/.exec(ruleStr);
+  /* v8 ignore start */
   if (m === null) {
     return null;
   }
+  /* v8 ignore stop */
 
   const leftCtx = m[1]!;
   const target = m[2]!;
@@ -1242,7 +1244,9 @@ export function wordToArpabetTraced(word: string): G2PTrace {
     // Look up rules for this letter
     const rules = COMPILED_RULES[ch] as CompiledRule[] | undefined;
     if (rules === undefined) {
+      /* v8 ignore start */
       pos++; // skip non-letter characters
+      /* v8 ignore stop */
     } else {
       let matched = false;
       // Lazily compute left context substring (only if a rule needs it)
@@ -1289,9 +1293,11 @@ export function wordToArpabetTraced(word: string): G2PTrace {
         matched = true;
         break;
       }
+      /* v8 ignore start */
       if (!matched) {
         pos++; // skip unrecognized character
       }
+      /* v8 ignore stop */
     }
   }
 

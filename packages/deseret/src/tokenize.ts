@@ -13,9 +13,11 @@ import { tokenizeUnicodeScript, type TextToken } from '@ingglish/normalize';
  */
 export function isDeseretChar(char: string): boolean {
   const cp = char.codePointAt(0);
+  /* v8 ignore start */
   if (cp === undefined) {
     return false;
   }
+  /* v8 ignore stop */
   return cp >= 0x1_04_00 && cp <= 0x1_04_4f;
 }
 

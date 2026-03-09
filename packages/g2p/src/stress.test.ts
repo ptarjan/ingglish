@@ -95,4 +95,33 @@ describe('applyStressPrediction', () => {
     // Should detect "re-" prefix after stripping -ing → stress 2nd syllable
     expect(result[3]).toMatch(/1$/);
   });
+
+  it('handles -ings gerund with prefix detection', () => {
+    // "undoings" — prefix "un-" detected after stripping -ings
+    const phonemes = ['AH1', 'N', 'D', 'UW1', 'IH1', 'NG', 'Z'];
+    const result = applyStressPrediction('undoings', phonemes);
+    // un- prefix → stress 2nd syllable
+    expect(result[3]).toMatch(/1$/);
+  });
+
+  it('reassigns stress backward when predicted syllable is AH0', () => {
+    // Simulate a word where the predicted stress syllable (first, default) is AH0
+    // so it searches backward — but since it's index 0, backward search finds nothing,
+    // then forward search kicks in
+    const phonemes = ['AH0', 'B', 'EH1', 'K', 'T'];
+    const result = applyStressPrediction('abekt', phonemes);
+    // AH0 stays AH0, EH gets primary stress
+    expect(result[0]).toBe('AH0');
+    expect(result[2]).toMatch(/1$/);
+  });
+
+  it('searches backward for non-AH0 when predicted stress is AH0', () => {
+    // 3 vowels, suffix -tion stresses penultimate (index 1), but make index 1 AH0
+    // so it searches backward to index 0
+    const phonemes = ['EH1', 'K', 'AH0', 'SH', 'AH0', 'N'];
+    const result = applyStressPrediction('exation', phonemes);
+    // Predicted = syllable 1 (penultimate of 3), but that's AH0
+    // Backward search finds index 0 (EH) → gets primary stress
+    expect(result[0]).toBe('EH1');
+  });
 });
