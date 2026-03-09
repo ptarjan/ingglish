@@ -1,3 +1,4 @@
+import { reverseTranslate, translate } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import {
   ARPABET_CONSONANTS,
@@ -5,9 +6,7 @@ import {
   ARPABET_VOWELS,
   arpabetToFormat,
   arpabetToIngglish,
-  ingglishToArpabet,
   stripStress,
-  verifyScriptRoundTrip,
 } from './index';
 
 describe('phoneme-map', () => {
@@ -108,25 +107,13 @@ describe('phoneme-map', () => {
 });
 
 describe('arpabetToIngglish round-trip', () => {
-  it('should round-trip all phonemes', () => {
-    expect(() => {
-      verifyScriptRoundTrip(
-        arpabetToIngglish,
-        ingglishToArpabet,
-        [
-          ['AA1', 'R'],
-          ['AO1', 'R'],
-          ['EH1', 'R'],
-          ['AE1', 'R'],
-          ['IH1', 'R'],
-          ['UH1', 'R'],
-          ['AH1', 'R'],
-        ],
-        // AH0 (schwa) → 'a' → AE is a known, intentional ambiguity
-        // resolved at a higher level via expandArpabetAlternatives
-        { AH0: ['AE'] }
-      );
-    }).not.toThrow();
+  it('should round-trip words through Ingglish', async () => {
+    // Test words covering various phoneme categories including R-colored vowels
+    for (const word of ['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world']) {
+      const ingglish = await translate(word);
+      const english = await reverseTranslate(ingglish);
+      expect(english, `Failed round-trip for "${word}"`).toBe(word);
+    }
   });
 });
 

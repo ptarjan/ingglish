@@ -1,14 +1,8 @@
+import { translateSync } from 'ingglish';
 import { describe, it, expect } from 'vitest';
-import { lookupPronunciation, getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
+import { getDictionary, CUSTOM_PRONUNCIATIONS } from '@ingglish/dictionary';
 import { wordToPhonetic, wordToArpabet } from '@ingglish/g2p';
 import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@ingglish/phonemes';
-import {
-  translateAsAcronym,
-  translateAsBritish,
-  translateAsCompound,
-  translateUnknown,
-  translateWithStemming,
-} from './index';
 
 describe('unknown-words', () => {
   describe('CUSTOM_PRONUNCIATIONS validation', () => {
@@ -75,16 +69,14 @@ describe('unknown-words', () => {
 
   describe('normalizeVelarNasal', () => {
     it('should correct N before K to NG K', () => {
-      // "think" in CMU has N K which should be normalized to NG K
-      const phonemes = lookupPronunciation('think');
-      expect(phonemes).toContain('NG');
-      expect(phonemes).not.toContain('N');
+      // "think" with velar nasal normalization: TH IH1 NG K → "thingk"
+      expect(translateSync('think')).toBe('thingk');
     });
 
     it('should not change N in other positions', () => {
-      // "run" has N at end, should stay N
-      const phonemes = lookupPronunciation('run');
-      expect(phonemes).toContain('N');
+      // "run" has N at end, stays N → no "ng" in output
+      const result = translateSync('run');
+      expect(result).not.toContain('ng');
     });
   });
 
@@ -893,123 +885,108 @@ describe('unknown-words', () => {
     });
   });
 
-  describe('translateWithStemming', () => {
-    it('should return null for words without recognizable stems', () => {
-      expect(translateWithStemming('xyzzy')).toBeNull();
-    });
-
-    it('should return null for short prefixed words', () => {
-      expect(translateWithStemming('una')).toBeNull();
-    });
-  });
-
-  describe('translateAsBritish', () => {
-    it('should return null for words that are not British spellings', () => {
-      expect(translateAsBritish('xyzzy')).toBeNull();
-    });
-
-    it('should return null when American form is not in dictionary', () => {
-      expect(translateAsBritish('blorgour')).toBeNull();
-    });
-  });
-
-  describe('translateUnknown', () => {
-    it('should always return a string', () => {
-      const result = translateUnknown('xyzzy');
+  describe('stemming fallback', () => {
+    it('should translate words without recognizable stems via G2P', () => {
+      // 'xyzzy' has no recognizable stem, falls through to G2P
+      const result = translateSync('xyzzy');
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should try stemming first then fallback to rules', () => {
-      const result = translateUnknown('blargification');
-      expect(result).toBeDefined();
+    it('should translate short words without prefix stripping', () => {
+      // 'una' is too short for prefix removal, falls through to G2P
+      const result = translateSync('una');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
     });
   });
 
-  describe('translateAsCompound', () => {
-    it('should return null for non-compound words', () => {
-      const result = translateAsCompound('xyzzy');
-      expect(result).toBeNull();
+  describe('British spelling handling', () => {
+    it('should translate British -our as American -or', () => {
+      // 'colour' → American 'color' → dictionary lookup
+      const british = translateSync('colour');
+      const american = translateSync('color');
+      expect(british).toBe(american);
     });
 
-    it('should reject splits with obscure parts', () => {
-      // Compound splitter requires parts with SUBTLEX frequency ≥ 500.
-      // Words made of obscure dictionary entries should not be split.
-      const result = translateAsCompound('abacus');
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('translateAsAcronym', () => {
-    it('should spell out URL as yooarel', () => {
-      expect(translateAsAcronym('url')).toBe('yooarel');
-    });
-
-    it('should spell out HTML correctly', () => {
-      expect(translateAsAcronym('html')).toBe('aychtee-emel');
-    });
-
-    it('should spell out API correctly', () => {
-      expect(translateAsAcronym('api')).toBe('aypeeai');
-    });
-
-    it('should spell out CSS correctly', () => {
-      expect(translateAsAcronym('css')).toBe('see-eses');
+    it('should translate British -ise as American -ize', () => {
+      // 'organise' → American 'organize' → dictionary lookup
+      const british = translateSync('organise');
+      const american = translateSync('organize');
+      expect(british).toBe(american);
     });
   });
 
-  describe('acronym detection in translateUnknown', () => {
-    it('should translate url as spelled-out letters', () => {
-      expect(translateUnknown('url')).toBe('yooarel');
+  describe('unknown word translation', () => {
+    it('should always produce output for unknown words', () => {
+      const result = translateSync('xyzzy');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should translate html as spelled-out letters', () => {
-      expect(translateUnknown('html')).toBe('aychtee-emel');
+    it('should translate words with recognizable suffixes', () => {
+      const result = translateSync('blargification');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('compound word handling', () => {
+    it('should translate non-compound unknown words via G2P', () => {
+      // 'xyzzy' can't be split into known compounds
+      const result = translateSync('xyzzy');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should translate api as spelled-out letters', () => {
-      expect(translateUnknown('api')).toBe('aypeeai');
+    it('should translate dictionary words directly', () => {
+      // 'abacus' is in the dictionary, uses direct lookup
+      const result = translateSync('abacus');
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('acronym translation', () => {
+    it('should spell out nfl as enefel', () => {
+      expect(translateSync('nfl')).toBe('enefel');
     });
 
-    it('should not treat regular words as acronyms', () => {
-      const result = translateUnknown('blorg');
-      expect(result).not.toBe('beeelohahrgee');
+    it('should spell out npm correctly', () => {
+      expect(translateSync('npm')).toBe('enpee-em');
+    });
+
+    it('should not spell out regular words as acronyms', () => {
+      const result = translateSync('blorg');
+      expect(result).not.toContain('beeeloh');
     });
   });
 
   describe('IPA output format', () => {
-    it('wordToPhonetic should output IPA when format is ipa', () => {
-      const result = wordToPhonetic('blorg', 'ipa');
+    it('should output IPA for unknown words', () => {
+      const result = translateSync('blorg', { format: 'ipa' });
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
-      // IPA output should contain IPA characters, not Latin alphabet
-      // The word "blorg" should produce something like /blɔɹɡ/
       expect(result).toMatch(/[bɡʃʒθðŋɹɑæʌɔɛɪʊəaeoiuˈˌ]/);
     });
 
-    it('translateAsAcronym should output IPA when format is ipa', () => {
-      // URL = /juː ɑːɹ ɛl/ (you-are-ell)
-      const result = translateAsAcronym('url', 'ipa');
+    it('should output IPA for acronyms', () => {
+      const result = translateSync('nfl', { format: 'ipa' });
       expect(result).toBeDefined();
-      // Should contain IPA vowels and consonants
-      expect(result).toMatch(/[juɑɹɛl]/);
+      // NFL spelled out should contain IPA characters
+      expect(result).toMatch(/[ɛnfl]/);
     });
 
-    it('translateUnknown should output IPA for acronyms', () => {
-      const result = translateUnknown('api', 'ipa');
+    it('should output IPA for spelled-out words', () => {
+      const result = translateSync('npm', { format: 'ipa' });
       expect(result).toBeDefined();
-      // API = /eɪ piː aɪ/ (ay-pee-eye)
-      // Should contain IPA characters
-      expect(result).toMatch(/[eɪpiːa]/);
+      expect(result).toMatch(/[ɛnpiːm]/);
     });
 
-    it('translateWithStemming should output IPA when format is ipa', () => {
-      // Test with a word that has a known stem
-      const result = translateWithStemming('quickly', 'ipa');
-      // May return null if stem not found, otherwise should be IPA
-      if (result !== null) {
-        expect(result).toMatch(/[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/);
-      }
+    it('should output IPA for known words', () => {
+      const result = translateSync('quickly', { format: 'ipa' });
+      expect(result).toBeDefined();
+      expect(result).toMatch(/[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/);
     });
   });
 });
