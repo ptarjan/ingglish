@@ -21,7 +21,9 @@ export type FreqFn = (word: string) => number | undefined;
  */
 function capitalize(str: string): string {
   /* v8 ignore next */
-  if (str.length === 0) {return str;}
+  if (str.length === 0) {
+    return str;
+  }
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -152,7 +154,9 @@ export function translateAsCompound(
   for (const part of parts) {
     const phonemes = lookupFn(part);
     /* v8 ignore next */
-    if (!phonemes) {return null;} // shouldn't happen but be safe
+    if (!phonemes) {
+      return null;
+    } // shouldn't happen but be safe
     let translated = arpabetToFormat(phonemes, format);
 
     // Preserve case per component for formats that support it
