@@ -233,6 +233,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-${{ matrix.browser }}-${{ matrix.shard }}
+          name: playwright-report-${{ matrix.browser }}-${{ strategy.job-index }}
           path: packages/website/test-results/
           retention-days: 7

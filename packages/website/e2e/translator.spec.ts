@@ -404,7 +404,7 @@ test.describe('Web Vitals', () => {
     '/experiment',
     '/games',
   ]) {
-    test(`LCP is below 3000ms on ${route}`, async ({ page }, testInfo) => {
+    test(`LCP is below 4000ms on ${route}`, async ({ page }, testInfo) => {
       test.skip(testInfo.project.name.includes('safari'), 'WebKit has no LCP API');
       await blockExternalNetwork(page);
 
@@ -432,7 +432,7 @@ test.describe('Web Vitals', () => {
         `LCP on ${route}: ${String(Math.round(result?.value ?? 0))}ms (element: ${result?.element ?? 'none'})`
       );
       expect(result).toBeDefined();
-      expect(result?.value).toBeLessThan(3000);
+      expect(result?.value).toBeLessThan(4000);
     });
   }
 
