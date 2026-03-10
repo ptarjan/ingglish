@@ -10,14 +10,15 @@ describe('word-frequency', () => {
       expect(freq).toBeGreaterThan(0);
     });
 
-    it('should be case-insensitive', () => {
-      expect(getWordFrequency('the')).toBe(getWordFrequency('THE'));
-      expect(getWordFrequency('Hello')).toBe(getWordFrequency('hello'));
+    it.each([
+      ['the', 'THE'],
+      ['Hello', 'hello'],
+    ])('should be case-insensitive: %s vs %s', (a, b) => {
+      expect(getWordFrequency(a)).toBe(getWordFrequency(b));
     });
 
-    it('should return undefined for non-words', () => {
-      expect(getWordFrequency('xyzzy123')).toBeUndefined();
-      expect(getWordFrequency('asdfghjkl')).toBeUndefined();
+    it.each(['xyzzy123', 'asdfghjkl'])('should return undefined for non-word: %s', (word) => {
+      expect(getWordFrequency(word)).toBeUndefined();
     });
   });
 
@@ -59,10 +60,12 @@ describe('word-frequency', () => {
   });
 
   describe('sortByFrequency', () => {
-    it('should sort words by frequency (most common first)', () => {
-      const words = ['xylophone', 'the', 'cat'];
+    it.each([
+      [['xylophone', 'the', 'cat'], 'the', 'most common first'],
+      [['hello2', 'hello'], 'hello', 'real words over numbered variants'],
+    ])('should sort: %s → first is "%s" (%s)', (words, expectedFirst) => {
       const sorted = sortByFrequency(words);
-      expect(sorted[0]).toBe('the');
+      expect(sorted[0]).toBe(expectedFirst);
     });
 
     it('should not mutate original array', () => {
@@ -74,12 +77,6 @@ describe('word-frequency', () => {
 
     it('should handle empty array', () => {
       expect(sortByFrequency([])).toEqual([]);
-    });
-
-    it('should prefer real words over numbered variants', () => {
-      const words = ['hello2', 'hello'];
-      const sorted = sortByFrequency(words);
-      expect(sorted[0]).toBe('hello');
     });
   });
 });
