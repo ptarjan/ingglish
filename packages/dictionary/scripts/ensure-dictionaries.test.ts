@@ -1,17 +1,25 @@
-import { execSync } from 'child_process';
 import { existsSync } from 'fs';
-import { join } from 'path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-const dictDir = join(import.meta.dirname, '..');
+async function run(scriptPath: string): Promise<string> {
+  const lines: string[] = [];
+  const spy = vi.spyOn(console, 'log').mockImplementation((...a: unknown[]) => {
+    lines.push(a.map(String).join(' '));
+  });
+  const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    const mod = await import(scriptPath);
+    await mod.main();
+    return lines.join('\n');
+  } finally {
+    spy.mockRestore();
+    errSpy.mockRestore();
+  }
+}
 
 describe('ensure-dictionaries', () => {
-  it('runs successfully (no-op when files exist)', () => {
-    const output = execSync('node scripts/ensure-dictionaries.cjs', {
-      cwd: dictDir,
-      encoding: 'utf-8',
-      timeout: 10_000,
-    });
+  it('runs successfully (no-op when files exist)', async () => {
+    const output = await run('./ensure-dictionaries.cjs');
     expect(output).toMatch(/Dictionaries (exist|already exist)/);
   });
 });
@@ -19,12 +27,8 @@ describe('ensure-dictionaries', () => {
 describe('analyze-variants', () => {
   it.skipIf(!existsSync('/tmp/cmudict-raw.dict'))(
     'runs successfully',
-    () => {
-      const output = execSync('node scripts/analyze-variants.js', {
-        cwd: dictDir,
-        encoding: 'utf-8',
-        timeout: 30_000,
-      });
+    async () => {
+      const output = await run('./analyze-variants.js');
       expect(output.length).toBeGreaterThan(0);
     },
     60_000
@@ -38,12 +42,8 @@ describe('cross-reference-dicts', () => {
     existsSync('/tmp/mpron.txt');
   it.skipIf(!hasPrereqs)(
     'runs successfully',
-    () => {
-      const output = execSync('node scripts/cross-reference-dicts.js', {
-        cwd: dictDir,
-        encoding: 'utf-8',
-        timeout: 60_000,
-      });
+    async () => {
+      const output = await run('./cross-reference-dicts.js');
       expect(output.length).toBeGreaterThan(0);
     },
     120_000
