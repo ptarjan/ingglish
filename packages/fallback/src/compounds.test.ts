@@ -7,11 +7,11 @@ import type { FreqFn } from './compounds';
  * Mock lookup and frequency functions that recognize a small vocabulary,
  * allowing us to test compound splitting without the full dictionary.
  */
-const MOCK_DICT: Record<string, string> = {
-  box: 'B AA1 K S',
-  cat: 'K AE1 T',
-  dog: 'D AO1 G',
-  hat: 'HH AE1 T',
+const MOCK_DICT: Record<string, string[]> = {
+  box: ['B AA1 K S'],
+  cat: ['K AE1 T'],
+  dog: ['D AO1 G'],
+  hat: ['HH AE1 T'],
 };
 
 const mockLookup: LookupFn = (word: string) => MOCK_DICT[word] ?? null;
