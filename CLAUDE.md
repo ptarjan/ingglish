@@ -12,6 +12,8 @@ When e2e tests fail in CI, download the `playwright-report` artifact from the fa
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
 
+Target 100% line coverage for all packages. Use parameterized tests (`it.each`) to reduce boilerplate — group tests with identical assertion patterns into tables. Prefer the public API (`translateSync`, `reverseTranslateSync`) over internal methods in tests, since vitest's source map remapping loses coverage attribution across package boundaries. Preload shared dictionaries once per file (e.g. `loadEntries` cache) rather than per-test.
+
 There is no need to manually run tests or lint before pushing — the pre-push hook runs lint, type-check, and tests for changed packages automatically and will block the push if anything fails.
 
 All commands are available if you need them for debugging:
