@@ -1,7 +1,9 @@
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { loadLangDict, translateSync } from 'ingglish';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { G2P_CONVERTERS } from './g2p';
-import { WORD_RESOLVERS } from './index';
+import { convertIpaEntries, WORD_RESOLVERS } from './index';
 
 /**
  * Tests language-specific word resolvers and G2P converters.
@@ -12,129 +14,74 @@ import { WORD_RESOLVERS } from './index';
  * boundaries (translateSync → core's lookupDict → ipa's WORD_RESOLVERS).
  * Verified empirically: translateSync gives 15% resolver coverage vs 98%+ direct.
  *
- * Resolver tests use minimal mock entries (the exact keys each resolver looks up)
- * instead of loading full multi-MB dictionary files from disk (~5x faster).
+ * All dicts are pre-loaded once in beforeAll to avoid repeated file I/O per test.
  */
 
-/** Creates a null-prototype dict from key-value pairs. */
-function mockDict(pairs: Record<string, string[]>): Record<string, string[]> {
-  const d: Record<string, string[]> = Object.create(null) as Record<string, string[]>;
-  for (const [k, v] of Object.entries(pairs)) {
-    d[k] = v;
-  }
-  return d;
-}
+const DICT_DIR = path.resolve(import.meta.dirname, '..', '..', 'website', 'public', 'ipa-dicts');
 
-// -- Mock entries: only the keys each resolver actually looks up --
+const RESOLVER_LANGS = ['de', 'ja', 'sv', 'ro', 'eo', 'fi', 'nb', 'ma', 'fa', 'sw'] as const;
+const G2P_LANGS = ['fi', 'eo', 'sw', 'ma'] as const;
+const entries = {} as Record<string, Record<string, string[]>>;
 
-const de = mockDict({
-  dass: ['D', 'AE1', 'S'],
-  Kongress: ['K', 'AO', 'N', 'G', 'R', 'EH1', 'S'],
-});
-
-const ja = mockDict({
-  か: ['K', 'AE1'],
-  き: ['K', 'IY1'],
-  きゃ: ['K', 'IY', 'AE1'],
-  た: ['T', 'AE1'],
-});
-
-const sv = mockDict({
-  barn: ['B', 'AA1', 'R', 'N'],
-  flicka: ['F', 'L', 'IH1', 'K', 'AE2'],
-  hund: ['HH', 'UH1', 'N', 'D'],
-});
-
-const ro = mockDict({
-  băiat: ['B', 'AH0', 'Y', 'AE1', 'T'],
-  împart: ['IH', 'M', 'P', 'AE1', 'R', 'T'],
-  înțeleg: ['IH', 'N', 'T', 'S', 'EH', 'L', 'EH1', 'G'],
-});
-
-const eo = mockDict({
-  bono: ['B', 'OW1', 'N', 'OW'],
-  labori: ['L', 'AE', 'B', 'OW1', 'R', 'IY'],
-  laboris: ['L', 'AE', 'B', 'OW1', 'R', 'IY', 'S'],
-  laboro: ['L', 'AE', 'B', 'OW1', 'R', 'OW'],
-  malrapida: ['M', 'AE', 'L', 'R', 'AE', 'P', 'IY1', 'D', 'AE'],
-  rapido: ['R', 'AE', 'P', 'IY1', 'D', 'OW'],
-});
-
-const fi = mockDict({
-  koira: ['K', 'OY1', 'R', 'AA'],
-  puhu: ['P', 'UW1', 'HH', 'UW'],
-  talo: ['T', 'AA1', 'L', 'OW'],
-});
-
-const nb = mockDict({
-  av: ['AA1', 'V'],
-  etter: ['EH1', 'T', 'AH0', 'R'],
-  hund: ['HH', 'UW1', 'N'],
-  mål: ['M', 'OW1', 'L'],
-});
-
-const ma = mockDict({
-  baik: ['B', 'AE1', 'EH', 'K'],
-  buat: ['B', 'UW', 'AE1', 'T'],
-  pak: ['P', 'AE1', 'K'],
-  tulis: ['T', 'UW1', 'L', 'AH0', 'S'],
-});
-
-const fa = mockDict({
-  کتاب: ['K', 'IY', 'T', 'AE1', 'B'],
-  می: ['M', 'AE1', 'Y'],
-});
-
-const sw = mockDict({
-  kula: ['K', 'UW', 'L', 'AE1'],
-  kusoma: ['K', 'UW', 'S', 'OW', 'M', 'AE1'],
-  penda: ['P', 'EH', 'N', 'D', 'AE1'],
-});
-
-// Pre-load G2P languages for translateSync tests
 beforeAll(async () => {
-  await Promise.all(['fi', 'eo', 'sw', 'ma'].map((lang) => loadLangDict(lang)));
+  // Load resolver dicts and G2P dicts in parallel
+  const [, ...g2pDicts] = await Promise.all([
+    // Load all resolver dicts from disk
+    Promise.all(
+      RESOLVER_LANGS.map(async (lang) => {
+        const json = await readFile(path.resolve(DICT_DIR, `${lang}.json`), 'utf8');
+        const raw = JSON.parse(json) as Record<string, string | string[]>;
+        entries[lang] = convertIpaEntries(raw, lang);
+      })
+    ),
+    // Pre-load G2P languages so translateSync works
+    ...G2P_LANGS.map((lang) => loadLangDict(lang)),
+  ]);
+  // Also store G2P entries for any overlap
+  for (const [i, G2P_LANG] of G2P_LANGS.entries()) {
+    entries[G2P_LANG] ??= g2pDicts[i]!.entries;
+  }
 }, 30_000);
 
 describe('German ß resolver', () => {
   it('normalizes ß to ss', () => {
-    expect(WORD_RESOLVERS.de!(de, 'daß')).toBeDefined();
+    expect(WORD_RESOLVERS.de!(entries.de!, 'daß')).toBeDefined();
   });
 
   it('normalizes ß with title case fallback', () => {
-    expect(WORD_RESOLVERS.de!(de, 'kongreß')).toBeDefined();
+    expect(WORD_RESOLVERS.de!(entries.de!, 'kongreß')).toBeDefined();
   });
 
   it('returns undefined for words without ß', () => {
-    expect(WORD_RESOLVERS.de!(de, 'das')).toBeUndefined();
+    expect(WORD_RESOLVERS.de!(entries.de!, 'das')).toBeUndefined();
   });
 });
 
 describe('Japanese kana resolver', () => {
   it('resolves single kana characters', () => {
-    const result = WORD_RESOLVERS.ja!(ja, 'かた');
+    const result = WORD_RESOLVERS.ja!(entries.ja!, 'かた');
     expect(result).toBeDefined();
     expect(result!.length).toBeGreaterThan(0);
   });
 
   it('prefers 2-char combined kana', () => {
-    expect(WORD_RESOLVERS.ja!(ja, 'きゃ')).toBeDefined();
+    expect(WORD_RESOLVERS.ja!(entries.ja!, 'きゃ')).toBeDefined();
   });
 
   it('falls back to 1-char when 2-char not found', () => {
-    expect(WORD_RESOLVERS.ja!(ja, 'きた')).toBeDefined();
+    expect(WORD_RESOLVERS.ja!(entries.ja!, 'きた')).toBeDefined();
   });
 
   it('skips structural markers (っ, ー)', () => {
-    expect(WORD_RESOLVERS.ja!(ja, 'かっ')).toBeDefined();
+    expect(WORD_RESOLVERS.ja!(entries.ja!, 'かっ')).toBeDefined();
   });
 
   it('returns empty for only structural markers', () => {
-    expect(WORD_RESOLVERS.ja!(ja, 'っー')).toEqual([]);
+    expect(WORD_RESOLVERS.ja!(entries.ja!, 'っー')).toEqual([]);
   });
 
   it('returns undefined for characters not in dict', () => {
-    expect(WORD_RESOLVERS.ja!(ja, '㊀')).toBeUndefined();
+    expect(WORD_RESOLVERS.ja!(entries.ja!, '㊀')).toBeUndefined();
   });
 });
 
@@ -145,11 +92,11 @@ describe('Swedish resolver', () => {
     ['hundar', 'strips -ar suffix'],
     ['barnens', 'handles recursive genitive -s'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.sv!(sv, word)).toBeDefined();
+    expect(WORD_RESOLVERS.sv!(entries.sv!, word)).toBeDefined();
   });
 
   it('returns undefined for unresolvable words', () => {
-    expect(WORD_RESOLVERS.sv!(sv, 'xyz')).toBeUndefined();
+    expect(WORD_RESOLVERS.sv!(entries.sv!, 'xyz')).toBeUndefined();
   });
 });
 
@@ -159,12 +106,11 @@ describe('Romanian resolver', () => {
     ['nțeleg', 'restores n- prefix to în-'],
     ['mpart', 'prepends î for fragments like mpart → împart'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.ro!(ro, word)).toBeDefined();
+    expect(WORD_RESOLVERS.ro!(entries.ro!, word)).toBeDefined();
   });
 
   it('returns undefined for unresolvable words', () => {
-    const entries = { test: ['T'] };
-    expect(WORD_RESOLVERS.ro!(entries, 'xyz')).toBeUndefined();
+    expect(WORD_RESOLVERS.ro!(entries.ro!, 'xyz')).toBeUndefined();
   });
 });
 
@@ -183,7 +129,7 @@ describe('Esperanto resolver', () => {
     ['laboristo', 'strips derivational -isto'],
     ['laborisj', 'strips -j then continues to verb ending'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.eo!(eo, word)).toBeDefined();
+    expect(WORD_RESOLVERS.eo!(entries.eo!, word)).toBeDefined();
   });
 
   it.each([
@@ -194,12 +140,12 @@ describe('Esperanto resolver', () => {
       'prefix with recursive lemmatization',
     ],
     ['laborisj', { labori: ['L', 'AE', 'B'] }, ['L', 'AE', 'B'], '-j fallthrough then verb ending'],
-  ])('controlled: %s (%s)', (word, entries, expected) => {
-    expect(WORD_RESOLVERS.eo!(entries, word)).toEqual(expected);
+  ])('controlled: %s (%s)', (word, ctrlEntries, expected) => {
+    expect(WORD_RESOLVERS.eo!(ctrlEntries, word)).toEqual(expected);
   });
 
   it('returns undefined for prefix stripping failure', () => {
-    expect(WORD_RESOLVERS.eo!(eo, 'malxyz')).toBeUndefined();
+    expect(WORD_RESOLVERS.eo!(entries.eo!, 'malxyz')).toBeUndefined();
   });
 });
 
@@ -212,7 +158,7 @@ describe('Finnish resolver', () => {
     ['talossansa', 'strips possessive -nsa then case (two-level)'],
     ['puhunut', 'strips verb suffix -nut'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.fi!(fi, word)).toBeDefined();
+    expect(WORD_RESOLVERS.fi!(entries.fi!, word)).toBeDefined();
   });
 
   it.each([
@@ -224,8 +170,8 @@ describe('Finnish resolver', () => {
     ['halkat', 'hala', ['HH', 'AE', 'L', 'AE'], 'lk→l'],
     ['parkat', 'para', ['P', 'AE', 'R', 'AE'], 'rk→r'],
   ])('applies consonant gradation %s (%s)', (word, dictKey, phonemes) => {
-    const entries = { [dictKey]: phonemes };
-    expect(WORD_RESOLVERS.fi!(entries, word)).toEqual(phonemes);
+    const ctrlEntries = { [dictKey]: phonemes };
+    expect(WORD_RESOLVERS.fi!(ctrlEntries, word)).toEqual(phonemes);
   });
 
   it.each([
@@ -235,8 +181,8 @@ describe('Finnish resolver', () => {
     ['langat', 'lanka', ['L', 'AE', 'N', 'K', 'AE'], 'ng→nk'],
     ['kammat', 'kampa', ['K', 'AE', 'M', 'P', 'AE'], 'mm→mp'],
   ])('applies consonant strengthening %s (%s)', (word, dictKey, phonemes) => {
-    const entries = { [dictKey]: phonemes };
-    expect(WORD_RESOLVERS.fi!(entries, word)).toEqual(phonemes);
+    const ctrlEntries = { [dictKey]: phonemes };
+    expect(WORD_RESOLVERS.fi!(ctrlEntries, word)).toEqual(phonemes);
   });
 });
 
@@ -249,11 +195,11 @@ describe('Norwegian Bokmål resolver', () => {
     ['hunder', 'strips -er suffix'],
     ['maalen', 'two-level: suffix then modernize'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.nb!(nb, word)).toBeDefined();
+    expect(WORD_RESOLVERS.nb!(entries.nb!, word)).toBeDefined();
   });
 
   it('returns undefined for unresolvable words', () => {
-    expect(WORD_RESOLVERS.nb!(nb, 'zzz')).toBeUndefined();
+    expect(WORD_RESOLVERS.nb!(entries.nb!, 'zzz')).toBeUndefined();
   });
 });
 
@@ -264,7 +210,7 @@ describe('Malay resolver', () => {
     ['buatkan', 'strips suffix -kan'],
     ['perbaiki', 'strips prefix per- + suffix -i'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.ma!(ma, word)).toBeDefined();
+    expect(WORD_RESOLVERS.ma!(entries.ma!, word)).toBeDefined();
   });
 });
 
@@ -274,7 +220,7 @@ describe('Persian resolver', () => {
     ['می\u200Cکند', 'splits ZWNJ compounds'],
     ['می\u200Cکنند', 'strips verb endings with می prefix'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.fa!(fa, word)).toBeDefined();
+    expect(WORD_RESOLVERS.fa!(entries.fa!, word)).toBeDefined();
   });
 
   it.each([
@@ -290,8 +236,8 @@ describe('Persian resolver', () => {
       ['M', 'IY', 'K'],
       'joins ZWNJ parts when joined form is in dict',
     ],
-  ])('controlled: %s (%s)', (word, entries, expected) => {
-    expect(WORD_RESOLVERS.fa!(entries, word)).toEqual(expected);
+  ])('controlled: %s (%s)', (word, ctrlEntries, expected) => {
+    expect(WORD_RESOLVERS.fa!(ctrlEntries, word)).toEqual(expected);
   });
 });
 
@@ -304,12 +250,12 @@ describe('Swahili resolver', () => {
     ['nilipendisha', 'strips derivational suffix -isha with prefix'],
     ['nilisomisha', 'strips derivational suffix -isha with prefix + ku-form'],
   ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.sw!(sw, word)).toBeDefined();
+    expect(WORD_RESOLVERS.sw!(entries.sw!, word)).toBeDefined();
   });
 
   it('strips derivational suffix without prefix', () => {
-    const entries = { paka: ['P', 'AE', 'K', 'AE'] };
-    expect(WORD_RESOLVERS.sw!(entries, 'pakika')).toEqual(['P', 'AE', 'K', 'AE']);
+    const ctrlEntries = { paka: ['P', 'AE', 'K', 'AE'] };
+    expect(WORD_RESOLVERS.sw!(ctrlEntries, 'pakika')).toEqual(['P', 'AE', 'K', 'AE']);
   });
 });
 
