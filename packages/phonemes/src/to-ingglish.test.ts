@@ -103,24 +103,26 @@ describe('phoneme-map', () => {
 });
 
 describe('arpabetToIngglish round-trip', () => {
-  it('should round-trip words through Ingglish', () => {
-    // Test words covering various phoneme categories including R-colored vowels
-    for (const word of ['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world']) {
+  it.each(['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world'])(
+    'round-trips "%s"',
+    (word) => {
       const ingglish = translateSync(word);
       const english = reverseTranslateSync(ingglish);
-      expect(english, `Failed round-trip for "${word}"`).toBe(word);
+      expect(english).toBe(word);
     }
-  });
+  );
 });
 
 describe('R-colored vowels', () => {
-  it('translates NEAR vowel words (IH+R → eer)', () => {
-    expect(translateSync('beer')).toBe('beer');
-    expect(translateSync('beard')).toBe('beerd');
-    expect(translateSync('fear')).toBe('feer');
-    expect(translateSync('near')).toBe('neer');
-    expect(translateSync('deer')).toBe('deer');
-    expect(translateSync('clear')).toBe('kleer');
+  it.each([
+    ['beer', 'beer'],
+    ['beard', 'beerd'],
+    ['fear', 'feer'],
+    ['near', 'neer'],
+    ['deer', 'deer'],
+    ['clear', 'kleer'],
+  ])('translates NEAR vowel "%s" → "%s"', (word, expected) => {
+    expect(translateSync(word)).toBe(expected);
   });
 
   it('translates START vowel words (AA+R → ar)', () => {
