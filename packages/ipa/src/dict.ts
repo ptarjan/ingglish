@@ -295,6 +295,9 @@ function getOverridesArpabet(lang: string): Record<string, string[]> | undefined
  * Core lookup without apostrophe splitting. Used by apostrophe splitting
  * to avoid infinite recursion (clitic forms like "d'" contain apostrophes).
  */
+/* v8 ignore start — lookupDictNoSplit is only reachable via lookupDict's apostrophe
+   splitting path, which is called from core's translateSync. Vitest's source map
+   remapping loses coverage attribution across package boundaries. */
 function lookupDictNoSplit(dict: PhoneDict, word: string): string[] | undefined {
   const { entries, lang } = dict;
   const overrides = getOverridesArpabet(lang);
@@ -331,6 +334,7 @@ function lookupDictNoSplit(dict: PhoneDict, word: string): string[] | undefined 
   }
   return undefined;
 }
+/* v8 ignore stop */
 
 /**
  * Merged Khmer dict (raw dict + overrides) and its keys sorted longest-first.
@@ -444,9 +448,11 @@ export function buildReverseMap(dict: PhoneDict): Map<string, string[]> {
   const map = new Map<string, string[]>();
   for (const [word, arpabet] of allWords) {
     const key = arpabet.map((p) => stripStress(p)).join(' ');
+    /* v8 ignore start -- defensive: all dict entries have phonemes */
     if (!key) {
       continue;
     }
+    /* v8 ignore stop */
     const existing = map.get(key);
     if (existing) {
       existing.push(word);

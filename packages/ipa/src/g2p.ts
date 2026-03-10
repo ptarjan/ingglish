@@ -80,7 +80,9 @@ function addPenultimateStress(ipa: string): string {
 
   // Monosyllabic or empty → stress on first (and only) syllable
   if (vowelPositions.length <= 1) {
+    /* v8 ignore start -- empty-string branch is defensive */
     return ipa ? 'ˈ' + ipa : ipa;
+    /* v8 ignore stop */
   }
 
   // Find the penultimate vowel
