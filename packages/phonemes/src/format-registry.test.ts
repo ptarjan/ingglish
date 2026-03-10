@@ -52,7 +52,9 @@ describe('format-registry', () => {
         scenario: 'defaults to true when not specified',
       },
     ])('$scenario', ({ expected, format, options }) => {
-      if (options) {registerFormat(format, options);}
+      if (options) {
+        registerFormat(format, options);
+      }
       expect(getFormatIsLatinScript(format)).toBe(expected);
     });
   });
@@ -100,7 +102,9 @@ describe('format-registry', () => {
         scenario: 'falls back to label when no native label',
       },
     ])('$scenario', ({ expected, format, options }) => {
-      if (options) {registerFormat(format, options);}
+      if (options) {
+        registerFormat(format, options);
+      }
       expect(getFormatNativeLabel(format)).toBe(expected);
     });
   });
@@ -126,7 +130,9 @@ describe('format-registry', () => {
         scenario: 'respects explicit preservesCase override',
       },
     ])('$scenario', ({ expected, format, options }) => {
-      if (options) {registerFormat(format, options);}
+      if (options) {
+        registerFormat(format, options);
+      }
       expect(getFormatPreservesCase(format)).toBe(expected);
     });
   });
