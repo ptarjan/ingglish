@@ -13,59 +13,53 @@ import {
 
 describe('phoneme-map', () => {
   describe('ARPABET_MAP', () => {
-    it('should have all vowels mapped', () => {
-      const vowels = [
-        'AA',
-        'AE',
-        'AH',
-        'AO',
-        'AW',
-        'AY',
-        'EH',
-        'ER',
-        'EY',
-        'IH',
-        'IY',
-        'OW',
-        'OY',
-        'UH',
-        'UW',
-      ];
-      for (const vowel of vowels) {
-        expect(ARPABET_MAP[vowel]).toBeDefined();
-      }
+    it.each([
+      'AA',
+      'AE',
+      'AH',
+      'AO',
+      'AW',
+      'AY',
+      'EH',
+      'ER',
+      'EY',
+      'IH',
+      'IY',
+      'OW',
+      'OY',
+      'UH',
+      'UW',
+    ])('maps vowel %s', (vowel) => {
+      expect(ARPABET_MAP[vowel]).toBeDefined();
     });
 
-    it('should have all consonants mapped', () => {
-      const consonants = [
-        'B',
-        'CH',
-        'D',
-        'DH',
-        'F',
-        'G',
-        'HH',
-        'JH',
-        'K',
-        'L',
-        'M',
-        'N',
-        'NG',
-        'P',
-        'R',
-        'S',
-        'SH',
-        'T',
-        'TH',
-        'V',
-        'W',
-        'Y',
-        'Z',
-        'ZH',
-      ];
-      for (const consonant of consonants) {
-        expect(ARPABET_MAP[consonant]).toBeDefined();
-      }
+    it.each([
+      'B',
+      'CH',
+      'D',
+      'DH',
+      'F',
+      'G',
+      'HH',
+      'JH',
+      'K',
+      'L',
+      'M',
+      'N',
+      'NG',
+      'P',
+      'R',
+      'S',
+      'SH',
+      'T',
+      'TH',
+      'V',
+      'W',
+      'Y',
+      'Z',
+      'ZH',
+    ])('maps consonant %s', (consonant) => {
+      expect(ARPABET_MAP[consonant]).toBeDefined();
     });
 
     it('should have 39 total phonemes (15 vowels + 24 consonants)', () => {

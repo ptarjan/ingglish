@@ -50,70 +50,80 @@ describe('non-Latin script translation of common words', () => {
 });
 
 describe('Shavian word translations', () => {
-  it('should translate common words to Shavian', () => {
-    expect(translateSync('hello', { format: 'shavian' })).toBe('𐑣𐑩𐑤𐑴');
-    expect(translateSync('world', { format: 'shavian' })).toBe('𐑢𐑻𐑤𐑛');
-    expect(translateSync('the', { format: 'shavian' })).toBe('𐑞𐑩');
-    expect(translateSync('cat', { format: 'shavian' })).toBe('𐑒𐑨𐑑');
+  it.each([
+    ['hello', '𐑣𐑩𐑤𐑴'],
+    ['world', '𐑢𐑻𐑤𐑛'],
+    ['the', '𐑞𐑩'],
+    ['cat', '𐑒𐑨𐑑'],
+  ])('translates "%s" to Shavian', (word, expected) => {
+    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
   });
 
-  it('should translate all consonant sounds to Shavian', () => {
-    expect(translateSync('pen', { format: 'shavian' })).toBe('𐑐𐑧𐑯'); // P 𐑐, N 𐑯
-    expect(translateSync('bat', { format: 'shavian' })).toBe('𐑚𐑨𐑑'); // B 𐑚
-    expect(translateSync('dog', { format: 'shavian' })).toBe('𐑛𐑷𐑜'); // D 𐑛, G 𐑜
-    expect(translateSync('fish', { format: 'shavian' })).toBe('𐑓𐑦𐑖'); // F 𐑓, SH 𐑖
-    expect(translateSync('very', { format: 'shavian' })).toBe('𐑝𐑺𐑰'); // V 𐑝
-    expect(translateSync('zoo', { format: 'shavian' })).toBe('𐑟𐑵'); // Z 𐑟
-    expect(translateSync('measure', { format: 'shavian' })).toBe('𐑥𐑧𐑠𐑻'); // ZH 𐑠, M 𐑥
-    expect(translateSync('church', { format: 'shavian' })).toBe('𐑗𐑻𐑗'); // CH 𐑗
-    expect(translateSync('judge', { format: 'shavian' })).toBe('𐑡𐑳𐑡'); // JH 𐑡
-    expect(translateSync('red', { format: 'shavian' })).toBe('𐑮𐑧𐑛'); // R 𐑮
-    expect(translateSync('yes', { format: 'shavian' })).toBe('𐑘𐑧𐑕'); // Y 𐑘, S 𐑕
+  it.each([
+    ['pen', '𐑐𐑧𐑯'],
+    ['bat', '𐑚𐑨𐑑'],
+    ['dog', '𐑛𐑷𐑜'],
+    ['fish', '𐑓𐑦𐑖'],
+    ['very', '𐑝𐑺𐑰'],
+    ['zoo', '𐑟𐑵'],
+    ['measure', '𐑥𐑧𐑠𐑻'],
+    ['church', '𐑗𐑻𐑗'],
+    ['judge', '𐑡𐑳𐑡'],
+    ['red', '𐑮𐑧𐑛'],
+    ['yes', '𐑘𐑧𐑕'],
+  ])('translates "%s" consonant to Shavian', (word, expected) => {
+    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
   });
 
-  it('should translate all vowel sounds to Shavian', () => {
-    expect(translateSync('hot', { format: 'shavian' })).toBe('𐑣𐑭𐑑'); // AA 𐑭
-    expect(translateSync('bed', { format: 'shavian' })).toBe('𐑚𐑧𐑛'); // EH 𐑧
-    expect(translateSync('book', { format: 'shavian' })).toBe('𐑚𐑫𐑒'); // UH 𐑫
-    expect(translateSync('see', { format: 'shavian' })).toBe('𐑕𐑰'); // IY 𐑰
-    expect(translateSync('day', { format: 'shavian' })).toBe('𐑛𐑱'); // EY 𐑱
-    expect(translateSync('my', { format: 'shavian' })).toBe('𐑥𐑲'); // AY 𐑲
-    expect(translateSync('cup', { format: 'shavian' })).toBe('𐑒𐑳𐑐'); // AH1 𐑳
-    expect(translateSync('go', { format: 'shavian' })).toBe('𐑜𐑴'); // OW 𐑴
-    expect(translateSync('cow', { format: 'shavian' })).toBe('𐑒𐑬'); // AW 𐑬
-    expect(translateSync('boy', { format: 'shavian' })).toBe('𐑚𐑶'); // OY 𐑶
-    expect(translateSync('law', { format: 'shavian' })).toBe('𐑤𐑷'); // AO 𐑷
-    expect(translateSync('not', { format: 'shavian' })).toBe('𐑯𐑭𐑑'); // AA 𐑭
+  it.each([
+    ['hot', '𐑣𐑭𐑑'],
+    ['bed', '𐑚𐑧𐑛'],
+    ['book', '𐑚𐑫𐑒'],
+    ['see', '𐑕𐑰'],
+    ['day', '𐑛𐑱'],
+    ['my', '𐑥𐑲'],
+    ['cup', '𐑒𐑳𐑐'],
+    ['go', '𐑜𐑴'],
+    ['cow', '𐑒𐑬'],
+    ['boy', '𐑚𐑶'],
+    ['law', '𐑤𐑷'],
+    ['not', '𐑯𐑭𐑑'],
+  ])('translates "%s" vowel to Shavian', (word, expected) => {
+    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
   });
 
-  it('should translate R-colored words to Shavian ligatures', () => {
-    expect(translateSync('star', { format: 'shavian' })).toBe('𐑕𐑑𐑸'); // AA+R 𐑸
-    expect(translateSync('more', { format: 'shavian' })).toBe('𐑥𐑹'); // AO+R 𐑹
-    expect(translateSync('care', { format: 'shavian' })).toBe('𐑒𐑺'); // EH+R 𐑺
-    expect(translateSync('beer', { format: 'shavian' })).toBe('𐑚𐑽'); // IH+R 𐑽
-    expect(translateSync('letter', { format: 'shavian' })).toBe('𐑤𐑧𐑑𐑻'); // ER 𐑻
+  it.each([
+    ['star', '𐑕𐑑𐑸'],
+    ['more', '𐑥𐑹'],
+    ['care', '𐑒𐑺'],
+    ['beer', '𐑚𐑽'],
+    ['letter', '𐑤𐑧𐑑𐑻'],
+  ])('translates R-colored "%s" to Shavian', (word, expected) => {
+    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
   });
 
   it('should translate NG cluster words to Shavian', () => {
     expect(translateSync('think', { format: 'shavian' })).toBe('𐑔𐑦𐑙𐑒');
   });
 
-  it('should round-trip Shavian translations', () => {
-    const words = ['hello', 'world', 'cat', 'dog', 'fish', 'love', 'time'];
-    for (const word of words) {
+  it.each(['hello', 'world', 'cat', 'dog', 'fish', 'love', 'time'])(
+    'round-trips "%s" through Shavian',
+    (word) => {
       const shavian = translateSync(word, { format: 'shavian' });
       const back = reverseTranslateSyncWithMapping(shavian, { format: 'shavian' });
       const result = back.find((t) => t.isWord);
-      expect(result?.translated.toLowerCase(), `${word} → ${shavian}`).toBe(word);
+      expect(result?.translated.toLowerCase()).toBe(word);
     }
-  });
+  );
 });
 
 describe('Deseret word translations', () => {
-  it('should translate common words to Deseret', () => {
-    expect(translateSync('hello', { format: 'deseret' })).toBe('𐐸𐐱𐑊𐐬');
-    expect(translateSync('cat', { format: 'deseret' })).toBe('𐐿𐐰𐐻');
-    expect(translateSync('the', { format: 'deseret' })).toBe('𐑄𐐱');
+  it.each([
+    ['hello', '𐐸𐐱𐑊𐐬'],
+    ['cat', '𐐿𐐰𐐻'],
+    ['the', '𐑄𐐱'],
+  ])('translates "%s" to Deseret', (word, expected) => {
+    expect(translateSync(word, { format: 'deseret' })).toBe(expected);
   });
 
   it('should translate all consonant sounds to Deseret', () => {
