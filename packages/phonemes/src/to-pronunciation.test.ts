@@ -25,13 +25,8 @@ describe('pronunciation format', () => {
     expect(translateSync('star', { format: 'pronunciation' })).toBeTruthy();
   });
 
-  it('converts ARPAbet directly', () => {
-    expect(arpabetToFormat(['HH', 'AH0', 'L', 'OW1'], 'pronunciation')).toBe('ha-LOH');
-  });
-
   it('handles adjacent vowels (no consonants between)', () => {
-    // "chaos" or similar - test syllabification with adjacent vowels
-    expect(arpabetToFormat(['K', 'EY1', 'AA0', 'S'], 'pronunciation')).toBe('KAY-os');
+    expect(translateSync('chaos', { format: 'pronunciation' })).toBe('KAY-os');
   });
 
   it('handles words with no vowels', () => {

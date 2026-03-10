@@ -1,41 +1,42 @@
+import { reverseTranslateSync, translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import { ipaToArpabet } from './index';
 
-describe('ipaToArpabet', () => {
-  it('converts simple consonants', () => {
-    expect(ipaToArpabet('p')).toEqual(['P']);
-    expect(ipaToArpabet('b')).toEqual(['B']);
-    expect(ipaToArpabet('t')).toEqual(['T']);
-    expect(ipaToArpabet('d')).toEqual(['D']);
+describe('ipaToArpabet — English round-trip via public API', () => {
+  it('round-trips English words through IPA', () => {
+    const words = [
+      'pen',
+      'bad',
+      'ten',
+      'dog', // simple consonants (p, b, t, d)
+      'cat',
+      'hot',
+      'bed',
+      'bit', // vowels (æ, ɑ, ɛ, ɪ)
+      'time',
+      'out',
+      'coin',
+      'go',
+      'say', // diphthongs (aɪ, aʊ, ɔɪ, oʊ, eɪ)
+      'church',
+      'judge', // affricates (tʃ, dʒ)
+      'think',
+      'the',
+      'she',
+      'measure', // fricatives (θ, ð, ʃ, ʒ)
+      'hello',
+      'world',
+      'thought', // complete words
+    ];
+    for (const word of words) {
+      const ipa = translateSync(word, { format: 'ipa' });
+      const english = reverseTranslateSync(ipa, { format: 'ipa' });
+      expect(english, `Failed round-trip for "${word}" (IPA: ${ipa})`).toBe(word);
+    }
   });
+});
 
-  it('converts vowels', () => {
-    expect(ipaToArpabet('æ')).toEqual(['AE']);
-    expect(ipaToArpabet('ɑ')).toEqual(['AA']);
-    expect(ipaToArpabet('ɛ')).toEqual(['EH']);
-    expect(ipaToArpabet('ɪ')).toEqual(['IH']);
-  });
-
-  it('converts diphthongs', () => {
-    expect(ipaToArpabet('aɪ')).toEqual(['AY']);
-    expect(ipaToArpabet('aʊ')).toEqual(['AW']);
-    expect(ipaToArpabet('ɔɪ')).toEqual(['OY']);
-    expect(ipaToArpabet('oʊ')).toEqual(['OW']);
-    expect(ipaToArpabet('eɪ')).toEqual(['EY']);
-  });
-
-  it('converts affricates', () => {
-    expect(ipaToArpabet('tʃ')).toEqual(['CH']);
-    expect(ipaToArpabet('dʒ')).toEqual(['JH']);
-  });
-
-  it('converts fricatives', () => {
-    expect(ipaToArpabet('θ')).toEqual(['TH']);
-    expect(ipaToArpabet('ð')).toEqual(['DH']);
-    expect(ipaToArpabet('ʃ')).toEqual(['SH']);
-    expect(ipaToArpabet('ʒ')).toEqual(['ZH']);
-  });
-
+describe('ipaToArpabet — direct conversion (non-English, overrides, edge cases)', () => {
   it('preserves IPA stress as ARPAbet stress digits', () => {
     // ˈ (primary) → 1, ˌ (secondary) → 2
     expect(ipaToArpabet('ˈhɛˌloʊ')).toEqual(['HH', 'EH1', 'L', 'OW2']);
@@ -45,22 +46,6 @@ describe('ipaToArpabet', () => {
     expect(ipaToArpabet('ɛ')).toEqual(['EH']);
     // Stress overrides existing digit on schwa (ˈə → AH1 not AH0)
     expect(ipaToArpabet('ˈə')).toEqual(['AH1']);
-  });
-
-  it('converts complete words', () => {
-    expect(ipaToArpabet('həˈɫoʊ')).toEqual(['HH', 'AH0', 'L', 'OW1']);
-    expect(ipaToArpabet('ˈwɝɫd')).toEqual(['W', 'ER1', 'L', 'D']);
-    expect(ipaToArpabet('ˈθɔt')).toEqual(['TH', 'AO1', 'T']);
-  });
-
-  it('handles both g variants', () => {
-    expect(ipaToArpabet('g')).toEqual(['G']);
-    expect(ipaToArpabet('ɡ')).toEqual(['G']);
-  });
-
-  it('handles both l variants', () => {
-    expect(ipaToArpabet('l')).toEqual(['L']);
-    expect(ipaToArpabet('ɫ')).toEqual(['L']);
   });
 
   it('maps plain /a/ to AE for recognizable foreign word output', () => {

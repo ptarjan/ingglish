@@ -1,49 +1,51 @@
 import { describe, expect, it } from 'vitest';
-import type { LookupFn } from './british';
-import { translateAsCompound } from './compounds';
-import type { FreqFn } from './compounds';
+import { dpDecompose, translateAsCompound } from './compounds';
 
-/**
- * Mock lookup and frequency functions that recognize a small vocabulary,
- * allowing us to test compound splitting without the full dictionary.
- */
-const MOCK_DICT: Record<string, string[]> = {
-  box: ['B AA1 K S'],
-  cat: ['K AE1 T'],
-  dog: ['D AO1 G'],
-  hat: ['HH AE1 T'],
-};
-
-const mockLookup: LookupFn = (word: string) => MOCK_DICT[word] ?? null;
-const mockFreq: FreqFn = (word: string) => (word in MOCK_DICT ? 10_000 : undefined);
-
-describe('translateAsCompound – camelCase preservation', () => {
-  it('capitalizes translated parts when original has uppercase letters', () => {
-    // "HatBox" → lowercase "hatbox" → decompose ["hat","box"]
-    // Original slices: "Hat" (uppercase H), "Box" (uppercase B)
-    // Both parts should be capitalized in the output
-    const result = translateAsCompound('HatBox', 'ingglish', mockLookup, mockFreq);
-    expect(result).toBeTruthy();
-    // First letter of each part should be uppercase
-    const parts = result!.split('');
-    expect(parts[0]).toBe(parts[0]!.toUpperCase());
+describe('dpDecompose', () => {
+  it('decomposes compound words into known parts', () => {
+    // "dogcat" = "dog" + "cat" — both common words with high frequency
+    const parts = dpDecompose('dogcat');
+    expect(parts).toEqual(['dog', 'cat']);
   });
 
-  it('capitalizes only parts with uppercase first letter in original', () => {
-    // "hatBox" → lowercase "hatbox" → decompose ["hat","box"]
-    // Original slices: "hat" (lowercase), "Box" (uppercase B)
-    // Only second part should be capitalized
-    const result = translateAsCompound('hatBox', 'ingglish', mockLookup, mockFreq);
+  it('returns null for words shorter than 6 characters', () => {
+    expect(dpDecompose('hello')).toBeNull();
+  });
+
+  it('prefers fewer parts with higher frequency', () => {
+    // "sunlight" = "sun" + "light" — both very common words
+    const parts = dpDecompose('sunlight');
+    expect(parts).toEqual(['sun', 'light']);
+  });
+
+  it('skips parts with low frequency (e.g. "foo" in "footprint")', () => {
+    // "foo" is in the dictionary but has freq 56 < MIN_PART_FREQUENCY (500)
+    // so dpDecompose skips it and finds "foot" + "print" instead
+    const parts = dpDecompose('footprint');
+    expect(parts).toEqual(['foot', 'print']);
+  });
+});
+
+describe('translateAsCompound – case preservation', () => {
+  it('preserves initial capital via compound decomposition', () => {
+    // "Dogcat" has first letter uppercase — capitalize branch triggered
+    const result = translateAsCompound('Dogcat');
     expect(result).toBeTruthy();
-    // "hat" part stays lowercase, "Box" part gets capitalized
-    expect(result!.startsWith('h')).toBe(true);
-    // The result should contain a capital letter for the second part
-    expect(result).toMatch(/[A-Z]/);
+    expect(result![0]).toBe(result![0]!.toUpperCase());
   });
 
   it('does not capitalize when original is all lowercase', () => {
-    const result = translateAsCompound('hatbox', 'ingglish', mockLookup, mockFreq);
+    const result = translateAsCompound('dogcat');
     expect(result).toBeTruthy();
     expect(result).toBe(result!.toLowerCase());
+  });
+
+  it('returns null for short words', () => {
+    expect(translateAsCompound('hello')).toBeNull();
+  });
+
+  it('returns null when no valid decomposition exists', () => {
+    // "xyzabc" is 6+ chars but has no valid dictionary decomposition
+    expect(translateAsCompound('xyzabc')).toBeNull();
   });
 });

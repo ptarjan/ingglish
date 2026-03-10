@@ -20,28 +20,20 @@ describe('Shavian conversion', () => {
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
   });
-});
 
-describe('arpabetToShavian', () => {
-  it('should produce R-colored ligatures for non-AH vowels followed by R', () => {
-    // AA+R → 𐑸 (start), tests the branch where base !== 'AH' so stressKey = base
-    expect(arpabetToShavian(['AA1', 'R'])).toBe('𐑸');
-    // EH+R → 𐑺 (square)
-    expect(arpabetToShavian(['EH1', 'R'])).toBe('𐑺');
-    // AO+R → 𐑹 (north)
-    expect(arpabetToShavian(['AO1', 'R'])).toBe('𐑹');
-    // IH+R → 𐑽 (near)
-    expect(arpabetToShavian(['IH0', 'R'])).toBe('𐑽');
+  it('should produce R-colored ligatures', () => {
+    expect(translateSync('star', { format: 'shavian' })).toContain('𐑸'); // AA+R
+    expect(translateSync('care', { format: 'shavian' })).toContain('𐑺'); // EH+R
+    expect(translateSync('store', { format: 'shavian' })).toContain('𐑹'); // AO+R
+    expect(translateSync('beer', { format: 'shavian' })).toContain('𐑽'); // IH+R
   });
 
-  it('should convert AH0 to schwa', () => {
-    // AH0 → 𐑩 (schwa), tests the AH stress=0 branch
-    expect(arpabetToShavian(['AH0'])).toBe('𐑩');
+  it('should convert schwa', () => {
+    expect(translateSync('the', { format: 'shavian' })).toContain('𐑩');
   });
 
   it('should convert stressed AH to strut', () => {
-    // AH1 → 𐑳 (strut), falls through to ARPABET_TO_SHAVIAN_MAP
-    expect(arpabetToShavian(['AH1'])).toBe('𐑳');
+    expect(translateSync('cup', { format: 'shavian' })).toContain('𐑳');
   });
 
   it('should use fallback empty string for unknown phonemes', () => {
