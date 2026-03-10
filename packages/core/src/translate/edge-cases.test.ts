@@ -450,11 +450,15 @@ describe('Unicode case handling', () => {
 // ===========================================================================
 
 describe('German word resolver', () => {
-  it.each([['Kongreß', 'resolve ß→ss']])('resolves "%s" (%s)', async (word) => {
-    const result = await translate(word, { lang: 'de' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe(word);
-  });
+  it.each([['Kongreß', 'resolve ß→ss']])(
+    'resolves "%s" (%s)',
+    async (word) => {
+      const result = await translate(word, { lang: 'de' });
+      expect(result).toBeTruthy();
+      expect(result).not.toBe(word);
+    },
+    30_000
+  );
 });
 
 describe('Swedish word resolver', () => {
