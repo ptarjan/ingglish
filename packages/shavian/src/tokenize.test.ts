@@ -30,12 +30,10 @@ describe('Shavian tokenization', () => {
     expect(shavian).toContain('!');
   });
 
-  it('round-trips several words', () => {
-    for (const word of ['the', 'hello', 'world', 'think']) {
-      const shavian = translateSync(word, { format: 'shavian' });
-      const english = reverseTranslateSync(shavian, { format: 'shavian' });
-      expect(english, `Failed round-trip for "${word}"`).toBe(word);
-    }
+  it.each(['the', 'hello', 'world', 'think'])('round-trips "%s" through Shavian', (word) => {
+    const shavian = translateSync(word, { format: 'shavian' });
+    const english = reverseTranslateSync(shavian, { format: 'shavian' });
+    expect(english).toBe(word);
   });
 });
 
