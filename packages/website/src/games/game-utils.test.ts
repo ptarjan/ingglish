@@ -2,20 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { getTierLabel, makeScoreLabel } from './game-utils';
 
 describe('getTierLabel', () => {
-  it('returns Easy for tier 1', () => {
-    expect(getTierLabel(1)).toBe('Easy');
-  });
-
-  it('returns Medium for tier 2', () => {
-    expect(getTierLabel(2)).toBe('Medium');
-  });
-
-  it('returns Hard for tier 3', () => {
-    expect(getTierLabel(3)).toBe('Hard');
-  });
-
-  it('returns Hard for any tier above 3', () => {
-    expect(getTierLabel(5)).toBe('Hard');
+  it.each<{ expected: string; tier: number }>([
+    { expected: 'Easy', tier: 1 },
+    { expected: 'Medium', tier: 2 },
+    { expected: 'Hard', tier: 3 },
+    { expected: 'Hard', tier: 5 },
+  ])('returns $expected for tier $tier', ({ expected, tier }) => {
+    expect(getTierLabel(tier)).toBe(expected);
   });
 });
 
@@ -28,35 +21,16 @@ describe('makeScoreLabel', () => {
   };
   const getLabel = makeScoreLabel(labels);
 
-  it('returns great label at 90%', () => {
-    expect(getLabel(90)).toBe('Amazing!');
-  });
-
-  it('returns great label at 100%', () => {
-    expect(getLabel(100)).toBe('Amazing!');
-  });
-
-  it('returns good label at 70%', () => {
-    expect(getLabel(70)).toBe('Good job!');
-  });
-
-  it('returns good label at 89%', () => {
-    expect(getLabel(89)).toBe('Good job!');
-  });
-
-  it('returns ok label at 50%', () => {
-    expect(getLabel(50)).toBe('Not bad!');
-  });
-
-  it('returns ok label at 69%', () => {
-    expect(getLabel(69)).toBe('Not bad!');
-  });
-
-  it('returns low label at 49%', () => {
-    expect(getLabel(49)).toBe('Keep trying!');
-  });
-
-  it('returns low label at 0%', () => {
-    expect(getLabel(0)).toBe('Keep trying!');
+  it.each<{ expected: string; percentage: number }>([
+    { expected: 'Amazing!', percentage: 90 },
+    { expected: 'Amazing!', percentage: 100 },
+    { expected: 'Good job!', percentage: 70 },
+    { expected: 'Good job!', percentage: 89 },
+    { expected: 'Not bad!', percentage: 50 },
+    { expected: 'Not bad!', percentage: 69 },
+    { expected: 'Keep trying!', percentage: 49 },
+    { expected: 'Keep trying!', percentage: 0 },
+  ])('returns "$expected" at $percentage%', ({ expected, percentage }) => {
+    expect(getLabel(percentage)).toBe(expected);
   });
 });

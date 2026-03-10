@@ -14,22 +14,21 @@ describe('G2P basic rules', () => {
     expect(result).toBe('guhb');
   });
 
-  it('handles silent letters (KN)', () => {
-    // K should be silent before N
-    expect(g2p('knib')).toBe('nib');
+  it.each([
+    ['shug', /^sh/],
+    ['chub', /^ch/],
+    ['thub', /^th/],
+  ] as [string, RegExp][])('handles digraph in %s', (word, pattern) => {
+    expect(g2p(word)).toMatch(pattern);
   });
 
-  it('handles digraphs (SH, CH, TH)', () => {
-    expect(g2p('shug')).toMatch(/^sh/);
-    expect(g2p('chub')).toMatch(/^ch/);
-    expect(g2p('thub')).toMatch(/^th/);
-  });
-
-  it('handles word-initial silent letters (GN, KN, PN, PS)', () => {
-    expect(g2p('gnab')).toBe('nab');
-    expect(g2p('knib')).toBe('nib');
-    expect(g2p('pnib')).toBe('nib');
-    expect(g2p('psar')).toBe('sar');
+  it.each([
+    ['knib', 'nib'],
+    ['gnab', 'nab'],
+    ['pnib', 'nib'],
+    ['psar', 'sar'],
+  ])('handles word-initial silent letter in %s → %s', (word, expected) => {
+    expect(g2p(word)).toBe(expected);
   });
 
   it('handles doubled consonants (ZZ, TT)', () => {
