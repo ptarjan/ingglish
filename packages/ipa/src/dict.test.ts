@@ -70,26 +70,7 @@ describe('Khmer compound decomposition', () => {
   });
 });
 
-describe('language resolvers via translate', () => {
-  it.each([
-    ['daß', 'de', 'German ß normalization'],
-    ['flickorna', 'sv', 'Swedish suffix stripping'],
-    ['talossani', 'fi', 'Finnish morphology'],
-    ['laboris', 'eo', 'Esperanto morphology'],
-    ['băiatul', 'ro', 'Romanian suffix stripping'],
-    ['af', 'nb', 'Norwegian old orthography'],
-    ['memakan', 'ma', 'Malay prefix-suffix'],
-    ['میکند', 'fa', 'Persian verb forms'],
-    ['wanakula', 'sw', 'Swahili verb prefixes'],
-  ])(
-    '%s resolves via %s (%s)',
-    async (word, lang) => {
-      const result = await translate(word, { lang });
-      expect(result).toBeTruthy();
-    },
-    30_000
-  );
-});
+// Language resolvers are covered by packages/ipa/src/resolvers.test.ts
 
 describe('lookupDict edge cases', () => {
   it('matches curly apostrophe entries when word has straight apostrophe', () => {

@@ -12,7 +12,7 @@ import '@ingglish/ipa'; // registers 'ipa' format
 import '@ingglish/shavian'; // registers 'shavian' format
 import { convertIpaEntries, getLanguage } from '@ingglish/ipa';
 import './src/register-english'; // registers English word resolver + G2P + default loader
-import { setDictLoader, setLangDict } from './src/dict-loader';
+import { loadLangDict, setDictLoader, setLangDict } from './src/dict-loader';
 
 // Load all data before tests run in this worker
 // With isolate: false, this is shared across all test files
@@ -43,3 +43,7 @@ setDictLoader(async (lang) => {
   setLangDict(lang, dict);
   return dict;
 });
+
+// Pre-load non-English dicts used by tests (shared via isolate: false)
+const TEST_LANGS = ['de', 'es', 'fr', 'ja'];
+await Promise.all(TEST_LANGS.map((lang) => loadLangDict(lang)));
