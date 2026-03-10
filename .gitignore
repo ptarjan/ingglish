@@ -52,6 +52,9 @@ coverage/
 playwright-report/
 test-results/
 
+# Lighthouse CI
+.lighthouseci/
+
 # Temporary files
 *.tmp
 *.temp
