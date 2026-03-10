@@ -1,5 +1,6 @@
 import { loadLangDict, translateSync } from 'ingglish';
 import { beforeAll, describe, expect, it } from 'vitest';
+import { G2P_CONVERTERS } from './g2p';
 import { WORD_RESOLVERS } from './index';
 
 /**
@@ -324,5 +325,11 @@ describe('G2P fallback via translateSync()', () => {
     ['belakanmu', 'ma', 'Malay G2P multisyllabic stress'],
   ])('%s (%s) — %s', (word, lang) => {
     expect(translateSync(word, { lang })).toBeTruthy();
+  });
+
+  it('returns empty array for all-unknown-char input (empty IPA)', () => {
+    // All digits are unknown to Esperanto rules → applyRules returns '' →
+    // addPenultimateStress returns '' → ipaToArpabet returns []
+    expect(G2P_CONVERTERS.eo.convert('123')).toEqual([]);
   });
 });

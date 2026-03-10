@@ -99,7 +99,6 @@ describe('lookupDict edge cases', () => {
       },
       lang: 'test-no-overrides',
     };
-    // lookupDict normalizes curly→straight, but also tries straight→curly for dict matching
     expect(lookupDict(dict, "l'homme")).toEqual(['L', 'AO1', 'M']);
   });
 
@@ -107,11 +106,56 @@ describe('lookupDict edge cases', () => {
     const dict: PhoneDict = {
       entries: {
         l: ['L'],
-        // 'xyz' deliberately missing
       },
       lang: 'test-no-overrides',
     };
     expect(lookupDict(dict, "l'xyz")).toBeUndefined();
+  });
+
+  it('splits apostrophe and looks up each part directly', () => {
+    const dict: PhoneDict = {
+      entries: { homme: ['AO1', 'M'], l: ['L'] },
+      lang: 'test-no-overrides',
+    };
+    expect(lookupDict(dict, "l'homme")).toEqual(['L', 'AO1', 'M']);
+  });
+
+  it('apostrophe split uses curly apostrophe fallback per part', () => {
+    const dict: PhoneDict = {
+      entries: { homme: ['AO1', 'M'], 'l\u2019': ['L'] },
+      lang: 'test-no-overrides',
+    };
+    expect(lookupDict(dict, "l'homme")).toEqual(['L', 'AO1', 'M']);
+  });
+
+  it('apostrophe split uses G2P fallback per part', () => {
+    const dict: PhoneDict = {
+      entries: { on: ['AO1', 'N'] },
+      lang: 'fi',
+    };
+    expect(lookupDict(dict, "talo'on")).toBeDefined();
+  });
+
+  it('apostrophe split resolves part via language override', () => {
+    // 'est' is in French overrides (IPA /ɛ/), so lookupDictNoSplit finds it there
+    const dict: PhoneDict = {
+      entries: { x: ['K', 'S'] },
+      lang: 'fr',
+    };
+    const result = lookupDict(dict, "est'x");
+    expect(result).toBeDefined();
+  });
+
+  it('apostrophe split resolves part via word resolver', () => {
+    // German resolver normalizes ß→ss: 'straße' → 'strasse' (found in entries)
+    // 'straße' is NOT in German overrides, so lookupDictNoSplit hits the resolver path
+    const dict: PhoneDict = {
+      entries: { strasse: ['SH', 'T', 'R', 'AH1', 'S', 'AH0'], x: ['K', 'S'] },
+      lang: 'de',
+    };
+    const result = lookupDict(dict, "straße'x");
+    expect(result).toBeDefined();
+    expect(result!.length).toBeGreaterThan(0);
   });
 });
 
@@ -152,6 +196,20 @@ describe('buildReverseMap', () => {
     };
     const map = buildReverseMap(dict);
     expect(map.get('DH EH R')).toEqual(['their', 'there']);
+  });
+
+  it('skips entries with empty phoneme arrays', () => {
+    const dict: PhoneDict = {
+      entries: {
+        empty: [],
+        hello: ['HH', 'AH0', 'L', 'OW1'],
+      },
+      lang: 'test-no-overrides',
+    };
+    const map = buildReverseMap(dict);
+    expect(map.get('HH AH L OW')).toEqual(['hello']);
+    // 'empty' should be skipped (no key to map to)
+    expect(map.size).toBe(1);
   });
 
   it('includes language overrides', () => {

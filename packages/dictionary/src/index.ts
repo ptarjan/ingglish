@@ -1,4 +1,3 @@
-/* v8 ignore start -- pure re-exports, no executable code */
 export {
   CUSTOM_PRONUNCIATIONS,
   getCustomPronunciation,
