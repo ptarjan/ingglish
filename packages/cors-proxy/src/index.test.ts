@@ -36,56 +36,33 @@ describe('cors-proxy', () => {
   });
 
   describe('isPrivateHost', () => {
-    it('should block localhost', () => {
-      expect(isPrivateHost('localhost')).toBe(true);
-      expect(isPrivateHost('LOCALHOST')).toBe(true);
-      expect(isPrivateHost('localhost.localdomain')).toBe(true);
-    });
-
-    it('should block loopback IPs', () => {
-      expect(isPrivateHost('127.0.0.1')).toBe(true);
-      expect(isPrivateHost('127.0.0.255')).toBe(true);
-      expect(isPrivateHost('127.255.255.255')).toBe(true);
-    });
-
-    it('should block Class A private range (10.x.x.x)', () => {
-      expect(isPrivateHost('10.0.0.1')).toBe(true);
-      expect(isPrivateHost('10.255.255.255')).toBe(true);
-    });
-
-    it('should block Class B private range (172.16-31.x.x)', () => {
-      expect(isPrivateHost('172.16.0.1')).toBe(true);
-      expect(isPrivateHost('172.31.255.255')).toBe(true);
-      // Outside range should be allowed
-      expect(isPrivateHost('172.15.0.1')).toBe(false);
-      expect(isPrivateHost('172.32.0.1')).toBe(false);
-    });
-
-    it('should block Class C private range (192.168.x.x)', () => {
-      expect(isPrivateHost('192.168.0.1')).toBe(true);
-      expect(isPrivateHost('192.168.255.255')).toBe(true);
-    });
-
-    it('should block link-local addresses (169.254.x.x)', () => {
-      expect(isPrivateHost('169.254.0.1')).toBe(true);
-      expect(isPrivateHost('169.254.169.254')).toBe(true); // AWS metadata
-    });
-
-    it('should block current network (0.x.x.x)', () => {
-      expect(isPrivateHost('0.0.0.0')).toBe(true);
-    });
-
-    it('should block IPv6 loopback and private', () => {
-      expect(isPrivateHost('::1')).toBe(true);
-      expect(isPrivateHost('fc00::1')).toBe(true);
-      expect(isPrivateHost('fd00::1')).toBe(true);
-    });
-
-    it('should allow public hosts', () => {
-      expect(isPrivateHost('google.com')).toBe(false);
-      expect(isPrivateHost('8.8.8.8')).toBe(false);
-      expect(isPrivateHost('1.1.1.1')).toBe(false);
-      expect(isPrivateHost('example.com')).toBe(false);
+    it.each([
+      ['localhost', true, 'localhost'],
+      ['LOCALHOST', true, 'localhost uppercase'],
+      ['localhost.localdomain', true, 'localhost.localdomain'],
+      ['127.0.0.1', true, 'loopback start'],
+      ['127.0.0.255', true, 'loopback mid'],
+      ['127.255.255.255', true, 'loopback end'],
+      ['10.0.0.1', true, 'Class A start'],
+      ['10.255.255.255', true, 'Class A end'],
+      ['172.16.0.1', true, 'Class B start'],
+      ['172.31.255.255', true, 'Class B end'],
+      ['172.15.0.1', false, 'below Class B range'],
+      ['172.32.0.1', false, 'above Class B range'],
+      ['192.168.0.1', true, 'Class C start'],
+      ['192.168.255.255', true, 'Class C end'],
+      ['169.254.0.1', true, 'link-local'],
+      ['169.254.169.254', true, 'AWS metadata'],
+      ['0.0.0.0', true, 'current network'],
+      ['::1', true, 'IPv6 loopback'],
+      ['fc00::1', true, 'IPv6 private fc00'],
+      ['fd00::1', true, 'IPv6 private fd00'],
+      ['google.com', false, 'public domain'],
+      ['8.8.8.8', false, 'public DNS'],
+      ['1.1.1.1', false, 'Cloudflare DNS'],
+      ['example.com', false, 'example domain'],
+    ] as [string, boolean, string][])('isPrivateHost(%s) → %s (%s)', (host, expected) => {
+      expect(isPrivateHost(host)).toBe(expected);
     });
   });
 
@@ -241,125 +218,61 @@ describe('cors-proxy', () => {
       expect(text).toContain('application/json');
     });
 
-    it('should accept non-HTML content-type if body starts with <!', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<!DOCTYPE html><html><body>Hello</body></html>', {
-          headers: { 'Content-Type': 'text/plain' },
-        })
-      );
+    it.each([
+      ['body starts with <!', '<!DOCTYPE html><html><body>Hello</body></html>', 'text/plain'],
+      ['body starts with <html', '<html><body>Hello</body></html>', 'text/plain'],
+      [
+        'body contains <html> tag',
+        'some preamble <html lang="en"><body>Hello</body></html>',
+        'text/plain',
+      ],
+      [
+        'body starts with <?',
+        '<?xml version="1.0"?><html><body>Hello</body></html>',
+        'application/xml',
+      ],
+    ] as [string, string, string][])(
+      'should accept non-HTML content-type if %s',
+      async (_, body, contentType) => {
+        vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+          new Response(body, { headers: { 'Content-Type': contentType } })
+        );
 
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
+        const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+          headers: { Origin: 'https://ingglish.com' },
+          method: 'GET',
+        });
 
-      const response = await worker.fetch(request, env);
-      expect(response.status).toBe(200);
-    });
+        const response = await worker.fetch(request, env);
+        expect(response.status).toBe(200);
+      }
+    );
 
-    it('should accept non-HTML content-type if body starts with <html', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<html><body>Hello</body></html>', {
-          headers: { 'Content-Type': 'text/plain' },
-        })
-      );
+    it.each([
+      ['respects upstream max-age >= 5 min', 'max-age=7200', 'public, max-age=7200'],
+      ['clamps upstream max-age < 5 min', 'max-age=60', 'public, max-age=300'],
+      ['defaults to 1 hour when absent', undefined, 'public, max-age=3600'],
+    ] as [string, string | undefined, string][])(
+      'Cache-Control: %s',
+      async (_, upstream, expected) => {
+        const headers: Record<string, string> = { 'Content-Type': 'text/html' };
+        if (upstream) {
+          headers['Cache-Control'] = upstream;
+        }
 
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
+        vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+          new Response('<html><body>Hello</body></html>', { headers })
+        );
 
-      const response = await worker.fetch(request, env);
-      expect(response.status).toBe(200);
-    });
+        const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
+          headers: { Origin: 'https://ingglish.com' },
+          method: 'GET',
+        });
 
-    it('should accept non-HTML content-type if body contains <html> tag', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('some preamble <html lang="en"><body>Hello</body></html>', {
-          headers: { 'Content-Type': 'text/plain' },
-        })
-      );
-
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
-
-      const response = await worker.fetch(request, env);
-      expect(response.status).toBe(200);
-    });
-
-    it('should accept non-HTML content-type if body starts with <?', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<?xml version="1.0"?><html><body>Hello</body></html>', {
-          headers: { 'Content-Type': 'application/xml' },
-        })
-      );
-
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
-
-      const response = await worker.fetch(request, env);
-      expect(response.status).toBe(200);
-    });
-
-    it('should respect upstream Cache-Control max-age when >= 5 minutes', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<html><body>Hello</body></html>', {
-          headers: {
-            'Cache-Control': 'max-age=7200',
-            'Content-Type': 'text/html',
-          },
-        })
-      );
-
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
-
-      const response = await worker.fetch(request, env);
-      expect(response.headers.get('Cache-Control')).toBe('public, max-age=7200');
-    });
-
-    it('should enforce minimum 5 minute cache when upstream max-age is too low', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<html><body>Hello</body></html>', {
-          headers: {
-            'Cache-Control': 'max-age=60',
-            'Content-Type': 'text/html',
-          },
-        })
-      );
-
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
-
-      const response = await worker.fetch(request, env);
-      expect(response.headers.get('Cache-Control')).toBe('public, max-age=300');
-    });
-
-    it('should default to 1 hour cache when no upstream Cache-Control', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response('<html><body>Hello</body></html>', {
-          headers: {
-            'Content-Type': 'text/html',
-          },
-        })
-      );
-
-      const request = new Request('https://proxy.example.com/?url=https://example.com/page', {
-        headers: { Origin: 'https://ingglish.com' },
-        method: 'GET',
-      });
-
-      const response = await worker.fetch(request, env);
-      expect(response.headers.get('Cache-Control')).toBe('public, max-age=3600');
-    });
+        const response = await worker.fetch(request, env);
+        expect(response.headers.get('Cache-Control')).toBe(expected);
+      }
+    );
 
     it('should return 502 when upstream fetch fails', async () => {
       vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('Network error'));
@@ -374,25 +287,21 @@ describe('cors-proxy', () => {
       expect(await response.text()).toBe('Proxy error: failed to fetch upstream resource');
     });
 
-    it('should block requests to private networks (SSRF protection)', async () => {
-      const privateUrls = [
-        'http://localhost/admin',
-        'http://127.0.0.1/secret',
-        'http://192.168.1.1/config',
-        'http://10.0.0.1/internal',
-        'http://169.254.169.254/latest/meta-data/', // AWS metadata
-      ];
+    it.each([
+      'http://localhost/admin',
+      'http://127.0.0.1/secret',
+      'http://192.168.1.1/config',
+      'http://10.0.0.1/internal',
+      'http://169.254.169.254/latest/meta-data/',
+    ])('should block SSRF request to %s', async (url) => {
+      const request = new Request(`https://proxy.example.com/?url=${encodeURIComponent(url)}`, {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
 
-      for (const url of privateUrls) {
-        const request = new Request(`https://proxy.example.com/?url=${encodeURIComponent(url)}`, {
-          headers: { Origin: 'https://ingglish.com' },
-          method: 'GET',
-        });
-
-        const response = await worker.fetch(request, env);
-        expect(response.status).toBe(403);
-        expect(await response.text()).toBe('Forbidden: Private networks not allowed');
-      }
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(403);
+      expect(await response.text()).toBe('Forbidden: Private networks not allowed');
     });
   });
 });
