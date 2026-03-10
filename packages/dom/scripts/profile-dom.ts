@@ -9,7 +9,7 @@ import { setupJSDOM, createTestDOM } from './harness';
 
 const ITERATIONS = 50;
 
-async function main() {
+export async function main() {
   console.log('=== DOM Translation Profile ===\n');
 
   // Set up global document/window for the DOM package
@@ -163,4 +163,4 @@ async function main() {
   console.log(`- applyTranslationsMap: ${applyAvg.toFixed(3)}ms`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-dom')) main().catch(console.error);

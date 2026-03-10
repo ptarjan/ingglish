@@ -24,7 +24,7 @@ const SKIP_TAGS = new Set([
   'CANVAS',
 ]);
 
-async function main() {
+export async function main() {
   console.log('=== TreeWalker Profile (Pre-parsed DOM) ===\n');
 
   // Parse DOM once
@@ -237,4 +237,4 @@ async function main() {
   console.log(`Attribute checks add:     ${(fullAvg - tagClassAvg).toFixed(3)}ms`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-walker-only')) main().catch(console.error);

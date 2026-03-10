@@ -28,7 +28,7 @@ const SKIP_TAGS = new Set([
   'CANVAS',
 ]);
 
-async function main() {
+export async function main() {
   console.log('=== Wikipedia DOM Profile ===\n');
   console.log(`HTML size: ${(wikipediaHtml.length / 1024).toFixed(1)} KB\n`);
 
@@ -320,4 +320,4 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-wikipedia')) main().catch(console.error);

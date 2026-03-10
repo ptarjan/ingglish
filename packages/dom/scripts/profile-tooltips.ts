@@ -8,7 +8,7 @@ import { setupJSDOM, loadWikipediaDOM } from './harness';
 
 const ITERATIONS = 10;
 
-async function main() {
+export async function main() {
   console.log('=== Tooltip Performance Profile ===\n');
 
   const dom = loadWikipediaDOM();
@@ -74,4 +74,4 @@ async function main() {
   console.log('Per-node difference: ' + perNodeDiff.toFixed(2) + 'µs');
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-tooltips')) main().catch(console.error);

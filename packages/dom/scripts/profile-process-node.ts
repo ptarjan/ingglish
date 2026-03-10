@@ -9,7 +9,7 @@ import { setupJSDOM } from './harness';
 
 const ITERATIONS = 1000;
 
-async function main() {
+export async function main() {
   console.log('=== processTextNode Deep Profile ===\n');
 
   // Set up DOM
@@ -233,4 +233,4 @@ async function main() {
   console.log(`\nRegex exec is ${(((currentNs - execNs) / currentNs) * 100).toFixed(1)}% faster`);
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-process-node')) main().catch(console.error);

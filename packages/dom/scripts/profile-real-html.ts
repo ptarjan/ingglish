@@ -195,7 +195,7 @@ function createRealisticDOM(): JSDOM {
   return new JSDOM(html);
 }
 
-async function main() {
+export async function main() {
   console.log('=== Real HTML DOM Profile ===\n');
 
   const dom = createRealisticDOM();
@@ -390,4 +390,4 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-real-html')) main().catch(console.error);

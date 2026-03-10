@@ -22,7 +22,7 @@ const SKIP_TAGS = new Set([
   'CANVAS',
 ]);
 
-async function main() {
+export async function main() {
   console.log('=== TreeWalker Alternatives Profile ===\n');
 
   const dom = createRealisticDOM();
@@ -243,4 +243,4 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+if (process.argv[1]?.includes('profile-tree-walker')) main().catch(console.error);
