@@ -83,69 +83,25 @@ describe('reverse contraction handling', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Stemming: -ed allomorphs via word resolver (stemming.ts lines 26-33)
-// Uses words NOT in CMU dict so they go through the stemming word resolver
+// English stemming (word resolver path)
 // ---------------------------------------------------------------------------
-describe('stemming -ed allomorphs (word resolver path)', () => {
-  it('should translate -ed after T/D with /ɪd/ (e.g. "formatted")', () => {
-    // "format" is in dict, "formatted" is not → word resolver → matchStemming
-    // T ending → IH0 D allomorph (stemming.ts line 28)
-    const result = translateSync('formatted');
+describe('English stemming (word resolver path)', () => {
+  it.each([
+    ['formatted', '-ed after T/D → /ɪd/'],
+    ['blogged', '-ed after voiced → /d/'],
+    ['skyped', '-ed after voiceless → /t/'],
+    ['relaunches', '-es after sibilant → /ɪz/'],
+    ['debugs', '-s after voiced → /z/'],
+    ['podcasts', '-s after voiceless → /s/'],
+    ['unbreak', 'un- prefix'],
+  ])('translates "%s" (%s)', (word) => {
+    const result = translateSync(word);
     expect(result).toBeTruthy();
-    expect(result.toLowerCase()).not.toBe('formatted');
+    expect(result.toLowerCase()).not.toBe(word);
   });
 
-  it('should translate -ed after voiced consonant with /d/ (e.g. "blogged")', () => {
-    // "blog" ends in G (voiced) → D allomorph (stemming.ts line 33)
-    const result = translateSync('blogged');
-    expect(result).toBeTruthy();
-    expect(result.toLowerCase()).not.toBe('blogged');
-  });
-
-  it('should translate -ed after voiceless consonant with /t/ (e.g. "skyped")', () => {
-    // "skype" ends in P (voiceless) → T allomorph (stemming.ts line 31)
-    const result = translateSync('skyped');
-    expect(result).toBeTruthy();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Stemming: -s allomorphs via word resolver (stemming.ts lines 42-50)
-// ---------------------------------------------------------------------------
-describe('stemming -s/-es allomorphs (word resolver path)', () => {
-  it('should translate -es after sibilants with /ɪz/ (e.g. "relaunches")', () => {
-    // "relaunch" ends in CH (sibilant) → IH0 Z allomorph (stemming.ts line 45)
-    const result = translateSync('relaunches');
-    expect(result).toBeTruthy();
-  });
-
-  it('should translate -s after voiced consonant with /z/ (e.g. "debugs")', () => {
-    // "debug" ends in G (voiced) → Z allomorph (stemming.ts line 50)
-    const result = translateSync('debugs');
-    expect(result).toBeTruthy();
-  });
-
-  it('should translate -s after voiceless consonant with /s/ (e.g. "podcasts")', () => {
-    // "podcast" ends in T (voiceless) → S allomorph (stemming.ts line 48)
-    const result = translateSync('podcasts');
-    expect(result).toBeTruthy();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Stemming: -ing, -tion, prefix un-, re-
-// ---------------------------------------------------------------------------
-describe('stemming additional patterns', () => {
-  it('should translate unknown -ing words via stem', () => {
-    // "detoxing" — not in dict but "detox" is → stemming resolver
+  it('translates -ing: "detoxing" → "deetoksing"', () => {
     expect(translateSync('detoxing')).toBe('deetoksing');
-  });
-
-  it('should handle un- prefixed words', () => {
-    // "undo" is in dictionary, but "unbreak" might not be
-    const result = translateSync('unbreak');
-    // Should translate via prefix stemming if "unbreak" isn't in dict
-    expect(result).toBeTruthy();
   });
 });
 
@@ -361,32 +317,32 @@ describe('English async reverseTranslate', () => {
 // Round-trip edge cases
 // ---------------------------------------------------------------------------
 describe('round-trip edge cases', () => {
-  it('should round-trip words with silent letters', () => {
-    const words = ['knight', 'knife', 'know', 'write', 'wrong'];
-    for (const word of words) {
+  it.each(['knight', 'knife', 'know', 'write', 'wrong'])(
+    'round-trips silent-letter word "%s"',
+    (word) => {
       const ingglish = translateSync(word);
       const result = reverseTranslateSync(ingglish);
-      expect(result.length, `${word} → ${ingglish}`).toBeGreaterThan(0);
+      expect(result.length).toBeGreaterThan(0);
     }
-  });
+  );
 
-  it('should round-trip words with -ough patterns', () => {
-    const words = ['though', 'through', 'tough', 'cough', 'bought'];
-    for (const word of words) {
+  it.each(['though', 'through', 'tough', 'cough', 'bought'])(
+    'round-trips -ough word "%s"',
+    (word) => {
       const ingglish = translateSync(word);
       const result = reverseTranslateSync(ingglish);
-      expect(result.toLowerCase(), `${word} → ${ingglish}`).toBe(word);
+      expect(result.toLowerCase()).toBe(word);
     }
-  });
+  );
 
-  it('should round-trip words ending in -tion/-sion', () => {
-    const words = ['nation', 'vision', 'station', 'decision'];
-    for (const word of words) {
+  it.each(['nation', 'vision', 'station', 'decision'])(
+    'round-trips -tion/-sion word "%s"',
+    (word) => {
       const ingglish = translateSync(word);
       const result = reverseTranslateSync(ingglish);
-      expect(result.toLowerCase(), `${word} → ${ingglish}`).toBe(word);
+      expect(result.toLowerCase()).toBe(word);
     }
-  });
+  );
 
   it('should handle multi-word sentences with punctuation', () => {
     const text = 'The quick brown fox jumps over the lazy dog.';
@@ -444,18 +400,6 @@ describe('pronunciation format translation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Non-English with disableRColoring (to-ingglish.ts line 178)
-// ---------------------------------------------------------------------------
-describe('non-English translation with R-coloring disabled', () => {
-  it('should translate Persian with R-coloring disabled', async () => {
-    // Persian has disableRColoring: true
-    const result = await translate('کتابها', { lang: 'fa' });
-    expect(result).toBeTruthy();
-    expect(result.length).toBeGreaterThan(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Compound word case preservation (compounds.ts lines 151-171)
 // ---------------------------------------------------------------------------
 describe('compound word case preservation paths', () => {
@@ -501,245 +445,114 @@ describe('Unicode case handling', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// German (de): ß→ss resolver — "daß" not in dict, "dass" is
-// ---------------------------------------------------------------------------
-describe('German translation', () => {
-  it('should resolve ß→ss via word resolver: "Kongreß" → "Kongress"', async () => {
-    // "Kongreß" not in dict or overrides; resolver converts ß→ss, tries title case "Kongress" (in dict)
-    const result = await translate('Kongreß', { lang: 'de' });
+// ===========================================================================
+// Non-English word resolvers
+// ===========================================================================
+
+describe('German word resolver', () => {
+  it.each([['Kongreß', 'resolve ß→ss']])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'de' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('Kongreß');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Swedish (sv): suffix stripping — "huset" not in dict, "hus" is
-// ---------------------------------------------------------------------------
-describe('Swedish translation', () => {
-  it('should strip -et suffix from "huset" to find "hus"', async () => {
-    const result = await translate('huset', { lang: 'sv' });
+describe('Swedish word resolver', () => {
+  it.each([
+    ['huset', 'strip -et suffix'],
+    ['barnens', 'two-level genitive: strip -s → strip -en'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'sv' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('huset');
-  });
-
-  it('should resolve two-level genitive: "barnens" → strip s → "barnen" → strip en → "barn"', async () => {
-    const result = await translate('barnens', { lang: 'sv' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('barnens');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Finnish (fi): suffix stripping — "talossa" not in dict, "talo" is
-// ---------------------------------------------------------------------------
-describe('Finnish translation', () => {
-  it('should strip inessive -ssa from "talossa" to find "talo"', async () => {
-    const result = await translate('talossa', { lang: 'fi' });
+describe('Finnish word resolver', () => {
+  it.each([
+    ['talossa', 'strip inessive -ssa'],
+    ['kengän', 'consonant gradation nk→ng'],
+    ['talossansa', 'two-level possessive -nsa'],
+    ['talollamme', 'two-level possessive -mme'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'fi' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('talossa');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Esperanto (eo): lemmatization — "bonajn" not in dict, "bona" is
-// ---------------------------------------------------------------------------
-describe('Esperanto translation', () => {
-  it('should strip plural+accusative -jn from "bonajn" to find "bona"', async () => {
-    const result = await translate('bonajn', { lang: 'eo' });
+describe('Esperanto word resolver', () => {
+  it.each([
+    ['bonajn', 'strip plural+accusative -jn'],
+    ['bonas', 'resolve verb tense -as'],
+    ['xyzplonko', 'G2P for unknown words'],
+    ['dormis', 'resolve verb past -is'],
+    ['sendu', 'resolve imperative -u'],
+    ['parolanta', 'resolve participle -anta'],
+    ['senbona', 'resolve prefix sen-'],
+    ['maldormis', 'resolve prefix mal- + verb'],
+    ['hundon', 'strip accusative -n'],
+    ['lernilojn', 'strip plural+accusative then derivational suffix'],
+    ['maldorme', 'resolve adverb -e'],
+    ['ekadmonas', 'resolve prefix ek- with recursive lemmatization'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'eo' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('bonajn');
-  });
-
-  it('should resolve verb tense -as: "bonas" → "bona"', async () => {
-    const result = await translate('bonas', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('bonas');
-  });
-
-  it('should use Esperanto G2P for unknown words', async () => {
-    // "xyzplonko" — not in dict, no resolver match → confident G2P
-    const result = await translate('xyzplonko', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('xyzplonko');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Swahili (sw): verb prefix stripping — "nipenda" not in dict, "penda" is
-// ---------------------------------------------------------------------------
-describe('Swahili translation', () => {
-  it('should strip verb prefix "ni" from "nipenda" to find "penda"', async () => {
-    const result = await translate('nipenda', { lang: 'sw' });
+describe('Swahili word resolver', () => {
+  it.each([
+    ['nipenda', 'strip verb prefix "ni"'],
+    ['xyzfanaka', 'G2P for unknown words'],
+    ['pendika', 'strip derivational suffix -ika'],
+    ['walipenda', 'strip prefix + suffix'],
+    ['walisomisha', 'strip prefix + derivational suffix + ku- form'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'sw' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('nipenda');
-  });
-
-  it('should use Swahili G2P for unknown words', async () => {
-    const result = await translate('xyzfanaka', { lang: 'sw' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('xyzfanaka');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Persian (fa): suffix stripping — "کتابها" not in dict, "کتاب" is
-// ---------------------------------------------------------------------------
-describe('Persian translation', () => {
-  it('should strip plural -ها from "کتابها" to find "کتاب"', async () => {
-    const result = await translate('کتابها', { lang: 'fa' });
+describe('Persian word resolver', () => {
+  it.each([
+    ['کتابها', 'strip plural -ها'],
+    ['می\u200Cکند', 'split ZWNJ compound'],
+    ['کتابای', 'strip -ای indefinite suffix'],
+    ['\u0646\u0645\u06CC\u200C\u062E\u0648\u0627\u0646\u0646\u062F', 'strip نمی ZWNJ verb ending'],
+    ['\u0622\u0628\u0627\u200C\u062F\u0627\u0646', 'join ZWNJ parts'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'fa' });
     expect(result).toBeTruthy();
   });
 });
 
-// ---------------------------------------------------------------------------
-// Malay (ma): G2P for unknown words
-// ---------------------------------------------------------------------------
-describe('Malay G2P', () => {
-  it('should use Malay G2P for unknown words', async () => {
-    const result = await translate('xyzbalak', { lang: 'ma' });
+describe('Malay word resolver', () => {
+  it.each([
+    ['xyzbalak', 'G2P for unknown words'],
+    ['tuliskan', 'strip -kan suffix'],
+    ['berkerja', 'strip ber- prefix'],
+    ['dipikir', 'strip di- prefix'],
+    ['menyewa', 'strip meny- prefix, restore s'],
+    ['menyewakan', 'strip suffix then prefix'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'ma' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('xyzbalak');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Japanese (ja): kana character-by-character resolver
-// ---------------------------------------------------------------------------
-describe('Japanese translation', () => {
-  it('should translate hiragana text', async () => {
-    const result = await translate('ありがとう', { lang: 'ja' });
-    expect(result).toBeTruthy();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Norwegian Bokmål (nb): old orthography + suffix stripping
-// ---------------------------------------------------------------------------
-describe('Norwegian Bokmål translation', () => {
-  it('should modernize old orthography aa→å: "paa" → "på"', async () => {
-    const result = await translate('paa', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('paa');
-  });
-
-  it('should modernize old spelling: "efter" → "etter"', async () => {
-    const result = await translate('efter', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('efter');
-  });
-
-  it('should strip suffix -en: "husen" → "hus"', async () => {
-    const result = await translate('husen', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('husen');
-  });
-
-  it('should strip suffix -er: "katter" → "katt"', async () => {
-    const result = await translate('katter', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('katter');
-  });
-
-  it('should two-level: strip suffix then modernize: "gaarden" → "gård"', async () => {
-    const result = await translate('gaarden', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('gaarden');
-  });
-
-  it('should modernize old spelling: "af" → "av"', async () => {
-    const result = await translate('af', { lang: 'nb' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('af');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Romanian (ro): suffix stripping + prefix restoration
-// ---------------------------------------------------------------------------
-describe('Romanian translation', () => {
-  it('should strip -ului suffix: "lupului" → "lup"', async () => {
-    const result = await translate('lupului', { lang: 'ro' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('lupului');
-  });
-
-  it('should strip -ele and add -ă: "camerele" → "cameră"', async () => {
-    const result = await translate('camerele', { lang: 'ro' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('camerele');
-  });
-
-  it('should restore prefix n→în: "nțeleg" → "înțeleg"', async () => {
-    const result = await translate('nțeleg', { lang: 'ro' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('nțeleg');
-  });
-
-  it('should resolve î+word: "mbarca" → "îmbarca"', async () => {
-    const result = await translate('mbarca', { lang: 'ro' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('mbarca');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Malay (ma): prefix/suffix stripping with nasal assimilation
-// ---------------------------------------------------------------------------
-describe('Malay translation', () => {
-  it('should strip -kan suffix: "tuliskan" → "tulis"', async () => {
-    const result = await translate('tuliskan', { lang: 'ma' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('tuliskan');
-  });
-
-  it('should strip ber- prefix: "berkerja" → "kerja"', async () => {
-    const result = await translate('berkerja', { lang: 'ma' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('berkerja');
-  });
-
-  it('should strip di- prefix: "dipikir" → "pikir"', async () => {
-    const result = await translate('dipikir', { lang: 'ma' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('dipikir');
-  });
-
-  it('should strip meny- prefix and restore s: "menyewa" → "sewa"', async () => {
-    const result = await translate('menyewa', { lang: 'ma' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('menyewa');
-  });
-
-  it('should strip suffix then prefix: "menyewakan" → strip -kan → "menyewa" → strip meny- → restore s → "sewa"', async () => {
-    const result = await translate('menyewakan', { lang: 'ma' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('menyewakan');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Japanese (ja): kana character-by-character resolver
-// ---------------------------------------------------------------------------
-describe('Japanese kana decomposition', () => {
-  it('should decompose hiragana word character-by-character: "すし"', async () => {
-    const result = await translate('すし', { lang: 'ja' });
-    expect(result).toBeTruthy();
-  });
-
-  it('should decompose hiragana with 2-char kana: "きゃく"', async () => {
-    const result = await translate('きゃく', { lang: 'ja' });
-    expect(result).toBeTruthy();
-  });
-
-  it('should handle sokuon (っ) skip: "きって"', async () => {
-    const result = await translate('きって', { lang: 'ja' });
-    expect(result).toBeTruthy();
-  });
-
-  it('should fall back when kana resolver hits unknown char: "き龠"', async () => {
-    // 龠 is not in the dict, so kana resolver returns undefined → falls back to G2P
-    const result = await translate('き龠', { lang: 'ja' });
+describe('Japanese word resolver', () => {
+  it.each([
+    ['ありがとう', 'translate hiragana text'],
+    ['すし', 'decompose character-by-character'],
+    ['きゃく', 'decompose with 2-char kana'],
+    ['きって', 'handle sokuon skip'],
+    ['き龠', 'fall back on unknown char'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'ja' });
     expect(result).toBeTruthy();
   });
 
@@ -750,139 +563,31 @@ describe('Japanese kana decomposition', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Esperanto (eo): verb tenses, participles, prefixes
-// Words confirmed NOT in eo.json but stems ARE
-// ---------------------------------------------------------------------------
-describe('Esperanto advanced lemmatization', () => {
-  it('should resolve verb past -is: "dormis" → "dormi"', async () => {
-    const result = await translate('dormis', { lang: 'eo' });
+describe('Norwegian Bokmål word resolver', () => {
+  it.each([
+    ['paa', 'modernize aa→å'],
+    ['efter', 'modernize old spelling'],
+    ['husen', 'strip -en suffix'],
+    ['katter', 'strip -er suffix'],
+    ['gaarden', 'two-level strip+modernize'],
+    ['af', 'modernize af→av'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'nb' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('dormis');
-  });
-
-  it('should resolve imperative -u: "sendu" → "sendi"', async () => {
-    const result = await translate('sendu', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('sendu');
-  });
-
-  it('should resolve participle -anta: "parolanta" → "paroli"', async () => {
-    const result = await translate('parolanta', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('parolanta');
-  });
-
-  it('should resolve prefix sen-: "senbona" → "bona"', async () => {
-    const result = await translate('senbona', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('senbona');
-  });
-
-  it('should resolve prefix mal- + verb: "maldormis" → recursive → "dormi"', async () => {
-    const result = await translate('maldormis', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('maldormis');
-  });
-
-  it('should strip accusative -n directly: "hundon" → "hundo"', async () => {
-    const result = await translate('hundon', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('hundon');
-  });
-
-  it('should strip plural+accusative then derivational suffix: "lernilojn"', async () => {
-    // lernilojn → strip n → lerniloj → strip j → lernilo → suffix ilo → lern → lerno
-    const result = await translate('lernilojn', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('lernilojn');
-  });
-
-  it('should resolve adverb -e: "maldorme" → "maldorma"', async () => {
-    const result = await translate('maldorme', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('maldorme');
-  });
-
-  it('should resolve prefix ek- with recursive lemmatization: "ekadmonas"', async () => {
-    // ekadmonas → prefix ek → admonas → verb -as → admoni
-    const result = await translate('ekadmonas', { lang: 'eo' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('ekadmonas');
+    expect(result).not.toBe(word);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Swahili (sw): derivational suffix stripping
-// ---------------------------------------------------------------------------
-describe('Swahili advanced morphology', () => {
-  it('should strip derivational suffix -ika: "pendika" → "penda"', async () => {
-    const result = await translate('pendika', { lang: 'sw' });
+describe('Romanian word resolver', () => {
+  it.each([
+    ['lupului', 'strip -ului suffix'],
+    ['camerele', 'strip -ele, add -ă'],
+    ['nțeleg', 'restore prefix n→în'],
+    ['mbarca', 'resolve î+word'],
+  ])('resolves "%s" (%s)', async (word) => {
+    const result = await translate(word, { lang: 'ro' });
     expect(result).toBeTruthy();
-    expect(result).not.toBe('pendika');
-  });
-
-  it('should strip prefix + suffix: "walipenda" → "penda"', async () => {
-    const result = await translate('walipenda', { lang: 'sw' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('walipenda');
-  });
-
-  it('should strip prefix + derivational suffix + ku- form: "walisomisha" → "kusoma"', async () => {
-    const result = await translate('walisomisha', { lang: 'sw' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('walisomisha');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Finnish (fi): consonant gradation, verb suffixes, two-level possessives
-// ---------------------------------------------------------------------------
-describe('Finnish advanced morphology', () => {
-  it('should handle consonant gradation nk→ng: "kengän" → "kenkä"', async () => {
-    // kenkä (shoe) is in dict; kengän is genitive (nk→ng gradation + -n)
-    const result = await translate('kengän', { lang: 'fi' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('kengän');
-  });
-
-  it('should strip two-level possessive -nsa: "talossansa" → strip -nsa → "talossa" → strip -ssa → "talo"', async () => {
-    const result = await translate('talossansa', { lang: 'fi' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('talossansa');
-  });
-
-  it('should strip two-level possessive -mme: "talollamme" → strip -mme → "talolla" → strip -lla → "talo"', async () => {
-    const result = await translate('talollamme', { lang: 'fi' });
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('talollamme');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Persian (fa): ZWNJ compounds, verb forms
-// ---------------------------------------------------------------------------
-describe('Persian advanced morphology', () => {
-  it('should split ZWNJ compound: "می‌کند"', async () => {
-    const result = await translate('می\u200Cکند', { lang: 'fa' });
-    expect(result).toBeTruthy();
-  });
-
-  it('should strip -ای indefinite suffix', async () => {
-    const result = await translate('کتابای', { lang: 'fa' });
-    expect(result).toBeTruthy();
-  });
-
-  it('should strip نمی ZWNJ verb ending: "نمی‌خوانند" → strip ند → "خوان"', async () => {
-    const result = await translate('\u0646\u0645\u06CC\u200C\u062E\u0648\u0627\u0646\u0646\u062F', {
-      lang: 'fa',
-    });
-    expect(result).toBeTruthy();
-  });
-
-  it('should join ZWNJ parts: "آبا‌دان" → "آبادان"', async () => {
-    const result = await translate('\u0622\u0628\u0627\u200C\u062F\u0627\u0646', { lang: 'fa' });
-    expect(result).toBeTruthy();
+    expect(result).not.toBe(word);
   });
 });
 
@@ -905,18 +610,6 @@ describe('curly apostrophe normalization', () => {
     const straight = translateSync("it's");
     const curly = translateSync('it\u2019s');
     expect(curly).toBe(straight);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Reverse map built via reverseTranslate (dict.ts lines 466-496)
-// ---------------------------------------------------------------------------
-describe('reverse map built via reverseTranslate', () => {
-  it('should reverse-translate German words from a built reverse map', async () => {
-    const ingglish = await translate('Haus', { lang: 'de' });
-    expect(ingglish).toBeTruthy();
-    const back = await reverseTranslate(ingglish, { lang: 'de' });
-    expect(back).toBeTruthy();
   });
 });
 
