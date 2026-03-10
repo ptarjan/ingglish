@@ -47,42 +47,22 @@ describe('reverse-translator', () => {
       expect(result).toBe('her');
     });
 
-    it('should round-trip contractions', () => {
-      // Contractions are translated without apostrophe for consistent phonetic representation
-      // The reverse translation returns the base word form
-      const contractions = [
-        { expectedBack: "wouldn't", input: "wouldn't" },
-        { expectedBack: "couldn't", input: "couldn't" },
-        { expectedBack: "shouldn't", input: "shouldn't" },
-        { expectedBack: "don't", input: "don't" },
-        { expectedBack: "can't", input: "can't" },
-        { expectedBack: "won't", input: "won't" },
-      ];
-      const failures: string[] = [];
-
-      for (const { expectedBack, input } of contractions) {
+    it.each([["wouldn't"], ["couldn't"], ["shouldn't"], ["don't"], ["can't"], ["won't"]])(
+      'round-trips contraction "%s"',
+      (input) => {
         const ingglish = translateSync(input);
         const back = reverseTranslateSync(ingglish);
-        if (back.toLowerCase() !== expectedBack.toLowerCase()) {
-          failures.push(`${input} -> ${ingglish} -> ${back} (expected: ${expectedBack})`);
-        }
+        expect(back.toLowerCase()).toBe(input.toLowerCase());
       }
+    );
 
-      expect(failures).toEqual([]);
-    });
-
-    it('should round-trip ambiguous words', () => {
-      // Regression tests for phoneme ambiguity
-      const ambiguousWords = [
-        { note: '"sh" can be SH (ship) or S+HH (exhume)', word: 'exhumed' },
-        { note: '"er" can be ER (were) or EH+R (where)', word: 'where' },
-      ];
-
-      for (const { note, word } of ambiguousWords) {
-        const ingglish = translateSync(word);
-        const result = reverseTranslateSync(ingglish);
-        expect(result.toLowerCase(), `${word}: ${note}`).toBe(word);
-      }
+    it.each([
+      ['exhumed', '"sh" can be SH (ship) or S+HH (exhume)'],
+      ['where', '"er" can be ER (were) or EH+R (where)'],
+    ])('round-trips ambiguous word "%s" (%s)', (word) => {
+      const ingglish = translateSync(word);
+      const result = reverseTranslateSync(ingglish);
+      expect(result.toLowerCase()).toBe(word);
     });
 
     it('sample text should round-trip exactly', () => {
