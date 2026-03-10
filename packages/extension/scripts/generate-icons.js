@@ -26,23 +26,17 @@ const inactiveSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 12
 
 const sizes = [16, 48, 128];
 
-async function generateIcons() {
+export async function main() {
   await mkdir(distIconsDir, { recursive: true });
 
   for (const size of sizes) {
     // Generate active icons
-    const activePng = await sharp(Buffer.from(activeSvg))
-      .resize(size, size)
-      .png()
-      .toBuffer();
+    const activePng = await sharp(Buffer.from(activeSvg)).resize(size, size).png().toBuffer();
     await sharp(activePng).toFile(join(distIconsDir, `icon${size}.png`));
     console.log(`Generated icon${size}.png`);
 
     // Generate inactive icons
-    const inactivePng = await sharp(Buffer.from(inactiveSvg))
-      .resize(size, size)
-      .png()
-      .toBuffer();
+    const inactivePng = await sharp(Buffer.from(inactiveSvg)).resize(size, size).png().toBuffer();
     await sharp(inactivePng).toFile(join(distIconsDir, `icon${size}-off.png`));
     console.log(`Generated icon${size}-off.png`);
   }
@@ -50,4 +44,4 @@ async function generateIcons() {
   console.log('All icons generated successfully!');
 }
 
-generateIcons().catch(console.error);
+if (process.argv[1]?.includes('generate-icons')) main().catch(console.error);
