@@ -133,7 +133,7 @@ function classifyDiff(word, v1, v2) {
 }
 
 // ── Main ────────────────────────────────────────────────────────────
-function main() {
+export function main() {
   if (!fs.existsSync(CMUDICT_RAW)) {
     console.error(`Missing ${CMUDICT_RAW}. Download with:`);
     console.error(
@@ -214,4 +214,4 @@ function main() {
   }
 }
 
-main();
+if (process.argv[1]?.includes('analyze-variants')) main();

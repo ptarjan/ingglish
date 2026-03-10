@@ -218,32 +218,36 @@ function translateQuote(
 }
 
 // Main
-for (const lang of languages) {
-  const dictPath = `${process.cwd()}/packages/website/public/ipa-dicts/${lang.file}`;
-  let dict: Record<string, string | string[]>;
-  try {
-    dict = JSON.parse(fs.readFileSync(dictPath, 'utf-8'));
-  } catch {
-    console.log(`\n=== ${lang.name} — dict not found ===`);
-    continue;
-  }
+export function main() {
+  for (const lang of languages) {
+    const dictPath = `${process.cwd()}/packages/website/public/ipa-dicts/${lang.file}`;
+    let dict: Record<string, string | string[]>;
+    try {
+      dict = JSON.parse(fs.readFileSync(dictPath, 'utf-8'));
+    } catch {
+      console.log(`\n=== ${lang.name} — dict not found ===`);
+      continue;
+    }
 
-  const overrides = IPA_LANGUAGE_OVERRIDES[lang.code];
-  const dictSize = Object.keys(dict).length;
-  console.log(
-    `\n=== ${lang.name} (${lang.code}, ${dictSize.toLocaleString()} entries${overrides ? ', has overrides' : ''}) ===`
-  );
+    const overrides = IPA_LANGUAGE_OVERRIDES[lang.code];
+    const dictSize = Object.keys(dict).length;
+    console.log(
+      `\n=== ${lang.name} (${lang.code}, ${dictSize.toLocaleString()} entries${overrides ? ', has overrides' : ''}) ===`
+    );
 
-  for (const quote of lang.quotes) {
-    const result = translateQuote(quote.text, dict, overrides);
-    // Count found vs not-found words
-    const words = quote.text.split(/\s+/).filter((w) => w.length > 0);
-    const missing = (result.match(/\?/g) ?? []).length;
-    const coverage = Math.round(((words.length - missing) / words.length) * 100);
+    for (const quote of lang.quotes) {
+      const result = translateQuote(quote.text, dict, overrides);
+      // Count found vs not-found words
+      const words = quote.text.split(/\s+/).filter((w) => w.length > 0);
+      const missing = (result.match(/\?/g) ?? []).length;
+      const coverage = Math.round(((words.length - missing) / words.length) * 100);
 
-    console.log(`\n  ${quote.source}:`);
-    console.log(`  ${quote.text}`);
-    console.log(`  → ${result}`);
-    console.log(`  (${coverage}% coverage, ${missing}/${words.length} words missing)`);
+      console.log(`\n  ${quote.source}:`);
+      console.log(`  ${quote.text}`);
+      console.log(`  → ${result}`);
+      console.log(`  (${coverage}% coverage, ${missing}/${words.length} words missing)`);
+    }
   }
 }
+
+if (process.argv[1]?.includes('review-languages')) main();

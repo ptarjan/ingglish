@@ -1,19 +1,22 @@
-import { execSync } from 'child_process';
-import { join } from 'path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { postprocessDocs } from '../../../scripts/postprocess-docs.js';
 import { lintGitignoreContent } from '../../../scripts/pre-commit-checks.js';
 
-const repoRoot = join(import.meta.dirname, '..', '..', '..');
-
 describe('review-languages', () => {
-  it('runs successfully', () => {
-    const output = execSync('npx tsx --conditions=source scripts/review-languages.ts', {
-      cwd: repoRoot,
-      encoding: 'utf-8',
-      timeout: 60_000,
+  it('runs successfully', async () => {
+    const lines: string[] = [];
+    const spy = vi.spyOn(console, 'log').mockImplementation((...a: unknown[]) => {
+      lines.push(a.map(String).join(' '));
     });
-    expect(output.length).toBeGreaterThan(0);
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const mod = await import('../../../scripts/review-languages');
+      await mod.main();
+      expect(lines.join('\n').length).toBeGreaterThan(0);
+    } finally {
+      spy.mockRestore();
+      errSpy.mockRestore();
+    }
   }, 60_000);
 });
 
