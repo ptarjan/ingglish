@@ -58,6 +58,9 @@ jobs:
           - scope: "@ingglish/dom"
             name: dom
             shard: ""
+          - scope: "@ingglish/dictionary"
+            name: dictionary
+            shard: ""
     name: test-cli (${{ matrix.name }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     steps:
       - uses: actions/checkout@v6

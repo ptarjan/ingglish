@@ -12,7 +12,7 @@ export default defineConfig({
     resolve: { conditions: ['source'] },
   },
   test: {
-    include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
+    include: ['src/**/*.test.ts'],
     setupFiles: ['./vitest.setup.ts'],
     maxWorkers: 1,
     isolate: false,

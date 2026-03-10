@@ -33,6 +33,7 @@
     "build:fast": "npm run update-dictionaries && tsup src/index.ts --format esm",
     "lint": "eslint --cache src",
     "test": "vitest run --no-color",
+    "test:cli": "vitest run --config vitest.config.cli.ts --no-color",
     "update-dictionaries": "node scripts/ensure-dictionaries.cjs",
     "prepublishOnly": "npm run build"
   },
