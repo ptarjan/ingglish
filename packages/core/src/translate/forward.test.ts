@@ -329,29 +329,21 @@ describe('translator', () => {
   });
 
   describe('URL and email preservation', () => {
-    it('should preserve HTTP URLs unchanged', () => {
-      const result = translateSync('Visit http://example.com today');
-      expect(result).toContain('http://example.com');
-    });
-
-    it('should preserve HTTPS URLs unchanged', () => {
-      const result = translateSync('Visit https://example.com/path?q=1 today');
-      expect(result).toContain('https://example.com/path?q=1');
-    });
-
-    it('should preserve complex URLs with fragments and params', () => {
-      const result = translateSync('See https://github.com/user/repo#readme for info');
-      expect(result).toContain('https://github.com/user/repo#readme');
-    });
-
-    it('should preserve email addresses unchanged', () => {
-      const result = translateSync('Contact foo@bar.com for help');
-      expect(result).toContain('foo@bar.com');
-    });
-
-    it('should preserve complex email addresses', () => {
-      const result = translateSync('Email user.name+tag@example.org now');
-      expect(result).toContain('user.name+tag@example.org');
+    it.each([
+      ['Visit http://example.com today', 'http://example.com', 'HTTP URL'],
+      ['Visit https://example.com/path?q=1 today', 'https://example.com/path?q=1', 'HTTPS URL'],
+      [
+        'See https://github.com/user/repo#readme for info',
+        'https://github.com/user/repo#readme',
+        'URL with fragment',
+      ],
+      ['Contact foo@bar.com for help', 'foo@bar.com', 'email address'],
+      ['Email user.name+tag@example.org now', 'user.name+tag@example.org', 'complex email'],
+      ['Visit google.com today', 'google.com', 'bare domain'],
+      ['See example.org/path?q=1 for info', 'example.org/path?q=1', 'bare domain with path'],
+    ])('preserves %s unchanged (%s)', (input, preserved) => {
+      const result = translateSync(input);
+      expect(result).toContain(preserved);
     });
 
     it('should translate surrounding text while preserving URLs', () => {
@@ -372,16 +364,6 @@ describe('translator', () => {
       expect(urlToken).toBeDefined();
       expect(urlToken?.translated).toBe('https://example.com');
       expect(urlToken?.isWord).toBe(false);
-    });
-
-    it('should preserve bare domains like google.com', () => {
-      const result = translateSync('Visit google.com today');
-      expect(result).toContain('google.com');
-    });
-
-    it('should preserve bare domains with paths', () => {
-      const result = translateSync('See example.org/path?q=1 for info');
-      expect(result).toContain('example.org/path?q=1');
     });
 
     it('should preserve various TLDs', () => {

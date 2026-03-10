@@ -15,36 +15,27 @@ describe('IPA translation', () => {
     expect(ipa.length).toBeGreaterThan(0);
   });
 
-  it('should round-trip words through IPA', () => {
-    for (const word of ['cat', 'hello', 'world', 'think', 'bird', 'the']) {
+  it.each(['cat', 'hello', 'world', 'think', 'bird', 'the'])(
+    'should round-trip %s through IPA',
+    (word) => {
       const ipa = translateSync(word, { format: 'ipa' });
       const english = reverseTranslateSync(ipa, { format: 'ipa' });
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
-  });
+  );
 });
 
 describe('IPA format for common words', () => {
   const WJ = '\u2060';
 
-  it('translates hello to IPA', () => {
-    expect(translateSync('hello', { format: 'ipa' })).toBe(`hə${WJ}ˈ${WJ}loʊ`);
-  });
-
-  it('translates world to IPA', () => {
-    expect(translateSync('world', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}wɝld`);
-  });
-
-  it('translates the to IPA', () => {
-    expect(translateSync('the', { format: 'ipa' })).toBe('ðə');
-  });
-
-  it('translates think to IPA', () => {
-    expect(translateSync('think', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}θɪŋk`);
-  });
-
-  it('translates beautiful to IPA', () => {
-    expect(translateSync('beautiful', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bjutəfəl`);
+  it.each([
+    ['hello', `hə${WJ}ˈ${WJ}loʊ`],
+    ['world', `${WJ}ˈ${WJ}wɝld`],
+    ['the', 'ðə'],
+    ['think', `${WJ}ˈ${WJ}θɪŋk`],
+    ['beautiful', `${WJ}ˈ${WJ}bjutəfəl`],
+  ])('translates %s to IPA', (word, expected) => {
+    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
 
   it('translates affricates (church, judge)', () => {
@@ -63,24 +54,28 @@ describe('IPA format for common words', () => {
     );
   });
 
-  it('translates all vowel sounds to IPA', () => {
-    expect(translateSync('hot', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}hɑt`); // AA → ɑ
-    expect(translateSync('dog', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dɔɡ`); // AO → ɔ
-    expect(translateSync('out', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}aʊt`); // AW → aʊ
-    expect(translateSync('bed', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bɛd`); // EH → ɛ
-    expect(translateSync('see', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}si`); // IY → i
-    expect(translateSync('book', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}bʊk`); // UH → ʊ
+  it.each([
+    ['hot', `${WJ}ˈ${WJ}hɑt`, 'AA → ɑ'],
+    ['dog', `${WJ}ˈ${WJ}dɔɡ`, 'AO → ɔ'],
+    ['out', `${WJ}ˈ${WJ}aʊt`, 'AW → aʊ'],
+    ['bed', `${WJ}ˈ${WJ}bɛd`, 'EH → ɛ'],
+    ['see', `${WJ}ˈ${WJ}si`, 'IY → i'],
+    ['book', `${WJ}ˈ${WJ}bʊk`, 'UH → ʊ'],
+  ])('translates vowel sound in %s (%s)', (word, expected) => {
+    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
 
-  it('translates all consonant sounds to IPA', () => {
-    expect(translateSync('pen', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}pɛn`); // P → p
-    expect(translateSync('red', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɹɛd`); // R → ɹ
-    expect(translateSync('say', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}seɪ`); // S → s
-    expect(translateSync('very', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}vɛɹi`); // V → v
-    expect(translateSync('measure', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}mɛʒɝ`); // ZH → ʒ
-    expect(translateSync('go', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ɡoʊ`); // G → ɡ
-    expect(translateSync('yes', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}jɛs`); // Y → j
-    expect(translateSync('she', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}ʃi`); // SH → ʃ
+  it.each([
+    ['pen', `${WJ}ˈ${WJ}pɛn`, 'P → p'],
+    ['red', `${WJ}ˈ${WJ}ɹɛd`, 'R → ɹ'],
+    ['say', `${WJ}ˈ${WJ}seɪ`, 'S → s'],
+    ['very', `${WJ}ˈ${WJ}vɛɹi`, 'V → v'],
+    ['measure', `${WJ}ˈ${WJ}mɛʒɝ`, 'ZH → ʒ'],
+    ['go', `${WJ}ˈ${WJ}ɡoʊ`, 'G → ɡ'],
+    ['yes', `${WJ}ˈ${WJ}jɛs`, 'Y → j'],
+    ['she', `${WJ}ˈ${WJ}ʃi`, 'SH → ʃ'],
+  ])('translates consonant sound in %s (%s)', (word, expected) => {
+    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
 });
 

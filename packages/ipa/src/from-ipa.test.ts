@@ -3,36 +3,33 @@ import { describe, expect, it } from 'vitest';
 import { ipaToArpabet } from './index';
 
 describe('ipaToArpabet — English round-trip via public API', () => {
-  it('round-trips English words through IPA', () => {
-    const words = [
-      'pen',
-      'bad',
-      'ten',
-      'dog', // simple consonants (p, b, t, d)
-      'cat',
-      'hot',
-      'bed',
-      'bit', // vowels (æ, ɑ, ɛ, ɪ)
-      'time',
-      'out',
-      'coin',
-      'go',
-      'say', // diphthongs (aɪ, aʊ, ɔɪ, oʊ, eɪ)
-      'church',
-      'judge', // affricates (tʃ, dʒ)
-      'think',
-      'the',
-      'she',
-      'measure', // fricatives (θ, ð, ʃ, ʒ)
-      'hello',
-      'world',
-      'thought', // complete words
-    ];
-    for (const word of words) {
-      const ipa = translateSync(word, { format: 'ipa' });
-      const english = reverseTranslateSync(ipa, { format: 'ipa' });
-      expect(english, `Failed round-trip for "${word}" (IPA: ${ipa})`).toBe(word);
-    }
+  it.each([
+    'pen',
+    'bad',
+    'ten',
+    'dog',
+    'cat',
+    'hot',
+    'bed',
+    'bit',
+    'time',
+    'out',
+    'coin',
+    'go',
+    'say',
+    'church',
+    'judge',
+    'think',
+    'the',
+    'she',
+    'measure',
+    'hello',
+    'world',
+    'thought',
+  ])('round-trips "%s" through IPA', (word) => {
+    const ipa = translateSync(word, { format: 'ipa' });
+    const english = reverseTranslateSync(ipa, { format: 'ipa' });
+    expect(english, `Failed round-trip for "${word}" (IPA: ${ipa})`).toBe(word);
   });
 });
 
