@@ -71,50 +71,24 @@ describe('Khmer compound decomposition', () => {
 });
 
 describe('language resolvers via translate', () => {
-  it('German ß normalization', async () => {
-    const result = await translate('daß', { lang: 'de' });
-    expect(result).toBeTruthy();
-  }, 30_000);
-
-  it('Swedish suffix stripping', async () => {
-    const result = await translate('flickorna', { lang: 'sv' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Finnish morphology', async () => {
-    const result = await translate('talossani', { lang: 'fi' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Esperanto morphology', async () => {
-    const result = await translate('laboris', { lang: 'eo' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Romanian suffix stripping', async () => {
-    const result = await translate('băiatul', { lang: 'ro' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Norwegian old orthography', async () => {
-    const result = await translate('af', { lang: 'nb' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Malay prefix-suffix', async () => {
-    const result = await translate('memakan', { lang: 'ma' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Persian verb forms', async () => {
-    const result = await translate('میکند', { lang: 'fa' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Swahili verb prefixes', async () => {
-    const result = await translate('wanakula', { lang: 'sw' });
-    expect(result).toBeTruthy();
-  });
+  it.each([
+    ['daß', 'de', 'German ß normalization'],
+    ['flickorna', 'sv', 'Swedish suffix stripping'],
+    ['talossani', 'fi', 'Finnish morphology'],
+    ['laboris', 'eo', 'Esperanto morphology'],
+    ['băiatul', 'ro', 'Romanian suffix stripping'],
+    ['af', 'nb', 'Norwegian old orthography'],
+    ['memakan', 'ma', 'Malay prefix-suffix'],
+    ['میکند', 'fa', 'Persian verb forms'],
+    ['wanakula', 'sw', 'Swahili verb prefixes'],
+  ])(
+    '%s resolves via %s (%s)',
+    async (word, lang) => {
+      const result = await translate(word, { lang });
+      expect(result).toBeTruthy();
+    },
+    30_000
+  );
 });
 
 describe('French via translate', () => {
