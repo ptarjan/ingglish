@@ -44,22 +44,15 @@ describe('parseDictionary', () => {
 });
 
 describe('stripStress', () => {
-  it('removes trailing 0', () => {
-    expect(stripStress('AH0')).toBe('AH');
-  });
-
-  it('removes trailing 1', () => {
-    expect(stripStress('IY1')).toBe('IY');
-  });
-
-  it('removes trailing 2', () => {
-    expect(stripStress('AO2')).toBe('AO');
-  });
-
-  it('leaves consonants unchanged', () => {
-    expect(stripStress('TH')).toBe('TH');
-    expect(stripStress('K')).toBe('K');
-    expect(stripStress('NG')).toBe('NG');
+  it.each([
+    ['AH0', 'AH', 'removes trailing 0'],
+    ['IY1', 'IY', 'removes trailing 1'],
+    ['AO2', 'AO', 'removes trailing 2'],
+    ['TH', 'TH', 'leaves consonant TH unchanged'],
+    ['K', 'K', 'leaves consonant K unchanged'],
+    ['NG', 'NG', 'leaves consonant NG unchanged'],
+  ])('stripStress(%s) → %s (%s)', (input, expected) => {
+    expect(stripStress(input)).toBe(expected);
   });
 });
 
@@ -70,35 +63,21 @@ describe('getWordScore', () => {
     ["don't", 50_000],
   ]);
 
-  it('returns frequency for known words', () => {
-    expect(getWordScore('the', freqMap)).toBe(1_000_000);
-    expect(getWordScore('hello', freqMap)).toBe(5000);
-  });
-
-  it('returns negative length for unknown words', () => {
-    expect(getWordScore('xyz', freqMap)).toBe(-3);
-    expect(getWordScore('abcdef', freqMap)).toBe(-6);
-  });
-
-  it('boosts common contractions', () => {
-    const score = getWordScore("don't", freqMap);
-    // Should be freq + 10_000_000 boost
-    expect(score).toBe(50_000 + 10_000_000);
-  });
-
-  it('gives unknown contractions a fixed score', () => {
-    // "shan't" is in COMMON_CONTRACTIONS but not in freqMap
-    const score = getWordScore("shan't", freqMap);
-    expect(score).toBe(5_000_000);
+  it.each([
+    ['the', 1_000_000, 'returns frequency for known word'],
+    ['hello', 5000, 'returns frequency for known word'],
+    ['xyz', -3, 'returns negative length for unknown word'],
+    ['abcdef', -6, 'returns negative length for unknown word'],
+    ["don't", 50_000 + 10_000_000, 'boosts common contractions'],
+    ["shan't", 5_000_000, 'gives unknown contractions a fixed score'],
+    ['THE', 1_000_000, 'is case-insensitive'],
+    ["DON'T", 50_000 + 10_000_000, 'is case-insensitive for contractions'],
+  ])('getWordScore(%s) → %d (%s)', (word, expected) => {
+    expect(getWordScore(word, freqMap)).toBe(expected);
   });
 
   it('penalizes numeric words', () => {
     const score = getWordScore('abc123', freqMap);
     expect(score).toBeLessThan(-1_000_000);
-  });
-
-  it('is case-insensitive', () => {
-    expect(getWordScore('THE', freqMap)).toBe(1_000_000);
-    expect(getWordScore("DON'T", freqMap)).toBe(50_000 + 10_000_000);
   });
 });
