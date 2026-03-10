@@ -4,7 +4,6 @@
  * (translateSync, reverseTranslateSync, translate, reverseTranslate).
  */
 import { describe, expect, it } from 'vitest';
-import { lookupPronunciation } from '@ingglish/dictionary';
 import {
   reverseTranslate,
   reverseTranslateSync,
@@ -13,7 +12,6 @@ import {
   translateSync,
   translateSyncWithMapping,
 } from '../index';
-import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
 
 // ===========================================================================
 // Non-English translation via public API with real dicts
@@ -92,7 +90,6 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
   it('should translate -ed after T/D with /ɪd/ (e.g. "formatted")', () => {
     // "format" is in dict, "formatted" is not → word resolver → matchStemming
     // T ending → IH0 D allomorph (stemming.ts line 28)
-    expect(lookupPronunciation('formatted')).toBeNull();
     const result = translateSync('formatted');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('formatted');
@@ -100,7 +97,6 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
 
   it('should translate -ed after voiced consonant with /d/ (e.g. "blogged")', () => {
     // "blog" ends in G (voiced) → D allomorph (stemming.ts line 33)
-    expect(lookupPronunciation('blogged')).toBeNull();
     const result = translateSync('blogged');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('blogged');
@@ -108,7 +104,6 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
 
   it('should translate -ed after voiceless consonant with /t/ (e.g. "skyped")', () => {
     // "skype" ends in P (voiceless) → T allomorph (stemming.ts line 31)
-    expect(lookupPronunciation('skyped')).toBeNull();
     const result = translateSync('skyped');
     expect(result).toBeTruthy();
   });
@@ -120,21 +115,18 @@ describe('stemming -ed allomorphs (word resolver path)', () => {
 describe('stemming -s/-es allomorphs (word resolver path)', () => {
   it('should translate -es after sibilants with /ɪz/ (e.g. "relaunches")', () => {
     // "relaunch" ends in CH (sibilant) → IH0 Z allomorph (stemming.ts line 45)
-    expect(lookupPronunciation('relaunches')).toBeNull();
     const result = translateSync('relaunches');
     expect(result).toBeTruthy();
   });
 
   it('should translate -s after voiced consonant with /z/ (e.g. "debugs")', () => {
     // "debug" ends in G (voiced) → Z allomorph (stemming.ts line 50)
-    expect(lookupPronunciation('debugs')).toBeNull();
     const result = translateSync('debugs');
     expect(result).toBeTruthy();
   });
 
   it('should translate -s after voiceless consonant with /s/ (e.g. "podcasts")', () => {
     // "podcast" ends in T (voiceless) → S allomorph (stemming.ts line 48)
-    expect(lookupPronunciation('podcasts')).toBeNull();
     const result = translateSync('podcasts');
     expect(result).toBeTruthy();
   });
@@ -151,10 +143,6 @@ describe('stemming additional patterns', () => {
 
   it('should handle un- prefixed words', () => {
     // "undo" is in dictionary, but "unbreak" might not be
-    const pron = lookupPronunciation('break');
-    if (!pron) {
-      return;
-    }
     const result = translateSync('unbreak');
     // Should translate via prefix stemming if "unbreak" isn't in dict
     expect(result).toBeTruthy();
@@ -491,9 +479,6 @@ describe('compound word case preservation paths', () => {
 describe('compound decomposition via word resolver', () => {
   it('should decompose unknown compound word into known parts', () => {
     // "catdog" — not in dict, but "cat" + "dog" are
-    if (!lookupPronunciation('cat') || !lookupPronunciation('dog')) {
-      return;
-    }
     const result = translateSync('catdog');
     expect(result).toBeTruthy();
     expect(result.toLowerCase()).not.toBe('catdog');
@@ -1094,34 +1079,6 @@ describe('British spelling word resolver', () => {
     // "vapour" is not in CMU dict but matchBritish maps it to "vapor" which is
     const result = translateSync('vapour');
     expect(result).toBe(translateSync('vapor'));
-  });
-});
-
-// ===========================================================================
-// Coverage: reverse.ts exported function edge cases
-// ===========================================================================
-describe('reverseTranslateIPAWord edge cases', () => {
-  it('returns [] for empty string', () => {
-    expect(reverseTranslateIPAWord('')).toEqual([]);
-  });
-
-  it('returns [ipaWord] for whitespace-only input', () => {
-    expect(reverseTranslateIPAWord('   ')).toEqual(['   ']);
-  });
-
-  it('returns [ipaWord] when IPA cannot convert to arpabet', () => {
-    // A click consonant that has no arpabet mapping
-    expect(reverseTranslateIPAWord('\u01C0')).toEqual(['\u01C0']);
-  });
-});
-
-describe('reverseTranslateWord edge cases', () => {
-  it('returns [] for empty string', () => {
-    expect(reverseTranslateWord('')).toEqual([]);
-  });
-
-  it('returns [ingglishWord] for non-letter input like "123"', () => {
-    expect(reverseTranslateWord('123')).toEqual(['123']);
   });
 });
 

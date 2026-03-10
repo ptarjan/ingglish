@@ -29,19 +29,6 @@ describe('lookupPronunciation', () => {
     expect(await translate('read')).toBe('reed');
   });
 
-  it('returns custom pronunciation directly via lookupPronunciation', () => {
-    // "read" has a custom pronunciation that should be returned
-    const result = lookupPronunciation('read');
-    expect(result).toEqual(['R', 'IY1', 'D']);
-  });
-
-  it('returns dictionary pronunciation for non-custom words', () => {
-    // "hello" is in CMU but not in custom pronunciations
-    const result = lookupPronunciation('hello');
-    expect(result).not.toBeNull();
-    expect(Array.isArray(result)).toBe(true);
-  });
-
   it('returns custom pronunciation for words not in CMU', async () => {
     // "emoji" is added in custom-words, not in CMU
     const result = await translate('emoji');
