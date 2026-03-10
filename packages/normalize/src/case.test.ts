@@ -3,83 +3,73 @@ import { applyCasePattern, detectCasePattern, splitCamelCase } from './index';
 
 describe('case-utils', () => {
   describe('detectCasePattern', () => {
-    it('should detect lowercase', () => {
-      expect(detectCasePattern('hello')).toBe('lower');
-      expect(detectCasePattern('world')).toBe('lower');
+    it.each([
+      ['hello', 'lower'],
+      ['world', 'lower'],
+      ['ég', 'lower'],
+      ['über', 'lower'],
+      ['', 'lower'],
+    ] as const)('should detect lowercase: %s → %s', (input, expected) => {
+      expect(detectCasePattern(input)).toBe(expected);
     });
 
-    it('should detect uppercase', () => {
-      expect(detectCasePattern('HELLO')).toBe('upper');
-      expect(detectCasePattern('NASA')).toBe('upper');
-      expect(detectCasePattern('API')).toBe('upper');
+    it.each([
+      ['HELLO', 'upper'],
+      ['NASA', 'upper'],
+      ['API', 'upper'],
+      ['ÜBER', 'upper'],
+    ] as const)('should detect uppercase: %s → %s', (input, expected) => {
+      expect(detectCasePattern(input)).toBe(expected);
     });
 
-    it('should treat two-letter initialisms as capitalized', () => {
-      expect(detectCasePattern('UI')).toBe('capitalized');
-      expect(detectCasePattern('AI')).toBe('capitalized');
-      expect(detectCasePattern('IT')).toBe('capitalized');
+    it.each([
+      ['UI', 'capitalized'],
+      ['AI', 'capitalized'],
+      ['IT', 'capitalized'],
+      ['ÉG', 'capitalized'],
+      ['Hello', 'capitalized'],
+      ['World', 'capitalized'],
+      ['A', 'capitalized'],
+      ['Ég', 'capitalized'],
+      ['Über', 'capitalized'],
+      ['Ölaf', 'capitalized'],
+    ] as const)('should detect capitalized: %s → %s', (input, expected) => {
+      expect(detectCasePattern(input)).toBe(expected);
     });
 
-    it('should detect capitalized (title case)', () => {
-      expect(detectCasePattern('Hello')).toBe('capitalized');
-      expect(detectCasePattern('World')).toBe('capitalized');
+    it.each([
+      ['a', 'lower'],
+      ['i', 'lower'],
+      ['I', 'lower'],
+      ['5', 'lower'],
+    ] as const)('should handle single character: %s → %s', (input, expected) => {
+      expect(detectCasePattern(input)).toBe(expected);
     });
 
-    it('should handle single characters (I is treated as lowercase)', () => {
-      expect(detectCasePattern('a')).toBe('lower');
-      expect(detectCasePattern('i')).toBe('lower');
-      expect(detectCasePattern('A')).toBe('capitalized');
-      expect(detectCasePattern('I')).toBe('lower');
-      expect(detectCasePattern('5')).toBe('lower');
-    });
-
-    it('should detect mixed case', () => {
-      expect(detectCasePattern('GitHub')).toBe('mixed');
-      expect(detectCasePattern('iPhone')).toBe('mixed');
-      expect(detectCasePattern('McDonald')).toBe('mixed');
-      expect(detectCasePattern('hElLo')).toBe('mixed');
-    });
-
-    it('returns lower for empty string', () => {
-      expect(detectCasePattern('')).toBe('lower');
-    });
-
-    it('detects mixed case with Unicode uppercase after lowercase', () => {
-      // \u00E9\u00C9 - lowercase first, uppercase unicode second
-      expect(detectCasePattern('\u00E9\u00C9')).toBe('mixed');
-    });
-
-    it('should handle accented uppercase letters (Unicode)', () => {
-      expect(detectCasePattern('Ég')).toBe('capitalized');
-      expect(detectCasePattern('Über')).toBe('capitalized');
-      expect(detectCasePattern('Ölaf')).toBe('capitalized');
-      expect(detectCasePattern('ég')).toBe('lower');
-      expect(detectCasePattern('über')).toBe('lower');
-      expect(detectCasePattern('ÉG')).toBe('capitalized'); // 2-letter initialism
-      expect(detectCasePattern('ÜBER')).toBe('upper');
+    it.each([
+      ['GitHub', 'mixed'],
+      ['iPhone', 'mixed'],
+      ['McDonald', 'mixed'],
+      ['hElLo', 'mixed'],
+      ['\u00E9\u00C9', 'mixed'],
+    ] as const)('should detect mixed case: %s → %s', (input, expected) => {
+      expect(detectCasePattern(input)).toBe(expected);
     });
   });
 
   describe('applyCasePattern', () => {
-    it('should apply lowercase', () => {
-      expect(applyCasePattern('HELLO', 'lower')).toBe('hello');
-      expect(applyCasePattern('Hello', 'lower')).toBe('hello');
-    });
-
-    it('should apply uppercase', () => {
-      expect(applyCasePattern('hello', 'upper')).toBe('HELLO');
-      expect(applyCasePattern('Hello', 'upper')).toBe('HELLO');
-    });
-
-    it('should apply capitalized', () => {
-      expect(applyCasePattern('hello', 'capitalized')).toBe('Hello');
-      expect(applyCasePattern('HELLO', 'capitalized')).toBe('Hello');
-    });
-
-    it('should handle empty strings', () => {
-      expect(applyCasePattern('', 'upper')).toBe('');
-      expect(applyCasePattern('', 'lower')).toBe('');
-      expect(applyCasePattern('', 'capitalized')).toBe('');
+    it.each([
+      ['HELLO', 'lower', undefined, 'hello'],
+      ['Hello', 'lower', undefined, 'hello'],
+      ['hello', 'upper', undefined, 'HELLO'],
+      ['Hello', 'upper', undefined, 'HELLO'],
+      ['hello', 'capitalized', undefined, 'Hello'],
+      ['HELLO', 'capitalized', undefined, 'Hello'],
+      ['', 'upper', undefined, ''],
+      ['', 'lower', undefined, ''],
+      ['', 'capitalized', undefined, ''],
+    ] as const)('should apply %s with pattern %s → %s', (input, pattern, _original, expected) => {
+      expect(applyCasePattern(input, pattern)).toBe(expected);
     });
 
     it('should apply mixed case with original word', () => {
@@ -102,19 +92,18 @@ describe('case-utils', () => {
   });
 
   describe('round-trip', () => {
-    it('should preserve case pattern through detect -> apply', () => {
-      const testCases = [
-        { expected: 'world', translated: 'world', word: 'hello' },
-        { expected: 'WORLD', translated: 'world', word: 'HELLO' },
-        { expected: 'World', translated: 'world', word: 'Hello' },
-      ];
-
-      for (const { expected, translated, word } of testCases) {
+    it.each([
+      ['hello', 'world', 'world'],
+      ['HELLO', 'world', 'WORLD'],
+      ['Hello', 'world', 'World'],
+    ] as const)(
+      'should preserve case pattern through detect -> apply: %s',
+      (word, translated, expected) => {
         const pattern = detectCasePattern(word);
         const result = applyCasePattern(translated, pattern, word);
         expect(result).toBe(expected);
       }
-    });
+    );
 
     it('should preserve mixed case through detect -> apply', () => {
       const pattern = detectCasePattern('GitHub');
@@ -125,62 +114,55 @@ describe('case-utils', () => {
   });
 
   describe('splitCamelCase', () => {
-    it('should split camelCase words at boundaries', () => {
-      expect(splitCamelCase('iCloud')).toEqual(['i', 'Cloud']);
-      expect(splitCamelCase('iPhone')).toEqual(['i', 'Phone']);
-      expect(splitCamelCase('MacBook')).toEqual(['Mac', 'Book']);
-      expect(splitCamelCase('sunLight')).toEqual(['sun', 'Light']);
+    it.each([
+      ['iCloud', ['i', 'Cloud']],
+      ['iPhone', ['i', 'Phone']],
+      ['MacBook', ['Mac', 'Book']],
+      ['sunLight', ['sun', 'Light']],
+      ['myAwesomeApp', ['my', 'Awesome', 'App']],
+      ['getHTTPResponse', ['get', 'HTTPResponse']],
+      ['hasInternalA', ['has', 'Internal', 'A']],
+      ['endsWithZ', ['ends', 'With', 'Z']],
+      ['testAend', ['test', 'Aend']],
+      ['testZend', ['test', 'Zend']],
+    ] as const)('should split camelCase: %s', (input, expected) => {
+      expect(splitCamelCase(input)).toEqual(expected);
     });
 
-    it('should handle multiple boundaries', () => {
-      expect(splitCamelCase('myAwesomeApp')).toEqual(['my', 'Awesome', 'App']);
-      expect(splitCamelCase('getHTTPResponse')).toEqual(['get', 'HTTPResponse']);
+    it.each([
+      'hello',
+      'HELLO',
+      'Hello',
+      '',
+      'a',
+      'lowercase',
+      'alllowercase',
+      'Uppercase',
+      'test123',
+      'version2',
+      'hello_world',
+      'test@end',
+      'test[end',
+    ])('should return null for non-camelCase: %s', (input) => {
+      expect(splitCamelCase(input)).toBeNull();
     });
 
-    it('should return null for non-camelCase words', () => {
-      expect(splitCamelCase('hello')).toBeNull();
-      expect(splitCamelCase('HELLO')).toBeNull();
-      expect(splitCamelCase('Hello')).toBeNull();
-    });
-
-    it('should return null for empty or single char', () => {
-      expect(splitCamelCase('')).toBeNull();
-      expect(splitCamelCase('a')).toBeNull();
-    });
-
-    it('should use fast path: only check for A-Z (charCodes 65-90)', () => {
-      expect(splitCamelCase('lowercase')).toBeNull();
-      expect(splitCamelCase('alllowercase')).toBeNull();
-      expect(splitCamelCase('Uppercase')).toBeNull();
-      expect(splitCamelCase('hasInternalA')).toEqual(['has', 'Internal', 'A']);
-      expect(splitCamelCase('endsWithZ')).toEqual(['ends', 'With', 'Z']);
-    });
-
-    it('should not be confused by numbers or special chars', () => {
-      expect(splitCamelCase('test123')).toBeNull();
-      expect(splitCamelCase('version2')).toBeNull();
-      expect(splitCamelCase('hello_world')).toBeNull();
-    });
-
-    it('should correctly identify charCode boundaries for A-Z (65-90)', () => {
-      expect(splitCamelCase('test@end')).toBeNull();
-      expect(splitCamelCase('test[end')).toBeNull();
-      expect(splitCamelCase('testAend')).toEqual(['test', 'Aend']);
-      expect(splitCamelCase('testZend')).toEqual(['test', 'Zend']);
-    });
-
-    it('should use charCode-based fast path (verifies optimization assumption)', () => {
-      for (let charCode = 65; charCode <= 90; charCode++) {
+    it.each(
+      Array.from({ length: 26 }, (_, i) => {
+        const charCode = 65 + i;
         const char = String.fromCodePoint(charCode);
-        const word = 'a' + char;
-        expect(splitCamelCase(word)).toEqual(['a', char]);
-      }
-
-      expect(splitCamelCase('a@')).toBeNull();
-      expect(splitCamelCase('a[')).toBeNull();
-      expect(splitCamelCase('a0')).toBeNull();
-      expect(splitCamelCase('a ')).toBeNull();
+        return [`a${char}`, ['a', char]] as const;
+      })
+    )('should detect camelCase boundary for A-Z: %s', (word, expected) => {
+      expect(splitCamelCase(word)).toEqual(expected);
     });
+
+    it.each(['a@', 'a[', 'a0', 'a '])(
+      'should not detect boundary for non-A-Z char: %s',
+      (input) => {
+        expect(splitCamelCase(input)).toBeNull();
+      }
+    );
 
     it('should skip slow path for lowercase words (no array allocation)', () => {
       let pushCallCount = 0;

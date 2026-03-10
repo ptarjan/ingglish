@@ -109,68 +109,42 @@ describe('text utilities', () => {
   });
 
   describe('isIPAChar', () => {
-    it('recognizes Latin letters', () => {
-      expect(isIPAChar('a')).toBe(true);
-      expect(isIPAChar('Z')).toBe(true);
-    });
-
-    it('recognizes word joiner U+2060', () => {
-      expect(isIPAChar('\u2060')).toBe(true);
-    });
-
-    it('recognizes IPA stress markers', () => {
-      expect(isIPAChar('\u02C8')).toBe(true); // ˈ primary stress
-      expect(isIPAChar('\u02CC')).toBe(true); // ˌ secondary stress
-    });
-
-    it('recognizes IPA symbols', () => {
-      expect(isIPAChar('ə')).toBe(true);
-      expect(isIPAChar('ʃ')).toBe(true);
-      expect(isIPAChar('ŋ')).toBe(true);
-    });
-
-    it('rejects punctuation and digits', () => {
-      expect(isIPAChar('.')).toBe(false);
-      expect(isIPAChar('1')).toBe(false);
-      expect(isIPAChar(' ')).toBe(false);
+    it.each([
+      ['a', 'Latin lowercase', true],
+      ['Z', 'Latin uppercase', true],
+      ['\u2060', 'word joiner U+2060', true],
+      ['\u02C8', 'primary stress \u02C8', true],
+      ['\u02CC', 'secondary stress \u02CC', true],
+      ['\u0259', 'IPA schwa \u0259', true],
+      ['\u0283', 'IPA esh \u0283', true],
+      ['\u014B', 'IPA eng \u014B', true],
+      ['.', 'period', false],
+      ['1', 'digit', false],
+      [' ', 'space', false],
+    ])('returns %s for %s (%j)', (char, _label, expected) => {
+      expect(isIPAChar(char)).toBe(expected);
     });
   });
 
   describe('isPhoneticChar', () => {
-    it('recognizes Latin letters', () => {
-      expect(isPhoneticChar('a')).toBe(true);
-      expect(isPhoneticChar('Z')).toBe(true);
-    });
-
-    it('recognizes apostrophe', () => {
-      expect(isPhoneticChar("'")).toBe(true);
-    });
-
-    it('recognizes accented vowels (stress markers)', () => {
-      expect(isPhoneticChar('á')).toBe(true);
-      expect(isPhoneticChar('é')).toBe(true);
-      expect(isPhoneticChar('ü')).toBe(true);
-      expect(isPhoneticChar('À')).toBe(true);
-    });
-
-    it('recognizes word joiner U+2060', () => {
-      expect(isPhoneticChar('\u2060')).toBe(true);
-    });
-
-    it('recognizes IPA stress markers', () => {
-      expect(isPhoneticChar('\u02C8')).toBe(true);
-      expect(isPhoneticChar('\u02CC')).toBe(true);
-    });
-
-    it('recognizes IPA symbols', () => {
-      expect(isPhoneticChar('ə')).toBe(true);
-      expect(isPhoneticChar('ʃ')).toBe(true);
-    });
-
-    it('rejects punctuation and digits', () => {
-      expect(isPhoneticChar('.')).toBe(false);
-      expect(isPhoneticChar('1')).toBe(false);
-      expect(isPhoneticChar(' ')).toBe(false);
+    it.each([
+      ['a', 'Latin lowercase', true],
+      ['Z', 'Latin uppercase', true],
+      ["'", 'apostrophe', true],
+      ['\u00E1', 'accented \u00E1', true],
+      ['\u00E9', 'accented \u00E9', true],
+      ['\u00FC', 'accented \u00FC', true],
+      ['\u00C0', 'accented \u00C0', true],
+      ['\u2060', 'word joiner U+2060', true],
+      ['\u02C8', 'primary stress \u02C8', true],
+      ['\u02CC', 'secondary stress \u02CC', true],
+      ['\u0259', 'IPA schwa \u0259', true],
+      ['\u0283', 'IPA esh \u0283', true],
+      ['.', 'period', false],
+      ['1', 'digit', false],
+      [' ', 'space', false],
+    ])('returns %s for %s (%j)', (char, _label, expected) => {
+      expect(isPhoneticChar(char)).toBe(expected);
     });
   });
 
@@ -247,18 +221,14 @@ describe('text utilities', () => {
   });
 
   describe('stripDiacritics', () => {
-    it('strips accents from vowels', () => {
-      expect(stripDiacritics('café')).toBe('cafe');
-      expect(stripDiacritics('résumé')).toBe('resume');
-      expect(stripDiacritics('naïve')).toBe('naive');
-    });
-
-    it('preserves text without diacritics', () => {
-      expect(stripDiacritics('hello')).toBe('hello');
-    });
-
-    it('handles mixed text', () => {
-      expect(stripDiacritics('cliché world')).toBe('cliche world');
+    it.each([
+      ['caf\u00E9', 'cafe'],
+      ['r\u00E9sum\u00E9', 'resume'],
+      ['na\u00EFve', 'naive'],
+      ['hello', 'hello'],
+      ['clich\u00E9 world', 'cliche world'],
+    ])('stripDiacritics(%j) -> %j', (input, expected) => {
+      expect(stripDiacritics(input)).toBe(expected);
     });
   });
 });

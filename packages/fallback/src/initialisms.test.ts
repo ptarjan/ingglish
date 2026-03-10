@@ -37,21 +37,12 @@ describe('initialisms', () => {
   });
 
   describe('known initialisms pass through unchanged', () => {
-    it('should pass through multi-letter initialisms unchanged', () => {
-      expect(translateSync('UI')).toBe('UI');
-      expect(translateSync('API')).toBe('API');
-      expect(translateSync('URL')).toBe('URL');
-      expect(translateSync('HTML')).toBe('HTML');
-      expect(translateSync('TV')).toBe('TV');
-      expect(translateSync('ID')).toBe('ID');
-      expect(translateSync('US')).toBe('US');
-      expect(translateSync('USA')).toBe('USA');
-      expect(translateSync('UK')).toBe('UK');
-      expect(translateSync('AI')).toBe('AI');
-      expect(translateSync('CPU')).toBe('CPU');
-      expect(translateSync('ML')).toBe('ML');
-      expect(translateSync('LLM')).toBe('LLM');
-    });
+    it.each(['UI', 'API', 'URL', 'HTML', 'TV', 'ID', 'US', 'USA', 'UK', 'AI', 'CPU', 'ML', 'LLM'])(
+      'should pass through %s unchanged',
+      (word) => {
+        expect(translateSync(word)).toBe(word);
+      }
+    );
 
     it('should pass through lowercase initialisms unchanged', () => {
       // lowercase "us", "it", "am" happen to translate to themselves anyway
@@ -61,10 +52,8 @@ describe('initialisms', () => {
   });
 
   describe('unknown all-caps words pass through unchanged', () => {
-    it('should pass through unknown all-caps words', () => {
-      expect(translateSync('MQTT')).toBe('MQTT');
-      expect(translateSync('USSR')).toBe('USSR');
-      expect(translateSync('XYZZY')).toBe('XYZZY');
+    it.each(['MQTT', 'USSR', 'XYZZY'])('should pass through %s unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
 
     it('should pass through all-caps acronyms-as-words via initialism list', () => {
@@ -92,41 +81,14 @@ describe('initialisms', () => {
   });
 
   describe('edge cases: initialisms that are also dictionary words', () => {
-    it('should treat IT as initialism, not pronoun', () => {
-      const result = translateSync('IT');
-      expect(result).toBe('IT');
-    });
-
-    it('should treat AM as initialism when uppercase', () => {
-      const result = translateSync('AM');
-      expect(result).toBe('AM');
-    });
-
-    it('should treat PM as initialism', () => {
-      const result = translateSync('PM');
-      expect(result).toBe('PM');
+    it.each(['IT', 'AM', 'PM'])('should treat %s as initialism, not dictionary word', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 
   describe('plural and possessive initialisms', () => {
-    it('should handle IDs as ID + s', () => {
-      const result = translateSync('IDs');
-      expect(result).toBe('IDs');
-    });
-
-    it('should handle TVs as TV + s', () => {
-      const result = translateSync('TVs');
-      expect(result).toBe('TVs');
-    });
-
-    it('should handle URLs as URL + s', () => {
-      const result = translateSync('URLs');
-      expect(result).toBe('URLs');
-    });
-
-    it('should handle APIs as API + s', () => {
-      const result = translateSync('APIs');
-      expect(result).toBe('APIs');
+    it.each(['IDs', 'TVs', 'URLs', 'APIs'])('should pass through %s unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
 
     it("should handle API's (possessive) correctly", () => {
@@ -146,9 +108,8 @@ describe('initialisms', () => {
   });
 
   describe('IPA format with initialisms', () => {
-    it('should pass through initialisms unchanged for IPA too', () => {
-      expect(translateSync('UI', { format: 'ipa' })).toBe('UI');
-      expect(translateSync('API', { format: 'ipa' })).toBe('API');
+    it.each(['UI', 'API'])('should pass through %s unchanged for IPA too', (word) => {
+      expect(translateSync(word, { format: 'ipa' })).toBe(word);
     });
   });
 

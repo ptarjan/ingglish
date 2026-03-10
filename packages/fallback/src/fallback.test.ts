@@ -2,40 +2,18 @@ import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 
 describe('British spelling translation', () => {
-  it('converts -our → -or (vapour)', () => {
-    expect(translateSync('vapour')).toBe('vayper');
-  });
-
-  it('converts -ise → -ize (organise)', () => {
-    expect(translateSync('organise')).toBe('organaiz');
-  });
-
-  it('converts -re → -er (meagre)', () => {
-    expect(translateSync('meagre')).toBe('meeger');
-  });
-
-  it('converts -isation → -ization (modernisation)', () => {
-    expect(translateSync('modernisation')).toBe('modernazayshan');
-  });
-
-  it('converts -ence → -ense (offence)', () => {
-    expect(translateSync('offence')).toBe('afens');
-  });
-
-  it('handles -oured suffix (favoured)', () => {
-    expect(translateSync('favoured')).toBe('fayverd');
-  });
-
-  it('converts -ey → -y (curtsey)', () => {
-    expect(translateSync('curtsey')).toBe('kertsee');
-  });
-
-  it('handles grey → gray (greyer)', () => {
-    expect(translateSync('greyer')).toBe('grayer');
-  });
-
-  it('converts -lled → -led (modelled)', () => {
-    expect(translateSync('modelled')).toBe('modald');
+  it.each([
+    ['vapour', 'vayper', '-our → -or'],
+    ['organise', 'organaiz', '-ise → -ize'],
+    ['meagre', 'meeger', '-re → -er'],
+    ['modernisation', 'modernazayshan', '-isation → -ization'],
+    ['offence', 'afens', '-ence → -ense'],
+    ['favoured', 'fayverd', '-oured suffix'],
+    ['curtsey', 'kertsee', '-ey → -y'],
+    ['greyer', 'grayer', 'grey → gray'],
+    ['modelled', 'modald', '-lled → -led'],
+  ])('converts %s → %s (%s)', (input, expected) => {
+    expect(translateSync(input)).toBe(expected);
   });
 });
 
@@ -49,51 +27,34 @@ describe('custom pronunciation translation', () => {
 });
 
 describe('compound word translation', () => {
-  it('translates "catdog" by splitting into known parts', () => {
-    expect(translateSync('catdog')).toBe('katdawg');
+  it.each([
+    ['catdog', 'katdawg'],
+    ['hatbox', 'hatboks'],
+    ['bedpost', 'bedpohst'],
+  ])('translates compound %s → %s', (input, expected) => {
+    expect(translateSync(input)).toBe(expected);
   });
 
   it('translates non-compound words via G2P', () => {
     const result = translateSync('xyzabc');
     expect(typeof result).toBe('string');
   });
-
-  it('translates compounds like "hatbox"', () => {
-    expect(translateSync('hatbox')).toBe('hatboks');
-  });
-
-  it('splits and translates "bedpost"', () => {
-    expect(translateSync('bedpost')).toBe('bedpohst');
-  });
 });
 
 describe('stemming translation', () => {
-  it('handles -es suffix after sibilants (stemming)', () => {
-    // "rehashes" not in CMU dict; stem "rehash" ends in SH (sibilant)
-    // sibilant -es allomorph adds IH0 Z → "iz"
-    expect(translateSync('rehashes')).toBe('reehashiz');
-  });
-
-  it('handles -s suffix after voiced consonants (stemming)', () => {
-    // "debugs" not in CMU dict; stem "debug" ends in G (voiced)
-    // voiced -s allomorph adds Z → "z"
-    expect(translateSync('debugs')).toBe('deebuhgz');
-  });
-
-  it('handles -ing suffix (detoxing → detox + ing)', () => {
-    expect(translateSync('detoxing')).toBe('deetoksing');
-  });
-
-  it('handles -ly suffix (boringly → boring + ly)', () => {
-    expect(translateSync('boringly')).toBe('boringlee');
-  });
-
-  it('handles un- prefix (unsorted)', () => {
-    expect(translateSync('unsorted')).toBe('ansortid');
-  });
-
-  it('handles re- prefix (rebooting → re + boot + ing)', () => {
-    expect(translateSync('rebooting')).toBe('reebooting');
+  it.each([
+    ['rehashes', 'reehashiz', '-es suffix after sibilants'],
+    ['debugs', 'deebuhgz', '-s suffix after voiced consonants'],
+    ['detoxing', 'deetoksing', '-ing suffix (detox + ing)'],
+    ['boringly', 'boringlee', '-ly suffix (boring + ly)'],
+    ['unsorted', 'ansortid', 'un- prefix'],
+    ['rebooting', 'reebooting', 're- prefix (re + boot + ing)'],
+    ['uglify', 'uhgleeifai', '-ify suffix'],
+    ['uglification', 'uhgleeifikayshan', '-ification suffix'],
+    ['uglifying', 'uhgleeifaiing', '-ifying suffix'],
+    ['transposing', 'transpohzing', 'e-reinsertion (transpose + ing)'],
+  ])('handles %s → %s (%s)', (input, expected) => {
+    expect(translateSync(input)).toBe(expected);
   });
 
   it('handles i→y stem change', () => {
@@ -101,29 +62,11 @@ describe('stemming translation', () => {
     expect(translateSync('fussily')).toBe('fuhseelee');
     expect(translateSync('fussier')).toBe('fuhser');
   });
-
-  it('handles -ify suffix (uglify)', () => {
-    expect(translateSync('uglify')).toBe('uhgleeifai');
-  });
-
-  it('handles -ification suffix (uglification)', () => {
-    expect(translateSync('uglification')).toBe('uhgleeifikayshan');
-  });
-
-  it('handles -ifying suffix (uglifying)', () => {
-    expect(translateSync('uglifying')).toBe('uhgleeifaiing');
-  });
-
-  it('handles e-reinsertion (transposing → transpose + ing)', () => {
-    expect(translateSync('transposing')).toBe('transpohzing');
-  });
 });
 
 describe('initialism passthrough', () => {
-  it('passes through known initialisms unchanged', () => {
-    expect(translateSync('URL')).toBe('URL');
-    expect(translateSync('HTML')).toBe('HTML');
-    expect(translateSync('API')).toBe('API');
+  it.each(['URL', 'HTML', 'API'])('passes through %s unchanged', (word) => {
+    expect(translateSync(word)).toBe(word);
   });
 
   it('is case-insensitive for initialisms', () => {

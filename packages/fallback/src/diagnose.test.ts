@@ -7,15 +7,14 @@ import { diagnoseUnknown } from './index';
 // show "dictionary" or "custom override" badges instead.
 
 describe('diagnoseUnknown', () => {
-  it('returns { strategy: "initialism" } for spelled-out letter sequences', () => {
-    for (const w of ['omg', 'diy', 'eta', 'faq']) {
-      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      expect(diagnoseUnknown(w)).toEqual({ strategy: 'initialism' });
-    }
+  it.each(['omg', 'diy', 'eta', 'faq'])('returns initialism strategy for "%s"', (w) => {
+    expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+    expect(diagnoseUnknown(w)).toEqual({ strategy: 'initialism' });
   });
 
-  it('returns { strategy: "british" } with americanSpelling for British spellings', () => {
-    for (const w of ['organise', 'specialise', 'categorise', 'normalise']) {
+  it.each(['organise', 'specialise', 'categorise', 'normalise'])(
+    'returns british strategy for "%s"',
+    (w) => {
       expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
       const result = diagnoseUnknown(w);
       expect(result).not.toBeNull();
@@ -25,7 +24,7 @@ describe('diagnoseUnknown', () => {
         expect(result!.phonemes.length).toBeGreaterThan(0);
       }
     }
-  });
+  );
 
   it('returns americanSpelling "organize" for "organise"', () => {
     const result = diagnoseUnknown('organise');
@@ -55,27 +54,19 @@ describe('diagnoseUnknown', () => {
     }
   });
 
-  it('returns { strategy: "g2p" } with trace for unknown words', () => {
-    for (const w of ['splonk', 'blorft', 'zazzle', 'crebbit']) {
-      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      const result = diagnoseUnknown(w);
-      expect(result).not.toBeNull();
-      expect(result!.strategy).toBe('g2p');
-      if (result!.strategy === 'g2p') {
-        expect(result!.trace).toBeDefined();
-        expect(result!.trace.phonemes.length).toBeGreaterThan(0);
-      }
+  it.each(['splonk', 'blorft', 'zazzle', 'crebbit'])('returns g2p strategy for "%s"', (w) => {
+    expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+    const result = diagnoseUnknown(w);
+    expect(result).not.toBeNull();
+    expect(result!.strategy).toBe('g2p');
+    if (result!.strategy === 'g2p') {
+      expect(result!.trace).toBeDefined();
+      expect(result!.trace.phonemes.length).toBeGreaterThan(0);
     }
   });
 
-  it('returns null for obvious non-words (passthrough)', () => {
-    // 3+ consecutive identical characters
-    expect(diagnoseUnknown('ssssssss')).toBeNull();
-    expect(diagnoseUnknown('brrr')).toBeNull();
-    // No vowels (a/e/i/o/u/y)
-    expect(diagnoseUnknown('bcdfg')).toBeNull();
-    expect(diagnoseUnknown('tsk')).toBeNull();
-    expect(diagnoseUnknown('pfft')).toBeNull();
+  it.each(['ssssssss', 'brrr', 'bcdfg', 'tsk', 'pfft'])('returns null for non-word "%s"', (w) => {
+    expect(diagnoseUnknown(w)).toBeNull();
   });
 });
 

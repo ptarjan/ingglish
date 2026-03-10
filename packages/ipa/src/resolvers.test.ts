@@ -80,25 +80,14 @@ describe('Japanese kana resolver', () => {
 });
 
 describe('Swedish resolver', () => {
-  it('strips -en suffix', async () => {
+  it.each([
+    ['barnen', 'strips -en suffix'],
+    ['flickorna', 'strips -orna suffix with -a replacement'],
+    ['hundar', 'strips -ar suffix'],
+    ['barnens', 'handles recursive genitive -s'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('sv');
-    expect(WORD_RESOLVERS.sv!(entries, 'barnen')).toBeDefined();
-  });
-
-  it('strips -orna suffix with -a replacement', async () => {
-    const entries = await loadEntries('sv');
-    expect(WORD_RESOLVERS.sv!(entries, 'flickorna')).toBeDefined();
-  });
-
-  it('strips -ar suffix', async () => {
-    const entries = await loadEntries('sv');
-    expect(WORD_RESOLVERS.sv!(entries, 'hundar')).toBeDefined();
-  });
-
-  it('handles recursive genitive -s', async () => {
-    const entries = await loadEntries('sv');
-    // barnens → strip -s → barnen → strip -en → barn
-    expect(WORD_RESOLVERS.sv!(entries, 'barnens')).toBeDefined();
+    expect(WORD_RESOLVERS.sv!(entries, word)).toBeDefined();
   });
 
   it('returns undefined for unresolvable words', async () => {
@@ -115,64 +104,22 @@ describe('Romanian resolver', () => {
 });
 
 describe('Esperanto resolver', () => {
-  it('strips accusative -n', async () => {
+  it.each([
+    ['bonon', 'strips accusative -n'],
+    ['bonoj', 'strips plural -j'],
+    ['bonojn', 'strips plural accusative -jn'],
+    ['laboris', 'strips past tense -is'],
+    ['laboros', 'strips future tense -os'],
+    ['laboru', 'strips imperative -u'],
+    ['laboranta', 'strips participle -anta'],
+    ['rapide', 'strips adverb -e → adjective -a'],
+    ['malbono', 'strips prefix mal-'],
+    ['malrapide', 'strips prefix mal- with recursive lemmatization'],
+    ['laboristo', 'strips derivational -isto'],
+    ['laborisj', 'strips -j then continues to verb ending'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'bonon')).toBeDefined();
-  });
-
-  it('strips plural -j', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'bonoj')).toBeDefined();
-  });
-
-  it('strips plural accusative -jn', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'bonojn')).toBeDefined();
-  });
-
-  it('strips past tense -is', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laboris')).toBeDefined();
-  });
-
-  it('strips future tense -os', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laboros')).toBeDefined();
-  });
-
-  it('strips imperative -u', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laboru')).toBeDefined();
-  });
-
-  it('strips participle -anta', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laboranta')).toBeDefined();
-  });
-
-  it('strips adverb -e → adjective -a', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'rapide')).toBeDefined();
-  });
-
-  it('strips prefix mal-', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'malbono')).toBeDefined();
-  });
-
-  it('strips prefix mal- with recursive lemmatization', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'malrapide')).toBeDefined();
-  });
-
-  it('strips derivational -isto', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laboristo')).toBeDefined();
-  });
-
-  it('strips -j then continues to verb ending', async () => {
-    const entries = await loadEntries('eo');
-    expect(WORD_RESOLVERS.eo!(entries, 'laborisj')).toBeDefined();
+    expect(WORD_RESOLVERS.eo!(entries, word)).toBeDefined();
   });
 
   it('returns undefined for prefix stripping failure', async () => {
@@ -182,66 +129,30 @@ describe('Esperanto resolver', () => {
 });
 
 describe('Finnish resolver', () => {
-  it('strips inessive -ssa', async () => {
+  it.each([
+    ['talossa', 'strips inessive -ssa'],
+    ['koiraa', 'strips partitive -a'],
+    ['talossani', 'strips possessive -ni then case (two-level)'],
+    ['talossamme', 'strips possessive -mme then case (two-level)'],
+    ['talossansa', 'strips possessive -nsa then case (two-level)'],
+    ['puhunut', 'strips verb suffix -nut'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'talossa')).toBeDefined();
-  });
-
-  it('strips partitive -a', async () => {
-    const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'koiraa')).toBeDefined();
-  });
-
-  it('strips possessive -ni then case (two-level)', async () => {
-    const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'talossani')).toBeDefined();
-  });
-
-  it('strips possessive -mme then case (two-level)', async () => {
-    const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'talossamme')).toBeDefined();
-  });
-
-  it('strips possessive -nsa then case (two-level)', async () => {
-    const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'talossansa')).toBeDefined();
-  });
-
-  it('strips verb suffix -nut', async () => {
-    const entries = await loadEntries('fi');
-    expect(WORD_RESOLVERS.fi!(entries, 'puhunut')).toBeDefined();
+    expect(WORD_RESOLVERS.fi!(entries, word)).toBeDefined();
   });
 });
 
 describe('Norwegian Bokmål resolver', () => {
-  it('modernizes af → av', async () => {
+  it.each([
+    ['af', 'modernizes af → av'],
+    ['efter', 'modernizes efter → etter'],
+    ['maal', 'modernizes old aa → å'],
+    ['hunden', 'strips -en suffix'],
+    ['hunder', 'strips -er suffix'],
+    ['maalen', 'two-level: suffix then modernize'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'af')).toBeDefined();
-  });
-
-  it('modernizes efter → etter', async () => {
-    const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'efter')).toBeDefined();
-  });
-
-  it('modernizes old aa → å', async () => {
-    const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'maal')).toBeDefined();
-  });
-
-  it('strips -en suffix', async () => {
-    const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'hunden')).toBeDefined();
-  });
-
-  it('strips -er suffix', async () => {
-    const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'hunder')).toBeDefined();
-  });
-
-  it('two-level: suffix then modernize', async () => {
-    const entries = await loadEntries('nb');
-    expect(WORD_RESOLVERS.nb!(entries, 'maalen')).toBeDefined();
+    expect(WORD_RESOLVERS.nb!(entries, word)).toBeDefined();
   });
 
   it('returns undefined for unresolvable words', async () => {
@@ -251,79 +162,47 @@ describe('Norwegian Bokmål resolver', () => {
 });
 
 describe('Malay resolver', () => {
-  it('strips prefix me-', async () => {
+  it.each([
+    ['memakan', 'strips prefix me-'],
+    ['menulis', 'restores dropped consonant with men- prefix'],
+    ['buatkan', 'strips suffix -kan'],
+    ['perbaiki', 'strips prefix per- + suffix -i'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('ma');
-    expect(WORD_RESOLVERS.ma!(entries, 'memakan')).toBeDefined();
-  });
-
-  it('restores dropped consonant with men- prefix', async () => {
-    const entries = await loadEntries('ma');
-    expect(WORD_RESOLVERS.ma!(entries, 'menulis')).toBeDefined();
-  });
-
-  it('strips suffix -kan', async () => {
-    const entries = await loadEntries('ma');
-    expect(WORD_RESOLVERS.ma!(entries, 'buatkan')).toBeDefined();
-  });
-
-  it('strips prefix per- + suffix -i', async () => {
-    const entries = await loadEntries('ma');
-    expect(WORD_RESOLVERS.ma!(entries, 'perbaiki')).toBeDefined();
+    expect(WORD_RESOLVERS.ma!(entries, word)).toBeDefined();
   });
 });
 
 describe('Persian resolver', () => {
-  it('strips plural -ها suffix', async () => {
+  it.each([
+    ['کتابها', 'strips plural -ها suffix'],
+    ['می\u200Cکند', 'splits ZWNJ compounds'],
+    ['می\u200Cکنند', 'strips verb endings with می prefix'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('fa');
-    expect(WORD_RESOLVERS.fa!(entries, 'کتابها')).toBeDefined();
-  });
-
-  it('splits ZWNJ compounds', async () => {
-    const entries = await loadEntries('fa');
-    expect(WORD_RESOLVERS.fa!(entries, 'می\u200Cکند')).toBeDefined();
-  });
-
-  it('strips verb endings with می prefix', async () => {
-    const entries = await loadEntries('fa');
-    expect(WORD_RESOLVERS.fa!(entries, 'می\u200Cکنند')).toBeDefined();
+    expect(WORD_RESOLVERS.fa!(entries, word)).toBeDefined();
   });
 });
 
 describe('Swahili resolver', () => {
-  it('strips verb prefix wana-', async () => {
+  it.each([
+    ['wanakula', 'strips verb prefix wana-'],
+    ['nikula', 'strips verb prefix ni-'],
+    ['wakula', 'strips verb prefix wa-'],
+  ])('%s — %s', async (word, _description) => {
     const entries = await loadEntries('sw');
-    expect(WORD_RESOLVERS.sw!(entries, 'wanakula')).toBeDefined();
-  });
-
-  it('strips verb prefix ni-', async () => {
-    const entries = await loadEntries('sw');
-    expect(WORD_RESOLVERS.sw!(entries, 'nikula')).toBeDefined();
-  });
-
-  it('strips verb prefix wa-', async () => {
-    const entries = await loadEntries('sw');
-    expect(WORD_RESOLVERS.sw!(entries, 'wakula')).toBeDefined();
+    expect(WORD_RESOLVERS.sw!(entries, word)).toBeDefined();
   });
 });
 
 describe('G2P fallback via translate()', () => {
-  it('Finnish G2P for unknown words', async () => {
-    const result = await translate('talokissa', { lang: 'fi' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Esperanto G2P for unknown words', async () => {
-    const result = await translate('salutonido', { lang: 'eo' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Swahili G2P for unknown words', async () => {
-    const result = await translate('habarimu', { lang: 'sw' });
-    expect(result).toBeTruthy();
-  });
-
-  it('Malay G2P for unknown words', async () => {
-    const result = await translate('selamatmu', { lang: 'ma' });
+  it.each([
+    ['talokissa', 'fi', 'Finnish G2P for unknown words'],
+    ['salutonido', 'eo', 'Esperanto G2P for unknown words'],
+    ['habarimu', 'sw', 'Swahili G2P for unknown words'],
+    ['selamatmu', 'ma', 'Malay G2P for unknown words'],
+  ])('%s (%s) — %s', async (word, lang, _description) => {
+    const result = await translate(word, { lang });
     expect(result).toBeTruthy();
   });
 });
