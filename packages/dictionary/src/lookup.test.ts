@@ -36,6 +36,19 @@ describe('lookupPronunciation', () => {
     expect(result.length).toBeGreaterThan(0);
   });
 
+  it('returns phonemes for known dictionary words', () => {
+    const result = lookupPronunciation('hello');
+    expect(result).not.toBeNull();
+    expect(result!.length).toBeGreaterThan(0);
+  });
+
+  it('returns custom pronunciation when available', () => {
+    // "read" is in CUSTOM_PRONUNCIATIONS
+    const result = lookupPronunciation('read');
+    expect(result).not.toBeNull();
+    expect(result).toContain('R');
+  });
+
   // Prototype safety is not observable through translate — keep direct test
   it('is prototype-safe: "constructor" returns null', () => {
     expect(lookupPronunciation('constructor')).toBeNull();
