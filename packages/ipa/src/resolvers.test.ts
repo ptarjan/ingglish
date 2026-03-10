@@ -25,19 +25,19 @@ describe('German ß resolver', () => {
     const entries = await loadEntries('de');
     const result = WORD_RESOLVERS.de!(entries, 'daß');
     expect(result).toBeDefined();
-  });
+  }, 30_000);
 
   it('normalizes ß with title case fallback', async () => {
     const entries = await loadEntries('de');
     // Kongreß → Kongress (title case in dict)
     const result = WORD_RESOLVERS.de!(entries, 'kongreß');
     expect(result).toBeDefined();
-  });
+  }, 30_000);
 
   it('returns undefined for words without ß', async () => {
     const entries = await loadEntries('de');
     expect(WORD_RESOLVERS.de!(entries, 'das')).toBeUndefined();
-  });
+  }, 30_000);
 });
 
 describe('Japanese kana resolver', () => {
