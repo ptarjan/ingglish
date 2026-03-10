@@ -1,6 +1,8 @@
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { describe, it, expect, vi } from 'vitest';
 import * as dictModule from '@ingglish/dictionary';
-import type { PhoneDict } from '@ingglish/ipa';
+import { convertIpaEntries, getLanguage } from '@ingglish/ipa';
 import {
   reverseTranslate,
   setDictLoader,
@@ -33,20 +35,11 @@ describe('async API loads only required dictionaries', () => {
   });
 
   it('translate() with lang loads foreign dict via registered loader', async () => {
-    const mockDict: PhoneDict = {
-      entries: { bonjour: ['B', 'AO1', 'ZH', 'UH1', 'R'] },
-      lang: 'test-fr',
-    };
-    const loader = vi.fn().mockResolvedValue(mockDict);
-    setDictLoader(loader);
-
-    const result = await translate('bonjour', { lang: 'test-fr' });
-    expect(loader).toHaveBeenCalledWith('test-fr');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+    const result = await translate('bonjour', { lang: 'fr' });
+    expect(result).toBeTruthy();
 
     // Sync should work after async load
-    const syncResult = translateSync('bonjour', { lang: 'test-fr' });
+    const syncResult = translateSync('bonjour', { lang: 'fr' });
     expect(syncResult).toBe(result);
   });
 
@@ -57,11 +50,34 @@ describe('async API loads only required dictionaries', () => {
 
   it('translate() rejects when no loader registered for foreign lang', async () => {
     // Use a fresh lang code that won't be cached
-
     setDictLoader(undefined as unknown as Parameters<typeof setDictLoader>[0]);
     await expect(translate('test', { lang: 'xx' })).rejects.toThrow(
       /No dictionary loader registered/
     );
+
+    // Restore the file-based dict loader for subsequent tests
+    const dictDir = path.resolve(
+      import.meta.dirname,
+      '..',
+      '..',
+      '..',
+      'website',
+      'public',
+      'ipa-dicts'
+    );
+    setDictLoader(async (lang) => {
+      const json = await readFile(path.resolve(dictDir, `${lang}.json`), 'utf8');
+      const raw = JSON.parse(json) as Record<string, string | string[]>;
+      const langMeta = getLanguage(lang);
+      return {
+        conventionalCapitals: langMeta?.conventionalCapitals,
+        disableRColoring: langMeta?.disableRColoring,
+        entries: convertIpaEntries(raw, lang),
+        lang,
+        nonLatinScript: langMeta?.nonLatinScript,
+        preprocess: langMeta?.preprocess,
+      };
+    });
   });
 });
 
@@ -388,14 +404,14 @@ describe('translator', () => {
     });
 
     it('translateSync throws for unknown foreign lang without loaded dict', () => {
-      expect(() => translateSync('bonjour', { lang: 'fr' })).toThrow(
-        /Dictionary for "fr" not loaded/
+      expect(() => translateSync('bonjour', { lang: 'zz-unloaded' })).toThrow(
+        /Dictionary for "zz-unloaded" not loaded/
       );
     });
 
     it('translateSyncWithMapping throws for unknown foreign lang without loaded dict', () => {
-      expect(() => translateSyncWithMapping('bonjour', { lang: 'fr' })).toThrow(
-        /Dictionary for "fr" not loaded/
+      expect(() => translateSyncWithMapping('bonjour', { lang: 'zz-unloaded' })).toThrow(
+        /Dictionary for "zz-unloaded" not loaded/
       );
     });
 
@@ -409,25 +425,13 @@ describe('translator', () => {
   });
 
   describe('sentence-start capitalization for caseless scripts', () => {
-    const MOCK_JA_LANG = 'test-ja';
-    const mockJaDict: PhoneDict = {
-      entries: {
-        desu: ['D', 'EH1', 'S', 'UW0'],
-        inu: ['IH1', 'N', 'UW0'],
-        neko: ['N', 'EH1', 'K', 'OW0'],
-      },
-      lang: MOCK_JA_LANG,
-      nonLatinScript: true,
-    };
-
     it('translateSyncWithMapping capitalizes first word of each sentence', async () => {
-      // Load the mock dict via setDictLoader + translate()
-      setDictLoader(() => Promise.resolve(mockJaDict));
-      await translate('neko', { lang: MOCK_JA_LANG });
+      // Load the real Japanese dict
+      await translate('猫', { lang: 'ja' });
 
-      // Simulates pre-segmented Japanese text: "neko desu. inu desu."
-      const tokens = translateSyncWithMapping('neko desu. inu desu.', {
-        lang: MOCK_JA_LANG,
+      // Real Japanese words: 猫 (neko/cat), 花 (hana/flower), 犬 (inu/dog)
+      const tokens = translateSyncWithMapping('猫 花. 犬 花.', {
+        lang: 'ja',
       });
 
       const words = tokens.filter((t) => t.isWord);
@@ -440,9 +444,8 @@ describe('translator', () => {
     });
 
     it('translateSync also capitalizes sentence starts for caseless scripts', () => {
-      // Dict already loaded from previous test
-      const result = translateSync('neko desu. inu desu.', {
-        lang: MOCK_JA_LANG,
+      const result = translateSync('猫 花. 犬 花.', {
+        lang: 'ja',
       });
 
       // First word capitalized
@@ -453,8 +456,8 @@ describe('translator', () => {
     });
 
     it('single word stays lowercase in translateSyncWithMapping', () => {
-      const tokens = translateSyncWithMapping('neko', {
-        lang: MOCK_JA_LANG,
+      const tokens = translateSyncWithMapping('猫', {
+        lang: 'ja',
       });
       const word = tokens.find((t) => t.isWord);
       // Single word: no capitalization

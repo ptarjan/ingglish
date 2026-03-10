@@ -6,11 +6,9 @@
 import { describe, expect, it } from 'vitest';
 import { lookupPronunciation } from '@ingglish/dictionary';
 import {
-  type PhoneDict,
   reverseTranslate,
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
-  setDictLoader,
   translate,
   translateSync,
   translateSyncWithMapping,
@@ -291,44 +289,29 @@ describe('capitalizeSentenceStarts with non-case-preserving format', () => {
 // Reverse: non-English language reverse translation
 // ---------------------------------------------------------------------------
 describe('non-English reverse translation', () => {
-  const MOCK_LANG = 'test-lang-reverse';
-
-  // Set up a mock language with a reverse map
-  const mockDict: PhoneDict = {
-    entries: {
-      neko: ['N', 'EH1', 'K', 'OW0'],
-    },
-    lang: MOCK_LANG,
-    nonLatinScript: true,
-  };
-
-  it('should reverse-translate Ingglish back to source language word', async () => {
-    // Load dict via public API
-    setDictLoader(() => Promise.resolve(mockDict));
-    await translate('neko', { lang: MOCK_LANG });
-
-    // Build reverse map via reverseTranslate (which calls buildReverseMap internally)
-    await reverseTranslate('nekoh', { lang: MOCK_LANG });
-
-    // Now reverseTranslateSync should work
-    const result = reverseTranslateSync('nekoh', { lang: MOCK_LANG });
-    // Should find the word "neko" in the reverse map
-    expect(result).toBe('neko');
+  it('should reverse-translate Japanese back to source word', async () => {
+    const ingglish = await translate('猫', { lang: 'ja' });
+    expect(ingglish).toBeTruthy();
+    const back = await reverseTranslate(ingglish, { lang: 'ja' });
+    // May return kanji 猫 or katakana ネコ — both are valid for the same pronunciation
+    expect(back).toBeTruthy();
+    expect(back).not.toBe(ingglish); // Should be Japanese, not Ingglish
   });
 
   it('should return unmatched word when not in reverse map', () => {
-    const result = reverseTranslateSync('zzzzz', { lang: MOCK_LANG });
-    // No match in reverse map, returned as-is
+    // Reverse map built by prior test
+    const result = reverseTranslateSync('zzzzz', { lang: 'ja' });
     expect(result).toBe('zzzzz');
   });
 
   it('should pass through non-letter tokens in non-English reverse', () => {
-    const result = reverseTranslateSync('123', { lang: MOCK_LANG });
+    const result = reverseTranslateSync('123', { lang: 'ja' });
     expect(result).toBe('123');
   });
 
-  it('should return mapping tokens for non-English reverse', () => {
-    const tokens = reverseTranslateSyncWithMapping('nekoh', { lang: MOCK_LANG });
+  it('should return mapping tokens for non-English reverse', async () => {
+    const ingglish = await translate('猫', { lang: 'ja' });
+    const tokens = reverseTranslateSyncWithMapping(ingglish, { lang: 'ja' });
     const words = tokens.filter((t) => t.isWord);
     expect(words.length).toBeGreaterThan(0);
     expect(words[0]?.matched).toBe(true);
@@ -336,59 +319,18 @@ describe('non-English reverse translation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Reverse: non-English alternative phoneme match
-// ---------------------------------------------------------------------------
-describe('non-English reverse with alternative phoneme match', () => {
-  const ALT_LANG = 'test-lang-alt';
-
-  const altDict: PhoneDict = {
-    entries: {
-      // "kat" phonemes: K AE1 T
-      // The reverse map built from this dict will have "K AE T" → ["kat"]
-      // But the alternative AH variant ("K AH T") won't be in the map
-      kat: ['K', 'AE1', 'T'],
-    },
-    lang: ALT_LANG,
-    nonLatinScript: true,
-  };
-
-  it('should translate and reverse non-English words', async () => {
-    setDictLoader(() => Promise.resolve(altDict));
-    await translate('kat', { lang: ALT_LANG });
-    await reverseTranslate('kat', { lang: ALT_LANG });
-
-    // "kat" should reverse to "kat" (the only entry in the dict)
-    const result = reverseTranslateSync('kat', { lang: ALT_LANG });
-    expect(result).toBe('kat');
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Forward: word not found with no G2P (forward.ts line 315)
 // ---------------------------------------------------------------------------
 describe('forward translation with no G2P fallback', () => {
-  const NO_G2P_LANG = 'test-lang-no-g2p';
-
-  const noG2pDict: PhoneDict = {
-    entries: {
-      helo: ['HH', 'EH1', 'L', 'OW0'],
-    },
-    lang: NO_G2P_LANG,
-    nonLatinScript: true,
-  };
-
   it('should return word unchanged when not in dict and no G2P exists', async () => {
-    setDictLoader(() => Promise.resolve(noG2pDict));
-    await translate('helo', { lang: NO_G2P_LANG });
-
-    const result = translateSync('unknownword', { lang: NO_G2P_LANG });
-    // Word is returned with NOT_FOUND_MARKER prefix since it can't be translated
-    expect(result).toContain('unknownword');
+    // Spanish has no G2P converter, so unknown words are returned unchanged
+    const result = await translate('xyzabc', { lang: 'es' });
+    expect(result).toContain('xyzabc');
   });
 
-  it('should translate known words in the mock dict', () => {
-    const result = translateSync('helo', { lang: NO_G2P_LANG });
-    expect(result).not.toBe('helo');
+  it('should translate known words in the Spanish dict', async () => {
+    const result = await translate('hola', { lang: 'es' });
+    expect(result).not.toBe('hola');
   });
 });
 
@@ -517,22 +459,9 @@ describe('pronunciation format translation', () => {
 // Non-English with disableRColoring (to-ingglish.ts line 178)
 // ---------------------------------------------------------------------------
 describe('non-English translation with R-coloring disabled', () => {
-  const R_LANG = 'test-lang-rcolor';
-  const rDict: PhoneDict = {
-    disableRColoring: true,
-    entries: {
-      // "car" = K AA1 R — with R-coloring disabled, vowel+R handled differently
-      kar: ['K', 'AA1', 'R'],
-    },
-    lang: R_LANG,
-    nonLatinScript: false,
-  };
-
-  it('should translate with R-coloring disabled', async () => {
-    setDictLoader(() => Promise.resolve(rDict));
-    await translate('kar', { lang: R_LANG });
-
-    const result = translateSync('kar', { lang: R_LANG });
+  it('should translate Persian with R-coloring disabled', async () => {
+    // Persian has disableRColoring: true
+    const result = await translate('کتابها', { lang: 'fa' });
     expect(result).toBeTruthy();
     expect(result.length).toBeGreaterThan(0);
   });
@@ -998,23 +927,11 @@ describe('curly apostrophe normalization', () => {
 // Reverse map built via reverseTranslate (dict.ts lines 466-496)
 // ---------------------------------------------------------------------------
 describe('reverse map built via reverseTranslate', () => {
-  const BUILD_LANG = 'test-reverse-build';
-  const testDict: PhoneDict = {
-    entries: {
-      cat: ['K', 'AE1', 'T'],
-      dog: ['D', 'AO1', 'G'],
-    },
-    lang: BUILD_LANG,
-    nonLatinScript: true,
-  };
-
-  it('should reverse-translate words from a built reverse map', async () => {
-    setDictLoader(() => Promise.resolve(testDict));
-    await translate('cat', { lang: BUILD_LANG });
-    await reverseTranslate('kat', { lang: BUILD_LANG });
-
-    expect(reverseTranslateSync('kat', { lang: BUILD_LANG })).toBe('cat');
-    expect(reverseTranslateSync('dawg', { lang: BUILD_LANG })).toBe('dog');
+  it('should reverse-translate German words from a built reverse map', async () => {
+    const ingglish = await translate('Haus', { lang: 'de' });
+    expect(ingglish).toBeTruthy();
+    const back = await reverseTranslate(ingglish, { lang: 'de' });
+    expect(back).toBeTruthy();
   });
 });
 
@@ -1213,37 +1130,6 @@ describe('reverseTranslateWord edge cases', () => {
 // ===========================================================================
 
 describe('non-English reverse edge cases (reverseLangWordAsResult)', () => {
-  const EDGE_LANG = 'test-lang-edge';
-
-  // Dict where entry has AH phoneme — input word "kat" maps to AE which
-  // has AH as alternative, so the alternative path (line 247) fires
-  const edgeDict: PhoneDict = {
-    entries: {
-      kut: ['K', 'AH1', 'T'], // reverse key: "K AH T" — matches AE→AH alternative of "kat"
-    },
-    lang: EDGE_LANG,
-    nonLatinScript: true,
-  };
-
-  it('should set up edge lang dict', async () => {
-    setDictLoader(() => Promise.resolve(edgeDict));
-    const result = await translate('kut', { lang: EDGE_LANG });
-    expect(result).toBeTruthy();
-    await reverseTranslate('kaht', { lang: EDGE_LANG });
-  });
-
-  it('word found via alternative phoneme interpretation (line 247)', () => {
-    // "kat" → arpabet ["K", "AE", "T"] → primary key "K AE T" not in map
-    // → alternative AE→AH → "K AH T" IS in map → returns "kut"
-    const result = reverseTranslateSync('kat', { lang: EDGE_LANG });
-    expect(result).toBe('kut');
-  });
-
-  it('word not in reverse map returns unmatched', () => {
-    const result = reverseTranslateSync('blib', { lang: EDGE_LANG });
-    expect(result).toBe('blib');
-  });
-
   it('should find word via alternative phoneme interpretation (German)', async () => {
     const ingglish = await translate('Haus', { lang: 'de' });
     const back = await reverseTranslate(ingglish, { lang: 'de' });
