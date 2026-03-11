@@ -68,3 +68,6 @@ test-results/
 # Turbo
 .turbo
 
+# Wrangler (Cloudflare Workers)
+.wrangler/
+
