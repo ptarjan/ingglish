@@ -21,38 +21,20 @@ async function run(scriptPath: string, extraArgs: string[] = []): Promise<string
 }
 
 describe('g2p tuning', () => {
-  it('pattern-analysis', async () => {
-    const output = await run('./pattern-analysis.js');
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('find-rules (single letter)', async () => {
-    const output = await run('./find-rules.js', ['A']);
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('try-removal (single letter)', async () => {
-    const output = await run('./try-removal.js', ['A']);
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('try-reorder (single letter)', async () => {
-    const output = await run('./try-reorder.js', ['A']);
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('try-rule', async () => {
-    const output = await run('./try-rule.js', ['A', '0', '[ATE] =/EY T/']);
+  it.each([
+    ['pattern-analysis', './pattern-analysis.js', []],
+    ['find-rules (single letter)', './find-rules.js', ['A']],
+    ['try-removal (single letter)', './try-removal.js', ['A']],
+    ['try-reorder (single letter)', './try-reorder.js', ['A']],
+    ['try-rule', './try-rule.js', ['A', '0', '[ATE] =/EY T/']],
+    ['backtest', './backtest.js', []],
+  ])('%s', async (_name, script, args) => {
+    const output = await run(script, [...args]);
     expect(output.length).toBeGreaterThan(0);
   });
 
   it('hill-climb (dry run, 1 round)', async () => {
     const output = await run('./hill-climb.js', ['--max-rounds=1']);
     expect(output).toContain('Round 1');
-  });
-
-  it('backtest', async () => {
-    const output = await run('./backtest.js');
-    expect(output.length).toBeGreaterThan(0);
   });
 });

@@ -35,64 +35,23 @@ function parseExamples(
   return examples.split(',').map((ex) => parseExample(ex.trim()));
 }
 
+const allSounds = [...vowelGroups, ...consonantGroups].flatMap((g) =>
+  g.sounds.map((s) => [s.phoneme, s.examples] as const)
+);
+
 describe('SpellingGuide examples', () => {
-  describe('vowel examples contain highlighted letters', () => {
-    for (const group of vowelGroups) {
-      describe(group.name, () => {
-        for (const sound of group.sounds) {
-          it(`${sound.phoneme}: examples contain highlighted letters`, () => {
-            const parsed = parseExamples(sound.examples);
-
-            for (const { highlighted, isValid, word } of parsed) {
-              expect(isValid, `"${word}" should contain "${highlighted}"`).toBe(true);
-              expect(
-                highlighted.length,
-                `"${word}" should have non-empty highlight`
-              ).toBeGreaterThan(0);
-            }
-          });
-        }
-      });
+  it.each(allSounds)('%s: examples contain highlighted letters', (_phoneme, examples) => {
+    const parsed = parseExamples(examples);
+    for (const { highlighted, isValid, word } of parsed) {
+      expect(isValid, `"${word}" should contain "${highlighted}"`).toBe(true);
+      expect(highlighted.length, `"${word}" should have non-empty highlight`).toBeGreaterThan(0);
     }
   });
 
-  describe('consonant examples contain highlighted letters', () => {
-    for (const group of consonantGroups) {
-      describe(group.name, () => {
-        for (const sound of group.sounds) {
-          it(`${sound.phoneme}: examples contain highlighted letters`, () => {
-            const parsed = parseExamples(sound.examples);
-
-            for (const { highlighted, isValid, word } of parsed) {
-              expect(isValid, `"${word}" should contain "${highlighted}"`).toBe(true);
-              expect(
-                highlighted.length,
-                `"${word}" should have non-empty highlight`
-              ).toBeGreaterThan(0);
-            }
-          });
-        }
-      });
-    }
-  });
-
-  describe('all examples have exactly one highlighted portion', () => {
-    const allGroups = [...vowelGroups, ...consonantGroups];
-
-    for (const group of allGroups) {
-      for (const sound of group.sounds) {
-        it(`${sound.phoneme}: each example has one highlight`, () => {
-          const examples = sound.examples.split(',').map((ex) => ex.trim());
-
-          for (const example of examples) {
-            const matches = example.match(/\*\*[^*]+\*\*/g);
-            expect(
-              matches?.length,
-              `"${example}" should have exactly one highlighted portion`
-            ).toBe(1);
-          }
-        });
-      }
+  it.each(allSounds)('%s: each example has one highlight', (_phoneme, examples) => {
+    for (const example of examples.split(',').map((ex) => ex.trim())) {
+      const matches = example.match(/\*\*[^*]+\*\*/g);
+      expect(matches?.length, `"${example}" should have exactly one highlighted portion`).toBe(1);
     }
   });
 });

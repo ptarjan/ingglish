@@ -18,28 +18,18 @@ async function run(scriptPath: string): Promise<string> {
 }
 
 describe('profile scripts', () => {
-  it('benchmark', async () => {
-    const output = await run('./benchmark.js');
-    expect(output).toContain('=== Ingglish Core Benchmarks ===');
-  });
-
-  it('convert', async () => {
-    const output = await run('./convert.js');
-    expect(output).toContain('=== arpabetToIngglish Deep Profile ===');
+  it.each([
+    ['benchmark', './benchmark.js', '=== Ingglish Core Benchmarks ==='],
+    ['convert', './convert.js', '=== arpabetToIngglish Deep Profile ==='],
+    ['overview', './overview.js', '=== Ingglish Performance Profile ==='],
+    ['translate', './translate.js', '=== translateSync Deep Profile ==='],
+  ])('%s', async (_name, script, expected) => {
+    const output = await run(script);
+    expect(output).toContain(expected);
   });
 
   it('cpu-profile', async () => {
     const output = await run('./cpu-profile.js');
     expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('overview', async () => {
-    const output = await run('./overview.js');
-    expect(output).toContain('=== Ingglish Performance Profile ===');
-  });
-
-  it('translate', async () => {
-    const output = await run('./translate.js');
-    expect(output).toContain('=== translateSync Deep Profile ===');
   });
 });

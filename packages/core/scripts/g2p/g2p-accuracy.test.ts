@@ -21,39 +21,22 @@ async function run(scriptPath: string, extraArgs: string[] = []): Promise<string
 }
 
 describe('g2p accuracy', () => {
-  it('measure', async () => {
-    const output = await run('./measure.js');
-    expect(output).toContain('Unweighted:');
-    expect(output).toContain('Freq-weighted:');
+  it.each([
+    ['measure', './measure.js', [], ['Unweighted:', 'Freq-weighted:']],
+    ['rule-words', './rule-words.js', ['[A]=/AE/'], ['Rule:']],
+  ])('%s', async (_name, script, args, expected) => {
+    const output = await run(script, [...args]);
+    for (const str of expected) expect(output).toContain(str);
   });
 
-  it('freq-errors', async () => {
-    const output = await run('./freq-errors.js', ['10']);
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('rule-errors', async () => {
-    const output = await run('./rule-errors.js');
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('rule-stats', async () => {
-    const output = await run('./rule-stats.js');
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('rule-words', async () => {
-    const output = await run('./rule-words.js', ['[A]=/AE/']);
-    expect(output).toContain('Rule:');
-  });
-
-  it('default-errors', async () => {
-    const output = await run('./default-errors.js');
-    expect(output.length).toBeGreaterThan(0);
-  });
-
-  it('error-analysis', async () => {
-    const output = await run('./error-analysis.js');
+  it.each([
+    ['freq-errors', './freq-errors.js', ['10']],
+    ['rule-errors', './rule-errors.js', []],
+    ['rule-stats', './rule-stats.js', []],
+    ['default-errors', './default-errors.js', []],
+    ['error-analysis', './error-analysis.js', []],
+  ])('%s', async (_name, script, args) => {
+    const output = await run(script, [...args]);
     expect(output.length).toBeGreaterThan(0);
   });
 });
