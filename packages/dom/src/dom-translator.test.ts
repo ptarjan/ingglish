@@ -685,34 +685,16 @@ describe('dom-translator', () => {
   });
 
   describe('applyTranslationsMap without tooltips', () => {
-    it('should apply translations via regex word replacement', async () => {
-      document.body.innerHTML = '<p>Hello world</p>';
-      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
-      expect(document.querySelector('p')?.textContent).toBe('Haloh werld');
-    });
-
-    it('should preserve case patterns in regex replacement', async () => {
-      document.body.innerHTML = '<p>HELLO World hello</p>';
-      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
-      expect(document.querySelector('p')?.textContent).toBe('HALOH Werld haloh');
-    });
-
-    it('should preserve punctuation in regex replacement', async () => {
-      document.body.innerHTML = '<p>Hello, world!</p>';
-      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
-      expect(document.querySelector('p')?.textContent).toBe('Haloh, werld!');
-    });
-
-    it('should skip words not in the map', async () => {
-      document.body.innerHTML = '<p>Hello beautiful world</p>';
-      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
-      expect(document.querySelector('p')?.textContent).toBe('Haloh beautiful werld');
-    });
-
-    it('should handle text with no translatable words', async () => {
-      document.body.innerHTML = '<p>123 456</p>';
-      await applyTranslationsMap(document.body, { hello: 'haloh' });
-      expect(document.querySelector('p')?.textContent).toBe('123 456');
+    it.each([
+      ['<p>Hello world</p>', { hello: 'haloh', world: 'werld' }, 'Haloh werld'],
+      ['<p>HELLO World hello</p>', { hello: 'haloh', world: 'werld' }, 'HALOH Werld haloh'],
+      ['<p>Hello, world!</p>', { hello: 'haloh', world: 'werld' }, 'Haloh, werld!'],
+      ['<p>Hello beautiful world</p>', { hello: 'haloh', world: 'werld' }, 'Haloh beautiful werld'],
+      ['<p>123 456</p>', { hello: 'haloh' }, '123 456'],
+    ])('%s → %s', async (html, map, expected) => {
+      document.body.innerHTML = html;
+      await applyTranslationsMap(document.body, map);
+      expect(document.querySelector('p')?.textContent).toBe(expected);
     });
 
     it('should store original content on parent element', async () => {
@@ -723,23 +705,13 @@ describe('dom-translator', () => {
   });
 
   describe('extractWords', () => {
-    it('should extract unique lowercase words from text', () => {
-      const words = extractWords('Hello World hello');
-      expect(words).toEqual(['hello', 'world']);
-    });
-
-    it('should handle empty text', () => {
-      expect(extractWords('')).toEqual([]);
-    });
-
-    it('should skip numbers and non-word tokens', () => {
-      const words = extractWords('Hello 123 world!');
-      expect(words).toEqual(['hello', 'world']);
-    });
-
-    it('should normalize apostrophes', () => {
-      const words = extractWords('don\u2019t won\u2019t');
-      expect(words).toEqual(["don't", "won't"]);
+    it.each([
+      ['Hello World hello', ['hello', 'world'], 'unique lowercase words'],
+      ['', [], 'empty text'],
+      ['Hello 123 world!', ['hello', 'world'], 'skips numbers/non-words'],
+      ['don\u2019t won\u2019t', ["don't", "won't"], 'normalizes apostrophes'],
+    ] as const)('extractWords(%s) → %j (%s)', (input, expected) => {
+      expect(extractWords(input)).toEqual([...expected]);
     });
   });
 
@@ -792,22 +764,14 @@ describe('dom-translator', () => {
   });
 
   describe('shouldSkipTextNode', () => {
-    it('should return true when parent is a skip tag', () => {
-      document.body.innerHTML = '<code>hello</code>';
-      const textNode = document.querySelector('code')!.firstChild as Text;
-      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
-    });
-
-    it('should return true when ancestor is a skip tag', () => {
-      document.body.innerHTML = '<pre><span>hello</span></pre>';
-      const textNode = document.querySelector('span')!.firstChild as Text;
-      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(true);
-    });
-
-    it('should return false for normal text nodes', () => {
-      document.body.innerHTML = '<p>hello</p>';
-      const textNode = document.querySelector('p')!.firstChild as Text;
-      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(false);
+    it.each([
+      ['<code>hello</code>', 'code', true, 'parent is skip tag'],
+      ['<pre><span>hello</span></pre>', 'span', true, 'ancestor is skip tag'],
+      ['<p>hello</p>', 'p', false, 'normal text node'],
+    ] as const)('%s (%s)', (html, selector, expected) => {
+      document.body.innerHTML = html;
+      const textNode = document.querySelector(selector)!.firstChild as Text;
+      expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(expected);
     });
   });
 

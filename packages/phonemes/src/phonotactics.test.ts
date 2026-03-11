@@ -4,41 +4,17 @@ import { findOnsetStart } from './index';
 
 describe('phonotactics', () => {
   describe('findOnsetStart', () => {
-    it('returns 0 for empty consonant array', () => {
-      expect(findOnsetStart([])).toBe(0);
-    });
-
-    it('returns 0 for single valid consonant', () => {
-      expect(findOnsetStart(['T'])).toBe(0);
-    });
-
-    it('finds onset start for "extra" (K S T R)', () => {
-      // S T R is valid onset, onset starts at index 1
-      expect(findOnsetStart(['K', 'S', 'T', 'R'])).toBe(1);
-    });
-
-    it('finds onset start for "instruct" (N S T R)', () => {
-      // S T R is valid onset, onset starts at index 1
-      expect(findOnsetStart(['N', 'S', 'T', 'R'])).toBe(1);
-    });
-
-    it('finds onset start for simple coda+onset (N T)', () => {
-      // T is valid onset, onset starts at index 1
-      expect(findOnsetStart(['N', 'T'])).toBe(1);
-    });
-
-    it('returns 0 when entire cluster is a valid onset', () => {
-      expect(findOnsetStart(['S', 'T'])).toBe(0);
-    });
-
-    it('handles cluster where only last consonant is valid', () => {
-      // NG is not a valid onset, so only K is valid
-      expect(findOnsetStart(['NG', 'K'])).toBe(1);
-    });
-
-    it('falls back to last consonant when nothing is valid', () => {
-      // NG alone is not a valid onset
-      expect(findOnsetStart(['NG'])).toBe(0);
+    it.each([
+      [[], 0, 'empty consonant array'],
+      [['T'], 0, 'single valid consonant'],
+      [['K', 'S', 'T', 'R'], 1, '"extra" (K S T R)'],
+      [['N', 'S', 'T', 'R'], 1, '"instruct" (N S T R)'],
+      [['N', 'T'], 1, 'simple coda+onset (N T)'],
+      [['S', 'T'], 0, 'entire cluster is valid onset'],
+      [['NG', 'K'], 1, 'only last consonant valid'],
+      [['NG'], 0, 'falls back to last consonant'],
+    ] as const)('findOnsetStart(%j) → %d (%s)', (input, expected) => {
+      expect(findOnsetStart([...input])).toBe(expected);
     });
   });
 

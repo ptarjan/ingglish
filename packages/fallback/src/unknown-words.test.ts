@@ -388,46 +388,25 @@ describe('unknown-words', () => {
   });
 
   describe('stemming fallback', () => {
-    it('should translate words without recognizable stems via G2P', () => {
-      // 'xyzzy' has no recognizable stem, falls through to G2P
-      const result = translateSync('xyzzy');
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it('should translate short words without prefix stripping', () => {
-      // 'una' is too short for prefix removal, falls through to G2P
-      const result = translateSync('una');
+    it.each(['xyzzy', 'una'])('translates "%s" via G2P fallback', (word) => {
+      const result = translateSync(word);
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });
   });
 
   describe('British spelling handling', () => {
-    it('should translate British -our as American -or', () => {
-      // 'colour' → American 'color' → dictionary lookup
-      const british = translateSync('colour');
-      const american = translateSync('color');
-      expect(british).toBe(american);
-    });
-
-    it('should translate British -ise as American -ize', () => {
-      // 'organise' → American 'organize' → dictionary lookup
-      const british = translateSync('organise');
-      const american = translateSync('organize');
-      expect(british).toBe(american);
+    it.each([
+      ['colour', 'color'],
+      ['organise', 'organize'],
+    ])('translates British %s same as American %s', (british, american) => {
+      expect(translateSync(british)).toBe(translateSync(american));
     });
   });
 
   describe('unknown word translation', () => {
-    it('should always produce output for unknown words', () => {
-      const result = translateSync('xyzzy');
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it('should translate words with recognizable suffixes', () => {
-      const result = translateSync('blargification');
+    it.each(['xyzzy', 'blargification'])('produces output for "%s"', (word) => {
+      const result = translateSync(word);
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });
@@ -450,45 +429,29 @@ describe('unknown-words', () => {
   });
 
   describe('acronym translation', () => {
-    it('should spell out nfl as enefel', () => {
-      expect(translateSync('nfl')).toBe('enefel');
-    });
-
-    it('should spell out npm correctly', () => {
-      expect(translateSync('npm')).toBe('enpee-em');
+    it.each([
+      ['nfl', 'enefel'],
+      ['npm', 'enpee-em'],
+    ])('spells out %s → %s', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
 
     it('should not spell out regular words as acronyms', () => {
-      const result = translateSync('blorg');
-      expect(result).not.toContain('beeeloh');
+      expect(translateSync('blorg')).not.toContain('beeeloh');
     });
   });
 
   describe('IPA output format', () => {
-    it('should output IPA for unknown words', () => {
-      const result = translateSync('blorg', { format: 'ipa' });
+    it.each([
+      ['blorg', /[bɡʃʒθðŋɹɑæʌɔɛɪʊəaeoiuˈˌ]/, 'unknown words'],
+      ['nfl', /[ɛnfl]/, 'acronyms'],
+      ['npm', /[ɛnpiːm]/, 'spelled-out words'],
+      ['quickly', /[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/, 'known words'],
+    ])('outputs IPA for %s (%s)', (word, pattern) => {
+      const result = translateSync(word, { format: 'ipa' });
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
-      expect(result).toMatch(/[bɡʃʒθðŋɹɑæʌɔɛɪʊəaeoiuˈˌ]/);
-    });
-
-    it('should output IPA for acronyms', () => {
-      const result = translateSync('nfl', { format: 'ipa' });
-      expect(result).toBeDefined();
-      // NFL spelled out should contain IPA characters
-      expect(result).toMatch(/[ɛnfl]/);
-    });
-
-    it('should output IPA for spelled-out words', () => {
-      const result = translateSync('npm', { format: 'ipa' });
-      expect(result).toBeDefined();
-      expect(result).toMatch(/[ɛnpiːm]/);
-    });
-
-    it('should output IPA for known words', () => {
-      const result = translateSync('quickly', { format: 'ipa' });
-      expect(result).toBeDefined();
-      expect(result).toMatch(/[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/);
+      expect(result).toMatch(pattern);
     });
   });
 });

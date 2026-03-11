@@ -20,31 +20,10 @@ describe('reverse Ingglish translation', () => {
 });
 
 describe('phoneme alternative expansion in reverse', () => {
-  it('reverses simple words', () => {
-    const ingglish = translateSync('but');
+  it.each(['but', 'bird', 'ship', 'shiver'])('round-trips "%s"', (word) => {
+    const ingglish = translateSync(word);
     const english = reverseTranslateSync(ingglish);
-    expect(english).toBe('but');
-  });
-
-  it('reverses words with ER phoneme', () => {
-    // 'bird' has ER phoneme, reverse should handle ER↔EH+R ambiguity
-    const ingglish = translateSync('bird');
-    const english = reverseTranslateSync(ingglish);
-    expect(english).toBe('bird');
-  });
-
-  it('reverses words with SH phoneme', () => {
-    // 'ship' has SH phoneme, reverse should handle SH↔S+HH ambiguity
-    const ingglish = translateSync('ship');
-    const english = reverseTranslateSync(ingglish);
-    expect(english).toBe('ship');
-  });
-
-  it('handles words with multiple ambiguous phonemes', () => {
-    // 'shiver' has both SH and ER phonemes
-    const ingglish = translateSync('shiver');
-    const english = reverseTranslateSync(ingglish);
-    expect(english).toBe('shiver');
+    expect(english).toBe(word);
   });
 });
 
