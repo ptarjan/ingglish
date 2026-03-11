@@ -2,16 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { charsetFromHeader, charsetFromHtml } from './validate-sample-urls';
 
 describe('charsetFromHeader', () => {
-  it('extracts charset from Content-Type header', () => {
-    expect(charsetFromHeader('text/html; charset=utf-8')).toBe('utf-8');
-  });
-
-  it('handles uppercase charset', () => {
-    expect(charsetFromHeader('text/html; charset=UTF-8')).toBe('UTF-8');
-  });
-
-  it('handles quoted charset', () => {
-    expect(charsetFromHeader('text/html; charset="iso-8859-1"')).toBe('iso-8859-1');
+  it.each([
+    ['text/html; charset=utf-8', 'utf-8', 'extracts charset from Content-Type header'],
+    ['text/html; charset=UTF-8', 'UTF-8', 'handles uppercase charset'],
+    ['text/html; charset="iso-8859-1"', 'iso-8859-1', 'handles quoted charset'],
+    ['text/html; charset = utf-8', 'utf-8', 'handles charset with spaces around equals'],
+  ] as const)('%s -> %s (%s)', (input, expected) => {
+    expect(charsetFromHeader(input)).toBe(expected);
   });
 
   it('returns null for missing charset', () => {
@@ -21,36 +18,36 @@ describe('charsetFromHeader', () => {
   it('returns null for null input', () => {
     expect(charsetFromHeader(null)).toBeNull();
   });
-
-  it('handles charset with spaces around equals', () => {
-    expect(charsetFromHeader('text/html; charset = utf-8')).toBe('utf-8');
-  });
 });
 
 describe('charsetFromHtml', () => {
-  it('extracts charset from meta charset tag', () => {
-    const html = '<html><head><meta charset="utf-8"></head></html>';
-    expect(charsetFromHtml(html)).toBe('utf-8');
-  });
-
-  it('extracts charset from meta http-equiv', () => {
-    const html =
-      '<html><head><meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"></head></html>';
-    expect(charsetFromHtml(html)).toBe('iso-8859-1');
-  });
-
-  it('extracts encoding from XML declaration', () => {
-    const html = '<?xml version="1.0" encoding="Shift_JIS"?><html></html>';
-    expect(charsetFromHtml(html)).toBe('Shift_JIS');
+  it.each([
+    [
+      '<html><head><meta charset="utf-8"></head></html>',
+      'utf-8',
+      'extracts charset from meta charset tag',
+    ],
+    [
+      '<html><head><meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"></head></html>',
+      'iso-8859-1',
+      'extracts charset from meta http-equiv',
+    ],
+    [
+      '<?xml version="1.0" encoding="Shift_JIS"?><html></html>',
+      'Shift_JIS',
+      'extracts encoding from XML declaration',
+    ],
+    [
+      "<html><head><meta charset='windows-1252'></head></html>",
+      'windows-1252',
+      'handles single-quoted charset',
+    ],
+  ] as const)('%s -> %s (%s)', (html, expected) => {
+    expect(charsetFromHtml(html)).toBe(expected);
   });
 
   it('returns null when no charset declared', () => {
     const html = '<html><head><title>No charset</title></head></html>';
     expect(charsetFromHtml(html)).toBeNull();
-  });
-
-  it('handles single-quoted charset', () => {
-    const html = "<html><head><meta charset='windows-1252'></head></html>";
-    expect(charsetFromHtml(html)).toBe('windows-1252');
   });
 });
