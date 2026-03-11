@@ -3,19 +3,15 @@ import { getStress } from './index';
 
 describe('arpabet utilities', () => {
   describe('getStress', () => {
-    it('should extract stress level from vowels', () => {
-      expect(getStress('AH0')).toBe(0);
-      expect(getStress('EY1')).toBe(1);
-      expect(getStress('AO2')).toBe(2);
-    });
-
-    it('should return null for consonants', () => {
-      expect(getStress('B')).toBe(null);
-      expect(getStress('SH')).toBe(null);
-    });
-
-    it('should return null for vowels without stress', () => {
-      expect(getStress('AH')).toBe(null);
+    it.each([
+      ['AH0', 0],
+      ['EY1', 1],
+      ['AO2', 2],
+      ['B', null],
+      ['SH', null],
+      ['AH', null],
+    ] as const)('getStress(%s) → %s', (input, expected) => {
+      expect(getStress(input)).toBe(expected);
     });
   });
 });

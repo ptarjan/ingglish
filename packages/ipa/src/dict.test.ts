@@ -5,29 +5,19 @@ import { segmentChineseText, segmentJapaneseText, segmentKhmerText } from './dic
 import { buildReverseMap, convertIpaEntries, type PhoneDict, lookupDict } from './index';
 
 describe('segmenters', () => {
-  it('segmentKhmerText inserts spaces between Khmer words', () => {
-    const text = 'សួស្តី';
-    const result = segmentKhmerText(text);
+  it.each([
+    ['segmentKhmerText', segmentKhmerText, 'សួស្តី'],
+    ['segmentJapaneseText', segmentJapaneseText, '東京タワー'],
+    ['segmentChineseText', segmentChineseText, '你好世界'],
+  ] as const)('%s produces non-empty output', (_name, fn, input) => {
+    const result = fn(input);
     expect(typeof result).toBe('string');
     expect(result.length).toBeGreaterThan(0);
   });
 
   it('segmentKhmerText normalizes zero-width spaces', () => {
-    const text = 'ខ្ញុំ\u200Bស្រលាញ់';
-    const result = segmentKhmerText(text);
+    const result = segmentKhmerText('ខ្ញុំ\u200Bស្រលាញ់');
     expect(result).not.toContain('\u200B');
-  });
-
-  it('segmentJapaneseText segments Japanese text', () => {
-    const result = segmentJapaneseText('東京タワー');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it('segmentChineseText segments Chinese text', () => {
-    const result = segmentChineseText('你好世界');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
   });
 });
 
