@@ -7,4 +7,11 @@ export default defineConfig({
   ssr: {
     resolve: { conditions: ['source'] },
   },
+  test: {
+    coverage: {
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.bench.ts'],
+      thresholds: { lines: 100, functions: 96, statements: 100 },
+    },
+  },
 });

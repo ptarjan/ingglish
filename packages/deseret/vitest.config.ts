@@ -10,5 +10,10 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts'],
     setupFiles: ['vitest.setup.ts'],
+    coverage: {
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.bench.ts'],
+      thresholds: { lines: 100, functions: 100, statements: 100 },
+    },
   },
 });

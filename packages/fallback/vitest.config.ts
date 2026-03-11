@@ -23,5 +23,10 @@ export default defineConfig({
     testTimeout: 10000,
     hookTimeout: 30000,
     sequence: { groupOrder: 3 },
+    coverage: {
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.bench.ts'],
+      thresholds: { lines: 100, functions: 100, statements: 100 },
+    },
   },
 });
