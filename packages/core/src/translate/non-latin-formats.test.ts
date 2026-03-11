@@ -55,11 +55,6 @@ describe('Shavian word translations', () => {
     ['world', '𐑢𐑻𐑤𐑛'],
     ['the', '𐑞𐑩'],
     ['cat', '𐑒𐑨𐑑'],
-  ])('translates "%s" to Shavian', (word, expected) => {
-    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
-  });
-
-  it.each([
     ['pen', '𐑐𐑧𐑯'],
     ['bat', '𐑚𐑨𐑑'],
     ['dog', '𐑛𐑷𐑜'],
@@ -71,11 +66,6 @@ describe('Shavian word translations', () => {
     ['judge', '𐑡𐑳𐑡'],
     ['red', '𐑮𐑧𐑛'],
     ['yes', '𐑘𐑧𐑕'],
-  ])('translates "%s" consonant to Shavian', (word, expected) => {
-    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
-  });
-
-  it.each([
     ['hot', '𐑣𐑭𐑑'],
     ['bed', '𐑚𐑧𐑛'],
     ['book', '𐑚𐑫𐑒'],
@@ -88,17 +78,12 @@ describe('Shavian word translations', () => {
     ['boy', '𐑚𐑶'],
     ['law', '𐑤𐑷'],
     ['not', '𐑯𐑭𐑑'],
-  ])('translates "%s" vowel to Shavian', (word, expected) => {
-    expect(translateSync(word, { format: 'shavian' })).toBe(expected);
-  });
-
-  it.each([
     ['star', '𐑕𐑑𐑸'],
     ['more', '𐑥𐑹'],
     ['care', '𐑒𐑺'],
     ['beer', '𐑚𐑽'],
     ['letter', '𐑤𐑧𐑑𐑻'],
-  ])('translates R-colored "%s" to Shavian', (word, expected) => {
+  ])('translates "%s" to Shavian', (word, expected) => {
     expect(translateSync(word, { format: 'shavian' })).toBe(expected);
   });
 
@@ -122,43 +107,32 @@ describe('Deseret word translations', () => {
     ['hello', '𐐸𐐱𐑊𐐬'],
     ['cat', '𐐿𐐰𐐻'],
     ['the', '𐑄𐐱'],
+    ['pen', '𐐹𐐯𐑌'],
+    ['bat', '𐐺𐐰𐐻'],
+    ['dog', '𐐼𐐫𐑀'],
+    ['fish', '𐑁𐐮𐑇'],
+    ['very', '𐑂𐐯𐑉𐐨'],
+    ['zoo', '𐑆𐐭'],
+    ['measure', '𐑋𐐯𐑈𐐱𐑉'],
+    ['church', '𐐽𐐲𐑉𐐽'],
+    ['judge', '𐐾𐐲𐐾'],
+    ['red', '𐑉𐐯𐐼'],
+    ['think', '𐑃𐐮𐑍𐐿'],
+    ['yes', '𐐷𐐯𐑅'],
+    ['world', '𐐶𐐲𐑉𐑊𐐼'],
+    ['hot', '𐐸𐐪𐐻'],
+    ['bed', '𐐺𐐯𐐼'],
+    ['book', '𐐺𐐳𐐿'],
+    ['see', '𐑅𐐨'],
+    ['day', '𐐼𐐩'],
+    ['my', '𐑋𐐴'],
+    ['cup', '𐐿𐐲𐐹'],
+    ['go', '𐑀𐐬'],
+    ['cow', '𐐿𐐵'],
+    ['boy', '𐐺𐑎'],
+    ['law', '𐑊𐐫'],
+    ['about', '𐐱𐐺𐐵𐐻'],
   ])('translates "%s" to Deseret', (word, expected) => {
-    expect(translateSync(word, { format: 'deseret' })).toBe(expected);
-  });
-
-  it.each([
-    ['pen', '𐐹𐐯𐑌', 'P+N'],
-    ['bat', '𐐺𐐰𐐻', 'B+T'],
-    ['dog', '𐐼𐐫𐑀', 'D+G'],
-    ['fish', '𐑁𐐮𐑇', 'F+SH'],
-    ['very', '𐑂𐐯𐑉𐐨', 'V'],
-    ['zoo', '𐑆𐐭', 'Z'],
-    ['measure', '𐑋𐐯𐑈𐐱𐑉', 'ZH+M'],
-    ['church', '𐐽𐐲𐑉𐐽', 'CH'],
-    ['judge', '𐐾𐐲𐐾', 'JH'],
-    ['red', '𐑉𐐯𐐼', 'R'],
-    ['think', '𐑃𐐮𐑍𐐿', 'TH+NG+K'],
-    ['yes', '𐐷𐐯𐑅', 'Y+S'],
-    ['world', '𐐶𐐲𐑉𐑊𐐼', 'W+L'],
-  ])('translates Deseret consonant "%s" → %s (%s)', (word, expected) => {
-    expect(translateSync(word, { format: 'deseret' })).toBe(expected);
-  });
-
-  it.each([
-    ['hot', '𐐸𐐪𐐻', 'AA'],
-    ['bed', '𐐺𐐯𐐼', 'EH'],
-    ['book', '𐐺𐐳𐐿', 'UH'],
-    ['see', '𐑅𐐨', 'IY'],
-    ['day', '𐐼𐐩', 'EY'],
-    ['my', '𐑋𐐴', 'AY'],
-    ['cup', '𐐿𐐲𐐹', 'AH1'],
-    ['go', '𐑀𐐬', 'OW'],
-    ['zoo', '𐑆𐐭', 'UW'],
-    ['cow', '𐐿𐐵', 'AW'],
-    ['boy', '𐐺𐑎', 'OY'],
-    ['law', '𐑊𐐫', 'AO'],
-    ['about', '𐐱𐐺𐐵𐐻', 'AH0'],
-  ])('translates Deseret vowel "%s" → %s (%s)', (word, expected) => {
     expect(translateSync(word, { format: 'deseret' })).toBe(expected);
   });
 

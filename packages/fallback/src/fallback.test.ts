@@ -57,26 +57,23 @@ describe('stemming translation', () => {
     expect(translateSync(input)).toBe(expected);
   });
 
-  it('handles i→y stem change', () => {
-    expect(translateSync('loveliest')).toBe('luhvleeast');
-    expect(translateSync('fussily')).toBe('fuhseelee');
-    expect(translateSync('fussier')).toBe('fuhser');
+  it.each([
+    ['loveliest', 'luhvleeast'],
+    ['fussily', 'fuhseelee'],
+    ['fussier', 'fuhser'],
+  ])('handles i→y stem change: %s → %s', (input, expected) => {
+    expect(translateSync(input)).toBe(expected);
   });
 });
 
 describe('initialism passthrough', () => {
-  it.each(['URL', 'HTML', 'API'])('passes through %s unchanged', (word) => {
+  it.each(['URL', 'HTML', 'API', 'url', 'Url'])('passes through %s unchanged', (word) => {
     expect(translateSync(word)).toBe(word);
-  });
-
-  it('is case-insensitive for initialisms', () => {
-    expect(translateSync('url')).toBe('url');
-    expect(translateSync('Url')).toBe('Url');
   });
 
   it('translates non-initialism words normally', () => {
     const result = translateSync('hello');
-    expect(result).not.toBe('hello'); // should be translated, not passed through
+    expect(result).not.toBe('hello');
   });
 });
 
@@ -137,18 +134,11 @@ describe('unknown word integration', () => {
 });
 
 describe('URL/email preservation via translateSync', () => {
-  it('preserves URLs in translated text', () => {
-    const result = translateSync('Visit https://example.com today');
-    expect(result).toContain('https://example.com');
-  });
-
-  it('preserves emails in translated text', () => {
-    const result = translateSync('Email test@example.com please');
-    expect(result).toContain('test@example.com');
-  });
-
-  it('preserves bare domains', () => {
-    const result = translateSync('Visit google.com today');
-    expect(result).toContain('google.com');
+  it.each([
+    ['Visit https://example.com today', 'https://example.com', 'URL'],
+    ['Email test@example.com please', 'test@example.com', 'email'],
+    ['Visit google.com today', 'google.com', 'bare domain'],
+  ])('preserves %s (%s)', (input, preserved) => {
+    expect(translateSync(input)).toContain(preserved);
   });
 });

@@ -45,61 +45,42 @@ vi.mock('@ingglish/dictionary', () => {
 });
 
 describe('charEditDistance', () => {
-  it('returns 0 for identical strings', () => {
-    expect(charEditDistance('hello', 'hello')).toBe(0);
-  });
-
-  it('handles empty strings', () => {
-    expect(charEditDistance('', 'abc')).toBe(3);
-    expect(charEditDistance('abc', '')).toBe(3);
-    expect(charEditDistance('', '')).toBe(0);
-  });
-
-  it('computes single-character substitution', () => {
-    expect(charEditDistance('cat', 'bat')).toBe(1);
-  });
-
-  it('computes insertion and deletion', () => {
-    expect(charEditDistance('cat', 'cats')).toBe(1);
-    expect(charEditDistance('cats', 'cat')).toBe(1);
-  });
-
-  it('computes multi-edit distance', () => {
-    expect(charEditDistance('kitten', 'sitting')).toBe(3);
+  it.each([
+    ['hello', 'hello', 0, 'identical strings'],
+    ['', 'abc', 3, 'empty source'],
+    ['abc', '', 3, 'empty target'],
+    ['', '', 0, 'both empty'],
+    ['cat', 'bat', 1, 'single substitution'],
+    ['cat', 'cats', 1, 'insertion'],
+    ['cats', 'cat', 1, 'deletion'],
+    ['kitten', 'sitting', 3, 'multi-edit'],
+  ])('charEditDistance(%s, %s) → %d (%s)', (a, b, expected) => {
+    expect(charEditDistance(a, b)).toBe(expected);
   });
 });
 
 describe('editSimilarity', () => {
-  it('returns 1 for identical strings', () => {
-    expect(editSimilarity('hello', 'hello')).toBe(1);
-  });
-
-  it('returns 0 for completely different strings of same length', () => {
-    expect(editSimilarity('abc', 'xyz')).toBe(0);
-  });
-
-  it('returns 1 for two empty strings', () => {
-    expect(editSimilarity('', '')).toBe(1);
+  it.each([
+    ['hello', 'hello', 1, 'identical'],
+    ['abc', 'xyz', 0, 'completely different'],
+    ['', '', 1, 'both empty'],
+  ])('editSimilarity(%s, %s) → %d (%s)', (a, b, expected) => {
+    expect(editSimilarity(a, b)).toBe(expected);
   });
 
   it('returns fraction for partial similarity', () => {
-    // cat → bat: 1 edit / 3 max = 0.333 distance → 0.667 similarity
     expect(editSimilarity('cat', 'bat')).toBeCloseTo(2 / 3);
   });
 });
 
 describe('phonemeLevenshtein', () => {
-  it('returns 0 for identical arrays', () => {
-    expect(phonemeLevenshtein(['B', 'AE', 'T'], ['B', 'AE', 'T'])).toBe(0);
-  });
-
-  it('handles empty arrays', () => {
-    expect(phonemeLevenshtein([], ['B'])).toBe(1);
-    expect(phonemeLevenshtein(['B'], [])).toBe(1);
-  });
-
-  it('counts substitutions', () => {
-    expect(phonemeLevenshtein(['B', 'AE', 'T'], ['K', 'AE', 'T'])).toBe(1);
+  it.each([
+    [['B', 'AE', 'T'], ['B', 'AE', 'T'], 0, 'identical'],
+    [[], ['B'], 1, 'empty source'],
+    [['B'], [], 1, 'empty target'],
+    [['B', 'AE', 'T'], ['K', 'AE', 'T'], 1, 'single substitution'],
+  ] as const)('phonemeLevenshtein(%j, %j) → %d (%s)', (a, b, expected, _desc) => {
+    expect(phonemeLevenshtein([...a], [...b])).toBe(expected);
   });
 });
 

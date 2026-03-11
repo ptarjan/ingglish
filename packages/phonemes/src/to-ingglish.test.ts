@@ -29,11 +29,6 @@ describe('phoneme-map', () => {
       'OY',
       'UH',
       'UW',
-    ])('maps vowel %s', (vowel) => {
-      expect(ARPABET_MAP[vowel]).toBeDefined();
-    });
-
-    it.each([
       'B',
       'CH',
       'D',
@@ -58,8 +53,8 @@ describe('phoneme-map', () => {
       'Y',
       'Z',
       'ZH',
-    ])('maps consonant %s', (consonant) => {
-      expect(ARPABET_MAP[consonant]).toBeDefined();
+    ])('maps phoneme %s', (phoneme) => {
+      expect(ARPABET_MAP[phoneme]).toBeDefined();
     });
 
     it('should have 39 total phonemes (15 vowels + 24 consonants)', () => {
@@ -139,12 +134,11 @@ describe('R-colored vowels', () => {
 });
 
 describe('common word translations', () => {
-  it('translates NG cluster words', () => {
-    expect(translateSync('think')).toBe('thingk');
-  });
-
-  it('translates multi-syllable words', () => {
-    expect(translateSync('beautiful')).toBe('byootafal');
+  it.each([
+    ['think', 'thingk', 'NG cluster'],
+    ['beautiful', 'byootafal', 'multi-syllable'],
+  ])('translates %s → %s (%s)', (word, expected) => {
+    expect(translateSync(word)).toBe(expected);
   });
 
   it.each([
@@ -190,12 +184,11 @@ describe('common word translations', () => {
 });
 
 describe('arpabetPhonemeToIngglish', () => {
-  it('returns "a" for unstressed schwa AH0', () => {
-    expect(arpabetPhonemeToIngglish('AH0')).toBe('a');
-  });
-
-  it('returns lowercase for unknown phonemes', () => {
-    expect(arpabetPhonemeToIngglish('XX')).toBe('xx');
+  it.each([
+    ['AH0', 'a', 'unstressed schwa'],
+    ['XX', 'xx', 'unknown phoneme'],
+  ])('arpabetPhonemeToIngglish(%s) → %s (%s)', (input, expected) => {
+    expect(arpabetPhonemeToIngglish(input)).toBe(expected);
   });
 });
 

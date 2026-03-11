@@ -50,22 +50,15 @@ describe('lookupPronunciation', () => {
   });
 
   // Prototype safety is not observable through translate — keep direct test
-  it('is prototype-safe: "constructor" returns null', () => {
-    expect(lookupPronunciation('constructor')).toBeNull();
-  });
-
-  it('is prototype-safe: "toString" returns null', () => {
-    expect(lookupPronunciation('toString')).toBeNull();
+  it.each(['constructor', 'toString'])('is prototype-safe: "%s" returns null', (word) => {
+    expect(lookupPronunciation(word)).toBeNull();
   });
 
   it('normalizes velar nasal: N before K becomes NG', async () => {
-    // "think" with normalization: TH IH1 NG K → "thingk"
-    // without normalization: TH IH1 N K → "think"
     expect(await translate('think')).toBe('thingk');
   });
 
   it('normalizes velar nasal: N before G becomes NG', async () => {
-    // "finger" has N before G in CMU, normalized to NG
     const result = await translate('finger');
     expect(result).toContain('ng');
   });

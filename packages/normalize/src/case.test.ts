@@ -9,20 +9,14 @@ describe('case-utils', () => {
       ['ég', 'lower'],
       ['über', 'lower'],
       ['', 'lower'],
-    ] as const)('should detect lowercase: %s → %s', (input, expected) => {
-      expect(detectCasePattern(input)).toBe(expected);
-    });
-
-    it.each([
+      ['a', 'lower'],
+      ['i', 'lower'],
+      ['I', 'lower'],
+      ['5', 'lower'],
       ['HELLO', 'upper'],
       ['NASA', 'upper'],
       ['API', 'upper'],
       ['ÜBER', 'upper'],
-    ] as const)('should detect uppercase: %s → %s', (input, expected) => {
-      expect(detectCasePattern(input)).toBe(expected);
-    });
-
-    it.each([
       ['UI', 'capitalized'],
       ['AI', 'capitalized'],
       ['IT', 'capitalized'],
@@ -33,26 +27,12 @@ describe('case-utils', () => {
       ['Ég', 'capitalized'],
       ['Über', 'capitalized'],
       ['Ölaf', 'capitalized'],
-    ] as const)('should detect capitalized: %s → %s', (input, expected) => {
-      expect(detectCasePattern(input)).toBe(expected);
-    });
-
-    it.each([
-      ['a', 'lower'],
-      ['i', 'lower'],
-      ['I', 'lower'],
-      ['5', 'lower'],
-    ] as const)('should handle single character: %s → %s', (input, expected) => {
-      expect(detectCasePattern(input)).toBe(expected);
-    });
-
-    it.each([
       ['GitHub', 'mixed'],
       ['iPhone', 'mixed'],
       ['McDonald', 'mixed'],
       ['hElLo', 'mixed'],
       ['\u00E9\u00C9', 'mixed'],
-    ] as const)('should detect mixed case: %s → %s', (input, expected) => {
+    ] as const)('detectCasePattern(%s) → %s', (input, expected) => {
       expect(detectCasePattern(input)).toBe(expected);
     });
   });
@@ -96,6 +76,7 @@ describe('case-utils', () => {
       ['hello', 'world', 'world'],
       ['HELLO', 'world', 'WORLD'],
       ['Hello', 'world', 'World'],
+      ['GitHub', 'github', 'GitHub'],
     ] as const)(
       'should preserve case pattern through detect -> apply: %s',
       (word, translated, expected) => {
@@ -104,13 +85,6 @@ describe('case-utils', () => {
         expect(result).toBe(expected);
       }
     );
-
-    it('should preserve mixed case through detect -> apply', () => {
-      const pattern = detectCasePattern('GitHub');
-      expect(pattern).toBe('mixed');
-      const result = applyCasePattern('github', pattern, 'GitHub');
-      expect(result).toBe('GitHub');
-    });
   });
 
   describe('splitCamelCase', () => {

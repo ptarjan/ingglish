@@ -44,15 +44,12 @@ describe('verifyScriptRoundTrip', () => {
     }).toThrow(/ER/);
   });
 
-  it('should throw when toArpabet returns null', () => {
+  it.each([
+    ['null', nullReverse],
+    ['empty array', emptyReverse],
+  ] as const)('should throw when toArpabet returns %s', (_, reverse) => {
     expect(() => {
-      verifyScriptRoundTrip(forward, nullReverse);
-    }).toThrow(/round-trip verification failed/i);
-  });
-
-  it('should throw when toArpabet returns empty array', () => {
-    expect(() => {
-      verifyScriptRoundTrip(forward, emptyReverse);
+      verifyScriptRoundTrip(forward, reverse);
     }).toThrow(/round-trip verification failed/i);
   });
 
