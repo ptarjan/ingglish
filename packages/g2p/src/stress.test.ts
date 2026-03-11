@@ -2,126 +2,66 @@ import { describe, expect, it } from 'vitest';
 import { applyStressPrediction } from './index';
 
 describe('applyStressPrediction', () => {
-  it('passes through monosyllabic words unchanged', () => {
-    const phonemes = ['K', 'AE1', 'T'];
-    const result = applyStressPrediction('cat', phonemes);
-    expect(result).toEqual(['K', 'AE1', 'T']);
-  });
-
-  it('keeps zero-vowel sequences unchanged', () => {
-    // No vowels (edge case, e.g., consonant cluster)
-    const phonemes = ['S', 'T', 'R'];
-    expect(applyStressPrediction('str', phonemes)).toEqual(['S', 'T', 'R']);
+  it.each([
+    ['cat', ['K', 'AE1', 'T'], ['K', 'AE1', 'T'], 'monosyllabic unchanged'],
+    ['str', ['S', 'T', 'R'], ['S', 'T', 'R'], 'zero-vowel unchanged'],
+  ] as const)('%s → passes through (%s)', (word, phonemes, expected) => {
+    expect(applyStressPrediction(word, [...phonemes])).toEqual([...expected]);
   });
 
   it('stresses first syllable by default for two-syllable words', () => {
-    // Simulating "rabbit" = R AE1 B IH1 T
-    const phonemes = ['R', 'AE1', 'B', 'IH1', 'T'];
-    const result = applyStressPrediction('rabbit', phonemes);
-    // First vowel should be stressed (1), second unstressed (0)
+    const result = applyStressPrediction('rabbit', ['R', 'AE1', 'B', 'IH1', 'T']);
     expect(result[1]).toBe('AE1');
     expect(result[3]).toBe('IH0');
   });
 
-  it('stresses final syllable for stress-attracting suffixes (-eer)', () => {
-    // Simulating "volunteer" = V AA1 L AH0 N T IH1 R
-    const phonemes = ['V', 'AA1', 'L', 'AH0', 'N', 'T', 'IH1', 'R'];
-    const result = applyStressPrediction('volunteer', phonemes);
-    // Last vowel should be stressed
-    expect(result[6]).toMatch(/1$/);
-  });
-
-  it('stresses final syllable for -ette suffix', () => {
-    const phonemes = ['K', 'AE1', 'S', 'EH1', 'T'];
-    const result = applyStressPrediction('cassette', phonemes);
-    // Second vowel (last) should be stressed
-    expect(result[3]).toBe('EH1');
-  });
-
-  it('applies pre-stress suffix rules (-tion = penultimate)', () => {
-    // "donation" = D OW1 N EY1 SH AH0 N — 3 vowels
-    const phonemes = ['D', 'OW1', 'N', 'EY1', 'SH', 'AH0', 'N'];
-    const result = applyStressPrediction('donation', phonemes);
-    // -tion stresses penultimate (2nd from end) = index 1 of 3 vowels
-    expect(result[3]).toBe('EY1');
-  });
-
-  it('applies pre-stress suffix rules (-ity = antepenultimate)', () => {
-    // "electricity" = IH1 L EH1 K T R IH1 S IH1 T IY1 — 5 vowels
-    const phonemes = ['IH1', 'L', 'EH1', 'K', 'T', 'R', 'IH1', 'S', 'IH1', 'T', 'IY1'];
-    const result = applyStressPrediction('electricity', phonemes);
-    // -ity stresses 3rd from end = index 2 of 5 vowels
-    expect(result[6]).toBe('IH1');
-  });
-
-  it('handles unstressed prefix "re-"', () => {
-    // "return" = R IY1 T ER1 N — 2 vowels
-    const phonemes = ['R', 'IY1', 'T', 'ER1', 'N'];
-    const result = applyStressPrediction('return', phonemes);
-    // Prefix re- → stress 2nd syllable
-    expect(result[3]).toMatch(/1$/);
-  });
-
-  it('handles unstressed prefix "un-"', () => {
-    // "undo" = AH1 N D UW1 — 2 vowels
-    const phonemes = ['AH1', 'N', 'D', 'UW1'];
-    const result = applyStressPrediction('undo', phonemes);
-    // Prefix un- → stress 2nd syllable
-    expect(result[3]).toMatch(/1$/);
+  it.each([
+    ['volunteer', ['V', 'AA1', 'L', 'AH0', 'N', 'T', 'IH1', 'R'], 6, '-eer suffix'],
+    ['cassette', ['K', 'AE1', 'S', 'EH1', 'T'], 3, '-ette suffix'],
+    ['donation', ['D', 'OW1', 'N', 'EY1', 'SH', 'AH0', 'N'], 3, '-tion penultimate'],
+    [
+      'electricity',
+      ['IH1', 'L', 'EH1', 'K', 'T', 'R', 'IH1', 'S', 'IH1', 'T', 'IY1'],
+      6,
+      '-ity antepenultimate',
+    ],
+    ['return', ['R', 'IY1', 'T', 'ER1', 'N'], 3, 're- prefix'],
+    ['undo', ['AH1', 'N', 'D', 'UW1'], 3, 'un- prefix'],
+    ['returning', ['R', 'IY1', 'T', 'ER1', 'N', 'IH1', 'NG'], 3, '-ing + re- prefix'],
+    ['undoings', ['AH1', 'N', 'D', 'UW1', 'IH1', 'NG', 'Z'], 3, '-ings + un- prefix'],
+  ] as const)('stresses correct syllable in %s (%s)', (word, phonemes, stressIdx) => {
+    const result = applyStressPrediction(word, [...phonemes]);
+    expect(result[stressIdx]).toMatch(/1$/);
   });
 
   it('preserves AH0 schwa phonemes from NRL rules', () => {
-    // If NRL already reduced a vowel to AH0, don't re-stress it
-    const phonemes = ['K', 'AH0', 'M', 'P', 'Y', 'UW1', 'T', 'ER1'];
-    const result = applyStressPrediction('computer', phonemes);
-    // AH0 should stay AH0
+    const result = applyStressPrediction('computer', [
+      'K',
+      'AH0',
+      'M',
+      'P',
+      'Y',
+      'UW1',
+      'T',
+      'ER1',
+    ]);
     expect(result[1]).toBe('AH0');
   });
 
   it('reduces AE to AH0 when unstressed', () => {
-    // "abstract" = AE1 B S T R AE1 K T — 2 vowels
-    // ab- prefix rule → stress falls on 2nd syllable
-    const phonemes = ['AE1', 'B', 'S', 'T', 'R', 'AE1', 'K', 'T'];
-    const result = applyStressPrediction('abstract', phonemes);
-    // Second syllable stressed (ab- prefix), first AE reduces to AH0
+    const result = applyStressPrediction('abstract', ['AE1', 'B', 'S', 'T', 'R', 'AE1', 'K', 'T']);
     expect(result[0]).toBe('AH0');
     expect(result[5]).toBe('AE1');
   });
 
-  it('handles -ing gerund with prefix detection', () => {
-    // "returning" = R IY1 T ER1 N IH1 NX — 3 vowels
-    const phonemes = ['R', 'IY1', 'T', 'ER1', 'N', 'IH1', 'NG'];
-    const result = applyStressPrediction('returning', phonemes);
-    // Should detect "re-" prefix after stripping -ing → stress 2nd syllable
-    expect(result[3]).toMatch(/1$/);
-  });
-
-  it('handles -ings gerund with prefix detection', () => {
-    // "undoings" — prefix "un-" detected after stripping -ings
-    const phonemes = ['AH1', 'N', 'D', 'UW1', 'IH1', 'NG', 'Z'];
-    const result = applyStressPrediction('undoings', phonemes);
-    // un- prefix → stress 2nd syllable
-    expect(result[3]).toMatch(/1$/);
-  });
-
   it('reassigns stress backward when predicted syllable is AH0', () => {
-    // Simulate a word where the predicted stress syllable (first, default) is AH0
-    // so it searches backward — but since it's index 0, backward search finds nothing,
-    // then forward search kicks in
-    const phonemes = ['AH0', 'B', 'EH1', 'K', 'T'];
-    const result = applyStressPrediction('abekt', phonemes);
-    // AH0 stays AH0, EH gets primary stress
+    const result = applyStressPrediction('abekt', ['AH0', 'B', 'EH1', 'K', 'T']);
     expect(result[0]).toBe('AH0');
     expect(result[2]).toMatch(/1$/);
   });
 
   it('searches backward for non-AH0 when predicted stress is AH0', () => {
-    // 3 vowels, suffix -tion stresses penultimate (index 1), but make index 1 AH0
-    // so it searches backward to index 0
-    const phonemes = ['EH1', 'K', 'AH0', 'SH', 'AH0', 'N'];
-    const result = applyStressPrediction('exation', phonemes);
-    // Predicted = syllable 1 (penultimate of 3), but that's AH0
-    // Backward search finds index 0 (EH) → gets primary stress
+    const result = applyStressPrediction('exation', ['EH1', 'K', 'AH0', 'SH', 'AH0', 'N']);
     expect(result[0]).toBe('EH1');
   });
 });

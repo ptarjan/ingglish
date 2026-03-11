@@ -39,11 +39,10 @@ describe('lookupPronunciation', () => {
     expect(lookupPronunciation(word)).toBeNull();
   });
 
-  it('normalizes velar nasal: N before K becomes NG', async () => {
-    expect(await translate('think')).toBe('thingk');
-  });
-
-  it('normalizes velar nasal: N before G becomes NG', async () => {
-    expect(await translate('finger')).toBe('fingger');
+  it.each([
+    ['think', 'thingk', 'N before K → NG'],
+    ['finger', 'fingger', 'N before G → NG'],
+  ])('normalizes velar nasal: %s → %s (%s)', async (word, expected) => {
+    expect(await translate(word)).toBe(expected);
   });
 });

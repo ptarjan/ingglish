@@ -81,33 +81,35 @@ describe('async API loads only required dictionaries', () => {
 
 describe('translator', () => {
   describe('translateSync (single words)', () => {
-    it('should translate common words', () => {
-      // hello = HH AH0 L OW1 -> haloh (American pronunciation)
-      expect(translateSync('hello')).toBe('haloh');
-      expect(translateSync('world')).toBe('werld');
-    });
-
-    it('should preserve capitalization', () => {
-      const hello = translateSync('hello');
-      expect(translateSync('Hello')).toBe(hello.charAt(0).toUpperCase() + hello.slice(1));
-    });
-
-    it('should handle unknown words with fallback', () => {
-      expect(translateSync('splonk')).toBe('splongk');
-    });
-
-    it('should translate url from dictionary', () => {
-      // "url" is in CMU dictionary
-      expect(translateSync('url')).toBe('url');
+    it.each([
+      ['hello', 'haloh', 'common word'],
+      ['world', 'werld', 'common word'],
+      ['Hello', 'Haloh', 'preserves capitalization'],
+      ['splonk', 'splongk', 'unknown word G2P fallback'],
+      ['url', 'url', 'dictionary word'],
+    ])('translates %s → %s (%s)', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('translateSync', () => {
-    it('should translate multiple words', () => {
-      const result = translateSync('hello world');
-      // First word of multi-word text is capitalized (sentence start)
-      expect(result).toContain('Haloh');
-      expect(result).toContain('werld');
+    it.each([
+      ['hello world', 'Haloh werld', 'multiple words with sentence-start cap'],
+      ['hello   world', 'Haloh   werld', 'preserves whitespace'],
+      ['hello 123 world', 'Haloh 123 werld', 'preserves numbers'],
+      ['', '', 'empty string'],
+      ['Hello, World! How are you?', 'Haloh, Werld! Hou ar yoo?', 'mixed content'],
+      ['hello. world', 'Haloh. Werld', 'sentence capitalization after period'],
+      ['stop! go now.', 'Stop! Goh nou.', 'sentence capitalization after !'],
+      ['résumé', 'rezamay', 'diacritics as pronunciation signal'],
+      ['resume', 'rizoom', 'unaccented homograph'],
+      ['China\u2019s economy', 'Chainaz ikonamee', 'curly apostrophe possessive'],
+      ['I went home.', 'Ai went hohm.', 'I at sentence start'],
+      ['Then I left.', 'Dhen ai left.', 'I mid-sentence'],
+      ['Hello. I am here.', 'Haloh. Ai am heer.', 'I after period'],
+      ['Really? I think so.', 'Rilee? Ai thingk soh.', 'I after question mark'],
+    ])('translates "%s" → "%s" (%s)', (input, expected) => {
+      expect(translateSync(input)).toBe(expected);
     });
 
     it('should preserve punctuation in IPA output', () => {
@@ -116,33 +118,8 @@ describe('translator', () => {
       expect(result).toContain('!');
     });
 
-    it('should preserve whitespace', () => {
-      const result = translateSync('hello   world');
-      expect(result).toContain('   ');
-    });
-
-    it('should preserve numbers', () => {
-      const result = translateSync('hello 123 world');
-      expect(result).toContain('123');
-    });
-
     it('should normalize curly apostrophes', () => {
-      // Curly apostrophe (U+2019) should be treated the same as straight
-      const curly = 'don\u2019t'; // don't with curly apostrophe
-      const straight = "don't";
-      expect(translateSync(curly)).toBe(translateSync(straight));
-    });
-
-    it('should handle possessives with curly apostrophes', () => {
-      // Common in text copied from websites like NY Times
-      const result = translateSync('China\u2019s economy');
-      expect(result).toBe('Chainaz ikonamee');
-    });
-
-    it('should use diacritics as pronunciation signals for homographs', () => {
-      // résumé (accented, French noun) ≠ resume (unaccented, English verb)
-      expect(translateSync('résumé')).toBe('rezamay');
-      expect(translateSync('resume')).toBe('rizoom');
+      expect(translateSync('don\u2019t')).toBe(translateSync("don't"));
     });
 
     it.each([
@@ -162,29 +139,6 @@ describe('translator', () => {
       ['i', 'ai'],
     ])('treats "%s" as lowercase → %s', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
-    });
-
-    it('should capitalize I at sentence start but not mid-sentence', () => {
-      // "I" at sentence start gets capitalized to "Ai"
-      expect(translateSync('I went home.')).toBe('Ai went hohm.');
-      // "I" mid-sentence stays lowercase "ai"
-      expect(translateSync('Then I left.')).toBe('Dhen ai left.');
-      // "I" after sentence-ending punctuation gets capitalized
-      expect(translateSync('Hello. I am here.')).toBe('Haloh. Ai am heer.');
-      expect(translateSync('Really? I think so.')).toBe('Rilee? Ai thingk soh.');
-    });
-
-    it('should handle empty string', () => {
-      expect(translateSync('')).toBe('');
-    });
-
-    it('should handle mixed content', () => {
-      expect(translateSync('Hello, World! How are you?')).toBe('Haloh, Werld! Hou ar yoo?');
-    });
-
-    it('should capitalize first word of each sentence', () => {
-      expect(translateSync('hello. world')).toBe('Haloh. Werld');
-      expect(translateSync('stop! go now.')).toBe('Stop! Goh nou.');
     });
   });
 

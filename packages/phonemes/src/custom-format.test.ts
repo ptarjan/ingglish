@@ -2,99 +2,77 @@ import { describe, expect, it } from 'vitest';
 import { createCustomConverter } from './index';
 
 describe('createCustomConverter', () => {
-  it('should produce identical output to default with empty overrides', () => {
-    const convert = createCustomConverter({ phonemeMap: {}, rColoredPrefixes: {} });
-    // "hello" = HH AH0 L OW1
-    expect(convert(['HH', 'AH0', 'L', 'OW1'])).toBe('haloh');
-    // "cat" = K AE1 T
-    expect(convert(['K', 'AE1', 'T'])).toBe('kat');
-  });
-
-  it('should apply phonemeMap overrides', () => {
+  it.each([
+    [
+      'empty overrides → default output',
+      { phonemeMap: {}, rColoredPrefixes: {} },
+      [
+        [['HH', 'AH0', 'L', 'OW1'], 'haloh'],
+        [['K', 'AE1', 'T'], 'kat'],
+      ],
+    ],
+    [
+      'phonemeMap: AA→ah',
+      { phonemeMap: { AA: 'ah' }, rColoredPrefixes: {} },
+      [[['HH', 'AA1', 'T'], 'haht']],
+    ],
+    [
+      'AH0 override',
+      { phonemeMap: { AH0: 'uh' }, rColoredPrefixes: {} },
+      [[['HH', 'AH0', 'L', 'OW1'], 'huhloh']],
+    ],
+    [
+      'stress-specific: EY→ay, EY0→eh',
+      { phonemeMap: { EY: 'ay', EY0: 'eh' }, rColoredPrefixes: {} },
+      [
+        [['EY1'], 'ay'],
+        [['EY0'], 'eh'],
+      ],
+    ],
+    [
+      'rColoredPrefixes: AA→ah',
+      { phonemeMap: {}, rColoredPrefixes: { AA: 'ah' } },
+      [[['S', 'T', 'AA1', 'R'], 'stahr']],
+    ],
+    [
+      'default r-colored vowels',
+      { phonemeMap: {}, rColoredPrefixes: {} },
+      [
+        [['S', 'T', 'AA1', 'R'], 'star'],
+        [['S', 'T', 'AO1', 'R'], 'stor'],
+      ],
+    ],
+    [
+      'auto-derive r-colored from phoneme map',
+      { phonemeMap: { AH: 'a' }, rColoredPrefixes: {} },
+      [[['AH1', 'R'], 'ar']],
+    ],
+    [
+      'explicit rColoredPrefixes wins over auto-derived',
+      { phonemeMap: { AA: 'ah' }, rColoredPrefixes: { AA: 'x' } },
+      [[['S', 'T', 'AA1', 'R'], 'stxr']],
+    ],
+    [
+      'consonants unchanged',
+      { phonemeMap: {}, rColoredPrefixes: {} },
+      [[['B', 'EH1', 'D'], 'bed']],
+    ],
+    ['unknown phonemes → lowercase', { phonemeMap: {}, rColoredPrefixes: {} }, [[['XX'], 'xx']]],
+    [
+      'multiple overrides together',
+      { phonemeMap: { AH0: 'uh', IY: 'i' }, rColoredPrefixes: { AA: 'ah' } },
+      [
+        [['AH0', 'B', 'AW1', 'T'], 'uhbout'],
+        [['S', 'IY1'], 'si'],
+      ],
+    ],
+  ] as const)('%s', (_desc, config, cases) => {
     const convert = createCustomConverter({
-      phonemeMap: { AA: 'ah' },
-      rColoredPrefixes: {},
+      phonemeMap: config.phonemeMap as Record<string, string>,
+      rColoredPrefixes: config.rColoredPrefixes as Record<string, string>,
     });
-    // "hot" = HH AA1 T
-    expect(convert(['HH', 'AA1', 'T'])).toBe('haht');
-  });
-
-  it('should handle AH0 override', () => {
-    const convert = createCustomConverter({
-      phonemeMap: { AH0: 'uh' },
-      rColoredPrefixes: {},
-    });
-    // "hello" = HH AH0 L OW1 — AH0 now maps to 'uh'
-    expect(convert(['HH', 'AH0', 'L', 'OW1'])).toBe('huhloh');
-  });
-
-  it('should handle stress-specific overrides', () => {
-    const convert = createCustomConverter({
-      phonemeMap: { EY: 'ay', EY0: 'eh' },
-      rColoredPrefixes: {},
-    });
-    // Stressed EY1 uses base EY -> 'ay'
-    expect(convert(['EY1'])).toBe('ay');
-    // Unstressed EY0 uses stress-specific override -> 'eh'
-    expect(convert(['EY0'])).toBe('eh');
-  });
-
-  it('should apply rColoredPrefixes overrides', () => {
-    const convert = createCustomConverter({
-      phonemeMap: {},
-      rColoredPrefixes: { AA: 'ah' },
-    });
-    // "star" = S T AA1 R — AA+R prefix now 'ah' instead of 'a', so 'ah'+'r' = 'ahr'
-    expect(convert(['S', 'T', 'AA1', 'R'])).toBe('stahr');
-  });
-
-  it('should handle r-colored vowels with default prefixes', () => {
-    const convert = createCustomConverter({ phonemeMap: {}, rColoredPrefixes: {} });
-    // "star" = S T AA1 R → 'star' (AA+R prefix 'a' + R='r')
-    expect(convert(['S', 'T', 'AA1', 'R'])).toBe('star');
-    // "store" = S T AO1 R → 'stor' (AO+R prefix 'o' + R='r')
-    expect(convert(['S', 'T', 'AO1', 'R'])).toBe('stor');
-  });
-
-  it('should auto-derive r-colored prefixes from phoneme map overrides', () => {
-    // Czech-like: AH→'a', no explicit rColoredPrefixes
-    const convert = createCustomConverter({
-      phonemeMap: { AH: 'a' },
-      rColoredPrefixes: {},
-    });
-    // "curry" = K ER1 IY0 — not affected (ER is its own phoneme)
-    // But AH+R should now use 'a' prefix instead of default 'uh'
-    expect(convert(['AH1', 'R'])).toBe('ar');
-  });
-
-  it('should not auto-derive when explicit rColoredPrefixes are set', () => {
-    const convert = createCustomConverter({
-      phonemeMap: { AA: 'ah' },
-      rColoredPrefixes: { AA: 'x' },
-    });
-    // Explicit rColoredPrefixes should win over auto-derived
-    expect(convert(['S', 'T', 'AA1', 'R'])).toBe('stxr');
-  });
-
-  it('should handle consonants normally', () => {
-    const convert = createCustomConverter({ phonemeMap: {}, rColoredPrefixes: {} });
-    // "bed" = B EH1 D
-    expect(convert(['B', 'EH1', 'D'])).toBe('bed');
-  });
-
-  it('should fall back to lowercase for unknown phonemes', () => {
-    const convert = createCustomConverter({ phonemeMap: {}, rColoredPrefixes: {} });
-    expect(convert(['XX'])).toBe('xx');
-  });
-
-  it('should handle multiple overrides together', () => {
-    const convert = createCustomConverter({
-      phonemeMap: { AH0: 'uh', IY: 'i' },
-      rColoredPrefixes: { AA: 'ah' },
-    });
-    // "about" = AH0 B AW1 T → 'uhbout'
-    expect(convert(['AH0', 'B', 'AW1', 'T'])).toBe('uhbout');
-    // "see" = S IY1 → 'si'
-    expect(convert(['S', 'IY1'])).toBe('si');
+    for (const [phonemes, expected] of cases) {
+      expect(convert([...phonemes])).toBe(expected);
+    }
   });
 });
