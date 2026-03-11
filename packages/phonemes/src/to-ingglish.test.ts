@@ -13,54 +13,50 @@ import {
 
 describe('phoneme-map', () => {
   describe('ARPABET_MAP', () => {
-    it.each([
-      'AA',
-      'AE',
-      'AH',
-      'AO',
-      'AW',
-      'AY',
-      'EH',
-      'ER',
-      'EY',
-      'IH',
-      'IY',
-      'OW',
-      'OY',
-      'UH',
-      'UW',
-      'B',
-      'CH',
-      'D',
-      'DH',
-      'F',
-      'G',
-      'HH',
-      'JH',
-      'K',
-      'L',
-      'M',
-      'N',
-      'NG',
-      'P',
-      'R',
-      'S',
-      'SH',
-      'T',
-      'TH',
-      'V',
-      'W',
-      'Y',
-      'Z',
-      'ZH',
-    ])('maps phoneme %s', (phoneme) => {
-      expect(ARPABET_MAP[phoneme]).toBeDefined();
-    });
-
-    it('should have 39 total phonemes (15 vowels + 24 consonants)', () => {
+    it('maps all 39 phonemes (15 vowels + 24 consonants) to ingglish spellings', () => {
       expect(ARPABET_VOWELS.length).toBe(15);
       expect(ARPABET_CONSONANTS.length).toBe(24);
-      expect(Object.keys(ARPABET_MAP).length).toBe(39);
+      expect(ARPABET_MAP).toEqual({
+        AA: 'o',
+        AE: 'a',
+        AH: 'uh',
+        AO: 'aw',
+        AW: 'ou',
+        AY: 'ai',
+        B: 'b',
+        CH: 'ch',
+        D: 'd',
+        DH: 'dh',
+        EH: 'e',
+        ER: 'er',
+        EY: 'ay',
+        F: 'f',
+        G: 'g',
+        HH: 'h',
+        IH: 'i',
+        IY: 'ee',
+        JH: 'j',
+        K: 'k',
+        L: 'l',
+        M: 'm',
+        N: 'n',
+        NG: 'ng',
+        OW: 'oh',
+        OY: 'oi',
+        P: 'p',
+        R: 'r',
+        S: 's',
+        SH: 'sh',
+        T: 't',
+        TH: 'th',
+        UH: 'u',
+        UW: 'oo',
+        V: 'v',
+        W: 'w',
+        Y: 'y',
+        Z: 'z',
+        ZH: 'zh',
+      });
     });
   });
 
