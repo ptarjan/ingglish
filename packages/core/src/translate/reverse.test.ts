@@ -19,31 +19,14 @@ are written exactly as they sound - what you see is what you say!`;
 describe('reverse-translator', () => {
   describe('reverseTranslateSync (single words)', () => {
     it.each([
-      ['kat', 'cat', 'simple words'],
+      ['kat', 'cat', 'simple word'],
       ['Kat', 'Cat', 'title case'],
       ['KAT', 'CAT', 'ALL CAPS'],
+      ['too', 'to', 'homophone picks most common'],
+      ['welfer', 'welfare', 'ambiguous "er" resolves to EH+R'],
+      ['her', 'her', 'ER phoneme stays as-is'],
     ])('reverses %s → %s (%s)', (input, expected) => {
       expect(reverseTranslateSync(input)).toBe(expected);
-    });
-
-    it('should handle homophones by picking most common word', () => {
-      // "too" is the Ingglish spelling for "too"/"to"/"two" (all T+UW)
-      const result = reverseTranslateSync('too');
-      expect(result).toBe('to'); // most common by frequency
-    });
-
-    it('should handle ambiguous "er" spellings (welfare case)', () => {
-      // "welfare" translates to "welfer", which could be:
-      // - ER (r-colored schwa) - no match
-      // - EH + R (short e + r) - matches "welfare"
-      const result = reverseTranslateSync('welfer');
-      expect(result).toBe('welfare');
-    });
-
-    it('should handle "er" that is actually ER phoneme', () => {
-      // "her" -> "her" (ER is correct here)
-      const result = reverseTranslateSync('her');
-      expect(result).toBe('her');
     });
 
     it.each([["wouldn't"], ["couldn't"], ["shouldn't"], ["don't"], ["can't"], ["won't"]])(
@@ -140,12 +123,11 @@ describe('reverse-translator', () => {
       expect(result).toContain('!');
     });
 
-    it('should handle mixed text', () => {
-      expect(reverseTranslateSync('Dha kat.')).toBe('The cat.');
-    });
-
-    it('should return empty string for empty input', () => {
-      expect(reverseTranslateSync('')).toBe('');
+    it.each([
+      ['Dha kat.', 'The cat.', 'mixed text'],
+      ['', '', 'empty input'],
+    ])('reverses "%s" → "%s" (%s)', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
     });
   });
 
@@ -172,15 +154,12 @@ describe('reverse-translator', () => {
   });
 
   describe('reverseTranslateSync failure behavior', () => {
-    it('should return unrecognized ingglish words as-is', () => {
-      // "zzxq" is not valid ingglish - can't be parsed to phonemes
-      const result = reverseTranslateSync('zzxq');
-      expect(result).toBe('zzxq');
-    });
-
-    it('should still return non-letter tokens as-is', () => {
-      expect(reverseTranslateSync('123')).toBe('123');
-      expect(reverseTranslateSync('...')).toBe('...');
+    it.each([
+      ['zzxq', 'zzxq', 'unrecognized ingglish'],
+      ['123', '123', 'numbers'],
+      ['...', '...', 'punctuation'],
+    ])('returns "%s" as-is → "%s" (%s)', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
     });
   });
 
@@ -275,27 +254,21 @@ describe('reverse-translator', () => {
   });
 
   describe('reverseTranslateIPAWord edge cases', () => {
-    it('returns [] for empty string', () => {
-      expect(reverseTranslateIPAWord('')).toEqual([]);
-    });
-
-    it('returns [ipaWord] for whitespace-only input', () => {
-      expect(reverseTranslateIPAWord('   ')).toEqual(['   ']);
-    });
-
-    it('returns [ipaWord] for unconvertible IPA', () => {
-      // A string that ipaToArpabetClean returns null for
-      expect(reverseTranslateIPAWord('∅')).toEqual(['∅']);
+    it.each([
+      ['', [], 'empty string'],
+      ['   ', ['   '], 'whitespace-only'],
+      ['∅', ['∅'], 'unconvertible IPA'],
+    ] as const)('reverseTranslateIPAWord("%s") → %j (%s)', (input, expected) => {
+      expect(reverseTranslateIPAWord(input)).toEqual([...expected]);
     });
   });
 
   describe('reverseTranslateWord edge cases', () => {
-    it('returns [] for empty string', () => {
-      expect(reverseTranslateWord('')).toEqual([]);
-    });
-
-    it('returns [word] for non-letter input', () => {
-      expect(reverseTranslateWord('123')).toEqual(['123']);
+    it.each([
+      ['', [], 'empty string'],
+      ['123', ['123'], 'non-letter input'],
+    ] as const)('reverseTranslateWord("%s") → %j (%s)', (input, expected) => {
+      expect(reverseTranslateWord(input)).toEqual([...expected]);
     });
   });
 

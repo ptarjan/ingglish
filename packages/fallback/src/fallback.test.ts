@@ -33,8 +33,7 @@ describe('compound word translation', () => {
   });
 
   it('translates non-compound words via G2P', () => {
-    const result = translateSync('xyzabc');
-    expect(typeof result).toBe('string');
+    expect(translateSync('xyzabc')).toBe('zaizabk');
   });
 });
 
