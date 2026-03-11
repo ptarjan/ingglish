@@ -12,56 +12,45 @@ describe('diagnoseUnknown', () => {
     expect(diagnoseUnknown(w)).toEqual({ strategy: 'initialism' });
   });
 
-  it.each(['organise', 'specialise', 'categorise', 'normalise'])(
-    'returns british strategy for "%s"',
-    (w) => {
-      expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
-      const result = diagnoseUnknown(w);
-      expect(result).not.toBeNull();
-      expect(result!.strategy).toBe('british');
-      if (result!.strategy === 'british') {
-        expect(result!.americanSpelling).toEqual(expect.any(String));
-        expect(result!.phonemes.length).toBeGreaterThan(0);
-      }
-    }
-  );
-
-  it('returns americanSpelling "organize" for "organise"', () => {
-    const result = diagnoseUnknown('organise');
-    expect(result).toEqual(
-      expect.objectContaining({ americanSpelling: 'organize', strategy: 'british' })
-    );
+  it.each([
+    ['organise', 'organize', ['AO1', 'R', 'G', 'AH0', 'N', 'AY2', 'Z']],
+    ['specialise', 'specialize', ['S', 'P', 'EH1', 'SH', 'AH0', 'L', 'AY2', 'Z']],
+    ['categorise', 'categorize', ['K', 'AE1', 'T', 'AH0', 'G', 'ER0', 'AY2', 'Z']],
+    ['normalise', 'normalize', ['N', 'AO1', 'R', 'M', 'AH0', 'L', 'AY2', 'Z']],
+  ])('returns british strategy for "%s" → %s', (w, americanSpelling, phonemes) => {
+    expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
+    expect(diagnoseUnknown(w)).toEqual({ americanSpelling, phonemes, strategy: 'british' });
   });
 
-  it('returns { strategy: "compound" } with parts for compound words', () => {
+  it('returns compound strategy with parts for "treehouse"', () => {
     expect(lookupPronunciation('treehouse'), 'treehouse should NOT be in dictionary').toBeNull();
-    const result = diagnoseUnknown('treehouse');
-    expect(result).not.toBeNull();
-    expect(result!.strategy).toBe('compound');
-    if (result!.strategy === 'compound') {
-      expect(result!.parts).toEqual(['tree', 'house']);
-    }
+    expect(diagnoseUnknown('treehouse')).toEqual({
+      parts: ['tree', 'house'],
+      strategy: 'compound',
+    });
   });
 
-  it('returns { strategy: "stemming" } with stem/suffix for stemmed words', () => {
+  it('returns stemming strategy with stem/suffix for "ghosting"', () => {
     expect(lookupPronunciation('ghosting'), 'ghosting should NOT be in dictionary').toBeNull();
-    const result = diagnoseUnknown('ghosting');
-    expect(result).not.toBeNull();
-    expect(result!.strategy).toBe('stemming');
-    if (result!.strategy === 'stemming') {
-      expect(result!.stem).toBe('ghost');
-      expect(result!.suffix).toBe('ing');
-    }
+    expect(diagnoseUnknown('ghosting')).toEqual({
+      stem: 'ghost',
+      strategy: 'stemming',
+      suffix: 'ing',
+    });
   });
 
-  it.each(['splonk', 'blorft', 'zazzle', 'crebbit'])('returns g2p strategy for "%s"', (w) => {
+  it.each([
+    ['splonk', ['S', 'P', 'L', 'AA1', 'NG', 'K']],
+    ['blorft', ['B', 'L', 'AO1', 'R', 'F', 'T']],
+    ['zazzle', ['Z', 'AE1', 'Z', 'AH0', 'L']],
+    ['crebbit', ['K', 'R', 'EH1', 'B', 'IH0', 'T']],
+  ])('returns g2p strategy for "%s"', (w, phonemes) => {
     expect(lookupPronunciation(w), `${w} should NOT be in dictionary`).toBeNull();
     const result = diagnoseUnknown(w);
     expect(result).not.toBeNull();
     expect(result!.strategy).toBe('g2p');
     if (result!.strategy === 'g2p') {
-      expect(result!.trace).toBeDefined();
-      expect(result!.trace.phonemes.length).toBeGreaterThan(0);
+      expect(result!.trace.phonemes).toEqual(phonemes);
     }
   });
 

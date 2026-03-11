@@ -21,23 +21,35 @@ import {
 // (but their stems ARE) so that word resolvers and G2P converters fire.
 
 // ---------------------------------------------------------------------------
-// Forward: camelCase with all-caps acronym (forward.ts line 360)
+// Forward: word-level translation edge cases (consolidated)
 // ---------------------------------------------------------------------------
-describe('camelCase with all-caps acronyms', () => {
+describe('forward word translation edge cases', () => {
   it.each([
-    ['ChatGPT', 'ChatGPT', 'GPT stays as-is'],
-    ['OpenAI', 'OhpanAI', 'AI stays as-is'],
-  ])('translates %s → %s (%s)', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: camelCase with unknown part (forward.ts lines 368-369)
-// ---------------------------------------------------------------------------
-describe('camelCase with unknown parts', () => {
-  it('should handle camelCase where a part has no dictionary entry', () => {
-    expect(translateSync('xyzFoo')).toBe('zizFoo');
+    // camelCase
+    ['ChatGPT', 'ChatGPT', 'camelCase: all-caps suffix stays'],
+    ['OpenAI', 'OhpanAI', 'camelCase: all-caps suffix stays'],
+    ['xyzFoo', 'zizFoo', 'camelCase: unknown part'],
+    // compound words
+    ['catdog', 'katdawg', 'compound decomposition'],
+    ['Catdog', 'Katdawg', 'compound case preservation'],
+    ['CATDOG', 'CATDOG', 'all-caps compound = initialism'],
+    ['GitHub', 'GitHuhb', 'mixed-case compound'],
+    ['abcdefghij', 'abkdefghij', 'compound with phonemeless part'],
+    // resolvers & fallbacks
+    ['Api', 'Api', 'title-case initialism bail-out'],
+    ['flonkify', 'flongkafai', 'G2P fallback for unknown word'],
+    ['vapour', 'vayper', 'British spelling resolver'],
+    ['xyzzy', 'zizee', 'truly unknown word via G2P'],
+    // passthrough & edge cases
+    ['A', 'A', 'single uppercase letter'],
+    ['123', '123', 'non-letter passthrough'],
+    ['', '', 'empty string'],
+    // sentence-level
+    ['hello 42 world', 'Haloh 42 werld', 'preserves numbers in sentence'],
+    ['hello... world', 'Haloh... Werld', 'preserves ellipsis in sentence'],
+    ['bcdfg', '\uFFFDbcdfg', 'vowelless word gets NOT_FOUND_MARKER'],
+  ])('translateSync("%s") → "%s" (%s)', (input, expected) => {
+    expect(translateSync(input)).toBe(expected);
   });
 });
 
@@ -86,17 +98,6 @@ describe('English stemming (word resolver path)', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Compounds: case preservation (compounds.ts line 164)
-// ---------------------------------------------------------------------------
-describe('compound word translation', () => {
-  it('should preserve capitalization in compound words', () => {
-    // "Catdog" with capital C — compound resolver + title case preservation
-    const result = translateSync('Catdog');
-    expect(result).toBe('Katdawg');
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Unstressed schwa mapping (to-ingglish.ts lines 22-26)
 // ---------------------------------------------------------------------------
 describe('unstressed schwa mapping', () => {
@@ -120,34 +121,6 @@ describe('reverse mapping with contractions', () => {
     for (const w of words) {
       expect(w.matched).toBe(true);
     }
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: translateWordString non-letter passthrough (forward.ts line 330)
-// ---------------------------------------------------------------------------
-describe('translateSync non-letter tokens', () => {
-  it('should pass through punctuation-only tokens unchanged', () => {
-    const result = translateSync('hello... world');
-    expect(result).toContain('...');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: title-case initialism fast path bail (forward.ts line 456)
-// ---------------------------------------------------------------------------
-describe('title-case initialism bail-out', () => {
-  it('should handle title-case known initialisms like "Api"', () => {
-    expect(translateSync('Api')).toBe('Api');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: low-confidence G2P fallback (forward.ts line 215)
-// ---------------------------------------------------------------------------
-describe('G2P fallback for unknown words', () => {
-  it('should translate a plausible but unknown word via G2P', () => {
-    expect(translateSync('flonkify')).toBe('flongkafai');
   });
 });
 
@@ -191,8 +164,8 @@ describe('non-English reverse translation', () => {
     const ingglish = await translate('猫', { lang: 'ja' });
     const tokens = reverseTranslateSyncWithMapping(ingglish, { lang: 'ja' });
     const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBeGreaterThan(0);
-    expect(words[0]?.matched).toBe(true);
+    expect(words.length).toBe(1);
+    expect(words[0]!.matched).toBe(true);
   });
 });
 
@@ -308,16 +281,6 @@ describe('pronunciation format translation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Compound word case preservation (compounds.ts lines 151-171)
-// ---------------------------------------------------------------------------
-describe('compound word case preservation paths', () => {
-  it('should pass through all-caps compound as initialism', () => {
-    // CATDOG is all-caps ≥2 chars → treated as initialism, passes through
-    expect(translateSync('CATDOG')).toBe('CATDOG');
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Unicode case patterns (normalize/case.ts)
 // ---------------------------------------------------------------------------
 describe('Unicode case handling', () => {
@@ -338,7 +301,7 @@ describe('non-English reverse translation via public API', () => {
   it('should reverse-translate German', async () => {
     const ingglish = await translate('Guten Tag', { lang: 'de' });
     const back = await reverseTranslate(ingglish, { lang: 'de' });
-    expect(back).toBeTruthy();
+    expect(back).not.toBe(ingglish);
   });
 });
 
@@ -371,22 +334,13 @@ describe('IPA reverse translation', () => {
 // ===========================================================================
 
 describe('forward.ts edge cases', () => {
-  it('truly unknown word returns something (line 217)', () => {
-    expect(translateSync('xyzzy')).toBe('zizee');
-  });
-
   it('requireLangDict: throws for unloaded language (line 54)', () => {
     expect(() => translateSync('hello', { lang: 'nonexistent-lang-xyz' })).toThrow(/not loaded/);
   });
 
   it('translateWordString: standalone apostrophes pass through (line 330)', () => {
-    // Standalone apostrophes are word tokens (odd index in split) but have no letters
     const result = translateSync("' '");
-    expect(result).toContain("'");
-  });
-
-  it('single uppercase letter: isTitleCaseAscii returns false (line 158)', () => {
-    expect(translateSync('A')).toBe('A');
+    expect(result).toBe("' '");
   });
 
   it('initialism in non-Latin script format: deseret (lines 415-418)', () => {
@@ -446,15 +400,6 @@ describe('reverse.ts edge cases', () => {
 });
 
 // ===========================================================================
-// Coverage: register-english.ts British spelling path (line 27)
-// ===========================================================================
-describe('British spelling word resolver', () => {
-  it('translates British spellings like "vapour" via matchBritish', () => {
-    expect(translateSync('vapour')).toBe('vayper');
-  });
-});
-
-// ===========================================================================
 // Coverage: non-English reverse with alternative phoneme match (line 247)
 // ===========================================================================
 
@@ -507,15 +452,5 @@ describe('pipeline.ts sentence capitalization', () => {
     expect(words.length).toBe(2);
     const secondWord = words[1]!.translated;
     expect(secondWord.charAt(0)).toBe(secondWord.charAt(0).toUpperCase());
-  });
-});
-
-// ===========================================================================
-// Coverage: register-english.ts — compound decomposition failure (line 42)
-// ===========================================================================
-
-describe('compound decomposition edge cases', () => {
-  it('should handle compound where a part has no phonemes', () => {
-    expect(translateSync('abcdefghij')).toBe('abkdefghij');
   });
 });

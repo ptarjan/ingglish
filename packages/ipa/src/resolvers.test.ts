@@ -45,10 +45,10 @@ beforeAll(async () => {
 
 describe('German ß resolver', () => {
   it.each([
-    ['daß', 'normalizes ß to ss'],
-    ['kongreß', 'normalizes ß with title case fallback'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.de!(entries.de!, word)).toBeDefined();
+    ['daß', ['D', 'AE1', 'S'], 'normalizes ß to ss'],
+    ['kongreß', ['K', 'AO', 'N', 'G', 'R', 'EH1', 'S'], 'normalizes ß with title case fallback'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.de!(entries.de!, word)).toEqual(expected);
   });
 
   it('returns undefined for words without ß', () => {
@@ -58,12 +58,12 @@ describe('German ß resolver', () => {
 
 describe('Japanese kana resolver', () => {
   it.each([
-    ['かた', 'resolves single kana characters'],
-    ['きゃ', 'prefers 2-char combined kana'],
-    ['きた', 'falls back to 1-char when 2-char not found'],
-    ['かっ', 'skips structural markers (っ, ー)'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.ja!(entries.ja!, word)).toBeDefined();
+    ['かた', ['K', 'AE1', 'T', 'AE1'], 'resolves single kana characters'],
+    ['きゃ', ['K', 'IY', 'AE1'], 'prefers 2-char combined kana'],
+    ['きた', ['K', 'IY1', 'T', 'AE1'], 'falls back to 1-char when 2-char not found'],
+    ['かっ', ['K', 'AE1'], 'skips structural markers (っ, ー)'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.ja!(entries.ja!, word)).toEqual(expected);
   });
 
   it('returns empty for only structural markers', () => {
@@ -77,12 +77,12 @@ describe('Japanese kana resolver', () => {
 
 describe('Swedish resolver', () => {
   it.each([
-    ['barnen', 'strips -en suffix'],
-    ['flickorna', 'strips -orna suffix with -a replacement'],
-    ['hundar', 'strips -ar suffix'],
-    ['barnens', 'handles recursive genitive -s'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.sv!(entries.sv!, word)).toBeDefined();
+    ['barnen', ['B', 'AA1', 'R', 'N'], 'strips -en suffix'],
+    ['flickorna', ['F', 'L', 'IH1', 'K', 'AE2'], 'strips -orna suffix with -a replacement'],
+    ['hundar', ['HH', 'UH1', 'N', 'D'], 'strips -ar suffix'],
+    ['barnens', ['B', 'AA1', 'R', 'N'], 'handles recursive genitive -s'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.sv!(entries.sv!, word)).toEqual(expected);
   });
 
   it('returns undefined for unresolvable words', () => {
@@ -92,11 +92,11 @@ describe('Swedish resolver', () => {
 
 describe('Romanian resolver', () => {
   it.each([
-    ['băiatul', 'strips -ul suffix'],
-    ['nțeleg', 'restores n- prefix to în-'],
-    ['mpart', 'prepends î for fragments like mpart → împart'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.ro!(entries.ro!, word)).toBeDefined();
+    ['băiatul', ['B', 'AH0', 'Y', 'AE1', 'T'], 'strips -ul suffix'],
+    ['nțeleg', ['IH', 'N', 'T', 'S', 'EH', 'L', 'EH1', 'G'], 'restores n- prefix to în-'],
+    ['mpart', ['IH', 'M', 'P', 'AE1', 'R', 'T'], 'prepends î for fragments like mpart → împart'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.ro!(entries.ro!, word)).toEqual(expected);
   });
 
   it('returns undefined for unresolvable words', () => {
@@ -106,20 +106,28 @@ describe('Romanian resolver', () => {
 
 describe('Esperanto resolver', () => {
   it.each([
-    ['bonon', 'strips accusative -n'],
-    ['bonoj', 'strips plural -j'],
-    ['bonojn', 'strips plural accusative -jn'],
-    ['laboris', 'strips past tense -is'],
-    ['laboros', 'strips future tense -os'],
-    ['laboru', 'strips imperative -u'],
-    ['laboranta', 'strips participle -anta'],
-    ['rapide', 'strips adverb -e → adjective -a'],
-    ['malbono', 'strips prefix mal-'],
-    ['malrapide', 'strips prefix mal- with recursive lemmatization'],
-    ['laboristo', 'strips derivational -isto'],
-    ['laborisj', 'strips -j then continues to verb ending'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.eo!(entries.eo!, word)).toBeDefined();
+    ['bonon', ['B', 'OW1', 'N', 'OW'], 'strips accusative -n'],
+    ['bonoj', ['B', 'OW1', 'N', 'OW'], 'strips plural -j'],
+    ['bonojn', ['B', 'OW1', 'N', 'OW'], 'strips plural accusative -jn'],
+    ['laboris', ['L', 'AE', 'B', 'OW1', 'R', 'IY'], 'strips past tense -is'],
+    ['laboros', ['L', 'AE', 'B', 'OW1', 'R', 'IY'], 'strips future tense -os'],
+    ['laboru', ['L', 'AE', 'B', 'OW1', 'R', 'IY'], 'strips imperative -u'],
+    ['laboranta', ['L', 'AE', 'B', 'OW1', 'R', 'IY'], 'strips participle -anta'],
+    ['rapide', ['R', 'AE', 'P', 'IY1', 'D', 'OW'], 'strips adverb -e → adjective -a'],
+    ['malbono', ['B', 'OW1', 'N', 'OW'], 'strips prefix mal-'],
+    [
+      'malrapide',
+      ['M', 'AE', 'L', 'R', 'AE', 'P', 'IY1', 'D', 'AE'],
+      'strips prefix mal- with recursive lemmatization',
+    ],
+    ['laboristo', ['L', 'AE', 'B', 'OW1', 'R', 'OW'], 'strips derivational -isto'],
+    [
+      'laborisj',
+      ['L', 'AE', 'B', 'OW1', 'R', 'IY', 'S'],
+      'strips -j then continues to verb ending',
+    ],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.eo!(entries.eo!, word)).toEqual(expected);
   });
 
   it.each([
@@ -141,14 +149,14 @@ describe('Esperanto resolver', () => {
 
 describe('Finnish resolver', () => {
   it.each([
-    ['talossa', 'strips inessive -ssa'],
-    ['koiraa', 'strips partitive -a'],
-    ['talossani', 'strips possessive -ni then case (two-level)'],
-    ['talossamme', 'strips possessive -mme then case (two-level)'],
-    ['talossansa', 'strips possessive -nsa then case (two-level)'],
-    ['puhunut', 'strips verb suffix -nut'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.fi!(entries.fi!, word)).toBeDefined();
+    ['talossa', ['T', 'AA1', 'L', 'OW'], 'strips inessive -ssa'],
+    ['koiraa', ['K', 'OY1', 'R', 'AA'], 'strips partitive -a'],
+    ['talossani', ['T', 'AA1', 'L', 'OW'], 'strips possessive -ni then case (two-level)'],
+    ['talossamme', ['T', 'AA1', 'L', 'OW'], 'strips possessive -mme then case (two-level)'],
+    ['talossansa', ['T', 'AA1', 'L', 'OW'], 'strips possessive -nsa then case (two-level)'],
+    ['puhunut', ['P', 'UW1', 'HH', 'UW'], 'strips verb suffix -nut'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.fi!(entries.fi!, word)).toEqual(expected);
   });
 
   it.each([
@@ -178,14 +186,14 @@ describe('Finnish resolver', () => {
 
 describe('Norwegian Bokmål resolver', () => {
   it.each([
-    ['af', 'modernizes af → av'],
-    ['efter', 'modernizes efter → etter'],
-    ['maal', 'modernizes old aa → å'],
-    ['hunden', 'strips -en suffix'],
-    ['hunder', 'strips -er suffix'],
-    ['maalen', 'two-level: suffix then modernize'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.nb!(entries.nb!, word)).toBeDefined();
+    ['af', ['AA1', 'V'], 'modernizes af → av'],
+    ['efter', ['EH1', 'T', 'AH0', 'R'], 'modernizes efter → etter'],
+    ['maal', ['M', 'OW1', 'L'], 'modernizes old aa → å'],
+    ['hunden', ['HH', 'UW1', 'N'], 'strips -en suffix'],
+    ['hunder', ['HH', 'UW1', 'N'], 'strips -er suffix'],
+    ['maalen', ['M', 'OW1', 'L'], 'two-level: suffix then modernize'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.nb!(entries.nb!, word)).toEqual(expected);
   });
 
   it('returns undefined for unresolvable words', () => {
@@ -195,22 +203,22 @@ describe('Norwegian Bokmål resolver', () => {
 
 describe('Malay resolver', () => {
   it.each([
-    ['memakan', 'strips prefix me-'],
-    ['menulis', 'restores dropped consonant with men- prefix'],
-    ['buatkan', 'strips suffix -kan'],
-    ['perbaiki', 'strips prefix per- + suffix -i'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.ma!(entries.ma!, word)).toBeDefined();
+    ['memakan', ['P', 'AE1', ''], 'strips prefix me-'],
+    ['menulis', ['T', 'UW1', 'L', 'AH0', 'S'], 'restores dropped consonant with men- prefix'],
+    ['buatkan', ['B', 'UW', 'AE1', 'T'], 'strips suffix -kan'],
+    ['perbaiki', ['B', 'AE1', 'EH', 'K'], 'strips prefix per- + suffix -i'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.ma!(entries.ma!, word)).toEqual(expected);
   });
 });
 
 describe('Persian resolver', () => {
   it.each([
-    ['کتابها', 'strips plural -ها suffix'],
-    ['می\u200Cکند', 'splits ZWNJ compounds'],
-    ['می\u200Cکنند', 'strips verb endings with می prefix'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.fa!(entries.fa!, word)).toBeDefined();
+    ['کتابها', ['K', 'IY', 'T', 'AE1', 'B'], 'strips plural -ها suffix'],
+    ['می\u200Cکند', ['M', 'AE1', 'Y'], 'splits ZWNJ compounds'],
+    ['می\u200Cکنند', ['M', 'AE1', 'Y'], 'strips verb endings with می prefix'],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.fa!(entries.fa!, word)).toEqual(expected);
   });
 
   it.each([
@@ -233,14 +241,18 @@ describe('Persian resolver', () => {
 
 describe('Swahili resolver', () => {
   it.each([
-    ['wanakula', 'strips verb prefix wana-'],
-    ['nikula', 'strips verb prefix ni-'],
-    ['wakula', 'strips verb prefix wa-'],
-    ['wanasoma', 'resolves prefix + ku-form fallback'],
-    ['nilipendisha', 'strips derivational suffix -isha with prefix'],
-    ['nilisomisha', 'strips derivational suffix -isha with prefix + ku-form'],
-  ])('%s — %s', (word) => {
-    expect(WORD_RESOLVERS.sw!(entries.sw!, word)).toBeDefined();
+    ['wanakula', ['K', 'UW', 'L', 'AE1'], 'strips verb prefix wana-'],
+    ['nikula', ['K', 'UW', 'L', 'AE1'], 'strips verb prefix ni-'],
+    ['wakula', ['K', 'UW', 'L', 'AE1'], 'strips verb prefix wa-'],
+    ['wanasoma', ['K', 'UW', 'S', 'OW', 'M', 'AE1'], 'resolves prefix + ku-form fallback'],
+    ['nilipendisha', ['P', 'EH', 'N', 'D', 'AE1'], 'strips derivational suffix -isha with prefix'],
+    [
+      'nilisomisha',
+      ['K', 'UW', 'S', 'OW', 'M', 'AE1'],
+      'strips derivational suffix -isha with prefix + ku-form',
+    ],
+  ])('%s → %j (%s)', (word, expected) => {
+    expect(WORD_RESOLVERS.sw!(entries.sw!, word)).toEqual(expected);
   });
 
   it('strips derivational suffix without prefix', () => {
