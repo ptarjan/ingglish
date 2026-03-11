@@ -9,21 +9,14 @@ import { stripStress, STRESS_MARKER_REGEX, arpabetToIngglish } from '@ingglish/p
  */
 describe('performance optimizations', () => {
   describe('stripStress charCode optimization', () => {
-    it('should use charCode 48-50 for stress markers (not regex)', () => {
-      // Verify the charCode range is exactly '0'=48, '1'=49, '2'=50
-      expect('0'.codePointAt(0)).toBe(48);
-      expect('1'.codePointAt(0)).toBe(49);
-      expect('2'.codePointAt(0)).toBe(50);
-
-      // These should strip the stress marker
-      expect(stripStress('AH0')).toBe('AH');
-      expect(stripStress('EY1')).toBe('EY');
-      expect(stripStress('IY2')).toBe('IY');
-
-      // Boundary test: '/' is charCode 47, should NOT be stripped
-      expect(stripStress('AH/')).toBe('AH/');
-      // Boundary test: '3' is charCode 51, should NOT be stripped
-      expect(stripStress('AH3')).toBe('AH3');
+    it.each([
+      ['AH0', 'AH', 'strips stress 0'],
+      ['EY1', 'EY', 'strips stress 1'],
+      ['IY2', 'IY', 'strips stress 2'],
+      ['AH/', 'AH/', 'charCode 47 boundary'],
+      ['AH3', 'AH3', 'charCode 51 boundary'],
+    ])('stripStress(%s) → %s (%s)', (input, expected) => {
+      expect(stripStress(input)).toBe(expected);
     });
 
     it('should not use regex for stress stripping', () => {

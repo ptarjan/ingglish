@@ -27,33 +27,27 @@ function isValidArpabet(phoneme: string): boolean {
 }
 
 describe('hasCustomPronunciation', () => {
-  it('returns true for known custom words', () => {
-    expect(hasCustomPronunciation('read')).toBe(true);
-    expect(hasCustomPronunciation('emoji')).toBe(true);
-    expect(hasCustomPronunciation('thyme')).toBe(true);
-  });
-
-  it('returns false for words not in custom list', () => {
-    expect(hasCustomPronunciation('hello')).toBe(false);
-    expect(hasCustomPronunciation('xyzzy')).toBe(false);
-  });
-
-  it('is prototype-safe', () => {
-    expect(hasCustomPronunciation('constructor')).toBe(false);
-    expect(hasCustomPronunciation('toString')).toBe(false);
-    expect(hasCustomPronunciation('__proto__')).toBe(false);
+  it.each([
+    ['read', true],
+    ['emoji', true],
+    ['thyme', true],
+    ['hello', false],
+    ['xyzzy', false],
+    ['constructor', false],
+    ['toString', false],
+    ['__proto__', false],
+  ])('hasCustomPronunciation(%s) → %s', (word, expected) => {
+    expect(hasCustomPronunciation(word)).toBe(expected);
   });
 });
 
 describe('getCustomPronunciation', () => {
   it('returns phoneme array for known words', () => {
-    const result = getCustomPronunciation('read');
-    expect(result).toEqual(['R', 'IY1', 'D']);
+    expect(getCustomPronunciation('read')).toEqual(['R', 'IY1', 'D']);
   });
 
-  it('returns undefined for unknown words', () => {
-    expect(getCustomPronunciation('hello')).toBeUndefined();
-    expect(getCustomPronunciation('xyzzy')).toBeUndefined();
+  it.each(['hello', 'xyzzy'])('returns undefined for unknown word "%s"', (word) => {
+    expect(getCustomPronunciation(word)).toBeUndefined();
   });
 });
 

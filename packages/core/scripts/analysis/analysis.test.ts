@@ -24,55 +24,41 @@ async function run(scriptPath: string, args: string[] = []): Promise<string> {
 }
 
 describe('analysis scripts', () => {
-  it('analyze-identical-words', async () => {
-    const output = await run('./analyze-identical-words.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
+  it.each([
+    ['analyze-identical-words', './analyze-identical-words.js', []],
+    ['british-vs-american', './british-vs-american.js', []],
+    ['cmu-error-scan', './cmu-error-scan.js', []],
+    ['compare-schwa', './compare-schwa.js', []],
+    ['compound-words-scan', './compound-words-scan.js', []],
+    ['cross-reference-top-words', './cross-reference-top-words.js', []],
+    ['find-more-errors', './find-more-errors.js', []],
+    ['missing-spelling-patterns', './missing-spelling-patterns.js', []],
+    ['prefix-consistency-scan', './prefix-consistency-scan.js', []],
+    ['pronunciation-consistency', './pronunciation-consistency.js', []],
+    ['rhyme-consistency-scan', './rhyme-consistency-scan.js', []],
+    ['spelling-rules-scan', './spelling-rules-scan.js', []],
+  ] as const)(
+    '%s',
+    async (_name, script, args) => {
+      const output = await run(script, [...args]);
+      expect(output.length).toBeGreaterThan(0);
+    },
+    60_000
+  );
 
-  it('british-vs-american', async () => {
-    const output = await run('./british-vs-american.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('cmu-error-scan', async () => {
-    const output = await run('./cmu-error-scan.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('compare-schwa', async () => {
-    const output = await run('./compare-schwa.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('compound-words-scan', async () => {
-    const output = await run('./compound-words-scan.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('cross-reference-top-words', async () => {
-    const output = await run('./cross-reference-top-words.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('exhaustive-search', async () => {
-    const output = await run('./exhaustive-search.js', ['--limit=2']);
-    expect(output.length).toBeGreaterThan(0);
-  }, 120_000);
-
-  it('familiarity-search', async () => {
-    const output = await run('./familiarity-search.js', ['--limit=2']);
-    expect(output.length).toBeGreaterThan(0);
-  }, 120_000);
-
-  it('find-more-errors', async () => {
-    const output = await run('./find-more-errors.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('g2p-roundtrip-search', async () => {
-    const output = await run('./g2p-roundtrip-search.js', ['--limit=2']);
-    expect(output.length).toBeGreaterThan(0);
-  }, 120_000);
+  it.each([
+    ['exhaustive-search', './exhaustive-search.js', ['--limit=2']],
+    ['familiarity-search', './familiarity-search.js', ['--limit=2']],
+    ['g2p-roundtrip-search', './g2p-roundtrip-search.js', ['--limit=2']],
+    ['orthotactic-search', './orthotactic-search.js', ['--limit=2']],
+  ] as const)(
+    '%s',
+    async (_name, script, args) => {
+      const output = await run(script, [...args]);
+      expect(output.length).toBeGreaterThan(0);
+    },
+    120_000
+  );
 
   it.skipIf(!existsSync('/tmp/cmudict-raw.dict'))(
     'homograph-defaults-scan',
@@ -82,34 +68,4 @@ describe('analysis scripts', () => {
     },
     60_000
   );
-
-  it('missing-spelling-patterns', async () => {
-    const output = await run('./missing-spelling-patterns.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('orthotactic-search', async () => {
-    const output = await run('./orthotactic-search.js', ['--limit=2']);
-    expect(output.length).toBeGreaterThan(0);
-  }, 120_000);
-
-  it('prefix-consistency-scan', async () => {
-    const output = await run('./prefix-consistency-scan.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('pronunciation-consistency', async () => {
-    const output = await run('./pronunciation-consistency.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('rhyme-consistency-scan', async () => {
-    const output = await run('./rhyme-consistency-scan.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
-
-  it('spelling-rules-scan', async () => {
-    const output = await run('./spelling-rules-scan.js');
-    expect(output.length).toBeGreaterThan(0);
-  }, 60_000);
 });

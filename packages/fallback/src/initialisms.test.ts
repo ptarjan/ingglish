@@ -44,10 +44,8 @@ describe('initialisms', () => {
       }
     );
 
-    it('should pass through lowercase initialisms unchanged', () => {
-      // lowercase "us", "it", "am" happen to translate to themselves anyway
-      expect(translateSync('ui')).toBe('ui');
-      expect(translateSync('api')).toBe('api');
+    it.each(['ui', 'api'])('should pass through lowercase %s unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 
@@ -56,27 +54,14 @@ describe('initialisms', () => {
       expect(translateSync(word)).toBe(word);
     });
 
-    it('should pass through all-caps acronyms-as-words via initialism list', () => {
-      // NATO and NASA are in CMU dict but are in our initialism list
-      expect(translateSync('NATO')).toBe('NATO');
-      expect(translateSync('NASA')).toBe('NASA');
+    it.each(['NATO', 'NASA'])('should pass through %s via initialism list', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 
   describe('lowercase words still translate normally', () => {
-    it('should translate lowercase "us" as pronoun', () => {
-      const result = translateSync('us');
-      expect(result).toBe('us');
-    });
-
-    it('should translate lowercase "it" as pronoun', () => {
-      const result = translateSync('it');
-      expect(result).toBe('it');
-    });
-
-    it('should translate lowercase "am" as verb', () => {
-      const result = translateSync('am');
-      expect(result).toBe('am');
+    it.each(['us', 'it', 'am'])('should translate lowercase "%s" unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 
@@ -91,19 +76,8 @@ describe('initialisms', () => {
       expect(translateSync(word)).toBe(word);
     });
 
-    it("should handle API's (possessive) correctly", () => {
-      const result = translateSync("API's");
-      expect(result).toBe("API's");
-    });
-
-    it('should handle lowercase ids', () => {
-      const result = translateSync('ids');
-      expect(result).toBe('ids');
-    });
-
-    it('should handle mixed case like Ids', () => {
-      const result = translateSync('Ids');
-      expect(result).toBe('Ids');
+    it.each(["API's", 'ids', 'Ids'])('should pass through %s unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 
@@ -114,15 +88,8 @@ describe('initialisms', () => {
   });
 
   describe('mixed case initialisms', () => {
-    it('should handle title case Ui', () => {
-      const result = translateSync('Ui');
-      // isInitialism matches case-insensitively, returns original
-      expect(result).toBe('Ui');
-    });
-
-    it('should handle title case Api', () => {
-      const result = translateSync('Api');
-      expect(result).toBe('Api');
+    it.each(['Ui', 'Api'])('should pass through title-case %s unchanged', (word) => {
+      expect(translateSync(word)).toBe(word);
     });
   });
 

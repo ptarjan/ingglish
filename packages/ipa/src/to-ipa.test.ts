@@ -34,78 +34,42 @@ describe('IPA format for common words', () => {
     ['the', 'ðə'],
     ['think', `${WJ}ˈ${WJ}θɪŋk`],
     ['beautiful', `${WJ}ˈ${WJ}bjutəfəl`],
+    ['church', `${WJ}ˈ${WJ}tʃɝtʃ`],
+    ['judge', `${WJ}ˈ${WJ}dʒʌdʒ`],
+    ['time', `${WJ}ˈ${WJ}taɪm`],
+    ['coin', `${WJ}ˈ${WJ}kɔɪn`],
+    ['examination', `ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən`],
+    ['hot', `${WJ}ˈ${WJ}hɑt`],
+    ['dog', `${WJ}ˈ${WJ}dɔɡ`],
+    ['out', `${WJ}ˈ${WJ}aʊt`],
+    ['bed', `${WJ}ˈ${WJ}bɛd`],
+    ['see', `${WJ}ˈ${WJ}si`],
+    ['book', `${WJ}ˈ${WJ}bʊk`],
+    ['pen', `${WJ}ˈ${WJ}pɛn`],
+    ['red', `${WJ}ˈ${WJ}ɹɛd`],
+    ['say', `${WJ}ˈ${WJ}seɪ`],
+    ['very', `${WJ}ˈ${WJ}vɛɹi`],
+    ['measure', `${WJ}ˈ${WJ}mɛʒɝ`],
+    ['go', `${WJ}ˈ${WJ}ɡoʊ`],
+    ['yes', `${WJ}ˈ${WJ}jɛs`],
+    ['she', `${WJ}ˈ${WJ}ʃi`],
   ])('translates %s to IPA', (word, expected) => {
-    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
-  });
-
-  it('translates affricates (church, judge)', () => {
-    expect(translateSync('church', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}tʃɝtʃ`);
-    expect(translateSync('judge', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}dʒʌdʒ`);
-  });
-
-  it('translates diphthongs (time, coin)', () => {
-    expect(translateSync('time', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}taɪm`);
-    expect(translateSync('coin', { format: 'ipa' })).toBe(`${WJ}ˈ${WJ}kɔɪn`);
-  });
-
-  it('places secondary stress correctly (examination)', () => {
-    expect(translateSync('examination', { format: 'ipa' })).toBe(
-      `ɪɡ${WJ}ˌ${WJ}zæmə${WJ}ˈ${WJ}neɪʃən`
-    );
-  });
-
-  it.each([
-    ['hot', `${WJ}ˈ${WJ}hɑt`, 'AA → ɑ'],
-    ['dog', `${WJ}ˈ${WJ}dɔɡ`, 'AO → ɔ'],
-    ['out', `${WJ}ˈ${WJ}aʊt`, 'AW → aʊ'],
-    ['bed', `${WJ}ˈ${WJ}bɛd`, 'EH → ɛ'],
-    ['see', `${WJ}ˈ${WJ}si`, 'IY → i'],
-    ['book', `${WJ}ˈ${WJ}bʊk`, 'UH → ʊ'],
-  ])('translates vowel sound in %s (%s)', (word, expected) => {
-    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
-  });
-
-  it.each([
-    ['pen', `${WJ}ˈ${WJ}pɛn`, 'P → p'],
-    ['red', `${WJ}ˈ${WJ}ɹɛd`, 'R → ɹ'],
-    ['say', `${WJ}ˈ${WJ}seɪ`, 'S → s'],
-    ['very', `${WJ}ˈ${WJ}vɛɹi`, 'V → v'],
-    ['measure', `${WJ}ˈ${WJ}mɛʒɝ`, 'ZH → ʒ'],
-    ['go', `${WJ}ˈ${WJ}ɡoʊ`, 'G → ɡ'],
-    ['yes', `${WJ}ˈ${WJ}jɛs`, 'Y → j'],
-    ['she', `${WJ}ˈ${WJ}ʃi`, 'SH → ʃ'],
-  ])('translates consonant sound in %s (%s)', (word, expected) => {
     expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
 });
 
 describe('arpabetPhonemeToIPA edge cases', () => {
-  it('returns lowercase for unknown phonemes', () => {
-    expect(arpabetPhonemeToIPA('XX')).toBe('xx');
-  });
-
-  it('returns schwa for unstressed AH0', () => {
-    expect(arpabetPhonemeToIPA('AH0')).toBe('ə');
-  });
-
-  it('adds primary stress marker for stress 1', () => {
-    const WJ = '\u2060';
-    expect(arpabetPhonemeToIPA('AE1')).toBe(`${WJ}ˈ${WJ}æ`);
-  });
-
-  it('adds secondary stress marker for stress 2', () => {
-    const WJ = '\u2060';
-    expect(arpabetPhonemeToIPA('AE2')).toBe(`${WJ}ˌ${WJ}æ`);
-  });
-
-  it('returns plain IPA for unstressed non-schwa vowel', () => {
-    // AE without stress marker — returns plain æ
-    expect(arpabetPhonemeToIPA('AE')).toBe('æ');
-  });
-
-  it('returns IPA for consonants (no stress)', () => {
-    expect(arpabetPhonemeToIPA('B')).toBe('b');
-    expect(arpabetPhonemeToIPA('TH')).toBe('θ');
+  const WJ = '\u2060';
+  it.each([
+    ['XX', 'xx', 'unknown phoneme'],
+    ['AH0', 'ə', 'unstressed schwa'],
+    ['AE1', `${WJ}ˈ${WJ}æ`, 'primary stress'],
+    ['AE2', `${WJ}ˌ${WJ}æ`, 'secondary stress'],
+    ['AE', 'æ', 'unstressed non-schwa vowel'],
+    ['B', 'b', 'consonant'],
+    ['TH', 'θ', 'digraph consonant'],
+  ])('arpabetPhonemeToIPA(%s) → %s (%s)', (input, expected) => {
+    expect(arpabetPhonemeToIPA(input)).toBe(expected);
   });
 });
 

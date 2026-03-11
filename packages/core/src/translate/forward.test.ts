@@ -264,9 +264,8 @@ describe('translator', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should handle words with only non-letter characters', () => {
-      expect(translateSync('123')).toBe('123');
-      expect(translateSync('!!!')).toBe('!!!');
+    it.each(['123', '!!!'])('should pass through non-letter "%s" unchanged', (input) => {
+      expect(translateSync(input)).toBe(input);
     });
 
     it('should translate unknown words to IPA format', () => {
@@ -299,11 +298,12 @@ describe('translator', () => {
       }
     );
 
-    it('should still translate dictionary words with 3+ repeated chars', () => {
-      // oooh and hmmm are in CMU dictionary
-      expect(translateSync('oooh')).not.toBe('oooh');
-      expect(translateSync('hmmm')).not.toBe('hmmm');
-    });
+    it.each(['oooh', 'hmmm'])(
+      'should still translate dict word "%s" with 3+ repeated chars',
+      (word) => {
+        expect(translateSync(word)).not.toBe(word);
+      }
+    );
 
     it.each(['bcdfghjk', 'xkcd'])(
       'should pass through vowelless "%s" not in dictionary',
@@ -315,16 +315,15 @@ describe('translator', () => {
       }
     );
 
-    it('should still translate dictionary words without vowels', () => {
-      // hmm, shh, nth are in CMU dictionary
-      expect(translateSync('hmm')).not.toBe('hmm');
-      expect(translateSync('shh')).not.toBe('shh');
-      expect(translateSync('nth')).not.toBe('nth');
+    it.each(['hmm', 'shh', 'nth'])('should still translate vowelless dict word "%s"', (word) => {
+      expect(translateSync(word)).not.toBe(word);
     });
 
-    it('should not affect normal words with doubled letters', () => {
-      expect(translateSync('running')).toBe('ruhning');
-      expect(translateSync('butter')).toBe('buhter');
+    it.each([
+      ['running', 'ruhning'],
+      ['butter', 'buhter'],
+    ])('should not affect normal word "%s" with doubled letters', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
