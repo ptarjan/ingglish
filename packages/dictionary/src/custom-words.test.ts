@@ -42,12 +42,12 @@ describe('hasCustomPronunciation', () => {
 });
 
 describe('getCustomPronunciation', () => {
-  it('returns phoneme array for known words', () => {
-    expect(getCustomPronunciation('read')).toEqual(['R', 'IY1', 'D']);
-  });
-
-  it.each(['hello', 'xyzzy'])('returns undefined for unknown word "%s"', (word) => {
-    expect(getCustomPronunciation(word)).toBeUndefined();
+  it.each([
+    ['read', ['R', 'IY1', 'D']],
+    ['hello', undefined],
+    ['xyzzy', undefined],
+  ] as const)('getCustomPronunciation(%s) → %j', (word, expected) => {
+    expect(getCustomPronunciation(word)).toEqual(expected);
   });
 });
 

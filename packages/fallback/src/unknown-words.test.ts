@@ -86,304 +86,136 @@ describe('unknown-words', () => {
 
   describe('G2P rules', () => {
     it.each([
+      // consonant digraphs
       ['shug', 'shuhg', 'SH'],
       ['chub', 'chuhb', 'CH'],
       ['thub', 'thuhb', 'TH'],
       ['phig', 'fig', 'PH → F'],
       ['quib', 'kwib', 'QU → KW'],
-    ])('handles consonant digraph %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
+      // vowel digraphs
       ['taig', 'tayg', 'AI → EY'],
       ['soat', 'soht', 'OA → OW'],
       ['spreed', 'spreed', 'EE → IY'],
       ['fleeble', 'fleebal', 'EE in context'],
-    ])('handles vowel digraph %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
+      // R-controlled vowels
       ['birg', 'berg', 'IR → ER'],
       ['slurk', 'slerk', 'UR → ER'],
-    ])('handles R-controlled vowel %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
+      // trigraphs
       ['snight', 'snait', 'IGH → AY'],
       ['skight', 'skait', 'IGH → AY'],
       ['splotch', 'sploch', 'TCH → CH'],
       ['blodge', 'bloj', 'DGE → JH'],
       ['spludge', 'spluhj', 'DGE → JH'],
-    ])('handles trigraph %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['deveigh', 'divay', 'deveigh'],
-      ['spleigh', 'splay', 'spleigh'],
-    ])('handles EIGH as long A %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle AUGH as AO', () => {
-      expect(g2p('splaugh')).toBe('splaw');
-    });
-
-    it.each([
-      ['blossion', 'bloshan', 'blossion'],
-      ['cession', 'seshan', 'cession'],
-    ])('handles SSION as SH %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
+      // EIGH
+      ['deveigh', 'divay', 'EIGH → long A'],
+      ['spleigh', 'splay', 'EIGH → long A'],
+      ['splaugh', 'splaw', 'AUGH → AO'],
+      // SSION/TION/SION
+      ['blossion', 'bloshan', 'SSION → SH'],
+      ['cession', 'seshan', 'SSION → SH'],
       ['blation', 'blayshan', 'TION → SH'],
       ['gresion', 'grayzhan', 'SION → ZH'],
-    ])('handles TION/SION %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
+      // silent consonant pairs
       ['wrib', 'rib', 'WR → R'],
       ['knib', 'nib', 'KN → N'],
       ['gnab', 'nab', 'GN → N (word-initial)'],
       ['psar', 'sar', 'PS → S'],
       ['pnib', 'nib', 'PN → N'],
-    ])('handles silent consonant pair %s → %s (%s)', (word, expected) => {
+      // magic-e
+      ['brike', 'braik', 'I_E → AY'],
+      ['blone', 'blohn', 'O_E → OW'],
+      ['frube', 'froob', 'U_E → UW'],
+      ['sprene', 'spreen', 'E_E → IY'],
+      // doubled consonants
+      ['bluzz', 'bluhz', 'ZZ → Z'],
+      ['smutt', 'smuht', 'TT → T'],
+      // Y rules
+      ['glyb', 'glib', 'Y as vowel mid-word'],
+      ['spyn', 'spin', 'Y as vowel mid-word'],
+      ['snylk', 'snilk', 'Y as vowel mid-word'],
+      ['flubby', 'fluhbee', 'word-final Y → /i/'],
+      ['bunkify', 'buhngkifai', '-FY suffix → /faɪ/'],
+      ['yub', 'yuhb', 'Y as consonant before vowels'],
+      // -ed suffix
+      ['blunked', 'bluhngkt', '-ed after voiceless → T'],
+      ['clobbed', 'klobd', '-ed after voiced → D'],
+      ['brummed', 'bruhmd', '-ed after voiced → D'],
+      ['spugged', 'spuhgd', '-ed after voiced → D'],
+      ['blatted', 'blatid', '-ed after t/d → ID'],
+      // final S voicing
+      ['blungs', 'bluhngz', 'final S voiced after voiced'],
+      ['flacks', 'flaks', 'final S voiceless after voiceless'],
+      // NK → NG K
+      ['blonk', 'blongk', 'NK → NG K'],
+      // SC before front vowel
+      ['scerg', 'serg', 'SC before E'],
+      ['scib', 'sib', 'SC before I'],
+      // -ture
+      ['blicture', 'blikcher', '-ture → CH ER'],
+      // consonant+le
+      ['spiffle', 'spifal', 'consonant+le ending'],
+      ['snortle', 'snortal', 'consonant+le ending'],
+      // OUGH
+      ['snough', 'snuhf', 'OUGH tough pattern'],
+      ['blought', 'blawt', 'OUGH thought pattern'],
+      // OW
+      ['browk', 'brohk', 'OW → OW (show-like)'],
+      ['brownd', 'bround', 'OW → AW before N (town-like)'],
+      // OO
+      ['glook', 'gluk', 'OO → UH before K (book)'],
+      ['splood', 'splud', 'OO+D (blood)'],
+      // WH
+      ['whoob', 'hoo-ob', 'WH before O → HH'],
+      ['whub', 'wuhb', 'WH → W'],
+      ['whag', 'wag', 'WH → W'],
+      // misc
+      ['clawb', 'klawb', 'AU/AW → AO'],
+      ['cerg', 'serg', 'soft C before front vowels'],
+      ['gerce', 'jers', 'soft G before front vowel'],
+      ['gerb', 'jerb', 'soft G before front vowel'],
+      // EA variations
+      ['fleam', 'fleem', 'EA → IY'],
+      ['spead', 'sped', 'EAD → EH'],
+      ['blealth', 'blelth', 'EALTH → EH'],
+      // WAR/WOR
+      ['warb', 'worb', 'WAR → AO R'],
+      ['swark', 'swork', 'WAR → AO R'],
+      ['worb', 'werb', 'WOR → ER'],
+      ['worg', 'werg', 'WOR → ER'],
+      // ALM/ALK
+      ['bralm', 'brom', 'ALM silent L'],
+      ['spalm', 'spom', 'ALM silent L'],
+      ['spalk', 'spawk', 'ALK silent L'],
+      // suffixes
+      ['clunkage', 'kluhngkij', '-AGE suffix'],
+      ['blondence', 'blondans', '-ENCE suffix'],
+      ['sprunkance', 'spruhngkans', '-ANCE suffix'],
+      ['bunkism', 'buhngkizam', '-ISM suffix'],
+      ['blartial', 'blarshal', 'TIAL → SH'],
+      ['spruncial', 'spruhnshal', 'CIAL → SH'],
+      // EIGN/IGN
+      ['spleign', 'splayn', 'EIGN silent G'],
+      ['bleign', 'blayn', 'EIGN silent G'],
+      ['blign', 'blain', 'word-final IGN silent G'],
+      // OLD/OLT/OLK
+      ['skold', 'skohld', 'OLD → OW L D'],
+      ['prolt', 'prohlt', 'OLT → OW L T'],
+      ['splolk', 'splohk', 'OLK → OW K (silent L)'],
+      // word-final O
+      ['spungo', 'spuhnggoh', 'word-final O → OW'],
+      ['blimbo', 'blimboh', 'word-final O → OW'],
+      // misc
+      ['xylem', 'zailam', 'word-initial X → Z'],
+      ['gladness', 'gladnas', '-NESS suffix'],
+      ['oddment', 'odmant', '-MENT suffix'],
+      ['artless', 'artlas', '-LESS suffix'],
+    ])('G2P: %s → %s (%s)', (word, expected) => {
       expect(g2p(word)).toBe(expected);
     });
 
     it('should not silence GN mid-word', () => {
       const result = g2p('oppugnant');
       expect(result).toContain('g');
-    });
-
-    it.each([
-      ['brike', 'braik', 'I_E → AY'],
-      ['blone', 'blohn', 'O_E → OW'],
-      ['frube', 'froob', 'U_E → UW'],
-      ['sprene', 'spreen', 'E_E → IY'],
-    ])('handles magic-e %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['bluzz', 'bluhz', 'ZZ → Z'],
-      ['smutt', 'smuht', 'TT → T'],
-    ])('collapses doubled consonant %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['glyb', 'glib', 'glyb'],
-      ['spyn', 'spin', 'spyn'],
-      ['snylk', 'snilk', 'snylk'],
-    ])('treats Y as vowel mid-word %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should treat word-final Y as /i/', () => {
-      expect(g2p('flubby')).toBe('fluhbee');
-    });
-
-    it('should treat -FY suffix as /faɪ/', () => {
-      expect(g2p('bunkify')).toBe('buhngkifai');
-    });
-
-    it('should treat Y as consonant before vowels', () => {
-      expect(g2p('yub')).toBe('yuhb');
-    });
-
-    it('should handle -ed suffix after voiceless → T', () => {
-      expect(g2p('blunked')).toBe('bluhngkt');
-    });
-
-    it.each([
-      ['clobbed', 'klobd', 'clobbed'],
-      ['brummed', 'bruhmd', 'brummed'],
-      ['spugged', 'spuhgd', 'spugged'],
-    ])('handles -ed suffix after voiced → D %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle -ed suffix after t/d → ID', () => {
-      expect(g2p('blatted')).toBe('blatid');
-    });
-
-    it('should voice final S after voiced sounds', () => {
-      expect(g2p('blungs')).toBe('bluhngz');
-    });
-
-    it('should keep final S after voiceless sounds', () => {
-      expect(g2p('flacks')).toBe('flaks');
-    });
-
-    it('should produce NG K for NK', () => {
-      expect(g2p('blonk')).toBe('blongk');
-    });
-
-    it.each([
-      ['scerg', 'serg', 'SC before E'],
-      ['scib', 'sib', 'SC before I'],
-    ])('handles SC before front vowel %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle -ture as CH ER', () => {
-      expect(g2p('blicture')).toBe('blikcher');
-    });
-
-    it.each([
-      ['spiffle', 'spifal', 'spiffle'],
-      ['snortle', 'snortal', 'snortle'],
-    ])('handles consonant+le ending %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['snough', 'snuhf', 'tough pattern'],
-      ['blought', 'blawt', 'thought pattern'],
-    ])('handles OUGH variation %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle OW as OW (show-like)', () => {
-      expect(g2p('browk')).toBe('brohk');
-    });
-
-    it('should handle OW as AW before N (town-like)', () => {
-      expect(g2p('brownd')).toBe('bround');
-    });
-
-    it('should handle OO as UH before K (book pattern)', () => {
-      expect(g2p('glook')).toBe('gluk');
-    });
-
-    it('should handle OO+D (blood pattern)', () => {
-      expect(g2p('splood')).toBe('splud');
-    });
-
-    it.each([
-      ['whoob', 'hoo-ob', 'WH before O → HH'],
-      ['whub', 'wuhb', 'WH → W'],
-      ['whag', 'wag', 'WH → W'],
-    ])('handles WH digraph %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle AU/AW as AO', () => {
-      expect(g2p('clawb')).toBe('klawb');
-    });
-
-    it('should handle soft C before front vowels', () => {
-      expect(g2p('cerg')).toBe('serg');
-    });
-
-    it.each([
-      ['gerce', 'jers', 'gerce'],
-      ['gerb', 'jerb', 'gerb'],
-    ])('handles soft G before front vowel %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['fleam', 'fleem', 'EA → IY'],
-      ['spead', 'sped', 'EAD → EH'],
-      ['blealth', 'blelth', 'EALTH → EH'],
-    ])('handles EA variation %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['warb', 'worb', 'warb'],
-      ['swark', 'swork', 'swark'],
-    ])('handles WAR as AO R %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['worb', 'werb', 'worb'],
-      ['worg', 'werg', 'worg'],
-    ])('handles WOR as ER %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['bralm', 'brom', 'bralm'],
-      ['spalm', 'spom', 'spalm'],
-    ])('handles ALM with silent L %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle ALK with silent L', () => {
-      expect(g2p('spalk')).toBe('spawk');
-    });
-
-    it('should handle -AGE suffix', () => {
-      expect(g2p('clunkage')).toBe('kluhngkij');
-    });
-
-    it.each([
-      ['blondence', 'blondans', '-ENCE'],
-      ['sprunkance', 'spruhngkans', '-ANCE'],
-    ])('handles -ENCE/-ANCE suffix %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle -ISM suffix', () => {
-      expect(g2p('bunkism')).toBe('buhngkizam');
-    });
-
-    it.each([
-      ['blartial', 'blarshal', 'TIAL'],
-      ['spruncial', 'spruhnshal', 'CIAL'],
-    ])('handles TIAL/CIAL as SH %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['spleign', 'splayn', 'spleign'],
-      ['bleign', 'blayn', 'bleign'],
-    ])('handles EIGN with silent G %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle word-final IGN with silent G', () => {
-      expect(g2p('blign')).toBe('blain');
-    });
-
-    it.each([
-      ['skold', 'skohld', 'OLD → OW L D'],
-      ['prolt', 'prohlt', 'OLT → OW L T'],
-      ['splolk', 'splohk', 'OLK → OW K (silent L)'],
-    ])('handles OLD/OLT/OLK pattern %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it.each([
-      ['spungo', 'spuhnggoh', 'spungo'],
-      ['blimbo', 'blimboh', 'blimbo'],
-    ])('handles word-final O as OW %s → %s (%s)', (word, expected) => {
-      expect(g2p(word)).toBe(expected);
-    });
-
-    it('should handle word-initial X as Z', () => {
-      expect(g2p('xylem')).toBe('zailam');
-    });
-
-    it('should handle -NESS suffix', () => {
-      expect(g2p('gladness')).toBe('gladnas');
-    });
-
-    it('should handle -MENT suffix', () => {
-      expect(g2p('oddment')).toBe('odmant');
-    });
-
-    it('should handle -LESS suffix', () => {
-      expect(g2p('artless')).toBe('artlas');
     });
   });
 
@@ -413,16 +245,8 @@ describe('unknown-words', () => {
   });
 
   describe('compound word handling', () => {
-    it('should translate non-compound unknown words via G2P', () => {
-      // 'xyzzy' can't be split into known compounds
-      const result = translateSync('xyzzy');
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it('should translate dictionary words directly', () => {
-      // 'abacus' is in the dictionary, uses direct lookup
-      const result = translateSync('abacus');
+    it.each(['xyzzy', 'abacus'])('translates "%s" to non-empty string', (word) => {
+      const result = translateSync(word);
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
     });

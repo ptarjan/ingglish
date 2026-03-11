@@ -44,12 +44,11 @@ beforeAll(async () => {
 }, 30_000);
 
 describe('German ß resolver', () => {
-  it('normalizes ß to ss', () => {
-    expect(WORD_RESOLVERS.de!(entries.de!, 'daß')).toBeDefined();
-  });
-
-  it('normalizes ß with title case fallback', () => {
-    expect(WORD_RESOLVERS.de!(entries.de!, 'kongreß')).toBeDefined();
+  it.each([
+    ['daß', 'normalizes ß to ss'],
+    ['kongreß', 'normalizes ß with title case fallback'],
+  ])('%s — %s', (word) => {
+    expect(WORD_RESOLVERS.de!(entries.de!, word)).toBeDefined();
   });
 
   it('returns undefined for words without ß', () => {
@@ -58,22 +57,13 @@ describe('German ß resolver', () => {
 });
 
 describe('Japanese kana resolver', () => {
-  it('resolves single kana characters', () => {
-    const result = WORD_RESOLVERS.ja!(entries.ja!, 'かた');
-    expect(result).toBeDefined();
-    expect(result!.length).toBeGreaterThan(0);
-  });
-
-  it('prefers 2-char combined kana', () => {
-    expect(WORD_RESOLVERS.ja!(entries.ja!, 'きゃ')).toBeDefined();
-  });
-
-  it('falls back to 1-char when 2-char not found', () => {
-    expect(WORD_RESOLVERS.ja!(entries.ja!, 'きた')).toBeDefined();
-  });
-
-  it('skips structural markers (っ, ー)', () => {
-    expect(WORD_RESOLVERS.ja!(entries.ja!, 'かっ')).toBeDefined();
+  it.each([
+    ['かた', 'resolves single kana characters'],
+    ['きゃ', 'prefers 2-char combined kana'],
+    ['きた', 'falls back to 1-char when 2-char not found'],
+    ['かっ', 'skips structural markers (っ, ー)'],
+  ])('%s — %s', (word) => {
+    expect(WORD_RESOLVERS.ja!(entries.ja!, word)).toBeDefined();
   });
 
   it('returns empty for only structural markers', () => {

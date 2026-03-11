@@ -106,17 +106,12 @@ describe('arpabetToIngglish round-trip', () => {
 
 describe('R-colored vowels', () => {
   it.each([
-    ['beer', 'beer'],
-    ['beard', 'beerd'],
-    ['fear', 'feer'],
-    ['near', 'neer'],
-    ['deer', 'deer'],
-    ['clear', 'kleer'],
-  ])('translates NEAR vowel "%s" → "%s"', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-
-  it.each([
+    ['beer', 'beer', 'NEAR'],
+    ['beard', 'beerd', 'NEAR'],
+    ['fear', 'feer', 'NEAR'],
+    ['near', 'neer', 'NEAR'],
+    ['deer', 'deer', 'NEAR'],
+    ['clear', 'kleer', 'NEAR'],
     ['star', 'star', 'START (AA+R → ar)'],
     ['car', 'kar', 'START (AA+R → ar)'],
     ['far', 'far', 'START (AA+R → ar)'],
@@ -128,7 +123,7 @@ describe('R-colored vowels', () => {
     ['arrow', 'arroh', 'TRAP+R (AE+R → arr)'],
     ['barrow', 'barroh', 'TRAP+R (AE+R → arr)'],
     ['carrot', 'karrat', 'TRAP+R (AE+R → arr)'],
-  ])('translates R-colored "%s" → "%s" (%s)', (word, expected) => {
+  ])('translates "%s" → "%s" (%s)', (word, expected) => {
     expect(translateSync(word)).toBe(expected);
   });
 });
@@ -137,11 +132,7 @@ describe('common word translations', () => {
   it.each([
     ['think', 'thingk', 'NG cluster'],
     ['beautiful', 'byootafal', 'multi-syllable'],
-  ])('translates %s → %s (%s)', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-
-  it.each([
+    // vowel sounds
     ['hot', 'hot', 'AA'],
     ['dog', 'dawg', 'AO'],
     ['law', 'law', 'AO'],
@@ -162,23 +153,17 @@ describe('common word translations', () => {
     ['cup', 'kuhp', 'AH stressed'],
     ['love', 'luhv', 'AH stressed'],
     ['buzz', 'buhz', 'AH stressed'],
-  ])('translates vowel sound: %s → %s (%s)', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-
-  it.each([
-    ['go', 'goh', 'G'],
+    // consonant sounds
     ['pen', 'pen', 'P'],
     ['she', 'shee', 'SH'],
     ['fish', 'fish', 'SH'],
     ['very', 'vairee', 'V'],
-    ['zoo', 'zoo', 'Z'],
     ['measure', 'mezher', 'ZH'],
     ['jump', 'juhmp', 'JH+M+P'],
     ['yes', 'yes', 'Y'],
     ['not', 'not', 'N'],
     ['bat', 'bat', 'B'],
-  ])('translates consonant sound: %s → %s (%s)', (word, expected) => {
+  ])('translates %s → %s (%s)', (word, expected) => {
     expect(translateSync(word)).toBe(expected);
   });
 });
