@@ -8,12 +8,10 @@ describe('pronunciation format', () => {
     ['beautiful', 'BYOO-ta-fal'],
     ['cat', 'KAT'],
     ['chaos', 'KAY-os'],
+    ['string', 'STRING'],
+    ['star', 'STAR'],
   ])('translates %s → %s', (word, expected) => {
     expect(translateSync(word, { format: 'pronunciation' })).toBe(expected);
-  });
-
-  it.each(['string', 'star'])('translates "%s" to non-empty pronunciation', (word) => {
-    expect(translateSync(word, { format: 'pronunciation' })).toBeTruthy();
   });
 
   it('handles words with no vowels', () => {

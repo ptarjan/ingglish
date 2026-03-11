@@ -36,8 +36,6 @@ describe('async API loads only required dictionaries', () => {
 
   it('translate() with lang loads foreign dict via registered loader', async () => {
     const result = await translate('bonjour', { lang: 'fr' });
-    expect(result).toBeTruthy();
-
     // Sync should work after async load
     const syncResult = translateSync('bonjour', { lang: 'fr' });
     expect(syncResult).toBe(result);
@@ -95,10 +93,7 @@ describe('translator', () => {
     });
 
     it('should handle unknown words with fallback', () => {
-      // Unknown words use G2P rules to produce a phonetic translation
-      const result = translateSync('splonk');
-      expect(typeof result).toBe('string');
-      expect(result).not.toBe('splonk'); // Should be transformed by G2P
+      expect(translateSync('splonk')).toBe('splongk');
     });
 
     it('should translate url from dictionary', () => {
@@ -194,74 +189,35 @@ describe('translator', () => {
   });
 
   describe('contraction edge cases', () => {
-    it('should handle contractions with apostrophe parts', () => {
-      // Test contractions that go through the fallback path
-      // where parts are translated separately
-      const result = translateSync("y'all");
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it('should handle possessives correctly', () => {
-      // John's is in the dictionary as a complete word
-      const result = translateSync("John's");
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it('should handle multiple apostrophes', () => {
-      const result = translateSync("'twas");
-      expect(result).toBeDefined();
-    });
-
-    it('should preserve all caps on contractions', () => {
-      // DON'T should stay uppercase
-      const result = translateSync("DON'T");
-      expect(result).toBe(result.toUpperCase());
-    });
-
-    it('should handle contractions not in dictionary via apostrophe splitting', () => {
-      // Made-up contraction — apostrophe splitting finds foo + t individually
-      const result = translateSync("foo't");
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
+    it.each([
+      ["y'all", 'yawl', 'apostrophe fallback'],
+      ["John's", 'Jonz', 'possessive'],
+      ["'twas", 'twuhz', 'leading apostrophe'],
+      ["DON'T", 'DOHNT', 'all caps preserved'],
+      ["foo't", 'footee', 'not in dictionary, apostrophe splitting'],
+    ])('translates %s → %s (%s)', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('case preservation for unknown words', () => {
-    it('should preserve all caps on unknown words', () => {
-      // KUBERNETES is not in CMU dictionary
-      const result = translateSync('KUBERNETES');
-      expect(result).toBe(result.toUpperCase());
-    });
-
-    it('should preserve title case on unknown words', () => {
-      // Kubernetes is not in CMU dictionary
-      const result = translateSync('Kubernetes');
-      expect(result.charAt(0)).toBe(result.charAt(0).toUpperCase());
-      expect(result.slice(1)).toBe(result.slice(1).toLowerCase());
-    });
-
-    it('should preserve mixed case on unknown words like GitHub', () => {
-      // GitHub has internal capital - AH1 in "hub" produces "huhb"
-      const result = translateSync('GitHub');
-      expect(result).toBe('GitHuhb');
+    it.each([
+      ['KUBERNETES', 'KUBERNETES', 'all caps passthrough'],
+      ['Kubernetes', 'Kyoobernets', 'title case'],
+      ['GitHub', 'GitHuhb', 'mixed case compound'],
+    ])('translates %s → %s (%s)', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
 
     it('should translate GitHub with correct phonetics (t+h not θ)', () => {
-      // GitHub = git + hub, the "th" should NOT become theta sound
       const ipa = translateSync('GitHub', { format: 'ipa' });
-      expect(ipa).toContain('t'); // separate t
-      expect(ipa).toContain('h'); // separate h
       expect(ipa).not.toContain('θ'); // NOT theta digraph
     });
   });
 
   describe('edge cases for coverage', () => {
-    it('should handle word with leading apostrophe', () => {
-      const result = translateSync("'xyz");
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
+    it("should translate leading apostrophe: 'xyz → ksiz", () => {
+      expect(translateSync("'xyz")).toBe('ksiz');
     });
 
     it.each(['123', '!!!'])('should pass through non-letter "%s" unchanged', (input) => {
@@ -269,12 +225,7 @@ describe('translator', () => {
     });
 
     it('should translate unknown words to IPA format', () => {
-      // Unknown word in IPA format should return IPA characters
-      const result = translateSync('xyzzy', { format: 'ipa' });
-      expect(result).toBeDefined();
-      expect(result.length).toBeGreaterThan(0);
-      // IPA result should contain non-ASCII characters
-      expect(result).not.toMatch(/^[a-z]+$/i);
+      expect(translateSync('xyzzy', { format: 'ipa' })).toBe('\u2060\u02C8\u2060z\u026Azi');
     });
 
     it('should use translateSyncWithMapping for token mapping', () => {

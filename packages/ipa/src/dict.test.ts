@@ -104,7 +104,7 @@ describe('lookupDict edge cases', () => {
       entries: { on: ['AO1', 'N'] },
       lang: 'fi',
     };
-    expect(lookupDict(dict, "talo'on")).toBeDefined();
+    expect(lookupDict(dict, "talo'on")).toEqual(['T', 'AA1', 'L', 'OW', 'AO1', 'N']);
   });
 
   it('apostrophe split resolves part via language override', () => {
@@ -113,8 +113,7 @@ describe('lookupDict edge cases', () => {
       entries: { x: ['K', 'S'] },
       lang: 'fr',
     };
-    const result = lookupDict(dict, "est'x");
-    expect(result).toBeDefined();
+    expect(lookupDict(dict, "est'x")).toEqual(['EH1', 'K', 'S']);
   });
 
   it('apostrophe split resolves part via word resolver', () => {
@@ -124,16 +123,15 @@ describe('lookupDict edge cases', () => {
       entries: { strasse: ['SH', 'T', 'R', 'AH1', 'S', 'AH0'], x: ['K', 'S'] },
       lang: 'de',
     };
-    const result = lookupDict(dict, "straße'x");
-    expect(result).toBeDefined();
-    expect(result!.length).toBeGreaterThan(0);
+    expect(lookupDict(dict, "straße'x")).toEqual(['SH', 'T', 'R', 'AH1', 'S', 'AH0', 'K', 'S']);
   });
 });
 
 describe('French via translate', () => {
   it('French contraction splitting', async () => {
     const result = await translate("l'essentiel", { lang: 'fr' });
-    expect(result).toBeTruthy();
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
   });
 
   it('French curly apostrophe same as straight', async () => {
@@ -190,8 +188,8 @@ describe('buildReverseMap', () => {
       lang: 'fr',
     };
     const map = buildReverseMap(dict);
-    // Should include both dict entry and any French overrides
-    expect(map.size).toBeGreaterThan(0);
+    // Should include dict entry and French overrides
+    expect(map.size).toBeGreaterThan(1);
     expect(map.get('B AO N ZH UH R')).toContain('bonjour');
   });
 });
@@ -203,9 +201,8 @@ describe('convertIpaEntries', () => {
       merci: '/mɛʁ.si/',
     };
     const result = convertIpaEntries(raw, 'fr');
-    expect(result.bonjour).toBeDefined();
-    expect(Array.isArray(result.bonjour)).toBe(true);
-    expect(result.merci).toBeDefined();
+    expect(result.bonjour).toEqual(['B', 'AO', 'N', 'ZH', 'UW1', 'R']);
+    expect(result.merci).toEqual(['M', 'EH', 'R', 'S', 'IY1']);
   });
 
   it('passes through already-converted ARPAbet arrays', () => {
