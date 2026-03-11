@@ -4,18 +4,12 @@ import { lookupPronunciation } from './index';
 
 describe('lookupPronunciation', () => {
   it('translates known words', async () => {
-    const result = await translate('hello');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+    expect(await translate('hello')).toBe('haloh');
   });
 
   it('is case-insensitive', async () => {
-    const hello = await translate('Hello');
-    const helloLower = await translate('hello');
-    expect(hello.toLowerCase()).toBe(helloLower);
-    const the = await translate('The');
-    const theLower = await translate('the');
-    expect(the.toLowerCase()).toBe(theLower);
+    expect(await translate('Hello')).toBe('Haloh');
+    expect(await translate('The')).toBe('Dha');
   });
 
   it('translates unknown words via G2P fallback', async () => {
@@ -25,28 +19,19 @@ describe('lookupPronunciation', () => {
   });
 
   it('custom pronunciations override dictionary', async () => {
-    // "read" is in CUSTOM_PRONUNCIATIONS with R IY1 D → "reed"
     expect(await translate('read')).toBe('reed');
   });
 
   it('returns custom pronunciation for words not in CMU', async () => {
-    // "emoji" is added in custom-words, not in CMU
-    const result = await translate('emoji');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+    expect(await translate('emoji')).toBe('imohjee');
   });
 
   it('returns phonemes for known dictionary words', () => {
-    const result = lookupPronunciation('hello');
-    expect(result).not.toBeNull();
-    expect(result!.length).toBeGreaterThan(0);
+    expect(lookupPronunciation('hello')).toEqual(['HH', 'AH0', 'L', 'OW1']);
   });
 
   it('returns custom pronunciation when available', () => {
-    // "read" is in CUSTOM_PRONUNCIATIONS
-    const result = lookupPronunciation('read');
-    expect(result).not.toBeNull();
-    expect(result).toContain('R');
+    expect(lookupPronunciation('read')).toEqual(['R', 'IY1', 'D']);
   });
 
   // Prototype safety is not observable through translate — keep direct test
@@ -59,7 +44,6 @@ describe('lookupPronunciation', () => {
   });
 
   it('normalizes velar nasal: N before G becomes NG', async () => {
-    const result = await translate('finger');
-    expect(result).toContain('ng');
+    expect(await translate('finger')).toBe('fingger');
   });
 });

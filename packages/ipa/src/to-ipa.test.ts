@@ -3,16 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { arpabetPhonemeToIPA, arpabetToIPARaw } from './index';
 
 describe('IPA translation', () => {
-  it('should produce valid IPA output', () => {
-    const ipa = translateSync('cat', { format: 'ipa' });
-    expect(ipa).toBeDefined();
-    expect(typeof ipa).toBe('string');
-    expect(ipa).toMatch(/[æɑɛɪɔʊəɹŋʃʒθðˈˌ]/);
-  });
-
-  it('should produce non-empty IPA for any word', () => {
-    const ipa = translateSync('hello', { format: 'ipa' });
-    expect(ipa.length).toBeGreaterThan(0);
+  it.each([
+    ['cat', '\u2060\u02C8\u2060k\u00E6t'],
+    ['hello', 'h\u0259\u2060\u02C8\u2060lo\u028A'],
+  ])('translates %s to IPA', (word, expected) => {
+    expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
 
   it.each(['cat', 'hello', 'world', 'think', 'bird', 'the'])(

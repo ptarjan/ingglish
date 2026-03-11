@@ -4,16 +4,14 @@ import { getDictionary, isDictionaryLoaded, loadDictionary, setDictionaryLoader 
 describe('getDictionary', () => {
   it('returns a dictionary object (loaded via vitest.setup.ts)', () => {
     const dict = getDictionary();
-    expect(dict).toBeDefined();
     expect(typeof dict).toBe('object');
   });
 
   it('has expected entries for common words', () => {
     const dict = getDictionary();
-    expect(dict.hello).toBeDefined();
-    expect(dict.the).toBeDefined();
-    expect(dict.world).toBeDefined();
     expect(Array.isArray(dict.hello)).toBe(true);
+    expect(Array.isArray(dict.the)).toBe(true);
+    expect(Array.isArray(dict.world)).toBe(true);
   });
 });
 

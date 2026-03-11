@@ -128,8 +128,7 @@ describe('reverse-translator', () => {
     it('aisle becomes "ail" which reverses ambiguously', () => {
       expect(translateSync('aisle')).toBe('ail');
       // Could reverse to "aisle", "i'll", or "isle"
-      const result = reverseTranslateSync('ail');
-      expect(result.length).toBeGreaterThan(0);
+      expect(['aisle', "i'll", 'isle']).toContain(reverseTranslateSync('ail'));
     });
   });
 
@@ -142,8 +141,7 @@ describe('reverse-translator', () => {
     });
 
     it('should handle mixed text', () => {
-      const result = reverseTranslateSync('Dha kat.');
-      expect(result).toMatch(/\bcat\b/i);
+      expect(reverseTranslateSync('Dha kat.')).toBe('The cat.');
     });
 
     it('should return empty string for empty input', () => {
@@ -306,7 +304,7 @@ describe('reverse-translator', () => {
       const { translate } = await import('../index');
       const ingglish = await translate('bonjour', { lang: 'fr' });
       const back = await reverseTranslate(ingglish, { lang: 'fr' });
-      expect(back.length).toBeGreaterThan(0);
+      expect(back).toBe('bonjour');
     });
 
     it('falls back to alternative arpabet variant when primary key misses', () => {

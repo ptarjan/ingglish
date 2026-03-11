@@ -7,19 +7,13 @@ import { describe, expect, it } from 'vitest';
 const g2p = (word: string) => translateSync(word).replace(/^\uFFFD/, '');
 
 describe('G2P basic rules', () => {
-  it('converts simple non-dict words to phonetic output', () => {
-    const result = g2p('gub');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
-    expect(result).toBe('guhb');
-  });
-
   it.each([
-    ['shug', /^sh/],
-    ['chub', /^ch/],
-    ['thub', /^th/],
-  ] as [string, RegExp][])('handles digraph in %s', (word, pattern) => {
-    expect(g2p(word)).toMatch(pattern);
+    ['gub', 'guhb', 'simple CVC'],
+    ['shug', 'shuhg', 'SH digraph'],
+    ['chub', 'chuhb', 'CH digraph'],
+    ['thub', 'thuhb', 'TH digraph'],
+  ])('converts %s → %s (%s)', (word, expected) => {
+    expect(g2p(word)).toBe(expected);
   });
 
   it.each([

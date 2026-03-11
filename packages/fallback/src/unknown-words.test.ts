@@ -220,35 +220,38 @@ describe('unknown-words', () => {
   });
 
   describe('stemming fallback', () => {
-    it.each(['xyzzy', 'una'])('translates "%s" via G2P fallback', (word) => {
-      const result = translateSync(word);
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+    it.each([
+      ['xyzzy', 'zizee'],
+      ['una', 'oona'],
+    ])('translates "%s" → "%s" via G2P fallback', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('British spelling handling', () => {
     it.each([
-      ['colour', 'color'],
-      ['organise', 'organize'],
-    ])('translates British %s same as American %s', (british, american) => {
-      expect(translateSync(british)).toBe(translateSync(american));
+      ['colour', 'kuhler'],
+      ['organise', 'organaiz'],
+    ])('translates British %s → %s', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('unknown word translation', () => {
-    it.each(['xyzzy', 'blargification'])('produces output for "%s"', (word) => {
-      const result = translateSync(word);
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+    it.each([
+      ['xyzzy', 'zizee'],
+      ['blargification', 'blarjifikayshan'],
+    ])('translates "%s" → "%s"', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('compound word handling', () => {
-    it.each(['xyzzy', 'abacus'])('translates "%s" to non-empty string', (word) => {
-      const result = translateSync(word);
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+    it.each([
+      ['xyzzy', 'zizee'],
+      ['abacus', 'abakas'],
+    ])('translates "%s" → "%s"', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 
@@ -267,15 +270,20 @@ describe('unknown-words', () => {
 
   describe('IPA output format', () => {
     it.each([
-      ['blorg', /[bɡʃʒθðŋɹɑæʌɔɛɪʊəaeoiuˈˌ]/, 'unknown words'],
-      ['nfl', /[ɛnfl]/, 'acronyms'],
-      ['npm', /[ɛnpiːm]/, 'spelled-out words'],
-      ['quickly', /[ɪəʌɛæɑɔʊuiŋʃʒθðɹ]/, 'known words'],
-    ])('outputs IPA for %s (%s)', (word, pattern) => {
-      const result = translateSync(word, { format: 'ipa' });
-      expect(result).toBeDefined();
-      expect(typeof result).toBe('string');
-      expect(result).toMatch(pattern);
+      ['blorg', '\u2060\u02C8\u2060bl\u0254\u0279\u0261', 'unknown words'],
+      [
+        'nfl',
+        '\u2060\u02C8\u2060\u025B\u2060\u02CC\u2060n\u025B\u2060\u02C8\u2060f\u025Bl',
+        'acronyms',
+      ],
+      [
+        'npm',
+        '\u2060\u02C8\u2060\u025Bn\u2060\u02C8\u2060pi\u2060\u02C8\u2060\u025Bm',
+        'spelled-out words',
+      ],
+      ['quickly', '\u2060\u02C8\u2060kw\u026Akli', 'known words'],
+    ])('outputs IPA for %s (%s)', (word, expected) => {
+      expect(translateSync(word, { format: 'ipa' })).toBe(expected);
     });
   });
 });

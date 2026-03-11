@@ -17,16 +17,11 @@ describe('dpDecompose', () => {
 
 describe('translateAsCompound – case preservation', () => {
   it('preserves initial capital via compound decomposition', () => {
-    // "Dogcat" has first letter uppercase — capitalize branch triggered
-    const result = translateAsCompound('Dogcat');
-    expect(result).toBeTruthy();
-    expect(result![0]).toBe(result![0]!.toUpperCase());
+    expect(translateAsCompound('Dogcat')).toBe('Dawgkat');
   });
 
   it('does not capitalize when original is all lowercase', () => {
-    const result = translateAsCompound('dogcat');
-    expect(result).toBeTruthy();
-    expect(result).toBe(result!.toLowerCase());
+    expect(translateAsCompound('dogcat')).toBe('dawgkat');
   });
 
   it.each(['hello', 'xyzabc'])('returns null for %s', (word) => {

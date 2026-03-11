@@ -19,10 +19,7 @@ describe('British spelling translation', () => {
 
 describe('custom pronunciation translation', () => {
   it('translates custom pronunciation words (nginx)', () => {
-    // nginx has custom pronunciation, not in CMU dict
-    const result = translateSync('nginx');
-    expect(result).toBeTruthy();
-    expect(result).not.toBe('nginx');
+    expect(translateSync('nginx')).toBe('nggingks');
   });
 });
 
@@ -72,8 +69,7 @@ describe('initialism passthrough', () => {
   });
 
   it('translates non-initialism words normally', () => {
-    const result = translateSync('hello');
-    expect(result).not.toBe('hello');
+    expect(translateSync('hello')).toBe('haloh');
   });
 });
 
@@ -87,9 +83,7 @@ describe('plural and possessive initialisms', () => {
   });
 
   it('translates non-initialism plurals normally', () => {
-    const result = translateSync('cats');
-    expect(typeof result).toBe('string');
-    expect(result).not.toBe('cats');
+    expect(translateSync('cats')).toBe('kats');
   });
 });
 
@@ -115,10 +109,10 @@ describe('unknown word integration', () => {
     expect(translateSync('blorgify')).toBe('blorjafai');
   });
 
-  it('always returns a non-empty string for very long words', () => {
-    const result = translateSync('supercalifragilisticexpialidocious');
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+  it('translates very long words', () => {
+    expect(translateSync('supercalifragilisticexpialidocious')).toBe(
+      'sooperkalifrajilistisekspeealidohshas'
+    );
   });
 
   it('produces different output for ingglish vs ipa format', () => {
@@ -128,8 +122,9 @@ describe('unknown word integration', () => {
   });
 
   it('preserves case in camelCase compounds with IPA format', () => {
-    const result = translateSync('catDog', { format: 'ipa' });
-    expect(result).toBeTruthy();
+    expect(translateSync('catDog', { format: 'ipa' })).toBe(
+      '\u2060\u02C8\u2060k\u00E6t\u2060\u02C8\u2060d\u0254\u0261'
+    );
   });
 });
 
