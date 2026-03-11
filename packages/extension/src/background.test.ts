@@ -737,5 +737,25 @@ describe('background script', () => {
       // Should not inject scripts
       expect(mockChrome.scripting.executeScript).not.toHaveBeenCalled();
     });
+
+    it('silently catches setIcon rejection (tab closed during update)', async () => {
+      const tabId = 891;
+      mockChrome.tabs.query.mockImplementation((_query: object, callback: QueryCallback) => {
+        callback([{ id: tabId }]);
+      });
+      mockChrome.scripting.executeScript.mockResolvedValue([]);
+      mockChrome.scripting.insertCSS.mockResolvedValue();
+      // Simulate tab closing: setIcon rejects
+      mockChrome.action.setIcon.mockRejectedValueOnce(new Error('Tab closed'));
+
+      commandHandler('toggle-translation');
+
+      await waitFor(() => {
+        expect(mockChrome.action.setIcon).toHaveBeenCalled();
+      });
+
+      // The rejection should be silently caught — no unhandled promise rejection
+      await new Promise((r) => setTimeout(r, 10));
+    });
   });
 });
