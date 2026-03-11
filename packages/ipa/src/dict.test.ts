@@ -134,13 +134,13 @@ describe('French via translate', () => {
   it('French contraction splitting', async () => {
     const result = await translate("l'essentiel", { lang: 'fr' });
     expect(result).toBeTruthy();
-  }, 15_000);
+  });
 
   it('French curly apostrophe same as straight', async () => {
     const curly = await translate('l\u2019homme', { lang: 'fr' });
     const straight = await translate("l'homme", { lang: 'fr' });
     expect(curly).toBe(straight);
-  }, 15_000);
+  });
 });
 
 describe('buildReverseMap', () => {
