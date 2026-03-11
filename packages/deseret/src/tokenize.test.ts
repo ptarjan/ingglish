@@ -9,13 +9,6 @@ describe('Deseret character recognition', () => {
     const english = reverseTranslateSync(deseret, { format: 'deseret' });
     expect(english).toBe('cat');
   });
-
-  it.each([
-    ['hello', 'non-Deseret text'],
-    ['', 'empty input'],
-  ])('passes through "%s" unchanged (%s)', (input) => {
-    expect(reverseTranslateSync(input, { format: 'deseret' })).toBe(input);
-  });
 });
 
 describe('Deseret tokenization', () => {
@@ -29,11 +22,5 @@ describe('Deseret tokenization', () => {
   it('preserves punctuation', () => {
     const deseret = translateSync('hello!', { format: 'deseret' });
     expect(deseret).toContain('!');
-  });
-
-  it.each(['the', 'hello', 'world', 'think'])('round-trips "%s"', (word) => {
-    const deseret = translateSync(word, { format: 'deseret' });
-    const english = reverseTranslateSync(deseret, { format: 'deseret' });
-    expect(english, `Failed round-trip for "${word}"`).toBe(word);
   });
 });

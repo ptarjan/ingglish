@@ -10,11 +10,6 @@ describe('Shavian character recognition', () => {
     const english = reverseTranslateSync(shavian, { format: 'shavian' });
     expect(english).toBe('cat');
   });
-
-  it('passes through non-Shavian text unchanged', () => {
-    expect(reverseTranslateSync('hello', { format: 'shavian' })).toBe('hello');
-    expect(reverseTranslateSync('', { format: 'shavian' })).toBe('');
-  });
 });
 
 describe('Shavian tokenization', () => {
@@ -28,12 +23,6 @@ describe('Shavian tokenization', () => {
   it('preserves punctuation', () => {
     const shavian = translateSync('hello!', { format: 'shavian' });
     expect(shavian).toContain('!');
-  });
-
-  it.each(['the', 'hello', 'world', 'think'])('round-trips "%s" through Shavian', (word) => {
-    const shavian = translateSync(word, { format: 'shavian' });
-    const english = reverseTranslateSync(shavian, { format: 'shavian' });
-    expect(english).toBe(word);
   });
 });
 

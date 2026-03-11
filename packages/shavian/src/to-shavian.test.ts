@@ -13,7 +13,7 @@ describe('Shavian conversion', () => {
     expect(result).toBe('');
   });
 
-  it.each(['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world'])(
+  it.each(['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'hello', 'world'])(
     'round-trips "%s" through Shavian',
     (word) => {
       const shavian = translateSync(word, { format: 'shavian' });

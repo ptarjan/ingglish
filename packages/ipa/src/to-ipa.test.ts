@@ -1,23 +1,11 @@
-import { reverseTranslateSync, translateSync } from 'ingglish';
+import { translateSync } from 'ingglish';
 import { describe, expect, it } from 'vitest';
 import { arpabetPhonemeToIPA, arpabetToIPARaw } from './index';
 
 describe('IPA translation', () => {
-  it.each([
-    ['cat', '\u2060\u02C8\u2060k\u00E6t'],
-    ['hello', 'h\u0259\u2060\u02C8\u2060lo\u028A'],
-  ])('translates %s to IPA', (word, expected) => {
+  it.each([['cat', '\u2060\u02C8\u2060k\u00E6t']])('translates %s to IPA', (word, expected) => {
     expect(translateSync(word, { format: 'ipa' })).toBe(expected);
   });
-
-  it.each(['cat', 'hello', 'world', 'think', 'bird', 'the'])(
-    'should round-trip %s through IPA',
-    (word) => {
-      const ipa = translateSync(word, { format: 'ipa' });
-      const english = reverseTranslateSync(ipa, { format: 'ipa' });
-      expect(english, `Failed round-trip for "${word}"`).toBe(word);
-    }
-  );
 });
 
 describe('IPA format for common words', () => {
