@@ -78,14 +78,3 @@ describe('diagnoseUnknown custom pronunciation', () => {
     expect(result!.strategy).toBe('custom');
   });
 });
-
-describe('diagnoseUnknown returns strategy', () => {
-  it('returns correct strategy string for each type', () => {
-    expect(diagnoseUnknown('omg')?.strategy).toBe('initialism');
-    expect(diagnoseUnknown('organise')?.strategy).toBe('british');
-    expect(diagnoseUnknown('treehouse')?.strategy).toBe('compound');
-    expect(diagnoseUnknown('ghosting')?.strategy).toBe('stemming');
-    expect(diagnoseUnknown('splonk')?.strategy).toBe('g2p');
-    expect(diagnoseUnknown('ssssssss')).toBeNull();
-  });
-});

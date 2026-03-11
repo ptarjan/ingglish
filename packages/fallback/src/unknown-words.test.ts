@@ -229,28 +229,19 @@ describe('unknown-words', () => {
   });
 
   describe('British spelling handling', () => {
-    it.each([
-      ['colour', 'kuhler'],
-      ['organise', 'organaiz'],
-    ])('translates British %s → %s', (word, expected) => {
+    it.each([['colour', 'kuhler']])('translates British %s → %s', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('unknown word translation', () => {
-    it.each([
-      ['xyzzy', 'zizee'],
-      ['blargification', 'blarjifikayshan'],
-    ])('translates "%s" → "%s"', (word, expected) => {
+    it.each([['blargification', 'blarjifikayshan']])('translates "%s" → "%s"', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
     });
   });
 
   describe('compound word handling', () => {
-    it.each([
-      ['xyzzy', 'zizee'],
-      ['abacus', 'abakas'],
-    ])('translates "%s" → "%s"', (word, expected) => {
+    it.each([['abacus', 'abakas']])('translates "%s" → "%s"', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
     });
   });

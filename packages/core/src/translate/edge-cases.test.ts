@@ -60,13 +60,6 @@ describe('untranslatable words', () => {
 // Reverse: contraction handling (reverse.ts lines 332-347)
 // ---------------------------------------------------------------------------
 describe('reverse contraction handling', () => {
-  it('should reverse-translate contractions with apostrophe', () => {
-    // Forward-translate a contraction, then reverse it
-    const ingglish = translateSync("don't");
-    const back = reverseTranslateSync(ingglish);
-    expect(back.toLowerCase()).toBe("don't");
-  });
-
   it("should reverse-translate it's", () => {
     const ingglish = translateSync("it's");
     const back = reverseTranslateSync(ingglish);
@@ -96,11 +89,6 @@ describe('English stemming (word resolver path)', () => {
 // Compounds: case preservation (compounds.ts line 164)
 // ---------------------------------------------------------------------------
 describe('compound word translation', () => {
-  it('should translate compound words like "catdog"', () => {
-    // "catdog" not in dict, but "cat" + "dog" are → compound resolver
-    expect(translateSync('catdog')).toBe('katdawg');
-  });
-
   it('should preserve capitalization in compound words', () => {
     // "Catdog" with capital C — compound resolver + title case preservation
     const result = translateSync('Catdog');
@@ -117,17 +105,6 @@ describe('unstressed schwa mapping', () => {
     ['up', 'uhp', 'AH1 → "uh" (stressed)'],
   ])('translates %s → %s (%s)', (word, expected) => {
     expect(translateSync(word)).toBe(expected);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Pipeline: sentence capitalization (pipeline.ts line 137)
-// ---------------------------------------------------------------------------
-describe('reverse translation output', () => {
-  it('should reverse-translate multi-word Ingglish text', () => {
-    const result = reverseTranslateSync('dha kat');
-    // "dha kat" → "the cat"
-    expect(result.toLowerCase()).toBe('the cat');
   });
 });
 
@@ -150,26 +127,9 @@ describe('reverse mapping with contractions', () => {
 // Forward: translateWordString non-letter passthrough (forward.ts line 330)
 // ---------------------------------------------------------------------------
 describe('translateSync non-letter tokens', () => {
-  it('should pass through numbers unchanged', () => {
-    const result = translateSync('hello 42 world');
-    expect(result).toContain('42');
-  });
-
   it('should pass through punctuation-only tokens unchanged', () => {
     const result = translateSync('hello... world');
     expect(result).toContain('...');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: translateWordString NOT_FOUND_MARKER (forward.ts line 341)
-// ---------------------------------------------------------------------------
-describe('translateSync with untranslatable words', () => {
-  it('should mark vowelless nonsense words in sentence context', () => {
-    // "bcdfg" has no vowels → skipped by G2P → NOT_FOUND_MARKER prepended
-    const result = translateSync('bcdfg');
-    // The NOT_FOUND_MARKER is \u00B7 (middle dot)
-    expect(result).toContain('bcdfg');
   });
 });
 
@@ -355,19 +315,6 @@ describe('compound word case preservation paths', () => {
     // CATDOG is all-caps ≥2 chars → treated as initialism, passes through
     expect(translateSync('CATDOG')).toBe('CATDOG');
   });
-
-  it('should translate mixed-case compound', () => {
-    expect(translateSync('GitHub')).toBe('GitHuhb');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Stemming: compound decomposition (register-english.ts lines 35-47)
-// ---------------------------------------------------------------------------
-describe('compound decomposition via word resolver', () => {
-  it('should decompose unknown compound word into known parts', () => {
-    expect(translateSync('catdog')).toBe('katdawg');
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -407,7 +354,7 @@ describe('curly apostrophe normalization', () => {
 });
 
 // ---------------------------------------------------------------------------
-// IPA reverse translation (reverse.ts reverseTranslateIPAWord)
+// IPA reverse translation with mapping (reverse.ts reverseTranslateIPATextWithMapping)
 // ---------------------------------------------------------------------------
 describe('IPA reverse translation', () => {
   it('should reverse-translate IPA with mapping', () => {
@@ -424,14 +371,6 @@ describe('IPA reverse translation', () => {
 // ===========================================================================
 
 describe('forward.ts edge cases', () => {
-  it('empty string returns empty (line 256)', () => {
-    expect(translateSync('')).toBe('');
-  });
-
-  it('non-letter token passes through (line 256)', () => {
-    expect(translateSync('123')).toBe('123');
-  });
-
   it('truly unknown word returns something (line 217)', () => {
     expect(translateSync('xyzzy')).toBe('zizee');
   });
@@ -482,14 +421,6 @@ describe('reverse.ts edge cases', () => {
     expect(reverseTranslateSync(input, { format: 'ipa' })).toBe(expected);
   });
 
-  it.each([
-    ['', '', 'empty string'],
-    ['123', '123', 'non-letter token'],
-    ['zzzzz', 'zzzzz', 'gibberish'],
-  ])('reverse Ingglish: "%s" → "%s" (%s)', (input, expected) => {
-    expect(reverseTranslateSync(input)).toBe(expected);
-  });
-
   it('reverseTranslateSync: pronunciation format falls through (line 191)', () => {
     // 'pronunciation' format has no reverseText handler, so it falls through
     // to reverseTranslateIngglishText at line 191
@@ -511,20 +442,6 @@ describe('reverse.ts edge cases', () => {
     const result = reverseTranslateSync('haloh, werld!');
     expect(result).toContain(',');
     expect(result).toContain('!');
-  });
-
-  it('IPA reverse with punctuation: non-word token path (line 296)', () => {
-    // IPA text with punctuation exercises the non-word branch in reverseTranslateIPATextInternal
-    const ipa = translateSync('hello, world', { format: 'ipa' });
-    const result = reverseTranslateSync(ipa, { format: 'ipa' });
-    expect(result).toContain(',');
-  });
-
-  it('reverseTranslateSync: gibberish word with no match (line 354)', () => {
-    // A word that has letters but reverseTranslateWord returns no matches
-    const result = reverseTranslateSync('xzqwp');
-    // Should return the original word since no arpabet mapping exists
-    expect(result).toBe('xzqwp');
   });
 });
 

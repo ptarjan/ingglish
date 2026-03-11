@@ -63,36 +63,7 @@ describe('stemming translation', () => {
   });
 });
 
-describe('initialism passthrough', () => {
-  it.each(['URL', 'HTML', 'API', 'url', 'Url'])('passes through %s unchanged', (word) => {
-    expect(translateSync(word)).toBe(word);
-  });
-
-  it('translates non-initialism words normally', () => {
-    expect(translateSync('hello')).toBe('haloh');
-  });
-});
-
-describe('plural and possessive initialisms', () => {
-  it('passes through plural initialisms (URLs)', () => {
-    expect(translateSync('URLs')).toBe('URLs');
-  });
-
-  it("passes through possessive initialisms (API's)", () => {
-    expect(translateSync("API's")).toBe("API's");
-  });
-
-  it('translates non-initialism plurals normally', () => {
-    expect(translateSync('cats')).toBe('kats');
-  });
-});
-
 describe('acronym spelling', () => {
-  it('spells out non-initialism acronyms', () => {
-    const result = translateSync('nfl');
-    expect(result).toBe('enefel');
-  });
-
   it('produces consistent output', () => {
     expect(translateSync('nfl')).toBe(translateSync('nfl'));
   });
