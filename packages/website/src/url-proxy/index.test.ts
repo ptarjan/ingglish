@@ -113,252 +113,191 @@ describe('normalizeCharsetToUtf8', () => {
 });
 
 describe('escapeHtmlAttr', () => {
-  it('escapes ampersands', () => {
-    expect(escapeHtmlAttr('a&b')).toBe('a&amp;b');
-  });
-
-  it('escapes double quotes', () => {
-    expect(escapeHtmlAttr('a"b')).toBe('a&quot;b');
-  });
-
-  it('escapes single quotes', () => {
-    expect(escapeHtmlAttr("a'b")).toBe('a&#39;b');
-  });
-
-  it('escapes less than', () => {
-    expect(escapeHtmlAttr('a<b')).toBe('a&lt;b');
-  });
-
-  it('escapes greater than', () => {
-    expect(escapeHtmlAttr('a>b')).toBe('a&gt;b');
-  });
-
-  it('escapes multiple special characters', () => {
-    expect(escapeHtmlAttr('<script>"alert(\'xss\')"</script>')).toBe(
-      '&lt;script&gt;&quot;alert(&#39;xss&#39;)&quot;&lt;/script&gt;'
-    );
-  });
-
-  it('handles URLs with query parameters', () => {
-    expect(escapeHtmlAttr('https://example.com?a=1&b=2')).toBe('https://example.com?a=1&amp;b=2');
-  });
-
-  it('returns empty string unchanged', () => {
-    expect(escapeHtmlAttr('')).toBe('');
-  });
-
-  it('returns safe strings unchanged', () => {
-    expect(escapeHtmlAttr('https://example.com/path')).toBe('https://example.com/path');
+  it.each([
+    ['ampersands', 'a&b', 'a&amp;b'],
+    ['double quotes', 'a"b', 'a&quot;b'],
+    ['single quotes', "a'b", 'a&#39;b'],
+    ['less than', 'a<b', 'a&lt;b'],
+    ['greater than', 'a>b', 'a&gt;b'],
+    [
+      'multiple special characters',
+      '<script>"alert(\'xss\')"</script>',
+      '&lt;script&gt;&quot;alert(&#39;xss&#39;)&quot;&lt;/script&gt;',
+    ],
+    [
+      'URLs with query parameters',
+      'https://example.com?a=1&b=2',
+      'https://example.com?a=1&amp;b=2',
+    ],
+    ['empty string unchanged', '', ''],
+    ['safe strings unchanged', 'https://example.com/path', 'https://example.com/path'],
+  ])('escapes %s', (_label, input, expected) => {
+    expect(escapeHtmlAttr(input)).toBe(expected);
   });
 });
 
 describe('normalizeUrl', () => {
-  it('returns null for empty string', () => {
-    expect(normalizeUrl('')).toBe(null);
-  });
-
-  it('returns null for whitespace only', () => {
-    expect(normalizeUrl('   ')).toBe(null);
-    expect(normalizeUrl('\t\n')).toBe(null);
-  });
-
-  it('adds https:// prefix when missing', () => {
-    expect(normalizeUrl('example.com')).toBe('https://example.com');
-    expect(normalizeUrl('www.example.com')).toBe('https://www.example.com');
-  });
-
-  it('preserves http:// prefix', () => {
-    expect(normalizeUrl('http://example.com')).toBe('http://example.com');
-  });
-
-  it('preserves https:// prefix', () => {
-    expect(normalizeUrl('https://example.com')).toBe('https://example.com');
-  });
-
-  it('returns null for invalid URLs', () => {
-    expect(normalizeUrl('not a valid url')).toBe(null);
-    expect(normalizeUrl('://missing-protocol')).toBe(null);
-  });
-
-  it('handles URLs with paths and query strings', () => {
-    expect(normalizeUrl('example.com/path?query=1')).toBe('https://example.com/path?query=1');
-  });
-
-  it('handles URLs with ports', () => {
-    expect(normalizeUrl('localhost:3000')).toBe('https://localhost:3000');
+  it.each([
+    ['empty string', '', null],
+    ['whitespace only (spaces)', '   ', null],
+    ['whitespace only (tab+newline)', '\t\n', null],
+    ['bare domain', 'example.com', 'https://example.com'],
+    ['www domain', 'www.example.com', 'https://www.example.com'],
+    ['http:// prefix', 'http://example.com', 'http://example.com'],
+    ['https:// prefix', 'https://example.com', 'https://example.com'],
+    ['invalid URL (spaces)', 'not a valid url', null],
+    ['invalid URL (missing protocol)', '://missing-protocol', null],
+    ['URL with path and query', 'example.com/path?query=1', 'https://example.com/path?query=1'],
+    ['URL with port', 'localhost:3000', 'https://localhost:3000'],
+  ])('normalizes %s', (_label, input, expected) => {
+    expect(normalizeUrl(input)).toBe(expected);
   });
 });
 
 describe('shouldSkipUrl', () => {
-  it('skips hash links', () => {
-    expect(shouldSkipUrl('#')).toBe(true);
-    expect(shouldSkipUrl('#section')).toBe(true);
-    expect(shouldSkipUrl('#top')).toBe(true);
-  });
-
-  it('skips javascript: URLs', () => {
-    expect(shouldSkipUrl('javascript:void(0)')).toBe(true);
-    expect(shouldSkipUrl('javascript:alert("hi")')).toBe(true);
-  });
-
-  it('skips mailto: URLs', () => {
-    expect(shouldSkipUrl('mailto:test@example.com')).toBe(true);
-    expect(shouldSkipUrl('mailto:user@domain.org?subject=Hello')).toBe(true);
-  });
-
-  it('does not skip regular URLs', () => {
-    expect(shouldSkipUrl('https://example.com')).toBe(false);
-    expect(shouldSkipUrl('http://example.com')).toBe(false);
-    expect(shouldSkipUrl('/relative/path')).toBe(false);
-    expect(shouldSkipUrl('relative/path')).toBe(false);
-  });
-
-  it('does not skip tel: URLs (not in skip list)', () => {
-    expect(shouldSkipUrl('tel:+1234567890')).toBe(false);
+  it.each([
+    ['hash link #', '#', true],
+    ['hash link #section', '#section', true],
+    ['hash link #top', '#top', true],
+    ['javascript:void(0)', 'javascript:void(0)', true],
+    ['javascript:alert("hi")', 'javascript:alert("hi")', true],
+    ['mailto:test@example.com', 'mailto:test@example.com', true],
+    ['mailto with subject', 'mailto:user@domain.org?subject=Hello', true],
+    ['https URL', 'https://example.com', false],
+    ['http URL', 'http://example.com', false],
+    ['absolute relative path', '/relative/path', false],
+    ['relative path', 'relative/path', false],
+    ['tel: URL (not in skip list)', 'tel:+1234567890', false],
+  ])('returns expected for %s', (_label, url, expected) => {
+    expect(shouldSkipUrl(url)).toBe(expected);
   });
 });
 
 describe('getBaseUrl', () => {
-  it('handles URLs ending with slash', () => {
-    expect(getBaseUrl('https://example.com/')).toBe('https://example.com/');
-    expect(getBaseUrl('https://example.com/path/')).toBe('https://example.com/path/');
-    expect(getBaseUrl('https://example.com/deep/path/')).toBe('https://example.com/deep/path/');
-  });
-
-  it('handles URLs with filenames', () => {
-    expect(getBaseUrl('https://example.com/page.html')).toBe('https://example.com/');
-    expect(getBaseUrl('https://example.com/path/page.html')).toBe('https://example.com/path/');
-    expect(getBaseUrl('https://example.com/deep/path/index.php')).toBe(
-      'https://example.com/deep/path/'
-    );
-  });
-
-  it('handles URLs without extension (strip last segment)', () => {
-    expect(getBaseUrl('https://example.com/nerdiversary')).toBe('https://example.com/');
-    expect(getBaseUrl('https://example.com/path/segment')).toBe('https://example.com/path/');
-    // HN-style: /item?id=123 → base is /
-    expect(getBaseUrl('https://news.ycombinator.com/item?id=47025011')).toBe(
-      'https://news.ycombinator.com/'
-    );
-  });
-
-  it('handles root URLs', () => {
-    expect(getBaseUrl('https://example.com')).toBe('https://example.com/');
-  });
-
-  it('handles URLs with ports', () => {
-    expect(getBaseUrl('http://localhost:3000/path/')).toBe('http://localhost:3000/path/');
-    expect(getBaseUrl('http://localhost:3000/page.html')).toBe('http://localhost:3000/');
+  it.each([
+    ['trailing slash (root)', 'https://example.com/', 'https://example.com/'],
+    ['trailing slash (one segment)', 'https://example.com/path/', 'https://example.com/path/'],
+    [
+      'trailing slash (deep path)',
+      'https://example.com/deep/path/',
+      'https://example.com/deep/path/',
+    ],
+    ['filename at root', 'https://example.com/page.html', 'https://example.com/'],
+    ['filename in path', 'https://example.com/path/page.html', 'https://example.com/path/'],
+    [
+      'filename deep path',
+      'https://example.com/deep/path/index.php',
+      'https://example.com/deep/path/',
+    ],
+    ['no extension (root segment)', 'https://example.com/nerdiversary', 'https://example.com/'],
+    [
+      'no extension (nested segment)',
+      'https://example.com/path/segment',
+      'https://example.com/path/',
+    ],
+    [
+      'HN-style query URL',
+      'https://news.ycombinator.com/item?id=47025011',
+      'https://news.ycombinator.com/',
+    ],
+    ['root URL without trailing slash', 'https://example.com', 'https://example.com/'],
+    ['port with trailing slash', 'http://localhost:3000/path/', 'http://localhost:3000/path/'],
+    ['port with filename', 'http://localhost:3000/page.html', 'http://localhost:3000/'],
+  ])('handles %s', (_label, input, expected) => {
+    expect(getBaseUrl(input)).toBe(expected);
   });
 });
 
 describe('extractBaseHref', () => {
-  it('extracts href from base tag with double quotes', () => {
-    expect(extractBaseHref('<head><base href="https://example.com/"></head>')).toBe(
-      'https://example.com/'
-    );
-  });
-
-  it('extracts href from base tag with single quotes', () => {
-    expect(extractBaseHref("<head><base href='https://example.com/'></head>")).toBe(
-      'https://example.com/'
-    );
-  });
-
-  it('extracts href from self-closing base tag', () => {
-    expect(extractBaseHref('<base href="https://example.com/" />')).toBe('https://example.com/');
-  });
-
-  it('is case-insensitive', () => {
-    expect(extractBaseHref('<BASE HREF="https://example.com/">')).toBe('https://example.com/');
-  });
-
-  it('returns null when no base tag exists', () => {
-    expect(extractBaseHref('<head><title>Test</title></head>')).toBeNull();
-  });
-
-  it('returns null for empty HTML', () => {
-    expect(extractBaseHref('')).toBeNull();
+  it.each([
+    [
+      'double-quoted href',
+      '<head><base href="https://example.com/"></head>',
+      'https://example.com/',
+    ],
+    [
+      'single-quoted href',
+      "<head><base href='https://example.com/'></head>",
+      'https://example.com/',
+    ],
+    ['self-closing base tag', '<base href="https://example.com/" />', 'https://example.com/'],
+    ['uppercase BASE HREF', '<BASE HREF="https://example.com/">', 'https://example.com/'],
+    ['no base tag', '<head><title>Test</title></head>', null],
+    ['empty HTML', '', null],
+  ])('extracts from %s', (_label, html, expected) => {
+    if (expected === null) {
+      expect(extractBaseHref(html)).toBeNull();
+    } else {
+      expect(extractBaseHref(html)).toBe(expected);
+    }
   });
 });
 
 describe('extractCanonicalUrl', () => {
-  it('extracts from link rel=canonical', () => {
-    expect(extractCanonicalUrl('<link rel="canonical" href="https://example.com/page">')).toBe(
-      'https://example.com/page'
-    );
-  });
-
-  it('extracts with href before rel', () => {
-    expect(extractCanonicalUrl('<link href="https://example.com/page" rel="canonical">')).toBe(
-      'https://example.com/page'
-    );
-  });
-
-  it('extracts from og:url meta tag', () => {
-    expect(extractCanonicalUrl('<meta property="og:url" content="https://example.com/page">')).toBe(
-      'https://example.com/page'
-    );
-  });
-
-  it('extracts og:url with content before property', () => {
-    expect(extractCanonicalUrl('<meta content="https://example.com/page" property="og:url">')).toBe(
-      'https://example.com/page'
-    );
-  });
-
-  it('prefers canonical over og:url', () => {
-    const html =
-      '<link rel="canonical" href="https://a.com/"><meta property="og:url" content="https://b.com/">';
-    expect(extractCanonicalUrl(html)).toBe('https://a.com/');
-  });
-
-  it('returns null when no canonical info exists', () => {
-    expect(extractCanonicalUrl('<head><title>Test</title></head>')).toBeNull();
-  });
-
-  it('returns null for empty HTML', () => {
-    expect(extractCanonicalUrl('')).toBeNull();
+  it.each([
+    [
+      'link rel=canonical',
+      '<link rel="canonical" href="https://example.com/page">',
+      'https://example.com/page',
+    ],
+    [
+      'href before rel',
+      '<link href="https://example.com/page" rel="canonical">',
+      'https://example.com/page',
+    ],
+    [
+      'og:url meta tag',
+      '<meta property="og:url" content="https://example.com/page">',
+      'https://example.com/page',
+    ],
+    [
+      'og:url with content before property',
+      '<meta content="https://example.com/page" property="og:url">',
+      'https://example.com/page',
+    ],
+    [
+      'canonical over og:url',
+      '<link rel="canonical" href="https://a.com/"><meta property="og:url" content="https://b.com/">',
+      'https://a.com/',
+    ],
+    ['no canonical info', '<head><title>Test</title></head>', null],
+    ['empty HTML', '', null],
+  ])('extracts from %s', (_label, html, expected) => {
+    if (expected === null) {
+      expect(extractCanonicalUrl(html)).toBeNull();
+    } else {
+      expect(extractCanonicalUrl(html)).toBe(expected);
+    }
   });
 });
 
 describe('injectBaseTag', () => {
   const baseUrl = 'https://example.com/path/';
 
-  it('injects base tag after <head> when present', () => {
-    const html = '<html><head><title>Test</title></head><body></body></html>';
-    const result = injectBaseTag(html, baseUrl);
-    expect(result).toBe(
-      '<html><head><base href="https://example.com/path/"><title>Test</title></head><body></body></html>'
-    );
-  });
-
-  it('creates head and injects base tag when only <html> is present', () => {
-    const html = '<html><body>Content</body></html>';
-    const result = injectBaseTag(html, baseUrl);
-    expect(result).toBe(
-      '<html><head><base href="https://example.com/path/"></head><body>Content</body></html>'
-    );
-  });
-
-  it('prepends base tag when no html or head tags present', () => {
-    const html = '<body>Content</body>';
-    const result = injectBaseTag(html, baseUrl);
-    expect(result).toBe('<base href="https://example.com/path/"><body>Content</body>');
-  });
-
-  it('handles empty HTML', () => {
-    const html = '';
-    const result = injectBaseTag(html, baseUrl);
-    expect(result).toBe('<base href="https://example.com/path/">');
-  });
-
-  it('handles HTML with uppercase tags', () => {
-    // Note: current implementation is case-sensitive
-    const html = '<HTML><HEAD></HEAD></HTML>';
-    const result = injectBaseTag(html, baseUrl);
-    // Since it looks for lowercase, it prepends
-    expect(result).toBe('<base href="https://example.com/path/"><HTML><HEAD></HEAD></HTML>');
+  it.each([
+    [
+      '<head> present',
+      '<html><head><title>Test</title></head><body></body></html>',
+      '<html><head><base href="https://example.com/path/"><title>Test</title></head><body></body></html>',
+    ],
+    [
+      'only <html> present',
+      '<html><body>Content</body></html>',
+      '<html><head><base href="https://example.com/path/"></head><body>Content</body></html>',
+    ],
+    [
+      'no html or head tags',
+      '<body>Content</body>',
+      '<base href="https://example.com/path/"><body>Content</body>',
+    ],
+    ['empty HTML', '', '<base href="https://example.com/path/">'],
+    [
+      'uppercase tags (case-sensitive)',
+      '<HTML><HEAD></HEAD></HTML>',
+      '<base href="https://example.com/path/"><HTML><HEAD></HEAD></HTML>',
+    ],
+  ])('injects base tag when %s', (_label, html, expected) => {
+    expect(injectBaseTag(html, baseUrl)).toBe(expected);
   });
 
   it('handles base URL with port', () => {
@@ -376,62 +315,44 @@ describe('injectBaseTag', () => {
 });
 
 describe('isHashOnlyChange', () => {
-  it('returns true for same URL with different hash', () => {
-    expect(isHashOnlyChange('https://example.com/page', 'https://example.com/page#section')).toBe(
-      true
-    );
-  });
-
-  it('returns true when hash changes', () => {
-    expect(isHashOnlyChange('https://example.com/page#one', 'https://example.com/page#two')).toBe(
-      true
-    );
-  });
-
-  it('returns false for different paths', () => {
-    expect(
-      isHashOnlyChange('https://example.com/page-a', 'https://example.com/page-b#section')
-    ).toBe(false);
-  });
-
-  it('returns false for different origins', () => {
-    expect(isHashOnlyChange('https://example.com/page', 'https://other.com/page#section')).toBe(
-      false
-    );
-  });
-
-  it('returns false when new URL has no hash', () => {
-    expect(isHashOnlyChange('https://example.com/page#section', 'https://example.com/page')).toBe(
-      false
-    );
-  });
-
-  it('returns false for different query strings', () => {
-    expect(
-      isHashOnlyChange('https://example.com/page?a=1', 'https://example.com/page?b=2#section')
-    ).toBe(false);
-  });
-
-  it('handles trailing slash differences (Wikipedia-style links)', () => {
-    // Wikipedia links often have trailing slash in the anchor href but not in the current URL
-    expect(
-      isHashOnlyChange(
-        'https://en.wikipedia.org/wiki/English_language',
-        'https://en.wikipedia.org/wiki/English_language/#History'
-      )
-    ).toBe(true);
-
-    expect(
-      isHashOnlyChange(
-        'https://en.wikipedia.org/wiki/English_language/',
-        'https://en.wikipedia.org/wiki/English_language#History'
-      )
-    ).toBe(true);
-  });
-
-  it('returns false for invalid URLs', () => {
-    expect(isHashOnlyChange('not a url', 'https://example.com#section')).toBe(false);
-    expect(isHashOnlyChange('https://example.com', 'not a url')).toBe(false);
+  it.each([
+    [
+      'same URL with added hash',
+      'https://example.com/page',
+      'https://example.com/page#section',
+      true,
+    ],
+    [
+      'hash changes from one to another',
+      'https://example.com/page#one',
+      'https://example.com/page#two',
+      true,
+    ],
+    [
+      'trailing slash added with hash (Wikipedia-style)',
+      'https://en.wikipedia.org/wiki/English_language',
+      'https://en.wikipedia.org/wiki/English_language/#History',
+      true,
+    ],
+    [
+      'trailing slash removed with hash (Wikipedia-style)',
+      'https://en.wikipedia.org/wiki/English_language/',
+      'https://en.wikipedia.org/wiki/English_language#History',
+      true,
+    ],
+    ['different paths', 'https://example.com/page-a', 'https://example.com/page-b#section', false],
+    ['different origins', 'https://example.com/page', 'https://other.com/page#section', false],
+    ['new URL has no hash', 'https://example.com/page#section', 'https://example.com/page', false],
+    [
+      'different query strings',
+      'https://example.com/page?a=1',
+      'https://example.com/page?b=2#section',
+      false,
+    ],
+    ['invalid current URL', 'not a url', 'https://example.com#section', false],
+    ['invalid new URL', 'https://example.com', 'not a url', false],
+  ])('returns expected for %s', (_label, currentUrl, newUrl, expected) => {
+    expect(isHashOnlyChange(currentUrl, newUrl)).toBe(expected);
   });
 });
 
@@ -441,62 +362,57 @@ describe('detectBotProtection', () => {
     expect(detectBotProtection(html)).toBe(null);
   });
 
-  it('detects Cloudflare challenge pages', () => {
-    const html =
-      '<html><head><title>Just a moment...</title></head><script>window._cf_chl_opt={}</script></html>';
-    expect(detectBotProtection(html)).toContain('Cloudflare protection');
-  });
-
-  it('detects Cloudflare challenge-platform scripts', () => {
-    const html = '<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script>';
-    expect(detectBotProtection(html)).toContain('Cloudflare protection');
-  });
-
-  it('detects Cloudflare block pages', () => {
-    const html = '<h1>Sorry, you have been blocked</h1><p>You are unable to access example.com</p>';
-    expect(detectBotProtection(html)).toContain('blocked');
-  });
-
-  it('detects Cloudflare attention required pages', () => {
-    const html = '<title>Attention Required! | Cloudflare</title>';
-    expect(detectBotProtection(html)).toContain('blocked');
-  });
-
-  it('detects JavaScript verification pages', () => {
-    const html = "<p>JavaScript is disabled</p><p>we need to verify that you're not a robot</p>";
-    expect(detectBotProtection(html)).toContain('JavaScript verification');
-  });
-
-  it('detects enable JavaScript continue pages', () => {
-    const html = '<p>Please enable JavaScript and cookies to continue</p>';
-    expect(detectBotProtection(html)).toContain('JavaScript verification');
-  });
-
-  it('is case insensitive', () => {
-    const html = '<H1>SORRY, YOU HAVE BEEN BLOCKED</H1>';
-    expect(detectBotProtection(html)).toContain('blocked');
+  it.each([
+    [
+      'Cloudflare challenge page',
+      '<html><head><title>Just a moment...</title></head><script>window._cf_chl_opt={}</script></html>',
+      'Cloudflare protection',
+    ],
+    [
+      'Cloudflare challenge-platform script',
+      '<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script>',
+      'Cloudflare protection',
+    ],
+    [
+      'Cloudflare block page',
+      '<h1>Sorry, you have been blocked</h1><p>You are unable to access example.com</p>',
+      'blocked',
+    ],
+    ['Cloudflare attention required', '<title>Attention Required! | Cloudflare</title>', 'blocked'],
+    [
+      'JavaScript verification page',
+      "<p>JavaScript is disabled</p><p>we need to verify that you're not a robot</p>",
+      'JavaScript verification',
+    ],
+    [
+      'enable JavaScript continue page',
+      '<p>Please enable JavaScript and cookies to continue</p>',
+      'JavaScript verification',
+    ],
+    ['case-insensitive block detection', '<H1>SORRY, YOU HAVE BEEN BLOCKED</H1>', 'blocked'],
+  ])('detects %s', (_label, html, expectedContains) => {
+    expect(detectBotProtection(html)).toContain(expectedContains);
   });
 });
 
 describe('stripScripts', () => {
-  it('removes script tags with content', () => {
-    const html = '<html><head><script>alert("hi")</script></head><body>Hello</body></html>';
-    expect(stripScripts(html)).toBe('<html><head></head><body>Hello</body></html>');
-  });
-
-  it('removes multiple script tags', () => {
-    const html = '<script>a</script><p>text</p><script>b</script>';
-    expect(stripScripts(html)).toBe('<p>text</p>');
-  });
-
-  it('removes script tags with attributes', () => {
-    const html = '<script type="text/javascript" src="app.js"></script>';
-    expect(stripScripts(html)).toBe('');
-  });
-
-  it('removes self-closing script tags', () => {
-    const html = '<script src="app.js"/><p>content</p>';
-    expect(stripScripts(html)).toBe('<p>content</p>');
+  it.each([
+    [
+      'script tags with content',
+      '<html><head><script>alert("hi")</script></head><body>Hello</body></html>',
+      '<html><head></head><body>Hello</body></html>',
+    ],
+    ['multiple script tags', '<script>a</script><p>text</p><script>b</script>', '<p>text</p>'],
+    ['script tags with attributes', '<script type="text/javascript" src="app.js"></script>', ''],
+    ['self-closing script tags', '<script src="app.js"/><p>content</p>', '<p>content</p>'],
+    ['case-insensitive script tags', '<SCRIPT>code</SCRIPT><Script>more</Script>', ''],
+    [
+      'preserves non-script content',
+      '<html><head><title>Test</title></head><body><p>Hello</p></body></html>',
+      '<html><head><title>Test</title></head><body><p>Hello</p></body></html>',
+    ],
+  ])('removes %s', (_label, html, expected) => {
+    expect(stripScripts(html)).toBe(expected);
   });
 
   it('handles multiline script content', () => {
@@ -506,16 +422,6 @@ describe('stripScripts', () => {
       }
     </script><p>text</p>`;
     expect(stripScripts(html)).toBe('<p>text</p>');
-  });
-
-  it('is case insensitive', () => {
-    const html = '<SCRIPT>code</SCRIPT><Script>more</Script>';
-    expect(stripScripts(html)).toBe('');
-  });
-
-  it('preserves other content', () => {
-    const html = '<html><head><title>Test</title></head><body><p>Hello</p></body></html>';
-    expect(stripScripts(html)).toBe(html);
   });
 });
 
@@ -746,27 +652,6 @@ describe('processProxiedHtml', () => {
 });
 
 describe('detectCharsetFromHeader', () => {
-  it('extracts charset from Content-Type header', () => {
-    const response = new Response('', {
-      headers: { 'Content-Type': 'text/html; charset=Shift_JIS' },
-    });
-    expect(detectCharsetFromHeader(response)).toBe('Shift_JIS');
-  });
-
-  it('extracts charset with quotes', () => {
-    const response = new Response('', {
-      headers: { 'Content-Type': 'text/html; charset="EUC-JP"' },
-    });
-    expect(detectCharsetFromHeader(response)).toBe('EUC-JP');
-  });
-
-  it('is case-insensitive', () => {
-    const response = new Response('', {
-      headers: { 'Content-Type': 'text/html; Charset=ISO-8859-1' },
-    });
-    expect(detectCharsetFromHeader(response)).toBe('ISO-8859-1');
-  });
-
   it('returns null when no Content-Type header', () => {
     // Response() sets a default Content-Type, so build one without it
     const response = new Response(null, { status: 200 });
@@ -779,6 +664,17 @@ describe('detectCharsetFromHeader', () => {
       headers: { 'Content-Type': 'text/html' },
     });
     expect(detectCharsetFromHeader(response)).toBeNull();
+  });
+
+  it.each([
+    ['standard charset', 'text/html; charset=Shift_JIS', 'Shift_JIS'],
+    ['quoted charset', 'text/html; charset="EUC-JP"', 'EUC-JP'],
+    ['case-insensitive Charset', 'text/html; Charset=ISO-8859-1', 'ISO-8859-1'],
+  ])('extracts %s from Content-Type header', (_label, contentType, expected) => {
+    const response = new Response('', {
+      headers: { 'Content-Type': contentType },
+    });
+    expect(detectCharsetFromHeader(response)).toBe(expected);
   });
 });
 
