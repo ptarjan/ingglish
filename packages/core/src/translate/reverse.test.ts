@@ -18,20 +18,12 @@ are written exactly as they sound - what you see is what you say!`;
 
 describe('reverse-translator', () => {
   describe('reverseTranslateSync (single words)', () => {
-    it('should translate simple words', () => {
-      // "kat" should map to "cat"
-      const result = reverseTranslateSync('kat');
-      expect(result).toBe('cat');
-    });
-
-    it('should preserve capitalization', () => {
-      const result = reverseTranslateSync('Kat');
-      expect(result).toBe('Cat');
-    });
-
-    it('should preserve ALL CAPS', () => {
-      const result = reverseTranslateSync('KAT');
-      expect(result).toBe('CAT');
+    it.each([
+      ['kat', 'cat', 'simple words'],
+      ['Kat', 'Cat', 'title case'],
+      ['KAT', 'CAT', 'ALL CAPS'],
+    ])('reverses %s → %s (%s)', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
     });
 
     it('should handle homophones by picking most common word', () => {
@@ -160,38 +152,21 @@ describe('reverse-translator', () => {
   });
 
   describe('reverseTranslateSync with IPA format', () => {
-    it('should translate simple IPA words', () => {
-      // /kæt/ -> "cat"
-      const result = reverseTranslateSync('kæt', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('cat');
+    it.each([
+      ['kæt', 'cat', 'simple word'],
+      ['/kæt/', 'cat', 'IPA brackets'],
+      ['ðə kæt', 'the cat', 'multiple words'],
+      ['həˈloʊ wɝld', 'hello world', 'IPA text'],
+    ])('reverse-translates IPA "%s" → "%s" (%s)', (ipa, expected) => {
+      expect(reverseTranslateSync(ipa, { format: 'ipa' }).toLowerCase()).toBe(expected);
     });
 
     it('should translate IPA with diphthongs', () => {
-      // /haɪ/ -> "hi" or "high"
       const result = reverseTranslateSync('haɪ', { format: 'ipa' });
       expect(['hi', 'high']).toContain(result.toLowerCase());
     });
 
-    it('should translate IPA text to English', () => {
-      // /həˈloʊ wɝld/ -> "hello world"
-      const result = reverseTranslateSync('həˈloʊ wɝld', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('hello world');
-    });
-
-    it('should handle IPA brackets', () => {
-      // Remove surrounding slashes
-      const result = reverseTranslateSync('/kæt/', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('cat');
-    });
-
-    it('should handle multiple words', () => {
-      // /ðə kæt/ -> "the cat"
-      const result = reverseTranslateSync('ðə kæt', { format: 'ipa' });
-      expect(result.toLowerCase()).toBe('the cat');
-    });
-
     it('should round-trip translateSync with IPA format', () => {
-      // Translate "hello world" to IPA, then back to English
       const ipa = translateSync('hello world', { format: 'ipa' });
       const back = reverseTranslateSync(ipa, { format: 'ipa' });
       expect(back.toLowerCase()).toBe('hello world');
@@ -279,19 +254,13 @@ describe('reverse-translator', () => {
   });
 
   describe('URL and email preservation', () => {
-    it('should preserve HTTP URLs unchanged', () => {
-      const result = reverseTranslateSync('Vizit http://example.com tuday');
-      expect(result).toContain('http://example.com');
-    });
-
-    it('should preserve HTTPS URLs unchanged', () => {
-      const result = reverseTranslateSync('Vizit https://example.com/path?q=1 tuday');
-      expect(result).toContain('https://example.com/path?q=1');
-    });
-
-    it('should preserve email addresses unchanged', () => {
-      const result = reverseTranslateSync('Kontakt foo@bar.com for help');
-      expect(result).toContain('foo@bar.com');
+    it.each([
+      ['Vizit http://example.com tuday', 'http://example.com', 'HTTP URL'],
+      ['Vizit https://example.com/path?q=1 tuday', 'https://example.com/path?q=1', 'HTTPS URL'],
+      ['Kontakt foo@bar.com for help', 'foo@bar.com', 'email address'],
+      ['Vizit google.com tuday', 'google.com', 'bare domain'],
+    ])('preserves %s in reverse (%s)', (input, preserved) => {
+      expect(reverseTranslateSync(input)).toContain(preserved);
     });
 
     it('should translate surrounding text while preserving URLs', () => {
@@ -304,11 +273,6 @@ describe('reverse-translator', () => {
       expect(result).toContain('http://a.com');
       expect(result).toContain('https://b.com');
       expect(result).toContain('x@y.com');
-    });
-
-    it('should preserve bare domains like google.com', () => {
-      const result = reverseTranslateSync('Vizit google.com tuday');
-      expect(result).toContain('google.com');
     });
   });
 

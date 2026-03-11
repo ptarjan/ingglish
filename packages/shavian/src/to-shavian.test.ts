@@ -13,19 +13,22 @@ describe('Shavian conversion', () => {
     expect(result).toBe('');
   });
 
-  it('should round-trip words through Shavian', () => {
-    for (const word of ['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world']) {
+  it.each(['cat', 'bird', 'car', 'air', 'shore', 'think', 'the', 'world'])(
+    'round-trips "%s" through Shavian',
+    (word) => {
       const shavian = translateSync(word, { format: 'shavian' });
       const english = reverseTranslateSync(shavian, { format: 'shavian' });
       expect(english, `Failed round-trip for "${word}"`).toBe(word);
     }
-  });
+  );
 
-  it('should produce R-colored ligatures', () => {
-    expect(translateSync('star', { format: 'shavian' })).toContain('𐑸'); // AA+R
-    expect(translateSync('care', { format: 'shavian' })).toContain('𐑺'); // EH+R
-    expect(translateSync('store', { format: 'shavian' })).toContain('𐑹'); // AO+R
-    expect(translateSync('beer', { format: 'shavian' })).toContain('𐑽'); // IH+R
+  it.each([
+    ['star', '𐑸', 'AA+R'],
+    ['care', '𐑺', 'EH+R'],
+    ['store', '𐑹', 'AO+R'],
+    ['beer', '𐑽', 'IH+R'],
+  ])('produces R-colored ligature for "%s" (%s)', (word, char) => {
+    expect(translateSync(word, { format: 'shavian' })).toContain(char);
   });
 
   it('should convert schwa', () => {

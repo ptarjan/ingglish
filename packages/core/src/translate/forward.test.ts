@@ -150,23 +150,23 @@ describe('translator', () => {
       expect(translateSync('resume')).toBe('rizoom');
     });
 
-    it('should strip diacritics per-word for non-homograph loanwords', () => {
-      // café→cafe, naïve→naive, cliché→cliche — same pronunciation
-      expect(translateSync('naïve')).toBe(translateSync('naive'));
-      expect(translateSync('café')).toBe(translateSync('cafe'));
-      expect(translateSync('cliché')).toBe(translateSync('cliche'));
+    it.each([
+      ['naïve', 'naive'],
+      ['café', 'cafe'],
+      ['cliché', 'cliche'],
+    ])('strips diacritics: %s → same as %s', (accented, plain) => {
+      expect(translateSync(accented)).toBe(translateSync(plain));
     });
 
-    it('should treat I as lowercase (English capitalizes I by convention only)', () => {
-      // "I" is always capitalized in English, but it's just a pronoun
-      // In Ingglish, there's no special reason to capitalize it
-      expect(translateSync('I')).toBe('ai');
-      expect(translateSync("I'm")).toBe('aim');
-      expect(translateSync("I'll")).toBe('ail');
-      expect(translateSync("I've")).toBe('aiv');
-      expect(translateSync("I'd")).toBe('aid');
-      // Lowercase remains lowercase
-      expect(translateSync('i')).toBe('ai');
+    it.each([
+      ['I', 'ai'],
+      ["I'm", 'aim'],
+      ["I'll", 'ail'],
+      ["I've", 'aiv'],
+      ["I'd", 'aid'],
+      ['i', 'ai'],
+    ])('treats "%s" as lowercase → %s', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
 
     it('should capitalize I at sentence start but not mid-sentence', () => {

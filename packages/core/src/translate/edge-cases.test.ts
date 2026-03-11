@@ -550,36 +550,21 @@ describe('forward.ts edge cases', () => {
 // ===========================================================================
 
 describe('reverse.ts edge cases', () => {
-  it('reverse IPA: empty string returns empty', () => {
-    expect(reverseTranslateSync('', { format: 'ipa' })).toBe('');
+  it.each([
+    ['', '', 'empty string'],
+    ['   ', '   ', 'whitespace-only'],
+    ['!!!', '!!!', 'unparseable IPA'],
+    ['ʒʒʒ', 'ʒʒʒ', 'no phoneme key match'],
+  ])('reverse IPA: "%s" → "%s" (%s)', (input, expected) => {
+    expect(reverseTranslateSync(input, { format: 'ipa' })).toBe(expected);
   });
 
-  it('reverse IPA: whitespace-only passes through', () => {
-    expect(reverseTranslateSync('   ', { format: 'ipa' })).toBe('   ');
-  });
-
-  it('reverse IPA: unparseable IPA returns original', () => {
-    const result = reverseTranslateSync('!!!', { format: 'ipa' });
-    expect(result).toBe('!!!');
-  });
-
-  it('reverse IPA: no phoneme key match returns original', () => {
-    // An IPA sequence that converts to arpabet but has no dictionary entry
-    const result = reverseTranslateSync('ʒʒʒ', { format: 'ipa' });
-    expect(result).toBe('ʒʒʒ');
-  });
-
-  it('reverse Ingglish: empty string returns empty', () => {
-    expect(reverseTranslateSync('')).toBe('');
-  });
-
-  it('reverse Ingglish: non-letter token passes through', () => {
-    expect(reverseTranslateSync('123')).toBe('123');
-  });
-
-  it('reverse Ingglish: gibberish returns as-is', () => {
-    const result = reverseTranslateSync('zzzzz');
-    expect(result).toBe('zzzzz');
+  it.each([
+    ['', '', 'empty string'],
+    ['123', '123', 'non-letter token'],
+    ['zzzzz', 'zzzzz', 'gibberish'],
+  ])('reverse Ingglish: "%s" → "%s" (%s)', (input, expected) => {
+    expect(reverseTranslateSync(input)).toBe(expected);
   });
 
   it('reverseTranslateSync: pronunciation format falls through (line 191)', () => {

@@ -70,21 +70,17 @@ describe('phoneme-map', () => {
   });
 
   describe('stripStress', () => {
-    it('should remove stress markers from phonemes', () => {
-      expect(stripStress('AH0')).toBe('AH');
-      expect(stripStress('EY1')).toBe('EY');
-      expect(stripStress('IY2')).toBe('IY');
-    });
-
-    it('should leave consonants unchanged', () => {
-      expect(stripStress('B')).toBe('B');
-      expect(stripStress('TH')).toBe('TH');
-      expect(stripStress('NG')).toBe('NG');
-    });
-
-    it('should handle already stripped vowels', () => {
-      expect(stripStress('AH')).toBe('AH');
-      expect(stripStress('IY')).toBe('IY');
+    it.each([
+      ['AH0', 'AH', 'removes stress 0'],
+      ['EY1', 'EY', 'removes stress 1'],
+      ['IY2', 'IY', 'removes stress 2'],
+      ['B', 'B', 'leaves consonant unchanged'],
+      ['TH', 'TH', 'leaves consonant unchanged'],
+      ['NG', 'NG', 'leaves consonant unchanged'],
+      ['AH', 'AH', 'already stripped'],
+      ['IY', 'IY', 'already stripped'],
+    ])('stripStress(%s) → %s (%s)', (input, expected) => {
+      expect(stripStress(input)).toBe(expected);
     });
   });
 
@@ -125,27 +121,20 @@ describe('R-colored vowels', () => {
     expect(translateSync(word)).toBe(expected);
   });
 
-  it('translates START vowel words (AA+R → ar)', () => {
-    expect(translateSync('star')).toBe('star');
-    expect(translateSync('car')).toBe('kar');
-    expect(translateSync('far')).toBe('far');
-  });
-
-  it('translates NORTH vowel words (AO+R → or)', () => {
-    expect(translateSync('store')).toBe('stor');
-    expect(translateSync('more')).toBe('mor');
-    expect(translateSync('bore')).toBe('bor');
-  });
-
-  it('translates SQUARE vowel words (EH+R → air)', () => {
-    expect(translateSync('care')).toBe('kair');
-    expect(translateSync('there')).toBe('dhair');
-  });
-
-  it('translates words with TRAP before R (AE+R → arr)', () => {
-    expect(translateSync('arrow')).toBe('arroh');
-    expect(translateSync('barrow')).toBe('barroh');
-    expect(translateSync('carrot')).toBe('karrat');
+  it.each([
+    ['star', 'star', 'START (AA+R → ar)'],
+    ['car', 'kar', 'START (AA+R → ar)'],
+    ['far', 'far', 'START (AA+R → ar)'],
+    ['store', 'stor', 'NORTH (AO+R → or)'],
+    ['more', 'mor', 'NORTH (AO+R → or)'],
+    ['bore', 'bor', 'NORTH (AO+R → or)'],
+    ['care', 'kair', 'SQUARE (EH+R → air)'],
+    ['there', 'dhair', 'SQUARE (EH+R → air)'],
+    ['arrow', 'arroh', 'TRAP+R (AE+R → arr)'],
+    ['barrow', 'barroh', 'TRAP+R (AE+R → arr)'],
+    ['carrot', 'karrat', 'TRAP+R (AE+R → arr)'],
+  ])('translates R-colored "%s" → "%s" (%s)', (word, expected) => {
+    expect(translateSync(word)).toBe(expected);
   });
 });
 
@@ -158,41 +147,45 @@ describe('common word translations', () => {
     expect(translateSync('beautiful')).toBe('byootafal');
   });
 
-  it('translates all vowel sounds', () => {
-    expect(translateSync('hot')).toBe('hot'); // AA
-    expect(translateSync('dog')).toBe('dawg'); // AO
-    expect(translateSync('law')).toBe('law'); // AO
-    expect(translateSync('cow')).toBe('kou'); // AW
-    expect(translateSync('out')).toBe('out'); // AW
-    expect(translateSync('bed')).toBe('bed'); // EH
-    expect(translateSync('red')).toBe('red'); // EH
-    expect(translateSync('day')).toBe('day'); // EY
-    expect(translateSync('say')).toBe('say'); // EY
-    expect(translateSync('see')).toBe('see'); // IY
-    expect(translateSync('me')).toBe('mee'); // IY
-    expect(translateSync('book')).toBe('buk'); // UH
-    expect(translateSync('put')).toBe('put'); // UH
-    expect(translateSync('boy')).toBe('boi'); // OY
-    expect(translateSync('my')).toBe('mai'); // AY
-    expect(translateSync('go')).toBe('goh'); // OW
-    expect(translateSync('zoo')).toBe('zoo'); // UW
-    expect(translateSync('cup')).toBe('kuhp'); // AH (stressed)
-    expect(translateSync('love')).toBe('luhv'); // AH (stressed)
-    expect(translateSync('buzz')).toBe('buhz'); // AH (stressed)
+  it.each([
+    ['hot', 'hot', 'AA'],
+    ['dog', 'dawg', 'AO'],
+    ['law', 'law', 'AO'],
+    ['cow', 'kou', 'AW'],
+    ['out', 'out', 'AW'],
+    ['bed', 'bed', 'EH'],
+    ['red', 'red', 'EH'],
+    ['day', 'day', 'EY'],
+    ['say', 'say', 'EY'],
+    ['see', 'see', 'IY'],
+    ['me', 'mee', 'IY'],
+    ['book', 'buk', 'UH'],
+    ['put', 'put', 'UH'],
+    ['boy', 'boi', 'OY'],
+    ['my', 'mai', 'AY'],
+    ['go', 'goh', 'OW'],
+    ['zoo', 'zoo', 'UW'],
+    ['cup', 'kuhp', 'AH stressed'],
+    ['love', 'luhv', 'AH stressed'],
+    ['buzz', 'buhz', 'AH stressed'],
+  ])('translates vowel sound: %s → %s (%s)', (word, expected) => {
+    expect(translateSync(word)).toBe(expected);
   });
 
-  it('translates all consonant sounds', () => {
-    expect(translateSync('go')).toBe('goh'); // G
-    expect(translateSync('pen')).toBe('pen'); // P
-    expect(translateSync('she')).toBe('shee'); // SH
-    expect(translateSync('fish')).toBe('fish'); // SH
-    expect(translateSync('very')).toBe('vairee'); // V
-    expect(translateSync('zoo')).toBe('zoo'); // Z
-    expect(translateSync('measure')).toBe('mezher'); // ZH
-    expect(translateSync('jump')).toBe('juhmp'); // JH, M, P
-    expect(translateSync('yes')).toBe('yes'); // Y (before non-UW vowel)
-    expect(translateSync('not')).toBe('not'); // N
-    expect(translateSync('bat')).toBe('bat'); // B
+  it.each([
+    ['go', 'goh', 'G'],
+    ['pen', 'pen', 'P'],
+    ['she', 'shee', 'SH'],
+    ['fish', 'fish', 'SH'],
+    ['very', 'vairee', 'V'],
+    ['zoo', 'zoo', 'Z'],
+    ['measure', 'mezher', 'ZH'],
+    ['jump', 'juhmp', 'JH+M+P'],
+    ['yes', 'yes', 'Y'],
+    ['not', 'not', 'N'],
+    ['bat', 'bat', 'B'],
+  ])('translates consonant sound: %s → %s (%s)', (word, expected) => {
+    expect(translateSync(word)).toBe(expected);
   });
 });
 
@@ -214,15 +207,14 @@ describe('arpabetToFormat fallback', () => {
 });
 
 describe('isVowel', () => {
-  it('identifies vowels with stress markers', () => {
-    expect(isVowel('AH0')).toBe(true);
-    expect(isVowel('EY1')).toBe(true);
-    expect(isVowel('IY2')).toBe(true);
-  });
-
-  it('identifies consonants as non-vowels', () => {
-    expect(isVowel('B')).toBe(false);
-    expect(isVowel('TH')).toBe(false);
+  it.each([
+    ['AH0', true],
+    ['EY1', true],
+    ['IY2', true],
+    ['B', false],
+    ['TH', false],
+  ])('isVowel(%s) → %s', (phoneme, expected) => {
+    expect(isVowel(phoneme)).toBe(expected);
   });
 });
 
@@ -236,17 +228,16 @@ describe('arpabetToFormat with disableRColoring', () => {
     ).toBe('sarang');
   });
 
-  it('treats all vowel+R as separate phonemes when disabled', () => {
-    // AA+R: "ar" stays "ar" (same result, different path)
-    expect(arpabetToFormat(['AA1', 'R'], 'ingglish', { disableRColoring: true })).toBe('or');
-    // AO+R: "or" → "aw"+"r" = "awr"
-    expect(arpabetToFormat(['AO1', 'R'], 'ingglish', { disableRColoring: true })).toBe('awr');
-    // EH+R: "air" → "e"+"r" = "er"
-    expect(arpabetToFormat(['EH1', 'R'], 'ingglish', { disableRColoring: true })).toBe('er');
-    // AE+R: "arr" → "a"+"r" = "ar"
-    expect(arpabetToFormat(['AE1', 'R'], 'ingglish', { disableRColoring: true })).toBe('ar');
-    // IH+R: "eer" → "i"+"r" = "ir"
-    expect(arpabetToFormat(['IH1', 'R'], 'ingglish', { disableRColoring: true })).toBe('ir');
+  it.each([
+    [['AA1', 'R'], 'or', 'AA+R'],
+    [['AO1', 'R'], 'awr', 'AO+R'],
+    [['EH1', 'R'], 'er', 'EH+R'],
+    [['AE1', 'R'], 'ar', 'AE+R'],
+    [['IH1', 'R'], 'ir', 'IH+R'],
+  ])('treats %s as separate phonemes → %s (%s)', (phonemes, expected) => {
+    expect(arpabetToFormat(phonemes, 'ingglish', { disableRColoring: true })).toBe(
+      expected
+    );
   });
 
   it('preserves unstressed schwa handling', () => {

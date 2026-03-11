@@ -126,36 +126,40 @@ describe('Deseret word translations', () => {
     expect(translateSync(word, { format: 'deseret' })).toBe(expected);
   });
 
-  it('should translate all consonant sounds to Deseret', () => {
-    expect(translateSync('pen', { format: 'deseret' })).toBe('𐐹𐐯𐑌'); // P 𐐹, N 𐑌
-    expect(translateSync('bat', { format: 'deseret' })).toBe('𐐺𐐰𐐻'); // B 𐐺, T 𐐻
-    expect(translateSync('dog', { format: 'deseret' })).toBe('𐐼𐐫𐑀'); // D 𐐼, G 𐑀
-    expect(translateSync('fish', { format: 'deseret' })).toBe('𐑁𐐮𐑇'); // F 𐑁, SH 𐑇
-    expect(translateSync('very', { format: 'deseret' })).toBe('𐑂𐐯𐑉𐐨'); // V 𐑂
-    expect(translateSync('zoo', { format: 'deseret' })).toBe('𐑆𐐭'); // Z 𐑆
-    expect(translateSync('measure', { format: 'deseret' })).toBe('𐑋𐐯𐑈𐐱𐑉'); // ZH 𐑈, M 𐑋
-    expect(translateSync('church', { format: 'deseret' })).toBe('𐐽𐐲𐑉𐐽'); // CH 𐐽
-    expect(translateSync('judge', { format: 'deseret' })).toBe('𐐾𐐲𐐾'); // JH 𐐾
-    expect(translateSync('red', { format: 'deseret' })).toBe('𐑉𐐯𐐼'); // R 𐑉
-    expect(translateSync('think', { format: 'deseret' })).toBe('𐑃𐐮𐑍𐐿'); // TH 𐑃, NG 𐑍, K 𐐿
-    expect(translateSync('yes', { format: 'deseret' })).toBe('𐐷𐐯𐑅'); // Y 𐐷, S 𐑅
-    expect(translateSync('world', { format: 'deseret' })).toBe('𐐶𐐲𐑉𐑊𐐼'); // W 𐐶, L 𐑊
+  it.each([
+    ['pen', '𐐹𐐯𐑌', 'P+N'],
+    ['bat', '𐐺𐐰𐐻', 'B+T'],
+    ['dog', '𐐼𐐫𐑀', 'D+G'],
+    ['fish', '𐑁𐐮𐑇', 'F+SH'],
+    ['very', '𐑂𐐯𐑉𐐨', 'V'],
+    ['zoo', '𐑆𐐭', 'Z'],
+    ['measure', '𐑋𐐯𐑈𐐱𐑉', 'ZH+M'],
+    ['church', '𐐽𐐲𐑉𐐽', 'CH'],
+    ['judge', '𐐾𐐲𐐾', 'JH'],
+    ['red', '𐑉𐐯𐐼', 'R'],
+    ['think', '𐑃𐐮𐑍𐐿', 'TH+NG+K'],
+    ['yes', '𐐷𐐯𐑅', 'Y+S'],
+    ['world', '𐐶𐐲𐑉𐑊𐐼', 'W+L'],
+  ])('translates Deseret consonant "%s" → %s (%s)', (word, expected) => {
+    expect(translateSync(word, { format: 'deseret' })).toBe(expected);
   });
 
-  it('should translate all vowel sounds to Deseret', () => {
-    expect(translateSync('hot', { format: 'deseret' })).toBe('𐐸𐐪𐐻'); // AA 𐐪
-    expect(translateSync('bed', { format: 'deseret' })).toBe('𐐺𐐯𐐼'); // EH 𐐯
-    expect(translateSync('book', { format: 'deseret' })).toBe('𐐺𐐳𐐿'); // UH 𐐳
-    expect(translateSync('see', { format: 'deseret' })).toBe('𐑅𐐨'); // IY 𐐨
-    expect(translateSync('day', { format: 'deseret' })).toBe('𐐼𐐩'); // EY 𐐩
-    expect(translateSync('my', { format: 'deseret' })).toBe('𐑋𐐴'); // AY 𐐴
-    expect(translateSync('cup', { format: 'deseret' })).toBe('𐐿𐐲𐐹'); // AH1 𐐲
-    expect(translateSync('go', { format: 'deseret' })).toBe('𐑀𐐬'); // OW 𐐬
-    expect(translateSync('zoo', { format: 'deseret' })).toBe('𐑆𐐭'); // UW 𐐭
-    expect(translateSync('cow', { format: 'deseret' })).toBe('𐐿𐐵'); // AW 𐐵
-    expect(translateSync('boy', { format: 'deseret' })).toBe('𐐺𐑎'); // OY 𐑎
-    expect(translateSync('law', { format: 'deseret' })).toBe('𐑊𐐫'); // AO 𐐫
-    expect(translateSync('about', { format: 'deseret' })).toBe('𐐱𐐺𐐵𐐻'); // AH0 𐐱
+  it.each([
+    ['hot', '𐐸𐐪𐐻', 'AA'],
+    ['bed', '𐐺𐐯𐐼', 'EH'],
+    ['book', '𐐺𐐳𐐿', 'UH'],
+    ['see', '𐑅𐐨', 'IY'],
+    ['day', '𐐼𐐩', 'EY'],
+    ['my', '𐑋𐐴', 'AY'],
+    ['cup', '𐐿𐐲𐐹', 'AH1'],
+    ['go', '𐑀𐐬', 'OW'],
+    ['zoo', '𐑆𐐭', 'UW'],
+    ['cow', '𐐿𐐵', 'AW'],
+    ['boy', '𐐺𐑎', 'OY'],
+    ['law', '𐑊𐐫', 'AO'],
+    ['about', '𐐱𐐺𐐵𐐻', 'AH0'],
+  ])('translates Deseret vowel "%s" → %s (%s)', (word, expected) => {
+    expect(translateSync(word, { format: 'deseret' })).toBe(expected);
   });
 
   it('should handle Y+UW → Ew ligature in Deseret', () => {
