@@ -235,9 +235,7 @@ describe('arpabetToFormat with disableRColoring', () => {
     [['AE1', 'R'], 'ar', 'AE+R'],
     [['IH1', 'R'], 'ir', 'IH+R'],
   ])('treats %s as separate phonemes → %s (%s)', (phonemes, expected) => {
-    expect(arpabetToFormat(phonemes, 'ingglish', { disableRColoring: true })).toBe(
-      expected
-    );
+    expect(arpabetToFormat(phonemes, 'ingglish', { disableRColoring: true })).toBe(expected);
   });
 
   it('preserves unstressed schwa handling', () => {
