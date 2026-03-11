@@ -25,7 +25,10 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.bench.ts'],
       reporter: ['text', 'json', 'html'],
+      thresholds: { lines: 100, functions: 100, statements: 100 },
     },
     // Performance optimizations
     // Single worker avoids loading dictionaries multiple times (9s vs 17s)

@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { reverseTranslateSync, reverseTranslateSyncWithMapping, translateSync } from '../index';
+import { setDictReverseMap } from '../dict-loader';
+import {
+  reverseTranslate,
+  reverseTranslateSync,
+  reverseTranslateSyncWithMapping,
+  translateSync,
+} from '../index';
+import { reverseTranslateIPAWord, reverseTranslateWord } from './reverse';
 
 const SAMPLE_TEXT = `The quick brown fox jumps over the lazy dog.
 This sentence contains every letter of the English alphabet.
@@ -302,6 +309,51 @@ describe('reverse-translator', () => {
     it('should preserve bare domains like google.com', () => {
       const result = reverseTranslateSync('Vizit google.com tuday');
       expect(result).toContain('google.com');
+    });
+  });
+
+  describe('reverseTranslateIPAWord edge cases', () => {
+    it('returns [] for empty string', () => {
+      expect(reverseTranslateIPAWord('')).toEqual([]);
+    });
+
+    it('returns [ipaWord] for whitespace-only input', () => {
+      expect(reverseTranslateIPAWord('   ')).toEqual(['   ']);
+    });
+
+    it('returns [ipaWord] for unconvertible IPA', () => {
+      // A string that ipaToArpabetClean returns null for
+      expect(reverseTranslateIPAWord('∅')).toEqual(['∅']);
+    });
+  });
+
+  describe('reverseTranslateWord edge cases', () => {
+    it('returns [] for empty string', () => {
+      expect(reverseTranslateWord('')).toEqual([]);
+    });
+
+    it('returns [word] for non-letter input', () => {
+      expect(reverseTranslateWord('123')).toEqual(['123']);
+    });
+  });
+
+  describe('non-English reverse translation', () => {
+    it('round-trips French words through reverse translation', async () => {
+      const { translate } = await import('../index');
+      const ingglish = await translate('bonjour', { lang: 'fr' });
+      const back = await reverseTranslate(ingglish, { lang: 'fr' });
+      expect(back.length).toBeGreaterThan(0);
+    });
+
+    it('falls back to alternative arpabet variant when primary key misses', () => {
+      // "kat" → arpabet ['K', 'AE', 'T'] → primary key "K AE T"
+      // Alternative: AE→AH → key "K AH T"
+      // Put word under AH key so primary misses but alternative hits
+      const reverseMap = new Map<string, string[]>([['K AH T', ['chat']]]);
+      setDictReverseMap('test-alt', reverseMap);
+
+      const result = reverseTranslateSync('kat', { lang: 'test-alt' });
+      expect(result).toBe('chat');
     });
   });
 });
