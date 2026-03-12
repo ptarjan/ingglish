@@ -13,7 +13,7 @@ describe('phonotactics', () => {
       [['S', 'T'], 0, 'entire cluster is valid onset'],
       [['NG', 'K'], 1, 'only last consonant valid'],
       [['NG'], 0, 'falls back to last consonant'],
-    ] as const)('findOnsetStart(%j) → %d (%s)', (input, expected) => {
+    ] as const)('findOnsetStart(%j) → %d (%s)', (input, expected, _desc) => {
       expect(findOnsetStart([...input])).toBe(expected);
     });
   });

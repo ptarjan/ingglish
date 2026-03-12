@@ -710,7 +710,7 @@ describe('dom-translator', () => {
       ['', [], 'empty text'],
       ['Hello 123 world!', ['hello', 'world'], 'skips numbers/non-words'],
       ['don\u2019t won\u2019t', ["don't", "won't"], 'normalizes apostrophes'],
-    ] as const)('extractWords(%s) → %j (%s)', (input, expected) => {
+    ] as const)('extractWords(%s) → %j (%s)', (input, expected, _desc) => {
       expect(extractWords(input)).toEqual([...expected]);
     });
   });
@@ -720,7 +720,7 @@ describe('dom-translator', () => {
       [['Hello world', 'Hello test'], ['hello', 'world', 'test'], 'multiple text nodes'],
       [[], [], 'empty array'],
       [[''], [], 'nodes with empty text content'],
-    ] as const)('should extract words from %j (%s)', (textContents, expected) => {
+    ] as const)('should extract words from %j (%s)', (textContents, expected, _desc) => {
       const nodes = textContents.map((t) => document.createTextNode(t));
       expect(extractWordsFromNodes(nodes)).toEqual([...expected]);
     });
@@ -760,7 +760,7 @@ describe('dom-translator', () => {
       ['<code>hello</code>', 'code', true, 'parent is skip tag'],
       ['<pre><span>hello</span></pre>', 'span', true, 'ancestor is skip tag'],
       ['<p>hello</p>', 'p', false, 'normal text node'],
-    ] as const)('%s (%s)', (html, selector, expected) => {
+    ] as const)('%s (%s)', (html, selector, expected, _desc) => {
       document.body.innerHTML = html;
       const textNode = document.querySelector(selector)!.firstChild as Text;
       expect(shouldSkipTextNode(textNode, DEFAULT_SKIP_TAGS, DEFAULT_SKIP_CLASSES)).toBe(expected);

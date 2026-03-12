@@ -258,7 +258,7 @@ describe('reverse-translator', () => {
       ['', [], 'empty string'],
       ['   ', ['   '], 'whitespace-only'],
       ['∅', ['∅'], 'unconvertible IPA'],
-    ] as const)('reverseTranslateIPAWord("%s") → %j (%s)', (input, expected) => {
+    ] as const)('reverseTranslateIPAWord("%s") → %j (%s)', (input, expected, _desc) => {
       expect(reverseTranslateIPAWord(input)).toEqual([...expected]);
     });
   });
@@ -267,7 +267,7 @@ describe('reverse-translator', () => {
     it.each([
       ['', [], 'empty string'],
       ['123', ['123'], 'non-letter input'],
-    ] as const)('reverseTranslateWord("%s") → %j (%s)', (input, expected) => {
+    ] as const)('reverseTranslateWord("%s") → %j (%s)', (input, expected, _desc) => {
       expect(reverseTranslateWord(input)).toEqual([...expected]);
     });
   });

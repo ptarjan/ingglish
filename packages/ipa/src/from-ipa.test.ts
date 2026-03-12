@@ -95,7 +95,7 @@ describe('ipaToArpabet — direct conversion (non-English, overrides, edge cases
     ['ɣ', undefined, ['G'], 'default ɣ → G'],
     ['ɣ', { ɣ: 'HH' }, ['HH'], 'Dutch ɣ → HH'],
     ['ɣut', { ɣ: 'HH' }, ['HH', 'UW', 'T'], 'Dutch goed'],
-  ] as const)('overrides: %s → %j (%s)', (ipa, overrides, expected) => {
+  ] as const)('overrides: %s → %j (%s)', (ipa, overrides, expected, _desc) => {
     expect(ipaToArpabet(ipa, overrides ?? undefined)).toEqual(expected);
   });
 

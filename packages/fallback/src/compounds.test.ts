@@ -6,7 +6,7 @@ describe('dpDecompose', () => {
     ['dogcat', ['dog', 'cat'], 'common words'],
     ['sunlight', ['sun', 'light'], 'fewer parts with higher frequency'],
     ['footprint', ['foot', 'print'], 'skips low-frequency parts'],
-  ] as const)('decomposes %s → %j (%s)', (word, expected) => {
+  ] as const)('decomposes %s → %j (%s)', (word, expected, _desc) => {
     expect(dpDecompose(word)).toEqual([...expected]);
   });
 

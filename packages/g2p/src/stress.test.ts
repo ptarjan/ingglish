@@ -5,7 +5,7 @@ describe('applyStressPrediction', () => {
   it.each([
     ['cat', ['K', 'AE1', 'T'], ['K', 'AE1', 'T'], 'monosyllabic unchanged'],
     ['str', ['S', 'T', 'R'], ['S', 'T', 'R'], 'zero-vowel unchanged'],
-  ] as const)('%s → passes through (%s)', (word, phonemes, expected) => {
+  ] as const)('%s → passes through (%s)', (word, phonemes, expected, _desc) => {
     expect(applyStressPrediction(word, [...phonemes])).toEqual([...expected]);
   });
 
@@ -29,7 +29,7 @@ describe('applyStressPrediction', () => {
     ['undo', ['AH1', 'N', 'D', 'UW1'], 3, 'un- prefix'],
     ['returning', ['R', 'IY1', 'T', 'ER1', 'N', 'IH1', 'NG'], 3, '-ing + re- prefix'],
     ['undoings', ['AH1', 'N', 'D', 'UW1', 'IH1', 'NG', 'Z'], 3, '-ings + un- prefix'],
-  ] as const)('stresses correct syllable in %s (%s)', (word, phonemes, stressIdx) => {
+  ] as const)('stresses correct syllable in %s (%s)', (word, phonemes, stressIdx, _desc) => {
     const result = applyStressPrediction(word, [...phonemes]);
     expect(result[stressIdx]).toMatch(/1$/);
   });

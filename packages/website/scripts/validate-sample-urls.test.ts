@@ -7,7 +7,7 @@ describe('charsetFromHeader', () => {
     ['text/html; charset=UTF-8', 'UTF-8', 'handles uppercase charset'],
     ['text/html; charset="iso-8859-1"', 'iso-8859-1', 'handles quoted charset'],
     ['text/html; charset = utf-8', 'utf-8', 'handles charset with spaces around equals'],
-  ] as const)('%s -> %s (%s)', (input, expected) => {
+  ] as const)('%s -> %s (%s)', (input, expected, _desc) => {
     expect(charsetFromHeader(input)).toBe(expected);
   });
 
@@ -42,7 +42,7 @@ describe('charsetFromHtml', () => {
       'windows-1252',
       'handles single-quoted charset',
     ],
-  ] as const)('%s -> %s (%s)', (html, expected) => {
+  ] as const)('%s -> %s (%s)', (html, expected, _desc) => {
     expect(charsetFromHtml(html)).toBe(expected);
   });
 
