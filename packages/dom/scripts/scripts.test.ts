@@ -19,38 +19,20 @@ async function run(scriptPath: string): Promise<string> {
 }
 
 describe('dom profile scripts', () => {
-  it('profile-dom', async () => {
-    const output = await run('./profile-dom');
-    expect(output).toContain('=== DOM Translation Profile ===');
-  }, 60_000);
-
-  it('profile-process-node', async () => {
-    const output = await run('./profile-process-node');
-    expect(output).toContain('=== processTextNode Deep Profile ===');
-  }, 60_000);
-
-  it('profile-real-html', async () => {
-    const output = await run('./profile-real-html');
-    expect(output).toContain('=== Real HTML DOM Profile ===');
-  }, 60_000);
-
-  it('profile-tooltips', async () => {
-    const output = await run('./profile-tooltips');
-    expect(output).toContain('=== Tooltip Performance Profile ===');
-  }, 60_000);
-
-  it('profile-tree-walker', async () => {
-    const output = await run('./profile-tree-walker');
-    expect(output).toContain('=== TreeWalker Alternatives Profile ===');
-  }, 60_000);
-
-  it('profile-walker-only', async () => {
-    const output = await run('./profile-walker-only');
-    expect(output).toContain('=== TreeWalker Profile (Pre-parsed DOM) ===');
-  }, 60_000);
-
-  it('profile-wikipedia', async () => {
-    const output = await run('./profile-wikipedia');
-    expect(output).toContain('=== Wikipedia DOM Profile ===');
-  }, 60_000);
+  it.each([
+    ['profile-dom', '=== DOM Translation Profile ==='],
+    ['profile-process-node', '=== processTextNode Deep Profile ==='],
+    ['profile-real-html', '=== Real HTML DOM Profile ==='],
+    ['profile-tooltips', '=== Tooltip Performance Profile ==='],
+    ['profile-tree-walker', '=== TreeWalker Alternatives Profile ==='],
+    ['profile-walker-only', '=== TreeWalker Profile (Pre-parsed DOM) ==='],
+    ['profile-wikipedia', '=== Wikipedia DOM Profile ==='],
+  ])(
+    '%s outputs expected header',
+    async (script, expectedHeader) => {
+      const output = await run(`./${script}`);
+      expect(output).toContain(expectedHeader);
+    },
+    60_000
+  );
 });

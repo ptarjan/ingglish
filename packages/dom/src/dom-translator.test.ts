@@ -716,21 +716,13 @@ describe('dom-translator', () => {
   });
 
   describe('extractWordsFromNodes', () => {
-    it('should extract unique words from multiple text nodes', () => {
-      const node1 = document.createTextNode('Hello world');
-      const node2 = document.createTextNode('Hello test');
-      const words = extractWordsFromNodes([node1, node2]);
-      expect(words).toEqual(['hello', 'world', 'test']);
-    });
-
-    it('should handle empty array', () => {
-      expect(extractWordsFromNodes([])).toEqual([]);
-    });
-
-    it('should handle nodes with null text content', () => {
-      const node = document.createTextNode('');
-      const words = extractWordsFromNodes([node]);
-      expect(words).toEqual([]);
+    it.each([
+      [['Hello world', 'Hello test'], ['hello', 'world', 'test'], 'multiple text nodes'],
+      [[], [], 'empty array'],
+      [[''], [], 'nodes with empty text content'],
+    ] as const)('should extract words from %j (%s)', (textContents, expected) => {
+      const nodes = textContents.map((t) => document.createTextNode(t));
+      expect(extractWordsFromNodes(nodes)).toEqual([...expected]);
     });
   });
 
