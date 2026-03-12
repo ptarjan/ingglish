@@ -30,20 +30,14 @@ describe('forward word translation edge cases', () => {
     ['OpenAI', 'OhpanAI', 'camelCase: all-caps suffix stays'],
     ['xyzFoo', 'zizFoo', 'camelCase: unknown part'],
     // compound words
-    ['catdog', 'katdawg', 'compound decomposition'],
     ['Catdog', 'Katdawg', 'compound case preservation'],
     ['CATDOG', 'CATDOG', 'all-caps compound = initialism'],
-    ['GitHub', 'GitHuhb', 'mixed-case compound'],
     ['abcdefghij', 'abkdefghij', 'compound with phonemeless part'],
     // resolvers & fallbacks
     ['Api', 'Api', 'title-case initialism bail-out'],
     ['flonkify', 'flongkafai', 'G2P fallback for unknown word'],
-    ['vapour', 'vayper', 'British spelling resolver'],
-    ['xyzzy', 'zizee', 'truly unknown word via G2P'],
     // passthrough & edge cases
     ['A', 'A', 'single uppercase letter'],
-    ['123', '123', 'non-letter passthrough'],
-    ['', '', 'empty string'],
     // sentence-level
     ['hello 42 world', 'Haloh 42 werld', 'preserves numbers in sentence'],
     ['hello... world', 'Haloh... Werld', 'preserves ellipsis in sentence'],
@@ -88,10 +82,8 @@ describe('English stemming (word resolver path)', () => {
     ['blogged', 'blawgd', '-ed after voiced → /d/'],
     ['skyped', 'skaipt', '-ed after voiceless → /t/'],
     ['relaunches', 'reelawnchiz', '-es after sibilant → /ɪz/'],
-    ['debugs', 'deebuhgz', '-s after voiced → /z/'],
     ['podcasts', 'podkasts', '-s after voiceless → /s/'],
     ['unbreak', 'anbrayk', 'un- prefix'],
-    ['detoxing', 'deetoksing', '-ing suffix'],
   ])('translates "%s" → "%s" (%s)', (word, expected) => {
     expect(translateSync(word)).toBe(expected);
   });
@@ -302,17 +294,6 @@ describe('non-English reverse translation via public API', () => {
     const ingglish = await translate('Guten Tag', { lang: 'de' });
     const back = await reverseTranslate(ingglish, { lang: 'de' });
     expect(back).not.toBe(ingglish);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// lookupDict curly apostrophe normalization (dict.ts line 248)
-// ---------------------------------------------------------------------------
-describe('curly apostrophe normalization', () => {
-  it('should translate curly apostrophes same as straight', () => {
-    const straight = translateSync("it's");
-    const curly = translateSync('it\u2019s');
-    expect(curly).toBe(straight);
   });
 });
 

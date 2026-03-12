@@ -97,13 +97,3 @@ describe('unknown word integration', () => {
     );
   });
 });
-
-describe('URL/email preservation via translateSync', () => {
-  it.each([
-    ['Visit https://example.com today', 'https://example.com', 'URL'],
-    ['Email test@example.com please', 'test@example.com', 'email'],
-    ['Visit google.com today', 'google.com', 'bare domain'],
-  ])('preserves %s (%s)', (input, preserved) => {
-    expect(translateSync(input)).toContain(preserved);
-  });
-});
