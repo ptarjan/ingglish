@@ -12,6 +12,8 @@ describe('G2P basic rules', () => {
     ['shug', 'shuhg', 'SH digraph'],
     ['chub', 'chuhb', 'CH digraph'],
     ['thub', 'thuhb', 'TH digraph'],
+    ['bluzz', 'bluhz', 'doubled ZZ'],
+    ['smutt', 'smuht', 'doubled TT'],
   ])('converts %s → %s (%s)', (word, expected) => {
     expect(g2p(word)).toBe(expected);
   });
@@ -23,11 +25,6 @@ describe('G2P basic rules', () => {
     ['psar', 'sar'],
   ])('handles word-initial silent letter in %s → %s', (word, expected) => {
     expect(g2p(word)).toBe(expected);
-  });
-
-  it('handles doubled consonants (ZZ, TT)', () => {
-    expect(g2p('bluzz')).toBe('bluhz');
-    expect(g2p('smutt')).toBe('smuht');
   });
 
   it('returns empty string for empty input', () => {

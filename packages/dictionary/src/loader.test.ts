@@ -7,11 +7,8 @@ describe('getDictionary', () => {
     expect(typeof dict).toBe('object');
   });
 
-  it('has expected entries for common words', () => {
-    const dict = getDictionary();
-    expect(Array.isArray(dict.hello)).toBe(true);
-    expect(Array.isArray(dict.the)).toBe(true);
-    expect(Array.isArray(dict.world)).toBe(true);
+  it.each(['hello', 'the', 'world'])('has entry for "%s"', (word) => {
+    expect(Array.isArray(getDictionary()[word])).toBe(true);
   });
 });
 

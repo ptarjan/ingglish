@@ -3,49 +3,30 @@ import { reverseTranslateSyncWithMapping, translateSync } from '../index';
 
 describe('non-Latin script translation of common words', () => {
   it('should translate "it" to shavian', () => {
-    const result = translateSync('it', { format: 'shavian' });
-    expect(result).toBe('𐑦𐑑');
+    expect(translateSync('it', { format: 'shavian' })).toBe('𐑦𐑑');
   });
 
-  it('should translate "it" to ingglish unchanged', () => {
-    const result = translateSync('it', { format: 'ingglish' });
-    expect(result).toBe('it');
+  it.each([
+    ['it', 'ingglish', 'it', 'lowercase unchanged'],
+    ['IT', 'ingglish', 'IT', 'uppercase unchanged'],
+  ])('keeps ingglish format: "%s" → "%s" (%s)', (input, format, expected) => {
+    expect(translateSync(input, { format: format as 'ingglish' })).toBe(expected);
   });
 
-  it('should translate "make it so" to all shavian', () => {
-    const result = translateSync('make it so', { format: 'shavian' });
-    expect(result).not.toMatch(/[a-z]/i);
+  it.each([
+    ['make it so', 'shavian', 'sentence'],
+    ['GIVE IT UP', 'shavian', 'all-caps sentence'],
+    ["it's great", 'shavian', 'contraction'],
+    ['GIVE IT UP', 'deseret', 'deseret all-caps'],
+  ])('produces no Latin characters for "%s" in %s (%s)', (input, format) => {
+    expect(translateSync(input, { format })).not.toMatch(/[a-z]/i);
   });
 
-  it('should translate "GIVE IT UP" to shavian (not keep Latin)', () => {
-    const result = translateSync('GIVE IT UP', { format: 'shavian' });
-    // Should not contain any Latin letters
-    expect(result).not.toMatch(/[a-z]/i);
-  });
-
-  it('should keep "IT" as-is for ingglish', () => {
-    const result = translateSync('IT', { format: 'ingglish' });
-    expect(result).toBe('IT');
-  });
-
-  it('should translate "us" to shavian (not confuse with US initialism)', () => {
-    const result = translateSync('us', { format: 'shavian' });
-    expect(result).not.toBe('us');
-  });
-
-  it('should translate "am" to shavian (not confuse with AM initialism)', () => {
-    const result = translateSync('am', { format: 'shavian' });
-    expect(result).not.toBe('am');
-  });
-
-  it('should translate "it\'s" as contraction in shavian', () => {
-    const result = translateSync("it's great", { format: 'shavian' });
-    expect(result).not.toMatch(/[a-z]/i);
-  });
-
-  it('should translate "GIVE IT UP" to deseret (not keep Latin)', () => {
-    const result = translateSync('GIVE IT UP', { format: 'deseret' });
-    expect(result).not.toMatch(/[a-z]/i);
+  it.each([
+    ['us', 'shavian', 'not confuse with US initialism'],
+    ['am', 'shavian', 'not confuse with AM initialism'],
+  ])('translates "%s" to %s (%s)', (input, format) => {
+    expect(translateSync(input, { format })).not.toBe(input);
   });
 });
 
