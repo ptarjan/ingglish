@@ -14,15 +14,9 @@ import {
 } from '../index';
 
 // ===========================================================================
-// Non-English translation via public API with real dicts
+// 1. Forward: word-level translation edge cases
 // ===========================================================================
-// Uses translate(text, { lang }) with real IPA dicts loaded from
-// packages/website/public/ipa-dicts/. Words are chosen to NOT be in the dict
-// (but their stems ARE) so that word resolvers and G2P converters fire.
 
-// ---------------------------------------------------------------------------
-// Forward: word-level translation edge cases (consolidated)
-// ---------------------------------------------------------------------------
 describe('forward word translation edge cases', () => {
   it.each([
     // camelCase
@@ -42,14 +36,21 @@ describe('forward word translation edge cases', () => {
     ['hello 42 world', 'Haloh 42 werld', 'preserves numbers in sentence'],
     ['hello... world', 'Haloh... Werld', 'preserves ellipsis in sentence'],
     ['bcdfg', '\uFFFDbcdfg', 'vowelless word gets NOT_FOUND_MARKER'],
+    // unstressed schwa mapping (to-ingglish.ts)
+    ['about', 'about', 'AH0 → "a" (unstressed schwa)'],
+    ['up', 'uhp', 'AH1 → "uh" (stressed)'],
+    // Unicode case patterns (normalize/case.ts)
+    ['CAFÉ', 'KAFAY', 'all caps with accent'],
+    ['Naïve', 'Naieev', 'title case with diaeresis'],
   ])('translateSync("%s") → "%s" (%s)', (input, expected) => {
     expect(translateSync(input)).toBe(expected);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Forward: untranslatable word gets NOT_FOUND_MARKER (forward.ts line 341)
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 2. Untranslatable words
+// ===========================================================================
+
 describe('untranslatable words', () => {
   it('should mark truly untranslatable words with marker', () => {
     // A word with no vowels and no dictionary entry
@@ -62,20 +63,10 @@ describe('untranslatable words', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Reverse: contraction handling (reverse.ts lines 332-347)
-// ---------------------------------------------------------------------------
-describe('reverse contraction handling', () => {
-  it("should reverse-translate it's", () => {
-    const ingglish = translateSync("it's");
-    const back = reverseTranslateSync(ingglish);
-    expect(back.toLowerCase()).toBe("it's");
-  });
-});
+// ===========================================================================
+// 3. English stemming edge cases
+// ===========================================================================
 
-// ---------------------------------------------------------------------------
-// English stemming (word resolver path)
-// ---------------------------------------------------------------------------
 describe('English stemming (word resolver path)', () => {
   it.each([
     ['formatted', 'formatid', '-ed after T/D → /ɪd/'],
@@ -89,98 +80,26 @@ describe('English stemming (word resolver path)', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Unstressed schwa mapping (to-ingglish.ts lines 22-26)
-// ---------------------------------------------------------------------------
-describe('unstressed schwa mapping', () => {
-  it.each([
-    ['about', 'about', 'AH0 → "a" (unstressed schwa)'],
-    ['up', 'uhp', 'AH1 → "uh" (stressed)'],
-  ])('translates %s → %s (%s)', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-});
+// ===========================================================================
+// 4. Reverse translation edge cases
+// ===========================================================================
 
-// ---------------------------------------------------------------------------
-// Reverse with mapping: contraction tokens
-// ---------------------------------------------------------------------------
-describe('reverse mapping with contractions', () => {
+describe('reverse translation edge cases', () => {
+  it("should reverse-translate it's (contraction handling)", () => {
+    const ingglish = translateSync("it's");
+    const back = reverseTranslateSync(ingglish);
+    expect(back.toLowerCase()).toBe("it's");
+  });
+
   it('should return matched tokens for contractions', () => {
     const ingglish = translateSync("she's happy");
     const tokens = reverseTranslateSyncWithMapping(ingglish);
     const words = tokens.filter((t) => t.isWord);
-    // All words should be matched
     for (const w of words) {
       expect(w.matched).toBe(true);
     }
   });
-});
 
-// ---------------------------------------------------------------------------
-// Pipeline: capitalizeSentenceStarts early return (pipeline.ts line 137)
-// ---------------------------------------------------------------------------
-describe('capitalizeSentenceStarts with non-case-preserving format', () => {
-  it('should skip capitalization for shavian format', () => {
-    // Shavian doesn't preserve case, so capitalizeSentenceStarts returns early
-    const tokens = translateSyncWithMapping('hello world', { format: 'shavian' });
-    // Should still produce valid tokens
-    expect(tokens.length).toBeGreaterThan(0);
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Reverse: non-English language reverse translation
-// ---------------------------------------------------------------------------
-describe('non-English reverse translation', () => {
-  it('should reverse-translate Japanese back to source word', async () => {
-    const ingglish = await translate('猫', { lang: 'ja' });
-    const back = await reverseTranslate(ingglish, { lang: 'ja' });
-    // May return kanji 猫 or katakana ネコ — both are valid for the same pronunciation
-    expect(back).not.toBe(ingglish); // Should be Japanese, not Ingglish
-  });
-
-  it('should return unmatched word when not in reverse map', () => {
-    // Reverse map built by prior test
-    const result = reverseTranslateSync('zzzzz', { lang: 'ja' });
-    expect(result).toBe('zzzzz');
-  });
-
-  it('should pass through non-letter tokens in non-English reverse', () => {
-    const result = reverseTranslateSync('123', { lang: 'ja' });
-    expect(result).toBe('123');
-  });
-
-  it('should return mapping tokens for non-English reverse', async () => {
-    const ingglish = await translate('猫', { lang: 'ja' });
-    const tokens = reverseTranslateSyncWithMapping(ingglish, { lang: 'ja' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(1);
-    expect(words[0]!.matched).toBe(true);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Forward: word not found with no G2P (forward.ts line 315)
-// ---------------------------------------------------------------------------
-describe('forward translation with no G2P fallback', () => {
-  it('should return word unchanged when not in dict and no G2P exists', async () => {
-    // Spanish has no G2P converter, so unknown words are returned unchanged
-    const result = await translate('xyzabc', { lang: 'es' });
-    expect(result).toContain('xyzabc');
-  });
-
-  it('should translate known words in the Spanish dict', async () => {
-    const result = await translate('hola', { lang: 'es' });
-    expect(result).not.toBe('hola');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Reverse: contraction with apostrophe in Ingglish input (reverse.ts lines 329, 332-338)
-// ---------------------------------------------------------------------------
-describe('reverse translation with apostrophes in input', () => {
   it('should handle Ingglish input containing apostrophe (contraction path)', () => {
     const result = reverseTranslateSync("dohn't");
     expect(result).toContain("'");
@@ -195,22 +114,54 @@ describe('reverse translation with apostrophes in input', () => {
     const result = reverseTranslateSync('haloh... werld');
     expect(result).toContain('...');
   });
-});
 
-// ---------------------------------------------------------------------------
-// English reverseTranslate (async, index.ts lines 50-51)
-// ---------------------------------------------------------------------------
-describe('English async reverseTranslate', () => {
   it('should reverse-translate English text via async API', async () => {
     const ingglish = translateSync('hello');
     const result = await reverseTranslate(ingglish);
     expect(result.toLowerCase()).toBe('hello');
   });
+
+  it('should reverse-translate IPA with mapping', () => {
+    const ipa = translateSync('hello world', { format: 'ipa' });
+    const tokens = reverseTranslateSyncWithMapping(ipa, { format: 'ipa' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
+    expect(words[0]!.translated.toLowerCase()).toBe('hello');
+  });
+
+  it.each([
+    ['', '', 'empty string'],
+    ['   ', '   ', 'whitespace-only'],
+    ['!!!', '!!!', 'unparseable IPA'],
+    ['ʒʒʒ', 'ʒʒʒ', 'no phoneme key match'],
+  ])('reverse IPA: "%s" → "%s" (%s)', (input, expected) => {
+    expect(reverseTranslateSync(input, { format: 'ipa' })).toBe(expected);
+  });
+
+  it('reverseTranslateSync: pronunciation format falls through', () => {
+    const ingglish = translateSync('hello');
+    const result = reverseTranslateSync(ingglish, { format: 'pronunciation' });
+    expect(result.toLowerCase()).toBe('hello');
+  });
+
+  it('reverseTranslateSyncWithMapping: pronunciation format falls through', () => {
+    const ingglish = translateSync('hello world');
+    const tokens = reverseTranslateSyncWithMapping(ingglish, { format: 'pronunciation' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
+  });
+
+  it('reverseTranslateWordAsResult: non-letter returns matched', () => {
+    const result = reverseTranslateSync('haloh, werld!');
+    expect(result).toContain(',');
+    expect(result).toContain('!');
+  });
 });
 
-// ---------------------------------------------------------------------------
-// Round-trip edge cases
-// ---------------------------------------------------------------------------
+// ===========================================================================
+// 5. Round-trip edge cases
+// ===========================================================================
+
 describe('round-trip edge cases', () => {
   it.each([
     ['knight', 'silent-letter'],
@@ -243,148 +194,78 @@ describe('round-trip edge cases', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// IPA format output (to-ipa.ts)
-// ---------------------------------------------------------------------------
-describe('IPA format translation', () => {
+// ===========================================================================
+// 6. Output format edge cases
+// ===========================================================================
+
+describe('output format edge cases', () => {
   it.each([
-    ['hello world', 'h\u0259\u2060\u02C8\u2060lo\u028A \u2060\u02C8\u2060w\u025Dld', 'sentence'],
-    [
-      'flonkify',
-      '\u2060\u02C8\u2060fl\u0251\u014Bk\u0259\u2060\u02CC\u2060fa\u026A',
-      'unknown word via G2P',
-    ],
+    ['hello world', 'hə⁠ˈ⁠loʊ ⁠ˈ⁠wɝld', 'IPA: sentence'],
+    ['flonkify', '⁠ˈ⁠flɑŋkə⁠ˌ⁠faɪ', 'IPA: unknown word via G2P'],
   ])('translates "%s" to IPA (%s)', (input, expected) => {
     expect(translateSync(input, { format: 'ipa' })).toBe(expected);
   });
-});
 
-// ---------------------------------------------------------------------------
-// Pronunciation/guide format (to-pronunciation.ts)
-// ---------------------------------------------------------------------------
-describe('pronunciation format translation', () => {
   it.each([
-    ['hello', 'ha-LOH', 'multisyllabic'],
-    ['beautiful', 'BYOO-ta-fal', '3 syllables'],
-    ['cat', 'KAT', 'monosyllabic'],
+    ['hello', 'ha-LOH', 'pronunciation: multisyllabic'],
+    ['beautiful', 'BYOO-ta-fal', 'pronunciation: 3 syllables'],
+    ['cat', 'KAT', 'pronunciation: monosyllabic'],
   ])('translates %s → %s (%s)', (word, expected) => {
     expect(translateSync(word, { format: 'pronunciation' })).toBe(expected);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Unicode case patterns (normalize/case.ts)
-// ---------------------------------------------------------------------------
-describe('Unicode case handling', () => {
-  it.each([
-    ['CAFÉ', 'KAFAY', 'all caps with accent'],
-    ['Naïve', 'Naieev', 'title case with diaeresis'],
-  ])('translates %s → %s (%s)', (word, expected) => {
-    expect(translateSync(word)).toBe(expected);
-  });
-});
-
+// ===========================================================================
+// 7. Non-English edge cases
+// ===========================================================================
+// Uses translate(text, { lang }) with real IPA dicts loaded from
+// packages/website/public/ipa-dicts/. Words are chosen to NOT be in the dict
+// (but their stems ARE) so that word resolvers and G2P converters fire.
 // Non-English word resolvers are covered by packages/ipa/src/resolvers.test.ts
 
-// ---------------------------------------------------------------------------
-// Non-English reverse translation via public API
-// ---------------------------------------------------------------------------
-describe('non-English reverse translation via public API', () => {
+describe('non-English edge cases', () => {
+  it('should reverse-translate Japanese back to source word', async () => {
+    const ingglish = await translate('猫', { lang: 'ja' });
+    const back = await reverseTranslate(ingglish, { lang: 'ja' });
+    // May return kanji 猫 or katakana ネコ — both are valid for the same pronunciation
+    expect(back).not.toBe(ingglish);
+  });
+
+  it('should return unmatched word when not in reverse map', () => {
+    const result = reverseTranslateSync('zzzzz', { lang: 'ja' });
+    expect(result).toBe('zzzzz');
+  });
+
+  it('should pass through non-letter tokens in non-English reverse', () => {
+    const result = reverseTranslateSync('123', { lang: 'ja' });
+    expect(result).toBe('123');
+  });
+
+  it('should return mapping tokens for non-English reverse', async () => {
+    const ingglish = await translate('猫', { lang: 'ja' });
+    const tokens = reverseTranslateSyncWithMapping(ingglish, { lang: 'ja' });
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(1);
+    expect(words[0]!.matched).toBe(true);
+  });
+
+  it('should return word unchanged when not in dict and no G2P exists', async () => {
+    // Spanish has no G2P converter, so unknown words are returned unchanged
+    const result = await translate('xyzabc', { lang: 'es' });
+    expect(result).toContain('xyzabc');
+  });
+
+  it('should translate known words in the Spanish dict', async () => {
+    const result = await translate('hola', { lang: 'es' });
+    expect(result).not.toBe('hola');
+  });
+
   it('should reverse-translate German', async () => {
     const ingglish = await translate('Guten Tag', { lang: 'de' });
     const back = await reverseTranslate(ingglish, { lang: 'de' });
     expect(back).not.toBe(ingglish);
   });
-});
 
-// ---------------------------------------------------------------------------
-// IPA reverse translation with mapping (reverse.ts reverseTranslateIPATextWithMapping)
-// ---------------------------------------------------------------------------
-describe('IPA reverse translation', () => {
-  it('should reverse-translate IPA with mapping', () => {
-    const ipa = translateSync('hello world', { format: 'ipa' });
-    const tokens = reverseTranslateSyncWithMapping(ipa, { format: 'ipa' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-    expect(words[0]!.translated.toLowerCase()).toBe('hello');
-  });
-});
-
-// ===========================================================================
-// Coverage: forward.ts edge cases
-// ===========================================================================
-
-describe('forward.ts edge cases', () => {
-  it('requireLangDict: throws for unloaded language (line 54)', () => {
-    expect(() => translateSync('hello', { lang: 'nonexistent-lang-xyz' })).toThrow(/not loaded/);
-  });
-
-  it('translateWordString: standalone apostrophes pass through (line 330)', () => {
-    const result = translateSync("' '");
-    expect(result).toBe("' '");
-  });
-
-  it('initialism in non-Latin script format: deseret (lines 415-418)', () => {
-    const result = translateSync('UI', { format: 'deseret' });
-    // Should be translated to Deseret, not pass through as "UI"
-    expect(result).not.toBe('UI');
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it('lowercase initialism in non-Latin script falls through (line 418)', () => {
-    const result = translateSync('api', { format: 'deseret' });
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it('initialism+suffix in non-Latin, lowercase base falls through (line 441)', () => {
-    const result = translateSync("it's", { format: 'deseret' });
-    expect(result.length).toBeGreaterThan(0);
-  });
-});
-
-// ===========================================================================
-// Coverage: reverse.ts edge cases
-// ===========================================================================
-
-describe('reverse.ts edge cases', () => {
-  it.each([
-    ['', '', 'empty string'],
-    ['   ', '   ', 'whitespace-only'],
-    ['!!!', '!!!', 'unparseable IPA'],
-    ['ʒʒʒ', 'ʒʒʒ', 'no phoneme key match'],
-  ])('reverse IPA: "%s" → "%s" (%s)', (input, expected) => {
-    expect(reverseTranslateSync(input, { format: 'ipa' })).toBe(expected);
-  });
-
-  it('reverseTranslateSync: pronunciation format falls through (line 191)', () => {
-    // 'pronunciation' format has no reverseText handler, so it falls through
-    // to reverseTranslateIngglishText at line 191
-    const ingglish = translateSync('hello');
-    const result = reverseTranslateSync(ingglish, { format: 'pronunciation' });
-    expect(result.toLowerCase()).toBe('hello');
-  });
-
-  it('reverseTranslateSyncWithMapping: pronunciation format falls through (line 215)', () => {
-    // 'pronunciation' format has no reverseTextWithMapping handler
-    const ingglish = translateSync('hello world');
-    const tokens = reverseTranslateSyncWithMapping(ingglish, { format: 'pronunciation' });
-    const words = tokens.filter((t) => t.isWord);
-    expect(words.length).toBe(2);
-  });
-
-  it('reverseTranslateWordAsResult: non-letter returns matched (line 329)', () => {
-    // Non-letter tokens in reverse translation should pass through
-    const result = reverseTranslateSync('haloh, werld!');
-    expect(result).toContain(',');
-    expect(result).toContain('!');
-  });
-});
-
-// ===========================================================================
-// Coverage: non-English reverse with alternative phoneme match (line 247)
-// ===========================================================================
-
-describe('non-English reverse edge cases (reverseLangWordAsResult)', () => {
   it('should find word via alternative phoneme interpretation (German)', async () => {
     const ingglish = await translate('Haus', { lang: 'de' });
     const back = await reverseTranslate(ingglish, { lang: 'de' });
@@ -393,43 +274,63 @@ describe('non-English reverse edge cases (reverseLangWordAsResult)', () => {
 });
 
 // ===========================================================================
-// Coverage: preserved.ts — text before placeholder (line 31)
+// 8. Pipeline/forward.ts edge cases
 // ===========================================================================
 
-describe('preserved pattern expansion', () => {
+describe('pipeline and forward.ts edge cases', () => {
+  it('requireLangDict: throws for unloaded language', () => {
+    expect(() => translateSync('hello', { lang: 'nonexistent-lang-xyz' })).toThrow(/not loaded/);
+  });
+
+  it('translateWordString: standalone apostrophes pass through', () => {
+    const result = translateSync("' '");
+    expect(result).toBe("' '");
+  });
+
+  it('initialism in non-Latin script format: deseret', () => {
+    const result = translateSync('UI', { format: 'deseret' });
+    expect(result).not.toBe('UI');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('lowercase initialism in non-Latin script falls through', () => {
+    const result = translateSync('api', { format: 'deseret' });
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('initialism+suffix in non-Latin, lowercase base falls through', () => {
+    const result = translateSync("it's", { format: 'deseret' });
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('should skip capitalization for shavian format', () => {
+    const tokens = translateSyncWithMapping('hello world', { format: 'shavian' });
+    expect(tokens.length).toBeGreaterThan(0);
+    const words = tokens.filter((t) => t.isWord);
+    expect(words.length).toBe(2);
+  });
+
   it('should preserve URLs with surrounding text in mapping', () => {
-    // A URL preceded by text in the same token should trigger the "before" path
     const tokens = translateSyncWithMapping('visit https://example.com today');
     const urlToken = tokens.find((t) => t.original.includes('https://'));
     expect(urlToken).toBeDefined();
     expect(urlToken!.translated).toContain('https://');
   });
 
-  it('should preserve multiple URLs in same token (preserved.ts line 31)', () => {
-    // Two URLs adjacent in the same separator token triggers matches.sort()
+  it('should preserve multiple URLs in same token', () => {
     const tokens = translateSyncWithMapping('go https://a.com https://b.com end');
     const urlTokens = tokens.filter((t) => t.translated.includes('https://'));
     expect(urlTokens.length).toBe(2);
   });
 
-  it('should preserve URL in renderText path (pipeline.ts expandPlaceholderText)', () => {
-    // translateSync uses renderText which has its own expandPlaceholderText
+  it('should preserve URL in renderText path', () => {
     const result = translateSync('visit https://example.com today');
     expect(result).toContain('https://example.com');
   });
-});
 
-// ===========================================================================
-// Coverage: pipeline.ts — capitalizeSentenceStarts after period (lines 154, 163)
-// ===========================================================================
-
-describe('pipeline.ts sentence capitalization', () => {
   it('should capitalize word after period in mapping', () => {
-    // translateSyncWithMapping calls capitalizeSentenceStarts
-    // "hello. world" — "world" should be capitalized after period
     const tokens = translateSyncWithMapping('hello. world');
     const words = tokens.filter((t) => t.isWord);
-    // Second word should start with uppercase
     expect(words.length).toBe(2);
     const secondWord = words[1]!.translated;
     expect(secondWord.charAt(0)).toBe(secondWord.charAt(0).toUpperCase());
