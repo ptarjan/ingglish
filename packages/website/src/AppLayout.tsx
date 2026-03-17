@@ -96,6 +96,16 @@ export default function AppLayout() {
   const activeTab = useMemo(() => getTabFromPath(location.pathname), [location.pathname]);
   const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
 
+  // Hide tabs on tutorial only for the very first visit (no prior navigation)
+  const [isFirstVisit] = useState(
+    () =>
+      activeTab === 'tutorial' &&
+      (typeof sessionStorage === 'undefined' || !sessionStorage.getItem('visited'))
+  );
+  useEffect(() => {
+    sessionStorage.setItem('visited', '1');
+  }, []);
+
   // Track page views and update document title
   useEffect(() => {
     // Docs and Games manage their own titles via sub-routes
@@ -173,7 +183,7 @@ export default function AppLayout() {
           </div>
         </header>
 
-        {activeTab !== 'tutorial' && (
+        {!(activeTab === 'tutorial' && isFirstVisit) && (
           <nav
             className="tabs hide-scrollbar"
             style={isLoading ? { visibility: 'hidden' } : undefined}
