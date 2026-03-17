@@ -2,10 +2,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { build as esbuild } from 'esbuild';
+import { marked } from 'marked';
 import { DOC_ENTRIES, GAME_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
 import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
 
@@ -132,6 +133,23 @@ const ROUTE_META: Record<string, RouteMeta> = {
 // Build a map from doc ID to title for per-doc metadata
 const DOC_TITLE_MAP = new Map(DOC_ENTRIES.map((e) => [e.id, e.title]));
 
+// Map doc IDs to their markdown file paths (relative to repo root)
+const DOC_FILE_MAP: Record<string, string> = {
+  'how-to-read-english': 'english-spelling-rules.md',
+  'how-to-spell-english': 'english-spelling-choices.md',
+  'api-reference': 'generated/README.md',
+};
+const DOCS_DIR = join(__dirname, '..', '..', 'docs');
+
+/** Read and render a doc's markdown to HTML for SEO injection. */
+function renderDocHtml(docId: string): string {
+  const filename = DOC_FILE_MAP[docId] ?? `${docId}.md`;
+  const mdPath = join(DOCS_DIR, filename);
+  if (!existsSync(mdPath)) return '';
+  const md = readFileSync(mdPath, 'utf-8');
+  return marked.parse(md, { async: false }) as string;
+}
+
 // Static body content injected into the loading screen for SEO.
 // React replaces the entire #root when it mounts, so this is only visible to crawlers
 // and users before JS loads.
@@ -190,11 +208,8 @@ function customizeHtml(html: string, route: string): string {
       : 'https://ingglish.com/og-image.png';
 
   // Inject per-route static body content for SEO (visible until React mounts)
-  const bodyContent =
-    ROUTE_BODY[route] ??
-    (docId !== null
-      ? `<h2>${DOC_TITLE_MAP.get(docId) ?? 'Documentation'}</h2><p>${description}</p>`
-      : '');
+  // Doc pages get their full rendered markdown; other routes get a short description.
+  const bodyContent = ROUTE_BODY[route] ?? (docId !== null ? renderDocHtml(docId) : '');
 
   let result = html
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
