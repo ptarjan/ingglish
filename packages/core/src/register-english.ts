@@ -23,10 +23,11 @@ WORD_RESOLVERS.en = (entries, word) => {
   const lookup = (w: string) => entries[w] ?? entries[w.toLowerCase()] ?? null;
 
   const british = matchBritish(word, lookup);
+  /* v8 ignore start -- covered via translateSync but v8 misattributes across packages */
   if (british) {
-    /* v8 ignore next -- covered via translateSync but v8 misattributes across packages */
     return british.phonemes;
   }
+  /* v8 ignore stop */
 
   const stemmed = matchStemming(word, lookup);
   if (stemmed) {
