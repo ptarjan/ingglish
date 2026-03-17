@@ -16,7 +16,7 @@ export async function blockExternalNetwork(page: Page) {
  */
 export async function waitForAppLoad(page: Page) {
   await expect(page.locator('.header h1')).toBeVisible({ timeout: 20_000 });
-  await expect(page.locator('.loading-spinner')).not.toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('.loading-spinner').first()).not.toBeVisible({ timeout: 20_000 });
 }
 
 /**

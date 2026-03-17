@@ -66,10 +66,10 @@ test.describe('Web Vitals', () => {
     await expect(page.locator('.logo')).toBeVisible();
 
     // Loading spinner should be inside .app > .main, not replacing the whole layout
-    const spinner = page.locator('.loading-spinner');
+    const spinner = page.locator('.main .loading-spinner').first();
     if (await spinner.isVisible()) {
       // Spinner should be a descendant of .app, not a sibling
-      await expect(page.locator('.app .loading-spinner')).toBeVisible();
+      await expect(page.locator('.app .loading-spinner').first()).toBeVisible();
     }
 
     // Wait for dictionary to finish loading
