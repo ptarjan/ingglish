@@ -6,7 +6,7 @@ const BOOKMARKLET_CODE = `javascript:void(function(){var s=document.createElemen
 type Browser = 'chrome' | 'edge' | 'firefox' | 'other' | 'safari';
 
 function detectBrowser(): Browser {
-  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent;
   if (ua.includes('Edg/')) {
     return 'edge';
   }
