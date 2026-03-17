@@ -132,6 +132,32 @@ const ROUTE_META: Record<string, RouteMeta> = {
 // Build a map from doc ID to title for per-doc metadata
 const DOC_TITLE_MAP = new Map(DOC_ENTRIES.map((e) => [e.id, e.title]));
 
+// Static body content injected into the loading screen for SEO.
+// React replaces the entire #root when it mounts, so this is only visible to crawlers
+// and users before JS loads.
+const ROUTE_BODY: Record<string, string> = {
+  text: `<h2>Text Translator</h2><p>Type or paste any English text to see it in Ingglish — phonetic English where every spelling always makes the same sound. No silent letters, no irregular pronunciations.</p><p>Example: "enough" → "enuf", "through" → "throo", "knight" → "nyt"</p>`,
+  url: `<h2>URL Translator</h2><p>Paste any URL and read the entire webpage in Ingglish. Every word is translated to phonetic spelling while keeping the original layout intact.</p>`,
+  guide: `<h2>Spelling Guide</h2><p>The complete guide to Ingglish phonetic spelling. See how every English sound maps to one consistent spelling. Learn the rules that make Ingglish predictable — if you can say it, you can spell it.</p>`,
+  experiment: `<h2>Experiment</h2><p>Design your own phonetic spelling system. Customize how each sound is written, test with sample text, and compare statistics against standard Ingglish.</p>`,
+  explore: `<h2>Word Explorer</h2><p>Look up any English word to see its full translation pipeline: phonemes, IPA transcription, Ingglish spelling, homophones, and word frequency data.</p>`,
+  extension: `<h2>Browser Extension &amp; Bookmarklet</h2><p>Translate any webpage to phonetic English with one click. Drag the bookmarklet to your bookmarks bar, or install the Chrome extension for instant translations.</p>`,
+  games: `<h2>Games</h2><p>Practice reading phonetic English with interactive games. Track your progress and challenge friends.</p><nav><ul>${GAME_ENTRIES.map((e) => `<li><a href="/games/${e.id}">${e.title}</a></li>`).join('')}</ul></nav>`,
+  docs: `<h2>Documentation</h2><p>Technical documentation for the Ingglish project. Covers design decisions, the phoneme mapping system, architecture, API reference, and performance optimization.</p><nav><ul>${DOC_ENTRIES.map((e) => `<li><a href="/docs/${e.id}">${e.title}</a></li>`).join('')}</ul></nav>`,
+  challenge: `<h2>Reading Challenge</h2><p>Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences. Share your results and compare with friends.</p>`,
+  'games/reading': `<h2>Reading Challenge</h2><p>Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.</p>`,
+  'games/homophones': `<h2>Homophones Quiz</h2><p>Can you tell which English word an Ingglish spelling represents? When "nyt" could mean "night" or "knight", test your knowledge of English homophones.</p>`,
+  'games/learn': `<h2>Learn to Read Ingglish</h2><p>8 progressive lessons teaching you to read phonetic English. Start with words that look the same, then advance to full sentences in Ingglish.</p>`,
+  'games/daily': `<h2>Daily Challenge</h2><p>A new Ingglish puzzle every day. 5 rounds with Wordle-style colored squares. Same challenge for everyone — share and compare your scores.</p>`,
+  'games/speedmatch': `<h2>Speed Match</h2><p>Match Ingglish words to their English translations as fast as you can. Race the clock across 3 rounds of increasing difficulty.</p>`,
+  'games/reverse': `<h2>Reverse Spelling</h2><p>See an English word and type how it looks in Ingglish. Tests your knowledge of phonetic spelling rules.</p>`,
+  'games/spelling-rules': `<h2>Spelling Rule Quiz</h2><p>Learn and test the rules behind Ingglish phonetic spelling. Understand why each word is spelled the way it is.</p>`,
+  'games/spell-that-sound': `<h2>Spell That Sound</h2><p>Hear a sound and choose the correct Ingglish spelling. Practice connecting sounds to their consistent letter patterns.</p>`,
+  'games/rule-or-exception': `<h2>Rule or Exception?</h2><p>Is an English spelling following the rules or breaking them? Test your understanding of when English spelling is regular vs. irregular.</p>`,
+  'games/pattern-sort': `<h2>Pattern Sort</h2><p>Sort words by their spelling patterns. A drag-and-drop game that builds your intuition for phonetic spelling rules.</p>`,
+  'games/origin-detective': `<h2>Origin Detective</h2><p>Guess the language origin of English words based on their spelling patterns. French, Latin, Greek, or Germanic? Their spelling gives clues.</p>`,
+};
+
 function customizeHtml(html: string, route: string): string {
   let title: string;
   let description: string;
@@ -163,7 +189,14 @@ function customizeHtml(html: string, route: string): string {
       ? `https://ingglish.com/og/${ogKey}.png`
       : 'https://ingglish.com/og-image.png';
 
-  return html
+  // Inject per-route static body content for SEO (visible until React mounts)
+  const bodyContent =
+    ROUTE_BODY[route] ??
+    (docId !== null
+      ? `<h2>${DOC_TITLE_MAP.get(docId) ?? 'Documentation'}</h2><p>${description}</p>`
+      : '');
+
+  let result = html
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(
       /<meta name="description" content="[^"]*"/,
@@ -195,6 +228,16 @@ function customizeHtml(html: string, route: string): string {
       /<meta name="twitter:image" content="[^"]*"/,
       `<meta name="twitter:image" content="${ogImageUrl}"`
     );
+
+  // Replace homepage SEO content with per-route content (visible until React mounts)
+  if (bodyContent) {
+    result = result.replace(
+      /<div class="seo-content"[^>]*>[\s\S]*?<\/div>\s*(?=<div class="loading-screen")/,
+      `<div class="seo-content" style="padding:2rem;max-width:48rem;margin:0 auto">${bodyContent}</div>\n          `
+    );
+  }
+
+  return result;
 }
 
 // Copy index.html to each route path so GitHub Pages serves the SPA for all routes
