@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { render } from '../entry-ssg';
 
 // Resolve relative to this file so it works regardless of cwd
 const DOCS_DIR = path.resolve(import.meta.dirname, '../../../../docs');
@@ -112,4 +113,25 @@ describe('Docs links', () => {
       }
     });
   }
+});
+
+describe('Docs SSG .md link transformation', () => {
+  it('SSG output has no raw .md links — all transformed to /docs/ paths', async () => {
+    const html = await render('/docs');
+    const mdLinks = html.match(/href="[^"]*\.md[^"]*"/g);
+    expect(mdLinks, `Found raw .md links in SSG output: ${mdLinks?.join(', ')}`).toBeNull();
+  });
+
+  it('SSG output contains /docs/ links with correct paths', async () => {
+    const html = await render('/docs');
+    // design-decisions.md is referenced from multiple docs
+    expect(html).toContain('href="/docs/design-decisions"');
+  });
+
+  it('SSG output preserves fragment identifiers in transformed links', async () => {
+    const html = await render('/docs/design-decisions');
+    // Check for a link with fragment (e.g. phoneme-mapping.md#some-section)
+    const fragLink = /href="\/docs\/[^"][^"#]*#[^"]+"/.exec(html);
+    expect(fragLink, 'Expected at least one /docs/ link with fragment').not.toBeNull();
+  });
 });

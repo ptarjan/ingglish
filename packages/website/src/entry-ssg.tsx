@@ -3,56 +3,63 @@ import { renderToString } from 'react-dom/server';
 import type { RouteObject } from 'react-router';
 import { createStaticHandler, createStaticRouter, StaticRouterProvider } from 'react-router';
 import AppLayout from './AppLayout';
-import { DictGate } from './components/DictGate';
 import Docs from './components/Docs';
 import ErrorBoundary from './components/ErrorBoundary';
 import Extension from './components/Extension';
-import TextTranslator from './components/TextTranslator';
-import Tutorial from './components/Tutorial';
+import SpellingGuide from './components/SpellingGuide';
 import { FormatProvider } from './contexts/FormatContext';
 
-// SSG-specific route config: eagerly import dict-independent components (Docs, Extension)
-// so they render their full content. Dict-dependent routes render the loading spinner
-// since the dictionary isn't available at build time — same as client initial render.
+// Noscript fallback for dict-dependent pages (spinner hidden by noscript CSS in index.html)
+const dictFallback = (
+  <noscript
+    dangerouslySetInnerHTML={{
+      __html:
+        '<p style="color:var(--color-text-muted,#64748b);padding:2rem;text-align:center">This page requires JavaScript for interactive features.</p>',
+    }}
+  />
+);
+
+// SSG-specific route config: eagerly import dict-independent components (Docs, Extension, SpellingGuide)
+// so they render their full content. Dict-dependent routes render a noscript fallback
+// since the dictionary isn't available at build time.
 const ssgRoutes: RouteObject[] = [
   {
     children: [
       {
         element: (
-          <DictGate>
-            <Tutorial />
-          </DictGate>
+          <>
+            <div className="loading-screen">
+              <div className="loading-spinner"></div>
+            </div>
+            {dictFallback}
+          </>
         ),
         index: true,
       },
       {
         element: (
-          <DictGate>
-            <ErrorBoundary>
-              <TextTranslator />
-            </ErrorBoundary>
-          </DictGate>
+          <>
+            <div className="loading-screen">
+              <div className="loading-spinner"></div>
+            </div>
+            {dictFallback}
+          </>
         ),
         path: 'text',
       },
       {
         element: (
-          <DictGate>
+          <>
             <div className="loading-screen">
               <div className="loading-spinner"></div>
             </div>
-          </DictGate>
+            {dictFallback}
+          </>
         ),
         path: 'url',
       },
       {
-        element: (
-          <DictGate>
-            <div className="loading-screen">
-              <div className="loading-spinner"></div>
-            </div>
-          </DictGate>
-        ),
+        element: <SpellingGuide />,
         path: 'guide',
       },
       {
@@ -61,21 +68,23 @@ const ssgRoutes: RouteObject[] = [
       },
       {
         element: (
-          <DictGate>
+          <>
             <div className="loading-screen">
               <div className="loading-spinner"></div>
             </div>
-          </DictGate>
+            {dictFallback}
+          </>
         ),
         path: 'explore',
       },
       {
         element: (
-          <DictGate>
+          <>
             <div className="loading-screen">
               <div className="loading-spinner"></div>
             </div>
-          </DictGate>
+            {dictFallback}
+          </>
         ),
         path: 'experiment',
       },
@@ -89,22 +98,24 @@ const ssgRoutes: RouteObject[] = [
       },
       {
         element: (
-          <DictGate>
+          <>
             <div className="loading-screen">
               <div className="loading-spinner"></div>
             </div>
-          </DictGate>
+            {dictFallback}
+          </>
         ),
         path: 'games/:gameId?',
       },
       {
         // /challenge redirects to /games/reading on the client; for SSG, render a loading spinner
         element: (
-          <DictGate>
+          <>
             <div className="loading-screen">
               <div className="loading-spinner"></div>
             </div>
-          </DictGate>
+            {dictFallback}
+          </>
         ),
         path: 'challenge',
       },

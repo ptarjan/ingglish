@@ -176,6 +176,11 @@ function decodeHtmlEntities(text: string): string {
   return textarea.value;
 }
 
+// Pre-transform all doc content so .md links work without JS
+for (const doc of docs) {
+  doc.content = transformMdLinks(doc.content);
+}
+
 function Docs(): JSX.Element {
   const { docId: paramDocId } = useParams<{ docId?: string }>();
   const navigate = useNavigate();
@@ -224,37 +229,32 @@ function Docs(): JSX.Element {
       heading.id = id;
     });
 
-    // Transform links
+    // Add SPA click handlers and target attributes to links
+    // (.md links are already transformed to /docs/:id paths at module level)
     container.querySelectorAll('a').forEach((link) => {
       const href = link.getAttribute('href');
       if (href === null || href === '') {
         return;
       }
 
-      // Transform .md links to path-based links with SPA navigation
-      if (href.includes('.md')) {
-        const [mdPath, section] = href.split('#') as [string, string | undefined];
-        const filename = mdPath.split('/').pop() ?? '';
-        const docId = filenameToId[filename];
-        if (docId !== undefined) {
-          link.setAttribute(
-            'href',
-            section !== undefined && section !== '' ? `/docs/${docId}#${section}` : `/docs/${docId}`
-          );
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (section !== undefined && section !== '') {
-              void navigate(`/docs/${docId}#${section}`);
-              setTimeout(() => {
-                document.querySelector(`#${CSS.escape(section)}`)?.scrollIntoView();
-              }, 100);
-            } else {
-              void navigate(`/docs/${docId}`);
-              window.scrollTo(0, 0);
-            }
-          });
-          return;
-        }
+      // Internal doc links — add SPA navigation click handler
+      if (href.startsWith('/docs/')) {
+        const url = new URL(href, globalThis.location.origin);
+        const docId = url.pathname.split('/').pop() ?? '';
+        const section = url.hash ? url.hash.slice(1) : undefined;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (section !== undefined && section !== '') {
+            void navigate(`/docs/${docId}#${section}`);
+            setTimeout(() => {
+              document.querySelector(`#${CSS.escape(section)}`)?.scrollIntoView();
+            }, 100);
+          } else {
+            void navigate(`/docs/${docId}`);
+            window.scrollTo(0, 0);
+          }
+        });
+        return;
       }
 
       // Anchor links - use standard #sectionId (stays on current doc page)
@@ -388,6 +388,25 @@ function extractHeadings(html: string): HeadingInfo[] {
     headings.push({ id, level, text });
   }
   return headings;
+}
+
+/**
+ * Replace .md file links with /docs/:id paths in HTML content.
+ * Runs at module level so SSG output has correct links without JS.
+ */
+function transformMdLinks(html: string): string {
+  return html.replaceAll(
+    /href="([^"]*\.md)(?:#([^"]*))?"/g,
+    (_match, mdPath: string, section?: string) => {
+      const filename = mdPath.split('/').pop() ?? '';
+      const docId = filenameToId[filename];
+      if (docId === undefined) {
+        return _match;
+      }
+      const frag = section !== undefined && section !== '' ? `#${section}` : '';
+      return `href="/docs/${docId}${frag}"`;
+    }
+  );
 }
 
 export default Docs;

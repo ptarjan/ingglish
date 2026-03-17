@@ -157,9 +157,7 @@ export const routes: RouteObject[] = [
       {
         element: (
           <SuspenseWrap>
-            <DictGate>
-              <SpellingGuide />
-            </DictGate>
+            <SpellingGuide />
           </SuspenseWrap>
         ),
         path: 'guide',
