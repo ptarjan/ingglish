@@ -123,7 +123,9 @@ export default function AppLayout() {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = (e.target as Element).closest?.('[data-orig]');
-      if (!target) {return;}
+      if (!target) {
+        return;
+      }
       const rect = target.getBoundingClientRect();
       target.classList.toggle('tooltip-below', rect.top < 35);
     };
@@ -207,7 +209,11 @@ export default function AppLayout() {
         <footer className="footer">
           <p>
             Ingglish uses the{' '}
-            <a href="https://github.com/cmusphinx/cmudict" rel="noopener noreferrer" target="_blank">
+            <a
+              href="https://github.com/cmusphinx/cmudict"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               CMU Pronouncing Dictionary
             </a>{' '}
             (126,000+ words) to convert English words to their phonemic spellings.{' '}
@@ -223,8 +229,12 @@ export default function AppLayout() {
 
 function getTabFromPath(pathname: string): Tab {
   const segment = pathname.replace(/\/$/, '').split('/')[1] ?? '';
-  if (segment === 'docs') {return 'docs';}
-  if (segment === 'games' || segment === 'challenge') {return 'games';}
+  if (segment === 'docs') {
+    return 'docs';
+  }
+  if (segment === 'games' || segment === 'challenge') {
+    return 'games';
+  }
   if (
     segment === 'tutorial' ||
     segment === 'text' ||

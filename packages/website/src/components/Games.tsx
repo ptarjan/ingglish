@@ -24,9 +24,7 @@ function Games(): JSX.Element {
 
   // Resolve to a valid game ID or null (hub view)
   const activeGame: GameId | null =
-    gameId !== undefined && GAME_ENTRIES.some((g) => g.id === gameId)
-      ? (gameId as GameId)
-      : null;
+    gameId !== undefined && GAME_ENTRIES.some((g) => g.id === gameId) ? (gameId as GameId) : null;
 
   // Update document title
   useEffect(() => {

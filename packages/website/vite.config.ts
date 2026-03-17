@@ -240,7 +240,8 @@ function preRenderRoutes(): Plugin {
             output: { format: 'esm' },
             // Suppress externalization warnings for node:fs/node:url
             onwarn(warning, warn) {
-              if (warning.message?.includes('has been externalized for browser compatibility')) return;
+              if (warning.message?.includes('has been externalized for browser compatibility'))
+                return;
               warn(warning);
             },
           },
@@ -269,10 +270,7 @@ function preRenderRoutes(): Plugin {
         // Inject rendered HTML into the #root div
         let html = baseHtml;
         if (appHtml) {
-          html = html.replace(
-            /<div id="root">[\s\S]*?<\/div>/,
-            `<div id="root">${appHtml}</div>`
-          );
+          html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
         }
 
         // Apply per-route metadata (title, description, OG tags)

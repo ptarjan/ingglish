@@ -80,7 +80,9 @@ function TextTranslatorRoute() {
     return shareUrl;
   }, []);
 
-  return <TextTranslator initialLang={initialLang} initialText={initialText} onShare={handleShareText} />;
+  return (
+    <TextTranslator initialLang={initialLang} initialText={initialText} onShare={handleShareText} />
+  );
 }
 
 /** Wrapper that provides share/navigate callbacks for UrlTranslator. */

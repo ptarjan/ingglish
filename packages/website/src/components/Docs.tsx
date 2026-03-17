@@ -183,9 +183,7 @@ function Docs(): JSX.Element {
 
   // Resolve activeDoc from URL param — default to first doc if param is missing or invalid
   const resolvedDocId =
-    paramDocId !== undefined && docs.some((d) => d.id === paramDocId)
-      ? paramDocId
-      : docs[0]!.id;
+    paramDocId !== undefined && docs.some((d) => d.id === paramDocId) ? paramDocId : docs[0]!.id;
 
   const [activeDoc, setActiveDoc] = useState(resolvedDocId);
   const [sidebarOpen, setSidebarOpen] = useState(true);
