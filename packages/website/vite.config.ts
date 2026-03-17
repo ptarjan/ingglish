@@ -267,10 +267,24 @@ function preRenderRoutes(): Plugin {
           appHtml = '';
         }
 
-        // Inject rendered HTML into the #root div
+        // Inject rendered HTML into the #root div, replacing the entire static shell.
+        // Use string indexOf instead of regex to correctly handle nested </div> tags.
         let html = baseHtml;
         if (appHtml) {
-          html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
+          const rootOpen = '<div id="root">';
+          const startIdx = html.indexOf(rootOpen);
+          if (startIdx !== -1) {
+            // Find the closing </div> that pairs with <div id="root">.
+            // It's the last </div> before the first <script> after the root open.
+            const afterRoot = html.indexOf('<script>', startIdx);
+            const closingDiv = html.lastIndexOf('</div>', afterRoot);
+            if (closingDiv !== -1) {
+              html =
+                html.slice(0, startIdx) +
+                `<div id="root">${appHtml}</div>` +
+                html.slice(closingDiv + '</div>'.length);
+            }
+          }
         }
 
         // Apply per-route metadata (title, description, OG tags)

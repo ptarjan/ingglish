@@ -24,7 +24,8 @@ WORD_RESOLVERS.en = (entries, word) => {
 
   const british = matchBritish(word, lookup);
   if (british) {
-    return british.phonemes; /* v8 ignore -- covered via translateSync but v8 misattributes across packages */
+    /* v8 ignore next -- covered via translateSync but v8 misattributes across packages */
+    return british.phonemes;
   }
 
   const stemmed = matchStemming(word, lookup);
