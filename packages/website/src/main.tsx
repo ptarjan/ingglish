@@ -32,22 +32,13 @@ if (rootElement === null) {
 
 const router = createBrowserRouter(routes);
 
-// Use hydrateRoot when SSG content is present (the .app div), createRoot otherwise (dev mode)
-if (rootElement.querySelector('.app')) {
-  ReactDOM.hydrateRoot(
-    rootElement,
-    <React.StrictMode>
-      <FormatProvider>
-        <RouterProvider router={router} />
-      </FormatProvider>
-    </React.StrictMode>
-  );
-} else {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <FormatProvider>
-        <RouterProvider router={router} />
-      </FormatProvider>
-    </React.StrictMode>
-  );
-}
+// Always use createRoot (not hydrateRoot). SSG content is for SEO crawlers only —
+// the client replaces it entirely. Hydration would require exact HTML parity between
+// SSG and client (dict loading state, theme, browser-only APIs) which isn't practical.
+ReactDOM.createRoot(rootElement).render(
+  <React.StrictMode>
+    <FormatProvider>
+      <RouterProvider router={router} />
+    </FormatProvider>
+  </React.StrictMode>
+);
