@@ -95,11 +95,19 @@
           </div>
           <div class="loading-screen" id="loading-screen">
             <div class="loading-spinner"></div>
-            <noscript><p style="color:var(--color-text-muted)">JavaScript is required to use Ingglish.</p></noscript>
+            <noscript><p style="color:var(--color-text-muted)">Interactive features require JavaScript.</p></noscript>
           </div>
         </main>
       </div>
     </div>
+    <noscript>
+      <style>
+        /* Hide loading spinners and reveal SSG content for no-JS users */
+        .loading-screen, .loading-spinner { display: none !important; }
+        .tabs, .subtitle-link { visibility: visible !important; }
+        .fonts-loading .header h1 { visibility: visible !important; }
+      </style>
+    </noscript>
     <script>
       // If JS bundle fails to load, show error after 10s instead of infinite spinner
       setTimeout(function() {
