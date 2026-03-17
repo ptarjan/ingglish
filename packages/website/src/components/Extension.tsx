@@ -6,7 +6,7 @@ const BOOKMARKLET_CODE = `javascript:void(function(){var s=document.createElemen
 type Browser = 'chrome' | 'edge' | 'firefox' | 'other' | 'safari';
 
 function detectBrowser(): Browser {
-  const ua = navigator.userAgent;
+  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   if (ua.includes('Edg/')) {
     return 'edge';
   }
@@ -22,7 +22,7 @@ function detectBrowser(): Browser {
   return 'other';
 }
 
-const isMac = navigator.userAgent.includes('Mac');
+const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac');
 const modKey = isMac ? '⌘' : 'Ctrl';
 
 const bookmarksBarInstructions: Record<Browser, { description: string; title: string }> = {
