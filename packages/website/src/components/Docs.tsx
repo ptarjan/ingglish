@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import architecture from '../../../../docs/architecture.md';
 import communityLandscape from '../../../../docs/community-landscape.md';
@@ -160,21 +161,41 @@ for (const doc of docs) {
 }
 
 function decodeHtmlEntities(text: string): string {
+  if (typeof document === 'undefined') {
+    // SSR fallback: decode common HTML entities
+    return text
+      .replaceAll('&amp;', '&')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+      .replaceAll('&quot;', '"')
+      .replaceAll('&#39;', "'")
+      .replaceAll('&nbsp;', ' ');
+  }
   const textarea = document.createElement('textarea');
   textarea.innerHTML = text;
   return textarea.value;
 }
 
 function Docs(): JSX.Element {
+  const { docId: paramDocId } = useParams<{ docId?: string }>();
+  const navigate = useNavigate();
   const contentRef = useRef<HTMLDivElement>(null);
-  const [activeDoc, setActiveDoc] = useState(() => {
-    const { docId } = parseDocsPath();
-    if (docId !== null && docs.some((d) => d.id === docId)) {
-      return docId;
-    }
-    return docs[0]!.id;
-  });
+
+  // Resolve activeDoc from URL param — default to first doc if param is missing or invalid
+  const resolvedDocId =
+    paramDocId !== undefined && docs.some((d) => d.id === paramDocId)
+      ? paramDocId
+      : docs[0]!.id;
+
+  const [activeDoc, setActiveDoc] = useState(resolvedDocId);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Sync activeDoc when URL param changes (e.g. browser back/forward)
+  useEffect(() => {
+    if (resolvedDocId !== activeDoc) {
+      setActiveDoc(resolvedDocId);
+    }
+  }, [resolvedDocId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll the active pill into view in the horizontal nav
   const activePillRef = useCallback((node: HTMLAnchorElement | null) => {
@@ -224,12 +245,13 @@ function Docs(): JSX.Element {
           );
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            setActiveDoc(docId);
             if (section !== undefined && section !== '') {
+              void navigate(`/docs/${docId}#${section}`);
               setTimeout(() => {
                 document.querySelector(`#${CSS.escape(section)}`)?.scrollIntoView();
               }, 100);
             } else {
+              void navigate(`/docs/${docId}`);
               window.scrollTo(0, 0);
             }
           });
@@ -246,20 +268,16 @@ function Docs(): JSX.Element {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
     });
-  }, [activeDoc, currentDoc.content]);
+  }, [activeDoc, currentDoc.content, navigate]);
 
-  // Update URL path and document title when switching docs
+  // Update document title when switching docs
   useEffect(() => {
-    const targetPath = `/docs/${activeDoc}`;
-    if (globalThis.location.pathname !== targetPath) {
-      globalThis.history.pushState(null, '', targetPath);
-    }
     document.title = `${currentDoc.title} | Ingglish Docs`;
   }, [activeDoc, currentDoc.title]);
 
   // Scroll to section on initial load
   useEffect(() => {
-    const { sectionId } = parseDocsPath();
+    const sectionId = globalThis.location.hash ? globalThis.location.hash.slice(1) : null;
     if (sectionId !== null) {
       setTimeout(() => {
         document.querySelector(`#${CSS.escape(sectionId)}`)?.scrollIntoView();
@@ -267,24 +285,23 @@ function Docs(): JSX.Element {
     }
   }, []);
 
-  // Handle browser back/forward
-  useEffect(() => {
-    const handlePopState = () => {
-      const { docId, sectionId } = parseDocsPath();
-      if (docId !== null && docs.some((d) => d.id === docId)) {
-        setActiveDoc(docId);
-        if (sectionId !== null) {
-          setTimeout(() => {
-            document.querySelector(`#${CSS.escape(sectionId)}`)?.scrollIntoView();
-          }, 100);
-        }
-      }
-    };
-    globalThis.addEventListener('popstate', handlePopState);
-    return () => {
-      globalThis.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
+  const handleDocClick = useCallback(
+    (docId: string) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      void navigate(`/docs/${docId}`);
+      window.scrollTo(0, 0);
+    },
+    [navigate]
+  );
+
+  const handleHeadingClick = useCallback(
+    (docId: string, headingId: string) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      document.querySelector(`#${CSS.escape(headingId)}`)?.scrollIntoView();
+      void navigate(`/docs/${docId}#${headingId}`);
+    },
+    [navigate]
+  );
 
   return (
     <>
@@ -315,11 +332,7 @@ function Docs(): JSX.Element {
                 <a
                   className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
                   href={`/docs/${doc.id}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveDoc(doc.id);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={handleDocClick(doc.id)}
                   ref={activeDoc === doc.id ? activePillRef : undefined}
                 >
                   {doc.title}
@@ -331,11 +344,7 @@ function Docs(): JSX.Element {
                         <a
                           className={`docs-subsection-link docs-subsection-h${heading.level}`}
                           href={`/docs/${doc.id}#${heading.id}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            document.querySelector(`#${CSS.escape(heading.id)}`)?.scrollIntoView();
-                            globalThis.history.pushState(null, '', `/docs/${doc.id}#${heading.id}`);
-                          }}
+                          onClick={handleHeadingClick(doc.id, heading.id)}
                         >
                           {heading.text}
                         </a>
@@ -381,16 +390,6 @@ function extractHeadings(html: string): HeadingInfo[] {
     headings.push({ id, level, text });
   }
   return headings;
-}
-
-function parseDocsPath(): { docId: null | string; sectionId: null | string } {
-  // Path: /docs/architecture → docId = 'architecture'
-  // Hash: #section → sectionId = 'section' (standard anchor scroll)
-  const segments = globalThis.location.pathname.replace(/\/$/, '').split('/');
-  // segments: ['', 'docs', 'architecture']
-  const docId = segments[2] ?? null;
-  const sectionId = globalThis.location.hash ? globalThis.location.hash.slice(1) : null;
-  return { docId, sectionId };
 }
 
 export default Docs;

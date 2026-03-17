@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import { Section1Ough } from './tutorial/Section1Ough';
 import { Section2WhatIf } from './tutorial/Section2WhatIf';
 import { Section3TryIt } from './tutorial/Section3TryIt';
@@ -7,11 +8,12 @@ import { Section6Progressive } from './tutorial/Section6Progressive';
 import { Section7Poem } from './tutorial/Section7Poem';
 import { Section8CTA } from './tutorial/Section8CTA';
 
-interface TutorialProps {
-  onNavigate: (tab: string) => void;
-}
+export default function Tutorial() {
+  const navigate = useNavigate();
+  const onNavigate = (tab: string) => {
+    void navigate(`/${tab}`);
+  };
 
-export default function Tutorial({ onNavigate }: TutorialProps) {
   return (
     <div className="tutorial">
       <Section1Ough />

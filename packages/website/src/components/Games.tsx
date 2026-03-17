@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import type { GameId } from '../routes';
 import { GAME_ENTRIES } from '../routes';
 import ErrorBoundary from './ErrorBoundary';
@@ -18,14 +19,17 @@ const PatternSort = lazy(() => import('./games/PatternSort'));
 const OriginDetective = lazy(() => import('./games/OriginDetective'));
 
 function Games(): JSX.Element {
-  const [activeGame, setActiveGame] = useState<GameId | null>(parseGamesPath);
+  const { gameId } = useParams<{ gameId?: string }>();
+  const navigate = useNavigate();
 
-  // Update URL path and title when switching games
+  // Resolve to a valid game ID or null (hub view)
+  const activeGame: GameId | null =
+    gameId !== undefined && GAME_ENTRIES.some((g) => g.id === gameId)
+      ? (gameId as GameId)
+      : null;
+
+  // Update document title
   useEffect(() => {
-    const targetPath = activeGame ? `/games/${activeGame}` : '/games';
-    if (globalThis.location.pathname !== targetPath) {
-      globalThis.history.pushState(null, '', targetPath);
-    }
     if (activeGame) {
       const entry = GAME_ENTRIES.find((g) => g.id === activeGame);
       document.title = `${entry?.title ?? 'Game'} | Ingglish`;
@@ -34,23 +38,9 @@ function Games(): JSX.Element {
     }
   }, [activeGame]);
 
-  // Handle browser back/forward
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveGame(parseGamesPath());
-    };
-    globalThis.addEventListener('popstate', handlePopState);
-    return () => {
-      globalThis.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
-
-  // Handle /challenge redirect
-  useEffect(() => {
-    if (globalThis.location.pathname.replace(/\/$/, '') === '/challenge') {
-      setActiveGame('reading');
-    }
-  }, []);
+  const handleSelectGame = (id: GameId) => {
+    void navigate(`/games/${id}`);
+  };
 
   const loading = (
     <div className="loading-screen">
@@ -61,7 +51,7 @@ function Games(): JSX.Element {
   return (
     <Suspense fallback={loading}>
       <ErrorBoundary>
-        {activeGame === null && <GamesHub onSelectGame={setActiveGame} />}
+        {activeGame === null && <GamesHub onSelectGame={handleSelectGame} />}
         {activeGame === 'reading' && <ReadingChallenge />}
         {activeGame === 'homophones' && <HomophonesQuiz />}
         {activeGame === 'learn' && <LearnToRead />}
@@ -76,16 +66,6 @@ function Games(): JSX.Element {
       </ErrorBoundary>
     </Suspense>
   );
-}
-
-function parseGamesPath(): GameId | null {
-  const segments = globalThis.location.pathname.replace(/\/$/, '').split('/');
-  // segments: ['', 'games', 'reading'] or ['', 'games']
-  const gameId = segments[2] as GameId | undefined;
-  if (gameId && GAME_ENTRIES.some((g) => g.id === gameId)) {
-    return gameId;
-  }
-  return null;
 }
 
 export default Games;
