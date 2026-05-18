@@ -13,7 +13,7 @@
     "test": "vitest run --no-color"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260228.0",
-    "wrangler": "^4.67.0"
+    "@cloudflare/workers-types": "^4.20260518.1",
+    "wrangler": "^4.92.0"
   }
 }
