@@ -44,8 +44,8 @@
     "ingglish": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3",
-    "jsdom": "^29.0.0",
+    "@types/node": "^25.9.2",
+    "jsdom": "^29.1.1",
     "vite": "^7.3.1"
   },
   "keywords": [

@@ -23,8 +23,8 @@
     "@ingglish/deseret": "^0.1.0"
   },
   "devDependencies": {
-    "@types/chrome": "^0.1.37",
-    "jsdom": "^29.0.0",
+    "@types/chrome": "^0.1.43",
+    "jsdom": "^29.1.1",
     "sharp": "^0.34.5"
   }
 }
