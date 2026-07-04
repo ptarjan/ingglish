@@ -226,6 +226,25 @@ describe('unknown-words', () => {
     ])('translates "%s" → "%s" via G2P fallback', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
     });
+
+    // De-doubling (runn -> run) must still work for genuinely doubled stems...
+    it.each([
+      ['running', 'ruhning'],
+      ['stopped', 'stopt'],
+      ['batted', 'batid'],
+      ['bigger', 'biger'],
+    ])('keeps de-doubling for doubled-consonant stem "%s" → "%s"', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
+    });
+
+    // ...but must not drop a real final consonant when the shortened stem
+    // happens to be a word ("yeet" -> "yee"). These fall through to G2P.
+    it.each([
+      ['yeeted', 'yeetid'],
+      ['weeted', 'weetid'],
+    ])('does not drop the final consonant of "%s" (→ "%s")', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
+    });
   });
 
   describe('British spelling handling', () => {

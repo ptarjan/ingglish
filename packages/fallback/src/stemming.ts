@@ -208,9 +208,15 @@ function getStemVariants(stem: string, suffix: string): string[] {
   if (INFLECTIONAL_SUFFIXES.has(suffix)) {
     variants.push(
       stem + 'e', // hoping -> hope
-      stem.length > 1 ? stem.slice(0, -1) : stem, // running -> run (double consonant)
       stem.length > 0 ? stem + stem.at(-1)! : stem // big -> bigg (for adding -er)
     );
+    // Drop the stem's last letter only when it is either a doubled consonant
+    // (running -> runn -> run) or a linking "-i-" (fussier -> fussi -> fuss).
+    // Applying slice() unconditionally would drop a real final consonant when
+    // the shortened form happens to be a word (e.g. "yeeted" -> "yeet" -> "yee").
+    if (stem.length > 1 && (stem.at(-1) === stem.at(-2) || stem.at(-1) === 'i')) {
+      variants.push(stem.slice(0, -1));
+    }
   }
   if (stem.endsWith('i')) {
     variants.push(stem.slice(0, -1) + 'y'); // loveliest -> lovely
