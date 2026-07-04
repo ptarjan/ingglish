@@ -55,8 +55,19 @@ describe('cors-proxy', () => {
       ['169.254.169.254', true, 'AWS metadata'],
       ['0.0.0.0', true, 'current network'],
       ['::1', true, 'IPv6 loopback'],
+      ['[::1]', true, 'IPv6 loopback bracketed (URL.hostname form)'],
+      ['::', true, 'IPv6 unspecified'],
       ['fc00::1', true, 'IPv6 private fc00'],
       ['fd00::1', true, 'IPv6 private fd00'],
+      ['[fd12:3456::1]', true, 'IPv6 ULA bracketed'],
+      ['fe80::1', true, 'IPv6 link-local'],
+      ['[fe80::abcd]', true, 'IPv6 link-local bracketed'],
+      ['::ffff:127.0.0.1', true, 'IPv4-mapped loopback dotted'],
+      ['[::ffff:7f00:1]', true, 'IPv4-mapped loopback hex (URL.hostname form)'],
+      ['::ffff:169.254.169.254', true, 'IPv4-mapped AWS metadata'],
+      ['[::ffff:a9fe:a9fe]', true, 'IPv4-mapped AWS metadata hex'],
+      ['::ffff:8.8.8.8', false, 'IPv4-mapped public address'],
+      ['2001:4860:4860::8888', false, 'public IPv6 (Google DNS)'],
       ['google.com', false, 'public domain'],
       ['8.8.8.8', false, 'public DNS'],
       ['1.1.1.1', false, 'Cloudflare DNS'],
@@ -302,6 +313,96 @@ describe('cors-proxy', () => {
       const response = await worker.fetch(request, env);
       expect(response.status).toBe(403);
       expect(await response.text()).toBe('Forbidden: Private networks not allowed');
+    });
+
+    it.each([
+      ['http://169.254.169.254/latest/meta-data/', 'IPv4 AWS metadata'],
+      ['http://[::1]/', 'IPv6 loopback'],
+      ['http://[::ffff:127.0.0.1]/', 'IPv4-mapped loopback'],
+      ['http://10.0.0.1/internal', 'private Class A'],
+    ])('should block SSRF via redirect to %s (%s)', async (redirectTarget) => {
+      // First hop is a public host that 302-redirects to an internal address.
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(null, {
+          headers: { Location: redirectTarget },
+          status: 302,
+        })
+      );
+
+      const request = new Request(
+        'https://proxy.example.com/?url=https://public-but-evil.example/',
+        {
+          headers: { Origin: 'https://ingglish.com' },
+          method: 'GET',
+        }
+      );
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(403);
+      expect(await response.text()).toBe('Forbidden: redirect to private network');
+    });
+
+    it('should block redirect to a disallowed protocol', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(null, {
+          headers: { Location: 'file:///etc/passwd' },
+          status: 301,
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(403);
+      expect(await response.text()).toBe('Forbidden: redirect to disallowed protocol');
+    });
+
+    it('should follow a redirect to another public URL and proxy the result', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      fetchSpy.mockResolvedValueOnce(
+        new Response(null, {
+          headers: { Location: 'https://final.example/page' },
+          status: 302,
+        })
+      );
+      fetchSpy.mockResolvedValueOnce(
+        new Response('<html><body>Hello</body></html>', {
+          headers: { 'Content-Type': 'text/html' },
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://start.example/', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('X-Proxied-URL')).toBe('https://final.example/page');
+      expect(await response.text()).toBe('<html><body>Hello</body></html>');
+    });
+
+    it('should stop after too many redirects', async () => {
+      vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+        Promise.resolve(
+          new Response(null, {
+            headers: { Location: 'https://loop.example/next' },
+            status: 302,
+          })
+        )
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://loop.example/', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(502);
+      expect(await response.text()).toBe('Too many redirects');
     });
   });
 });

@@ -52,9 +52,11 @@ const PRIVATE_IPV4_PATTERNS = [
 /**
  * Checks if a hostname resolves to a private/internal IP address.
  * Prevents SSRF attacks by blocking requests to internal networks.
+ * Accepts bare hostnames as well as bracketed IPv6 literals ("[::1]").
  */
 export function isPrivateHost(hostname: string): boolean {
-  const lowerHost = hostname.toLowerCase();
+  // WHATWG URL wraps IPv6 literals in brackets — strip them before matching.
+  const lowerHost = hostname.toLowerCase().replace(/^\[/, '').replace(/\]$/, '');
 
   // Block localhost
   if (lowerHost === 'localhost' || lowerHost === 'localhost.localdomain') {
@@ -68,12 +70,97 @@ export function isPrivateHost(hostname: string): boolean {
     }
   }
 
-  // Block IPv6 loopback and private
-  if (lowerHost === '::1' || lowerHost.startsWith('fc') || lowerHost.startsWith('fd')) {
-    return true;
+  const groups = parseIPv6(lowerHost);
+  if (groups !== null) {
+    // ::  (unspecified) and ::1 (loopback)
+    if (groups.every((g) => g === 0)) {
+      return true;
+    }
+    if (groups.slice(0, 7).every((g) => g === 0) && groups[7] === 1) {
+      return true;
+    }
+    // fc00::/7 unique local addresses
+    if ((groups[0]! & 0xfe_00) === 0xfc_00) {
+      return true;
+    }
+    // fe80::/10 link-local
+    if ((groups[0]! & 0xff_c0) === 0xfe_80) {
+      return true;
+    }
+    // IPv4-mapped (::ffff:a.b.c.d) and IPv4-compatible (::a.b.c.d):
+    // re-check the embedded IPv4 against the private ranges above.
+    const isMapped = groups.slice(0, 5).every((g) => g === 0) && groups[5] === 0xff_ff;
+    const isCompat =
+      groups.slice(0, 6).every((g) => g === 0) && (groups[6] !== 0 || groups[7] !== 0);
+    if (isMapped || isCompat) {
+      const a = groups[6]! >> 8;
+      const b = groups[6]! & 0xff;
+      const c = groups[7]! >> 8;
+      const d = groups[7]! & 0xff;
+      const dotted = `${a}.${b}.${c}.${d}`;
+      if (PRIVATE_IPV4_PATTERNS.some((p) => p.test(dotted))) {
+        return true;
+      }
+    }
   }
 
   return false;
+}
+
+/**
+ * Parses a colon-separated run of IPv6 groups (one side of a `::`), expanding a
+ * trailing IPv4-mapped suffix like `127.0.0.1` into two 16-bit groups. Returns
+ * null on any malformed piece.
+ */
+function ipv6GroupsFromRun(part: string): null | number[] {
+  if (part === '') {
+    return [];
+  }
+  const groups: number[] = [];
+  for (const piece of part.split(':')) {
+    if (piece.includes('.')) {
+      const octets = piece.split('.').map(Number);
+      if (octets.length !== 4 || octets.some((o) => !Number.isInteger(o) || o < 0 || o > 255)) {
+        return null;
+      }
+      groups.push((octets[0]! << 8) | octets[1]!, (octets[2]! << 8) | octets[3]!);
+    } else {
+      if (!/^[0-9a-f]{1,4}$/.test(piece)) {
+        return null;
+      }
+      groups.push(Number.parseInt(piece, 16));
+    }
+  }
+  return groups;
+}
+
+/**
+ * Expands an IPv6 hostname (WHATWG-normalized, may contain an embedded
+ * IPv4-mapped suffix) into its 8 16-bit groups, or returns null if it does
+ * not parse as IPv6. Handles `::` compression.
+ */
+function parseIPv6(host: string): null | number[] {
+  if (!host.includes(':')) {
+    return null;
+  }
+  const halves = host.split('::');
+  if (halves.length > 2) {
+    return null;
+  }
+
+  const head = ipv6GroupsFromRun(halves[0]!);
+  const tail = halves.length === 2 ? ipv6GroupsFromRun(halves[1]!) : [];
+  if (head === null || tail === null) {
+    return null;
+  }
+  if (halves.length === 1) {
+    return head.length === 8 ? head : null;
+  }
+  const fill = 8 - head.length - tail.length;
+  if (fill < 1) {
+    return null;
+  }
+  return [...head, ...Array.from<number>({ length: fill }).fill(0), ...tail];
 }
 
 export default {
@@ -140,19 +227,64 @@ export default {
     }
 
     try {
-      // Fetch the target URL with browser-like headers
-      const response = await fetch(parsedUrl.toString(), {
-        headers: {
-          Accept:
-            'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        },
-        redirect: 'follow',
-      });
+      // Follow redirects manually so every hop is re-validated against the
+      // protocol allowlist and the private-network (SSRF) checks. `redirect:
+      // 'follow'` would let an allowed public URL bounce us to an internal
+      // address (e.g. 169.254.169.254 or [::1]) without any re-check.
+      let response: Response;
+      let currentUrl = parsedUrl;
+      const MAX_REDIRECTS = 10;
+      let redirects = 0;
+      for (;;) {
+        response = await fetch(currentUrl.toString(), {
+          headers: {
+            Accept:
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'User-Agent':
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          },
+          redirect: 'manual',
+        });
+
+        const location = response.headers.get('Location');
+        const isRedirect = response.status >= 300 && response.status < 400 && location !== null;
+        if (!isRedirect) {
+          break;
+        }
+
+        if (++redirects > MAX_REDIRECTS) {
+          return new Response('Too many redirects', {
+            headers: corsHeaders(origin),
+            status: 502,
+          });
+        }
+
+        let nextUrl: URL;
+        try {
+          nextUrl = new URL(location, currentUrl);
+        } catch {
+          return new Response('Invalid redirect location', {
+            headers: corsHeaders(origin),
+            status: 502,
+          });
+        }
+        if (nextUrl.protocol !== 'http:' && nextUrl.protocol !== 'https:') {
+          return new Response('Forbidden: redirect to disallowed protocol', {
+            headers: corsHeaders(origin),
+            status: 403,
+          });
+        }
+        if (isPrivateHost(nextUrl.hostname)) {
+          return new Response('Forbidden: redirect to private network', {
+            headers: corsHeaders(origin),
+            status: 403,
+          });
+        }
+        currentUrl = nextUrl;
+      }
 
       // Get content type and raw body (preserve original encoding for non-UTF-8 pages)
       const contentType = response.headers.get('Content-Type') ?? 'text/html';
@@ -202,7 +334,7 @@ export default {
         headers: Object.assign({}, corsHeaders(origin), {
           'Cache-Control': cacheControl,
           'Content-Type': contentType,
-          'X-Proxied-URL': parsedUrl.toString(),
+          'X-Proxied-URL': currentUrl.toString(),
         }),
         status: response.status,
       });
