@@ -67,7 +67,18 @@ describe('cors-proxy', () => {
       ['::ffff:169.254.169.254', true, 'IPv4-mapped AWS metadata'],
       ['[::ffff:a9fe:a9fe]', true, 'IPv4-mapped AWS metadata hex'],
       ['::ffff:8.8.8.8', false, 'IPv4-mapped public address'],
+      ['::7f00:1', true, 'IPv4-compatible loopback (::127.0.0.1)'],
+      ['::2', true, 'IPv4-compatible ::0.0.0.2 (0.0.0.0/8 current network)'],
+      ['::ffff:0102:0304', false, 'IPv4-mapped public (1.2.3.4) via hex'],
       ['2001:4860:4860::8888', false, 'public IPv6 (Google DNS)'],
+      ['2001:db8:0:0:0:0:0:1', false, 'public IPv6, fully expanded (no ::)'],
+      // Malformed inputs must parse to null and be treated as non-private.
+      ['1:2:3', false, 'too few groups, no ::'],
+      ['1:2:3:4:5:6:7::8', false, 'full 8 groups plus :: (fill < 1)'],
+      ['1::2::3', false, 'multiple :: is invalid'],
+      ['gg::1', false, 'non-hex group'],
+      ['::ffff:999.0.0.1', false, 'embedded IPv4 octet out of range'],
+      ['::ffff:1.2.3', false, 'embedded IPv4 with too few octets'],
       ['google.com', false, 'public domain'],
       ['8.8.8.8', false, 'public DNS'],
       ['1.1.1.1', false, 'Cloudflare DNS'],
@@ -340,6 +351,41 @@ describe('cors-proxy', () => {
       const response = await worker.fetch(request, env);
       expect(response.status).toBe(403);
       expect(await response.text()).toBe('Forbidden: redirect to private network');
+    });
+
+    it('should return 502 for a redirect to an unparseable Location', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(null, {
+          headers: { Location: 'http://[' },
+          status: 302,
+        })
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(502);
+      expect(await response.text()).toBe('Invalid redirect location');
+    });
+
+    it('should default Content-Type to text/html when upstream omits it', async () => {
+      // ArrayBuffer/typed-array bodies do not get an auto Content-Type, so the
+      // response has none and the worker falls back to text/html.
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(new TextEncoder().encode('<html><body>Hi</body></html>'))
+      );
+
+      const request = new Request('https://proxy.example.com/?url=https://example.com/', {
+        headers: { Origin: 'https://ingglish.com' },
+        method: 'GET',
+      });
+
+      const response = await worker.fetch(request, env);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('Content-Type')).toBe('text/html');
     });
 
     it('should block redirect to a disallowed protocol', async () => {
