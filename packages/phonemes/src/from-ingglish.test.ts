@@ -65,6 +65,15 @@ describe('phoneme alternative expansion in reverse', () => {
   it.each(['chair', 'care', 'there'])('leaves genuine EH+R word "%s" intact', (word) => {
     expect(reverseTranslateSync(translateSync(word))).toBe(word);
   });
+
+  // A vowel+H junction ("aho" = AA+HH+OW) spells "oh", colliding with OW.
+  it.each(['aho', 'aarhus'])('round-trips AA+HH junction "%s"', (word) => {
+    expect(reverseTranslateSync(translateSync(word))).toBe(word);
+  });
+
+  it.each(['go', 'oh', 'home', 'boat'])('leaves genuine OW word "%s" intact', (word) => {
+    expect(reverseTranslateSync(translateSync(word))).toBe(word);
+  });
 });
 
 describe('expandArpabetAlternatives', () => {
