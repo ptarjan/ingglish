@@ -29,6 +29,15 @@ describe('parseDictionary', () => {
     expect(Object.keys(dict)).toEqual(['hello']);
   });
 
+  it('strips inline # comments from phonemes', () => {
+    // cmudict.dict annotates some entries: "AALBORG AO1 L B AO0 R G # place, danish"
+    const text = 'aalborg AO1 L B AO0 R G # place, danish\ngdp G IY1 D IY1 P IY1 # abbrev\n';
+    const dict = parseDictionary(text);
+    expect(dict['aalborg']).toEqual(['AO1', 'L', 'B', 'AO0', 'R', 'G']);
+    expect(dict['gdp']).toEqual(['G', 'IY1', 'D', 'IY1', 'P', 'IY1']);
+    expect(dict['aalborg']).not.toContain('#');
+  });
+
   it('normalizes velar nasals (N before K/G becomes NG)', () => {
     const text = 'think TH IH1 N K\nsing S IH1 N G\n';
     const dict = parseDictionary(text);

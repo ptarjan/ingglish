@@ -76,7 +76,11 @@ export function parseDictionary(text: string): CMUDictionary {
       // Strip variant suffix e.g. AND(2) -> AND
       const rawWord = line.slice(0, spaceIndex);
       const word = rawWord.replace(/\(\d+\)$/, '');
-      const phonemes = line.slice(spaceIndex + 1).trim();
+      // Strip inline "# ..." annotations (e.g. "AO1 L B ... # place, danish")
+      // so comment tokens don't end up as fake phonemes.
+      const rest = line.slice(spaceIndex + 1);
+      const hashIndex = rest.indexOf('#');
+      const phonemes = (hashIndex === -1 ? rest : rest.slice(0, hashIndex)).trim();
       // Convert word to lowercase and pre-split phonemes into array
       // For variant pronunciations, only keep the first (most common)
       const key = word.toLowerCase();
