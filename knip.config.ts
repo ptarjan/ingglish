@@ -37,12 +37,8 @@ const config: KnipConfig = {
   ignore: [
     // Website bookmarklet (standalone script)
     'packages/website/src/bookmarklet.ts',
-    // Extension test files (vitest runs them but they're not entry points)
-    'packages/extension/src/*.test.ts',
     // Service worker built via custom vite plugin (not a regular import)
     'packages/website/src/sw.ts',
-    // SSG entry point built via vite plugin at build time (not a regular import)
-    'packages/website/src/entry-ssg.tsx',
   ],
   ignoreDependencies: [
     'eslint-plugin-prettier', // required by eslint-config-prettier
