@@ -30,11 +30,15 @@ describe('word-frequency', () => {
   });
 
   describe('scoreWord', () => {
-    it('boosts common contractions with frequency data', () => {
-      // "won't" is a common contraction and should score lower (better) than a regular word
-      const contractionScore = scoreWord("won't");
-      const regularScore = scoreWord('the');
-      expect(contractionScore).toBeLessThan(regularScore);
+    it('ranks a frequency-less contraction above its rare homophone', () => {
+      // "won't" lacks SUBTLEX frequency data but should still outrank (score
+      // lower than) its rare true-homophone "wont" (freq ~81).
+      expect(scoreWord("won't")).toBeLessThan(scoreWord('wont'));
+    });
+
+    it('ranks a frequency-less contraction below a much more common homophone', () => {
+      // "they're" must NOT beat "there" (freq ~221k), a far more common word.
+      expect(scoreWord("they're")).toBeGreaterThan(scoreWord('there'));
     });
 
     it('gives unknown contractions a boost score', () => {

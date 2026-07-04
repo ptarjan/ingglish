@@ -39,6 +39,17 @@ describe('reverse-translator', () => {
     );
 
     it.each([
+      // A frequency-less contraction must not outrank a much more common
+      // true-homophone word: "there" (freq ~221k) beats "they're".
+      ['dhair', 'there', 'common word beats homophone contraction'],
+      // But a contraction still beats its rare homophones.
+      ['its', "it's", 'contraction beats rare homophone "its"'],
+      ['wohnt', "won't", 'contraction beats rare homophone "wont"'],
+    ])('ranks homophones sanely: %s → %s (%s)', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
+    });
+
+    it.each([
       ['exhumed', '"sh" can be SH (ship) or S+HH (exhume)'],
       ['where', '"er" can be ER (were) or EH+R (where)'],
     ])('round-trips ambiguous word "%s" (%s)', (word) => {

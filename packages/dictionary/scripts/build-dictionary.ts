@@ -296,7 +296,12 @@ const COMMON_CONTRACTIONS = new Set([
 ]);
 
 const CONTRACTION_BOOST = 10_000_000;
-const UNKNOWN_CONTRACTION_SCORE = 5_000_000;
+// Score for contractions lacking SUBTLEX frequency data (nearly all of them —
+// the corpus underrepresents apostrophe forms). Treated as a moderately common
+// word (~freq 50k) so a contraction still outranks its rare homophones ("its",
+// "wont", "whats") but loses to a genuinely common one (e.g. "there" ~221k beats
+// "they're"). Mirrors UNKNOWN_CONTRACTION_SCORE in src/frequency.ts.
+const UNKNOWN_CONTRACTION_SCORE = 50_000;
 const NUMERIC_REGEX = /[0-9]/;
 
 /**

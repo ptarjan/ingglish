@@ -142,7 +142,13 @@ const COMMON_CONTRACTIONS = new Set([
 
 // Scoring constants for word ranking (lower = more likely)
 const CONTRACTION_FREQUENCY_BOOST = 10_000_000; // Added to frequency for known contractions
-const UNKNOWN_CONTRACTION_SCORE = -5_000_000; // Score for contractions without frequency data
+// Score for contractions without SUBTLEX frequency data (nearly all of them —
+// the corpus underrepresents apostrophe forms). Treated as a moderately common
+// word (~freq 50k) so a contraction still beats its rare homophones ("its",
+// "wont", "whats") but loses to a genuinely common one ("there" ~221k beats
+// "they're"). Must stay between the two: below ~9k (beat "its") and above the
+// negation of the most common colliding word.
+const UNKNOWN_CONTRACTION_SCORE = -50_000;
 const NUMERIC_WORD_PENALTY = 1_000_000; // Penalty for words containing numbers
 const UNKNOWN_WORD_PENALTY = 100_000; // Base penalty for unknown words
 

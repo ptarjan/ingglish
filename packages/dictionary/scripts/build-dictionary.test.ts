@@ -69,7 +69,7 @@ describe('getWordScore', () => {
     ['xyz', -3, 'returns negative length for unknown word'],
     ['abcdef', -6, 'returns negative length for unknown word'],
     ["don't", 50_000 + 10_000_000, 'boosts common contractions'],
-    ["shan't", 5_000_000, 'gives unknown contractions a fixed score'],
+    ["shan't", 50_000, 'gives unknown contractions a fixed score'],
     ['THE', 1_000_000, 'is case-insensitive'],
     ["DON'T", 50_000 + 10_000_000, 'is case-insensitive for contractions'],
   ])('getWordScore(%s) → %d (%s)', (word, expected) => {
