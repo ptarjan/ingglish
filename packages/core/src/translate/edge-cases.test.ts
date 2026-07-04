@@ -335,4 +335,19 @@ describe('pipeline and forward.ts edge cases', () => {
     const secondWord = words[1]!.translated;
     expect(secondWord.charAt(0)).toBe(secondWord.charAt(0).toUpperCase());
   });
+
+  it.each([
+    ['Go to google.com. hello there', 'a bare domain'],
+    ['Mail a@b.com. next one here', 'an email'],
+  ])('capitalizes the next sentence after a preserved pattern + period (%s)', (input) => {
+    // renderText (translateSync) must flip sentenceStart on the punctuation
+    // that trails a preserved-pattern placeholder, matching the mapping path.
+    const sync = translateSync(input);
+    const mapping = translateSyncWithMapping(input)
+      .map((t) => t.translated)
+      .join('');
+    expect(sync).toBe(mapping);
+    // The word after the period is capitalized.
+    expect(sync).toMatch(/\.\s+[A-Z]/);
+  });
 });

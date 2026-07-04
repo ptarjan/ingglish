@@ -203,6 +203,19 @@ export function renderText(
       const expanded = expandPlaceholderText(token, preserved);
       if (expanded !== null) {
         result += expanded;
+        // The token may carry sentence-ending punctuation outside the preserved
+        // pattern (e.g. "<url>."). Strip the placeholders and re-run the
+        // sentence-end check on the remaining punctuation so the next sentence's
+        // first word still capitalizes — matching the mapping-based path.
+        if (preservesCase) {
+          let residual = token;
+          for (const placeholder of preserved.keys()) {
+            residual = residual.split(placeholder).join('');
+          }
+          if (SENTENCE_END.test(residual) && !HAS_LETTER.test(residual)) {
+            sentenceStart = true;
+          }
+        }
         continue;
       }
     }
