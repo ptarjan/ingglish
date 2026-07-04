@@ -26,10 +26,18 @@ import {
  * AE/AH ambiguity: unstressed schwa (AH0) maps to 'a', same as AE (cat).
  * Reverse parser gets AE from the map; AH alternative covers schwa words.
  */
+// A morpheme-junction consonant + H spells as a digraph but is really two
+// phonemes — mirrors SH→S+HH: "adhere" (D+HH) parses as DH, "althaus" (T+HH)
+// as TH, "clotheshorse"/"alzheimer" (Z+HH) as ZH. And "aw" greedily parses as
+// AO but at a schwa+glide junction is AH+W (e.g. "agawam" = AE G AH W AA M).
 const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   AE: [['AH']], // "a" could be AE (cat) or AH (schwa: about, the)
+  AO: [['AH', 'W']],
+  DH: [['D', 'HH']],
   ER: [['EH', 'R']],
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
+  TH: [['T', 'HH']],
+  ZH: [['Z', 'HH']],
 };
 
 /**

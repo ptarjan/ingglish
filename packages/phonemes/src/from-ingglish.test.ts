@@ -36,6 +36,23 @@ describe('phoneme alternative expansion in reverse', () => {
       expect(reverseTranslateSync(translateSync(word))).toBe(word);
     }
   );
+
+  // Consonant+H morpheme junctions spell as a digraph (TH/DH/ZH) but are two
+  // phonemes; the +HH alternatives recover them.
+  it.each(['adhered', 'adhesive', 'althaus', 'alzheimer', 'clotheshorse'])(
+    'round-trips consonant+H junction "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  // Genuine digraph words (TH/DH/ZH) must be unaffected (primary parse wins).
+  it.each(['the', 'this', 'thing', 'them', 'vision', 'measure'])(
+    'leaves genuine digraph word "%s" intact',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
 });
 
 describe('expandArpabetAlternatives', () => {
