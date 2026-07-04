@@ -15,7 +15,7 @@ ingglish/
 │   ├── shavian/        # Shavian alphabet conversion
 │   ├── deseret/        # Deseret alphabet conversion
 │   ├── fallback/       # Unknown word strategies
-│   ├── core/           # Translation API (translate + detect)
+│   ├── core/           # Translation API (translate + reverse)
 │   ├── dom/            # DOM translation utilities
 │   ├── website/        # React web application
 │   ├── extension/      # Chrome extension
@@ -143,14 +143,18 @@ The core package is a thin orchestration layer. It imports from the packages abo
 ```
 src/
 ├── index.ts            # Public API: translate, reverseTranslate, Sync variants
-├── translate/          # Translation logic
-│   ├── forward.ts      # English → Ingglish/IPA
-│   ├── reverse.ts      # Ingglish/IPA → English
-│   ├── contractions.ts # Handle "don't", "I'm", etc.
-│   └── preserved.ts    # URL/email preservation during translation
-└── detect/             # Language detection
-    └── language.ts     # Detect Ingglish vs English text
+├── dict-loader.ts      # Per-language dictionary registration/loading
+├── register-english.ts # Registers the English dictionary loader
+└── translate/          # Translation logic
+    ├── index.ts        # Re-exports the translate/reverse API
+    ├── forward.ts      # English → Ingglish/IPA (incl. contractions)
+    ├── reverse.ts      # Ingglish/IPA → English (incl. contractions)
+    ├── pipeline.ts     # Shared tokenize → map → render stages
+    └── preserved.ts    # URL/email preservation during translation
 ```
+
+Contraction handling ("don't", "I'm") lives inline in `forward.ts`/`reverse.ts`;
+there is no separate contractions or language-detection module.
 
 ### Translation Flow
 
@@ -285,11 +289,9 @@ src/
 │   ├── index.ts                # translateDOM orchestration
 │   ├── translator.ts           # Core DOM translation algorithm
 │   ├── apply-map.ts            # Apply pre-computed translations
+│   ├── chunked.ts              # requestAnimationFrame chunked processing
 │   ├── restore.ts              # Restore original text
 │   └── tooltip-fragment.ts     # Hover tooltip HTML generation
-├── observe/                    # Dynamic content handling
-│   ├── index.ts                # observeAndTranslate entry point
-│   └── observer.ts             # MutationObserver implementation
 └── traversal/                  # DOM traversal
     ├── index.ts                # Traversal exports
     ├── browser.ts              # Browser detection
@@ -299,14 +301,20 @@ src/
     └── tooltip.ts              # Tooltip styling utilities
 ```
 
+Public API: `translateDOM` / `translateDOMSync`, `restoreDOM`, and
+`applyTranslationsMap`, plus traversal helpers (`collectTextNodes`,
+`extractWordsFromNodes`, `injectTooltipStyles`, `injectTooltipBehavior`).
+
 ### Key Features
 
 - **Chunked translation**: Uses `requestAnimationFrame` for smooth rendering on large pages
 - **Tooltip support**: Wraps translated words in spans with original text on hover
-- **MutationObserver**: Auto-translates dynamically added content (SPAs)
 - **Attribute translation**: Handles `title`, `alt`, `placeholder`, `aria-label`
 - **Skip logic**: Respects `<code>`, `<pre>`, `.no-translate`, `contenteditable`
 - **Pre-computed translations**: `applyTranslationsMap()` for external translation sources
+
+Live MutationObserver handling (auto-translating dynamically added content) is
+implemented in the Chrome extension's content script, not in this package.
 
 ## Website (`@ingglish/website`)
 

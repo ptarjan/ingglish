@@ -93,17 +93,16 @@ console.log(fromIpa); // "hello, world!"
 ### DOM Translation (Browser)
 
 ```typescript
-import { translateDOM, observeAndTranslate } from '@ingglish/dom';
+import { translateDOM, restoreDOM } from '@ingglish/dom';
 
-// Translate DOM elements with tooltips
+// Translate DOM elements with hover tooltips showing the original word
 await translateDOM(document.body, {
   showTooltips: true,
   chunked: true, // Smooth rendering for large pages
 });
 
-// Auto-translate dynamic content (SPAs)
-const stop = observeAndTranslate(document.body);
-// Later: stop() to disconnect observer
+// Restore the original text
+restoreDOM(document.body);
 ```
 
 ## Contributing
