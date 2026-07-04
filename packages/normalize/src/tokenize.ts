@@ -6,8 +6,13 @@ import { normalizeApostrophes } from './text';
 
 // Shared regex patterns for word tokenization (exported for use in dom package)
 /** Regex to split text into word and non-word tokens (includes accented Latin chars).
- *  Digit lookaround prevents matching letters in escape sequences like \u2014. */
-export const WORD_SPLIT_REGEX = /((?<!\d)[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+(?!\d))/;
+ *  The alphanumeric boundary assertions ensure a letter run is only captured as a
+ *  word when it is not adjacent to a digit on either side. A run touching a digit
+ *  (an escape sequence like \u2014, an ordinal like "3rd", an identifier like
+ *  "win32") is left uncaptured, so it stays in a separator token and passes
+ *  through untranslated instead of being partially matched via backtracking. */
+export const WORD_SPLIT_REGEX =
+  /(?<![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])([a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+)(?![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])/;
 /** Regex to test if a token is a word (includes accented Latin chars) */
 export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+$/;
 

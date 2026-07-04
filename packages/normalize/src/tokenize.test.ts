@@ -45,6 +45,30 @@ describe('text utilities', () => {
       expect(words[0]!.text).toBe("don't");
       expect(words[1]!.text).toBe('stop');
     });
+
+    it.each([
+      ['3rd', '3rd'],
+      ['21st', '21st'],
+      ['22nd', '22nd'],
+      ['win32', 'win32'],
+      ['mp3', 'mp3'],
+      ['covid19', 'covid19'],
+      ['h264', 'h264'],
+      ['a1b2c3', 'a1b2c3'],
+    ])('should keep digit-adjacent runs (%s) as a single non-word token', (input) => {
+      const tokens = tokenizeText(input);
+      expect(tokens).toHaveLength(1);
+      expect(tokens[0]).toEqual({ isWord: false, text: input });
+    });
+
+    it('should not split letters out of alphanumeric runs mixed with words', () => {
+      const tokens = tokenizeText('the 3rd of May');
+      const words = tokens.filter((t) => t.isWord).map((t) => t.text);
+      expect(words).toEqual(['the', 'of', 'May']);
+      // "3rd" is not a word; it survives inside a non-word (separator) token.
+      expect(tokens.some((t) => !t.isWord && t.text.includes('3rd'))).toBe(true);
+      expect(tokens.map((t) => t.text).join('')).toBe('the 3rd of May');
+    });
   });
 
   describe('tokenizeIPA', () => {
