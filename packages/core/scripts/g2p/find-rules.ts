@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find candidate new rules by analyzing letter context patterns in G2P errors.
  *

@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * G2P batch experiment tester.
  *
@@ -7,7 +7,7 @@
  * combining winners.
  *
  * Usage:
- *   npx vite-node scripts/g2p/batch-test.ts <experiment-file>
+ *   npx vite-node --script scripts/g2p/batch-test.ts <experiment-file>
  *
  * Experiment file format (TypeScript):
  *   export const experiments = [
@@ -46,7 +46,7 @@ function runTest(name: string): { sl: number; s: number } {
   try {
     execSync('npx tsup src/index.ts --format cjs,esm', { cwd: G2P_DIR, stdio: 'pipe' });
     const result = execSync(
-      'npx vite-node scripts/g2p/backtest.ts 2>/dev/null | grep -E "(ignoring stress|with stress)"',
+      'npx vite-node --script scripts/g2p/backtest.ts 2>/dev/null | grep -E "(ignoring stress|with stress)"',
       { cwd: CORE_DIR, encoding: 'utf8', timeout: 60000 }
     );
     const slMatch = result.match(/ignoring stress.*?(\d+)/);
@@ -75,7 +75,7 @@ async function main() {
   const expFile = process.argv[2];
   if (!expFile) {
     // If no experiment file, just run as inline with empty experiments
-    console.log('Usage: npx vite-node scripts/g2p/batch-test.ts <experiment-file.ts>');
+    console.log('Usage: npx vite-node --script scripts/g2p/batch-test.ts <experiment-file.ts>');
     console.log('Or import and call runBatchTest(experiments) programmatically.');
     process.exit(1);
   }

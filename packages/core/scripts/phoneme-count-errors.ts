@@ -4,7 +4,7 @@
  * If "forge" has 3 phonemes and "forging" should be forge's 3 + IH0 NG = 5,
  * but CMU has 4, that means a phoneme was dropped (or added).
  *
- * Usage: cd packages/core && npx vite-node scripts/phoneme-count-errors.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/phoneme-count-errors.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

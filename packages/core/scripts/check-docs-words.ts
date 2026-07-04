@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Extract all English words from docs/ markdown files, poems, challenge data,
  * and English samples, then check which are missing from the CMU dictionary

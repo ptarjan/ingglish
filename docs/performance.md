@@ -34,10 +34,10 @@ How to profile, benchmark, and optimize Ingglish.
 cd packages/core
 
 # Full benchmark suite
-npx vite-node scripts/profile/benchmark.ts
+npx vite-node --script scripts/profile/benchmark.ts
 
 # Quick profile
-npx vite-node scripts/profile/overview.ts
+npx vite-node --script scripts/profile/overview.ts
 ```
 
 Sample output:
@@ -60,10 +60,10 @@ reverseTranslateWord(single)                   0.005ms  (min: 0.003ms, max: 0.54
 cd packages/dom
 
 # Profile with real Wikipedia content
-npx vite-node scripts/profile-wikipedia.ts
+npx vite-node --script scripts/profile-wikipedia.ts
 
 # Compare TreeWalker implementations
-npx vite-node scripts/profile-tree-walker.ts
+npx vite-node --script scripts/profile-tree-walker.ts
 ```
 
 Sample output from `profile-wikipedia.ts`:

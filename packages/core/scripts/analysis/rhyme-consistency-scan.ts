@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find CMU dictionary errors by checking that words with identical spelling
  * endings are pronounced consistently.
@@ -14,7 +14,7 @@
  * - A word ending in "-ight" that uses IH T instead of AY T
  * - A word ending in "-ence" with an unexpected vowel
  *
- * Usage: cd packages/core && npx vite-node scripts/rhyme-consistency-scan.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/rhyme-consistency-scan.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Profile arpabetToIngglish breakdown to find the bottleneck.
  */

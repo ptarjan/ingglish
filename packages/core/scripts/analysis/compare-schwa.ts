@@ -1,10 +1,10 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Compare schwa mapping: AH0 -> 'u' (current) vs AH0 -> 'a' (proposed).
  *
  * Only AH0 (unstressed schwa) changes. AH1 and AH2 (stressed /ʌ/) stay as 'u'.
  *
- * Usage: npx vite-node packages/core/scripts/analysis/compare-schwa.ts
+ * Usage: npx vite-node --script packages/core/scripts/analysis/compare-schwa.ts
  */
 import {
   loadDictionary,

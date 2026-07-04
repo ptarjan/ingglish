@@ -1,10 +1,10 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Systematic scan for specific error patterns across the entire CMU dictionary.
  * Unlike pronunciation-consistency.ts which compares related word pairs,
  * this script checks every entry against known phonological rules.
  *
- * Usage: npx vite-node scripts/cmu-error-scan.ts
+ * Usage: npx vite-node --script scripts/cmu-error-scan.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

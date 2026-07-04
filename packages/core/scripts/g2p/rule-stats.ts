@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find high-impact NRL rules to improve.
  * Shows rules ranked by wrong-word count and error rate, with freq-weighted impact.

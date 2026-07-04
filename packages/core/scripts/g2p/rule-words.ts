@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Show words where a specific NRL rule fires.
  * Lists wrong words (up to 40) and correct/wrong counts with freq weighting.

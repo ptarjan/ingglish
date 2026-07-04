@@ -1,9 +1,9 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Analyze whether current phoneme mappings maximize identical words.
  * An "identical word" is one where the Ingglish spelling equals the English spelling.
  *
- * Run with: npx vite-node scripts/analyze-identical-words.ts
+ * Run with: npx vite-node --script scripts/analyze-identical-words.ts
  */
 
 import {

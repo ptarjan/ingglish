@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Scan CMU dictionary homographs to check if default (first) pronunciations
  * are correct for the most common usage of each word.
@@ -10,7 +10,7 @@
  * The build step (build-dictionary.ts) strips variants and only keeps the first.
  * This script parses the raw dict file to recover variant information.
  *
- * Usage: npx vite-node scripts/homograph-defaults-scan.ts
+ * Usage: npx vite-node --script scripts/homograph-defaults-scan.ts
  *
  * Requires /tmp/cmudict-raw.dict to exist. Download with:
  *   curl -sL https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict > /tmp/cmudict-raw.dict

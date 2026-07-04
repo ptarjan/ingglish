@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Detailed G2P error analysis — identifies the highest-impact fixable patterns.
  *

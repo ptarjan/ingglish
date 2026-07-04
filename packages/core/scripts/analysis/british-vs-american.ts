@@ -1,9 +1,9 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Scan CMU dictionary for entries that use British English pronunciations
  * where American English would differ.
  *
- * Usage: cd packages/core && npx vite-node scripts/british-vs-american.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/british-vs-american.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

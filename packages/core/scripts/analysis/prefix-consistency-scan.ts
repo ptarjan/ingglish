@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find CMU dictionary errors by comparing prefixed words to their base forms.
  *
@@ -6,7 +6,7 @@
  * verify the prefixed word's phonemes match [prefix phonemes] + [base phonemes].
  * Consonant mismatches after the prefix are likely CMU dictionary errors.
  *
- * Usage: cd packages/core && npx vite-node scripts/prefix-consistency-scan.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/prefix-consistency-scan.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

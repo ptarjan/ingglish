@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find likely CMU dictionary errors by comparing pronunciations of related words.
  *
@@ -6,7 +6,7 @@
  * the same. Similarly for compound words: "break" in "breakfast" should match
  * "break" standalone (unless there's a genuine English pronunciation change).
  *
- * Usage: npx vite-node scripts/analysis/pronunciation-consistency.ts
+ * Usage: npx vite-node --script scripts/analysis/pronunciation-consistency.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

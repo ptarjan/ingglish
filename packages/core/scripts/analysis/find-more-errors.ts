@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find CMU dictionary pronunciation errors by comparing common words against
  * their inflected forms. Aggressively filters to eliminate false positives.
@@ -7,7 +7,7 @@
  * them is wrong. By requiring BOTH forms to be frequent and stems to be long,
  * we eliminate proper nouns, rare words, and coincidental overlaps.
  *
- * Usage: cd packages/core && npx vite-node scripts/find-more-errors.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/find-more-errors.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

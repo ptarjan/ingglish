@@ -206,7 +206,7 @@ The exhaustive search runs in three phases:
 
 Run with:
 ```bash
-npx vite-node scripts/analysis/exhaustive-search.ts
+npx vite-node --script scripts/analysis/exhaustive-search.ts
 ```
 
 ## Why Raw Identical Word Count Misleads

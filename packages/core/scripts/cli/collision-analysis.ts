@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Collision analysis: Find words where Ingglish translation matches another English word.
  * Usage: npm run analyze-collisions

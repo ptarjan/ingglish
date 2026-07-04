@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Cross-reference the top most common CMU dictionary words to find potential errors.
  *
@@ -9,7 +9,7 @@
  *   D) Vowel+R consistency (EH R vs ER)
  *   E) Manual function-word verification list
  *
- * Usage: cd packages/core && npx vite-node scripts/cross-reference-top-words.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/cross-reference-top-words.ts
  */
 
 import {

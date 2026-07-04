@@ -1,9 +1,9 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Scan CMU dictionary for entries that violate common English spelling-to-pronunciation rules.
  * These violations may indicate genuine CMU errors (wrong phonemes) vs legitimate exceptions.
  *
- * Usage: cd packages/core && npx vite-node scripts/spelling-rules-scan.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/spelling-rules-scan.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

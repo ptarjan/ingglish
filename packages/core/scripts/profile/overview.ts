@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Performance profiling script for Ingglish core library.
  * Measures time spent in different parts of the translation pipeline.

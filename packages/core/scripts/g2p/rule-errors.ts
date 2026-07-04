@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Analyze which NRL rules cause the most G2P errors.
  * For each error, tracks the rule that fired when the first phoneme mismatch occurs.

@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * Find CMU dictionary errors by checking compound words.
  *
@@ -10,7 +10,7 @@
  * we require a very high phoneme match rate (>= 90%) and filter out common false
  * patterns like doubled consonants at morpheme boundaries.
  *
- * Usage: cd packages/core && npx vite-node scripts/compound-words-scan.ts
+ * Usage: cd packages/core && npx vite-node --script scripts/compound-words-scan.ts
  */
 
 import { loadDictionary, getDictionary } from '@ingglish/dictionary';

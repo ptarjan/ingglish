@@ -1,4 +1,4 @@
-#!/usr/bin/env npx vite-node
+#!/usr/bin/env -S npx vite-node --script
 /**
  * CLI tool to translate words/text to Ingglish and back.
  * Usage: npm run translate "text to translate"
@@ -20,7 +20,7 @@ import {
 } from '../../src/translate/reverse.js';
 import '../../src/register-english.js';
 import { setLangDict } from '../../src/dict-loader.js';
-import { getLanguage, LANGUAGES, NOT_FOUND_MARKER, toNullProto } from '@ingglish/ipa';
+import { convertIpaEntries, getLanguage, LANGUAGES, NOT_FOUND_MARKER } from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -31,8 +31,9 @@ function loadPhoneDict(langCode: string): PhoneDict {
     '../../../website/public/ipa-dicts',
     `${langCode}.json`
   );
-  const entries = toNullProto(
-    JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string[]>
+  const entries = convertIpaEntries(
+    JSON.parse(readFileSync(dictPath, 'utf-8')) as Record<string, string | string[]>,
+    langCode
   );
   const langMeta = getLanguage(langCode);
   return {

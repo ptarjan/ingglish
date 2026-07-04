@@ -34,9 +34,9 @@
     "test:cli": "vitest run --config vitest.config.cli.ts --no-color",
     "bench": "vitest bench --no-color",
     "test:watch": "vitest",
-    "translate": "npx vite-node scripts/cli/translate.ts",
-    "debug:roundtrip": "npx vite-node scripts/cli/debug-roundtrip.ts",
-    "analyze-collisions": "npx vite-node scripts/cli/collision-analysis.ts",
+    "translate": "npx vite-node --script scripts/cli/translate.ts",
+    "debug:roundtrip": "npx vite-node --script scripts/cli/debug-roundtrip.ts",
+    "analyze-collisions": "npx vite-node --script scripts/cli/collision-analysis.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
