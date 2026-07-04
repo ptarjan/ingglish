@@ -53,6 +53,18 @@ describe('phoneme alternative expansion in reverse', () => {
       expect(reverseTranslateSync(translateSync(word))).toBe(word);
     }
   );
+
+  // The "air" spelling covers AY+R (admire) as well as EH+R (chair).
+  it.each(['admire', 'expire', 'inquire', 'esquire', 'umpire'])(
+    'round-trips AY+R "air"-spelled word "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  it.each(['chair', 'care', 'there'])('leaves genuine EH+R word "%s" intact', (word) => {
+    expect(reverseTranslateSync(translateSync(word))).toBe(word);
+  });
 });
 
 describe('expandArpabetAlternatives', () => {

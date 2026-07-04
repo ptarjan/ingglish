@@ -41,14 +41,17 @@ const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
 };
 
 /**
- * Contextual (multi-phoneme) alternatives. A schwa+glide junction like the
- * "-awal" in "usual" (Y UW ZH AH0 W AH0 L) renders "...zhawal", which greedily
- * parses as AO ("aw") + AE ("a") and never matches the dictionary. Re-expand
- * that AO+AE pair to AH+W+AH. Only tried when the primary parse fails, so words
- * that genuinely contain AO (thought, saw) are unaffected.
+ * Contextual (multi-phoneme) alternatives, tried only when the primary parse
+ * fails (so genuine AO / EH+R words are unaffected):
+ * - AO+AE → AH+W+AH: a schwa+glide junction like "-awal" in "usual"
+ *   (Y UW ZH AH0 W AH0 L) renders "...zhawal", which greedily parses as
+ *   AO ("aw") + AE ("a").
+ * - EH+R → AY+R: the spelling "air" covers both EH+R (chair) and AY+R
+ *   (admire, expire, esquire); the parser defaults to EH+R.
  */
 const ARPABET_SEQUENCE_ALTERNATIVES: { from: string[]; to: string[] }[] = [
   { from: ['AO', 'AE'], to: ['AH', 'W', 'AH'] },
+  { from: ['EH', 'R'], to: ['AY', 'R'] },
 ];
 
 // Pre-computed to avoid Object.entries() allocation on every call
