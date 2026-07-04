@@ -10,7 +10,7 @@
  * ```
  */
 
-export { ATTR_ORIGINAL_WORD, WORD_SPAN_CLASS } from './constants';
+export { ATTR_ORIGINAL_CONTENT, ATTR_ORIGINAL_WORD, WORD_SPAN_CLASS } from './constants';
 export { applyTranslationsMap, restoreDOM, translateDOM } from './translate';
 
 export {

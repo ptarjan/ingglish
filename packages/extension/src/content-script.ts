@@ -2,6 +2,7 @@
 // Delegates translation to the background service worker via message passing
 
 import {
+  ATTR_ORIGINAL_CONTENT,
   ATTR_ORIGINAL_WORD,
   WORD_SPAN_CLASS,
   applyTranslationsMap,
@@ -454,7 +455,17 @@ function setupObserver(format: OutputFormat, existingTranslations: Record<string
       for (const node of Array.from(mutation.addedNodes)) {
         if (node.nodeType === Node.TEXT_NODE) {
           const text = (node as Text).textContent?.trim() ?? '';
-          if (text.length > 0) {
+          // Skip our own output: when applyTranslationsMap replaces a text node
+          // it leaves plain leftover text nodes (e.g. ", ") as siblings of the
+          // word spans, inside a parent that now carries ATTR_ORIGINAL_CONTENT.
+          // Without this guard the observer re-queues those forever, since each
+          // reprocess creates a fresh identical node — an infinite loop.
+          const parent = (node as Text).parentElement;
+          const alreadyTranslated =
+            parent !== null &&
+            (parent.hasAttribute(ATTR_ORIGINAL_CONTENT) ||
+              parent.closest(`.${WORD_SPAN_CLASS}`) !== null);
+          if (text.length > 0 && !alreadyTranslated) {
             pendingNodes.push(node as Text);
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {

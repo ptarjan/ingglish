@@ -13,7 +13,7 @@ import {
   DEFAULT_SKIP_TAGS,
   DEFAULT_SKIP_CLASSES,
 } from './traversal/skip-rules';
-import { applyTranslationsMap, restoreDOM, translateDOM } from './index';
+import { applyTranslationsMap, ATTR_ORIGINAL_CONTENT, restoreDOM, translateDOM } from './index';
 
 /** Helper to create a simple mapping fn that uppercases words */
 function uppercaseMappingFn(text: string) {
@@ -588,6 +588,28 @@ describe('dom-translator', () => {
 
       createElementSpy.mockRestore();
       cloneNodeSpy.mockRestore();
+    });
+
+    it('marks the parent so a MutationObserver can skip its own leftover nodes', async () => {
+      // The extension's observer distinguishes genuinely-new page text from the
+      // leftover punctuation nodes this function creates by checking whether the
+      // node's parent already carries ATTR_ORIGINAL_CONTENT. This test locks in
+      // that invariant: after translation the parent is marked, and the leftover
+      // ", " text node is a child of that (marked) parent — so guarding on the
+      // attribute prevents the observer from reprocessing its own output forever.
+      document.body.innerHTML = '<p>Hello, world</p>';
+      const p = document.querySelector('p')!;
+
+      await applyTranslationsMap(p, { hello: 'haloh', world: 'werld' }, { showTooltips: true });
+
+      expect(p.hasAttribute(ATTR_ORIGINAL_CONTENT)).toBe(true);
+
+      const leftover = Array.from(p.childNodes).find(
+        (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim().length > 0
+      ) as Text | undefined;
+      expect(leftover, 'expected a leftover punctuation text node').toBeDefined();
+      expect(leftover!.parentElement).toBe(p);
+      expect(leftover!.parentElement!.hasAttribute(ATTR_ORIGINAL_CONTENT)).toBe(true);
     });
 
     it('should batch adjacent non-word tokens into single text nodes', async () => {
