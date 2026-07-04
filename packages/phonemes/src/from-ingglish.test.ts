@@ -19,6 +19,23 @@ describe('phoneme alternative expansion in reverse', () => {
     const english = reverseTranslateSync(ingglish);
     expect(english).toBe(word);
   });
+
+  // Schwa+glide junctions ("-awal") render such that "awa" greedily parses as
+  // AO + AE; the AO+AE → AH+W+AH sequence alternative fixes the round-trip.
+  it.each(['usual', 'casual', 'visual', 'actual', 'sensual'])(
+    'round-trips schwa+glide word "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  // Words that genuinely contain AO must be unaffected (primary parse wins).
+  it.each(['thought', 'bought', 'saw', 'draw', 'awkward'])(
+    'leaves genuine-AO word "%s" intact',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
 });
 
 describe('expandArpabetAlternatives', () => {
@@ -28,6 +45,13 @@ describe('expandArpabetAlternatives', () => {
     const results = expandArpabetAlternatives(arpabet);
     // Should include original, two single-position AH substitutions, and the all-replaced variant
     expect(results).toContainEqual(['AH', 'K', 'AH', 'T']);
+  });
+
+  it('expands an AO+AE junction to AH+W+AH', () => {
+    // "yoozhawal" (usual) parses as Y UW ZH AO AE L; the sequence alternative
+    // must offer Y UW ZH AH W AH L.
+    const results = expandArpabetAlternatives(['Y', 'UW', 'ZH', 'AO', 'AE', 'L']);
+    expect(results).toContainEqual(['Y', 'UW', 'ZH', 'AH', 'W', 'AH', 'L']);
   });
 });
 

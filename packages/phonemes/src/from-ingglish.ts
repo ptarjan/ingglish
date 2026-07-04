@@ -32,6 +32,17 @@ const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
 };
 
+/**
+ * Contextual (multi-phoneme) alternatives. A schwa+glide junction like the
+ * "-awal" in "usual" (Y UW ZH AH0 W AH0 L) renders "...zhawal", which greedily
+ * parses as AO ("aw") + AE ("a") and never matches the dictionary. Re-expand
+ * that AO+AE pair to AH+W+AH. Only tried when the primary parse fails, so words
+ * that genuinely contain AO (thought, saw) are unaffected.
+ */
+const ARPABET_SEQUENCE_ALTERNATIVES: { from: string[]; to: string[] }[] = [
+  { from: ['AO', 'AE'], to: ['AH', 'W', 'AH'] },
+];
+
 // Pre-computed to avoid Object.entries() allocation on every call
 const ARPABET_ALTERNATIVES_ENTRIES = Object.entries(ARPABET_ALTERNATIVES);
 
@@ -53,6 +64,15 @@ export function expandArpabetAlternatives(arpabet: string[]): string[][] {
       for (const alt of alternatives) {
         const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
         results.push(expanded);
+      }
+    }
+  }
+
+  // Contextual multi-phoneme substitutions (e.g. AO+AE → AH+W+AH for "-awal").
+  for (const { from, to } of ARPABET_SEQUENCE_ALTERNATIVES) {
+    for (let i = 0; i + from.length <= arpabet.length; i++) {
+      if (from.every((p, j) => arpabet[i + j] === p)) {
+        results.push([...arpabet.slice(0, i), ...to, ...arpabet.slice(i + from.length)]);
       }
     }
   }
