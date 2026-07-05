@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { execSync } from 'child_process';
 import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
 import { pathToFileURL } from 'url';
@@ -307,7 +308,8 @@ function preRenderRoutes(): Plugin {
   };
 }
 
-// Generate sitemap.xml from the shared route list
+// Generate sitemap-pages.xml (app routes) from the shared route list. The word
+// pages sitemap and the sitemap.xml *index* are written by wordPages() below.
 function generateSitemap(): Plugin {
   return {
     name: 'generate-sitemap',
@@ -324,7 +326,27 @@ function generateSitemap(): Plugin {
         })
         .join('\n');
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
-      writeFileSync(join(distDir, 'sitemap.xml'), sitemap);
+      writeFileSync(join(distDir, 'sitemap-pages.xml'), sitemap);
+    },
+  };
+}
+
+// Generate per-word SEO landing pages (dist/word/<w>/index.html), the browsable
+// hub (dist/words/), sitemap-words.xml, and the sitemap.xml index. Runs the
+// standalone generator via tsx with source conditions so it can translate words
+// using the workspace packages' TypeScript source. Skippable via WORD_PAGES=0.
+function wordPages(): Plugin {
+  return {
+    name: 'generate-word-pages',
+    closeBundle() {
+      if (process.env.WORD_PAGES === '0') {
+        console.log('Word pages: skipped (WORD_PAGES=0)');
+        return;
+      }
+      execSync('npx tsx --conditions=source scripts/build-word-pages.ts', {
+        stdio: 'inherit',
+        cwd: __dirname,
+      });
     },
   };
 }
@@ -414,6 +436,7 @@ export default defineConfig({
     ogImages(),
     preRenderRoutes(),
     generateSitemap(),
+    wordPages(),
     writeBuildId(),
     buildBookmarklet(),
     buildServiceWorker(),
