@@ -114,6 +114,27 @@ export function rhymeKey(phonemes: string[]): string {
   return stripped.slice(-2).join(' ');
 }
 
+/** Full stress-stripped phoneme key (matches the reverse dictionary's keys). */
+export function phonemeKey(phonemes: string[]): string {
+  return phonemes.map((p) => p.replace(/[0-2]$/, '')).join(' ');
+}
+
+/**
+ * From reverse-dictionary candidates for a word's phoneme key, keeps the ones
+ * that have their own page (are in `wordSet`) and aren't the word itself.
+ */
+export function pickHomophones(
+  word: string,
+  candidates: string[] | undefined,
+  wordSet: Set<string>,
+  limit: number
+): string[] {
+  if (!candidates) {
+    return [];
+  }
+  return candidates.filter((w) => w !== word && wordSet.has(w)).slice(0, limit);
+}
+
 /**
  * Groups words by rhyme so each page can link to words that rhyme with it.
  * Returns a map from rhyme key → ordered word list (input order preserved,
@@ -188,11 +209,26 @@ button.hear{background:#1a1a1a;color:#f5f5f5;border-color:#333}button.hear:hover
 
 const SITE_HEADER = `<header><a href="/">Ingglish</a><a href="/text">Translator</a></header>`;
 
-/** Renders one word's static landing page. `rhymes` are other pageable words that rhyme. */
-export function renderWordPage(data: WordData, rhymes: string[]): string {
+/** A link list of word pages ("cat" → <a href="/word/cat/">cat</a>). */
+function wordLinks(words: string[]): string {
+  return words.map((w) => `<a href="/word/${w}/">${escapeHtml(w)}</a>`).join('');
+}
+
+/**
+ * Renders one word's static landing page. `rhymes` and `homophones` are other
+ * pageable words (with their own pages) that rhyme with / sound identical to it.
+ */
+export function renderWordPage(
+  data: WordData,
+  rhymes: string[],
+  homophones: string[] = []
+): string {
   const { word, ingglish, ipa } = data;
   const title = `How to pronounce “${word}” — phonetic spelling & IPA | Ingglish`;
-  const desc = `“${word}” is written “${ingglish}” in Ingglish phonetic spelling (IPA /${ipa}/). Hear it, see it sound by sound, and read why English spells it “${word}”.`;
+  const homophoneNote = homophones.length
+    ? ` It sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`
+    : '';
+  const desc = `“${word}” is written “${ingglish}” in Ingglish phonetic spelling (IPA /${ipa}/).${homophoneNote} Hear it, see it sound by sound, and read why English spells it “${word}”.`;
   const canonical = `${SITE}/word/${word}/`;
 
   const spellingCells = data.sounds
@@ -201,9 +237,11 @@ export function renderWordPage(data: WordData, rhymes: string[]): string {
   const ipaCells = data.sounds.map((s) => `<td>/${escapeHtml(s.ipa)}/</td>`).join('');
 
   const stressNote = data.syllables > 1 ? `${data.syllables} syllables` : '1 syllable';
-  const rhymeLinks = rhymes.map((r) => `<a href="/word/${r}/">${escapeHtml(r)}</a>`).join('');
+  const homophoneBlock = homophones.length
+    ? `<h2>Words that sound like “${escapeHtml(word)}” (homophones)</h2><p class="rhymes">${wordLinks(homophones)}</p>`
+    : '';
   const rhymeBlock = rhymes.length
-    ? `<h2>Words that rhyme with “${escapeHtml(word)}”</h2><p class="rhymes">${rhymeLinks}</p>`
+    ? `<h2>Words that rhyme with “${escapeHtml(word)}”</h2><p class="rhymes">${wordLinks(rhymes)}</p>`
     : '';
 
   const jsonLd = JSON.stringify({
@@ -260,6 +298,8 @@ ${SITE_HEADER}
 ${word.length} letters for ${data.sounds.length} sounds. Ingglish writes it
 <strong>“${escapeHtml(ingglish)}”</strong> — no silent letters, and the same spelling
 always makes the same sound, so you can read it exactly as it looks.</div>
+
+${homophoneBlock}
 
 ${rhymeBlock}
 
@@ -340,6 +380,8 @@ export function renderSitemapIndex(): string {
 
 /** How many rhyme links to show per page. */
 const RHYMES_PER_PAGE = 10;
+/** How many homophone links to show per page. */
+const HOMOPHONES_PER_PAGE = 8;
 /** How many words to list on the browsable hub (top slice keeps the page light). */
 const HUB_WORDS = 600;
 
@@ -357,7 +399,7 @@ async function main(): Promise<void> {
   const ipa = await import('@ingglish/ipa');
 
   await ingglish.translate('warmup'); // registers + loads the English dictionary
-  await Promise.all([dict.loadDictionary(), dict.loadFrequencies()]);
+  await Promise.all([dict.loadDictionary(), dict.loadFrequencies(), dict.loadReverseDictionary()]);
 
   const deps: WordDeps = {
     translateSync: ingglish.translateSync,
@@ -377,6 +419,7 @@ async function main(): Promise<void> {
   }
 
   const words = pickTopWords(entries, limit).filter((w) => deps.lookupPronunciation(w));
+  const wordSet = new Set(words);
   const rhymeMap = buildRhymeMap(words, deps.lookupPronunciation);
 
   let written = 0;
@@ -389,9 +432,15 @@ async function main(): Promise<void> {
     const rhymes = (rhymeMap.get(rhymeKey(ph)) ?? [])
       .filter((w) => w !== word)
       .slice(0, RHYMES_PER_PAGE);
+    const homophones = pickHomophones(
+      word,
+      dict.lookupPhonemeKey(phonemeKey(ph)),
+      wordSet,
+      HOMOPHONES_PER_PAGE
+    );
     const dir = join(distDir, 'word', word);
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'index.html'), renderWordPage(data, rhymes));
+    writeFileSync(join(dir, 'index.html'), renderWordPage(data, rhymes, homophones));
     written++;
   }
 

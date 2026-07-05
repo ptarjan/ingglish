@@ -5,6 +5,8 @@ import {
   cleanIpaSymbol,
   escapeHtml,
   isPageableWord,
+  phonemeKey,
+  pickHomophones,
   pickTopWords,
   renderSitemapIndex,
   renderWordPage,
@@ -118,6 +120,20 @@ describe('rhymeKey and buildRhymeMap', () => {
   });
 });
 
+describe('phonemeKey and pickHomophones', () => {
+  it('builds the full stress-stripped key', () => {
+    expect(phonemeKey(['K', 'ER1', 'N', 'AH0', 'L'])).toBe('K ER N AH L');
+  });
+
+  it('keeps only same-key words that have a page and are not the word itself', () => {
+    const wordSet = new Set(['colonel', 'kernel']); // "krnl" (a non-page word) excluded
+    const candidates = ['colonel', 'kernel', 'krnl'];
+    expect(pickHomophones('colonel', candidates, wordSet, 8)).toEqual(['kernel']);
+    expect(pickHomophones('colonel', undefined, wordSet, 8)).toEqual([]);
+    expect(pickHomophones('colonel', candidates, wordSet, 0)).toEqual([]);
+  });
+});
+
 describe('escapeHtml', () => {
   it('escapes HTML metacharacters', () => {
     expect(escapeHtml(`<a href="x">& '`)).toBe('&lt;a href=&quot;x&quot;&gt;&amp; &#39;');
@@ -144,6 +160,17 @@ describe('renderWordPage', () => {
 
   it('omits the rhyme section when there are no rhymes', () => {
     expect(renderWordPage(data, [])).not.toContain('Words that rhyme');
+  });
+
+  it('renders a homophones section and mentions them in the description', () => {
+    const withHom = renderWordPage(data, [], ['kernel']);
+    expect(withHom).toContain('homophones');
+    expect(withHom).toContain('sounds identical to “kernel”');
+    expect(withHom).toContain('/word/kernel/');
+  });
+
+  it('omits the homophones section when there are none', () => {
+    expect(renderWordPage(data, [], [])).not.toContain('(homophones)');
   });
 });
 
