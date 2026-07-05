@@ -18,6 +18,7 @@
  */
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const SITE = 'https://ingglish.com';
 
@@ -404,7 +405,9 @@ async function main(): Promise<void> {
   console.log(`Word pages: wrote ${written} pages + hub + sitemaps (limit ${limit})`);
 }
 
-if (process.argv[1]?.includes('build-word-pages')) {
+// Exact entry-point match (not `includes`) so importing this module from the
+// test file (build-word-pages.test.ts) never triggers generation.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch((e: unknown) => {
     console.error(e);
     process.exit(1);

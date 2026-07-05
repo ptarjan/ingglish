@@ -338,9 +338,11 @@ function generateSitemap(): Plugin {
 function wordPages(): Plugin {
   return {
     name: 'generate-word-pages',
+    apply: 'build',
     closeBundle() {
-      if (process.env.WORD_PAGES === '0') {
-        console.log('Word pages: skipped (WORD_PAGES=0)');
+      // Vitest evaluates this config and fires closeBundle; only generate during
+      // a real production build (never under test) and honor WORD_PAGES=0.
+      if (process.env.VITEST || process.env.WORD_PAGES === '0') {
         return;
       }
       execSync('npx tsx --conditions=source scripts/build-word-pages.ts', {
