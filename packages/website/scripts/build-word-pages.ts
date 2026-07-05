@@ -472,7 +472,7 @@ const HUB_TOP_WORDS = 300;
 
 /* v8 ignore start -- filesystem orchestration; the pure builders above are unit-tested */
 async function main(): Promise<void> {
-  const limit = Number(process.env.WORD_PAGE_LIMIT ?? '10000');
+  const limit = Number(process.env.WORD_PAGE_LIMIT ?? '25000');
   const distDir = join(import.meta.dirname, '..', 'dist');
   if (!existsSync(distDir)) {
     throw new Error(`dist/ not found at ${distDir} — run "vite build" first`);
