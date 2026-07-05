@@ -4,10 +4,13 @@ import {
   buildWordData,
   cleanIpaSymbol,
   escapeHtml,
+  groupByLetter,
   isPageableWord,
+  letterOf,
   phonemeKey,
   pickHomophones,
   pickTopWords,
+  renderLetterPage,
   renderSitemapIndex,
   renderWordPage,
   renderWordsHub,
@@ -174,21 +177,40 @@ describe('renderWordPage', () => {
   });
 });
 
+describe('groupByLetter / letterOf', () => {
+  it('groups words by first letter, sorted within each', () => {
+    expect(letterOf('Cat')).toBe('c');
+    const map = groupByLetter(['cat', 'apple', 'ant']);
+    expect([...map.keys()].sort()).toEqual(['a', 'c']);
+    expect(map.get('a')).toEqual(['ant', 'apple']); // alphabetical within letter
+  });
+});
+
 describe('renderWordsHub', () => {
-  it('groups words alphabetically with links', () => {
-    const html = renderWordsHub(['cat', 'apple', 'ant']);
-    expect(html).toContain('<h2>A</h2>');
-    expect(html).toContain('<h2>C</h2>');
+  it('links to each letter page and features the top words', () => {
+    const html = renderWordsHub(['a', 'c'], ['the', 'cat']);
+    expect(html).toContain('href="/words/a/"');
+    expect(html).toContain('href="/words/c/"');
+    expect(html).toContain('Most common words');
+    expect(html).toContain('/word/the/');
+  });
+});
+
+describe('renderLetterPage', () => {
+  it('lists every word for the letter and links back to the hub', () => {
+    const html = renderLetterPage('a', ['ant', 'apple']);
+    expect(html).toContain('Words starting with A');
+    expect(html).toContain('href="/words/"'); // back link
+    expect(html).toContain('/word/ant/');
     expect(html).toContain('/word/apple/');
-    // alphabetical within a letter
-    expect(html.indexOf('/word/ant/')).toBeLessThan(html.indexOf('/word/apple/'));
   });
 });
 
 describe('sitemaps', () => {
-  it('renders the words sitemap with the hub and every word', () => {
-    const xml = renderWordsSitemap(['cat', 'hello']);
+  it('renders the words sitemap with the hub, letter pages, and every word', () => {
+    const xml = renderWordsSitemap(['cat', 'hello'], ['c', 'h']);
     expect(xml).toContain('<loc>https://ingglish.com/words/</loc>');
+    expect(xml).toContain('<loc>https://ingglish.com/words/c/</loc>');
     expect(xml).toContain('<loc>https://ingglish.com/word/cat/</loc>');
     expect(xml).toContain('<loc>https://ingglish.com/word/hello/</loc>');
   });

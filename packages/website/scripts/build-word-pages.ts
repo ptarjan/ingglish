@@ -316,11 +316,16 @@ ${rhymeBlock}
 `;
 }
 
-/** Renders the browsable A–Z hub linking to the (top slice of) word pages. */
-export function renderWordsHub(words: string[]): string {
+/** The URL-safe index letter for a word ('a'–'z'). */
+export function letterOf(word: string): string {
+  return word[0]!.toLowerCase();
+}
+
+/** Groups words by their first letter, each list sorted alphabetically. */
+export function groupByLetter(words: string[]): Map<string, string[]> {
   const byLetter = new Map<string, string[]>();
   for (const w of [...words].sort()) {
-    const letter = w[0]!.toUpperCase();
+    const letter = letterOf(w);
     let list = byLetter.get(letter);
     if (!list) {
       list = [];
@@ -328,31 +333,25 @@ export function renderWordsHub(words: string[]): string {
     }
     list.push(w);
   }
-  const sections = [...byLetter.entries()]
-    .map(
-      ([letter, ws]) =>
-        `<h2>${letter}</h2><p class="rhymes">${ws
-          .map((w) => `<a href="/word/${w}/">${escapeHtml(w)}</a>`)
-          .join('')}</p>`
-    )
-    .join('\n');
-  const canonical = `${SITE}/words/`;
+  return byLetter;
+}
+
+/** Minimal self-contained HTML shell for the browsable index pages. */
+function hubShell(title: string, description: string, canonical: string, body: string): string {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Word pronunciations A–Z — phonetic spelling & IPA | Ingglish</title>
-<meta name="description" content="Browse phonetic spellings and IPA pronunciations for common English words. See how each word looks when every spelling always makes the same sound.">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${canonical}">
 <style>${PAGE_CSS}</style>
 </head>
 <body>
 ${SITE_HEADER}
 <main>
-<div class="hero"><h1>Word pronunciations</h1>
-<div class="ipa">Phonetic spelling &amp; IPA for common English words</div></div>
-${sections}
+${body}
 <p><a class="cta" href="/text">Translate any text →</a></p>
 </main>
 <footer><a href="/">Ingglish</a> — every spelling always makes the same sound.</footer>
@@ -361,10 +360,45 @@ ${sections}
 `;
 }
 
-/** Builds the words sitemap XML from the given word list. */
-export function renderWordsSitemap(words: string[]): string {
+/**
+ * Renders the top-level /words hub: an A–Z nav to the per-letter pages plus a
+ * "most common" shortcut list, so every word page is reachable within two link
+ * hops of the homepage (footer → /words → /words/<letter> → word).
+ */
+export function renderWordsHub(letters: string[], topWords: string[]): string {
+  const letterNav = letters.map((l) => `<a href="/words/${l}/">${l.toUpperCase()}</a>`).join('');
+  const body = `<div class="hero"><h1>Word pronunciations</h1>
+<div class="ipa">Phonetic spelling &amp; IPA for common English words</div></div>
+<h2>Browse A–Z</h2><p class="rhymes">${letterNav}</p>
+<h2>Most common words</h2><p class="rhymes">${wordLinks(topWords)}</p>`;
+  return hubShell(
+    'Word pronunciations A–Z — phonetic spelling & IPA | Ingglish',
+    'Browse phonetic spellings and IPA pronunciations for common English words. See how each word looks when every spelling always makes the same sound.',
+    `${SITE}/words/`,
+    body
+  );
+}
+
+/** Renders one letter's index page listing every word page starting with it. */
+export function renderLetterPage(letter: string, words: string[]): string {
+  const upper = letter.toUpperCase();
+  const body = `<div class="hero"><h1>Words starting with ${upper}</h1>
+<div class="ipa">Phonetic spelling &amp; IPA · ${words.length} words</div></div>
+<p><a href="/words/">← All letters</a></p>
+<p class="rhymes">${wordLinks(words)}</p>`;
+  return hubShell(
+    `Words starting with ${upper} — phonetic spelling & IPA | Ingglish`,
+    `Phonetic spellings and IPA pronunciations for English words starting with ${upper}.`,
+    `${SITE}/words/${letter}/`,
+    body
+  );
+}
+
+/** Builds the words sitemap XML: the hub, each letter page, and every word. */
+export function renderWordsSitemap(words: string[], letters: string[]): string {
   const urls = [
     `  <url><loc>${SITE}/words/</loc></url>`,
+    ...letters.map((l) => `  <url><loc>${SITE}/words/${l}/</loc></url>`),
     ...words.map((w) => `  <url><loc>${SITE}/word/${w}/</loc></url>`),
   ].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
@@ -382,8 +416,8 @@ export function renderSitemapIndex(): string {
 const RHYMES_PER_PAGE = 10;
 /** How many homophone links to show per page. */
 const HOMOPHONES_PER_PAGE = 8;
-/** How many words to list on the browsable hub (top slice keeps the page light). */
-const HUB_WORDS = 600;
+/** How many "most common" words to feature on the top-level /words hub. */
+const HUB_TOP_WORDS = 300;
 
 /* v8 ignore start -- filesystem orchestration; the pure builders above are unit-tested */
 async function main(): Promise<void> {
@@ -444,14 +478,25 @@ async function main(): Promise<void> {
     written++;
   }
 
+  // A–Z hub + one index page per letter, so every word page is reachable by
+  // link-following (homepage footer → /words → /words/<letter> → word).
+  const byLetter = groupByLetter(words);
+  const letters = [...byLetter.keys()].sort();
   const hubDir = join(distDir, 'words');
   mkdirSync(hubDir, { recursive: true });
-  writeFileSync(join(hubDir, 'index.html'), renderWordsHub(words.slice(0, HUB_WORDS)));
+  writeFileSync(join(hubDir, 'index.html'), renderWordsHub(letters, words.slice(0, HUB_TOP_WORDS)));
+  for (const letter of letters) {
+    const letterDir = join(hubDir, letter);
+    mkdirSync(letterDir, { recursive: true });
+    writeFileSync(join(letterDir, 'index.html'), renderLetterPage(letter, byLetter.get(letter)!));
+  }
 
-  writeFileSync(join(distDir, 'sitemap-words.xml'), renderWordsSitemap(words));
+  writeFileSync(join(distDir, 'sitemap-words.xml'), renderWordsSitemap(words, letters));
   writeFileSync(join(distDir, 'sitemap.xml'), renderSitemapIndex());
 
-  console.log(`Word pages: wrote ${written} pages + hub + sitemaps (limit ${limit})`);
+  console.log(
+    `Word pages: wrote ${written} pages + ${letters.length} letter pages + sitemaps (limit ${limit})`
+  );
 }
 
 // Exact entry-point match (not `includes`) so importing this module from the
