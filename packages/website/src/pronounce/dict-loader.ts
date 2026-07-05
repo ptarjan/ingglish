@@ -23,7 +23,9 @@ export async function loadDict(code: string): Promise<PhoneDict> {
   // these singletons (it uses PhoneDict entries via the lookup param).
   const promises: Promise<unknown>[] = [fetchDictEntries(code)];
   if (code === 'en') {
-    promises.push(loadDictionary(), loadFrequencies());
+    // loadDictionary() resolves through fetchDictEntries (already resilient);
+    // loadFrequencies() is a dynamic import, so retry it too.
+    promises.push(loadDictionary(), retryAsync(loadFrequencies));
   }
   const [entries] = (await Promise.all(promises)) as [Record<string, string[]>];
 
@@ -40,6 +42,63 @@ export async function loadDict(code: string): Promise<PhoneDict> {
   return dict;
 }
 
+/** Max attempts (1 initial + retries) for a dictionary fetch before giving up. */
+const FETCH_ATTEMPTS = 4;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const backoff = (attempt: number) => Math.min(400 * 2 ** (attempt - 1), 3000) + Math.random() * 200;
+
+/**
+ * Fetches a URL with retries and exponential backoff so a transient network
+ * blip (the dictionary is several MB, and mobile connections drop) recovers on
+ * its own instead of failing the whole app. Retries network errors and
+ * transient server statuses (5xx/408/429); a permanent 4xx fails immediately.
+ */
+export async function fetchWithRetry(url: string, attempts = FETCH_ATTEMPTS): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    let response: Response | undefined;
+    try {
+      response = await fetch(url);
+    } catch (error) {
+      lastError = error; // network failure (e.g. Safari "Load failed")
+    }
+    if (response) {
+      if (response.ok) {
+        return response;
+      }
+      const retryable =
+        response.status >= 500 || response.status === 408 || response.status === 429;
+      if (!retryable) {
+        throw new Error(`Failed to fetch ${url}: ${response.status}`);
+      }
+      lastError = new Error(`Failed to fetch ${url}: ${response.status}`);
+    }
+    if (attempt < attempts) {
+      // 400ms, 800ms, 1600ms (capped), plus jitter to avoid thundering herds.
+      await sleep(backoff(attempt));
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(`Failed to fetch ${url}`);
+}
+
+/** Retries a promise-returning operation with exponential backoff. */
+export async function retryAsync<T>(fn: () => Promise<T>, attempts = FETCH_ATTEMPTS): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await sleep(backoff(attempt));
+      }
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('Operation failed after retries');
+}
+
 /** Fetch a JSON dict file from the public directory. Cached to avoid double-fetching. */
 async function fetchDictEntries(code: string): Promise<Record<string, string[]>> {
   const cachedEntries = entriesCache.get(code);
@@ -53,10 +112,7 @@ async function fetchDictEntries(code: string): Promise<Record<string, string[]>>
   }
   // Use validated lang.code (not raw `code`) to build URL — satisfies CodeQL SSRF check
   const url = `${import.meta.env.BASE_URL}ipa-dicts/${lang.code}.json`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to load dictionary for ${code}: ${response.status}`);
-  }
+  const response = await fetchWithRetry(url);
   const raw = (await response.json()) as Record<string, string | string[]>;
   const entries = convertIpaEntries(raw, lang.code);
   entriesCache.set(code, entries);
