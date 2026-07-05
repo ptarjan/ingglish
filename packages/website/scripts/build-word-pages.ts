@@ -31,6 +31,8 @@ export interface WordData {
   word: string;
   ingglish: string;
   ipa: string;
+  /** Guide pronunciation with the stressed syllable capitalized, e.g. "KER-nal". */
+  guide: string;
   sounds: WordSound[];
   syllables: number;
   frequencyRank: number;
@@ -38,15 +40,21 @@ export interface WordData {
 
 /** Dependencies injected so the pure builders can be unit-tested. */
 export interface WordDeps {
-  translateSync: (text: string, opts?: { format?: 'ipa' }) => string;
+  translateSync: (text: string, opts?: { format?: 'ipa' | 'pronunciation' }) => string;
   lookupPronunciation: (word: string) => string[] | null | undefined;
   arpabetPhonemeToIngglish: (phoneme: string) => string;
   arpabetPhonemeToIPA: (phoneme: string) => string;
 }
 
+const WORD_JOINERS = /[⁠.]/g;
 const STRESS_AND_JOINERS = /[⁠ˈˌ.]/g;
 
-/** Strips IPA stress marks, word-joiners, and syllable dots for clean display. */
+/** Strips word-joiners and syllable dots but keeps IPA stress marks (word-level display). */
+export function cleanIpa(ipa: string): string {
+  return ipa.replace(WORD_JOINERS, '');
+}
+
+/** Strips IPA stress marks, word-joiners, and syllable dots (per-sound display). */
 export function cleanIpaSymbol(ipa: string): string {
   return ipa.replace(STRESS_AND_JOINERS, '');
 }
@@ -93,7 +101,8 @@ export function buildWordData(word: string, rank: number, deps: WordDeps): WordD
     return null;
   }
   const ingglish = deps.translateSync(word);
-  const ipa = cleanIpaSymbol(deps.translateSync(word, { format: 'ipa' })).replace(/^\/|\/$/g, '');
+  const ipa = cleanIpa(deps.translateSync(word, { format: 'ipa' })).replace(/^\/|\/$/g, '');
+  const guide = deps.translateSync(word, { format: 'pronunciation' });
   const sounds = phonemes.map((p) => ({
     ingglish: deps.arpabetPhonemeToIngglish(p),
     ipa: cleanIpaSymbol(deps.arpabetPhonemeToIPA(p)),
@@ -102,6 +111,7 @@ export function buildWordData(word: string, rank: number, deps: WordDeps): WordD
     word,
     ingglish,
     ipa,
+    guide,
     sounds,
     syllables: countSyllables(phonemes),
     frequencyRank: rank,
@@ -185,7 +195,10 @@ main{padding-bottom:3rem}
 .hero h1{font-size:2.6rem;margin:.2rem 0}
 .arrow{color:#666;margin:0 .5rem}
 .ing{font-size:2.6rem;font-weight:700;color:#4f46e5}
+.guide{font-size:1.5rem;font-weight:700;letter-spacing:.02em;margin:.1rem 0}
 .ipa{font-size:1.3rem;color:#666;margin:.25rem 0}
+.faq h3{font-size:1.05rem;margin:1rem 0 .25rem}
+.faq p{margin:.25rem 0}
 button.hear{margin-top:.75rem;font-size:1rem;padding:.5rem 1rem;border:1px solid #e0e0e0;border-radius:.5rem;
 background:#fff;color:#1a1a1a;cursor:pointer}
 button.hear:hover{background:#f0f0f0}
@@ -223,12 +236,13 @@ export function renderWordPage(
   rhymes: string[],
   homophones: string[] = []
 ): string {
-  const { word, ingglish, ipa } = data;
+  const { word, ingglish, ipa, guide } = data;
   const title = `How to pronounce “${word}” — phonetic spelling & IPA | Ingglish`;
   const homophoneNote = homophones.length
     ? ` It sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`
     : '';
-  const desc = `“${word}” is written “${ingglish}” in Ingglish phonetic spelling (IPA /${ipa}/).${homophoneNote} Hear it, see it sound by sound, and read why English spells it “${word}”.`;
+  const syllableWord = data.syllables === 1 ? 'syllable' : 'syllables';
+  const desc = `“${word}” is pronounced ${guide} (IPA /${ipa}/) and written “${ingglish}” in Ingglish phonetic spelling — ${data.syllables} ${syllableWord}.${homophoneNote}`;
   const canonical = `${SITE}/word/${word}/`;
 
   const spellingCells = data.sounds
@@ -236,7 +250,7 @@ export function renderWordPage(
     .join('');
   const ipaCells = data.sounds.map((s) => `<td>/${escapeHtml(s.ipa)}/</td>`).join('');
 
-  const stressNote = data.syllables > 1 ? `${data.syllables} syllables` : '1 syllable';
+  const stressNote = `${data.syllables} ${syllableWord}`;
   const homophoneBlock = homophones.length
     ? `<h2>Words that sound like “${escapeHtml(word)}” (homophones)</h2><p class="rhymes">${wordLinks(homophones)}</p>`
     : '';
@@ -244,14 +258,45 @@ export function renderWordPage(
     ? `<h2>Words that rhyme with “${escapeHtml(word)}”</h2><p class="rhymes">${wordLinks(rhymes)}</p>`
     : '';
 
-  const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'DefinedTerm',
-    name: word,
-    description: desc,
-    url: canonical,
-    inDefinedTermSet: `${SITE}/`,
-  });
+  // FAQ — genuine answers built from the pronunciation data, with FAQPage
+  // structured data for question-format search matching.
+  const faq: { q: string; a: string }[] = [
+    {
+      q: `How do you pronounce “${word}”?`,
+      a: `“${word}” is pronounced ${guide} — IPA /${ipa}/. In Ingglish phonetic spelling, where every spelling always makes the same sound, it is written “${ingglish}”.`,
+    },
+    {
+      q: `How many syllables are in “${word}”?`,
+      a: `“${word}” has ${data.syllables} ${syllableWord}: ${guide} (the capitalized syllable is stressed).`,
+    },
+  ];
+  if (homophones.length) {
+    faq.push({
+      q: `What words sound like “${word}”?`,
+      a: `“${word}” sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`,
+    });
+  }
+  const faqHtml = faq.map((f) => `<h3>${escapeHtml(f.q)}</h3><p>${escapeHtml(f.a)}</p>`).join('\n');
+
+  const jsonLd = JSON.stringify([
+    {
+      '@context': 'https://schema.org',
+      '@type': 'DefinedTerm',
+      name: word,
+      description: desc,
+      url: canonical,
+      inDefinedTermSet: `${SITE}/`,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ]);
 
   return `<!doctype html>
 <html lang="en">
@@ -274,6 +319,7 @@ ${SITE_HEADER}
 <main>
 <div class="hero">
 <h1>${escapeHtml(word)}</h1>
+<div class="guide">${escapeHtml(guide)}</div>
 <div><span class="ing">${escapeHtml(ingglish)}</span></div>
 <div class="ipa">/${escapeHtml(ipa)}/ · ${stressNote}</div>
 <button class="hear" type="button" onclick="(function(){try{var u=new SpeechSynthesisUtterance('${escapeHtml(
@@ -302,6 +348,11 @@ always makes the same sound, so you can read it exactly as it looks.</div>
 ${homophoneBlock}
 
 ${rhymeBlock}
+
+<section class="faq">
+<h2>“${escapeHtml(word)}” — questions &amp; answers</h2>
+${faqHtml}
+</section>
 
 <p>
 <a class="cta" href="/text?text=${encodeURIComponent(word)}">Translate any text →</a>

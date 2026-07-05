@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildRhymeMap,
   buildWordData,
+  cleanIpa,
   cleanIpaSymbol,
   escapeHtml,
   groupByLetter,
@@ -33,6 +34,7 @@ const ING: Record<string, string> = {
   cat: 'kat',
 };
 const IPA: Record<string, string> = { colonel: '/ˈkɝnəl/', hello: '/həˈloʊ/', cat: '/ˈkæt/' };
+const GUIDE: Record<string, string> = { colonel: 'KER-nal', hello: 'ha-LOH', cat: 'KAT' };
 const PHONE_ING: Record<string, string> = {
   K: 'k',
   ER: 'er',
@@ -57,8 +59,11 @@ const PHONE_IPA: Record<string, string> = {
 };
 
 const deps: WordDeps = {
-  translateSync: (text, opts) =>
-    opts?.format === 'ipa' ? (IPA[text] ?? text) : (ING[text] ?? text),
+  translateSync: (text, opts) => {
+    if (opts?.format === 'ipa') return IPA[text] ?? text;
+    if (opts?.format === 'pronunciation') return GUIDE[text] ?? text;
+    return ING[text] ?? text;
+  },
   lookupPronunciation: (word) => PRON[word] ?? null,
   arpabetPhonemeToIngglish: (p) => PHONE_ING[p.replace(/[0-2]$/, '')] ?? p,
   arpabetPhonemeToIPA: (p) => PHONE_IPA[p.replace(/[0-2]$/, '')] ?? p,
@@ -91,22 +96,26 @@ describe('pickTopWords', () => {
   });
 });
 
-describe('cleanIpaSymbol', () => {
-  it('strips stress marks, word-joiners, and syllable dots', () => {
+describe('cleanIpa / cleanIpaSymbol', () => {
+  it('cleanIpa keeps stress marks, strips joiners and dots', () => {
+    expect(cleanIpa('⁠ˈkɝ.nəl')).toBe('ˈkɝnəl');
+  });
+  it('cleanIpaSymbol strips stress marks too', () => {
     expect(cleanIpaSymbol('⁠ˈkɝ.nəl')).toBe('kɝnəl');
   });
 });
 
 describe('buildWordData', () => {
-  it('builds display data with sounds and syllable count', () => {
+  it('builds display data with guide, sounds and syllable count', () => {
     const data = buildWordData('colonel', 3, deps);
     expect(data).not.toBeNull();
     expect(data!.ingglish).toBe('kernal');
-    expect(data!.ipa).toBe('kɝnəl');
+    expect(data!.ipa).toBe('ˈkɝnəl'); // word-level IPA keeps stress
+    expect(data!.guide).toBe('KER-nal');
     expect(data!.syllables).toBe(2); // ER1 + AH0
     expect(data!.frequencyRank).toBe(3);
     expect(data!.sounds.map((s) => s.ingglish)).toEqual(['k', 'er', 'n', 'a', 'l']);
-    expect(data!.sounds[1]!.ipa).toBe('ɝ'); // stress stripped
+    expect(data!.sounds[1]!.ipa).toBe('ɝ'); // per-sound stress stripped
   });
 
   it('returns null when the word has no pronunciation', () => {
@@ -151,7 +160,7 @@ describe('renderWordPage', () => {
     expect(html).toContain('<!doctype html>');
     expect(html).toContain('<link rel="canonical" href="https://ingglish.com/word/colonel/">');
     expect(html).toContain('kernal');
-    expect(html).toContain('/kɝnəl/');
+    expect(html).toContain('/ˈkɝnəl/');
   });
 
   it('includes a per-sound breakdown, rhyme links, and a translator CTA', () => {
@@ -159,6 +168,13 @@ describe('renderWordPage', () => {
     expect(html).toContain('/word/kernel/');
     expect(html).toContain('/text?text=colonel');
     expect(html).toContain('application/ld+json');
+  });
+
+  it('shows the guide pronunciation and an FAQ with FAQPage structured data', () => {
+    expect(html).toContain('class="guide">KER-nal</div>');
+    expect(html).toContain('How do you pronounce “colonel”?');
+    expect(html).toContain('How many syllables are in “colonel”?');
+    expect(html).toContain('"@type":"FAQPage"');
   });
 
   it('omits the rhyme section when there are no rhymes', () => {
