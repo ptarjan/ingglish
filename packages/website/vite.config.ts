@@ -223,6 +223,7 @@ function customizeHtml(html: string, route: string): string {
 function preRenderRoutes(): Plugin {
   return {
     name: 'pre-render-routes',
+    apply: 'build',
     async closeBundle() {
       const distDir = join(__dirname, 'dist');
       const ssgDir = join(distDir, '.ssg');
@@ -313,6 +314,7 @@ function preRenderRoutes(): Plugin {
 function generateSitemap(): Plugin {
   return {
     name: 'generate-sitemap',
+    apply: 'build',
     writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       const allUrls = [
@@ -357,6 +359,7 @@ function wordPages(): Plugin {
 function writeBuildId(): Plugin {
   return {
     name: 'write-build-id',
+    apply: 'build',
     writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       writeFileSync(join(distDir, 'build-id.txt'), BUILD_ID + '\n');
@@ -368,6 +371,7 @@ function writeBuildId(): Plugin {
 function buildServiceWorker(): Plugin {
   return {
     name: 'build-service-worker',
+    apply: 'build',
     async writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       await esbuild({
@@ -387,6 +391,7 @@ function buildServiceWorker(): Plugin {
 function buildBookmarklet(): Plugin {
   return {
     name: 'build-bookmarklet',
+    apply: 'build',
     async writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       await esbuild({
@@ -406,6 +411,7 @@ function buildBookmarklet(): Plugin {
 function ogImages(): Plugin {
   return {
     name: 'generate-og-images',
+    apply: 'build',
     writeBundle(options) {
       const distDir = options.dir ?? join(__dirname, 'dist');
       const svgPath = join(distDir, 'og-image.svg');
