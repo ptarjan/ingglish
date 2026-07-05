@@ -472,7 +472,11 @@ const HUB_TOP_WORDS = 300;
 
 /* v8 ignore start -- filesystem orchestration; the pure builders above are unit-tested */
 async function main(): Promise<void> {
-  const limit = Number(process.env.WORD_PAGE_LIMIT ?? '25000');
+  // Default 50k caps naturally at the ~49k pageable words that have SUBTLEX
+  // frequency data. Frequency ranks the pages but no longer gates them out:
+  // the highest-intent "how do you pronounce X" words (quinoa, gnocchi,
+  // epitome, worcestershire) are rare in corpora yet heavily searched.
+  const limit = Number(process.env.WORD_PAGE_LIMIT ?? '50000');
   const distDir = join(import.meta.dirname, '..', 'dist');
   if (!existsSync(distDir)) {
     throw new Error(`dist/ not found at ${distDir} — run "vite build" first`);
