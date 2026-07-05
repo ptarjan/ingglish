@@ -202,8 +202,9 @@ main{padding-bottom:3rem}
 button.hear{margin-top:.75rem;font-size:1rem;padding:.5rem 1rem;border:1px solid #e0e0e0;border-radius:.5rem;
 background:#fff;color:#1a1a1a;cursor:pointer}
 button.hear:hover{background:#f0f0f0}
-table{width:100%;border-collapse:collapse;margin:1.5rem 0}
-th,td{padding:.5rem;border-bottom:1px solid #e0e0e0;text-align:center}
+.tablewrap{overflow-x:auto;margin:1.5rem 0}
+table{width:100%;border-collapse:collapse}
+th,td{padding:.5rem;border-bottom:1px solid #e0e0e0;text-align:center;white-space:nowrap}
 th{color:#666;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
 td.snd{font-size:1.4rem;font-weight:700;color:#4f46e5}
 .note{background:#fff;border:1px solid #e0e0e0;border-radius:.75rem;padding:1rem 1.25rem;margin:1.5rem 0}
@@ -332,6 +333,7 @@ ${SITE_HEADER}
     ingglish
   )}”</strong>. Here is how it sounds out, one sound at a time:</p>
 
+<div class="tablewrap">
 <table>
 <caption class="sr-only">Sound-by-sound breakdown of “${escapeHtml(word)}”</caption>
 <tbody>
@@ -339,6 +341,7 @@ ${SITE_HEADER}
 <tr><th scope="row" style="text-align:left;color:#666">IPA</th>${ipaCells}</tr>
 </tbody>
 </table>
+</div>
 
 <div class="note">English writes <strong>“${escapeHtml(word)}”</strong> with
 ${word.length} letters for ${data.sounds.length} sounds. Ingglish writes it

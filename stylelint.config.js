@@ -77,6 +77,8 @@ export default {
           resize: ['/^.+$/'],
           // Needed for gradient text; has -webkit- fallback
           'background-clip': ['text'],
+          // Progressive enhancement — falls back to normal wrapping
+          'text-wrap': ['balance'],
         },
       },
     ],

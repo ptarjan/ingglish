@@ -223,6 +223,10 @@
 .footer p {
   font-size: 0.875rem;
   color: var(--color-text-muted);
+  /* Even out the short centered lines so a link doesn't orphan a single word
+     onto its own line on mobile. Progressive enhancement — ignored where
+     unsupported, which just falls back to normal wrapping. */
+  text-wrap: balance;
 }
 
 .footer p a {
