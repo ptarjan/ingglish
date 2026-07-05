@@ -204,11 +204,17 @@ describe('Norwegian Bokmål resolver', () => {
 describe('Malay resolver', () => {
   it.each([
     ['memakan', ['P', 'AE1', ''], 'strips prefix me-'],
-    ['menulis', ['T', 'UW1', 'L', 'AH0', 'S'], 'restores dropped consonant with men- prefix'],
     ['buatkan', ['B', 'UW', 'AE1', 'T'], 'strips suffix -kan'],
     ['perbaiki', ['B', 'AE1', 'EH', 'K'], 'strips prefix per- + suffix -i'],
   ])('%s → %j (%s)', (word, expected) => {
     expect(WORD_RESOLVERS.ma!(entries.ma!, word)).toEqual(expected);
+  });
+
+  it('restores the dropped consonant with the men- prefix (menulis → tulis)', () => {
+    // The resolver reconstructs the base "tulis" and returns its dict entry.
+    // Assert against that entry rather than hardcoding phonemes, since the
+    // vowel comes from volatile external Wiktionary/kaikki data that drifts.
+    expect(WORD_RESOLVERS.ma!(entries.ma!, 'menulis')).toEqual(entries.ma!.tulis);
   });
 });
 
