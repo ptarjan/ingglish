@@ -218,6 +218,12 @@ export default function AppLayout() {
 
         <footer className="footer">
           <p>
+            {/* Plain anchor (not react-router Link): /words is a build-time
+                static page, not an SPA route, and this link makes the per-word
+                pages crawlable from every page rather than the sitemap alone. */}
+            Browse the phonetic spelling of <a href="/words/">common English words</a>.
+          </p>
+          <p>
             Ingglish uses the{' '}
             <a
               href="https://github.com/cmusphinx/cmudict"
