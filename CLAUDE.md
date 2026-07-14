@@ -8,6 +8,10 @@ Push directly to main — don't create PRs or feature branches. Always commit an
 
 When e2e tests fail in CI, download the `playwright-report` artifact from the failed run to see screenshots and traces of what went wrong.
 
+Playwright e2e tests serve the website's `dist/` via `vite preview` — rebuild with `npx vite build` in packages/website before running them locally, or you'll test a stale bundle. The `Web Vitals › INP` tests are timing-sensitive and flake on a loaded local machine; trust CI for those.
+
+The dictionary artifacts (cmudict, reverse-cmudict, word-frequencies) are generated, not committed, and the ensure script only checks they exist. After changing generation logic in packages/dictionary/scripts/build-dictionary.ts (e.g. reverse-dictionary ranking), run `node scripts/ensure-dictionaries.cjs --force` in packages/dictionary to regenerate.
+
 ## Testing & Linting
 
 Use test-driven development (TDD). When possible, write a failing test first, then write the code to make it pass.
