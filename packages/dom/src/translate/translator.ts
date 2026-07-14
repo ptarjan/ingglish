@@ -17,6 +17,7 @@ import {
 } from '../traversal';
 import type { DOMTranslatorOptions } from '../types';
 import { processChunked } from './chunked';
+import { rememberOriginalText } from './original-text';
 import { createTooltipFragment, createTooltipFragmentFromTokens } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates
@@ -192,6 +193,7 @@ function translateTextNode(textNode: Text, ctx: TranslateContext): void {
     textNode.replaceWith(fragment);
   } else {
     // Simple text replacement
+    rememberOriginalText(textNode, originalText);
     textNode.textContent = ctx.doTranslate(originalText, ctx.outputFormat);
   }
 }

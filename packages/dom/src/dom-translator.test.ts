@@ -726,6 +726,47 @@ describe('dom-translator', () => {
     });
   });
 
+  describe('restoreDOM round-trips', () => {
+    it('restores non-tooltip translations applied via applyTranslationsMap', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await applyTranslationsMap(document.body, { hello: 'haloh', world: 'werld' });
+      expect(document.querySelector('p')?.textContent).toBe('Haloh werld');
+      restoreDOM(document.body);
+      expect(document.querySelector('p')?.textContent).toBe('Hello world');
+      expect(document.querySelector('p')?.hasAttribute(ATTR_ORIGINAL_CONTENT)).toBe(false);
+    });
+
+    it('restores every text node of a mixed-content parent', async () => {
+      document.body.innerHTML = '<p>Hello <b>bold</b> world</p>';
+      await applyTranslationsMap(document.body, {
+        bold: 'bohld',
+        hello: 'haloh',
+        world: 'werld',
+      });
+      expect(document.querySelector('p')?.textContent).toBe('Haloh bohld werld');
+      restoreDOM(document.body);
+      expect(document.querySelector('p')?.textContent).toBe('Hello bold world');
+    });
+
+    it('restores non-tooltip translateDOM output', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await translateDOM(document.body, { showTooltips: false });
+      expect(document.querySelector('p')?.textContent).not.toBe('Hello world');
+      restoreDOM(document.body);
+      expect(document.querySelector('p')?.textContent).toBe('Hello world');
+    });
+
+    it('merges fragmented text nodes after a tooltip translate/restore cycle', async () => {
+      document.body.innerHTML = '<p>Hello world</p>';
+      await translateDOM(document.body, { showTooltips: true });
+      restoreDOM(document.body);
+      const p = document.querySelector('p');
+      expect(p?.textContent).toBe('Hello world');
+      // Repeated translate/restore cycles must not accumulate fragmentation
+      expect(p?.childNodes.length).toBe(1);
+    });
+  });
+
   describe('extractWords', () => {
     it.each([
       ['Hello World hello', ['hello', 'world'], 'unique lowercase words'],

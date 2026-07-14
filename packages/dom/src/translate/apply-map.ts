@@ -11,6 +11,7 @@ import {
   requireBrowser,
 } from '../traversal';
 import { processChunked } from './chunked';
+import { rememberOriginalText } from './original-text';
 import { createTooltipFragmentFromMap } from './tooltip-fragment';
 
 // Default chunk size for chunked DOM updates (consistent with translator.ts)
@@ -100,6 +101,7 @@ function processTextNode(
   } else {
     // Simple text replacement using regex exec (30% faster than split+test)
     const text = textNode.textContent ?? '';
+    rememberOriginalText(textNode, text);
     const normalized = normalizeApostrophes(text);
     let result = '';
     let lastIndex = 0;
