@@ -10,11 +10,17 @@ import { normalizeApostrophes } from './text';
  *  word when it is not adjacent to a digit on either side. A run touching a digit
  *  (an escape sequence like \u2014, an ordinal like "3rd", an identifier like
  *  "win32") is left uncaptured, so it stays in a separator token and passes
- *  through untranslated instead of being partially matched via backtracking. */
+ *  through untranslated instead of being partially matched via backtracking.
+ *  Apostrophes join a word only when they sit between letters (contractions,
+ *  possessives like "James's"); leading/trailing apostrophes are quote marks
+ *  or plural possessives ("dogs'") and stay in separator tokens so they
+ *  survive translation. */
 export const WORD_SPLIT_REGEX =
-  /(?<![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])([a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+)(?![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])/;
-/** Regex to test if a token is a word (includes accented Latin chars) */
-export const WORD_TEST_REGEX = /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+$/;
+  /(?<![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])([a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:'[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)(?![0-9a-zA-Z\u00C0-\u024F\u1E00-\u1EFF])/;
+/** Regex to test if a token is a word (includes accented Latin chars).
+ *  Mirrors the word shape captured by WORD_SPLIT_REGEX. */
+export const WORD_TEST_REGEX =
+  /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:'[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*$/;
 
 // Common IPA symbols used in phonetic transcription (Set for O(1) lookup).
 // Exported for reuse in language detection (core/detect).

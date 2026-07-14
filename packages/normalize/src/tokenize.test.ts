@@ -46,6 +46,39 @@ describe('text utilities', () => {
       expect(words[1]!.text).toBe('stop');
     });
 
+    // Only internal apostrophes are part of a word. Leading/trailing ones are
+    // quote marks or possessive markers and must survive as separators —
+    // previously "'hello'" captured the quotes into the word token and the
+    // translator silently dropped them.
+    it('should treat surrounding quote apostrophes as separators', () => {
+      const tokens = tokenizeText("'hello'");
+      expect(tokens).toEqual([
+        { isWord: false, text: "'" },
+        { isWord: true, text: 'hello' },
+        { isWord: false, text: "'" },
+      ]);
+    });
+
+    it('should keep the plural possessive apostrophe as a separator', () => {
+      const tokens = tokenizeText("the dogs' bones");
+      expect(tokens.filter((t) => t.isWord).map((t) => t.text)).toEqual(['the', 'dogs', 'bones']);
+      expect(tokens.map((t) => t.text).join('')).toBe("the dogs' bones");
+    });
+
+    it('round-trips quoted words without losing characters', () => {
+      const input = "she said 'wait' and 'don't go'";
+      const tokens = tokenizeText(input);
+      expect(tokens.map((t) => t.text).join('')).toBe(input);
+      expect(tokens.filter((t) => t.isWord).map((t) => t.text)).toEqual([
+        'she',
+        'said',
+        'wait',
+        'and',
+        "don't",
+        'go',
+      ]);
+    });
+
     it.each([
       ['3rd', '3rd'],
       ['21st', '21st'],
