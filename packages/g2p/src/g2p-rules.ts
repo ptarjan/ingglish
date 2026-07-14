@@ -370,7 +370,6 @@ const NRL_RULES: Record<string, string[]> = {
     'PR[E]VI=/IY/',
     'CR[E]TE=/IY/',
     'PL[E]TE=/IY/',
-    'TL[E]ME=//',
     'ST[E]VE=/IY/',
     ' [E]QU=/IH/',
     ' [E]FF=/IH/',

@@ -598,9 +598,16 @@ if (!state.injected) {
       if (message.type === 'RETRANSLATE') {
         // Only retranslate if currently translated
         if (state.translated) {
-          void retranslatePage(message.format).then(() => {
-            sendResponse({ success: true });
-          });
+          retranslatePage(message.format)
+            .then(() => {
+              sendResponse({ success: true });
+            })
+            /* v8 ignore start -- a rejection would otherwise leave the
+               sender's message channel hanging until Chrome times it out */
+            .catch(() => {
+              sendResponse({ success: false });
+            });
+          /* v8 ignore stop */
           return true; // Keep channel open for async response
         }
         /* v8 ignore start */

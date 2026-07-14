@@ -5,8 +5,8 @@
  * 1. CMU corrections — fix errors in existing CMU entries (verified vs Cambridge/Wiktionary)
  * 2. Additions — words not in CMU (tech terms, loanwords, etc.)
  *
- * Note: ~800 N-before-velar errors (N K → NG K, N G → NG G) are fixed automatically
- * by normalizeVelarNasal() in lookup.ts and don't need entries here.
+ * Note: ~800 N-before-velar errors (N K → NG K, N G → NG G) are pre-normalized
+ * at build time in scripts/build-dictionary.ts and don't need entries here.
  */
 export const CUSTOM_PRONUNCIATIONS: Record<string, string[]> = {
   // ---------------------------------------------------------------------------
