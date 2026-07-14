@@ -53,6 +53,17 @@ const LANGUAGES = [
   { code: 'zh', file: 'zh_hans.txt' },
 ] as const;
 
+/**
+ * Hand-maintained entries merged last (they win over ipa-dict and kaikki).
+ * Kaikki regenerates from Wiktionary, so words can vanish between dumps —
+ * these cover sample-critical words the dict-coverage test guards.
+ */
+export const MANUAL_ENTRIES: Record<string, Record<string, string>> = {
+  // "ø" (island, Dano-Norwegian) appears in the Ibsen "Terje Vigen" sample;
+  // it dropped out of the kaikki Norwegian dump in July 2026.
+  nb: { ø: '/øː/' },
+};
+
 async function download(url: string): Promise<string> {
   const { stdout } = await execFileAsync('curl', ['-sL', url], {
     maxBuffer: 50 * 1024 * 1024,
@@ -151,6 +162,9 @@ async function buildAll(): Promise<void> {
     if (kaikkiCount > 0) {
       Object.assign(ipaDict, kaikki);
     }
+
+    // Hand-maintained entries win over both upstream sources
+    Object.assign(ipaDict, MANUAL_ENTRIES[lang.code]);
 
     const mergedCount = Object.keys(ipaDict).length;
 

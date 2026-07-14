@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { applyDefaultStress, convertToArpabet, parseTsv } from './build-ipa-dicts';
+import { applyDefaultStress, convertToArpabet, MANUAL_ENTRIES, parseTsv } from './build-ipa-dicts';
+
+describe('MANUAL_ENTRIES', () => {
+  // Kaikki regenerates from Wiktionary and can drop words between dumps —
+  // this guards that the sample-critical supplement stays present and converts.
+  it('supplements nb with "ø" (Terje Vigen sample) and converts to ARPAbet', () => {
+    expect(MANUAL_ENTRIES['nb']!['ø']).toBe('/øː/');
+    const arpa = convertToArpabet(MANUAL_ENTRIES['nb']!, 'nb');
+    expect(arpa['ø']!.length).toBeGreaterThan(0);
+  });
+});
 
 describe('parseTsv', () => {
   it('parses tab-separated word/IPA pairs', () => {
