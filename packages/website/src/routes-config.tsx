@@ -5,7 +5,6 @@ import { Navigate } from 'react-router';
 import AppLayout from './AppLayout';
 import { DictGate } from './components/DictGate';
 import ErrorBoundary from './components/ErrorBoundary';
-import TextTranslator from './components/TextTranslator';
 import Tutorial from './components/Tutorial';
 
 // Retry dynamic imports with a page reload on failure (handles stale chunks after deploys)
@@ -20,6 +19,8 @@ function lazyWithReload<T extends { default: ComponentType<object> }>(
   );
 }
 
+// Lazy so the multi-language sample corpus it imports stays out of the main bundle
+const TextTranslator = lazyWithReload(() => import('./components/TextTranslator'));
 const UrlTranslator = lazyWithReload(() => import('./components/UrlTranslator'));
 const SpellingGuide = lazyWithReload(() => import('./components/SpellingGuide'));
 const Extension = lazyWithReload(() => import('./components/Extension'));
@@ -134,11 +135,13 @@ export const routes: RouteObject[] = [
       },
       {
         element: (
-          <DictGate>
-            <ErrorBoundary>
-              <TextTranslatorRoute />
-            </ErrorBoundary>
-          </DictGate>
+          <SuspenseWrap>
+            <DictGate>
+              <ErrorBoundary>
+                <TextTranslatorRoute />
+              </ErrorBoundary>
+            </DictGate>
+          </SuspenseWrap>
         ),
         path: 'text',
       },
