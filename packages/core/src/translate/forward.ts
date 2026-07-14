@@ -17,6 +17,7 @@ import {
   translateUnknown,
   isInitialism,
   KNOWN_INITIALISMS,
+  letterSpellingPhonemes,
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
@@ -32,6 +33,7 @@ import {
   arpabetToFormat,
   getFormatIsLatinScript,
   getFormatPreservesCase,
+  stripStress,
 } from '@ingglish/phonemes';
 import type { TranslateOptions } from '../dict-loader';
 import { getLangDict, resolveLang } from '../dict-loader';
@@ -172,13 +174,53 @@ function isTitleCaseAscii(word: string): boolean {
   return true;
 }
 
-// ============================================================================
-// Unified word translation
-// ============================================================================
+/**
+ * Decides whether a lowercase initialism key keeps the passthrough or the
+ * dictionary wins. Keys the dictionary itself pronounces as spelled letters
+ * ("pm" → P IY1 EH1 M, "api", "ids") are genuine initialisms and pass
+ * through so tech terms stay recognizable. Keys with a real word reading
+ * ("us" → AH1 S, not "you-es") are English words first — they translate
+ * via the dictionary, matching what non-Latin formats already did.
+ */
+function keepsInitialismPassthrough(lower: string, dict: PhoneDict): boolean {
+  const entry = dict.entries[lower];
+  if (!entry) {
+    // Not a dictionary word — nothing to override the passthrough
+    return true;
+  }
+  // isInitialismLower matched either the bare key or key+'s'
+  const base = KNOWN_INITIALISMS.has(lower) ? lower : lower.slice(0, -1);
+  const letters = letterSpellingPhonemes(base);
+  /* v8 ignore start -- initialism keys are always pure a-z */
+  if (!letters) {
+    return false;
+  }
+  /* v8 ignore stop */
+  // Letter names end voiced, so a plural 's' is pronounced Z ("IDs" → aideez)
+  const spelled = base === lower ? letters : [...letters, 'Z'];
+  return phonemesMatchIgnoringStress(entry, spelled);
+}
 
 /** Create a lookup function from PhoneDict entries (same pattern as WORD_RESOLVERS). */
 function makeDictLookup(dict: PhoneDict): (word: string) => null | string[] {
   return (w: string) => dict.entries[w] ?? dict.entries[w.toLowerCase()] ?? null;
+}
+
+// ============================================================================
+// Unified word translation
+// ============================================================================
+
+/** Compares two ARPAbet sequences ignoring stress markers. */
+function phonemesMatchIgnoringStress(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (const [i, element] of a.entries()) {
+    if (stripStress(element) !== stripStress(b[i]!)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /** Convert ARPAbet to format, respecting dict's R-coloring setting. */
@@ -393,13 +435,15 @@ function tryCamelCase(word: string, dict: PhoneDict, format: OutputFormat): null
  * Fast path for pure lowercase ASCII dictionary words (most common in natural text).
  * Pure a-z words exclude camelCase, contractions, and diacritics, so we can skip
  * all those checks and go straight to dictionary lookup.
+ * A word-reading dictionary hit wins over initialism collisions ("us" is the
+ * pronoun, not "US"); see keepsInitialismPassthrough.
  * Returns the translated string, or null if the word doesn't qualify.
  */
 function tryFastPath(word: string, dict: PhoneDict, format: OutputFormat): null | string {
   if (!isAllLowerAscii(word)) {
     return null;
   }
-  if (isInitialismLower(word)) {
+  if (isInitialismLower(word) && keepsInitialismPassthrough(word, dict)) {
     return null;
   }
   const phonemes = dict.entries[word];
@@ -461,7 +505,7 @@ function tryTitleCaseFastPath(word: string, dict: PhoneDict, format: OutputForma
   }
 
   const lower = word.toLowerCase();
-  if (isInitialismLower(lower)) {
+  if (isInitialismLower(lower) && keepsInitialismPassthrough(lower, dict)) {
     return null;
   }
 

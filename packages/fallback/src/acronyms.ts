@@ -253,11 +253,11 @@ export const LETTER_PHONEMES: Record<string, string[]> = {
 
 /**
  * Known initialisms - derived from INITIALISM_EXPANSIONS for consistency.
- * These are pronounced as individual letters, NOT as words.
- *
- * Excludes acronyms pronounced as words like:
- * - RAM (ram), ROM (rom), GIF (gif/jif), JPEG (jay-peg)
- * - JSON (jason), SQL (sequel), NASA, NATO, SCUBA, LASER
+ * The set includes word-pronounced acronyms (RAM, NASA, NATO) as well as
+ * letter-spelled initialisms (API, HTML). Membership only gates the
+ * passthrough for words the dictionary doesn't already know — lowercase
+ * dictionary words that collide with a key ("us", "it", "am") translate
+ * normally via the dictionary.
  */
 export const KNOWN_INITIALISMS = new Set(Object.keys(INITIALISM_EXPANSIONS));
 
@@ -277,6 +277,24 @@ export function isInitialism(word: string): boolean {
 
 // Common suffixes for initialisms (plural, possessive)
 const INITIALISM_SUFFIXES = ["'s", 's'] as const;
+
+/**
+ * Returns the ARPAbet letter-spelling of a lowercase word ("pm" →
+ * P IY1 EH1 M), or null if any character has no letter pronunciation.
+ * Used to detect whether a dictionary entry for an initialism key is the
+ * spelled-letters reading or a genuine word reading.
+ */
+export function letterSpellingPhonemes(word: string): null | string[] {
+  const arpabet: string[] = [];
+  for (const char of word) {
+    const letterArpabet = LETTER_PHONEMES[char];
+    if (letterArpabet === undefined) {
+      return null;
+    }
+    arpabet.push(...letterArpabet);
+  }
+  return arpabet.length > 0 ? arpabet : null;
+}
 
 /**
  * Checks if a word is an initialism with a suffix (e.g., "IDs", "TVs", "URLs", "API's").

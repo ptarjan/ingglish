@@ -52,9 +52,11 @@ describe('initialisms', () => {
       'CPU',
       'ML',
       'LLM',
-      // known lowercase
+      // known lowercase whose dictionary entry is the spelled-letters reading
       'ui',
       'api',
+      'pm',
+      'sql',
       // unknown all-caps
       'MQTT',
       'USSR',
@@ -62,11 +64,7 @@ describe('initialisms', () => {
       // all-caps via initialism list
       'NATO',
       'NASA',
-      // lowercase words that happen to match
-      'us',
-      'it',
-      'am',
-      // also dictionary words
+      // uppercase initialisms that are also dictionary words
       'IT',
       'AM',
       'PM',
@@ -87,6 +85,33 @@ describe('initialisms', () => {
 
     it.each(['UI', 'API'])('passes through %s unchanged for IPA too', (word) => {
       expect(translateSync(word, { format: 'ipa' })).toBe(word);
+    });
+  });
+
+  // Lowercase (and title-case) words that collide with initialism keys but
+  // have a real word reading in the dictionary ("us" → AH1 S, not "you-es")
+  // are ordinary English words — the dictionary wins, matching what
+  // non-Latin formats already did. Keys whose dictionary entry IS the
+  // spelled-letters reading ("pm", "api", "ids") keep the passthrough above.
+  describe('lowercase dictionary words win over initialism collisions', () => {
+    it.each([
+      ['us', 'uhs'],
+      ['it', 'it'],
+      ['am', 'am'],
+      ['id', 'id'],
+      ['ide', 'aid'],
+      ['nato', 'naytoh'],
+      ['ram', 'ram'],
+      ['crud', 'kruhd'],
+    ])('translates "%s" via the dictionary to "%s"', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
+    });
+
+    it.each([
+      ['Us', 'Uhs'],
+      ['Nato', 'Naytoh'],
+    ])('translates title-case "%s" via the dictionary to "%s"', (word, expected) => {
+      expect(translateSync(word)).toBe(expected);
     });
   });
 

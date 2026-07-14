@@ -43,6 +43,7 @@ export {
   isInitialism,
   KNOWN_INITIALISMS,
   LETTER_PHONEMES,
+  letterSpellingPhonemes,
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from './acronyms';
