@@ -377,9 +377,12 @@ function translateWordInternal(
  * Falls through to the full pipeline for everything else.
  */
 function translateWordString(word: string, dict: PhoneDict, format: OutputFormat): string {
+  // Word tokens from WORD_SPLIT_REGEX always contain a letter; defensive guard
+  /* v8 ignore start */
   if (!word || !HAS_LETTER.test(word)) {
     return word;
   }
+  /* v8 ignore stop */
   const fast = tryFastPath(word, dict, format) ?? tryTitleCaseFastPath(word, dict, format);
   if (fast !== null) {
     return fast;

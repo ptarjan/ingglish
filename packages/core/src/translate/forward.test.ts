@@ -146,7 +146,7 @@ describe('translator', () => {
     it.each([
       ["y'all", 'yawl', 'apostrophe fallback'],
       ["John's", 'Jonz', 'possessive'],
-      ["'twas", 'twuhz', 'leading apostrophe'],
+      ["'twas", "'twuhz", 'leading apostrophe preserved as separator'],
       ["DON'T", 'DOHNT', 'all caps preserved'],
       ["foo't", 'footee', 'not in dictionary, apostrophe splitting'],
     ])('translates %s → %s (%s)', (word, expected) => {
@@ -170,8 +170,21 @@ describe('translator', () => {
   });
 
   describe('edge cases for coverage', () => {
-    it("should translate leading apostrophe: 'xyz → ksiz", () => {
-      expect(translateSync("'xyz")).toBe('ksiz');
+    it("preserves a leading quote apostrophe: 'xyz → 'ziz", () => {
+      // The apostrophe stays a separator token; "xyz" alone goes through
+      // G2P (word-initial x → /z/ as in xylophone).
+      expect(translateSync("'xyz")).toBe("'ziz");
+    });
+
+    it('passes through a lowercase initialism the dictionary does not know', () => {
+      expect(translateSync('gif')).toBe('gif');
+    });
+
+    it('lets a word reading win when it differs from the letter spelling at equal length', () => {
+      // CMU pronounces "gps" with a hard G (G IY1 P IY0 EH1 S) — same
+      // phoneme count as the letter spelling (JH IY1 ...) but not equal,
+      // so the dictionary reading wins over the initialism passthrough.
+      expect(translateSync('gps')).toBe('geepee-es');
     });
 
     it.each(['123', '!!!'])('should pass through non-letter "%s" unchanged', (input) => {

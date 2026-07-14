@@ -347,9 +347,13 @@ function reverseTranslateWordAsResult(word: string): TranslateResult {
     const parts = word.split("'");
     let allMatched = true;
     const translatedParts = parts.map((p) => {
+      // Word tokens can't start/end with an apostrophe since WORD_SPLIT_REGEX
+      // only accepts internal ones, so parts are never empty; defensive guard
+      /* v8 ignore start */
       if (!p) {
         return '';
       }
+      /* v8 ignore stop */
       const matches = reverseTranslateWord(p);
       if (matches[0]) {
         return matches[0];
