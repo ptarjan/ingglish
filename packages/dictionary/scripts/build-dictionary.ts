@@ -14,6 +14,7 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 import wordFrequencies from 'subtlex-word-frequencies';
 import { CUSTOM_PRONUNCIATIONS } from '../src/custom-words';
+import { scoreWordWithFrequency } from '../src/frequency';
 
 const execFileAsync = promisify(execFile);
 
@@ -231,103 +232,14 @@ function buildFrequencyMap(): Map<string, number> {
   return freqMap;
 }
 
-// Common contractions that should be boosted in sorting
-const COMMON_CONTRACTIONS = new Set([
-  "can't",
-  "won't",
-  "don't",
-  "didn't",
-  "doesn't",
-  "isn't",
-  "aren't",
-  "wasn't",
-  "weren't",
-  "hasn't",
-  "haven't",
-  "hadn't",
-  "couldn't",
-  "wouldn't",
-  "shouldn't",
-  "mustn't",
-  "needn't",
-  "mightn't",
-  "shan't",
-  "ain't",
-  "i'll",
-  "you'll",
-  "he'll",
-  "she'll",
-  "it'll",
-  "we'll",
-  "they'll",
-  "that'll",
-  "who'll",
-  "what'll",
-  "there'll",
-  "you're",
-  "we're",
-  "they're",
-  "i've",
-  "you've",
-  "we've",
-  "they've",
-  "could've",
-  "would've",
-  "should've",
-  "might've",
-  "must've",
-  "i'd",
-  "you'd",
-  "he'd",
-  "she'd",
-  "it'd",
-  "we'd",
-  "they'd",
-  "that'd",
-  "who'd",
-  "he's",
-  "she's",
-  "it's",
-  "that's",
-  "what's",
-  "who's",
-  "where's",
-  "there's",
-  "here's",
-  "how's",
-  "let's",
-  "i'm",
-]);
-
-const CONTRACTION_BOOST = 10_000_000;
-// Score for contractions lacking SUBTLEX frequency data (nearly all of them —
-// the corpus underrepresents apostrophe forms). Treated as a moderately common
-// word (~freq 50k) so a contraction still outranks its rare homophones ("its",
-// "wont", "whats") but loses to a genuinely common one (e.g. "there" ~221k beats
-// "they're"). Mirrors UNKNOWN_CONTRACTION_SCORE in src/frequency.ts.
-const UNKNOWN_CONTRACTION_SCORE = 50_000;
-const NUMERIC_REGEX = /[0-9]/;
-
 /**
  * Score a word for sorting (higher = more common, should come first).
+ * Delegates to the shared runtime scorer in src/frequency.ts so the
+ * pre-built reverse dictionary and runtime re-sorts can't drift apart.
  */
 export function getWordScore(word: string, freqMap: Map<string, number>): number {
-  const freq = freqMap.get(word.toLowerCase()) ?? 0;
-  const isContraction = COMMON_CONTRACTIONS.has(word.toLowerCase());
-
-  if (freq > 0) {
-    return isContraction ? freq + CONTRACTION_BOOST : freq;
-  }
-
-  if (isContraction) {
-    return UNKNOWN_CONTRACTION_SCORE;
-  }
-
-  if (NUMERIC_REGEX.test(word)) {
-    return -1_000_000 - word.length;
-  }
-
-  return -word.length;
+  const freq = freqMap.get(word.toLowerCase());
+  return -scoreWordWithFrequency(word, freq !== undefined && freq > 0 ? freq : undefined);
 }
 
 /**

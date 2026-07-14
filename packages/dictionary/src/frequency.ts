@@ -151,6 +151,11 @@ const CONTRACTION_FREQUENCY_BOOST = 10_000_000; // Added to frequency for known 
 const UNKNOWN_CONTRACTION_SCORE = -50_000;
 const NUMERIC_WORD_PENALTY = 1_000_000; // Penalty for words containing numbers
 const UNKNOWN_WORD_PENALTY = 100_000; // Base penalty for unknown words
+// Single-letter entries ("q", "t", "b") carry inflated corpus frequencies from
+// tokenization artifacts (SUBTLEX "t" ≈ 733k) and are almost never the
+// intended reverse translation — rank them below every real word but above
+// unknown junk. "a" and "i" are genuine words and exempt.
+const SINGLE_LETTER_PENALTY = 50_000;
 
 // Pre-compiled regex for hot path performance
 const NUMERIC_REGEX = /\d/;
@@ -160,8 +165,22 @@ const NUMERIC_REGEX = /\d/;
  * Used for sorting homophones by likelihood.
  */
 export function scoreWord(word: string): number {
+  const frequency = loader.isLoaded() ? loader.get().map.get(word.toLowerCase()) : undefined;
+  return scoreWordWithFrequency(word, frequency);
+}
+
+/**
+ * Pure scoring shared by the runtime sort ({@link scoreWord}) and the
+ * build-time pre-sort (scripts/build-dictionary.ts) — one implementation so
+ * the pre-built reverse dictionary and runtime re-sorts can't drift apart.
+ * Lower score is better (more likely).
+ */
+export function scoreWordWithFrequency(word: string, frequency: number | undefined): number {
   const lower = word.toLowerCase();
-  const frequency = loader.isLoaded() ? loader.get().map.get(lower) : undefined;
+
+  if (lower.length === 1 && lower !== 'a' && lower !== 'i') {
+    return SINGLE_LETTER_PENALTY;
+  }
 
   // Boost common contractions - they're usually more common than their
   // homophones (e.g., "won't" vs archaic "wont")

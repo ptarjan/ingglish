@@ -75,12 +75,13 @@ describe('getWordScore', () => {
   it.each([
     ['the', 1_000_000, 'returns frequency for known word'],
     ['hello', 5000, 'returns frequency for known word'],
-    ['xyz', -3, 'returns negative length for unknown word'],
-    ['abcdef', -6, 'returns negative length for unknown word'],
+    ['xyz', -100_003, 'penalizes unknown words by length'],
+    ['abcdef', -100_006, 'penalizes unknown words by length'],
     ["don't", 50_000 + 10_000_000, 'boosts common contractions'],
     ["shan't", 50_000, 'gives unknown contractions a fixed score'],
     ['THE', 1_000_000, 'is case-insensitive'],
     ["DON'T", 50_000 + 10_000_000, 'is case-insensitive for contractions'],
+    ['q', -50_000, 'ranks single letters below every real word'],
   ])('getWordScore(%s) → %d (%s)', (word, expected) => {
     expect(getWordScore(word, freqMap)).toBe(expected);
   });

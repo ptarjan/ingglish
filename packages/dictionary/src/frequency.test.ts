@@ -61,6 +61,27 @@ describe('word-frequency', () => {
       const longScore = scoreWord('zzzzzz');
       expect(longScore).toBeGreaterThan(shortScore);
     });
+
+    // Single-letter dictionary entries ("q", "t", "b") carry inflated corpus
+    // frequencies from tokenization artifacts (SUBTLEX "t" ≈ 733k) and are
+    // almost never the intended reverse translation — "kyoo" should give
+    // "cue"/"queue", not "q". Only "a" and "i" are genuine words.
+    it.each([
+      ['q', 'queue'],
+      ['q', 'cue'],
+      ['t', 'tea'],
+      ['b', 'bee'],
+    ])('ranks the letter "%s" below the real word "%s"', (letter, word) => {
+      expect(scoreWord(letter)).toBeGreaterThan(scoreWord(word));
+    });
+
+    it.each(['a', 'i'])('still ranks "%s" as a real word', (letter) => {
+      expect(scoreWord(letter)).toBeLessThan(0);
+    });
+
+    it('ranks a single letter above unknown junk words', () => {
+      expect(scoreWord('q')).toBeLessThan(scoreWord('zzzq'));
+    });
   });
 
   describe('sortByFrequency', () => {
