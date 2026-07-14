@@ -183,7 +183,10 @@ export function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]!);
 }
 
-const PAGE_CSS = `:root{color-scheme:light dark}
+// Written once to dist/word.css and <link>ed from every generated page —
+// inlining it would duplicate ~1.5 KB into each of ~50k pages (~73 MB of
+// dist/ and ~40% of every page's bytes).
+export const PAGE_CSS = `:root{color-scheme:light dark}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6;
 background:#fafafa;color:#1a1a1a}
@@ -313,7 +316,7 @@ export function renderWordPage(
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">${jsonLd}</script>
-<style>${PAGE_CSS}</style>
+<link rel="stylesheet" href="/word.css">
 </head>
 <body>
 ${SITE_HEADER}
@@ -400,7 +403,7 @@ function hubShell(title: string, description: string, canonical: string, body: s
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${canonical}">
-<style>${PAGE_CSS}</style>
+<link rel="stylesheet" href="/word.css">
 </head>
 <body>
 ${SITE_HEADER}
@@ -548,6 +551,9 @@ async function main(): Promise<void> {
     mkdirSync(letterDir, { recursive: true });
     writeFileSync(join(letterDir, 'index.html'), renderLetterPage(letter, byLetter.get(letter)!));
   }
+
+  // The shared stylesheet every generated page <link>s
+  writeFileSync(join(distDir, 'word.css'), PAGE_CSS);
 
   writeFileSync(join(distDir, 'sitemap-words.xml'), renderWordsSitemap(words, letters));
   writeFileSync(join(distDir, 'sitemap.xml'), renderSitemapIndex());

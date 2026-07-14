@@ -191,6 +191,14 @@ describe('renderWordPage', () => {
   it('omits the homophones section when there are none', () => {
     expect(renderWordPage(data, [], [])).not.toContain('(homophones)');
   });
+
+  // ~50k generated pages share one stylesheet: inlining it would duplicate
+  // the CSS tens of thousands of times in dist/ (~40% of every page's bytes).
+  it('links the shared stylesheet instead of inlining CSS', () => {
+    expect(html).toContain('<link rel="stylesheet" href="/word.css">');
+    expect(html).not.toContain('<style>');
+    expect(renderWordsHub(['a'], ['the'])).toContain('<link rel="stylesheet" href="/word.css">');
+  });
 });
 
 describe('groupByLetter / letterOf', () => {
