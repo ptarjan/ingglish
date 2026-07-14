@@ -39,7 +39,7 @@ export function isAllowedOrigin(origin: null | string, allowedOrigins: string): 
   return false;
 }
 
-// Pre-compiled regex patterns for private IPv4 ranges (hoisted for performance)
+// Pre-compiled regex patterns for private/reserved IPv4 ranges (hoisted for performance)
 const PRIVATE_IPV4_PATTERNS = [
   /^127\./, // Loopback
   /^10\./, // Class A private
@@ -47,6 +47,10 @@ const PRIVATE_IPV4_PATTERNS = [
   /^192\.168\./, // Class C private
   /^169\.254\./, // Link-local
   /^0\./, // Current network
+  /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./, // CGNAT 100.64.0.0/10 (alt cloud metadata endpoints)
+  /^192\.0\.0\./, // IETF protocol assignments 192.0.0.0/24
+  /^198\.1[89]\./, // Benchmarking 198.18.0.0/15
+  /^(22[4-9]|2[34]\d|25[0-5])\./, // Multicast 224.0.0.0/4, reserved 240.0.0.0/4, broadcast
 ];
 
 /**

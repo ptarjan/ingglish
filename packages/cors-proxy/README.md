@@ -4,11 +4,19 @@ A Cloudflare Worker that proxies requests for the Ingglish URL translator.
 
 ## Security Features
 
-- **Origin validation**: Only allows requests from configured allowed origins
-- **SSRF prevention**: Blocks requests to private IP ranges (127.*, 10.*, 172.16-31.*, 192.168.*, 169.254.*, ::1, fc00::/fd00::)
+- **Origin validation**: Only allows requests from configured allowed origins.
+  Note: the `Origin` header is only enforced by browsers — a non-browser
+  client can spoof it, so this deters casual misuse rather than determined
+  abuse. Real abuse control needs a Cloudflare rate-limiting rule or a signed
+  token from the site.
+- **SSRF prevention**: Blocks literal private/reserved IPs (loopback, RFC 1918,
+  link-local, CGNAT 100.64/10, 192.0.0.0/24, 198.18/15, multicast/reserved,
+  IPv6 loopback/ULA/link-local and IPv4-mapped forms), re-validated on every
+  redirect hop. Known limitation: a hostname whose DNS record points at a
+  private IP (DNS rebinding) passes the check — Workers can't resolve DNS
+  before fetching.
 - **Protocol restriction**: Only allows HTTP/HTTPS URLs
 - **Content-Type validation**: Only proxies HTML responses
-- **Rate limiting**: Uses Cloudflare's built-in DDoS protection
 - **Cache control**: Enforces minimum 5-minute cache headers
 
 ## Deployment
