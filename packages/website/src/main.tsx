@@ -7,6 +7,10 @@ import { registerPronunciation } from '@ingglish/phonemes';
 import { registerShavian } from '@ingglish/shavian';
 import { FormatProvider } from './contexts/FormatContext';
 import { registerExperiment } from './hooks/useCustomMapping';
+// Side effect: registers the browser dictionary loader (setDictLoader).
+// DictGate needs it on every route — it must load with the main bundle, not
+// ride along inside a lazy route chunk.
+import './pronounce/dict-loader';
 import { registerServiceWorker } from './register-sw';
 import { routes } from './routes-config';
 import './styles/index.css';

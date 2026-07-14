@@ -1,6 +1,6 @@
 import { translateSync } from 'ingglish';
 import { describe, it, expect, vi } from 'vitest';
-import { isInitialism, KNOWN_INITIALISMS } from './index';
+import { isInitialism, KNOWN_INITIALISMS, letterSpellingPhonemes } from './index';
 
 describe('initialisms', () => {
   describe('isInitialism performance', () => {
@@ -112,6 +112,20 @@ describe('initialisms', () => {
       ['Nato', 'Naytoh'],
     ])('translates title-case "%s" via the dictionary to "%s"', (word, expected) => {
       expect(translateSync(word)).toBe(expected);
+    });
+  });
+
+  describe('letterSpellingPhonemes', () => {
+    it('spells out each letter as ARPAbet', () => {
+      expect(letterSpellingPhonemes('pm')).toEqual(['P', 'IY1', 'EH1', 'M']);
+    });
+
+    it('returns null when a character has no letter pronunciation', () => {
+      expect(letterSpellingPhonemes('a1')).toBeNull();
+    });
+
+    it('returns null for empty input', () => {
+      expect(letterSpellingPhonemes('')).toBeNull();
     });
   });
 
