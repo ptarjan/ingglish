@@ -43,66 +43,71 @@ const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
 
 /**
  * Contextual (multi-phoneme) alternatives, tried only when the primary parse
- * fails (so genuine AO / EH+R words are unaffected):
+ * fails (so genuine AO / EH+R / IH+R words are unaffected):
  * - AO+AE → AH+W+AH: a schwa+glide junction like "-awal" in "usual"
  *   (Y UW ZH AH0 W AH0 L) renders "...zhawal", which greedily parses as
  *   AO ("aw") + AE ("a").
  * - EH+R → AY+R: the spelling "air" covers both EH+R (chair) and AY+R
  *   (admire, expire, esquire); the parser defaults to EH+R.
+ * - IH+R → IY+R: the spelling "eer" covers both IH+R (beer) and IY+R
+ *   (here, ear, period — CMU is inconsistent before R); the parser
+ *   defaults to IH+R.
  */
 const ARPABET_SEQUENCE_ALTERNATIVES: { from: string[]; to: string[] }[] = [
   { from: ['AO', 'AE'], to: ['AH', 'W', 'AH'] },
   { from: ['EH', 'R'], to: ['AY', 'R'] },
+  { from: ['IH', 'R'], to: ['IY', 'R'] },
 ];
 
-// Pre-computed to avoid Object.entries() allocation on every call
-const ARPABET_ALTERNATIVES_ENTRIES = Object.entries(ARPABET_ALTERNATIVES);
+// Combinatorial safety valve: a word with n ambiguous vowels has 2^n
+// variants, so cap the closure. BFS order means the variants closest to
+// the primary parse are always kept; only deep combinations get dropped.
+const MAX_ALTERNATIVE_VARIANTS = 256;
 
 /**
  * Generates alternative ARPAbet sequences for ambiguous spellings.
  *
- * For length-changing alternatives (ER→EH+R, SH→S+HH), generates
- * single-position substitutions. For same-length alternatives (AE→AH),
- * also generates an "all-replaced" variant to handle words with multiple
- * ambiguous vowels (e.g., "difakalt" → D IH F AH K AH L T).
+ * Computes the closure of all substitution rules (breadth-first, deduped,
+ * capped) so alternatives compose:
+ * - mixed subsets: "capital" (K AE1 P AH0 T AH0 L) renders "kapatal", which
+ *   parses as K AE P AE T AE L — recovering it needs the first AE kept and
+ *   the other two replaced with AH
+ * - cross-rule composition: "virus" (V AY1 R AH0 S) renders "vairas", which
+ *   needs EH+R→AY+R and AE→AH applied together
+ *
+ * Variants are ordered by number of substitutions (primary first), so
+ * callers that scan in order prefer parses closest to the literal spelling.
  */
 export function expandArpabetAlternatives(arpabet: string[]): string[][] {
   const results: string[][] = [arpabet];
+  const seen = new Set<string>([arpabet.join(' ')]);
 
-  // Single-position substitutions
-  for (let i = 0; i < arpabet.length; i++) {
-    const alternatives = ARPABET_ALTERNATIVES[arpabet[i]!];
-    if (alternatives !== undefined) {
-      for (const alt of alternatives) {
-        const expanded = [...arpabet.slice(0, i), ...alt, ...arpabet.slice(i + 1)];
-        results.push(expanded);
+  for (let r = 0; r < results.length && results.length < MAX_ALTERNATIVE_VARIANTS; r++) {
+    const current = results[r]!;
+
+    const push = (variant: string[]): void => {
+      const key = variant.join(' ');
+      if (!seen.has(key) && results.length < MAX_ALTERNATIVE_VARIANTS) {
+        seen.add(key);
+        results.push(variant);
       }
-    }
-  }
+    };
 
-  // Contextual multi-phoneme substitutions (e.g. AO+AE → AH+W+AH for "-awal").
-  for (const { from, to } of ARPABET_SEQUENCE_ALTERNATIVES) {
-    for (let i = 0; i + from.length <= arpabet.length; i++) {
-      if (from.every((p, j) => arpabet[i + j] === p)) {
-        results.push([...arpabet.slice(0, i), ...to, ...arpabet.slice(i + from.length)]);
-      }
-    }
-  }
-
-  // All-replaced variant for same-length (1:1) alternatives like AE→AH.
-  // Needed when a word has multiple ambiguous vowels (e.g., "difficult"
-  // has two AH0→'a', so both AE positions must be replaced to match).
-  for (const [phoneme, alts] of ARPABET_ALTERNATIVES_ENTRIES) {
-    for (const alt of alts) {
-      if (alt.length === 1) {
-        let count = 0;
-        for (const p of arpabet) {
-          if (p === phoneme) {
-            count++;
-          }
+    // Single-phoneme substitutions (AE→AH, SH→S+HH, ...)
+    for (let i = 0; i < current.length; i++) {
+      const alternatives = ARPABET_ALTERNATIVES[current[i]!];
+      if (alternatives !== undefined) {
+        for (const alt of alternatives) {
+          push([...current.slice(0, i), ...alt, ...current.slice(i + 1)]);
         }
-        if (count >= 2) {
-          results.push(arpabet.map((p) => (p === phoneme ? alt[0]! : p)));
+      }
+    }
+
+    // Contextual multi-phoneme substitutions (e.g. AO+AE → AH+W+AH for "-awal").
+    for (const { from, to } of ARPABET_SEQUENCE_ALTERNATIVES) {
+      for (let i = 0; i + from.length <= current.length; i++) {
+        if (from.every((p, j) => current[i + j] === p)) {
+          push([...current.slice(0, i), ...to, ...current.slice(i + from.length)]);
         }
       }
     }

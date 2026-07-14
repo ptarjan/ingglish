@@ -74,6 +74,38 @@ describe('phoneme alternative expansion in reverse', () => {
   it.each(['go', 'oh', 'home', 'boat'])('leaves genuine OW word "%s" intact', (word) => {
     expect(reverseTranslateSync(translateSync(word))).toBe(word);
   });
+
+  // Words with 3+ ambiguous 'a' vowels where only a strict subset is schwa
+  // (e.g. "capital" K AE1 P AH0 T AH0 L) need mixed AE/AH combinations, not
+  // just single-position or all-replaced variants.
+  it.each(['capital', 'animal', 'canada', 'academy', 'national', 'management'])(
+    'round-trips mixed AE/AH word "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  // "virus" (V AY1 R AH0 S) renders "vairas": recovering it needs EH+R → AY+R
+  // and AE → AH applied together, so alternatives must compose.
+  it.each(['virus', 'admiral', 'desirable'])(
+    'round-trips composed-alternative word "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  // CMU is inconsistent about IY+R vs IH+R before R ("here" HH IY1 R, "beer"
+  // B IH1 R); both spell "eer", so the reverse parser must try both.
+  it.each(['here', 'ear', 'hearing', 'period', 'serious'])(
+    'round-trips IY+R "eer"-spelled word "%s"',
+    (word) => {
+      expect(reverseTranslateSync(translateSync(word))).toBe(word);
+    }
+  );
+
+  it.each(['beer', 'cheer', 'clear'])('leaves genuine IH+R word "%s" intact', (word) => {
+    expect(reverseTranslateSync(translateSync(word))).toBe(word);
+  });
 });
 
 describe('expandArpabetAlternatives', () => {
