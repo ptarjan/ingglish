@@ -224,7 +224,7 @@ button.hear{background:#1a1a1a;color:#f5f5f5;border-color:#333}button.hear:hover
 .cta{background:#6366f1}.cta:hover{background:#818cf8}footer{border-color:#333}
 }`;
 
-const SITE_HEADER = `<header><a href="/">Ingglish</a><a href="/text">Translator</a></header>`;
+const SITE_HEADER = `<header><a href="/">Ingglish</a><a href="/text/">Translator</a></header>`;
 
 /** A link list of word pages ("cat" → <a href="/word/cat/">cat</a>). */
 function wordLinks(words: string[]): string {
@@ -361,8 +361,8 @@ ${faqHtml}
 </section>
 
 <p>
-<a class="cta" href="/text?text=${encodeURIComponent(word)}">Translate any text →</a>
-<a class="cta" href="/words">Browse all words</a>
+<a class="cta" href="/text/?text=${encodeURIComponent(word)}">Translate any text →</a>
+<a class="cta" href="/words/">Browse all words</a>
 </p>
 </main>
 <footer>
@@ -409,7 +409,7 @@ function hubShell(title: string, description: string, canonical: string, body: s
 ${SITE_HEADER}
 <main>
 ${body}
-<p><a class="cta" href="/text">Translate any text →</a></p>
+<p><a class="cta" href="/text/">Translate any text →</a></p>
 </main>
 <footer><a href="/">Ingglish</a> — every spelling always makes the same sound.</footer>
 </body>

@@ -23,6 +23,7 @@ import spellingIteration from '../../../../docs/spelling-iteration.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import type { DocId } from '../routes';
+import { sitePath, siteUrl } from '../routes';
 
 interface DocEntry {
   content: string;
@@ -245,12 +246,12 @@ function Docs(): JSX.Element {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           if (section !== undefined && section !== '') {
-            void navigate(`/docs/${docId}#${section}`);
+            void navigate(`${sitePath(`/docs/${docId}`)}#${section}`);
             setTimeout(() => {
               document.querySelector(`#${CSS.escape(section)}`)?.scrollIntoView();
             }, 100);
           } else {
-            void navigate(`/docs/${docId}`);
+            void navigate(sitePath(`/docs/${docId}`));
             window.scrollTo(0, 0);
           }
         });
@@ -286,7 +287,7 @@ function Docs(): JSX.Element {
   const handleDocClick = useCallback(
     (docId: string) => (e: React.MouseEvent) => {
       e.preventDefault();
-      void navigate(`/docs/${docId}`);
+      void navigate(sitePath(`/docs/${docId}`));
       window.scrollTo(0, 0);
     },
     [navigate]
@@ -296,7 +297,7 @@ function Docs(): JSX.Element {
     (docId: string, headingId: string) => (e: React.MouseEvent) => {
       e.preventDefault();
       document.querySelector(`#${CSS.escape(headingId)}`)?.scrollIntoView();
-      void navigate(`/docs/${docId}#${headingId}`);
+      void navigate(`${sitePath(`/docs/${docId}`)}#${headingId}`);
     },
     [navigate]
   );
@@ -307,7 +308,7 @@ function Docs(): JSX.Element {
         content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
         name="description"
       />
-      <link href={`https://ingglish.com/docs/${currentDoc.id}`} rel="canonical" />
+      <link href={siteUrl(`/docs/${currentDoc.id}`)} rel="canonical" />
       <div className="docs-container">
         <button
           aria-label={sidebarOpen ? 'Collapse navigation' : 'Expand navigation'}
@@ -329,7 +330,7 @@ function Docs(): JSX.Element {
                 )}
                 <a
                   className={`docs-nav-item ${activeDoc === doc.id ? 'active' : ''}`}
-                  href={`/docs/${doc.id}`}
+                  href={sitePath(`/docs/${doc.id}`)}
                   onClick={handleDocClick(doc.id)}
                   ref={activeDoc === doc.id ? activePillRef : undefined}
                 >
@@ -341,7 +342,7 @@ function Docs(): JSX.Element {
                       <li key={heading.id}>
                         <a
                           className={`docs-subsection-link docs-subsection-h${heading.level}`}
-                          href={`/docs/${doc.id}#${heading.id}`}
+                          href={`${sitePath(`/docs/${doc.id}`)}#${heading.id}`}
                           onClick={handleHeadingClick(doc.id, heading.id)}
                         >
                           {heading.text}
@@ -404,7 +405,7 @@ function transformMdLinks(html: string): string {
         return _match;
       }
       const frag = section !== undefined && section !== '' ? `#${section}` : '';
-      return `href="/docs/${docId}${frag}"`;
+      return `href="${sitePath(`/docs/${docId}`)}${frag}"`;
     }
   );
 }

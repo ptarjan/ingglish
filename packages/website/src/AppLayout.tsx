@@ -5,6 +5,7 @@ import { DictContext } from './DictContext';
 import { trackPageView } from './analytics';
 import { useTheme } from './hooks/useTheme';
 import { useUpdateCheck } from './hooks/useUpdateCheck';
+import { sitePath, siteUrl } from './routes';
 
 type Tab =
   | 'docs'
@@ -74,17 +75,21 @@ const ROUTE_META: Record<Tab, { description: string; path: string; title: string
   },
 };
 
-const TAB_LINKS: (readonly [string, Tab, string])[] = [
-  ['/', 'tutorial', 'Tutorial'],
-  ['/text', 'text', 'Translate Text'],
-  ['/url', 'url', 'Translate URL'],
-  ['/guide', 'guide', 'Spelling Guide'],
-  ['/docs', 'docs', 'Docs'],
-  ['/extension', 'extension', 'Extension'],
-  ['/explore', 'explore', 'Word Explorer'],
-  ['/experiment', 'experiment', 'Experiment'],
-  ['/games', 'games', 'Games'],
-];
+// Hrefs carry the trailing slash so crawlers following the nav land on the page
+// instead of a GitHub Pages 301 (see sitePath in routes.ts).
+const TAB_LINKS: (readonly [string, Tab, string])[] = (
+  [
+    ['/', 'tutorial', 'Tutorial'],
+    ['/text', 'text', 'Translate Text'],
+    ['/url', 'url', 'Translate URL'],
+    ['/guide', 'guide', 'Spelling Guide'],
+    ['/docs', 'docs', 'Docs'],
+    ['/extension', 'extension', 'Extension'],
+    ['/explore', 'explore', 'Word Explorer'],
+    ['/experiment', 'experiment', 'Experiment'],
+    ['/games', 'games', 'Games'],
+  ] as const
+).map(([href, tab, label]) => [sitePath(href), tab, label] as const);
 
 export default function AppLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -161,7 +166,7 @@ export default function AppLayout() {
           </div>
         )}
         <meta content={meta.description} name="description" />
-        <link href={`https://ingglish.com${meta.path}`} rel="canonical" />
+        <link href={siteUrl(meta.path)} rel="canonical" />
         <header className="header">
           <div className="header-title">
             <Link className="logo-link" to="/">
@@ -171,7 +176,7 @@ export default function AppLayout() {
             <Link
               className="btn-reset subtitle-link"
               style={isLoading ? { visibility: 'hidden' } : undefined}
-              to="/guide"
+              to="/guide/"
             >
               What if English spelling made sense?
             </Link>

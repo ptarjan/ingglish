@@ -17,13 +17,13 @@ export function Section8CTA({ onNavigate }: { onNavigate: (tab: string) => void 
     <section className={`tutorial-section tutorial-cta ${visible ? 'revealed' : ''}`} ref={ref}>
       <h2 className="tutorial-heading">Try Ingglish</h2>
       <div className="cta-buttons">
-        <a className="cta-primary" href="/text" onClick={handleNavigate('text')}>
+        <a className="cta-primary" href="/text/" onClick={handleNavigate('text')}>
           Translate Text
         </a>
-        <a className="cta-secondary" href="/url" onClick={handleNavigate('url')}>
+        <a className="cta-secondary" href="/url/" onClick={handleNavigate('url')}>
           Translate a Website
         </a>
-        <a className="cta-secondary" href="/guide" onClick={handleNavigate('guide')}>
+        <a className="cta-secondary" href="/guide/" onClick={handleNavigate('guide')}>
           Spelling Guide
         </a>
       </div>

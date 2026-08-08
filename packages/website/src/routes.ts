@@ -1,6 +1,26 @@
 // Single source of truth for routes and doc IDs.
 // Shared between vite.config.ts (build-time HTML generation, sitemap) and the app (Docs.tsx).
 
+export const SITE = 'https://ingglish.com';
+
+// GitHub Pages serves every route as <route>/index.html and 301-redirects the
+// slash-less form, so any URL we hand a crawler — canonical, og:url, sitemap
+// entry, internal link — has to carry the trailing slash or Google indexes a
+// redirect instead of the page. Query strings keep the slash on the path:
+// /text/?text=cat.
+export function sitePath(route: string): string {
+  const path = route.startsWith('/') ? route : `/${route}`;
+  const queryAt = path.indexOf('?');
+  const pathname = queryAt === -1 ? path : path.slice(0, queryAt);
+  const query = queryAt === -1 ? '' : path.slice(queryAt);
+  return `${pathname.endsWith('/') ? pathname : `${pathname}/`}${query}`;
+}
+
+/** Absolute crawlable URL for a route — `guide` → `https://ingglish.com/guide/`. */
+export function siteUrl(route: string): string {
+  return `${SITE}${sitePath(route)}`;
+}
+
 export const TOP_LEVEL_ROUTES = [
   'text',
   'url',

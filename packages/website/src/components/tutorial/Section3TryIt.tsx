@@ -93,10 +93,10 @@ export function Section3TryIt({ onNavigate }: { onNavigate?: (tab: string) => vo
       {onNavigate && (
         <div className="try-it-cta">
           <p className="try-it-cta-prompt">Want to translate more?</p>
-          <a className="cta-primary" href="/text" onClick={handleNavigate('text')}>
+          <a className="cta-primary" href="/text/" onClick={handleNavigate('text')}>
             Translate Text
           </a>
-          <a className="cta-secondary" href="/url" onClick={handleNavigate('url')}>
+          <a className="cta-secondary" href="/url/" onClick={handleNavigate('url')}>
             Translate a Website
           </a>
         </div>

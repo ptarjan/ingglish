@@ -125,7 +125,7 @@ describe('Docs SSG .md link transformation', () => {
   it('SSG output contains /docs/ links with correct paths', async () => {
     const html = await render('/docs');
     // design-decisions.md is referenced from multiple docs
-    expect(html).toContain('href="/docs/design-decisions"');
+    expect(html).toContain('href="/docs/design-decisions/"');
   });
 
   it('SSG output preserves fragment identifiers in transformed links', async () => {

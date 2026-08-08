@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
+# The translator routes render whatever is passed in the query string. Crawling
+# them yields an unbounded set of URLs whose server-rendered shell has no
+# content, which Google reports as soft 404s. The routes themselves (/text/,
+# /url/, /explore/) stay indexable — only the parameterized forms are blocked.
+Disallow: /*?text=
+Disallow: /*?url=
+Disallow: /*?word=
+Disallow: /*?lang=
+
 Sitemap: https://ingglish.com/sitemap.xml

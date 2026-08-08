@@ -220,7 +220,7 @@ export const routes: RouteObject[] = [
         path: 'games/:gameId?',
       },
       {
-        element: <Navigate replace to="/games/reading" />,
+        element: <Navigate replace to="/games/reading/" />,
         path: 'challenge',
       },
     ],

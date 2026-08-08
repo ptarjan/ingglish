@@ -299,7 +299,7 @@ function MappingStats({ version }: MappingStatsProps) {
             <DeltaBadge value={experiment.textPreservedPct - ingglish.textPreservedPct} />
           </div>
           <div className="stat-label">
-            <a href="https://ingglish.com/docs/metrics#text-preserved">Text preserved</a>
+            <a href="https://ingglish.com/docs/metrics/#text-preserved">Text preserved</a>
           </div>
         </div>
         <div
@@ -311,7 +311,7 @@ function MappingStats({ version }: MappingStatsProps) {
             <DeltaBadge value={experiment.uniquePct - ingglish.uniquePct} />
           </div>
           <div className="stat-label">
-            <a href="https://ingglish.com/docs/metrics#unambiguous-text">Unambiguous text</a>
+            <a href="https://ingglish.com/docs/metrics/#unambiguous-text">Unambiguous text</a>
           </div>
         </div>
         <div
@@ -323,7 +323,7 @@ function MappingStats({ version }: MappingStatsProps) {
             <DeltaBadge value={(experiment.pronounceability - ingglish.pronounceability) * 100} />
           </div>
           <div className="stat-label">
-            <a href="https://ingglish.com/docs/metrics#pronounceability">Pronounceability</a>
+            <a href="https://ingglish.com/docs/metrics/#pronounceability">Pronounceability</a>
           </div>
         </div>
       </div>
@@ -334,7 +334,7 @@ function MappingStats({ version }: MappingStatsProps) {
           <div className="stats-extra-row">
             <div className="stats-extra-header">
               <span className="stats-extra-name">
-                <a href="https://ingglish.com/docs/metrics#edit-similarity">Edit similarity</a>
+                <a href="https://ingglish.com/docs/metrics/#edit-similarity">Edit similarity</a>
               </span>
               <span className="stats-extra-value">
                 {(experiment.editSimilarity * 100).toFixed(1)}%
@@ -349,7 +349,7 @@ function MappingStats({ version }: MappingStatsProps) {
           <div className="stats-extra-row">
             <div className="stats-extra-header">
               <span className="stats-extra-name">
-                <a href="https://ingglish.com/docs/metrics#spelling-familiarity">
+                <a href="https://ingglish.com/docs/metrics/#spelling-familiarity">
                   Spelling familiarity
                 </a>
               </span>
@@ -368,7 +368,7 @@ function MappingStats({ version }: MappingStatsProps) {
           <div className="stats-extra-row">
             <div className="stats-extra-header">
               <span className="stats-extra-name">
-                <a href="https://ingglish.com/docs/metrics#naturalness">Naturalness</a>
+                <a href="https://ingglish.com/docs/metrics/#naturalness">Naturalness</a>
               </span>
               <span className="stats-extra-value">
                 {experiment.naturalness.toFixed(2)}
@@ -386,7 +386,7 @@ function MappingStats({ version }: MappingStatsProps) {
           </div>
           <div className="stats-extra-link">
             <a
-              href="https://ingglish.com/docs/metrics#why-surface-level-metrics-cant-optimize-mappings"
+              href="https://ingglish.com/docs/metrics/#why-surface-level-metrics-cant-optimize-mappings"
               rel="noopener noreferrer"
               target="_blank"
             >

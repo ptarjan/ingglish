@@ -9,7 +9,7 @@ import { dirname, join } from 'path';
 import { pathToFileURL } from 'url';
 import { build as esbuild } from 'esbuild';
 import { marked } from 'marked';
-import { DOC_ENTRIES, GAME_ENTRIES, TOP_LEVEL_ROUTES } from './src/routes';
+import { DOC_ENTRIES, GAME_ENTRIES, siteUrl, TOP_LEVEL_ROUTES } from './src/routes';
 import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
 
 const BUILD_ID = randomUUID();
@@ -174,7 +174,7 @@ function customizeHtml(html: string, route: string): string {
     description = meta.description;
   }
 
-  const url = `https://ingglish.com/${route}`;
+  const url = siteUrl(route);
 
   // Use the first path segment to look up the OG image (e.g. 'docs/foo' → 'docs')
   const ogKey = route.split('/')[0];
@@ -321,12 +321,7 @@ function generateSitemap(): Plugin {
         '', // homepage
         ...ALL_ROUTES,
       ];
-      const urls = allUrls
-        .map((r) => {
-          const loc = r === '' ? 'https://ingglish.com/' : `https://ingglish.com/${r}`;
-          return `  <url>\n    <loc>${loc}</loc>\n  </url>`;
-        })
-        .join('\n');
+      const urls = allUrls.map((r) => `  <url>\n    <loc>${siteUrl(r)}</loc>\n  </url>`).join('\n');
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
       writeFileSync(join(distDir, 'sitemap-pages.xml'), sitemap);
     },

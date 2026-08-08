@@ -166,7 +166,7 @@ describe('renderWordPage', () => {
   it('includes a per-sound breakdown, rhyme links, and a translator CTA', () => {
     expect(html).toContain('class="snd">er</td>');
     expect(html).toContain('/word/kernel/');
-    expect(html).toContain('/text?text=colonel');
+    expect(html).toContain('/text/?text=colonel');
     expect(html).toContain('application/ld+json');
   });
 
