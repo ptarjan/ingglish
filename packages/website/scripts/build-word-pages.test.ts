@@ -15,7 +15,8 @@ import {
   renderSitemapIndex,
   renderWordPage,
   renderWordsHub,
-  renderWordsSitemap,
+  renderWordsSitemaps,
+  SITEMAP_CHUNK_SIZE,
   rhymeKey,
   type WordDeps,
 } from './build-word-pages';
@@ -232,7 +233,10 @@ describe('renderLetterPage', () => {
 
 describe('sitemaps', () => {
   it('renders the words sitemap with the hub, letter pages, and every word', () => {
-    const xml = renderWordsSitemap(['cat', 'hello'], ['c', 'h']);
+    const maps = renderWordsSitemaps(['cat', 'hello'], ['c', 'h']);
+    expect(maps).toHaveLength(1);
+    expect(maps[0]!.filename).toBe('sitemap-words.xml');
+    const xml = maps[0]!.xml;
     expect(xml).toContain('<loc>https://ingglish.com/words/</loc>');
     expect(xml).toContain('<loc>https://ingglish.com/words/c/</loc>');
     expect(xml).toContain('<loc>https://ingglish.com/word/cat/</loc>');
@@ -240,9 +244,33 @@ describe('sitemaps', () => {
   });
 
   it('renders a sitemap index pointing at page and word sitemaps', () => {
-    const xml = renderSitemapIndex();
+    const xml = renderSitemapIndex(['sitemap-words.xml']);
     expect(xml).toContain('<sitemapindex');
-    expect(xml).toContain('sitemap-pages.xml');
-    expect(xml).toContain('sitemap-words.xml');
+    expect(xml).toContain('https://ingglish.com/sitemap-pages.xml');
+    expect(xml).toContain('https://ingglish.com/sitemap-words.xml');
+  });
+
+  // A sitemap over 50,000 URLs is rejected whole, not truncated, so the split
+  // has to happen before the dictionary grows into it — never after.
+  it('splits past the chunk size and keeps the historical first filename', () => {
+    const words = Array.from({ length: SITEMAP_CHUNK_SIZE + 10 }, (_, i) => `w${i}`);
+    const maps = renderWordsSitemaps(words, ['w']);
+    expect(maps).toHaveLength(2);
+    expect(maps.map((m) => m.filename)).toEqual(['sitemap-words.xml', 'sitemap-words-2.xml']);
+    expect([...maps[0]!.xml.matchAll(/<loc>/g)]).toHaveLength(SITEMAP_CHUNK_SIZE);
+    expect([...maps[1]!.xml.matchAll(/<loc>/g)]).toHaveLength(12); // 10 words + hub + letter
+  });
+
+  it.each([0, 1, SITEMAP_CHUNK_SIZE * 2 + 5])('%i words stays under the cap', (count) => {
+    const words = Array.from({ length: count }, (_, i) => `w${i}`);
+    const maps = renderWordsSitemaps(words, ['w']);
+    const total = maps.reduce((n, m) => n + [...m.xml.matchAll(/<loc>/g)].length, 0);
+    expect(total).toBe(count + 2); // every word, plus the hub and the one letter page
+    for (const m of maps) {
+      expect([...m.xml.matchAll(/<loc>/g)].length).toBeLessThanOrEqual(SITEMAP_CHUNK_SIZE);
+    }
+    // Every chunk must be reachable, or its pages are invisible.
+    const index = renderSitemapIndex(maps.map((m) => m.filename));
+    for (const m of maps) expect(index).toContain(`https://ingglish.com/${m.filename}`);
   });
 });

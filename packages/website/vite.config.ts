@@ -328,7 +328,8 @@ function generateSitemap(): Plugin {
 }
 
 // Generate per-word SEO landing pages (dist/word/<w>/index.html), the browsable
-// hub (dist/words/), sitemap-words.xml, and the sitemap.xml index. Runs the
+// hub (dist/words/), the chunked sitemap-words[-N].xml, and the sitemap.xml
+// index that lists them. Runs the
 // standalone generator via tsx with source conditions so it can translate words
 // using the workspace packages' TypeScript source. Skippable via WORD_PAGES=0.
 function wordPages(): Plugin {

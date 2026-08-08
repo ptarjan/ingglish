@@ -13,8 +13,8 @@
  * Writes into ./dist (must exist — run after `vite build`):
  *   dist/word/<word>/index.html   one landing page per word
  *   dist/words/index.html         browsable A–Z hub
- *   dist/sitemap-words.xml        sitemap of every word page
- *   dist/sitemap.xml              sitemap index (pages + words)
+ *   dist/sitemap-words[-N].xml    word pages, chunked under the 50k URL cap
+ *   dist/sitemap.xml              sitemap index (pages + every word chunk)
  */
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -467,20 +467,48 @@ export function renderLetterPage(letter: string, words: string[]): string {
   );
 }
 
-/** Builds the words sitemap XML: the hub, each letter page, and every word. */
-export function renderWordsSitemap(words: string[], letters: string[]): string {
-  const urls = [
-    `  <url><loc>${SITE}/words/</loc></url>`,
-    ...letters.map((l) => `  <url><loc>${SITE}/words/${l}/</loc></url>`),
-    ...words.map((w) => `  <url><loc>${SITE}/word/${w}/</loc></url>`),
-  ].join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+// A sitemap may hold at most 50,000 URLs, and crossing the line does not drop
+// the overflow — Google rejects the whole file, so every word page would go
+// dark at once. The dictionary had reached 48,831. Chunk well below the cap so
+// the next few thousand words are a non-event.
+export const SITEMAP_CHUNK_SIZE = 25_000;
+
+/**
+ * Builds the words sitemaps: the hub, each letter page, and every word, split
+ * into files of at most SITEMAP_CHUNK_SIZE URLs.
+ *
+ * The first chunk keeps the historical `sitemap-words.xml` name. Google has
+ * that URL on file from earlier submissions, and renaming it would 404 a
+ * sitemap it is still fetching — an avoidable Search Console error for no gain.
+ */
+export function renderWordsSitemaps(
+  words: string[],
+  letters: string[]
+): { filename: string; xml: string }[] {
+  const locs = [
+    `${SITE}/words/`,
+    ...letters.map((l) => `${SITE}/words/${l}/`),
+    ...words.map((w) => `${SITE}/word/${w}/`),
+  ];
+  const result: { filename: string; xml: string }[] = [];
+  for (let i = 0; i < locs.length; i += SITEMAP_CHUNK_SIZE) {
+    const urls = locs
+      .slice(i, i + SITEMAP_CHUNK_SIZE)
+      .map((loc) => `  <url><loc>${loc}</loc></url>`)
+      .join('\n');
+    const n = result.length + 1;
+    result.push({
+      filename: n === 1 ? 'sitemap-words.xml' : `sitemap-words-${n}.xml`,
+      xml: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+    });
+  }
+  return result;
 }
 
-/** Builds the sitemap index referencing the page and word sitemaps. */
-export function renderSitemapIndex(): string {
-  const maps = [`${SITE}/sitemap-pages.xml`, `${SITE}/sitemap-words.xml`]
-    .map((loc) => `  <sitemap><loc>${loc}</loc></sitemap>`)
+/** Builds the sitemap index referencing the page sitemap and every word sitemap. */
+export function renderSitemapIndex(wordSitemaps: string[]): string {
+  const maps = ['sitemap-pages.xml', ...wordSitemaps]
+    .map((name) => `  <sitemap><loc>${SITE}/${name}</loc></sitemap>`)
     .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${maps}\n</sitemapindex>\n`;
 }
@@ -571,11 +599,18 @@ async function main(): Promise<void> {
   // The shared stylesheet every generated page <link>s
   writeFileSync(join(distDir, 'word.css'), PAGE_CSS);
 
-  writeFileSync(join(distDir, 'sitemap-words.xml'), renderWordsSitemap(words, letters));
-  writeFileSync(join(distDir, 'sitemap.xml'), renderSitemapIndex());
+  const wordSitemaps = renderWordsSitemaps(words, letters);
+  for (const { filename, xml } of wordSitemaps) {
+    writeFileSync(join(distDir, filename), xml);
+  }
+  writeFileSync(
+    join(distDir, 'sitemap.xml'),
+    renderSitemapIndex(wordSitemaps.map((s) => s.filename))
+  );
 
   console.log(
-    `Word pages: wrote ${written} pages + ${letters.length} letter pages + sitemaps (limit ${limit})`
+    `Word pages: wrote ${written} pages + ${letters.length} letter pages + ` +
+      `${wordSitemaps.length} word sitemaps (limit ${limit})`
   );
 }
 
