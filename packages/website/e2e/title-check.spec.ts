@@ -30,7 +30,7 @@ test('non-docs pages have correct titles', async ({ page }) => {
 test('docs page title loads without flash', async ({ page }) => {
   await trackTitleChanges(page);
   await page.goto('/docs/design-decisions');
-  await expect(page).toHaveTitle('Design Decisions | Ingglish Docs');
+  await expect(page).toHaveTitle('How Ingglish Was Designed: Rules, Trade-offs & Rejected Ideas');
 
   const changes = await getTitleChanges(page);
   // Title should never be blank or show the generic "Documentation | Ingglish"
@@ -47,5 +47,5 @@ test('docs title updates when navigating between docs', async ({ page }) => {
   const navLink = page.locator('a.docs-nav-item:has-text("Architecture")');
   await navLink.scrollIntoViewIfNeeded();
   await navLink.click();
-  await expect(page).toHaveTitle('Architecture | Ingglish Docs');
+  await expect(page).toHaveTitle('Ingglish Architecture: How the Translator Works');
 });

@@ -23,7 +23,14 @@ import spellingIteration from '../../../../docs/spelling-iteration.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
 import type { DocId } from '../routes';
-import { sitePath, siteUrl } from '../routes';
+import { DOC_ENTRIES, sitePath, siteUrl } from '../routes';
+
+// The sidebar list below carries each doc's content and short label; its
+// search-facing title and description live in routes.ts, shared with the
+// build-time HTML so the pre-rendered <head> and the SPA's cannot disagree.
+const DOC_SEO = new Map(
+  DOC_ENTRIES.map((e) => [e.id, { description: e.seoDescription, title: e.seoTitle }])
+);
 
 interface DocEntry {
   content: string;
@@ -207,6 +214,7 @@ function Docs(): JSX.Element {
   }, []);
 
   const currentDoc = docs.find((d) => d.id === activeDoc) ?? docs[0]!;
+  const seo = DOC_SEO.get(currentDoc.id)!;
 
   // Extract headings from current doc for TOC
   const currentHeadings = useMemo(() => extractHeadings(currentDoc.content), [currentDoc.content]);
@@ -269,10 +277,8 @@ function Docs(): JSX.Element {
     });
   }, [activeDoc, currentDoc.content, navigate]);
 
-  // Update document title when switching docs
-  useEffect(() => {
-    document.title = `${currentDoc.title} | Ingglish Docs`;
-  }, [activeDoc, currentDoc.title]);
+  // The title is rendered declaratively below (React hoists <title> to <head>),
+  // so it stays in lockstep with the description and with the build-time HTML.
 
   // Scroll to section on initial load
   useEffect(() => {
@@ -304,10 +310,8 @@ function Docs(): JSX.Element {
 
   return (
     <>
-      <meta
-        content={`Ingglish documentation — ${currentDoc.title}. Technical reference for the phonemic English spelling system.`}
-        name="description"
-      />
+      <title>{seo.title}</title>
+      <meta content={seo.description} name="description" />
       <link href={siteUrl(`/docs/${currentDoc.id}`)} rel="canonical" />
       <div className="docs-container">
         <button

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { sitePath, SITE, siteUrl } from './routes';
+import { DOC_ENTRIES, sitePath, SITE, siteUrl } from './routes';
 
 describe('sitePath', () => {
   it.each([
@@ -68,5 +68,26 @@ describe('internal links are crawlable', () => {
       .map((m) => m[1] ?? m[2])
       .filter((path) => path !== undefined && !/\.[a-z0-9]+$/i.test(path));
     expect(offenders).toEqual([]);
+  });
+});
+
+// Search Console recorded 1064 impressions at average position ~10 with zero
+// clicks, because every one of these pages was titled for the project rather
+// than for the person searching. Pin the shape so it cannot drift back: no doc
+// may be published under the generic "| Ingglish Docs" label, and none may
+// reuse the boilerplate description that made all twenty look identical.
+describe('doc pages have search-facing metadata', () => {
+  it.each(DOC_ENTRIES.map((d) => [d.id, d] as const))('%s', (_id, doc) => {
+    expect(doc.seoTitle).not.toMatch(/\| Ingglish Docs$/);
+    expect(doc.seoDescription).not.toMatch(/^Ingglish documentation —/);
+    // Google truncates titles around 60 characters and descriptions around 160.
+    expect(doc.seoTitle.length).toBeLessThanOrEqual(65);
+    expect(doc.seoDescription.length).toBeGreaterThanOrEqual(80);
+    expect(doc.seoDescription.length).toBeLessThanOrEqual(165);
+  });
+
+  it('every title is distinct', () => {
+    const titles = DOC_ENTRIES.map((d) => d.seoTitle);
+    expect(new Set(titles).size).toBe(titles.length);
   });
 });

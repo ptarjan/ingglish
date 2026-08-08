@@ -241,12 +241,21 @@ export function renderWordPage(
   homophones: string[] = []
 ): string {
   const { word, ingglish, ipa, guide } = data;
-  const title = `How to pronounce “${word}” — phonetic spelling & IPA | Ingglish`;
+  // Search Console says these pages rank ~position 10 for two query shapes in
+  // roughly equal volume — "farmer spelling" / "how do you spell security" and
+  // "how to pronounce become" — and the old pronounce-only title converted 1064
+  // impressions into zero clicks. Serve both intents, lead with the word (that
+  // is how the queries are phrased), and put the answer in the snippet: at
+  // position 10 the only way past nine dictionaries is to be visibly different.
+  const title = `${word} — spelling & pronunciation (${guide}) | Ingglish`;
   const homophoneNote = homophones.length
-    ? ` It sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`
+    ? ` Sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`
     : '';
   const syllableWord = data.syllables === 1 ? 'syllable' : 'syllables';
-  const desc = `“${word}” is pronounced ${guide} (IPA /${ipa}/) and written “${ingglish}” in Ingglish phonetic spelling — ${data.syllables} ${syllableWord}.${homophoneNote}`;
+  const letterWord = word.length === 1 ? 'letter' : 'letters';
+  const soundWord = data.sounds.length === 1 ? 'sound' : 'sounds';
+  const spelledOut = [...word].join('-').toUpperCase();
+  const desc = `Spell “${word}”: ${spelledOut} — ${word.length} ${letterWord}, ${data.sounds.length} ${soundWord}, ${data.syllables} ${syllableWord}. Pronounced ${guide} (IPA /${ipa}/); written “${ingglish}” in Ingglish phonetic spelling.${homophoneNote}`;
   const canonical = `${SITE}/word/${word}/`;
 
   const spellingCells = data.sounds
@@ -264,7 +273,14 @@ export function renderWordPage(
 
   // FAQ — genuine answers built from the pronunciation data, with FAQPage
   // structured data for question-format search matching.
+  // "X spelling" / "how do you spell X" is the larger of the two query clusters
+  // these pages rank for, so it leads. Answer the question actually asked —
+  // the English spelling, letter by letter — before pivoting to Ingglish.
   const faq: { q: string; a: string }[] = [
+    {
+      q: `How do you spell “${word}”?`,
+      a: `“${word}” is spelled ${spelledOut} — ${word.length} ${letterWord} for ${data.sounds.length} ${soundWord}. In Ingglish, where every spelling always makes the same sound, the same word is written “${ingglish}”.`,
+    },
     {
       q: `How do you pronounce “${word}”?`,
       a: `“${word}” is pronounced ${guide} — IPA /${ipa}/. In Ingglish phonetic spelling, where every spelling always makes the same sound, it is written “${ingglish}”.`,

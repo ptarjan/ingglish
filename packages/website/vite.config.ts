@@ -132,8 +132,10 @@ const ROUTE_META: Record<string, RouteMeta> = {
   },
 };
 
-// Build a map from doc ID to title for per-doc metadata
-const DOC_TITLE_MAP = new Map(DOC_ENTRIES.map((e) => [e.id, e.title]));
+// Build a map from doc ID to its search-facing metadata (see DOC_ENTRIES).
+const DOC_META_MAP = new Map(
+  DOC_ENTRIES.map((e) => [e.id, { title: e.seoTitle, description: e.seoDescription }])
+);
 
 // Map doc IDs to their markdown file paths (relative to repo root)
 const DOC_FILE_MAP: Record<string, string> = {
@@ -159,12 +161,9 @@ function customizeHtml(html: string, route: string): string {
   // Check for doc sub-pages (e.g. 'docs/design-decisions')
   const docId = route.startsWith('docs/') ? route.slice(5) : null;
   if (docId !== null) {
-    const docTitle = DOC_TITLE_MAP.get(docId);
-    title = docTitle !== undefined ? `${docTitle} | Ingglish Docs` : ROUTE_META.docs.title;
-    description =
-      docTitle !== undefined
-        ? `Ingglish documentation — ${docTitle}. Technical reference for the phonemic English spelling system.`
-        : ROUTE_META.docs.description;
+    const docMeta = DOC_META_MAP.get(docId);
+    title = docMeta?.title ?? ROUTE_META.docs.title;
+    description = docMeta?.description ?? ROUTE_META.docs.description;
   } else {
     const meta = ROUTE_META[route];
     if (meta === undefined) {
