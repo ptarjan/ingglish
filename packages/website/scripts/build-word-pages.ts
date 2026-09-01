@@ -2,10 +2,17 @@
  * Generates lightweight, self-contained static landing pages for the most
  * common English words: one page per word at dist/word/<word>/index.html.
  *
- * Each page shows the word's Ingglish phonetic respelling, its IPA, a
- * sound-by-sound breakdown, a "hear it" button, and links to rhyming words —
- * unique, useful content that captures long-tail "how to pronounce X" search
- * traffic and funnels visitors into the interactive translator.
+ * Each page shows the word's Ingglish phonetic respelling, its IPA, which
+ * English letter group becomes which Ingglish spelling, a sound-by-sound
+ * breakdown, its sound/syllable/stress/frequency facts, a "hear it" button, and
+ * links to rhyming words and homophones — content that captures long-tail "how
+ * do you spell X" / "how to pronounce X" search traffic and funnels visitors
+ * into the interactive translator.
+ *
+ * Every fact is stated once. At ~49k pages, restating the same template
+ * sentence in prose, a callout and an FAQ answer made any two pages ~75%
+ * verbatim identical (measured over <main> tokens with difflib.SequenceMatcher)
+ * — thin/doorway territory. The per-word signal below carries the page instead.
  *
  * Run standalone (source conditions resolve workspace packages to TS source):
  *   npx tsx --conditions=source scripts/build-word-pages.ts
@@ -25,6 +32,8 @@ const SITE = 'https://ingglish.com';
 export interface WordSound {
   ingglish: string;
   ipa: string;
+  /** ARPAbet vowels carry a stress digit; everything else is a consonant. */
+  vowel: boolean;
 }
 
 export interface WordData {
@@ -35,7 +44,16 @@ export interface WordData {
   guide: string;
   sounds: WordSound[];
   syllables: number;
+  /** 0-based position in the frequency-ordered word list. */
   frequencyRank: number;
+  /** How many words have a page — the denominator the rank is quoted against. */
+  corpusSize: number;
+  /** Uses per million words in SUBTLEX, or null when the word has no count. */
+  perMillion: number | null;
+  /** 0-based syllable carrying primary stress; -1 when nothing is stressed. */
+  stressIndex: number;
+  /** Aligned English → Ingglish letter groups. */
+  spelling: SpellingPair[];
 }
 
 /** Dependencies injected so the pure builders can be unit-tested. */
@@ -44,6 +62,23 @@ export interface WordDeps {
   lookupPronunciation: (word: string) => string[] | null | undefined;
   arpabetPhonemeToIngglish: (phoneme: string) => string;
   arpabetPhonemeToIPA: (phoneme: string) => string;
+  getWordFrequency: (word: string) => number | undefined;
+  getCorpusTotal: () => number;
+  /** Whole-sequence conversion — applies r-coloring and schwa context. */
+  arpabetToIngglish: (phonemes: string[]) => string;
+  /** Letter-group → phoneme trace from the NRL rules, or null if it throws. */
+  traceSpelling: (word: string) => G2PTrace | null;
+}
+
+export interface G2PTrace {
+  phonemes: string[];
+  steps: { letters: string; phonemes: string[] }[];
+}
+
+/** One column of the letter-by-letter table: an English letter group and its Ingglish spelling. */
+export interface SpellingPair {
+  from: string;
+  to: string;
 }
 
 const WORD_JOINERS = /[⁠.]/g;
@@ -83,19 +118,235 @@ export function pickTopWords(entries: { word: string; count: number }[], limit: 
   return pageable.slice(0, limit).map((e) => e.word);
 }
 
-/** Counts syllables as the number of vowel-carrying phonemes (ARPAbet vowels end in a stress digit). */
+/** ARPAbet vowels are exactly the phonemes carrying a stress digit. */
+const STRESS_DIGIT = /[0-2]$/;
+
+/** Counts syllables as the number of vowel-carrying phonemes. */
 function countSyllables(phonemes: string[]): number {
   let n = 0;
   for (const p of phonemes) {
-    if (/[0-2]$/.test(p)) {
+    if (STRESS_DIGIT.test(p)) {
       n++;
     }
   }
   return Math.max(1, n);
 }
 
+/** 0-based syllable index carrying primary stress, or -1 when nothing is stressed. */
+export function primaryStressIndex(phonemes: string[]): number {
+  let syllable = 0;
+  for (const p of phonemes) {
+    if (!STRESS_DIGIT.test(p)) {
+      continue;
+    }
+    if (p.endsWith('1')) {
+      return syllable;
+    }
+    syllable++;
+  }
+  return -1;
+}
+
+/**
+ * Splits two spellings into aligned columns around their longest common
+ * subsequence: runs that match become one column each, runs that differ pair up
+ * as one column. Purely a comparison of the two strings — it makes no claim
+ * about which letter makes which sound. Used when the letter-to-sound trace
+ * can't be trusted for this word.
+ */
+export function lcsSegments(a: string, b: string): SpellingPair[] {
+  const n = a.length;
+  const m = b.length;
+  // table[i][j] = length of the LCS of a.slice(i) and b.slice(j)
+  const table: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      table[i]![j] =
+        a[i] === b[j] ? table[i + 1]![j + 1]! + 1 : Math.max(table[i + 1]![j]!, table[i]![j + 1]!);
+    }
+  }
+  const pairs: SpellingPair[] = [];
+  let i = 0;
+  let j = 0;
+  let same = '';
+  let fromRun = '';
+  let toRun = '';
+  const flushDiff = (): void => {
+    if (fromRun || toRun) {
+      pairs.push({ from: fromRun, to: toRun });
+      fromRun = '';
+      toRun = '';
+    }
+  };
+  const flushSame = (): void => {
+    if (same) {
+      pairs.push({ from: same, to: same });
+      same = '';
+    }
+  };
+  while (i < n || j < m) {
+    if (i < n && j < m && a[i] === b[j]) {
+      flushDiff();
+      same += a[i];
+      i++;
+      j++;
+    } else if (j >= m || (i < n && table[i + 1]![j]! >= table[i]![j + 1]!)) {
+      flushSame();
+      fromRun += a[i];
+      i++;
+    } else {
+      flushSame();
+      toRun += b[j];
+      j++;
+    }
+  }
+  flushSame();
+  flushDiff();
+  return absorbOneSidedRuns(pairs);
+}
+
+/**
+ * A run present on only one side ("" → "h") reads as a hole in the table, so it
+ * borrows the last letter of the matching run before it: "lu/lu" + "/h" becomes
+ * "l/l" + "u/uh". Only applies to the string-comparison path — on the trace
+ * path an empty Ingglish cell is real information (the letters are silent).
+ */
+function absorbOneSidedRuns(pairs: SpellingPair[]): SpellingPair[] {
+  const out: SpellingPair[] = [];
+  for (const { from, to } of pairs) {
+    const prev = out.at(-1);
+    if (from && to) {
+      out.push({ from, to });
+    } else if (prev && prev.from === prev.to && prev.from.length > 1) {
+      const borrowed = prev.from.slice(-1);
+      prev.from = prev.from.slice(0, -1);
+      prev.to = prev.to.slice(0, -1);
+      out.push({ from: borrowed + from, to: borrowed + to });
+    } else {
+      out.push({ from, to });
+    }
+  }
+  return out;
+}
+
+/**
+ * Turns a letter-to-sound trace into aligned columns, spelling each letter
+ * group with the word's *dictionary* phonemes rather than the trace's own — the
+ * trace is only trusted for where the group boundaries fall, so the columns
+ * always concatenate to the same Ingglish spelling the translator produces.
+ *
+ * A group only closes once its spelling is a prefix of the finished word, which
+ * is how r-colored vowels stay in one column: "AA" alone spells "o", so
+ * "aardvark" holds it open until the R arrives and the pair spells "ar".
+ */
+export function traceSegments(
+  steps: G2PTrace['steps'],
+  phonemes: string[],
+  ingglish: string,
+  arpabetToIngglish: (p: string[]) => string
+): SpellingPair[] {
+  const pairs: SpellingPair[] = [];
+  let done = 0;
+  let spelled = '';
+  let letters = '';
+  let pending = 0;
+  for (const step of steps) {
+    letters += step.letters;
+    pending += step.phonemes.length;
+    const next = arpabetToIngglish(phonemes.slice(0, done + pending));
+    if (!next.startsWith(spelled) || !ingglish.startsWith(next)) {
+      continue; // context spans the boundary — keep accumulating
+    }
+    pairs.push({ from: letters.toLowerCase(), to: next.slice(spelled.length) });
+    done += pending;
+    spelled = next;
+    letters = '';
+    pending = 0;
+  }
+  if (letters) {
+    pairs.push({ from: letters.toLowerCase(), to: '' });
+  }
+  return pairs;
+}
+
+/** Stress-stripped phoneme sequences match (the trace got this word right). */
+function traceAgrees(trace: G2PTrace | null, phonemes: string[]): trace is G2PTrace {
+  return trace !== null && phonemeKey(trace.phonemes) === phonemeKey(phonemes);
+}
+
+/**
+ * Aligned English-letters → Ingglish-letters columns for one word, from the
+ * letter-to-sound trace when it reproduces the dictionary pronunciation and the
+ * columns rebuild the real spelling, otherwise from a plain string comparison.
+ */
+export function alignSpelling(
+  word: string,
+  ingglish: string,
+  phonemes: string[],
+  deps: WordDeps
+): SpellingPair[] {
+  const trace = deps.traceSpelling(word);
+  if (traceAgrees(trace, phonemes)) {
+    const pairs = traceSegments(trace.steps, phonemes, ingglish, deps.arpabetToIngglish);
+    if (
+      pairs.map((p) => p.from).join('') === word &&
+      pairs.map((p) => p.to).join('') === ingglish
+    ) {
+      return pairs;
+    }
+  }
+  return lcsSegments(word, ingglish);
+}
+
+/**
+ * Commonness band for a SUBTLEX rate in uses per million words. The cuts are
+ * order-of-magnitude steps, not fitted: ~1000/M is the closed class ("the",
+ * "and"), ~1/M is roughly the edge of everyday vocabulary.
+ */
+export function frequencyBand(perMillion: number | null): string {
+  if (perMillion === null) {
+    return 'not in the frequency corpus';
+  }
+  if (perMillion >= 1000) {
+    return 'one of the most common words in English';
+  }
+  if (perMillion >= 100) {
+    return 'very common';
+  }
+  if (perMillion >= 10) {
+    return 'common';
+  }
+  if (perMillion >= 1) {
+    return 'fairly common';
+  }
+  if (perMillion >= 0.1) {
+    return 'uncommon';
+  }
+  return 'rare';
+}
+
+const ORDINALS = ['', '1st', '2nd', '3rd'];
+
+/** "1st", "2nd", "3rd", "4th"… for small counts (syllable positions). */
+export function ordinal(n: number): string {
+  return ORDINALS[n] ?? `${n}th`;
+}
+
+/** Renders a rate in uses per million at a readable precision for its size. */
+export function formatRate(perMillion: number): string {
+  if (perMillion >= 100) {
+    return Math.round(perMillion).toLocaleString('en-US');
+  }
+  return perMillion >= 1 ? perMillion.toFixed(1) : perMillion.toFixed(2);
+}
+
 /** Builds the display data for one word, or null if it has no usable pronunciation. */
-export function buildWordData(word: string, rank: number, deps: WordDeps): WordData | null {
+export function buildWordData(
+  word: string,
+  rank: number,
+  deps: WordDeps,
+  corpusSize = 0
+): WordData | null {
   const phonemes = deps.lookupPronunciation(word);
   if (!phonemes || phonemes.length === 0) {
     return null;
@@ -106,7 +357,10 @@ export function buildWordData(word: string, rank: number, deps: WordDeps): WordD
   const sounds = phonemes.map((p) => ({
     ingglish: deps.arpabetPhonemeToIngglish(p),
     ipa: cleanIpaSymbol(deps.arpabetPhonemeToIPA(p)),
+    vowel: STRESS_DIGIT.test(p),
   }));
+  const count = deps.getWordFrequency(word);
+  const total = deps.getCorpusTotal();
   return {
     word,
     ingglish,
@@ -115,6 +369,10 @@ export function buildWordData(word: string, rank: number, deps: WordDeps): WordD
     sounds,
     syllables: countSyllables(phonemes),
     frequencyRank: rank,
+    corpusSize,
+    perMillion: count === undefined || total === 0 ? null : (count / total) * 1_000_000,
+    stressIndex: primaryStressIndex(phonemes),
+    spelling: alignSpelling(word, ingglish, phonemes, deps),
   };
 }
 
@@ -210,7 +468,12 @@ table{width:100%;border-collapse:collapse}
 th,td{padding:.5rem;border-bottom:1px solid #e0e0e0;text-align:center;white-space:nowrap}
 th{color:#666;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
 td.snd{font-size:1.4rem;font-weight:700;color:#4f46e5}
-.note{background:#fff;border:1px solid #e0e0e0;border-radius:.75rem;padding:1rem 1.25rem;margin:1.5rem 0}
+.facts{background:#fff;border:1px solid #e0e0e0;border-radius:.75rem;padding:1rem 1.25rem;margin:1.5rem 0;
+display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem}
+.facts dt{color:#666;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em;font-weight:600;
+padding-top:.2rem}
+.facts dd{margin:0}
+td.eng{font-size:1.1rem}
 .cta{display:inline-block;margin:.5rem .5rem 0 0;padding:.6rem 1.1rem;border-radius:.5rem;
 background:#4f46e5;color:#fff;font-weight:600}
 .cta:hover{background:#4338ca;text-decoration:none}
@@ -220,7 +483,7 @@ footer{color:#666;font-size:.9rem;padding-top:1.5rem;border-top:1px solid #e0e0e
 @media(prefers-color-scheme:dark){
 body{background:#0f0f0f;color:#f5f5f5}a{color:#818cf8}.ing{color:#818cf8}
 button.hear{background:#1a1a1a;color:#f5f5f5;border-color:#333}button.hear:hover{background:#252525}
-.note{background:#1a1a1a;border-color:#333}th,td{border-color:#333}td.snd{color:#818cf8}
+.facts{background:#1a1a1a;border-color:#333}th,td{border-color:#333}td.snd{color:#818cf8}
 .cta{background:#6366f1}.cta:hover{background:#818cf8}footer{border-color:#333}
 }`;
 
@@ -263,37 +526,78 @@ export function renderWordPage(
     .join('');
   const ipaCells = data.sounds.map((s) => `<td>/${escapeHtml(s.ipa)}/</td>`).join('');
 
-  const stressNote = `${data.syllables} ${syllableWord}`;
+  // Letter-by-letter table: which English letter group becomes which Ingglish
+  // spelling. Different for nearly every word, and it is the site's argument in
+  // one glance. An empty Ingglish cell means the letters make no sound.
+  const engCells = data.spelling
+    .map((p) => `<td class="eng">${p.from ? escapeHtml(p.from) : '—'}</td>`)
+    .join('');
+  const ingCells = data.spelling
+    .map((p) => `<td class="snd">${p.to ? escapeHtml(p.to) : '—'}</td>`)
+    .join('');
+
+  const vowels = data.sounds.filter((s) => s.vowel);
+  const consonants = data.sounds.filter((s) => !s.vowel);
+  // "2 vowels /ɑ/, /i/" — the count and the symbols, no sentence around them.
+  const soundGroup = (list: WordSound[], kind: string): string =>
+    `${list.length} ${kind}${list.length === 1 ? '' : 's'} ` +
+    list.map((s) => `/${escapeHtml(s.ipa)}/`).join(', ');
+  const syllableParts = guide.split('-');
+  const stressFact =
+    data.stressIndex >= 0 && data.syllables > 1
+      ? `, stress on the ${ordinal(data.stressIndex + 1)}`
+      : '';
+  // The last two sounds: exactly what the rhyme list is grouped on, so the
+  // heading and this row describe the linked words and nothing more.
+  const rime = data.sounds
+    .slice(-2)
+    .map((s) => s.ipa)
+    .join('');
+  const rate =
+    data.perMillion === null
+      ? frequencyBand(null)
+      : `${frequencyBand(data.perMillion)} — ${formatRate(data.perMillion)} uses per million words ` +
+        `in the SUBTLEX subtitle corpus` +
+        (data.corpusSize > 0
+          ? `, ranking it #${(data.frequencyRank + 1).toLocaleString('en-US')} of ${data.corpusSize.toLocaleString('en-US')}`
+          : '');
+
+  const facts = [
+    [
+      'Sounds',
+      `${data.sounds.length} from ${word.length} ${letterWord} — ` +
+        `${soundGroup(vowels, 'vowel')} and ${soundGroup(consonants, 'consonant')}`,
+    ],
+    ['Syllables', `${data.syllables} — ${escapeHtml(syllableParts.join(' · '))}${stressFact}`],
+    ['Frequency', escapeHtml(rate)],
+    ['Rhyme ending', `/${escapeHtml(rime)}/`],
+  ];
+  const factsHtml = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+
   const homophoneBlock = homophones.length
     ? `<h2>Words that sound like “${escapeHtml(word)}” (homophones)</h2><p class="rhymes">${wordLinks(homophones)}</p>`
     : '';
   const rhymeBlock = rhymes.length
-    ? `<h2>Words that rhyme with “${escapeHtml(word)}”</h2><p class="rhymes">${wordLinks(rhymes)}</p>`
+    ? `<h2>Words that rhyme with “${escapeHtml(word)}” (/${escapeHtml(rime)}/)</h2><p class="rhymes">${wordLinks(rhymes)}</p>`
     : '';
 
-  // FAQ — genuine answers built from the pronunciation data, with FAQPage
-  // structured data for question-format search matching.
-  // "X spelling" / "how do you spell X" is the larger of the two query clusters
-  // these pages rank for, so it leads. Answer the question actually asked —
-  // the English spelling, letter by letter — before pivoting to Ingglish.
+  // FAQ — one short answer each, no restating. "X spelling" / "how do you spell
+  // X" is the larger of the two query clusters these pages rank for, so it
+  // leads. FAQPage structured data carries them into question-format results.
   const faq: { q: string; a: string }[] = [
     {
       q: `How do you spell “${word}”?`,
-      a: `“${word}” is spelled ${spelledOut} — ${word.length} ${letterWord} for ${data.sounds.length} ${soundWord}. In Ingglish, where every spelling always makes the same sound, the same word is written “${ingglish}”.`,
+      a: `${spelledOut} in English; “${ingglish}” in Ingglish.`,
     },
     {
       q: `How do you pronounce “${word}”?`,
-      a: `“${word}” is pronounced ${guide} — IPA /${ipa}/. In Ingglish phonetic spelling, where every spelling always makes the same sound, it is written “${ingglish}”.`,
-    },
-    {
-      q: `How many syllables are in “${word}”?`,
-      a: `“${word}” has ${data.syllables} ${syllableWord}: ${guide} (the capitalized syllable is stressed).`,
+      a: `${guide} — IPA /${ipa}/, ${data.syllables} ${syllableWord}${stressFact}.`,
     },
   ];
   if (homophones.length) {
     faq.push({
       q: `What words sound like “${word}”?`,
-      a: `“${word}” sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`,
+      a: `${homophones.map((h) => `“${h}”`).join(', ')} — same sounds, different spelling.`,
     });
   }
   const faqHtml = faq.map((f) => `<h3>${escapeHtml(f.q)}</h3><p>${escapeHtml(f.a)}</p>`).join('\n');
@@ -341,17 +645,25 @@ ${SITE_HEADER}
 <h1>${escapeHtml(word)}</h1>
 <div class="guide">${escapeHtml(guide)}</div>
 <div><span class="ing">${escapeHtml(ingglish)}</span></div>
-<div class="ipa">/${escapeHtml(ipa)}/ · ${stressNote}</div>
+<div class="ipa">/${escapeHtml(ipa)}/ · ${data.syllables} ${syllableWord}</div>
 <button class="hear" type="button" onclick="(function(){try{var u=new SpeechSynthesisUtterance('${escapeHtml(
     word
   )}');speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}})()">🔊 Hear it</button>
 </div>
 
-<p>In Ingglish — phonetic English where every spelling always makes the same sound — the word
-<strong>“${escapeHtml(word)}”</strong> is spelled <strong>“${escapeHtml(
-    ingglish
-  )}”</strong>. Here is how it sounds out, one sound at a time:</p>
+<h2>“${escapeHtml(word)}” letter by letter</h2>
+<div class="tablewrap">
+<table>
+<caption class="sr-only">Each letter group of “${escapeHtml(word)}” and how Ingglish spells it
+(an em dash means those letters make no sound)</caption>
+<tbody>
+<tr><th scope="row" style="text-align:left;color:#666">English</th>${engCells}</tr>
+<tr><th scope="row" style="text-align:left;color:#666">Ingglish</th>${ingCells}</tr>
+</tbody>
+</table>
+</div>
 
+<h2>How “${escapeHtml(word)}” sounds out</h2>
 <div class="tablewrap">
 <table>
 <caption class="sr-only">Sound-by-sound breakdown of “${escapeHtml(word)}”</caption>
@@ -362,10 +674,7 @@ ${SITE_HEADER}
 </table>
 </div>
 
-<div class="note">English writes <strong>“${escapeHtml(word)}”</strong> with
-${word.length} letters for ${data.sounds.length} sounds. Ingglish writes it
-<strong>“${escapeHtml(ingglish)}”</strong> — no silent letters, and the same spelling
-always makes the same sound, so you can read it exactly as it looks.</div>
+<dl class="facts">${factsHtml}</dl>
 
 ${homophoneBlock}
 
@@ -536,6 +845,7 @@ async function main(): Promise<void> {
   const dict = await import('@ingglish/dictionary');
   const phonemes = await import('@ingglish/phonemes');
   const ipa = await import('@ingglish/ipa');
+  const g2p = await import('@ingglish/g2p');
 
   await ingglish.translate('warmup'); // registers + loads the English dictionary
   await Promise.all([dict.loadDictionary(), dict.loadFrequencies(), dict.loadReverseDictionary()]);
@@ -545,6 +855,18 @@ async function main(): Promise<void> {
     lookupPronunciation: dict.lookupPronunciation,
     arpabetPhonemeToIngglish: phonemes.arpabetPhonemeToIngglish,
     arpabetPhonemeToIPA: ipa.arpabetPhonemeToIPA,
+    arpabetToIngglish: phonemes.arpabetToIngglish,
+    getWordFrequency: dict.getWordFrequency,
+    getCorpusTotal: dict.getCorpusTotal,
+    // The NRL rules are a best-effort letter-to-sound guess; buildWordData only
+    // uses the trace when it reproduces the dictionary pronunciation exactly.
+    traceSpelling: (word) => {
+      try {
+        return g2p.wordToArpabetTraced(word);
+      } catch {
+        return null;
+      }
+    },
   };
 
   // Build the frequency list from the dictionary's own words + frequency API,
@@ -563,7 +885,7 @@ async function main(): Promise<void> {
 
   let written = 0;
   for (const [rank, word] of words.entries()) {
-    const data = buildWordData(word, rank, deps);
+    const data = buildWordData(word, rank, deps, words.length);
     if (!data) {
       continue;
     }

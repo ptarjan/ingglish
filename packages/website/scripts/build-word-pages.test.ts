@@ -4,11 +4,18 @@ import {
   buildWordData,
   cleanIpa,
   cleanIpaSymbol,
+  alignSpelling,
   escapeHtml,
+  formatRate,
+  frequencyBand,
   groupByLetter,
   isPageableWord,
+  lcsSegments,
   letterOf,
+  ordinal,
   phonemeKey,
+  primaryStressIndex,
+  traceSegments,
   pickHomophones,
   pickTopWords,
   renderLetterPage,
@@ -59,6 +66,26 @@ const PHONE_IPA: Record<string, string> = {
   T: 't',
 };
 
+const FREQ: Record<string, number> = { colonel: 500, hello: 2_000_000, cat: 90_000 };
+// "kernel" traces cleanly (its letters really do make its sounds); "colonel"
+// does not, which is what pushes it onto the string-comparison path.
+const TRACE: Record<
+  string,
+  { phonemes: string[]; steps: { letters: string; phonemes: string[] }[] }
+> = {
+  kernel: {
+    phonemes: ['K', 'ER1', 'N', 'AH0', 'L'],
+    steps: [
+      { letters: 'K', phonemes: ['K'] },
+      { letters: 'ER', phonemes: ['ER1'] },
+      { letters: 'N', phonemes: ['N'] },
+      { letters: 'E', phonemes: ['AH0'] },
+      { letters: 'L', phonemes: ['L'] },
+    ],
+  },
+  colonel: { phonemes: ['K', 'OW1', 'L', 'AH0', 'N', 'AH0', 'L'], steps: [] },
+};
+
 const deps: WordDeps = {
   translateSync: (text, opts) => {
     if (opts?.format === 'ipa') return IPA[text] ?? text;
@@ -68,6 +95,10 @@ const deps: WordDeps = {
   lookupPronunciation: (word) => PRON[word] ?? null,
   arpabetPhonemeToIngglish: (p) => PHONE_ING[p.replace(/[0-2]$/, '')] ?? p,
   arpabetPhonemeToIPA: (p) => PHONE_IPA[p.replace(/[0-2]$/, '')] ?? p,
+  arpabetToIngglish: (ps) => ps.map((p) => PHONE_ING[p.replace(/[0-2]$/, '')] ?? p).join(''),
+  getWordFrequency: (word) => FREQ[word],
+  getCorpusTotal: () => 50_000_000,
+  traceSpelling: (word) => TRACE[word] ?? null,
 };
 
 describe('isPageableWord', () => {
@@ -119,8 +150,166 @@ describe('buildWordData', () => {
     expect(data!.sounds[1]!.ipa).toBe('ɝ'); // per-sound stress stripped
   });
 
+  it('marks which sounds are vowels and where the primary stress falls', () => {
+    const data = buildWordData('colonel', 3, deps)!;
+    expect(data.sounds.map((s) => s.vowel)).toEqual([false, true, false, true, false]);
+    expect(data.stressIndex).toBe(0); // ER1 is the first syllable
+  });
+
+  it('converts the raw frequency count to uses per million', () => {
+    // colonel: 500 in a 50M-token corpus = 10 per million
+    expect(buildWordData('colonel', 3, deps, 400)!.perMillion).toBe(10);
+    expect(buildWordData('colonel', 3, deps, 400)!.corpusSize).toBe(400);
+    expect(buildWordData('kernel', 3, deps)!.perMillion).toBeNull(); // no count
+  });
+
   it('returns null when the word has no pronunciation', () => {
     expect(buildWordData('zzz', 0, deps)).toBeNull();
+  });
+});
+
+describe('primaryStressIndex', () => {
+  it.each([
+    [['K', 'ER1', 'N', 'AH0', 'L'], 0],
+    [['HH', 'AH0', 'L', 'OW1'], 1],
+    [['DH', 'AH0'], -1], // unstressed function word
+  ])('%s → %s', (phonemes, expected) => {
+    expect(primaryStressIndex(phonemes)).toBe(expected);
+  });
+});
+
+describe('lcsSegments', () => {
+  it('splits both spellings into aligned columns around what they share', () => {
+    expect(lcsSegments('tsunami', 'tsoonomee')).toEqual([
+      { from: 'ts', to: 'ts' },
+      { from: 'u', to: 'oo' },
+      { from: 'n', to: 'n' },
+      { from: 'a', to: 'o' },
+      { from: 'm', to: 'm' },
+      { from: 'i', to: 'ee' },
+    ]);
+  });
+
+  it('gives a one-sided run a letter from its neighbour so no column is empty', () => {
+    expect(lcsSegments('lum', 'luhm')).toEqual([
+      { from: 'l', to: 'l' },
+      { from: 'u', to: 'uh' }, // an inserted "h" alone would leave a hole
+      { from: 'm', to: 'm' },
+    ]);
+    expect(lcsSegments('zeiss', 'zais')).toEqual([
+      { from: 'z', to: 'z' },
+      { from: 'e', to: 'a' },
+      { from: 'i', to: 'i' },
+      { from: 'ss', to: 's' },
+    ]);
+  });
+
+  it.each([
+    ['luring', 'luring'],
+    ['cat', 'kat'],
+    ['through', 'throo'],
+    ['aardvark', 'ardvark'],
+  ])('columns always rebuild both spellings (%s → %s)', (english, ingglish) => {
+    const pairs = lcsSegments(english, ingglish);
+    expect(pairs.map((p) => p.from).join('')).toBe(english);
+    expect(pairs.map((p) => p.to).join('')).toBe(ingglish);
+  });
+});
+
+describe('traceSegments', () => {
+  it('spells each traced letter group with the dictionary phonemes', () => {
+    expect(
+      traceSegments(TRACE.kernel!.steps, PRON.kernel!, 'kernal', deps.arpabetToIngglish)
+    ).toEqual([
+      { from: 'k', to: 'k' },
+      { from: 'er', to: 'er' },
+      { from: 'n', to: 'n' },
+      { from: 'e', to: 'a' },
+      { from: 'l', to: 'l' },
+    ]);
+  });
+
+  it('merges groups whose spellings run together, and keeps silent letters empty', () => {
+    // A group that emits no phoneme spells to "" — that is the silent-letter
+    // signal the page renders as an em dash.
+    const steps = [
+      { letters: 'K', phonemes: [] },
+      { letters: 'N', phonemes: ['N'] },
+    ];
+    expect(traceSegments(steps, ['N'], 'n', deps.arpabetToIngglish)).toEqual([
+      { from: 'k', to: '' },
+      { from: 'n', to: 'n' },
+    ]);
+  });
+
+  it('keeps trailing letters that never resolved to a column', () => {
+    // A converter whose longer prefix is not an extension of its shorter one
+    // never lets the second group settle; its letters still have to appear.
+    const steps = [
+      { letters: 'A', phonemes: ['X'] },
+      { letters: 'B', phonemes: ['Y'] },
+    ];
+    const weird = (p: string[]): string => (p.length === 1 ? 'q' : 'zz');
+    expect(traceSegments(steps, ['X', 'Y'], 'q', weird)).toEqual([
+      { from: 'a', to: 'q' },
+      { from: 'b', to: '' },
+    ]);
+  });
+});
+
+describe('alignSpelling', () => {
+  it('uses the letter-to-sound trace when it matches the dictionary', () => {
+    expect(alignSpelling('kernel', 'kernal', PRON.kernel!, deps)).toEqual([
+      { from: 'k', to: 'k' },
+      { from: 'er', to: 'er' },
+      { from: 'n', to: 'n' },
+      { from: 'e', to: 'a' },
+      { from: 'l', to: 'l' },
+    ]);
+  });
+
+  it('falls back to comparing the spellings when the trace disagrees', () => {
+    // "colonel" is the classic case: its letters do not make its sounds, so the
+    // trace mispronounces it and must not be used to explain the spelling.
+    const pairs = alignSpelling('colonel', 'kernal', PRON.colonel!, deps);
+    expect(pairs.map((p) => p.from).join('')).toBe('colonel');
+    expect(pairs.map((p) => p.to).join('')).toBe('kernal');
+  });
+
+  it('falls back when there is no trace at all', () => {
+    const pairs = alignSpelling('hello', 'haloh', PRON.hello!, deps);
+    expect(pairs.map((p) => p.to).join('')).toBe('haloh');
+  });
+});
+
+describe('frequencyBand / formatRate / ordinal', () => {
+  it.each([
+    [null, 'not in the frequency corpus'],
+    [4000, 'one of the most common words in English'],
+    [250, 'very common'],
+    [12, 'common'],
+    [3, 'fairly common'],
+    [0.4, 'uncommon'],
+    [0.01, 'rare'],
+  ])('%s per million → %s', (perMillion, expected) => {
+    expect(frequencyBand(perMillion)).toBe(expected);
+  });
+
+  it.each([
+    [4123.6, '4,124'],
+    [12.34, '12.3'],
+    [0.456, '0.46'],
+  ])('formats %s as %s', (rate, expected) => {
+    expect(formatRate(rate)).toBe(expected);
+  });
+
+  it.each([
+    [1, '1st'],
+    [2, '2nd'],
+    [3, '3rd'],
+    [4, '4th'],
+  ])('ordinal %s → %s', (n, expected) => {
+    expect(ordinal(n)).toBe(expected);
   });
 });
 
@@ -154,7 +343,7 @@ describe('escapeHtml', () => {
 });
 
 describe('renderWordPage', () => {
-  const data = buildWordData('colonel', 3, deps)!;
+  const data = buildWordData('colonel', 3, deps, 48_000)!;
   const html = renderWordPage(data, ['kernel']);
 
   it('is a complete HTML document with canonical and word content', () => {
@@ -174,8 +363,34 @@ describe('renderWordPage', () => {
   it('shows the guide pronunciation and an FAQ with FAQPage structured data', () => {
     expect(html).toContain('class="guide">KER-nal</div>');
     expect(html).toContain('How do you pronounce “colonel”?');
-    expect(html).toContain('How many syllables are in “colonel”?');
+    // The syllable question used to restate the Syllables fact row verbatim.
+    expect(html).not.toContain('How many syllables are in “colonel”?');
     expect(html).toContain('"@type":"FAQPage"');
+  });
+
+  it('shows the letter-by-letter English → Ingglish columns', () => {
+    const kernel = renderWordPage(buildWordData('kernel', 4, deps)!, []);
+    expect(kernel).toContain('“kernel” letter by letter');
+    expect(kernel).toContain('<td class="eng">er</td>');
+    // "e" spells the schwa, so its Ingglish column is "a"
+    expect(kernel).toContain('<td class="eng">e</td><td class="eng">l</td>');
+  });
+
+  it('states per-word facts: sound counts, stress, frequency band and rhyme ending', () => {
+    expect(html).toContain('5 from 7 letters — 2 vowels /ɝ/, /ə/ and 3 consonants /k/, /n/, /l/');
+    expect(html).toContain('stress on the 1st');
+    // 500 hits in a 50M corpus = 10 per million, ranked 4th of 48,000
+    expect(html).toContain('common — 10.0 uses per million words');
+    expect(html).toContain('#4 of 48,000');
+    expect(html).toContain('Rhyme ending');
+  });
+
+  it('says each fact once instead of restating it in prose', () => {
+    // The old template repeated the same sentence in the intro, a callout and
+    // every FAQ answer; ~75% of any two word pages was verbatim identical.
+    expect(html.match(/every spelling always makes the same sound/g)).toBeNull();
+    expect(html).not.toContain('Here is how it sounds out');
+    expect(html).not.toContain('no silent letters');
   });
 
   it('omits the rhyme section when there are no rhymes', () => {
@@ -185,7 +400,7 @@ describe('renderWordPage', () => {
   it('renders a homophones section and mentions them in the description', () => {
     const withHom = renderWordPage(data, [], ['kernel']);
     expect(withHom).toContain('homophones');
-    expect(withHom).toContain('sounds identical to “kernel”');
+    expect(withHom).toContain('Sounds identical to “kernel”');
     expect(withHom).toContain('/word/kernel/');
   });
 
