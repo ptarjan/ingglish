@@ -47,6 +47,20 @@ describe('SSG render', () => {
     );
   });
 
+  // The <head> copies written by customizeHtml are authoritative; anything the
+  // React tree emits would land inside #root and give the page two or three
+  // conflicting descriptions.
+  describe('no head-only tags leak into the body', () => {
+    it.each(['/', '/text', '/guide', '/extension', '/docs', '/docs/architecture', '/games'])(
+      '%s has no inline description or canonical',
+      async (url) => {
+        const html = await render(url);
+        expect(html).not.toContain('name="description"');
+        expect(html).not.toContain('rel="canonical"');
+      }
+    );
+  });
+
   it('/challenge returns empty (redirect)', async () => {
     // /challenge is a redirect on client — SSG renders spinner fallback
     const html = await render('/challenge');

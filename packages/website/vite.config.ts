@@ -2,7 +2,7 @@ import { defineConfig, build as viteBuild } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import markdown from './vite-plugin-md';
 import type { Plugin } from 'vite';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { randomUUID } from 'crypto';
 import { dirname, join } from 'path';
@@ -302,8 +302,20 @@ function preRenderRoutes(): Plugin {
       // Clean up SSR bundle
       rmSync(ssgDir, { recursive: true, force: true });
 
-      // 404.html as catch-all fallback for GitHub Pages
-      copyFileSync(join(distDir, 'index.html'), join(distDir, '404.html'));
+      // 404.html as catch-all fallback for GitHub Pages. It keeps the app shell
+      // so client routing still boots, but it must not present itself as the
+      // homepage: a copy of index.html gives every unknown URL the homepage's
+      // title and a canonical pointing at "/", which reads as a soft 404 no
+      // matter what status code the server sends.
+      const notFoundHtml = readFileSync(join(distDir, 'index.html'), 'utf-8')
+        .replace(/<title>[^<]*<\/title>/, '<title>Page not found | Ingglish</title>')
+        .replace(
+          /<meta name="description" content="[^"]*"[^>]*>/,
+          '<meta name="description" content="This page does not exist." />' +
+            '<meta name="robots" content="noindex" />'
+        )
+        .replace(/<link rel="canonical" href="[^"]*"[^>]*>/, '');
+      writeFileSync(join(distDir, '404.html'), notFoundHtml);
     },
   };
 }

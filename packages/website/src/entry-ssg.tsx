@@ -124,6 +124,16 @@ const ssgRoutes: RouteObject[] = [
   },
 ];
 
+// AppLayout and Docs render <meta name="description"> and <link rel="canonical">
+// into the tree because React 19 hoists them into <head> in the browser.
+// renderToString does not hoist, so on the server they stay where they were
+// rendered — inside #root — and the page ends up with two or three conflicting
+// descriptions, none of them in <head>. The <head> copies written by
+// customizeHtml in vite.config.ts are the only ones that count, so drop these.
+// React writes attributes in its own order, so match on the identifying
+// attribute rather than on the start of the tag.
+const HEAD_ONLY_TAGS = /<meta [^>]*name="description"[^>]*>|<link [^>]*rel="canonical"[^>]*>/g;
+
 export async function render(url: string): Promise<string> {
   const handler = createStaticHandler(ssgRoutes);
   const fetchRequest = new Request(`https://ingglish.com${url}`);
@@ -135,11 +145,12 @@ export async function render(url: string): Promise<string> {
   }
 
   const router = createStaticRouter(handler.dataRoutes, context);
-  return renderToString(
+  const html = renderToString(
     <React.StrictMode>
       <FormatProvider>
         <StaticRouterProvider context={context} router={router} />
       </FormatProvider>
     </React.StrictMode>
   );
+  return html.replaceAll(HEAD_ONLY_TAGS, '');
 }
