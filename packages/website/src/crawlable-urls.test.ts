@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { ALL_ROUTES, ROUTE_META } from './route-meta';
 import { DOC_ENTRIES, sitePath, SITE, siteUrl } from './routes';
 
 describe('sitePath', () => {
@@ -88,6 +89,30 @@ describe('doc pages have search-facing metadata', () => {
 
   it('every title is distinct', () => {
     const titles = DOC_ENTRIES.map((d) => d.seoTitle);
+    expect(new Set(titles).size).toBe(titles.length);
+  });
+});
+
+// customizeHtml returns the page untouched when ROUTE_META has no entry for it,
+// which leaves the shell's homepage <title> and — worse — the shell's canonical
+// pointing at "/". Five game routes shipped that way and could never have been
+// indexed under their own URL, however good the page was.
+describe('every pre-rendered route has its own head metadata', () => {
+  // Doc pages get theirs from DOC_ENTRIES, asserted above.
+  const routes = ALL_ROUTES.filter((r) => !r.startsWith('docs/'));
+
+  it.each(routes)('%s', (route) => {
+    const meta = ROUTE_META[route];
+    expect(meta).toBeDefined();
+    // Google truncates titles around 60 characters and descriptions around 160.
+    expect(meta?.title.length).toBeLessThanOrEqual(65);
+    expect(meta?.description.length).toBeGreaterThanOrEqual(80);
+    expect(meta?.description.length).toBeLessThanOrEqual(165);
+  });
+
+  it('every title is distinct', () => {
+    // /challenge is the old URL of /games/reading and deliberately matches it.
+    const titles = routes.filter((r) => r !== 'challenge').map((r) => ROUTE_META[r]?.title);
     expect(new Set(titles).size).toBe(titles.length);
   });
 });

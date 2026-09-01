@@ -9,19 +9,11 @@ import { dirname, join } from 'path';
 import { pathToFileURL } from 'url';
 import { build as esbuild } from 'esbuild';
 import { marked } from 'marked';
-import { DOC_ENTRIES, GAME_ENTRIES, siteUrl, TOP_LEVEL_ROUTES } from './src/routes';
+import { DOC_ENTRIES, siteUrl } from './src/routes';
+import { ALL_ROUTES, ROUTE_META } from './src/route-meta';
 import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
 
 const BUILD_ID = randomUUID();
-
-// All routes that get their own index.html in dist/
-const ALL_ROUTES = [
-  ...TOP_LEVEL_ROUTES,
-  // Backward compat: /challenge redirects to /games/reading
-  'challenge',
-  ...GAME_ENTRIES.map((e) => `games/${e.id}`),
-  ...DOC_ENTRIES.map((e) => `docs/${e.id}`),
-];
 
 // Skip sourcemaps for data and vendor chunks
 function processChunks(): Plugin {
@@ -47,90 +39,6 @@ function processChunks(): Plugin {
     },
   };
 }
-
-// Per-route OG metadata overrides
-interface RouteMeta {
-  title: string;
-  description: string;
-}
-
-const ROUTE_META: Record<string, RouteMeta> = {
-  text: {
-    title: 'Ingglish Text Translator',
-    description:
-      'Translate any English text to phonetic spelling instantly. See how words look when every spelling always makes the same sound.',
-  },
-  url: {
-    title: 'Ingglish URL Translator',
-    description:
-      'Paste any URL and read the page in phonetic English. Every spelling always makes the same sound.',
-  },
-  guide: {
-    title: 'Ingglish Spelling Guide',
-    description:
-      'Complete guide to the Ingglish phonetic alphabet. See how every English sound maps to a consistent spelling.',
-  },
-  experiment: {
-    title: 'Ingglish Experiment - Design Your Own Spelling',
-    description:
-      'Create your own phonetic spelling system. Customize how each sound is written, test with sample text, and compare statistics against standard Ingglish.',
-  },
-  explore: {
-    title: 'Ingglish Word Explorer',
-    description:
-      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
-  },
-  extension: {
-    title: 'Ingglish Bookmarklet & Extension',
-    description:
-      'Translate any webpage to phonetic English with one click. Drag the bookmarklet to your bookmarks bar or install the Chrome extension.',
-  },
-  games: {
-    title: 'Ingglish Games',
-    description:
-      'Practice reading and understanding Ingglish with interactive games. Reading challenge, homophones quiz, and learn-to-read lessons.',
-  },
-  challenge: {
-    title: 'Ingglish Reading Challenge',
-    description:
-      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
-  },
-  'games/reading': {
-    title: 'Ingglish Reading Challenge',
-    description:
-      'Test how quickly you can read Ingglish! 10 rounds of progressively harder sentences with shareable results.',
-  },
-  'games/homophones': {
-    title: 'Ingglish Homophones Quiz',
-    description:
-      'Can you tell which English word an Ingglish spelling represents? Test your knowledge of homophones and phonetic spelling.',
-  },
-  'games/learn': {
-    title: 'Learn to Read Ingglish',
-    description:
-      '8 progressive lessons teaching you to read phonetic English. From unchanged words to full sentences.',
-  },
-  'games/daily': {
-    title: 'Ingglish Daily Challenge',
-    description:
-      'A new Ingglish puzzle every day. 5 rounds with Wordle-style colored squares. Same challenge for everyone.',
-  },
-  'games/speedmatch': {
-    title: 'Ingglish Speed Match',
-    description:
-      'Match Ingglish words to their English translations as fast as you can. Race the clock across 3 rounds.',
-  },
-  'games/reverse': {
-    title: 'Ingglish Reverse Spelling',
-    description:
-      'See an English word and type how it looks in Ingglish. Tests your knowledge of phonetic spelling rules.',
-  },
-  docs: {
-    title: 'Ingglish Documentation',
-    description:
-      'Technical documentation for the Ingglish phonetic English project. Design decisions, architecture, and API reference.',
-  },
-};
 
 // Build a map from doc ID to its search-facing metadata (see DOC_ENTRIES).
 const DOC_META_MAP = new Map(
