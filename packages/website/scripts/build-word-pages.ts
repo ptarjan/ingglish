@@ -325,6 +325,89 @@ export function frequencyBand(perMillion: number | null): string {
   return 'rare';
 }
 
+/** Google shows about this much of a <title> before it truncates. */
+export const TITLE_LIMIT = 60;
+/** Google shows about this much of a meta description before it truncates. */
+export const DESCRIPTION_LIMIT = 155;
+
+/**
+ * First candidate that fits `limit` code points, else the last one. Candidates
+ * must run richest-to-shortest, so a long word loses a whole clause rather than
+ * being cut mid-fact by the search engine.
+ */
+export function fitText(candidates: string[], limit: number): string {
+  for (const c of candidates) {
+    if ([...c].length <= limit) {
+      return c;
+    }
+  }
+  return candidates.at(-1)!;
+}
+
+/** Sentence-cases a headword: every competitor on the SERP starts with a capital. */
+export function capitalize(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+/**
+ * The <title>. Aimed at the pronunciation/IPA/rhyme tail rather than the
+ * "how do you spell X" head: Google answers spelling in its own dictionary card
+ * above every organic result, so those impressions convert ~15× worse than the
+ * intents it has no widget for. Nothing here may promise audio — the page has a
+ * speechSynthesis button, not a recording.
+ */
+export function wordTitle(data: WordData, rhymes: string[] = []): string {
+  const word = capitalize(data.word);
+  const lead = `How to pronounce ${word}: ${data.guide}`;
+  return fitText(
+    [
+      ...(rhymes.length > 0 ? [`${lead} — IPA & rhymes`] : []),
+      `${lead} — IPA`,
+      lead,
+      `${word}: ${data.guide}`,
+      `How to pronounce ${word}`,
+      word,
+    ],
+    TITLE_LIMIT
+  );
+}
+
+/**
+ * The meta description. Answers the pronunciation and stops: the spelling stays
+ * behind the click, and the closing clause names what only this page has —
+ * the letter-to-sound columns, the rhymes, the homophones.
+ */
+export function wordDescription(
+  data: WordData,
+  rhymes: string[] = [],
+  homophones: string[] = []
+): string {
+  const word = capitalize(data.word);
+  const syllables = `${data.syllables} ${data.syllables === 1 ? 'syllable' : 'syllables'}`;
+  const base = fitText(
+    [
+      `${word} is pronounced ${data.guide} (IPA /${data.ipa}/) — ${syllables}.`,
+      `${word} is pronounced ${data.guide} — ${syllables}.`,
+      `${word} is pronounced ${data.guide}.`,
+    ],
+    DESCRIPTION_LIMIT
+  );
+  const letters = ' See which letters make which sound';
+  const tails = [
+    ...(rhymes.length > 0 && homophones.length > 0
+      ? [`${letters}, plus rhymes and homophones.`]
+      : []),
+    ...(rhymes.length > 0 ? [`${letters}, plus words that rhyme with it.`] : []),
+    ...(homophones.length > 0 ? [`${letters}, plus words that sound the same.`] : []),
+    `${letters}.`,
+    '',
+  ];
+  return fitText(
+    tails.map((t) => base + t),
+    DESCRIPTION_LIMIT
+  );
+}
+
 const ORDINALS = ['', '1st', '2nd', '3rd'];
 
 /** "1st", "2nd", "3rd", "4th"… for small counts (syllable positions). */
@@ -504,21 +587,11 @@ export function renderWordPage(
   homophones: string[] = []
 ): string {
   const { word, ingglish, ipa, guide } = data;
-  // Search Console says these pages rank ~position 10 for two query shapes in
-  // roughly equal volume — "farmer spelling" / "how do you spell security" and
-  // "how to pronounce become" — and the old pronounce-only title converted 1064
-  // impressions into zero clicks. Serve both intents, lead with the word (that
-  // is how the queries are phrased), and put the answer in the snippet: at
-  // position 10 the only way past nine dictionaries is to be visibly different.
-  const title = `${word} — spelling & pronunciation (${guide}) | Ingglish`;
-  const homophoneNote = homophones.length
-    ? ` Sounds identical to ${homophones.map((h) => `“${h}”`).join(', ')}.`
-    : '';
+  const title = wordTitle(data, rhymes);
+  const desc = wordDescription(data, rhymes, homophones);
   const syllableWord = data.syllables === 1 ? 'syllable' : 'syllables';
   const letterWord = word.length === 1 ? 'letter' : 'letters';
-  const soundWord = data.sounds.length === 1 ? 'sound' : 'sounds';
   const spelledOut = [...word].join('-').toUpperCase();
-  const desc = `Spell “${word}”: ${spelledOut} — ${word.length} ${letterWord}, ${data.sounds.length} ${soundWord}, ${data.syllables} ${syllableWord}. Pronounced ${guide} (IPA /${ipa}/); written “${ingglish}” in Ingglish phonetic spelling.${homophoneNote}`;
   const canonical = `${SITE}/word/${word}/`;
 
   const spellingCells = data.sounds
@@ -583,7 +656,8 @@ export function renderWordPage(
 
   // FAQ — one short answer each, no restating. "X spelling" / "how do you spell
   // X" is the larger of the two query clusters these pages rank for, so it
-  // leads. FAQPage structured data carries them into question-format results.
+  // leads. The FAQPage markup earns no rich result at this site's authority
+  // level; it is here as plain on-page structure, not as a SERP feature bet.
   const faq: { q: string; a: string }[] = [
     {
       q: `How do you spell “${word}”?`,

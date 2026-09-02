@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
   buildRhymeMap,
   buildWordData,
+  capitalize,
   cleanIpa,
   cleanIpaSymbol,
   alignSpelling,
+  DESCRIPTION_LIMIT,
   escapeHtml,
+  fitText,
   formatRate,
   frequencyBand,
   groupByLetter,
@@ -25,6 +28,10 @@ import {
   renderWordsSitemaps,
   SITEMAP_CHUNK_SIZE,
   rhymeKey,
+  TITLE_LIMIT,
+  wordDescription,
+  wordTitle,
+  type WordData,
   type WordDeps,
 } from './build-word-pages';
 
@@ -342,6 +349,191 @@ describe('escapeHtml', () => {
   });
 });
 
+describe('fitText', () => {
+  it('returns the first candidate within the limit', () => {
+    expect(fitText(['aaaaaa', 'aaa', 'a'], 4)).toBe('aaa');
+  });
+
+  it('falls back to the last candidate when nothing fits', () => {
+    expect(fitText(['aaaaaa', 'aaaa'], 2)).toBe('aaaa');
+  });
+
+  it('measures code points, not UTF-16 units', () => {
+    expect(fitText(['𝐚𝐛𝐜', 'x'], 3)).toBe('𝐚𝐛𝐜');
+  });
+});
+
+describe('capitalize', () => {
+  it.each([
+    ['patriarchs', 'Patriarchs'],
+    ['a', 'A'],
+    ["don't", "Don't"],
+    ['co-op', 'Co-op'],
+    ['', ''],
+  ])('%s → %s', (word, expected) => {
+    expect(capitalize(word)).toBe(expected);
+  });
+});
+
+// A spread of real corpus words: the head Google answers ("the", "it"), the
+// pages losing the most clicks, and the longest guides in the dictionary.
+const SAMPLE: Pick<WordData, 'word' | 'guide' | 'ipa' | 'syllables'>[] = [
+  { word: 'a', guide: 'a', ipa: 'ə', syllables: 1 },
+  { word: 'the', guide: 'dha', ipa: 'ðə', syllables: 1 },
+  { word: 'it', guide: 'IT', ipa: 'ˈɪt', syllables: 1 },
+  { word: 'pencil', guide: 'PEN-sal', ipa: 'ˈpɛnsəl', syllables: 2 },
+  { word: 'beauty', guide: 'BYOO-tee', ipa: 'ˈbjuti', syllables: 2 },
+  { word: 'colonel', guide: 'KER-nal', ipa: 'ˈkɝnəl', syllables: 2 },
+  { word: 'quinoa', guide: 'KEE-NOH-a', ipa: 'ˌkiˈnoʊə', syllables: 3 },
+  { word: 'butterfly', guide: 'BUH-ter-FLAI', ipa: 'ˈbʌtɝˌflaɪ', syllables: 3 },
+  { word: 'patriarchs', guide: 'PAY-tree-ARKS', ipa: 'ˈpeɪtɹiˌɑɹks', syllables: 3 },
+  { word: 'worcestershire', guide: 'WU-ster-sher', ipa: 'ˈwʊstɝʃɝ', syllables: 3 },
+  { word: 'phenolphthalein', guide: 'FEE-nolf-THAY-lan', ipa: 'ˌfinɑlfˈθeɪlən', syllables: 4 },
+  {
+    word: 'uncharacteristically',
+    guide: 'UHNG-KE-rik-ter-I-sti-klee',
+    ipa: 'ˌʌŋˌkɛɹɪktɝˈɪstɪkli',
+    syllables: 7,
+  },
+  {
+    word: 'telecommunications',
+    guide: 'TE-la-ka-MYOO-na-KAY-shanz',
+    ipa: 'ˌtɛləkəˌmjunəˈkeɪʃənz',
+    syllables: 7,
+  },
+  {
+    word: 'counterrevolutionary',
+    guide: 'KOUN-ter-re-va-LOO-sha-NE-ree',
+    ipa: 'ˌkaʊntɝɹɛvəˈluʃəˌnɛɹi',
+    syllables: 8,
+  },
+  {
+    word: 'deinstitutionalization',
+    guide: 'DEE-IN-sti-TOO-sha-na-la-ZAY-shan',
+    ipa: 'ˌdiˌɪnstɪˌtuʃənələˈzeɪʃən',
+    syllables: 9,
+  },
+  {
+    // The longest guide in the dictionary — 42 characters on its own.
+    word: 'antidisestablishmentarianism',
+    guide: 'AN-tai-DI-sa-STA-blish-man-TE-ree-a-NI-zam',
+    ipa: 'ˌæntaɪˌdɪsəˌstæblɪʃmənˈtɛɹiəˌnɪzəm',
+    syllables: 12,
+  },
+  { word: "don't", guide: 'DOHNT', ipa: 'ˈdoʊnt', syllables: 1 },
+  { word: 'co-op', guide: 'KOH-op', ipa: 'ˈkoʊˌɑp', syllables: 2 },
+];
+
+const stub = (s: (typeof SAMPLE)[number]): WordData =>
+  ({ ...s, ingglish: s.word, sounds: [], spelling: [] }) as unknown as WordData;
+
+const len = (s: string): number => [...s].length;
+
+describe('wordTitle', () => {
+  it('leads with the capitalized word and its pronunciation guide', () => {
+    const title = wordTitle(stub(SAMPLE[8]!), ['monarchs']);
+    expect(title).toBe('How to pronounce Patriarchs: PAY-tree-ARKS — IPA & rhymes');
+    expect(len(title)).toBeLessThanOrEqual(TITLE_LIMIT);
+  });
+
+  it('drops the rhyme hook when the word has no rhymes', () => {
+    expect(wordTitle(stub(SAMPLE[3]!), [])).toBe('How to pronounce Pencil: PEN-sal — IPA');
+  });
+
+  it('never carries the brand suffix or a lowercase lead', () => {
+    for (const s of SAMPLE) {
+      const title = wordTitle(stub(s), ['x']);
+      expect(title).not.toContain('| Ingglish');
+      expect(title[0]).toBe(title[0]!.toUpperCase());
+    }
+  });
+
+  it.each(SAMPLE.map((s) => [s.word, s] as const))(
+    'fits %s in the title limit whole facts only',
+    (_word, s) => {
+      for (const rhymes of [[], ['x']]) {
+        const title = wordTitle(stub(s), rhymes);
+        expect(len(title)).toBeLessThanOrEqual(TITLE_LIMIT);
+        // Degrades by dropping a whole clause, never by truncating one.
+        expect(title).not.toMatch(/[—:]\s*$/);
+        expect(title).toContain(capitalize(s.word));
+      }
+    }
+  );
+
+  it('drops clauses in priority order as the word gets longer', () => {
+    // The guide is the answer, so it outlives the "How to pronounce" framing;
+    // once even that will not fit, the framing outlives the guide.
+    expect(wordTitle(stub(SAMPLE[12]!), ['x'])).toBe(
+      'Telecommunications: TE-la-ka-MYOO-na-KAY-shanz'
+    );
+    expect(wordTitle(stub(SAMPLE[15]!), ['x'])).toBe(
+      'How to pronounce Antidisestablishmentarianism'
+    );
+  });
+});
+
+describe('wordDescription', () => {
+  it('gives the pronunciation, IPA and syllable count, then what needs a click', () => {
+    expect(wordDescription(stub(SAMPLE[8]!), ['monarchs'], [])).toBe(
+      'Patriarchs is pronounced PAY-tree-ARKS (IPA /ˈpeɪtɹiˌɑɹks/) — 3 syllables. ' +
+        'See which letters make which sound, plus words that rhyme with it.'
+    );
+  });
+
+  it('names homophones only when the page has them', () => {
+    expect(wordDescription(stub(SAMPLE[5]!), ['x'], ['kernel'])).toContain(
+      'plus rhymes and homophones.'
+    );
+    expect(wordDescription(stub(SAMPLE[5]!), [], [])).toContain(
+      'See which letters make which sound.'
+    );
+  });
+
+  it('uses the singular for one-syllable words', () => {
+    expect(wordDescription(stub(SAMPLE[1]!), [], [])).toContain('— 1 syllable.');
+  });
+
+  it.each(SAMPLE.map((s) => [s.word, s] as const))(
+    'fits %s in the description limit whole facts only',
+    (_word, s) => {
+      for (const rhymes of [[], ['x']]) {
+        const desc = wordDescription(stub(s), rhymes, rhymes);
+        expect(len(desc)).toBeLessThanOrEqual(DESCRIPTION_LIMIT);
+        expect(desc.endsWith('.')).toBe(true);
+        expect(desc).toContain(s.guide);
+      }
+    }
+  );
+});
+
+// The page has a speechSynthesis button, not a recording. A snippet that
+// promises audio wins the click and loses the visit.
+const AUDIO_CLAIM = /audio|listen|hear|sound clip|recording|play it/i;
+
+describe('title and description promise nothing the page does not have', () => {
+  it.each(SAMPLE.map((s) => [s.word, s] as const))('%s', (_word, s) => {
+    // Only the boilerplate is checked: "hear" is a legitimate headword, and the
+    // guide for it legitimately reads HEER.
+    const boilerplate = `${wordTitle(stub(s), ['x'])} ${wordDescription(stub(s), ['x'], ['y'])}`
+      .split(s.guide)
+      .join('')
+      .split(s.ipa)
+      .join('')
+      .replace(new RegExp(capitalize(s.word), 'gi'), '');
+    expect(boilerplate).not.toMatch(AUDIO_CLAIM);
+  });
+});
+
+describe('title and description uniqueness', () => {
+  it('gives every word its own title and description', () => {
+    const titles = new Set(SAMPLE.map((s) => wordTitle(stub(s), ['x'])));
+    const descs = new Set(SAMPLE.map((s) => wordDescription(stub(s), ['x'], [])));
+    expect(titles.size).toBe(SAMPLE.length);
+    expect(descs.size).toBe(SAMPLE.length);
+  });
+});
+
 describe('renderWordPage', () => {
   const data = buildWordData('colonel', 3, deps, 48_000)!;
   const html = renderWordPage(data, ['kernel']);
@@ -397,11 +589,22 @@ describe('renderWordPage', () => {
     expect(renderWordPage(data, [])).not.toContain('Words that rhyme');
   });
 
-  it('renders a homophones section and mentions them in the description', () => {
+  it('renders a homophones section and points at it from the description', () => {
     const withHom = renderWordPage(data, [], ['kernel']);
     expect(withHom).toContain('homophones');
-    expect(withHom).toContain('Sounds identical to “kernel”');
+    expect(withHom).toContain('plus words that sound the same.');
     expect(withHom).toContain('/word/kernel/');
+  });
+
+  it('uses the tail-facing title and description in every head slot', () => {
+    const title = 'How to pronounce Colonel: KER-nal — IPA &amp; rhymes';
+    const desc =
+      'Colonel is pronounced KER-nal (IPA /ˈkɝnəl/) — 2 syllables. ' +
+      'See which letters make which sound, plus words that rhyme with it.';
+    expect(html).toContain(`<title>${title}</title>`);
+    expect(html).toContain(`<meta name="description" content="${desc}">`);
+    expect(html).toContain(`<meta property="og:description" content="${desc}">`);
+    expect(html).not.toContain('| Ingglish</title>');
   });
 
   it('omits the homophones section when there are none', () => {
