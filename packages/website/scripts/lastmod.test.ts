@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ALL_ROUTES } from '../src/route-meta';
@@ -173,6 +173,53 @@ describe('wordPagesLastmod', () => {
       'packages/core/src': '2026-07-13T22:24:54-06:00',
     });
     expect(wordPagesLastmod(read)).toBe('2026-09-01T18:20:28-06:00');
+  });
+});
+
+/**
+ * WORD_PAGE_SOURCES dates 48,831 URLs off one `git log`, so anything listed
+ * here has to be a source that decides what a word page SAYS. A module that
+ * also renders sitemaps would re-date every word page the next time a sitemap
+ * was tweaked — the pages would claim a freshness their HTML does not have,
+ * which is exactly the lastmod abuse Google stops trusting.
+ */
+describe('WORD_PAGE_SOURCES', () => {
+  /** Strings only sitemap-rendering code contains. */
+  const SITEMAP_MARKERS = ['<urlset', '<sitemapindex', 'sitemap-words', '<loc>'];
+
+  /** Every TypeScript file under a repo-root-relative file or directory path. */
+  function sourceFiles(rel: string): string[] {
+    const abs = join(REPO_ROOT, rel);
+    if (!statSync(abs).isDirectory()) {
+      return [rel];
+    }
+    return readdirSync(abs, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() || /\.(ts|tsx)$/.test(e.name) ? sourceFiles(`${rel}/${e.name}`) : []
+    );
+  }
+
+  it('lists exactly the sources that decide word-page content', () => {
+    expect(WORD_PAGE_SOURCES).toEqual([
+      'packages/website/scripts/build-word-pages.ts',
+      'packages/core/src',
+      'packages/dictionary/src',
+      'packages/dictionary/scripts',
+      'packages/phonemes/src',
+      'packages/ipa/src',
+      'packages/g2p/src',
+    ]);
+    for (const src of WORD_PAGE_SOURCES) {
+      expect(existsSync(join(REPO_ROOT, src))).toBe(true);
+    }
+  });
+
+  it('names no module that renders sitemaps', () => {
+    expect(WORD_PAGE_SOURCES).not.toContain('packages/website/scripts/sitemaps.ts');
+    const offenders = WORD_PAGE_SOURCES.flatMap(sourceFiles).filter((f) => {
+      const text = readFileSync(join(REPO_ROOT, f), 'utf-8');
+      return SITEMAP_MARKERS.some((m) => text.includes(m));
+    });
+    expect(offenders).toEqual([]);
   });
 });
 
