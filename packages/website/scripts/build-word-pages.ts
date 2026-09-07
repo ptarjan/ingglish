@@ -23,9 +23,11 @@
  *   dist/sitemap-words[-N].xml    word pages, chunked under the 50k URL cap
  *   dist/sitemap.xml              sitemap index (pages + every word chunk)
  */
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { LASTMOD_FALLBACK, newestLastmodIn, wordPagesLastmod } from './lastmod';
 
 const SITE = 'https://ingglish.com';
 
@@ -860,13 +862,18 @@ export const SITEMAP_CHUNK_SIZE = 25_000;
  * Builds the words sitemaps: the hub, each letter page, and every word, split
  * into files of at most SITEMAP_CHUNK_SIZE URLs.
  *
+ * Every URL shares one `lastmod` because every page here is regenerated as a
+ * batch from the same generator and dictionaries — see wordPagesLastmod, which
+ * reads that date out of git rather than off the clock.
+ *
  * The first chunk keeps the historical `sitemap-words.xml` name. Google has
  * that URL on file from earlier submissions, and renaming it would 404 a
  * sitemap it is still fetching — an avoidable Search Console error for no gain.
  */
 export function renderWordsSitemaps(
   words: string[],
-  letters: string[]
+  letters: string[],
+  lastmod: string
 ): { filename: string; xml: string }[] {
   const locs = [
     `${SITE}/words/`,
@@ -877,7 +884,7 @@ export function renderWordsSitemaps(
   for (let i = 0; i < locs.length; i += SITEMAP_CHUNK_SIZE) {
     const urls = locs
       .slice(i, i + SITEMAP_CHUNK_SIZE)
-      .map((loc) => `  <url><loc>${loc}</loc></url>`)
+      .map((loc) => `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`)
       .join('\n');
     const n = result.length + 1;
     result.push({
@@ -889,9 +896,12 @@ export function renderWordsSitemaps(
 }
 
 /** Builds the sitemap index referencing the page sitemap and every word sitemap. */
-export function renderSitemapIndex(wordSitemaps: string[]): string {
-  const maps = ['sitemap-pages.xml', ...wordSitemaps]
-    .map((name) => `  <sitemap><loc>${SITE}/${name}</loc></sitemap>`)
+export function renderSitemapIndex(sitemaps: { filename: string; lastmod: string }[]): string {
+  const maps = sitemaps
+    .map(
+      ({ filename, lastmod }) =>
+        `  <sitemap><loc>${SITE}/${filename}</loc><lastmod>${lastmod}</lastmod></sitemap>`
+    )
     .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${maps}\n</sitemapindex>\n`;
 }
@@ -995,13 +1005,23 @@ async function main(): Promise<void> {
   // The shared stylesheet every generated page <link>s
   writeFileSync(join(distDir, 'word.css'), PAGE_CSS);
 
-  const wordSitemaps = renderWordsSitemaps(words, letters);
+  const wordsLastmod = wordPagesLastmod();
+  const wordSitemaps = renderWordsSitemaps(words, letters, wordsLastmod);
   for (const { filename, xml } of wordSitemaps) {
     writeFileSync(join(distDir, filename), xml);
   }
+  // The index entry for sitemap-pages.xml is dated from the file vite already
+  // wrote, so the two can never disagree about what is in it.
+  const pagesSitemap = join(distDir, 'sitemap-pages.xml');
+  const pagesLastmod = existsSync(pagesSitemap)
+    ? newestLastmodIn(readFileSync(pagesSitemap, 'utf-8'))
+    : LASTMOD_FALLBACK;
   writeFileSync(
     join(distDir, 'sitemap.xml'),
-    renderSitemapIndex(wordSitemaps.map((s) => s.filename))
+    renderSitemapIndex([
+      { filename: 'sitemap-pages.xml', lastmod: pagesLastmod },
+      ...wordSitemaps.map((s) => ({ filename: s.filename, lastmod: wordsLastmod })),
+    ])
   );
 
   console.log(

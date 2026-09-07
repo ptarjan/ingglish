@@ -12,6 +12,7 @@ import { marked } from 'marked';
 import { DOC_ENTRIES, siteUrl } from './src/routes';
 import { ALL_ROUTES, ROUTE_META } from './src/route-meta';
 import { generateOgImages, ROUTE_OG } from './scripts/generate-og-images';
+import { DOC_FILE_MAP, renderPagesSitemap } from './scripts/lastmod';
 
 const BUILD_ID = randomUUID();
 
@@ -45,12 +46,6 @@ const DOC_META_MAP = new Map(
   DOC_ENTRIES.map((e) => [e.id, { title: e.seoTitle, description: e.seoDescription }])
 );
 
-// Map doc IDs to their markdown file paths (relative to repo root)
-const DOC_FILE_MAP: Record<string, string> = {
-  'how-to-read-english': 'english-spelling-rules.md',
-  'how-to-spell-english': 'english-spelling-choices.md',
-  'api-reference': 'generated/README.md',
-};
 const DOCS_DIR = join(__dirname, '..', '..', 'docs');
 
 /** Read and render a doc's markdown to HTML for SEO injection. */
@@ -228,8 +223,9 @@ function preRenderRoutes(): Plugin {
   };
 }
 
-// Generate sitemap-pages.xml (app routes) from the shared route list. The word
-// pages sitemap and the sitemap.xml *index* are written by wordPages() below.
+// Generate sitemap-pages.xml (app routes) from the shared route list, each URL
+// dated from the git history of the source that renders it (see scripts/lastmod.ts).
+// The word pages sitemap and the sitemap.xml *index* are written by wordPages() below.
 function generateSitemap(): Plugin {
   return {
     name: 'generate-sitemap',
@@ -240,9 +236,7 @@ function generateSitemap(): Plugin {
         '', // homepage
         ...ALL_ROUTES,
       ];
-      const urls = allUrls.map((r) => `  <url>\n    <loc>${siteUrl(r)}</loc>\n  </url>`).join('\n');
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
-      writeFileSync(join(distDir, 'sitemap-pages.xml'), sitemap);
+      writeFileSync(join(distDir, 'sitemap-pages.xml'), renderPagesSitemap(allUrls));
     },
   };
 }
