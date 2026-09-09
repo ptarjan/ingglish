@@ -153,13 +153,15 @@ describe('lastmodForRoute', () => {
   });
 
   // The whole point of lastmod: pages of different ages must not share a date.
+  // One `git log` per route, so it needs more than the default 5s budget when
+  // the rest of the suite is running beside it.
   it('gives pages of different ages different dates', () => {
     if (SHALLOW) return;
     const dates = new Set(['', ...ALL_ROUTES].map((r) => lastmodForRoute(r)));
     expect(dates.size).toBeGreaterThan(1);
     const today = new Date().toISOString().slice(0, 10);
     expect([...dates].every((d) => d.startsWith(today))).toBe(false);
-  });
+  }, 30_000);
 
   it('keeps an untouched doc on its old date', () => {
     if (SHALLOW) return;
