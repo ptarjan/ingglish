@@ -1,7 +1,7 @@
 /**
- * The word sitemaps and the sitemap index: dist/sitemap-words[-N].xml and
- * dist/sitemap.xml. (dist/sitemap-pages.xml is written by the vite plugin from
- * renderPagesSitemap in ./lastmod.)
+ * The word and rhyme sitemaps and the sitemap index: dist/sitemap-words[-N].xml,
+ * dist/sitemap-rhymes[-N].xml and dist/sitemap.xml. (dist/sitemap-pages.xml is
+ * written by the vite plugin from renderPagesSitemap in ./lastmod.)
  *
  * This lives apart from the word-page generator on purpose. WORD_PAGE_SOURCES
  * in ./lastmod dates all 48,831 word URLs from the commit history of the files
@@ -15,7 +15,7 @@ import { join } from 'node:path';
 
 import { SITE } from '../src/routes';
 
-import { LASTMOD_FALLBACK, newestLastmodIn, wordPagesLastmod } from './lastmod';
+import { LASTMOD_FALLBACK, newestLastmodIn, rhymePagesLastmod, wordPagesLastmod } from './lastmod';
 
 // A sitemap may hold at most 50,000 URLs, and crossing the line does not drop
 // the overflow — Google rejects the whole file, so every word page would go
@@ -60,6 +60,32 @@ export function renderWordsSitemaps(
   return result;
 }
 
+/**
+ * Builds the rhyme sitemaps: the /rhymes/ hub and every /rhymes/<word>/ page,
+ * chunked like the word sitemaps. Today's 6,361 pages fit in one file — the
+ * chunking is here so growth past the cap is a non-event rather than a rejected
+ * sitemap, exactly as for the words.
+ */
+export function renderRhymesSitemaps(
+  rhymeWords: string[],
+  lastmod: string
+): { filename: string; xml: string }[] {
+  const locs = [`${SITE}/rhymes/`, ...rhymeWords.map((w) => `${SITE}/rhymes/${w}/`)];
+  const result: { filename: string; xml: string }[] = [];
+  for (let i = 0; i < locs.length; i += SITEMAP_CHUNK_SIZE) {
+    const urls = locs
+      .slice(i, i + SITEMAP_CHUNK_SIZE)
+      .map((loc) => `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`)
+      .join('\n');
+    const n = result.length + 1;
+    result.push({
+      filename: n === 1 ? 'sitemap-rhymes.xml' : `sitemap-rhymes-${n}.xml`,
+      xml: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+    });
+  }
+  return result;
+}
+
 /** Builds the sitemap index referencing the page sitemap and every word sitemap. */
 export function renderSitemapIndex(sitemaps: { filename: string; lastmod: string }[]): string {
   const maps = sitemaps
@@ -76,10 +102,22 @@ export function renderSitemapIndex(sitemaps: { filename: string; lastmod: string
  * Writes the word sitemaps and the sitemap index into `distDir`, and returns
  * how many word sitemaps were written.
  */
-export function writeSitemaps(distDir: string, words: string[], letters: string[]): number {
+export function writeSitemaps(
+  distDir: string,
+  words: string[],
+  letters: string[],
+  rhymeWords: string[]
+): number {
   const wordsLastmod = wordPagesLastmod();
   const wordSitemaps = renderWordsSitemaps(words, letters, wordsLastmod);
   for (const { filename, xml } of wordSitemaps) {
+    writeFileSync(join(distDir, filename), xml);
+  }
+  // Dated from their own generator: a rhyme page changes when the rhyme model
+  // or its renderer changes, which is not when a word page changes.
+  const rhymesLastmod = rhymePagesLastmod();
+  const rhymeSitemaps = renderRhymesSitemaps(rhymeWords, rhymesLastmod);
+  for (const { filename, xml } of rhymeSitemaps) {
     writeFileSync(join(distDir, filename), xml);
   }
   // The index entry for sitemap-pages.xml is dated from the file vite already
@@ -93,6 +131,7 @@ export function writeSitemaps(distDir: string, words: string[], letters: string[
     renderSitemapIndex([
       { filename: 'sitemap-pages.xml', lastmod: pagesLastmod },
       ...wordSitemaps.map((s) => ({ filename: s.filename, lastmod: wordsLastmod })),
+      ...rhymeSitemaps.map((s) => ({ filename: s.filename, lastmod: rhymesLastmod })),
     ])
   );
   return wordSitemaps.length;

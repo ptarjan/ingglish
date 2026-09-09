@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  buildRhymeMap,
   buildWordData,
   capitalize,
   cleanIpa,
@@ -24,13 +23,13 @@ import {
   renderLetterPage,
   renderWordPage,
   renderWordsHub,
-  rhymeKey,
   TITLE_LIMIT,
   wordDescription,
   wordTitle,
   type WordData,
   type WordDeps,
 } from './build-word-pages';
+import { AUDIO_CLAIM } from './seo-claims';
 
 // A tiny fake translator/dictionary so the builders can be tested in isolation.
 const PRON: Record<string, string[]> = {
@@ -317,15 +316,6 @@ describe('frequencyBand / formatRate / ordinal', () => {
   });
 });
 
-describe('rhymeKey and buildRhymeMap', () => {
-  it('groups words by their last two phonemes', () => {
-    expect(rhymeKey(['K', 'ER1', 'N', 'AH0', 'L'])).toBe('AH L');
-    const map = buildRhymeMap(['colonel', 'kernel', 'cat'], deps.lookupPronunciation);
-    expect(map.get('AH L')).toEqual(['colonel', 'kernel']);
-    expect(map.has('AE T')).toBe(true);
-  });
-});
-
 describe('phonemeKey and pickHomophones', () => {
   it('builds the full stress-stripped key', () => {
     expect(phonemeKey(['K', 'ER1', 'N', 'AH0', 'L'])).toBe('K ER N AH L');
@@ -504,10 +494,6 @@ describe('wordDescription', () => {
   );
 });
 
-// The page has a speechSynthesis button, not a recording. A snippet that
-// promises audio wins the click and loses the visit.
-const AUDIO_CLAIM = /audio|listen|hear|sound clip|recording|play it/i;
-
 describe('title and description promise nothing the page does not have', () => {
   it.each(SAMPLE.map((s) => [s.word, s] as const))('%s', (_word, s) => {
     // Only the boilerplate is checked: "hear" is a legitimate headword, and the
@@ -555,6 +541,22 @@ describe('renderWordPage', () => {
     // The syllable question used to restate the Syllables fact row verbatim.
     expect(html).not.toContain('How many syllables are in “colonel”?');
     expect(html).toContain('"@type":"FAQPage"');
+  });
+
+  // "IPA for X" converts an order of magnitude better than the spelling query
+  // Google answers in its own card, and the word used to say "IPA" nowhere a
+  // reader or a snippet would look.
+  it('labels the IPA in the hero and answers the IPA question', () => {
+    expect(html).toContain('IPA /ˈkɝnəl/ · 2 syllables');
+    expect(html).toContain('What is the IPA for “colonel”?');
+    expect(html).toContain('/ˈkɝnəl/ — 2 syllables, stress on the 1st.');
+  });
+
+  // The rhyme block used to group on the last two sounds, which put "colonel"
+  // with "several", "national" and "animal" under a shared /əl/.
+  it('names the whole rime, not the last two sounds', () => {
+    expect(html).toContain('Words that rhyme with “colonel” (/ɝnəl/)');
+    expect(html).toContain('<dd>/ɝnəl/</dd>');
   });
 
   it('shows the letter-by-letter English → Ingglish columns', () => {
@@ -633,6 +635,7 @@ describe('renderWordsHub', () => {
     expect(html).toContain('href="/words/c/"');
     expect(html).toContain('Most common words');
     expect(html).toContain('/word/the/');
+    expect(html).toContain('href="/rhymes/"'); // the only way between sibling rhyme pages
   });
 });
 

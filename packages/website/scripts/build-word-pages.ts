@@ -20,12 +20,23 @@
  * Writes into ./dist (must exist — run after `vite build`):
  *   dist/word/<word>/index.html   one landing page per word
  *   dist/words/index.html         browsable A–Z hub
+ *   dist/rhymes/**                the rhyme pages, via ./build-rhyme-pages
  *   dist/sitemap*.xml             the word and index sitemaps, via ./sitemaps
  */
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  buildStrictRhymeMap,
+  countSyllables,
+  isVowel,
+  rimeStartIndex,
+  rhymesFor,
+  selectRhymePages,
+  hasRhymePage,
+  type RhymeDeps,
+} from './rhymes';
 import { writeSitemaps } from './sitemaps';
 
 const SITE = 'https://ingglish.com';
@@ -53,6 +64,8 @@ export interface WordData {
   perMillion: number | null;
   /** 0-based syllable carrying primary stress; -1 when nothing is stressed. */
   stressIndex: number;
+  /** IPA of the rime — the stressed vowel to the end, i.e. what the word rhymes on. */
+  rime: string;
   /** Aligned English → Ingglish letter groups. */
   spelling: SpellingPair[];
 }
@@ -119,25 +132,11 @@ export function pickTopWords(entries: { word: string; count: number }[], limit: 
   return pageable.slice(0, limit).map((e) => e.word);
 }
 
-/** ARPAbet vowels are exactly the phonemes carrying a stress digit. */
-const STRESS_DIGIT = /[0-2]$/;
-
-/** Counts syllables as the number of vowel-carrying phonemes. */
-function countSyllables(phonemes: string[]): number {
-  let n = 0;
-  for (const p of phonemes) {
-    if (STRESS_DIGIT.test(p)) {
-      n++;
-    }
-  }
-  return Math.max(1, n);
-}
-
 /** 0-based syllable index carrying primary stress, or -1 when nothing is stressed. */
 export function primaryStressIndex(phonemes: string[]): number {
   let syllable = 0;
   for (const p of phonemes) {
-    if (!STRESS_DIGIT.test(p)) {
+    if (!isVowel(p)) {
       continue;
     }
     if (p.endsWith('1')) {
@@ -441,8 +440,9 @@ export function buildWordData(
   const sounds = phonemes.map((p) => ({
     ingglish: deps.arpabetPhonemeToIngglish(p),
     ipa: cleanIpaSymbol(deps.arpabetPhonemeToIPA(p)),
-    vowel: STRESS_DIGIT.test(p),
+    vowel: isVowel(p),
   }));
+  const rimeStart = rimeStartIndex(phonemes);
   const count = deps.getWordFrequency(word);
   const total = deps.getCorpusTotal();
   return {
@@ -456,14 +456,15 @@ export function buildWordData(
     corpusSize,
     perMillion: count === undefined || total === 0 ? null : (count / total) * 1_000_000,
     stressIndex: primaryStressIndex(phonemes),
+    rime:
+      rimeStart === null
+        ? ''
+        : sounds
+            .slice(rimeStart)
+            .map((s) => s.ipa)
+            .join(''),
     spelling: alignSpelling(word, ingglish, phonemes, deps),
   };
-}
-
-/** Rhyme key: the last two stress-stripped phonemes (or one, for monosyllables). */
-export function rhymeKey(phonemes: string[]): string {
-  const stripped = phonemes.map((p) => p.replace(/[0-2]$/, ''));
-  return stripped.slice(-2).join(' ');
 }
 
 /** Full stress-stripped phoneme key (matches the reverse dictionary's keys). */
@@ -485,32 +486,6 @@ export function pickHomophones(
     return [];
   }
   return candidates.filter((w) => w !== word && wordSet.has(w)).slice(0, limit);
-}
-
-/**
- * Groups words by rhyme so each page can link to words that rhyme with it.
- * Returns a map from rhyme key → ordered word list (input order preserved,
- * which is frequency order when built from pickTopWords output).
- */
-export function buildRhymeMap(
-  words: string[],
-  lookupPronunciation: WordDeps['lookupPronunciation']
-): Map<string, string[]> {
-  const map = new Map<string, string[]>();
-  for (const word of words) {
-    const ph = lookupPronunciation(word);
-    if (!ph || ph.length < 2) {
-      continue;
-    }
-    const key = rhymeKey(ph);
-    const list = map.get(key);
-    if (list) {
-      list.push(word);
-    } else {
-      map.set(key, [word]);
-    }
-  }
-  return map;
 }
 
 const HTML_ESCAPES: Record<string, string> = {
@@ -580,12 +555,15 @@ function wordLinks(words: string[]): string {
 
 /**
  * Renders one word's static landing page. `rhymes` and `homophones` are other
- * pageable words (with their own pages) that rhyme with / sound identical to it.
+ * pageable words (with their own pages) that rhyme with / sound identical to
+ * it. `rhymePageTotal` is how many rhymes /rhymes/<word>/ lists, or 0 when the
+ * word has no rhyme page — the link must promise the count that page delivers.
  */
 export function renderWordPage(
   data: WordData,
   rhymes: string[],
-  homophones: string[] = []
+  homophones: string[] = [],
+  rhymePageTotal = 0
 ): string {
   const { word, ingglish, ipa, guide } = data;
   const title = wordTitle(data, rhymes);
@@ -621,12 +599,9 @@ export function renderWordPage(
     data.stressIndex >= 0 && data.syllables > 1
       ? `, stress on the ${ordinal(data.stressIndex + 1)}`
       : '';
-  // The last two sounds: exactly what the rhyme list is grouped on, so the
-  // heading and this row describe the linked words and nothing more.
-  const rime = data.sounds
-    .slice(-2)
-    .map((s) => s.ipa)
-    .join('');
+  // The stressed vowel to the end: exactly what the rhyme list is grouped on,
+  // so the heading and this row describe the linked words and nothing more.
+  const rime = data.rime;
   const rate =
     data.perMillion === null
       ? frequencyBand(null)
@@ -651,8 +626,14 @@ export function renderWordPage(
   const homophoneBlock = homophones.length
     ? `<h2>Words that sound like “${escapeHtml(word)}” (homophones)</h2><p class="rhymes">${wordLinks(homophones)}</p>`
     : '';
+  const moreRhymes =
+    rhymePageTotal > 0
+      ? `<p><a href="/rhymes/${word}/">See all ${rhymePageTotal} words that rhyme with ` +
+        `“${escapeHtml(word)}” →</a></p>`
+      : '';
   const rhymeBlock = rhymes.length
-    ? `<h2>Words that rhyme with “${escapeHtml(word)}” (/${escapeHtml(rime)}/)</h2><p class="rhymes">${wordLinks(rhymes)}</p>`
+    ? `<h2>Words that rhyme with “${escapeHtml(word)}” (/${escapeHtml(rime)}/)</h2>` +
+      `<p class="rhymes">${wordLinks(rhymes)}</p>${moreRhymes}`
     : '';
 
   // FAQ — one short answer each, no restating. "X spelling" / "how do you spell
@@ -667,6 +648,13 @@ export function renderWordPage(
     {
       q: `How do you pronounce “${word}”?`,
       a: `${guide} — IPA /${ipa}/, ${data.syllables} ${syllableWord}${stressFact}.`,
+    },
+    // "IPA for X" is its own query cluster and converts far better than the
+    // spelling one, because Google's dictionary card answers spelling and
+    // nothing on the SERP answers this.
+    {
+      q: `What is the IPA for “${word}”?`,
+      a: `/${ipa}/ — ${data.syllables} ${syllableWord}${stressFact}.`,
     },
   ];
   if (homophones.length) {
@@ -720,7 +708,7 @@ ${SITE_HEADER}
 <h1>${escapeHtml(word)}</h1>
 <div class="guide">${escapeHtml(guide)}</div>
 <div><span class="ing">${escapeHtml(ingglish)}</span></div>
-<div class="ipa">/${escapeHtml(ipa)}/ · ${data.syllables} ${syllableWord}</div>
+<div class="ipa">IPA /${escapeHtml(ipa)}/ · ${data.syllables} ${syllableWord}</div>
 <button class="hear" type="button" onclick="(function(){try{var u=new SpeechSynthesisUtterance('${escapeHtml(
     word
   )}');speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}})()">🔊 Hear it</button>
@@ -794,7 +782,12 @@ export function groupByLetter(words: string[]): Map<string, string[]> {
 }
 
 /** Minimal self-contained HTML shell for the browsable index pages. */
-function hubShell(title: string, description: string, canonical: string, body: string): string {
+export function hubShell(
+  title: string,
+  description: string,
+  canonical: string,
+  body: string
+): string {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -827,7 +820,8 @@ export function renderWordsHub(letters: string[], topWords: string[]): string {
   const body = `<div class="hero"><h1>Word pronunciations</h1>
 <div class="ipa">Phonetic spelling &amp; IPA for common English words</div></div>
 <h2>Browse A–Z</h2><p class="rhymes">${letterNav}</p>
-<h2>Most common words</h2><p class="rhymes">${wordLinks(topWords)}</p>`;
+<h2>Most common words</h2><p class="rhymes">${wordLinks(topWords)}</p>
+<h2>Rhymes</h2><p><a href="/rhymes/">Browse rhyming words by sound →</a></p>`;
   return hubShell(
     'Word pronunciations A–Z — phonetic spelling & IPA | Ingglish',
     'Browse phonetic spellings and IPA pronunciations for common English words. See how each word looks when every spelling always makes the same sound.',
@@ -910,7 +904,13 @@ async function main(): Promise<void> {
 
   const words = pickTopWords(entries, limit).filter((w) => deps.lookupPronunciation(w));
   const wordSet = new Set(words);
-  const rhymeMap = buildRhymeMap(words, deps.lookupPronunciation);
+  const rankMap = new Map(words.map((w, i) => [w, i]));
+  const rhymeDeps: RhymeDeps = {
+    lookupPronunciation: deps.lookupPronunciation,
+    rankOf: (w) => rankMap.get(w) ?? Number.POSITIVE_INFINITY,
+  };
+  const rhymeMap = buildStrictRhymeMap(words, deps.lookupPronunciation);
+  const rhymePages = new Set(selectRhymePages(words, rhymeMap, rhymeDeps.rankOf));
 
   let written = 0;
   for (const [rank, word] of words.entries()) {
@@ -919,9 +919,9 @@ async function main(): Promise<void> {
       continue;
     }
     const ph = deps.lookupPronunciation(word)!;
-    const rhymes = (rhymeMap.get(rhymeKey(ph)) ?? [])
-      .filter((w) => w !== word)
-      .slice(0, RHYMES_PER_PAGE);
+    // The rhyme page lists the same words in the same order, so the "see all"
+    // link can only promise what that page delivers.
+    const rhymes = rhymesFor(word, rhymeMap, rhymeDeps);
     const homophones = pickHomophones(
       word,
       dict.lookupPhonemeKey(phonemeKey(ph)),
@@ -930,7 +930,15 @@ async function main(): Promise<void> {
     );
     const dir = join(distDir, 'word', word);
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'index.html'), renderWordPage(data, rhymes, homophones));
+    writeFileSync(
+      join(dir, 'index.html'),
+      renderWordPage(
+        data,
+        rhymes.slice(0, RHYMES_PER_PAGE),
+        homophones,
+        hasRhymePage(word, rhymePages) ? rhymes.length : 0
+      )
+    );
     written++;
   }
 
@@ -950,11 +958,22 @@ async function main(): Promise<void> {
   // The shared stylesheet every generated page <link>s
   writeFileSync(join(distDir, 'word.css'), PAGE_CSS);
 
-  const wordSitemapCount = writeSitemaps(distDir, words, letters);
+  // Imported here rather than at the top of the file: build-rhyme-pages
+  // imports this module's renderers, and a static edge back would make the two
+  // a cycle for every test that touches either.
+  const { writeRhymePages } = await import('./build-rhyme-pages');
+  const rhymeWords = writeRhymePages(distDir, [...rhymePages], rhymeMap, {
+    ...rhymeDeps,
+    translateSync: ingglish.translateSync,
+    arpabetPhonemeToIPA: ipa.arpabetPhonemeToIPA,
+    arpabetToIngglish: phonemes.arpabetToIngglish,
+  });
+
+  const wordSitemapCount = writeSitemaps(distDir, words, letters, rhymeWords);
 
   console.log(
     `Word pages: wrote ${written} pages + ${letters.length} letter pages + ` +
-      `${wordSitemapCount} word sitemaps (limit ${limit})`
+      `${rhymeWords.length} rhyme pages + ${wordSitemapCount} word sitemaps (limit ${limit})`
   );
 }
 

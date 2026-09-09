@@ -115,12 +115,14 @@ export const ROUTE_SOURCE: Record<string, string[]> = {
 const ROUTE_META_SOURCE = `${SRC}/route-meta.ts`;
 
 /**
- * Sources behind the generated word pages: the generator plus the packages
- * whose output it embeds. Every word page is rebuilt from all of them at once,
- * so they honestly share one date.
+ * Sources behind the generated word pages: the generator, the rhyme model it
+ * groups its rhyme block on, and the packages whose output it embeds. Every
+ * word page is rebuilt from all of them at once, so they honestly share one
+ * date.
  */
 export const WORD_PAGE_SOURCES = [
   'packages/website/scripts/build-word-pages.ts',
+  'packages/website/scripts/rhymes.ts',
   'packages/core/src',
   'packages/dictionary/src',
   'packages/dictionary/scripts',
@@ -132,6 +134,27 @@ export const WORD_PAGE_SOURCES = [
 /** The date every /word/, /words/ and /words/<letter>/ page carries. */
 export function wordPagesLastmod(read: GitDateReader = readGitDate): string {
   return lastmodFor(WORD_PAGE_SOURCES, read);
+}
+
+/**
+ * Sources behind the generated rhyme pages. build-rhyme-pages.ts is here and
+ * deliberately absent from WORD_PAGE_SOURCES: retouching a rhyme table would
+ * otherwise re-date 48,804 word pages whose HTML did not change, which is the
+ * lastmod abuse this module exists to avoid.
+ */
+export const RHYME_PAGE_SOURCES = [
+  'packages/website/scripts/build-rhyme-pages.ts',
+  'packages/website/scripts/rhymes.ts',
+  'packages/core/src',
+  'packages/dictionary/src',
+  'packages/dictionary/scripts',
+  'packages/phonemes/src',
+  'packages/ipa/src',
+];
+
+/** The date every /rhymes/ and /rhymes/<word>/ page carries. */
+export function rhymePagesLastmod(read: GitDateReader = readGitDate): string {
+  return lastmodFor(RHYME_PAGE_SOURCES, read);
 }
 
 /**

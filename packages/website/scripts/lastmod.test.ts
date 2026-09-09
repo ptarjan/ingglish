@@ -15,6 +15,8 @@ import {
   newestLastmodIn,
   readGitDate,
   renderPagesSitemap,
+  RHYME_PAGE_SOURCES,
+  rhymePagesLastmod,
   WORD_PAGE_SOURCES,
   wordPagesLastmod,
 } from './lastmod';
@@ -176,6 +178,28 @@ describe('wordPagesLastmod', () => {
   });
 });
 
+describe('rhymePagesLastmod', () => {
+  it('takes the newest of the rhyme generator and the packages it embeds', () => {
+    const read = fakeReader({
+      'packages/website/scripts/build-rhyme-pages.ts': '2026-09-09T10:00:00-06:00',
+      'packages/core/src': '2026-07-13T22:24:54-06:00',
+    });
+    expect(rhymePagesLastmod(read)).toBe('2026-09-09T10:00:00-06:00');
+  });
+
+  // The two families are dated apart, so retouching a rhyme table cannot claim
+  // 48,804 word pages changed with it.
+  it('dates rhyme pages from their own generator, not the word generator', () => {
+    const read = fakeReader({
+      'packages/website/scripts/build-word-pages.ts': '2026-09-01T00:00:00+00:00',
+      'packages/website/scripts/build-rhyme-pages.ts': '2026-09-09T00:00:00+00:00',
+      'packages/website/scripts/rhymes.ts': '2026-09-01T00:00:00+00:00',
+    });
+    expect(rhymePagesLastmod(read)).toBe('2026-09-09T00:00:00+00:00');
+    expect(wordPagesLastmod(read)).toBe('2026-09-01T00:00:00+00:00');
+  });
+});
+
 /**
  * WORD_PAGE_SOURCES dates 48,831 URLs off one `git log`, so anything listed
  * here has to be a source that decides what a word page SAYS. A module that
@@ -183,24 +207,33 @@ describe('wordPagesLastmod', () => {
  * was tweaked — the pages would claim a freshness their HTML does not have,
  * which is exactly the lastmod abuse Google stops trusting.
  */
-describe('WORD_PAGE_SOURCES', () => {
-  /** Strings only sitemap-rendering code contains. */
-  const SITEMAP_MARKERS = ['<urlset', '<sitemapindex', 'sitemap-words', '<loc>'];
+/** Strings only sitemap-rendering code contains. */
+const SITEMAP_MARKERS = ['<urlset', '<sitemapindex', 'sitemap-words', '<loc>'];
 
-  /** Every TypeScript file under a repo-root-relative file or directory path. */
-  function sourceFiles(rel: string): string[] {
-    const abs = join(REPO_ROOT, rel);
-    if (!statSync(abs).isDirectory()) {
-      return [rel];
-    }
-    return readdirSync(abs, { withFileTypes: true }).flatMap((e) =>
-      e.isDirectory() || /\.(ts|tsx)$/.test(e.name) ? sourceFiles(`${rel}/${e.name}`) : []
-    );
+/** Every TypeScript file under a repo-root-relative file or directory path. */
+function sourceFiles(rel: string): string[] {
+  const abs = join(REPO_ROOT, rel);
+  if (!statSync(abs).isDirectory()) {
+    return [rel];
   }
+  return readdirSync(abs, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() || /\.(ts|tsx)$/.test(e.name) ? sourceFiles(`${rel}/${e.name}`) : []
+  );
+}
 
+/** No listed source may render sitemaps — see the describe above each caller. */
+function sitemapRenderersIn(sources: string[]): string[] {
+  return sources.flatMap(sourceFiles).filter((f) => {
+    const text = readFileSync(join(REPO_ROOT, f), 'utf-8');
+    return SITEMAP_MARKERS.some((m) => text.includes(m));
+  });
+}
+
+describe('WORD_PAGE_SOURCES', () => {
   it('lists exactly the sources that decide word-page content', () => {
     expect(WORD_PAGE_SOURCES).toEqual([
       'packages/website/scripts/build-word-pages.ts',
+      'packages/website/scripts/rhymes.ts',
       'packages/core/src',
       'packages/dictionary/src',
       'packages/dictionary/scripts',
@@ -215,11 +248,36 @@ describe('WORD_PAGE_SOURCES', () => {
 
   it('names no module that renders sitemaps', () => {
     expect(WORD_PAGE_SOURCES).not.toContain('packages/website/scripts/sitemaps.ts');
-    const offenders = WORD_PAGE_SOURCES.flatMap(sourceFiles).filter((f) => {
-      const text = readFileSync(join(REPO_ROOT, f), 'utf-8');
-      return SITEMAP_MARKERS.some((m) => text.includes(m));
-    });
-    expect(offenders).toEqual([]);
+    expect(sitemapRenderersIn(WORD_PAGE_SOURCES)).toEqual([]);
+  });
+
+  // The rhyme generator decides /rhymes/ pages, not /word/ pages. Listing it
+  // here would re-date all 48,804 word pages every time a rhyme row moved.
+  it('does not name the rhyme-page generator', () => {
+    expect(WORD_PAGE_SOURCES).not.toContain('packages/website/scripts/build-rhyme-pages.ts');
+  });
+});
+
+/** Same contract as WORD_PAGE_SOURCES, for the 6,361 /rhymes/ URLs. */
+describe('RHYME_PAGE_SOURCES', () => {
+  it('lists exactly the sources that decide rhyme-page content', () => {
+    expect(RHYME_PAGE_SOURCES).toEqual([
+      'packages/website/scripts/build-rhyme-pages.ts',
+      'packages/website/scripts/rhymes.ts',
+      'packages/core/src',
+      'packages/dictionary/src',
+      'packages/dictionary/scripts',
+      'packages/phonemes/src',
+      'packages/ipa/src',
+    ]);
+    for (const src of RHYME_PAGE_SOURCES) {
+      expect(existsSync(join(REPO_ROOT, src))).toBe(true);
+    }
+  });
+
+  it('names no module that renders sitemaps', () => {
+    expect(RHYME_PAGE_SOURCES).not.toContain('packages/website/scripts/sitemaps.ts');
+    expect(sitemapRenderersIn(RHYME_PAGE_SOURCES)).toEqual([]);
   });
 });
 

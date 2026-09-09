@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { renderSitemapIndex, renderWordsSitemaps, SITEMAP_CHUNK_SIZE } from './sitemaps';
+import {
+  renderRhymesSitemaps,
+  renderSitemapIndex,
+  renderWordsSitemaps,
+  SITEMAP_CHUNK_SIZE,
+} from './sitemaps';
 
 describe('sitemaps', () => {
   const MOD = '2026-09-01T18:20:28-06:00';
@@ -30,6 +35,42 @@ describe('sitemaps', () => {
     const xml = renderWordsSitemaps(['cat'], ['c'], MOD)[0]!.xml;
     expect(xml).not.toContain('changefreq');
     expect(xml).not.toContain('priority');
+  });
+
+  describe('renderRhymesSitemaps', () => {
+    it('renders the hub and every rhyme page', () => {
+      const maps = renderRhymesSitemaps(['cat', 'colonel'], MOD);
+      expect(maps).toHaveLength(1);
+      expect(maps[0]!.filename).toBe('sitemap-rhymes.xml');
+      const xml = maps[0]!.xml;
+      expect(xml).toContain('<loc>https://ingglish.com/rhymes/</loc>');
+      expect(xml).toContain('<loc>https://ingglish.com/rhymes/cat/</loc>');
+      expect(xml).toContain('<loc>https://ingglish.com/rhymes/colonel/</loc>');
+    });
+
+    it('gives every url a lastmod and no changefreq or priority', () => {
+      const xml = renderRhymesSitemaps(['cat'], MOD)[0]!.xml;
+      expect([...xml.matchAll(/<lastmod>/g)]).toHaveLength([...xml.matchAll(/<loc>/g)].length);
+      expect(xml).toContain(`<lastmod>${MOD}</lastmod>`);
+      expect(xml).not.toContain('changefreq');
+      expect(xml).not.toContain('priority');
+    });
+
+    // Today's 6,361 rhyme pages fit in one file. The split is here so growing
+    // into the 50,000-URL cap is a non-event, not a rejected sitemap.
+    it('splits past the chunk size and keeps the first filename', () => {
+      const words = Array.from({ length: SITEMAP_CHUNK_SIZE + 5 }, (_, i) => `w${i}`);
+      const maps = renderRhymesSitemaps(words, MOD);
+      expect(maps.map((m) => m.filename)).toEqual(['sitemap-rhymes.xml', 'sitemap-rhymes-2.xml']);
+      expect([...maps[0]!.xml.matchAll(/<loc>/g)]).toHaveLength(SITEMAP_CHUNK_SIZE);
+      expect([...maps[1]!.xml.matchAll(/<loc>/g)]).toHaveLength(6); // 5 words + the hub
+    });
+
+    it('is reachable from the sitemap index', () => {
+      const maps = renderRhymesSitemaps(['cat'], MOD);
+      const index = renderSitemapIndex(maps.map((m) => ({ filename: m.filename, lastmod: MOD })));
+      expect(index).toContain('https://ingglish.com/sitemap-rhymes.xml');
+    });
   });
 
   it('renders a sitemap index pointing at page and word sitemaps', () => {
