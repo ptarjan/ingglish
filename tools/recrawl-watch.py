@@ -103,14 +103,21 @@ def short(url):
 
 
 def wake(room, text):
-    subprocess.run([WAKE, "-c", room, text], check=True)
+    """True if the bridge took it. Never raises: a tick that found news and
+    then lost it to a transport error is worse than one that reports both."""
+    return subprocess.run([WAKE, "-c", room, text], check=False).returncode == 0
 
 
 def main() -> int:
-    room = os.environ.get("HOUSEHOLD_ROOM")
+    # The id in preference to the name, both handed over by plugin-run at run
+    # time, so nothing here spells a Discord id. The Mac's household checkout
+    # lags the container's and its wake.sh predates name resolution, so a name
+    # reaches the API verbatim and comes back HTTP 400 not-a-snowflake.
+    room = os.environ.get("HOUSEHOLD_ROOM_ID") or os.environ.get("HOUSEHOLD_ROOM")
     if not room:
-        raise SystemExit("HOUSEHOLD_ROOM is unset — this must run as a household "
-                         "plugin so the room is resolved at run time")
+        raise SystemExit("neither HOUSEHOLD_ROOM_ID nor HOUSEHOLD_ROOM is set — "
+                         "this must run as a household plugin so the room is "
+                         "resolved at run time")
 
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
     if state.get("titles_fired") and state.get("rhymes_fired"):
@@ -118,6 +125,7 @@ def main() -> int:
 
     svc = service()
     report = {"checked": dt.date.today().isoformat()}
+    undelivered = []
 
     if not state.get("titles_fired"):
         pages = clicked_word_pages(svc)
@@ -128,7 +136,7 @@ def main() -> int:
         if len(fresh) >= WORD_QUORUM:
             listing = ", ".join(f"{short(u)} ({t.date().isoformat()})"
                                 for u, t in sorted(fresh.items()))
-            wake(room, (
+            text = (
                 f"Googlebot has recrawled {len(fresh)} of {len(pages)} sampled "
                 f"clicked /word/ pages since the 2026-09-02 title rewrite: "
                 f"{listing}. The new titles and descriptions are in the index, "
@@ -138,8 +146,11 @@ def main() -> int:
                 f"pages.csv, not queries.csv — query rows are capped by clicks "
                 f"and over-sample winners — and exclude the junk queries named in "
                 f"that memory or the number reads ~10% low. Say plainly whether "
-                f"CTR moved, stayed flat, or fell. This arm has disarmed itself."))
-            state["titles_fired"] = dt.date.today().isoformat()
+                f"CTR moved, stayed flat, or fell. This arm has disarmed itself.")
+            if wake(room, text):
+                state["titles_fired"] = dt.date.today().isoformat()
+            else:
+                undelivered.append("titles")
 
     if not state.get("rhymes_fired"):
         pages = rhyme_pages()
@@ -149,7 +160,7 @@ def main() -> int:
         if len(crawls) >= RHYME_QUORUM:
             listing = ", ".join(f"{short(u)} ({t.date().isoformat()})"
                                 for u, t in sorted(crawls.items()))
-            wake(room, (
+            text = (
                 f"Googlebot has crawled {len(crawls)} of {len(pages)} sampled "
                 f"/rhymes/ pages: {listing}. The family shipped {RHYMES_SHIPPED} "
                 f"with zero crawl history, so this is the first evidence it is "
@@ -158,11 +169,18 @@ def main() -> int:
                 f"CTRs recorded in ingglish-recrawl-watch.md (1.3% and 1.9%), not "
                 f"the sitewide 0.12% — that average is dominated by spelling "
                 f"queries Google answers in its own widget. This arm has "
-                f"disarmed itself."))
-            state["rhymes_fired"] = dt.date.today().isoformat()
+                f"disarmed itself.")
+            if wake(room, text):
+                state["rhymes_fired"] = dt.date.today().isoformat()
+            else:
+                undelivered.append("rhymes")
 
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps({**state, **report}, indent=1))
+    if undelivered:
+        raise SystemExit(f"found news for {', '.join(undelivered)} and wake.sh "
+                         f"refused it (room={room!r}); findings are in {STATE}, "
+                         f"so those arms stay armed and will report next tick")
     return 0
 
 
