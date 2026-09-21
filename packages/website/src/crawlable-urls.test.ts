@@ -116,3 +116,19 @@ describe('every pre-rendered route has its own head metadata', () => {
     expect(new Set(titles).size).toBe(titles.length);
   });
 });
+
+// robots.txt blocks the parameterized translator forms, and Search Console then
+// filed 8,588 of them as "Indexed, though blocked by robots.txt" — one per word
+// page, because every word page linked /text/?text=<word>. A blocked URL that
+// is linked still gets indexed, contentless. Internal links must use the
+// fragment form (/text/#text=<word>), which no crawler treats as a URL.
+const BLOCKED_QUERY_LINK = /(?:href|to)=["'`][^"'`]*[?&](?:text|url|word|lang)=/g;
+
+describe('internal links avoid the robots-blocked query forms', () => {
+  const files = SOURCE_DIRS.flatMap((d) => sourceFiles(path.join(__dirname, '..', d)));
+
+  it.each(files)('%s links no blocked query form', (file) => {
+    const contents = readFileSync(file, 'utf8');
+    expect([...contents.matchAll(BLOCKED_QUERY_LINK)].map((m) => m[0])).toEqual([]);
+  });
+});

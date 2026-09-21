@@ -213,7 +213,7 @@ Ingglish, where that spelling always makes that sound. Every word above ends on 
 
 <p>
 <a class="cta" href="/rhymes/">Browse rhymes by sound →</a>
-<a class="cta" href="/text/?text=${encodeURIComponent(word)}">Translate any text</a>
+<a class="cta" href="/text/#text=${encodeURIComponent(word)}">Translate any text</a>
 </p>
 </main>
 <footer>

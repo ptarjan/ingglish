@@ -35,6 +35,24 @@ const loading = (
   </div>
 );
 
+/**
+ * Read a route parameter from the query string, then from the fragment.
+ *
+ * robots.txt blocks the `?text=`, `?url=`, `?word=` and `?lang=` forms, because
+ * they render whatever is passed in and so expose an unbounded set of
+ * contentless URLs. A blocked URL that is still linked gets indexed anyway
+ * ("Indexed, though blocked by robots.txt"), so internal links use the `#text=`
+ * form instead: a fragment is not a URL to a crawler. Query forms keep working
+ * for the share links already in the wild.
+ */
+export function initialParam(name: string): string | undefined {
+  const fromSearch = new URLSearchParams(globalThis.location.search).get(name);
+  if (fromSearch !== null) {
+    return fromSearch;
+  }
+  return new URLSearchParams(globalThis.location.hash.slice(1)).get(name) ?? undefined;
+}
+
 /** Build a shareable URL for the URL translator. */
 function buildShareUrl(targetUrl: string): string {
   const url = new URL(globalThis.location.href);
@@ -46,16 +64,16 @@ function buildShareUrl(targetUrl: string): string {
 }
 
 function getInitialLang(): string | undefined {
-  return new URLSearchParams(globalThis.location.search).get('lang') ?? undefined;
+  return initialParam('lang');
 }
 
-/** Read initial values from URL search params (evaluated once). */
+/** Read initial values from the URL (evaluated once). */
 function getInitialText(): string {
-  return new URLSearchParams(globalThis.location.search).get('text') ?? '';
+  return initialParam('text') ?? '';
 }
 
 function getInitialUrl(): string {
-  return new URLSearchParams(globalThis.location.search).get('url') ?? '';
+  return initialParam('url') ?? '';
 }
 
 function SuspenseWrap({ children }: { children: React.ReactNode }) {

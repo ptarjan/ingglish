@@ -749,7 +749,7 @@ ${faqHtml}
 </section>
 
 <p>
-<a class="cta" href="/text/?text=${encodeURIComponent(word)}">Translate any text →</a>
+<a class="cta" href="/text/#text=${encodeURIComponent(word)}">Translate any text →</a>
 <a class="cta" href="/words/">Browse all words</a>
 </p>
 </main>
