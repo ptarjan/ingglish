@@ -17,8 +17,8 @@ export const yue: Sample[] = [
     text: '山 中 相 送 罷 日 暮 掩 柴 扉 春 草 明 年 綠 王 孫 歸 不 歸',
   },
   {
-    // https://ctext.org/analects (traditional characters for Cantonese)
     label: '論語 — 學而篇',
+    source: 'https://m.gushiwen.cn/shiwenv_d6640103678f.aspx',
     text: '學 而 時 習 之 不 亦 說 乎 有 朋 自 遠 方 來 不 亦 樂 乎 人 不 知 而 不 慍 不 亦 君 子 乎 三 人 行 必 有 我 師 焉 擇 其 善 者 而 從 之 其 不 善 者 而 改 之',
   },
   {
@@ -27,58 +27,58 @@ export const yue: Sample[] = [
     text: '古 之 學 者 必 有 師 師 者 所 以 傳 道 受 業 解 惑 也 人 非 生 而 知 之 者 孰 能 無 惑 惑 而 不 從 師 其 為 惑 也 終 不 解 矣',
   },
   {
-    // https://www.daodejing.org/1.html (traditional)
     label: '老子 — 道德經',
+    source: 'https://zh.wikisource.org/wiki/道德經_(王弼本)',
     text: '道 可 道 非 常 道 名 可 名 非 常 名 無 名 天 地 之 始 有 名 萬 物 之 母 故 常 無 欲 以 觀 其 妙 常 有 欲 以 觀 其 徼 此 兩 者 同 出 而 異 名 同 謂 之 玄 玄 之 又 玄 眾 妙 之 門',
   },
   {
-    // Romance of Three Kingdoms (traditional)
     label: '羅貫中 — 三國演義',
+    source: 'https://zh.wikisource.org/wiki/三國演義/第001回',
     text: '話 說 天 下 大 勢 分 久 必 合 合 久 必 分 周 末 七 國 分 爭 併 入 於 秦 及 秦 滅 之 後 楚 漢 分 爭 又 併 入 於 漢',
   },
   {
-    // Dream of Red Chamber (traditional)
     label: '曹雪芹 — 紅樓夢',
+    source: 'https://m.gushiwen.cn/guwen/bookv_b630af160f65.aspx',
     text: '滿 紙 荒 唐 言 一 把 辛 酸 淚 都 云 作 者 癡 誰 解 其 中 味 此 開 卷 第 一 回 也 作 者 自 云 因 曾 歷 過 一 番 夢 幻 之 後 故 將 真 事 隱 去',
   },
   {
-    // Li Qingzhao (traditional)
     label: '李清照 — 聲聲慢',
+    source: 'https://fanti.dugushici.com/ancient_proses/52354',
     text: '尋 尋 覓 覓 冷 冷 清 清 淒 淒 慘 慘 戚 戚 乍 暖 還 寒 時 候 最 難 將 息 三 杯 兩 盞 淡 酒 怎 敵 他 晚 來 風 急 雁 過 也 正 傷 心 卻 是 舊 時 相 識',
   },
   {
-    // Xin Qiji (traditional)
     label: '辛棄疾 — 青玉案·元夕',
+    source: 'https://fanti.dugushici.com/ancient_proses/57089',
     text: '東 風 夜 放 花 千 樹 更 吹 落 星 如 雨 寶 馬 雕 車 香 滿 路 鳳 簫 聲 動 玉 壺 光 轉 一 夜 魚 龍 舞 眾 裏 尋 他 千 百 度 驀 然 回 首 那 人 卻 在 燈 火 闌 珊 處',
   },
   {
-    // Liu Yong (traditional)
     label: '柳永 — 雨霖鈴',
+    source: 'https://fanti.dugushici.com/ancient_proses/47837',
     text: '寒 蟬 淒 切 對 長 亭 晚 驟 雨 初 歇 都 門 帳 飲 無 緒 留 戀 處 蘭 舟 催 發 執 手 相 看 淚 眼 竟 無 語 凝 噎 念 去 去 千 里 煙 波 暮 靄 沉 沉 楚 天 闊',
   },
   {
-    // Du Mu (traditional)
     label: '杜牧 — 江南春',
+    source: 'https://fanti.dugushici.com/ancient_proses/27317',
     text: '千 里 鶯 啼 綠 映 紅 水 村 山 郭 酒 旗 風 南 朝 四 百 八 十 寺 多 少 樓 臺 煙 雨 中',
   },
   {
-    // Li Shangyin (traditional)
     label: '李商隱 — 錦瑟',
+    source: 'https://fanti.dugushici.com/ancient_proses/28266',
     text: '錦 瑟 無 端 五 十 弦 一 弦 一 柱 思 華 年 莊 生 曉 夢 迷 蝴 蝶 望 帝 春 心 託 杜 鵑 滄 海 月 明 珠 有 淚 藍 田 日 暖 玉 生 煙 此 情 可 待 成 追 憶 只 是 當 時 已 惘 然',
   },
   {
-    // Ouyang Xiu (traditional)
     label: '歐陽修 — 醉翁亭記',
+    source: 'https://fanti.dugushici.com/ancient_proses/47520',
     text: '環 滁 皆 山 也 其 西 南 諸 峰 林 壑 尤 美 望 之 蔚 然 而 深 秀 者 瑯 琊 也 山 行 六 七 里 漸 聞 水 聲 潺 潺 而 瀉 出 於 兩 峰 之 間 者 釀 泉 也',
   },
   {
-    // Mencius (traditional)
     label: '孟子 — 告子下',
+    source: 'https://m.gushiwen.cn/shiwenv_ff66d475ee44.aspx',
     text: '天 將 降 大 任 於 是 人 也 必 先 苦 其 心 志 勞 其 筋 骨 餓 其 體 膚 空 乏 其 身 行 拂 亂 其 所 為 所 以 動 心 忍 性 曾 益 其 所 不 能',
   },
   {
-    // Heart Sutra (traditional)
     label: '般若波羅蜜多心經',
+    source: 'https://zh.wikisource.org/wiki/心經',
     text: '觀 自 在 菩 薩 行 深 般 若 波 羅 蜜 多 時 照 見 五 蘊 皆 空 度 一 切 苦 厄 舍 利 子 色 不 異 空 空 不 異 色 色 即 是 空 空 即 是 色 受 想 行 識 亦 復 如 是',
   },
   {
@@ -98,7 +98,7 @@ export const yue: Sample[] = [
   },
   {
     label: '岳飛 — 滿江紅',
-    source: 'https://en.wikipedia.org/wiki/Man_Jiang_Hong',
+    source: 'https://m.gushiwen.cn/shiwenv_19f9f352c186.aspx',
     text: '怒 髮 衝 冠 憑 闌 處 瀟 瀟 雨 歇 抬 望 眼 仰 天 長 嘯 壯 懷 激 烈 三 十 功 名 塵 與 土 八 千 里 路 雲 和 月 莫 等 閒 白 了 少 年 頭 空 悲 切',
   },
   {
