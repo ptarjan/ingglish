@@ -12,9 +12,10 @@ export const nl: Sample[] = [
     text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
   },
   {
-    label: 'Herman Gorter — Mei',
-    source: 'https://www.dbnl.org/tekst/gort004jcli01_01/gort004jcli01_01_0001.php',
-    text: 'Waarom diè rijkdom wil en diè een vrouw en één zichzelf, hoewel ze allen nauw weten dat ze iets zoeken dan een woord alleen? Weet iemand dit? Wel, hoort.',
+    label: 'Harry Mulisch — De Aanslag',
+    source:
+      'https://www.scholieren.com/verslag/boekverslag-nederlands-de-aanslag-door-harry-mulisch-76058',
+    text: 'Ver, ver weg in de tweede wereldoorlog woonde een zekere Anton Steenwijk met zijn ouders en zijn broer aan de rand van Haarlem. Aan een kade, die over een lengte van honderd meter langs het water liep en dan met een flauwe bocht weer een gewone straat werd, stonden vier huizen niet ver van elkaar.',
   },
   {
     label: 'Louis Couperus — De Stille Kracht',
@@ -22,9 +23,9 @@ export const nl: Sample[] = [
     text: 'De volle maan, tragisch dien avond, was reeds vroeg, nog in den laatsten dagschemer opgerezen als een immense, bloedroze bol, vlamde als een zonsondergang laag achter de tamarindeboomen der Lange Laan en steeg, langzaam zich louterende van hare tragische tint, in een vagen hemel op.',
   },
   {
-    label: 'Cyriel Buysse — Lente',
-    source: 'https://www.gutenberg.org/files/18069/18069-h/18069-h.htm',
-    text: 'Wie weet, misschien zou ze al heel spoedig terug moeten. Haar vader zou haar waarschijnlijk niet lang kunnen missen.',
+    label: 'Gerard Reve — De Avonden',
+    source: 'https://www.spellingenzo.nl/boekrecensie-de-avonden-van-gerard-reve/',
+    text: 'Het was nog donker, toen in de vroege morgen van de tweeëntwintigste december 1946 in onze stad, op de eerste verdieping van het huis Schilderskade 66, de held van deze geschiedenis, Frits van Egters, ontwaakte.',
   },
   {
     label: 'Joost van den Vondel — Gysbreght van Aemstel',
@@ -42,9 +43,10 @@ export const nl: Sample[] = [
     text: 'Allen dengenen die dese tegenwoordighe sullen sien ofte hooren lesen, saluyt. Alsoo een yegelick kennelick is, dat een Prince van den lande van Godt gestelt is hooft over zijne ondersaten, om deselve te bewaren ende beschermen van alle onrecht, overlast ende ghewelt.',
   },
   {
-    label: 'Felix Timmermans — Pallieter',
-    source: 'https://www.gutenberg.org/cache/epub/11355/pg11355-images.html',
-    text: 'De hemel was weer rein en blauw gelijk een vergeet-mij-nietje en de zon deed alles nog nat van den regen blinken.',
+    label: 'Hella Haasse — Oeroeg',
+    source:
+      'https://literatuurmuseum.nl/nl/ontdek-online/literatuurlab/online-exposities/hella-haasse/oeroeg-1948',
+    text: 'Oeroeg was mijn vriend. Als ik terugdenk aan mijn kindertijd en mijn jongensjaren, verschijnt zonder uitzondering het beeld van Oeroeg in mij, als was mijn herinnering gelijk aan een van die toverplaatjes die we vroeger plachten te kopen.',
   },
   {
     label: 'Nicolaas Beets — Camera Obscura',
@@ -83,9 +85,9 @@ export const nl: Sample[] = [
     text: 'Je kunt op hem niet veel peil meer trekken; ik geloof, dat hij in zijn laatste schoenen loopt.',
   },
   {
-    label: 'Betje Wolff & Aagje Deken — Sara Burgerhart',
-    source: 'https://www.gutenberg.org/cache/epub/10400/pg10400-images.html',
-    text: 'Een huwelijk kan even ongelukkig zijn door te veel overeenkomst tusschen man en vrouw als door te weinig.',
+    label: 'Jan Wolkers — Turks fruit',
+    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00684.php',
+    text: 'Ik was aardig in de rotzooi terechtgekomen nadat ze bij me weggegaan was.',
   },
   {
     label: 'Nescio — De uitvreter',
@@ -93,18 +95,18 @@ export const nl: Sample[] = [
     text: 'Behalve den man, die de Sarphatistraat de mooiste plek van Europa vond, heb ik nooit een wonderlijker kerel gekend dan den uitvreter.',
   },
   {
-    label: 'Jacobus Jan Cremer — Betuwsche novellen',
-    source: 'https://www.gutenberg.org/cache/epub/26483/pg26483.txt',
-    text: 'Ze was schoon en goed, en ze was de lieveling van al de kinderen en van de echtelieden ook.',
+    label: 'Simon Vestdijk — De koperen tuin',
+    source: 'https://oblivionsoave.wordpress.com/2022/02/02/de-koperen-tuin/',
+    text: 'Het eerste wat ik mij van W… herinner, waar even na mijn vijfde verjaardag mijn vader tot rechter was benoemd, is de warme voorzomermiddag, toen de bal van mijn broer over de ijzeren krullen van het balkonhek vloog, de verlaten huiskamer in.',
   },
   {
-    label: 'Jacob van Lennep — Ferdinand Huyck',
-    source: 'https://www.gutenberg.org/files/17706/17706-h/17706-h.htm',
-    text: 'Een koude rilling liep mij door de aderen; want welk ander oogmerk kon men hebben met mij van den weg af te voeren, dan dat van mij uit te schudden en te vermoorden?',
+    label: 'W.F. Hermans — Nooit meer slapen',
+    source: 'https://www.debezigebij.nl/boek/nooit-meer-slapen/',
+    text: 'De portier is een invalide.',
   },
   {
-    label: 'Frederik van Eeden — De kleine Johannes',
-    source: 'https://www.dbnl.org/tekst/eede003klei02_01/eede003klei02_01_0001.php',
-    text: 'Kon ik daarin vliegen! dacht hij dan. Wat zou wel daar achter zijn? Zou ik daar eenmaal, eenmaal kunnen komen?',
+    label: 'Louis Paul Boon — De Kapellekensbaan',
+    source: 'https://canon2015.literairecanon.be/en/works/de-kapellekensbaan/fragment',
+    text: 'Ge ziet van uit uw open zolderraam hoe het niemandsbos in het rood wordt geverfd door de zakkende zon.',
   },
 ];
