@@ -32,9 +32,9 @@ export const pt: Sample[] = [
     text: 'Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao pé de mim, falou da Lua e dos ministros, e acabou recitando-me versos. A viagem era curta, e os versos pode ser que não fossem inteiramente maus.',
   },
   {
-    label: 'Declaração Universal dos Direitos Humanos — Artigos 3.º, 4.º e 6.º',
-    source: 'https://pt.wikisource.org/wiki/Declaração_Universal_dos_Direitos_Humanos',
-    text: 'Todo o indivíduo tem direito à vida, à liberdade e à segurança pessoal. Ninguém será mantido em escravatura ou em servidão; a escravatura e o trato dos escravos, sob todas as formas, são proibidos. Todos os indivíduos têm direito ao reconhecimento, em todos os lugares, da sua personalidade jurídica.',
+    label: 'Saramago — Ensaio sobre a Cegueira',
+    source: 'https://www.tyrannusmelancholicus.com.br/prosa/ensaio-sobre-a-cegueira-excerto/12652',
+    text: 'O disco amarelo iluminou-se. Dois dos automóveis da frente aceleraram antes que o sinal vermelho aparecesse. Na passadeira de peões surgiu o desenho do homem verde. A gente que esperava começou a atravessar a rua pisando as faixas brancas pintadas na capa negra do asfalto, não há nada que menos se pareça com uma zebra, porém assim lhe chamam.',
   },
   {
     label: 'Saramago — Memorial do Convento',
@@ -84,9 +84,9 @@ export const pt: Sample[] = [
     text: 'Tudo no mundo começou com um sim. Uma molécula disse sim a outra molécula e nasceu a vida. Mas antes da pré-história havia a pré-história da pré-história e havia o nunca e havia o sim. Sempre houve. Não sei o quê, mas sei que o universo jamais começou.',
   },
   {
-    label: 'Constituição da República Portuguesa — Preâmbulo',
-    source: 'https://www.parlamento.pt/Legislacao/Paginas/ConstituicaoRepublicaPortuguesa.aspx',
-    text: 'A 25 de Abril de 1974, o Movimento das Forças Armadas, coroando a longa resistência do povo português e interpretando os seus sentimentos profundos, derrubou o regime fascista. Libertar Portugal da ditadura, da opressão e do colonialismo representou uma transformação revolucionária e o início de uma viragem histórica da sociedade portuguesa.',
+    label: 'Mia Couto — Terra Sonâmbula',
+    source: 'https://www.todamateria.com.br/terra-sonambula/',
+    text: 'Naquele lugar, a guerra tinha morto a estrada. Pelos caminhos só as hienas se arrastavam, focinhando entre cinzas e poeiras. A paisagem se mestiçara de tristezas nunca vistas, em cores que se pegavam à boca. Eram cores sujas, tão sujas que tinham perdido toda a leveza, esquecidas da ousadia de levantar asas pelo azul.',
   },
   {
     label: 'Constituição da República Federativa do Brasil — Preâmbulo',
