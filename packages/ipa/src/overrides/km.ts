@@ -45,6 +45,7 @@ export const km: Record<string, string> = {
   ថ្កាន: '/tkaan/', // magnificent (literary)
   ថ្កើង: '/tkəəŋ/', // to glorify
   ថ្កើងថ្កាន: '/tkəəŋ tkaan/', // glorious, magnificent
+  ថ្នា: '/tʰnaa/', // second half of ប្រាថ្នា "to wish"
   ថ្នូរ: '/tnoo/', // dignity, nobility
   ថ្នែ: '/tnae/', // aspect (partial segmentation of ថ្នែក)
   ថ្នែក: '/tnaek/', // aspect, class
@@ -71,6 +72,7 @@ export const km: Record<string, string> = {
   ប្រជាធិបតេយ្យ: '/prɑciə tʰippɑɗɛj/', // democracy
   ប្រណី: '/prɑnəy/', // loving, affectionate
   ប្រតិបត្តិ: '/prɑtĕɓat/', // to practice, comply with
+  ប្រា: '/praa/', // first half of ប្រាថ្នា "to wish"
   ប្រាជ្ញ: '/praac/', // wisdom
   ប្រាជ្ញា: '/praacɲaa/', // wisdom
   ប្រាសាទ: '/praasaat/', // temple, palace
