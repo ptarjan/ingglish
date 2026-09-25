@@ -4,7 +4,7 @@ export const fr: Sample[] = [
   {
     label: 'Verne — Vingt mille lieues sous les mers',
     source: 'https://fr.wikisource.org/wiki/Vingt_mille_lieues_sous_les_mers/Partie_1/Chapitre_1',
-    text: "L'année 1866 fut marquée par un événement bizarre, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents, les gens de mer furent particulièrement émus.",
+    text: "En effet, depuis quelque temps, plusieurs navires s'étaient rencontrés sur mer avec une chose énorme, un objet long, fusiforme, parfois phosphorescent, infiniment plus vaste et plus rapide qu'une baleine. Les faits relatifs à cette apparition, consignés aux divers livres de bord, s'accordaient assez exactement sur la structure de l'objet ou de l'être en question.",
   },
   {
     label: 'Daudet — La Dernière Classe',
@@ -120,10 +120,10 @@ export const fr: Sample[] = [
     text: "Quoi! quand je dis: «Nicole, apportez-moi mes pantoufles, et me donnez mon bonnet de nuit», c'est de la prose? Par ma foi! il y a plus de quarante ans que je dis de la prose sans que j'en susse rien, et je vous suis le plus obligé du monde de m'avoir appris cela.",
   },
   {
-    label: 'Madame de La Fayette — La Princesse de Clèves',
+    label: 'La Rochefoucauld — Maximes',
     source:
-      'https://fr.wikisource.org/wiki/La_Princesse_de_Cl%C3%A8ves,_%C3%A9dition_Lepetit,_1820/Premi%C3%A8re_partie',
-    text: "La magnificence et la galanterie n'ont jamais paru en France avec tant d'éclat que dans les dernières années du règne de Henri II. Ce prince était galant, bien fait, et amoureux; quoique sa passion pour Diane de Poitiers, duchesse de Valentinois, eût commencé il y avait plus de vingt ans, elle n'en était pas moins violente, et il n'en donnait pas des témoignages moins éclatants.",
+      'https://fr.wikisource.org/wiki/%C5%92uvres_de_La_Rochefoucauld_-_T.1/R%C3%A9flexions_ou_sentences_et_maximes_morales',
+    text: "Nos vertus ne sont le plus souvent que des vices déguisés. Ce que nous prenons pour des vertus n'est souvent qu'un assemblage de diverses actions et de divers intérêts que la fortune ou notre industrie savent arranger, et ce n'est pas toujours par valeur et par chasteté que les hommes sont vaillants et que les femmes sont chastes. L'amour-propre est le plus grand de tous les flatteurs.",
   },
   {
     label: 'Descartes — Discours de la méthode',
