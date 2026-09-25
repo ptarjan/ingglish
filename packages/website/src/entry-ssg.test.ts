@@ -139,8 +139,9 @@ describe('SSG render', () => {
       '/games',
       '/games/daily',
       '/challenge',
-    ])('%s has no inline description or canonical', async (url) => {
+    ])('%s has no inline title, description or canonical', async (url) => {
       const html = await render(url);
+      expect(html).not.toContain('<title');
       expect(html).not.toContain('name="description"');
       expect(html).not.toContain('rel="canonical"');
     });
