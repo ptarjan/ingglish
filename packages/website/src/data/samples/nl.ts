@@ -22,9 +22,9 @@ export const nl: Sample[] = [
     text: 'De volle maan, tragisch dien avond, was reeds vroeg, nog in den laatsten dagschemer opgerezen als een immense, bloedroze bol, vlamde als een zonsondergang laag achter de tamarindeboomen der Lange Laan en steeg, langzaam zich louterende van hare tragische tint, in een vagen hemel op.',
   },
   {
-    label: 'Gerard Reve — De Avonden',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00513.php',
-    text: 'Het was nog donker, toen in de vroege morgen van de tweeëntwintigste december 1946 in onze stad, op de eerste verdieping van het huis Schilderskade 66, de held van deze geschiedenis, Frits van Egters, ontwaakte.',
+    label: 'Cyriel Buysse — Lente',
+    source: 'https://www.gutenberg.org/files/18069/18069-h/18069-h.htm',
+    text: 'Wie weet, misschien zou ze al heel spoedig terug moeten. Haar vader zou haar waarschijnlijk niet lang kunnen missen.',
   },
   {
     label: 'Joost van den Vondel — Gysbreght van Aemstel',
@@ -42,15 +42,14 @@ export const nl: Sample[] = [
     text: 'Allen dengenen die dese tegenwoordighe sullen sien ofte hooren lesen, saluyt. Alsoo een yegelick kennelick is, dat een Prince van den lande van Godt gestelt is hooft over zijne ondersaten, om deselve te bewaren ende beschermen van alle onrecht, overlast ende ghewelt.',
   },
   {
-    label: 'Hella Haasse — Oeroeg',
-    source:
-      'https://literatuurmuseum.nl/nl/ontdek-online/literatuurlab/online-exposities/hella-haasse/oeroeg-1948',
-    text: 'Oeroeg was mijn vriend. Als ik terugdenk aan mijn kindertijd en mijn jongensjaren, verschijnt zonder uitzondering het beeld van Oeroeg in mij, als was mijn herinnering gelijk aan een van die toverplaatjes die we vroeger plachten te kopen.',
+    label: 'Felix Timmermans — Pallieter',
+    source: 'https://www.gutenberg.org/cache/epub/11355/pg11355-images.html',
+    text: 'De hemel was weer rein en blauw gelijk een vergeet-mij-nietje en de zon deed alles nog nat van den regen blinken.',
   },
   {
-    label: 'Annie M.G. Schmidt — Pluk van de Petteflet',
-    source: 'https://www.dbnl.org/titels/titel.php?id=schm001pluk01',
-    text: 'Pluk had een klein rood kraanwagentje. Hij reed ermee door de hele stad en zocht naar een huis om in te wonen. Af en toe stopte hij en keek omhoog naar de hoge huizen.',
+    label: 'Nicolaas Beets — Camera Obscura',
+    source: 'https://www.gutenberg.org/cache/epub/15975/pg15975-images.html',
+    text: 'Eerst echter wilde ik u vragen, ronduit vragen, of gij een humorist zijt? Ik denk het half, omdat het tegenwoordig zoo ijselijk aan de orde is.',
   },
   {
     label: 'Willem Elsschot — Lijmen',
@@ -58,14 +57,14 @@ export const nl: Sample[] = [
     text: 'Nu ja, lijmen. De mensen bepraten en dan doen tekenen. En als zij getekend hebben, krijgen zij het ook werkelijk thuis.',
   },
   {
-    label: 'Harry Mulisch — De Ontdekking van de Hemel',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00431.php',
-    text: 'Er waren twee engelen in gesprek. Zij bevonden zich niet in de hemel maar ook niet op aarde; zij waren nergens. Het was volkomen donker, zo donker dat er zelfs geen duisternis was.',
+    label: 'Jacobus Jan Cremer — Dokter Helmond en zijn vrouw',
+    source: 'https://www.gutenberg.org/files/25138/25138-h/25138-h.htm',
+    text: "Als ik hem in de laatste dagen gezien had, dan zou ik 't hem zeker gezegd hebben.",
   },
   {
-    label: 'Cees Nooteboom — Rituelen',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00462.php',
-    text: 'Op de dag dat Inni Wintrop zelfmoord pleegde stonden de aandelen Philips op 149,60. Heeft dat iets met elkaar te maken? Misschien wel. De koers mag dan later gezakt zijn, hijzelf is nooit meer zo hoog gekomen.',
+    label: 'Justus van Maurik — Op reis en thuis',
+    source: 'https://www.gutenberg.org/files/13705/13705-h/13705-h.htm',
+    text: 'Ik viel van rechts naar links, nu eens tegen de couchette aan, dan weer op mijn koffer of tegen den wand.',
   },
   {
     label: 'VN — Universele Verklaring van de Rechten van de Mens',
@@ -74,19 +73,19 @@ export const nl: Sample[] = [
     text: 'Alle mensen worden vrij en gelijk in waardigheid en rechten geboren. Een ieder heeft het recht op leven, vrijheid en onschendbaarheid van zijn persoon.',
   },
   {
-    label: 'W.F. Hermans — De Donkere Kamer van Damokles',
-    source: 'https://nl.wikipedia.org/wiki/De_donkere_kamer_van_Damokles',
-    text: 'Henri Osewoudt woonde in Voorschoten en was twaalf jaar toen zijn moeder zijn vader vermoordde. Het scheermes waarmee zij het deed was heel scherp, want zijn vader was kapper van beroep.',
+    label: 'E.J. Potgieter — Jan, Jannetje en hun jongste kind',
+    source: 'https://www.gutenberg.org/files/48384/48384-h/48384-h.htm',
+    text: 'Ik zou schier durven beweren, dat Jan nooit zoo oud zou zijn geworden indien hij een van deze drie ooit was geweest.',
   },
   {
-    label: 'Hugo Claus — Het verdriet van België',
-    source: 'https://nl.wikipedia.org/wiki/Het_verdriet_van_België',
-    text: 'Daar was iets met de ziel, op het eind van de laan. Louis Seynaeve, elf jaar, stond aan de muur van de houten kapel en ademde de nacht in.',
+    label: 'Justus van Maurik — Papieren Kinderen',
+    source: 'https://www.gutenberg.org/files/29429/29429-h/29429-h.htm',
+    text: 'Je kunt op hem niet veel peil meer trekken; ik geloof, dat hij in zijn laatste schoenen loopt.',
   },
   {
-    label: 'Jan Wolkers — Turks fruit',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00684.php',
-    text: 'Ik was aardig in de rotzooi terechtgekomen nadat ze bij me weggegaan was.',
+    label: 'Betje Wolff & Aagje Deken — Sara Burgerhart',
+    source: 'https://www.gutenberg.org/cache/epub/10400/pg10400-images.html',
+    text: 'Een huwelijk kan even ongelukkig zijn door te veel overeenkomst tusschen man en vrouw als door te weinig.',
   },
   {
     label: 'Nescio — De uitvreter',
@@ -94,14 +93,14 @@ export const nl: Sample[] = [
     text: 'Behalve den man, die de Sarphatistraat de mooiste plek van Europa vond, heb ik nooit een wonderlijker kerel gekend dan den uitvreter.',
   },
   {
-    label: 'Simon Vestdijk — De koperen tuin',
-    source: 'https://oblivionsoave.wordpress.com/2022/02/02/de-koperen-tuin/',
-    text: 'Het eerste wat ik mij van W… herinner, waar even na mijn vijfde verjaardag mijn vader tot rechter was benoemd, is de warme voorzomermiddag, toen de bal van mijn broer over de ijzeren krullen van het balkonhek vloog, de verlaten huiskamer in.',
+    label: 'Jacobus Jan Cremer — Betuwsche novellen',
+    source: 'https://www.gutenberg.org/cache/epub/26483/pg26483.txt',
+    text: 'Ze was schoon en goed, en ze was de lieveling van al de kinderen en van de echtelieden ook.',
   },
   {
-    label: 'W.F. Hermans — Nooit meer slapen',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00287.php',
-    text: 'De portier is een invalide. Op het eikehouten bureautje waaraan hij zit, staat alleen een telefoon, en door een goedkope zonnebril staart hij roerloos voor zich uit.',
+    label: 'Jacob van Lennep — Ferdinand Huyck',
+    source: 'https://www.gutenberg.org/files/17706/17706-h/17706-h.htm',
+    text: 'Een koude rilling liep mij door de aderen; want welk ander oogmerk kon men hebben met mij van den weg af te voeren, dan dat van mij uit te schudden en te vermoorden?',
   },
   {
     label: 'Frederik van Eeden — De kleine Johannes',
