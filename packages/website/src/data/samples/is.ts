@@ -13,9 +13,9 @@ export const is: Sample[] = [
     text: 'Deyr fé, deyja frændur, deyr sjálfur hinn sami. En orðstír deyr aldrei, sér góðan getur. Deyr fé, deyja frændur, deyr sjálfur hinn sami. Ég veit eitt að aldrei deyr, dómur um dauðan hvern.',
   },
   {
-    label: 'Jónas Hallgrímsson — Gunnarshólmi',
-    source: 'https://is.wikisource.org/wiki/Gunnarshólmi',
-    text: 'Skein yfir landi sól á sumarvegi og silfurbláan Eyjafjallatind gullrauðum loga glæsti seint á degi. Við austur gnæfir sú in mikla mynd hátt yfir sveit, og höfði björtu svalar í himinblámans fagurtærri lind.',
+    label: 'Íslenskir málshættir I',
+    source: 'https://is.wikipedia.org/wiki/Listi_yfir_íslenska_málshætti#H',
+    text: 'Heima er best. Hlátur lengir lífið. Hugur ræður hálfum sigri. Hugurinn ber mann hálfa leið. Hver er sinnar gæfu smiður. Hver hefur sinn djöful að draga. Hverjum þykir sinn fugl fagur.',
   },
   {
     label: 'Njáls saga — Opening',
@@ -48,9 +48,9 @@ export const is: Sample[] = [
     text: 'Ketill flatnefur hét einn ágætur hersir í Noregi. Hann var sonur Bjarnar bunu Grímssonar hersis úr Sogni. Ketill var kvongaður. Hann átti Yngveldi, dóttur Ketils veðurs hersis af Raumaríki.',
   },
   {
-    label: 'Matthías Jochumsson — Sorg',
-    source: 'https://is.wikisource.org/wiki/Sorg_(Matthías_Jochumsson)',
-    text: 'Heim til að bjarga þér hleypti ég skeið, og hirti ekki um storminn né æginn; skein þá öll Esjan svo skínandi, breið, nema skugginn stóð rétt yfir bæinn.',
+    label: 'Íslenskir málshættir II',
+    source: 'https://is.wikipedia.org/wiki/Listi_yfir_íslenska_málshætti#M',
+    text: 'Maður er manns gaman. Margt smátt gerir eitt stórt. Margur er knár þó hann sé smár. Margur heldur mig sig. Morgunstund gefur gull í mund.',
   },
   {
     label: 'Jónas Hallgrímsson — Ísland',

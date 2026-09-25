@@ -8,12 +8,12 @@ export const vi: Sample[] = [
   },
   {
     label: 'Hồ Xuân Hương — Bánh trôi nước',
-    source: 'https://www.thivien.net/Hồ-Xuân-Hương/Bánh-trôi-nước/poem-uWq3KGCd3SUUse06kE6PYA',
+    source: 'https://vi.wikisource.org/wiki/Bánh_trôi_nước',
     text: 'Thân em vừa trắng lại vừa tròn, bảy nổi ba chìm với nước non. Rắn nát mặc dầu tay kẻ nặn, mà em vẫn giữ tấm lòng son.',
   },
   {
     label: 'Bà Huyện Thanh Quan — Qua đèo Ngang',
-    source: 'https://www.thivien.net/Bà-huyện-Thanh-Quan/Qua-Đèo-Ngang/poem-9f1Hth0gmM_PXzGNXg5Fog',
+    source: 'https://vi.wikisource.org/wiki/Qua_đèo_Ngang_(Bà_Huyện_Thanh_Quan)',
     text: 'Bước tới Đèo Ngang bóng xế tà, cỏ cây chen đá lá chen hoa. Nhớ nước đau lòng con quốc quốc, thương nhà mỏi miệng cái gia gia. Dừng chân đứng lại trời non nước, một mảnh tình riêng ta với ta.',
   },
   {
@@ -33,7 +33,6 @@ export const vi: Sample[] = [
   },
   {
     label: 'Nguyễn Trãi — Bình Ngô đại cáo',
-    source: 'https://www.thivien.net/Nguyễn-Trãi/Bình-Ngô-đại-cáo/poem-mLEGY5d9nFI0RH280X-vIQ',
     text: 'Từng nghe: Việc nhân nghĩa cốt ở yên dân, quân điếu phạt trước lo trừ bạo. Như nước Đại Việt ta từ trước, vốn xưng nền văn hiến đã lâu. Núi sông bờ cõi đã chia, phong tục Bắc Nam cũng khác.',
   },
   {
