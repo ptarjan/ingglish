@@ -72,9 +72,9 @@ export const de: Sample[] = [
     text: 'Gustav Aschenbach oder von Aschenbach, wie seit seinem fünfzigsten Geburtstag amtlich sein Name lautete, hatte an einem Frühlingsnachmittag des Jahres 19.., das unserem Kontinent monatelang eine so gefahrdrohende Miene zeigte, von seiner Wohnung in der Prinz-Regentenstraße zu München aus, allein einen weiteren Spaziergang unternommen.',
   },
   {
-    label: 'Wilhelm Busch — Max und Moritz',
-    source: 'https://www.gutenberg.org/files/17161/17161-h/17161-h.htm',
-    text: 'Ach, was muß man oft von bösen Kindern hören oder lesen! Wie zum Beispiel hier von diesen, welche Max und Moritz hießen. Die, anstatt durch weise Lehren sich zum Guten zu bekehren, oftmals noch darüber lachten und sich heimlich lustig machten.',
+    label: 'Brecht — Die Dreigroschenoper',
+    source: 'https://de.wikipedia.org/wiki/Die_Moritat_von_Mackie_Messer',
+    text: 'Und der Haifisch, der hat Zähne, und die trägt er im Gesicht. Und Macheath, der hat ein Messer, doch das Messer sieht man nicht.',
   },
   {
     label: 'Schiller — An die Freude',
