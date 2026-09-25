@@ -63,7 +63,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'Cees Nooteboom — Rituelen',
-    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00513.php',
+    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00462.php',
     text: 'Op de dag dat Inni Wintrop zelfmoord pleegde stonden de aandelen Philips op 149,60. Heeft dat iets met elkaar te maken? Misschien wel. De koers mag dan later gezakt zijn, hijzelf is nooit meer zo hoog gekomen.',
   },
   {
