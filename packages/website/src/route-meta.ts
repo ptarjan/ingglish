@@ -54,7 +54,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   },
   extension: {
     description:
-      'Translate any webpage into phonetic English with one click. Drag the bookmarklet to your bookmarks bar, or install the Chrome extension.',
+      'Switch the page you’re reading to phonetic English with one click. Drag the bookmarklet to your bookmarks bar, or install the Chrome extension.',
     title: 'Ingglish Bookmarklet & Extension',
   },
   games: {

@@ -74,10 +74,10 @@ function Extension(): React.JSX.Element {
   return (
     <div className="extension-page">
       <div className="guide-intro">
-        <h2>Translate Any Webpage</h2>
+        <h2>Translate the Page You&rsquo;re Reading</h2>
         <p>
-          Read any webpage in Ingglish with one click. Use the bookmarklet in any browser, or
-          install the Chrome extension, which also translates new content automatically.
+          Switch the page you&rsquo;re on to Ingglish with one click. Use the bookmarklet in any
+          browser, or install the Chrome extension, which also translates new content automatically.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ function Extension(): React.JSX.Element {
           <li>
             <strong>Translate any page</strong>
             <p>
-              Open any webpage and click &ldquo;Ingglish&rdquo; in your bookmarks bar. A small badge
+              Open a webpage and click &ldquo;Ingglish&rdquo; in your bookmarks bar. A small badge
               appears in the corner; click it to switch back to the original.
             </p>
           </li>

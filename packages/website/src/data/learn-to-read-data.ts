@@ -100,7 +100,7 @@ export const LESSONS: Lesson[] = [
     title: 'ph becomes f',
   },
   {
-    description: '"c" picks a lane: "k" before a/o/u, "s" before e/i.',
+    description: '"c" sounds like "k" before a, o or u, and like "s" before e or i.',
     examples: [
       { english: 'cat', ingglish: 'kat' },
       { english: 'city', ingglish: 'sitee' },
