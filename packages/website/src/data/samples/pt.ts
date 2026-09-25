@@ -23,16 +23,18 @@ export const pt: Sample[] = [
   },
   {
     label: 'Machado de Assis — Memórias Póstumas de Brás Cubas',
+    source: 'https://pt.wikisource.org/wiki/Memórias_Póstumas_de_Brás_Cubas/I',
     text: 'Algum tempo hesitei se devia abrir estas memórias pelo princípio ou pelo fim, isto é, se poria em primeiro lugar o meu nascimento ou a minha morte. Suposto o uso vulgar seja começar pelo nascimento, duas considerações me levaram a adotar diferente método: a primeira é que eu não sou propriamente um autor defunto, mas um defunto autor, para quem a campa foi outro berço.',
   },
   {
     label: 'Machado de Assis — Dom Casmurro',
+    source: 'https://pt.wikisource.org/wiki/Dom_Casmurro/I',
     text: 'Uma noite destas, vindo da cidade para o Engenho Novo, encontrei no trem da Central um rapaz aqui do bairro, que eu conheço de vista e de chapéu. Cumprimentou-me, sentou-se ao pé de mim, falou da Lua e dos ministros, e acabou recitando-me versos. A viagem era curta, e os versos pode ser que não fossem inteiramente maus.',
   },
   {
-    label: 'Saramago — Ensaio sobre a Cegueira',
-    source: 'https://pt.wikipedia.org/wiki/Ensaio_sobre_a_Cegueira',
-    text: 'O disco amarelo iluminou-se. Dois dos automóveis da frente aceleraram antes que o sinal vermelho aparecesse. Na passadeira de peões surgiu o desenho do homem verde. A gente que esperava começou a atravessar a rua pisando as faixas brancas pintadas na capa negra do asfalto, não há nada que menos se pareça com uma zebra, porém assim lhe chamam.',
+    label: 'Declaração Universal dos Direitos Humanos — Artigos 3.º, 4.º e 6.º',
+    source: 'https://pt.wikisource.org/wiki/Declaração_Universal_dos_Direitos_Humanos',
+    text: 'Todo o indivíduo tem direito à vida, à liberdade e à segurança pessoal. Ninguém será mantido em escravatura ou em servidão; a escravatura e o trato dos escravos, sob todas as formas, são proibidos. Todos os indivíduos têm direito ao reconhecimento, em todos os lugares, da sua personalidade jurídica.',
   },
   {
     label: 'Saramago — Memorial do Convento',
@@ -41,6 +43,7 @@ export const pt: Sample[] = [
   },
   {
     label: 'Eça de Queirós — Os Maias',
+    source: 'https://pt.wikisource.org/wiki/Os_Maias/Livro_I/I',
     text: 'A casa que os Maias vieram habitar em Lisboa, no outono de 1875, era conhecida na vizinhança da rua de S. Francisco de Paula, e em todo o bairro das Janelas Verdes, pela casa do Ramalhete ou simplesmente o Ramalhete.',
   },
   {
@@ -66,6 +69,8 @@ export const pt: Sample[] = [
   },
   {
     label: 'Guimarães Rosa — Grande Sertão: Veredas',
+    source:
+      'https://www.ileel.ufu.br/lexicoSertanista/arquivos/43b0ce78-34a9-461d-b8c5-55ee0b0e5528_Grande%20Sert%C3%A3o%20Veredas.pdf',
     text: 'Nonada. Tiros que o senhor ouviu foram de briga de homem não, Deus esteja. Alvejei mira em árvore, no quintal, no baixo do córrego. Por meu acerto. Todo dia isso faço, gosto; desde mal em minha mocidade.',
   },
   {
@@ -79,10 +84,9 @@ export const pt: Sample[] = [
     text: 'Tudo no mundo começou com um sim. Uma molécula disse sim a outra molécula e nasceu a vida. Mas antes da pré-história havia a pré-história da pré-história e havia o nunca e havia o sim. Sempre houve. Não sei o quê, mas sei que o universo jamais começou.',
   },
   {
-    label: 'Mia Couto — Terra Sonâmbula',
-    source:
-      'https://jornal.usp.br/cultura/em-terra-sonambula-poesia-se-eleva-de-ruinas-materiais-e-espirituais/',
-    text: 'Naquele lugar, a guerra tinha morto a estrada. Pelos caminhos só as hienas se arrastavam, focinhando entre cinzas e poeiras. A paisagem se mestiçara de tristezas nunca vistas, em cores que se pegavam à boca. Eram cores sujas, tão sujas que tinham perdido toda a leveza, esquecidas da ousadia de levantar asas pelo azul.',
+    label: 'Constituição da República Portuguesa — Preâmbulo',
+    source: 'https://www.parlamento.pt/Legislacao/Paginas/ConstituicaoRepublicaPortuguesa.aspx',
+    text: 'A 25 de Abril de 1974, o Movimento das Forças Armadas, coroando a longa resistência do povo português e interpretando os seus sentimentos profundos, derrubou o regime fascista. Libertar Portugal da ditadura, da opressão e do colonialismo representou uma transformação revolucionária e o início de uma viragem histórica da sociedade portuguesa.',
   },
   {
     label: 'Constituição da República Federativa do Brasil — Preâmbulo',
@@ -101,7 +105,7 @@ export const pt: Sample[] = [
   },
   {
     label: 'Hino Nacional Brasileiro',
-    source: 'https://www.iheartbrazil.com/national-anthem-of-brazil/',
+    source: 'https://pt.wikisource.org/wiki/Hino_Nacional_Brasileiro',
     text: 'Ouviram do Ipiranga as margens plácidas de um povo heróico o brado retumbante, e o sol da Liberdade, em raios fúlgidos, brilhou no céu da Pátria nesse instante.',
   },
 ];
