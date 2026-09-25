@@ -7,9 +7,9 @@ export const es: Sample[] = [
     text: 'En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor. Una olla de algo más vaca que carnero, salpicón las más noches, duelos y quebrantos los sábados, lentejas los viernes, algún palomino de añadidura los domingos, consumían las tres partes de su hacienda.',
   },
   {
-    label: 'García Márquez — Cien años de soledad',
-    source: 'https://es.wikipedia.org/wiki/Cien_años_de_soledad',
-    text: 'Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo. Macondo era entonces una aldea de veinte casas de barro y cañabrava construidas a la orilla de un río de aguas diáfanas que se precipitaban por un lecho de piedras pulidas, blancas y enormes como huevos prehistóricos.',
+    label: 'Rivera — La vorágine',
+    source: 'https://es.wikisource.org/wiki/La_vorágine/Primera_parte',
+    text: 'Cuando los ojos de Alicia me trajeron la desventura, había renunciado ya a la esperanza de sentir un afecto puro. En vano mis brazos —tediosos de libertad— se tendieron ante muchas mujeres implorando para ellos una cadena. Nadie adivinaba mi ensueño. Seguía el silencio en mi corazón.',
   },
   {
     label: 'Neruda — Poema 20',
@@ -22,9 +22,9 @@ export const es: Sample[] = [
     text: 'La candente mañana de febrero en que Beatriz Viterbo murió, después de una imperiosa agonía que no se rebajó un solo instante ni al sentimentalismo ni al miedo, noté que las carteleras de fierro de la Plaza Constitución habían renovado no sé qué aviso de cigarrillos rubios; el hecho me dolió, pues comprendí que el incesante y vasto universo ya se apartaba de ella y que ese cambio era el primero de una serie infinita.',
   },
   {
-    label: 'Allende — La casa de los espíritus',
-    source: 'https://es.wikipedia.org/wiki/La_casa_de_los_espíritus',
-    text: 'Barrabás llegó a la familia por vía marítima, anotó la niña Clara con su delicada caligrafía. Ya entonces tenía el hábito de escribir las cosas importantes y más tarde, cuando se quedó muda, escribía también las trivialidades, sin sospechar que cincuenta años después, sus cuadernos me servirían para rescatar la memoria del pasado y para sobrevivir a mi propio espanto.',
+    label: 'Galdós — Doña Perfecta',
+    source: 'https://es.wikisource.org/wiki/Doña_Perfecta/I',
+    text: 'Antes de que la caravana se pusiese en movimiento, partió el tren, que se iba escurriendo por la vía con la parsimoniosa cachaza de un tren mixto. Sus pasos, retumbando cada vez más lejanos, producían ecos profundos bajo tierra. Al entrar en el túnel del kilómetro 172, lanzó el vapor por el silbato, y un aullido estrepitoso resonó en los aires.',
   },
   {
     label: 'Quiroga — El almohadón de plumas',
@@ -77,9 +77,9 @@ export const es: Sample[] = [
     text: 'Volverán las oscuras golondrinas en tu balcón sus nidos a colgar, y otra vez con el ala a sus cristales jugando llamarán. Pero aquellas que el vuelo refrenaban tu hermosura y mi dicha a contemplar, aquellas que aprendieron nuestros nombres, ¡esas no volverán!',
   },
   {
-    label: 'García Márquez — El amor en los tiempos del cólera',
-    source: 'https://es.wikipedia.org/wiki/El_amor_en_los_tiempos_del_cólera',
-    text: 'Era inevitable: el olor de las almendras amargas le recordaba siempre el destino de los amores contrariados. El doctor Juvenal Urbino lo percibió desde que entró en la casa todavía en penumbras, adonde había acudido de urgencia a ocuparse de un caso que para él había dejado de ser urgente desde hacía muchos años.',
+    label: 'Valera — Pepita Jiménez',
+    source: 'https://es.wikisource.org/wiki/Pepita_Jiménez/Capítulo_I',
+    text: 'Como salí de aquí tan niño y he vuelto hecho un hombre, es singular la impresión que me causan todos estos objetos que guardaba en la memoria. Todo me parece más chico, mucho más chico; pero también más bonito que el recuerdo que tenía. La casa de mi padre, que en mi imaginación era inmensa, es sin duda una gran casa de un rico labrador; pero más pequeña que el Seminario.',
   },
   {
     label: 'Unamuno — Niebla',
@@ -97,8 +97,8 @@ export const es: Sample[] = [
     text: 'Todos los seres humanos nacen libres e iguales en dignidad y derechos y, dotados como están de razón y conciencia, deben comportarse fraternalmente los unos con los otros.',
   },
   {
-    label: 'Vargas Llosa — La ciudad y los perros',
-    source: 'https://es.wikipedia.org/wiki/La_ciudad_y_los_perros_(novela)',
-    text: 'Cuatro, dijo el Jaguar. Los rostros se suavizaron en el resplandor vacilante que el globo de luz difundía por el recinto, a través de escasas partículas limpias de vidrio: el peligro había desaparecido para todos, salvo para Porfirio Cava.',
+    label: 'Palma — El alacrán de fray Gómez',
+    source: 'https://es.wikisource.org/wiki/El_alacrán_de_fray_Gómez',
+    text: 'Sucedió que un día iba el lego por el puente, cuando un caballo desbocado arrojó sobre las losas al jinete. El infeliz quedó patitieso, con la cabeza hecha una criba y arrojando sangre por boca y narices. -¡Se descalabró, se descalabró! -gritaba la gente-. ¡Que vayan a San Lázaro por el santo óleo! Y todo era bullicio y alharaca.',
   },
 ];
