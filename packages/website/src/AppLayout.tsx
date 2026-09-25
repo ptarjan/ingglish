@@ -9,7 +9,15 @@ import { HOME_META, ROUTE_META } from './route-meta';
 import { sitePath, siteUrl } from './routes';
 
 type Tab =
-  'docs' | 'experiment' | 'explore' | 'extension' | 'games' | 'guide' | 'text' | 'tutorial' | 'url';
+  | 'docs'
+  | 'experiment'
+  | 'explore'
+  | 'extension'
+  | 'games'
+  | 'guide'
+  | 'text'
+  | 'tutorial'
+  | 'url';
 
 // Runtime titles. Descriptions come from route-meta.ts so the pre-rendered
 // <head> and the app never disagree.
