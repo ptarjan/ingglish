@@ -2,24 +2,24 @@ import type { Sample } from './types';
 
 export const is: Sample[] = [
   {
-    // https://sagadb.org/brennu-njals_saga.is (ch. 75)
     label: 'Njáls saga — Gunnar at Hlíðarendi',
+    source: 'https://sagadb.org/brennu-njals_saga.is#75',
     text: 'Fögur er hlíðin, svo að mér hefir hún aldrei sýnst, bleikir akrar en slegin tún, og mun eg ríða heim aftur og fara hvergi.',
   },
   {
-    // https://www.voluspa.org/havamal76-80.htm (modern Icelandic spelling)
     label: 'Hávamál — Stanzas 76–77',
+    // Modern Icelandic spelling.
+    source: 'https://www.voluspa.org/havamal76-80.htm',
     text: 'Deyr fé, deyja frændur, deyr sjálfur hinn sami. En orðstír deyr aldrei, sér góðan getur. Deyr fé, deyja frændur, deyr sjálfur hinn sami. Ég veit eitt að aldrei deyr, dómur um dauðan hvern.',
   },
   {
-    label: 'Halldór Laxness — Íslandsklukkan',
-    source:
-      'https://gljufrasteinn.is/is/halldor_laxness/vi_og_verk_halldors_kiljans_laxness/ritverk/slandsklukkan/',
-    text: 'Hef ég drepið mann eða hef ég ekki drepið mann? Hver hefur drepið mann og hver hefur ekki drepið mann? Hvenær drepur maður mann og hvenær drepur maður ekki mann? Fari í helvíti sem ég drap mann. Og þó.',
+    label: 'Jónas Hallgrímsson — Gunnarshólmi',
+    source: 'https://is.wikisource.org/wiki/Gunnarshólmi',
+    text: 'Skein yfir landi sól á sumarvegi og silfurbláan Eyjafjallatind gullrauðum loga glæsti seint á degi. Við austur gnæfir sú in mikla mynd hátt yfir sveit, og höfði björtu svalar í himinblámans fagurtærri lind.',
   },
   {
-    // https://sagadb.org/brennu-njals_saga.is (ch. 1)
     label: 'Njáls saga — Opening',
+    source: 'https://sagadb.org/brennu-njals_saga.is#1',
     text: 'Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Völlum í Rangárvallasýslu. Hann var ríkur höfðingi en mikill lögmaður.',
   },
   {
@@ -48,13 +48,13 @@ export const is: Sample[] = [
     text: 'Ketill flatnefur hét einn ágætur hersir í Noregi. Hann var sonur Bjarnar bunu Grímssonar hersis úr Sogni. Ketill var kvongaður. Hann átti Yngveldi, dóttur Ketils veðurs hersis af Raumaríki.',
   },
   {
-    label: 'Halldór Laxness — Sjálfstætt fólk',
-    source: 'https://is.wikipedia.org/wiki/Sjálfstætt_fólk',
-    text: 'En þá er norrænir menn settust hér að, flýðu hinir vestrænu galdursmenn landið, og telja fornrit að Kólumkilli hafi í hefndarskyni lagt á þjóð þá hina nýu að hún skyldi í þessu landi aldrei þrífast.',
+    label: 'Matthías Jochumsson — Sorg',
+    source: 'https://is.wikisource.org/wiki/Sorg_(Matthías_Jochumsson)',
+    text: 'Heim til að bjarga þér hleypti ég skeið, og hirti ekki um storminn né æginn; skein þá öll Esjan svo skínandi, breið, nema skugginn stóð rétt yfir bæinn.',
   },
   {
     label: 'Jónas Hallgrímsson — Ísland',
-    source: 'https://digicoll.library.wisc.edu/Jonas/Island/Island.html',
+    source: 'https://is.wikisource.org/wiki/Ísland_(Jónas_Hallgrímsson)',
     text: 'Ísland, farsælda frón og hagsælda hrímhvíta móðir! Hvar er þín fornaldar frægð, frelsið og manndáðin best? Landið var fagurt og frítt og fannhvítir jöklanna tindar, himinninn heiður og blár, hafið var skínandi bjart.',
   },
   {
@@ -74,6 +74,7 @@ export const is: Sample[] = [
   },
   {
     label: 'Hrafnkels saga Freysgoða — Opening',
+    source: 'https://sagadb.org/hrafnkels_saga_freysgoda.is',
     text: 'Það var á dögum Haralds konungs hins hárfagra að maður bjó í Fljótsdal sem Hallfreður hét. Hann nam Hrafnkelsdal allan upp frá Lagarfljóti. Hrafnkell var sonur Hallfreðs. Hrafnkell reisti hof mikið og eflaði blót stór.',
   },
   {
