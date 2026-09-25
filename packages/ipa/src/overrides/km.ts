@@ -8,6 +8,7 @@
 export const km: Record<string, string> = {
   // --- UDHR Article 1 ---
   កំណើត: '/kɑmnaət/', // birth
+  កល្យាណី: '/kaʔlyeanəy/', // beautiful, virtuous woman (Pali kalyāṇī)
   // --- Reamker (Ramayana) ---
   ក្ដី: '/kdəy/', // matter, affair
   ក្រេវ: '/kreew/', // furious
@@ -31,17 +32,15 @@ export const km: Record<string, string> = {
   ជ័យមង្គល: '/cey mɔŋkɔl/', // victory, auspicious
   // --- Proverbs ---
   ជាក់: '/ceak/', // certain, sure
-  ជាលំដាប់: '/cie lɔmɗaap/', // successively
-  // --- Preah Chinawong ---
-  ជិន: '/cɨn/', // Jin (proper name element)
-  ជិនវង្ส: '/cɨn wɔŋ/', // Chinawong (proper name)
   ជូ: '/cuu/', // proper (literary)
   ញាក់: '/ɲeak/', // to startle, twitch
   ញាក់ចិញ្ចើម: '/ɲeak cəɲcaəm/', // to raise eyebrows
   ដែន: '/daen/', // territory
+  ដ្ឋ: '/ɑɑt/', // part of រដ្ឋ "state" (browser splits off រ)
   ណាយ: '/naay/', // to yearn
   ណាយចិត្ត: '/naay cət/', // heart yearns
   តប: '/tɑp/', // to reply
+  តាមលទ្ធិ: '/taam lʊttʰeʔ/', // according to the doctrine of
   ថ្កាន: '/tkaan/', // magnificent (literary)
   ថ្កើង: '/tkəəŋ/', // to glorify
   ថ្កើងថ្កាន: '/tkəəŋ tkaan/', // glorious, magnificent
@@ -50,29 +49,31 @@ export const km: Record<string, string> = {
   ថ្នែក: '/tnaek/', // aspect, class
   ថ្វាត់: '/twat/', // harshly
   ទត: '/tɔt/', // to look, behold (royal)
+  // --- Gatilok (moral fables) ---
+  ទាំងពួង: '/teaŋ puəŋ/', // all, the whole
   ទាវ: '/tiew/', // Teav (proper name)
-  ទុក្ខ: '/tuk/', // suffering (dukkha)
-  ទុក្ខវេទនា: '/tukweetɑɑnie/', // suffering
   ទូល: '/tuul/', // to inform (royal register)
   ទេព្តា: '/teepɗaa/', // devas, celestial beings
+  // --- Constitution, Article 1 ---
+  ទ្រង់: '/trɔɔŋ/', // royal verb marker
   នរបតី: '/nɔrɔpaɗəy/', // sovereign, king
   នាវ: '/niew/', // Nav (proper name)
   និម៌ល: '/nɨmmɔl/', // pure, immaculate
-  បំផ្លាញ: '/bɑmpʰlieɲ/', // to destroy
-  បំផ្លិច: '/bɑmpʰləc/', // to demolish
+  បញ្ចពិធ: '/pɑɲcɑpĭt/', // fivefold (Pali pañcavidha)
   បពិត្រ: '/bɑpɨt/', // lord, sir (polite address)
   បុត្រ: '/ɓot/', // son
-  // --- Chbab Srey (Code for Women) ---
-  ប្រដៅ: '/prɑɗaw/', // to advise, counsel
+  // --- Collection of Khmer Legends ---
+  ប្ដី: '/ɓɗəy/', // husband
+  ប្រជាធិបតេយ្យ: '/prɑciə tʰippɑɗɛj/', // democracy
   ប្រណី: '/prɑnəy/', // loving, affectionate
+  ប្រតិបត្តិ: '/prɑtĕɓat/', // to practice, comply with
   ប្រាជ្ញ: '/praac/', // wisdom
+  ប្រាជ្ញា: '/praacɲaa/', // wisdom
   ប្រាសាទ: '/praasaat/', // temple, palace
+  ពហុបក្ស: '/pɔhoʔɓɑk/', // multi-party
   ពិរោធ: '/piroot/', // anger
   ពុំ: '/pum/', // not (literary)
   ពុំជូ: '/pum cuu/', // not proper
-  ព្យាបាទ: '/pjiebaat/', // malice
-  ព្រះមហេសី: '/preah mɔheesəy/', // queen consort (with ព្រះ)
-  ព្រះរាជបុត្រ: '/preah riec ɓot/', // prince (with ព្រះ)
   ព្រះរាជា: '/preah riecie/', // the king
   ភ័ក្រ្ត: '/pʰeak/', // face (royal register)
   ភាតរ: '/pʰietɑɑ/', // brother (standalone; final រ silent)
@@ -81,20 +82,26 @@ export const km: Record<string, string> = {
   មង្គល: '/mɔŋkɔl/', // auspicious
   មហា: '/mɔhaa/', // great (prefix)
   មហាក្សត្រ: '/mɔhaa ksaat/', // great king, maharaja
-  មហាជាតិ: '/mɔhaa ciet/', // great nation
+  // --- Also exercised by the Khmer compound-decomposition tests below ---
   មហេសី: '/mɔheesəy/', // queen consort
+  មាយា: '/maajie/', // deceit, guile
+  ម្ដេច: '/mɗəc/', // how (contraction)
+  រដ្ឋធម្មនុញ្ញ: '/rɔət tʰɔmmɔnuɲ/', // constitution
   រាជ: '/riec/', // royal
   រាជបុត្រ: '/riec ɓot/', // prince
   រាជា: '/riecie/', // king
   រុង: '/ruŋ/', // to shine
   រុងរឿង: '/ruŋ rɨəŋ/', // brilliant, prosperous
-  លំដាប់: '/lɔmɗaap/', // successively, in order
+  លំអ: '/lumʔɑɑ/', // adornment, beauty
   វង្ស: '/wɔŋ/', // dynasty, lineage
   វិចារណញ្ញាណ: '/wicaarɑɲɲaan/', // discernment
   វេទនា: '/weetɑɑnie/', // pain (vedana)
   សតិ: '/saʔteʔ/', // consciousness, mindfulness
   សតិសម្បជញ្ញៈ: '/saʔteʔ sampaʔcʊəɲɲeaʔ/', // conscience
+  សន្តិភាព: '/sɑntĕpʰiep/', // peace
   សម្បជញ្ញៈ: '/sampaʔcʊəɲɲeaʔ/', // awareness
+  សម្ព័ន្ធ: '/sɑmpŭən/', // alliance
+  សហាយ: '/sɑhaay/', // lover, paramour
   សាទរ: '/saatɔɔ/', // to welcome
   សិរី: '/serəy/', // glory (from Pali)
   សួ: '/suə/', // (first syllable of សួស្តី)
@@ -105,13 +112,14 @@ export const km: Record<string, string> = {
   ស្តាប់: '/sdaap/', // to listen
   ស្តី: '/sdəy/', // (second syllable of សួស្តី)
   ស្ទុះ: '/stuh/', // to rush
-  ស្នំ: '/snɑm/', // concubine
   ហត្ថា: '/hatɑɑtʰaa/', // hand (literary)
-  // --- Constitution Preamble ---
-  អង្គរ: '/ʔɑŋkɔɔ/', // Angkor
+  អចិន្ត្រៃយ៍: '/ʔɑcɑntrɑj/', // eternal, permanent
+  អធិបតេយ្យ: '/ʔatʰippɑɗɛj/', // sovereignty
+  អព្យាក្រឹត: '/ʔɑpjiekrɨt/', // neutral
+  // --- Proverbs & Nokor Reach (misc) ---
   អរ: '/ʔɑɑ/', // to rejoice
-  អស្ចារ្យ: '/ʔɑscaa/', // wonderful, marvelous
   អាល: '/ʔaal/', // to rush, boast
   អួត: '/ʔuət/', // to boast
+  ឯករាជ្យ: '/ʔaekkɔriec/', // independence
   ឱ្យ: '/ʔaoy/', // to give, let
 };
