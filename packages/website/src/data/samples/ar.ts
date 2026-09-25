@@ -23,17 +23,17 @@ export const ar: Sample[] = [
   },
   {
     label: 'Al-Mutanabbi — على قدر أهل العزم',
-    source: 'https://www.aldiwan.net/poem10524.html',
+    source: 'https://ar.wikisource.org/wiki/على_قدر_أهل_العزم_تأتي_العزائم',
     text: 'على قدر أهل العزم تأتي العزائم وتأتي على قدر الكرام المكارم وتعظم في عين الصغير صغارها وتصغر في عين العظيم العظائم',
   },
   {
     label: 'Mahmoud Darwish — على هذه الأرض',
-    source: 'https://www.aldiwan.net/poem9094.html',
+    source: 'https://poetsgate.com/poem.php?pm=147830',
     text: 'على هذه الأرض ما يستحق الحياة تردد إبريل رائحة الخبز في الفجر آراء امرأة في الرجال كتابات أسخيليوس أول الحب عشب على حجر أمهات تقفن على خيط ناي وخوف الغزاة من الذكريات',
   },
   {
     label: 'Nizar Qabbani — قارئة الفنجان',
-    source: 'https://www.aldiwan.net/poem6243.html',
+    source: 'https://qaseda.com/nizarqabbani/قارئة-الفنجان/',
     text: 'جلست والخوف بعينيها تتأمل فنجاني المقلوب قالت يا ولدي لا تحزن فالحب عليك هو المكتوب',
   },
   {
@@ -43,7 +43,6 @@ export const ar: Sample[] = [
   },
   {
     label: 'Ghassan Kanafani — رجال في الشمس',
-    source: 'https://www.bookleaks.com/files/ghassankanafani/12.pdf',
     text: 'ليس يدري لماذا امتلأ فجأة بشعور آسن من الغربة وحسب لوهلة أنه على وشك أن يبكي كلا لم تمطر أمس نحن في آب الآن أنسيت',
   },
   {
@@ -82,27 +81,27 @@ export const ar: Sample[] = [
   },
   {
     label: 'Naguib Mahfouz — أولاد حارتنا',
-    source: 'https://www.hindawi.org/books/94868139/0/',
+    source: 'https://ar.wikipedia.org/wiki/أولاد_حارتنا',
     text: 'قلت إن أحدا لم يره منذ اعتزاله ولم يكن هذا بذي بال عند أكثر الناس فلم يهتموا منذ بادئ الأمر إلا بأوقافه وبشروطه العشرة التي كثر القيل والقال عنها ومن هنا ولد النزاع في حارتنا',
   },
   {
     label: 'Ibn al-Muqaffa — كليلة ودمنة',
-    source: 'https://www.aldiwan.net/',
+    source: 'https://ar.wikisource.org/wiki/كليلة_ودمنة',
     text: 'زعموا أنه كان في أرض الدكن ملك يقال له دبشليم وكان ذا رأي وحزم وعقل ونبل وفطنة وعدل وكان في عصره فيلسوف يقال له بيدبا',
   },
   {
     label: 'أبو العلاء المعري — غير مجد في ملتي واعتقادي',
-    source: 'https://www.aldiwan.net/poem23625.html',
+    source: 'https://qaseda.com/almaarri/غير-مجد-في-ملتي-واعتقادي/',
     text: 'غير مجد في ملتي واعتقادي نوح باك ولا ترنم شاد وشبيه صوت النعي إذا قيس بصوت البشير في كل ناد',
   },
   {
     label: 'طرفة بن العبد — المعلقة',
-    source: 'https://www.aldiwan.net/poem20973.html',
+    source: 'https://ar.wikisource.org/wiki/معلقة_طرفة_بن_العبد',
     text: 'لخولة أطلال ببرقة ثهمد تلوح كباقي الوشم في ظاهر اليد وقوفا بها صحبي علي مطيهم يقولون لا تهلك أسى وتجلد',
   },
   {
     label: 'عنترة بن شداد — المعلقة',
-    source: 'https://www.aldiwan.net/poem85.html',
+    source: 'https://ar.wikisource.org/wiki/معلقة_عنترة_بن_شداد',
     text: 'هل غادر الشعراء من متردم أم هل عرفت الدار بعد توهم يا دار عبلة بالجواء تكلمي وعمي صباحا دار عبلة واسلمي',
   },
   {

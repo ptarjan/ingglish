@@ -22,7 +22,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'Gerard Reve — De Avonden',
-    source: 'https://adoc.pub/gerard-van-het-reve-de-avonden.html',
+    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00513.php',
     text: 'Het was nog donker, toen in de vroege morgen van de tweeëntwintigste december 1946 in onze stad, op de eerste verdieping van het huis Schilderskade 66, de held van deze geschiedenis, Frits van Egters, ontwaakte.',
   },
   {
@@ -37,8 +37,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'Plakkaat van Verlatinghe (1581)',
-    source:
-      'https://www.let.rug.nl/usa/documents/before-1600/plakkaat-van-verlatinghe-1581-july-26.php',
+    source: 'https://nl.wikisource.org/wiki/Plakkaat_van_Verlatinghe',
     text: 'Allen dengenen die dese tegenwoordighe sullen sien ofte hooren lesen, saluyt. Alsoo een yegelick kennelick is, dat een Prince van den lande van Godt gestelt is hooft over zijne ondersaten, om deselve te bewaren ende beschermen van alle onrecht, overlast ende ghewelt.',
   },
   {
@@ -99,7 +98,7 @@ export const nl: Sample[] = [
   },
   {
     label: 'W.F. Hermans — Nooit meer slapen',
-    source: 'https://adoc.pub/willem-frederik-hermans-nooit-meer-slapen.html',
+    source: 'https://www.dbnl.org/tekst/anbe001lexi01_01/lvlw00287.php',
     text: 'De portier is een invalide. Op het eikehouten bureautje waaraan hij zit, staat alleen een telefoon, en door een goedkope zonnebril staart hij roerloos voor zich uit.',
   },
   {

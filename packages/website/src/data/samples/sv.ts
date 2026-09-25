@@ -28,7 +28,7 @@ export const sv: Sample[] = [
   },
   {
     label: 'Hjalmar Söderberg — Doktor Glas',
-    source: 'https://www.textalk.se/klassisk-svensk-litteratur/Hjalmar-Soderberg-Doktor-Glas.html',
+    source: 'https://sv.wikipedia.org/wiki/Doktor_Glas',
     text: 'Jag har aldrig sett en sådan sommar. Rötmånadshetta sedan i mitten av maj. Hela dagen står ett tjockt töcken av damm alldeles stilla över gatorna och torgen.',
   },
   {
@@ -53,7 +53,7 @@ export const sv: Sample[] = [
   },
   {
     label: 'August Strindberg — Fadren',
-    source: 'https://litteraturbanken.se/txt/lb999200147/lb999200147.pdf',
+    source: 'https://sv.wikipedia.org/wiki/Fadren',
     text: 'Kort och gott: är du far till barnet eller inte? Hur ska en kunna veta det? Vad för slag? Kan du inte veta det? Nej, si det kan en då aldrig veta.',
   },
   {
@@ -107,8 +107,7 @@ export const sv: Sample[] = [
   },
   {
     label: 'Hjalmar Söderberg — Martin Bircks ungdom',
-    source:
-      'https://www.textalk.se/klassisk-svensk-litteratur/Hjalmar-Soderberg-Martin-Bircks-ungdom.html',
+    source: 'https://sv.wikipedia.org/wiki/Martin_Bircks_ungdom',
     text: 'Martin Birck var ett litet barn, som låg i sin säng och drömde.',
   },
 ];

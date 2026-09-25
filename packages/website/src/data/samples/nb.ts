@@ -51,27 +51,27 @@ export const nb: Sample[] = [
   },
   {
     label: 'Henrik Ibsen — Et dukkehjem',
-    source: 'https://www.ibsen.uio.no/DRVIT_Du%7CDuht.xhtml',
+    source: 'https://ibsen.uio.no/DRVIT_Du%7cDuht.html',
     text: 'Gem juletræet godt, Helene. Børnene må endelig ikke få se det før iaften, når det er pyntet. Hvormeget –? Femti øre. Der er en krone. Nej, behold det hele.',
   },
   {
     label: 'Henrik Ibsen — Peer Gynt',
-    source: 'https://www.ibsen.uio.no/DRVIT_PG%7CPGht.xhtml',
+    source: 'https://ibsen.uio.no/DRVIT_PG%7cPGht.html',
     text: 'Peer, du lyver! Nej, jeg gjør ej! Naa, saa band paa, det er sandt! Hvorfor bande? Tvi; du tør ej! Alt ihob er Tøv og Tant! Det er sandt – hvert evigt Ord! Og du skjæms ej for din Moer?',
   },
   {
     label: 'Henrik Ibsen — Vildanden',
-    source: 'https://www.ibsen.uio.no/DRVIT_Vi%7CViht.xhtml',
+    source: 'https://ibsen.uio.no/DRVIT_Vi%7cViht.html',
     text: 'Nej hør bare, De, Jensen; nu står gamlingen ved bordet og proppenerer en lang skål for fru Sørby. Er det kanske sandt, som folk siger, at der er noget imellem dem?',
   },
   {
     label: 'Henrik Ibsen — Gengangere',
-    source: 'https://www.ibsen.uio.no/DRVIT_Ge%7CGeht.xhtml',
+    source: 'https://ibsen.uio.no/DRVIT_Ge%7cGeht.html',
     text: 'Hvad er det du vil? Bliv stående der du står. Det drypper jo af dig. Det er Vorherres regn, det, barnet mit. Det er fandens regn, er det.',
   },
   {
     label: 'Henrik Ibsen — Brand',
-    source: 'https://www.ibsen.uio.no/DRVIT_Br%7CBrht.xhtml',
+    source: 'https://ibsen.uio.no/DRVIT_Br%7cBrht.html',
     text: 'Hej, Fremmedkarl, far ej saa fort! Hvor er du? Her! Du gaar dig bort! Nu tykkner Skodden slig, at knappt en ser saa langt, som Staven rækker. Frem maa jeg, som jeg før har sagt. Det evner ingen Mandemagt.',
   },
   {
@@ -101,7 +101,7 @@ export const nb: Sample[] = [
   },
   {
     label: 'FN — Verdenserklæringen om menneskerettighetene',
-    source: 'https://www.ohchr.org/en/UDHR/Documents/UDHR_Translations/nrr.pdf',
+    source: 'http://efele.net/udhr/d/udhr_nob.html',
     text: 'Alle mennesker er født frie og med samme menneskeverd og menneskerettigheter. De er utstyrt med fornuft og samvittighet og bør handle mot hverandre i brorskapets ånd.',
   },
   {

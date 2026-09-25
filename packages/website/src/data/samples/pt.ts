@@ -31,8 +31,7 @@ export const pt: Sample[] = [
   },
   {
     label: 'Saramago — Ensaio sobre a Cegueira',
-    source:
-      'https://professordiegodelpasso.wordpress.com/wp-content/uploads/2016/05/ensaio-sobre-a-cegueira1.pdf',
+    source: 'https://pt.wikipedia.org/wiki/Ensaio_sobre_a_Cegueira',
     text: 'O disco amarelo iluminou-se. Dois dos automóveis da frente aceleraram antes que o sinal vermelho aparecesse. Na passadeira de peões surgiu o desenho do homem verde. A gente que esperava começou a atravessar a rua pisando as faixas brancas pintadas na capa negra do asfalto, não há nada que menos se pareça com uma zebra, porém assim lhe chamam.',
   },
   {

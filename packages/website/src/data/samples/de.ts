@@ -73,7 +73,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Brecht — Die Dreigroschenoper',
-    source: 'https://www.lyrikline.org/de/gedichte/die-moritat-von-mackie-messer',
+    source: 'https://de.wikipedia.org/wiki/Die_Moritat_von_Mackie_Messer',
     text: 'Und der Haifisch, der hat Zähne, und die trägt er im Gesicht. Und Macheath, der hat ein Messer, doch das Messer sieht man nicht.',
   },
   {

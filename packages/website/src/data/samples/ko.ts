@@ -37,7 +37,7 @@ export const ko: Sample[] = [
   },
   {
     label: '정지용 — 향수',
-    source: 'https://namu.wiki/w/향수(시)',
+    source: 'https://ko.wikisource.org/wiki/향수/향수',
     text: '넓다 벌 동쪽 끝 으로 옛 이야기 지줄대다 실 개천 이 휘돌다 나가다 얼룩 백 황소 가 해설피 금빛 게으르다 울음 을 울다 곳 그곳 이 차마 꿈 에 잊히다 리 야',
   },
   {
@@ -60,7 +60,7 @@ export const ko: Sample[] = [
   },
   {
     label: '박경리 — 토지',
-    source: 'https://namu.wiki/w/토지(소설)',
+    source: 'https://ko.wikipedia.org/wiki/토지_(소설)',
     text: '한가위 달 이 떠오르다 들판 위 를 환하다 비추다 타작마당 에서 꽹과리 소리 울리다 징 소리 와 함께 흥 이 넘치다 그러나 최 참판 댁 사랑 은 적막하다 기운 에 싸이다',
   },
   {
@@ -80,7 +80,7 @@ export const ko: Sample[] = [
   },
   {
     label: '신경림 — 농무',
-    source: 'https://namu.wiki/w/%EB%86%8D%EB%AC%B4',
+    source: 'https://ko.wikipedia.org/wiki/농무',
     text: '징 이 울리다 막 이 내리다 오동나무 에 전등 이 매어달리다 가설 무대 구경꾼 이 돌아가다 나다 텅 비다 운동장 우리 는 분 이 얼룩지다 얼굴 로 학교 앞 소줏집 에 몰리다 술 을 마시다 답답하다 고달프다 살다 것 이 원통하다',
   },
   {

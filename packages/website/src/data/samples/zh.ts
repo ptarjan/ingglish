@@ -53,7 +53,7 @@ export const zh: Sample[] = [
   },
   {
     label: '朱自清 — 背影',
-    source: 'https://www.ruiwen.com/wenxue/zhuziqing/332811.html',
+    source: 'http://www.ccview.net/htm/xiandai/zzq/zzqsw003.htm',
     text: '我 与 父 亲 不 相 见 已 二 年 余 了 我 最 不 能 忘 记 的 是 他 的 背 影 那 年 冬 天 祖 母 死 了 父 亲 的 差 使 也 交 卸 了 正 是 祸 不 单 行 的 日 子',
   },
   {

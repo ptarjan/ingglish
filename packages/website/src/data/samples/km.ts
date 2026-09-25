@@ -14,7 +14,7 @@ export const km: Sample[] = [
   },
   {
     label: 'សេចក្តីប្រកាសជាសកលស្តីពីសិទ្ធិមនុស្ស — មាត្រា ១',
-    source: 'https://www.ohchr.org/sites/default/files/UDHR/Documents/UDHR_Translations/khm.pdf',
+    source: 'http://efele.net/udhr/d/udhr_khm.html',
     text: 'មនុស្សទាំងអស់កើតមកមានសេរីភាពនិងសមភាពក្នុងថ្នែកសេចក្ដីថ្លៃថ្នូរនិងសិទ្ធិ។ មនុស្សមានវិចារណញ្ញាណ និងសតិសម្បជញ្ញៈជាប់ពីកំណើត ហើយគប្បីប្រព្រឹត្តចំពោះគ្នាទៅវិញទៅមកក្នុងស្មារតីភាតរភាពជាបងប្អូន។',
   },
   {
@@ -24,7 +24,7 @@ export const km: Sample[] = [
   },
   {
     label: 'រដ្ឋធម្មនុញ្ញ — បុព្វកថា',
-    source: 'https://constitutionnet.org/sites/default/files/Cambodia%20Constitution.pdf',
+    source: 'https://wikisource.org/wiki/រដ្ឋធម្មនុញ្ញនៃព្រះរាជាណាចក្រកម្ពុជា',
     text: 'យើងប្រជាជនកម្ពុជា ដែលមានប្រពៃណីប្រាសាទអង្គរដ៏រុងរឿង សែនអស្ចារ្យ ដែលជាតិខ្មែរមហាជាតិបានកំពុងតក់ស្លុតនឹងទុក្ខវេទនា និងការបំផ្លិចបំផ្លាញជាលំដាប់',
   },
   {

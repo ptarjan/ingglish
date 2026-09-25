@@ -13,12 +13,12 @@ export const ma: Sample[] = [
   },
   {
     label: 'Sejarah Melayu — Sulalatus Salatin',
-    source: 'https://anyflip.com/eazy/znmh/basic',
+    source: 'https://ms.wikisource.org/wiki/Karya:Sulalatus_Salatin',
     text: 'Segala puji-pujian bagi Allah, yang tiada Tuhan hanya Ia, dan adalah Ia pada azal, tiada sesuatu jua pun serta-Nya.',
   },
   {
     label: 'UDHR — Perisytiharan Hak Asasi Manusia, Perkara 1',
-    source: 'https://www.ohchr.org/sites/default/files/UDHR/Documents/UDHR_Translations/mli.pdf',
+    source: 'http://efele.net/udhr/d/udhr_mly_latn.html',
     text: 'Semua manusia dilahirkan bebas dan samarata dari segi kemuliaan dan hak-hak. Mereka mempunyai pemikiran dan perasaan hati dan hendaklah bertindak di antara satu sama lain dengan semangat persaudaraan.',
   },
   {
@@ -56,8 +56,7 @@ export const ma: Sample[] = [
   },
   {
     label: 'Tunku Abdul Rahman — Pemasyhuran Kemerdekaan 1957',
-    source:
-      'https://pustakailmu.arkib.gov.my/index.php/ms/pustaka-ilmu/imbasan-fakta/dokumen-perisytiharan-kemerdekaan',
+    source: 'https://ms.wikipedia.org/wiki/Pemasyhuran_Kemerdekaan_Tanah_Melayu',
     text: 'Dengan nama Allah Yang Maha Murah lagi Mengasihani, saya Tunku Abdul Rahman Putra ibni Almarhum Sultan Abdul Hamid Halim Shah, Perdana Menteri bagi Persekutuan Tanah Melayu, dengan persetujuan dan perkenan Duli-duli Yang Maha Mulia Raja-raja Negeri-negeri Melayu dengan ini memasyhurkan dan mengisytiharkan bagi pihak umat Persekutuan Tanah Melayu bahawa Persekutuan Tanah Melayu adalah negara merdeka dan berdaulat.',
   },
   {

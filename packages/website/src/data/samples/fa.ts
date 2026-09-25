@@ -38,7 +38,7 @@ export const fa: Sample[] = [
   },
   {
     label: 'فروغ فرخزاد — تولدی دیگر',
-    source: 'https://lyricstranslate.com/en/tavalodi-digar-another-birth.html',
+    source: 'https://fa.wikisource.org/wiki/تولدی_دیگر/تولدی_دیگر',
     text: 'همه هستی من آیه تاریکیست که ترا در خود تکرار کنان به سحرگاه شکفتن‌ها و رستن‌های ابدی خواهد برد من در این آیه ترا آه کشیدم آه',
   },
   {

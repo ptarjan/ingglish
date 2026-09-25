@@ -76,7 +76,6 @@ export const eo: Sample[] = [
   },
   {
     label: 'Julio Baghy — Ĉe samovaro',
-    source: 'https://sezonoj.ru/2017/03/baghy-2/',
     text: 'Ĉe malnova samovaro sidas ruso kaj hungaro. Dum la akvo zume bolas la amikoj ekparolas: "Havi landon en libero, tamen migri tra la tero, iri vojon, sed sencelan… Ĉu vi konas pli kruelan?" La hungaro ne respondas, liaj pensoj ĝeme ondas, viŝas larmon retenitan: "Havi landon, sed perditan…"',
   },
   {

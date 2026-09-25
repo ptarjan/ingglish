@@ -66,12 +66,12 @@ export const sw: Sample[] = [
   },
   {
     label: 'Katiba ya Tanzania — Utangulizi',
-    source: 'https://tanzlii.org/en/akn/tz/act/1977/1/swa@2002-07-31',
+    source:
+      'https://tanzanialaws.com/statutes/principal-legislation/175-katiba-ya-jamhuri-ya-muungano-wa-tanzania,-ya-mwaka',
     text: 'Kwa kuwa sisi wananchi wa Jamhuri ya Muungano wa Tanzania tumeamua rasmi na kwa dhati kujenga katika nchi yetu jamii inayozingatia misingi ya uhuru, haki, udugu na amani.',
   },
   {
     label: 'Katiba ya Kenya — Utangulizi',
-    source: 'https://uraia.or.ke/wp-content/uploads/2023/12/Katiba-ya-Kenya.pdf',
     text: 'Sisi, watu wa Kenya, tunatambua ukuu wa Mwenyezi Mungu muumba wa vyote. Tunawaheshimu mashujaa waliojitoa mhanga kuleta uhuru na haki nchini mwetu.',
   },
   {

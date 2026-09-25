@@ -26,12 +26,12 @@ export const ro: Sample[] = [
   },
   {
     label: 'Tudor Arghezi — Testament',
-    source: 'https://lyricstranslate.com/en/tudor-arghezi-testament-poem-complet-lyrics.html',
+    source: 'https://poetii-nostri.ro/tudor-arghezi-testament-poezie-id-70/',
     text: 'Nu-ți voi lăsa drept bunuri, după moarte, decât un nume adunat pe-o carte, în seara răzvrătită care vine de la străbunii mei până la tine. Cartea mea-i, fiule, o treaptă.',
   },
   {
     label: 'George Bacovia — Plumb',
-    source: 'https://lyricstranslate.com/en/george-bacovia-plumb-english',
+    source: 'https://poetii-nostri.ro/george-bacovia-plumb-poezie-id-125/',
     text: 'Dormeau adânc sicriele de plumb, și flori de plumb și funerar veștmânt. Stam singur în cavou și era vânt și scârțâiau coroanele de plumb.',
   },
   {
@@ -76,8 +76,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Mircea Eliade — Noaptea de Sânziene',
-    source:
-      'https://scldr.ro/wp-content/uploads/simple-file-list/mircea-eliade-noaptea-de-sanziene.pdf',
+    source: 'https://ro.wikipedia.org/wiki/Noaptea_de_Sânziene',
     text: 'Deschise cât putu de încet ușa și aprinse lumina. Odaia era caldă; mirosea a praf. Obloanele ferestrelor erau lăsate. Alături de pat se afla o masă mare de lemn încărcată cu cărți, aproape toate noi, unele cu foile încă netăiate.',
   },
   {
@@ -98,7 +97,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Ion Barbu — Joc secund',
-    source: 'https://lyricstranslate.com/en/ion-barbu-joc-secund-lyrics.html',
+    source: 'https://www.poezie.ro/index.php/poetry/21859/Joc_secund',
     text: 'Din ceas, dedus adâncul acestei calme creste, intrată prin oglindă în mântuit azur, tăind pe înecarea cirezilor agreste, în grupurile apei, un joc secund, mai pur.',
   },
   {

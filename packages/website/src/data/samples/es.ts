@@ -53,7 +53,7 @@ export const es: Sample[] = [
   },
   {
     label: 'Sor Juana Inés de la Cruz — Hombres necios',
-    source: 'https://ccat.sas.upenn.edu/romance/spanish/219/07colonial/sorjuanahombresnecios.html',
+    source: 'https://es.wikisource.org/wiki/Redondillas',
     text: 'Hombres necios que acusáis a la mujer sin razón, sin ver que sois la ocasión de lo mismo que culpáis. Si con ansia sin igual solicitáis su desdén, ¿por qué queréis que obren bien si las incitáis al mal?',
   },
   {
@@ -98,8 +98,7 @@ export const es: Sample[] = [
   },
   {
     label: 'Vargas Llosa — La ciudad y los perros',
-    source:
-      'https://www.guao.org/sites/default/files/biblioteca/La%20ciudad%20y%20los%20perros%20Vargas%20LLosa.pdf',
+    source: 'https://es.wikipedia.org/wiki/La_ciudad_y_los_perros_(novela)',
     text: 'Cuatro, dijo el Jaguar. Los rostros se suavizaron en el resplandor vacilante que el globo de luz difundía por el recinto, a través de escasas partículas limpias de vidrio: el peligro había desaparecido para todos, salvo para Porfirio Cava.',
   },
 ];

@@ -139,9 +139,9 @@ function redirectLooksLikeGate(requestedUrl: string, proxiedUrl: string | null):
   return null;
 }
 
-async function checkUrl(entry: UrlEntry): Promise<CheckResult> {
+async function checkUrl(entry: UrlEntry, timeoutMs: number = TIMEOUT_MS): Promise<CheckResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const proxyUrl = `${CORS_PROXY_URL}${encodeURIComponent(entry.url)}`;
@@ -212,6 +212,25 @@ async function checkAll(entries: UrlEntry[]): Promise<CheckResult[]> {
 
   const workers = Array.from({ length: CONCURRENCY }, () => worker());
   await Promise.all(workers);
+
+  // A batch of CONCURRENCY simultaneous requests can starve a slow-but-
+  // working site into a false timeout purely from contention on the proxy
+  // worker or the site's own rate limiting — retest timeouts one at a time,
+  // with a longer budget, before reporting them as broken.
+  const timedOut = results.filter((r) => r.error === 'Timeout');
+  if (timedOut.length > 0) {
+    process.stderr.write(`\nRetrying ${timedOut.length} timeout(s) one at a time...\n`);
+    for (const prior of timedOut) {
+      const retry = await checkUrl(prior.entry, TIMEOUT_MS * 2);
+      const index = results.indexOf(prior);
+      results[index] = retry;
+      const icon = retry.error ? '✗' : '✓';
+      process.stderr.write(
+        `${icon} (retry) ${retry.entry.file}:${retry.entry.label}${retry.error ? ` — ${retry.error}` : ''}\n`
+      );
+    }
+  }
+
   return results;
 }
 
