@@ -2,7 +2,7 @@
  * Tokenization utilities for splitting text into word and non-word tokens.
  */
 
-import { normalizeApostrophes } from './text';
+import { extractPreservedPatterns, normalizeApostrophes, restorePreservedPatterns } from './text';
 
 // Shared regex patterns for word tokenization (exported for use in dom package)
 /** Regex to split text into word and non-word tokens (includes accented Latin chars).
@@ -196,17 +196,19 @@ export function tokenizePhonetic(text: string): IndexedToken[] {
 
 /**
  * Tokenizes Ingglish/English text into words and non-words.
- * Words are sequences of letters and apostrophes.
+ * Words are sequences of letters and apostrophes. URLs, emails and dotted
+ * tokens ("node.js", "e.g.") are kept whole inside non-word tokens.
  */
 export function tokenizeText(text: string): TextToken[] {
-  const normalized = normalizeApostrophes(text);
-  const parts = normalized.split(WORD_SPLIT_REGEX);
+  const { preserved, text: masked } = extractPreservedPatterns(normalizeApostrophes(text));
+  const parts = masked.split(WORD_SPLIT_REGEX);
 
-  // Single pass: filter and map together
+  // WORD_SPLIT_REGEX is a capturing group, so words sit at odd indices.
   const tokens: TextToken[] = [];
-  for (const part of parts) {
+  for (const [i, part] of parts.entries()) {
     if (part.length > 0) {
-      tokens.push({ isWord: WORD_TEST_REGEX.test(part), text: part });
+      const isWord = i % 2 === 1;
+      tokens.push({ isWord, text: isWord ? part : restorePreservedPatterns(part, preserved) });
     }
   }
   return tokens;

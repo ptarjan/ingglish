@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 // All words below are NOT in the CMU dictionary, so translateSync
 // exercises the G2P pipeline. Strip the not-found marker to get just
 // the phonetic output.
-const g2p = (word: string) => translateSync(word).replace(/^\uFFFD/, '');
+const g2p = (word: string) => translateSync(word);
 
 describe('G2P basic rules', () => {
   it.each([
@@ -41,7 +41,7 @@ describe('G2P basic rules', () => {
 describe('G2P format output', () => {
   it('produces different output for ingglish vs ipa format', () => {
     const ingglish = g2p('gub');
-    const ipa = translateSync('gub', { format: 'ipa' }).replace(/^\uFFFD/, '');
+    const ipa = translateSync('gub', { format: 'ipa' });
     expect(ingglish).not.toBe(ipa);
   });
 

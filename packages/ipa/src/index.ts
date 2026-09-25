@@ -20,7 +20,6 @@ export {
   getLanguage,
   LANGUAGES,
   lookupDict,
-  NOT_FOUND_MARKER,
   toNullProto,
 } from './dict';
 export type { Language, PhoneDict } from './dict';

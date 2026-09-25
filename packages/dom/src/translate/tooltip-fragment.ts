@@ -3,13 +3,7 @@
  */
 
 import { translateSyncWithMapping } from 'ingglish';
-import {
-  applyCasePattern,
-  detectCasePattern,
-  normalizeApostrophes,
-  WORD_SPLIT_REGEX,
-  WORD_TEST_REGEX,
-} from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern, tokenizeText } from '@ingglish/normalize';
 import type { OutputFormat, TranslatedToken } from '@ingglish/phonemes';
 import {
   ATTR_ORIGINAL_WORD,
@@ -67,12 +61,9 @@ export function createTooltipFragmentFromMap(
   text: string,
   translations: Record<string, string>
 ): DocumentFragment {
-  const normalized = normalizeApostrophes(text);
-  const tokens = normalized.split(WORD_SPLIT_REGEX);
-
   return buildTooltipFragment(
-    tokens.filter(Boolean).map((token) => {
-      if (WORD_TEST_REGEX.test(token)) {
+    tokenizeText(text).map(({ isWord, text: token }) => {
+      if (isWord) {
         const lowerToken = token.toLowerCase();
         const translated = translations[lowerToken];
         if (translated !== undefined && translated !== lowerToken) {

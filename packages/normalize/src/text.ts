@@ -17,23 +17,25 @@ export const URL_REGEX = /(?:https?|ftp|file):\/\/[^\s<>"')\]]+/gi;
 export const EMAIL_REGEX = /[\w.%+-]{1,64}@(?:[a-z0-9-]{1,63}\.){1,10}[a-z]{2,63}/gi;
 
 /**
- * Regex to match bare domain names (without protocol).
- * Matches common TLDs to avoid false positives like "Dr. Smith".
- * Includes optional path/query after the domain.
+ * Regex to match single letters each followed by a period ("e.g.", "i.e.",
+ * "U.S.A."), including the final period, so it is not read as a sentence end.
  */
-const COMMON_TLDS =
-  'com|org|net|edu|gov|io|co|uk|de|fr|jp|au|ca|ru|ch|it|nl|se|no|es|mil' +
-  '|info|biz|tv|me|app|dev|ai|xyz' +
-  // Newer/less common but seen on HN, Reddit, etc.
-  '|rs|site|tech|blog|news|club|lol|new|world|online|space|fun|live|shop|store' +
-  '|gg|fm|im|is|to|cc|ws|ly|gl|be|us|in|eu|asia|pro|cz|pl|fi|dk|pt|ie|nz|za|br|mx|ar|cl|kr|tw|hk|sg|id|th|vn|ph';
-export const BARE_DOMAIN_REGEX = new RegExp(
-  String.raw`\b(?:[a-z0-9][-a-z0-9]*\.)+(?:${COMMON_TLDS})\b(?:\/[^\s<>"')\]]*)?`,
-  'gi'
+export const LETTER_ABBREVIATION_REGEX = /(?<![\p{L}\p{N}_.])(?:\p{L}\.){2,}(?![\p{L}\p{N}_])/gu;
+
+/**
+ * Regex to match letters/digits joined by '.' with no whitespace: domains
+ * ("f-droid.org"), filenames ("ansi2html.py"), names ("node.js"), versions
+ * ("1.2.3"). Includes an optional path after the token. A trailing period is
+ * left out, so "see node.js." still ends a sentence.
+ */
+const DOTTED_LABEL = String.raw`[\p{L}\p{N}_][-\p{L}\p{N}_]*`;
+export const DOTTED_TOKEN_REGEX = new RegExp(
+  String.raw`(?<![\p{L}\p{N}_.-])${DOTTED_LABEL}(?:\.${DOTTED_LABEL})+(?![\p{L}\p{N}_])(?:\/[^\s<>"')\]]*)?`,
+  'gu'
 );
 
 /**
- * Extracts URLs and emails from text, replacing them with placeholders.
+ * Extracts URLs, emails and dotted tokens from text, replacing them with placeholders.
  * Returns the modified text and a map to restore originals.
  * Placeholders use non-alphanumeric characters to avoid being split by word regex.
  */
@@ -67,16 +69,30 @@ export function extractPreservedPatterns(text: string): {
     });
   }
 
-  // Replace bare domains (after URLs and emails to avoid double-matching)
+  // Replace abbreviations, then other dotted tokens (after URLs and emails to
+  // avoid double-matching)
   if (result.includes('.')) {
-    result = result.replaceAll(BARE_DOMAIN_REGEX, (match) => {
-      const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
-      preserved.set(placeholder, match);
-      return placeholder;
-    });
+    for (const regex of [LETTER_ABBREVIATION_REGEX, DOTTED_TOKEN_REGEX]) {
+      result = result.replaceAll(regex, (match) => {
+        const placeholder = `\u0000\u0001${counter++}\u0001\u0000`;
+        preserved.set(placeholder, match);
+        return placeholder;
+      });
+    }
   }
 
   return { preserved, text: result };
+}
+
+/**
+ * Replaces the placeholders from extractPreservedPatterns in text with their originals.
+ */
+export function restorePreservedPatterns(text: string, preserved: Map<string, string>): string {
+  let result = text;
+  for (const [placeholder, original] of preserved) {
+    result = result.replace(placeholder, original);
+  }
+  return result;
 }
 
 // Pre-compiled regex patterns (avoid per-call RegExp object creation)

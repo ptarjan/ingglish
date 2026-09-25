@@ -8,6 +8,7 @@
 import {
   extractPreservedPatterns,
   normalizeApostrophes,
+  restorePreservedPatterns,
   WORD_SPLIT_REGEX,
 } from '@ingglish/normalize';
 import type { OutputFormat } from '@ingglish/phonemes';
@@ -28,7 +29,8 @@ export type WordRenderer = (word: string) => string;
 export type WordTranslator = (word: string) => TranslateResult;
 
 // Pre-compiled regex patterns
-const SENTENCE_END = /[.?!。！？]/;
+/** Sentence-ending punctuation; a mark followed by a letter or digit ("3.14") ends nothing. */
+const SENTENCE_END = /[.?!。！？](?![\p{L}\p{N}])/u;
 export const HAS_LETTER = /\p{L}/u;
 
 /**
@@ -112,16 +114,8 @@ export function mapTokens(
  * original text in-place. Returns null if no placeholders found in the token.
  */
 const expandPlaceholderText = (token: string, preserved: Map<string, string>): null | string => {
-  let found = false;
-  let result = token;
-  for (const [placeholder, original] of preserved) {
-    const idx = result.indexOf(placeholder);
-    if (idx !== -1) {
-      result = result.slice(0, idx) + original + result.slice(idx + placeholder.length);
-      found = true;
-    }
-  }
-  return found ? result : null;
+  const result = restorePreservedPatterns(token, preserved);
+  return result === token ? null : result;
 };
 
 /**

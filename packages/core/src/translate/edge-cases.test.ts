@@ -35,7 +35,6 @@ describe('forward word translation edge cases', () => {
     // sentence-level
     ['hello 42 world', 'Haloh 42 werld', 'preserves numbers in sentence'],
     ['hello... world', 'Haloh... Werld', 'preserves ellipsis in sentence'],
-    ['bcdfg', '\uFFFDbcdfg', 'vowelless word gets NOT_FOUND_MARKER'],
     // unstressed schwa mapping (to-ingglish.ts)
     ['about', 'about', 'AH0 → "a" (unstressed schwa)'],
     ['up', 'uhp', 'AH1 → "uh" (stressed)'],
@@ -349,5 +348,63 @@ describe('pipeline and forward.ts edge cases', () => {
     expect(sync).toBe(mapping);
     // The word after the period is capitalized.
     expect(sync).toMatch(/\.\s+[A-Z]/);
+  });
+});
+
+// ===========================================================================
+// Dotted tokens: letters/digits joined by '.' with no whitespace
+// ===========================================================================
+
+describe('dotted tokens pass through verbatim', () => {
+  const DOTTED = [
+    ['inoti.fyi', 'a domain with an uncommon TLD'],
+    ['ansi2html.py', 'a filename'],
+    ['node.js', 'a library name'],
+    ['f-droid.org', 'a hyphenated domain'],
+    ['v1.2.3', 'a version'],
+    ['e.g.', 'a single-letter abbreviation'],
+    ['i.e.', 'another single-letter abbreviation'],
+    ['U.S.A.', 'an uppercase single-letter abbreviation'],
+  ];
+
+  it.each(DOTTED)('translateSync keeps %s (%s)', (token) => {
+    expect(translateSync(`see ${token} or this`)).toBe(`See ${token} or dhis`);
+  });
+
+  it.each(DOTTED)('translateSyncWithMapping keeps %s (%s)', (token) => {
+    const text = translateSyncWithMapping(`see ${token} or this`)
+      .map((t) => t.translated)
+      .join('');
+    expect(text).toBe(`See ${token} or dhis`);
+  });
+
+  it.each(DOTTED)('reverseTranslateSync keeps %s (%s)', (token) => {
+    expect(reverseTranslateSync(`See ${token} or dhis`)).toBe(`See ${token} or this`);
+  });
+
+  it('translates the Lobsters sample', () => {
+    expect(
+      translateSync('via inoti.fyi and ansi2html.py on f-droid.org see node.js or e.g. this')
+    ).toBe('Vaia inoti.fyi and ansi2html.py on f-droid.org see node.js or e.g. dhis');
+  });
+
+  it.each([
+    ['numbers', 'see 3.14 now', 'See 3.14 nou'],
+    ['a sentence end with no space', 'it ended.Then we', 'It ended.Then wee'],
+  ])('a period without whitespace after it is no sentence boundary (%s)', (_, input, expected) => {
+    expect(translateSync(input)).toBe(expected);
+    const mapped = translateSyncWithMapping(input)
+      .map((t) => t.translated)
+      .join('');
+    expect(mapped).toBe(expected);
+  });
+
+  it('a period followed by whitespace still starts a sentence', () => {
+    expect(translateSync('see node.js. then this')).toBe('See node.js. Dhen dhis');
+  });
+
+  it('an unknown word never gains a replacement character', () => {
+    expect(translateSync('see js now')).not.toContain('�');
+    expect(translateSync('bcdfg')).toBe('bcdfg');
   });
 });

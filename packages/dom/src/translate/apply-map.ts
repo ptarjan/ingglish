@@ -2,7 +2,7 @@
  * Apply pre-computed translations to DOM.
  */
 
-import { applyCasePattern, detectCasePattern, normalizeApostrophes } from '@ingglish/normalize';
+import { applyCasePattern, detectCasePattern, tokenizeText } from '@ingglish/normalize';
 import { ATTR_ORIGINAL_CONTENT } from '../constants';
 import {
   collectTextNodes,
@@ -19,9 +19,6 @@ const DEFAULT_CHUNK_SIZE = 100;
 
 // Threshold for synchronous processing (avoid RAF overhead for small pages)
 const SYNC_THRESHOLD = 500;
-
-// Word matching regex for exec-based processing (faster than split+test)
-const WORD_REGEX = /(?<!\d)[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF']+(?!\d)/g;
 
 /**
  * Options for applying pre-computed translations.
@@ -99,34 +96,16 @@ function processTextNode(
     const fragment = createTooltipFragmentFromMap(textNode.textContent ?? '', translations);
     textNode.replaceWith(fragment);
   } else {
-    // Simple text replacement using regex exec (30% faster than split+test)
     const text = textNode.textContent ?? '';
     rememberOriginalText(textNode, text);
-    const normalized = normalizeApostrophes(text);
     let result = '';
-    let lastIndex = 0;
-    let match;
-
-    // Reset regex state for each node
-    WORD_REGEX.lastIndex = 0;
-
-    while ((match = WORD_REGEX.exec(normalized)) !== null) {
-      // Add text between matches (punctuation, spaces, etc.)
-      result += normalized.slice(lastIndex, match.index);
-      lastIndex = match.index + match[0].length;
-
-      const word = match[0];
-      const translated = translations[word.toLowerCase()];
-      if (translated === undefined) {
-        result += word;
-      } else {
-        const pattern = detectCasePattern(word);
-        result += applyCasePattern(translated, pattern, word);
-      }
+    for (const { isWord, text: token } of tokenizeText(text)) {
+      const translated = isWord ? translations[token.toLowerCase()] : undefined;
+      result +=
+        translated === undefined
+          ? token
+          : applyCasePattern(translated, detectCasePattern(token), token);
     }
-
-    // Add remaining text after last match
-    result += normalized.slice(lastIndex);
     textNode.textContent = result;
   }
 }

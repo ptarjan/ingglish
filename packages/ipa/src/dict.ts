@@ -416,9 +416,6 @@ function lookupKhmerCompound(
 // Register Khmer word resolver (greedy compound segmentation)
 WORD_RESOLVERS.km = (entries, word) => lookupKhmerCompound(entries, word);
 
-/** Marker for words not found in the dictionary */
-export const NOT_FOUND_MARKER = '\u{FFFD}'; // Unicode replacement character
-
 /**
  * Builds a reverse map from a PhoneDict: stress-free ARPAbet key → source words.
  * Used for reverse-translating Ingglish back to the source language.

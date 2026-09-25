@@ -2,7 +2,7 @@
  * Word extraction utilities.
  */
 
-import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@ingglish/normalize';
+import { tokenizeText } from '@ingglish/normalize';
 
 /**
  * Extracts unique words from text for batch translation.
@@ -11,16 +11,7 @@ import { normalizeApostrophes, WORD_SPLIT_REGEX, WORD_TEST_REGEX } from '@inggli
  * @returns Array of unique lowercase words (no duplicates)
  */
 export function extractWords(text: string): string[] {
-  const normalized = normalizeApostrophes(text);
-  const tokens = normalized.split(WORD_SPLIT_REGEX);
-  // Single pass: filter, lowercase, and deduplicate
-  const uniqueWords = new Set<string>();
-  for (const token of tokens) {
-    if (token !== '' && WORD_TEST_REGEX.test(token)) {
-      uniqueWords.add(token.toLowerCase());
-    }
-  }
-  return [...uniqueWords];
+  return extractWordsFromTexts([text]);
 }
 
 /**
@@ -31,14 +22,15 @@ export function extractWords(text: string): string[] {
  * @returns Array of unique lowercase words across all nodes
  */
 export function extractWordsFromNodes(textNodes: Text[]): string[] {
+  return extractWordsFromTexts(textNodes.map((node) => node.textContent ?? ''));
+}
+
+function extractWordsFromTexts(texts: string[]): string[] {
   const uniqueWords = new Set<string>();
-  for (const node of textNodes) {
-    const text = node.textContent ?? '';
-    const normalized = normalizeApostrophes(text);
-    const tokens = normalized.split(WORD_SPLIT_REGEX);
-    for (const token of tokens) {
-      if (token !== '' && WORD_TEST_REGEX.test(token)) {
-        uniqueWords.add(token.toLowerCase());
+  for (const text of texts) {
+    for (const token of tokenizeText(text)) {
+      if (token.isWord) {
+        uniqueWords.add(token.text.toLowerCase());
       }
     }
   }

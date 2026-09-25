@@ -70,7 +70,7 @@ function resolveJaKana(entries: Record<string, string[]>, word: string): string[
     return undefined;
   }
   // If only structural markers were present (e.g. just っ), return empty
-  // phoneme array rather than undefined to avoid NOT_FOUND_MARKER
+  // phoneme array rather than undefined so the word counts as found
   if (result.length === 0 && allSkippable) {
     return [];
   }

@@ -6,7 +6,7 @@ import { ARPABET_VOWELS, ARPABET_CONSONANTS, STRESS_MARKER_REGEX } from '@inggli
 // All words used in G2P tests are NOT in the CMU dictionary, so translateSync
 // exercises the G2P pipeline. Strip the not-found marker to get just the
 // phonetic output.
-const g2p = (word: string) => translateSync(word).replace(/^\uFFFD/, '');
+const g2p = (word: string) => translateSync(word);
 
 describe('unknown-words', () => {
   describe('CUSTOM_PRONUNCIATIONS validation', () => {

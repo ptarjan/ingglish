@@ -21,7 +21,7 @@ import {
   parseInitialismWithSuffix,
   translateAsAcronym,
 } from '@ingglish/fallback';
-import { G2P_CONVERTERS, lookupDict, NOT_FOUND_MARKER, type PhoneDict } from '@ingglish/ipa';
+import { G2P_CONVERTERS, lookupDict, type PhoneDict } from '@ingglish/ipa';
 import {
   applyCasePattern,
   detectCasePattern,
@@ -387,14 +387,7 @@ function translateWordString(word: string, dict: PhoneDict, format: OutputFormat
   if (fast !== null) {
     return fast;
   }
-  const result = translateWordInternal(word, dict, format);
-  // For languages with low-confidence G2P (English), unmatched words still have
-  // a useful G2P translation. Only prepend NOT_FOUND_MARKER when the word truly
-  // couldn't be translated (matched=false AND no G2P fallback was applied).
-  if (!result.matched && result.translated === word) {
-    return NOT_FOUND_MARKER + word;
-  }
-  return result.translated;
+  return translateWordInternal(word, dict, format).translated;
 }
 
 /**

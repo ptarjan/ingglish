@@ -719,6 +719,15 @@ describe('dom-translator', () => {
       expect(document.querySelector('p')?.textContent).toBe(expected);
     });
 
+    it.each([false, true])('keeps dotted tokens verbatim (showTooltips: %s)', async (tips) => {
+      document.body.innerHTML = '<p>hello inoti.fyi node.js e.g. f-droid.org</p>';
+      const map = { droid: 'droyd', e: 'ee', fyi: 'faiwai', g: 'jee', hello: 'haloh', js: 'jz' };
+      await applyTranslationsMap(document.body, map, { showTooltips: tips });
+      expect(document.querySelector('p')?.textContent).toBe(
+        'haloh inoti.fyi node.js e.g. f-droid.org'
+      );
+    });
+
     it('should store original content on parent element', async () => {
       document.body.innerHTML = '<p>Hello world</p>';
       await applyTranslationsMap(document.body, { hello: 'haloh' });
@@ -773,6 +782,7 @@ describe('dom-translator', () => {
       ['', [], 'empty text'],
       ['Hello 123 world!', ['hello', 'world'], 'skips numbers/non-words'],
       ['don\u2019t won\u2019t', ["don't", "won't"], 'normalizes apostrophes'],
+      ['see node.js, e.g. inoti.fyi', ['see'], 'skips dotted tokens'],
     ] as const)('extractWords(%s) → %j (%s)', (input, expected, _desc) => {
       expect(extractWords(input)).toEqual([...expected]);
     });

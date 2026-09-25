@@ -13,14 +13,14 @@ import {
   loadFrequencies,
   lookupPronunciation,
 } from '@ingglish/dictionary';
-import { translateSync } from '../../src/translate/forward.js';
+import { translateSync, translateSyncWithMapping } from '../../src/translate/forward.js';
 import {
   reverseTranslateSync,
   reverseTranslateSyncWithMapping,
 } from '../../src/translate/reverse.js';
 import '../../src/register-english.js';
 import { setLangDict } from '../../src/dict-loader.js';
-import { convertIpaEntries, getLanguage, LANGUAGES, NOT_FOUND_MARKER } from '@ingglish/ipa';
+import { convertIpaEntries, getLanguage, LANGUAGES } from '@ingglish/ipa';
 import type { PhoneDict } from '@ingglish/ipa';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -96,10 +96,10 @@ export async function main() {
     // Show per-word output
     const words = text.match(/\S+/g) || [];
     for (const word of words) {
-      const result = translateSync(word, { lang: langCode });
-      if (result.includes(NOT_FOUND_MARKER)) {
-        const clean = result.replaceAll(NOT_FOUND_MARKER, '');
-        console.log(`? "${word}" -> not found (kept as "${clean}")`);
+      const tokens = translateSyncWithMapping(word, { lang: langCode });
+      const result = tokens.map((t) => t.translated).join('');
+      if (tokens.some((t) => t.isWord && !t.matched)) {
+        console.log(`? "${word}" -> not found (kept as "${result}")`);
       } else {
         console.log(`✓ "${word}" -> "${result}"`);
       }

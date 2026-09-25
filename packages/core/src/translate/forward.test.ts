@@ -208,7 +208,7 @@ describe('translator', () => {
     it.each(['ssssss', 'dddddddddd', 'hellooo', 'nooo'])(
       'should pass through "%s" with 3+ repeated characters',
       (word) => {
-        // translateSyncWithMapping shows the raw word (without NOT_FOUND_MARKER)
+        // translateSyncWithMapping shows the raw word and flags it unmatched
         const tokens = translateSyncWithMapping(word);
         const wordToken = tokens.find((t) => t.isWord);
         expect(wordToken?.translated).toBe(word);
