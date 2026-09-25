@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const nb: Sample[] = [
   {
     label: 'Bjørnstjerne Bjørnson — Ja, vi elsker dette landet',
-    source: 'https://snl.no/Ja,_vi_elsker_dette_landet',
+    source: 'https://www.bokselskap.no/boker/bjornsondikt/javielsker',
     text: 'Ja, vi elsker dette landet, som det stiger frem, furet, værbitt over vannet, med de tusen hjem. Elsker, elsker det og tenker på vår far og mor og den saganatt som senker drømmer på vår jord.',
   },
   {
@@ -46,7 +46,7 @@ export const nb: Sample[] = [
   },
   {
     label: 'Karl Ove Knausgård — Min kamp',
-    source: 'https://ndla.no/nb/r/norsk-pb/min-kamp-1-utdrag/bcecc7e987',
+    source: 'https://ndla.no/nb/r/norsk-pb/min-kamp-1-utdrag/206502e41c',
     text: 'For hjertet er livet enkelt: det slår så lenge det kan. Så stopper det. Før eller siden, en eller annen dag, opphører denne stampende bevegelsen av seg selv.',
   },
   {
@@ -101,13 +101,12 @@ export const nb: Sample[] = [
   },
   {
     label: 'FN — Verdenserklæringen om menneskerettighetene',
-    source: 'http://efele.net/udhr/d/udhr_nob.html',
+    source: 'https://no.wikisource.org/wiki/Verdenserkl%C3%A6ringen_om_Menneskerettighetene',
     text: 'Alle mennesker er født frie og med samme menneskeverd og menneskerettigheter. De er utstyrt med fornuft og samvittighet og bør handle mot hverandre i brorskapets ånd.',
   },
   {
-    label: 'Dag Solstad — Genanse og verdighet',
-    source:
-      'https://heltgreilitteratur.wordpress.com/2011/09/05/genanse-og-verdighet-av-dag-solstad/',
-    text: 'Egentlig var han en litt fordrukken lektor i 50-årsalderen, med en kone som hadde est litt for mye ut, og som han spiste frokost med hver morgen.',
+    label: 'Grunnloven — §§ 93, 96 og 98',
+    source: 'https://lovdata.no/dokument/NL/lov/1814-05-17#PARAGRAF_96',
+    text: 'Ingen kan dømmes uten etter lov eller straffes uten etter dom. Alle er like for loven. Ingen kan dømmes til døden.',
   },
 ];
