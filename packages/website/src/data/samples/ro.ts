@@ -97,7 +97,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Ion Barbu — Joc secund',
-    source: 'https://www.poezie.ro/index.php/poetry/21859/Joc_secund',
+    source: 'https://poezie.ro/clasici/ion-barbu/poezie/joc-secund',
     text: 'Din ceas, dedus adâncul acestei calme creste, intrată prin oglindă în mântuit azur, tăind pe înecarea cirezilor agreste, în grupurile apei, un joc secund, mai pur.',
   },
   {
