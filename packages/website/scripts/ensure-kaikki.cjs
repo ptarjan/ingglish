@@ -11,8 +11,9 @@ function main() {
 
   const kaikkiDir = join(__dirname, '..', 'data', 'kaikki');
 
-  // Check for at least one extracted file
-  const sampleFile = join(kaikkiDir, 'fi.tsv');
+  // The paradigm file is the newest kind of output: its absence means the
+  // data predates it and must be re-extracted.
+  const sampleFile = join(kaikkiDir, 'sv.forms.tsv');
 
   const force = process.argv.includes('--force');
 

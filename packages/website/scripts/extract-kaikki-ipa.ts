@@ -8,6 +8,11 @@
  * Each JSONL entry has a `sounds` array with IPA transcriptions.
  * We prefer phonemic /IPA/ over phonetic [IPA].
  * Output: word\t/IPA/ (one per line)
+ *
+ * Wiktionary transcribes lemmas, not their inflections, so for languages
+ * flagged `paradigms` we also write <code>.forms.tsv: each lemma followed by
+ * its inflected forms (from inflection tables and form-of entries).
+ * build-ipa-dicts.ts derives IPA for those forms.
  */
 
 import { spawn } from 'child_process';
@@ -19,7 +24,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'kaikki');
 
-const LANGUAGES: { code: string; name: string }[] = [
+export const LANGUAGES: { code: string; name: string; paradigms?: true }[] = [
   { code: 'ar', name: 'Arabic' },
   { code: 'de', name: 'German' },
   { code: 'eo', name: 'Esperanto' },
@@ -37,7 +42,7 @@ const LANGUAGES: { code: string; name: string }[] = [
   { code: 'or', name: 'Odia' },
   { code: 'pt', name: 'Portuguese' },
   { code: 'ro', name: 'Romanian' },
-  { code: 'sv', name: 'Swedish' },
+  { code: 'sv', name: 'Swedish', paradigms: true },
   { code: 'sw', name: 'Swahili' },
   { code: 'vi', name: 'Vietnamese' },
   { code: 'yue', name: 'Cantonese' },
@@ -52,6 +57,42 @@ interface KaikkiSound {
 interface KaikkiEntry {
   word?: string;
   sounds?: KaikkiSound[];
+  forms?: { form?: string; tags?: string[] }[];
+  senses?: { form_of?: { word?: string }[] }[];
+}
+
+/** Kaikki data file listing a language's paradigms, one lemma and its forms per line. */
+export function paradigmsFile(code: string): string {
+  return `${code}.forms.tsv`;
+}
+
+/** Form-table tags that label the table itself rather than an inflected form. */
+const TABLE_META_TAGS = new Set(['table-tags', 'inflection-template']);
+
+/**
+ * Add an entry's inflected forms to `paradigms` (lemma → forms): the forms
+ * in its inflection table, and, for a form-of entry, itself under its lemma.
+ */
+export function collectParadigm(entry: KaikkiEntry, paradigms: Map<string, Set<string>>): void {
+  const word = entry.word;
+  if (!word) return;
+  const add = (lemma: string, form: string): void => {
+    if (!form || form === '-' || form.includes(' ') || form === lemma) return;
+    let forms = paradigms.get(lemma);
+    if (!forms) {
+      forms = new Set();
+      paradigms.set(lemma, forms);
+    }
+    forms.add(form);
+  };
+  for (const f of entry.forms ?? []) {
+    if (f.form && !f.tags?.some((t) => TABLE_META_TAGS.has(t))) add(word, f.form);
+  }
+  for (const sense of entry.senses ?? []) {
+    for (const target of sense.form_of ?? []) {
+      if (target.word) add(target.word, word);
+    }
+  }
 }
 
 /**
@@ -84,7 +125,11 @@ export function extractIpa(sounds: KaikkiSound[]): string | null {
 /**
  * Stream a kaikki JSONL.gz file and extract word→IPA pairs.
  */
-async function extractLanguage(code: string, name: string): Promise<Map<string, string>> {
+async function extractLanguage(
+  code: string,
+  name: string,
+  paradigms: Map<string, Set<string>> | undefined
+): Promise<Map<string, string>> {
   const url = `https://kaikki.org/dictionary/${encodeURIComponent(name)}/kaikki.org-dictionary-${encodeURIComponent(name)}.jsonl.gz`;
   const dict = new Map<string, string>();
 
@@ -123,6 +168,8 @@ async function extractLanguage(code: string, name: string): Promise<Map<string, 
     } catch {
       continue;
     }
+
+    if (paradigms) collectParadigm(entry, paradigms);
 
     const word = entry.word;
     if (!word || !entry.sounds?.length) continue;
@@ -165,12 +212,22 @@ async function main(): Promise<void> {
     const outPath = path.join(OUTPUT_DIR, `${lang.code}.tsv`);
 
     try {
-      const dict = await extractLanguage(lang.code, lang.name);
+      const paradigms = lang.paradigms ? new Map<string, Set<string>>() : undefined;
+      const dict = await extractLanguage(lang.code, lang.name, paradigms);
       if (dict.size === 0) {
         console.log(`  ${lang.code}: no entries found, skipping`);
         continue;
       }
       await writeTsv(dict, outPath);
+      if (paradigms) {
+        const lines = [...paradigms].map(([lemma, forms]) => [lemma, ...forms].join('\t'));
+        await fs.writeFile(
+          path.join(OUTPUT_DIR, paradigmsFile(lang.code)),
+          lines.join('\n') + '\n',
+          'utf8'
+        );
+        console.log(`  ${lang.code}: ${paradigms.size} paradigms`);
+      }
       totalEntries += dict.size;
     } catch (err) {
       console.error(`  ${lang.code}: FAILED -`, err);

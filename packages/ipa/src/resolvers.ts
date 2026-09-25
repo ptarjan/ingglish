@@ -94,6 +94,7 @@ function tryLookup(dict: Record<string, string[]>, ...candidates: string[]): str
 /** Suffix → replacement candidates to try after stripping. */
 const SV_SUFFIXES: [string, string[]][] = [
   // 4+ char suffixes
+  ['arna', ['', 'e']],
   ['erna', ['', 'e']],
   ['orna', ['', 'a']],
   ['ande', ['', 'a']],

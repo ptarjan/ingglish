@@ -80,13 +80,42 @@ describe('Swedish resolver', () => {
     ['barnen', ['B', 'AA1', 'R', 'N'], 'strips -en suffix'],
     ['flickorna', ['F', 'L', 'IH1', 'K', 'AE2'], 'strips -orna suffix with -a replacement'],
     ['hundar', ['HH', 'UH1', 'N', 'D'], 'strips -ar suffix'],
-    ['barnens', ['B', 'AA1', 'R', 'N'], 'handles recursive genitive -s'],
+    ['hästarna', ['HH', 'EH1', 'S', 'T'], 'strips -arna suffix'],
   ])('%s → %j (%s)', (word, expected) => {
     expect(WORD_RESOLVERS.sv!(entries.sv!, word)).toEqual(expected);
   });
 
+  it('handles recursive genitive -s', () => {
+    expect(WORD_RESOLVERS.sv!({ barn: ['B', 'AA1', 'R', 'N'] }, 'barnens')).toEqual([
+      'B',
+      'AA1',
+      'R',
+      'N',
+    ]);
+  });
+
   it('returns undefined for unresolvable words', () => {
     expect(WORD_RESOLVERS.sv!(entries.sv!, 'xyz')).toBeUndefined();
+  });
+});
+
+// Wiktionary and ipa-dict transcribe lemmas only; build-ipa-dicts.ts derives
+// the inflected forms from kaikki's inflection tables.
+describe('Swedish inflected forms via translateSync()', () => {
+  beforeAll(() => loadLangDict('sv'), 30_000);
+
+  it.each([
+    ['ögon', 'ugawn', 'irregular plural of öga'],
+    ['stjärnor', 'shernawr', '-or plural'],
+    ['rummet', 'rumet', 'definite singular with doubled consonant'],
+    ['fötterna', 'fuhterna', 'definite plural of irregular fötter'],
+    ['hästarna', 'hestana', '-arna definite plural'],
+    ['säg', 'sey', 'imperative'],
+    ['äro', 'araw', 'archaic plural of är'],
+    ['vänner', 'vener', 'plural with doubled consonant'],
+    ['kommit', 'kawmit', 'supine'],
+  ])('%s → %s (%s)', (word, expected) => {
+    expect(translateSync(word, { lang: 'sv' })).toBe(expected);
   });
 });
 

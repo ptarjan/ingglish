@@ -17,6 +17,7 @@ import { promisify } from 'util';
 import { ipaToArpabet } from '../../ipa/src/from-ipa';
 import { IPA_LANGUAGE_OVERRIDES } from '../../ipa/src/ipa-maps';
 import { getStress, isVowel } from '@ingglish/phonemes';
+import { paradigmsFile } from './extract-kaikki-ipa';
 
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -63,6 +64,157 @@ export const MANUAL_ENTRIES: Record<string, Record<string, string>> = {
   // it dropped out of the kaikki Norwegian dump in July 2026.
   nb: { ø: '/øː/' },
 };
+
+/**
+ * IPA for the letters an inflectional ending may contain, per language. A
+ * language listed here gets its kaikki paradigms expanded (see
+ * deriveInflection). The first alternative is emitted; all are accepted when
+ * stripping a base's ending. Digraphs are tried before single letters.
+ */
+export const ENDING_IPA: Record<string, Record<string, readonly string[]>> = {
+  sv: {
+    a: ['a', 'ɑ'],
+    e: ['ɛ', 'e', 'ə'],
+    i: ['ɪ', 'i'],
+    o: ['ɔ', 'ʊ', 'o', 'u'],
+    d: ['d'],
+    l: ['l'],
+    m: ['m'],
+    n: ['n'],
+    r: ['r', 'ɾ'],
+    s: ['s'],
+    t: ['t'],
+    rd: ['ɖ'],
+    rl: ['ɭ'],
+    rn: ['ɳ'],
+    rs: ['ʂ'],
+    rt: ['ʈ'],
+  },
+};
+
+const VOWEL_LETTERS = 'aeiouyåäöæø';
+/** Stress, syllable and length marks plus combining diacritics: skipped when matching an ending. */
+const IPA_TRAILING_MARKS_RE = /[ˈˌ²¹.ːˑ̀-ͯ]+$/u;
+const IPA_TRAILING_STRESS_RE = /[ˈˌ²¹.]+$/u;
+const MAX_BASE_ENDING = 3;
+const MAX_FORM_ENDING = 5;
+
+/** Remove the IPA of `letters` from the end of `ipa`, or undefined if it doesn't end that way. */
+function stripEndingIpa(
+  ipa: string,
+  letters: string,
+  table: Record<string, readonly string[]>
+): string | undefined {
+  if (!letters) return ipa;
+  const body = ipa.replace(IPA_TRAILING_MARKS_RE, '');
+  for (const len of [2, 1]) {
+    const key = letters.slice(-len);
+    if (key.length !== len) continue;
+    for (const alt of table[key] ?? []) {
+      if (body.endsWith(alt)) {
+        const rest = stripEndingIpa(body.slice(0, -alt.length), letters.slice(0, -len), table);
+        if (rest !== undefined) return rest;
+      }
+    }
+  }
+  return undefined;
+}
+
+/** IPA for an ending's letters (digraphs first, doubled consonants once), or undefined. */
+function endingIpa(letters: string, table: Record<string, readonly string[]>): string | undefined {
+  let out = '';
+  for (let i = 0; i < letters.length; ) {
+    if (i > 0 && letters[i] === letters[i - 1] && !VOWEL_LETTERS.includes(letters[i]!)) {
+      i++;
+      continue;
+    }
+    const pair = letters.slice(i, i + 2);
+    const digraph = pair.length === 2 ? table[pair] : undefined;
+    const single = table[letters[i]!];
+    if (digraph) {
+      out += digraph[0];
+      i += 2;
+    } else if (single) {
+      out += single[0];
+      i++;
+    } else {
+      return undefined;
+    }
+  }
+  return out;
+}
+
+/**
+ * Derive IPA for an inflected `form` from a `base` in the same paradigm:
+ * split both at their longest common prefix, strip the base's ending from
+ * its IPA and append the form's ending. A consonant doubled across the split
+ * (rum → rummet, glömma → glöm) is pronounced once. Returns undefined when
+ * the stem changes (fot → fötter) or an ending has a letter the table lacks.
+ */
+export function deriveInflection(
+  base: string,
+  baseIpa: string,
+  form: string,
+  lang: string
+): string | undefined {
+  const table = ENDING_IPA[lang];
+  if (!table) return undefined;
+  let p = 0;
+  while (p < base.length && p < form.length && base[p] === form[p]) p++;
+  const stem = form.slice(0, p);
+  if (p < 2 || ![...stem].some((ch) => VOWEL_LETTERS.includes(ch))) return undefined;
+  let baseEnd = base.slice(p);
+  let formEnd = form.slice(p);
+  const last = stem[p - 1]!;
+  if (!VOWEL_LETTERS.includes(last)) {
+    if (baseEnd.startsWith(last)) baseEnd = baseEnd.slice(1);
+    if (formEnd.startsWith(last)) formEnd = formEnd.slice(1);
+  }
+  if (baseEnd.length > MAX_BASE_ENDING || formEnd.length > MAX_FORM_ENDING) return undefined;
+  const stemIpa = stripEndingIpa(baseIpa.replaceAll(IPA_SLASH_RE, ''), baseEnd, table);
+  const suffixIpa = endingIpa(formEnd, table);
+  if (stemIpa === undefined || suffixIpa === undefined) return undefined;
+  return `/${(stemIpa + suffixIpa).replace(IPA_TRAILING_STRESS_RE, '')}/`;
+}
+
+/** Parse a kaikki paradigm TSV: one paradigm per line, lemma first, tab-separated. */
+export function parseParadigms(text: string): string[][] {
+  return text
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => line.split('\t'));
+}
+
+/**
+ * Add derived IPA for every paradigm member missing from `ipaDict`, based on
+ * the member with IPA that shares the longest prefix with it. Derived forms
+ * never serve as bases. Returns the number of entries added.
+ */
+export function expandParadigms(
+  ipaDict: Record<string, string>,
+  paradigms: string[][],
+  lang: string
+): number {
+  const derived: Record<string, string> = {};
+  for (const words of paradigms) {
+    const bases = words.filter((w) => w in ipaDict);
+    if (bases.length === 0) continue;
+    for (const form of words) {
+      if (form in ipaDict || form in derived) continue;
+      let best: { ipa: string; prefix: number } | undefined;
+      for (const base of bases) {
+        let prefix = 0;
+        while (base[prefix] !== undefined && base[prefix] === form[prefix]) prefix++;
+        if (best && prefix <= best.prefix) continue;
+        const ipa = deriveInflection(base, ipaDict[base]!, form, lang);
+        if (ipa) best = { ipa, prefix };
+      }
+      if (best) derived[form] = best.ipa;
+    }
+  }
+  Object.assign(ipaDict, derived);
+  return Object.keys(derived).length;
+}
 
 async function download(url: string): Promise<string> {
   const { stdout } = await execFileAsync('curl', ['-sL', url], {
@@ -135,12 +287,16 @@ export function convertToArpabet(
  * Returns empty record if the file doesn't exist.
  */
 async function readKaikkiTsv(code: string): Promise<Record<string, string>> {
-  const tsvPath = path.join(KAIKKI_DIR, `${code}.tsv`);
+  const text = await readKaikkiFile(`${code}.tsv`);
+  return text ? parseTsv(text) : {};
+}
+
+/** Read a file from the kaikki data dir, or undefined if it doesn't exist. */
+async function readKaikkiFile(name: string): Promise<string | undefined> {
   try {
-    const text = await fs.readFile(tsvPath, 'utf8');
-    return parseTsv(text);
+    return await fs.readFile(path.join(KAIKKI_DIR, name), 'utf8');
   } catch {
-    return {};
+    return undefined;
   }
 }
 
@@ -163,6 +319,18 @@ async function buildAll(): Promise<void> {
       Object.assign(ipaDict, kaikki);
     }
 
+    // Inflected forms get IPA derived from a transcribed member of their paradigm
+    let derivedCount = 0;
+    if (ENDING_IPA[lang.code]) {
+      const forms = await readKaikkiFile(paradigmsFile(lang.code));
+      if (forms === undefined) {
+        throw new Error(
+          `${lang.code}: ${path.join(KAIKKI_DIR, paradigmsFile(lang.code))} is missing; run node scripts/ensure-kaikki.cjs --force`
+        );
+      }
+      derivedCount = expandParadigms(ipaDict, parseParadigms(forms), lang.code);
+    }
+
     // Hand-maintained entries win over both upstream sources
     Object.assign(ipaDict, MANUAL_ENTRIES[lang.code]);
 
@@ -175,7 +343,7 @@ async function buildAll(): Promise<void> {
     await fs.writeFile(outPath, json, 'utf8');
     if (kaikkiCount > 0) {
       console.log(
-        `  ${lang.code}: ${ipaCount} (ipa-dict) + ${kaikkiCount} (kaikki) = ${mergedCount} merged, ${(json.length / 1024).toFixed(0)} KB`
+        `  ${lang.code}: ${ipaCount} (ipa-dict) + ${kaikkiCount} (kaikki) + ${derivedCount} (derived inflections) = ${mergedCount} merged, ${(json.length / 1024).toFixed(0)} KB`
       );
     } else {
       console.log(`  ${lang.code}: ${ipaCount} entries, ${(json.length / 1024).toFixed(0)} KB`);

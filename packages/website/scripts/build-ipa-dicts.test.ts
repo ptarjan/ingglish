@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { applyDefaultStress, convertToArpabet, MANUAL_ENTRIES, parseTsv } from './build-ipa-dicts';
+import {
+  applyDefaultStress,
+  convertToArpabet,
+  deriveInflection,
+  ENDING_IPA,
+  expandParadigms,
+  MANUAL_ENTRIES,
+  parseParadigms,
+  parseTsv,
+} from './build-ipa-dicts';
+import { LANGUAGES, paradigmsFile } from './extract-kaikki-ipa';
 
 describe('MANUAL_ENTRIES', () => {
   // Kaikki regenerates from Wiktionary and can drop words between dumps —
@@ -107,5 +117,62 @@ describe('convertToArpabet (full pipeline)', () => {
     const ipaDict = { empty: '/' };
     const result = convertToArpabet(ipaDict, 'en');
     expect(result['empty']).toBeUndefined();
+  });
+});
+
+describe('deriveInflection', () => {
+  it.each([
+    ['öga', '/²øːɡa/', 'ögon', '/²øːɡɔn/', 'replaces the lemma ending'],
+    ['häst', '/hɛsːt/', 'hästarna', '/hɛsːtaɳa/', 'appends an ending, rn as retroflex'],
+    ['rum', '/rɵm/', 'rummet', '/rɵmɛt/', 'pronounces a consonant doubled across the split once'],
+    ['glömma', '/²ɡlœmːa/', 'glöm', '/²ɡlœmː/', 'strips past length marks and a doubled consonant'],
+    ['vacker', '/ˈvakːɛr/', 'vackra', '/ˈvakːra/', 'strips a two-letter ending'],
+    ['god', '/ɡuːd/', 'gott', '/ɡuːt/', 'pronounces a doubled consonant in the ending once'],
+    ['flicka', '/ˈflɪkːˌa/', 'flick', '/ˈflɪkː/', 'drops stress marks left dangling at the end'],
+    ['stjärna', '/ˈɧɛːɳa/', 'stjärnor', '/ˈɧɛːɳɔr/', 'strips a retroflex digraph'],
+  ])('%s %s → %s %s (%s)', (base, baseIpa, form, expected) => {
+    expect(deriveInflection(base, baseIpa, form, 'sv')).toBe(expected);
+  });
+
+  it.each([
+    ['fot', '/fuːt/', 'fötter', 'sv', 'the stem changes'],
+    ['gå', '/ɡoː/', 'gå', 'xx', 'the language has no ending table'],
+    ['stad', '/stɑːd/', 'städer', 'sv', 'the shared prefix has no vowel'],
+    ['ögonen', '/²øːɡɔnɛn/', 'ögat', 'sv', 'the base ending is too long'],
+    ['öga', '/²øːɡa/', 'ögonenskapen', 'sv', 'the form ending is too long'],
+    ['öga', '/øːɡe/', 'ögon', 'sv', "the base IPA doesn't end in its ending"],
+    ['öga', '/øːɡa/', 'ögx', 'sv', 'the form ending has a letter outside the table'],
+  ])('%s → %s is undefined when %s', (base, baseIpa, form, lang) => {
+    expect(deriveInflection(base, baseIpa, form, lang)).toBeUndefined();
+  });
+});
+
+describe('expandParadigms', () => {
+  it('adds forms from the transcribed member sharing the longest prefix, never from derived forms', () => {
+    const ipaDict: Record<string, string> = { fot: '/fuːt/', fötter: '/fœtːɛr/' };
+    const paradigms = parseParadigms('fot\tfoten\tfötter\tfötterna\n\nxyz\txyzs\n');
+    expect(expandParadigms(ipaDict, paradigms, 'sv')).toBe(2);
+    expect(ipaDict).toEqual({
+      fot: '/fuːt/',
+      foten: '/fuːtɛn/',
+      fötter: '/fœtːɛr/',
+      fötterna: '/fœtːɛrna/',
+    });
+  });
+
+  it('skips forms no base can derive', () => {
+    const ipaDict: Record<string, string> = { gå: '/ɡoː/' };
+    expect(expandParadigms(ipaDict, [['gå', 'gick']], 'sv')).toBe(0);
+  });
+});
+
+describe('paradigm languages', () => {
+  it('extracts paradigms for exactly the languages with an ending table', () => {
+    const extracted = LANGUAGES.filter((l) => l.paradigms).map((l) => l.code);
+    expect(extracted.sort()).toEqual(Object.keys(ENDING_IPA).sort());
+  });
+
+  it('names the paradigm file after the language', () => {
+    expect(paradigmsFile('sv')).toBe('sv.forms.tsv');
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractIpa } from './extract-kaikki-ipa';
+import { collectParadigm, extractIpa } from './extract-kaikki-ipa';
 
 describe('extractIpa', () => {
   it.each([
@@ -46,5 +46,37 @@ describe('extractIpa', () => {
     },
   ])('$name', ({ sounds }) => {
     expect(extractIpa(sounds)).toBeNull();
+  });
+});
+
+describe('collectParadigm', () => {
+  it('collects inflection-table forms and form-of entries under their lemma', () => {
+    const paradigms = new Map<string, Set<string>>();
+    collectParadigm(
+      {
+        word: 'öga',
+        forms: [
+          { form: 'no-table-tags', tags: ['table-tags'] },
+          { form: 'öga', tags: ['indefinite'] },
+          { form: 'ögon', tags: ['plural'] },
+          { form: '-', tags: ['plural'] },
+          { form: 'två ögon' },
+          {},
+        ],
+      },
+      paradigms
+    );
+    collectParadigm(
+      { word: 'ögonen', senses: [{ form_of: [{ word: 'öga' }, {}] }, {}] },
+      paradigms
+    );
+    collectParadigm({ word: 'äro', senses: [{ form_of: [{ word: 'vara' }] }] }, paradigms);
+    collectParadigm({ forms: [{ form: 'x' }] }, paradigms);
+    expect(paradigms).toEqual(
+      new Map([
+        ['öga', new Set(['ögon', 'ögonen'])],
+        ['vara', new Set(['äro'])],
+      ])
+    );
   });
 });
