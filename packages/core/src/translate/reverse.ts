@@ -24,6 +24,7 @@ import {
 import { getDictReverseMap } from '../dict-loader';
 import type { TranslateOptions } from '../dict-loader';
 import type { TranslatedToken } from './forward';
+import { translateWord } from './forward';
 import type { TranslateResult } from './pipeline';
 import { extractTokens, HAS_LETTER, mapTokens } from './pipeline';
 
@@ -53,7 +54,7 @@ export function reverseTranslateIPAWord(ipaWord: string): string[] {
     return [ipaWord];
   }
 
-  const matches = lookupByArpabet(arpabet);
+  const matches = lookupByArpabet(expandArpabetAlternatives(arpabet));
 
   if (matches.length === 0) {
     return [ipaWord];
@@ -81,13 +82,15 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
   }
   /* v8 ignore stop */
 
-  const matches = lookupByArpabet(arpabet);
+  const variants = expandArpabetAlternatives(arpabet);
+  const matches = lookupByArpabet(variants);
+  const spelledThisWay = wordsSpelledAs(ingglishWord.toLowerCase(), variants);
+  const ranked =
+    spelledThisWay.length === 0
+      ? matches
+      : [...spelledThisWay, ...matches.filter((word) => !spelledThisWay.includes(word))];
 
-  if (matches.length === 0) {
-    return [];
-  }
-
-  return matches.map((word) => applyCasePattern(word, casePattern));
+  return ranked.map((word) => applyCasePattern(word, casePattern));
 }
 
 /**
@@ -97,8 +100,8 @@ export function reverseTranslateWord(ingglishWord: string): string[] {
  * overwhelmingly more common than the primary's best match (>5x frequency).
  * This prevents "kat" → "cut" (3.5x) while allowing "haloh" → "hello" (3000x).
  */
-function lookupByArpabet(arpabet: string[]): string[] {
-  const [primary, ...alternatives] = expandArpabetAlternatives(arpabet);
+function lookupByArpabet(variants: string[][]): string[] {
+  const [primary, ...alternatives] = variants;
   // expandArpabetAlternatives always returns at least the primary
   /* v8 ignore start */
   if (!primary) {
@@ -154,6 +157,29 @@ function lookupByArpabet(arpabet: string[]): string[] {
   return primaryMatches;
 }
 
+/**
+ * Returns the candidate words (across every parse variant) whose forward
+ * translation is exactly `spelling`, most common first. The phoneme lookup
+ * alone can't tell them apart: the reverse dictionary is stress-stripped and
+ * holds every CMU variant, and the parse alternatives (AE→AH, ER→EH+R) cover
+ * spellings the forward translator never writes for those phonemes.
+ */
+function wordsSpelledAs(spelling: string, variants: string[][]): string[] {
+  const seen = new Set<string>();
+  const exact: string[] = [];
+  for (const variant of variants) {
+    for (const word of lookupPhonemeKey(variant.join(' ')) ?? []) {
+      if (!seen.has(word)) {
+        seen.add(word);
+        if (translateWord(word).toLowerCase() === spelling) {
+          exact.push(word);
+        }
+      }
+    }
+  }
+  return exact.length > 1 ? sortByFrequency(exact) : exact;
+}
+
 // ============================================================================
 // Unified Reverse Translation
 // ============================================================================
@@ -169,7 +195,9 @@ registerFormat('ipa', {
 });
 
 /**
- * Synchronous reverse translation. Dictionary/reverse map must already be loaded.
+ * Synchronous reverse translation. For English, the reverse dictionary,
+ * frequencies and the forward dictionary must already be loaded; for other
+ * languages, the reverse map.
  *
  * All languages go through the same pipeline:
  *   text → extractTokens → mapTokens(reverseWord) → output

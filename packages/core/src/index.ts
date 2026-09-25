@@ -47,7 +47,8 @@ export async function reverseTranslate(
     return reverseTranslateSync(text, { format, lang });
   }
 
-  await Promise.all([loadReverseDictionary(), loadFrequencies()]);
+  // The forward dictionary ranks candidates by whether they spell back to the input.
+  await Promise.all([loadReverseDictionary(), loadFrequencies(), loadLangDict('en')]);
   return reverseTranslateSync(text, { format });
 }
 

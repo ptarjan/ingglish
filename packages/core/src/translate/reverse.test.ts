@@ -43,9 +43,28 @@ describe('reverse-translator', () => {
       // true-homophone word: "there" (freq ~221k) beats "they're".
       ['dhair', 'there', 'common word beats homophone contraction'],
       // But a contraction still beats its rare homophones.
-      ['its', "it's", 'contraction beats rare homophone "its"'],
       ['wohnt', "won't", 'contraction beats rare homophone "wont"'],
     ])('ranks homophones sanely: %s → %s (%s)', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
+    });
+
+    // A spelling the forward translator produces for exactly one word must
+    // reverse to that word, even when a stress-stripped or alternative parse
+    // (AE→AH, ER→EH+R) or a secondary CMU variant finds a more common one.
+    it.each([
+      ['fer', 'fur'],
+      ['as', 'ass'],
+      ['led', 'led'],
+      ['red', 'red'],
+      ['bat', 'bat'],
+      ['staf', 'staff'],
+      ['mach', 'match'],
+      ['its', 'its'],
+      ['uh', 'uh'],
+      ['uhs', 'us'],
+      ['kat', 'cat'],
+    ])('reverses the forward spelling %s to the word that produces it: %s', (input, expected) => {
+      expect(translateSync(expected)).toBe(input);
       expect(reverseTranslateSync(input)).toBe(expected);
     });
 
