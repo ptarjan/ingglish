@@ -102,6 +102,13 @@ describe('text utilities', () => {
       expect(tokens.some((t) => !t.isWord && t.text.includes('3rd'))).toBe(true);
       expect(tokens.map((t) => t.text).join('')).toBe('the 3rd of May');
     });
+
+    it('keeps dotted tokens and letter abbreviations whole in non-word tokens', () => {
+      const text = 'see node.js, e.g. https://a.com or me@b.com';
+      const tokens = tokenizeText(text);
+      expect(tokens.filter((t) => t.isWord).map((t) => t.text)).toEqual(['see', 'or']);
+      expect(tokens.map((t) => t.text).join('')).toBe(text);
+    });
   });
 
   describe('tokenizeIPA', () => {
