@@ -93,9 +93,9 @@ export const sw: Sample[] = [
     text: 'Kuno kunena kwa nini, kukanikomeya kuno? Kwani kunena kunani, kukashikwa kani vino? Kani iso na kiini, na kuninuniya mno.',
   },
   {
-    label: 'Shaaban Robert — Kusadikika (Waziri Majivuno)',
-    source: 'https://archive.org/stream/Kusadikika/Kusadikika_djvu.txt',
-    text: 'Waziri wa Kusadikika alikuwa mtu mwenye haiba kubwa na uhodari mwingi. Kwa hivi aliitwa Majivuno. Uwaziri wake ulianza zamani sana. Alikuwa waziri wa wafalme watatu katika nyakati mbalimbali.',
+    label: 'Ebrahim Hussein — Kinjeketile',
+    source: 'https://www.swahili-literatur.at/nacherzaehlungen/kinjeketile.pdf',
+    text: 'Mama tazama — nyumba ya Kinjeketile! Moshi! Pengine anapika. Ebu chungulia. Ludi, Chausiku! Ludi, anakuja ntu.',
   },
   {
     label: 'Methali za Kiswahili — Swahili Proverbs',
