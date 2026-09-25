@@ -29,12 +29,13 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `Though through thorough thought, I ought to understand the cough brought on by the dough. The rough bough of a plough can cause hiccoughs. A knight might write about the right way to knit, but the psychology of a gnome is a subtle thing.`,
   },
   {
-    label: 'Harry Potter',
-    source: 'https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone',
-    text: `Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you'd expect to be involved in anything strange or mysterious, because they just didn't hold with such nonsense.`,
+    label: 'Peter Pan',
+    source: 'https://www.gutenberg.org/cache/epub/16/pg16-images.html',
+    text: `All children, except one, grow up. They soon know that they will grow up, and the way Wendy knew was this. One day when she was two years old she was playing in a garden, and she plucked another flower and ran with it to her mother.`,
   },
   {
     label: 'Gettysburg Address',
+    source: 'https://en.wikisource.org/wiki/Gettysburg_Address_(Bliss_copy)',
     text: `Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure.`,
   },
   {
@@ -73,9 +74,9 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation.`,
   },
   {
-    label: '1984',
-    source: 'https://en.wikipedia.org/wiki/Nineteen_Eighty-Four',
-    text: `It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith, his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly through the glass doors of Victory Mansions, though not quickly enough to prevent a swirl of gritty dust from entering along with him.`,
+    label: 'The War of the Worlds',
+    source: 'https://www.gutenberg.org/cache/epub/36/pg36-images.html',
+    text: `No one would have believed in the last years of the nineteenth century that this world was being watched keenly and closely by intelligences greater than man's and yet as mortal as his own; that as men busied themselves about their various concerns they were scrutinised and studied, perhaps almost as narrowly as a man with a microscope might scrutinise the transient creatures that swarm and multiply in a drop of water.`,
   },
   {
     label: 'Our Strange Lingo',
@@ -95,13 +96,13 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
   },
   {
     label: 'The Great Gatsby',
-    source: 'https://en.wikipedia.org/wiki/The_Great_Gatsby',
+    source: 'https://www.gutenberg.org/cache/epub/64317/pg64317-images.html',
     text: `In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since. "Whenever you feel like criticizing anyone," he told me, "just remember that all the people in this world haven't had the advantages that you've had."`,
   },
   {
-    label: 'The Hobbit',
-    source: 'https://en.wikipedia.org/wiki/The_Hobbit',
-    text: `In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.`,
+    label: 'The Wonderful Wizard of Oz',
+    source: 'https://www.gutenberg.org/cache/epub/55/pg55-images.html',
+    text: `Dorothy lived in the midst of the great Kansas prairies, with Uncle Henry, who was a farmer, and Aunt Em, who was the farmer's wife. Their house was small, for the lumber to build it had to be carried by wagon many miles.`,
   },
   {
     label: 'Jane Eyre',
@@ -125,12 +126,12 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
   },
   {
     label: 'The Road Not Taken (Frost)',
-    source: 'https://en.wikipedia.org/wiki/The_Road_Not_Taken',
+    source: 'https://en.wikisource.org/wiki/Mountain_Interval/The_Road_Not_Taken',
     text: `Two roads diverged in a yellow wood, and sorry I could not travel both and be one traveler, long I stood and looked down one as far as I could to where it bent in the undergrowth. Then took the other, as just as fair, and having perhaps the better claim, because it was grassy and wanted wear.`,
   },
   {
-    label: 'Catch-22',
-    source: 'https://en.wikipedia.org/wiki/Catch-22',
-    text: `It was love at first sight. The first time Yossarian saw the chaplain he fell madly in love with him. Yossarian was in the hospital with a pain in his liver that fell just short of being jaundice. The doctors were puzzled by the fact that it wasn't quite jaundice.`,
+    label: 'Treasure Island',
+    source: 'https://www.gutenberg.org/cache/epub/120/pg120-images.html',
+    text: `Squire Trelawney, Dr. Livesey, and the rest of these gentlemen having asked me to write down the whole particulars about Treasure Island, from the beginning to the end, keeping nothing back but the bearings of the island, and that only because there is still treasure not yet lifted, I take up my pen in the year of grace 17—, and go back to the time when my father kept the Admiral Benbow inn and the brown old seaman with the sabre cut first took up his lodging under our roof.`,
   },
 ];
