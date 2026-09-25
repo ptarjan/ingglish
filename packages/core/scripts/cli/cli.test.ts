@@ -68,9 +68,15 @@ describe('debug-roundtrip CLI', () => {
 });
 
 describe('collision-analysis CLI', () => {
-  it('runs and produces collision report', async () => {
+  it.each([
+    'Total words analyzed',
+    'Ingglish spellings that match different English words',
+    'Homophone groups',
+    'Words in homophone groups',
+    'False friends involving a common word',
+  ])('reports a nonzero count for "%s"', async (label) => {
     const { stdout } = await run('./collision-analysis.js');
-    expect(stdout).toContain('Collision Analysis');
-    expect(stdout).toContain('Total words analyzed');
+    const count = new RegExp(`^- ${label}[^:]*: (\\d+)$`, 'm').exec(stdout)?.[1];
+    expect(Number(count)).toBeGreaterThan(0);
   });
 });

@@ -10,7 +10,11 @@ import {
   getWordFrequency,
   getCorpusTotal,
 } from '@ingglish/dictionary';
+import { loadLangDict } from '../../src/index.js';
 import { translateWord } from '../../src/translate/forward.js';
+
+/** A word counts as common at or above this many occurrences per million words. */
+const COMMON_PER_MILLION = 20;
 
 interface Collision {
   ingglish: string;
@@ -23,13 +27,14 @@ interface AnalysisResult {
   englishCollisions: Collision[];
   homophones: Collision[];
   commonWordCollisions: Collision[];
+  bothCommonCollisions: Collision[];
 }
 
 /**
  * Analyze all word collisions in the Ingglish translation.
  */
 async function analyzeCollisions(): Promise<AnalysisResult> {
-  await Promise.all([loadDictionary(), loadFrequencies()]);
+  await Promise.all([loadDictionary(), loadFrequencies(), loadLangDict('en')]);
   const dict = getDictionary();
 
   const words = Object.keys(dict).filter(
@@ -40,16 +45,12 @@ async function analyzeCollisions(): Promise<AnalysisResult> {
   const ingglishToEnglish = new Map<string, string[]>();
 
   for (const word of words) {
-    try {
-      const ingglish = translateWord(word).toLowerCase();
-      const existing = ingglishToEnglish.get(ingglish);
-      if (existing !== undefined) {
-        existing.push(word);
-      } else {
-        ingglishToEnglish.set(ingglish, [word]);
-      }
-    } catch {
-      // Skip errors
+    const ingglish = translateWord(word).toLowerCase();
+    const existing = ingglishToEnglish.get(ingglish);
+    if (existing !== undefined) {
+      existing.push(word);
+    } else {
+      ingglishToEnglish.set(ingglish, [word]);
     }
   }
 
@@ -65,39 +66,34 @@ async function analyzeCollisions(): Promise<AnalysisResult> {
   }
 
   const englishCollisions = collisions.filter((c) => c.collidesWithEnglish);
-  const homophones = collisions.filter((c) => !c.collidesWithEnglish && c.sources.length > 1);
+  const homophones = collisions.filter((c) => c.sources.length > 1);
 
-  // Find collisions involving common words (frequency >= 1000 in SUBTLEX corpus)
-  const COMMON_THRESHOLD = 1000;
-  const commonWordCollisions = englishCollisions.filter((c) => {
-    // Check if any source word or the collision target is common
-    const hasCommonSource = c.sources.some((w) => {
-      const freq = getWordFrequency(w);
-      return freq !== undefined && freq >= COMMON_THRESHOLD;
-    });
-    const targetFreq = getWordFrequency(c.ingglish);
-    const hasCommonTarget = targetFreq !== undefined && targetFreq >= COMMON_THRESHOLD;
-    return hasCommonSource || hasCommonTarget;
-  });
+  const freqOf = (w: string): number => getWordFrequency(w) ?? 0;
+  const commonThreshold = (COMMON_PER_MILLION * getCorpusTotal()) / 1_000_000;
+  const commonWordCollisions = englishCollisions.filter((c) =>
+    [...c.sources, c.ingglish].some((w) => freqOf(w) >= commonThreshold)
+  );
+  const bothCommonCollisions = commonWordCollisions.filter(
+    (c) =>
+      freqOf(c.ingglish) >= commonThreshold && c.sources.some((w) => freqOf(w) >= commonThreshold)
+  );
+  commonWordCollisions.sort(
+    (a, b) =>
+      Math.max(...b.sources.map(freqOf), freqOf(b.ingglish)) -
+      Math.max(...a.sources.map(freqOf), freqOf(a.ingglish))
+  );
 
-  // Sort by frequency (most common first - higher frequency = more common)
-  commonWordCollisions.sort((a, b) => {
-    const freqA = Math.max(
-      ...a.sources.map((w) => getWordFrequency(w) ?? 0),
-      getWordFrequency(a.ingglish) ?? 0
-    );
-    const freqB = Math.max(
-      ...b.sources.map((w) => getWordFrequency(w) ?? 0),
-      getWordFrequency(b.ingglish) ?? 0
-    );
-    return freqB - freqA; // Higher frequency first
-  });
+  // Rank homophone groups by their second most frequent member, so the top of
+  // the list is groups of two or more everyday words, not clusters of rare names.
+  const secondFreq = (c: Collision): number => c.sources.map(freqOf).sort((x, y) => y - x)[1] ?? 0;
+  homophones.sort((a, b) => secondFreq(b) - secondFreq(a));
 
   return {
     totalWords: words.length,
     englishCollisions,
     homophones,
     commonWordCollisions,
+    bothCommonCollisions,
   };
 }
 
@@ -115,53 +111,52 @@ export async function main() {
     return '0';
   };
 
+  const withFreq = (w: string): string => {
+    const f = getWordFrequency(w);
+    return f !== undefined ? `${w}(${fmtPM(f)} /M)` : w;
+  };
+  const wordsInHomophoneGroups = result.homophones.reduce((n, c) => n + c.sources.length, 0);
+
   console.log('\n# Ingglish Collision Analysis\n');
   console.log('## Summary\n');
-  console.log('- Total words analyzed: %d', result.totalWords);
+  console.log(`- Total words analyzed: ${result.totalWords}`);
   console.log(
-    '- Ingglish spellings that match different English words: %d',
-    result.englishCollisions.length
+    `- Ingglish spellings that match different English words: ${result.englishCollisions.length}`
   );
-  console.log('- Homophones (same Ingglish, different English): %d', result.homophones.length);
   console.log(
-    '- Collisions involving common words (freq >= 20 /M): %d',
-    result.commonWordCollisions.length
+    `- Homophone groups (2+ English words -> same Ingglish): ${result.homophones.length}`
+  );
+  console.log(`- Words in homophone groups: ${wordsInHomophoneGroups}`);
+  console.log(
+    `- False friends involving a common word (freq >= ${COMMON_PER_MILLION} /M): ${result.commonWordCollisions.length}`
+  );
+  console.log(
+    `- False friends where both words are common: ${result.bothCommonCollisions.length} (${result.bothCommonCollisions.map((c) => `${c.sources.join('/')}->${c.ingglish}`).join(', ')})`
   );
   console.log('\n---\n');
 
-  console.log('## Most Problematic Collisions (Common Words)\n');
-  console.log('These involve frequently-used words:\n');
-
-  for (const c of result.commonWordCollisions.slice(0, 50)) {
-    const freqs = c.sources.map((w) => {
-      const f = getWordFrequency(w);
-      return f !== undefined ? `${w}(${fmtPM(f)} /M)` : w;
-    });
-    const targetFreq = getWordFrequency(c.ingglish);
-    const targetInfo =
-      targetFreq !== undefined ? `${c.ingglish}(${fmtPM(targetFreq)} /M)` : c.ingglish;
-    console.log('- **%s** <- %s', targetInfo, freqs.join(', '));
+  console.log('## False Friends Involving Common Words\n');
+  console.log('Ingglish spelling (its own English frequency) <- English source words:\n');
+  for (const c of result.commonWordCollisions) {
+    console.log(`- **${withFreq(c.ingglish)}** <- ${c.sources.map(withFreq).join(', ')}`);
   }
 
-  console.log('\n## All Collisions with English Words\n');
-
+  console.log('\n## All False Friends\n');
   for (const c of result.englishCollisions) {
-    console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+    console.log(`- **${c.ingglish}** <- ${c.sources.join(', ')}`);
   }
 
-  console.log('\n## Homophones (2+ words -> same Ingglish)\n');
-
-  // Sort homophones by size (most sources first)
-  const sortedHomophones = [...result.homophones].sort(
-    (a, b) => b.sources.length - a.sources.length
-  );
-
-  for (const c of sortedHomophones.slice(0, 100)) {
-    console.log('- **%s** <- %s', c.ingglish, c.sources.join(', '));
+  console.log('\n## Homophones (2+ words -> same Ingglish), most common first\n');
+  for (const c of result.homophones.slice(0, 100)) {
+    console.log(`- **${c.ingglish}** <- ${c.sources.map(withFreq).join(', ')}`);
   }
   if (result.homophones.length > 100) {
-    console.log('\n... and %d more', result.homophones.length - 100);
+    console.log(`\n... and ${result.homophones.length - 100} more`);
   }
 }
 
-if (process.argv[1]?.includes('collision-analysis')) main().catch(console.error);
+if (process.argv[1]?.includes('collision-analysis'))
+  main().catch((err: unknown) => {
+    console.error(err);
+    process.exit(1);
+  });
