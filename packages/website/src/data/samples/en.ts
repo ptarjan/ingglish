@@ -29,9 +29,10 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `Though through thorough thought, I ought to understand the cough brought on by the dough. The rough bough of a plough can cause hiccoughs. A knight might write about the right way to knit, but the psychology of a gnome is a subtle thing.`,
   },
   {
-    label: 'Peter Pan',
-    source: 'https://www.gutenberg.org/cache/epub/16/pg16-images.html',
-    text: `All children, except one, grow up. They soon know that they will grow up, and the way Wendy knew was this. One day when she was two years old she was playing in a garden, and she plucked another flower and ran with it to her mother.`,
+    label: 'Harry Potter',
+    source:
+      'https://www.goodreads.com/quotes/283156-mr-and-mrs-dursley-of-number-four-privet-drive-were',
+    text: `Mr. and Mrs. Dursley, of number four Privet Drive, were proud to say that they were perfectly normal, thank you very much.`,
   },
   {
     label: 'Gettysburg Address',
@@ -74,12 +75,13 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation.`,
   },
   {
-    label: 'The War of the Worlds',
-    source: 'https://www.gutenberg.org/cache/epub/36/pg36-images.html',
-    text: `No one would have believed in the last years of the nineteenth century that this world was being watched keenly and closely by intelligences greater than man's and yet as mortal as his own; that as men busied themselves about their various concerns they were scrutinised and studied, perhaps almost as narrowly as a man with a microscope might scrutinise the transient creatures that swarm and multiply in a drop of water.`,
+    label: '1984',
+    source: 'https://www.goodreads.com/quotes/897043-it-was-a-bright-cold-day-in-april-and-the',
+    text: `It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith, his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly through the glass doors of Victory Mansions, though not quickly enough to prevent a swirl of gritty dust from entering along with him.`,
   },
   {
     label: 'Our Strange Lingo',
+    source: 'https://livinwithme.net/2014/01/28/our-strange-lingo/',
     text: poems.find((p) => p.title === 'Our Strange Lingo')!.lines.join('\n'),
   },
   {
@@ -100,9 +102,9 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since. "Whenever you feel like criticizing anyone," he told me, "just remember that all the people in this world haven't had the advantages that you've had."`,
   },
   {
-    label: 'The Wonderful Wizard of Oz',
-    source: 'https://www.gutenberg.org/cache/epub/55/pg55-images.html',
-    text: `Dorothy lived in the midst of the great Kansas prairies, with Uncle Henry, who was a farmer, and Aunt Em, who was the farmer's wife. Their house was small, for the lumber to build it had to be carried by wagon many miles.`,
+    label: 'The Hobbit',
+    source: 'https://www.goodreads.com/quotes/288669-in-a-hole-in-the-ground-there-lived-a-hobbit',
+    text: `In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.`,
   },
   {
     label: 'Jane Eyre',
@@ -130,8 +132,9 @@ Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Pi
     text: `Two roads diverged in a yellow wood, and sorry I could not travel both and be one traveler, long I stood and looked down one as far as I could to where it bent in the undergrowth. Then took the other, as just as fair, and having perhaps the better claim, because it was grassy and wanted wear.`,
   },
   {
-    label: 'Treasure Island',
-    source: 'https://www.gutenberg.org/cache/epub/120/pg120-images.html',
-    text: `Squire Trelawney, Dr. Livesey, and the rest of these gentlemen having asked me to write down the whole particulars about Treasure Island, from the beginning to the end, keeping nothing back but the bearings of the island, and that only because there is still treasure not yet lifted, I take up my pen in the year of grace 17—, and go back to the time when my father kept the Admiral Benbow inn and the brown old seaman with the sabre cut first took up his lodging under our roof.`,
+    label: 'Catch-22',
+    source:
+      'https://www.goodreads.com/quotes/8519528-it-was-love-at-first-sight-the-first-time-yossarian',
+    text: `It was love at first sight. The first time Yossarian saw the chaplain he fell madly in love with him. Yossarian was in the hospital with a pain in his liver that fell just short of being jaundice. The doctors were puzzled by the fact that it wasn't quite jaundice.`,
   },
 ];
