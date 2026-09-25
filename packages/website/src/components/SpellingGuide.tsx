@@ -35,7 +35,7 @@ function SpellingGuide(): React.JSX.Element {
     <div className="spelling-guide">
       <div className="guide-intro">
         <p>
-          Many{' '}
+          People have proposed many{' '}
           <a
             href="https://en.wikipedia.org/wiki/English-language_spelling_reform"
             rel="noopener noreferrer"
@@ -43,7 +43,7 @@ function SpellingGuide(): React.JSX.Element {
           >
             spelling reforms
           </a>{' '}
-          have been proposed over the centuries, from{' '}
+          over the centuries:{' '}
           <a
             href="https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet"
             rel="noopener noreferrer"
@@ -51,7 +51,7 @@ function SpellingGuide(): React.JSX.Element {
           >
             Benjamin Franklin's phonetic alphabet
           </a>{' '}
-          (1768) to the{' '}
+          (1768), the{' '}
           <a
             href="https://en.wikipedia.org/wiki/Shavian_alphabet"
             rel="noopener noreferrer"
@@ -59,7 +59,7 @@ function SpellingGuide(): React.JSX.Element {
           >
             Shavian alphabet
           </a>{' '}
-          (48 new characters) to{' '}
+          (48 new characters) and{' '}
           <a
             href="https://en.wikipedia.org/wiki/Cut_Spelling"
             rel="noopener noreferrer"
@@ -67,7 +67,7 @@ function SpellingGuide(): React.JSX.Element {
           >
             Cut Spelling
           </a>{' '}
-          (removing silent letters).{' '}
+          (which drops silent letters).{' '}
           <a
             href="https://en.wikipedia.org/wiki/Noah_Webster#Spelling_reform"
             rel="noopener noreferrer"
@@ -75,16 +75,16 @@ function SpellingGuide(): React.JSX.Element {
           >
             Noah Webster
           </a>{' '}
-          succeeded in simplifying American spelling (color, center, dialog), but most reforms fail
-          because they're either too radical to read or too conservative to help.
+          did simplify American spelling (color, center, dialog), but most reforms fail because they
+          are either too radical to read or too timid to help.
         </p>
         <p>
-          Ingglish takes a practical middle path: it uses the{' '}
-          <strong>familiar Latin alphabet</strong> with a <strong>one-to-one mapping</strong>{' '}
-          between sounds and spellings. Each letter or letter combination always makes the same
-          sound. You can read any word aloud correctly without memorization, start reading
-          immediately without learning a new alphabet, and type on any standard keyboard without
-          diacritics or special characters.
+          Ingglish takes a practical middle path. It keeps the{' '}
+          <strong>familiar Latin alphabet</strong> and gives each sound{' '}
+          <strong>exactly one spelling</strong>, so a letter or letter group always stands for the
+          same sound. You can read any word aloud correctly without memorizing it, start reading
+          right away without learning new letters, and type on any standard keyboard with no accents
+          or special characters.
         </p>
       </div>
 
@@ -92,16 +92,16 @@ function SpellingGuide(): React.JSX.Element {
         <h3>Key Principles</h3>
         <ul className="principles-list">
           <li>
-            <strong>No silent letters</strong> - every letter contributes to the pronunciation
+            <strong>No silent letters:</strong> every letter is pronounced.
           </li>
           <li>
-            <strong>Consistent spelling</strong> - same sound = same spelling, always
+            <strong>Consistent spelling:</strong> the same sound is always spelled the same way.
           </li>
           <li>
-            <strong>Readable aloud</strong> - anyone can pronounce unfamiliar words correctly
+            <strong>Readable aloud:</strong> anyone can pronounce an unfamiliar word correctly.
           </li>
           <li>
-            <strong>Standardized</strong> - pronunciations from linguistic research
+            <strong>Standardized:</strong> pronunciations come from linguistic research.
           </li>
         </ul>
       </div>
@@ -119,8 +119,7 @@ function SpellingGuide(): React.JSX.Element {
       <div className="guide-section">
         <h3>Unused Letters</h3>
         <p>
-          These English letters are not used in Ingglish because they are redundant - their sounds
-          are already covered by other letters:
+          Ingglish drops three English letters, because other letters already cover their sounds:
         </p>
         <table className="mapping-table">
           <thead>
@@ -134,7 +133,7 @@ function SpellingGuide(): React.JSX.Element {
             <tr>
               <td className="ingglish-cell">c</td>
               <td className="examples-cell">k or s</td>
-              <td className="examples-cell">cat → kat, city → siti</td>
+              <td className="examples-cell">cat → kat, city → sitee</td>
             </tr>
             <tr>
               <td className="ingglish-cell">q</td>
@@ -144,7 +143,7 @@ function SpellingGuide(): React.JSX.Element {
             <tr>
               <td className="ingglish-cell">x</td>
               <td className="examples-cell">ks or z</td>
-              <td className="examples-cell">box → boks, xylophone → zailufohn</td>
+              <td className="examples-cell">box → boks, xylophone → zailafohn</td>
             </tr>
           </tbody>
         </table>
@@ -152,62 +151,60 @@ function SpellingGuide(): React.JSX.Element {
 
       <div className="guide-section">
         <h3>Special Cases</h3>
-        <p>Beyond basic phonemic translation, Ingglish handles several edge cases:</p>
+        <p>Beyond turning sounds into letters, Ingglish handles several special cases:</p>
 
         <h4>Contractions</h4>
         <p>
-          Contractions like "don't", "I'm", and "we'll" are translated as complete units using their
-          dictionary pronunciations. The apostrophe is dropped since Ingglish spelling is
-          unambiguous: don't → dohnt, I'm → iem, we'll → weel. This ensures contractions round-trip
-          correctly between English and Ingglish.
+          Contractions like "don't", "I'm" and "we'll" are translated as whole words, using their
+          dictionary pronunciations. The apostrophe is dropped because the Ingglish spelling is
+          unambiguous without it: don't → dohnt, I'm → aim, we'll → weel. This way contractions
+          translate back to English correctly.
         </p>
 
         <h4>Case Preservation</h4>
         <p>
-          Capitalization patterns are preserved during translation. ALL CAPS stays all caps, Title
-          Case stays title case, and lowercase stays lowercase. For mixed case like "GitHub", the
-          exact pattern is preserved position-by-position. The pronoun "I" becomes lowercase "ai"
-          since the capitalization is just an English convention, not phonemic.
+          Translation keeps capitalization: Title Case stays title case and lowercase stays
+          lowercase. A word with capitals inside it is translated in parts, and each part keeps its
+          case: GitHub → GitHuhb, iPhone → aiFohn. The pronoun "I" becomes lowercase: I → ai,
+          because its capital letter is an English writing convention, not part of the sound.
         </p>
 
         <h4>Initialisms</h4>
         <p>
-          Initialisms like UI, API, and URL are translated by taking the first letter of each
-          translated expansion word. For example, UI (User Interface) becomes YI because "user"
-          translates to "yoozer" (Y) and "interface" translates to "interfays" (I). This preserves
-          the initialism format while using Ingglish spellings. Common initialisms stay all caps: UI
-          → YI, API → API, URL → YRL.
+          A word written entirely in capitals is left unchanged, because it is usually an initialism
+          or acronym: UI → UI, HTML → HTML, NASA → NASA. Plurals like IDs and all-caps parts of
+          longer words, like the GPT in ChatGPT, stay unchanged too. Contractions are the exception
+          and are still translated: DON'T → DOHNT.
         </p>
 
         <h4>Unknown Words</h4>
         <p>
-          Words not in the dictionary (like tech terms, brand names, or neologisms) are handled
-          through multiple fallback strategies: compound word splitting (GitHub → Git + Hub), known
-          suffixes and prefixes (-tion, -ing, un-, re-), and rule-based grapheme-to-phoneme
-          conversion. This ensures even invented words get reasonable phonemic spellings.
+          Words missing from the dictionary, such as tech terms, brand names and newly coined words,
+          go through several fallbacks: splitting words into parts (GitHub → GitHuhb), recognizing
+          known prefixes and suffixes (un-, re-, -tion, -ing), and rules that work out the sounds
+          from the letters. Even made-up words get a sensible phonetic spelling.
         </p>
 
         <h4>Reverse Translation</h4>
         <p>
-          Ingglish can be translated back to English. The system matches phonemic spellings against
-          the dictionary to find the original words. For homophones like "too", "to", and "two" (all
-          spelled "too" in Ingglish), the most common word is chosen based on frequency data. Case
-          patterns are preserved during reverse translation.
+          Ingglish can be translated back to English by looking up each spelling in the dictionary.
+          When several words sound the same, like "too", "to" and "two" (all spelled "too" in
+          Ingglish), the most common one is chosen, based on word-frequency data. Capitalization is
+          kept in this direction too.
         </p>
 
         <h4>R-Colored Vowels</h4>
         <p>
-          When certain vowels are followed by R, they combine into special r-colored sounds. See the
-          R-Colored Vowels table in the Vowels section above for the complete list of mappings.
+          Some vowels blend with a following R into a single sound, called an r-colored vowel. The
+          R-Colored Vowels table in the Vowels section above lists every one and its spelling.
         </p>
 
         <h4>Hyphen Separator</h4>
         <p>
-          When two adjacent sounds would produce three or more of the same letter in a row, a hyphen
-          is inserted to keep the spelling readable. For example, "acquiesce" has an "ee" sound
-          followed by a short "e" sound — without a separator that would be "akweees", so Ingglish
-          writes "akwee-es" instead. This also occurs in foreign language translations and
-          spelled-out initialisms (e.g. HTML → aychtee-emel).
+          When two neighboring sounds would put three or more of the same letter in a row, Ingglish
+          inserts a hyphen to keep the word readable. In "acquiesce", an "ee" sound is followed by a
+          short "e" sound. Written together that would be "akweees", so Ingglish writes it with a
+          hyphen: acquiesce → akwee-es. The same happens in translations from other languages.
         </p>
       </div>
     </div>

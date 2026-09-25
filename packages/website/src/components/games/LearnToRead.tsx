@@ -146,8 +146,8 @@ function LearnToRead() {
         <div className="game-intro">
           <h2>Learn to Read Ingglish</h2>
           <p>
-            8 progressive lessons, each teaching one rule. Complete the quiz at the end of each
-            lesson to track your progress.
+            8 lessons, taken in order, each teaching one rule. Finishing a lesson's quiz marks the
+            lesson complete and saves your best score.
           </p>
         </div>
         <div className="learn-lessons">

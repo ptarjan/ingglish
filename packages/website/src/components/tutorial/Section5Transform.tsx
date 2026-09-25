@@ -38,7 +38,7 @@ export function Section5Transform() {
         previousDone={completedStep >= 0}
       />
       <SimpleRuleGroup
-        caption="Complex letter combos become what they sound like."
+        caption="Awkward letter combinations are spelled the way they sound."
         examples={simplifyExamples}
         onComplete={() => {
           markComplete(2);
@@ -48,7 +48,7 @@ export function Section5Transform() {
       />
       <SimpleRuleGroup
         caption={
-          'Say "thin," then "the." Feel the vibration? Different sounds, different spellings. Only about 20 common words use "dh" — the, this, that, they, mother, other — but they\'re among the most frequent in English.'
+          'Say "thin," then "the." In "the" your voice buzzes; in "thin" it doesn\'t. Different sounds get different spellings. Only about 20 common words use "dh" (the, this, that, they, mother, other), but they are among the most frequent words in English.'
         }
         examples={thDhExamples}
         onComplete={() => {
@@ -175,7 +175,7 @@ function OneSound({ onComplete, previousDone }: { onComplete: () => void; previo
   return (
     <div className={`tutorial-substep ${active ? 'revealed' : ''}`} ref={ref}>
       <h3 className="tutorial-subheading">One sound, one spelling</h3>
-      <p className="tutorial-caption">Same sound always written the same way.</p>
+      <p className="tutorial-caption">Each sound is always written the same way.</p>
       <SoundGroup
         examples={eeSoundExamples}
         revealedCount={revealedCount}
@@ -207,7 +207,7 @@ function SilentLetters({
   return (
     <div className={`tutorial-substep ${active ? 'revealed' : ''}`} ref={ref}>
       <h3 className="tutorial-subheading">Drop the silent letters</h3>
-      <p className="tutorial-caption">No silent letters. Every letter contributes to the sound.</p>
+      <p className="tutorial-caption">Every letter you write is a letter you say.</p>
       <div className="sound-examples">
         {silentLetterExamples.map((ex, i) => (
           <AnimatedSoundWord

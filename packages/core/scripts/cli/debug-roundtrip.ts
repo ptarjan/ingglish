@@ -12,6 +12,7 @@
 
 import { loadDictionary, loadReverseDictionary, lookupPronunciation } from '@ingglish/dictionary';
 import { ingglishToArpabet } from '@ingglish/phonemes';
+import { loadLangDict } from 'ingglish';
 import { translateWord, translateSync as translateText } from '../../src/translate/forward.js';
 import {
   reverseTranslateWord,
@@ -171,6 +172,7 @@ export async function main() {
   const dictStart = performance.now();
   await loadDictionary();
   await loadReverseDictionary();
+  await loadLangDict('en');
   const dictTime = performance.now() - dictStart;
 
   // Single word vs text

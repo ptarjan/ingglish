@@ -1,6 +1,8 @@
 # Architecture Overview
 
-High-level architecture of the Ingglish project.
+How the Ingglish project is organized: its packages, how they depend on each other, and how text flows through them.
+
+Two terms come up throughout. Pronunciations come from the CMU Pronouncing Dictionary (Carnegie Mellon University's pronunciation list), which writes sounds in **ARPAbet**, a plain-ASCII phoneme notation. **G2P** (grapheme-to-phoneme) means guessing a word's pronunciation from its spelling.
 
 ## Project Structure
 
@@ -138,7 +140,7 @@ src/
 
 ### `ingglish` - Translation API
 
-The core package is a thin orchestration layer. It imports from the packages above and exports the public translation API.
+The core package is a thin layer that ties the packages above together and exports the public translation API.
 
 ```
 src/
@@ -153,8 +155,8 @@ src/
     └── preserved.ts    # URL/email preservation during translation
 ```
 
-Contraction handling ("don't", "I'm") lives inline in `forward.ts`/`reverse.ts`;
-there is no separate contractions or language-detection module.
+Contractions ("don't", "I'm") are handled directly in `forward.ts` and `reverse.ts`.
+There is no separate module for contractions or language detection.
 
 ### Translation Flow
 
@@ -208,7 +210,7 @@ Ingglish    IPA
 
 ### Reverse Translation Flow
 
-Supports both Ingglish and IPA input:
+Reverse translation accepts either Ingglish or IPA input:
 
 ```
 Ingglish Text          IPA Text
@@ -268,7 +270,7 @@ Map<string, string[]>
 // ARPAbet → Ingglish spelling
 {
   "HH": "h",
-  "AH": "uh",
+  "AH": "uh",   // stressed; unstressed AH0 → "a"
   "L": "l",
   "OW": "oh",
   ...
@@ -277,7 +279,7 @@ Map<string, string[]>
 
 ## DOM Library (`@ingglish/dom`)
 
-Browser-only utilities for translating DOM content.
+Browser-only tools for translating the text of a live web page (its DOM).
 
 ### Module Structure
 
@@ -307,34 +309,39 @@ Public API: `translateDOM` / `translateDOMSync`, `restoreDOM`, and
 
 ### Key Features
 
-- **Chunked translation**: Uses `requestAnimationFrame` for smooth rendering on large pages
-- **Tooltip support**: Wraps translated words in spans with original text on hover
-- **Attribute translation**: Handles `title`, `alt`, `placeholder`, `aria-label`
-- **Skip logic**: Respects `<code>`, `<pre>`, `.no-translate`, `contenteditable`
-- **Pre-computed translations**: `applyTranslationsMap()` for external translation sources
+- **Chunked translation**: Spreads work across frames with `requestAnimationFrame`, so large pages stay smooth
+- **Tooltips**: Wraps each translated word in a span that shows the original text on hover
+- **Attribute translation**: Also translates `title`, `alt`, `placeholder` and `aria-label`
+- **Skip rules**: Leaves `<code>`, `<pre>`, `.no-translate` and `contenteditable` content untouched
+- **Pre-computed translations**: `applyTranslationsMap()` applies translations produced elsewhere
 
-Live MutationObserver handling (auto-translating dynamically added content) is
-implemented in the Chrome extension's content script, not in this package.
+Translating content that appears after the page loads (via a MutationObserver) happens
+in the Chrome extension's content script, not in this package.
 
 ## Website (`@ingglish/website`)
 
-React single-page application with three main features:
+A React single-page application. Each page is its own route, and every page except the tutorial is lazy-loaded:
 
 ### Components
 
 ```
 src/
 ├── components/
+│   ├── Tutorial.tsx         # Home page: interactive introduction (sections in tutorial/)
 │   ├── TextTranslator.tsx   # Bidirectional text translation
 │   ├── UrlTranslator.tsx    # Web page translation
 │   ├── SpellingGuide.tsx    # Phoneme mapping reference
+│   ├── WordExplorer.tsx     # Per-word breakdown of spelling and sound
+│   ├── Experiment.tsx       # Custom mappings, scored by lib/mapping-metrics.ts
+│   ├── Games.tsx            # Reading and spelling games (games/)
 │   ├── Extension.tsx        # Chrome extension info page
 │   └── Docs.tsx             # Documentation viewer
 ├── contexts/
 │   └── FormatContext.tsx    # Output format state (Ingglish/IPA)
 ├── hooks/
 │   └── useUrlTranslator.ts  # URL fetching & translation logic
-└── App.tsx                   # Tab navigation & routing
+├── routes-config.tsx        # Route table
+└── AppLayout.tsx            # Tab navigation shell
 ```
 
 ### URL Translation Architecture
@@ -351,11 +358,11 @@ src/
 └─────────────┘
 ```
 
-1. User enters URL
-2. Website fetches via CORS proxy
-3. HTML is written to sandboxed iframe
-4. `translateDOM` from `@ingglish/dom` walks text nodes and translates
-5. Links are intercepted for navigation within iframe
+1. The user enters a URL
+2. The website fetches the page through the CORS proxy
+3. The HTML is written into a sandboxed iframe
+4. `translateDOM` from `@ingglish/dom` walks the page's text and translates it
+5. Clicked links are intercepted so navigation stays inside the iframe
 
 ## Chrome Extension (`@ingglish/extension`)
 
@@ -371,11 +378,11 @@ src/
 
 ### Architecture
 
-The extension uses a message-passing architecture to keep the content script lightweight:
+The extension keeps the script injected into each page small by passing messages to a background worker that does the heavy lifting:
 
 - **Background service worker**: Loads the full CMU dictionary (~5MB) once
-- **Content script**: Lightweight (~11KB), walks DOM and sends words to background for translation
-- **Translation cache**: 50K entry in-memory cache in background for fast repeated lookups
+- **Content script**: Small (~11KB); walks the page and sends its words to the background worker for translation
+- **Translation cache**: The background worker keeps up to 50K translations in memory, so repeated words are fast
 
 ### Flow
 
@@ -407,21 +414,21 @@ The extension uses a message-passing architecture to keep the content script lig
 
 ### Performance Optimizations
 
-1. **Debounced MutationObserver**: Waits 100ms for mutations to settle before processing,
-   preventing freezes on sites with rapid DOM updates (e.g., infinite scroll)
+1. **Debounced MutationObserver**: Waits until page changes have been quiet for 100ms before
+   translating them, so sites that update constantly (e.g., infinite scroll) don't freeze
 
-2. **In-place format switching**: When switching between Ingglish and IPA, updates existing
-   spans directly instead of restoring and re-translating the entire page
+2. **In-place format switching**: Switching between Ingglish and IPA updates the existing
+   spans directly instead of restoring and re-translating the whole page
 
-3. **Chunked DOM updates**: Uses `requestAnimationFrame` to apply translations in chunks
-   of 50 elements, keeping the main thread responsive
+3. **Chunked DOM updates**: Applies translations 50 elements at a time with
+   `requestAnimationFrame`, so the page stays responsive
 
-4. **Pre-collected text nodes**: Passes pre-collected nodes to `applyTranslationsMap()`
-   to avoid double DOM traversal
+4. **Pre-collected text nodes**: Passes the text nodes it already collected to
+   `applyTranslationsMap()`, so the page is not walked twice
 
 ## CORS Proxy (`@ingglish/cors-proxy`)
 
-Cloudflare Worker that proxies requests to bypass CORS restrictions.
+A Cloudflare Worker that fetches pages on the website's behalf. Browsers block a site from reading most other sites' pages directly (CORS restrictions); the proxy adds the headers that allow it.
 
 ```
 ┌────────────┐     ┌───────────────────┐     ┌─────────────┐
@@ -432,11 +439,11 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 ```
 
 **Security features:**
-- Origin allowlist validation
-- SSRF prevention (blocks private IP ranges: 127.*, 10.*, 172.16-31.*, 192.168.*, ::1)
-- Protocol restriction (HTTP/HTTPS only)
-- Content-Type checking (HTML only)
-- Cache control headers (minimum 5 minutes)
+- Only accepts requests from allowlisted origins
+- Blocks requests to private IP ranges (127.*, 10.*, 172.16-31.*, 192.168.*, ::1), so it can't be used to reach internal servers (server-side request forgery, SSRF)
+- Only fetches HTTP/HTTPS URLs
+- Only returns HTML (checks Content-Type)
+- Sets cache headers (minimum 5 minutes)
 
 ## Data Flow Summary
 
@@ -458,6 +465,6 @@ Cloudflare Worker that proxies requests to bypass CORS restrictions.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-All paths are linear (no quadratic or exponential complexity). Dictionary data is loaded on-demand via dynamic imports.
+Every path runs in linear time or better; none is quadratic or exponential. Dictionary data is loaded only when needed, via dynamic imports.
 
 See [Performance](performance.md) for complexity tables, profiling scripts, and optimization guidelines.

@@ -14,9 +14,9 @@ import '../../styles/reverse-spelling.css';
 const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = { 1: 30, 2: 25, 3: 20 };
 
 const getScoreLabel = makeScoreLabel({
-  good: 'Great job! You have a solid grasp of the rules!',
+  good: 'Great job! You know the rules well!',
   great: 'Amazing! You know Ingglish spelling inside-out!',
-  low: "Keep at it — you'll internalize the patterns!",
+  low: 'Keep at it and the patterns will stick!',
   ok: 'Not bad! Phonetic spelling takes practice.',
 });
 
@@ -43,14 +43,14 @@ function ReverseSpelling() {
     return (
       <div className="game-page">
         <GameIntro
-          description="Can you spell in Ingglish? You'll see an English word — type how it would look in phonetic Ingglish spelling. Close misspellings get partial credit!"
+          description="Can you spell in Ingglish? You'll see an English word; type its Ingglish spelling. Close misspellings get half credit."
           onStart={() => {
             game.startGame(game.seed);
           }}
           rules={[
-            'See an English word displayed on screen',
-            'Type the Ingglish spelling before time runs out',
-            'Exact match = full credit, close = half credit',
+            'See an English word',
+            'Type its Ingglish spelling before time runs out',
+            'An exact match gets full credit; a close one gets half',
           ]}
           startRef={game.startRef}
           title="Reverse Spelling"

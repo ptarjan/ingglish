@@ -362,7 +362,7 @@ function DailyChallenge() {
         <div className="game-intro">
           <h2>Ingglish Wordle</h2>
           <p>
-            Guess the 5-letter Ingglish word in 6 tries. Each guess must be a valid Ingglish word.
+            Guess the 5-letter Ingglish word in 6 tries. Each guess must be a real Ingglish word.
             After each guess, the tiles change color to show how close you are.
           </p>
           <div style={{ margin: '0 auto 1.5rem', maxWidth: '300px', textAlign: 'left' }}>
@@ -481,7 +481,7 @@ function DailyChallenge() {
               Share Text
             </button>
             <button className="btn-secondary" onClick={handleSaveImage}>
-              Save
+              Save Image
             </button>
           </div>
         </div>

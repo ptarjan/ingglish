@@ -43,7 +43,7 @@ export function GameResultActions({
         {copied ? 'Copied!' : 'Share Result'}
       </button>
       <button className="btn-secondary" onClick={onSave}>
-        Save
+        Save Image
       </button>
     </div>
   );

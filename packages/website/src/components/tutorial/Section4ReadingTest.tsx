@@ -15,7 +15,7 @@ export function Section4ReadingTest() {
         <p className="reading-attribution">&mdash; {readingTestAttribution}</p>
       </div>
       <p className="tutorial-punchline">
-        You just read Shakespeare. Without learning a single rule.
+        You just read Shakespeare without learning a single rule.
       </p>
     </section>
   );

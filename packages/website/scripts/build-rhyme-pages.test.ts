@@ -106,8 +106,8 @@ describe('renderRhymePage', () => {
     expect(html.match(/<tr><td class="eng">/g)).toHaveLength(CAT.rhymes.length);
     expect(html).toContain('<h2>1-syllable rhymes for “cat”</h2>');
     expect(html).toContain('<h2>2-syllable rhymes for “cat”</h2>');
-    expect(html).toContain('<h2>Why these rhyme</h2>');
-    expect(html).toContain('spelled “at” in');
+    expect(html).toContain('<p>A perfect rhyme matches every sound from the stressed vowel');
+    expect(html).toContain('Ingglish spells it\n“at”');
   });
 
   it('marks the list up as an ItemList and nothing as a question', () => {
@@ -128,7 +128,7 @@ describe('renderRhymePage', () => {
    * it, and the two would compete for the same query.
    */
   it('shares no letter-by-letter or frequency table with the word page', () => {
-    expect(html).not.toContain('letter by letter');
+    expect(html).not.toContain('is spelled in Ingglish');
     expect(html).not.toContain('SUBTLEX');
     expect(html).not.toContain('class="facts"');
   });

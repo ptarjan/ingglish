@@ -39,11 +39,11 @@ const bookmarksBarInstructions: Record<Browser, { description: string; title: st
     title: 'Show your bookmarks toolbar',
   },
   other: {
-    description: 'Open your browser settings and enable the bookmarks or favorites bar',
+    description: 'Open your browser settings and turn on the bookmarks or favorites bar',
     title: 'Show your bookmarks bar',
   },
   safari: {
-    description: 'Go to View > Show Favorites Bar in the menu bar',
+    description: 'In the menu bar, choose View > Show Favorites Bar',
     title: 'Show your Favorites Bar',
   },
 };
@@ -76,14 +76,17 @@ function Extension(): React.JSX.Element {
       <div className="guide-intro">
         <h2>Translate Any Webpage</h2>
         <p>
-          Read any webpage in Ingglish with one click. Choose a bookmarklet for any browser, or a
-          Chrome extension for automatic translation.
+          Read any webpage in Ingglish with one click. Use the bookmarklet in any browser, or
+          install the Chrome extension, which also translates new content automatically.
         </p>
       </div>
 
       <div className="guide-section">
         <h3>Bookmarklet (Any Browser)</h3>
-        <p>Works in Chrome, Firefox, Safari, Edge, and any other browser.</p>
+        <p>
+          A bookmarklet is a bookmark that translates the page you are on. It works in Chrome,
+          Firefox, Safari, Edge and any other browser.
+        </p>
         <div className="bookmarklet-container">
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- bookmarklet drag target */}
           <a
@@ -105,13 +108,13 @@ function Extension(): React.JSX.Element {
           </li>
           <li>
             <strong>Drag the &ldquo;Ingglish&rdquo; button</strong>
-            <p>Drag it from above into your bookmarks bar</p>
+            <p>Drag the button above into your bookmarks bar</p>
           </li>
           <li>
             <strong>Translate any page</strong>
             <p>
-              Navigate to any webpage and click &ldquo;Ingglish&rdquo; in your bookmarks bar. A
-              small badge appears in the corner — click it to toggle back.
+              Open any webpage and click &ldquo;Ingglish&rdquo; in your bookmarks bar. A small badge
+              appears in the corner; click it to switch back to the original.
             </p>
           </li>
         </ol>
@@ -120,15 +123,15 @@ function Extension(): React.JSX.Element {
           <button className="btn-reset link-button" onClick={handleCopy}>
             {copied ? 'Copied!' : 'copy the bookmarklet code'}
           </button>{' '}
-          and create a bookmark manually.
+          and paste it into a new bookmark by hand.
         </p>
       </div>
 
       <div className="guide-section">
         <h3>Chrome Extension</h3>
         <p>
-          The extension translates pages with one click and automatically translates new content as
-          it loads (useful for infinite-scroll pages).
+          The extension translates a page with one click, then keeps translating new content as it
+          loads, which helps on infinite-scroll pages.
         </p>
       </div>
 
@@ -136,16 +139,16 @@ function Extension(): React.JSX.Element {
         <h4>Features</h4>
         <ul className="principles-list">
           <li>
-            <strong>One-click translation</strong> - translate any webpage instantly
+            <strong>One-click translation:</strong> translates the page you are reading.
           </li>
           <li>
-            <strong>Dynamic content</strong> - automatically translates new content as it appears
+            <strong>Dynamic content:</strong> translates new content as it appears.
           </li>
           <li>
-            <strong>Smart skipping</strong> - preserves code blocks, scripts, and form inputs
+            <strong>Smart skipping:</strong> leaves code blocks, scripts and form inputs untouched.
           </li>
           <li>
-            <strong>Visual indicator</strong> - shows when a page has been translated
+            <strong>Visual indicator:</strong> shows when a page has been translated.
           </li>
         </ul>
       </div>
@@ -163,23 +166,21 @@ function Extension(): React.JSX.Element {
           </li>
           <li>
             <strong>Unzip the file</strong>
-            <p>
-              Extract the zip to a folder you&apos;ll keep (e.g., &ldquo;ingglish-extension&rdquo;)
-            </p>
+            <p>Extract it to a folder you&apos;ll keep, such as &ldquo;ingglish-extension&rdquo;</p>
           </li>
           <li>
             <strong>Open Chrome Extensions</strong>
             <p>
-              Go to <code>chrome://extensions/</code> in your browser
+              Go to <code>chrome://extensions/</code> in Chrome
             </p>
           </li>
           <li>
             <strong>Enable Developer Mode</strong>
-            <p>Toggle the switch in the top right corner</p>
+            <p>Turn on the switch in the top right corner</p>
           </li>
           <li>
             <strong>Load the extension</strong>
-            <p>Click &ldquo;Load unpacked&rdquo; and select the folder you extracted</p>
+            <p>Click &ldquo;Load unpacked&rdquo; and choose the folder you extracted</p>
           </li>
         </ol>
       </div>

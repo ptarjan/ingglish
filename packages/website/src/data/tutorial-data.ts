@@ -7,7 +7,7 @@ export const oughExamples = [
   { prefix: 'th', sound: 'aw', suffix: 't' },
   { prefix: 't', sound: 'uhf', suffix: '' },
   { prefix: 'c', sound: 'of', suffix: '' },
-  { prefix: 'b', sound: 'ow', suffix: '' },
+  { prefix: 'b', sound: 'ou', suffix: '' },
 ];
 
 export interface ExampleWord {
@@ -99,11 +99,11 @@ export const paragraphWords: ParagraphWord[] = [
 export const stepCaptions = [
   '',
   'Drop the silent letters: knight, could.',
-  'One sound, one spelling: consistent vowels.',
+  'Vowels are spelled the way they sound: he → hee, said → sed, was → woz.',
   '"Ph" is just "f": phone, physician.',
-  'C picks a lane: city, office, schedule.',
-  'The silent "ght" club: flight, night, caught.',
-  '"Th" vs "dh": that and the get their own sound.',
+  "C quits its double life: it's K or S, whichever you hear. City, office, schedule.",
+  'The "gh" you never hear is gone: flight, night, caught.',
+  'The buzzing "th" in "that" and "the" gets its own spelling: "dh".',
 ];
 
 // "Hints on Pronunciation for Foreigners" (attributed to T.S. Watt, 1954).

@@ -33,7 +33,7 @@ npx turbo lint                     # Lint all packages
 npx turbo lint -- --fix            # Auto-fix lint issues
 ```
 
-Before pushing cross-package changes, run `npx turbo lint` to catch type errors in dependent packages (lint-staged only checks staged files).
+If your change affects other packages, run `npx turbo lint` before pushing. The pre-commit hook (lint-staged) lints only the files you staged, so it won't catch a type error your change causes in another package.
 
 ## CLI Scripts
 
@@ -56,7 +56,7 @@ See [Architecture](architecture.md) for the full package dependency graph and mo
 
 ## Commit Messages
 
-Follow conventional commits:
+Use the conventional commits format (`type: summary`):
 
 ```
 feat: add new phoneme mapping for X
@@ -69,7 +69,7 @@ refactor: simplify unknown word handling
 ## Pull Request Process
 
 1. Create a feature branch: `git checkout -b feat/your-feature`
-2. Make your changes with tests
-3. Run `npx turbo test lint` to verify
+2. Make your change and add tests for it
+3. Run `npx turbo test lint` (tests and lint in one command)
 4. Commit with a descriptive message
-5. Push and create a PR against `main`
+5. Push and open a pull request against `main`

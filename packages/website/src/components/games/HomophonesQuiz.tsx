@@ -12,7 +12,7 @@ import { QuizResults } from './QuizResults';
 const getScoreLabel = makeScoreLabel({
   good: 'Great job! You understand Ingglish well!',
   great: 'Perfect ear! You know your homophones!',
-  low: "Keep practicing — you'll get there!",
+  low: "Keep practicing. You'll get there!",
   ok: 'Not bad! Homophones are tricky.',
 });
 
@@ -47,12 +47,12 @@ function HomophonesQuiz() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Quiz"
-          description="In Ingglish, words that sound the same are spelled the same. Can you figure out which English word an Ingglish spelling represents?"
+          description="In Ingglish, words that sound the same are spelled the same. Can you tell which English word an Ingglish spelling stands for?"
           onStart={game.handleStart}
           rules={[
             'See an Ingglish word',
-            'Pick which English word it could be',
-            '10 rounds, from obvious to tricky',
+            'Pick the English word it could be',
+            '10 rounds, from easy to tricky',
           ]}
           startRef={game.startRef}
           title="Homophones Quiz"

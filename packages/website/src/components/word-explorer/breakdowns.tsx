@@ -22,7 +22,7 @@ export function BritishBreakdown({
     <div className="explorer-section">
       <h4>British Spelling</h4>
       <p className="section-note">
-        Normalized to American spelling: {original} &rarr; {american}
+        Translated via the American spelling: {original} &rarr; {american}
       </p>
       <div className="homophone-list">
         <button
@@ -51,7 +51,7 @@ export function CompoundBreakdown({
 }) {
   return (
     <div className="explorer-section">
-      <h4>Compound Breakdown</h4>
+      <h4>Compound Word Parts</h4>
       <div className="homophone-list">
         {parts.map((part, i) => (
           <button
@@ -116,7 +116,7 @@ export function HomophoneList({
   return (
     <div className="explorer-section">
       <h4>Homophones ({homophones.length})</h4>
-      <p className="section-note">Other words with the same pronunciation:</p>
+      <p className="section-note">Other words pronounced the same way:</p>
       <div className="homophone-list">
         {homophones.slice(0, 20).map((w) => (
           <button
@@ -146,7 +146,7 @@ export function InitialismBreakdown({ format, word }: { format: OutputFormat; wo
 
   return (
     <div className="explorer-section">
-      <h4>Initialism Breakdown</h4>
+      <h4>Letter by Letter</h4>
       <p className="section-note">{letters.map((l) => l.toUpperCase()).join(' \u00B7 ')}</p>
       <div className="phoneme-chain">
         <table className="chain-table">
@@ -185,7 +185,7 @@ export function PhonemeChain({ format, phonemes }: { format: OutputFormat; phone
       <table className="chain-table">
         <thead>
           <tr>
-            <th>ARPAbet</th>
+            <th title="Sound codes from the CMU Pronouncing Dictionary">ARPAbet</th>
             <th>IPA</th>
             <th>{getFormatLabel(format)}</th>
             <th>Type</th>
@@ -217,7 +217,7 @@ export function StemmingBreakdown({
 }) {
   return (
     <div className="explorer-section">
-      <h4>Stemming Breakdown</h4>
+      <h4>Prefix, Stem and Suffix</h4>
       <div className="homophone-list">
         {result.prefix !== undefined && (
           <span className="homophone-chip" style={{ cursor: 'default' }}>

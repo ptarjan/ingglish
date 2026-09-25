@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { loadLangDict, translateSync } from 'ingglish';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { consonantGroups, vowelGroups } from '../data/spelling-guide-data';
 
 /**
@@ -53,5 +57,29 @@ describe('SpellingGuide examples', () => {
       const matches = example.match(/\*\*[^*]+\*\*/g);
       expect(matches?.length, `"${example}" should have exactly one highlighted portion`).toBe(1);
     }
+  });
+});
+
+// Every `english → ingglish` pair written in the guide's prose must match the
+// translator. Any arrow the pattern cannot parse fails the count check, so a
+// new example cannot slip past unverified.
+describe('SpellingGuide prose examples', () => {
+  const source = readFileSync(
+    path.join(path.dirname(fileURLToPath(import.meta.url)), 'SpellingGuide.tsx'),
+    'utf8'
+  );
+  const pairs = [...source.matchAll(/([a-z][a-z']*)\s*→\s*([a-z][a-z'-]*)/gi)].map(
+    (m) => [m[1]!, m[2]!] as const
+  );
+
+  beforeAll(() => loadLangDict('en'));
+
+  it('parses every arrow in the file', () => {
+    expect(pairs.length).toBeGreaterThan(0);
+    expect(pairs.length).toBe(source.split('→').length - 1);
+  });
+
+  it.each(pairs)('%s → %s', (english, ingglish) => {
+    expect(translateSync(english)).toBe(ingglish);
   });
 });

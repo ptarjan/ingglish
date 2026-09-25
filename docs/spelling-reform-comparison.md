@@ -1,124 +1,124 @@
 # Spelling Reform Comparison
 
-English spelling reform has a long history of mostly failure. [Noah Webster](https://en.wikipedia.org/wiki/Noah_Webster#Spelling_reform) succeeded with incremental changes (colour→color, centre→center), but every attempt at comprehensive reform, from [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s, has failed. So why would Ingglish be any different?
+English spelling reform has mostly failed. [Noah Webster](https://en.wikipedia.org/wiki/Noah_Webster#Spelling_reform) succeeded with small changes (colour→color, centre→center). Every attempt at a full reform has failed, from [Benjamin Franklin's 1768 phonetic alphabet](https://en.wikipedia.org/wiki/Benjamin_Franklin%27s_phonetic_alphabet) to the [Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) of the 1960s. So why would Ingglish be any different?
 
-What went wrong, and what Ingglish does differently.
+This page covers what went wrong for earlier reforms and what Ingglish does differently.
 
 ## The Graveyard of Spelling Reforms
 
 ### Complete Alphabet Replacements
 
-**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published (*Androcles and the Lion*, 1962). Almost nobody used it.
+**[Shavian Alphabet](https://en.wikipedia.org/wiki/Shavian_alphabet) (1962)** - George Bernard Shaw left money in his will to create a new 48-character alphabet. One book was published in it (*Androcles and the Lion*, 1962). Almost nobody used it.
 
-**[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent $20,000+ (enormous in the 1850s) creating a 38-character alphabet. They sold 500 books. Even Brigham Young, who commissioned the project, abandoned it, writing: "I candidly confess that I never did like the present construction of the alphabet."
+**[Deseret Alphabet](https://en.wikipedia.org/wiki/Deseret_alphabet) (1854)** - The Mormon church spent over $20,000 (a huge sum in the 1850s) on a 38-character alphabet. It sold 500 books. Even Brigham Young, who commissioned the project, gave up on it, writing: "I candidly confess that I never did like the present construction of the alphabet."
 
-**[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. Nobody published any academic validation, and the system kept getting revised, creating incompatible versions.
+**[Unifon](https://en.wikipedia.org/wiki/Unifon) (1959)** - A 40-character alphabet tested in Chicago schools. No academic study of it was ever published, and repeated revisions left several incompatible versions.
 
-**[English Phonotypic Alphabet](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet) (1845)** - Isaac Pitman and Alexander John Ellis created a 40-letter alphabet. Trials in Waltham, Massachusetts (1852-1860) and Syracuse, New York (1850-1866) showed students could learn literacy faster, but elements were later absorbed into the IPA instead of gaining direct adoption.
+**[English Phonotypic Alphabet](https://en.wikipedia.org/wiki/English_Phonotypic_Alphabet) (1845)** - A 40-letter alphabet by Isaac Pitman and Alexander John Ellis. Trials in Waltham, Massachusetts (1852-1860) and Syracuse, New York (1850-1866) showed students learned to read faster. It was never adopted directly; parts of it were later absorbed into the IPA (the International Phonetic Alphabet).
 
-These all had the same problem: no reading material existed in the new script, and once you learned it you couldn't read anything already written.
+All of these shared one problem: nothing was written in the new script, and learning it didn't help you read anything that already existed.
 
-Ingglish uses standard Latin letters (no 'q', no 'x', 'c' only in 'ch'). If you can read English, you can read Ingglish.
+Ingglish uses ordinary Latin letters (no 'q', no 'x', and 'c' only in 'ch'). If you can read English, you can read Ingglish.
 
 ### Transitional Systems
 
-**[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created a 44-character system to teach children to read. By the mid-1960s, thousands of schools used it.
+**[Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet) (1961)** - Sir James Pitman created this 44-character alphabet to teach children to read. By the mid-1960s, thousands of schools used it.
 
-Then it collapsed. Children learned ITA, but couldn't transfer to regular English. Teachers had no training for the transition. The Warburton & Southgate (1969) evaluation (*i.t.a.: An Independent Evaluation*, London: John Murray) found mixed results: initial reading gains but inconsistent transfer to traditional orthography.
+Then it collapsed. Children learned ITA but struggled to switch to regular English spelling, and teachers had no training for the switch. The Warburton & Southgate (1969) evaluation (*i.t.a.: An Independent Evaluation*, London: John Murray) found mixed results: early reading gains, but uneven transfer to standard spelling.
 
-Teaching a system that must later be replaced risks negative transfer: the first system interferes with learning the second.
+A system that must later be replaced risks "negative transfer": the first system gets in the way of learning the second.
 
-Ingglish isn't an initial literacy tool. Users already know traditional spelling; Ingglish supplements it.
+Ingglish isn't a tool for teaching children to read. Its users already know standard spelling, and Ingglish sits alongside it.
 
 ### Simplified Spelling Systems
 
-**[Fonetic Advocat](https://exhibits.lib.ku.edu/exhibits/show/english-language/item/7259) (1850s)** - Published in "Sinsinati" (Cincinnati) by E. Longley, director of the American Phonetic Society. Promoted the English Phonotypic Alphabet. George Bernard Shaw himself owned a copy, showing the continuity of reform interest across generations.
+**[Fonetic Advocat](https://exhibits.lib.ku.edu/exhibits/show/english-language/item/7259) (1850s)** - A publication from "Sinsinati" (Cincinnati) by E. Longley, director of the American Phonetic Society, promoting the English Phonotypic Alphabet. George Bernard Shaw owned a copy, a sign of how reform interest carried across generations.
 
-**[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A collaboration between the Spelling Reform Association and the English Spelling Society with Swedish professor R.E. Zachrisson. Tried to simplify spelling while keeping words recognizable.
+**[Anglic](https://en.wikipedia.org/wiki/Anglic) (1930)** - A joint project of the Spelling Reform Association, the English Spelling Society and Swedish professor R.E. Zachrisson. It tried to simplify spelling while keeping words recognizable.
 
-**[Cut Spelling](https://en.wikipedia.org/wiki/Cut_Spelling) (1992)** - Christopher Upward's system focused on *removing* unnecessary letters rather than respelling. Claimed to eliminate 50% of common spelling errors by cutting redundant letters. Example: "accommodation" → "acomodation."
+**[Cut Spelling](https://en.wikipedia.org/wiki/Cut_Spelling) (1992)** - Christopher Upward's system *removed* unnecessary letters instead of respelling words. It claimed to eliminate 50% of common spelling errors this way. Example: "accommodation" → "acomodation."
 
-**[SoundSpel](https://en.wikipedia.org/wiki/SoundSpel) (1910)** - One of many systems based on Pitman and Ellis's phonogram foundations. Like Truespel and others, attempted full phonetic representation but never achieved adoption.
+**[SoundSpel](https://en.wikipedia.org/wiki/SoundSpel) (1910)** - One of many systems built on Pitman and Ellis's sound-to-letter foundations. Like Truespel and others, it aimed to spell every sound but was never adopted.
 
-**Chicago Tribune (1934-1975)** - The newspaper unilaterally adopted 80 reformed spellings including "tho," "thru," "agast," "burocrat," and "iland." After 40 years, they quietly abandoned the experiment.
+**Chicago Tribune (1934-1975)** - The newspaper adopted 80 reformed spellings on its own, including "tho," "thru," "agast," "burocrat," and "iland." After 41 years, it quietly dropped them.
 
-Even well-designed simplified systems failed without institutional backing or network effects.
+Even well-designed simplified systems failed without institutional backing or a large base of users.
 
 ### Political Failures
 
-**[Theodore Roosevelt's spelling reform](https://en.wikipedia.org/wiki/Simplified_Spelling_Board#Roosevelt_and_the_Government_Printing_Office) (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Congress overturned it within four months amid widespread outcry and mockery.
+**[Theodore Roosevelt's spelling reform](https://en.wikipedia.org/wiki/Simplified_Spelling_Board#Roosevelt_and_the_Government_Printing_Office) (1906)** - The president ordered the Government Printing Office to adopt 300 simplified spellings. Amid public outcry and mockery, Congress overturned the order within four months.
 
-**[Andrew Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board) (1906-1920)** - The steel magnate invested $283,000 (roughly $9–10 million in 2024 dollars per [BLS CPI](https://www.bls.gov/data/inflation_calculator.htm)) in the Simplified Spelling Board. Result: zero lasting impact.
+**[Andrew Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board) (1906-1920)** - The steel magnate put $283,000 (roughly $9–10 million in 2024 dollars, per the [US Bureau of Labor Statistics inflation calculator](https://www.bls.gov/data/inflation_calculator.htm)) into the Simplified Spelling Board. It left no lasting mark.
 
 **UK Parliamentary Bills (1949, 1953)** - Both failed.
 
-No central authority can mandate spelling changes for English. Unlike French ([Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise)) or Spanish ([Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy)), English has no official body with that power. Ingglish doesn't try to replace English spelling. No political mandate needed, just voluntary adoption.
+No one has the authority to change English spelling. French has the [Académie française](https://en.wikipedia.org/wiki/Acad%C3%A9mie_fran%C3%A7aise) and Spanish has the [Real Academia Española](https://en.wikipedia.org/wiki/Royal_Spanish_Academy); English has no equivalent. Ingglish doesn't try to replace English spelling, so it needs no mandate. People can simply choose to use it.
 
 ## The 10 Ways Spelling Reforms Die
 
 ### 1. The Dialect Problem
 
-Every phonemic system must choose whose pronunciation to encode. The Shavian alphabet faced dialect fragmentation: speakers of different dialects would spell words differently to match their accents.
+Any system that spells by sound must pick whose pronunciation to spell. The Shavian alphabet split along dialect lines: speakers spelled words differently to match their own accents.
 
-Ingglish uses General American English via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for the full treatment of how this affects non-American speakers.
+Ingglish follows General American English, the broad standard US accent. Its pronunciations come from the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary), a free pronunciation list from Carnegie Mellon University. [Dialect Assumptions](dialect-assumptions.md) covers in full how this affects non-American speakers.
 
 ### 2. Breaking Etymology
 
-Critics argue that spelling preserves word relationships: "sign"/"signature" share a visible root even though the 'g' is silent in "sign." [Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) argued that English spelling's morphophonemic properties actually *aid* reading.
+Critics argue that spelling shows how words are related: "sign" and "signature" share a visible root even though the 'g' is silent in "sign." [Chomsky & Halle (1968)](https://en.wikipedia.org/wiki/The_Sound_Pattern_of_English) argued that because English spelling tracks word roots as well as sounds, it actually *helps* reading.
 
-That said, some "etymological" spellings are just wrong ([Crystal 2012](https://books.google.com/books?id=jkYmhKwRALkC), *Spell It Out*): "debt" got its 'b' from Latin "debitum" but came through French without it; "island" got an 's' from a false Latin "insula" connection.
+Some "etymological" spellings are simply mistakes, though ([Crystal 2012](https://books.google.com/books?id=jkYmhKwRALkC), *Spell It Out*). "Debt" got its 'b' from Latin "debitum," but the word came into English through French without one. "Island" got its 's' from a mistaken link to Latin "insula."
 
-Ingglish prioritizes pronunciation over etymology. You lose some morphological connections ("sign"→"sain"), but learners who can't pronounce the words can't use those connections anyway. See [Morphological Preservation](morphological-analysis.md) for the full analysis of what's preserved and what's lost.
+Ingglish puts pronunciation ahead of word history. Some links between related words are lost ("sign" is spelled "sain", which no longer looks like "signature"), but learners who can't pronounce the words can't use those links anyway. [Morphological Preservation](morphological-analysis.md) analyzes in full what is kept and what is lost.
 
 ### 3. The Transition Problem
 
-An estimated 1.5 billion people speak English as a first or second language ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC), *English as a Global Language*; [Ethnologue](https://www.ethnologue.com/language/eng/)). Any reform makes existing text harder to read, at least initially.
+An estimated 1.5 billion people speak English as a first or second language ([Crystal 2003](https://books.google.com/books?id=d5sPAV2eRGUC), *English as a Global Language*; [Ethnologue](https://www.ethnologue.com/language/eng/)). Any reform makes existing text harder to read, at least at first.
 
-Ingglish is a **supplementary** system (like [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet)), not a replacement. Traditional spelling isn't going anywhere. Ingglish adds an option; it doesn't take one away.
+Ingglish is an **add-on** to standard spelling, as the [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet) is, not a replacement. Standard spelling isn't going anywhere. Ingglish adds an option without taking one away.
 
-You don't need institutional buy-in. Bidirectional translation tools let you convert between English and Ingglish at any time; no one else needs to adopt it first.
+It also needs no institutional support. Translation tools convert English to Ingglish and back at any time, so no one else has to adopt it first.
 
 ### 4. No Central Authority
 
-There's no English Academy that can decree changes. Every attempt at mandatory reform has failed. Ingglish doesn't need one: use it if you want, ignore it if you don't.
+No English Academy exists to decree changes, and every attempt to force a reform has failed. Ingglish doesn't need one: use it if you want, ignore it if you don't.
 
 ### 5. The Network Effect Trap
 
-The value of a spelling system depends on how many people use it. Individual adoption seems pointless without collective adoption.
+A spelling system is only as useful as the number of people who use it. Adopting one alone seems pointless until many others do too.
 
-Bidirectional translation breaks the network effect. You can convert English to Ingglish and back instantly, so you never need anyone else to adopt it first.
+Two-way translation gets around this. You can convert English to Ingglish and back instantly, so you never have to wait for anyone else.
 
 ### 6. Typography Disasters
 
-The Deseret alphabet deliberately avoided ascenders and descenders (letters extending above or below the line) to make printing type last longer. The result was monotonous, rectangular blocks of text that were tiring to read.
+The Deseret alphabet deliberately avoided ascenders and descenders (the parts of letters that rise above or drop below the line) so printing type would last longer. The result was dull, blocky text that was tiring to read.
 
-Ingglish uses standard Latin letters, so words keep their familiar shapes.
+Ingglish uses ordinary Latin letters, so words keep familiar shapes.
 
 ### 7. Requires Learning New Characters
 
-Systems requiring new characters (Shavian, Deseret, Unifon) face a chicken-and-egg problem: no materials exist to learn from, and nobody creates materials because nobody can read them.
+Systems with new characters (Shavian, Deseret, Unifon) are stuck in a loop: there's nothing to learn from, and nobody writes anything because nobody can read it.
 
-Ingglish has zero new characters. The digraphs (sh, ch, th, ng) are already familiar to English readers.
+Ingglish adds no new characters. Its letter pairs (sh, ch, th, ng) are already familiar to English readers.
 
 ### 8. The "Looks Childish" Problem
 
-Simplified spelling often looks childish to English readers because they associate phonemic spelling with the attempts of learners sounding things out.
+English readers often find simplified spelling childish, because it looks like the work of a learner sounding words out.
 
-Spellings like "luv," "thru," and "enuf" carry stigma from text-speak and children's writing.
+Spellings like "luv," "thru," and "enuf" carry a stigma from text-speak and children's writing.
 
-This seems to be an English-specific thing. Finnish, Italian, and Spanish have far more transparent orthographies, and their speakers don't perceive phonemic spelling as childish. The association exists in English because phonemic spelling resembles the attempts of beginning readers sounding words out. It's a cultural bias, not a linguistic one.
+This reaction seems specific to English. Finnish, Italian, and Spanish spell far more consistently by sound, and their speakers don't see that as childish. The stigma is cultural, not linguistic.
 
 ### 9. Constant Revision
 
-New Spelling, Unifon, and other systems were repeatedly revised, preventing stable adoption and creating incompatible versions.
+New Spelling, Unifon, and other systems were revised again and again, which blocked steady adoption and produced incompatible versions.
 
-Ingglish is based on stable phoneme-to-grapheme mappings from the CMU dictionary. Every spelling is documented with IPA equivalents and cross-language comparisons in the [Orthography Comparison](orthography-comparison.md).
+Ingglish's letter-to-sound rules are fixed and built on the CMU dictionary. Every spelling is documented, with IPA equivalents and comparisons to other languages, in the [Orthography Comparison](orthography-comparison.md).
 
 ### 10. Vested Interests
 
-People who invested years mastering English spelling resist changes that would devalue that skill. Spelling difficulty has become cultural capital, hence spelling bees.
+People who spent years mastering English spelling resist changes that make that skill worth less. Hard spelling has become a mark of status; hence spelling bees.
 
-Mechanics who learned imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify imposing that cost on every future generation.
+Mechanics trained on imperial tools made the same argument against metric. The sunk cost is real, but it doesn't justify charging it to every future generation.
 
 ## What Actually Worked: Successful Reforms
 
@@ -127,51 +127,51 @@ Mechanics who learned imperial tools made the same argument against metric. The 
 [Atatürk](https://en.wikipedia.org/wiki/Atat%C3%BCrk) replaced the Arabic script with a Latin alphabet in three months. Literacy rose from roughly 9% to over 30% within a decade ([Zürcher 2004](https://books.google.com/books/about/Turkey.html?id=gD1pAAAAMAAJ), *Turkey: A Modern History*; exact figures vary by source).
 
 **Why it worked:**
-- Authoritarian one-party state could mandate change
-- Only 9% initial literacy (few people invested in the old system)
-- Part of a broader national identity transformation
-- Personal leadership (Atatürk himself taught citizens in parks)
+- An authoritarian one-party state could order the change
+- Only 9% of people could read, so few had invested in the old system
+- It was part of a wider remaking of national identity
+- Atatürk led it personally, even teaching citizens in parks
 
-Big-bang reform requires political power that English-speaking democracies lack, and shouldn't want.
+A sudden, total switch needs political power that English-speaking democracies lack, and shouldn't want.
 
 ### [German orthography reform](https://en.wikipedia.org/wiki/German_orthography_reform_of_1996) (1996) - Modest Reform
 
-Changed ß→ss in some words, simplified compound consonants, etc.
+Changed ß→ss in some words, simplified compound consonants, and more.
 
 **What happened:**
-- Polls consistently showed majority opposition
-- Some newspapers refused to implement it
-- A "reform of the reform" in 2006 reverted controversial changes
-- But it stuck in schools, creating a new generation using the new spellings
+- Polls consistently showed most people opposed it
+- Some newspapers refused to adopt it
+- A "reform of the reform" in 2006 reversed the most disputed changes
+- It stuck in schools, so a new generation now uses the new spellings
 
-Even **minor** mandatory reforms face massive resistance. Voluntary adoption avoids the backlash.
+Even **minor** reforms face fierce resistance when they are mandatory. Voluntary adoption avoids that backlash.
 
 ### [Korean Hangul](https://en.wikipedia.org/wiki/Hangul) - The Long Game
 
-[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It was declared the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the sole script for government documents in 1968. By the 1980s, Hangul dominated everyday life, a journey of over **500 years**.
+[King Sejong](https://en.wikipedia.org/wiki/Sejong_the_Great) created Hangul in 1443. It became the official Korean script in 1894. North Korea abolished Chinese characters in 1949; South Korea made Hangul the only script for government documents in 1968. By the 1980s Hangul dominated everyday life, more than **500 years** after its creation.
 
 **Why it eventually worked:**
-- Coexisted with Chinese characters for centuries
-- Gained status gradually through nationalist movements and government policy
-- Technology (computers, phones) further accelerated exclusive Hangul use
+- It existed alongside Chinese characters for centuries
+- It gained status gradually through nationalist movements and government policy
+- Computers and phones sped up the shift to Hangul alone
 
-Hangul's success was driven by government policy and nationalism, not voluntary adoption. But the coexistence of two writing systems for 450+ years shows that supplementary scripts can survive long enough to eventually become primary.
+Government policy and nationalism drove Hangul's success, not voluntary choice. But its five centuries alongside another script show that a secondary writing system can survive long enough to become the main one.
 
 ## What Ingglish Can Realistically Achieve
 
 ### The Metric Parallel
 
-The US officially adopted metric in 1975. Fifty years later, Americans still use miles and Fahrenheit daily. Did metric fail?
+The US officially adopted metric in 1975. Fifty years later, Americans still use miles and Fahrenheit every day. Did metric fail?
 
-No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. The "failure" is just consumer-facing measurements: road signs, weather reports, grocery stores. The rational system dominates professional contexts while the legacy system persists in casual ones.
+No. Metric won where it matters: science, medicine, the military, international trade, manufacturing. It "failed" only in everyday public use: road signs, weather reports, grocery stores. The logical system rules professional work while the old one lingers in casual life.
 
-Ingglish could follow the same path. Possible applications (not yet formally tested):
-- Phonemic spelling for ESL and early literacy
-- Consistent spelling for dyslexic readers (transparent orthographies correlate with lower dyslexia impact; [Paulesu et al. 2001](https://doi.org/10.1126/science.1057179))
+Ingglish could follow the same path. Possible uses (none formally tested yet):
+- Sound-based spelling for English learners and young readers
+- Consistent spelling for dyslexic readers (dyslexia has less impact in languages that spell consistently by sound; [Paulesu et al. 2001](https://doi.org/10.1126/science.1057179))
 - Unambiguous input for speech synthesis and language models
-- A standard that doesn't privilege native speakers' memorized exceptions
+- A standard that doesn't favor native speakers who have memorized the exceptions
 
-Traditional spelling will probably stick around in casual contexts forever, and that's fine.
+Standard spelling will probably stay in casual use forever, and that's fine.
 
 ### Design Summary
 
@@ -181,7 +181,7 @@ Traditional spelling will probably stick around in casual contexts forever, and 
 | Standard digraphs (sh, ch, th) | Already familiar to English readers |
 | CMU dictionary basis | Consistent, well-documented pronunciations |
 | Supplements, doesn't replace | No political battle required |
-| Bi-directional translation | Maintains connection to traditional spelling |
+| Bi-directional translation | Converts to and from standard spelling at any time |
 
 ## The Unfamiliarity Hurdle
 
@@ -192,41 +192,41 @@ Some Ingglish spellings will look strange at first:
 - "through" → "throo"
 - "beautiful" → "byootafal"
 
-But "strange" isn't "wrong." Kilometers looked strange to Americans too. The question isn't whether it looks familiar; it's whether the system is better. A spelling system where every letter pattern has one sound is easier to learn than one where "ough" can be pronounced seven different ways, and the research backs this up ([Seymour et al. 2003](https://doi.org/10.1348/000712603321661859)).
+But strange isn't wrong. Kilometers looked strange to Americans too. What matters is not whether a spelling looks familiar but whether the system is better. A system where each letter pattern has one sound is easier to learn than one where "ough" has seven pronunciations, and the research supports this ([Seymour et al. 2003](https://doi.org/10.1348/000712603321661859)).
 
 ### The Dialect Gap
 
-This is covered in detail in [The Dialect Problem](#1-the-dialect-problem) above. The short version: Ingglish standardizes on General American English. Non-American speakers will encounter mismatches, but that's the price of picking one standard.
+[The Dialect Problem](#1-the-dialect-problem) above covers this in detail. In short: Ingglish follows General American English. Speakers of other accents will find mismatches, which is the price of picking one standard.
 
 ### The "Why Bother?" Question
 
 Fluent English readers might ask: "I already know how to pronounce words. Why would I care?"
 
-Because you're not the only person who reads English. The number of English learners worldwide exceeds the number of native speakers ([British Council 2013](https://www.britishcouncil.org/research-insight/research/future-english); Crystal 2003). Every one of them hits the same walls:
+Because you aren't the only one reading English. English learners worldwide outnumber native speakers ([British Council 2013](https://www.britishcouncil.org/research-insight/research/future-english); Crystal 2003). Every one of them hits the same walls:
 
-- **Years of extra effort** - At the end of Grade 1, English-speaking children read at roughly 34% accuracy on a standard word-reading task, compared to 95%+ for children learning transparent orthographies like Finnish or Italian ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859); replicated by [Ziegler et al. 2010](https://doi.org/10.1037/a0019978))
+- **Years of extra effort** - At the end of first grade, English-speaking children read about 34% of words correctly on a standard word-reading test. Children learning languages that spell by sound, like Finnish or Italian, score 95% or more ([Seymour, Aro & Erskine 2003](https://doi.org/10.1348/000712603321661859); replicated by [Ziegler et al. 2010](https://doi.org/10.1037/a0019978))
 - **Rules that aren't** - "I before E except after C" has more exceptions than examples
-- **Unreadable words** - "Lead" rhymes with "read" or "red" depending on context. There's no way to know without memorizing each word.
+- **Unreadable words** - "Lead" rhymes with "read" (to guide) or "red" (the metal). The only way to know is to memorize each word.
 
-Fluent readers have already paid this cost. Should every future generation keep paying it too?
+Fluent readers have already paid this cost. Should every future generation pay it too?
 
 ## Conclusion
 
-English spelling works, but at unnecessary cost. Every generation of learners pays for inconsistencies baked in centuries ago.
+English spelling works, but at a needless cost. Every generation of learners pays for inconsistencies fixed in place centuries ago.
 
-Previous reforms failed because they required everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can find a foothold in domains where consistency matters while traditional spelling persists elsewhere. Metric took decades. Hangul took centuries.
+Earlier reforms failed because they needed everyone to switch at once. Ingglish doesn't. Like metric in science and medicine, it can take hold where consistency matters while standard spelling carries on elsewhere. Metric took decades. Hangul took centuries.
 
 ## Video Resources
 
-- [There's a better English alphabet](https://www.youtube.com/watch?v=D66LrlotvCA) - RobWords (19 min) - Deep dive into the Shavian alphabet and whether a phonemic alphabet could work for English
-- [The Screwed-Up History of English Spelling](https://www.pbs.org/video/the-screwed-up-history-of-english-spelling-iake2v/) - PBS Otherwords (8 min) - Excellent overview of how English spelling became such a mess
-- [Ghoti and the Ministry of Helth: Spelling Reform](https://www.youtube.com/watch?v=AfRJVF-bRwQ) - Tom Scott (3 min) - Quick introduction to spelling reform history
-- [Most English spelling reforms are bad](https://www.youtube.com/watch?v=TEsqY4MH40s) - Jan Misali (17 min) - Critical analysis of why reforms fail, plus a creative alternative approach
-- [The Simplified Spelling Board](https://www.youtube.com/watch?v=zWLVogAqNac) - The History Guy (15 min) - Deep dive into Roosevelt and Carnegie's failed reform attempt
+- [There's a better English alphabet](https://www.youtube.com/watch?v=D66LrlotvCA) - RobWords (19 min) - An in-depth look at the Shavian alphabet and whether a sound-based alphabet could work for English
+- [The Screwed-Up History of English Spelling](https://www.pbs.org/video/the-screwed-up-history-of-english-spelling-iake2v/) - PBS Otherwords (8 min) - A clear overview of how English spelling became such a mess
+- [Ghoti and the Ministry of Helth: Spelling Reform](https://www.youtube.com/watch?v=AfRJVF-bRwQ) - Tom Scott (3 min) - A quick introduction to the history of spelling reform
+- [Most English spelling reforms are bad](https://www.youtube.com/watch?v=TEsqY4MH40s) - Jan Misali (17 min) - Why reforms fail, plus an inventive alternative
+- [The Simplified Spelling Board](https://www.youtube.com/watch?v=zWLVogAqNac) - The History Guy (15 min) - The story of Roosevelt and Carnegie's failed reform
 
 ## Sources
 
-Historical overviews (Wikipedia articles used as starting points; primary sources should be substituted for formal publication):
+Historical overviews (Wikipedia articles used as starting points; for formal publication, cite the primary sources instead):
 - [Shavian Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Shavian_alphabet)
 - [Initial Teaching Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet)
 - [Deseret Alphabet - Wikipedia](https://en.wikipedia.org/wiki/Deseret_alphabet)

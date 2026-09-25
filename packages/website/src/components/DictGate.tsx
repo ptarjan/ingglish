@@ -8,7 +8,7 @@ export function DictGate({ children }: { children: ReactNode }) {
   if (error !== null) {
     return (
       <div className="error-screen">
-        <h1>Error</h1>
+        <h1>Something went wrong</h1>
         <p>{error}</p>
       </div>
     );

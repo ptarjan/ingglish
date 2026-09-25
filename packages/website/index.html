@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ingglish - Phonetic English Spelling</title>
-    <meta name="description" content="What if English spelling made sense? Ingglish is phonetic English — every spelling always makes the same sound." />
+    <meta name="description" content="What if English spelling made sense? Ingglish respells English phonetically, so each spelling always stands for the same sound." />
     <link rel="canonical" href="https://ingglish.com/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -16,7 +16,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ingglish.com" />
     <meta property="og:title" content="Ingglish - What if English spelling made sense?" />
-    <meta property="og:description" content="One sound per spelling. No silent letters. Every spelling always makes the same sound. Translate any English text to phonetic spelling instantly." />
+    <meta property="og:description" content="English respelled so each spelling always makes the same sound, with no silent letters. Paste in any English text to see it spelled phonetically." />
     <meta property="og:image" content="https://ingglish.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -24,7 +24,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Ingglish - What if English spelling made sense?" />
-    <meta name="twitter:description" content="One sound per spelling. No silent letters. Every spelling always makes the same sound. Translate any English text to phonetic spelling instantly." />
+    <meta name="twitter:description" content="English respelled so each spelling always makes the same sound, with no silent letters. Paste in any English text to see it spelled phonetically." />
     <meta name="twitter:image" content="https://ingglish.com/og-image.png" />
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2RPKS54P74"></script>
@@ -79,23 +79,23 @@
         <main class="main">
           <div class="seo-content" style="padding:2rem;max-width:48rem;margin:0 auto">
             <h2>What if English spelling made sense?</h2>
-            <p>Ingglish is phonetic English — every spelling always makes the same sound. No silent letters, no irregular pronunciations. If you can say it, you can spell it.</p>
-            <p>Examples: "enough" → "enuf" · "through" → "throo" · "knight" → "nyt" · "beautiful" → "byootiful"</p>
+            <p>Ingglish is phonetic English: each spelling always makes the same sound. There are no silent letters and no irregular pronunciations. If you can say a word, you can spell it.</p>
+            <p>Examples: "enough" → "inuhf" · "through" → "throo" · "knight" → "nait" · "beautiful" → "byootafal"</p>
             <nav>
               <ul>
-                <li><a href="/text/">Text Translator</a> — Translate any English text to phonetic spelling</li>
+                <li><a href="/text/">Text Translator</a> — Translate any English text into phonetic spelling</li>
                 <li><a href="/url/">URL Translator</a> — Read any webpage in Ingglish</li>
-                <li><a href="/guide/">Spelling Guide</a> — Learn the complete phonetic alphabet</li>
-                <li><a href="/explore/">Word Explorer</a> — Look up any word's phonemes and translation</li>
-                <li><a href="/games/">Games</a> — Practice reading Ingglish with interactive games</li>
-                <li><a href="/extension/">Browser Extension</a> — One-click translation for any webpage</li>
-                <li><a href="/docs/">Documentation</a> — Design decisions, architecture, and API reference</li>
+                <li><a href="/guide/">Spelling Guide</a> — The complete phonetic alphabet: every sound and how Ingglish spells it</li>
+                <li><a href="/explore/">Word Explorer</a> — Look up any word to see its sounds and its Ingglish spelling</li>
+                <li><a href="/games/">Games</a> — Practice reading Ingglish</li>
+                <li><a href="/extension/">Browser Extension</a> — Translate any webpage with one click</li>
+                <li><a href="/docs/">Documentation</a> — Design decisions, architecture and API reference</li>
               </ul>
             </nav>
           </div>
           <div class="loading-screen" id="loading-screen">
             <div class="loading-spinner"></div>
-            <noscript><p style="color:var(--color-text-muted)">Interactive features require JavaScript.</p></noscript>
+            <noscript><p style="color:var(--color-text-muted)">The interactive tools need JavaScript.</p></noscript>
           </div>
         </main>
       </div>
@@ -114,7 +114,7 @@
         var el = document.getElementById('loading-screen');
         if (el) {
           el.innerHTML = '<p style="color:var(--color-text);font-size:1.125rem;font-weight:600">Something went wrong</p>' +
-            '<p style="color:var(--color-text-muted)">The app failed to load. Please try refreshing.</p>' +
+            '<p style="color:var(--color-text-muted)">The site didn&#39;t finish loading. Try reloading the page.</p>' +
             '<button onclick="location.reload()" style="padding:0.5rem 1.5rem;font-size:1rem;color:#fff;background:var(--color-primary,#4f46e5);border:none;border-radius:0.5rem;cursor:pointer">Reload</button>';
         }
       }, 10000);

@@ -73,7 +73,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
   }, []);
 
   // Auto-translate if initialUrl is provided (e.g. /url?url=... from share link
-  // or "Read full page" link). Don't push history — the URL is already in the
+  // or "Translate the page this sample comes from" link). Don't push history — the URL is already in the
   // address bar, so pushing would require an extra back-click to leave.
   const initialTranslatedRef = useRef(false);
   useEffect(() => {
@@ -202,7 +202,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
           onChange={(e) => {
             setUrl(e.target.value);
           }}
-          placeholder="Enter a URL (e.g., example.com)"
+          placeholder="Enter a web address, like example.com"
           type="text"
           value={url}
         />
@@ -217,6 +217,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
           className="btn-secondary format-toggle"
           disabled={isLoading}
           onClick={toggleFormat}
+          title="Switch output format"
           type="button"
         >
           {formatLabel} &#x21C5;
@@ -293,9 +294,7 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
         ))}
       </div>
 
-      <p className="url-note">
-        Due to browser security restrictions, some websites may not load correctly.
-      </p>
+      <p className="url-note">Browser security rules stop some websites from loading correctly.</p>
     </div>
   );
 }

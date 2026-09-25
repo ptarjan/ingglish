@@ -200,14 +200,14 @@ function PatternSort() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Game"
-          description="The same letter pattern can make different sounds. Sort words into the right pronunciation bucket!"
+          description="The same letters can make different sounds. Sort each word by how its letter pattern is pronounced."
           onStart={() => {
             startGame(seed);
           }}
           rules={[
-            'See a word with a common spelling pattern',
-            'Tap which pronunciation bucket it belongs in',
-            '3 rounds with different patterns',
+            "See a word that contains the round's letter pattern",
+            'Pick the sound the pattern makes in that word',
+            '3 rounds, each with a different pattern',
           ]}
           startRef={startRef}
           title="Pattern Sort"
@@ -240,6 +240,7 @@ function PatternSort() {
         />
         <GameResultActions
           copied={copied}
+          newGameLabel="New Words"
           onNewGame={() => {
             startGame(Date.now());
           }}

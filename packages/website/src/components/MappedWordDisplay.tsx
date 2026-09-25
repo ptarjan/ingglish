@@ -20,7 +20,7 @@ export function MappedWordDisplay({
   hoveredWordIndex = null,
   onHoverWord,
   onScroll,
-  placeholder = 'Hover to see word correspondence...',
+  placeholder = 'Hover over a word to see the original…',
   scrollRef,
   showTooltip = true,
   spokenWordIndex = null,

@@ -220,21 +220,21 @@ function SpeedMatch() {
     return (
       <div className="game-page">
         <GameIntro
-          description="Match Ingglish words to their English translations as fast as you can! Click one word from each column to make a pair. 3 rounds of 6 pairs each."
+          description="Match Ingglish words to their English translations as fast as you can. Click one word in each column to make a pair. 3 rounds of 6 pairs each."
           onStart={() => {
             startGame(seed);
           }}
           rules={[
             'Click an Ingglish word on the left',
             'Click its English match on the right',
-            'Match all pairs as fast as possible!',
+            'Clear all the pairs to finish the round',
           ]}
           startRef={startRef}
           title="Speed Match"
         >
           {bestTime !== null && (
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-              Best time: {formatTime(bestTime)}
+              Best total time: {formatTime(bestTime)}
             </p>
           )}
         </GameIntro>

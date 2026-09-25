@@ -44,7 +44,7 @@ export const ROUTE_OG: Record<string, RouteOg> = {
   },
   extension: {
     subtitle: 'One-Click Browser Extension',
-    examples: 'Translate any webpage instantly',
+    examples: 'Translate the page you are reading',
   },
   challenge: {
     subtitle: 'Test Your Reading Speed',

@@ -460,7 +460,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
                 aria-label="Random sample"
                 className="btn-secondary btn-icon"
                 onClick={handleRandom}
-                title="Random"
+                title="Random sample"
               >
                 <DiceIcon />
               </button>
@@ -522,10 +522,10 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             </select>
             {selectedSampleSource && (
               <a
-                aria-label="Read full page"
+                aria-label="Translate the page this sample comes from"
                 className="btn-secondary btn-icon"
                 href={`/url?url=${encodeURIComponent(selectedSampleSource)}${selectedLanguage === 'en' ? '' : `&lang=${selectedLanguage}`}`}
-                title="Read full page"
+                title="Translate the page this sample comes from"
               >
                 <ExternalLinkIcon />
               </a>
@@ -549,7 +549,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
             <button
               className="format-cycle-btn format-toggle"
               onClick={toggleFormat}
-              title="Cycle output format"
+              title="Switch output format"
             >
               {getFormatLabel(format)}
               <span aria-hidden="true" className="format-cycle-icon">
@@ -594,7 +594,7 @@ function TextTranslator({ initialLang, initialText = '', onShare }: TextTranslat
 
       {lastEdited === 'english' && isAllCaps(englishText) && (
         <div className="warning-message">
-          Ingglish is case-sensitive — type in normal case for accurate translations.
+          Ingglish is case-sensitive. Type in normal case, not all caps, for accurate translations.
         </div>
       )}
     </div>

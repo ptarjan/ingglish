@@ -112,19 +112,19 @@ export function fallbackLabel(strategy: undefined | WordDiagnosis['strategy']): 
       return 'compound word';
     }
     case 'custom': {
-      return 'custom override';
+      return 'custom pronunciation';
     }
     case 'g2p': {
-      return 'G2P rules';
+      return 'spelling-to-sound rules';
     }
     case 'initialism': {
       return 'initialism';
     }
     case 'stemming': {
-      return 'stemmed';
+      return 'prefix/suffix split';
     }
     case undefined: {
-      return 'passthrough';
+      return 'left unchanged';
     }
   }
 }

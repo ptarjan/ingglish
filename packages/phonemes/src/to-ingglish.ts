@@ -18,7 +18,7 @@ import type { OutputFormat } from './types';
  * @returns Ingglish spelling (e.g., "a", "ay", "b")
  */
 export function arpabetPhonemeToIngglish(phoneme: string): string {
-  // Unstressed schwa AH0 → 'a' (stressed /ʌ/ AH1/AH2 → 'u' via map)
+  // Unstressed schwa AH0 → 'a' (stressed /ʌ/ AH1/AH2 → 'uh' via map)
   if (phoneme === 'AH0') {
     return 'a';
   }

@@ -26,7 +26,7 @@ function Experiment() {
     shareLink(
       mapping.shareUrl,
       'My custom Ingglish spelling',
-      'Check out my custom phonetic spelling mapping!'
+      'Here is my own phonetic spelling system for English.'
     );
   }, [shareLink, mapping.shareUrl]);
 
@@ -35,15 +35,14 @@ function Experiment() {
       <div className="experiment-intro">
         <p>
           Design your own phonetic spelling system. Click any cell in the <strong>Spelling</strong>{' '}
-          column to change how a sound is written, then see your changes applied to sample text on
-          the right.
+          column to change how that sound is written. The text on the right updates as you go.
         </p>
       </div>
 
       <div className="experiment-presets">
         <span
           className="presets-label"
-          title="Languages with near 1:1 letter-to-sound mappings, applied to English phonemes"
+          title="Spell English sounds the way these languages do; each has a nearly one-to-one match between letters and sounds"
         >
           Languages:
         </span>
@@ -85,7 +84,7 @@ function Experiment() {
         })}
         <span
           className="presets-label"
-          title="Published and community English spelling reform proposals"
+          title="English spelling reforms proposed in print or by the community"
         >
           Reforms:
         </span>

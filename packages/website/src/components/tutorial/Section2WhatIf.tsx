@@ -5,8 +5,8 @@ export function Section2WhatIf() {
   const revealedCount = useStaggeredReveal(3, visible, 800);
 
   const lines = [
-    'What if every spelling always made the same sound?',
-    "What if you could read any word correctly\u2009\u2014\u2009even one you'd never seen before?",
+    'What if each spelling always made the same sound?',
+    "What if you could read any word correctly, even one you'd never seen before?",
     "That's Ingglish.",
   ];
 

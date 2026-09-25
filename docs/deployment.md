@@ -1,12 +1,12 @@
 # Deployment Guide
 
-How to deploy the Ingglish website, Chrome extension, and CORS proxy.
+How to deploy the three deployable parts of Ingglish: the website, the Chrome extension and the CORS proxy.
 
 ## Website Deployment
 
 ### GitHub Pages (Current)
 
-The site is deployed automatically via GitHub Actions on every push to main.
+GitHub Actions deploys the site automatically on every push to `main`.
 
 1. **Enable GitHub Pages**
    - Go to repository Settings > Pages
@@ -16,8 +16,8 @@ The site is deployed automatically via GitHub Actions on every push to main.
    See [.github/workflows/pages.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/pages.yml) for the full workflow.
 
 3. **Environment Variables**
-   - `BASE_URL` - Set to `/<repo-name>/` for GitHub Pages subpath
-   - `VITE_CORS_PROXY_URL` - URL to your CORS proxy for the URL translator feature
+   - `BASE_URL`: set to `/<repo-name>/` when the site is served from a GitHub Pages subpath
+   - `VITE_CORS_PROXY_URL`: the URL of your CORS proxy, used by the URL translator (the site feature that translates a web page from its address)
 
 ## Chrome Extension Deployment
 
@@ -27,21 +27,21 @@ The site is deployed automatically via GitHub Actions on every push to main.
 npm run build -w @ingglish/extension
 ```
 
-The built extension will be in `packages/extension/dist/`.
+The build goes to `packages/extension/dist/`.
 
 ### Loading in Chrome
 
 1. Go to `chrome://extensions`
-2. Enable "Developer mode" (toggle in top right)
+2. Turn on "Developer mode" (the toggle at the top right)
 3. Click "Load unpacked"
 4. Select `packages/extension/dist`
 
 ### Usage
 
-1. Click the Ingglish extension icon in the Chrome toolbar
-2. Click "Translate Page" to translate the current page
+1. Click the Ingglish icon in the Chrome toolbar
+2. Click "Translate Page" to translate the page you're on
 3. Click "Turn Off" to restore the original text
-4. Use the format toggle to switch between Ingglish and IPA
+4. Use the format toggle to switch the output between Ingglish and IPA (the International Phonetic Alphabet)
 
 **Keyboard Shortcuts:**
 - **Windows/Linux**: `Alt+Shift+G`
@@ -49,14 +49,14 @@ The built extension will be in `packages/extension/dist/`.
 
 ### Features
 
-- **Format switching** - Toggle between Ingglish and IPA output
-- **In-place updates** - Format switching updates existing translations without re-rendering
-- **Dynamic content** - Automatically translates content added via JavaScript (SPAs, infinite scroll)
-- **Hover tooltips** - See original English by hovering over translated words
+- **Format switching**: toggle the output between Ingglish and IPA
+- **In-place updates**: switching format updates the words already translated, without re-rendering the page
+- **Dynamic content**: content added later by JavaScript (single-page apps, infinite scroll) is translated too
+- **Hover tooltips**: hover over a translated word to see the original English
 
 ### Notes
 
-- Translation state persists within a tab across page refreshes
+- Within a tab, translation stays on (or off) when you refresh the page
 - Some pages block content scripts (e.g., Chrome Web Store)
 - Code blocks, form inputs, and scripts are not translated
 
@@ -75,24 +75,24 @@ The built extension will be in `packages/extension/dist/`.
 
 3. **Submit to Chrome Web Store**
    - Go to [Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-   - Pay one-time $5 developer fee
-   - Upload ZIP file
-   - Fill in store listing details
+   - Pay the one-time $5 developer fee
+   - Upload the ZIP file
+   - Fill in the store listing
    - Submit for review
 
 ### Extension CI/CD
 
-The extension is automatically built and packaged in [.github/workflows/pages.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/pages.yml).
+The extension is built and packaged automatically by [.github/workflows/pages.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/pages.yml).
 
 ## CORS Proxy Deployment
 
-The URL translator feature requires a CORS proxy to fetch external websites. You can use the included Cloudflare Worker.
+The URL translator needs a CORS proxy to fetch pages from other websites. The repo includes one as a Cloudflare Worker.
 
 ### Automatic Deployment
 
-The CORS proxy is automatically deployed via [.github/workflows/deploy-cors-proxy.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/deploy-cors-proxy.yml) when changes are pushed to `packages/cors-proxy/`.
+The CORS proxy is deployed automatically by [.github/workflows/deploy-cors-proxy.yml](https://github.com/ptarjan/ingglish/blob/main/.github/workflows/deploy-cors-proxy.yml) whenever a push changes `packages/cors-proxy/`.
 
-Requires `CLOUDFLARE_API_TOKEN` secret in repository settings.
+This needs a `CLOUDFLARE_API_TOKEN` secret in the repository settings.
 
 ### Manual Deployment
 
@@ -116,15 +116,15 @@ Requires `CLOUDFLARE_API_TOKEN` secret in repository settings.
 
 ### Using Custom Proxy
 
-Alternatively, use any CORS proxy that supports the `?url=` parameter format.
+You can also use any CORS proxy that takes the target as a `?url=` parameter.
 
 ## Environment Variables
 
 ### Website
-No environment variables required for basic deployment.
+A basic deployment needs no environment variables.
 
 ### For URL Translation Feature
-If you want to use your own CORS proxy instead of allorigins.win:
+To use your own CORS proxy instead of the default public proxy, allorigins.win:
 - `VITE_CORS_PROXY_URL` - Your CORS proxy URL (e.g., `https://your-proxy.workers.dev/?url=`)
 
 ## Troubleshooting

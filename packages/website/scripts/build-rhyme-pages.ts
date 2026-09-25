@@ -203,21 +203,20 @@ ${SITE_HEADER}
 <p><a href="/word/${word}/">How to pronounce “${escapeHtml(word)}” →</a></p>
 </div>
 
+<p>A perfect rhyme matches every sound from the stressed vowel to the end of the word. In
+“${escapeHtml(word)}” (/${escapeHtml(ipa)}/) that part is /${escapeHtml(rime)}/. Ingglish spells it
+“${escapeHtml(rimeIngglish)}”, and that spelling always makes that sound. Every word below ends in
+/${escapeHtml(rime)}/, however English spells it.</p>
+
 ${sections}
 
-<h2>Why these rhyme</h2>
-<p>A perfect rhyme shares everything from the stressed vowel onward. “${escapeHtml(word)}” is
-/${escapeHtml(ipa)}/, and its rime is /${escapeHtml(rime)}/ — spelled “${escapeHtml(rimeIngglish)}” in
-Ingglish, where that spelling always makes that sound. Every word above ends on the same
-/${escapeHtml(rime)}/, however English chooses to spell it.</p>
-
 <p>
-<a class="cta" href="/rhymes/">Browse rhymes by sound →</a>
+<a class="cta" href="/rhymes/">Browse all rhyme groups →</a>
 <a class="cta" href="/text/#text=${encodeURIComponent(word)}">Translate any text</a>
 </p>
 </main>
 <footer>
-<a href="/">Ingglish</a> — what if English spelling made sense? Every spelling always makes the same sound.
+<a href="/">Ingglish</a> respells English so that each spelling always makes the same sound.
 </footer>
 </body>
 </html>

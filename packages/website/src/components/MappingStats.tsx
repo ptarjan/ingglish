@@ -167,7 +167,7 @@ function DeltaBadge({
   const sign = value > 0 ? '+' : '';
   const className = value > 0 ? 'stat-delta stat-delta-better' : 'stat-delta stat-delta-worse';
   return (
-    <span className={className}>
+    <span className={className} title="Change from standard Ingglish">
       {sign}
       {value.toFixed(decimals)}
     </span>
@@ -278,7 +278,7 @@ function MappingStats({ version }: MappingStatsProps) {
     return (
       <div className="card mapping-stats">
         <h3>Statistics</h3>
-        <div className="stats-loading">Computing...</div>
+        <div className="stats-loading">Calculating…</div>
       </div>
     );
   }
@@ -287,12 +287,12 @@ function MappingStats({ version }: MappingStatsProps) {
 
   return (
     <div className="card mapping-stats">
-      <h3>Statistics {computing && <span className="stats-updating">(updating...)</span>}</h3>
+      <h3>Statistics {computing && <span className="stats-updating">(updating…)</span>}</h3>
 
       <div className="stats-cards">
         <div
           className="stat-card"
-          title="What percentage of real-world text (by word frequency) stays identical after translation — higher means more familiar to English readers"
+          title="Share of everyday text, weighted by how often each word is used, that is spelled the same as in English. Higher means more familiar to English readers."
         >
           <div className="stat-value">
             {experiment.textPreservedPct.toFixed(1)}%
@@ -304,7 +304,7 @@ function MappingStats({ version }: MappingStatsProps) {
         </div>
         <div
           className="stat-card"
-          title="What percentage of real-world text (by word frequency) has an unambiguous spelling — higher means fewer confusing homophones"
+          title="Share of everyday text, weighted by how often each word is used, whose spelling belongs to only one word. Higher means fewer confusing look-alikes."
         >
           <div className="stat-value">
             {experiment.uniquePct.toFixed(1)}%
@@ -316,7 +316,7 @@ function MappingStats({ version }: MappingStatsProps) {
         </div>
         <div
           className="stat-card"
-          title="Would an English reader pronounce this correctly? G2P round-trip phoneme recovery rate — higher means more pronounceable"
+          title="Would an English reader say these spellings correctly? Measured by reading each spelling back into sounds with English pronunciation rules and checking they match. Higher is better."
         >
           <div className="stat-value">
             {(experiment.pronounceability * 100).toFixed(1)}%
@@ -342,8 +342,8 @@ function MappingStats({ version }: MappingStatsProps) {
               </span>
             </div>
             <div className="stats-extra-desc">
-              Character-level Levenshtein similarity to English spelling. Flaw: optimizes for
-              character overlap, not readability.
+              How close each spelling is to the English one, letter by letter (Levenshtein
+              similarity). Weakness: rewards shared letters, not readability.
             </div>
           </div>
           <div className="stats-extra-row">
@@ -361,8 +361,8 @@ function MappingStats({ version }: MappingStatsProps) {
               </span>
             </div>
             <div className="stats-extra-desc">
-              How often each grapheme appears in the English word. Flaw: can&apos;t tell{' '}
-              <em>why</em> a grapheme appears.
+              How often each spelling unit (grapheme) also appears in the English word. Weakness: it
+              can&apos;t tell <em>why</em> the letters are there.
             </div>
           </div>
           <div className="stats-extra-row">
@@ -380,8 +380,8 @@ function MappingStats({ version }: MappingStatsProps) {
               </span>
             </div>
             <div className="stats-extra-desc">
-              Orthotactic probability (avg log bigram probability). Flaw: rewards common letter
-              sequences regardless of pronunciation.
+              How English-like the letter sequences look (average log probability of each letter
+              pair). Weakness: rewards common letter pairs whatever they sound like.
             </div>
           </div>
           <div className="stats-extra-link">
@@ -398,7 +398,7 @@ function MappingStats({ version }: MappingStatsProps) {
 
       {stats.topChanges.length > 0 && (
         <div className="top-changes">
-          <h4>Most common words affected</h4>
+          <h4>Most common words you changed</h4>
           <table className="changes-table">
             <thead>
               <tr>
@@ -422,12 +422,12 @@ function MappingStats({ version }: MappingStatsProps) {
 
       {stats.topCollisions.length > 0 && (
         <div className="top-collisions">
-          <h4>New collisions from your changes</h4>
+          <h4>Words your changes now spell the same</h4>
           <table className="changes-table">
             <thead>
               <tr>
                 <th>English words</th>
-                <th>Now both spell</th>
+                <th>Shared spelling</th>
               </tr>
             </thead>
             <tbody>

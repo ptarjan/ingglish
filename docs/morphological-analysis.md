@@ -1,60 +1,59 @@
 # Morphological Preservation
 
-English orthography is a compromise between phonetic and morphological representation. Silent letters and inconsistent vowel spellings often serve as **morphological markers** connecting related words: "sign" and "signal" share the visual root "sign-" even though the "g" is silent in one. A purely phonetic system like Ingglish sacrifices some of this morphological transparency in favor of pronunciation transparency.
+English spelling tries to show two things at once: how a word sounds, and which words it is related to. Silent letters and inconsistent vowel spellings often keep related words looking alike: "sign" and "signal" share the visible root "sign-" even though the "g" is silent in "sign". Ingglish spells by sound alone, so it gives up some of these visual links in exchange for spelling that tells you how to say the word.
 
-This page documents exactly where morphological relationships are preserved, broken, or improved.
+This page shows where word-family links survive in Ingglish, where they break, and where they get clearer. Sounds are written in IPA between slashes (/eɪ/ is the vowel in "say"); [Phoneme Mapping](phoneme-mapping.md) gives an example word for each.
 
 ## The Fundamental Tradeoff
 
-Every spelling system sits on a spectrum between two ideals:
+Every spelling system sits somewhere between two ideals:
 
-- **Phonemic transparency**: spelling reflects pronunciation (Finnish, Turkish)
-- **Morphological transparency**: spelling reflects word relationships (Chinese, to some extent English)
+- **Phonemic transparency**: spelling shows pronunciation (Finnish, Turkish)
+- **Morphological transparency**: spelling shows which words are related (Chinese, and English to some extent)
 
-English leans toward morphological transparency in many cases, keeping related words looking similar even when they sound different. Ingglish chooses phonemic transparency, which means related words that *sound* different will *look* different.
+English often leans toward the second, keeping related words looking alike even when they sound different. Ingglish chooses the first, so related words that *sound* different also *look* different.
 
 ## Preserved Relationships
 
-In these families, the shared root sounds similar enough across forms that Ingglish preserves the visual connection:
+In these word families, the shared root sounds alike enough in every form that the Ingglish spellings still look related:
 
-| Family | English | Ingglish | Shared stem |
+| Family | English | Ingglish | Shared root |
 |--------|---------|----------|-------------|
 | electric | electric / electricity / electrical | ilektrik / ilektrisatee / ilektrikal | ilektri- |
 | magic | magic / magician / magical | majik / majishan / majikal | maji- |
 | medicine | medicine / medical / medication | medasan / medakal / medakayshan | med- |
-| produce | produce / production / productive | pradoos / praduhkshan / praduhktiv | pradu- |
-| reduce | reduce / reduction | radoos / raduhkshan | radu- |
-| deep | deep / depth | deep / depth | deep/depth |
-| cone | cone / conic / conical | kohn / konik / konikal | kon- |
+| produce | produce / production / productive | pradoos / praduhkshan / praduhktiv | prad- |
+| reduce | reduce / reduction | radoos / raduhkshan | rad- |
+| deep | deep / depth | deep / depth | same as English |
 | bomb\* | bombard / bombardment | bombard / bombardmant | bombard- |
 
-\* "bombard" and "bombardment" stay related, though "bomb" itself diverges (see below).
+\* "bombard" and "bombardment" still match, but "bomb" itself does not (see below).
 
 ## Broken Relationships
 
-In these families, English pronunciation shifts between related forms cause Ingglish spellings to diverge. Each pattern represents a systematic phonological process.
+In these families, the pronunciation changes from one form to another, so the Ingglish spellings drift apart. Each pattern below comes from a regular sound change in English.
 
 ### Vowel Shift Alternations
 
-The [Great Vowel Shift](https://en.wikipedia.org/wiki/Great_Vowel_Shift) and related processes cause long/short vowel alternations in English derivational morphology. English orthography hides these behind shared spellings; Ingglish exposes them:
+Because of the [Great Vowel Shift](https://en.wikipedia.org/wiki/Great_Vowel_Shift) and related changes, many English root vowels switch between a "long" and a "short" sound when a suffix is added (sane → sanity). English spelling hides the switch behind a shared spelling; Ingglish shows it:
 
 | Family | English | Ingglish | What changed |
 |--------|---------|----------|-------------|
-| sane / sanity | sane / sanity | sayn / sanatee | /eɪ/ -> /&aelig;/ |
-| serene / serenity | serene / serenity | sereen / serenatee | /iː/ -> /&epsilon;/ |
-| divine / divinity | divine / divinity | divain / divinatee | /aɪ/ -> /&iota;/ |
-| type / typical | type / typical / typify | taip / tipakal / tipafai | /aɪ/ -> /&iota;/ |
-| cone / conic | cone / conic | kohn / konik | /oʊ/ -> /&alpha;/ |
-| please / pleasant | please / pleasant / pleasure | pleez / plezant / plezher | /iː/ -> /&epsilon;/ |
-| heal / health | heal / health / healthy | heel / helth / helthee | /iː/ -> /&epsilon;/ |
-| child / children | child / children | chaild / childran | /aɪ/ -> /&iota;/ |
-| nation / national | nation / national | nayshan / nashanal | /eɪ/ -> /&aelig;/ |
+| sane / sanity | sane / sanity | sayn / sanatee | /eɪ/ -> /æ/ |
+| serene / serenity | serene / serenity | sereen / serenatee | /iː/ -> /ɛ/ |
+| divine / divinity | divine / divinity | divain / divinatee | /aɪ/ -> /ɪ/ |
+| type / typical | type / typical / typify | taip / tipakal / tipafai | /aɪ/ -> /ɪ/ |
+| cone / conic | cone / conic | kohn / konik | /oʊ/ -> /ɑ/ |
+| please / pleasant | please / pleasant / pleasure | pleez / plezant / plezher | /iː/ -> /ɛ/ |
+| heal / health | heal / health / healthy | heel / helth / helthee | /iː/ -> /ɛ/ |
+| child / children | child / children | chaild / childran | /aɪ/ -> /ɪ/ |
+| nation / national | nation / national | nayshan / nashanal | /eɪ/ -> /æ/ |
 
-This is the most systematic source of morphological divergence. In English, spelling rules like "a_e" (sane) vs "a" (sanity) preserve the root "san-" across the vowel shift. Ingglish must spell what it hears: "sayn" vs "san-".
+This is the most regular way word families drift apart. In English, rules like "a_e" (sane) vs "a" (sanity) keep the root "san-" visible across the change. Ingglish has to spell what it hears: "sayn" vs "san-".
 
 ### Silent Letter Reactivation
 
-English keeps certain consonants in spelling even when they're silent, because they become audible in derived forms. Ingglish removes silent consonants, then shows them when they return:
+English keeps some consonants in the spelling even when they're silent, because they are pronounced in related words. Ingglish drops a silent consonant and writes it only where it is pronounced:
 
 | Family | English | Ingglish | What changed |
 |--------|---------|----------|-------------|
@@ -69,17 +68,17 @@ English keeps certain consonants in spelling even when they're silent, because t
 
 ### Stress-Induced Vowel Reduction
 
-When stress shifts between forms, unstressed vowels reduce to schwa, changing the Ingglish spelling:
+When the stress moves to a different syllable, the vowels that lose stress weaken to schwa (the "uh" sound in "about"), which changes the Ingglish spelling:
 
 | Family | English | Ingglish | What changed |
 |--------|---------|----------|-------------|
-| photograph / photography | photograph / photography | fohtagraf / fatografee | stress shift changes /oʊ/ -> /&schwa;/ |
+| photograph / photography | photograph / photography | fohtagraf / fatografee | stress shift changes /oʊ/ -> /ə/ |
 | condemn / condemnation | condemn / condemnation | kandem / kondamnayshan | multiple vowels shift |
-| receipt / receive | receipt / receive | riseet / raseev | /&iota;/ -> /&schwa;/ |
+| receipt / receive | receipt / receive | riseet / raseev | /ɪ/ -> /ə/ |
 
 ### Multiple Effects Combined
 
-Some word families combine vowel shifts, silent letter reactivation, and stress changes:
+Some word families show several of these changes at once:
 
 | Family | English | Ingglish | Effects |
 |--------|---------|----------|---------|
@@ -89,26 +88,25 @@ Some word families combine vowel shifts, silent letter reactivation, and stress 
 
 ## Improved Relationships
 
-In a few cases, Ingglish's consistent consonant spelling makes morphological relationships *clearer* than English:
+In a few cases, Ingglish's consistent consonant spelling makes the family link *clearer* than in English:
 
 | Family | English problem | Ingglish improvement |
 |--------|----------------|---------------------|
-| magic / magician / magical | "c" represents /k/, /&Integral;/, and /k/ | "k" consistently represents /k/, "sh" represents /&Integral;/ |
+| magic / magician / magical | "c" is /k/ in "magic" and "magical" but /ʃ/ in "magician" | "k" consistently represents /k/, "sh" represents /ʃ/ |
 | electric / electricity | "c" represents /k/ and /s/ | "k" and "s" are explicit |
-| cone / conic / conical | "c" represents /k/ in "cone" but could be /s/ | "k" is unambiguous |
 
-These improvements are modest: Ingglish clarifies consonant ambiguities but breaks vowel relationships more often than it fixes consonant ones.
+These gains are modest. Ingglish fixes some consonant confusions, but it breaks more vowel links than that.
 
 ## Summary
 
-| Category | Count | Pattern |
+| Category | Families on this page | Pattern |
 |----------|-------|---------|
-| Preserved | ~10 families | Root pronunciation stays similar across forms |
-| Broken by vowel shift | ~9 families | Long/short vowel alternation (sane/sanity pattern) |
-| Broken by silent letters | ~8 families | Consonants appear/disappear (sign/signal pattern) |
-| Broken by stress shift | ~3 families | Unstressed vowels reduce to schwa |
-| Improved | ~3 families | Consistent consonant spelling |
+| Preserved | 7 | Root pronunciation stays similar across forms |
+| Broken by vowel shift | 9 | Long/short vowel alternation (sane/sanity pattern) |
+| Broken by silent letters | 8 | Consonants appear/disappear (sign/signal pattern) |
+| Broken by stress shift | 3 | Unstressed vowels reduce to schwa |
+| Improved | 2 | Consistent consonant spelling |
 
-The vowel shift alternation is the dominant pattern. In English, the shared spelling of root vowels (a_e/a, ee/e, i_e/i) acts as a visual morphological marker. Ingglish, by faithfully representing pronunciation, must use different vowel spellings for different vowel sounds, even when the words are morphologically related.
+The long/short vowel switch is the main pattern. In English, a shared spelling for the root vowel (a_e/a, ee/e, i_e/i) visibly marks words as related. Because Ingglish spells pronunciation faithfully, it must use different vowel spellings for different vowel sounds, even in related words.
 
-This is the fundamental tradeoff of any phonemic spelling system: you gain the ability to predict pronunciation from spelling, but you lose some of the visual connections between related words. Whether this tradeoff is worthwhile depends on whether you prioritize reading (decoding) or spelling (encoding), and on how much context helps readers recognize word families despite spelling differences.
+Every phonemic spelling system makes this trade: you can tell how a word sounds from its spelling, but you lose some of the visual links between related words. Whether that is worth it depends on whether you care more about reading (turning spelling into sound) or spelling (turning sound into letters), and on how well context helps readers spot word families despite the different spellings.

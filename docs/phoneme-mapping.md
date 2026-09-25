@@ -2,20 +2,20 @@
 
 ## Overview
 
-How Ingglish maps ARPAbet notation from the CMU Pronouncing Dictionary to Ingglish spellings and IPA.
+This page shows how each sound in the CMU Pronouncing Dictionary is spelled in Ingglish, alongside its IPA symbol.
 
-**ARPAbet** is a phonemic notation system that uses ASCII characters to represent English phonemes (contrastive speech sounds). Each English word in the CMU dictionary has an ARPAbet transcription.
+The dictionary writes pronunciations in **ARPAbet**, a notation that spells each English phoneme (a sound that can tell two words apart) with plain ASCII letters. Every word in the dictionary has an ARPAbet transcription. **IPA** is the International Phonetic Alphabet, the standard symbols linguists use for speech sounds.
 
 For why we chose these spellings, see [Design Decisions](design-decisions.md).
 
 ## Pronunciation Dictionary
 
 We use the **CMU Pronouncing Dictionary** (cmudict):
-- Contains ~126,000 entries (variant pronunciations are pre-resolved at build time)
-- Uses ARPAbet phoneme notation
-- Includes stress markers (0=none, 1=primary, 2=secondary)
+- About 126,000 entries (where a word has several pronunciations, one is chosen at build time)
+- Written in ARPAbet
+- Marks stress on each vowel (0=none, 1=primary, 2=secondary)
 - Maintained by Carnegie Mellon University
-- Available as npm package: `cmu-pronouncing-dictionary`
+- Available as the npm package `cmu-pronouncing-dictionary`
 
 ## Vowel Mappings
 
@@ -88,7 +88,7 @@ We use the **CMU Pronouncing Dictionary** (cmudict):
 
 ## R-Colored Vowels
 
-When certain vowels are followed by R, they combine into special r-colored sounds. Ingglish uses dedicated spellings for these combinations:
+Some vowels change sound when followed by R; these are called r-colored vowels. Ingglish gives these combinations their own spellings:
 
 | Phoneme Sequence | Ingglish | IPA | Example Words | Notes |
 |------------------|----------|-----|---------------|-------|
@@ -101,36 +101,36 @@ When certain vowels are followed by R, they combine into special r-colored sound
 
 ### Why This Matters
 
-Without special handling, the vowel mappings would produce confusing results:
+Without these spellings, the plain vowel mappings would give confusing results:
 - "star" (AA + R) would become "stor" (o + r), which looks like "store"
 - "store" (AO + R) would become "stawr" (aw + r)
-- "fair" (EH + R) would become "fer" (collides with "fur" → "fer")
-- "carry" (AE + R) would become "karee" (indistinct from 'ar' words once AA+R → ar is added)
+- "fair" (EH + R) would become "fer", the same spelling as "fur"
+- "carry" (AE + R) would become "karee", which reads as "car" + "ee" once AA + R is spelled 'ar'
 - "beard" (IH + R) would become "bird" (looks like the animal)
 
-The R-rule fixes this:
+With the R rule:
 - "star" → **star** (intuitive)
 - "store" → **stor** (clearly different from "star")
 - "fair" → **fair** (distinct from "fur" → "fer")
 - "carry" → **karree** (distinct from "car" → "kar")
 - "beer" → **beer** (identical! without the rule it would be "bir")
 
-The rule applies only when the vowel is immediately followed by R in the phoneme sequence. Standalone AA, AO, EH, AE, and IH vowels use their regular spellings (o, aw, e, a, i).
+The rule applies only when R comes right after the vowel in the pronunciation. Otherwise AA, AO, EH, AE, and IH keep their regular spellings (o, aw, e, a, i).
 
 ### Why Not Use R-Colored Spellings for All Vowels?
 
-Why not use the R-colored vowel bases everywhere? If AA was always 'a', AO always 'o', EH always 'ai', and AE always 'ar', then R-coloring would happen automatically, no special rules needed.
+Why not use the vowel from each R spelling everywhere? If AA were always 'a', AO always 'o', EH always 'ai', and AE always 'ar', the R spellings would fall out naturally with no special rule.
 
-The problem is readability. These spellings would make words look like different English words:
+The problem is readability. Those spellings would turn words into different English words:
 - "hot" → "hat" (looks like the head covering)
 - "law" → "lo" (looks incomplete)
 - "bed" → "baid" (looks like "bade" or "bayed")
 
-The R-colored spellings (ar, or, air, arr) were chosen because they match English conventions *in the R context* - "star", "store", "air", "arrow" all look natural. But using their base vowels everywhere would create confusing false cognates.
+The R spellings (ar, or, air, arr) were chosen because they match normal English spelling *before an R*: "star", "store", "air", "arrow" all look natural. Using their vowels everywhere would produce misleading look-alikes.
 
-With these R-colored vowel rules in place, there are zero collisions between any vowel+R combinations in the dictionary.
+With these R rules, no two vowel+R combinations in the dictionary share a spelling.
 
-If Ingglish ever gets popular enough that this exception is the biggest complaint, we'd happily revisit it. The rule helps English readers today, but a future version could drop it for full consistency.
+If Ingglish ever becomes popular enough that this exception is the main complaint, we'd gladly revisit it. The rule helps English readers today, but a future version could drop it for full consistency.
 
 ## Example Translations
 
@@ -145,31 +145,31 @@ If Ingglish ever gets popular enough that this exception is the biggest complain
 
 ## Schwa and STRUT
 
-The CMU dictionary uses a single phoneme AH for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish splits these by stress level:
+The CMU dictionary uses one phoneme, AH, for both stressed /ʌ/ (the STRUT vowel, as in "but" and "cup") and unstressed /ə/ (schwa, as in "about" and "sofa"). Ingglish splits them by stress:
 
 - **AH1/AH2** (stressed /ʌ/) → **'uh'**: but, cup, run, son
 - **AH0** (unstressed /ə/) → **'a'**: about, sofa, the, and
 
-This split exploits their [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution) (/ʌ/ appears only in stressed syllables, /ə/ only in unstressed syllables). Many phonological analyses treat them as allophones of a single phoneme (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*).
+The split is safe because the two sounds never compete: /ʌ/ occurs only in stressed syllables and /ə/ only in unstressed ones (linguists call this [complementary distribution](https://en.wikipedia.org/wiki/Complementary_distribution)). Many analyses treat them as two forms of a single phoneme (e.g., [Giegerich 1992](https://books.google.com/books/about/English_Phonology.html?id=ALJKvQWP8FAC), *English Phonology: An Introduction*).
 
-Using 'a' for schwa preserves the English spelling of extremely common words: "a", "and", "about", "away", "important", "hospital", "normal", "signal". See [Spelling Iteration Log](spelling-iteration.md#about-sofa-u-a) for the full rationale.
+Using 'a' for schwa keeps the normal spelling of very common words: "a", "and", "about", "away", "important", "hospital", "normal", "signal". See the [Spelling Iteration Log](spelling-iteration.md#about-sofa-u-a) for the full reasoning.
 
 ## Stress Handling
 
-ARPAbet includes stress markers on vowels:
+ARPAbet marks stress on each vowel:
 - **0** = no stress (unstressed)
 - **1** = primary stress
 - **2** = secondary stress
 
 ### Ingglish Output
-We strip stress markers before mapping to Ingglish spellings. The output is simpler and still phonemically accurate.
+Ingglish spellings carry no stress marks, and stress changes the spelling of only one vowel: unstressed AH0 becomes 'a', while stressed AH1/AH2 become 'uh'. Before R, AH is 'uh' at any stress ("curry" → "kuhree"), so it never collides with the 'ar' of AA+R (see [Schwa and STRUT](#schwa-and-strut)). Every other phoneme is spelled the same at any stress level.
 
 ### IPA Output
-IPA output preserves stress information using standard IPA stress markers:
+IPA output keeps stress, using the standard IPA stress marks:
 - **ˈ** (U+02C8) = primary stress
 - **ˌ** (U+02CC) = secondary stress
 
-Stress markers are placed at **syllable boundaries** following the Maximal Onset Principle. This means the marker appears before the onset consonants of the stressed syllable, not directly before the vowel.
+Stress marks go at **syllable boundaries**, following the Maximal Onset Principle, which assigns consonants between two vowels to the later syllable wherever English allows it. So the mark comes before the consonants that start the stressed syllable (its onset), not directly before the vowel.
 
 **Example:** "hello" /həˈloʊ/
 - The stress marker goes before "l" (the syllable onset), not before "oʊ"
@@ -178,14 +178,14 @@ Stress markers are placed at **syllable boundaries** following the Maximal Onset
 - Secondary stress before "z" (onset of second syllable)
 - Primary stress before "n" (onset of fourth syllable)
 
-The system uses English phonotactics (valid onset clusters like /bl/, /str/, /skw/) to place stress markers at the right syllable boundaries.
+To find those boundaries, the system uses the consonant clusters English allows at the start of a syllable (such as /bl/, /str/, /skw/).
 
 ## Limitations
 
-1. **Homophones**: Words that sound the same will have the same Ingglish spelling
+1. **Homophones**: Words that sound the same are spelled the same in Ingglish
    - "their", "there", "they're" → all become the same
    - See [False Friends Analysis](false-friends.md) for a full breakdown of how this affects real words
-2. **Digraph boundary ambiguity**: When two letters that form a digraph appear adjacent across a morpheme boundary, the spelling can be misread. For example, "hothouse" → "hothous" where 'th' represents /t/+/h/ (not /θ/), "mishap" → "mishap" where 'sh' is /s/+/h/ (not /ʃ/), and "engage" → "engayj" where 'ng' is /n/+/g/ (not /ŋ/). This is an inherent limitation of digraph-based orthographies; the same ambiguity exists in standard English (compare "hothouse" vs "nothing"). Cases where this matters are rare.
-3. **Accent neutrality**: CMU dictionary represents General American English. This includes maintaining the [cot-caught distinction](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (/ɑ/ vs /ɔ/) even though many American speakers merge these vowels. We preserve the distinction because the CMU dictionary does and because it serves speakers who maintain it.
-4. **Allophonic detail not captured**: As a phonemic (not phonetic) system, Ingglish does not represent allophonic variation such as aspiration of stops (/pʰ/ in "pin" vs /p/ in "spin"), flapping of /t/ ([ɾ] in "butter"), or vowel nasalization. These are predictable from context and don't change word meanings.
-5. **Missing words**: Proper nouns, neologisms, and slang may not be in the dictionary
+2. **Letter pairs across word parts**: A letter pair such as 'th' normally spells one sound. When its two letters meet across the boundary between two parts of a word, the spelling can be misread. For example, "hothouse" → "hothous" where 'th' represents /t/+/h/ (not /θ/), "mishap" → "mishap" where 'sh' is /s/+/h/ (not /ʃ/), and "engage" → "engayj" where 'ng' is /n/+/g/ (not /ŋ/). Any spelling system that uses letter pairs has this problem; standard English has it too (compare "hothouse" and "nothing"). It rarely matters in practice.
+3. **One accent**: The CMU dictionary follows General American English. That includes keeping "cot" and "caught" distinct (/ɑ/ vs /ɔ/; see the [cot-caught merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger)), even though many Americans pronounce them the same. We keep the distinction because the CMU dictionary does, and because it serves speakers who make it.
+4. **Fine sound detail not captured**: Ingglish spells phonemes, not every shade of how they are pronounced. It ignores variations such as the puff of air after /p/ in "pin" (/pʰ/) but not in "spin" (/p/), the quick tap that /t/ turns into in "butter" ([ɾ]), or vowels picking up a nasal sound. These are predictable from context and never change a word's meaning.
+5. **Missing words**: Names, new words, and slang may not be in the dictionary

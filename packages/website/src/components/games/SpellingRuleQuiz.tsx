@@ -12,7 +12,7 @@ import { QuizResults } from './QuizResults';
 const getScoreLabel = makeScoreLabel({
   good: 'Great job! English spelling is tricky but you handle it well.',
   great: 'Amazing! You really know English spelling rules!',
-  low: 'English spelling is wild — keep practicing!',
+  low: 'English spelling is wild. Keep practicing!',
   ok: 'Not bad! English spelling trips up even native speakers.',
 });
 
@@ -83,11 +83,11 @@ function SpellingRuleQuiz() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Quiz"
-          description="English uses the same letters for different sounds depending on word origin and context. Can you predict what sound a letter pattern makes?"
+          description="In English, the same letters can make different sounds, depending on where the word came from and the letters around them. Can you predict the sound?"
           onStart={game.handleStart}
           rules={[
-            'See a word with a highlighted spelling pattern',
-            'Pick what sound that pattern makes in the word',
+            'See a word with some letters highlighted',
+            'Pick the sound those letters make in this word',
             '10 rounds, from common rules to tricky exceptions',
           ]}
           startRef={game.startRef}

@@ -60,84 +60,84 @@ export const DOC_ENTRIES = [
   {
     id: 'design-decisions',
     seoDescription:
-      'Every design decision behind the Ingglish phonetic alphabet — which sounds got which spellings, the trade-offs weighed, and the alternatives rejected.',
+      'Why each Ingglish spelling was chosen: the sound it writes, the trade-offs weighed, and the alternatives that were tried and rejected.',
     seoTitle: 'How Ingglish Was Designed: Rules, Trade-offs & Rejected Ideas',
     title: 'Design Decisions',
   },
   {
     id: 'phoneme-mapping',
     seoDescription:
-      'Complete table of English phonemes — vowels and consonants in IPA, ARPABET (CMU Pronouncing Dictionary) and Ingglish spelling, with example words for each.',
-    seoTitle: 'English Phoneme Chart: All 44 Sounds in IPA and ARPABET',
+      'Every English phoneme in the CMU Pronouncing Dictionary, with its ARPABET code, IPA symbol, Ingglish spelling and example words.',
+    seoTitle: 'English Phoneme Chart: All 39 Sounds in IPA and ARPABET',
     title: 'Phoneme Mapping',
   },
   {
     id: 'orthography-comparison',
     seoDescription:
-      'English spelling measured against other writing systems. Why Spanish, Finnish and Korean are read exactly as written, and how far English has drifted.',
-    seoTitle: 'How English Spelling Compares to Spanish, Finnish, Korean & More',
+      'Sound by sound, how 37 languages write the vowels and consonants of English, from sh and th to ng, and how widely each Ingglish spelling is used.',
+    seoTitle: 'How 37 Languages Spell English Sounds: sh, th, ch, ng & More',
     title: 'Orthography Comparison',
   },
   {
     id: 'spelling-reform-comparison',
     seoDescription:
-      'From Noah Webster and the Simplified Spelling Board to Shavian, Unifon and SoundSpel — a history of English spelling reform and what stopped each one.',
+      'From Benjamin Franklin and Noah Webster to Shavian, Unifon and SoundSpel: a history of English spelling reform, why most attempts failed, and what worked.',
     seoTitle: 'English Spelling Reform: Every Major Attempt and Why It Failed',
     title: 'Spelling Reform History',
   },
   {
     id: 'community-landscape',
     seoDescription:
-      'Who is still working on English spelling reform — the societies, forums and active projects, what each proposes, and where they disagree.',
-    seoTitle: 'Spelling Reform Communities, Groups & Projects Today',
+      'A survey of about 54 English spelling reforms posted to r/conorthography: where they agree, where they split, and the criticism every reform draws.',
+    seoTitle: 'English Spelling Reform Proposals Today: A Survey',
     title: 'Community Landscape',
   },
   {
     id: 'spelling-iteration',
     seoDescription:
-      'A running log of every change to the Ingglish spelling rules, the problem each one solved, and the measured effect on the dictionary.',
+      'A log of every change to the Ingglish spelling rules: what was tried, the problem each change solved, and its measured effect on the dictionary.',
     seoTitle: 'Ingglish Spelling Iteration Log: What Changed and Why',
     title: 'Spelling Iteration Log',
   },
   {
     id: 'identical-words-analysis',
     seoDescription:
-      'Thousands of English words already follow their own sounds. An analysis of which words survive the switch to phonetic spelling unchanged, and what they share.',
+      "Over 10,000 English words are already spelled the way Ingglish spells them. Which words they are, and why Ingglish doesn't try to push that number higher.",
     seoTitle: 'Which English Words Are Already Spelled Phonetically?',
     title: 'Identical Words Analysis',
   },
   {
     id: 'metrics',
     seoDescription:
-      'How consistent is English spelling, quantified — sound-to-letter ambiguity, silent letters, and irregularity rates, measured across the whole dictionary.',
-    seoTitle: 'Measuring English Spelling Consistency: The Numbers',
+      'The metrics used to judge a phonetic spelling of English (text preserved, unambiguous text, pronounceability) and why surface-level metrics fall short.',
+    seoTitle: 'How to Score a Phonetic Spelling: Mapping Quality Metrics',
     title: 'Mapping Quality Metrics',
   },
   {
     id: 'false-friends',
     seoDescription:
-      'Words spelled the same that sound different, and words spelled differently that sound the same. Where English spelling misleads readers most.',
-    seoTitle: 'False Friends: English Words That Look Alike but Sound Different',
+      'Some Ingglish spellings happen to match a different English word. A list of these false friends, how common they are, and why they cause no ambiguity.',
+    seoTitle: 'Ingglish False Friends: Spellings That Match Other English Words',
     title: 'False Friends Analysis',
   },
   {
     id: 'orthographic-transparency',
     seoDescription:
-      'What makes a writing system transparent, how transparency is measured, and where English ranks against shallow orthographies like Spanish and Italian.',
+      'What makes a spelling system transparent, how linguists measure it, and how English and Ingglish compare with Finnish, Italian, German and French.',
     seoTitle: 'Orthographic Transparency: Why Some Languages Are Easy to Read',
     title: 'Orthographic Transparency',
   },
   {
     id: 'morphological-analysis',
     seoDescription:
-      'Phonetic spelling is often accused of hiding word roots. An analysis of prefixes, suffixes and word families under Ingglish spelling, with the evidence.',
+      'Does phonetic spelling hide word roots? Which English word families still look related in Ingglish, which drift apart, and which become clearer.',
     seoTitle: 'Do English Word Roots Survive Phonetic Spelling?',
     title: 'Morphological Analysis',
   },
   {
     id: 'dialect-assumptions',
     seoDescription:
-      'Phonetic spelling has to pick an accent. Why Ingglish uses General American, how British and other dialects differ, and what that costs.',
+      'Phonetic spelling has to pick an accent. Why Ingglish uses General American, where British and other accents differ, and what that means for their speakers.',
     seoTitle: 'Which English Accent Should Phonetic Spelling Use?',
     title: 'Dialect Assumptions',
   },
@@ -145,14 +145,14 @@ export const DOC_ENTRIES = [
   {
     id: 'how-to-read-english',
     seoDescription:
-      'Every rule for reading English aloud — what each letter and letter combination sounds like, when the rules hold, and the exceptions that break them.',
+      'The rules for reading English aloud: what each letter and letter combination sounds like, ranked by how many words they cover, with the exceptions.',
     seoTitle: 'English Pronunciation Rules: How Letters Turn Into Sounds',
     title: 'Reading: Letters to Sounds',
   },
   {
     id: 'how-to-spell-english',
     seoDescription:
-      'How to spell each English sound — every letter combination that can write it, which to choose and when, and the patterns that make the choice predictable.',
+      'How to spell each English sound: every letter pattern that can write it, which one to choose and when, and the most common spelling mistakes.',
     seoTitle: 'English Spelling Rules: How to Spell Every Sound',
     title: 'Writing: Sounds to Letters',
   },
@@ -160,42 +160,42 @@ export const DOC_ENTRIES = [
   {
     id: 'architecture',
     seoDescription:
-      'How the Ingglish translator is built — dictionary lookup, phoneme mapping, and the fallback that handles words no dictionary has.',
+      'How the Ingglish translator is built: the packages, dictionary lookup, phoneme mapping, and the rule-based fallback for words the dictionary lacks.',
     seoTitle: 'Ingglish Architecture: How the Translator Works',
     title: 'Architecture',
   },
   {
     id: 'api-reference',
     seoDescription:
-      'API reference for the Ingglish translation packages — functions, options and types for converting English text to phonetic spelling and back.',
+      'API reference for the Ingglish packages: the functions, options and types for converting English text to phonetic spelling and back.',
     seoTitle: 'Ingglish API Reference: Translate English to Phonetic Spelling',
     title: 'API Reference',
   },
   {
     id: 'performance',
     seoDescription:
-      'Benchmarks and optimizations for the Ingglish translator — dictionary load time, per-word lookup cost, and how the bundle stays small.',
-    seoTitle: 'Ingglish Performance: Translating at Dictionary Scale',
+      'How fast the Ingglish translator is: benchmarks, profiling scripts, the complexity of each code path, and how the dictionary bundle is split.',
+    seoTitle: 'Ingglish Performance: Benchmarks, Profiling & Bundle Size',
     title: 'Performance',
   },
   {
     id: 'deployment',
     seoDescription:
-      'How Ingglish is built and deployed — the static site build, generated word pages, and the release pipeline.',
-    seoTitle: 'Deploying Ingglish: Build and Release Process',
+      'How to deploy Ingglish: the website on GitHub Pages, the Chrome extension (local and Web Store), and the Cloudflare Worker CORS proxy.',
+    seoTitle: 'Deploying Ingglish: Website, Chrome Extension & CORS Proxy',
     title: 'Deployment',
   },
   {
     id: 'contributing',
     seoDescription:
-      'How to contribute to Ingglish — local setup, running the tests, code conventions, and how to propose a change to the spelling rules.',
-    seoTitle: 'Contributing to Ingglish: Setup, Tests & Conventions',
+      'How to contribute to Ingglish: local setup, build and test commands, debugging scripts, commit message format and the pull request process.',
+    seoTitle: 'Contributing to Ingglish: Setup, Tests & Pull Requests',
     title: 'Contributing',
   },
   {
     id: 'troubleshooting',
     seoDescription:
-      'Fixes for common Ingglish problems — dictionary build failures, unexpected translations, and browser extension issues.',
+      "Fixes for common Ingglish problems: build and type errors, a dictionary that won't load, extension issues, and words that change on a round trip to Ingglish.",
     seoTitle: 'Ingglish Troubleshooting: Common Problems and Fixes',
     title: 'Troubleshooting',
   },

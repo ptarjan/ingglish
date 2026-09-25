@@ -50,7 +50,7 @@ export function Section6Progressive() {
           className="progressive-caption"
           style={{ visibility: currentStep > 0 ? 'visible' : 'hidden' }}
         >
-          Hover any blue word to see the original.
+          Hover over any blue word to see the original English.
         </p>
         <div className="progressive-controls">
           <button

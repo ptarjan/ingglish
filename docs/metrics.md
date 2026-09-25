@@ -1,36 +1,36 @@
 # Mapping Quality Metrics
 
-The [experiment page](https://ingglish.com/experiment) shows several metrics for evaluating phoneme-to-grapheme mappings. Three primary metrics (text preserved, unambiguous text, pronounceability) appear as stat cards; three additional metrics (edit similarity, spelling familiarity, naturalness) appear in a collapsible "More metrics" section.
+A mapping is the set of rules that decides how each sound (phoneme) is spelled; the letters that spell a sound are its grapheme. The [experiment page](https://ingglish.com/experiment) lets you try different mappings and scores each one. Three primary metrics (text preserved, unambiguous text, pronounceability) appear as stat cards. Three additional metrics (edit similarity, spelling familiarity, naturalness) appear in a collapsible "More metrics" section.
 
-All metrics are frequency-weighted using the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977) so that common words like "the" and "is" contribute more than rare words like "synecdoche."
+Every metric is weighted by how often words occur, using the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977) of word counts, so common words like "the" and "is" count for more than rare ones like "synecdoche."
 
 ## Primary Metrics
 
-These are the most useful metrics for evaluating a mapping.
+These are the most useful metrics for judging a mapping.
 
 ### Text Preserved
 
-**What it measures:** What percentage of real-world text (by word frequency) stays identical after translation. A word is "preserved" if its Ingglish spelling exactly matches the English spelling (case-insensitive).
+**What it measures:** The share of real-world text (weighted by word frequency) that is unchanged by translation. A word is "preserved" if its Ingglish spelling exactly matches its English spelling, ignoring case.
 
-**Why it matters:** More preserved text means more familiar readability for English speakers. If 50% of text is preserved, half of all words a reader encounters look exactly like English.
+**Why it matters:** The more text is preserved, the more familiar Ingglish looks to English readers. If 50% of text is preserved, half the words a reader sees look exactly like English.
 
 **Range:** 0–100%. Higher is better.
 
 ### Unambiguous Text
 
-**What it measures:** What percentage of real-world text (by word frequency) has an unambiguous spelling, i.e., no other word maps to the same Ingglish spelling.
+**What it measures:** The share of real-world text (weighted by word frequency) whose spelling is unambiguous: no other word gets the same Ingglish spelling.
 
-**Why it matters:** Collisions (homophones) make text harder to understand. If "write" and "right" both become "rait", context is the only disambiguator.
+**Why it matters:** When two words share a spelling (homophones such as "write" and "right", which both become "rait"), only context tells the reader which is meant. That makes text harder to understand.
 
 **Range:** 0–100%. Higher is better.
 
 ### Pronounceability
 
-**What it measures:** Would an English reader pronounce this correctly? Feeds each Ingglish spelling back through the [G2P (grapheme-to-phoneme) model](../packages/g2p) (329 context-sensitive NRL letter-to-sound rules) and compares the predicted phonemes against the original CMU dictionary phonemes. The score is the frequency-weighted phoneme recovery rate.
+**What it measures:** Would an English reader pronounce the spelling correctly? Each Ingglish spelling is fed through a [G2P (grapheme-to-phoneme) model](../packages/g2p), which guesses pronunciation from spelling the way an English reader would, using 329 letter-to-sound rules from the US Naval Research Laboratory (NRL) that take surrounding letters into account. Its guess is compared with the word's real pronunciation from the CMU dictionary. The score is the frequency-weighted share of sounds recovered correctly.
 
-**Formula:** Per word: `1 - levenshtein(predicted_phonemes, original_phonemes) / max(len(predicted), len(original))`. Stress is stripped before comparison (stress prediction is a separate concern). Aggregate: frequency-weighted average across all dictionary words.
+**Formula:** Per word: `1 - levenshtein(predicted_phonemes, original_phonemes) / max(len(predicted), len(original))`. Stress is removed before comparing, since predicting stress is a separate problem. Aggregate: frequency-weighted average across all dictionary words.
 
-**Why it works:** This directly models grapheme-phoneme alignment: whether the proposed spelling would actually be *read correctly* by an English reader. Unlike the surface-level metrics below, it correctly rejects mappings that produce common-looking but unreadable words:
+**Why it works:** It checks directly which letters an English reader would link to which sounds (grapheme-phoneme alignment), and so whether a spelling would actually be *read correctly*. Unlike the surface-level metrics below, it rightly rejects mappings that produce words that look common but read wrong:
 
 | Mapping | Ingglish | G2P predicts | Original | Score |
 |---------|----------|-------------|----------|-------|
@@ -44,31 +44,31 @@ These are the most useful metrics for evaluating a mapping.
 
 ## Orthographic Transparency
 
-These are system-level properties of the mapping, not per-experiment scores. They measure how predictable the spelling-sound relationship is, following the framework from [Ziegler, Stone & Jacobs (1997)](https://doi.org/10.3758/BF03214423). See [Orthographic Transparency](orthographic-transparency.md) for the full analysis including comparisons with other languages and spelling reforms.
+These are properties of the Ingglish spelling system as a whole, not scores on the experiment page. They measure how predictable the link between spelling and sound is, using the framework of [Ziegler, Stone & Jacobs (1997)](https://doi.org/10.3758/BF03214423). See [Orthographic Transparency](orthographic-transparency.md) for the full analysis, including comparisons with other languages and spelling reforms.
 
 ### Feedforward Consistency (Spelling → Sound)
 
-**What it measures:** Given a grapheme, how many possible pronunciations does it have? A ratio of 1.0 means every grapheme always makes the same sound.
+**What it measures:** Given a spelling, how many ways can it be pronounced? A ratio of 1.0 means every grapheme always makes the same sound.
 
-**Ingglish score: 1.00**: perfect. Each of the 39 graphemes maps to exactly one phoneme. No exceptions, no context rules, no silent letters. For comparison, English scores ~0.70 ("ough" alone has 6+ pronunciations).
+**Ingglish score: just under 1.00** (not yet measured). There are no silent letters and almost every grapheme spells one phoneme, but a few spellings can be read two ways, such as "a" (the vowel in "cat" or a schwa). See [Reading Ambiguities](orthographic-transparency.md#reading-ambiguities). English scores ~0.70 ("ough" alone has 6+ pronunciations).
 
 ### Feedback Consistency (Sound → Spelling)
 
-**What it measures:** Given a phoneme, how many possible spellings does it have? A ratio of 1.0 means every phoneme has exactly one spelling.
+**What it measures:** Given a sound, how many ways can it be spelled? A ratio of 1.0 means every phoneme has exactly one spelling.
 
-**Ingglish score: 0.92**: near-perfect, with exactly three minor ambiguities: "a" can represent /æ/ or schwa (stress-conditioned), "er" can be the r-colored vowel or EH+R, and "sh" can be the fricative or S+HH. For comparison, English scores ~0.50 (/iː/ alone has 11+ spellings).
+**Ingglish score: 1.00**, by construction. The translator builds every spelling from the word's phonemes, so the same sounds always get the same spelling. English scores ~0.50 (/iː/ alone has 11+ spellings).
 
 ## Additional Metrics
 
-These metrics were investigated during development. Each captures something real but has a fundamental limitation that prevents it from being used for optimization. They are shown on the experiment page for comparison. See [why surface-level metrics can't optimize mappings](#why-surface-level-metrics-cant-optimize-mappings) for the full analysis.
+These metrics were tried during development. Each captures something real, but each has a basic flaw that makes it useless as a target for automatically searching for better mappings. The experiment page shows them for comparison. See [why surface-level metrics can't optimize mappings](#why-surface-level-metrics-cant-optimize-mappings) for the full analysis.
 
 ### Edit Similarity
 
-**What it measures:** Character-level Levenshtein similarity between the English word and its Ingglish spelling. Measures how much the spelling changes.
+**What it measures:** How much the spelling changes: the Levenshtein similarity (based on the number of single-letter edits) between the English word and its Ingglish spelling.
 
 **Formula:** Per word: `1 - charEditDistance(english, ingglish) / max(len(english), len(ingglish))`. Aggregate: frequency-weighted average.
 
-**Limitation:** Optimizes for character overlap, not perceptual readability. When used for hill-climbing optimization, the top suggestion was /ʌ/→"uo" producing "buot" for "but" and "uop" for "up", which has high character overlap with English but is completely unreadable. Also suggested /k/→"ck" producing "ckat" for "cat."
+**Limitation:** It rewards shared letters, not readability. When used to drive a hill-climbing search (repeatedly trying small changes and keeping whichever scores better), its top suggestion was /ʌ/→"uo", giving "buot" for "but" and "uop" for "up": many letters in common with English, yet unreadable. It also suggested /k/→"ck", giving "ckat" for "cat."
 
 **Range:** 0–100%. Higher means spellings are closer to English.
 
@@ -76,11 +76,11 @@ These metrics were investigated during development. Each captures something real
 
 ### Spelling Familiarity
 
-**What it measures:** For each phoneme in a word, checks if its grapheme appears as a substring of the original English word. Measures how often the chosen graphemes already appear in English words that contain the corresponding sounds.
+**What it measures:** How often the chosen spellings already appear in English words that contain those sounds. For each phoneme in a word, it checks whether its grapheme appears anywhere in the English spelling.
 
 **Formula:** Per word: `(number of graphemes found in english word) / (total graphemes)`. Aggregate: frequency-weighted average.
 
-**Limitation:** Substring matching can't distinguish *why* a grapheme appears. The top suggestion was /ʌ/→"wh" because "wh" appears in AH-containing words like "what" and "where", but "wh" represents /w/ there, not /ʌ/. Also suggested /aɪ/→"gh" (because of "igh" in "right", "high") producing "mgh" for "my."
+**Limitation:** Finding the letters somewhere in the word says nothing about *why* they are there. The top suggestion was /ʌ/→"wh", because "wh" appears in words with that vowel such as "what" and "where", but there "wh" spells /w/, not /ʌ/. It also suggested /aɪ/→"gh" (because of "igh" in "right", "high"), giving "mgh" for "my."
 
 **Range:** 0–100%. Higher means graphemes appear more often in English words with that sound.
 
@@ -88,13 +88,13 @@ These metrics were investigated during development. Each captures something real
 
 ### Naturalness
 
-**What it measures:** Orthotactic probability: how "English-looking" the respelled words are, based on character bigram statistics. Uses a bigram model trained on English words (token-weighted by log frequency, add-k smoothed with k=0.01).
+**What it measures:** Orthotactic probability: how "English-looking" the respelled words are, judged by how often each pair of adjacent letters (bigram) occurs in English. The bigram model is trained on English words (each weighted by log frequency, add-k smoothed with k=0.01).
 
 **Formula:** Per word: average log bigram probability with word boundary markers (^word$). The bigram model is trained on all CMU dictionary words weighted by `log(frequency + 1)`. Aggregate: frequency-weighted average across all words.
 
-**Limitation:** Rewards common letter sequences regardless of phoneme-grapheme alignment. The top suggestions were /j/→"c" producing "coo" for "you" (high score because "co" and "oo" are common bigrams), /z/→"ck" producing "ick" for "is", and /ð/→"ph" producing "pha" for "the." The bigram model correctly identifies these as common English sequences; it just can't distinguish which *sound* those sequences should represent.
+**Limitation:** It rewards common letter sequences whether or not they spell the right sounds. The top suggestions were /j/→"c", giving "coo" for "you" (a high score because "co" and "oo" are common bigrams); /z/→"ck", giving "ick" for "is"; and /ð/→"ph", giving "pha" for "the." These really are common English sequences; the model just can't tell which *sound* they should represent.
 
-This was the most theoretically promising surface-level metric. The psycholinguistic literature validates orthotactic probability for measuring reading difficulty of novel words. But it assumes novel words are spelled phonetically. In our case, words are spelled using arbitrary phoneme→grapheme mappings, so the metric rewards letter sequences that are common in English for reasons unrelated to the phonemes being represented.
+In theory this was the most promising surface-level metric. Reading research has shown that orthotactic probability predicts how hard unfamiliar words are to read. But that research assumes the words are spelled by sound in the usual English way. Here the phoneme→grapheme mappings can be arbitrary, so the metric rewards letter sequences that are common in English for reasons unrelated to the sounds they now stand for.
 
 **Range:** Negative numbers (log probabilities). Less negative is more "English-looking."
 
@@ -102,11 +102,11 @@ This was the most theoretically promising surface-level metric. The psycholingui
 
 ## Why Surface-Level Metrics Can't Optimize Mappings
 
-All four additional metrics above share the same root cause of failure: they measure surface-level properties of text (character overlap, letter patterns, substring co-occurrence, bigram statistics) without modeling **grapheme-phoneme alignment**: which specific letters correspond to which specific sounds in a word.
+All three additional metrics above fail for the same reason. They measure surface features of text (shared letters, letters found somewhere in a word, bigram counts) without modeling **grapheme-phoneme alignment**: which letters in a word spell which sounds.
 
-Without alignment, any metric is gameable by graphemes that happen to co-occur with a phoneme for unrelated reasons. For example, "wh" appears in many words containing /ʌ/ (what, where), but only because those words also contain /w/, not because "wh" represents /ʌ/.
+Without alignment, a metric can be fooled by letters that merely tend to appear alongside a sound. For example, "wh" appears in many words containing /ʌ/ (what, where), but only because those words also contain /w/, not because "wh" spells /ʌ/.
 
-The G2P round-trip metric (Pronounceability) succeeds because it directly models this alignment: it asks "if an English reader sees this spelling, what phonemes would they produce?" This is the question all surface-level metrics are trying to approximate, and the G2P model answers it directly using 329 context-sensitive letter-to-sound rules.
+The G2P round-trip metric (Pronounceability) works because it models alignment directly. It asks: "If an English reader sees this spelling, what sounds will they say?" That is the question the surface-level metrics only approximate, and the G2P model answers it directly with its 329 context-sensitive letter-to-sound rules.
 
 ### Summary table
 
@@ -119,7 +119,7 @@ The G2P round-trip metric (Pronounceability) succeeds because it directly models
 
 ## Per-Phoneme Familiarity Breakdown
 
-The per-phoneme familiarity breakdown (from the `familiarity-search.ts` analysis) reveals which current mappings are most and least familiar to English readers:
+This breakdown (from the `familiarity-search.ts` analysis) shows which of the current spellings are most and least familiar to English readers:
 
 | Phoneme | Grapheme | Familiarity | Notes |
 |---------|----------|-------------|-------|
@@ -137,11 +137,11 @@ The per-phoneme familiarity breakdown (from the `familiarity-search.ts` analysis
 
 ## Methodology
 
-All metrics are computed over the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary) (~126,000 unique words) using the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977) for frequency weighting. Metric implementations are in [`packages/website/src/lib/mapping-metrics.ts`](../packages/website/src/lib/mapping-metrics.ts).
+All metrics are computed over the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary) (~126,000 unique words), weighted by frequency from the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977). The metrics are implemented in [`packages/website/src/lib/mapping-metrics.ts`](../packages/website/src/lib/mapping-metrics.ts).
 
-Analysis scripts that use these metrics for hill-climbing optimization are in `packages/core/scripts/analysis/`:
+The analysis scripts that use these metrics to search for better mappings are in `packages/core/scripts/analysis/`:
 
 - `g2p-roundtrip-search.ts`: G2P round-trip pronounceability hill climb (primary metric)
 - `orthotactic-search.ts`: Orthotactic probability hill climb (replaced by G2P round-trip)
 - `familiarity-search.ts`: Per-phoneme spelling familiarity analysis
-- `exhaustive-search.ts`: Exhaustively tests all possible spelling options with frequency weighting
+- `exhaustive-search.ts`: Tests every possible spelling option, weighted by frequency

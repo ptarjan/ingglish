@@ -128,6 +128,15 @@ function RColoredCell({ isChanged, onChangePrefix, prefix }: RColoredCellProps) 
   );
 }
 
+/**
+ * Reads the experiment mapping registered at module level. Rows pick up a new
+ * mapping because renderPhonemeRow depends on `mapping`, which changes on
+ * every edit.
+ */
+function translateWord(word: string): string {
+  return translateSync(word, { format: 'experiment' });
+}
+
 /** Stress variants for advanced mode */
 const STRESS_VARIANTS = ['0', '1', '2'];
 
@@ -139,17 +148,6 @@ function MappingEditor({ mapping }: MappingEditorProps) {
   const duplicates = useMemo(() => findDuplicates(mapping.phonemeMap), [mapping.phonemeMap]);
 
   const isDuplicate = useCallback((spelling: string) => duplicates.has(spelling), [duplicates]);
-
-  // translateSync is a stable module-level function whose output changes when
-  // the experiment mapping is updated. We capture mapping.version so React
-  // re-creates this callback (and dependents re-render) on every mapping edit.
-  const translateWord = useCallback(
-    (word: string) => {
-      void mapping.version;
-      return translateSync(word, { format: 'experiment' });
-    },
-    [mapping.version]
-  );
 
   const renderPhonemeRow = useCallback(
     (sound: SoundEntry) => {
@@ -253,7 +251,11 @@ function MappingEditor({ mapping }: MappingEditorProps) {
               const stressedDefault = getDefault(stressedPhoneme);
               const stressedValue = mapping.phonemeMap[stressedPhoneme] ?? stressedDefault;
               const stressLabel =
-                stress === '0' ? 'unstressed' : stress === '1' ? 'primary' : 'secondary';
+                stress === '0'
+                  ? 'unstressed'
+                  : stress === '1'
+                    ? 'primary stress'
+                    : 'secondary stress';
               // AH0 has a real default ('a'), other stress variants default to base
               const hasOwnDefault = stressedDefault !== defaultSpelling;
               return (
@@ -315,7 +317,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
         </tr>
       );
     },
-    [mapping, advancedMode, isDuplicate, translateWord]
+    [mapping, advancedMode, isDuplicate]
   );
 
   const renderGroupContent = useCallback(
@@ -363,7 +365,7 @@ function MappingEditor({ mapping }: MappingEditorProps) {
     const warnings: string[] = [];
     for (const [spelling, phonemes] of duplicates) {
       const ipaList = phonemes.map((p) => getCleanIPA(p)).join(', ');
-      warnings.push(`"${spelling}" is used for: ${ipaList}`);
+      warnings.push(`"${spelling}" spells ${ipaList}`);
     }
     return warnings;
   }, [duplicates]);
@@ -380,13 +382,13 @@ function MappingEditor({ mapping }: MappingEditorProps) {
             }}
             type="checkbox"
           />
-          Advanced mode (stress variants)
+          Advanced: spell stressed and unstressed vowels separately
         </label>
       </div>
 
       {duplicateWarnings.length > 0 && (
         <div className="duplicate-warnings">
-          <strong>Ambiguous spellings:</strong>
+          <strong>Ambiguous spellings (one spelling, several sounds):</strong>
           <ul>
             {duplicateWarnings.map((w, i) => (
               <li key={i}>{w}</li>

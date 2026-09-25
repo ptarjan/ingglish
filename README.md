@@ -2,13 +2,13 @@
 
 [![CI](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml/badge.svg)](https://github.com/ptarjan/ingglish/actions/workflows/ci.yml)
 
-Phonemic English spelling translator. Every spelling always makes the same sound.
+Ingglish is a phonemic spelling of English: each spelling always stands for the same sound, so you can read any word aloud from how it is written. This repo holds the translator and the site at **[ingglish.com](https://ingglish.com/)**, which converts text and web pages between English and Ingglish.
 
 **[Try it live →](https://ingglish.com/)** · **[Spelling Guide](https://ingglish.com/guide)** · **[Docs](https://ingglish.com/docs)**
 
 ## Why?
 
-My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." English spelling is broken — "ough" alone has at least six pronunciations (though, through, rough, cough, thought, bough). Ingglish fixes that.
+My 5-year-old is learning to read, and I keep saying "sorry, that letter is silent" and "no, those letters make a different sound in this word." English spelling is inconsistent: "ough" alone has at least six pronunciations (though, through, rough, cough, thought, bough). In Ingglish, each spelling makes only one sound.
 
 ## Examples
 
@@ -23,27 +23,27 @@ My 5-year-old is learning to read and I keep having to say "yeah sorry, that let
 | the | dha | /ðə/ |
 | English | Ingglish | /ˈɪŋɡlɪʃ/ |
 
-> **About the name:** "Ingglish" is simply how you spell "English" in Ingglish! When speaking, you can distinguish them by stressing the first syllable and pausing briefly between the two g's: **ING·glish** vs. English.
+> **About the name:** "Ingglish" is how you spell "English" in Ingglish. To tell them apart out loud, stress the first syllable and pause briefly between the two g's: **ING·glish** vs. English.
 
 ## Packages
 
-This is a monorepo containing:
+This monorepo contains these packages:
 
 | Package | Description |
 |---------|-------------|
-| **ingglish** | Translation API — translate and reverse-translate text |
+| **ingglish** | Translation API: English to Ingglish and back |
 | **@ingglish/normalize** | Text cleanup, case handling, tokenization |
-| **@ingglish/phonemes** | Phoneme data + ARPAbet/IPA/Ingglish conversion |
-| **@ingglish/dictionary** | CMU dictionary, lookup, word frequency |
-| **@ingglish/g2p** | Rule-based grapheme-to-phoneme conversion |
-| **@ingglish/fallback** | Unknown word strategies (G2P, stemming, compounds) |
+| **@ingglish/phonemes** | Phoneme data and conversion between ARPAbet (ASCII phoneme codes), IPA and Ingglish |
+| **@ingglish/dictionary** | CMU Pronouncing Dictionary, word lookup, word frequency |
+| **@ingglish/g2p** | Rule-based grapheme-to-phoneme (G2P) conversion: guesses pronunciation from spelling |
+| **@ingglish/fallback** | Strategies for words not in the dictionary (G2P, stemming, compound splitting) |
 | **@ingglish/ipa** | IPA ↔ ARPAbet conversion |
-| **@ingglish/shavian** | Shavian alphabet ↔ ARPAbet conversion |
-| **@ingglish/deseret** | Deseret alphabet ↔ ARPAbet conversion |
-| **@ingglish/dom** | DOM translation utilities (Browser only) |
-| **@ingglish/website** | React website for text and URL translation |
-| **@ingglish/extension** | Chrome extension for translating any webpage |
-| **@ingglish/cors-proxy** | Cloudflare Worker CORS proxy for URL translation |
+| **@ingglish/shavian** | Shavian (an alternative English alphabet) ↔ ARPAbet conversion |
+| **@ingglish/deseret** | Deseret (an alternative English alphabet) ↔ ARPAbet conversion |
+| **@ingglish/dom** | Translates a web page in place (browser only) |
+| **@ingglish/website** | React website that translates text and URLs |
+| **@ingglish/extension** | Chrome extension that translates any web page |
+| **@ingglish/cors-proxy** | Cloudflare Worker CORS proxy that fetches pages for the URL translator |
 
 ## Installation
 
@@ -107,7 +107,7 @@ restoreDOM(document.body);
 
 ## Contributing
 
-See the [Contributing Guide](docs/contributing.md) for development setup, testing, and CLI scripts.
+The [Contributing Guide](docs/contributing.md) covers development setup, testing and CLI scripts.
 
 ## License
 

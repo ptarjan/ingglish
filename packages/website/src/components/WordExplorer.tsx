@@ -75,9 +75,9 @@ export default function WordExplorer() {
       <div className="guide-intro">
         <h2>Word Explorer</h2>
         <p>
-          Look up any English word to see its full translation pipeline: spelling &rarr; phonemes
-          &rarr; IPA &rarr; {formatLabel}. See homophones, frequency data, and how each phoneme
-          maps.
+          Look up any English word to see each step of its translation: spelling &rarr; sounds
+          (phonemes) &rarr; IPA &rarr; {formatLabel}. You also get words that sound the same, how
+          common the word is, and how each sound is spelled.
         </p>
       </div>
 
@@ -90,22 +90,25 @@ export default function WordExplorer() {
             setInput(e.target.value);
           }}
           placeholder={
-            reverseDictReady
-              ? 'Type a word (e.g., knight, treehouse, URL)'
-              : 'Loading dictionary...'
+            reverseDictReady ? 'Type a word, like knight, treehouse or URL' : 'Loading dictionary…'
           }
           spellCheck={false}
           type="text"
           value={input}
         />
-        <button className="btn-secondary format-toggle" onClick={toggleFormat} type="button">
+        <button
+          className="btn-secondary format-toggle"
+          onClick={toggleFormat}
+          title="Switch output format"
+          type="button"
+        >
           {formatLabel} &#x21C5;
         </button>
       </div>
 
       {results.length === 0 && input.trim().length === 0 && (
         <div className="explorer-empty">
-          <p>Try some interesting words:</p>
+          <p>Try one of these:</p>
           <div className="suggestion-chips">
             {['colonel', 'treehouse', 'ghosting', 'URL', 'favourable', 'emoji', 'doomscroll'].map(
               (w) => (
@@ -138,16 +141,18 @@ export default function WordExplorer() {
           <div className="word-meta">
             <span className={`badge ${result.matched ? 'badge-dict' : 'badge-fallback'}`}>
               {result.isCustom
-                ? 'custom override'
+                ? 'custom pronunciation'
                 : result.matched
-                  ? 'dictionary'
+                  ? 'in dictionary'
                   : fallbackLabel(result.diagnosis?.strategy)}
             </span>
             {result.britishSpelling !== undefined && result.diagnosis?.strategy !== 'british' && (
               <span className="badge badge-fallback">British variant</span>
             )}
             {result.frequency !== undefined && (
-              <span className="badge badge-freq">freq: {formatFrequency(result.frequency)}</span>
+              <span className="badge badge-freq">
+                frequency: {formatFrequency(result.frequency)}
+              </span>
             )}
             {result.homophones.length > 0 && (
               <span className="badge badge-homo">
@@ -158,7 +163,7 @@ export default function WordExplorer() {
 
           {result.diagnosis?.strategy === 'g2p' && (
             <div className="explorer-section">
-              <h4>G2P Rules Applied</h4>
+              <h4>Spelling-to-Sound Rules Applied</h4>
               <G2PRuleTrace format={format} trace={result.diagnosis.trace} />
             </div>
           )}
@@ -198,14 +203,14 @@ export default function WordExplorer() {
 
           {result.phonemes !== null && (
             <div className="explorer-section">
-              <h4>Phoneme-by-Phoneme Mapping</h4>
+              <h4>Sound by Sound</h4>
               <PhonemeChain format={format} phonemes={result.phonemes} />
             </div>
           )}
 
           {format !== 'ingglish' && result.phonemes !== null && (
             <div className="explorer-section">
-              <h4>All Formats</h4>
+              <h4>Other Formats</h4>
               <div className="format-comparison">
                 <div className="format-item">
                   <span className="label-caps format-label">Ingglish</span>

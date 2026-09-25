@@ -86,7 +86,8 @@ export function Section3TryIt({ onNavigate }: { onNavigate?: (tab: string) => vo
         {input && <MappedWordDisplay className="try-it-output" placeholder="" tokens={tokens} />}
         {isAllCaps(input) && (
           <div className="warning-message">
-            Ingglish is case-sensitive — type in normal case for accurate translations.
+            Ingglish is case-sensitive. Type in normal case, not all caps, for accurate
+            translations.
           </div>
         )}
       </div>

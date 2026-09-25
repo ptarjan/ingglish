@@ -40,10 +40,10 @@ function OriginDetective() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Quiz"
-          description="English borrowed words from many languages, and the weird spellings are often clues to where a word came from. Can you guess the origin?"
+          description="English borrowed words from many languages, and an odd spelling is often a clue to where a word came from. Can you guess the source?"
           onStart={game.handleStart}
           rules={[
-            'See a word and a spelling clue',
+            'See a word and a clue about its spelling',
             'Guess whether it came from Germanic, French, Latin, or Greek',
             '10 rounds, from obvious to surprising',
           ]}

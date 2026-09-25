@@ -561,18 +561,20 @@ describe('renderWordPage', () => {
 
   it('shows the letter-by-letter English → Ingglish columns', () => {
     const kernel = renderWordPage(buildWordData('kernel', 4, deps)!, []);
-    expect(kernel).toContain('“kernel” letter by letter');
+    expect(kernel).toContain('How “kernel” is spelled in Ingglish');
     expect(kernel).toContain('<td class="eng">er</td>');
     // "e" spells the schwa, so its Ingglish column is "a"
     expect(kernel).toContain('<td class="eng">e</td><td class="eng">l</td>');
   });
 
   it('states per-word facts: sound counts, stress, frequency band and rhyme ending', () => {
-    expect(html).toContain('5 from 7 letters — 2 vowels /ɝ/, /ə/ and 3 consonants /k/, /n/, /l/');
+    expect(html).toContain(
+      '5 sounds from 7 letters: 2 vowels /ɝ/, /ə/ and 3 consonants /k/, /n/, /l/'
+    );
     expect(html).toContain('stress on the 1st');
     // 500 hits in a 50M corpus = 10 per million, ranked 4th of 48,000
-    expect(html).toContain('common — 10.0 uses per million words');
-    expect(html).toContain('#4 of 48,000');
+    expect(html).toContain('common: 10.0 uses per million words');
+    expect(html).toContain('#4 of the 48,000 words on this site');
     expect(html).toContain('Rhyme ending');
   });
 

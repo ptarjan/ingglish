@@ -13,9 +13,7 @@ export function Section1Ough() {
           <OughCard key={i} {...ex} animate={i < revealedCount} />
         ))}
       </div>
-      <p className="tutorial-punchline">
-        Same four letters. Six different sounds. This is English.
-      </p>
+      <p className="tutorial-punchline">Same four letters, six different sounds. That's English.</p>
       <div aria-hidden="true" className="scroll-hint">
         &#8595;
       </div>

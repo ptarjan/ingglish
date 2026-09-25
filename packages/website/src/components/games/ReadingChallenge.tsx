@@ -17,7 +17,7 @@ const TIER_TIME_LIMITS: Record<1 | 2 | 3, number> = { 1: 30, 2: 25, 3: 20 };
 const getScoreLabel = makeScoreLabel({
   good: 'Great job! You picked it up quickly!',
   great: 'Amazing! You read Ingglish like a pro!',
-  low: "Keep practicing — you'll get the hang of it!",
+  low: "Keep practicing. You'll get the hang of it!",
   ok: 'Not bad! Ingglish takes a little practice.',
 });
 
@@ -56,15 +56,15 @@ function ReadingChallenge() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Challenge"
-          description="Ingglish claims you can learn to read it in 5 minutes. Let's put that to the test. You'll see 10 sentences written in Ingglish — type what you think the English is."
+          description="Ingglish claims you can learn to read it in 5 minutes. Test that claim: read 10 sentences written in Ingglish and type each one in English."
           disabled={!reverseDictReady}
           onStart={() => {
             game.startGame(game.seed);
           }}
           rules={[
-            'Read the Ingglish sentence shown to you',
-            'Type what you think it says in English before time runs out',
-            'Get scored word-by-word (homophones accepted!)',
+            'Read the Ingglish sentence',
+            'Type it in English before time runs out',
+            'Each word is scored on its own, and homophones count as correct',
           ]}
           startRef={game.startRef}
           title="Reading Challenge"
@@ -92,6 +92,7 @@ function ReadingChallenge() {
 
         <GameResultActions
           copied={game.copied}
+          newGameLabel="New Sentences"
           onNewGame={() => {
             game.startGame(Date.now());
           }}

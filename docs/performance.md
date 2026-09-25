@@ -9,22 +9,22 @@ How to profile, benchmark, and optimize Ingglish.
 | Script | Purpose |
 |--------|---------|
 | `benchmark.ts` | Full benchmark suite (1000 iterations, statistics) |
-| `overview.ts` | Quick translation profiling |
-| `translate.ts` | translateSync performance analysis |
+| `overview.ts` | Quick translation profile |
+| `translate.ts` | translateSync performance |
 | `convert.ts` | Phoneme conversion performance |
 | `cpu-profile.ts` | V8 CPU profiler for flame graphs |
-| `harness.ts` | Shared benchmark/formatting utilities |
+| `harness.ts` | Shared benchmark and formatting helpers |
 
 ### DOM Library (`packages/dom/scripts/`)
 
 | Script | Purpose |
 |--------|---------|
-| `profile-wikipedia.ts` | Real Wikipedia HTML profiling (~300KB) |
-| `profile-tree-walker.ts` | TreeWalker alternatives comparison |
-| `profile-process-node.ts` | Text node processing analysis |
-| `profile-dom.ts` | General DOM translation profiling |
-| `profile-real-html.ts` | Article-style HTML profiling |
-| `profile-tooltips.ts` | Tooltip overhead comparison |
+| `profile-wikipedia.ts` | Profiles a real Wikipedia page (~220KB of HTML) |
+| `profile-tree-walker.ts` | Compares TreeWalker alternatives |
+| `profile-process-node.ts` | Text node processing cost |
+| `profile-dom.ts` | General DOM translation profile |
+| `profile-real-html.ts` | Profiles article-style HTML |
+| `profile-tooltips.ts` | Compares tooltip overhead |
 
 ## Running Benchmarks
 
@@ -66,19 +66,32 @@ npx vite-node --script scripts/profile-wikipedia.ts
 npx vite-node --script scripts/profile-tree-walker.ts
 ```
 
-Sample output from `profile-wikipedia.ts`:
+Sample output from `profile-wikipedia.ts` (abridged):
 ```
-=== Wikipedia HTML Profiling ===
-HTML size: 219KB, Text nodes: 808, Words: 1,769
+=== Wikipedia DOM Profile ===
 
-Phase                    Time (ms)    Per-item
-─────────────────────────────────────────────
-Collect nodes            13.8         17.0µs/node
-Extract words            0.8          0.8µs/word
-Apply translations       34.2         19.3µs/word
-─────────────────────────────────────────────
-Total                    34.2ms
+HTML size: 219.3 KB
+
+--- DOM Statistics ---
+Total elements: 2213
+Text nodes: 808
+Total word occurrences: 1769
+Unique words: 927
+
+collectTextNodes:  avg: 18.70ms  (23.14µs per node)
+extractWordsFromNodes:  avg: 1.11ms  (927 unique words)
+applyTranslationsMap:  avg: 62.14ms  min: 41.51ms  max: 114.88ms
+
+=== Summary ===
+
+Total translation time: 62.14ms for 808 text nodes (1769 words)
+Breakdown:
+  - collectTextNodes: 18.70ms (30.1%)
+  - Text processing:  2.63ms (4.2%)
+  - DOM updates:      40.82ms (65.7%)
 ```
+
+The phases overlap: `applyTranslationsMap` walks the DOM itself, so its time already includes collecting the text nodes. The total is the `applyTranslationsMap` time, and the breakdown splits it into its parts. Timings vary from run to run.
 
 ## Performance Characteristics
 
@@ -91,7 +104,7 @@ Total                    34.2ms
 | Reverse | O(n) | Pre-sorted at build time |
 | Full text | O(w × n) | w = word count |
 
-All paths are **linear**: no quadratic or exponential complexity.
+Every path is **linear**: nothing is quadratic or exponential.
 
 ### Forward Translation (`translateWord`)
 
@@ -107,10 +120,10 @@ All paths are **linear**: no quadratic or exponential complexity.
 | Strategy | Complexity | Notes |
 |----------|------------|-------|
 | Custom pronunciations | O(1) | Hash table lookup |
-| Initialism check | O(1) | Hash table + O(e) for expansion |
+| Initialism check | O(n) | Hash table lookup, then spells out each letter |
 | Compound splitting | O(n) | n-2 split points × O(1) lookup each |
 | Stemming | O(1) | ~20 suffixes × ~4 variants = constant |
-| G2P rules | O(n) | n chars × ~40 rules (constant) |
+| G2P (grapheme-to-phoneme) rules | O(n) | n chars × ~40 rules (constant) |
 
 ### Reverse Translation (`reverseTranslateWord`)
 
@@ -129,27 +142,27 @@ All paths are **linear**: no quadratic or exponential complexity.
 
 ## Optimization Guidelines
 
-1. **Profile first** - Measure before optimizing to identify actual bottlenecks
+1. **Profile first**: measure before optimizing, so you fix the real bottleneck
 
-2. **Use pre-collected nodes** - Pass `textNodes` to `applyTranslationsMap()` to avoid double DOM traversal
+2. **Reuse collected nodes**: pass `textNodes` to `applyTranslationsMap()` so the DOM isn't walked twice
 
-3. **Batch translations** - Use `translateWordsInBatches()` for large word sets
+3. **Batch translations**: use `translateWordsInBatches()` for large sets of words
 
-4. **Chunked rendering** - Use `requestAnimationFrame` for smooth rendering on large pages
+4. **Render in chunks**: use `requestAnimationFrame` to keep large pages smooth
 
-5. **Cache translations** - The extension caches 50K translations in the background worker
+5. **Cache translations**: the Chrome extension's background worker caches 50K translations
 
 ## Bundle Splitting
 
-The `@ingglish/dictionary` package uses dynamic imports for code splitting:
+The `@ingglish/dictionary` package splits its code with dynamic imports:
 
-- `ingglish` index - Minimal public API (~2KB)
-- Forward dictionary - Loaded on first `translate()` call (~1MB gzipped)
-- Reverse dictionary - Loaded on first reverse translation (~300KB gzipped)
-- Word frequencies - Loaded on first reverse translation (~500KB)
+- `ingglish` index: the minimal public API (~2KB)
+- Forward dictionary: loaded on the first `translate()` call (~1MB gzipped)
+- Reverse dictionary: loaded on the first reverse translation (~300KB gzipped)
+- Word frequencies: loaded on the first reverse translation (~500KB)
 
-Dictionaries are pre-processed at build time (in `@ingglish/dictionary`):
+`@ingglish/dictionary` pre-processes the dictionaries at build time:
 - Phonemes pre-split into arrays (no runtime string splitting)
 - Reverse dictionary pre-sorted by word frequency (no runtime sorting)
 
-This keeps initial page load fast while deferring heavy data until needed.
+The first page load stays fast, and the heavy data loads only when it's needed.

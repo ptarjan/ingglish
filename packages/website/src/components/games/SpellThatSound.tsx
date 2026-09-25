@@ -13,7 +13,7 @@ const getScoreLabel = makeScoreLabel({
   good: 'Great spelling instincts!',
   great: 'Spelling champion!',
   low: 'English has too many ways to spell the same sound!',
-  ok: 'English spelling is tough — nice work!',
+  ok: 'English spelling is tough. Nice work!',
 });
 
 function SpellThatSound() {
@@ -41,12 +41,12 @@ function SpellThatSound() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Quiz"
-          description="English has multiple ways to spell the same sound. Can you pick the right spelling for each word?"
+          description="English often has several ways to spell the same sound. Can you pick the right spelling for each word?"
           onStart={game.handleStart}
           rules={[
-            'See a sound and a word with a missing spelling',
-            'Pick the correct letters to complete the word',
-            '10 rounds, from common patterns to tricky ones',
+            'See a word with letters missing, and the sound they make',
+            'Pick the letters that complete the word',
+            '10 rounds, from common spellings to tricky ones',
           ]}
           startRef={game.startRef}
           title="Spell That Sound"

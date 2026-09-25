@@ -5,71 +5,48 @@ import { DictContext } from './DictContext';
 import { trackPageView } from './analytics';
 import { useTheme } from './hooks/useTheme';
 import { useUpdateCheck } from './hooks/useUpdateCheck';
+import { HOME_META, ROUTE_META } from './route-meta';
 import { sitePath, siteUrl } from './routes';
 
 type Tab =
-  | 'docs'
-  | 'experiment'
-  | 'explore'
-  | 'extension'
-  | 'games'
-  | 'guide'
-  | 'text'
-  | 'tutorial'
-  | 'url';
+  'docs' | 'experiment' | 'explore' | 'extension' | 'games' | 'guide' | 'text' | 'tutorial' | 'url';
 
-const ROUTE_META: Record<Tab, { description: string; path: string; title: string }> = {
+// Runtime titles. Descriptions come from route-meta.ts so the pre-rendered
+// <head> and the app never disagree.
+const TAB_META: Record<Tab, { path: string; title: string }> = {
   docs: {
-    description:
-      'Technical documentation for Ingglish — architecture, design decisions, phoneme mappings, and API reference.',
     path: '/docs',
     title: 'Documentation | Ingglish',
   },
   experiment: {
-    description:
-      'Create custom phoneme-to-spelling mappings and test them with translated text. See statistics and share your mapping.',
     path: '/experiment',
     title: 'Experiment | Ingglish',
   },
   explore: {
-    description:
-      'Look up any English word to see its phoneme-by-phoneme translation pipeline, IPA transcription, homophones, and frequency data.',
     path: '/explore',
     title: 'Word Explorer | Ingglish',
   },
   extension: {
-    description:
-      'Install the Ingglish browser extension to translate any webpage to phonetic spelling with one click.',
     path: '/extension',
     title: 'Browser Extension | Ingglish',
   },
   games: {
-    description:
-      'Practice reading and understanding Ingglish with interactive games. Reading challenge, homophones quiz, and learn-to-read lessons.',
     path: '/games',
     title: 'Games | Ingglish',
   },
   guide: {
-    description:
-      'Learn the Ingglish spelling rules — how each sound maps to one consistent spelling. A complete reference for the phonemic alphabet.',
     path: '/guide',
     title: 'Spelling Guide | Ingglish',
   },
   text: {
-    description:
-      'Translate any English text into phonetic Ingglish spelling instantly. Paste or type text and see it respelled.',
     path: '/text',
     title: 'Text Translator | Ingglish',
   },
   tutorial: {
-    description:
-      'Ingglish is phonemic English — every spelling always makes the same sound. No silent letters, no memorization.',
     path: '/',
     title: 'Ingglish — What if English Spelling Made Sense?',
   },
   url: {
-    description:
-      'Enter any URL and read the page in phonetic Ingglish spelling. Browse the web with consistent, phonetic English.',
     path: '/url',
     title: 'URL Translator | Ingglish',
   },
@@ -99,7 +76,13 @@ export default function AppLayout() {
   const location = useLocation();
 
   const activeTab = useMemo(() => getTabFromPath(location.pathname), [location.pathname]);
-  const meta = useMemo(() => ROUTE_META[activeTab], [activeTab]);
+  const meta = useMemo(
+    () => ({
+      ...TAB_META[activeTab],
+      description: (activeTab === 'tutorial' ? HOME_META : ROUTE_META[activeTab]!).description,
+    }),
+    [activeTab]
+  );
 
   // Hide tabs on tutorial only for the very first visit (no prior navigation)
   const [isFirstVisit] = useState(
@@ -129,7 +112,7 @@ export default function AppLayout() {
       })
       .catch((error_: unknown) => {
         const message = error_ instanceof Error ? error_.message : 'Unknown error';
-        setError(`Failed to load dictionary: ${message}`);
+        setError(`Couldn't load the pronunciation dictionary: ${message}. Try reloading the page.`);
         setIsLoading(false);
       });
   }, []);
@@ -237,7 +220,8 @@ export default function AppLayout() {
             >
               CMU Pronouncing Dictionary
             </a>{' '}
-            (126,000+ words) to convert English words to their phonemic spellings.{' '}
+            (126,000+ words) to look up how each English word is pronounced, then spells it by
+            sound.{' '}
             <a href="https://github.com/ptarjan/ingglish" rel="noopener noreferrer" target="_blank">
               View on GitHub
             </a>

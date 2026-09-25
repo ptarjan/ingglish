@@ -605,16 +605,16 @@ export function renderWordPage(
   const rate =
     data.perMillion === null
       ? frequencyBand(null)
-      : `${frequencyBand(data.perMillion)} — ${formatRate(data.perMillion)} uses per million words ` +
-        `in the SUBTLEX subtitle corpus` +
+      : `${frequencyBand(data.perMillion)}: ${formatRate(data.perMillion)} uses per million words ` +
+        `of film and TV subtitles (SUBTLEX)` +
         (data.corpusSize > 0
-          ? `, ranking it #${(data.frequencyRank + 1).toLocaleString('en-US')} of ${data.corpusSize.toLocaleString('en-US')}`
+          ? `, ranking #${(data.frequencyRank + 1).toLocaleString('en-US')} of the ${data.corpusSize.toLocaleString('en-US')} words on this site`
           : '');
 
   const facts = [
     [
       'Sounds',
-      `${data.sounds.length} from ${word.length} ${letterWord} — ` +
+      `${data.sounds.length} ${data.sounds.length === 1 ? 'sound' : 'sounds'} from ${word.length} ${letterWord}: ` +
         `${soundGroup(vowels, 'vowel')} and ${soundGroup(consonants, 'consonant')}`,
     ],
     ['Syllables', `${data.syllables} — ${escapeHtml(syllableParts.join(' · '))}${stressFact}`],
@@ -707,14 +707,14 @@ ${SITE_HEADER}
 <div class="hero">
 <h1>${escapeHtml(word)}</h1>
 <div class="guide">${escapeHtml(guide)}</div>
-<div><span class="ing">${escapeHtml(ingglish)}</span></div>
+<div><span class="ing">${escapeHtml(ingglish)}</span> <span class="ipa">in Ingglish</span></div>
 <div class="ipa">IPA /${escapeHtml(ipa)}/ · ${data.syllables} ${syllableWord}</div>
 <button class="hear" type="button" onclick="(function(){try{var u=new SpeechSynthesisUtterance('${escapeHtml(
     word
   )}');speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}})()">🔊 Hear it</button>
 </div>
 
-<h2>“${escapeHtml(word)}” letter by letter</h2>
+<h2>How “${escapeHtml(word)}” is spelled in Ingglish</h2>
 <div class="tablewrap">
 <table>
 <caption class="sr-only">Each letter group of “${escapeHtml(word)}” and how Ingglish spells it
@@ -726,7 +726,7 @@ ${SITE_HEADER}
 </table>
 </div>
 
-<h2>How “${escapeHtml(word)}” sounds out</h2>
+<h2>“${escapeHtml(word)}” sound by sound</h2>
 <div class="tablewrap">
 <table>
 <caption class="sr-only">Sound-by-sound breakdown of “${escapeHtml(word)}”</caption>
@@ -754,7 +754,7 @@ ${faqHtml}
 </p>
 </main>
 <footer>
-<a href="/">Ingglish</a> — what if English spelling made sense? Every spelling always makes the same sound.
+<a href="/">Ingglish</a> respells English so that each spelling always makes the same sound.
 </footer>
 </body>
 </html>

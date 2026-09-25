@@ -1,27 +1,27 @@
 # Ingglish False Friends Analysis
 
-When an English word is translated to Ingglish, it sometimes produces a spelling that matches a **different** existing English word. These are [false friends](https://en.wikipedia.org/wiki/False_friend): they look like familiar English words but have different pronunciations in Ingglish. They are **not** collisions: each Ingglish spelling maps to exactly one pronunciation, so there is no ambiguity in the system.
+Sometimes an English word's Ingglish spelling is also a **different** English word: "white" becomes "wait". These are [false friends](https://en.wikipedia.org/wiki/False_friend): they look like familiar English words, but in Ingglish they are pronounced differently. They are **not** collisions (two different words sharing one Ingglish spelling). Each Ingglish spelling stands for exactly one pronunciation, so Ingglish itself is never ambiguous; the only risk is a reader mistaking the word for the English one it resembles.
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Total words analyzed | 117,493 (lowercase alphabetic words from cmudict's ~126,000 entries) |
-| False friends (Ingglish matches different English word) | 1,360 |
+| Total words analyzed | 117,493 (lowercase alphabetic words from the ~126,000 entries of cmudict, the CMU pronouncing dictionary) |
+| False friends (Ingglish spelling is a different English word) | 1,360 |
 | False friends involving common words (freq >= 20 /M) | 175 |
 
 ### Is This a Problem?
 
 **Rarely.** Looking at the data:
 
-- Most false friends translate common words to **obscure** words (rait, wont, heer, fain, hou, uv). You'll rarely encounter these in normal text.
+- Most false friends turn a common word into an **obscure** one (rait, wont, heer, fain, hou, uv), which you'll rarely meet in normal text.
 - Only 7 involve two common words: uh→u, yeah→ya, white→wait, ass→as, place→plays, side→said, mine→main
-- **Part of speech differences** resolve most cases: white (adj) → wait (verb) are grammatically distinct
-- Context resolves these just like English homophones (their/there/they're)
+- **Grammar** settles most cases: white is an adjective and wait is a verb, so they appear in different places in a sentence
+- Context settles the rest, just as it does for English homophones (their/there/they're)
 
 ## False Friends (Common Words)
 
-Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*). The Ingglish column is also an English word.
+Each Ingglish spelling below is also an English word, with its English meaning in brackets. Freq /M gives how often each word appears per million words of text, first for the original English word and then for the English word its Ingglish spelling matches. The figures come from the SUBTLEX-US corpus ([Brysbaert & New 2009](https://doi.org/10.3758/BRM.41.4.977), "Moving beyond Kučera and Francis," *Behavior Research Methods*).
 
 | English | Ingglish | Freq /M |
 |---------|----------|---------|
@@ -48,19 +48,19 @@ Frequency shows per-million rates from the SUBTLEX-US corpus ([Brysbaert & New 2
 
 ### Notable False Friends
 
-**white → wait**: adjective → verb. Different parts of speech make this unambiguous: "the wait house" is grammatically odd. Note: "wait" translates to "wayt", so reverse translation works.
+**white → wait**: adjective → verb. Because they are different parts of speech, there's no ambiguity: "the wait house" is ungrammatical as English. And since "wait" itself becomes "wayt", translating Ingglish back to English still works.
 
-**ass → as**: noun → preposition. Grammar resolves this easily - "as" never appears where a noun would.
+**ass → as**: noun → preposition. Grammar settles this easily: "as" never appears where a noun would.
 
-**place → plays**: noun → verb/noun. Same part of speech possible, but "plays" as noun means theater works. "In the first plays" sounds wrong.
+**place → plays**: noun → verb/noun. Both can be nouns, but the noun "plays" means theater works, so "In the first plays" sounds wrong.
 
-**side → said**: noun → verb (past tense). Different parts of speech in most contexts, though "said" can be an adjective in legal English ("the said document"). Note: "said" translates to "sed".
+**side → said**: noun → verb (past tense). Different parts of speech in most contexts, though "said" can be an adjective in legal English ("the said document"). "said" itself becomes "sed".
 
-**mine → main**: noun/pronoun → adjective. Different parts of speech. "The main entrance" vs "the mine entrance" - grammar disambiguates. Note: "main" translates to "mayn".
+**mine → main**: pronoun/noun → adjective. As a pronoun, grammar settles it: "main" is almost never used on its own after a verb, so "dhat wuhn iz main" can only mean "that one is mine". As a noun before another noun, only meaning helps: "dha main entrans" is grammatical either way and could be "the mine entrance" or "the main entrance", so the reader relies on context. "main" itself becomes "mayn".
 
 ## Homophone Groups
 
-Ingglish merges homophones (words that sound identical). This isn't a collision problem - it's just how phonemic spelling works.
+Ingglish gives homophones (words that sound identical) the same spelling. These aren't the kind of collision Ingglish tries to avoid: any system that spells by sound must spell words that sound the same the same way. Some examples:
 
 | English | Ingglish |
 |---------|----------|

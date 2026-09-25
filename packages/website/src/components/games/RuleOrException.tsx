@@ -12,7 +12,7 @@ const getScoreLabel = makeScoreLabel({
   good: 'Great instincts for English patterns!',
   great: 'You really know your spelling rules!',
   low: 'English spelling is full of surprises!',
-  ok: 'English has a lot of exceptions — nice effort!',
+  ok: 'English has a lot of exceptions. Nice effort!',
 });
 
 function RuleOrException() {
@@ -28,7 +28,7 @@ function RuleOrException() {
     speakFeedback: (q, _selectedChoice, correct) =>
       correct
         ? `Correct! ${q.explanation}`
-        : `Not quite, it's ${q.isException ? 'an exception' : 'a rule follower'}. ${q.explanation}`,
+        : `Not quite, ${q.isException ? 'it breaks the rule' : 'it follows the rule'}. ${q.explanation}`,
     speakQuestion: (q) => `${q.word} ... Rule: ${q.rule} ... Follows Rule ... or Exception.`,
   });
 
@@ -37,11 +37,11 @@ function RuleOrException() {
       <div className="game-page">
         <GameIntro
           buttonLabel="Start Quiz"
-          description="English spelling has rules, but also lots of exceptions. Can you tell which is which?"
+          description="English spelling has rules, and lots of words that break them. Can you tell which is which?"
           onStart={game.handleStart}
           rules={[
             'See a word and a spelling rule',
-            'Decide: does the word follow the rule, or is it an exception?',
+            'Decide whether the word follows the rule or breaks it',
             '10 rounds, from obvious to tricky',
           ]}
           startRef={game.startRef}
@@ -99,9 +99,7 @@ function RuleOrException() {
           correct={(game.selectedChoice === 'true') === currentQ.isException}
           explanation={currentQ.explanation}
           incorrectMessage={
-            <>
-              Not quite — it{'\u2019'}s {currentQ.isException ? 'an exception' : 'a rule follower'}!
-            </>
+            <>Not quite: {currentQ.isException ? 'it breaks the rule.' : 'it follows the rule.'}</>
           }
           isLast={game.round + 1 >= game.questions.length}
           nextRef={game.nextRef}

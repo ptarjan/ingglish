@@ -1,5 +1,5 @@
-import { type TranslatedToken, translateSyncWithMapping } from 'ingglish';
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { translateSyncWithMapping } from 'ingglish';
+import { memo, useCallback, useDeferredValue, useEffect, useState } from 'react';
 import { ALL_SAMPLES, pickSample } from '../data/language-samples';
 import { MappedWordDisplay } from './MappedWordDisplay';
 import { buildDiffMap } from './diff-map';
@@ -9,6 +9,27 @@ const STORAGE_KEY = 'ingglish-experiment-text';
 interface ExperimentTranslatorProps {
   version: number;
 }
+
+/**
+ * The experiment format reads the mapping registered at module level, so its
+ * output changes without any prop changing. The parent keys this component by
+ * the mapping version: an edit remounts it and retranslates, while memo skips
+ * the urgent renders where only the not-yet-deferred text changed.
+ */
+const ExperimentOutput = memo(function ExperimentOutput({ text }: { text: string }) {
+  const tokens = translateSyncWithMapping(text, { format: 'experiment' });
+  return (
+    <div className="experiment-output">
+      <div className="label-caps experiment-output-label">Translated:</div>
+      <MappedWordDisplay
+        className="experiment-words"
+        diffMap={buildDiffMap(tokens, text, 'experiment')}
+        showTooltip
+        tokens={tokens}
+      />
+    </div>
+  );
+});
 
 function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   const [text, setText] = useState(() => localStorage.getItem(STORAGE_KEY) ?? '');
@@ -22,18 +43,6 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   }, [text]);
 
   const deferredText = useDeferredValue(text);
-
-  // translateSyncWithMapping is a stable module-level function whose output
-  // changes when the experiment mapping is updated. We capture `version` so
-  // React re-computes this memo on every mapping edit.
-  const { diffMap, tokens } = useMemo(() => {
-    void version;
-    if (deferredText.trim().length === 0) {
-      return { diffMap: undefined, tokens: [] as TranslatedToken[] };
-    }
-    const expTokens = translateSyncWithMapping(deferredText, { format: 'experiment' });
-    return { diffMap: buildDiffMap(expTokens, deferredText, 'experiment'), tokens: expTokens };
-  }, [deferredText, version]);
 
   const enSamples = ALL_SAMPLES.en!;
 
@@ -60,7 +69,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
   return (
     <div className="card experiment-translator">
       <div className="experiment-translator-header">
-        <h3>Test</h3>
+        <h3>Try it</h3>
         <select
           aria-label="Load sample passage"
           className="sample-select"
@@ -68,7 +77,7 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
           value={selectedIndex === -1 ? '' : String(selectedIndex)}
         >
           <option disabled value="">
-            Load sample...
+            Load a sample…
           </option>
           {enSamples.map((p, i) => (
             <option key={i} value={i}>
@@ -86,23 +95,13 @@ function ExperimentTranslator({ version }: ExperimentTranslatorProps) {
         onChange={(e) => {
           setText(e.target.value);
         }}
-        placeholder="Type or paste English text here..."
+        placeholder="Type or paste English text here…"
         rows={4}
         spellCheck={false}
         value={text}
       />
 
-      {hasContent && (
-        <div className="experiment-output">
-          <div className="label-caps experiment-output-label">Translated:</div>
-          <MappedWordDisplay
-            className="experiment-words"
-            diffMap={diffMap}
-            showTooltip
-            tokens={tokens}
-          />
-        </div>
-      )}
+      {hasContent && <ExperimentOutput key={version} text={deferredText} />}
     </div>
   );
 }

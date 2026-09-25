@@ -1,16 +1,16 @@
 # Design Decisions: Why Ingglish Spells Things This Way
 
-Why we made these spelling choices, and what we tried that didn't work.
+Why each spelling was chosen, and what we tried that didn't work.
 
 ## Motivation
 
-My 5-year-old is learning to read and I keep having to say "yeah sorry, that letter is silent" and "no, those letters make a different sound in this word." The sequence "ough" alone has at least six pronunciations: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every English learner, whether a child or a non-native speaker, pays this cost.
+My 5-year-old is learning to read, and I keep having to say "sorry, that letter is silent" or "no, those letters make a different sound in this word." The letters "ough" alone have at least six pronunciations: though (/oʊ/), through (/uː/), rough (/ʌf/), cough (/ɔf/), thought (/ɔː/), bough (/aʊ/). Every learner of English, child or adult, pays this cost.
 
-I wanted a system where you could look at any word and know exactly how to say it. Not a new alphabet, not a political campaign, just a consistent spelling you can read on any keyboard and convert back to standard English whenever you need to.
+I wanted spelling where you can look at any word and know how to say it. Not a new alphabet and not a political campaign: just consistent spelling that you can type on any keyboard and convert back to standard English whenever you need to.
 
 ## Sample Text: The North Wind and the Sun
 
-The standard passage used to compare writing systems, shown in English and Ingglish side by side.
+The standard passage for comparing writing systems, in English and in Ingglish.
 
 **English:**
 
@@ -18,60 +18,60 @@ The standard passage used to compare writing systems, shown in English and Inggl
 
 **Ingglish:**
 
-> Dha North Waind and dha Suhn wer dispyooting wich woz dha strawnger, wen a travaler kaym alawng rapt in a worm klohk. Dhay agreed dhat dha wuhn hoo ferst sakseedid in mayking dha travaler tayk awf hiz klohk shud bee kansiderd strawnger dhan dha uhdher. Dhen dha North Waind bloo az hard az hee kud, buht dha mor hee bloo dha mor klohslee did dha travaler rap hiz klohk eround him; and at last dha North Waind gayv uhp dha atempt. Dhen dha Suhn shohn out wormlee, and imeedeeatlee dha travaler tuk awf hiz klohk. And soh dha North Waind woz ablaijd too kanfes dhat dha Suhn woz dha strawnger uhv dha too.
+> Dha North Wind and dha Suhn wer dispyooting wich woz dha strawnger, wen a travaler kaym alawng rapt in a worm klohk. Dhay agreed dhat dha wuhn hoo ferst sakseedid in mayking dha travaler tayk awf hiz klohk shud bee kansiderd strawnger dhan dha uhdher. Dhen dha North Wind bloo az hard az hee kud, buht dha mor hee bloo dha mor klohslee did dha travaler rap hiz klohk eround him; and at last dha North Wind gayv uhp dha atempt. Dhen dha Suhn shohn out wormlee, and imeedeeatlee dha travaler tuk awf hiz klohk. And soh dha North Wind woz ablaijd too kanfes dhat dha Suhn woz dha strawnger uhv dha too.
 
-Notice how many words stay identical or nearly identical: "North", "and", "in", "a", "agreed", "hard", "him", "at", "last", "up", "out", "took". The biggest visual changes are "the" → "dha" (the th/dh split) and phonemically spelled vowels like "klohk" (cloak) and "strawnger" (stronger).
+Many words stay identical: "North", "Wind", "and", "in", "a", "agreed", "hard", "him", "at", "last", "out". The biggest visual changes are "the" → "dha" (voiced "th" is spelled "dh") and vowels spelled by sound, as in "klohk" (cloak) and "strawnger" (stronger).
 
 ## Core Principles
 
-1. **One sound, one spelling (and vice versa)**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) maps to exactly one spelling, and each spelling maps to exactly one sound. (For [R-colored vowels](phoneme-mapping.md#r-colored-vowels), certain vowel+R sequences get their own spellings like "air" and "ar"; see the phoneme mapping for details.)
-2. **No new characters**: Standard Latin letters minus 'q' (use 'kw') and 'x' (use 'ks'), with 'c' appearing only in the digraph 'ch'
-3. **Intuitive for English readers**: Spellings feel natural based on existing English conventions
-4. **Consistent and reversible**: Forward translation is deterministic; reverse uses word frequency to pick the most likely homophone
-5. **Voluntary adoption**: Not trying to replace English, supplements it
+1. **One sound, one spelling**: Each [phoneme](https://en.wikipedia.org/wiki/Phoneme) (a distinct speech sound) has exactly one spelling, and almost every spelling stands for exactly one sound. The main exception is "a", which spells both the vowel in "cat" and unstressed schwa; see [Orthographic Transparency](orthographic-transparency.md#reading-ambiguities) for the full list. The other exception is [R-colored vowels](phoneme-mapping.md#r-colored-vowels): some vowels blend with a following R into a single sound, and these combinations get their own spellings, such as "air" and "ar". See the phoneme mapping for details.
+2. **No new characters**: Only standard Latin letters. There is no 'q' (write 'kw') and no 'x' (write 'ks'), and 'c' appears only in 'ch'. Other "c" sounds are written 'k' or 's'.
+3. **Familiar to English readers**: Spellings follow conventions English readers already know.
+4. **Consistent and reversible**: English to Ingglish always gives the same result. Ingglish back to English uses word frequency to pick the most likely word when several sound alike.
+5. **Voluntary**: Ingglish sits alongside English. It is not trying to replace it.
 
 ## Why English Is Hard
 
-English spelling is notoriously difficult because:
+1. **Too many vowel sounds**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each, so it has no such problem. We cover the gap with doubled letters (ee, oo) and letter pairs (ai, ay, ou, uh). (The vowel count is from [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. The exact count varies by analysis and dialect.)
 
-1. **Too many vowels**: English has 14–15 vowel phonemes but only 5 vowel letters (a, e, i, o, u). Spanish has 5 of each, no problem. We solve this with doubling (ee, oo) and digraphs (ai, ay, ou, uh). (Vowel count based on [Ladefoged & Johnson 2014](https://books.google.com/books?id=FjIVAgAAQBAJ), *A Course in Phonetics*, for General American English. Exact count varies by analysis and dialect.)
+2. **Rare consonants**: Only ~4% of languages have /θ/ (the "th" in "think") and ~7% have /ð/ (the "th" in "this") ([PHOIBLE 2.0](https://phoible.org/); [Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19) reports ~8% for dental fricatives broadly). Because most languages never needed to write these sounds, there is no standard way to spell them.
 
-2. **Rare consonants**: Only ~4% of languages have /θ/ and ~7% have /ð/ ([PHOIBLE 2.0](https://phoible.org/); [Maddieson 2013, WALS Chapter 19](https://wals.info/chapter/19) reports ~8% for dental fricatives broadly). There's no "standard" way to write these because most languages never needed one.
-
-3. **R-colored vowels**: Sounds like "bird" and "car" are rare across world languages. We follow intuitive spellings (er, ar) that English readers already expect.
+3. **R-colored vowels**: Vowels blended with R, as in "bird" and "car", are rare among the world's languages. We use the spellings English readers already expect (er, ar).
 
 ## What Makes Ingglish Different
 
-Previous spelling reforms failed because they:
-- Required learning entirely new alphabets ([Shavian](https://en.wikipedia.org/wiki/Shavian_alphabet), [Deseret](https://en.wikipedia.org/wiki/Deseret_alphabet))
-- Created systems that later had to be "un-taught" ([Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet))
-- Tried to mandate change through political authority ([Roosevelt](https://en.wikipedia.org/wiki/Simplified_Spelling_Board), [Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board))
+Earlier spelling reforms failed because they:
+- Required learning an entirely new alphabet ([Shavian](https://en.wikipedia.org/wiki/Shavian_alphabet), [Deseret](https://en.wikipedia.org/wiki/Deseret_alphabet))
+- Had to be "un-taught" later ([Initial Teaching Alphabet](https://en.wikipedia.org/wiki/Initial_Teaching_Alphabet))
+- Tried to impose change through political authority ([Roosevelt](https://en.wikipedia.org/wiki/Simplified_Spelling_Board), [Carnegie](https://en.wikipedia.org/wiki/Simplified_Spelling_Board))
 
-Ingglish avoids these traps:
+Ingglish avoids each of these:
 
 | Design Choice | Why It Matters |
 |--------------|----------------|
 | Standard ASCII letters | No new characters to learn |
-| Familiar digraphs (sh, ch, th, ng) | You already know these |
-| Logical extensions (zh parallels sh) | Easy to infer new patterns |
-| Bidirectional conversion | Convert any text instantly |
+| Familiar letter pairs (sh, ch, th, ng) | You already know them |
+| Logical extensions (zh is to sh as z is to s) | New patterns are easy to guess |
+| Two-way conversion | Convert any text instantly, in either direction |
 | Not replacing English | No political mandate needed |
 
 ## Specific Spelling Decisions
 
 ### Consonant [Digraphs](https://en.wikipedia.org/wiki/Digraph_(orthography))
 
-**TH vs DH Distinction**
+A digraph is two letters that spell one sound, like "sh".
 
-Traditional English uses "th" for both sounds:
+**TH vs DH**
+
+English uses "th" for two different sounds:
 - Voiceless [/θ/](https://en.wikipedia.org/wiki/Voiceless_dental_fricative): "**th**ink", "ba**th**"
 - Voiced [/ð/](https://en.wikipedia.org/wiki/Voiced_dental_fricative): "**th**e", "**th**is"
 
-We use **"th"** for the voiceless sound and **"dh"** for the voiced one. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
+Ingglish spells the voiceless sound **"th"** and the voiced one **"dh"**. [Albanian](https://en.wikipedia.org/wiki/Albanian_alphabet) already uses 'dh' officially.
 
 **ZH for [/ʒ/](https://en.wikipedia.org/wiki/Voiced_postalveolar_fricative)**
 
-English hides this sound in "measure", "vision", "beige". We give it a proper spelling that parallels sh/zh like s/z.
+English hides this sound in "measure", "vision" and "beige". Ingglish gives it its own spelling, "zh": zh is to sh as z is to s.
 
 ### Vowel Spellings
 
@@ -81,19 +81,19 @@ English hides this sound in "measure", "vision", "beige". We give it a proper sp
 |----------|-------|-----------|
 | ee | /iː/ (bee) | [Finnish](https://en.wikipedia.org/wiki/Finnish_orthography)/[Estonian](https://en.wikipedia.org/wiki/Estonian_orthography) pattern for long vowels |
 | oo | /uː/ (too) | Matches English "too", "food", "moon", "cool" |
-| uh | /ʌ/ (but) | English interjection "uh", frees 'u' for /ʊ/ |
+| uh | /ʌ/ (but) | English interjection "uh"; leaves 'u' free for /ʊ/ (the vowel in "book") |
 
-**Schwa Representation**
+**Schwa**
 
-We map unstressed schwa (ə) to **"a"** and stressed /ʌ/ to **"uh"**, which preserves the spelling of "a", "about", "again", "along", "away", "around". See [Phoneme Mapping](phoneme-mapping.md#schwa-and-strut) for details and [Spelling Iteration Log](spelling-iteration.md#about-sofa-u-a) for the full rationale.
+Schwa (ə) is the weak, unstressed vowel at the start of "about". Ingglish spells unstressed schwa **"a"** and the stressed /ʌ/ of "but" **"uh"**. This keeps "a", "about", "again", "along", "away" and "around" spelled as in English. See [Phoneme Mapping](phoneme-mapping.md#schwa-and-strut) for details and the [Spelling Iteration Log](spelling-iteration.md#about-sofa-u-a) for the full reasoning.
 
 ### Diphthong Decisions
 
-Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), [diphthong](https://en.wikipedia.org/wiki/Diphthong) spellings have competing conventions across languages.
+A [diphthong](https://en.wikipedia.org/wiki/Diphthong) is a vowel that glides from one sound to another, like the "i" in "my". Consonant spellings like 'sh', 'ch' and 'ng' are nearly universal, but languages disagree on how to spell diphthongs.
 
 | Sound | Spelling | Why This Choice |
 |-------|----------|-----------------|
-| /aɪ/ (my) | **ai** | IPA alignment; [Pinyin](https://en.wikipedia.org/wiki/Pinyin), Italian, Vietnamese precedent |
+| /aɪ/ (my) | **ai** | Matches the IPA symbol; used in [Pinyin](https://en.wikipedia.org/wiki/Pinyin), Italian, Vietnamese |
 | /aʊ/ (cow) | **ou** | "out", "loud", "sound" stay identical; [Dutch](https://en.wikipedia.org/wiki/Dutch_orthography) uses 'ou' |
 | /eɪ/ (say) | **ay** | Matches English "say", "day", "play" |
 | /oʊ/ (go) | **oh** | Unambiguous; 'ow' was rejected (see below) |
@@ -107,16 +107,16 @@ Unlike consonants (where 'sh', 'ch', 'ng' are nearly universal), [diphthong](htt
 | out loud | out loud |
 | go show | goh shoh |
 
-**Why not 'ow' for /oʊ/?** It would make snow, throw, bowl, window identical to English. But `ow` is ambiguous in English: it represents both /oʊ/ (snow) and /aʊ/ (cow). New combinations like `bownz` (bones) read as "bowns" and `howm` (home) sounds like it rhymes with "cow". Nothing else in English reads as `oh`, so it's unambiguous.
+**Why not 'ow' for /oʊ/?** It would keep snow, throw, bowl and window identical to English. But English `ow` has two sounds: /oʊ/ (snow) and /aʊ/ (cow). New spellings like `bownz` (bones) would read as "bowns", and `howm` (home) would seem to rhyme with "cow". Nothing in English reads `oh` any other way.
 
-**Why not 'eu' for /uː/?** It would gain words like feud, deuce, neutral. But `eu` in English implies a /j/ onset: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) reads as "mew-n" (two syllables) and `teu` (too) reads as "tyoo". English `oo` already represents this sound (too, food, moon), so it's unambiguous.
+**Why not 'eu' for /uː/?** It would keep feud, deuce and neutral identical to English. But English `eu` implies a "y" sound before the vowel: "feud" is /fjuːd/, "neural" is /njʊɹəl/. So `meun` (moon) would read as "mew-n" (two syllables) and `teu` (too) as "tyoo". English already uses `oo` for this sound (too, food, moon), and `oo` has no such problem.
 
 ### R-Colored Vowels
 
-When certain vowels are followed by R, they combine into [r-colored sounds](https://en.wikipedia.org/wiki/R-colored_vowel). Without special handling, "star" (AA+R) would become "stor" (colliding with "store") and "beer" would become "bir" (colliding with "bird"). The R-rule gives each combination a dedicated spelling: ar, or, air, arr, eer, er. See [Phoneme Mapping](phoneme-mapping.md#r-colored-vowels) for the full table and collision analysis.
+When some vowels come before R, the two blend into one [r-colored sound](https://en.wikipedia.org/wiki/R-colored_vowel). Spelled vowel by vowel, "star" (the "father" vowel plus R; AA+R in CMU dictionary notation) would become "stor" (the same as "store") and "beer" would become "bir" (the same as "bird"). So each combination gets its own spelling: ar, or, air, arr, eer, er. See [Phoneme Mapping](phoneme-mapping.md#r-colored-vowels) for the full table and the clashes each spelling avoids.
 
 ## Dialect and Precedent
 
-Ingglish uses [General American English](https://en.wikipedia.org/wiki/General_American_English) via the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for how this affects non-American speakers.
+Ingglish follows [General American English](https://en.wikipedia.org/wiki/General_American_English) pronunciation, taken from the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). See [Dialect Assumptions](dialect-assumptions.md) for what this means for speakers of other accents.
 
-Every spelling has precedent in at least one major language. See [Orthography Comparison](orthography-comparison.md) for language-by-language detail.
+Every spelling is already used in at least one major language. See [Orthography Comparison](orthography-comparison.md) for the language-by-language detail.

@@ -17,11 +17,7 @@ import {
 
 /**
  * Some Ingglish spellings are ambiguous because the same letters can
- * represent different ARPAbet sequences. For example, "er" could be:
- * - ER (r-colored schwa): "bird", "her"
- * - EH + R (short e + r): "welfare", "better"
- *
- * Only EH + R is valid here because IH + R -> "eer" and AH + R -> "ur"
+ * represent different ARPAbet sequences.
  *
  * AE/AH ambiguity: unstressed schwa (AH0) maps to 'a', same as AE (cat).
  * Reverse parser gets AE from the map; AH alternative covers schwa words.
@@ -34,7 +30,7 @@ const ARPABET_ALTERNATIVES: Record<string, string[][]> = {
   AE: [['AH']], // "a" could be AE (cat) or AH (schwa: about, the)
   AO: [['AH', 'W']],
   DH: [['D', 'HH']],
-  ER: [['EH', 'R']],
+  ER: [['EH', 'R']], // the translator writes EH+R as "air", but "er" input (welfer, German loanwords) still means EH+R
   OW: [['AA', 'HH']],
   SH: [['S', 'HH']], // "sh" could be SH (ship) or S+HH (exhume)
   TH: [['T', 'HH']],

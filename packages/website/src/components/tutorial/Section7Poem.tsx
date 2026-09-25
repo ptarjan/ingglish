@@ -63,6 +63,9 @@ export function Section7Poem() {
     <section className="tutorial-section" ref={ref}>
       <h2 className="tutorial-heading">Hints on Pronunciation for Foreigners</h2>
       <p className="poem-attribution">&mdash; attributed to T.S. Watt, 1954</p>
+      <p className="tutorial-caption" style={{ textAlign: 'center' }}>
+        A poem about the traps of English spelling. Watch it turn into Ingglish, one line at a time.
+      </p>
       <div className="poem-paragraph">
         <div className="poem-controls">
           {advancing && (
