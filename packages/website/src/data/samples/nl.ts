@@ -2,18 +2,19 @@ import type { Sample } from './types';
 
 export const nl: Sample[] = [
   {
-    label: 'Anne Frank — Het Achterhuis',
-    text: 'Ik zal hoop ik aan jou alles kunnen toevertrouwen, zoals ik het nog aan niemand gekund heb, en ik hoop dat je een grote steun voor me zult zijn.',
+    label: 'Marcellus Emants — Een nagelaten bekentenis',
+    source: 'https://www.dbnl.org/tekst/eman001nage01_01/eman001nage01_01_0001.php',
+    text: "Ik heb voor je gedaan, wat ik kon; nu moet je 't maar zelf weten. Wie niet hooren wil, moet voelen! Liefde hebben we van jou toch evenmin genoten als vertrouwelijkheid! Maar ben je nog toegankelijk voor goede raad, denk dan aan 't geen ik je gezegd heb.... Eén ding wil ik je wel bekennen: van een jongen als jij, kan ik geen hoogte krijgen!",
   },
   {
     label: 'Multatuli — Max Havelaar',
+    source: 'https://www.dbnl.org/tekst/mult001maxh15_01/mult001maxh15_01_0003.php',
     text: 'Ik ben makelaar in koffie, en woon op de Lauriergracht. Het is mijn gewoonte niet, romans te schrijven, of zulke dingen.',
   },
   {
-    label: 'Harry Mulisch — De Aanslag',
-    source:
-      'https://www.scholieren.com/verslag/boekverslag-nederlands-de-aanslag-door-harry-mulisch-76058',
-    text: 'Ver, ver weg in de tweede wereldoorlog woonde een zekere Anton Steenwijk met zijn ouders en zijn broer aan de rand van Haarlem. Aan een kade, die over een lengte van honderd meter langs het water liep en dan met een flauwe bocht weer een gewone straat werd, stonden vier huizen niet ver van elkaar.',
+    label: 'Herman Gorter — Mei',
+    source: 'https://www.dbnl.org/tekst/gort004jcli01_01/gort004jcli01_01_0001.php',
+    text: 'Waarom diè rijkdom wil en diè een vrouw en één zichzelf, hoewel ze allen nauw weten dat ze iets zoeken dan een woord alleen? Weet iemand dit? Wel, hoort.',
   },
   {
     label: 'Louis Couperus — De Stille Kracht',
@@ -67,9 +68,10 @@ export const nl: Sample[] = [
     text: 'Op de dag dat Inni Wintrop zelfmoord pleegde stonden de aandelen Philips op 149,60. Heeft dat iets met elkaar te maken? Misschien wel. De koers mag dan later gezakt zijn, hijzelf is nooit meer zo hoog gekomen.',
   },
   {
-    label: 'Lucebert — Ik tracht op poëtische wijze',
-    source: 'https://nl.wikipedia.org/wiki/Lucebert',
-    text: 'Ik tracht op poëtische wijze, dat wil zeggen eenvouds, de waarheid te zeggen. De alchemie van het woord, het hermetisch experiment, de zuivere poëzie, zij hebben de aarde verlaten.',
+    label: 'VN — Universele Verklaring van de Rechten van de Mens',
+    source:
+      'https://www.ohchr.org/en/human-rights/universal-declaration/translations/dutch-nederlands',
+    text: 'Alle mensen worden vrij en gelijk in waardigheid en rechten geboren. Een ieder heeft het recht op leven, vrijheid en onschendbaarheid van zijn persoon.',
   },
   {
     label: 'W.F. Hermans — De Donkere Kamer van Damokles',
@@ -102,7 +104,8 @@ export const nl: Sample[] = [
     text: 'De portier is een invalide. Op het eikehouten bureautje waaraan hij zit, staat alleen een telefoon, en door een goedkope zonnebril staart hij roerloos voor zich uit.',
   },
   {
-    label: 'Louis Paul Boon — De Kapellekensbaan',
-    text: 'Ge ziet van uit uw open zolderraam hoe het niemandsbos in het rood wordt geverfd door de zakkende zon, en ge ziet ook daar tusschen de boomen en braamstoelen den spoorwegzate, waar ge de werkmenschen langs ziet gaan, heel klein daaronder.',
+    label: 'Frederik van Eeden — De kleine Johannes',
+    source: 'https://www.dbnl.org/tekst/eede003klei02_01/eede003klei02_01_0001.php',
+    text: 'Kon ik daarin vliegen! dacht hij dan. Wat zou wel daar achter zijn? Zou ik daar eenmaal, eenmaal kunnen komen?',
   },
 ];
