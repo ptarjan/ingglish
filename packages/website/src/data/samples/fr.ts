@@ -2,14 +2,16 @@ import type { Sample } from './types';
 
 export const fr: Sample[] = [
   {
-    label: 'Verne — Vingt mille lieues sous les mers',
-    source: 'https://fr.wikisource.org/wiki/Vingt_mille_lieues_sous_les_mers/Partie_1/Chapitre_1',
-    text: "En effet, depuis quelque temps, plusieurs navires s'étaient rencontrés sur mer avec une chose énorme, un objet long, fusiforme, parfois phosphorescent, infiniment plus vaste et plus rapide qu'une baleine. Les faits relatifs à cette apparition, consignés aux divers livres de bord, s'accordaient assez exactement sur la structure de l'objet ou de l'être en question.",
+    label: "Camus — L'Étranger",
+    source:
+      'https://sites.google.com/site/es1415follereau/sequence-ii-etrange-etranger/analyses/la-1-l-incipit',
+    text: "Aujourd'hui, maman est morte. Ou peut-être hier, je ne sais pas. J'ai reçu un télégramme de l'asile: Mère décédée. Enterrement demain. Sentiments distingués. Cela ne veut rien dire. C'était peut-être hier. L'asile de vieillards est à Marengo, à quatre-vingts kilomètres d'Alger. Je prendrai l'autobus à deux heures et j'arriverai dans l'après-midi.",
   },
   {
-    label: 'Daudet — La Dernière Classe',
-    source: 'https://fr.wikisource.org/wiki/La_Derni%C3%A8re_Classe',
-    text: "Ce matin-là, j'étais très en retard pour aller à l'école, et j'avais grand-peur d'être grondé, d'autant que M. Hamel nous avait dit qu'il nous interrogerait sur les participes, et je n'en savais pas le premier mot. Un moment l'idée me vint de manquer la classe et de prendre ma course à travers champs.",
+    label: 'Saint-Exupéry — Le Petit Prince',
+    source:
+      'https://www.mesexercices.com/recherche_information/debuts-de-romans-incipit-lorsque-j-avais-six-ans-j-ai-vu-une-fois-une-magnifique-image-dans-un-livre-sur-la-foret-vierge-qui-s-appelait-histoires-vecues-ca-representait-un-serpent-boa-qui-avalait-un-fauve_3_112283.htm',
+    text: "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait Histoires Vécues. Ça représentait un serpent boa qui avalait un fauve.",
   },
   {
     label: "Hugo — Demain, dès l'aube",
@@ -120,16 +122,14 @@ export const fr: Sample[] = [
     text: "Quoi! quand je dis: «Nicole, apportez-moi mes pantoufles, et me donnez mon bonnet de nuit», c'est de la prose? Par ma foi! il y a plus de quarante ans que je dis de la prose sans que j'en susse rien, et je vous suis le plus obligé du monde de m'avoir appris cela.",
   },
   {
-    label: 'La Rochefoucauld — Maximes',
-    source:
-      'https://fr.wikisource.org/wiki/%C5%92uvres_de_La_Rochefoucauld_-_T.1/R%C3%A9flexions_ou_sentences_et_maximes_morales',
-    text: "Nos vertus ne sont le plus souvent que des vices déguisés. Ce que nous prenons pour des vertus n'est souvent qu'un assemblage de diverses actions et de divers intérêts que la fortune ou notre industrie savent arranger, et ce n'est pas toujours par valeur et par chasteté que les hommes sont vaillants et que les femmes sont chastes. L'amour-propre est le plus grand de tous les flatteurs.",
+    label: 'Beauvoir — Le Deuxième Sexe',
+    source: 'https://brunorigolt.org/2011/10/23/la-citation-de-la-semaine-simone-de-beauvoir/',
+    text: "On ne naît pas femme: on le devient. Aucun destin biologique, psychique, économique ne définit la figure que revêt au sein de la société la femelle humaine; c'est l'ensemble de la civilisation qui élabore ce produit intermédiaire entre le mâle et le castrat qu'on qualifie de féminin.",
   },
   {
-    label: 'Descartes — Discours de la méthode',
-    source:
-      'https://fr.wikisource.org/wiki/Discours_de_la_m%C3%A9thode_(%C3%A9d._Cousin)/Premi%C3%A8re_partie',
-    text: "Le bon sens est la chose du monde la mieux partagée; car chacun pense en être si bien pourvu, que ceux même qui sont les plus difficiles à contenter en toute autre chose n'ont point coutume d'en désirer plus qu'ils en ont. En quoi il n'est pas vraisemblable que tous se trompent.",
+    label: "Sartre — L'existentialisme est un humanisme",
+    source: 'https://la-philosophie.com/sartre-existence-precede-essence',
+    text: "L'homme existe d'abord, se rencontre, surgit dans le monde, et qu'il se définit après.",
   },
   {
     label: "Duras — L'Amant",
