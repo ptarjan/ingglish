@@ -13,7 +13,7 @@ import { HOME_META } from './route-meta';
 
 const INDEX_HTML = path.join(path.dirname(fileURLToPath(import.meta.url)), '../index.html');
 
-beforeAll(() => loadLangDict('en'));
+beforeAll(() => loadLangDict('en'), 60_000);
 
 /** Every `"english" → "ingglish"` pair in the page. */
 function extractArrowPairs(html: string): [string, string][] {

@@ -72,7 +72,7 @@ describe('SpellingGuide prose examples', () => {
     (m) => [m[1]!, m[2]!] as const
   );
 
-  beforeAll(() => loadLangDict('en'));
+  beforeAll(() => loadLangDict('en'), 60_000);
 
   it('parses every arrow in the file', () => {
     expect(pairs.length).toBeGreaterThan(0);
