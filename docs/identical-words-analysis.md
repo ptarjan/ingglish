@@ -8,13 +8,13 @@ No, and that's intentional.
 
 The current mapping from sounds to spellings produces **10,150 identical words** (8.05% of the CMU dictionary, the pronunciation dictionary Ingglish is built on). Other mappings could in theory produce more, but most of them either create unacceptable collisions (different words sharing a spelling) or bring back spellings that English readers would mispronounce.
 
-We tested every one of 2,730 alternative spellings that avoid collisions, weighting each word by how often it appears (occurrences per million words of text, written /M). Only two candidates come out ahead, and both fail the mispronunciation test: an English reader would say some of the new spellings wrong. The rest come out behind:
+We tested every one of 2,730 alternative spellings that avoid collisions, weighting each word by how often it appears (occurrences per million words of text, written /M). Only one candidate comes out ahead, and it's too marginal to be worth the disruption. The rest come out behind, most sharply /uː/→eu:
 
 - /ɔɪ/→oy: **+235 /M**, marginal; "oi" and "oy" are both common English spellings
-- /uː/→eu: **+19 /M**, negligible, and `eu` misleads English readers (`meun` reads as "mew-n") (tested when /uː/ was still spelled 'uu')
-- /oʊ/→ow: **-1,330 /M**: "oh" alone (3,374 /M) outweighs all gains
-- /ɔ/→au: **-555 /M**, loses saw (413 /M), law (119 /M)
 - /aɪ/→ei: **-1 /M**, shuffles rare German surnames, essentially zero effect on real text
+- /ɔ/→au: **-555 /M**, loses saw (413 /M), law (119 /M)
+- /oʊ/→ow: **-1,330 /M**: "oh" alone (3,374 /M) outweighs all gains
+- /uː/→eu: **-3,657 /M**: loses too (1,407 /M), room (451 /M), soon (264 /M) — ordinary words currently spelled 'oo' — for the sake of rare gains like zeus (6 /M) and neutral (4 /M); `eu` also misleads English readers (`meun` reads as "mew-n")
 
 All five candidates were rejected (see [Recommendations](#recommendations)). The most promising area for further work is spelling a vowel differently when it is unstressed, as Ingglish already does for schwa (unstressed /ə/ → 'a').
 
@@ -52,29 +52,25 @@ These changes create **collisions**: different words with the same spelling, whi
 
 ## Collision-Free Base Phoneme Alternatives
 
-We tested every combination of 39 sounds × 70 spelling options (2,730 in all) to find changes that create no collisions. Only two come out ahead (+235 /M and +19 /M), and both fail the mispronunciation test. The other three come out behind. All five were rejected (see [Recommendations](#recommendations)).
+We tested every combination of 39 sounds × 70 spelling options (2,730 in all) to find changes that create no collisions. Only one comes out ahead (+235 /M), and it's too marginal to be worth the disruption. The other four come out behind, one of them (/uː/→eu) by a wide margin. All five were rejected (see [Recommendations](#recommendations)).
 
 ### Candidates (sorted by frequency impact)
 
 | Phoneme | Current | Proposed | Net /M | Top Gains (/M) | Top Losses (/M) |
 |---------|---------|----------|--------|-----------------|-----------------|
 | /ɔɪ/ | oi | oy | **+235** | boy (543), enjoy (85), joy (29) | point (243), join (86), oil (42) |
-| /uː/ | oo | eu | **+19** | zeus (6), neutral (4), maneuver (3) | bruun (0), ruud (0) |
 | /aɪ/ | ai | ei | **-1** | einstein (5), heist (3), stein (3) | shanghai (5), saigon (4), ai (4) |
 | /ɔ/ | aw | au | **-555** | fault (107), paul (97), launch (20) | saw (413), law (119), lawyer (82) |
 | /oʊ/ | oh | ow | **-1,330** | show (501), own (471), throw (132) | oh (3,374) |
+| /uː/ | oo | eu | **-3,657** | zeus (6), neutral (4), maneuver (3) | too (1,407), room (451), soon (264) |
 
-The two candidates that come out ahead (/ɔɪ/→oy and /uː/→eu) still fail the mispronunciation test; see below.
+/ɔɪ/→oy is the only candidate that comes out ahead, and only marginally: "oi" and "oy" are close enough in frequency that it's nearly a wash (see below). /uː/→eu also fails the mispronunciation test, on top of now being the worst of the five by frequency.
 
 ### Trade-off Analysis
 
 #### /ɔɪ/: "oi" → "oy" (+235 /M)
 
 The best trade by frequency: it gains boy (543 /M), enjoy (85 /M), joy (29 /M) and royal (24 /M) but loses point (243 /M), join (86 /M) and oil (42 /M). Both "oi" and "oy" are common English spellings with similar total frequency, so it's nearly a wash. Not compelling enough to change.
-
-#### /uː/: "oo" → "eu" (+19 /M)
-
-A negligible gain: zeus (6 /M), neutral (4 /M), maneuver (3 /M). At only +19 /M, it would affect 0.002% of real text. It also leads readers to mispronounce words; see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 #### /aɪ/: "ai" → "ei" (-1 /M)
 
@@ -87,6 +83,10 @@ It gains fault (107 /M), paul (97 /M), launch (20 /M), trauma (17 /M) and vault 
 #### /oʊ/: "oh" → "ow" (-1,330 /M)
 
 It gains show (501 /M), own (471 /M), throw (132 /M), blow (100 /M) and window (88 /M), all useful words. But "oh" alone, at 3,374 /M, outweighs them all. It also leads readers to mispronounce words: English uses `ow` for both /oʊ/ (snow) and /aʊ/ (cow); see [Design Decisions](design-decisions.md#diphthong-decisions).
+
+#### /uː/: "oo" → "eu" (-3,657 /M)
+
+The worst trade of the five, and it looks better than it is if you only count words. It keeps zeus (6 /M), neutral (4 /M) and maneuver (3 /M) identical, mostly rare surnames, but breaks too (1,407 /M), room (451 /M), soon (264 /M), shoot (169 /M) and food (158 /M) — ordinary English words that are currently identical under 'oo'. It also leads readers to mispronounce words: `meun` (moon) reads as "mew-n" and `teu` (too) as "tyoo"; see [Design Decisions](design-decisions.md#diphthong-decisions).
 
 ## Alternative Improvements Not Recommended
 
@@ -164,6 +164,7 @@ We checked that the proposed changes don't create problem collisions:
 All five proposed changes were investigated and rejected. Each one fails at least one of two tests:
 
 1. **Frequency impact**: does the change help or hurt in real text?
+   - /uː/→eu: -3,657 /M (worst of the five; breaks too, room, soon and other common 'oo' words)
    - /ɔ/→au: -555 /M, /oʊ/→ow: -1,330 /M (net negative)
    - /aɪ/→ei: -1 /M (negligible)
    - /ɔɪ/→oy: +235 /M (marginal, nearly a wash)
