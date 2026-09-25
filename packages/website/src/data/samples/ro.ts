@@ -8,10 +8,12 @@ export const ro: Sample[] = [
   },
   {
     label: 'Eminescu — Mai am un singur dor',
+    source: 'https://ro.wikisource.org/wiki/Mai_am_un_singur_dor',
     text: 'Mai am un singur dor: în liniștea serii să mă lăsați să mor la marginea mării. Să-mi fie somnul lin și codrul aproape, pe-ntinsele ape să am un cer senin.',
   },
   {
     label: 'Eminescu — Dorința',
+    source: 'https://ro.wikisource.org/wiki/Dorința_(Eminescu)',
     text: 'Vino-n codru la izvorul care tremură pe prund, unde prispa cea de brazde crengi plecate o ascund. Și în brațele-mi întinse să alergi, pe piept să-mi cazi, să-ți desprind din creștet vălul, să-l ridic de pe obraz.',
   },
   {
@@ -36,11 +38,12 @@ export const ro: Sample[] = [
   },
   {
     label: 'Nichita Stănescu — Lecția despre cub',
+    source: 'https://www.romanianvoice.com/poezii/poezii/lectiacub.php',
     text: 'Se ia o bucată de piatră, se cioplește cu o daltă de sânge, se lustruiește cu ochiul lui Homer, se răzuiește cu raze până cubul iese perfect.',
   },
   {
     label: 'Marin Preda — Moromeții',
-    source: 'https://bgrmihailsturdza.wordpress.com',
+    source: 'https://textbase.scriptorium.ro/preda/morometii/partea_intai/capitolul_1',
     text: 'Familia Moromete se întorsese mai devreme de la câmp. Paraschi, cel mai mare dintre copii, se dăduse jos din căruță, lăsase pe alții să deshame și să dea jos uneltele, iar el întinsese pe prispă o haină veche și se culcase peste ea gemând.',
   },
   {
@@ -50,8 +53,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Andrei Mureșanu — Deșteaptă-te, române!',
-    source:
-      'https://lyrics-on.net/en/1012186-romanian-national-anthem-desteapta-te-romane-lyrics.html',
+    source: 'https://ro.wikisource.org/wiki/Deșteaptă-te,_române!',
     text: 'Deșteaptă-te, române, din somnul cel de moarte, în care te-adânciră barbarii de tirani! Acum ori niciodată, croiește-ți altă soarte, la care să se-nchine și cruzii tăi dușmani.',
   },
   {
@@ -66,7 +68,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Mihail Sadoveanu — Baltagul',
-    source: 'https://ro.wikipedia.org/wiki/Baltagul_(roman)',
+    source: 'https://textbase.scriptorium.ro/sadoveanu/baltagul/i',
     text: 'Domnul Dumnezeu, după ce a alcătuit lumea, a pus rânduială și semn fiecărui neam. Pe țigan l-a învățat să cânte cu cetera și neamțului i-a dat șurubul.',
   },
   {
@@ -76,7 +78,8 @@ export const ro: Sample[] = [
   },
   {
     label: 'Mircea Eliade — Noaptea de Sânziene',
-    source: 'https://ro.wikipedia.org/wiki/Noaptea_de_Sânziene',
+    source:
+      'https://scorilos.wordpress.com/wp-content/uploads/2012/08/mircea-eliade-noaptea-de-sanziene.pdf',
     text: 'Deschise cât putu de încet ușa și aprinse lumina. Odaia era caldă; mirosea a praf. Obloanele ferestrelor erau lăsate. Alături de pat se afla o masă mare de lemn încărcată cu cărți, aproape toate noi, unele cu foile încă netăiate.',
   },
   {
@@ -107,6 +110,7 @@ export const ro: Sample[] = [
   },
   {
     label: 'Miorița — Baladă populară',
+    source: 'https://ro.wikisource.org/wiki/Miorița',
     text: 'Pe-un picior de plai, pe-o gură de rai, iată vin în cale, se cobor la vale, trei turme de miei, cu trei ciobănei.',
   },
 ];
