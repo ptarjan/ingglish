@@ -3,7 +3,7 @@
  * Analyze whether current phoneme mappings maximize identical words.
  * An "identical word" is one where the Ingglish spelling equals the English spelling.
  *
- * Run with: npx vite-node --script scripts/analyze-identical-words.ts
+ * Run from packages/core: npx vite-node --script scripts/analysis/analyze-identical-words.ts
  */
 
 import {
@@ -78,17 +78,20 @@ export async function main() {
     count: number;
     totalFreq: number;
     examples: string[];
+    spellings: Map<string, string>;
   } {
     const customMap = { ...ARPABET_TO_INGGLISH_MAP, ...override };
     let count = 0;
     let totalFreq = 0;
     const examples: string[] = [];
+    const spellings = new Map<string, string>();
 
     for (const word of allWords) {
       const phonemes = cmudict[word];
       if (!phonemes) continue;
 
       const ingglish = phonemesToIngglish(phonemes, customMap);
+      spellings.set(word, ingglish);
       if (ingglish.toLowerCase() === word.toLowerCase()) {
         count++;
         totalFreq += getWordFrequency(word) ?? 0;
@@ -96,11 +99,43 @@ export async function main() {
       }
     }
 
-    return { count, totalFreq, examples };
+    return { count, totalFreq, examples, spellings };
   }
 
   // Current mappings baseline
   const baseline = countIdenticalWithMapping({});
+
+  /**
+   * The most frequent pair of words that are spelled differently today but
+   * share a spelling under `spellings` (ranked by the rarer word's frequency).
+   */
+  function topNewCollision(spellings: Map<string, string>): string {
+    const groups = new Map<string, string[]>();
+    for (const [word, ingglish] of spellings) {
+      const group = groups.get(ingglish);
+      if (group) group.push(word);
+      else groups.set(ingglish, [word]);
+    }
+    let best = '-';
+    let bestFreq = -1;
+    for (const [ingglish, words] of groups) {
+      if (words.length < 2) continue;
+      const ranked = words
+        .map((w) => ({ w, f: getWordFrequency(w) ?? 0 }))
+        .sort((a, b) => b.f - a.f);
+      for (let i = 0; i < ranked.length; i++) {
+        for (let j = i + 1; j < ranked.length; j++) {
+          const a = ranked[i]!;
+          const b = ranked[j]!;
+          if (b.f <= bestFreq) break;
+          if (baseline.spellings.get(a.w) === baseline.spellings.get(b.w)) continue;
+          bestFreq = b.f;
+          best = `${a.w} / ${b.w} -> ${ingglish}`;
+        }
+      }
+    }
+    return best;
+  }
   console.log(`\n${'='.repeat(70)}`);
   console.log(
     `CURRENT MAPPINGS: ${baseline.count} identical words (${((baseline.count / allWords.length) * 100).toFixed(2)}%)`
@@ -112,42 +147,47 @@ export async function main() {
   console.log(`TESTING ALTERNATIVE MAPPINGS`);
   console.log(`${'='.repeat(70)}`);
 
-  const alternatives: { phoneme: string; current: string; alternatives: string[] }[] = [
+  // The current spelling of each phoneme is read from ARPABET_TO_INGGLISH_MAP,
+  // and an alternative equal to it is skipped.
+  const alternatives: { phoneme: string; alternatives: string[] }[] = [
     // Vowels - these have the most variation in English spelling
-    { phoneme: 'AH', current: 'u', alternatives: ['a', 'o', 'uh'] },
-    { phoneme: 'IH', current: 'i', alternatives: ['e', 'y'] },
-    { phoneme: 'EH', current: 'e', alternatives: ['a', 'ai'] },
-    { phoneme: 'AE', current: 'a', alternatives: ['e', 'ai'] },
-    { phoneme: 'AA', current: 'o', alternatives: ['a', 'ah'] },
-    { phoneme: 'UH', current: 'oo', alternatives: ['u', 'o'] },
-    { phoneme: 'IY', current: 'ee', alternatives: ['i', 'y', 'ie', 'e'] },
-    { phoneme: 'EY', current: 'ay', alternatives: ['a', 'ai', 'ey'] },
-    { phoneme: 'OW', current: 'oh', alternatives: ['o', 'ow'] },
-    { phoneme: 'AO', current: 'aw', alternatives: ['o', 'au', 'a'] },
+    { phoneme: 'AH', alternatives: ['a', 'o', 'u'] },
+    { phoneme: 'IH', alternatives: ['e', 'y'] },
+    { phoneme: 'EH', alternatives: ['a', 'ai'] },
+    { phoneme: 'AE', alternatives: ['e', 'ai'] },
+    { phoneme: 'AA', alternatives: ['a', 'ah'] },
+    { phoneme: 'UH', alternatives: ['oo', 'o'] },
+    { phoneme: 'UW', alternatives: ['eu', 'ew', 'u'] },
+    { phoneme: 'IY', alternatives: ['i', 'y', 'ie', 'e'] },
+    { phoneme: 'EY', alternatives: ['a', 'ai', 'ey'] },
+    { phoneme: 'OW', alternatives: ['o', 'ow'] },
+    { phoneme: 'AO', alternatives: ['o', 'au', 'a'] },
+    { phoneme: 'AY', alternatives: ['y', 'ie', 'ei'] },
+    { phoneme: 'OY', alternatives: ['oy'] },
 
     // Consonants
-    { phoneme: 'K', current: 'k', alternatives: ['c', 'ck'] },
-    { phoneme: 'S', current: 's', alternatives: ['c', 'ss'] },
-    { phoneme: 'Z', current: 'z', alternatives: ['s', 'zz'] },
-    { phoneme: 'F', current: 'f', alternatives: ['ph', 'ff'] },
-    { phoneme: 'JH', current: 'j', alternatives: ['g', 'dge'] },
+    { phoneme: 'K', alternatives: ['c', 'ck'] },
+    { phoneme: 'S', alternatives: ['c', 'ss'] },
+    { phoneme: 'Z', alternatives: ['s', 'zz'] },
+    { phoneme: 'F', alternatives: ['ph', 'ff'] },
+    { phoneme: 'JH', alternatives: ['g', 'dge'] },
   ];
 
-  console.log(`\nPhoneme | Current | Alt   | Net /M      | Winner`);
-  console.log(`${'─'.repeat(55)}`);
+  console.log(`\nPhoneme | Current | Alt   | Net /M      | Winner    | Top new collision`);
+  console.log(`${'─'.repeat(90)}`);
 
   const improvements: { phoneme: string; from: string; to: string; freqDiff: number }[] = [];
 
-  for (const { phoneme, current, alternatives: alts } of alternatives) {
-    const currentResult = countIdenticalWithMapping({});
+  for (const { phoneme, alternatives: alts } of alternatives) {
+    const current = ARPABET_TO_INGGLISH_MAP[phoneme];
 
-    for (const alt of alts) {
+    for (const alt of alts.filter((a) => a !== current)) {
       const altResult = countIdenticalWithMapping({ [phoneme]: alt });
-      const freqDiff = altResult.totalFreq - currentResult.totalFreq;
+      const freqDiff = altResult.totalFreq - baseline.totalFreq;
       const winner = freqDiff > 0 ? '← ALT' : freqDiff < 0 ? 'CURRENT →' : 'TIE';
 
       console.log(
-        `  ${phoneme.padEnd(5)} | ${current.padEnd(7)} | ${alt.padEnd(5)} | ${(freqDiff >= 0 ? '+' : '-') + fmtPM(Math.abs(freqDiff)).padEnd(10)} | ${winner}`
+        `  ${phoneme.padEnd(5)} | ${current.padEnd(7)} | ${alt.padEnd(5)} | ${(freqDiff >= 0 ? '+' : '-') + fmtPM(Math.abs(freqDiff)).padEnd(10)} | ${winner.padEnd(9)} | ${topNewCollision(altResult.spellings)}`
       );
 
       if (freqDiff > 0) {
@@ -168,7 +208,7 @@ export async function main() {
   } else {
     console.log(`\nAlternatives with positive frequency impact:`);
     improvements.sort((a, b) => b.freqDiff - a.freqDiff);
-    for (const { phoneme, from, to, freqDiff } of improvements.slice(0, 10)) {
+    for (const { phoneme, from, to, freqDiff } of improvements) {
       console.log(
         `  ${phoneme}: ${from} → ${to} (${freqDiff >= 0 ? '+' : ''}${fmtPM(freqDiff)} /M)`
       );

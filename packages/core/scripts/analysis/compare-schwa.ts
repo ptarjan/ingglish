@@ -1,8 +1,13 @@
 #!/usr/bin/env -S npx vite-node --script
 /**
- * Compare schwa mapping: AH0 -> 'u' (current) vs AH0 -> 'a' (proposed).
+ * Compare schwa mapping: AH0 -> 'u' (old) vs AH0 -> 'a' (adopted).
  *
- * Only AH0 (unstressed schwa) changes. AH1 and AH2 (stressed /ʌ/) stay as 'u'.
+ * This is the comparison that justified spelling unstressed schwa (AH0) as 'a'.
+ * The "old" side reproduces the spelling from before that change; Ingglish
+ * now uses the "adopted" side. Only AH0 differs between the two: every other
+ * phoneme, including stressed AH1/AH2, uses the live ARPABET_TO_INGGLISH_MAP
+ * (AH is 'uh' there now, not the 'u' it was when this was first measured), so
+ * a rerun today will not reproduce the numbers quoted in the docs.
  *
  * Usage: npx vite-node --script packages/core/scripts/analysis/compare-schwa.ts
  */
@@ -59,8 +64,8 @@ export async function main() {
   interface WordComparison {
     english: string;
     phonemes: string[];
-    current: string; // AH0 -> 'u'
-    proposed: string; // AH0 -> 'a'
+    current: string; // old: AH0 -> 'u'
+    proposed: string; // adopted: AH0 -> 'a'
     frequency: number;
   }
 
@@ -87,9 +92,9 @@ export async function main() {
 
     const hasAH0 = phonemes.includes('AH0');
 
-    // Current translation (AH0 -> 'u')
+    // Old translation (AH0 -> 'u')
     const current = arpabetToIngglishWithSchwa(phonemes, 'u');
-    // Proposed translation (AH0 -> 'a')
+    // Adopted translation (AH0 -> 'a')
     const proposed = hasAH0 ? arpabetToIngglishWithSchwa(phonemes, 'a') : current;
 
     // Build collision maps for ALL words (not just affected ones)
@@ -218,7 +223,7 @@ export async function main() {
   const netCollisions = proposedCollisions.count - currentCollisions.count;
   const netCollisionsStr = netCollisions >= 0 ? `+${netCollisions}` : `${netCollisions}`;
 
-  console.log(`# Schwa Mapping Comparison: AH0 -> 'u' (current) vs AH0 -> 'a' (proposed)\n`);
+  console.log(`# Schwa Mapping Comparison: AH0 -> 'u' (old) vs AH0 -> 'a' (adopted)\n`);
 
   console.log('## Summary\n');
   console.log(`- Total dictionary words: ${totalWords}`);
@@ -226,19 +231,19 @@ export async function main() {
   console.log('');
 
   console.log('## Identical Words (Ingglish === English)\n');
-  console.log(`- Total identical (current AH0->u): ${totalCurrentIdentical}`);
-  console.log(`- Total identical (proposed AH0->a): ${totalProposedIdentical}`);
+  console.log(`- Total identical (old AH0->u): ${totalCurrentIdentical}`);
+  console.log(`- Total identical (adopted AH0->a): ${totalProposedIdentical}`);
   console.log(`- Net change: ${netIdenticalStr}`);
   console.log('- Among AH0 words:');
-  console.log(`  - Currently identical: ${currentIdentical}`);
-  console.log(`  - Would become identical: ${proposedIdentical}`);
+  console.log(`  - Identical under old: ${currentIdentical}`);
+  console.log(`  - Identical under adopted: ${proposedIdentical}`);
   console.log(`  - Would LOSE identity (was identical, no longer): ${lostIdentical.length}`);
   console.log(`  - Would GAIN identity (wasn't identical, now is): ${gainedIdentical.length}`);
   console.log('');
 
   console.log('## Collisions (2+ English words -> same Ingglish)\n');
-  console.log(`- Current collision groups: ${currentCollisions.count}`);
-  console.log(`- Proposed collision groups: ${proposedCollisions.count}`);
+  console.log(`- Old collision groups: ${currentCollisions.count}`);
+  console.log(`- Adopted collision groups: ${proposedCollisions.count}`);
   console.log(`- Net change: ${netCollisionsStr}`);
   console.log(`- New collisions introduced: ${newCollisions.length}`);
   console.log(`- Collisions resolved: ${lostCollisions.length}`);
@@ -249,7 +254,7 @@ export async function main() {
   for (const item of improved.slice(0, 20)) {
     const freqStr = item.frequency > 0 ? `  (freq: ${item.frequency})` : '';
     console.log(
-      `  ${pad(item.english, 20)}  current: ${pad(item.current, 20)}  proposed: ${pad(item.proposed, 20)}${freqStr}`
+      `  ${pad(item.english, 20)}  old: ${pad(item.current, 20)}  adopted: ${pad(item.proposed, 20)}${freqStr}`
     );
   }
   console.log('');
@@ -259,7 +264,7 @@ export async function main() {
   for (const item of worsened.slice(0, 20)) {
     const freqStr = item.frequency > 0 ? `  (freq: ${item.frequency})` : '';
     console.log(
-      `  ${pad(item.english, 20)}  current: ${pad(item.current, 20)}  proposed: ${pad(item.proposed, 20)}${freqStr}`
+      `  ${pad(item.english, 20)}  old: ${pad(item.current, 20)}  adopted: ${pad(item.proposed, 20)}${freqStr}`
     );
   }
   console.log('');
@@ -269,7 +274,7 @@ export async function main() {
   for (const item of changedNonIdentical.slice(0, 20)) {
     const freqStr = item.frequency > 0 ? `  (freq: ${item.frequency})` : '';
     console.log(
-      `  ${pad(item.english, 20)}  current: ${pad(item.current, 20)}  proposed: ${pad(item.proposed, 20)}${freqStr}`
+      `  ${pad(item.english, 20)}  old: ${pad(item.current, 20)}  adopted: ${pad(item.proposed, 20)}${freqStr}`
     );
   }
   console.log('');
@@ -286,7 +291,7 @@ export async function main() {
   console.log('');
 
   console.log('## Top 20 Collisions Resolved\n');
-  console.log('Words that currently collide but would stop colliding:\n');
+  console.log('Words that collide under old but not under adopted:\n');
   for (const [ingglish, sources] of lostCollisions.slice(0, 20)) {
     const freqs = sources.map((w) => {
       const f = getWordFrequency(w);
@@ -303,7 +308,7 @@ export async function main() {
   console.log('## Sample High-Frequency AH0 Words (top 30)\n');
   const topAffected = [...affected].sort((a, b) => b.frequency - a.frequency).slice(0, 30);
   console.log(
-    `  ${pad('English', 20)}  ${pad('AH phonemes', 15)}  ${pad('Current (u)', 20)}  ${pad('Proposed (a)', 20)}  Freq`
+    `  ${pad('English', 20)}  ${pad('AH phonemes', 15)}  ${pad('Old (u)', 20)}  ${pad('Adopted (a)', 20)}  Freq`
   );
   console.log('  ' + '-'.repeat(95));
   for (const item of topAffected) {
@@ -524,9 +529,9 @@ export async function main() {
 
   console.log('English:');
   console.log(`  ${sampleWords.join(' ')}\n`);
-  console.log('Current (schwa=u):');
+  console.log('Old (schwa=u):');
   console.log(`  ${currentSentence.join(' ')}\n`);
-  console.log('Proposed (schwa=a):');
+  console.log('Adopted (schwa=a):');
   console.log(`  ${proposedSentence.join(' ')}\n`);
 
   // 5. All words that lose identity, sorted by frequency
