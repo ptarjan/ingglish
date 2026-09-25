@@ -1,17 +1,19 @@
-# Morphological Preservation
+# Word Families
 
-English spelling tries to show two things at once: how a word sounds, and which words it is related to. Silent letters and inconsistent vowel spellings often keep related words looking alike: "sign" and "signal" share the visible root "sign-" even though the "g" is silent in "sign". Ingglish spells by sound alone, so it gives up some of these visual links in exchange for spelling that tells you how to say the word.
+Ingglish's first goal is one sound, one spelling (see [How Ingglish Was Designed](design-decisions.md)). This page covers what that goal costs: some related words stop looking related.
 
-This page shows where word-family links survive in Ingglish, where they break, and where they get clearer. Sounds are written in IPA between slashes (/eɪ/ is the vowel in "say"); [Phoneme Mapping](phoneme-mapping.md) gives an example word for each.
+English spelling tries to show two things at once: how a word sounds, and which words it belongs with. Silent letters and loose vowel spellings often keep a family looking alike. "sign" and "signal" share the visible root "sign-", even though the "g" is silent in "sign". Ingglish spells by sound alone, so it gives up some of these visual links. In return, the spelling tells you how to say the word.
+
+The page shows where family links survive in Ingglish, where they break, and where they get clearer. Sounds are written in IPA between slashes (/eɪ/ is the vowel in "say"); the [Phoneme Chart](phoneme-mapping.md) gives an example word for each. Two vowel spellings appear in almost every table. Ingglish usually writes schwa, the weak vowel at the start of "about", as a, so "sanity" is sanatee (its second a is the schwa) and the ending "-tion" is -shan. It writes the stressed vowel of "cup" as uh, so "production" is praduhkshan.
 
 ## The Fundamental Tradeoff
 
 Every spelling system sits somewhere between two ideals:
 
-- **Phonemic transparency**: spelling shows pronunciation (Finnish, Turkish)
-- **Morphological transparency**: spelling shows which words are related (Chinese, and English to some extent)
+- **Phonemic transparency**: the spelling shows the pronunciation (Finnish, Turkish).
+- **Morphological transparency**: the spelling shows which words are related (Chinese, and English to some extent).
 
-English often leans toward the second, keeping related words looking alike even when they sound different. Ingglish chooses the first, so related words that *sound* different also *look* different.
+English often leans toward the second, keeping related words alike even when they sound different. Ingglish chooses the first, so related words that *sound* different also *look* different.
 
 ## Preserved Relationships
 
@@ -24,7 +26,7 @@ In these word families, the shared root sounds alike enough in every form that t
 | medicine | medicine / medical / medication | medasan / medakal / medakayshan | med- |
 | produce | produce / production / productive | pradoos / praduhkshan / praduhktiv | prad- |
 | reduce | reduce / reduction | radoos / raduhkshan | rad- |
-| deep | deep / depth | deep / depth | same as English |
+| deep | deep / depth | deep / depth | same as English, where the vowel already changes |
 | bomb\* | bombard / bombardment | bombard / bombardmant | bombard- |
 
 \* "bombard" and "bombardment" still match, but "bomb" itself does not (see below).
@@ -68,7 +70,7 @@ English keeps some consonants in the spelling even when they're silent, because 
 
 ### Stress-Induced Vowel Reduction
 
-When the stress moves to a different syllable, the vowels that lose stress weaken to schwa (the "uh" sound in "about"), which changes the Ingglish spelling:
+When the stress moves to a different syllable, the vowels that lose it weaken to schwa, which Ingglish writes as a (see [Schwa and STRUT](vowel-spellings.md#schwa-and-strut)). So the spelling of the root changes:
 
 | Family | English | Ingglish | What changed |
 |--------|---------|----------|-------------|
@@ -82,9 +84,9 @@ Some word families show several of these changes at once:
 
 | Family | English | Ingglish | Effects |
 |--------|---------|----------|---------|
-| receipt / receive / reception | receipt / receive / reception | riseet / raseev / risepshan | vowel shift + stress + consonant change |
-| muscle / muscular | muscle / muscular | muhsal / muhskyaler | vowel change + consonant insertion |
-| know / knowledge | know / knowledge | noh / nolaj | silent "k" + vowel shift |
+| receipt / receive / reception | receipt / receive / reception | riseet / raseev / risepshan | vowel shift + stress + silent "p" returns |
+| muscle / muscular | muscle / muscular | muhsal / muhskyaler | vowel change + a "y" sound added |
+| know / knowledge | know / knowledge | noh / nolaj | silent "k" + vowel shift (/oʊ/ -> /ɑ/) |
 
 ## Improved Relationships
 
@@ -95,18 +97,20 @@ In a few cases, Ingglish's consistent consonant spelling makes the family link *
 | magic / magician / magical | "c" is /k/ in "magic" and "magical" but /ʃ/ in "magician" | "k" consistently represents /k/, "sh" represents /ʃ/ |
 | electric / electricity | "c" represents /k/ and /s/ | "k" and "s" are explicit |
 
-These gains are modest. Ingglish fixes some consonant confusions, but it breaks more vowel links than that.
+These gains are small. Ingglish fixes a few consonant confusions, but it breaks more vowel links than it fixes.
 
 ## Summary
 
-| Category | Families on this page | Pattern |
+| What happens to the family | Families on this page | Why |
 |----------|-------|---------|
-| Preserved | 7 | Root pronunciation stays similar across forms |
-| Broken by vowel shift | 9 | Long/short vowel alternation (sane/sanity pattern) |
-| Broken by silent letters | 8 | Consonants appear/disappear (sign/signal pattern) |
-| Broken by stress shift | 3 | Unstressed vowels reduce to schwa |
-| Improved | 2 | Consistent consonant spelling |
+| Still looks related | 7 | The root sounds about the same in every form |
+| Split by a long/short vowel switch | 9 | sane/sanity: the root vowel changes sound |
+| Split by a silent letter | 8 | sign/signal: a consonant is pronounced in only some forms |
+| Split by a stress shift | 3 | Vowels that lose stress weaken to schwa |
+| Clearer than in English | 2 | Each consonant sound has one spelling |
 
-The long/short vowel switch is the main pattern. In English, a shared spelling for the root vowel (a_e/a, ee/e, i_e/i) visibly marks words as related. Because Ingglish spells pronunciation faithfully, it must use different vowel spellings for different vowel sounds, even in related words.
+The rows overlap: condemn is split both by a silent letter and by a stress shift, and electric and magic both still look related and are clearer than in English.
 
-Every phonemic spelling system makes this trade: you can tell how a word sounds from its spelling, but you lose some of the visual links between related words. Whether that is worth it depends on whether you care more about reading (turning spelling into sound) or spelling (turning sound into letters), and on how well context helps readers spot word families despite the different spellings.
+The long/short vowel switch is the main loss. English marks sane and sanity as relatives by spelling the root vowel the same way (a_e and a, ee and e, i_e and i). Ingglish spells each vowel sound one way, so when the sound changes, the spelling changes with it.
+
+Every spelling system that follows sound makes this trade. A reader can say any word from its spelling, but has to recognize some word families by meaning rather than by sight.

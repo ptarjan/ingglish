@@ -1,16 +1,20 @@
-# Dialect Assumptions
+# Which Accent Ingglish Spells
 
-Ingglish spells words as they sound in **General American English (GenAm)**, using the pronunciations in the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary). English accents differ, so any phonetic spelling has to pick one. This page lists every major place where that choice matters and who it affects.
+The first constraint on any phonetic spelling is that it has to pick an accent. "Spell it as it sounds" only works once you say whose voice it sounds like, because English accents disagree about hundreds of common words. This page is the first step of the design story told in [How Ingglish Was Designed](design-decisions.md): it says which accent Ingglish follows, why, and where speakers of other accents will find the spelling doesn't match how they talk.
 
-The CMU dictionary writes pronunciations in ARPAbet, a plain-text notation with 39 phonemes (distinct sounds): 15 vowels and 24 consonants. That set of sounds is itself American. It has no /ɒ/ (the British vowel in "lot"), no /ʍ/ (a breathy "hw" sound), and no separate symbol for schwa, the weak vowel in "about"; schwa is written as the "but" vowel, AH, marked unstressed: AH0, where the digit gives the stress level and 0 means none.
+Ingglish spells words as they sound in **General American English (GenAm)**, using the pronunciations in the [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary), a free list of English words and how Americans say them.
+
+The CMU dictionary writes pronunciations in ARPAbet, a plain-text notation that names each sound with one or two capital letters (AH, K, SH). It has 39 phonemes (distinct sounds): 15 vowels and 24 consonants. That set of sounds is itself American. It has no /ɒ/ (the British vowel in "lot"), no /ʍ/ (a breathy "hw" sound), and no separate symbol for schwa, the weak vowel in "about". Schwa is written as the "but" vowel, AH, marked unstressed: AH0. A digit after a vowel gives its stress: 1 or 2 for stressed, 0 for none.
+
+In the tables, symbols between slashes, like /æ/, are IPA (the International Phonetic Alphabet) and show the sounds a speaker thinks of a word as having. Symbols in square brackets, like [ɾ], show exactly how a sound comes out.
 
 Capitalised names like LOT, TRAP and BATH are standard linguists' labels for groups of words that share a vowel, each named after one of its words: "the BATH words" means bath, grass, dance and so on. A *merger* is when an accent pronounces two such groups the same way; a *split* is the reverse.
 
 ## Why General American?
 
-1. The CMU Pronouncing Dictionary is the largest free English pronunciation dictionary (126,000+ words).
+1. The CMU Pronouncing Dictionary is the largest free English pronunciation dictionary, with 126,051 entries.
 2. Thanks to American media, GenAm is the most widely recognized English accent worldwide.
-3. It is a practical single accent to start from (see [Design Decisions](design-decisions.md)).
+3. A spelling needs one accent to start from, and this one comes with the dictionary.
 
 Other accents could be supported later with alternative sound-to-spelling mappings.
 
@@ -28,9 +32,9 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 | near | neer | /nɪɹ/ | /nɪə/ |
 | nurse | ners | /nɝs/ | /nɜːs/ |
 
-**Who this affects:** Speakers of non-rhotic accents (RP, the standard British accent; Australian; New Zealand; some Southern US; some New England) see an R where they don't say one. This is the assumption with the widest reach: it touches almost every word with a vowel followed by R.
+**Who this affects:** Speakers of non-rhotic accents see an R where they don't say one. These include RP (the standard British accent), Australian, New Zealand, some Southern US and some New England accents. This is the assumption with the widest reach: it touches almost every word with a vowel followed by R. It is also why Ingglish can give vowels before R their own spellings (see [R-Colored Vowels](vowel-spellings.md#r-colored-vowels)).
 
-**Who this matches:** General American, Canadian, and most other rhotic accents. Scottish and Irish accents are rhotic too, but their vowels before R differ (many Scottish speakers keep the vowels of "fern", "bird" and "hurt" apart, where General American merges all three into /ɝ/, spelled "er": fern, berd, hert), so the R is right but the vowel spelling may not match.
+**Who this matches:** General American, Canadian, and most other rhotic accents. Scottish and Irish accents are rhotic too, but their vowels before R differ. Many Scottish speakers keep the vowels of "fern", "bird" and "hurt" apart, where General American merges all three into /ɝ/, spelled "er" (fern, berd, hert). So for them the R is right but the vowel spelling may not match.
 
 ### The TRAP-BATH Split
 
@@ -51,19 +55,22 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 
 ### The Cot-Caught Distinction
 
-**Ingglish keeps the LOT vowel (/ɑ/, "cot") separate from the THOUGHT vowel (/ɔ/, "caught").**
+**Ingglish has two spellings for these vowels: "o" for the LOT vowel (/ɑ/, "cot") and "aw" for the THOUGHT vowel (/ɔ/, "law").** Which one a word gets depends on how the CMU dictionary records it.
 
 | Word | Ingglish | Vowel | GenAm |
 |------|----------|-------|-------|
 | cot | kot | /ɑ/ | /kɑt/ |
-| caught | kawt | /ɔ/ | /kɔt/ |
 | lot | lot | /ɑ/ | /lɑt/ |
+| taught | tawt | /ɔ/ | /tɔt/ |
+| daughter | dawter | /ɔ/ | /dɔtɚ/ |
 | thought | thawt | /ɔ/ | /θɔt/ |
 | cloth | klawth | /ɔ/ | /klɔθ/ |
 
-**Who this affects:** Speakers with the [cot-caught merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) (Western US, Canada, much of the US Midland) say both with the same vowel, so the choice between "o" and "aw" will seem arbitrary to them.
+The distinction is only partial in practice. The CMU dictionary gives some words more than one pronunciation, and Ingglish always uses the first one listed. For a few words, including "caught" and "bought", the first one listed has the LOT vowel and the THOUGHT vowel comes second. So "caught" comes out as **kot**, the same as "cot", and "bought" as **bot**. Ingglish's translator also works in reverse, and turning "kot" back into English gives "caught", the more common of the two words. This is a known gap: a later version may prefer the THOUGHT pronunciation for these words.
 
-**Who this matches:** Speakers who keep the two apart (Eastern US, some Southern US). RP keeps them apart too, but with different vowel sounds.
+**Who this affects:** Speakers with the [cot-caught merger](https://en.wikipedia.org/wiki/Cot%E2%80%93caught_merger) say both vowels the same. They include speakers in the Western US, Canada and much of the US Midland. For them the choice between "o" and "aw" will seem arbitrary. Speakers who keep the two apart will find the few words like "caught" spelled with the wrong one.
+
+**Who this matches:** Speakers who keep the two apart, in the Eastern US and some of the Southern US. RP keeps them apart too, but with different vowel sounds.
 
 ### The Father-Bother Merger
 
@@ -92,7 +99,7 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 
 ### Yod-Dropping After Coronals
 
-**Ingglish drops the "y" sound (/j/) between /t/, /d/, /n/ or /s/ and /uː/**, so "new" is "noo", not "nyoo". Linguists call /j/ "yod" and these four consonants "coronals", hence yod-dropping after coronals.
+**Ingglish drops the "y" sound (/j/) between /t/, /d/, /n/ or /s/ and /uː/**, so "new" is "noo", not "nyoo". Linguists call /j/ "yod", and these four consonants "coronals" because they are made with the tip or blade of the tongue. Hence yod-dropping after coronals.
 
 | Word | Ingglish | GenAm | British RP |
 |------|----------|-------|------------|
@@ -118,7 +125,7 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 | where | wair | /wɛɹ/ | /ʍɛɹ/ |
 | wear | wair | /wɛɹ/ | /wɛɹ/ |
 
-**Who this affects:** Scottish, Irish, and some Southern US speakers, who start "which" with /ʍ/ ("hw"). For them, a real difference disappears.
+**Who this affects:** Scottish, Irish, and some Southern US speakers, who start "which" with /ʍ/ ("hw"). For them, a real difference disappears. See [Y and W](consonant-spellings.md#y-and-w).
 
 **Who this matches:** Most GenAm and RP speakers, who say "which" and "witch" the same.
 
@@ -137,7 +144,7 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 
 ### Flapping (Allophonic Detail)
 
-**Ingglish writes the /t/ a word has in principle, not the quick tapped [ɾ] Americans actually say.** Linguists call this tap a flap.
+**Ingglish writes a /t/ as "t", even where Americans say it as a quick tap, [ɾ].** Linguists call this tap a flap, and an *allophonic* detail: a change in how a sound is said that never turns it into a different sound.
 
 | Word | Ingglish | GenAm pronunciation | What you hear |
 |------|----------|-------------------|---------------|
@@ -146,7 +153,7 @@ Other accents could be supported later with alternative sound-to-spelling mappin
 | letter | leter | /lɛtɚ/ | [lɛɾɚ] (flapped) |
 | ladder | lader | /lædɚ/ | [læɾɚ] (flapped) |
 
-Ingglish records **phonemes** (the sounds a speaker thinks of a word as having), not **phonetic** detail (exactly how it comes out). So a /t/ between vowels is written "t" even though most Americans say it as a flap [ɾ], much like a quick "d". This happens to match RP more closely, since RP doesn't flap /t/. (Slashes, as in /t/, mark phonemes; square brackets, as in [ɾ], mark sounds as actually spoken.)
+Ingglish records **phonemes** (in slashes, like /t/), not **phonetic** detail (in square brackets, like [ɾ]). So a /t/ between vowels is written "t" even though most Americans say it as a flap [ɾ], much like a quick "d". This happens to match RP more closely, since RP doesn't flap /t/.
 
 ### The -ile Suffix
 
@@ -184,7 +191,7 @@ Some individual words are well known for sounding different in America and Brita
 |---------|----------------|---------|
 | Rhoticity | Rhotic (all R's pronounced) | RP, Australian, NZ speakers |
 | TRAP-BATH | No split (all /æ/) | RP, Australian, SA speakers |
-| Cot-caught | Distinct (/ɑ/ vs /ɔ/) | Western US, Canadian speakers |
+| Cot-caught | Mostly distinct (/ɑ/ vs /ɔ/); caught and bought use /ɑ/ | Western US, Canadian speakers |
 | Father-bother | Merged (both /ɑ/) | RP, Australian speakers |
 | Mary-marry-merry | Fully merged | RP, NYC, Philadelphia speakers |
 | Wine-whine | Merged (both W) | Scottish, Irish speakers |
@@ -192,16 +199,8 @@ Some individual words are well known for sounding different in America and Brita
 | Horse-hoarse | Merged | Some Scottish, Irish speakers |
 | Flapping | Written as underlying /t/ | Matches all dialects phonemically |
 
-## British Spelling Normalization
+## British Spellings
 
-Pronunciation aside, the CMU dictionary lists American *spellings*. If a word like "colour" or "realise" isn't in it, Ingglish converts it to the American spelling ("color", "realize") and looks that up instead. The conversions are:
+The CMU dictionary also lists American *spellings*. When a British spelling such as "colour", "realise" or "centre" is not in it, Ingglish's translator looks up the American spelling ("color", "realize", "center") instead. This only changes which dictionary entry is found; the pronunciation, and so the Ingglish spelling, is still the American one.
 
-- -ise -> -ize (realise -> realize)
-- -our -> -or (colour -> color)
-- -re -> -er (centre -> center)
-- -lled -> -led (travelled -> traveled)
-- -ence -> -ense (defence -> defense)
-- -ogue -> -og (catalogue -> catalog)
-- grey -> gray
-
-This only changes which dictionary entry is found. It does not change any pronunciation choice.
+The next constraint is how to tell a good spelling from a bad one: see [How a Spelling Is Scored](metrics.md).

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 // Import markdown files - vite-plugin-md converts to HTML at build time
 import architecture from '../../../../docs/architecture.md';
 import communityLandscape from '../../../../docs/community-landscape.md';
+import consonantSpellings from '../../../../docs/consonant-spellings.md';
 import contributing from '../../../../docs/contributing.md';
 import deploymentDoc from '../../../../docs/deployment.md';
 import designDecisions from '../../../../docs/design-decisions.md';
@@ -22,11 +23,12 @@ import phonemeMapping from '../../../../docs/phoneme-mapping.md';
 import spellingIteration from '../../../../docs/spelling-iteration.md';
 import spellingReformComparison from '../../../../docs/spelling-reform-comparison.md';
 import troubleshooting from '../../../../docs/troubleshooting.md';
+import vowelSpellings from '../../../../docs/vowel-spellings.md';
 import type { DocId } from '../routes';
 import { DOC_ENTRIES, sitePath, siteUrl } from '../routes';
 
-// The sidebar list below carries each doc's content and short label; its
-// search-facing title and description live in routes.ts, shared with the
+// The sidebar list below carries each doc's content and order; its short
+// label, search-facing title and description live in routes.ts, shared with the
 // build-time HTML so the pre-rendered <head> and the SPA's cannot disagree.
 const DOC_SEO = new Map(
   DOC_ENTRIES.map((e) => [e.id, { description: e.seoDescription, title: e.seoTitle }])
@@ -46,80 +48,82 @@ interface HeadingInfo {
   text: string;
 }
 
-const docs: DocEntry[] = [
-  // Ingglish Design — how the project works
+const docList: Omit<DocEntry, 'title'>[] = [
+  // How the Spelling Was Designed — the design story, read in order
   {
     content: designDecisions,
     filename: 'design-decisions.md',
     id: 'design-decisions',
-    section: 'Ingglish Design',
-    title: 'Design Decisions',
-  },
-  {
-    content: phonemeMapping,
-    filename: 'phoneme-mapping.md',
-    id: 'phoneme-mapping',
-    title: 'Phoneme Mapping',
-  },
-  {
-    content: orthographyComparison,
-    filename: 'orthography-comparison.md',
-    id: 'orthography-comparison',
-    title: 'Orthography Comparison',
-  },
-  {
-    content: spellingReformComparison,
-    filename: 'spelling-reform-comparison.md',
-    id: 'spelling-reform-comparison',
-    title: 'Spelling Reform History',
-  },
-  {
-    content: communityLandscape,
-    filename: 'community-landscape.md',
-    id: 'community-landscape',
-    title: 'Community Landscape',
-  },
-  {
-    content: spellingIteration,
-    filename: 'spelling-iteration.md',
-    id: 'spelling-iteration',
-    title: 'Spelling Iteration Log',
-  },
-  {
-    content: identicalWordsAnalysis,
-    filename: 'identical-words-analysis.md',
-    id: 'identical-words-analysis',
-    title: 'Identical Words Analysis',
-  },
-  {
-    content: metricsDoc,
-    filename: 'metrics.md',
-    id: 'metrics',
-    title: 'Mapping Quality Metrics',
-  },
-  {
-    content: falseFriends,
-    filename: 'false-friends.md',
-    id: 'false-friends',
-    title: 'False Friends Analysis',
-  },
-  {
-    content: orthographicTransparency,
-    filename: 'orthographic-transparency.md',
-    id: 'orthographic-transparency',
-    title: 'Orthographic Transparency',
-  },
-  {
-    content: morphologicalAnalysis,
-    filename: 'morphological-analysis.md',
-    id: 'morphological-analysis',
-    title: 'Morphological Analysis',
+    section: 'How the Spelling Was Designed',
   },
   {
     content: dialectAssumptions,
     filename: 'dialect-assumptions.md',
     id: 'dialect-assumptions',
-    title: 'Dialect Assumptions',
+  },
+  {
+    content: metricsDoc,
+    filename: 'metrics.md',
+    id: 'metrics',
+  },
+  {
+    content: identicalWordsAnalysis,
+    filename: 'identical-words-analysis.md',
+    id: 'identical-words-analysis',
+  },
+  {
+    content: vowelSpellings,
+    filename: 'vowel-spellings.md',
+    id: 'vowel-spellings',
+  },
+  {
+    content: consonantSpellings,
+    filename: 'consonant-spellings.md',
+    id: 'consonant-spellings',
+  },
+  {
+    content: falseFriends,
+    filename: 'false-friends.md',
+    id: 'false-friends',
+  },
+  {
+    content: morphologicalAnalysis,
+    filename: 'morphological-analysis.md',
+    id: 'morphological-analysis',
+  },
+  {
+    content: orthographicTransparency,
+    filename: 'orthographic-transparency.md',
+    id: 'orthographic-transparency',
+  },
+  {
+    content: spellingIteration,
+    filename: 'spelling-iteration.md',
+    id: 'spelling-iteration',
+  },
+  // Reference — look-up tables
+  {
+    content: phonemeMapping,
+    filename: 'phoneme-mapping.md',
+    id: 'phoneme-mapping',
+    section: 'Reference',
+  },
+  {
+    content: orthographyComparison,
+    filename: 'orthography-comparison.md',
+    id: 'orthography-comparison',
+  },
+  // Other Spelling Reforms — comparisons with other reform efforts
+  {
+    content: spellingReformComparison,
+    filename: 'spelling-reform-comparison.md',
+    id: 'spelling-reform-comparison',
+    section: 'Other Spelling Reforms',
+  },
+  {
+    content: communityLandscape,
+    filename: 'community-landscape.md',
+    id: 'community-landscape',
   },
   // English Spelling — standalone reference guides
   {
@@ -127,13 +131,11 @@ const docs: DocEntry[] = [
     filename: 'english-spelling-rules.md',
     id: 'how-to-read-english',
     section: 'English Spelling',
-    title: 'Reading: Letters to Sounds',
   },
   {
     content: englishSpellingChoices,
     filename: 'english-spelling-choices.md',
     id: 'how-to-spell-english',
-    title: 'Writing: Sounds to Letters',
   },
   // Development — technical reference
   {
@@ -141,24 +143,25 @@ const docs: DocEntry[] = [
     filename: 'architecture.md',
     id: 'architecture',
     section: 'Development',
-    title: 'Architecture',
   },
-  { content: apiReference, id: 'api-reference', title: 'API Reference' }, // auto-generated
+  { content: apiReference, id: 'api-reference' }, // auto-generated
   {
     content: performanceDoc,
     filename: 'performance.md',
     id: 'performance',
-    title: 'Performance',
   },
-  { content: deploymentDoc, filename: 'deployment.md', id: 'deployment', title: 'Deployment' },
-  { content: contributing, filename: 'contributing.md', id: 'contributing', title: 'Contributing' },
+  { content: deploymentDoc, filename: 'deployment.md', id: 'deployment' },
+  { content: contributing, filename: 'contributing.md', id: 'contributing' },
   {
     content: troubleshooting,
     filename: 'troubleshooting.md',
     id: 'troubleshooting',
-    title: 'Troubleshooting',
   },
 ];
+
+// Sidebar labels live in routes.ts beside the SEO text, so a doc has one title.
+const DOC_TITLE = new Map(DOC_ENTRIES.map((e) => [e.id, e.title]));
+const docs: DocEntry[] = docList.map((d) => ({ ...d, title: DOC_TITLE.get(d.id)! }));
 
 // Map filenames to doc IDs for link handling
 const filenameToId: Record<string, string> = {};

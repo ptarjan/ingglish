@@ -2,7 +2,7 @@
  * Metric functions for evaluating phoneme-to-grapheme mappings.
  *
  * These are pure scoring functions extracted from MappingStats for testability.
- * See docs/identical-words-analysis.md for analysis of each metric's strengths
+ * See docs/metrics.md for analysis of each metric's strengths
  * and limitations.
  */
 

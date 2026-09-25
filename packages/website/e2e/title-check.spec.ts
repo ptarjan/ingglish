@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+import { DOC_ENTRIES, type DocId } from '../src/routes';
+
+const seoTitle = (id: DocId) => DOC_ENTRIES.find((d) => d.id === id)?.seoTitle ?? id;
+
 // Install a MutationObserver on <title> before the page navigates,
 // so we can assert that no unwanted intermediate titles appear.
 async function trackTitleChanges(page: import('@playwright/test').Page) {
@@ -30,7 +34,7 @@ test('non-docs pages have correct titles', async ({ page }) => {
 test('docs page title loads without flash', async ({ page }) => {
   await trackTitleChanges(page);
   await page.goto('/docs/design-decisions');
-  await expect(page).toHaveTitle('How Ingglish Was Designed: Rules, Trade-offs & Rejected Ideas');
+  await expect(page).toHaveTitle(seoTitle('design-decisions'));
 
   const changes = await getTitleChanges(page);
   // Title should never be blank or show the generic "Documentation | Ingglish"
@@ -47,5 +51,5 @@ test('docs title updates when navigating between docs', async ({ page }) => {
   const navLink = page.locator('a.docs-nav-item:has-text("Architecture")');
   await navLink.scrollIntoViewIfNeeded();
   await navLink.click();
-  await expect(page).toHaveTitle('Ingglish Architecture: How the Translator Works');
+  await expect(page).toHaveTitle(seoTitle('architecture'));
 });

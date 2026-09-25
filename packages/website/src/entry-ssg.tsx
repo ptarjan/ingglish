@@ -156,7 +156,7 @@ const exploreContent = (
       other word with the identical pronunciation, as clickable chips with their own spellings and
       corpus counts — the homophones that phonetic spelling merges and English keeps apart. Try
       words like <em>colonel</em>, <em>favourable</em> or <em>doomscroll</em>, or read about the{' '}
-      <a href={sitePath('docs/false-friends')}>words English spells misleadingly</a>.
+      <a href={sitePath('docs/false-friends')}>why homophones share a spelling</a>.
     </p>
   </SeoPage>
 );
@@ -432,8 +432,9 @@ const GAME_COPY: Record<GameId, GameCopy> = {
           Ten questions per game from a bank of 65, ordered easy to hard, and every answer comes
           with a written explanation of the rule involved. Play a few rounds and the argument makes
           itself: the same letters keep changing their minds, and the only way to know is to have
-          already met the word. The <a href={sitePath('docs/metrics')}>metrics page</a> puts a
-          number on how often that happens.
+          already met the word. The{' '}
+          <a href={sitePath('docs/how-to-read-english')}>guide to reading English aloud</a> ranks
+          each rule by how many words it covers and lists the words that break it.
         </p>
       </>
     ),

@@ -2,7 +2,7 @@
 
 How each Ingglish spelling compares with the way other languages write the same sound. Nearly every choice is already used by at least one major language.
 
-For the reasoning behind each spelling, see [Design Decisions](design-decisions.md). For how Ingglish compares with other current spelling reform proposals, see [Community Landscape](community-landscape.md).
+For the reasoning behind each spelling, see [Vowels, Sound by Sound](vowel-spellings.md) and [Consonants, Sound by Sound](consonant-spellings.md). For how Ingglish compares with other current spelling reform proposals, see [Reforms Proposed Today](community-landscape.md).
 
 ## Languages Compared
 
@@ -260,7 +260,7 @@ This page compares Ingglish with 37 languages (English included), listed here by
 
 **Notes:**
 - English spells this sound many different ways: "law", "caught", "thought", "all"
-- Ingglish always uses 'aw', as in English "law", "saw", "raw"
+- Ingglish always uses 'aw', as in English "law", "saw", "jaw"
 - Scandinavian languages have a separate letter for this sound, **å**
 - Catalan distinguishes open ò /ɔ/ from close ó /o/; Yoruba uses ọ (dot below) for /ɔ/
 - Plain 'o' already spells /ɑ/ (father, hot), so it can't also spell /ɔ/
@@ -296,7 +296,7 @@ This page compares Ingglish with 37 languages (English included), listed here by
 - The schwa is the most common vowel sound in English: the weak, unstressed "uh" found in many syllables
 - English spells it with any vowel letter, depending on the word's history
 - Ingglish uses 'a' for the unstressed schwa and 'uh' for the stressed /ʌ/ (as in "but"). In ARPAbet, the sound notation of the CMU Pronouncing Dictionary, these are AH0 and AH1/AH2; the digit marks stress
-- As a result, many words are spelled the same as in English (about, banana, again, around), and the unstressed schwa still looks different from the stressed /ʌ/
+- As a result, many words are spelled the same as in English (about, banana, panda, karma), and the unstressed schwa still looks different from the stressed /ʌ/
 - Romanian 'ă' and Albanian 'ë' are dedicated letters for /ə/
 - Indonesian 'e' (called "e pepet") is /ə/ in many common words
 - Portuguese and Catalan reduce unstressed vowels to schwa; Russian/Ukrainian reduce unstressed 'o' and 'a' to /ɐ/ (near-schwa)
@@ -331,7 +331,7 @@ In each table below, the "naive" row shows what you would get by writing the ord
 **Notes:**
 - By the ordinary rules, /ɛ/ + /r/ would be 'er', but 'er' already spells /ɝ/ (her). "Care" would become "ker", with the same 'er' as "her".
 - Ingglish always uses 'air', matching the word "air" itself
-- This spelling fixed 204 collisions (different words that would otherwise be spelled the same)
+- This spelling avoids merging many such words with the unrelated 'her' set
 
 #### 'EER' Sound (/ɪɹ/)
 
@@ -383,6 +383,28 @@ In each table below, the "naive" row shows what you would get by writing the ord
 - There is no clash here: 'er' works as-is for this merged vowel + r sound
 - English has five different spellings for this sound; Ingglish always uses 'er'
 - Mandarin is one of the few languages with r-colored vowels; adding this r-coloring to a syllable is called erhua (儿化)
+
+#### 'UR' Sound (/ʊɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **ur** | tur, kyur, shur |
+| English | our, ure, oor | tour, cure, sure, moor |
+
+**Notes:**
+- There is no clash here: Ingglish writes /ʊ/ (put) as 'u', so the ordinary rule already gives 'ur'
+- This is the vowel of "tour" and "cure" (the [CURE vowel](https://en.wikipedia.org/wiki/English_phonology#CURE)). Many American speakers merge it with 'or' or 'er', but the CMU dictionary keeps it apart.
+
+#### 'UHR' Sound (/ʌɹ/)
+
+| Language | Spelling | Example |
+|----------|----------|---------|
+| **Ingglish** | **uhr** | kuhree, huhray, bainuhreez |
+| English | urr, ur, ar | curry, hurray, binaries |
+
+**Notes:**
+- Stressed, this is the vowel of "cup" (written 'uh') before an r, so the ordinary rule gives 'uhr'
+- The same sound unstressed is schwa, which Ingglish usually writes 'a'. By that rule schwa + /r/ would be 'ar', which already spells /ɑɹ/ (star). Ingglish uses 'uhr' for both, so "binaries" is bainuhreez.
 
 ## Consonants
 
@@ -471,7 +493,7 @@ The remaining fricatives need digraphs, and languages spell them in many differe
 | c/z (Castilian) | Spanish |
 
 **Notes:**
-- Only ~4% of languages have /θ/ ([PHOIBLE 2.0](https://phoible.org/), [Moran & McCloy 2019](https://doi.org/10.5281/zenodo.2677911)). That makes it one of the world's rarest consonants.
+- Only ~4% of languages have /θ/, per [PHOIBLE 2.0](https://phoible.org/) (a database of the sound inventories of 3,000+ languages; [Moran & McCloy 2019](https://doi.org/10.5281/zenodo.2677911)). That makes it one of the world's rarest consonants.
 - Icelandic writes /θ/ as þ (thorn); Old English used þ and ð interchangeably for both /θ/ and /ð/
 - Castilian Spanish writes /θ/ as 'c' (before e/i) and 'z'; Latin American Spanish doesn't have this sound
 - The IPA symbol θ is the Greek letter theta, whose sound shifted from /tʰ/ in Ancient Greek to /θ/ in Modern Greek
@@ -561,7 +583,7 @@ The velar nasal /ŋ/ (the sound at the end of "sing") needs a digraph:
 - Swahili uses 'ng'' (with apostrophe) to distinguish /ŋ/ from the /ŋɡ/ cluster
 - Vietnamese uses 'ngh' before front vowels (e, i) for the same /ŋ/ sound
 - In many languages, /ŋ/ occurs only as a variant of /n/ before /k/ or /g/, not as a separate phoneme
-- Polynesian languages treat /ŋ/ as a single letter, often written 'g' or 'ng'
+- Polynesian languages treat /ŋ/ as a letter of their own alphabet rather than a variant of 'n', often written 'g' or 'ng'
 
 ### Liquids & Glides
 
@@ -579,27 +601,11 @@ The liquids (l, r) and glides (w, y) use the standard single letters, found in e
 - 'w' is less common in some European languages but widely understood
 - 'y' for /j/ follows English, Indonesian, Swahili, Turkish and Pinyin; German, Dutch, Scandinavian and most Slavic languages write this sound 'j' (Spanish uses 'y' for a different sound)
 
-## Summary: Where Ingglish Aligns and Diverges
+## Summary
 
-### Following Convention
-- **sh** for /ʃ/: used by English, four other Latin-script languages (Swahili, Hausa, Somali, Albanian) and five romanizations
-- **ch** for /tʃ/: used by English, Spanish, Portuguese, Pinyin, and others
-- **ng** for /ŋ/: nearly universal
-- **ee/oo** for long vowels: doubling a vowel to make it long
-- **ai** for /aɪ/: Pinyin, Italian, Vietnamese, Indonesian, IPA
-- **oi** for /ɔɪ/: English, Italian, Dutch, Indonesian, and others
-- **ou** for /aʊ/: English and Dutch
+The tables above answer one narrow question: does some other language already spell this sound the way Ingglish does? Mostly yes, as the ratings below show.
 
-### Solving Problems English Never Did
-- **dh** for /ð/: English uses "th" for two different sounds (think vs. the). Albanian already has 'dh' as an official letter.
-- **zh** for /ʒ/: English hides this sound in "measure", "vision", "beige". Ingglish gives it its own spelling, which pairs with 'sh' the way 'z' pairs with 's'. Cyrillic romanization and Albanian use it too.
-- **u/oo** for /ʊ/ vs /uː/: "book" and "too" sound different. Now they look different: buk vs too.
-- **oh** for /oʊ/: 'o' alone already spells /ɑ/, so /oʊ/ needs a digraph: go → goh.
-
-### Trade-offs
-- When they conflict, **familiarity for English readers** wins over patterns from other languages
-- Ingglish uses **digraphs**, not diacritics, so everything can be typed in plain ASCII
-- For more on the diphthong choices, see [Design Decisions: Diphthongs](design-decisions.md#diphthong-decisions)
+They don't answer why Ingglish chose that spelling over the alternatives it measured, or what history the choice has. That reasoning lives on [Vowels, Sound by Sound](vowel-spellings.md) and [Consonants, Sound by Sound](consonant-spellings.md), one section per sound.
 
 ## Commonality Ratings Summary
 
@@ -651,6 +657,8 @@ Each spelling is rated by how widely the compared languages use it:
 | arr | /æɹ/ | **Regional** | Doubled 'r' after short vowel; matches English "carrot", "barrel" |
 | er | /ɝ/ | **Regional** | English and Mandarin erhua |
 | eer | /ɪɹ/ | **Rare** | English-only; rhotic dialects only |
+| ur | /ʊɹ/ | **Rare** | English-only; rhotic dialects only |
+| uhr | /ʌɹ/ | **Rare** | English-only; 'uh' + r, so schwa + r stays apart from 'ar' |
 
 Note: R-colored vowels are absent from 35 of the 37 compared languages. Only English and Mandarin have them.
 
@@ -749,7 +757,7 @@ Very phonetic, even though it looks intimidating:
 - Once you learn the digraphs and diacritical letters (ą, ę, ć, ś, ź, ń, ł, ó, ż), pronunciation is almost perfectly predictable from spelling
 - 7 vowel phonemes + nasal vowels (ą, ę)
 - The only irregularities: ó and u both spell /u/, and rz and ż both spell /ʐ/
-- Changes in voicing caused by neighboring sounds aren't written ("chleb" is pronounced /xlɛp/, with a final /p/), which is standard for Slavic languages
+- Changes in voicing caused by neighboring sounds, such as final devoicing, aren't written ("chleb" is pronounced /xlɛp/, with a final /p/), which is standard for Slavic languages
 
 ### Hungarian
 
@@ -800,10 +808,10 @@ Most languages have 5–7 distinct vowel sounds. English has 14–15, depending 
 | 5 vowels | ~32% | Spanish, Japanese, Swahili (most common category) |
 | 6 vowels | ~14% | Arabic, many Bantu languages |
 | 7+ vowels | ~29% | German, French |
-| 10+ vowels | <5% | English, Danish |
+| 10+ vowels | <5% | English (14–15), Danish |
 
 (Data from [Maddieson 2013, WALS Chapter 2](https://wals.info/chapter/2).)
 
 English spelling is hard because it maps ~15 vowel sounds onto 5 vowel letters (a, e, i, o, u).
 
-See [Design Decisions](design-decisions.md) for how Ingglish handles this.
+See [Vowels, Sound by Sound](vowel-spellings.md) for how Ingglish handles this.

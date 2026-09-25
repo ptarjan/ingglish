@@ -1,392 +1,184 @@
-# Spelling Iteration Log
+# Spelling History: Every Change and Why
 
-Every change we made to how Ingglish spells a sound: what we tried, what worked, what didn't, and why.
+This page lists every change to how Ingglish spells a sound, in the order it happened, with the date and the commit. Each entry says what changed, what it replaced and why, in a line or two. The full reasoning and measurements for each sound are on [Vowels, Sound by Sound](vowel-spellings.md), and the goals every change served are on [How It Was Designed](design-decisions.md).
 
-A few terms come up throughout:
+Every change so far has been to a vowel. The consonant spellings have not changed since the first version; [Consonants, Sound by Sound](consonant-spellings.md) explains why.
 
-- **Identical word**: a word Ingglish spells exactly as English does (out → out).
-- **/M**: occurrences per million words of real English text, which measures how often a reader actually meets a word.
-- **Collision**: two different English words ending up with the same Ingglish spelling (so a reader can't tell which is meant). A **collision group** is one such set of words that share a spelling.
-- **IPA**: the International Phonetic Alphabet, the standard notation for sounds. Slashes mark a sound: /aɪ/ is the vowel in "my".
-- **Diphthong**: a vowel that glides from one sound to another, like the vowel in "my" or "cow".
-- **ARPAbet**: the notation used by the CMU pronouncing dictionary that Ingglish is built on. A digit after a vowel marks stress (how strongly a syllable is said): AH0 is unstressed, AH1 and AH2 are stressed.
-- **Ratings** (from Universal down through Common, Regional and Rare): how widely the world's languages use a spelling for that sound. See [Commonality Ratings](orthography-comparison.md#commonality-ratings-summary).
+A few terms used below:
+
+- **Sound names**: capitalized names such as PRICE, GOAT and THOUGHT are the standard names linguists use for English vowels, each named after a word containing the vowel. IPA symbols between slashes give the same sounds: /aɪ/ is the vowel of "my".
+- **Identical word**: a word whose Ingglish spelling is the same as its English spelling ("out" → "out").
+- **/M**: "per million words of running text". A change worth +5K /M makes 5,000 more words in every million words of ordinary English text come out spelled as in English.
+- **Collision**: two different English words that end up with the same Ingglish spelling.
+- **The search**: a script that tries 70 candidate spellings for every sound and scores each one; see [Testing Every Alternative](identical-words-analysis.md).
+- **R-colored vowel**: a vowel blended with a following R, as in "star", "air" and "beer".
 
 ## Summary of Changes
 
-| Sound | IPA | Spelling | Changes |
-|-------|-----|----------|---------|
-| my, time | /aɪ/ | **ai** | ii → ie → ai |
-| cow, out | /aʊ/ | **ou** | ow → ou |
-| go, show | /oʊ/ | **oh** | o → oh |
-| father, hot | /ɑ/ | **o** | ah → o |
-| thought, law | /ɔ/ | **aw** | aw → o → aw |
-| book, put | /ʊ/ | **u** | uu → oo → u |
-| too, blue | /uː/ | **oo** | oo → uu → oo |
-| arrow, carrot | /æɹ/ | **arr** | aar → arr |
-| but, cup | /ʌ/ | **uh** | u → uh |
-| schwa (about, sofa) | /ə/ | **a** | u → a (AH0 only) |
+| Sound | IPA | Spelling now | Changes |
+|-------|-----|--------------|---------|
+| my, time (PRICE) | /aɪ/ | **ai** | ai → ii → ie → ai |
+| cow, out (MOUTH) | /aʊ/ | **ou** | ow → ou |
+| go, show (GOAT) | /oʊ/ | **oh** | oh → o → oh |
+| father, hot (LOT) | /ɑ/ | **o** | ah → o |
+| thought, law (THOUGHT) | /ɔ/ | **aw** | aw → o → aw |
+| book, put (FOOT) | /ʊ/ | **u** | uu → oo → u |
+| too, blue (GOOSE) | /uː/ | **oo** | oo → uu → oo |
+| but, cup (STRUT) | /ʌ/ | **uh** | u → uh |
+| about, sofa (schwa) | /ə/ | **a** | u → a (unstressed only) |
+| vowel + R | | **ar, or, air, arr, eer, ur, uhr** | added one at a time; the spelling for the vowel of "arrow" went aar → arr |
 
-## Diphthong Evolution
+The other vowels (sit, bed, cat, see, say, boy, and the er of "her") have kept their first spelling.
 
-### /aɪ/ (my, time): ii → ie → ai
+## The Log
 
-**Attempt 1: 'ii'**
-- Rationale: a doubled letter for a long sound
-- Problem: "fiit" looked like "feet"
-- Verdict: ❌ Rejected: readers confused it with a different word
+### 5 January 2026: the first spellings
 
-**Attempt 2: 'ie'**
-- Rationale: matches English "tie", "pie", "die"
-- Problem: still felt arbitrary, and no other language uses it this way
-- Verdict: ⚠️ Better, but not ideal
+Commit ea62835b. The first version spelled the vowels ah (father), a (cat), u (but and about), aw (law), ow (cow), ai (my), e (bed), er (her), ay (say), i (sit), ee (see), oh (go), oi (boy), uu (book) and oo (too), with no special spellings before R.
 
-**Attempt 3: 'ai' (current)**
-- Rationale:
-  - It spells out the sound directly: /aɪ/ is an "a" gliding into an "i", and you can see that glide in the letters
-  - Pinyin (the standard romanization of Mandarin Chinese), Italian and Vietnamese all use 'ai'
-  - English 'ai' words (rain, paint) use /eɪ/, so 'ai' is available
-- Impact: more identical words than 'ii' or 'ie'. 'ei' wins on a raw dictionary count, but weighted by frequency it comes out at -1 /M: its gains are mostly rare German surnames like Bernstein and Alzheimer, which almost never appear in real text.
-- Verdict: ✅ **Adopted**: used by other languages, and the spelling shows the sound
+### /oʊ/ (go): oh → o
 
-**Examples:**
-- my → mai
-- time → taim
-- night → nait
-- I → ai
+5 January 2026, commit 57efb393. Shortened so that "go" stayed "go". Reversed five days later; see below.
 
-### /aʊ/ (cow, out): ow → ou
+### /aɪ/ (my): ai → ii
 
-**Attempt 1: 'ow'**
-- Rationale: matches English "cow", "now", "how", "wow"
-- Problem:
-  - Words like "out", "loud", "sound" became "owt", "lowd", "sownd"
-  - These looked unfamiliar, even though 'ow' matches some English words
-  - Rated only "Regional", since English is the only language that uses 'ow' for this sound
-- Verdict: ⚠️ Workable but not the best choice
+10 January 2026, commit 32482523. A doubled letter for a long sound. Replaced the next day:
 
-**Attempt 2: 'ou' (current)**
-- Rationale:
-  - "out", "loud", "sound" come out IDENTICAL to English
-  - Dutch also uses 'ou' for this sound (oud = old)
-  - Upgraded from a "Regional" to a "Common" rating
-- Impact: a large gain over 'ow', because out (3,965 /M), about (3,725 /M), our (1,308 /M), sound (141 /M) and found (121 /M) are among the most common words in English
-- Trade-off: "cow" → "kou" looks less familiar
-- Verdict: ✅ **Adopted**: keeping common words identical is worth making rarer words look unfamiliar
+**Problem:** "fiit" (fight) looked like "feet".
+
+### /ɔ/ (law): aw → o, and /oʊ/ (go): o → oh
+
+10 January 2026, commit 0f883440. Many Americans say "caught" and "cot" alike (the cot–caught merger), so this change tried spelling them alike too: the THOUGHT vowel took o, and GOAT moved back to oh to make room.
+
+**Problem:** "dawn" and "don", "taught" and "tot" merged, losing a distinction many speakers make. See [THOUGHT](vowel-spellings.md#thought-law-taught-aw).
+
+### /ɑ/ (hot): ah → o, and /ɔ/ (law): o → aw
+
+11 January 2026, commit a16f7a4c, less than a day after the change above. "Haht" (hot) and "rahk" (rock) looked foreign, so LOT took o and THOUGHT went back to aw. GOAT stayed oh, since o was taken again. See [LOT and PALM](vowel-spellings.md#lot-and-palm-hot-father-o).
 
 **Examples:**
-- out → out (identical!)
-- our → ouer
-- loud → loud (identical!)
-- sound → sound (identical!)
-- cow → kou
-- house → hous
-
-### /oʊ/ (go, show): o → oh
-
-**Attempt 1: 'o'**
-- Rationale: simple, and 'o' is the usual letter for this kind of vowel in languages written in the Latin alphabet (though English /oʊ/ glides between two vowel sounds, unlike the single steady /o/ of Spanish or Italian)
-- Problem: we first spelled /ɑ/ as 'ah' (hot → "haht", rock → "rahk"), but readers said 'ah' looked too foreign. Switching /ɑ/ to 'o' made those words look natural (hot → "hot", rock → "rok"), but it took 'o', so /oʊ/ could no longer use it.
-- Verdict: ❌ Rejected: 'o' was already taken by /ɑ/
-
-**Attempt 2: 'oh' (current)**
-- Rationale:
-  - English already spells the exclamation "oh!" this way
-  - "go" (goh) and "cow" (kou) can't be confused
-  - It was the only option left once 'o' went to /ɑ/
-- Trade-off: 'ow' would make show (501 /M), own (471 /M) and throw (132 /M) identical, but would lose "oh" (3,374 /M), for a net -1,330 /M. 'oa' does even worse. Both also make words easy to misread (see attempt 3 below).
-- Verdict: ✅ **Adopted**: needed to keep /oʊ/ apart from /ɑ/
-
-**Attempt 3: 'ow' (rejected)**
-- Rationale: would make snow, throw, bowl and window identical to English. It gains show (501 /M), own (471 /M) and throw (132 /M), but nets -1,330 /M because "oh" alone is 3,374 /M.
-- Problem: English uses `ow` for two sounds: /oʊ/ (snow, throw) and /aʊ/ (cow, town). New spellings like `bownz` (bones) read as "bowns", and `howm` (home) looks like it rhymes with "cow". That brings back exactly the ambiguity Ingglish exists to remove.
-- Verdict: ❌ Rejected: readers would mispronounce words, even though no two words would share a spelling
-
-**Examples:**
-- go → goh
-- show → shoh
-- hello → haloh
-
-## Vowel Evolution
-
-### /ɑ/ (father, hot): ah → o
-
-**Attempt 1: 'ah'**
-- Rationale: an accurate spelling of the "ah" sound in "father"
-- Problem:
-  - "rock" → "rahk" looked strange
-  - "hot" → "haht" was unrecognizable
-- Verdict: ❌ Rejected: words looked too foreign
-
-**Attempt 2: 'o' (current)**
-- Rationale:
-  - "rock" → "rok" looks natural
-  - "hot" → "hot" (identical!)
-  - 'o' is the usual letter for this kind of vowel across languages written in the Latin alphabet
-- Impact: a large gain over 'ah': hot (195 /M), got (222 /M), job (153 /M) and lot (141 /M) are all common words that become identical
-- Verdict: ✅ **Adopted**: words look familiar
-
-**Examples:**
-- hot → hot (identical!)
+- hot → hot
 - rock → rok
-- father → fodher
-
-### /ɔ/ (thought, law): aw → o → aw
-
-No vowel changed more times than this one.
-
-**Attempt 1: 'aw'**
-- Rationale: matches English "law", "saw", "raw"
-- Worked reasonably well
-- Verdict: ⚠️ Acceptable
-
-**Attempt 2: 'o' (caught-cot merger)**
-- Rationale: simplify by spelling /ɔ/ the same as /ɑ/, since many Americans pronounce them alike (so "caught" and "cot" sound the same)
-- Problem:
-  - Speakers who still pronounce the two vowels differently lost that distinction
-  - It forced /oʊ/ over to 'oh' to avoid a clash
-- Verdict: ❌ Rejected: lost too much information
-
-**Attempt 3: back to 'aw' (current)**
-- Rationale:
-  - "thought" → "thawt" is readable
-  - "law" → "law" (identical!)
-  - Keeps the distinction for speakers who make it
-  - Rated "Common": matches English "law", "saw"
-- Impact: merging into 'o' would add 176 collision groups. The other alternative, 'au', avoids collisions but loses 555 /M: saw (413 /M), law (119 /M) and lawyer (82 /M) outweigh what it gains in fault (107 /M), paul (97 /M) and launch (20 /M).
-- Verdict: ✅ **Adopted**: keeps the distinction, and words look familiar
-
-**Examples:**
-- law → law (identical!)
+- law → law
 - thought → thawt
-- call → kawl
 
-### /ʊ/ and /uː/ Swap: oo ↔ uu (superseded)
+### Vowel + R: ar, or, air and aar added
 
-**Original:**
-- /ʊ/ (book) → 'uu'
-- /uː/ (too) → 'oo'
-
-**Problem:**
-- "book" → "buuk" looked strange when English already spells it "book"
-- "too" → "too" was identical, but the long vowel had the shorter spelling
-
-**After Swap:**
-- /ʊ/ (book) → 'oo' - matches English "book", "good", "look"
-- /uː/ (too) → 'uu' - the longer sound gets the longer spelling, as in Finnish, which doubles a vowel to make it long
-
-**Impact:** the original assignment gives more identical words if every dictionary word counts equally, but frequency tells a different story. The swap keeps "would" (1,813 /M), "good" (2,677 /M), "could" (1,475 /M), "should" (803 /M), "look" (1,038 /M), "book" (182 /M) and "looking" (476 /M) identical. These common words far outweigh the rare words it loses.
-
-**Verdict:** ⚠️ **Adopted then superseded**: changing /ʌ/ to 'uh' later freed 'u' for /ʊ/ and 'oo' for /uː/; see [the /ʌ/, /ʊ/, /uː/ change below](#and-u-chain-uoouu-uhuoo)
-
-**Later considered: 'eu' for /uː/ (rejected)**
-- Rationale: would gain 19 /M (zeus 6 /M, neutral 4 /M, maneuver 3 /M) and lose very little
-- Problem: in English, `eu` starts with a "y" sound: "feud" is /fjuːd/ and "neural" is /njʊɹəl/. So `meun` (moon) reads as two syllables, "mew-n"; `seun` (soon) reads as "syoon"; `teu` (too) reads as "tyoo". English readers would be actively misled.
-- Lesson: counting identical words isn't enough. A spelling that matches English but reads as the wrong sound is worse than an unfamiliar spelling that reads correctly.
-- Verdict: ❌ Rejected: readers would mispronounce words, and 19 /M is negligible anyway
-
-### /ʌ/, /ʊ/, and /uː/ Chain: u/oo/uu → uh/u/oo
-
-Three vowels moved at once. This got rid of 'uu' and gave all three vowels more intuitive spellings.
-
-**Before (the oo/uu swap era):**
-- /ʌ/ (but) → 'u'
-- /ʊ/ (book) → 'oo'
-- /uː/ (too) → 'uu'
-
-**Problem:**
-- English never uses 'uu': "tuu", "thruu", "byuutafal" looked alien
-- Most of the world's languages write /ʊ/ as 'u', not 'oo'
-- 'oo' is the natural English spelling for /uː/ (too, food, moon, cool)
-
-**After (current):**
-- /ʌ/ (but) → 'uh', since the English word "uh" is exactly this sound
-- /ʊ/ (book) → 'u', the letter most languages use for this vowel
-- /uː/ (too) → 'oo', matching English "too", "food", "moon", "cool"
-
-**Rationale:**
-- Everyone knows how "uh" sounds, so it is an intuitive spelling for /ʌ/
-- 'u' for /ʊ/ matches most of the world's languages (rated "Universal")
-- 'oo' for /uː/ matches English (too, food, moon, cool, school)
-- 'uu' is gone entirely
-
-**Impact:**
-- "too" → "too" (identical!), "food" → "food" (identical!), "moon" → "moon" (identical!), "school" → "skool", "blue" → "bloo", "you" → "yoo"
-- "book" → "buk", "good" → "gud", "could" → "kud", "would" → "wud", "should" → "shud", "put" → "put" (identical!), "look" → "luk"
-- "but" → "buht", "cup" → "kuhp", "love" → "luhv", "of" → "uhv"
-- Some /ʊ/ words stop being identical (book, good, could, would, should, look), but some /uː/ words become identical (too, food, moon), and the unfamiliar 'uu' is gone
-
-**Verdict:** ✅ **Adopted**: removes 'uu', matches most languages, and 'oo' matches English
+11 January 2026, commits 976c7824, 72ba3227 and da12c032. Without them, "star" was spelled like "store", "air" like "her", and "barrow" like "borrow". Each vowel before R got its own spelling. See [R-Colored Vowels](vowel-spellings.md#r-colored-vowels).
 
 **Examples:**
-- but → buht
-- cup → kuhp
-- love → luhv
-- book → buk
-- good → gud
-- could → kud
-- too → too (identical!)
-- food → food (identical!)
-- school → skool
-- beautiful → byootafal
-- through → throo
+- star → star
+- store → stor
+- air → air
+- care → kair
 
-### /ə/ (about, sofa): u → a
+### /aɪ/ (my): ii → ie
 
-Schwa (/ə/) is the most common vowel in English: the weak, unstressed "uh" found in nearly every word of more than one syllable (about, the, beautiful, difficult, nation). This change affects **unstressed schwa** only. The stressed /ʌ/ in "but", "cup", "run" is spelled 'uh'; linguists call it the STRUT vowel.
+11 January 2026, commit ddae380f. ie matches English "tie", "pie" and "die", and fixed the "fiit" problem.
 
-**Attempt 1: 'u'**
-- Rationale: ARPAbet writes both /ə/ and /ʌ/ as 'AH', so spelling every AH as 'u' was the simplest approach
-- Problem:
-  - "the" → "dhu" (unrecognizable, and "the" is the most common English word)
-  - "about" → "ubout" (no longer identical to English)
-  - "hello" → "huloh" (the 'u' in the first syllable looked odd)
-  - "nation" → "nayshun" (the '-un' ending felt wrong for a word ending in /-ən/)
-  - "beautiful" → "byootufool" (confusing)
-- Verdict: ❌ Rejected: words with schwa looked too unfamiliar
+### /ʊ/ (book) and /uː/ (too): uu/oo swapped to oo/uu
 
-**Attempt 2: 'a' (current)**
-- Rationale:
-  - "about" → "about" (identical!), "and" → "and" (identical!), "the" → "dha" (natural)
-  - 'a' sounds close to schwa, and many languages use 'a' for their neutral vowel
-  - English already spells schwa 'a' in some of its most common words: **a**, **about**, **again**, **along**, **away**, **around**, all identical in Ingglish
-  - Stressed /ʌ/ keeps its own spelling ('uh'), so schwa words don't collide with STRUT words
-- Impact:
-  - **67.6× frequency-weighted improvement**, the largest gain from any single change
-  - Top gains: "a" (20,941 /M), "and" (13,733 /M), "about" (3,725 /M), "around" (1,428 /M)
-  - Only 93 more collision groups, most of them rare words
-  - The losses follow predictable patterns: the un- prefix (until→antil), the up- prefix (upset→apset), the -ful suffix (handful→handfal) and the -um suffix (museum→myoozeeam)
-- Trade-off: schwa before R (AH0+R) must stay 'ur', not 'ar', or it would collide with the /ɑ/+R sound (AA+R), which is spelled 'ar'. A special rule for vowels before R handles this and takes priority over the schwa rule.
-- Verdict: ✅ **Adopted**: a big gain in familiar-looking words at little cost
+11 January 2026, commit b7804b92. FOOT took oo so that book, good and look matched English, and GOOSE took uu, a longer spelling for the longer sound, as Finnish writes it. Replaced six weeks later by the chain shift.
 
-**Examples:**
-- about → about (identical!)
-- and → and (identical!)
-- the → dha
-- again → agen (identical!)
-- hello → haloh
-- beautiful → byootafal
-- difficult → difakalt
-- nation → nayshan
+### /æ/ + R (arrow): aar → arr
 
-## R-Colored Vowel Evolution
-
-An R-colored vowel is a vowel followed by R, as in "air", "beer", "star" and "store". We added special spellings for these one at a time to fix collisions and make words easier to read. Together, these rules (air, eer, ar, or, arr) make many common words identical and prevent 25 collision groups.
-
-### /æ/+R: aar → arr
-
-**Attempt 1: 'aar'**
-- Rationale: double the vowel before R
-- Problem: "arrow" → "aaroh" looked strange
-
-**Attempt 2: 'arr' (current)**
-- Rationale:
-  - English already doubles the consonant after a short vowel (carrot, barrel, arrow)
-  - "arrow" → "arroh" is easier to recognize
-  - Upgraded from a "Rare" to a "Regional" rating
-- Verdict: ✅ **Adopted**: follows English convention
+11 January 2026, commit 0cd69063. "Aaroh" (arrow) looked strange. English already doubles the consonant after a short vowel (carrot, barrel).
 
 **Examples:**
 - arrow → arroh
 - carrot → karrat
 - barrel → barral
 
-### /ɛ/+R → 'air' (added)
+### /aɪ/ (my): ie → ai
 
-**Before:** No special handling
-- "air" → "er" (collision with "her")
-- "there" → "dher" (collision with "the" + "her")
+11 January 2026, commit 72cea61c. ai shows the glide from a to i, matches the IPA symbol /aɪ/, and is how Pinyin, Italian and Vietnamese spell the sound. English ai spells the vowel of "rain", but Ingglish spells that vowel ay, so ai was free. See [PRICE](vowel-spellings.md#price-my-time-ai).
 
-**After:** a rule that spells /ɛ/ as 'ai' when R follows
-- "air" → "air" (identical!)
-- "there" → "dhair"
-- "care" → "kair"
+**Examples:**
+- my → mai
+- time → taim
+- night → nait
 
-**Verdict:** ✅ Essential: stops /ɛ/+R words from colliding with /ɝ/ words like "her"
+### /aʊ/ (cow, out): ow → ou
 
-### /ɪ/+R → 'eer' (added)
+12 January 2026, commit c08cb52e. ou keeps out, about, loud, sound and found spelled as in English, and Dutch uses it too. The trade-off: "cow" becomes "kou". See [MOUTH](vowel-spellings.md#mouth-cow-out-ou).
 
-**Before:** No special handling
-- "beard" → "bird" (looks like the animal)
-- "beer" → "bir" (unrecognizable)
-- "fear" → "fir" (looks like the tree)
+**Examples:**
+- out → out
+- loud → loud
+- cow → kou
 
-**After:** a rule that spells /ɪ/ as 'ee' when R follows
-- "beard" → "beerd"
-- "beer" → "beer" (identical!)
-- "fear" → "feer"
-- "near" → "neer"
+### /ɪ/ + R (beer): eer added
 
-**Verdict:** ✅ Essential: removed spellings that looked like other English words
+9 February 2026, commit 6d27d497.
 
-### /ɑ/+R → 'ar' (added)
+**Before:** "beard" was spelled "bird", and "beer" was "bir".
 
-**Before:** No special handling
-- "star" → "stor" (collision with "store")
+**After:**
+- beard → beerd
+- beer → beer
+- fear → feer
 
-**After:** a rule that spells /ɑ/ as 'a' when R follows
-- "star" → "star" (identical!)
-- "car" → "kar"
+### /ə/ (about, sofa): u → a
 
-**Verdict:** ✅ Essential: removed major collisions
+16 February 2026, commit eac63596. The CMU Pronouncing Dictionary, the free dictionary of American pronunciations that Ingglish is built on, writes the weak vowel of "about" (schwa) and the stressed vowel of "but" with one symbol, AH, followed by a digit for stress: AH0 is unstressed, AH1 and AH2 are stressed. Ingglish split them: unstressed AH0 became a, and stressed AH stayed u. When it was adopted, the words it made identical (a, and, about) appeared 67.6 times as often in real text as the words that stopped matching English (until, upset). Measured against today's spellings, it is still worth more identical text than any other single change. The same commit spelled AH before R as ur. See [Schwa and STRUT](vowel-spellings.md#schwa-and-strut).
 
-### /ɔ/+R → 'or' (added)
+**Before:** "the" was "dhu", "about" was "ubout", and "nation" was "nayshun".
 
-**Before:** No special handling
-- "store" → "stawr" (confusing)
+**After:**
+- the → dha
+- about → about
+- nation → nayshan
 
-**After:** a rule that spells /ɔ/ as 'o' when R follows
-- "store" → "stor"
-- "more" → "mor"
+### /ʌ/, /ʊ/, /uː/: the chain shift, u/oo/uu → uh/u/oo
 
-**Verdict:** ✅ Essential: natural spellings
+20 February 2026, commit 7602382b. STRUT (but) took uh, the English interjection for that sound. That freed u for FOOT (book), the letter most languages use, which freed oo for GOOSE (too), its usual English spelling. uu, which English never uses, was retired. Measured today, this change cost more identical text than any other: the old three spellings would make 21.9K /M more text identical, because just, but, up, good and look matched English. It was made for readability and precedent. See [the chain shift](vowel-spellings.md#the-chain-shift-of-february-2026).
+
+**Examples:**
+- but → buht
+- book → buk
+- too → too
+- food → food
+
+### Vowel + R: ur and uhr
+
+21 February 2026, commit 599e20a1. After the chain shift, STRUT + R moved from ur to uhr (curry → kuhree), and the vowel of "tour" and "cure" (FOOT + R) took ur. The y in kyur is the y sound English says in "cure".
+
+**Examples:**
+- curry → kuhree
+- tour → tur
+- cure → kyur
 
 ## Lessons
 
-### 1. Identical Words Are a Big Win (But Not Everything)
-A word spelled the same in English and Ingglish (out→out, loud→loud, too→too, law→law) is as familiar as a word can be. We favor spellings that create more identical words, but **never at the cost of collisions** (different words sharing a spelling).
+1. **Identical words are a big win, but not the only one.** A word that looks the same in Ingglish and English costs a reader nothing. Today 9,385 of 126,051 dictionary words (7.45%) are identical. But the chain shift gave up identical words on purpose, for spellings that read better.
+2. **Weight by frequency.** Counting dictionary words rewards spellings that match rare names. /aɪ/ as ei makes 371 more words identical, but scores −4 /M in real text, because the words it gains are rare surnames and the few it loses are more common.
+3. **A spelling that misleads is worse than one that looks new.** ow for GOAT and eu for GOOSE both match English words, but "bownz" (bones) and "meun" (moon) lead readers to the wrong sound. The real test is whether an English reader says the word correctly.
+4. **Collisions must be fixed, even at the cost of simple rules.** Without the R rules, "air" and "her" would share a spelling.
+5. **A collision-free total can hide collisions.** The search accepts a change if the total collision count doesn't rise. Spelling /aɪ/ as y passes that test, because it removes more collisions elsewhere than it adds. But it still spells "iron" and "yearn" the same (yern), since in Ingglish y also spells the consonant at the start of "yearn".
+6. **Other languages matter.** A spelling several languages already use, like ai in Pinyin, Italian and Vietnamese, is easier to defend than one only English uses.
+7. **Reverting is fine.** THOUGHT went aw → o → aw, and GOAT oh → o → oh. The goal is the best final system, not loyalty to earlier decisions.
+8. **Splitting a sound by stress can pay off.** The schwa split (spelling the weak vowel of "about" differently from the vowel of "but") needed a rule in the translator (the software that converts English to Ingglish), not just a new row in the table of spellings, and it was the biggest single gain. Other vowels may benefit too; see [Still Open: Unstressed Vowels](vowel-spellings.md#still-open-unstressed-vowels).
 
-Current status: **10,150 identical words** (8.05% of 126,051 dictionary words). The schwa change (AH0 → 'a') produced the largest frequency-weighted gain of any single change (67.6×). See [Identical Words Analysis](identical-words-analysis.md) for a frequency-weighted look at possible further improvements.
+## Changes Not Made
 
-### 2. Other Languages Matter
-A spelling used by several languages (like 'ai' in Pinyin, Italian and Vietnamese) is easier to defend than one only English uses.
+Each of these was measured or argued and rejected. The reasoning is in the linked section.
 
-### 3. Collisions Must Be Fixed
-Without the R-colored vowel rules, "air" and "her" would both be spelled "er". Fixing collisions matters more than keeping the rules simple.
-
-### 4. Rating Upgrades
-Several changes were made specifically to raise that rating:
-- 'arr' (was 'aar'): Rare → Regional
-- 'ou' (was 'ow'): Regional → Common
-- 'u' for /ʊ/: Regional → Universal
-- 'oo' for /uː/: Common
-
-### 5. Reverting Is Fine
-The /ɔ/ vowel went aw → o → aw. When a change didn't work, we undid it. The goal is the best final system, not loyalty to early decisions.
-
-### 6. Identical Word Count Can Mislead
-A spelling that matches more English words does harm if English readers then mispronounce new words spelled the same way. The real test isn't "does this string match an English word?" but "will an English reader say it correctly?" See [Design Decisions](design-decisions.md#diphthong-decisions) for examples.
-
-### 7. Splitting a Sound by Stress Can Pay Off
-The schwa change split ARPAbet's AH into two spellings by stress: unstressed AH0 → 'a', stressed AH1/AH2 → 'uh'. That needed logic in the translator's code, not just a row in the mapping table. When one dictionary symbol covers two sounds English speakers hear as different (like /ə/ and /ʌ/), a split by stress is worth considering. See [Identical Words Analysis](identical-words-analysis.md#stress-conditioned-alternatives) for other candidates.
-
-## Changes Not Made (Considered and Rejected)
-
-### Using 'au' for /aʊ/ instead of 'ou'
-- Would match German, Dutch and Portuguese
-- Rejected because 'ou' keeps common words identical (out 3,965 /M, about 3,725 /M, our 1,308 /M, sound 141 /M), and 'au' would lose them
-
-### Using pure IPA-style spellings throughout
-- Would be more consistent with other languages
-- Rejected because Ingglish is mainly for English speakers
-
-### Removing the R-colored vowel rules
-- Would simplify the system
-- Rejected because common words would stop being identical (star, air, beer, store, etc.) and 25 collision groups would appear
+- **y for /aɪ/** (my → "my"): y already spells the consonant of "yes". See [PRICE](vowel-spellings.md#price-my-time-ai)
+- **ei for /aɪ/**: gains only rare German surnames. See [PRICE](vowel-spellings.md#price-my-time-ai)
+- **oy for /ɔɪ/**: gains "boy", loses "point"; nearly a wash. See [CHOICE](vowel-spellings.md#choice-boy-coin-oi)
+- **o or ow for /oʊ/**: o merges "note" with "not"; ow reads as in "cow". See [GOAT](vowel-spellings.md#goat-go-show-oh)
+- **au for /ɔ/**: loses "saw" and "law". See [THOUGHT](vowel-spellings.md#thought-law-taught-aw)
+- **au for /aʊ/**: loses every English ou word. See [MOUTH](vowel-spellings.md#mouth-cow-out-ou)
+- **eu for /uː/**: "meun" (moon) reads as two syllables. See [GOOSE](vowel-spellings.md#goose-too-food-oo)
+- **e for /iː/**: merges "here" with "her". See [FLEECE](vowel-spellings.md#fleece-see-ee)
+- **Dropping the R rules**: "star" and "store" would share a spelling. See [R-Colored Vowels](vowel-spellings.md#r-colored-vowels)
+- **Vowel letters with their European values** (a as in "father" and i as in "machine", the values they have in Spanish and in the IPA): more consistent with other languages, but Ingglish is written for English readers.
+- **Separate spellings for unstressed vowels**: still open. See [Still Open: Unstressed Vowels](vowel-spellings.md#still-open-unstressed-vowels)
 
 ## Version History
 
-For the complete git history, see:
+The spelling of each sound lives in `packages/phonemes/src/ingglish-maps.ts`. Before 16 February 2026 it lived in `packages/core/src/`. To see every change:
+
 ```bash
 git log --oneline --all --grep="spelling\|phoneme\|vowel\|diphthong"
 ```

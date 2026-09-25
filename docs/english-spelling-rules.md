@@ -4,7 +4,7 @@ You see a word on the page. How do you know what it sounds like? This guide goes
 
 For the other direction (you know the word and want to spell it), see [How to Spell English Sounds](english-spelling-choices.md).
 
-The rules here draw on [Ingglish's grapheme-to-phoneme (G2P) engine](/docs/architecture), the part of Ingglish that turns spellings into sounds. It uses ~960 letter-to-sound rules that each depend on the surrounding letters, based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts come from an analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
+The rules here draw on [Ingglish's grapheme-to-phoneme (G2P) engine](architecture.md), the part of Ingglish that turns spellings into sounds. It uses ~960 letter-to-sound rules that each depend on the surrounding letters, based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts come from an analysis of 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
 Sounds are written between slashes in the International Phonetic Alphabet, so /ʃ/ is the "sh" sound. Each section gives example words, so you can hear the sound without knowing the symbol.
 

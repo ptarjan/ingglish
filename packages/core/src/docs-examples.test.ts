@@ -248,7 +248,11 @@ function extractExamples(content: string, filename: string): Example[] {
 
     // Pattern 7: Collision table — | english, english | ingglish (description) | freq |
     // e.g., | right, write, rite | rait (soak flax) | 204,428 → rare |
-    const collisionTableMatch = /^\|\s*([a-z]+(?:[, ]+[a-z]+)*)\s*\|\s*([a-z]+)\s*\(/i.exec(line);
+    // The trailing "| <freq>" requirement (a digit or "<1") tells this apart from
+    // unrelated tables that happen to have the same "word | word (aside)" shape,
+    // such as dialect-assumptions' "| Rhoticity | Rhotic (all R's pronounced) | ..." row.
+    const collisionTableMatch =
+      /^\|\s*([a-z]+(?:[, ]+[a-z]+)*)\s*\|\s*([a-z]+)\s*\([^)]*\)\s*\|\s*[\d<]/i.exec(line);
     if (collisionTableMatch) {
       const englishWords = collisionTableMatch[1]!.split(',').map((w) => w.trim().toLowerCase());
       const ingglish = collisionTableMatch[2]!.toLowerCase();
@@ -335,13 +339,12 @@ function extractSpellingGuideExamples(filepath: string): Example[] {
  * Read a file and extract examples
  */
 function getExamplesFromFile(filepath: string): Example[] {
-  try {
-    const content = readFileSync(filepath, 'utf8');
-    const filename = filepath.split('/').pop() ?? filepath;
-    return extractExamples(content, filename);
-  } catch {
-    return [];
-  }
+  // Intentionally not caught: a missing pattern file used to be silently
+  // skipped, testing nothing. That is a trap once files get renamed — fail
+  // loudly instead.
+  const content = readFileSync(filepath, 'utf8');
+  const filename = filepath.split('/').pop() ?? filepath;
+  return extractExamples(content, filename);
 }
 
 const SPELLING_GUIDE_PATH = path.join(
@@ -366,10 +369,10 @@ function extractTableExamples(content: string, filename: string): Example[] {
     const line = line_;
     const lineNum = i + 1;
 
-    // Detect table header rows with both English and Ingglish columns
-    if (line.startsWith('|') && /\bEnglish\b/i.test(line) && /\bIngglish\b/i.test(line)) {
+    // Detect table header rows with both an English (or Word) and an Ingglish column
+    if (line.startsWith('|') && /\b(?:English|Word)\b/i.test(line) && /\bIngglish\b/i.test(line)) {
       const cells = line.split('|').map((c) => c.trim());
-      englishCol = cells.findIndex((c) => /^English$/i.test(c));
+      englishCol = cells.findIndex((c) => /^(?:English|Word)$/i.test(c));
       ingglishCol = cells.findIndex((c) => /^Ingglish$/i.test(c));
       inTable = englishCol !== -1 && ingglishCol !== -1;
       continue;
@@ -456,6 +459,10 @@ describe('documentation examples', () => {
     'spelling-reform-comparison.md',
     'spelling-iteration.md',
     'false-friends.md',
+    'vowel-spellings.md',
+    'consonant-spellings.md',
+    'dialect-assumptions.md',
+    'morphological-analysis.md',
   ];
 
   for (const file of patternDocFiles) {

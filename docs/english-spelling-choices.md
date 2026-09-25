@@ -6,7 +6,7 @@ English often has several ways to spell the same sound. The choice isn't random.
 
 For the other direction (you see a word and want to pronounce it), see [How to Read English](english-spelling-rules.md).
 
-The patterns here draw on [Ingglish's grapheme-to-phoneme (G2P) engine](/docs/architecture), the part of Ingglish that turns spellings into sounds. It uses ~960 letter-to-sound rules that each depend on the surrounding letters, based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts come from 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
+The patterns here draw on [Ingglish's grapheme-to-phoneme (G2P) engine](architecture.md), the part of Ingglish that turns spellings into sounds. It uses ~960 letter-to-sound rules that each depend on the surrounding letters, based on the [NRL/Elovitz system](https://apps.dtic.mil/sti/citations/ADA021929) (1976). Word counts come from 126,000 words in the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict).
 
 Sounds are written between slashes in the International Phonetic Alphabet, so /ʃ/ is the "sh" sound. Every sound comes with example words, so you don't need to know the symbols.
 

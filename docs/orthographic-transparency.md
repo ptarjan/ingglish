@@ -1,8 +1,15 @@
-# Orthographic Transparency
+# How Transparent Is Ingglish?
 
-Orthographic transparency is how predictably a writing system's spelling matches its pronunciation. Linguists measure it two ways: **feedforward consistency** (can you tell how a word sounds from its spelling?) and **feedback consistency** (can you tell how a word is spelled from its sound?). English scores poorly on both. Ingglish is fully consistent in the feedback direction by construction, and nearly consistent in the feedforward direction.
+Orthographic transparency is how predictably a writing system's spelling matches its pronunciation. It is the linguists' yardstick for the first goal in [How Ingglish Was Designed](design-decisions.md), "one sound, one spelling", and this page measures the finished design against it.
 
-Below, a *grapheme* is a letter or letter group that spells one sound (like "sh"), and a *phoneme* is one distinct speech sound. Capitalised codes like AH, ER and SH are the CMU Pronouncing Dictionary's ARPAbet names for phonemes: a trailing digit marks stress (AH0 is an unstressed AH), and "+" means one sound followed by another.
+Linguists look at transparency in two directions:
+
+- **Feedforward consistency** (reading): can you tell how a word sounds from its spelling?
+- **Feedback consistency** (spelling): can you tell how a word is spelled from its sound?
+
+English does poorly in both directions. Ingglish is fully predictable in the spelling direction, because Ingglish's translator (the tool on this site that converts English text) is built to give each sequence of sounds exactly one spelling, and nearly so in the reading direction.
+
+Below, a *grapheme* is a letter or letter group that spells one sound (like "sh"), and a *phoneme* is one distinct speech sound. Symbols between slashes, like /o/, are phonemes written in IPA, the International Phonetic Alphabet. Capitalised codes like AH, ER and SH are the CMU Pronouncing Dictionary's ARPAbet names for phonemes (see the [Phoneme Chart](phoneme-mapping.md)). A trailing digit marks stress (AH0 is an unstressed AH), and "+" means one sound followed by another.
 
 ## The Standard Metrics
 
@@ -10,101 +17,111 @@ These metrics follow the method set out by [Ziegler, Stone & Jacobs (1997)](http
 
 ### Feedforward Consistency (Reading: Spelling -> Sound)
 
-How many ways can a given grapheme be pronounced?
-
-- **Consistency ratio** = how often the grapheme has its most common pronunciation ÷ how often it appears at all
-- A ratio of 1.0 means the grapheme always makes the same sound
-
-| System | Feedforward Consistency | Notes |
-|--------|------------------------|-------|
-| Finnish | ~1.00 | Nearly perfect 1:1 grapheme-phoneme mapping |
-| Italian | ~0.98 | Few exceptions (e.g., "c" before e/i) |
-| German | ~0.90 | Mostly regular with some context rules |
-| French | ~0.85 | Complex but rule-governed (nasal vowels, silent endings) |
-| **Ingglish** | **just under 1.00** | A handful of reading ambiguities (see below); not yet measured |
-| English | ~0.70 | Highly inconsistent ("ough" has 6+ pronunciations) |
-
-Ingglish comes close in this direction but is not perfect. It has no silent letters, and almost every grapheme stands for one phoneme, but a few spellings can be read two ways (see [Reading Ambiguities](#reading-ambiguities) below).
+How many ways can a given grapheme be pronounced? The measure is a ratio: how often the grapheme has its most common pronunciation, divided by how often it appears at all. A ratio of 1.0 means the grapheme always makes the same sound.
 
 ### Feedback Consistency (Spelling: Sound -> Spelling)
 
-How many ways can a given phoneme be spelled?
+How many ways can a given phoneme be spelled? The measure is the same ratio turned around: how often the phoneme gets its most common spelling, divided by how often it appears.
 
-| System | Feedback Consistency | Notes |
-|--------|---------------------|-------|
-| Finnish | ~0.99 | Nearly perfect in both directions |
-| Italian | ~0.90 | Some phonemes have multiple spellings |
-| German | ~0.75 | Several phonemes can be spelled multiple ways |
-| **Ingglish** | **1.00** | One spelling per sound, by construction |
-| French | ~0.55 | Many phonemes have multiple spellings (/o/ = o, au, eau, ...) |
-| English | ~0.50 | Extremely inconsistent (/iː/ = ee, ea, e, ie, ei, ey, ...) |
+### Where Languages Fall
+
+Linguists rank European spelling systems from *shallow* (spelling tracks sound closely) to *deep* (it doesn't). In the ranking used by [Seymour, Aro & Erskine (2003)](https://doi.org/10.1348/000712603321661859), Finnish is the shallowest, Italian is close behind, German sits in the middle, French is deeper, and English is the deepest of all. The same study found that English-speaking children take far longer to learn to read than children learning shallow spellings.
+
+The two directions need not match. French is fairly predictable to read but hard to spell, because one sound often has many spellings: /o/ can be o, au or eau. English is inconsistent both ways, and worse for spelling than for reading.
+
+| System | Reading (feedforward) | Spelling (feedback) |
+|--------|----------------------|---------------------|
+| Finnish | Almost fully consistent | Almost fully consistent |
+| Italian | Very consistent | Consistent, with some sounds spelled more than one way |
+| German | Mostly consistent | Less consistent |
+| French | Fairly consistent (rule-governed) | Inconsistent |
+| **Ingglish** | **Almost fully consistent** (see [Reading Ambiguities](#reading-ambiguities)) | **Fully consistent**, by design |
+| English | Inconsistent ("ough" has six pronunciations) | Very inconsistent (/iː/ can be ee, ea, e, ie, ei, ey, ...) |
+
+Ingglish's reading figure has not been measured yet; see [Methodology](#methodology).
 
 ## Ingglish Grapheme Inventory
 
-Ingglish has 39 graphemes (15 vowels and 24 consonants), plus spellings for the R-colored vowels such as "ar" and "air". They use 24 of the 26 standard Latin letters, with no accent marks and no new symbols: Q and X never appear, and C appears only in "ch". See [Phoneme Mapping](phoneme-mapping.md) for the full table.
+Ingglish spells the 39 phonemes of the CMU dictionary (15 vowels and 24 consonants). Some vowels also get their own spelling before R, such as "ar" in "star" and "air" in "fair". They use 24 of the 26 standard letters, with no accent marks and no new symbols: Q and X never appear, and C appears only in "ch". The [Phoneme Chart](phoneme-mapping.md) has the full table.
 
-In the sound-to-spelling direction this is complete: the translator turns each sequence of phonemes into exactly one spelling. The CMU dictionary's AH counts as two sounds here, because Ingglish spells stressed AH (the vowel in "but") "uh" and unstressed AH0 (schwa) "a".
+In the spelling direction this is complete: the translator turns each sequence of phonemes into exactly one spelling. A few sounds do have two spellings, but a fixed rule always picks one:
+
+- The CMU dictionary's AH is spelled by stress: "uh" when stressed (the vowel in "but") and "a" when unstressed (schwa, as in "about").
+- Some vowels get a different spelling before R: the vowel of "hot" is "o", but before R it is "ar", as in "star".
+
+So knowing how a word sounds (including its stress) always gives exactly one Ingglish spelling.
 
 ## Reading Ambiguities
 
-A few Ingglish spellings can stand for more than one sound, so reading them back from spelling to sound can go two ways. The translator's reverse parser lists each one and tries both readings.
+A few Ingglish spellings can stand for more than one sequence of sounds, so reading them back can go two ways. The translator's reverse parser (which turns Ingglish back into English) keeps a list of these, and when a spelling has one, it tries both readings.
 
 ### 1. "a": the vowel in "cat" or schwa
 
-The letter "a" stands for both the vowel in "cat" (/æ/, AE in the CMU dictionary's notation) and schwa, the weak unstressed vowel in "about" (/ə/, AH0). This is the only ambiguity that comes up often.
+The letter "a" stands for both the vowel in "cat" (/æ/, AE) and schwa, the weak unstressed vowel in "about" (/ə/, AH0). This is the only ambiguity that comes up often.
 
-It is also the easiest compromise to defend. Schwa is the most common English vowel and appears in almost every unstressed syllable, and which sound "a" makes is largely predictable: in an unstressed syllable it is schwa; in a stressed syllable it is the "cat" vowel.
+It is also the easiest compromise to defend. Schwa is the most common English vowel and appears in almost every unstressed syllable. And which sound "a" makes is largely predictable: in an unstressed syllable it is schwa; in a stressed syllable it is the "cat" vowel. [Schwa and STRUT](vowel-spellings.md#schwa-and-strut) explains why schwa is spelled "a".
 
-### 2. Consonant + "h" across a word part
+### 2. Letter + "h" across a word part
 
-"sh", "th", "dh" and "zh" each spell one sound, but the same letters also appear where a word part ending in s, t, d or z meets one starting with h: "mishap" → **mishap** (S+HH), "hothouse" → **hothous** (T+HH), "adhere" → **adheer** (D+HH), "clotheshorse" → **klohzhors** (Z+HH). These are rare.
+"sh", "th", "dh", "zh" and "oh" each spell one sound. But the same two letters also turn up where one word part ends in s, t, d, z or the vowel of "hot", and the next begins with h:
+
+- "mishap" → **mishap** (S+HH, not "sh")
+- "courthouse" → **korthous** (T+HH, not "th")
+- "adhere" → **adheer** (D+HH, not "dh")
+- "clotheshorse" → **klohzhors** (Z+HH, not "zh")
+- "aha" → **oho** (AA+HH, not "oh")
+
+These are rare, and mostly in compounds and names.
 
 ### 3. "air" and "eer" before R
 
-"air" is both the vowel of "chair" (EH+R) and of "admire" → **admair** (AY+R). "eer" covers both IH+R ("beer") and IY+R ("here"); the CMU dictionary is inconsistent between these two, and most American speakers say them the same.
+"air" is the vowel of "chair" (EH+R), and also of "admire" → **admair** (AY+R). "eer" covers both IH+R ("beer") and IY+R ("here"). The CMU dictionary gives some words of this kind IH+R and others IY+R, though most American speakers say them the same.
 
-### 4. "aw" at a vowel junction
+### 4. "aw" before a vowel
 
-"aw" is the vowel in "law", but it also appears where schwa meets a W: "usual" → **yoozhawal**.
+"aw" is the vowel in "law", but it also appears where schwa meets a W sound: "usual" → **yoozhawal**, "actual" → **akchawal**.
+
+The other spellings for vowels before R, "ur" (tour → **tur**) and "uhr" (curry → **kuhree**), add no ambiguity: "u" and "uh" each spell only one sound.
 
 ## How English Compares
 
-For comparison, English has over **1,100 grapheme-phoneme correspondences** (ways a letter group can spell a sound) for its ~40 phonemes. Some sounds with many spellings:
+English spells its sounds in hundreds of ways. A few sounds alone show the problem. In the table, "e_e" means an e, one consonant, then a silent e, as in "these".
 
-| Phoneme | English spellings | Count |
-|---------|-------------------|-------|
-| /iː/ | ee, ea, e, ie, ei, ey, e_e, i, eo, ae, oe, ... | 11+ |
-| /ʃ/ | sh, ti, ci, si, ssi, ch, s, ce, sci, xi | 10+ |
-| /k/ | c, k, ck, ch, cc, que, q, x (in "fox") | 8+ |
-| /uː/ | oo, u, ue, ew, ou, o, ui, u_e, ough, wo | 10+ |
+| Sound | English spellings | Count |
+|-------|-------------------|-------|
+| /iː/ (see) | ee, ea, e, ie, ei, ey, e_e, i, eo, ae, oe | 11 |
+| /ʃ/ (she) | sh, ti, ci, si, ssi, ch, s, ce, sci | 9 |
+| /k/ (kit) | c, k, ck, ch, cc, que, qu, kh, cq | 9 |
+| /uː/ (too) | oo, u, ue, ew, ou, o, ui, u_e, ough, wo | 10 |
 
-Ingglish reduces each of these to exactly one spelling.
+(Examples, in order: see, sea, me, field, receive, key, these, machine, people, Caesar, phoenix; she, nation, special, tension, mission, chef, sure, ocean, conscience; cat, kit, back, school, occur, unique, bouquet, khaki, acquire; too, flu, blue, new, soup, do, fruit, rule, through, two.)
 
-## Entropy Analysis
+Ingglish spells each of these sounds one way: ee, sh, k and oo.
+
+## Uncertainty in Bits
 
 [Shannon entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)) measures uncertainty in bits. An entropy of 0 means no uncertainty: the answer is fully predictable. Higher values mean more ambiguity.
 
-| Direction | Ingglish Entropy | English Entropy |
-|-----------|-----------------|-----------------|
-| Feedforward (reading) | **near 0** (a few reading ambiguities; not yet measured) | ~1.5-2.5 bits per grapheme |
-| Feedback (spelling) | **0 bits** (one spelling per sound) | ~2.0-3.0 bits per phoneme |
-
-Knowing how a word sounds fixes its Ingglish spelling completely. Reading is nearly as certain: only the "a" ambiguity (AE vs AH0) comes up often enough to add real uncertainty.
+In the spelling direction, Ingglish's entropy is **0 bits**, because knowing a word's sounds fixes its spelling completely. In the reading direction it should be **near 0**, since only the "a" ambiguity comes up often enough to add real uncertainty, but it has not been measured. English is well above zero in both directions.
 
 ## Comparison with Other Spelling Reforms
 
-| System | Feedforward | Feedback | Script | Notes |
-|--------|------------|----------|--------|-------|
-| Ingglish | just under 1.00 | 1.00 | Latin (24 of 26 letters) | Digraphs for extra sounds |
-| Shavian | 1.00 | 1.00 | New (48 letters) | Perfect but requires learning new alphabet |
-| Deseret | 1.00 | 1.00 | New (38 letters) | Perfect but requires learning new alphabet |
-| IPA | 1.00 | 1.00 | Extended Latin + new symbols | Perfect but not designed for everyday use |
-| SoundSpel | ~0.95 | ~0.85 | Latin | Some remaining ambiguities |
-| Cut Spelling | ~0.80 | ~0.75 | Latin | Removes letters but keeps irregularities |
-| Traditional English | ~0.70 | ~0.50 | Latin | The baseline |
+| System | Reading | Spelling | Script | Notes |
+|--------|---------|----------|--------|-------|
+| Ingglish | Almost fully consistent | Fully consistent | Latin (24 of 26 letters) | Letter pairs for sounds with no letter of their own |
+| Shavian | Fully consistent | Fully consistent | New (48 letters) | Requires learning a new alphabet |
+| Deseret | Fully consistent | Fully consistent | New (38 letters) | Requires learning a new alphabet |
+| IPA | Fully consistent | Fully consistent | Latin plus new symbols | Not designed for everyday writing |
+| SoundSpel | Mostly consistent | Less consistent | Latin | Keeps some alternative spellings |
+| Cut Spelling | Somewhat better than English | Somewhat better than English | Latin | Drops silent and doubled letters but keeps many irregular spellings |
+| Traditional English | Inconsistent | Very inconsistent | Latin | The baseline |
 
-Among these, only the new-alphabet systems and IPA are fully consistent in both directions. Ingglish's few reading ambiguities are the price of spelling every English sound with ordinary keyboard letters.
+Among these, only the new alphabets and IPA are fully consistent in both directions. Ingglish's few reading ambiguities are the price of spelling every English sound with ordinary keyboard letters. [Spelling Reform History](spelling-reform-comparison.md) compares these reforms in more detail.
 
 ## Methodology
 
-Ingglish's feedback consistency follows from how the translator works: it builds each spelling from the word's [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary) phonemes, so the same sequence of phonemes always gives the same spelling. The reading ambiguities above are the ones the translator's reverse parser has to try both ways. Ingglish's feedforward consistency ratio has not yet been computed; a proper figure would count these ambiguities across the CMU dictionary, weighted by how common each word is in the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977) of American film and TV subtitles.
+Ingglish's spelling-direction consistency follows from how the translator works. It builds each spelling from the word's [CMU Pronouncing Dictionary](https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary) phonemes, so the same sequence of phonemes always gives the same spelling ([to-ingglish.ts](https://github.com/ptarjan/ingglish/blob/main/packages/phonemes/src/to-ingglish.ts)). The reading ambiguities above are the ones the reverse parser tries both ways ([from-ingglish.ts](https://github.com/ptarjan/ingglish/blob/main/packages/phonemes/src/from-ingglish.ts)).
+
+The ratings for other languages and reforms are a ranking, not measurements. The reading-direction consistency ratio for Ingglish has not been computed yet. A proper figure would count these ambiguities across the CMU dictionary, weighted by how common each word is in the [SUBTLEX-US corpus](https://doi.org/10.3758/BRM.41.4.977) of American film and TV subtitles.
+
+Next in the design story: [Spelling History](spelling-iteration.md), every change and why.
