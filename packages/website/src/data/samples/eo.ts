@@ -12,9 +12,9 @@ export const eo: Sample[] = [
     text: "Tra densa mallumo briletas la celo, al kiu kuraĝe ni iras. Simile al stelo en nokta ĉielo, al ni la direkton ĝi diras. Kaj nin ne timigas la noktaj fantomoj, nek batoj de l' sorto, nek mokoj de l' homoj, ĉar klara kaj rekta kaj tre difinita ĝi estas, la voj' elektita.",
   },
   {
-    label: 'Henri Vallienne — Kastelo de Prelongo',
-    source: 'https://eo.wikisource.org/wiki/Kastelo_de_Prelongo/%C4%88apitro_Unua',
-    text: 'La tri virinoj, sinjorino Linŝardo, ŝia bofilino, kaj bokuzino kompate akceptita, starante meze de la blanka vojo, tenante siajn manojn super siaj okuloj kiel ŝirmilon, atentegis senpacience al la dezirata veturilo, kiu ne alvenis. Ili atendis la alvenon de kapitano Viktoro, la dua familia filo, kiun lia patro Andreo kaj lia frato Ludoviko estis akceptontaj en la stacidomo.',
+    label: 'William Auld — La infana raso',
+    source: 'http://literaturo.org/HARLOW-Don/Esperanto/Literaturo/Poezio/infana.html',
+    text: 'Saluton, masonisto, mia prapatro Ruben kiu dum tuta vivo grimpadis supren-suben, ĉizante sur preĝejoj gargojlojn kaj anĝelojn!',
   },
   {
     label: 'UDHR — Universala Deklaracio de Homaj Rajtoj, Artikolo 1',
@@ -78,19 +78,19 @@ export const eo: Sample[] = [
     text: 'Malproksime en la maro la akvo estas tiel blua, kiel la folioj de la plej bela cejano, kaj klara, kiel la plej pura vitro, sed ĝi estas tre profunda, pli profunda, ol povas atingi ia ankro; multaj turoj devus esti starigitaj unu sur la alia, por atingi de la fundo ĝis super la akvo. Tie loĝas la popolo de maro.',
   },
   {
-    label: 'Goethe (trad. Zamenhof) — Ifigenio en Taŭrido',
-    source: 'https://eo.wikisource.org/wiki/Ifigenio_en_Ta%C5%ADrido/Akto_Unua',
-    text: "Al via ombro, pintoj moviĝemaj de l' densa kaj antikva arbareto, al la sanktej' kvieta de l' diino ankoraŭ nun kun trema sent' mi iras, simile kiel la unuan fojon: ne povas mi al vi alkutimiĝi. Jam multajn jarojn min ĉi tie kaŝas plej alta volo, kiun mi obeas; mi tamen ĉiam sentas min nur fremda.",
+    label: 'Kálmán Kalocsay — Sunsubiro',
+    source: 'http://gxirafo.blogspot.com/2013/09/kalman-kalocsay-sunsubiro-sunset.html',
+    text: "Jam iĝis kupro la tagmeza or'. Ĉe l' horizont' la sun' adiaŭluma, okul' gigante granda, plorbruluma rerigardante pasas drone for. Kaj kvazaŭ sang' fluinta ĵus el kor', jen arda ruĝo sur fenestro doma.",
   },
   {
-    label: 'Eliza Orzeszkowa (trad. Zamenhof) — Marta',
-    source: 'https://eo.wikisource.org/wiki/Marta',
-    text: 'La strato Graniczna estas unu el la sufiĉe vivoplenaj stratoj de Varsovio. Antaŭ kelke da jaroj, en tre bela aŭtuna tago, tra tiu strato iris kaj veturis multe da homoj, el kiuj ĉiu rapidis aŭ al siaj aferoj, aŭ al plezuro, ne rigardante flanken, nek dekstren nek maldekstren, kaj tute ne atentante tion, kio fariĝas en la profundo de unu el la kortoj, kiuj kuntuŝiĝas kun tiu strato.',
+    label: 'Julio Baghy — Ĉe samovaro',
+    source: 'https://sezonoj.ru/2019/10/blk-6',
+    text: 'Ĉe malnova samovaro sidas ruso kaj hungaro. Dum la akvo zume bolas la amikoj ekparolas: "Havi landon en libero, tamen migri tra la tero, iri vojon, sed sencelan… Ĉu vi konas pli kruelan?" La hungaro ne respondas, liaj pensoj ĝeme ondas, viŝas larmon retenitan: "Havi landon, sed perditan…"',
   },
   {
-    label: 'Antoni Malczewski (trad. Grabowski) — Kozako en stepo',
-    source: 'https://eo.wikisource.org/wiki/El_Parnaso_de_Popoloj/Kozako_en_stepo',
-    text: "Hej, kozak' sur ĉevalo! vi kien rapidas? Ĉu leporon, saltantan sur stepo, vi vidas? Ĉu, ludiginte pensojn, en liber' senfina vi kuras pro la veto kun vent' ukraina? Aŭ vin eble en kampo atendas, rajdanto, amatino kun sia malgaja revkanto?",
+    label: 'Julio Baghy — Estas mi esperantisto',
+    source: 'http://esperantomovado.blogspot.com/2012/09/verda-stelo-sur-la-brusto.html',
+    text: 'Verda stelo sur la brusto iom palas pro la rusto. Mi ne estas purigisto; estas mi esperantisto. Kuŝas ie sub tegmento "Netuŝebla Fundamento". Tuŝu ĝin nur la Mefisto; estas mi esperantisto.',
   },
   {
     label: 'La Sankta Biblio — Genezo 1:1-5',
