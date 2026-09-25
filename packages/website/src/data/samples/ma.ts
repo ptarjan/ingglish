@@ -13,7 +13,7 @@ export const ma: Sample[] = [
   },
   {
     label: 'Sejarah Melayu — Sulalatus Salatin',
-    source: 'https://ms.wikisource.org/wiki/Karya:Sulalatus_Salatin',
+    source: 'https://ms.wikisource.org/wiki/Sejarah_Malayu_(Shellabear,_1915)',
     text: 'Segala puji-pujian bagi Allah, yang tiada Tuhan hanya Ia, dan adalah Ia pada azal, tiada sesuatu jua pun serta-Nya.',
   },
   {
@@ -23,6 +23,7 @@ export const ma: Sample[] = [
   },
   {
     label: 'UDHR — Perisytiharan Hak Asasi Manusia, Perkara 3-5',
+    source: 'https://ms.wikisource.org/wiki/Perisytiharan_Hak_Asasi_Manusia_Sejagat',
     text: 'Setiap orang adalah berhak kepada nyawa, kebebasan dan keselamatan diri. Tiada sesiapa pun boleh diperhamba atau diperabdikan; keabdian dan dagangan hamba abdi hendaklah dilarang dalam semua bentuknya. Tiada sesiapa pun boleh dikenakan seksaan atau layanan atau hukuman yang zalim, tidak berperikemanusiaan atau menghinakan.',
   },
   {
@@ -32,6 +33,8 @@ export const ma: Sample[] = [
   },
   {
     label: 'Hikayat Hang Tuah — Pertempuran dengan Hang Jebat',
+    source:
+      'https://archive.org/stream/hikayat-hang-tuah-ii-2010/Hikayat%20Hang%20Tuah%20II%20%282010%29_djvu.txt',
     text: 'Maka titah baginda, "Dapatkah kekasihku membunuh Si Jebat demikian itu?" Maka sembah laksamana, "Daulat tuanku, patik mohonkan ampun."',
   },
   {
@@ -71,13 +74,13 @@ export const ma: Sample[] = [
   },
   {
     label: 'Peribahasa Melayu — Simpulan Bahasa',
-    source:
-      'https://akuanakpahang.blogspot.com/2014/05/100-maksud-dan-makna-peribahasa-melayu.html',
+    source: 'https://www.infoupu.com/peribahasa-melayu/',
     text: 'Harimau mati meninggalkan belang, manusia mati meninggalkan nama. Bagai aur dengan tebing. Katak di bawah tempurung. Bertepuk sebelah tangan, tidak akan berbunyi.',
   },
   {
     label: 'Perlembagaan Persekutuan — Perkara 1',
-    source: 'http://pengajianmalaysiaikmtsya.blogspot.com/2014/09/bab-7-perlembagaan-malaysia.html',
+    source:
+      'https://ms.wikisource.org/wiki/Perlembagaan_Persekutuan_Malaysia/Negeri-Negeri,_Agama_dan_Undang-Undang_bagi_Persekutuan',
     text: 'Persekutuan dinamai Malaysia dalam bahasa Melayu dan dalam bahasa Inggeris. Negeri-Negeri Persekutuan terdiri daripada Johor, Kedah, Kelantan, Melaka, Negeri Sembilan, Pahang, Pulau Pinang, Perak, Perlis, Sabah, Sarawak, Selangor dan Terengganu.',
   },
 ];
