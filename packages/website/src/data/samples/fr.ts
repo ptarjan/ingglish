@@ -2,14 +2,14 @@ import type { Sample } from './types';
 
 export const fr: Sample[] = [
   {
-    label: "Camus — L'Étranger",
-    source: "https://fr.wikipedia.org/wiki/L'Étranger",
-    text: "Aujourd'hui, maman est morte. Ou peut-être hier, je ne sais pas. J'ai reçu un télégramme de l'asile: Mère décédée. Enterrement demain. Sentiments distingués. Cela ne veut rien dire. C'était peut-être hier. L'asile de vieillards est à Marengo, à quatre-vingts kilomètres d'Alger. Je prendrai l'autobus à deux heures et j'arriverai dans l'après-midi.",
+    label: 'Verne — Vingt mille lieues sous les mers',
+    source: 'https://fr.wikisource.org/wiki/Vingt_mille_lieues_sous_les_mers/Partie_1/Chapitre_1',
+    text: "L'année 1866 fut marquée par un événement bizarre, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents, les gens de mer furent particulièrement émus.",
   },
   {
-    label: 'Saint-Exupéry — Le Petit Prince',
-    source: 'https://fr.wikipedia.org/wiki/Le_Petit_Prince',
-    text: "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait Histoires Vécues. Ça représentait un serpent boa qui avalait un fauve. J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin.",
+    label: 'Daudet — La Dernière Classe',
+    source: 'https://fr.wikisource.org/wiki/La_Derni%C3%A8re_Classe',
+    text: "Ce matin-là, j'étais très en retard pour aller à l'école, et j'avais grand-peur d'être grondé, d'autant que M. Hamel nous avait dit qu'il nous interrogerait sur les participes, et je n'en savais pas le premier mot. Un moment l'idée me vint de manquer la classe et de prendre ma course à travers champs.",
   },
   {
     label: "Hugo — Demain, dès l'aube",
@@ -33,11 +33,13 @@ export const fr: Sample[] = [
   },
   {
     label: 'Voltaire — Candide',
-    source: 'https://www.gutenberg.org/ebooks/4650',
+    source: 'https://www.gutenberg.org/cache/epub/4650/pg4650-images.html',
     text: "Il y avait en Westphalie, dans le château de M. le baron de Thunder-ten-tronckh, un jeune garçon à qui la nature avait donné les mœurs les plus douces. Sa physionomie annonçait son âme. Il avait le jugement assez droit, avec l'esprit le plus simple; c'est, je crois, pour cette raison qu'on le nommait Candide.",
   },
   {
     label: 'Voltaire — Candide (Pangloss)',
+    source:
+      'https://fr.wikisource.org/wiki/Candide,_ou_l%E2%80%99Optimisme/Garnier_1877/Chapitre_1',
     text: "Pangloss enseignait la métaphysico-théologo-cosmolonigologie. Il prouvait admirablement qu'il n'y a point d'effet sans cause, et que, dans ce meilleur des mondes possibles, le château de monseigneur le baron était le plus beau des châteaux et madame la meilleure des baronnes possibles.",
   },
   {
@@ -47,7 +49,7 @@ export const fr: Sample[] = [
   },
   {
     label: 'Flaubert — Madame Bovary',
-    source: 'https://www.gutenberg.org/ebooks/48359',
+    source: 'https://www.gutenberg.org/cache/epub/48359/pg48359-images.html',
     text: "Nous étions à l'étude, quand le proviseur entra, suivi d'un nouveau habillé en bourgeois et d'un garçon de classe qui portait un grand pupitre. Ceux qui dormaient se réveillèrent, et chacun se leva, comme surpris dans son travail.",
   },
   {
@@ -72,7 +74,7 @@ export const fr: Sample[] = [
   },
   {
     label: 'Stendhal — Le Rouge et le Noir',
-    source: 'https://www.gutenberg.org/ebooks/798',
+    source: 'https://www.gutenberg.org/cache/epub/798/pg798-images.html',
     text: "La petite ville de Verrières peut passer pour l'une des plus jolies de la Franche-Comté. Ses maisons blanches avec leurs toits pointus de tuiles rouges s'étendent sur la pente d'une colline, dont des touffes de vigoureux châtaigniers marquent les moindres sinuosités.",
   },
   {
@@ -103,7 +105,7 @@ export const fr: Sample[] = [
   },
   {
     label: 'Zola — Germinal',
-    source: 'https://www.gutenberg.org/ebooks/5711',
+    source: 'https://www.gutenberg.org/cache/epub/5711/pg5711-images.html',
     text: "Dans la plaine rase, sous la nuit sans étoiles, d'une obscurité et d'une épaisseur d'encre, un homme suivait seul la grande route de Marchiennes à Montsou, dix kilomètres de pavé coupant tout droit, à travers les champs de betteraves.",
   },
   {
@@ -113,18 +115,21 @@ export const fr: Sample[] = [
   },
   {
     label: 'Molière — Le Bourgeois gentilhomme',
-    source: 'https://fr.wikisource.org/wiki/Le_Bourgeois_gentilhomme',
+    source:
+      'https://fr.wikisource.org/wiki/Le_Bourgeois_gentilhomme/%C3%89dition_Louandre,_1910/Acte_II',
     text: "Quoi! quand je dis: «Nicole, apportez-moi mes pantoufles, et me donnez mon bonnet de nuit», c'est de la prose? Par ma foi! il y a plus de quarante ans que je dis de la prose sans que j'en susse rien, et je vous suis le plus obligé du monde de m'avoir appris cela.",
   },
   {
-    label: 'Beauvoir — Le Deuxième Sexe',
-    source: 'https://ocw.mit.edu/courses/21g-311-introduction-to-french-culture-spring-2014/',
-    text: "On ne naît pas femme: on le devient. Aucun destin biologique, psychique, économique ne définit la figure que revêt au sein de la société la femelle humaine; c'est l'ensemble de la civilisation qui élabore ce produit intermédiaire entre le mâle et le castrat qu'on qualifie de féminin.",
+    label: 'Madame de La Fayette — La Princesse de Clèves',
+    source:
+      'https://fr.wikisource.org/wiki/La_Princesse_de_Cl%C3%A8ves,_%C3%A9dition_Lepetit,_1820/Premi%C3%A8re_partie',
+    text: "La magnificence et la galanterie n'ont jamais paru en France avec tant d'éclat que dans les dernières années du règne de Henri II. Ce prince était galant, bien fait, et amoureux; quoique sa passion pour Diane de Poitiers, duchesse de Valentinois, eût commencé il y avait plus de vingt ans, elle n'en était pas moins violente, et il n'en donnait pas des témoignages moins éclatants.",
   },
   {
-    label: "Sartre — L'existentialisme est un humanisme",
-    source: 'https://la-philosophie.com/sartre-existence-precede-essence',
-    text: "Qu'est-ce que signifie ici que l'existence précède l'essence? Cela signifie que l'homme existe d'abord, se rencontre, surgit dans le monde, et qu'il se définit après. L'homme, tel que le conçoit l'existentialiste, s'il n'est pas définissable, c'est qu'il n'est d'abord rien. Il ne sera qu'ensuite, et il sera tel qu'il se sera fait.",
+    label: 'Descartes — Discours de la méthode',
+    source:
+      'https://fr.wikisource.org/wiki/Discours_de_la_m%C3%A9thode_(%C3%A9d._Cousin)/Premi%C3%A8re_partie',
+    text: "Le bon sens est la chose du monde la mieux partagée; car chacun pense en être si bien pourvu, que ceux même qui sont les plus difficiles à contenter en toute autre chose n'ont point coutume d'en désirer plus qu'ils en ont. En quoi il n'est pas vraisemblable que tous se trompent.",
   },
   {
     label: "Duras — L'Amant",
