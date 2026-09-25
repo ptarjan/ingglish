@@ -653,6 +653,25 @@ describe('useSpeech', () => {
     expect(result.current[4]).toEqual([0, 4]);
   });
 
+  it('survives a browser that rejects the listed voices (Brave on iOS)', () => {
+    class RejectingUtterance extends MockUtterance {
+      set voice(_v: unknown) {
+        throw new TypeError(
+          "undefined is not an object (evaluating 'Object.getPrototypeOf(voice)')"
+        );
+      }
+    }
+    vi.stubGlobal('SpeechSynthesisUtterance', RejectingUtterance);
+    mockSynthesis.speak.mockImplementation(() => {});
+
+    const { result } = renderHook(() => useSpeech()) as SpeechHook;
+    act(() => {
+      result.current[1]('hello world', 'en');
+    });
+
+    expect(getRealUtterance(mockSynthesis.speak).text).toBe('hello world');
+  });
+
   it('does not set explicit voice for languages without confirmed boundary support', () => {
     // Add French voice but boundary probe will fail (no onboundary in mock for fr)
     mockSynthesis.getVoices.mockReturnValue([

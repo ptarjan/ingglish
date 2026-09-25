@@ -105,9 +105,19 @@ export function useSpeech(): [
       setBoundaryLangs(langs);
     };
 
+    const settle = () => {
+      remaining--;
+      if (remaining === 0) {
+        finish();
+      }
+    };
+
     for (const [name, voice] of voiceForLang) {
       const utterance = new SpeechSynthesisUtterance('a b');
-      utterance.voice = voice;
+      if (!trySetVoice(utterance, voice)) {
+        settle();
+        continue;
+      }
       utterance.volume = 0;
       utterance.rate = 5;
 
@@ -119,17 +129,9 @@ export function useSpeech(): [
         if (gotBoundary) {
           supportedVoiceNames.add(name);
         }
-        remaining--;
-        if (remaining === 0) {
-          finish();
-        }
+        settle();
       };
-      utterance.addEventListener('error', () => {
-        remaining--;
-        if (remaining === 0) {
-          finish();
-        }
-      });
+      utterance.addEventListener('error', settle);
 
       speechSynthesis.speak(utterance);
     }
@@ -189,7 +191,7 @@ export function useSpeech(): [
         if (boundaryCacheRef.current.get(lang.toLowerCase()) === true) {
           const voice = findPreferredVoice(lang);
           if (voice) {
-            utterance.voice = voice;
+            trySetVoice(utterance, voice);
           }
         }
       }
@@ -399,4 +401,18 @@ function lookupWordIndex(wordStarts: number[], charIndex: number): number {
     }
   }
   return idx;
+}
+
+/**
+ * Assign a voice, reporting whether the browser accepted it. Brave on iOS lists
+ * voices that its own setter then rejects with a TypeError; an uncaught throw
+ * here takes down the whole page, so a rejected voice falls back to the default.
+ */
+function trySetVoice(utterance: SpeechSynthesisUtterance, voice: SpeechSynthesisVoice): boolean {
+  try {
+    utterance.voice = voice;
+    return true;
+  } catch {
+    return false;
+  }
 }
