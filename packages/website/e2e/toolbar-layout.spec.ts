@@ -10,28 +10,19 @@ import { setupMockProxy, waitForAppLoad } from './test-utils';
 // until its label wrapped.
 const IPAD_PORTRAIT = { height: 1080, width: 810 };
 
-/** Lines of text in a button: its content-box height over its line height. */
+/**
+ * Lines of text in a button: the height of its rendered label over one line
+ * height. Measures the text, not the button, because a flex row stretches the
+ * button taller than its label.
+ */
 async function labelLines(button: Locator): Promise<number> {
   return button.evaluate((el) => {
     const style = getComputedStyle(el);
-    const [
-      padTop = 0,
-      padBottom = 0,
-      borderTop = 0,
-      borderBottom = 0,
-      fontSize = 0,
-      lineHeight = 0,
-    ] = [
-      style.paddingTop,
-      style.paddingBottom,
-      style.borderTopWidth,
-      style.borderBottomWidth,
-      style.fontSize,
-      style.lineHeight,
-    ].map((v) => Number.parseFloat(v) || 0);
-    const content =
-      el.getBoundingClientRect().height - padTop - padBottom - borderTop - borderBottom;
-    return Math.round(content / (lineHeight > 0 ? lineHeight : fontSize * 1.2));
+    const lineHeight =
+      Number.parseFloat(style.lineHeight) || Number.parseFloat(style.fontSize) * 1.2;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    return Math.round(range.getBoundingClientRect().height / lineHeight);
   });
 }
 
