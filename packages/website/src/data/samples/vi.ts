@@ -33,7 +33,8 @@ export const vi: Sample[] = [
   },
   {
     label: 'Nguyễn Trãi — Bình Ngô đại cáo',
-    text: 'Từng nghe: Việc nhân nghĩa cốt ở yên dân, quân điếu phạt trước lo trừ bạo. Như nước Đại Việt ta từ trước, vốn xưng nền văn hiến đã lâu. Núi sông bờ cõi đã chia, phong tục Bắc Nam cũng khác.',
+    source: 'https://vi.wikisource.org/wiki/Bình_Ngô_đại_cáo_(Trần_Trọng_Kim_dịch)',
+    text: 'Tượng-mảng: Việc nhân-nghĩa cốt ở yên dân, quân điếu phạt chỉ vì khử bạo. Như nước Việt ta từ trước, vốn xưng văn-hiến đã lâu. Sơn-hà cương-vực đã chia, phong-tục bắc nam cũng khác.',
   },
   {
     label: 'Xuân Diệu — Vội vàng',
