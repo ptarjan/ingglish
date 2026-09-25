@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const de: Sample[] = [
   {
     label: 'Kafka — Die Verwandlung',
-    source: 'https://www.gutenberg.org/ebooks/22367',
+    source: 'https://www.gutenberg.org/cache/epub/22367/pg22367-images.html',
     text: 'Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheuren Ungeziefer verwandelt. Er lag auf seinem panzerartig harten Rücken und sah, wenn er den Kopf ein wenig hob, seinen gewölbten, braunen, von bogenförmigen Versteifungen geteilten Bauch, auf dessen Höhe sich die Bettdecke, zum gänzlichen Niedergleiten bereit, kaum noch erhalten konnte.',
   },
   {
@@ -33,8 +33,8 @@ export const de: Sample[] = [
   },
   {
     label: 'Stefan Zweig — Schachnovelle',
-    source: 'https://www.gutenberg.org/ebooks/59108',
-    text: 'An Bord des großen Passagierdampfers, der um Mitternacht von New York nach Buenos Aires abgehen sollte, herrschte die übliche Geschäftigkeit und Bewegung der letzten Stunde.',
+    source: 'http://www.zeno.org/Literatur/M/Zweig,+Stefan/Werke/Schachnovelle',
+    text: 'Auf dem großen Passagierdampfer, der um Mitternacht von New York nach Buenos Aires abgehen sollte, herrschte die übliche Geschäftigkeit und Bewegung der letzten Stunde.',
   },
   {
     label: 'Heine — Die Loreley',
@@ -43,7 +43,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Goethe — Erlkönig',
-    source: 'https://de.wikipedia.org/wiki/Erlkönig_(Ballade)',
+    source: 'https://de.wikisource.org/wiki/Erlk%C3%B6nig',
     text: 'Wer reitet so spät durch Nacht und Wind? Es ist der Vater mit seinem Kind; er hat den Knaben wohl in dem Arm, er faßt ihn sicher, er hält ihn warm.',
   },
   {
@@ -53,7 +53,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Goethe — Wandrers Nachtlied',
-    source: 'https://de.wikipedia.org/wiki/Wandrers_Nachtlied',
+    source: 'https://de.wikisource.org/wiki/Ein_Gleiches',
     text: 'Über allen Gipfeln ist Ruh, in allen Wipfeln spürest du kaum einen Hauch; die Vöglein schweigen im Walde. Warte nur, balde ruhest du auch.',
   },
   {
@@ -68,13 +68,13 @@ export const de: Sample[] = [
   },
   {
     label: 'Mann — Der Tod in Venedig',
-    source: 'https://www.gutenberg.org/ebooks/12108',
+    source: 'https://www.gutenberg.org/cache/epub/12108/pg12108-images.html',
     text: 'Gustav Aschenbach oder von Aschenbach, wie seit seinem fünfzigsten Geburtstag amtlich sein Name lautete, hatte an einem Frühlingsnachmittag des Jahres 19.., das unserem Kontinent monatelang eine so gefahrdrohende Miene zeigte, von seiner Wohnung in der Prinz-Regentenstraße zu München aus, allein einen weiteren Spaziergang unternommen.',
   },
   {
-    label: 'Brecht — Die Dreigroschenoper',
-    source: 'https://de.wikipedia.org/wiki/Die_Moritat_von_Mackie_Messer',
-    text: 'Und der Haifisch, der hat Zähne, und die trägt er im Gesicht. Und Macheath, der hat ein Messer, doch das Messer sieht man nicht.',
+    label: 'Wilhelm Busch — Max und Moritz',
+    source: 'https://www.gutenberg.org/files/17161/17161-h/17161-h.htm',
+    text: 'Ach, was muß man oft von bösen Kindern hören oder lesen! Wie zum Beispiel hier von diesen, welche Max und Moritz hießen. Die, anstatt durch weise Lehren sich zum Guten zu bekehren, oftmals noch darüber lachten und sich heimlich lustig machten.',
   },
   {
     label: 'Schiller — An die Freude',
@@ -118,7 +118,7 @@ export const de: Sample[] = [
   },
   {
     label: 'Kafka — Der Prozess',
-    source: 'https://www.gutenberg.org/ebooks/69327',
+    source: 'https://www.gutenberg.org/cache/epub/69327/pg69327-images.html',
     text: 'Jemand mußte Josef K. verleumdet haben, denn ohne daß er etwas Böses getan hätte, wurde er eines Morgens verhaftet.',
   },
 ];
