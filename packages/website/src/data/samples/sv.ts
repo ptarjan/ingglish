@@ -12,9 +12,9 @@ export const sv: Sample[] = [
     text: 'Det var en afton i början av maj. Den lilla trädgården på Mosebacke hade ännu icke blivit öppnad för allmänheten, och rabatterna voro ej uppgrävda; snödropparna hade arbetat sig upp genom fjolårets lövsamlingar och höllo just på att sluta sin korta verksamhet för att lämna plats åt de ömtåligare saffransblommorna, vilka tagit skydd under ett ofruktsamt päronträd.',
   },
   {
-    label: 'Viktor Rydberg — Singoalla',
-    source: 'https://runeberg.org/singoall/02.html',
-    text: 'Nej, nej, stanna! Han sade detta med sådan ton, att den okända vände sig om. Låt mig veta, vad du heter, sade gossen och tog hennes hand. Du är nyfiken. Nej, jag bryr mig icke om ditt namn, om du endast vill säga mig, varifrån du är, och varför vi aldrig mer skola se varandra.',
+    label: 'Lindgren — Pippi Långstrump',
+    source: 'https://nordstjernan.com/news/arts/1033/',
+    text: 'I utkanten av den lilla, lilla staden låg en gammal förfallen trädgård. I trädgården låg ett gammalt hus, och i huset bodde Pippi Långstrump. Hon var nio år, och hon bodde där alldeles ensam.',
   },
   {
     label: 'Lagerlöf — Gösta Berlings saga',
@@ -67,9 +67,9 @@ export const sv: Sample[] = [
     text: 'Vill du jag skall spå dig? Skall jag säga dig, att det sneda vecket över dina ögonbryn betyder bråd död? Jag ser år framåt i det kommande, men hur långt jag ser, finner jag bara ondska och låga uppsåt. Du är sämre än jag och jag är sämre än min mor.',
   },
   {
-    label: 'Fredrika Bremer — Hertha',
-    source: 'https://runeberg.org/hertha/kap04.html',
-    text: 'Giftermål är mig en bisak, ja, en usel sak, om det ej hjälper till högre mänsklig utveckling i ljusets och frihetens tjänst. Vad jag söker och vill, är ett liv, ett arbete, som låter mig känna, att jag lever fullt, icke blott för mig, utan för det hela, mitt land, mitt folk, mänskligheten.',
+    label: 'Stieg Larsson — Män som hatar kvinnor',
+    source: 'http://dagensbok.com/2005/12/15/stieg-larsson-man-som-hatar-kvinnor/',
+    text: 'Det hade blivit en årligen återkommande händelse. Mottagaren av blomman fyllde nu åttiotvå år. När blomman anlänt öppnade han paketet och plockade bort presentpappret. Därefter lyfte han telefonluren och slog numret till en före detta kriminalkommissarie som efter pensionen bosatt sig vid Siljan.',
   },
   {
     label: 'August Strindberg — Hemsöborna',
