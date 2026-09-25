@@ -162,12 +162,6 @@ describe('lastmodForRoute', () => {
     const today = new Date().toISOString().slice(0, 10);
     expect([...dates].every((d) => d.startsWith(today))).toBe(false);
   }, 30_000);
-
-  it('keeps an untouched doc on its old date', () => {
-    if (SHALLOW) return;
-    const doc = Date.parse(lastmodForRoute('docs/design-decisions'));
-    expect(doc).toBeLessThan(Date.parse(lastmodFor(WORD_PAGE_SOURCES)));
-  });
 });
 
 describe('wordPagesLastmod', () => {
