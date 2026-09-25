@@ -1,94 +1,36 @@
 # Claude Development Notes
 
-## CI/CD
+## Git
 
-Other sessions work in this repo at the same time. Always run `git pull --rebase`:
+Other sessions work in this checkout too. `git pull --rebase` before starting and before every push (commit, pull, push). Push straight to main; no PRs or branches. Commit and push at every good stopping point.
 
-- before starting any work, and
-- before every push: commit first, then pull, then push, so your commit is rebased onto any new remote changes.
+## Testing
 
-Push directly to main. Never create PRs or feature branches. Always commit and push when you reach a good stopping point; don't wait to be asked.
+- TDD where you can: failing test first.
+- 100% line coverage per package. Use `it.each` tables for tests sharing an assertion.
+- Test through the public API (`translateSync`, `reverseTranslateSync`); coverage isn't attributed across package boundaries.
+- Load a shared dictionary once per file, not once per test.
+- The pre-push hook runs lint, type-check and tests for changed packages. `npx turbo test|lint|build:fast` runs everything; `npx vitest run packages/core` runs one package.
+- e2e tests serve the built `dist/`: run `npx vite build` in packages/website first. On failed CI e2e runs, download the `playwright-report` artifact. `Web Vitals › INP` flakes on a busy machine; trust CI.
+- Dictionary artifacts are generated, not committed, and only checked for existence. After changing `packages/dictionary/scripts/build-dictionary.ts`, run `node scripts/ensure-dictionaries.cjs --force` in packages/dictionary.
 
-When e2e tests fail in CI, download the `playwright-report` artifact from the failed run. It has screenshots and traces of the failure.
+## Code
 
-The Playwright e2e tests serve the website's built `dist/` via `vite preview`. Before running them locally, rebuild with `npx vite build` in packages/website, or you will test a stale bundle. The `Web Vitals › INP` tests are timing-sensitive and flake on a busy local machine; trust CI's result for those.
+- Unfinished feature: leave a TODO comment.
+- Profile before optimizing.
 
-The dictionary artifacts (cmudict, reverse-cmudict, word-frequencies) are generated, not committed. The ensure script only checks that they exist, not that they are current. After changing generation logic in packages/dictionary/scripts/build-dictionary.ts (e.g. reverse-dictionary ranking), regenerate them by running `node scripts/ensure-dictionaries.cjs --force` in packages/dictionary.
+## Trying translations
 
-## Testing & Linting
-
-Use test-driven development (TDD): when possible, write a failing test first, then write the code that makes it pass.
-
-- Target 100% line coverage for all packages.
-- Use parameterized tests (`it.each`) to cut boilerplate: put tests that share an assertion pattern into one table.
-- In tests, prefer the public API (`translateSync`, `reverseTranslateSync`) over internal methods. Vitest's source-map remapping loses coverage attribution across package boundaries, so tests of internals may not count.
-- Load shared dictionaries once per file (e.g. a `loadEntries` cache), not once per test.
-
-You don't need to run tests or lint by hand before pushing. The pre-push hook runs lint, type-check and tests for the changed packages, and blocks the push if anything fails.
-
-For debugging, you can run any of these directly:
+In packages/core:
 
 ```bash
-npx turbo test                # run all tests across all packages
-npx vitest run packages/core  # run tests for a single package
-npx turbo lint                # lint all packages
-npx turbo build:fast          # build all packages (type-check + bundle)
+npm run translate -- "white wait hello"     # ✓ "white" -> "wait" -> "white"
+npm run translate -- -r "haloh werld"       # Ingglish → English
+npm run translate -- -l fr "bonjour monde"  # other languages; no args lists codes
 ```
 
-## Code Comments
+`npx tsx -e` scripts emit CommonJS, so wrap top-level `await` in an async function, and pass `--conditions=source` to resolve workspace packages to their TypeScript source.
 
-When a feature isn't complete, add a TODO comment in the code so the unfinished work stays tracked.
+## Reddit
 
-## Performance
-
-Profile before optimizing. Don't guess at performance fixes; measure first to find the actual bottleneck.
-
-## Quick Translation Testing
-
-To test how words translate and round-trip:
-
-```bash
-cd packages/core
-npm run translate -- "white wait hello world"
-```
-
-The output shows each word's translation and its reverse translation back to English:
-```
-✓ "white" -> "wait" -> "white"
-✓ "wait" -> "wayt" -> "wait"
-✓ "hello" -> "haloh" -> "hello"
-```
-
-For reverse translation (Ingglish → English):
-```bash
-npm run translate -- -r "haloh werld"
-```
-
-For non-English languages:
-```bash
-npm run translate -- -l fr "bonjour monde"
-npm run translate -- -l ja "東京"
-```
-
-Run it with no arguments to list every available language code.
-
-## Running Inline Scripts
-
-In one-off `npx tsx -e` scripts, **top-level `await` does not work** because tsx outputs CommonJS. Wrap the code in an async function:
-
-```bash
-npx tsx --conditions=source -e "
-async function main() {
-  const { loadDictionary, lookupPronunciation } = await import('@ingglish/dictionary');
-  await loadDictionary();
-  console.log(lookupPronunciation('hello'));
-}
-main();
-"
-```
-
-The `--conditions=source` flag resolves workspace packages to their TypeScript source files.
-
-## Browsing Reddit
-
-WebFetch cannot access reddit.com. Instead, append `.json` to the Reddit URL and fetch it with curl, sending a `User-Agent` header. Parse the JSON with python3, writing the script to a temp file to avoid shell-escaping problems.
+WebFetch can't reach reddit.com: append `.json` to the URL and fetch it with a `User-Agent` header.
