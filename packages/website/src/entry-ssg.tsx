@@ -54,7 +54,7 @@ const homeContent = (
       Ingglish gives every English sound exactly one spelling. Take <em>ough</em>: English reads the
       same four letters six different ways, in <em>through</em>, <em>though</em>, <em>thought</em>,{' '}
       <em>tough</em>, <em>cough</em> and <em>bough</em>. Ingglish writes those as <em>throo</em>,{' '}
-      <em>thoh</em>, <em>thawt</em>, <em>tuhf</em>, <em>cof</em> and <em>bow</em> — six sounds, six
+      <em>dhoh</em>, <em>thawt</em>, <em>tuhf</em>, <em>kof</em> and <em>bou</em> — six sounds, six
       spellings, nothing left to guess at.
     </p>
     <p>

@@ -1,7 +1,10 @@
 /**
  * Hand-written Ingglish outside the tutorial example tables must match the
- * translator: the static home page shell and the "ough" cards. The shell's
- * <head> metadata must match HOME_META, which the app renders at runtime.
+ * translator: the static home page shell, the actual home page SSG renders
+ * (the SSG build always replaces index.html's #root content, so that's what
+ * ships to production — the shell only ever ships from a dev server or a
+ * build-time render failure), and the "ough" cards. The shell's <head>
+ * metadata must match HOME_META, which the app renders at runtime.
  */
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -9,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { loadLangDict, translateSync } from 'ingglish';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { oughExamples } from './data/tutorial-data';
+import { render } from './entry-ssg';
 import { HOME_META } from './route-meta';
 
 const INDEX_HTML = path.join(path.dirname(fileURLToPath(import.meta.url)), '../index.html');
@@ -37,6 +41,24 @@ describe('index.html examples', () => {
 
   it.each(pairs)('"%s" → "%s"', (english, ingglish) => {
     expect(translateSync(english).toLowerCase()).toBe(ingglish);
+  });
+});
+
+describe('home page SSG render', () => {
+  it('ough example words match the translator', async () => {
+    const html = await render('/');
+    const start = html.indexOf('different ways, in ');
+    const end = html.indexOf(' — six sounds', start);
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    const words = [...html.slice(start, end).matchAll(/<em>([^<]+)<\/em>/g)].map((m) => m[1]!);
+    // Six English words, then their six Ingglish translations, in the same order.
+    expect(words).toHaveLength(12);
+    const english = words.slice(0, 6);
+    const ingglish = words.slice(6);
+    english.forEach((word, i) => {
+      expect(translateSync(word).toLowerCase()).toBe(ingglish[i]);
+    });
   });
 });
 
