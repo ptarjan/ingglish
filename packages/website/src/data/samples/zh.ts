@@ -3,7 +3,7 @@ import type { Sample } from './types';
 export const zh: Sample[] = [
   {
     label: '曹雪芹 — 红楼梦',
-    source: 'https://baike.baidu.com/item/满纸荒唐言',
+    source: 'https://m.gushiwen.cn/guwen/bookv_b630af160f65.aspx',
     text: '满 纸 荒 唐 言 一 把 辛 酸 泪 都 云 作 者 痴 谁 解 其 中 味 此 开 卷 第 一 回 也 作 者 自 云 因 曾 历 过 一 番 梦 幻 之 后 故 将 真 事 隐 去',
   },
   {
@@ -18,17 +18,17 @@ export const zh: Sample[] = [
   },
   {
     label: 'Confucius — Analects',
-    source: 'https://ctext.org/analects',
+    source: 'https://m.gushiwen.cn/shiwenv_d6640103678f.aspx',
     text: '学 而 时 习 之 不 亦 说 乎 有 朋 自 远方 来 不 亦 乐 乎 人 不 知 而 不 愠 不 亦 君子 乎 三 人 行 必 有 我 师 焉 择 其 善 者 而 从 之 其 不 善 者 而 改 之',
   },
   {
     label: '罗贯中 — 三国演义',
-    source: 'https://baike.baidu.com/item/分久必合，合久必分',
+    source: 'https://zh.wikisource.org/wiki/三國演義/第001回',
     text: '话 说 天 下 大 势 分 久 必 合 合 久 必 分 周 末 七 国 分 争 并 入 于 秦 及 秦 灭 之 后 楚 汉 分 争 又 并 入 于 汉',
   },
   {
     label: '毛泽东 — 沁园春·雪',
-    source: 'https://www.marxists.org/reference/archive/mao/selected-works/poems/poems18.htm',
+    source: 'https://m.gushiwen.cn/shiwenv_202a800b9239.aspx',
     text: '北 国 风 光 千 里 冰 封 万 里 雪 飘 望 长 城 内 外 惟 余 莽 莽 大 河 上 下 顿 失 滔 滔 山 舞 银 蛇 原 驰 蜡 象 欲 与 天 公 试 比 高',
   },
   {
@@ -42,9 +42,9 @@ export const zh: Sample[] = [
     text: '国 破 山 河 在 城 春 草 木 深 感 时 花 溅 泪 恨 别 鸟 惊 心 烽火 连 三 月 家 书 抵 万 金 白 头 搔 更 短 浑 欲 不 胜 簪',
   },
   {
-    label: '李白 — 静夜思·月下独酌',
-    source: 'https://www.gushiwen.cn/shiwenv_c35a60c1a8e2.aspx',
-    text: '床 前 明 月 光 疑 是 地 上 霜 举 头 望 明 月 低 头 思 故 乡 花 间 一 壶 酒 独 酌 无 相 亲 举 杯 邀 明 月 对 影 成 三 人',
+    label: '李白 — 月下独酌',
+    source: 'https://m.gushiwen.cn/shiwenv_3185407c5519.aspx',
+    text: '花 间 一 壶 酒 独 酌 无 相 亲 举 杯 邀 明 月 对 影 成 三 人 月 既 不 解 饮 影 徒 随 我 身 暂 伴 月 将 影 行 乐 须 及 春 我 歌 月 徘 徊 我 舞 影 零 乱 醒 时 同 交 欢 醉 后 各 分 散 永 结 无 情 游 相 期 邈 云 汉',
   },
   {
     label: '沈从文 — 边城',
@@ -73,18 +73,18 @@ export const zh: Sample[] = [
   },
   {
     label: '苏轼 — 水调歌头',
-    source: 'https://baike.baidu.com/item/水调歌头·明月几时有',
+    source: 'https://m.gushiwen.cn/shiwenv_632c5beb84eb.aspx',
     text: '明 月 几 时 有 把 酒 问 青 天 不 知 天 上 宫 阙 今 夕 是 何 年 我 欲 乘 风 归 去 又 恐 琼 楼 玉 宇 高 处 不 胜 寒 起 舞 弄 清 影 何 似 在 人 间',
   },
   {
     label: '孟子 — 告子下',
-    source: 'https://ctext.org/mengzi',
+    source: 'https://m.gushiwen.cn/shiwenv_ff66d475ee44.aspx',
     text: '天 将 降 大 任 于 是 人 也 必 先 苦 其 心 志 劳 其 筋 骨 饿 其 体 肤 空 乏 其 身 行 拂 乱 其 所 为 所 以 动 心 忍 性 曾 益 其 所 不 能',
   },
   {
-    label: '巴金 — 家',
-    source: 'https://zh.wikipedia.org/wiki/家_(小说)',
-    text: '风 刮 得 很 紧 雪 片 像 扯 破 了 的 棉 絮 一 样 在 空 中 飞 舞 没 有 目 的 地 四 处 飘 落 左 右 两 边 墙 脚 各 有 一 条 白 色 的 路 好 像 给 中 间 满 是 水 泥 的 石 板 路 镶 了 两 道 宽 边',
+    label: '鲁迅 — 孔乙己',
+    source: 'https://www.gushiwen.cn/shiwenv_6740c3cb4985.aspx',
+    text: '鲁 镇 的 酒 店 的 格 局 是 和 别 处 不 同 的 都 是 当 街 一 个 曲 尺 形 的 大 柜 台 柜 里 面 预 备 着 热 水 可 以 随 时 温 酒 做 工 的 人 傍 午 傍 晚 散 了 工 每 每 花 四 文 铜 钱 买 一 碗 酒',
   },
   {
     label: '白居易 — 琵琶行',
@@ -103,7 +103,7 @@ export const zh: Sample[] = [
   },
   {
     label: '庄子 — 逍遥游',
-    source: 'https://ctext.org/zhuangzi/enjoyment-in-untroubled-ease',
+    source: 'https://www.gushiwen.cn/shiwenv_5bfecbe60620.aspx',
     text: '北 冥 有 鱼 其 名 为 鲲 鲲 之 大 不 知 其 几 千 里 也 化 而 为 鸟 其 名 为 鹏 鹏 之 背 不 知 其 几 千 里 也 怒 而 飞 其 翼 若 垂 天 之 云',
   },
 ];
