@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
 
 import { setupMockProxy, waitForAppLoad } from './test-utils';
 
@@ -9,8 +9,31 @@ import { setupMockProxy, waitForAppLoad } from './test-utils';
 // narrow enough that unconstrained flex-shrink used to squeeze the toggle button
 // until its label wrapped.
 const IPAD_PORTRAIT = { height: 1080, width: 810 };
-// A wrapped two-line label roughly doubles the button's single-line height.
-const MAX_SINGLE_LINE_HEIGHT = 50;
+
+/** Lines of text in a button: its content-box height over its line height. */
+async function labelLines(button: Locator): Promise<number> {
+  return button.evaluate((el) => {
+    const style = getComputedStyle(el);
+    const [
+      padTop = 0,
+      padBottom = 0,
+      borderTop = 0,
+      borderBottom = 0,
+      fontSize = 0,
+      lineHeight = 0,
+    ] = [
+      style.paddingTop,
+      style.paddingBottom,
+      style.borderTopWidth,
+      style.borderBottomWidth,
+      style.fontSize,
+      style.lineHeight,
+    ].map((v) => Number.parseFloat(v) || 0);
+    const content =
+      el.getBoundingClientRect().height - padTop - padBottom - borderTop - borderBottom;
+    return Math.round(content / (lineHeight > 0 ? lineHeight : fontSize * 1.2));
+  });
+}
 
 test.describe('Toolbar layout at tablet width', () => {
   test('URL translator format-toggle button stays on one line', async ({ browser }) => {
@@ -32,7 +55,7 @@ test.describe('Toolbar layout at tablet width', () => {
     // Same base button styles (.btn-secondary), so an unwrapped label keeps them
     // the same height. A wrapped label makes the toggle noticeably taller.
     expect(toggleBox?.height).toBeCloseTo(clearBox?.height ?? 0, 0);
-    expect(toggleBox?.height).toBeLessThan(MAX_SINGLE_LINE_HEIGHT);
+    expect(await labelLines(formatToggle)).toBe(1);
 
     await context.close();
   });
@@ -45,9 +68,7 @@ test.describe('Toolbar layout at tablet width', () => {
     await expect(page.locator('.text-translator')).toBeVisible();
 
     const formatToggle = page.locator('.format-toggle');
-    const toggleBox = await formatToggle.boundingBox();
-    expect(toggleBox).not.toBeNull();
-    expect(toggleBox?.height).toBeLessThan(MAX_SINGLE_LINE_HEIGHT);
+    expect(await labelLines(formatToggle)).toBe(1);
 
     await context.close();
   });
