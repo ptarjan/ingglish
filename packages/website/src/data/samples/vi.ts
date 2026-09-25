@@ -37,8 +37,9 @@ export const vi: Sample[] = [
     text: 'Tượng-mảng: Việc nhân-nghĩa cốt ở yên dân, quân điếu phạt chỉ vì khử bạo. Như nước Việt ta từ trước, vốn xưng văn-hiến đã lâu. Sơn-hà cương-vực đã chia, phong-tục bắc nam cũng khác.',
   },
   {
-    label: 'Xuân Diệu — Vội vàng',
-    text: 'Tôi muốn tắt nắng đi cho màu đừng nhạt mất; tôi muốn buộc gió lại cho hương đừng bay đi. Của ong bướm này đây tuần tháng mật; này đây hoa của đồng nội xanh rì; này đây lá của cành tơ phơ phất.',
+    label: 'Nguyễn Đình Chiểu — Xúc cảnh',
+    source: 'https://vi.wikisource.org/wiki/Xúc_cảnh',
+    text: 'Hoa cỏ ngùi ngùi ngóng gió đông, chúa xuân đâu hỡi, có hay không? Mây giăng ải bắc trông tin nhạn, ngày xế non nam bặt tiếng hồng. Bờ cõi xưa đà chia đất khác, nắng sương nay há đội trời chung. Chừng nào thánh đế ân soi thấu, một trận mưa nhuần rửa núi sông.',
   },
   {
     label: 'Nam Cao — Chí Phèo',
@@ -61,8 +62,9 @@ export const vi: Sample[] = [
     text: 'Ao thu lạnh lẽo nước trong veo, một chiếc thuyền câu bé tẻo teo. Sóng biếc theo làn hơi gợn tí, lá vàng trước gió sẽ đưa vèo. Tầng mây lơ lửng trời xanh ngắt, ngõ trúc quanh co khách vắng teo. Tựa gối ôm cần lâu chẳng được, cá đâu đớp động dưới chân bèo.',
   },
   {
-    label: 'Tố Hữu — Việt Bắc',
-    text: 'Mình về mình có nhớ ta? Mười lăm năm ấy thiết tha mặn nồng. Mình về mình có nhớ không, nhìn cây nhớ núi, nhìn sông nhớ nguồn?',
+    label: 'Ca dao Việt Nam — Trèo lên cây bưởi hái hoa',
+    source: 'https://vi.wikisource.org/wiki/Tiếc_sự_biết_nhau_quá_chậm',
+    text: 'Trèo lên cây bưởi hái hoa, bước xuống vườn cà hái nụ tầm-xuân. Nụ tầm-xuân nở ra xanh biếc, em đã có chồng, anh tiếc lắm thay! Ba đồng một mớ trầu cay, sao anh chẳng hỏi những ngày còn không? Bây giờ em đã có chồng, như chim vào lồng, như cá cắn câu. Cá cắn câu, biết đâu mà gỡ; chim vào lồng, biết thuở nào ra!',
   },
   {
     label: 'Nguyễn Bỉnh Khiêm — Nhàn',
@@ -70,8 +72,9 @@ export const vi: Sample[] = [
     text: 'Một mai một cuốc một cần câu, thơ thẩn dù ai vui thú nào. Ta dại ta tìm nơi vắng vẻ, người khôn người đến chốn lao xao. Thu ăn măng trúc đông ăn giá, xuân tắm hồ sen hạ tắm ao.',
   },
   {
-    label: 'Thế Lữ — Nhớ rừng',
-    text: 'Gậm một khối căm hờn trong cũi sắt, ta nằm dài, trông ngày tháng dần qua. Khinh lũ người kia ngạo mạn, ngẩn ngơ, giương mắt bé riễu oai linh rừng thẳm.',
+    label: 'Tản Đà — Thề non nước',
+    source: 'https://vi.wikisource.org/wiki/Thề_non_nước_(thơ)',
+    text: 'Nước non nặng một nhời thề, nước đi đi mãi không về cùng non. Nhớ nhời nguyện nước thề non, nước đi chưa lại, non còn đứng không. Non cao những ngóng cùng trông, suối khô dòng lệ chờ mong tháng ngày. Sương mai một nắm hao gầy, tóc mây một mái đã đầy tuyết sương!',
   },
   {
     label: 'Ca dao Việt Nam — Công cha nghĩa mẹ',
@@ -84,15 +87,18 @@ export const vi: Sample[] = [
     text: 'Sao anh không về chơi thôn Vĩ? Nhìn nắng hàng cau nắng mới lên. Vườn ai mướt quá, xanh như ngọc, lá trúc che ngang mặt chữ điền. Gió theo lối gió, mây đường mây, dòng nước buồn thiu, hoa bắp lay. Thuyền ai đậu bến sông trăng đó, có chở trăng về kịp tối nay?',
   },
   {
-    label: 'Huy Cận — Tràng giang',
-    text: 'Sóng gợn tràng giang buồn điệp điệp, con thuyền xuôi mái nước song song. Thuyền về nước lại, sầu trăm ngả; củi một cành khô lạc mấy dòng. Lơ thơ cồn nhỏ gió đìu hiu, đâu tiếng làng xa vãn chợ chiều. Nắng xuống, trời lên sâu chót vót; sông dài, trời rộng, bến cô liêu.',
+    label: 'Nguyễn Khuyến — Thu vịnh',
+    source: 'https://vi.wikisource.org/wiki/Thu_vịnh',
+    text: 'Trời thu xanh ngắt mấy tầng cao, cần trúc lơ phơ gió hắt hiu. Nước biếc trông như tầng khói phủ, song thưa để mặc bóng trăng vào. Mấy chùm trước giậu hoa năm ngoái, một tiếng trên không ngỗng nước nào? Nhân hứng cũng vừa toan cất bút, nghĩ ra lại thẹn với ông Đào.',
   },
   {
-    label: 'Lưu Trọng Lư — Tiếng thu',
-    text: 'Em không nghe mùa thu, dưới trăng mờ thổn thức? Em không nghe rạo rực, hình ảnh kẻ chinh phu, trong lòng người cô phụ? Em không nghe rừng thu, lá thu kêu xào xạc, con nai vàng ngơ ngác, đạp trên lá vàng khô?',
+    label: 'Trần Tế Xương — Đất Vị Hoàng',
+    source: 'https://vi.wikisource.org/wiki/Đất_Vị_Hoàng',
+    text: 'Có đất nào như đất ấy không? Phố phường tiếp giáp với bờ sông. Nhà kia lỗi phép con khinh bố, mụ nọ chanh chua vợ chửi chồng. Keo cú người đâu như cứt sắt, tham lam chuyện thở những hơi đồng. Bắc Nam hỏi khắp người bao tỉnh, có đất nào như đất ấy không?',
   },
   {
-    label: 'Phạm Tiến Duật — Bài thơ về tiểu đội xe không kính',
-    text: 'Không có kính không phải vì xe không có kính, bom giật, bom rung kính vỡ đi rồi. Ung dung buồng lái ta ngồi, nhìn đất, nhìn trời, nhìn thẳng. Không có kính, rồi xe không có đèn, không có mui xe, thùng xe có xước, xe vẫn chạy vì miền Nam phía trước: chỉ cần trong xe có một trái tim.',
+    label: 'Ca dao Việt Nam — Thằng Bờm',
+    source: 'https://vi.wikisource.org/wiki/Thằng_Bờm',
+    text: 'Thằng Bờm có cái quạt mo, phú-ông xin đổi ba bò chín trâu. Bờm rằng: Bờm chẳng lấy trâu. Phú-ông xin đổi một xâu cá mè. Bờm rằng: Bờm chẳng lấy mè. Phú-ông xin đổi một bè gỗ lim. Bờm rằng: Bờm chẳng lấy lim. Phú-ông xin đổi con chim đồi-mồi. Bờm rằng: Bờm chẳng lấy mồi. Phú-ông xin đổi nắm xôi, Bờm cười.',
   },
 ];
