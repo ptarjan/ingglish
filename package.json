@@ -73,6 +73,7 @@
     "eslint-plugin-regexp": "^3.0.0",
     "eslint-plugin-unicorn": "^63.0.0",
     "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
     "knip": "^5.85.0",
     "lint-staged": "^16.3.1",
     "prettier": "^3.8.1",
