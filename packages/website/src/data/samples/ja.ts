@@ -2,9 +2,9 @@ import type { Sample } from './types';
 
 export const ja: Sample[] = [
   {
-    label: 'Kawabata — Snow Country',
-    source: 'https://note.com/renhoshinoren/n/n25556f880f1b',
-    text: '国境 の 長い トンネル を 抜ける と 雪国 で あった 夜 の 底 が 白く なった 信号 所 に 汽車 が 止まった',
+    label: '有島武郎 — 一房の葡萄',
+    source: 'https://www.aozora.gr.jp/cards/000025/files/211_20472.html',
+    text: '僕 は 小さい 時 に 絵 を 描く こと が 好きだ 僕 の 通う て いる た 学校 は 横浜 の 山の手 と いう 所 に ある た が そこ いら は 西洋人 ばかり 住む て いる 町 で ある た',
   },
   {
     label: '夏目漱石 — 吾輩は猫である',
@@ -27,9 +27,9 @@ export const ja: Sample[] = [
     text: 'ある 日 の 暮方 の 事 で ある 一人 の 下人 が 羅生門 の 下 で 雨 やみ を 待つ て いる た 広い 門 の 下 に は この 男 の ほか に 誰 も いる ない',
   },
   {
-    label: '三島由紀夫 — 金閣寺',
-    source: 'https://ja.wikipedia.org/wiki/金閣寺_(小説)',
-    text: '幼時 から 父 は 私 に よく 金閣 の こと を 語る た',
+    label: '新美南吉 — ごん狐',
+    source: 'https://www.aozora.gr.jp/cards/000121/files/628_14895.html',
+    text: 'これ は 私 が 小さい とき に 村 の おじいさん から きく た お話 だ むかし は 私 たち の 村 の ちかく に 中山 と いう ところ に 小さい お城 が ある て 中山 さま と いう おとの さま が おる た そう だ',
   },
   {
     label: '宮沢賢治 — 銀河鉄道の夜',
@@ -73,9 +73,9 @@ export const ja: Sample[] = [
     text: '日本 国民 は 正義 と 秩序 を 基調 と する 国際 平和 を 誠実 に 希求 する 国権 の 発動 た る 戦争 と 武力 に よる 威嚇 また は 武力 の 行使 は 国際 紛争 を 解決 する 手段 と する て は 永久 に これ を 放棄 する',
   },
   {
-    label: '小林一茶 — 俳句',
-    source: 'https://wabisabi-nihon.com/archives/7755',
-    text: '痩 蛙 負ける な 一茶 これ に あり 雀 の 子 そこ のけ そこ のけ お 馬 が 通る 我 と 来る て 遊ぶ や 親 の ない 雀',
+    label: '石川啄木 — 一握の砂',
+    source: 'https://www.aozora.gr.jp/cards/000153/files/816_15786.html',
+    text: '東海 の 小島 の 磯 の 白砂 に われ 泣く ぬれる て 蟹 と たわむれる 頬 に つたう なみだ の ごう ぬ 一握 の 砂 を 示す し 人 を 忘れる ず たわむれる に 母 を 背負う て その あまり 軽い に 泣く て 三 歩 あゆむ ず',
   },
   {
     label: '紫式部 — 源氏物語',
@@ -83,9 +83,9 @@ export const ja: Sample[] = [
     text: 'いづれ の 御 時 に か 女御 更衣 あまた 候う 給う なか に いと やんごとなし 際 に は あらぬ が すぐれる て 時めく 給う ある けり',
   },
   {
-    label: '村上春樹 — ノルウェイの森',
-    source: 'https://note.com/nishiken28/n/nc0556ed4bfc8',
-    text: '僕 は 三十七 歳 で その 時 ボーイング 747 の シート に 座る て いる た',
+    label: '梶井基次郎 — 檸檬',
+    source: 'https://www.aozora.gr.jp/cards/000074/files/424_19826.html',
+    text: 'えたい の 知れる ない 不吉だ 塊 が 私 の 心 を 始終 圧える つける て いる た 焦躁 と 言う おう か 嫌悪 と 言う おう か',
   },
   {
     label: '太宰治 — 走れメロス',

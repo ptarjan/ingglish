@@ -8,12 +8,12 @@ export const fi: Sample[] = [
   },
   {
     label: 'Kalevala — Runo 1',
-    source: 'https://www.gutenberg.org/ebooks/7000',
+    source: 'https://www.gutenberg.org/cache/epub/7000/pg7000-images.html',
     text: "Mieleni minun tekevi, aivoni ajattelevi, lähteäni laulamahan, saa'ani sanelemahan, sukuvirttä suoltamahan, lajivirttä laulamahan. Sanat suussani sulavat, puhe'et putoelevat, kielelleni kerkiävät, hampahilleni hajoovat.",
   },
   {
     label: 'Maamme — Suomen kansallislaulu',
-    source: 'https://fi.wikipedia.org/wiki/Maamme',
+    source: 'https://fi.wikisource.org/wiki/Maamme',
     text: 'Oi maamme, Suomi, synnyinmaa, soi sana kultainen! Ei laaksoa, ei kukkulaa, ei vettä, rantaa rakkaampaa kuin kotimaa tää pohjoinen, maa kallis isien!',
   },
   {
@@ -34,7 +34,7 @@ export const fi: Sample[] = [
   },
   {
     label: 'Tove Jansson — Taikurin hattu',
-    source: 'https://tovejansson.com/fi/book/17-muumipeikko-ja-pyrstotahti/',
+    source: 'https://kaisareetta-t.blogspot.com/2014/02/tove-jansson-taikurin-hattu.html',
     text: 'Eräänä kevätaamuna kello neljältä lensi ensimmäinen käki Muumilaakson läpi. Se istuutui sinisen muumitalon katolle ja kukkui kahdeksan kertaa, tosin hieman käheästi, sillä oli vielä hyvin varhainen kevät. Sitten se lensi edelleen itää kohti.',
   },
   {
@@ -79,10 +79,12 @@ export const fi: Sample[] = [
   },
   {
     label: 'Eino Leino — Elegia (loppu)',
+    source: 'https://www.kainuuneinoleinoseura.fi/eino-leinon-runoja/elegia/',
     text: 'Toivoton taisto taivaan valtoja vastaan! Kaikuvi kannel; lohduta laulu ei lastaan. Hallatar haastaa, soi sävel sortuvin siivin. Rotkoni rauhaan kuin peto kuoleva hiivin.',
   },
   {
     label: 'J.L. Runeberg — Saarijärven Paavo (loppu)',
+    source: 'http://marinkirjablogi.blogspot.com/2011/02/runeberg-runo-viikonlopuksi.html',
     text: "Vaimon käteen tarttuin Paavo lausui: «Vaimo, vaimo, sit' ei kuri kaada, veljeään ken hädässä ei hylkää. Pane leipään puolet petäjäistä, veihän naapurimme touon halla.»",
   },
   {
