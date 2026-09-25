@@ -13,9 +13,9 @@ export const is: Sample[] = [
     text: 'Deyr fé, deyja frændur, deyr sjálfur hinn sami. En orðstír deyr aldrei, sér góðan getur. Deyr fé, deyja frændur, deyr sjálfur hinn sami. Ég veit eitt að aldrei deyr, dómur um dauðan hvern.',
   },
   {
-    label: 'Íslenskir málshættir I',
-    source: 'https://is.wikipedia.org/wiki/Listi_yfir_íslenska_málshætti#H',
-    text: 'Heima er best. Hlátur lengir lífið. Hugur ræður hálfum sigri. Hugurinn ber mann hálfa leið. Hver er sinnar gæfu smiður. Hver hefur sinn djöful að draga. Hverjum þykir sinn fugl fagur.',
+    label: 'Halldór Laxness — Íslandsklukkan',
+    source: 'https://is.wikiquote.org/wiki/Íslandsklukkan',
+    text: 'Hef ég drepið mann eða hef ég ekki drepið mann? Hver hefur drepið mann og hver hefur ekki drepið mann? Hvenær drepur maður mann og hvenær drepur maður ekki mann? Fari í helvíti sem ég drap mann. Og þó.',
   },
   {
     label: 'Njáls saga — Opening',
