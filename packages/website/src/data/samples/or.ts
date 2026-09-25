@@ -8,7 +8,7 @@ export const or: Sample[] = [
   },
   {
     label: 'ସାର୍ବଜନୀନ ମାନବ ଅଧିକାର ଘୋଷଣା — ମାତ୍ରା ୧',
-    source: 'https://www.omniglot.com/udhr/indoiranian.htm',
+    source: 'https://wikisource.org/wiki/Page:Universal_Declaration_of_Human_Rights_Oriya.pdf/2',
     text: 'ସବୁ ମନୁଷ୍ୟ ଜନ୍ମକାଳରୁ ସ୍ୱାଧୀନ. ସେମାନଙ୍କର ମର୍ଯ୍ୟାଦା ଓ ଅଧିକାର ସମାନ. ସେମାନଙ୍କଠାରେ ପ୍ରଜ୍ଞା ଓ ବିବେକ ନିହିତ ଅଛି. ସେମାନେ ପରସ୍ପର ପ୍ରତି ଭାତୃଭାବ ପୋଷଣ କରି କାର୍ଯ୍ୟ କରିବା ଦରକାର.',
   },
   {
@@ -24,6 +24,8 @@ export const or: Sample[] = [
   },
   {
     label: 'ଭୀମ ଭୋଇ — ସ୍ତୁତିଚିନ୍ତାମଣି',
+    source:
+      'https://archive.org/download/stuti-chintamani-bhima-bhoi-odia/Stuti%20Chintamani%20-%20Bhima%20Bhoi%20%28Odia%29_djvu.txt',
     text: 'ପ୍ରାଣୀମାନଙ୍କ ଆରତ ଦୁଃଖ ଅପ୍ରମିତ ଦେଖି ଦେଖି କେବା ସହୁ, ମୋ ଜୀବନ ପଛେ ନର୍କେ ପଡ଼ିଥାଉ ଜଗତ ଉଦ୍ଧାର ହେଉ।',
   },
   {
@@ -40,6 +42,7 @@ export const or: Sample[] = [
   },
   {
     label: 'ଜଗନ୍ନାଥ ଦାସ — ଓଡ଼ିଆ ଭାଗବତ (ପ୍ରଥମ ସ୍କନ୍ଧ)',
+    source: 'https://collection.shubhapallaba.com/2020/08/odia-bhagabata-part1.html',
     text: 'ନମଇଁ ନୃସିଂହ ଚରଣ। ଅନାଦି ପରମ କାରଣ॥ ଯା ବିନୁ ଆଦି ମଧ୍ୟ ଅନ୍ତ। ବିଚାରେ ନ ଘଟେ ଜଗତ॥ ସେ କୃଷ୍ଣପାଦ ହୃଦେ ଧରି। ପ୍ରବନ୍ଧେ ଗୀତନାଦ କରି॥ ଅଶେଷ ଜଗତର ହିତେ। ବର୍ଣ୍ଣଇ ଦାସ ଜଗନ୍ନାଥେ॥',
   },
   {
@@ -55,7 +58,7 @@ export const or: Sample[] = [
   },
   {
     label: 'ଫକୀର ମୋହନ ସେନାପତି — ଛ ମାଣ ଆଠ ଗୁଣ୍ଠ',
-    source: 'https://archive.org/details/ChhaManaAthaGunthaByFakirMohanSenapati-OdiaNovel',
+    source: 'https://or.wikisource.org/wiki/ଛମାଣ_ଆଠଗୁଣ୍ଠ/ରାମଚନ୍ଦ୍ର_ମଙ୍ଗରାଜ',
     text: 'ରାମଚନ୍ଦ୍ର ମଙ୍ଗରାଜ ଜଣେ ମଫସଲର ଜମିଦାର, ମଧ୍ୟ ମହାଜନ-ନଗଦ ଟଙ୍କା କାରବାର ଠାରୁ ଧାନର ମହାଜନୀ ବେଶି। ଶୁଣାଯାଏ, ଆଡ଼େ ଦୀର୍ଘେ ଚାରି କୋଶ ମଧ୍ୟରେ ଆଉ କାହାରି କାରବାର ଚଳେନାହିଁ। ବଡ଼ ଧାର୍ମିକ।',
   },
   {
