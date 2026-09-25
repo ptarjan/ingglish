@@ -72,30 +72,30 @@ export function convertArpabet(
 }
 
 /**
+ * Whether joining `left` and `right` would put 3+ identical letters in a row,
+ * which is where the forward translator writes a hyphen inside a word.
+ */
+export function needsSeparator(left: string, right: string): boolean {
+  const lastChar = left.at(-1);
+  if (lastChar === undefined || !right.startsWith(lastChar)) {
+    return false;
+  }
+  let run = 0;
+  for (let j = left.length - 1; j >= 0 && left[j] === lastChar; j--) {
+    run++;
+  }
+  for (let j = 0; j < right.length && right[j] === lastChar; j++) {
+    run++;
+  }
+  return run >= 3;
+}
+
+/**
  * Append a chunk to the result, inserting a hyphen if the junction would
  * create 3+ identical consecutive letters (e.g. "ee"+"e" → "ee-e").
  */
 function appendWithSeparator(result: string, chunk: string): string {
-  if (result.length > 0 && chunk.length > 0) {
-    const lastChar = result.at(-1)!;
-    if (chunk.startsWith(lastChar)) {
-      // Count trailing run of lastChar in result
-      let runLen = 0;
-      for (let j = result.length - 1; j >= 0 && result[j] === lastChar; j--) {
-        runLen++;
-      }
-      // Count leading run of lastChar in chunk
-      let chunkRun = 0;
-      for (let j = 0; j < chunk.length && chunk[j] === lastChar; j++) {
-        chunkRun++;
-      }
-      // Would create 3+ of the same letter in a row
-      if (runLen + chunkRun >= 3) {
-        return result + '-' + chunk;
-      }
-    }
-  }
-  return result + chunk;
+  return needsSeparator(result, chunk) ? result + '-' + chunk : result + chunk;
 }
 
 // Pre-combined lookup: phoneme (with or without stress digit) → ingglish spelling.

@@ -18,6 +18,7 @@ import {
   expandArpabetAlternatives,
   getFormatHandler,
   ingglishToArpabet,
+  needsSeparator,
   registerFormat,
   stripStress,
 } from '@ingglish/phonemes';
@@ -249,6 +250,32 @@ export function reverseTranslateSyncWithMapping(
 }
 
 /**
+ * Rejoins words the forward translator split with a hyphen to avoid three
+ * identical letters in a row ("eezee-er" is "easier"), when the joined word
+ * is in the dictionary. Other hyphens separate compound parts. Words sit at
+ * odd indices of `rawTokens`; joining word + "-" + word keeps that parity.
+ */
+function joinSeparatedWords(rawTokens: string[]): string[] {
+  const out: string[] = [];
+  for (const token of rawTokens) {
+    const left = out.at(-2);
+    if (out.length % 2 === 1 && out.at(-1) === '-' && left && needsSeparator(left, token)) {
+      const joined = `${left}-${token}`;
+      if (reverseTranslateWordAsResult(joined).matched) {
+        out.splice(-2, 2, joined);
+        continue;
+      }
+    }
+    out.push(token);
+  }
+  return out;
+}
+
+// ============================================================================
+// Reverse Translation with Mapping
+// ============================================================================
+
+/**
  * Reverse-translate a single Ingglish word back to a non-English language
  * using the pre-built reverse map.
  */
@@ -296,10 +323,6 @@ function reverseLangWordAsResult(word: string, reverseMap: Map<string, string[]>
   return { matched: false, translated: word };
 }
 
-// ============================================================================
-// Reverse Translation with Mapping
-// ============================================================================
-
 /**
  * Translates Ingglish text back to English.
  * URLs and emails are preserved unchanged.
@@ -315,7 +338,7 @@ function reverseTranslateIngglishText(text: string): string {
  */
 function reverseTranslateIngglishTextWithMapping(text: string): TranslatedToken[] {
   const { preserved, rawTokens } = extractTokens(text);
-  return mapTokens(rawTokens, preserved, reverseTranslateWordAsResult);
+  return mapTokens(joinSeparatedWords(rawTokens), preserved, reverseTranslateWordAsResult);
 }
 
 /**

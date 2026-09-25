@@ -26,7 +26,12 @@ export {
 } from './format-registry';
 
 // Forward conversion (ARPAbet → display formats)
-export { arpabetPhonemeToIngglish, arpabetToFormat, arpabetToIngglish } from './to-ingglish';
+export {
+  arpabetPhonemeToIngglish,
+  arpabetToFormat,
+  arpabetToIngglish,
+  needsSeparator,
+} from './to-ingglish';
 
 // Reverse conversion (display formats → ARPAbet)
 export { expandArpabetAlternatives, ingglishToArpabet } from './from-ingglish';

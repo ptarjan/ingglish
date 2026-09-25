@@ -68,6 +68,22 @@ describe('reverse-translator', () => {
       expect(reverseTranslateSync(input)).toBe(expected);
     });
 
+    // Forward writes a hyphen where three identical letters would meet; that
+    // hyphen joins one word. Any other hyphen separates words of a compound.
+    it.each([
+      ['erlee-er', 'earlier'],
+      ['eezee-er', 'easier'],
+      ['Hapee-er', 'Happier'],
+      ['doo-oh', 'duo'],
+      ['throo-out', 'throughout'],
+      ['wel-nohn', 'well-known'],
+      ['buhs-stop', 'bus-stop'],
+      ['see-eel', 'see-eel'],
+      ['eezee-er-hapee-er', 'easier-happier'],
+    ])('reverses the hyphenated spelling %s as %s', (input, expected) => {
+      expect(reverseTranslateSync(input)).toBe(expected);
+    });
+
     it.each([
       ['exhumed', '"sh" can be SH (ship) or S+HH (exhume)'],
       ['where', '"er" can be ER (were) or EH+R (where)'],
