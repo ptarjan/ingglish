@@ -11,6 +11,7 @@ export const km: Record<string, string> = {
   កល្យាណី: '/kaʔlyeanəy/', // beautiful, virtuous woman (Pali kalyāṇī)
   // --- Reamker (Ramayana) ---
   ក្ដី: '/kdəy/', // matter, affair
+  ក្រឹត: '/krɨt/', // second half of អព្យាក្រឹត
   ក្រេវ: '/kreew/', // furious
   ក្រេវក្រោធ: '/kreew krout/', // furiously angry
   ក្រោធ: '/krout/', // anger
@@ -56,6 +57,8 @@ export const km: Record<string, string> = {
   ទេព្តា: '/teepɗaa/', // devas, celestial beings
   // --- Constitution, Article 1 ---
   ទ្រង់: '/trɔɔŋ/', // royal verb marker
+  ធម្មនុញ្ញ: '/tʰɔmmɔnuɲ/', // constitution (without រដ្ឋ)
+  ធិបតេយ្យ: '/tʰippɑɗɛj/', // -cracy (from ប្រជាធិបតេយ្យ)
   នរបតី: '/nɔrɔpaɗəy/', // sovereign, king
   នាវ: '/niew/', // Nav (proper name)
   និម៌ល: '/nɨmmɔl/', // pure, immaculate
@@ -64,6 +67,7 @@ export const km: Record<string, string> = {
   បុត្រ: '/ɓot/', // son
   // --- Collection of Khmer Legends ---
   ប្ដី: '/ɓɗəy/', // husband
+  ប្រជា: '/prɑciə/', // people
   ប្រជាធិបតេយ្យ: '/prɑciə tʰippɑɗɛj/', // democracy
   ប្រណី: '/prɑnəy/', // loving, affectionate
   ប្រតិបត្តិ: '/prɑtĕɓat/', // to practice, comply with
@@ -92,6 +96,7 @@ export const km: Record<string, string> = {
   រាជា: '/riecie/', // king
   រុង: '/ruŋ/', // to shine
   រុងរឿង: '/ruŋ rɨəŋ/', // brilliant, prosperous
+  លទ្ធិ: '/lʊttʰeʔ/', // doctrine
   លំអ: '/lumʔɑɑ/', // adornment, beauty
   វង្ស: '/wɔŋ/', // dynasty, lineage
   វិចារណញ្ញាណ: '/wicaarɑɲɲaan/', // discernment
@@ -108,6 +113,7 @@ export const km: Record<string, string> = {
   សួស្តី: '/suəsdəy/', // greeting, well-being
   សេចក្ដី: '/sac kdəy/', // matter, affair
   សេចក្ដីថ្លៃថ្នូរ: '/sac kdəy tlay tnoo/', // dignity
+  សេរីពហុ: '/seirəy pɔhoʔ/', // liberal multi-
   ស្ដេច: '/sdac/', // king
   ស្តាប់: '/sdaap/', // to listen
   ស្តី: '/sdəy/', // (second syllable of សួស្តី)
@@ -115,6 +121,7 @@ export const km: Record<string, string> = {
   ហត្ថា: '/hatɑɑtʰaa/', // hand (literary)
   អចិន្ត្រៃយ៍: '/ʔɑcɑntrɑj/', // eternal, permanent
   អធិបតេយ្យ: '/ʔatʰippɑɗɛj/', // sovereignty
+  អព្យា: '/ʔɑpjie/', // first half of អព្យាក្រឹត
   អព្យាក្រឹត: '/ʔɑpjiekrɨt/', // neutral
   // --- Proverbs & Nokor Reach (misc) ---
   អរ: '/ʔɑɑ/', // to rejoice
