@@ -2,23 +2,50 @@
 /**
  * Validates all sample source URLs for the /url page.
  *
+ * Fetches every URL through the same CORS proxy the live site uses (not
+ * directly), because a target can be reachable directly while still being
+ * blocked for the proxy specifically — e.g. a site that blocks Cloudflare
+ * Workers' IP ranges, or a Cloudflare/DataDome challenge that only triggers
+ * for datacenter traffic. Checking the target directly would silently miss
+ * exactly the failures users hit on the live site.
+ *
  * Checks:
- * - HTTP status (404, 5xx, timeouts)
+ * - HTTP status of the proxied response (404, 5xx, timeouts, and any
+ *   proxy-generated error like 415 "not HTML" or 403 "forbidden")
+ * - Bot-protection / challenge pages that slip through as HTTP 200
+ * - Redirects to a different host or to a login/signin page (e.g. a site
+ *   that now gates logged-out access) — the proxy call itself succeeds, but
+ *   the content isn't what the example promised
  * - Character encoding (non-UTF-8 that might cause mojibake)
  * - Whether our decodeHtmlBuffer() can detect the charset
  *
  * Usage:
  *   npx tsx --conditions=source packages/website/scripts/validate-sample-urls.ts
  *   npx tsx --conditions=source packages/website/scripts/validate-sample-urls.ts --fix  # remove broken URLs
+ *
+ * Env:
+ *   VITE_CORS_PROXY_URL - override the proxy to test against (defaults to
+ *     the deployed production worker, same as .github/workflows/pages.yml)
  */
 
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
+import { detectBotProtection } from '../src/url-proxy';
 
 const SAMPLES_DIR = join(import.meta.dirname, '..', 'src', 'data', 'samples');
 const TIMEOUT_MS = 15_000;
 const CONCURRENCY = 10;
+
+// Same proxy the production build points at (see .github/workflows/pages.yml).
+// The worker only accepts requests carrying an Origin header from
+// ALLOWED_ORIGINS (packages/cors-proxy/wrangler.toml) — a plain server-side
+// fetch doesn't set one on its own the way a browser would, so we set it
+// explicitly below.
+const CORS_PROXY_URL =
+  process.env.VITE_CORS_PROXY_URL ??
+  'https://ingglish-cors-proxy.curly-unit-b9e0.workers.dev/?url=';
+const PROXY_ORIGIN = 'https://ingglish.com';
 
 // Also check the hardcoded EXAMPLE_URLS from UrlTranslator
 const EXAMPLE_URLS = [
@@ -40,12 +67,12 @@ const EXAMPLE_URLS = [
   {
     file: 'UrlTranslator.tsx',
     name: 'Dictionary',
-    url: 'https://www.merriam-webster.com/dictionary/hello',
+    url: 'https://www.dictionary.com/browse/hello',
   },
-  { file: 'UrlTranslator.tsx', name: 'Hacker News', url: 'https://news.ycombinator.com' },
+  { file: 'UrlTranslator.tsx', name: 'Lobsters', url: 'https://lobste.rs' },
   { file: 'UrlTranslator.tsx', name: 'NPR', url: 'https://text.npr.org' },
-  { file: 'UrlTranslator.tsx', name: 'NY Times', url: 'https://www.nytimes.com' },
-  { file: 'UrlTranslator.tsx', name: 'Reddit', url: 'https://old.reddit.com' },
+  { file: 'UrlTranslator.tsx', name: 'The Guardian', url: 'https://www.theguardian.com/us' },
+  { file: 'UrlTranslator.tsx', name: 'Tildes', url: 'https://tildes.net' },
   { file: 'UrlTranslator.tsx', name: 'GitHub', url: 'https://github.com/ptarjan/ingglish' },
 ];
 
@@ -84,14 +111,44 @@ export function charsetFromHtml(html: string): string | null {
   return null;
 }
 
+/**
+ * Checks whether a proxied response landed somewhere other than the
+ * requested page — a different host, or a login/signin page. The proxy call
+ * itself can succeed (HTTP 200) while the target quietly gates logged-out
+ * access, e.g. old.reddit.com redirecting anonymous requests to
+ * /login/?dest=....
+ */
+function redirectLooksLikeGate(requestedUrl: string, proxiedUrl: string | null): string | null {
+  if (proxiedUrl === null) {
+    return null;
+  }
+  let requestedHost: string;
+  let finalUrl: URL;
+  try {
+    requestedHost = new URL(requestedUrl).hostname;
+    finalUrl = new URL(proxiedUrl);
+  } catch {
+    return null;
+  }
+  if (finalUrl.hostname !== requestedHost) {
+    return `Redirected to a different host: ${proxiedUrl}`;
+  }
+  if (/\/(log[-_]?in|sign[-_]?in)\b/i.test(finalUrl.pathname)) {
+    return `Redirected to a login page: ${proxiedUrl}`;
+  }
+  return null;
+}
+
 async function checkUrl(entry: UrlEntry): Promise<CheckResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   try {
-    const response = await fetch(entry.url, {
+    const proxyUrl = `${CORS_PROXY_URL}${encodeURIComponent(entry.url)}`;
+    const response = await fetch(proxyUrl, {
       headers: {
         Accept: 'text/html',
+        Origin: PROXY_ORIGIN,
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ingglish-url-validator/1.0',
       },
       redirect: 'follow',
@@ -101,8 +158,9 @@ async function checkUrl(entry: UrlEntry): Promise<CheckResult> {
     const status = response.status;
     const contentType = response.headers.get('content-type');
     const headerCharset = charsetFromHeader(contentType);
+    const proxiedUrl = response.headers.get('x-proxied-url');
 
-    // Read first 4KB to check HTML charset declaration
+    // Read first 4KB to check HTML charset declaration and bot-protection pages
     const buffer = await response.arrayBuffer();
     const peek = new TextDecoder('latin1').decode(buffer.slice(0, 4096));
     const htmlCharset = charsetFromHtml(peek);
@@ -112,7 +170,13 @@ async function checkUrl(entry: UrlEntry): Promise<CheckResult> {
 
     let error: string | null = null;
     if (status >= 400) {
-      error = `HTTP ${status}`;
+      // Read the proxy's own error body (e.g. "Only HTML content is
+      // supported... Body preview: Sorry") when the fetch itself is 400+ so
+      // the reason shows up in the report instead of just the status code.
+      const bodyText = new TextDecoder('utf-8').decode(buffer.slice(0, 300)).trim();
+      error = bodyText ? `HTTP ${status} via proxy — ${bodyText}` : `HTTP ${status} via proxy`;
+    } else {
+      error = detectBotProtection(peek) ?? redirectLooksLikeGate(entry.url, proxiedUrl);
     }
 
     return { charset, charsetSource, entry, error, status };

@@ -15,11 +15,22 @@ const EXAMPLE_URLS = [
     url: 'https://www.archives.gov/founding-docs/constitution-transcript',
   },
   { name: 'Alice in Wonderland', url: 'https://www.gutenberg.org/cache/epub/11/pg11-images.html' },
-  { name: 'Dictionary', url: 'https://www.merriam-webster.com/dictionary/hello' },
-  { name: 'Hacker News', url: 'https://news.ycombinator.com' },
+  // Merriam-Webster now serves a Cloudflare JS challenge to any server-side
+  // fetch (proxy or not), so it never loads through the CORS proxy.
+  { name: 'Dictionary', url: 'https://www.dictionary.com/browse/hello' },
+  // news.ycombinator.com blocks requests from Cloudflare Workers'
+  // (hosting-provider) IP ranges specifically — it returns a plain-text
+  // "Sorry" page, so this fails through any Cloudflare Worker CORS proxy
+  // even though it loads fine from a normal browser or residential IP.
+  { name: 'Lobsters', url: 'https://lobste.rs' },
   { name: 'NPR', url: 'https://text.npr.org' },
-  { name: 'NY Times', url: 'https://www.nytimes.com' },
-  { name: 'Reddit', url: 'https://old.reddit.com' },
+  // nytimes.com blocks the proxy's (datacenter) IP via DataDome bot
+  // protection, independent of the request's headers.
+  { name: 'The Guardian', url: 'https://www.theguardian.com/us' },
+  // old.reddit.com now redirects logged-out requests to a login wall
+  // (confirmed even without going through any proxy), so it no longer shows
+  // real content.
+  { name: 'Tildes', url: 'https://tildes.net' },
   { name: 'GitHub', url: 'https://github.com/ptarjan/ingglish' },
 ];
 
