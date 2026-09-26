@@ -10,17 +10,31 @@
 
 .url-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
 .url-input {
-  flex: 1;
+  /* Soaks up spare width on a shared row; the actions only grow once they wrap to their own row */
+  flex: 100 1 20rem;
+  min-width: 0;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   color: var(--color-text);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
+}
+
+.url-actions {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.url-actions > button {
+  flex: 1 1 auto;
 }
 
 .url-input:focus {
@@ -160,6 +174,7 @@
   }
 
   .url-input {
+    flex: none;
     font-size: 16px; /* Prevents iOS zoom on focus */
   }
 

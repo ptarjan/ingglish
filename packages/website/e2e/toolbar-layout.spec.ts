@@ -51,6 +51,33 @@ test.describe('Toolbar layout at tablet width', () => {
     await context.close();
   });
 
+  for (const viewport of [
+    { height: 1024, width: 768 },
+    IPAD_PORTRAIT,
+    { height: 1180, width: 820 },
+  ]) {
+    test(`URL translator buttons fit inside the page at ${String(viewport.width)}px`, async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({ viewport });
+      const page = await context.newPage();
+      await setupMockProxy(page);
+      await page.goto('/url');
+      await waitForAppLoad(page);
+      const container = await page.locator('.url-translator').boundingBox();
+      expect(container).not.toBeNull();
+      const containerRight = (container?.x ?? 0) + (container?.width ?? 0);
+
+      for (const button of await page.locator('.url-form button').all()) {
+        const box = await button.boundingBox();
+        expect(box).not.toBeNull();
+        expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(containerRight + 1);
+      }
+
+      await context.close();
+    });
+  }
+
   test('Text translator format-toggle button stays on one line', async ({ browser }) => {
     const context = await browser.newContext({ viewport: IPAD_PORTRAIT });
     const page = await context.newPage();

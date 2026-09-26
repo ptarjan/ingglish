@@ -217,35 +217,37 @@ function UrlTranslator({ initialLang, initialUrl = '', onNavigate, onShare }: Ur
           type="text"
           value={url}
         />
-        <button
-          className={`btn-primary ${isLoading ? 'btn-loading' : ''}`}
-          disabled={isLoading}
-          type="submit"
-        >
-          {isLoading ? 'Loading...' : 'Translate'}
-        </button>
-        <button
-          className="btn-secondary format-toggle"
-          disabled={isLoading}
-          onClick={toggleFormat}
-          title="Switch output format"
-          type="button"
-        >
-          {formatLabel} &#x21C5;
-        </button>
-        <button className="btn-secondary" disabled={isLoading} onClick={clear} type="button">
-          Clear
-        </button>
-        {onShare && (
+        <div className="url-actions">
           <button
-            className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
-            disabled={isLoading || url.trim().length === 0}
-            onClick={handleShare}
+            className={`btn-primary ${isLoading ? 'btn-loading' : ''}`}
+            disabled={isLoading}
+            type="submit"
+          >
+            {isLoading ? 'Loading...' : 'Translate'}
+          </button>
+          <button
+            className="btn-secondary format-toggle"
+            disabled={isLoading}
+            onClick={toggleFormat}
+            title="Switch output format"
             type="button"
           >
-            {copiedShare ? 'Copied!' : 'Share'}
+            {formatLabel} &#x21C5;
           </button>
-        )}
+          <button className="btn-secondary" disabled={isLoading} onClick={clear} type="button">
+            Clear
+          </button>
+          {onShare && (
+            <button
+              className={`btn-secondary ${copiedShare ? 'btn-copied' : ''}`}
+              disabled={isLoading || url.trim().length === 0}
+              onClick={handleShare}
+              type="button"
+            >
+              {copiedShare ? 'Copied!' : 'Share'}
+            </button>
+          )}
+        </div>
       </form>
 
       {dictLoading && hasContent && (
