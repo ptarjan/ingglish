@@ -31,7 +31,7 @@
     "ingglish": "^0.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router": "^7.13.1"
+    "react-router": "^7.15.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
