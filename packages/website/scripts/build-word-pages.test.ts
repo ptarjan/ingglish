@@ -641,6 +641,21 @@ describe('renderWordsHub', () => {
   });
 });
 
+describe('Google Analytics tag', () => {
+  const data = buildWordData('colonel', 4, deps)!;
+  it.each([
+    ['word page', () => renderWordPage(data, [])],
+    ['words hub', () => renderWordsHub(['a'], ['the'])],
+    ['letter page', () => renderLetterPage('a', ['ant'])],
+  ])('%s carries the same async gtag as index.html', (_name, render) => {
+    const html = render();
+    expect(html).toContain(
+      '<script async src="https://www.googletagmanager.com/gtag/js?id=G-2RPKS54P74"></script>'
+    );
+    expect(html).toContain("gtag('config','G-2RPKS54P74')");
+  });
+});
+
 describe('renderLetterPage', () => {
   it('lists every word for the letter and links back to the hub', () => {
     const html = renderLetterPage('a', ['ant', 'apple']);

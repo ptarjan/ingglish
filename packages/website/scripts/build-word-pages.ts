@@ -546,6 +546,10 @@ button.hear{background:#1a1a1a;color:#f5f5f5;border-color:#333}button.hear:hover
 .cta{background:#6366f1}.cta:hover{background:#818cf8}footer{border-color:#333}
 }`;
 
+/** Same Google Analytics tag as index.html, so static pages fire a page_view too. */
+export const GA_SNIPPET = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-2RPKS54P74"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-2RPKS54P74')</script>`;
+
 const SITE_HEADER = `<header><a href="/">Ingglish</a><a href="/text/">Translator</a></header>`;
 
 /** A link list of word pages ("cat" → <a href="/word/cat/">cat</a>). */
@@ -699,6 +703,7 @@ export function renderWordPage(
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">${jsonLd}</script>
+${GA_SNIPPET}
 <link rel="stylesheet" href="/word.css">
 </head>
 <body>
@@ -796,6 +801,7 @@ export function hubShell(
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${canonical}">
+${GA_SNIPPET}
 <link rel="stylesheet" href="/word.css">
 </head>
 <body>

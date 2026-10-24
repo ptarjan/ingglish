@@ -33,6 +33,7 @@ import {
   DESCRIPTION_LIMIT,
   escapeHtml,
   fitText,
+  GA_SNIPPET,
   hubShell,
   TITLE_LIMIT,
 } from './build-word-pages';
@@ -192,6 +193,7 @@ ${sectionRows
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">${jsonLd}</script>
+${GA_SNIPPET}
 <link rel="stylesheet" href="/word.css">
 </head>
 <body>

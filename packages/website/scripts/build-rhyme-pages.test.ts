@@ -117,6 +117,11 @@ describe('renderRhymePage', () => {
     expect(html).not.toContain('FAQPage');
   });
 
+  it('carries the Google Analytics tag so rhyme landings are measured', () => {
+    expect(html).toContain('googletagmanager.com/gtag/js?id=G-2RPKS54P74');
+    expect(html).toContain("gtag('config','G-2RPKS54P74')");
+  });
+
   // ~6.4k more generated pages share the word pages' stylesheet.
   it('links the shared stylesheet instead of inlining CSS', () => {
     expect(html).toContain('<link rel="stylesheet" href="/word.css">');
