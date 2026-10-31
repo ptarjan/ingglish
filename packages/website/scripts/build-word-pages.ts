@@ -536,6 +536,8 @@ td.eng{font-size:1.1rem}
 .cta{display:inline-block;margin:.5rem .5rem 0 0;padding:.6rem 1.1rem;border-radius:.5rem;
 background:#4f46e5;color:#fff;font-weight:600}
 .cta:hover{background:#4338ca;text-decoration:none}
+.try{margin:1.5rem 0}.try input{padding:.55rem .7rem;border:1px solid #ccc;border-radius:.5rem;font:inherit;width:min(100%,24rem);box-sizing:border-box;margin-right:.5rem}
+.try button{padding:.6rem 1.1rem;border:0;border-radius:.5rem;background:#4f46e5;color:#fff;font:inherit;font-weight:600;cursor:pointer}
 .rhymes a{display:inline-block;margin:.25rem .5rem .25rem 0}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 footer{color:#666;font-size:.9rem;padding-top:1.5rem;border-top:1px solid #e0e0e0;margin-top:2rem}
@@ -543,12 +545,26 @@ footer{color:#666;font-size:.9rem;padding-top:1.5rem;border-top:1px solid #e0e0e
 body{background:#0f0f0f;color:#f5f5f5}a{color:#818cf8}.ing{color:#818cf8}
 button.hear{background:#1a1a1a;color:#f5f5f5;border-color:#333}button.hear:hover{background:#252525}
 .facts{background:#1a1a1a;border-color:#333}th,td{border-color:#333}td.snd{color:#818cf8}
-.cta{background:#6366f1}.cta:hover{background:#818cf8}footer{border-color:#333}
+.try input{background:#1a1a1a;color:#f5f5f5;border-color:#333}.try button{background:#6366f1}.cta{background:#6366f1}.cta:hover{background:#818cf8}footer{border-color:#333}
 }`;
 
 /** Same Google Analytics tag as index.html, so static pages fire a page_view too. */
 export const GA_SNIPPET = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-2RPKS54P74"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-2RPKS54P74')</script>`;
+
+/**
+ * "Try your own sentence" box. Submitting fires a GA event and goes to the translator with the
+ * text in the URL fragment (never ?text=, which robots.txt blocks). The plain link inside is the
+ * no-JS fallback.
+ */
+export function tryBox(word: string): string {
+  const w = escapeHtml(word);
+  const sentence = `I said “${w}” out loud.`;
+  return `<form class="try" data-w="${w}" onsubmit="var f=this,t=f.t.value;window.gtag&&gtag('event','word_page_try',{word:f.dataset.w});location.href='/text/#text='+encodeURIComponent(t);return false">
+<label>Try your own sentence<br><input name="t" value="${sentence}" maxlength="200"></label><button>Translate</button>
+<p><a href="/text/#text=${encodeURIComponent(word)}">Or open the full translator</a></p>
+</form>`;
+}
 
 const SITE_HEADER = `<header><a href="/">Ingglish</a><a href="/text/">Translator</a></header>`;
 
@@ -753,8 +769,9 @@ ${rhymeBlock}
 ${faqHtml}
 </section>
 
+${tryBox(word)}
+
 <p>
-<a class="cta" href="/text/#text=${encodeURIComponent(word)}">Translate any text →</a>
 <a class="cta" href="/words/">Browse all words</a>
 </p>
 </main>

@@ -521,6 +521,17 @@ describe('renderWordPage', () => {
   const data = buildWordData('colonel', 3, deps, 48_000)!;
   const html = renderWordPage(data, ['kernel']);
 
+  it('has a try-your-own-sentence box that fires the event and uses the fragment URL', () => {
+    expect(html).toContain('Try your own sentence');
+    expect(html).toContain('value="I said “colonel” out loud."');
+    expect(html).toContain("gtag('event','word_page_try',{word:f.dataset.w})");
+    expect(html).toContain('data-w="colonel"');
+    expect(html).toContain("location.href='/text/#text='+encodeURIComponent(t)");
+    expect(html).toContain('href="/text/#text=colonel"');
+    expect(html).not.toMatch(/\/text\/\?text=/);
+    expect(html).not.toContain('action=');
+  });
+
   it('is a complete HTML document with canonical and word content', () => {
     expect(html).toContain('<!doctype html>');
     expect(html).toContain('<link rel="canonical" href="https://ingglish.com/word/colonel/">');

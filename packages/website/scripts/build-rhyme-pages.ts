@@ -34,6 +34,7 @@ import {
   escapeHtml,
   fitText,
   GA_SNIPPET,
+  tryBox,
   hubShell,
   TITLE_LIMIT,
 } from './build-word-pages';
@@ -212,9 +213,10 @@ ${SITE_HEADER}
 
 ${sections}
 
+${tryBox(word)}
+
 <p>
 <a class="cta" href="/rhymes/">Browse all rhyme groups →</a>
-<a class="cta" href="/text/#text=${encodeURIComponent(word)}">Translate any text</a>
 </p>
 </main>
 <footer>
