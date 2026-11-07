@@ -214,5 +214,69 @@ describe('convertIpaEntries', () => {
   });
 });
 
+describe('convertIpaEntries', () => {
+  it('passes through already-ARPAbet entries', () => {
+    const entries = { hello: ['HH', 'AH0', 'L', 'OW1'] };
+    const result = convertIpaEntries(entries, 'en');
+    expect(result.hello).toEqual(['HH', 'AH0', 'L', 'OW1']);
+  });
+
+  it('handles empty entries', () => {
+    const result = convertIpaEntries({}, 'en');
+    expect(Object.keys(result)).toHaveLength(0);
+  });
+});
+
+describe('language resolvers via translate', () => {
+  it(
+    'German ß normalization',
+    async () => {
+      const result = await translate('daß', { lang: 'de' });
+      expect(result).toBeTruthy();
+    },
+    30_000
+  );
+
+  it('Swedish suffix stripping', async () => {
+    const result = await translate('flickorna', { lang: 'sv' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Finnish morphology', async () => {
+    const result = await translate('talossani', { lang: 'fi' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Esperanto morphology', async () => {
+    const result = await translate('laboris', { lang: 'eo' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Romanian suffix stripping', async () => {
+    const result = await translate('băiatul', { lang: 'ro' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Norwegian old orthography', async () => {
+    const result = await translate('af', { lang: 'nb' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Malay prefix-suffix', async () => {
+    const result = await translate('memakan', { lang: 'ma' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Persian verb forms', async () => {
+    const result = await translate('میکند', { lang: 'fa' });
+    expect(result).toBeTruthy();
+  });
+
+  it('Swahili verb prefixes', async () => {
+    const result = await translate('wanakula', { lang: 'sw' });
+    expect(result).toBeTruthy();
+  });
+});
+
 // Khmer and sample coverage tests are in dict-coverage.test.ts (slow, reads website data files).
 // Run separately via: npx vitest run src/dict-coverage.test.ts
